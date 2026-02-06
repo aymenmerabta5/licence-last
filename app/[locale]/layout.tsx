@@ -5,6 +5,8 @@ import { getTranslations } from "next-intl/server"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages } from "next-intl/server"
 
+import { QueryProvider } from "@/components/providers/QueryProvider"
+
 import "../globals.css"
 
 type Params = Promise<{ locale: string }>
@@ -71,7 +73,9 @@ export default async function LocaleLayout({
             defaultTheme="light"
             enableSystem={false}
           >
-            {children}
+            <QueryProvider>
+              {children}
+            </QueryProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

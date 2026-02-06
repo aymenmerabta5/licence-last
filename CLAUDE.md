@@ -44,7 +44,7 @@ The app automatically handles RTL when locale is 'ar':
 - Asymmetrical layouts
 
 ### 4. Components Pattern
-For that you should use the skill 'vercel-composition-patterns' whenever you will create a component
+For that you should use the skill 'vercel-composition-patterns' and 'vercel-react-best-practices' whenever you will create a component
 
 ### 5. Design Pattern
 You should use the existing design style and the color palette and you should use the basic shadcn components to do that, you should use the design skills to help you desgin better
