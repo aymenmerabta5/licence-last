@@ -226,3 +226,101 @@ This codebase prioritizes **editorial elegance** over generic UI:
 - **Dark mode as first-class** — "Night Edition" theme is equally refined
 
 When adding features, maintain this editorial voice. Avoid generic component libraries unless they fit the warm, refined aesthetic.
+
+---
+
+## Internationalization (i18n) with next-intl
+
+This project supports **three languages**: English (en), French (fr), and Arabic (ar). All components must be i18n-ready.
+
+### Setup
+- **Configuration**: `i18n/routing.ts`, `i18n/request.ts`
+- **Messages**: `messages/{en,fr,ar}.json`
+- **Middleware**: `middleware.ts` (handles auto-detection)
+- **Routing**: All pages under `app/[locale]/`
+
+### Server Components
+```typescript
+import { getTranslations } from "next-intl/server"
+
+export default async function Page() {
+  const t = await getTranslations("namespace")
+  return <h1>{t("key")}</h1>
+}
+```
+
+### Client Components
+```typescript
+"use client"
+import { useTranslations } from "next-intl"
+
+export function Component() {
+  const t = useTranslations("namespace")
+  return <h1>{t("key")}</h1>
+}
+```
+
+### RTL (Right-to-Left) Support for Arabic
+
+**CRITICAL**: When styling components that support RTL languages (Arabic), **always use logical CSS properties** instead of physical ones:
+
+| ❌ Physical (Avoid) | ✅ Logical (Use) | Description |
+|---------------------|------------------|-------------|
+| `ml-*` / `mr-*` | `ms-*` / `me-*` | Margin start/end |
+| `pl-*` / `pr-*` | `ps-*` / `pe-*` | Padding start/end |
+| `left-*` / `right-*` | `start-*` / `end-*` | Positioning |
+| `text-left` / `text-right` | `text-start` / `text-end` | Text alignment |
+| `border-l` / `border-r` | `border-s` / `border-e` | Borders |
+| `rounded-l` / `rounded-r` | `rounded-s` / `rounded-e` | Border radius |
+
+**Examples:**
+```tsx
+// Good - logical properties work for both LTR and RTL
+<div className="ps-4 pe-6 border-s border-e">
+
+// Bad - physical properties break in RTL
+<div className="pl-4 pr-6 border-l border-r">
+```
+
+### RTL Font Support
+- Arabic uses **Noto Sans Arabic** font
+- Automatically applied when `dir="rtl"` is set on `<html>`
+- CSS variable: `--font-arabic`
+
+### Navigation with i18n
+```typescript
+import { usePathname, useRouter } from "@/i18n/routing"
+
+const router = useRouter()
+const pathname = usePathname()
+
+// Navigate preserving locale
+router.push(pathname)
+
+// Navigate with different locale
+router.replace(pathname, { locale: "ar" })
+```
+
+### Language Switcher
+Use the built-in `LanguageSwitcher` component:
+```typescript
+import { LanguageSwitcher } from "@/components/LanguageSwitcher"
+
+// Place next to ThemeToggle
+<div className="flex items-center gap-3">
+  <LanguageSwitcher />
+  <ThemeToggle />
+</div>
+```
+
+### Translation Keys Organization
+```
+messages/
+├── metadata    (page title, description)
+├── nav         (navigation labels)
+├── hero        (headline, descriptions, CTAs)
+├── features    (feature cards)
+├── marquee     (scrolling items)
+├── stats       (statistics labels)
+└── language    (language switcher labels)
+```

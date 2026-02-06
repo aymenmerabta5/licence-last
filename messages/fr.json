@@ -1,0 +1,94 @@
+{
+  "metadata": {
+    "title": "Internex — L'Avenir de la Découverte de Stages",
+    "description": "Une plateforme centralisée reliant les universités et les entreprises. Matching basé sur les compétences, génération automatique de documents et suivi des placements."
+  },
+  "nav": {
+    "discover": "Découvrir",
+    "forStudents": "Pour Étudiants",
+    "forRecruiters": "Pour Recruteurs",
+    "about": "À Propos",
+    "getStarted": "Commencer",
+    "aria": {
+      "mainNav": "Navigation principale",
+      "getStarted": "Commencer avec Internex"
+    }
+  },
+  "hero": {
+    "volume": "Vol. I — 2025",
+    "headline": "L'Avenir de la Découverte de Stages",
+    "headlineHighlight": "de la Découverte",
+    "description1": "Une plateforme centralisée reliant les universités et les entreprises. Matching basé sur les compétences, génération automatique de documents et suivi des placements—tout dans un système élégant.",
+    "description2": "Dans le cadre de la stratégie du MESRS pour renforcer le lien Université-Entreprise, Internex digitalise tout le cycle de vie du stage de la découverte à la Convention de Stage officielle.",
+    "cta": "Explorer la Plateforme",
+    "freeForStudents": "Gratuit pour Étudiants",
+    "aria": {
+      "explore": "Explorer la plateforme"
+    }
+  },
+  "features": {
+    "studentSpace": {
+      "num": "01",
+      "title": "Espace Étudiant",
+      "desc": "Construisez votre profil, ajoutez des compétences, connectez GitHub. Recherchez et postulez avec des filtres intelligents."
+    },
+    "companyPortal": {
+      "num": "02",
+      "title": "Portail Entreprise",
+      "desc": "Publiez des offres, suivez les candidats, acceptez les talents. Un clic déclenche tout le workflow."
+    },
+    "adminDashboard": {
+      "num": "03",
+      "title": "Tableau de Bord Admin",
+      "desc": "Validez les placements, générez des PDF officiels, accédez aux analyses globales de placement."
+    }
+  },
+  "marquee": {
+    "items": [
+      "MATCHING DE STAGES",
+      "CV DIGITAL",
+      "FILTRES INTELLIGENTS",
+      "DOCUMENTS AUTO",
+      "TAGS DE COMPÉTENCES",
+      "SUIVI EN TEMPS RÉEL"
+    ],
+    "aria": "Points forts des fonctionnalités"
+  },
+  "stats": {
+    "students": {
+      "value": "2,500+",
+      "label": "Étudiants Connectés"
+    },
+    "companies": {
+      "value": "350+",
+      "label": "Entreprises Partenaires"
+    },
+    "universities": {
+      "value": "45",
+      "label": "Universités"
+    },
+    "placementRate": {
+      "value": "96%",
+      "label": "Taux de Placement"
+    }
+  },
+  "language": {
+    "switcher": {
+      "aria": "Sélectionner la langue",
+      "en": "EN",
+      "fr": "FR",
+      "ar": "العربية"
+    }
+  },
+  "theme": {
+    "toggle": {
+      "aria": "Changer le thème",
+      "toLight": "Passer en mode clair",
+      "toDark": "Passer en mode sombre"
+    }
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "returnHome": "Retour à l'accueil"
+  }
+}

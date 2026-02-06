@@ -1,228 +1,188 @@
-# AGENTS.md — Coding Guidelines for AI Agents
+# CLAUDE.md — Project Context for Claude
 
-> Last updated: 2025-02-06  
-> Project: Internex — A Next.js 16 + React 19 application with editorial design aesthetic, for linking companies internship programs with university students
-
----
-
-## Build & Development Commands
-
-```bash
-# Development server
-bun run dev
-
-# Production build
-bun run build
-
-# Production server (after build)
-bun run start
-
-# Linting (ESLint with Next.js config)
-bun run lint
-```
-
-**Note:** This project uses Bun as the package manager (`bun.lock` present).
+This file contains project-specific knowledge and patterns for Claude to reference.
 
 ---
 
-## Technology Stack
+## Project Overview
 
-| Category | Technology |
-|----------|------------|
-| Framework | Next.js 16 (App Router) |
-| React | 19.2.3 |
-| Language | TypeScript 5 (strict mode) |
-| Styling | Tailwind CSS 4 + `@theme inline` |
-| UI Components | shadcn/ui (base-nova style) |
-| Animation | motion (Framer Motion successor) |
-| Icons | lucide-react |
-| Fonts | DM Sans, DM Serif Display (Google Fonts) |
+**Internex** — A Next.js 16 + React 19 application connecting companies with university students for internships.
+
+- **Framework**: Next.js 16 (App Router)
+- **Styling**: Tailwind CSS 4 + shadcn/ui
+- **Design**: Editorial "Morning Press / Night Edition" aesthetic
+- **i18n**: next-intl (EN, FR, AR)
 
 ---
 
-## Code Style Guidelines
+## Key Architectural Decisions
 
-### Imports & Path Aliases
-
-- **Always use `@/` aliases** — never relative imports:
-  - `@/components/ui/button`
-  - `@/lib/utils`
-  - `@/app/_components/HeroSection`
-
-- **Import order** (separate groups with blank line):
-  1. React/Next built-ins
-  2. Third-party libraries
-  3. `@/` aliases (components, lib, hooks)
-  4. Local styles
-
-```typescript
-import type { Metadata } from "next"
-import { DM_Sans } from "next/font/google"
-import { ThemeProvider } from "next-themes"
-
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-
-import "./globals.css"
-```
-
-### TypeScript Conventions
-
-- Use `type` for type imports: `import type { Metadata }`
-- Props interfaces use descriptive names:
-  ```typescript
-  interface ButtonProps extends VariantProps<typeof buttonVariants> {
-    className?: string
-  }
-  ```
-- Prefer `interface` over `type` for object shapes
-- Use `React.ReactNode` for children
-- Strict mode enabled — no implicit any
-
-### Naming Conventions
-
-- **Components**: PascalCase (`HeroSection`, `ThemeToggle`)
-- **Files**: PascalCase for components, camelCase for utilities
-- **Constants**: UPPER_SNAKE_CASE for module-level constants
-  ```typescript
-  const NAV_ITEMS = ["Discover", "For Students", "For Recruiters", "About"]
-  ```
-- **Variants**: Use `cva` (class-variance-authority) with descriptive variant names
-- **Hooks**: camelCase starting with `use` (if any custom hooks added)
-
-### Component Structure
-
-```typescript
-"use client" // If needed (must be first line)
-
-import { cva, type VariantProps } from "class-variance-authority"
-
-import { cn } from "@/lib/utils"
-
-// 1. Variant definitions
-const componentVariants = cva("base classes", {
-  variants: {
-    variant: { /* ... */ },
-    size: { /* ... */ },
-  },
-  defaultVariants: {
-    variant: "default",
-    size: "default",
-  },
-})
-
-// 2. Component function
-function ComponentName({
-  className,
-  variant = "default",
-  size = "default",
-  ...props
-}: ComponentPrimitive.Props & VariantProps<typeof componentVariants>) {
-  return (
-    <ComponentPrimitive
-      data-slot="component-name"
-      className={cn(componentVariants({ variant, size, className }))}
-      {...props}
-    />
-  )
-}
-
-// 3. Exports
-export { ComponentName, componentVariants }
-```
-
-### Tailwind CSS Conventions
-
-- **Use `@theme inline`** — all design tokens defined in `globals.css` as CSS variables
-- **Color tokens** (use these, not hardcoded values):
-  - `--color-background`, `--color-foreground`
-  - `--color-primary`, `--color-secondary`
-  - `--color-heading` (for editorial headlines)
-  - `--color-muted`, `--color-accent`
-- **Radius tokens**: `--radius-sm`, `--radius-md`, `--radius-lg`, etc.
-- **Typography**: `--font-sans` (DM Sans), `--font-serif` (DM Serif)
-
-- **Utility classes** via `cn()` from `@/lib/utils`:
-  ```typescript
-  className={cn(buttonVariants({ variant, size, className }))}
-  ```
-
-### Editorial Design System
-
-This project follows a "Morning Press / Night Edition" editorial aesthetic:
-
-- **Warm color palette**: Parchment backgrounds, ink foregrounds
-- **Typography**: Serif for headlines (`font-serif`), sans for body (`font-sans`)
-- **Spacing**: Generous whitespace, editorial magazine feel
-- **Custom utilities** (defined in `globals.css`):
-  - `.ed-smooth` — smooth theme transitions
-  - `.ed-underline` — animated underline effect
-  - `.ed-marquee` — continuous scroll animation
-  - `.ed-hero-glow` — ambient background glow (dark mode)
-
-### File Organization
+### 1. App Router with i18n
+All routes are under `app/[locale]/` for internationalization support.
 
 ```
 app/
-├── page.tsx              # Route pages
-├── layout.tsx            # Root layout
-├── globals.css           # Global styles + theme variables
-└── _components/          # Route-specific components (private)
-    ├── HeroSection.tsx
-    └── StatsBar.tsx
-
-components/
-├── ui/                   # shadcn/ui components (auto-generated)
-│   ├── button.tsx
-│   └── card.tsx
-├── Navbar.tsx            # Shared components (top-level)
-└── ThemeToggle.tsx
-
-lib/
-└── utils.ts              # cn() utility only
-
-public/                   # Static assets
+├── [locale]/
+│   ├── layout.tsx      (with RTL support)
+│   ├── page.tsx
+│   └── _components/
+├── layout.tsx          (root redirector)
+└── page.tsx            (redirects to /en)
 ```
 
-### Error Handling
+### 2. RTL Support for Arabic
+The app automatically handles RTL when locale is 'ar':
+- `dir="rtl"` on `<html>` element
+- Arabic font: Noto Sans Arabic
+- Logical CSS properties throughout
 
-- Use early returns for guard clauses
-- Prefer explicit error types over `any`
-- Client components: Handle loading/error states with UI feedback
-- Server components: Let errors bubble to error boundaries
-
-### Accessibility
-
-- Always include `aria-label` on interactive elements without visible text
-- Use semantic HTML (`nav`, `main`, `article`)
-- Support `prefers-reduced-motion` (already handled in globals.css)
-- Ensure proper color contrast (design system maintains WCAG compliance)
+### 3. Editorial Design System
+- Warm color palette (parchment, ink)
+- Serif headlines (DM Serif Display)
+- Sans-serif body (DM Sans / Noto Sans Arabic)
+- Generous whitespace
+- Asymmetrical layouts
 
 ---
 
-## Linting
+## RTL & Logical CSS Properties (CRITICAL)
 
-This project uses ESLint with Next.js core-web-vitals and TypeScript configs:
+When writing Tailwind classes for RTL support, **ALWAYS use logical properties**:
 
-```javascript
-// eslint.config.mjs
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+### Spacing
+```tsx
+// ✅ CORRECT - works for LTR and RTL
+<div className="ms-4 me-6 ps-2 pe-4">
+
+// ❌ WRONG - breaks in RTL
+<div className="ml-4 mr-6 pl-2 pr-4">
 ```
 
-Run `bun run lint` before committing. No custom rules — follow Next.js defaults.
+### Text Alignment
+```tsx
+// ✅ CORRECT
+<p className="text-start"> or <p className="text-end">
+
+// ❌ WRONG
+<p className="text-left"> or <p className="text-right">
+```
+
+### Borders
+```tsx
+// ✅ CORRECT
+<div className="border-s border-e rounded-s rounded-e">
+
+// ❌ WRONG
+<div className="border-l border-r rounded-l rounded-r">
+```
+
+### Positioning
+```tsx
+// ✅ CORRECT
+<div className="start-0 end-0 inset-inline-start-4">
+
+// ❌ WRONG
+<div className="left-0 right-0 left-4">
+```
 
 ---
 
-## Design Philosophy
+## Translation Patterns
 
-This codebase prioritizes **editorial elegance** over generic UI:
+### Server Components
+```typescript
+import { getTranslations } from "next-intl/server"
 
-- **Warm, human aesthetic** — not cold corporate design
-- **Intentional asymmetry** — magazine-style layouts
-- **Smooth, purposeful motion** — animations that enhance, not distract
-- **Typography-driven hierarchy** — serif headlines, clean body text
-- **Dark mode as first-class** — "Night Edition" theme is equally refined
+export default async function Page() {
+  const t = await getTranslations("namespace")
+  return <h1>{t("key.subkey")}</h1>
+}
+```
 
-When adding features, maintain this editorial voice. Avoid generic component libraries unless they fit the warm, refined aesthetic.
+### Client Components
+```typescript
+"use client"
+import { useTranslations } from "next-intl"
+
+export function Component() {
+  const t = useTranslations("namespace")
+  return <h1>{t("key.subkey")}</h1>
+}
+```
+
+### Translation Structure
+```
+messages/
+├── metadata    → title, description
+├── nav         → discover, forStudents, forRecruiters, about, getStarted
+├── hero        → volume, headline, description1, description2, cta
+├── features    → studentSpace, companyPortal, adminDashboard
+├── marquee     → items[]
+├── stats       → students, companies, universities, placementRate
+└── language    → switcher labels
+```
+
+---
+
+## Common Patterns
+
+### Language Switcher
+```typescript
+import { LanguageSwitcher } from "@/components/LanguageSwitcher"
+
+// Always include in Navbar, next to ThemeToggle
+<div className="flex items-center gap-3">
+  <LanguageSwitcher />
+  <ThemeToggle />
+</div>
+```
+
+### Navigation with Locale
+```typescript
+import { usePathname, useRouter } from "@/i18n/routing"
+
+const router = useRouter()
+const pathname = usePathname()
+
+// Change locale
+router.replace(pathname, { locale: "ar" })
+```
+
+### Detecting RTL
+```typescript
+import { useLocale } from "next-intl"
+
+const locale = useLocale()
+const isRTL = locale === "ar"
+```
+
+---
+
+## File Conventions
+
+- **Components**: PascalCase (`HeroSection.tsx`)
+- **Utilities**: camelCase (`utils.ts`)
+- **Constants**: UPPER_SNAKE_CASE
+- **Imports**: Always use `@/` aliases
+- **CSS**: Use logical properties for RTL
+
+---
+
+## Design Tokens
+
+Access via CSS variables:
+- `--color-background`, `--color-foreground`
+- `--color-primary`, `--color-secondary`
+- `--font-sans`, `--font-serif`, `--font-arabic`
+- Custom utilities: `.ed-smooth`, `.ed-underline`, `.ed-marquee`
+
+---
+
+## Build Commands
+
+```bash
+bun run dev      # Development
+bun run build    # Production build
+bun run lint     # ESLint
+bun run typecheck # TypeScript check
+```

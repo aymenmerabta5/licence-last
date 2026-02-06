@@ -1,11 +1,15 @@
 "use client"
 
-import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
+
+import { useTranslations } from "next-intl"
+import { useTheme } from "next-themes"
 import { Sun, Moon } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 
 export function ThemeToggle() {
+  const t = useTranslations("theme.toggle")
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -20,7 +24,7 @@ export function ThemeToggle() {
         variant="editorial-ghost"
         size="editorial-icon"
         className="ed-toggle"
-        aria-label="Toggle theme"
+        aria-label={t("aria")}
       >
         <span className="ed-toggle-icon">
           <span className="h-4 w-4" />
@@ -37,7 +41,7 @@ export function ThemeToggle() {
       size="editorial-icon"
       className="ed-toggle"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={isDark ? t("toLight") : t("toDark")}
     >
       <span className="ed-toggle-icon">
         {isDark ? (

@@ -1,0 +1,94 @@
+{
+  "metadata": {
+    "title": "Internex — The Future of Internship Discovery",
+    "description": "A centralized platform bridging the gap between universities and enterprises. Skill-based matching, automated document generation, and placement tracking."
+  },
+  "nav": {
+    "discover": "Discover",
+    "forStudents": "For Students",
+    "forRecruiters": "For Recruiters",
+    "about": "About",
+    "getStarted": "Get Started",
+    "aria": {
+      "mainNav": "Main navigation",
+      "getStarted": "Get started with Internex"
+    }
+  },
+  "hero": {
+    "volume": "Vol. I — 2025",
+    "headline": "The Future of Internship Discovery",
+    "headlineHighlight": "of Internship",
+    "description1": "A centralized platform bridging the gap between universities and enterprises. Skill-based matching, automated document generation, and placement tracking—all in one elegant system.",
+    "description2": "Within the framework of MESRS strategy to strengthen the University-Enterprise link, Internex digitizes the entire internship lifecycle from discovery to official Convention de Stage.",
+    "cta": "Explore Platform",
+    "freeForStudents": "Free for Students",
+    "aria": {
+      "explore": "Explore the platform"
+    }
+  },
+  "features": {
+    "studentSpace": {
+      "num": "01",
+      "title": "Student Space",
+      "desc": "Build your profile, tag skills, connect GitHub. Search and apply with smart filters."
+    },
+    "companyPortal": {
+      "num": "02",
+      "title": "Company Portal",
+      "desc": "Publish offers, track candidates, accept talent. One click triggers the full workflow."
+    },
+    "adminDashboard": {
+      "num": "03",
+      "title": "Admin Dashboard",
+      "desc": "Validate placements, generate official PDFs, access global placement analytics."
+    }
+  },
+  "marquee": {
+    "items": [
+      "INTERNSHIP MATCHING",
+      "DIGITAL CV",
+      "SMART FILTERS",
+      "AUTO DOCUMENTS",
+      "SKILL TAGS",
+      "REAL-TIME TRACKING"
+    ],
+    "aria": "Feature highlights"
+  },
+  "stats": {
+    "students": {
+      "value": "2,500+",
+      "label": "Students Connected"
+    },
+    "companies": {
+      "value": "350+",
+      "label": "Partner Companies"
+    },
+    "universities": {
+      "value": "45",
+      "label": "Universities"
+    },
+    "placementRate": {
+      "value": "96%",
+      "label": "Placement Rate"
+    }
+  },
+  "language": {
+    "switcher": {
+      "aria": "Select language",
+      "en": "EN",
+      "fr": "FR",
+      "ar": "العربية"
+    }
+  },
+  "theme": {
+    "toggle": {
+      "aria": "Toggle theme",
+      "toLight": "Switch to light mode",
+      "toDark": "Switch to dark mode"
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "returnHome": "Return Home"
+  }
+}
