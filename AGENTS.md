@@ -19,6 +19,11 @@ bun run start
 
 # Linting (ESLint with Next.js config)
 bun run lint
+
+# Testing
+bun test              # Run all tests
+bun test:watch        # Watch mode
+bun test:coverage     # With coverage report
 ```
 
 **Note:** This project uses Bun as the package manager (`bun.lock` present).
@@ -37,6 +42,7 @@ bun run lint
 | Animation | motion (Framer Motion successor) |
 | Icons | lucide-react |
 | Fonts | DM Sans, DM Serif Display (Google Fonts) |
+| Testing | Bun Test Runner (built-in) |
 
 ---
 
@@ -264,11 +270,13 @@ src/
 │   └── LanguageSwitcher.tsx
 ├── lib/                        # Utilities & shared logic
 │   ├── utils.ts                # cn() utility
+│   ├── utils.test.ts           # Tests for utils.ts
 │   ├── auth.ts                 # Better Auth server config
 │   ├── auth-client.ts          # Better Auth client
 │   ├── safe-action.ts          # next-safe-action clients
 │   └── validations/            # Zod schemas
-│       └── auth.ts
+│       ├── auth.ts
+│       └── auth.test.ts        # Tests for auth.ts
 ├── server/                     # Server-only code (DB, routers)
 │   └── db/
 │       ├── index.ts            # Drizzle client
@@ -322,6 +330,101 @@ import nextTs from "eslint-config-next/typescript";
 ```
 
 Run `bun run lint` before committing. No custom rules — follow Next.js defaults.
+
+---
+
+## Testing (Unit Tests with Bun)
+
+This project uses **Bun's built-in test runner** (`bun:test`) - no Jest or Vitest needed.
+
+### Test File Structure (Co-location)
+
+Always place tests **next to the source file** they test:
+
+```typescript
+// src/lib/utils.ts
+export function cn(...inputs: ClassValue[]) { ... }
+
+// src/lib/utils.test.ts
+import { describe, test, expect } from "bun:test"
+import { cn } from "./utils"
+
+describe("cn utility", () => {
+  test("merges classes correctly", () => {
+    expect(cn("px-2", "px-4")).toBe("px-4")
+  })
+})
+```
+
+**Required locations for tests:**
+- `src/lib/*.test.ts` - Utility functions
+- `src/lib/validations/*.test.ts` - Zod schemas and validation logic
+- `src/server/*/queries/*.test.ts` - Database query functions
+- `src/server/*/mutations/*.test.ts` - Database mutation functions
+- `src/components/ui/*.test.tsx` - UI components (when logic is complex)
+
+### When to Write Tests
+
+**Always write tests for:**
+1. ✅ Utility functions in `src/lib/utils.ts`
+2. ✅ All validation schemas in `src/lib/validations/`
+3. ✅ Server-side business logic (queries/mutations)
+4. ✅ Complex helper functions with branching logic
+
+**Example scenarios requiring tests:**
+- Form validation schemas (test valid inputs, invalid inputs, edge cases)
+- Data transformation utilities
+- Business logic with conditional branches
+- Helper functions that manipulate data
+
+### Test Commands
+
+```bash
+bun test              # Run all tests
+bun test:watch        # Watch mode for development
+bun test:coverage     # Generate coverage report
+```
+
+### Writing Test Files
+
+**Naming:** Use `<source-file>.test.ts` pattern
+
+**Structure:**
+```typescript
+import { describe, test, expect } from "bun:test"
+import { functionToTest } from "./source-file"
+
+describe("functionName", () => {
+  describe("feature/context", () => {
+    test("should [expected behavior] when [condition]", () => {
+      // Arrange
+      const input = ...
+      
+      // Act
+      const result = functionToTest(input)
+      
+      // Assert
+      expect(result).toBe(expected)
+    })
+  })
+})
+```
+
+**Key guidelines:**
+- Use `describe()` to group related tests
+- Test names should read like "should [expected behavior] when [condition]"
+- Test both happy paths and error cases
+- Mock external dependencies (DB, API calls) when needed
+- Use explicit type annotations if TypeScript complains about literal types
+
+### TypeScript Configuration
+
+Tests use Bun's types. The `tsconfig.json` includes:
+```json
+"types": ["bun-types"]
+```
+
+This allows importing from `bun:test` without type errors.
 
 ---
 

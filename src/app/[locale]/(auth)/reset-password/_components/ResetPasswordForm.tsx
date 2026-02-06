@@ -51,7 +51,7 @@ export function ResetPasswordForm() {
       setServerError("")
 
       try {
-        await authClient.forgetPassword({
+        await authClient.requestPasswordReset({
           email: value.email,
           redirectTo: "/reset-password/verify",
         })

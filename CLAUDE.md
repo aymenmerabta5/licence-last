@@ -249,4 +249,130 @@ bun run dev      # Development
 bun run build    # Production build
 bun run lint     # ESLint
 bun run typecheck # TypeScript check
+bun test         # Run all tests
+bun test:watch   # Run tests in watch mode
+bun test:coverage # Run tests with coverage report
+```
+
+---
+
+## Testing Architecture (Bun Test Runner)
+
+This project uses **Bun's built-in test runner** (`bun:test`) for unit testing. Tests are co-located next to the source files they test.
+
+### Test File Location (Co-location Pattern)
+
+Place test files **next to the source files** they test:
+
+```
+src/
+├── lib/
+│   ├── utils.ts
+│   └── utils.test.ts              # Test for utils.ts
+├── lib/validations/
+│   ├── auth.ts
+│   └── auth.test.ts               # Test for auth.ts
+├── components/ui/
+│   ├── button.tsx
+│   └── button.test.tsx            # Test for button.tsx
+└── server/
+    └── db/queries/
+        ├── list.ts
+        └── list.test.ts           # Test for list.ts
+```
+
+**Why co-location:**
+- Easy to find tests when working on a file
+- Clear visibility of what's tested
+- Moving/deleting files keeps tests in sync
+- Follows the project's domain-organized pattern
+
+### Writing Tests
+
+Import test utilities from `bun:test`:
+
+```typescript
+import { describe, test, expect } from "bun:test"
+import { myFunction } from "./my-module"
+
+describe("myModule", () => {
+  test("should do something correctly", () => {
+    const result = myFunction("input")
+    expect(result).toBe("expected output")
+  })
+
+  test("should handle edge cases", () => {
+    expect(() => myFunction(null)).toThrow()
+  })
+})
+```
+
+### What to Test
+
+**Must test:**
+- Utility functions (`src/lib/utils.ts`)
+- Validation schemas (`src/lib/validations/*.ts`)
+- Business logic in server queries/mutations
+- Complex component logic (custom hooks, utilities)
+
+**Test coverage goals:**
+- All exported utility functions
+- All validation schemas (valid and invalid inputs)
+- Server query/mutation functions
+- Edge cases and error handling
+
+### Test Commands
+
+```bash
+bun test                    # Run all tests once
+bun test:watch             # Watch mode - re-run on file changes
+bun test:coverage          # Run with coverage report
+bun test src/lib/utils.test.ts  # Run specific test file
+bun test --test-name-pattern="should handle"  # Run matching tests
+```
+
+### Best Practices
+
+1. **Use descriptive test names** - "should [expected behavior] when [condition]"
+2. **Group related tests** with `describe()` blocks
+3. **Test both success and failure cases**
+4. **Avoid testing implementation details** - test behavior, not internals
+5. **Keep tests fast** - avoid real network calls, use mocks when needed
+6. **Use type annotations when needed** to prevent TypeScript errors:
+   ```typescript
+   const variant: string = "primary"  // Prevents literal type inference
+   ```
+
+### Example Test Patterns
+
+**Utility function test:**
+```typescript
+describe("cn utility", () => {
+  test("merges tailwind classes correctly", () => {
+    expect(cn("px-2", "px-4")).toBe("px-4")
+  })
+})
+```
+
+**Validation schema test:**
+```typescript
+describe("login schema", () => {
+  const schema = createLoginSchema(mockT)
+
+  test("accepts valid email and password", () => {
+    const result = schema.safeParse({
+      email: "user@example.com",
+      password: "password123"
+    })
+    expect(result.success).toBe(true)
+  })
+
+  test("rejects invalid email", () => {
+    const result = schema.safeParse({
+      email: "not-an-email",
+      password: "password123"
+    })
+    expect(result.success).toBe(false)
+  })
+})
 ```

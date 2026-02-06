@@ -3,11 +3,11 @@ import { z } from "zod";
  
 export const env = createEnv({
   server: {
-    DATABASE_URL: z.url(),
+    DATABASE_URL: z.string().url(),
     BETTER_AUTH_SECRET: z.string(),
   },
   client: {
-    NEXT_PUBLIC_BETTER_AUTH_URL: z.url(),
+    NEXT_PUBLIC_BETTER_AUTH_URL: z.string().url(),
   },
 
   experimental__runtimeEnv: {

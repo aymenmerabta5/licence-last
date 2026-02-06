@@ -1,6 +1,6 @@
 "use client"
 
-import { useTransition } from "react"
+import { useEffect, useTransition } from "react"
 
 import { useLocale, useTranslations } from "next-intl"
 import { ChevronDownIcon, Globe } from "lucide-react"
@@ -23,6 +23,16 @@ export function LanguageSwitcher() {
   const router = useRouter()
   const pathname = usePathname()
   const [isPending, startTransition] = useTransition()
+
+  // Sync <html> dir & lang with the active locale.
+  // The root layout sets these correctly on initial SSR, but shared layouts
+  // are NOT re-rendered during client-side navigations so the attributes go
+  // stale when the user switches locale. This effect patches them.
+  useEffect(() => {
+    const dir = locale === "ar" ? "rtl" : "ltr"
+    document.documentElement.lang = locale
+    document.documentElement.dir = dir
+  }, [locale])
 
   const getLocaleLabel = (code: string) => {
     if (code === "en") return t("en")
