@@ -42,35 +42,35 @@ bun run lint
 
 ## Data Access, Fetching & Mutations (Next.js 16)
 
-This project uses **Postgres + Drizzle** (`server/db/*`). Prefer a **server-first** architecture, and use shared Zod contracts to make `/app/api/*` routes effectively type-safe.
+This project uses **Postgres + Drizzle** (`src/server/db/*`). Prefer a **server-first** architecture, and use shared Zod contracts to make `/app/api/*` routes effectively type-safe.
 
 ### Server-Only Data Modules (Required)
 
 - Put all DB access in small domain functions (avoid big OOP service classes).
 - Location:
-  - Reads: `server/<domain>/queries/*.ts` (prefer `list.ts`, `get.ts`)
-  - Writes: `server/<domain>/mutations/*.ts` (prefer `create.ts`, `update.ts`, `delete.ts`)
+  - Reads: `src/server/<domain>/queries/*.ts` (prefer `list.ts`, `get.ts`)
+  - Writes: `src/server/<domain>/mutations/*.ts` (prefer `create.ts`, `update.ts`, `delete.ts`)
 - Add `import "server-only"` at the top of these files.
 - Import `db` from `@/server/db` and schema from `@/server/db/schema`.
 
 ### Fetching (Reads)
 
-- **Server Components (default)**: Call `server/<domain>/queries/*` directly from `app/[locale]/**/page.tsx` and other Server Components.
+- **Server Components (default)**: Call `src/server/<domain>/queries/*` directly from `src/app/[locale]/**/page.tsx` and other Server Components.
 - **Client Components (TanStack Query)**: Use `/app/api/*` for client reads, especially for `useInfiniteQuery`.
-  - Keep `app/api/*` thin (re-export from `server/routers/**`); routers call the server query function and return JSON.
+  - Keep `src/app/api/*` thin (re-export from `src/server/routers/**`); routers call the server query function and return JSON.
 
 ### Server Routers for `/app/api/*` (Required)
 
-Keep all route handler logic in **server-only router modules**, and keep `app/api/*` files as thin re-exports.
+Keep all route handler logic in **server-only router modules**, and keep `src/app/api/*` files as thin re-exports.
 
-- Location: `server/routers/<domain>/*.ts` (prefer `list.ts`, `get.ts`)
+- Location: `src/server/routers/<domain>/*.ts` (prefer `list.ts`, `get.ts`)
   - Example mapping:
-    - `app/api/internships/route.ts` exports `GET` from `server/routers/internships/list.ts`
-    - `app/api/internships/[id]/route.ts` exports `GET` from `server/routers/internships/get.ts`
+    - `src/app/api/internships/route.ts` exports `GET` from `src/server/routers/internships/list.ts`
+    - `src/app/api/internships/[id]/route.ts` exports `GET` from `src/server/routers/internships/get.ts`
 - Router modules:
   - Start with `import "server-only"`
   - Parse input with Zod contract schemas
-  - Call `server/<domain>/queries/*`
+  - Call `src/server/<domain>/queries/*`
   - Parse/validate output with `...ResponseSchema`
   - Return `NextResponse.json(...)`
 
@@ -78,15 +78,15 @@ Keep all route handler logic in **server-only router modules**, and keep `app/ap
 
 Because `app/api/*` is not type-safe by default, enforce a shared contract:
 
-- Create `lib/contracts/<domain>.ts` with Zod schemas and inferred types:
+- Create `src/lib/contracts/<domain>.ts` with Zod schemas and inferred types:
   - Input schema(s): `...QuerySchema` for `searchParams`, `...BodySchema` for JSON bodies
   - Output schema: `...ResponseSchema`
-- In the server router module (e.g. `server/routers/<domain>/list.ts` / `server/routers/<domain>/get.ts`):
+- In the server router module (e.g. `src/server/routers/<domain>/list.ts` / `src/server/routers/<domain>/get.ts`):
   - `parse()` the incoming params/body with the input schema
   - `parse()` the output payload with the response schema before returning
-- In the Next route file (`app/api/**/route.ts`):
-  - Re-export the handler from `server/routers/**` (keep it thin)
-- In the client fetcher (e.g. `lib/api/<domain>.ts`):
+- In the Next route file (`src/app/api/**/route.ts`):
+  - Re-export the handler from `src/server/routers/**` (keep it thin)
+- In the client fetcher (e.g. `src/lib/api/<domain>.ts`):
   - `parse()` the response JSON with the same `...ResponseSchema`
 
 ### React Query Prefetch + Hydration (Recommended)
@@ -234,26 +234,57 @@ This project follows a "Morning Press / Night Edition" editorial aesthetic:
 
 ### File Organization
 
+All source code lives under the `src/` directory. Configuration files stay at root.
+
 ```
-app/
-├── page.tsx              # Route pages
-├── layout.tsx            # Root layout
-├── globals.css           # Global styles + theme variables
-└── _components/          # Route-specific components (private)
-    ├── HeroSection.tsx
-    └── StatsBar.tsx
+src/
+├── app/                        # Next.js App Router
+│   ├── page.tsx                # Root redirect → /en
+│   ├── layout.tsx              # Root layout (fonts, html)
+│   ├── globals.css             # Global styles + theme variables
+│   ├── [locale]/               # i18n routes
+│   │   ├── layout.tsx          # Locale layout (providers)
+│   │   ├── page.tsx            # Home page
+│   │   ├── _components/        # Route-specific components
+│   │   └── (auth)/             # Auth route group
+│   │       ├── layout.tsx
+│   │       ├── login/
+│   │       ├── signup/
+│   │       └── reset-password/
+│   └── api/                    # API routes
+│       └── auth/[...all]/
+├── components/                 # Shared components
+│   ├── ui/                     # shadcn/ui components (auto-generated)
+│   │   ├── button.tsx
+│   │   └── card.tsx
+│   ├── providers/              # Context providers
+│   │   └── QueryProvider.tsx
+│   ├── Navbar.tsx
+│   ├── ThemeToggle.tsx
+│   └── LanguageSwitcher.tsx
+├── lib/                        # Utilities & shared logic
+│   ├── utils.ts                # cn() utility
+│   ├── auth.ts                 # Better Auth server config
+│   ├── auth-client.ts          # Better Auth client
+│   ├── safe-action.ts          # next-safe-action clients
+│   └── validations/            # Zod schemas
+│       └── auth.ts
+├── server/                     # Server-only code (DB, routers)
+│   └── db/
+│       ├── index.ts            # Drizzle client
+│       └── schema/
+│           └── auth.ts
+├── i18n/                       # next-intl configuration
+│   ├── routing.ts
+│   └── request.ts
+├── messages/                   # Translation JSON files
+│   ├── en.json
+│   ├── fr.json
+│   └── ar.json
+├── env.ts                      # T3 Env validation
+└── proxy.ts                    # Next.js middleware (i18n + auth)
 
-components/
-├── ui/                   # shadcn/ui components (auto-generated)
-│   ├── button.tsx
-│   └── card.tsx
-├── Navbar.tsx            # Shared components (top-level)
-└── ThemeToggle.tsx
-
-lib/
-└── utils.ts              # cn() utility only
-
-public/                   # Static assets
+public/                         # Static assets (root level)
 ```
 
 ### Error Handling
@@ -313,10 +344,10 @@ When adding features, maintain this editorial voice. Avoid generic component lib
 This project supports **three languages**: English (en), French (fr), and Arabic (ar). All components must be i18n-ready.
 
 ### Setup
-- **Configuration**: `i18n/routing.ts`, `i18n/request.ts`
-- **Messages**: `messages/{en,fr,ar}.json`
-- **Middleware**: `proxy.ts` (next-intl routing + protected routes)
-- **Routing**: All pages under `app/[locale]/`
+- **Configuration**: `src/i18n/routing.ts`, `src/i18n/request.ts`
+- **Messages**: `src/messages/{en,fr,ar}.json`
+- **Middleware**: `src/proxy.ts` (next-intl routing + protected routes)
+- **Routing**: All pages under `src/app/[locale]/`
 
 ### Server Components
 ```typescript
@@ -394,7 +425,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 
 ### Translation Keys Organization
 ```
-messages/
+src/messages/
 ├── metadata    (page title, description)
 ├── nav         (navigation labels)
 ├── hero        (headline, descriptions, CTAs)

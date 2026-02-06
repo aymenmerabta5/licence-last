@@ -17,17 +17,28 @@ This file contains project-specific knowledge and patterns for Claude to referen
 
 ## Key Architectural Decisions
 
-### 1. App Router with i18n
-All routes are under `app/[locale]/` for internationalization support.
+### 1. App Router with i18n (src/ layout)
+All source code lives under `src/`. Routes are under `src/app/[locale]/` for internationalization support.
 
 ```
-app/
-├── [locale]/
-│   ├── layout.tsx      (with RTL support)
-│   ├── page.tsx
-│   └── _components/
-├── layout.tsx          (root redirector)
-└── page.tsx            (redirects to /en)
+src/
+├── app/
+│   ├── [locale]/
+│   │   ├── layout.tsx      (locale providers)
+│   │   ├── page.tsx
+│   │   ├── _components/
+│   │   └── (auth)/         (auth route group)
+│   ├── api/                (API routes)
+│   ├── layout.tsx          (root layout — fonts, html)
+│   ├── globals.css
+│   └── page.tsx            (redirects to /en)
+├── components/             (shared UI components)
+├── lib/                    (utilities, auth, validations)
+├── server/                 (DB, queries, mutations)
+├── i18n/                   (routing.ts, request.ts)
+├── messages/               (en.json, fr.json, ar.json)
+├── env.ts                  (T3 Env validation)
+└── proxy.ts                (middleware)
 ```
 
 ### 2. RTL Support for Arabic
@@ -53,28 +64,28 @@ You should use the existing design style and the color palette and you should us
 
 This project uses **Drizzle + Postgres**. The preferred architecture is **server-first** with type-safe contracts for client queries.
 
-- **Server-only domain modules**: Put DB access in small functions (not large classes) under `server/<domain>/`.
-  - Reads: `server/<domain>/queries/*.ts` (prefer `list.ts`, `get.ts`)
-  - Writes: `server/<domain>/mutations/*.ts` (prefer `create.ts`, `update.ts`, `delete.ts`)
+- **Server-only domain modules**: Put DB access in small functions (not large classes) under `src/server/<domain>/`.
+  - Reads: `src/server/<domain>/queries/*.ts` (prefer `list.ts`, `get.ts`)
+  - Writes: `src/server/<domain>/mutations/*.ts` (prefer `create.ts`, `update.ts`, `delete.ts`)
   - Add `import "server-only"` at the top of these modules to prevent accidental client imports.
 
-- **Server Components (default reads)**: Server Components call `server/<domain>/queries/*` directly.
+- **Server Components (default reads)**: Server Components call `src/server/<domain>/queries/*` directly.
   - Avoid creating `/api` endpoints when the data is only needed on the server.
 
-- **TanStack Query reads (client / infinite lists)**: Client Components (e.g. `useInfiniteQuery`) fetch from `app/api/*`.
+- **TanStack Query reads (client / infinite lists)**: Client Components (e.g. `useInfiniteQuery`) fetch from `src/app/api/*`.
   - API routes are **not type-safe by default**, so we enforce a contract with shared Zod schemas.
 
-- **Server routers for `/app/api/*` (required)**: Keep `app/api/*` files as thin re-exports and put route logic in server-only router modules.
-  - Location: `server/routers/<domain>/*.ts` (prefer `list.ts`, `get.ts`)
+- **Server routers for `/app/api/*` (required)**: Keep `src/app/api/*` files as thin re-exports and put route logic in server-only router modules.
+  - Location: `src/server/routers/<domain>/*.ts` (prefer `list.ts`, `get.ts`)
   - Router modules:
     - Start with `import "server-only"`
     - Parse input with Zod schemas
-    - Call `server/<domain>/queries/*`
+    - Call `src/server/<domain>/queries/*`
     - Validate output with `...ResponseSchema`
     - Return `NextResponse.json(...)`
 
-- **Zod contracts for routes (Option 1)**: For every `app/api/*` endpoint, create a shared contract file:
-  - `lib/contracts/<domain>.ts` exports:
+- **Zod contracts for routes (Option 1)**: For every `src/app/api/*` endpoint, create a shared contract file:
+  - `src/lib/contracts/<domain>.ts` exports:
     - `...QuerySchema` / `...BodySchema` (inputs)
     - `...ResponseSchema` (output)
     - `z.infer<>` types
@@ -164,7 +175,7 @@ export function Component() {
 
 ### Translation Structure
 ```
-messages/
+src/messages/
 ├── metadata    → title, description
 ├── nav         → discover, forStudents, forRecruiters, about, getStarted
 ├── hero        → volume, headline, description1, description2, cta
@@ -215,8 +226,9 @@ const isRTL = locale === "ar"
 - **Components**: PascalCase (`HeroSection.tsx`)
 - **Utilities**: camelCase (`utils.ts`)
 - **Constants**: UPPER_SNAKE_CASE
-- **Imports**: Always use `@/` aliases
+- **Imports**: Always use `@/` aliases (resolves to `src/*` via tsconfig paths)
 - **CSS**: Use logical properties for RTL
+- **Source code**: All source lives under `src/`; config files at project root
 
 ---
 
