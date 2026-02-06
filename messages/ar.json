@@ -90,5 +90,74 @@
   "notFound": {
     "title": "الصفحة غير موجودة",
     "returnHome": "العودة إلى الصفحة الرئيسية"
+  },
+  "auth": {
+    "login": {
+      "pageTitle": "تسجيل الدخول",
+      "title": "مرحباً بعودتك",
+      "subtitle": "سجّل الدخول إلى حسابك في إنترنكس",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "you@university.edu",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "rememberMe": "تذكرني",
+      "forgotPassword": "نسيت كلمة المرور؟",
+      "submit": "تسجيل الدخول",
+      "noAccount": "ليس لديك حساب؟",
+      "createOne": "أنشئ واحداً",
+      "or": "أو",
+      "error": "البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى."
+    },
+    "signup": {
+      "pageTitle": "إنشاء حساب",
+      "title": "انضم إلى إنترنكس",
+      "subtitle": "أنشئ حسابك وابدأ رحلتك",
+      "name": "الاسم الكامل",
+      "namePlaceholder": "أحمد محمد",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "you@university.edu",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أنشئ كلمة مرور قوية",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "أعد إدخال كلمة المرور",
+      "agreeToTerms": "أوافق على",
+      "terms": "شروط الخدمة",
+      "and": "و",
+      "privacy": "سياسة الخصوصية",
+      "submit": "إنشاء الحساب",
+      "hasAccount": "لديك حساب بالفعل؟",
+      "signIn": "تسجيل الدخول",
+      "or": "أو",
+      "passwordHint": "٨ أحرف على الأقل",
+      "passwordMismatch": "كلمات المرور غير متطابقة",
+      "termsRequired": "يجب الموافقة على الشروط",
+      "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    },
+    "resetPassword": {
+      "pageTitle": "إعادة تعيين كلمة المرور",
+      "title": "إعادة تعيين كلمة المرور",
+      "subtitle": "سنرسل لك رابط إعادة التعيين عبر البريد الإلكتروني",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "you@university.edu",
+      "submit": "إرسال رابط إعادة التعيين",
+      "backToLogin": "العودة لتسجيل الدخول",
+      "success": "إذا كان هناك حساب مرتبط بهذا البريد الإلكتروني، ستتلقى رابط إعادة التعيين قريباً.",
+      "description": "أدخل عنوان البريد الإلكتروني المرتبط بحسابك وسنرسل لك رابطاً لإعادة تعيين كلمة المرور."
+    },
+    "panel": {
+      "volume": "المجلد الأول — ٢٠٢٥",
+      "tagline": "حيث يلتقي الموهبة بالفرصة",
+      "description": "الجسر بين الجامعة والشركة",
+      "established": "تأسست ٢٠٢٥"
+    },
+    "validation": {
+      "emailInvalid": "يرجى إدخال بريد إلكتروني صالح",
+      "passwordRequired": "كلمة المرور مطلوبة",
+      "passwordMin": "يجب أن تتكون كلمة المرور من ٨ أحرف على الأقل",
+      "nameMin": "يجب أن يتكون الاسم من حرفين على الأقل",
+      "confirmRequired": "يرجى تأكيد كلمة المرور",
+      "passwordMismatch": "كلمات المرور غير متطابقة",
+      "termsRequired": "يجب الموافقة على الشروط"
+    }
   }
 }

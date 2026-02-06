@@ -90,5 +90,74 @@
   "notFound": {
     "title": "Page introuvable",
     "returnHome": "Retour à l'accueil"
+  },
+  "auth": {
+    "login": {
+      "pageTitle": "Connexion",
+      "title": "Bon Retour",
+      "subtitle": "Connectez-vous à votre compte Internex",
+      "email": "Adresse email",
+      "emailPlaceholder": "vous@universite.edu",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Entrez votre mot de passe",
+      "rememberMe": "Se souvenir de moi",
+      "forgotPassword": "Mot de passe oublié ?",
+      "submit": "Se Connecter",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "createOne": "Créer un",
+      "or": "ou",
+      "error": "Email ou mot de passe invalide. Veuillez réessayer."
+    },
+    "signup": {
+      "pageTitle": "Créer un Compte",
+      "title": "Rejoignez Internex",
+      "subtitle": "Créez votre compte et commencez votre parcours",
+      "name": "Nom complet",
+      "namePlaceholder": "Jean Dupont",
+      "email": "Adresse email",
+      "emailPlaceholder": "vous@universite.edu",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Créez un mot de passe fort",
+      "confirmPassword": "Confirmer le mot de passe",
+      "confirmPasswordPlaceholder": "Ressaisissez votre mot de passe",
+      "agreeToTerms": "J'accepte les",
+      "terms": "Conditions d'Utilisation",
+      "and": "et la",
+      "privacy": "Politique de Confidentialité",
+      "submit": "Créer le Compte",
+      "hasAccount": "Vous avez déjà un compte ?",
+      "signIn": "Se connecter",
+      "or": "ou",
+      "passwordHint": "Au moins 8 caractères",
+      "passwordMismatch": "Les mots de passe ne correspondent pas",
+      "termsRequired": "Vous devez accepter les conditions",
+      "error": "Une erreur s'est produite. Veuillez réessayer."
+    },
+    "resetPassword": {
+      "pageTitle": "Réinitialiser le Mot de Passe",
+      "title": "Réinitialiser le Mot de Passe",
+      "subtitle": "Nous vous enverrons un lien de réinitialisation",
+      "email": "Adresse email",
+      "emailPlaceholder": "vous@universite.edu",
+      "submit": "Envoyer le Lien",
+      "backToLogin": "Retour à la connexion",
+      "success": "Si un compte existe avec cet email, vous recevrez un lien de réinitialisation sous peu.",
+      "description": "Entrez l'adresse email associée à votre compte et nous vous enverrons un lien pour réinitialiser votre mot de passe."
+    },
+    "panel": {
+      "volume": "Vol. I — 2025",
+      "tagline": "Là où le Talent Rencontre l'Opportunité",
+      "description": "Le pont entre l'Université et l'Entreprise",
+      "established": "Est. 2025"
+    },
+    "validation": {
+      "emailInvalid": "Veuillez entrer une adresse email valide",
+      "passwordRequired": "Le mot de passe est requis",
+      "passwordMin": "Le mot de passe doit contenir au moins 8 caractères",
+      "nameMin": "Le nom doit contenir au moins 2 caractères",
+      "confirmRequired": "Veuillez confirmer votre mot de passe",
+      "passwordMismatch": "Les mots de passe ne correspondent pas",
+      "termsRequired": "Vous devez accepter les conditions"
+    }
   }
 }

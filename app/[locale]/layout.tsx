@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { DM_Sans, DM_Serif_Display, Noto_Sans_Arabic } from "next/font/google"
 import { ThemeProvider } from "next-themes"
 import { getTranslations } from "next-intl/server"
 import { NextIntlClientProvider } from "next-intl"
@@ -7,30 +6,7 @@ import { getMessages } from "next-intl/server"
 
 import { QueryProvider } from "@/components/providers/QueryProvider"
 
-import "../globals.css"
-
 type Params = Promise<{ locale: string }>
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-dm-sans",
-  display: "swap",
-})
-
-const dmSerif = DM_Serif_Display({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-dm-serif",
-  display: "swap",
-})
-
-const notoSansArabic = Noto_Sans_Arabic({
-  subsets: ["arabic"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-arabic",
-  display: "swap",
-})
 
 export async function generateMetadata({
   params,
@@ -56,29 +32,17 @@ export default async function LocaleLayout({
   const { locale } = await params
   const messages = await getMessages()
 
-  const isRTL = locale === "ar"
-
   return (
-    <html
-      lang={locale}
-      dir={isRTL ? "rtl" : "ltr"}
-      suppressHydrationWarning
-    >
-      <body
-        className={`${dmSans.variable} ${dmSerif.variable} ${notoSansArabic.variable} font-sans antialiased`}
+    <NextIntlClientProvider messages={messages} locale={locale}>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="light"
+        enableSystem={false}
       >
-        <NextIntlClientProvider messages={messages} locale={locale}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem={false}
-          >
-            <QueryProvider>
-              {children}
-            </QueryProvider>
-          </ThemeProvider>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+        <QueryProvider>
+          {children}
+        </QueryProvider>
+      </ThemeProvider>
+    </NextIntlClientProvider>
   )
 }

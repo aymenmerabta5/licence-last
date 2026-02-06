@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl"
 
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
-import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export function Navbar() {
   const t = useTranslations("nav")
@@ -42,13 +42,13 @@ export function Navbar() {
       <div className="flex items-center gap-3">
         <LanguageSwitcher />
         <ThemeToggle />
-        <Button
-          variant="editorial"
-          size="editorial-sm"
+        <Link
+          className="rounded-none inline-flex items-center justify-center border-2 border-secondary text-secondary bg-transparent font-bold uppercase tracking-[0.15em] hover:bg-secondary hover:text-secondary-foreground ed-smooth-fast h-10 px-6 text-sm rounded-md"
           aria-label={t("aria.getStarted")}
+          href="/login"
         >
           {t("getStarted")}
-        </Button>
+        </Link>
       </div>
     </nav>
   )

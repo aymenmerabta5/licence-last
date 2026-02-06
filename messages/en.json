@@ -90,5 +90,74 @@
   "notFound": {
     "title": "Page not found",
     "returnHome": "Return Home"
+  },
+  "auth": {
+    "login": {
+      "pageTitle": "Sign In",
+      "title": "Welcome Back",
+      "subtitle": "Sign in to your Internex account",
+      "email": "Email address",
+      "emailPlaceholder": "you@university.edu",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign In",
+      "noAccount": "Don't have an account?",
+      "createOne": "Create one",
+      "or": "or",
+      "error": "Invalid email or password. Please try again."
+    },
+    "signup": {
+      "pageTitle": "Create Account",
+      "title": "Join Internex",
+      "subtitle": "Create your account and start your journey",
+      "name": "Full name",
+      "namePlaceholder": "John Doe",
+      "email": "Email address",
+      "emailPlaceholder": "you@university.edu",
+      "password": "Password",
+      "passwordPlaceholder": "Create a strong password",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Re-enter your password",
+      "agreeToTerms": "I agree to the",
+      "terms": "Terms of Service",
+      "and": "and",
+      "privacy": "Privacy Policy",
+      "submit": "Create Account",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "or": "or",
+      "passwordHint": "At least 8 characters",
+      "passwordMismatch": "Passwords do not match",
+      "termsRequired": "You must agree to the terms",
+      "error": "Something went wrong. Please try again."
+    },
+    "resetPassword": {
+      "pageTitle": "Reset Password",
+      "title": "Reset Password",
+      "subtitle": "We'll send a reset link to your email",
+      "email": "Email address",
+      "emailPlaceholder": "you@university.edu",
+      "submit": "Send Reset Link",
+      "backToLogin": "Back to sign in",
+      "success": "If an account exists with this email, you'll receive a reset link shortly.",
+      "description": "Enter the email address associated with your account and we'll send you a link to reset your password."
+    },
+    "panel": {
+      "volume": "Vol. I — 2025",
+      "tagline": "Where Talent Meets Opportunity",
+      "description": "The bridge between University & Enterprise",
+      "established": "Est. 2025"
+    },
+    "validation": {
+      "emailInvalid": "Please enter a valid email address",
+      "passwordRequired": "Password is required",
+      "passwordMin": "Password must be at least 8 characters",
+      "nameMin": "Name must be at least 2 characters",
+      "confirmRequired": "Please confirm your password",
+      "passwordMismatch": "Passwords do not match",
+      "termsRequired": "You must agree to the terms"
+    }
   }
 }

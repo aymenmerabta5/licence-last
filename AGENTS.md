@@ -1,6 +1,6 @@
 # AGENTS.md — Coding Guidelines for AI Agents
 
-> Last updated: 2025-02-06  
+> Last updated: 2026-02-06  
 > Project: Internex — A Next.js 16 + React 19 application with editorial design aesthetic, for linking companies internship programs with university students
 
 ---
@@ -37,6 +37,78 @@ bun run lint
 | Animation | motion (Framer Motion successor) |
 | Icons | lucide-react |
 | Fonts | DM Sans, DM Serif Display (Google Fonts) |
+
+---
+
+## Data Access, Fetching & Mutations (Next.js 16)
+
+This project uses **Postgres + Drizzle** (`server/db/*`). Prefer a **server-first** architecture, and use shared Zod contracts to make `/app/api/*` routes effectively type-safe.
+
+### Server-Only Data Modules (Required)
+
+- Put all DB access in small domain functions (avoid big OOP service classes).
+- Location:
+  - Reads: `server/<domain>/queries/*.ts` (prefer `list.ts`, `get.ts`)
+  - Writes: `server/<domain>/mutations/*.ts` (prefer `create.ts`, `update.ts`, `delete.ts`)
+- Add `import "server-only"` at the top of these files.
+- Import `db` from `@/server/db` and schema from `@/server/db/schema`.
+
+### Fetching (Reads)
+
+- **Server Components (default)**: Call `server/<domain>/queries/*` directly from `app/[locale]/**/page.tsx` and other Server Components.
+- **Client Components (TanStack Query)**: Use `/app/api/*` for client reads, especially for `useInfiniteQuery`.
+  - Keep `app/api/*` thin (re-export from `server/routers/**`); routers call the server query function and return JSON.
+
+### Server Routers for `/app/api/*` (Required)
+
+Keep all route handler logic in **server-only router modules**, and keep `app/api/*` files as thin re-exports.
+
+- Location: `server/routers/<domain>/*.ts` (prefer `list.ts`, `get.ts`)
+  - Example mapping:
+    - `app/api/internships/route.ts` exports `GET` from `server/routers/internships/list.ts`
+    - `app/api/internships/[id]/route.ts` exports `GET` from `server/routers/internships/get.ts`
+- Router modules:
+  - Start with `import "server-only"`
+  - Parse input with Zod contract schemas
+  - Call `server/<domain>/queries/*`
+  - Parse/validate output with `...ResponseSchema`
+  - Return `NextResponse.json(...)`
+
+### Type-Safe Route Handlers (Option 1 - Required For /api)
+
+Because `app/api/*` is not type-safe by default, enforce a shared contract:
+
+- Create `lib/contracts/<domain>.ts` with Zod schemas and inferred types:
+  - Input schema(s): `...QuerySchema` for `searchParams`, `...BodySchema` for JSON bodies
+  - Output schema: `...ResponseSchema`
+- In the server router module (e.g. `server/routers/<domain>/list.ts` / `server/routers/<domain>/get.ts`):
+  - `parse()` the incoming params/body with the input schema
+  - `parse()` the output payload with the response schema before returning
+- In the Next route file (`app/api/**/route.ts`):
+  - Re-export the handler from `server/routers/**` (keep it thin)
+- In the client fetcher (e.g. `lib/api/<domain>.ts`):
+  - `parse()` the response JSON with the same `...ResponseSchema`
+
+### React Query Prefetch + Hydration (Recommended)
+
+- For client-heavy pages (feeds, infinite lists), prefetch on the server with a `QueryClient` and hydrate:
+  - Server page: `prefetchQuery/prefetchInfiniteQuery` using the server query function (Drizzle direct; no HTTP)
+  - Render: `<HydrationBoundary state={dehydrate(queryClient)}>` around the client component
+  - Client: `useQuery/useInfiniteQuery` continues fetching via `/api` using the same query key
+
+### Mutations (Writes)
+
+- Use **Server Actions** for creates/updates/deletes.
+  - Validate on the server with Zod (optionally use `next-safe-action` for typed results and consistent errors).
+- After a successful mutation:
+  - Invalidate TanStack Query caches (`queryClient.invalidateQueries({ queryKey: ... })`)
+  - If the mutated data also appears in Server Components with Next caching, use `revalidatePath` / `revalidateTag` as needed
+
+### Frontend Form Validation (Required)
+
+- When building form-based UI, use **TanStack Form** to validate in the client before executing the Server Action or Any Form Or Mutation.
+- Use the same Zod schema for client validation and server validation.
+- Client validation improves UX; server validation remains mandatory.
 
 ---
 
@@ -243,7 +315,7 @@ This project supports **three languages**: English (en), French (fr), and Arabic
 ### Setup
 - **Configuration**: `i18n/routing.ts`, `i18n/request.ts`
 - **Messages**: `messages/{en,fr,ar}.json`
-- **Middleware**: `middleware.ts` (handles auto-detection)
+- **Middleware**: `proxy.ts` (next-intl routing + protected routes)
 - **Routing**: All pages under `app/[locale]/`
 
 ### Server Components

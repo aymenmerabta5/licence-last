@@ -49,6 +49,52 @@ For that you should use the skill 'vercel-composition-patterns' and 'vercel-reac
 ### 5. Design Pattern
 You should use the existing design style and the color palette and you should use the basic shadcn components to do that, you should use the design skills to help you desgin better
 
+### 6. Data Fetching & Mutations (Drizzle + Type-Safe Contracts)
+
+This project uses **Drizzle + Postgres**. The preferred architecture is **server-first** with type-safe contracts for client queries.
+
+- **Server-only domain modules**: Put DB access in small functions (not large classes) under `server/<domain>/`.
+  - Reads: `server/<domain>/queries/*.ts` (prefer `list.ts`, `get.ts`)
+  - Writes: `server/<domain>/mutations/*.ts` (prefer `create.ts`, `update.ts`, `delete.ts`)
+  - Add `import "server-only"` at the top of these modules to prevent accidental client imports.
+
+- **Server Components (default reads)**: Server Components call `server/<domain>/queries/*` directly.
+  - Avoid creating `/api` endpoints when the data is only needed on the server.
+
+- **TanStack Query reads (client / infinite lists)**: Client Components (e.g. `useInfiniteQuery`) fetch from `app/api/*`.
+  - API routes are **not type-safe by default**, so we enforce a contract with shared Zod schemas.
+
+- **Server routers for `/app/api/*` (required)**: Keep `app/api/*` files as thin re-exports and put route logic in server-only router modules.
+  - Location: `server/routers/<domain>/*.ts` (prefer `list.ts`, `get.ts`)
+  - Router modules:
+    - Start with `import "server-only"`
+    - Parse input with Zod schemas
+    - Call `server/<domain>/queries/*`
+    - Validate output with `...ResponseSchema`
+    - Return `NextResponse.json(...)`
+
+- **Zod contracts for routes (Option 1)**: For every `app/api/*` endpoint, create a shared contract file:
+  - `lib/contracts/<domain>.ts` exports:
+    - `...QuerySchema` / `...BodySchema` (inputs)
+    - `...ResponseSchema` (output)
+    - `z.infer<>` types
+  - Server router module: `parse()` input and `parse()` the JSON response payload before returning.
+  - Client fetcher: `parse()` the JSON using the same `...ResponseSchema`.
+
+- **Prefetch + hydration (recommended for infinite feeds)**:
+  - Server page: `prefetchQuery/prefetchInfiniteQuery` using the server query function (Drizzle direct, no HTTP)
+  - Wrap the client component with `HydrationBoundary(dehydrate(queryClient))`
+  - Client hook uses the same query key and continues fetching via `/api`.
+
+- **Mutations**:
+  - Use **Server Actions** for writes.
+  - Validate on the server with Zod (optionally `next-safe-action` for typed inputs/outputs).
+  - After success: invalidate TanStack Query caches and (if needed) `revalidatePath/revalidateTag` for RSC freshness.
+
+- **Client-side form validation (required)**:
+  - When building frontend forms, use **TanStack Form** to validate on the client (using the same Zod schema) before calling the Server Action Or Any Form Or Mutation.
+  - Server-side validation still remains mandatory.
+
 ---
 
 ## RTL & Logical CSS Properties (CRITICAL)

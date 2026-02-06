@@ -234,6 +234,41 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   Auth Panel — Editorial Dark Cover
+   ═══════════════════════════════════════════════════════════════════ */
+.ed-auth-panel {
+  background: linear-gradient(
+    155deg,
+    oklch(0.13 0.005 60),
+    oklch(0.10 0.012 50) 40%,
+    oklch(0.14 0.008 45) 100%
+  );
+  color: oklch(0.88 0.012 75);
+}
+
+.dark .ed-auth-panel {
+  background: linear-gradient(
+    155deg,
+    oklch(0.065 0.01 55),
+    oklch(0.05 0.015 48) 40%,
+    oklch(0.08 0.01 52) 100%
+  );
+  color: oklch(0.78 0.012 70);
+}
+
+.ed-auth-panel-glow {
+  background: none;
+}
+
+.dark .ed-auth-panel-glow {
+  background: radial-gradient(
+    ellipse 70% 50% at 50% 45%,
+    oklch(0.577 0.198 40 / 5%),
+    transparent 70%
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    Reduced Motion
    ═══════════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
