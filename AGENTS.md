@@ -198,6 +198,13 @@ public/                   # Static assets
 - Support `prefers-reduced-motion` (already handled in globals.css)
 - Ensure proper color contrast (design system maintains WCAG compliance)
 
+### Components Pattern
+For that you should use the skill 'vercel-composition-patterns' whenever you will create a component
+
+### Design Pattern
+You should use the existing design style and the color palette and you should use the basic shadcn components to do that, you should use the design skills to help you desgin better
+
+
 ---
 
 ## Linting
