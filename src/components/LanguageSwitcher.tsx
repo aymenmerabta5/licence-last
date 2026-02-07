@@ -19,10 +19,10 @@ const LOCALES = ["en", "fr", "ar"] as const
 
 const triggerClassName = cn(
   "focus-visible:border-ring focus-visible:ring-ring/50 outline-none focus-visible:ring-3",
-  "flex items-center gap-2 rounded-full border border-border/30 bg-transparent px-3 py-2 select-none",
-  "text-xs font-medium tracking-wide text-foreground/55 transition-colors",
-  "hover:bg-secondary/50 hover:text-foreground/80",
-  "aria-expanded:bg-secondary/60 aria-expanded:text-foreground",
+  "flex items-center gap-2 border border-border/30 bg-transparent px-3 py-2 select-none",
+  "text-xs font-medium tracking-wide text-foreground/55 ed-smooth-fast",
+  "hover:border-primary hover:text-foreground/80",
+  "aria-expanded:border-primary aria-expanded:text-foreground",
   "disabled:pointer-events-none disabled:opacity-50"
 )
 
