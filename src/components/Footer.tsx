@@ -97,7 +97,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
   // In a real app, these would be <Link> with valid routes like "/about"
   return (
     <Link 
-      href={href as any} 
+      href={href} 
       className="text-muted-foreground hover:text-primary transition-colors w-fit group flex items-center gap-2"
     >
       <span className="relative">
