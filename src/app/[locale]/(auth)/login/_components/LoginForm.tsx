@@ -54,7 +54,23 @@ export function LoginForm() {
       password: "",
     },
     validators: {
-      onSubmit: loginSchema,
+      onSubmit: ({ value }) => {
+        const result = loginSchema.safeParse(value)
+        const fieldErrors: Record<string, string> = {}
+
+        if (!result.success) {
+          for (const issue of result.error.issues) {
+            const path = issue.path[0]
+            if (path !== undefined && !fieldErrors[String(path)]) {
+              fieldErrors[String(path)] = issue.message
+            }
+          }
+        }
+
+        return Object.keys(fieldErrors).length > 0
+          ? { fields: fieldErrors }
+          : undefined
+      },
     },
     onSubmit: async ({ value }) => {
       setServerError("")
