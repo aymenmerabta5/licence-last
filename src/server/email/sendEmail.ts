@@ -1,17 +1,36 @@
 import "server-only"
 
-import { env } from "@/env"
+import type { env as EnvType } from "@/env"
 
-interface SendEmailArgs {
+export interface SendEmailArgs {
   to: string
   subject: string
   text: string
   html?: string
 }
 
-export async function sendEmail({ to, subject, text, html }: SendEmailArgs) {
-  const from = env.EMAIL_FROM
-  const resendKey = env.RESEND_API_KEY
+interface EmailEnv {
+  EMAIL_FROM?: string
+  RESEND_API_KEY?: string
+}
+
+// Lazy load env to avoid issues during testing
+let _env: typeof EnvType | undefined
+function getEnv(): typeof EnvType {
+  if (!_env) {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    _env = require("@/env").env as typeof EnvType
+  }
+  return _env!
+}
+
+export async function sendEmail(
+  { to, subject, text, html }: SendEmailArgs,
+  emailEnv?: EmailEnv
+) {
+  // Use provided env or lazy-load from @/env
+  const from = emailEnv?.EMAIL_FROM ?? getEnv().EMAIL_FROM
+  const resendKey = emailEnv?.RESEND_API_KEY ?? getEnv().RESEND_API_KEY
 
   // If a provider isn't configured, fall back to console output.
   if (!resendKey || !from) {

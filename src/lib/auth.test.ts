@@ -1,26 +1,5 @@
 import { describe, test, expect } from "bun:test"
-
-// Re-declare the functions to test them directly
-// Since the original functions are private in auth.ts, we replicate them here for testing
-function getEmailDomain(email: string): string | null {
-  const at = email.lastIndexOf("@")
-  if (at === -1) return null
-  const domain = email.slice(at + 1).trim().toLowerCase()
-  if (!domain) return null
-  return domain
-}
-
-function domainCandidates(domain: string): string[] {
-  const parts = domain.split(".").map((p) => p.trim()).filter(Boolean)
-  if (parts.length < 2) return [domain]
-
-  const candidates: string[] = []
-  // Note: Loop stops at parts.length - 2 to exclude single-part TLDs like "dz" or "uk"
-  for (let i = 0; i <= parts.length - 2; i += 1) {
-    candidates.push(parts.slice(i).join("."))
-  }
-  return candidates
-}
+import { getEmailDomain, domainCandidates } from "./auth-utils"
 
 describe("getEmailDomain", () => {
   describe("valid emails", () => {

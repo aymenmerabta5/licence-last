@@ -7,9 +7,13 @@ import { routing } from "@/i18n/routing"
 
 const intlMiddleware = createMiddleware(routing)
 
-const PROTECTED_PATHS = ["/dashboard"]
+export const PROTECTED_PATHS = ["/dashboard"]
 
-function isProtectedPath(pathname: string): boolean {
+/**
+ * Check if a pathname is a protected path that requires authentication.
+ * Strips locale prefix before checking (e.g., /en/dashboard -> /dashboard).
+ */
+export function isProtectedPath(pathname: string): boolean {
   // Strip locale prefix (e.g. /en/dashboard -> /dashboard)
   const pathWithoutLocale = pathname.replace(
     /^\/(en|fr|ar)/,

@@ -1,13 +1,5 @@
 import { describe, test, expect } from "bun:test"
-
-// Re-declare the function to test it directly
-function parseDomains(input: string | undefined): string[] {
-  if (!input) return []
-  return input
-    .split(",")
-    .map((d) => d.trim().toLowerCase())
-    .filter(Boolean)
-}
+import { parseDomains } from "./seed"
 
 describe("parseDomains", () => {
   describe("valid inputs", () => {

@@ -1,16 +1,5 @@
 import { describe, test, expect } from "bun:test"
-
-// Re-declare the function to test it directly
-const PROTECTED_PATHS = ["/dashboard"]
-
-function isProtectedPath(pathname: string): boolean {
-  // Strip locale prefix (e.g. /en/dashboard -> /dashboard)
-  const pathWithoutLocale = pathname.replace(
-    /^\/(en|fr|ar)/,
-    "",
-  )
-  return PROTECTED_PATHS.some((p) => pathWithoutLocale.startsWith(p))
-}
+import { isProtectedPath, PROTECTED_PATHS } from "./proxy"
 
 describe("isProtectedPath", () => {
   describe("protected paths without locale", () => {
@@ -187,5 +176,19 @@ describe("isProtectedPath", () => {
       expect(isProtectedPath("/en-us/dashboard")).toBe(false)
       expect(isProtectedPath("/en_us/dashboard")).toBe(false)
     })
+  })
+})
+
+describe("PROTECTED_PATHS", () => {
+  test("should contain /dashboard", () => {
+    expect(PROTECTED_PATHS).toContain("/dashboard")
+  })
+
+  test("should be an array", () => {
+    expect(Array.isArray(PROTECTED_PATHS)).toBe(true)
+  })
+
+  test("should not be empty", () => {
+    expect(PROTECTED_PATHS.length).toBeGreaterThan(0)
   })
 })

@@ -47,7 +47,8 @@ global.URL = window.URL
 // @ts-expect-error happy-dom type mismatch
 global.location = window.location
 
-// Additional properties for testing-library
+
+// @ts-expect-error happy-dom type mismatch - getComputedStyle signature differs
 global.getComputedStyle = window.getComputedStyle.bind(window)
 global.requestAnimationFrame = (callback: FrameRequestCallback) => setTimeout(callback, 16)
 global.cancelAnimationFrame = (id: number) => clearTimeout(id)
@@ -67,7 +68,6 @@ if (!window.matchMedia) {
   })
 }
 
-// @ts-expect-error bun:test is not a module
 import { expect } from "bun:test"
 import * as matchers from "@testing-library/jest-dom/matchers"
 

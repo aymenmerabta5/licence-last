@@ -10,25 +10,10 @@ import { db } from "@/server/db"
 import { universityDomain } from "@/server/db/schema/universities"
 import { sendEmail } from "@/server/email/sendEmail"
 import { env } from "@/env"
+import { getEmailDomain, domainCandidates } from "./auth-utils"
 
-function getEmailDomain(email: string): string | null {
-  const at = email.lastIndexOf("@")
-  if (at === -1) return null
-  const domain = email.slice(at + 1).trim().toLowerCase()
-  if (!domain) return null
-  return domain
-}
-
-function domainCandidates(domain: string): string[] {
-  const parts = domain.split(".").map((p) => p.trim()).filter(Boolean)
-  if (parts.length < 2) return [domain]
-
-  const candidates: string[] = []
-  for (let i = 0; i <= parts.length - 2; i += 1) {
-    candidates.push(parts.slice(i).join("."))
-  }
-  return candidates
-}
+// Re-export for backward compatibility
+export { getEmailDomain, domainCandidates } from "./auth-utils"
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),

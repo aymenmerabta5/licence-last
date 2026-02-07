@@ -7,7 +7,11 @@ import { drizzle } from "drizzle-orm/postgres-js"
 import * as schema from "./schema"
 import { university, universityDomain } from "./schema/universities"
 
-function parseDomains(input: string | undefined): string[] {
+/**
+ * Parse a comma-separated string of domains into an array of normalized domains.
+ * Trims whitespace and converts to lowercase.
+ */
+export function parseDomains(input: string | undefined): string[] {
   if (!input) return []
   return input
     .split(",")
@@ -83,11 +87,14 @@ async function main() {
   await client.end({ timeout: 5 })
 }
 
-main()
-  .then(() => {
-    console.info("Seed complete")
-  })
-  .catch((err) => {
-    console.error(err)
-    process.exitCode = 1
-  })
+// Only run main if this file is executed directly (not imported)
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main()
+    .then(() => {
+      console.info("Seed complete")
+    })
+    .catch((err) => {
+      console.error(err)
+      process.exitCode = 1
+    })
+}

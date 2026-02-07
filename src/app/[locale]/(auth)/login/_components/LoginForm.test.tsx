@@ -1,5 +1,5 @@
-import { describe, test, expect, beforeEach, mock } from "bun:test"
-import { render, screen, fireEvent, waitFor } from "@testing-library/react"
+import { describe, test, expect, beforeEach, afterEach, mock } from "bun:test"
+import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react"
 import { LoginForm } from "./LoginForm"
 
 // Mock next-intl
@@ -95,6 +95,10 @@ describe("LoginForm", () => {
   beforeEach(() => {
     mockSignIn.mockClear()
     mockSendVerificationEmail.mockClear()
+  })
+
+  afterEach(() => {
+    cleanup()
   })
 
   describe("rendering", () => {
