@@ -15,5 +15,6 @@ export default function Home() {
       <HowItWorksSection />
       <Footer />
     </main>
+    
   )
 }
