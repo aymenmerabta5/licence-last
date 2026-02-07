@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
 
-import { getTranslations } from "next-intl/server"
+import { NextIntlClientProvider } from "next-intl"
+import { getMessages, getTranslations } from "next-intl/server"
 
 type Params = Promise<{ locale: string }>
 
@@ -26,6 +27,14 @@ export async function generateMetadata({
 
 export default async function LocaleLayout({
   children,
+  params,
 }: LocaleLayoutProps) {
-  return children
+  const { locale } = await params
+  const messages = await getMessages({ locale })
+
+  return (
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      {children}
+    </NextIntlClientProvider>
+  )
 }

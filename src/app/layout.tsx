@@ -5,8 +5,6 @@ import type { ReactNode } from "react"
 import { DM_Sans, DM_Serif_Display, Noto_Sans_Arabic } from "next/font/google"
 import { getLocale } from "next-intl/server"
 import { ThemeProvider } from "next-themes"
-import { NextIntlClientProvider } from "next-intl"
-import { getMessages } from "next-intl/server"
 
 import { QueryProvider } from "@/components/providers/QueryProvider"
 
@@ -38,7 +36,6 @@ interface RootLayoutProps {
 export default async function RootLayout({ children }: RootLayoutProps) {
   const locale = await getLocale()
   const isRTL = locale === "ar"
-  const messages = await getMessages()
 
   return (
     <html
@@ -49,15 +46,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <body
         className={`${dmSans.variable} ${dmSerif.variable} ${notoSansArabic.variable} font-sans antialiased`}
       >
-        <NextIntlClientProvider messages={messages} locale={locale}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem={false}
-          >
-            <QueryProvider>{children}</QueryProvider>
-          </ThemeProvider>
-        </NextIntlClientProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <QueryProvider>{children}</QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
