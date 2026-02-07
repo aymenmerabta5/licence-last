@@ -27,7 +27,7 @@ const getServerHydratedSnapshot = () => false
 const triggerClassName = cn(
   "focus-visible:border-ring focus-visible:ring-ring/50 outline-none focus-visible:ring-3",
   "flex items-center gap-2 border border-border/30 bg-transparent px-3 py-2 select-none",
-  "text-xs font-medium tracking-wide text-foreground/55 ed-smooth-fast",
+  "text-xs font-medium tracking-wide text-foreground/55 transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
   "hover:border-primary hover:text-foreground/80",
   "aria-expanded:border-primary aria-expanded:text-foreground",
   "disabled:pointer-events-none disabled:opacity-50"
@@ -53,6 +53,20 @@ export function LanguageSwitcher() {
     const dir = locale === "ar" ? "rtl" : "ltr"
     document.documentElement.lang = locale
     document.documentElement.dir = dir
+
+    if (dir === "rtl") {
+      document.body.style.setProperty(
+        "--font-sans",
+        "var(--font-arabic), var(--font-dm-sans)"
+      )
+      document.body.style.setProperty(
+        "--font-serif",
+        "var(--font-arabic), var(--font-dm-serif)"
+      )
+    } else {
+      document.body.style.removeProperty("--font-sans")
+      document.body.style.removeProperty("--font-serif")
+    }
   }, [locale])
 
   const getLocaleLabel = (code: string) => {

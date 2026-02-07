@@ -81,10 +81,10 @@ export function LoginForm() {
     >
       {/* ── Header ── */}
       <motion.div {...reveal} transition={{ duration: 0.6, ease }}>
-        <h1 className="font-serif text-3xl text-heading tracking-tight mb-2 ed-smooth">
+        <h1 className="font-serif text-3xl text-heading tracking-tight mb-2 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
           {t("title")}
         </h1>
-        <p className="text-sm text-muted-foreground font-light ed-smooth">
+        <p className="text-sm text-muted-foreground font-light transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
           {t("subtitle")}
         </p>
       </motion.div>
@@ -285,7 +285,7 @@ export function LoginForm() {
         {t("noAccount")}{" "}
         <Link
           href="/signup"
-          className="font-bold text-heading hover:text-primary transition-colors uppercase tracking-wide text-xs ed-smooth"
+          className="font-bold text-heading hover:text-primary transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] uppercase tracking-wide text-xs [[dir=rtl]_&]:tracking-normal"
         >
           {t("createOne")}
         </Link>

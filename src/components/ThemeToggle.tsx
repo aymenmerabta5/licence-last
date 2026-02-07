@@ -23,10 +23,10 @@ export function ThemeToggle() {
       <Button
         variant="editorial-ghost"
         size="editorial-icon"
-        className="ed-toggle"
+        className="group"
         aria-label={t("aria")}
       >
-        <span className="ed-toggle-icon">
+        <span className="transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:rotate-[30deg]">
           <span className="h-4 w-4" />
         </span>
       </Button>
@@ -39,11 +39,11 @@ export function ThemeToggle() {
     <Button
       variant="editorial-ghost"
       size="editorial-icon"
-      className="ed-toggle"
+      className="group"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label={isDark ? t("toLight") : t("toDark")}
     >
-      <span className="ed-toggle-icon">
+      <span className="transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:rotate-[30deg]">
         {isDark ? (
           <Sun className="h-4 w-4 text-primary" />
         ) : (

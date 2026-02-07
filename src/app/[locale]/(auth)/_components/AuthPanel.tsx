@@ -45,24 +45,36 @@ export function AuthPanel() {
   const t = useTranslations("auth.panel")
 
   return (
-    <div className="ed-auth-panel h-full flex flex-col items-center justify-center relative overflow-hidden bg-accent">
-      <Link href="/" className="absolute top-4 left-4">
-        <ArrowLeft className="h-4 w-4" />
-      </Link>
-      {/* Ambient glow — dark mode only */}
+    <div className="relative flex h-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-accent via-accent to-muted text-accent-foreground transition-colors duration-500 dark:from-accent dark:via-accent dark:to-card">
+      {/* Ambient print-glow + vignette (dark mode only) */}
+      <div className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100" aria-hidden="true">
+        <div className="absolute -top-24 -start-24 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute -bottom-32 start-1/2 h-[26rem] w-[26rem] -translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/20" />
+      </div>
+
+      {/* Panel edge definition (helps against bg-background in dark mode) */}
       <div
-        className="ed-auth-panel-glow absolute inset-0 pointer-events-none"
+        className="pointer-events-none absolute inset-0 ring-1 ring-border/30 dark:ring-border/60"
         aria-hidden="true"
       />
 
+      <Link
+        href="/"
+        aria-label={t("backHomeAria")}
+        className="absolute top-5 start-5 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/40 bg-background/50 text-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-background/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:bg-background/20 dark:hover:bg-background/30"
+      >
+        <ArrowLeft className="h-4 w-4" />
+      </Link>
+
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center text-center px-12">
+      <div className="relative z-10 flex flex-col items-center text-center px-8 sm:px-12">
         {/* Volume marker */}
-        <motion.span
-          {...reveal}
-          transition={{ duration: 0.7, ease, delay: 0.1 }}
-          className="text-[10px] tracking-[0.35em] uppercase opacity-40 mb-16 font-light"
-        >
+          <motion.span
+            {...reveal}
+            transition={{ duration: 0.7, ease, delay: 0.1 }}
+            className="mb-14 inline-flex items-center gap-2 rounded-full border border-border/40 bg-background/30 px-4 py-2 text-[10px] font-light uppercase tracking-[0.35em] text-muted-foreground backdrop-blur-sm [[dir=rtl]_&]:tracking-normal"
+          >
           {t("volume")}
         </motion.span>
 
@@ -73,7 +85,7 @@ export function AuthPanel() {
         <motion.h1
           {...reveal}
           transition={{ duration: 0.8, ease, delay: 0.3 }}
-          className="font-serif text-5xl xl:text-6xl tracking-tight mt-14 mb-6"
+          className="mt-12 mb-6 font-serif text-5xl tracking-tight text-heading xl:text-6xl"
         >
           Internex<span className="text-primary">.</span>io
         </motion.h1>
@@ -82,7 +94,7 @@ export function AuthPanel() {
         <motion.p
           {...reveal}
           transition={{ duration: 0.7, ease, delay: 0.4 }}
-          className="font-serif text-lg xl:text-xl opacity-60 leading-relaxed max-w-[260px] mb-14"
+          className="mb-12 max-w-[260px] font-serif text-lg leading-relaxed text-muted-foreground xl:text-xl"
         >
           {t("tagline")}
         </motion.p>
@@ -94,7 +106,7 @@ export function AuthPanel() {
         <motion.p
           {...reveal}
           transition={{ duration: 0.7, ease, delay: 0.55 }}
-          className="text-[11px] tracking-[0.2em] uppercase opacity-30 max-w-[240px] leading-relaxed mt-14"
+          className="mt-12 max-w-[240px] text-[11px] uppercase leading-relaxed tracking-[0.2em] text-muted-foreground/70 [[dir=rtl]_&]:tracking-normal"
         >
           {t("description")}
         </motion.p>
@@ -103,7 +115,7 @@ export function AuthPanel() {
         <motion.span
           {...reveal}
           transition={{ duration: 0.7, ease, delay: 0.65 }}
-          className="text-[10px] tracking-[0.3em] uppercase opacity-20 mt-20"
+          className="mt-20 text-[10px] uppercase tracking-[0.3em] text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal"
         >
           {t("established")}
         </motion.span>

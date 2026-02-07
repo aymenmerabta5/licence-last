@@ -103,11 +103,10 @@ lib/
 - **Headlines**: DM Serif Display (serif)
 - **Body**: DM Sans (sans-serif)
 
-### Custom Utilities
-- `.ed-smooth` — Smooth theme transitions
-- `.ed-underline` — Animated underline effect
-- `.ed-marquee` — Continuous scroll animation
-- `.ed-hero-glow` — Ambient background glow (dark mode)
+### Animation Policy
+- Use Tailwind transitions for hover/theme changes
+- Use `motion` for orchestrated animations (reveals, stagger, marquee)
+- Avoid custom CSS `@keyframes` and avoid global utility classes in `src/app/globals.css`
 
 ## Learn More
 

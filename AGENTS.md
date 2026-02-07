@@ -232,11 +232,10 @@ This project follows a "Morning Press / Night Edition" editorial aesthetic:
 - **Warm color palette**: Parchment backgrounds, ink foregrounds
 - **Typography**: Serif for headlines (`font-serif`), sans for body (`font-sans`)
 - **Spacing**: Generous whitespace, editorial magazine feel
-- **Custom utilities** (defined in `globals.css`):
-  - `.ed-smooth` — smooth theme transitions
-  - `.ed-underline` — animated underline effect
-  - `.ed-marquee` — continuous scroll animation
-  - `.ed-hero-glow` — ambient background glow (dark mode)
+- **Animation policy**:
+  - Use Tailwind for transitions (`transition-*`, `duration-*`, `ease-*`)
+  - Use `motion` (`motion/react-client`) for orchestrated animations (reveals, staggers, marquee/continuous motion)
+  - Do not add custom CSS keyframes or global `.ed-*` utility classes in `src/app/globals.css`
 
 ### File Organization
 
@@ -306,7 +305,7 @@ public/                         # Static assets (root level)
 
 - Always include `aria-label` on interactive elements without visible text
 - Use semantic HTML (`nav`, `main`, `article`)
-- Support `prefers-reduced-motion` (already handled in globals.css)
+- Support `prefers-reduced-motion` (prefer Motion's reduced-motion support; avoid continuous motion when possible)
 - Ensure proper color contrast (design system maintains WCAG compliance)
 
 ### Components Pattern

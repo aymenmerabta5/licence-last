@@ -9,13 +9,13 @@ import { type Route } from "next";
 
 export function Footer() {
   return (
-    <footer className="bg-background text-foreground border-t border-border py-14 lg:py-14 ed-smooth">
+    <footer className="bg-background text-foreground border-t border-border py-14 lg:py-14 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
       <div className="mx-auto max-w-7xl px-8 lg:px-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
           {/* Brand Column */}
           <div className="lg:col-span-4 flex flex-col gap-6">
             <Link href="/" className="flex items-center gap-2">
-              <span className="font-serif text-3xl tracking-tight text-heading ed-smooth">
+              <span className="font-serif text-3xl tracking-tight text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
                 Internex<span className="text-primary">.</span>io
               </span>
             </Link>
@@ -70,7 +70,7 @@ export function Footer() {
                 />
               </div>
               <Button variant="editorial" className="w-full mt-2 group">
-                Subscribe <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                Subscribe <ArrowRight className="ms-2 h-4 w-4 group-hover:translate-x-1 [[dir=rtl]_&]:group-hover:-translate-x-1 transition-transform" />
               </Button>
             </form>
           </div>
@@ -97,11 +97,11 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
       href={href as Route} 
       className="text-muted-foreground hover:text-primary transition-colors w-fit group flex items-center gap-2"
     >
-      <span className="relative">
-        {children}
-        <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary transition-all group-hover:w-full" />
-      </span>
-    </Link>
+        <span className="relative">
+          {children}
+          <span className="absolute -bottom-1 start-0 w-0 h-px bg-primary transition-all group-hover:w-full" />
+        </span>
+      </Link>
   )
 }
 

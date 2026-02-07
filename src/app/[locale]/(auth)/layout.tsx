@@ -9,7 +9,7 @@ export default async function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-background ed-smooth">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-background transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
       {/* ── Decorative Editorial Panel — Desktop only ── */}
       <aside className="hidden lg:block lg:w-[42%] xl:w-[38%] relative">
         <div className="sticky top-0 h-screen">
@@ -22,7 +22,7 @@ export default async function AuthLayout({
         {/* Top Bar */}
         <header className="flex items-center justify-between px-6 py-5 lg:px-10 lg:py-6">
           {/* Mobile brand (hidden on desktop — panel has logo) */}
-          <span className="lg:hidden font-serif text-xl tracking-tight text-heading ed-smooth">
+          <span className="lg:hidden font-serif text-xl tracking-tight text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
             Internex<span className="text-primary">.</span>io
           </span>
 

@@ -14,14 +14,14 @@ export function Navbar() {
     t("about"),
   ]
 
-  return (
-    <nav
-      className="relative z-20 flex items-center justify-between px-8 lg:px-16 pt-6 pb-6 border-b border-border ed-smooth"
+    return (
+      <nav
+      className="relative z-20 flex items-center justify-between px-8 lg:px-16 pt-6 pb-6 border-b border-border transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
       aria-label={t("aria.mainNav")}
     >
       {/* ── Logo ── */}
       <div className="flex items-center gap-3">
-        <span className="font-serif text-2xl tracking-tight text-heading ed-smooth">
+        <span className="font-serif text-2xl tracking-tight text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
           Internex<span className="text-primary">.</span>io
         </span>
       </div>
@@ -43,7 +43,7 @@ export function Navbar() {
         <LanguageSwitcher />
         <ThemeToggle />
         <Link
-          className="rounded-none inline-flex items-center justify-center border-2 border-secondary text-secondary bg-transparent font-bold uppercase tracking-[0.15em] hover:bg-secondary hover:text-secondary-foreground ed-smooth-fast h-10 px-6 text-sm rounded-md"
+          className="rounded-none inline-flex items-center justify-center border-2 border-secondary text-secondary bg-transparent font-bold uppercase tracking-[0.15em] transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:bg-secondary hover:text-secondary-foreground h-10 px-6 text-sm rounded-md"
           aria-label={t("aria.getStarted")}
           href="/login"
         >

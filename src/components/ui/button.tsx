@@ -24,11 +24,11 @@ const buttonVariants = cva(
 
         /* ── Editorial variants ─────────────────────────────────── */
         editorial:
-          "rounded-none border-2 border-secondary text-secondary bg-transparent font-bold uppercase tracking-[0.15em] hover:bg-secondary hover:text-secondary-foreground ed-smooth-fast",
+          "rounded-none border-2 border-secondary text-secondary bg-transparent font-bold uppercase tracking-[0.15em] hover:bg-secondary hover:text-secondary-foreground",
         "editorial-outline":
-          "rounded-none border border-border text-foreground bg-transparent font-bold uppercase tracking-[0.15em] hover:border-primary hover:text-primary ed-smooth-fast",
+          "rounded-none border border-border text-foreground bg-transparent font-bold uppercase tracking-[0.15em] hover:border-primary hover:text-primary",
         "editorial-ghost":
-          "rounded-none border border-border/50 bg-transparent hover:border-primary ed-smooth-fast",
+          "rounded-none border border-border/50 bg-transparent hover:border-primary",
         "editorial-link":
           "bg-transparent text-heading font-bold uppercase tracking-[0.15em] hover:text-primary border-none",
       },

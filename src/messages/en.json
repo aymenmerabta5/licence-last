@@ -151,7 +151,8 @@
       "volume": "Vol. I — 2025",
       "tagline": "Where Talent Meets Opportunity",
       "description": "The bridge between University & Enterprise",
-      "established": "Est. 2025"
+      "established": "Est. 2025",
+      "backHomeAria": "Back to home"
     },
     "validation": {
       "emailInvalid": "Please enter a valid email address",

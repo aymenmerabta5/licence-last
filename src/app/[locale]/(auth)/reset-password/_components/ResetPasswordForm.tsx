@@ -68,10 +68,10 @@ export function ResetPasswordForm() {
     <div className="space-y-8">
       {/* ── Header ── */}
       <motion.div {...reveal} transition={{ duration: 0.6, ease }}>
-        <h1 className="font-serif text-3xl text-heading tracking-tight mb-2 ed-smooth">
+        <h1 className="font-serif text-3xl text-heading tracking-tight mb-2 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
           {t("title")}
         </h1>
-        <p className="text-sm text-muted-foreground font-light ed-smooth">
+        <p className="text-sm text-muted-foreground font-light transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
           {t("subtitle")}
         </p>
       </motion.div>
@@ -88,7 +88,7 @@ export function ResetPasswordForm() {
           <div className="flex items-start gap-3 p-4 text-sm bg-primary/5 border border-primary/15">
             <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5 text-primary" />
             <div className="space-y-1">
-              <p className="font-medium text-heading ed-smooth">
+              <p className="font-medium text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
                 {t("success")}
               </p>
             </div>
@@ -97,7 +97,7 @@ export function ResetPasswordForm() {
           {/* Back to login */}
           <Link
             href="/login"
-            className="inline-flex items-center gap-2 text-sm font-bold text-heading hover:text-primary transition-colors uppercase tracking-wide ed-smooth group"
+            className="inline-flex items-center gap-2 text-sm font-bold text-heading hover:text-primary transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] uppercase tracking-wide group [[dir=rtl]_&]:tracking-normal"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
             {t("backToLogin")}
@@ -115,7 +115,7 @@ export function ResetPasswordForm() {
           <motion.p
             {...reveal}
             transition={{ duration: 0.6, ease, delay: 0.05 }}
-            className="text-sm text-muted-foreground leading-relaxed font-light ed-smooth"
+            className="text-sm text-muted-foreground leading-relaxed font-light transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
           >
             {t("description")}
           </motion.p>
@@ -209,7 +209,7 @@ export function ResetPasswordForm() {
           >
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 text-sm font-bold text-heading hover:text-primary transition-colors uppercase tracking-wide ed-smooth group"
+              className="inline-flex items-center gap-2 text-sm font-bold text-heading hover:text-primary transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] uppercase tracking-wide group [[dir=rtl]_&]:tracking-normal"
             >
               <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
               {t("backToLogin")}

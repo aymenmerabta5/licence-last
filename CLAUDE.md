@@ -238,7 +238,11 @@ Access via CSS variables:
 - `--color-background`, `--color-foreground`
 - `--color-primary`, `--color-secondary`
 - `--font-sans`, `--font-serif`, `--font-arabic`
-- Custom utilities: `.ed-smooth`, `.ed-underline`, `.ed-marquee`
+
+Animation policy:
+- Use Tailwind transitions for UI/state changes
+- Use `motion` (`motion/react-client`) for all animations (reveals, staggers, marquee)
+- Avoid custom CSS `@keyframes` and avoid global `.ed-*` utilities in `src/app/globals.css`
 
 ---
 

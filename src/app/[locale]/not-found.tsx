@@ -31,12 +31,12 @@ function DotSeparator({
       aria-hidden="true"
     >
       <span
-        className="h-px bg-foreground/15 ed-smooth"
+        className="h-px bg-foreground/15 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
         style={{ width: lineWidth }}
       />
       <span className="h-1.5 w-1.5 rounded-full bg-primary" />
       <span
-        className="h-px bg-foreground/15 ed-smooth"
+        className="h-px bg-foreground/15 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
         style={{ width: lineWidth }}
       />
     </motion.div>
@@ -47,23 +47,24 @@ export default function NotFoundPage() {
   const t = useTranslations("notFound")
 
   return (
-    <main className="min-h-screen flex flex-col bg-background text-foreground ed-smooth">
+    <main className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
       <Navbar />
 
       {/* ── 404 Content ── */}
       <div className="flex-1 relative flex items-center justify-center px-6 py-16 lg:py-24">
         {/* Ambient glow — dark mode only */}
-        <div
-          className="ed-hero-glow absolute inset-0 pointer-events-none"
-          aria-hidden="true"
-        />
+        <div className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100" aria-hidden="true">
+          <div className="absolute -top-20 -start-20 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
+          <div className="absolute -bottom-28 start-1/2 h-[26rem] w-[26rem] -translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/15" />
+        </div>
 
         <div className="relative z-10 flex flex-col items-center text-center max-w-xl">
           {/* Edition marker */}
           <motion.span
             {...reveal}
             transition={{ duration: 0.7, ease, delay: 0.1 }}
-            className="text-[10px] font-medium tracking-[0.35em] uppercase text-primary mb-10"
+            className="text-[10px] font-medium tracking-[0.35em] uppercase text-primary mb-10 [[dir=rtl]_&]:tracking-normal"
           >
             {t("edition")}
           </motion.span>
@@ -79,7 +80,7 @@ export default function NotFoundPage() {
             className="mt-10 mb-6"
           >
             <span
-              className="font-serif text-heading ed-smooth ed-card-num block"
+              className="font-serif text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] dark:drop-shadow-[0_0_24px_var(--color-primary)] block"
               style={{
                 fontSize: "clamp(7rem, 18vw, 14rem)",
                 lineHeight: 0.85,
@@ -90,18 +91,14 @@ export default function NotFoundPage() {
               <span className="relative inline-block">
                 <span className="text-primary">0</span>
                 {/* Decorative underline beneath the zero */}
-                <motion.span
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 0.6, ease, delay: 0.8 }}
-                  className="absolute -bottom-1 start-0 end-0 h-[3px] bg-primary origin-start"
-                  style={{
-                    boxShadow:
-                      "var(--tw-shadow, none)",
-                  }}
-                  aria-hidden="true"
-                />
-              </span>
+                  <motion.span
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ duration: 0.6, ease, delay: 0.8 }}
+                    className="absolute -bottom-1 start-0 end-0 h-[3px] bg-primary origin-left [[dir=rtl]_&]:origin-right"
+                    aria-hidden="true"
+                  />
+                </span>
               4
             </span>
           </motion.div>
@@ -113,7 +110,7 @@ export default function NotFoundPage() {
           <motion.h1
             {...reveal}
             transition={{ duration: 0.7, ease, delay: 0.5 }}
-            className="font-serif text-2xl md:text-3xl text-heading tracking-tight mt-8 mb-4 ed-smooth"
+            className="font-serif text-2xl md:text-3xl text-heading tracking-tight mt-8 mb-4 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
           >
             {t("headline")}
           </motion.h1>
@@ -124,14 +121,14 @@ export default function NotFoundPage() {
             transition={{ duration: 0.6, ease, delay: 0.55 }}
             className="w-full max-w-xs mb-6"
           >
-            <Separator className="bg-border/50 ed-smooth" />
+            <Separator className="bg-border/50 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]" />
           </motion.div>
 
           {/* Description */}
           <motion.p
             {...reveal}
             transition={{ duration: 0.7, ease, delay: 0.6 }}
-            className="text-sm leading-relaxed font-light text-muted-foreground max-w-sm mb-10 ed-smooth"
+            className="text-sm leading-relaxed font-light text-muted-foreground max-w-sm mb-10 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
           >
             {t("description")}
           </motion.p>
@@ -144,10 +141,10 @@ export default function NotFoundPage() {
             <Link
               href="/"
               aria-label={t("returnHome")}
-              className="rounded-none inline-flex items-center justify-center gap-3 border-2 border-secondary text-secondary bg-transparent font-bold uppercase tracking-[0.15em] hover:bg-secondary hover:text-secondary-foreground ed-smooth-fast h-10 px-5 py-2.5 text-xs group"
+              className="rounded-none inline-flex items-center justify-center gap-3 border-2 border-secondary text-secondary bg-transparent font-bold uppercase tracking-[0.15em] transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:bg-secondary hover:text-secondary-foreground h-10 px-5 py-2.5 text-xs group"
             >
               {t("returnHome")}
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-2" />
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-2 [[dir=rtl]_&]:group-hover:-translate-x-2" />
             </Link>
           </motion.div>
 
@@ -164,7 +161,7 @@ export default function NotFoundPage() {
           <motion.p
             {...reveal}
             transition={{ duration: 0.7, ease, delay: 0.9 }}
-            className="text-[11px] tracking-[0.15em] uppercase text-muted-foreground/50 mt-8 ed-smooth"
+            className="text-[11px] tracking-[0.15em] uppercase text-muted-foreground/50 mt-8 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] [[dir=rtl]_&]:tracking-normal"
           >
             {t("suggestion")}
           </motion.p>

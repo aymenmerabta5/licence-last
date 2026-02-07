@@ -151,7 +151,8 @@
       "volume": "Vol. I — 2025",
       "tagline": "Là où le Talent Rencontre l'Opportunité",
       "description": "Le pont entre l'Université et l'Entreprise",
-      "established": "Est. 2025"
+      "established": "Est. 2025",
+      "backHomeAria": "Retour à l'accueil"
     },
     "validation": {
       "emailInvalid": "Veuillez entrer une adresse email valide",

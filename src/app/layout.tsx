@@ -36,6 +36,9 @@ interface RootLayoutProps {
 export default async function RootLayout({ children }: RootLayoutProps) {
   const locale = await getLocale()
   const isRTL = locale === "ar"
+  const rtlFontVars = isRTL
+    ? "[--font-sans:var(--font-arabic),var(--font-dm-sans)] [--font-serif:var(--font-arabic),var(--font-dm-serif)]"
+    : ""
 
   return (
     <html
@@ -44,7 +47,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       suppressHydrationWarning
     >
       <body
-        className={`${dmSans.variable} ${dmSerif.variable} ${notoSansArabic.variable} font-sans antialiased`}
+        className={`${dmSans.variable} ${dmSerif.variable} ${notoSansArabic.variable} ${rtlFontVars} font-sans antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <QueryProvider>{children}</QueryProvider>
