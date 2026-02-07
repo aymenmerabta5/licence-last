@@ -131,14 +131,15 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
-  
+
   button:not([disabled]),
-    [role="button"]:not([disabled]) {
-      cursor: pointer;
-    }
+  [role="button"]:not([disabled]) {
+    cursor: pointer;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -148,6 +149,7 @@
   from {
     transform: scaleX(0);
   }
+
   to {
     transform: scaleX(1);
   }
@@ -157,6 +159,7 @@
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }
@@ -168,6 +171,7 @@
 .ed-underline {
   position: relative;
 }
+
 .ed-underline::after {
   content: "";
   position: absolute;
@@ -181,6 +185,7 @@
   transition: box-shadow 0.5s ease;
   box-shadow: none;
 }
+
 .dark .ed-underline::after {
   box-shadow: 0 2px 20px oklch(0.577 0.198 40 / 35%);
 }
@@ -194,6 +199,7 @@
 .ed-toggle-icon {
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .ed-toggle:hover .ed-toggle-icon {
   transform: rotate(30deg);
 }
@@ -204,17 +210,14 @@
 .ed-hero-glow {
   background: none;
 }
+
 .dark .ed-hero-glow {
-  background: radial-gradient(
-      ellipse 70% 60% at 25% 40%,
+  background: radial-gradient(ellipse 70% 60% at 25% 40%,
       oklch(0.577 0.198 40 / 4%),
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 50% 50% at 80% 30%,
+      transparent 70%),
+    radial-gradient(ellipse 50% 50% at 80% 30%,
       oklch(0.577 0.198 40 / 2%),
-      transparent 60%
-    );
+      transparent 60%);
 }
 
 /* Dark mode card number warm glow */
@@ -229,49 +232,167 @@
   transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s ease,
     border-color 0.5s ease;
 }
+
 .ed-smooth-fast {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   Auth Panel — Editorial Dark Cover
+   Auth Panel — Premium Dark Editorial Cover
    ═══════════════════════════════════════════════════════════════════ */
+
+/* Base panel styling with rich dark gradient */
 .ed-auth-panel {
-  background: linear-gradient(
-    155deg,
-    oklch(0.13 0.005 60),
-    oklch(0.10 0.012 50) 40%,
-    oklch(0.14 0.008 45) 100%
-  );
+  background: linear-gradient(155deg,
+      oklch(0.13 0.005 60),
+      oklch(0.10 0.012 50) 40%,
+      oklch(0.14 0.008 45) 100%);
   color: oklch(0.88 0.012 75);
 }
 
+/* Dark mode: Warm amber-tinted dark for visual separation from pure black form area */
 .dark .ed-auth-panel {
-  background: linear-gradient(
-    155deg,
-    oklch(0.065 0.01 55),
-    oklch(0.05 0.015 48) 40%,
-    oklch(0.08 0.01 52) 100%
-  );
-  color: oklch(0.78 0.012 70);
+  background: linear-gradient(155deg,
+      oklch(0.14 0.045 42),
+      oklch(0.12 0.055 38) 35%,
+      oklch(0.16 0.048 45) 70%,
+      oklch(0.13 0.050 40) 100%);
+  color: oklch(0.90 0.022 78);
 }
 
+/* Multi-layer gradient system for depth */
+.ed-auth-gradient {
+  background: none;
+}
+
+.dark .ed-auth-gradient {
+  background:
+    /* Stronger diagonal light beam */
+    linear-gradient(135deg,
+      transparent 0%,
+      oklch(0.577 0.198 40 / 8%) 30%,
+      transparent 60%),
+    /* Bottom-up warmth - more visible */
+    linear-gradient(to top,
+      oklch(0.577 0.198 40 / 10%) 0%,
+      transparent 50%),
+    /* Edge darkening for depth */
+    linear-gradient(to right,
+      oklch(0 0 0 / 20%) 0%,
+      transparent 25%,
+      transparent 75%,
+      oklch(0 0 0 / 20%) 100%);
+}
+
+/* Primary glow - Large ambient orb */
+.ed-auth-glow-primary {
+  background: none;
+}
+
+.dark .ed-auth-glow-primary {
+  background: radial-gradient(ellipse 80% 60% at 50% 50%,
+      oklch(0.577 0.198 40 / 15%),
+      transparent 70%);
+}
+
+/* Secondary glow - Top accent */
+.ed-auth-glow-secondary {
+  background: none;
+}
+
+.dark .ed-auth-glow-secondary {
+  background: radial-gradient(ellipse 60% 40% at 50% 20%,
+      oklch(0.577 0.198 40 / 10%),
+      transparent 65%);
+}
+
+/* Accent glow - Bottom warm wash */
+.ed-auth-glow-accent {
+  background: none;
+}
+
+.dark .ed-auth-glow-accent {
+  background: radial-gradient(ellipse 100% 50% at 50% 100%,
+      oklch(0.5 0.15 35 / 12%),
+      transparent 55%);
+}
+
+/* Typography enhancements - Brand name */
+.ed-auth-brand {
+  color: oklch(0.88 0.012 75);
+}
+
+.dark .ed-auth-brand {
+  color: oklch(0.96 0.015 80);
+  text-shadow:
+    0 0 50px oklch(0.577 0.198 40 / 35%),
+    0 0 100px oklch(0.577 0.198 40 / 15%),
+    0 2px 20px oklch(0 0 0 / 50%);
+}
+
+/* Pulsing dot effect */
+.ed-auth-dot {
+  display: inline-block;
+}
+
+.dark .ed-auth-dot {
+  filter: drop-shadow(0 0 6px oklch(0.577 0.198 40 / 50%));
+}
+
+/* Tagline styling */
+.ed-auth-tagline {
+  color: oklch(0.78 0.01 72);
+}
+
+.dark .ed-auth-tagline {
+  color: oklch(0.85 0.025 75);
+  text-shadow: 0 1px 15px oklch(0 0 0 / 40%);
+}
+
+/* Description text with subtle depth */
+.ed-auth-description {
+  color: oklch(0.68 0.008 70);
+}
+
+.dark .ed-auth-description {
+  color: oklch(0.75 0.018 72);
+  text-shadow: 0 1px 10px oklch(0 0 0 / 35%);
+}
+
+/* Established marker */
+.ed-auth-established {
+  color: oklch(0.58 0.008 68);
+}
+
+.dark .ed-auth-established {
+  color: oklch(0.68 0.015 70);
+}
+
+/* Subtle text glow for small elements */
+.ed-auth-text-glow {
+  text-shadow: none;
+}
+
+.dark .ed-auth-text-glow {
+  text-shadow: 0 0 25px oklch(0.577 0.198 40 / 25%);
+}
+
+/* Legacy support - keep old classes working */
 .ed-auth-panel-glow {
   background: none;
 }
 
 .dark .ed-auth-panel-glow {
-  background: radial-gradient(
-    ellipse 70% 50% at 50% 45%,
-    oklch(0.577 0.198 40 / 5%),
-    transparent 70%
-  );
+  background: radial-gradient(ellipse 70% 50% at 50% 45%,
+      oklch(0.577 0.198 40 / 5%),
+      transparent 70%);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
    Reduced Motion
    ═══════════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
+
   .ed-underline::after,
   .ed-marquee,
   .ed-toggle-icon {
@@ -305,6 +426,7 @@
   from {
     transform: scaleX(0);
   }
+
   to {
     transform: scaleX(1);
   }
@@ -319,6 +441,7 @@
   0% {
     transform: translateX(-50%);
   }
+
   100% {
     transform: translateX(0);
   }
@@ -350,6 +473,6 @@
   direction: rtl;
 }
 
-[dir="rtl"] .lg\:col-span-5 > * {
+[dir="rtl"] .lg\:col-span-5>* {
   direction: ltr;
 }
