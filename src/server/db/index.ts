@@ -1,6 +1,25 @@
-import { drizzle } from "drizzle-orm/bun-sql"
+import "server-only"
+
+import postgres from "postgres"
+import { drizzle } from "drizzle-orm/postgres-js"
 
 import { env } from "@/env"
 import * as schema from "@/server/db/schema"
 
-export const db = drizzle(env.DATABASE_URL, { schema })
+const globalForPostgres = globalThis as unknown as {
+  postgresClient?: ReturnType<typeof postgres>
+}
+
+const client =
+  globalForPostgres.postgresClient ??
+  postgres(env.DATABASE_URL, {
+    max: 10,
+    idle_timeout: 20,
+    connect_timeout: 10,
+  })
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPostgres.postgresClient = client
+}
+
+export const db = drizzle(client, { schema })

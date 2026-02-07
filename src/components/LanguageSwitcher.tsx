@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useTransition } from "react"
+import { useEffect, useSyncExternalStore, useTransition } from "react"
 
 import { useLocale, useTranslations } from "next-intl"
 import { ChevronDownIcon, Globe } from "lucide-react"
@@ -17,6 +17,13 @@ import { cn } from "@/lib/utils"
 
 const LOCALES = ["en", "fr", "ar"] as const
 
+const subscribeHydration = () => {
+  return () => {}
+}
+
+const getHydratedSnapshot = () => true
+const getServerHydratedSnapshot = () => false
+
 const triggerClassName = cn(
   "focus-visible:border-ring focus-visible:ring-ring/50 outline-none focus-visible:ring-3",
   "flex items-center gap-2 border border-border/30 bg-transparent px-3 py-2 select-none",
@@ -32,11 +39,11 @@ export function LanguageSwitcher() {
   const router = useRouter()
   const pathname = usePathname()
   const [isPending, startTransition] = useTransition()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useSyncExternalStore(
+    subscribeHydration,
+    getHydratedSnapshot,
+    getServerHydratedSnapshot
+  )
 
   // Sync <html> dir & lang with the active locale.
   // The root layout sets these correctly on initial SSR, but shared layouts
