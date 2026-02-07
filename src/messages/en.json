@@ -163,5 +163,88 @@
       "passwordMismatch": "Passwords do not match",
       "termsRequired": "You must agree to the terms"
     }
+  },
+  "howItWorks": {
+    "label": "How It Works",
+    "headline": "Streamlined Workflow for Everyone",
+    "description": "Whether you're a student seeking opportunities, a company looking for talent, or an administrator managing placements—Internex provides a seamless experience tailored to your role.",
+    "student": {
+      "title": "Student Journey",
+      "subtitle": "For Students",
+      "steps": {
+        "register": {
+          "step": "Step 01",
+          "title": "Create Your Account",
+          "description": "Register with your university email and verify your student status securely."
+        },
+        "profile": {
+          "step": "Step 02",
+          "title": "Build Your Digital CV",
+          "description": "Add your skills, experience, and connect your GitHub or portfolio links."
+        },
+        "search": {
+          "step": "Step 03",
+          "title": "Discover Opportunities",
+          "description": "Use smart filters to find internships by location, tech stack, or company type."
+        },
+        "apply": {
+          "step": "Step 04",
+          "title": "Apply with One Click",
+          "description": "Send your profile directly to companies and track your applications."
+        }
+      }
+    },
+    "company": {
+      "title": "Recruiter Portal",
+      "subtitle": "For Companies",
+      "steps": {
+        "profile": {
+          "step": "Step 01",
+          "title": "Company Profile",
+          "description": "Set up your company page with logo, description, and office locations."
+        },
+        "offers": {
+          "step": "Step 02",
+          "title": "Publish Offers",
+          "description": "Create, modify, and manage internship positions with detailed requirements."
+        },
+        "candidates": {
+          "step": "Step 03",
+          "title": "Review Candidates",
+          "description": "Access a dashboard of applicants and filter by skills or experience."
+        },
+        "accept": {
+          "step": "Step 04",
+          "title": "Accept & Proceed",
+          "description": "Accept candidates and trigger the administrative workflow automatically."
+        }
+      }
+    },
+    "admin": {
+      "title": "Admin Control",
+      "subtitle": "For Administration",
+      "steps": {
+        "validate": {
+          "step": "Step 01",
+          "title": "Validate Placements",
+          "description": "Review and approve internship matchings submitted by companies."
+        },
+        "documents": {
+          "step": "Step 02",
+          "title": "Generate Documents",
+          "description": "Auto-generate Convention de Stage PDFs with all required data pre-filled."
+        },
+        "statistics": {
+          "step": "Step 03",
+          "title": "Track Statistics",
+          "description": "Access global analytics on placement rates and student outcomes."
+        }
+      }
+    },
+    "cta": {
+      "text": "Ready to transform your internship experience?",
+      "button": "Get Started Free",
+      "aria": "Get started with Internex for free"
+    }
   }
 }

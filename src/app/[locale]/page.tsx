@@ -2,6 +2,7 @@ import { Navbar } from "@/components/Navbar"
 import { MarqueeRibbon } from "./_components/MarqueeRibbon"
 import { HeroSection } from "./_components/HeroSection"
 import { StatsBar } from "./_components/StatsBar"
+import { HowItWorksSection } from "./_components/HowItWorksSection"
 import { Footer } from "@/components/Footer"
 
 export default function Home() {
@@ -11,7 +12,9 @@ export default function Home() {
       <MarqueeRibbon />
       <HeroSection />
       <StatsBar />
+      <HowItWorksSection />
       <Footer />
     </main>
   )
 }
+

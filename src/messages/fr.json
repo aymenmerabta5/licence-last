@@ -163,5 +163,88 @@
       "passwordMismatch": "Les mots de passe ne correspondent pas",
       "termsRequired": "Vous devez accepter les conditions"
     }
+  },
+  "howItWorks": {
+    "label": "Comment Ça Marche",
+    "headline": "Un Workflow Simplifié pour Tous",
+    "description": "Que vous soyez étudiant à la recherche d'opportunités, entreprise en quête de talents ou administrateur gérant les placements—Internex offre une expérience fluide adaptée à votre rôle.",
+    "student": {
+      "title": "Parcours Étudiant",
+      "subtitle": "Pour Étudiants",
+      "steps": {
+        "register": {
+          "step": "Étape 01",
+          "title": "Créer Votre Compte",
+          "description": "Inscrivez-vous avec votre email universitaire et vérifiez votre statut étudiant en toute sécurité."
+        },
+        "profile": {
+          "step": "Étape 02",
+          "title": "Construire Votre CV Digital",
+          "description": "Ajoutez vos compétences, expériences et connectez vos liens GitHub ou portfolio."
+        },
+        "search": {
+          "step": "Étape 03",
+          "title": "Découvrir les Opportunités",
+          "description": "Utilisez des filtres intelligents pour trouver des stages par lieu, stack technique ou type d'entreprise."
+        },
+        "apply": {
+          "step": "Étape 04",
+          "title": "Postuler en Un Clic",
+          "description": "Envoyez votre profil directement aux entreprises et suivez vos candidatures."
+        }
+      }
+    },
+    "company": {
+      "title": "Portail Recruteur",
+      "subtitle": "Pour Entreprises",
+      "steps": {
+        "profile": {
+          "step": "Étape 01",
+          "title": "Profil Entreprise",
+          "description": "Configurez votre page entreprise avec logo, description et localisations."
+        },
+        "offers": {
+          "step": "Étape 02",
+          "title": "Publier des Offres",
+          "description": "Créez, modifiez et gérez vos postes de stage avec des exigences détaillées."
+        },
+        "candidates": {
+          "step": "Étape 03",
+          "title": "Examiner les Candidats",
+          "description": "Accédez à un tableau de bord des candidats et filtrez par compétences ou expérience."
+        },
+        "accept": {
+          "step": "Étape 04",
+          "title": "Accepter et Poursuivre",
+          "description": "Acceptez les candidats et déclenchez automatiquement le workflow administratif."
+        }
+      }
+    },
+    "admin": {
+      "title": "Contrôle Admin",
+      "subtitle": "Pour Administration",
+      "steps": {
+        "validate": {
+          "step": "Étape 01",
+          "title": "Valider les Placements",
+          "description": "Examinez et approuvez les matchings de stages soumis par les entreprises."
+        },
+        "documents": {
+          "step": "Étape 02",
+          "title": "Générer les Documents",
+          "description": "Auto-générez les PDFs de Convention de Stage avec toutes les données pré-remplies."
+        },
+        "statistics": {
+          "step": "Étape 03",
+          "title": "Suivre les Statistiques",
+          "description": "Accédez aux analyses globales sur les taux de placement et résultats étudiants."
+        }
+      }
+    },
+    "cta": {
+      "text": "Prêt à transformer votre expérience de stage ?",
+      "button": "Commencer Gratuitement",
+      "aria": "Commencer avec Internex gratuitement"
+    }
   }
 }
