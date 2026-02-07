@@ -1,3 +1,5 @@
+"use client"
+
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { ArrowRight } from "lucide-react"
