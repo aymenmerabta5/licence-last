@@ -4,6 +4,9 @@ import type { ReactNode } from "react"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages, getTranslations } from "next-intl/server"
 
+import { Footer } from "@/components/Footer"
+import { Navbar } from "@/components/Navbar"
+
 type Params = Promise<{ locale: string }>
 
 interface LocaleLayoutProps {
@@ -34,7 +37,11 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      {children}
+      <div className="flex min-h-screen flex-col">
+        <Navbar />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </div>
     </NextIntlClientProvider>
   )
 }
