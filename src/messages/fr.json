@@ -88,8 +88,11 @@
     }
   },
   "notFound": {
-    "title": "Page introuvable",
-    "returnHome": "Retour à l'accueil"
+    "edition": "Édition Manquante",
+    "headline": "Page Introuvable",
+    "description": "L'article que vous recherchez semble avoir été retiré de notre publication, renommé ou est temporairement indisponible.",
+    "returnHome": "Retour à l'Accueil",
+    "suggestion": "Nous vous conseillons de repartir de l'édition principale"
   },
   "auth": {
     "login": {

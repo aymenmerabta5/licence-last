@@ -88,8 +88,11 @@
     }
   },
   "notFound": {
-    "title": "Page not found",
-    "returnHome": "Return Home"
+    "edition": "Missing Edition",
+    "headline": "Page Not Found",
+    "description": "The article you are looking for seems to have been removed from our publication, renamed, or is temporarily unavailable.",
+    "returnHome": "Return to Home",
+    "suggestion": "We suggest starting from the main edition"
   },
   "auth": {
     "login": {
