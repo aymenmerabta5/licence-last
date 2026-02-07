@@ -25,12 +25,12 @@ export function proxy(request: NextRequest) {
   if (isProtectedPath(pathname)) {
     const sessionCookie = getSessionCookie(request)
     if (!sessionCookie) {
-      const locale = pathname.match(/^\/(en|fr|ar)/)?.[1] ?? "en"
-      return NextResponse.redirect(
-        new URL(`/${locale}/sign-in`, request.url),
-      )
+        const locale = pathname.match(/^\/(en|fr|ar)/)?.[1] ?? "en"
+        return NextResponse.redirect(
+        new URL(`/${locale}/login`, request.url),
+        )
+      }
     }
-  }
 
   // Delegate to next-intl for locale routing
   const response = intlMiddleware(request)

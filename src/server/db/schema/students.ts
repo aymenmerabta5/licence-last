@@ -1,0 +1,55 @@
+import {
+  pgTable,
+  text,
+  timestamp,
+  integer,
+  primaryKey,
+  index,
+} from "drizzle-orm/pg-core"
+
+import { user } from "./auth"
+import { skillTag } from "./skills"
+
+export const studentProfile = pgTable(
+  "student_profile",
+  {
+    userId: text("user_id")
+      .primaryKey()
+      .references(() => user.id, { onDelete: "cascade" }),
+
+    wilayaCode: integer("wilaya_code"),
+    bio: text("bio"),
+    phone: text("phone"),
+    githubUrl: text("github_url"),
+    portfolioUrl: text("portfolio_url"),
+
+    studentNumber: text("student_number"),
+    department: text("department"),
+    level: text("level"),
+    address: text("address"),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [index("student_profile_wilayaCode_idx").on(table.wilayaCode)],
+)
+
+export const studentSkill = pgTable(
+  "student_skill",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    skillTagId: text("skill_tag_id")
+      .notNull()
+      .references(() => skillTag.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.userId, table.skillTagId] }),
+    index("student_skill_skillTagId_idx").on(table.skillTagId),
+  ],
+)

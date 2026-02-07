@@ -12,6 +12,7 @@ import {
   AlertCircle,
   ArrowRight,
   Loader2,
+  CheckCircle2,
 } from "lucide-react"
 
 import { Link } from "@/i18n/routing"
@@ -41,6 +42,9 @@ export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const [serverError, setServerError] = useState("")
+  const [needsVerification, setNeedsVerification] = useState(false)
+  const [verificationSent, setVerificationSent] = useState(false)
+  const [pendingEmail, setPendingEmail] = useState("")
 
   const loginSchema = useMemo(() => createLoginSchema(tv), [tv])
 
@@ -54,22 +58,53 @@ export function LoginForm() {
     },
     onSubmit: async ({ value }) => {
       setServerError("")
+      setNeedsVerification(false)
+      setVerificationSent(false)
+      setPendingEmail(value.email)
 
       try {
         const result = await authClient.signIn.email({
           email: value.email,
           password: value.password,
+          rememberMe,
           callbackURL: "/",
         })
 
         if (result.error) {
-          setServerError(t("error"))
+          if (result.error.status === 403) {
+            setNeedsVerification(true)
+            setServerError(t("emailNotVerified"))
+            return
+          }
+          setServerError(result.error.message || t("error"))
         }
       } catch {
         setServerError(t("error"))
       }
     },
   })
+
+  async function resendVerificationEmail() {
+    if (!pendingEmail) return
+    setServerError("")
+    setVerificationSent(false)
+
+    try {
+      const result = await authClient.sendVerificationEmail({
+        email: pendingEmail,
+        callbackURL: "/",
+      })
+
+      if (result.error) {
+        setServerError(result.error.message || t("error"))
+        return
+      }
+
+      setVerificationSent(true)
+    } catch {
+      setServerError(t("error"))
+    }
+  }
 
   return (
     <form
@@ -98,6 +133,33 @@ export function LoginForm() {
         >
           <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
           <span>{serverError}</span>
+        </motion.div>
+      )}
+
+      {/* ── Verification Helper ── */}
+      {needsVerification && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-3"
+        >
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full h-11 rounded-none"
+            onClick={resendVerificationEmail}
+          >
+            {t("resendVerification")}
+          </Button>
+
+          {verificationSent && (
+            <div className="flex items-start gap-2.5 p-3.5 text-sm bg-primary/5 border border-primary/15">
+              <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-primary" />
+              <span className="text-muted-foreground">
+                {t("verificationSent")}
+              </span>
+            </div>
+          )}
         </motion.div>
       )}
 

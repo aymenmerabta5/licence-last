@@ -8,7 +8,7 @@ export function MarqueeRibbon() {
   const t = useTranslations("marquee")
   const locale = useLocale()
   const items = t.raw("items") as string[]
-  const xKeyframes = locale === "ar" ? (["-50%", "0%"] as const) : (["0%", "-50%"] as const)
+  const xKeyframes: string[] = locale === "ar" ? ["-50%", "0%"] : ["0%", "-50%"]
 
   return (
     <div

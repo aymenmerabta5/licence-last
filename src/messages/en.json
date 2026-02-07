@@ -109,7 +109,10 @@
       "noAccount": "Don't have an account?",
       "createOne": "Create one",
       "or": "or",
-      "error": "Invalid email or password. Please try again."
+      "error": "Invalid email or password. Please try again.",
+      "emailNotVerified": "Please verify your email address to continue.",
+      "resendVerification": "Resend verification email",
+      "verificationSent": "Verification email sent. Check your inbox."
     },
     "signup": {
       "pageTitle": "Create Account",
@@ -134,7 +137,10 @@
       "passwordHint": "At least 8 characters",
       "passwordMismatch": "Passwords do not match",
       "termsRequired": "You must agree to the terms",
-      "error": "Something went wrong. Please try again."
+      "error": "Something went wrong. Please try again.",
+      "verifyTitle": "Verify your email",
+      "verifyDescription": "We sent you a verification link. Open it to activate your account.",
+      "backToLogin": "Back to sign in"
     },
     "resetPassword": {
       "pageTitle": "Reset Password",

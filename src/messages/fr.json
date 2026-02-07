@@ -109,7 +109,10 @@
       "noAccount": "Vous n'avez pas de compte ?",
       "createOne": "Créer un",
       "or": "ou",
-      "error": "Email ou mot de passe invalide. Veuillez réessayer."
+      "error": "Email ou mot de passe invalide. Veuillez réessayer.",
+      "emailNotVerified": "Veuillez vérifier votre adresse email pour continuer.",
+      "resendVerification": "Renvoyer l'email de vérification",
+      "verificationSent": "Email de vérification envoyé. Vérifiez votre boîte de réception."
     },
     "signup": {
       "pageTitle": "Créer un Compte",
@@ -134,7 +137,10 @@
       "passwordHint": "Au moins 8 caractères",
       "passwordMismatch": "Les mots de passe ne correspondent pas",
       "termsRequired": "Vous devez accepter les conditions",
-      "error": "Une erreur s'est produite. Veuillez réessayer."
+      "error": "Une erreur s'est produite. Veuillez réessayer.",
+      "verifyTitle": "Vérifiez votre email",
+      "verifyDescription": "Nous vous avons envoyé un lien de vérification. Ouvrez-le pour activer votre compte.",
+      "backToLogin": "Retour à la connexion"
     },
     "resetPassword": {
       "pageTitle": "Réinitialiser le Mot de Passe",

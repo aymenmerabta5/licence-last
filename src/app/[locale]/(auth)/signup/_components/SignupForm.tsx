@@ -12,6 +12,8 @@ import {
   EyeOff,
   AlertCircle,
   ArrowRight,
+  ArrowLeft,
+  CheckCircle2,
   Loader2,
 } from "lucide-react"
 
@@ -42,6 +44,7 @@ export function SignupForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [serverError, setServerError] = useState("")
+  const [success, setSuccess] = useState(false)
 
   const signupSchema = useMemo(() => createSignupSchema(tv), [tv])
 
@@ -86,6 +89,7 @@ export function SignupForm() {
     },
     onSubmit: async ({ value }) => {
       setServerError("")
+      setSuccess(false)
 
       try {
         const result = await authClient.signUp.email({
@@ -96,13 +100,47 @@ export function SignupForm() {
         })
 
         if (result.error) {
-          setServerError(t("error"))
+          setServerError(result.error.message || t("error"))
+          return
         }
+
+        setSuccess(true)
       } catch {
         setServerError(t("error"))
       }
     },
   })
+
+  if (success) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease }}
+        className="space-y-8"
+      >
+        <div className="flex items-start gap-3 p-4 text-sm bg-primary/5 border border-primary/15">
+          <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5 text-primary" />
+          <div className="space-y-1">
+            <p className="font-medium text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
+              {t("verifyTitle")}
+            </p>
+            <p className="text-muted-foreground font-light">
+              {t("verifyDescription")}
+            </p>
+          </div>
+        </div>
+
+        <Link
+          href="/login"
+          className="inline-flex items-center gap-2 text-sm font-bold text-heading hover:text-primary transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] uppercase tracking-wide group [[dir=rtl]_&]:tracking-normal"
+        >
+          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          {t("backToLogin")}
+        </Link>
+      </motion.div>
+    )
+  }
 
   return (
     <form

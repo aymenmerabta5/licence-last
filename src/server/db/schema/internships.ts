@@ -1,0 +1,57 @@
+import {
+  pgTable,
+  text,
+  timestamp,
+  integer,
+  primaryKey,
+  index,
+} from "drizzle-orm/pg-core"
+
+import { offerStatusEnum, workModeEnum } from "./enums"
+import { company } from "./companies"
+import { skillTag } from "./skills"
+
+export const internshipOffer = pgTable(
+  "internship_offer",
+  {
+    id: text("id").primaryKey(),
+    companyId: text("company_id")
+      .notNull()
+      .references(() => company.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    description: text("description").notNull(),
+    internshipType: text("internship_type").notNull(),
+    workMode: workModeEnum("work_mode"),
+    wilayaCode: integer("wilaya_code"),
+    status: offerStatusEnum("status").default("draft").notNull(),
+    publishedAt: timestamp("published_at"),
+    closesAt: timestamp("closes_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("internship_offer_companyId_idx").on(table.companyId),
+    index("internship_offer_status_idx").on(table.status),
+    index("internship_offer_wilayaCode_idx").on(table.wilayaCode),
+  ],
+)
+
+export const internshipOfferSkill = pgTable(
+  "internship_offer_skill",
+  {
+    offerId: text("offer_id")
+      .notNull()
+      .references(() => internshipOffer.id, { onDelete: "cascade" }),
+    skillTagId: text("skill_tag_id")
+      .notNull()
+      .references(() => skillTag.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.offerId, table.skillTagId] }),
+    index("internship_offer_skill_skillTagId_idx").on(table.skillTagId),
+  ],
+)

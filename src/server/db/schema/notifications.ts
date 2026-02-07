@@ -1,0 +1,21 @@
+import { pgTable, text, timestamp, jsonb, index } from "drizzle-orm/pg-core"
+
+import { user } from "./auth"
+
+export const notification = pgTable(
+  "notification",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    type: text("type").notNull(),
+    payload: jsonb("payload").default({}).notNull(),
+    readAt: timestamp("read_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("notification_userId_idx").on(table.userId),
+    index("notification_userId_readAt_idx").on(table.userId, table.readAt),
+  ],
+)
