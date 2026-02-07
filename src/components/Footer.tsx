@@ -1,12 +1,11 @@
 "use client"
 
-import * as React from "react"
 import Link from "next/link"
 import { ArrowRight, Github, Instagram, Linkedin, Twitter } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
+import { type Route } from "next";
 
 export function Footer() {
   return (
@@ -93,11 +92,9 @@ export function Footer() {
 }
 
 function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
-  // Using <a> tag to avoid typed-route errors with placeholder '#' links
-  // In a real app, these would be <Link> with valid routes like "/about"
   return (
     <Link 
-      href={href as any} 
+      href={href as Route} 
       className="text-muted-foreground hover:text-primary transition-colors w-fit group flex items-center gap-2"
     >
       <span className="relative">
