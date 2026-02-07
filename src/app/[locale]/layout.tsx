@@ -1,12 +1,14 @@
 import type { Metadata } from "next"
-import { ThemeProvider } from "next-themes"
-import { getTranslations } from "next-intl/server"
-import { NextIntlClientProvider } from "next-intl"
-import { getMessages } from "next-intl/server"
+import type { ReactNode } from "react"
 
-import { QueryProvider } from "@/components/providers/QueryProvider"
+import { getTranslations } from "next-intl/server"
 
 type Params = Promise<{ locale: string }>
+
+interface LocaleLayoutProps {
+  children: ReactNode
+  params: Params
+}
 
 export async function generateMetadata({
   params,
@@ -24,25 +26,6 @@ export async function generateMetadata({
 
 export default async function LocaleLayout({
   children,
-  params,
-}: {
-  children: React.ReactNode
-  params: Params
-}) {
-  const { locale } = await params
-  const messages = await getMessages()
-
-  return (
-    <NextIntlClientProvider messages={messages} locale={locale}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="light"
-        enableSystem={false}
-      >
-        <QueryProvider>
-          {children}
-        </QueryProvider>
-      </ThemeProvider>
-    </NextIntlClientProvider>
-  )
+}: LocaleLayoutProps) {
+  return children
 }
