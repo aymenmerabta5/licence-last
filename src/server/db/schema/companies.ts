@@ -7,7 +7,7 @@ import {
   index,
 } from "drizzle-orm/pg-core"
 
-import { companyMemberRoleEnum } from "./enums"
+import { companyMemberRoleEnum, companyStatusEnum } from "./enums"
 import { user } from "./auth"
 
 export const company = pgTable(
@@ -21,6 +21,12 @@ export const company = pgTable(
     websiteUrl: text("website_url"),
     wilayaCode: integer("wilaya_code"),
     address: text("address"),
+    status: companyStatusEnum("status").default("pending").notNull(),
+    approvedAt: timestamp("approved_at"),
+    approvedByUserId: text("approved_by_user_id").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    rejectionReason: text("rejection_reason"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -30,6 +36,7 @@ export const company = pgTable(
   (table) => [
     index("company_slug_idx").on(table.slug),
     index("company_wilayaCode_idx").on(table.wilayaCode),
+    index("company_status_idx").on(table.status),
   ],
 )
 

@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test"
-import { isProtectedPath, PROTECTED_PATHS } from "./proxy"
+import { isProtectedPath, isAuthPath, PROTECTED_PATHS, AUTH_PATHS } from "./proxy"
 
 describe("isProtectedPath", () => {
   describe("protected paths without locale", () => {
@@ -184,11 +184,81 @@ describe("PROTECTED_PATHS", () => {
     expect(PROTECTED_PATHS).toContain("/dashboard")
   })
 
+  test("should contain /onboarding", () => {
+    expect(PROTECTED_PATHS).toContain("/onboarding")
+  })
+
   test("should be an array", () => {
     expect(Array.isArray(PROTECTED_PATHS)).toBe(true)
   })
 
   test("should not be empty", () => {
     expect(PROTECTED_PATHS.length).toBeGreaterThan(0)
+  })
+})
+
+describe("isAuthPath", () => {
+  test("should identify /login as auth path", () => {
+    expect(isAuthPath("/login")).toBe(true)
+  })
+
+  test("should identify /signup as auth path", () => {
+    expect(isAuthPath("/signup")).toBe(true)
+  })
+
+  test("should identify /reset-password as auth path", () => {
+    expect(isAuthPath("/reset-password")).toBe(true)
+  })
+
+  test("should identify /en/login as auth path", () => {
+    expect(isAuthPath("/en/login")).toBe(true)
+  })
+
+  test("should identify /fr/signup as auth path", () => {
+    expect(isAuthPath("/fr/signup")).toBe(true)
+  })
+
+  test("should identify /ar/reset-password as auth path", () => {
+    expect(isAuthPath("/ar/reset-password")).toBe(true)
+  })
+
+  test("should not identify /dashboard as auth path", () => {
+    expect(isAuthPath("/dashboard")).toBe(false)
+  })
+
+  test("should not identify / as auth path", () => {
+    expect(isAuthPath("/")).toBe(false)
+  })
+})
+
+describe("AUTH_PATHS", () => {
+  test("should contain /login", () => {
+    expect(AUTH_PATHS).toContain("/login")
+  })
+
+  test("should contain /signup", () => {
+    expect(AUTH_PATHS).toContain("/signup")
+  })
+
+  test("should contain /reset-password", () => {
+    expect(AUTH_PATHS).toContain("/reset-password")
+  })
+})
+
+describe("onboarding protected paths", () => {
+  test("should identify /onboarding as protected", () => {
+    expect(isProtectedPath("/onboarding")).toBe(true)
+  })
+
+  test("should identify /onboarding/company as protected", () => {
+    expect(isProtectedPath("/onboarding/company")).toBe(true)
+  })
+
+  test("should identify /en/onboarding/company as protected", () => {
+    expect(isProtectedPath("/en/onboarding/company")).toBe(true)
+  })
+
+  test("should identify /fr/onboarding as protected", () => {
+    expect(isProtectedPath("/fr/onboarding")).toBe(true)
   })
 })

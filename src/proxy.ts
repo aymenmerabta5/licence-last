@@ -7,34 +7,54 @@ import { routing } from "@/i18n/routing"
 
 const intlMiddleware = createMiddleware(routing)
 
-export const PROTECTED_PATHS = ["/dashboard"]
+export const PROTECTED_PATHS = ["/dashboard", "/onboarding"]
+export const AUTH_PATHS = ["/login", "/signup", "/reset-password"]
+
+/**
+ * Strip the locale prefix from a pathname.
+ * e.g. /en/dashboard -> /dashboard, /fr/login -> /login
+ */
+function stripLocale(pathname: string): string {
+  return pathname.replace(/^\/(en|fr|ar)/, "")
+}
 
 /**
  * Check if a pathname is a protected path that requires authentication.
- * Strips locale prefix before checking (e.g., /en/dashboard -> /dashboard).
  */
 export function isProtectedPath(pathname: string): boolean {
-  // Strip locale prefix (e.g. /en/dashboard -> /dashboard)
-  const pathWithoutLocale = pathname.replace(
-    /^\/(en|fr|ar)/,
-    "",
-  )
-  return PROTECTED_PATHS.some((p) => pathWithoutLocale.startsWith(p))
+  const path = stripLocale(pathname)
+  return PROTECTED_PATHS.some((p) => path.startsWith(p))
+}
+
+/**
+ * Check if a pathname is an auth page (login, signup, reset-password).
+ */
+export function isAuthPath(pathname: string): boolean {
+  const path = stripLocale(pathname)
+  return AUTH_PATHS.some((p) => path.startsWith(p))
 }
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const locale = pathname.match(/^\/(en|fr|ar)/)?.[1] ?? "en"
 
-  // Check auth for protected routes
+  // Redirect unauthenticated users away from protected routes
   if (isProtectedPath(pathname)) {
     const sessionCookie = getSessionCookie(request)
     if (!sessionCookie) {
-        const locale = pathname.match(/^\/(en|fr|ar)/)?.[1] ?? "en"
-        return NextResponse.redirect(
+      return NextResponse.redirect(
         new URL(`/${locale}/login`, request.url),
-        )
-      }
+      )
     }
+  }
+
+  // Redirect authenticated users away from auth pages
+  if (isAuthPath(pathname)) {
+    const sessionCookie = getSessionCookie(request)
+    if (sessionCookie) {
+      return NextResponse.redirect(new URL(`/${locale}`, request.url))
+    }
+  }
 
   // Delegate to next-intl for locale routing
   const response = intlMiddleware(request)
