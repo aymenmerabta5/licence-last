@@ -28,7 +28,7 @@ mock.module("next-intl", () => ({
 }))
 
 // Mock auth validation
-mock.module("@/lib/validations/auth", () => ({
+mock.module("@/lib/schemas/auth", () => ({
   createLoginSchema: () => ({
     safeParse: (data: { email: string; password: string }) => {
       const issues: Array<{ path: (string | number)[]; message: string }> = []
@@ -72,11 +72,46 @@ mock.module("@/lib/auth-client", () => ({
   },
 }))
 
+// Mock post-login redirect
+mock.module("@/lib/post-login-redirect", () => ({
+  getPostLoginRedirectPath: () => "/dashboard/student",
+}))
+
+// Mock oRPC client
+mock.module("@/server/orpc/client", () => ({
+  orpcClient: {
+    users: {
+      getMe: mock(() =>
+        Promise.resolve({
+          user: {
+            id: "1",
+            email: "test@example.com",
+            role: "student",
+            name: "Test User",
+            onboardingCompleted: false,
+          },
+          company: null,
+        }),
+      ),
+    },
+  },
+  orpc: {},
+}))
+
 // Mock routing
+const mockRouterPush = mock(() => {})
 mock.module("@/i18n/routing", () => ({
   Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
     <a href={href}>{children}</a>
   ),
+  useRouter: () => ({
+    push: mockRouterPush,
+    replace: mock(() => {}),
+    back: mock(() => {}),
+    forward: mock(() => {}),
+    refresh: mock(() => {}),
+    prefetch: mock(() => {}),
+  }),
 }))
 
 // Mock motion
@@ -95,6 +130,7 @@ describe("LoginForm", () => {
   beforeEach(() => {
     mockSignIn.mockClear()
     mockSendVerificationEmail.mockClear()
+    mockRouterPush.mockClear()
   })
 
   afterEach(() => {
@@ -229,11 +265,10 @@ describe("LoginForm", () => {
         expect(mockSignIn.mock.calls.length).toBe(1)
       })
 
-      const callArg = mockSignIn.mock.calls[0][0] as { email: string; password: string; rememberMe: boolean; callbackURL: string }
+      const callArg = mockSignIn.mock.calls[0][0] as { email: string; password: string; rememberMe: boolean }
       expect(callArg.email).toBe("test@example.com")
       expect(callArg.password).toBe("password123")
       expect(callArg.rememberMe).toBe(false)
-      expect(callArg.callbackURL).toBe("/")
     })
 
     test("should pass rememberMe to signIn", async () => {

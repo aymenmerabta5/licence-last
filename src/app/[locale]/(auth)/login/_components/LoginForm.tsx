@@ -15,9 +15,11 @@ import {
   CheckCircle2,
 } from "lucide-react"
 
-import { Link } from "@/i18n/routing"
+import { Link, useRouter } from "@/i18n/routing"
 import { authClient } from "@/lib/auth-client"
-import { createLoginSchema, errorMessage } from "@/lib/validations/auth"
+import { createLoginSchema, errorMessage } from "@/lib/schemas/auth"
+import { getPostLoginRedirectPath } from "@/lib/post-login-redirect"
+import { orpcClient } from "@/server/orpc/client"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
@@ -38,6 +40,7 @@ const ease = [0.4, 0, 0.2, 1] as const
 export function LoginForm() {
   const t = useTranslations("auth.login")
   const tv = useTranslations("auth.validation")
+  const router = useRouter()
 
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
@@ -83,7 +86,6 @@ export function LoginForm() {
           email: value.email,
           password: value.password,
           rememberMe,
-          callbackURL: "/",
         })
 
         if (result.error) {
@@ -93,7 +95,13 @@ export function LoginForm() {
             return
           }
           setServerError(result.error.message || t("error"))
+          return
         }
+
+        // Fetch user profile to determine redirect
+        const me = await orpcClient.users.getMe()
+        const redirectPath = getPostLoginRedirectPath(me)
+        router.push(redirectPath)
       } catch {
         setServerError(t("error"))
       }

@@ -22,7 +22,7 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: {
-        type: ["student", "recruiter", "admin"],
+        type: ["student", "company_admin", "admin", "super_admin"],
         required: false,
         defaultValue: "student",
         input: true,
@@ -45,9 +45,9 @@ export const auth = betterAuth({
       create: {
         before: async (data) => {
           const role = data.role ?? "student"
-          if (role !== "student" && role !== "recruiter") {
+          if (role !== "student" && role !== "company_admin") {
             throw new APIError("BAD_REQUEST", {
-              message: "Invalid role",
+              message: "Invalid role for self-registration",
             })
           }
 

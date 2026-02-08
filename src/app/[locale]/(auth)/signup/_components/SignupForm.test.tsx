@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, afterEach, mock } from "bun:test"
 import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react"
-import { SignupForm } from "./SignupForm"
+import { StudentSignupForm } from "./StudentSignupForm"
 
 // Mock next-intl
 mock.module("next-intl", () => ({
@@ -29,13 +29,14 @@ mock.module("next-intl", () => ({
       "verifyTitle": "Verify your email",
       "verifyDescription": "Check your email to complete registration",
       "backToLogin": "Back to login",
+      "back": "Back",
     }
     return translations[key] || key
   },
 }))
 
 // Mock auth validation
-mock.module("@/lib/validations/auth", () => ({
+mock.module("@/lib/schemas/auth", () => ({
   createSignupSchema: () => ({
     safeParse: (data: { name: string; email: string; password: string; confirmPassword: string; agreeToTerms: boolean }) => {
       const issues: Array<{ path: (string | number)[]; message: string }> = []
@@ -100,7 +101,7 @@ mock.module("motion/react-client", () => ({
   },
 }))
 
-describe("SignupForm", () => {
+describe("StudentSignupForm", () => {
   beforeEach(() => {
     mockSignUp.mockClear()
   })
@@ -111,7 +112,7 @@ describe("SignupForm", () => {
 
   describe("rendering", () => {
     test("should render form elements", () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       expect(screen.getByRole("heading", { name: "Create Account" })).toBeDefined()
       expect(screen.getByText("Sign up for a new account")).toBeDefined()
@@ -123,13 +124,13 @@ describe("SignupForm", () => {
     })
 
     test("should render password hint", () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
       const hints = screen.getAllByText("Must be at least 8 characters")
       expect(hints.length).toBeGreaterThan(0)
     })
 
     test("should render terms checkbox", () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
       const agreeTexts = screen.getAllByText(/I agree to the/i)
       expect(agreeTexts.length).toBeGreaterThan(0)
       expect(screen.getAllByText("Terms of Service").length).toBeGreaterThan(0)
@@ -137,7 +138,7 @@ describe("SignupForm", () => {
     })
 
     test("should render login link", () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
       const loginLinks = screen.getAllByText("Sign In")
       expect(loginLinks.length).toBeGreaterThan(0)
       const loginLink = loginLinks.find(el => el.closest("a")?.getAttribute("href") === "/login")
@@ -147,7 +148,7 @@ describe("SignupForm", () => {
 
   describe("form validation", () => {
     test("should show validation error for short name", async () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const nameInput = screen.getByLabelText("Full Name")
       fireEvent.change(nameInput, { target: { value: "A" } })
@@ -164,7 +165,7 @@ describe("SignupForm", () => {
     })
 
     test("should show validation error for invalid email", async () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const nameInput = screen.getByLabelText("Full Name")
       const emailInput = screen.getByLabelText("Email")
@@ -184,7 +185,7 @@ describe("SignupForm", () => {
     })
 
     test("should show validation error for short password", async () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const nameInput = screen.getByLabelText("Full Name")
       const emailInput = screen.getByLabelText("Email")
@@ -206,7 +207,7 @@ describe("SignupForm", () => {
     })
 
     test("should show validation error for missing confirm password", async () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const nameInput = screen.getByLabelText("Full Name")
       const emailInput = screen.getByLabelText("Email")
@@ -228,7 +229,7 @@ describe("SignupForm", () => {
     })
 
     test("should show validation error for terms not agreed", async () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const nameInput = screen.getByLabelText("Full Name")
       const emailInput = screen.getByLabelText("Email")
@@ -254,7 +255,7 @@ describe("SignupForm", () => {
 
   describe("password visibility toggle", () => {
     test("should toggle password visibility", () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const passwordInput = screen.getByLabelText("Password")
       const toggleButtons = screen.getAllByLabelText("Show password")
@@ -272,7 +273,7 @@ describe("SignupForm", () => {
     })
 
     test("should toggle confirm password visibility", () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const confirmInput = screen.getByLabelText("Confirm Password")
       const toggleButtons = screen.getAllByLabelText("Show password")
@@ -289,7 +290,7 @@ describe("SignupForm", () => {
 
   describe("terms checkbox", () => {
     test("should toggle terms checkbox", () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const checkboxes = screen.getAllByRole("checkbox")
       const checkbox = checkboxes[0] as HTMLInputElement
@@ -308,7 +309,7 @@ describe("SignupForm", () => {
     test("should call signUp with correct data", async () => {
       mockSignUp.mockResolvedValueOnce({ error: null })
 
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const nameInput = screen.getByLabelText("Full Name")
       const emailInput = screen.getByLabelText("Email")
@@ -331,17 +332,18 @@ describe("SignupForm", () => {
         expect(mockSignUp.mock.calls.length).toBe(1)
       })
 
-      const callArg = mockSignUp.mock.calls[0][0] as { name: string; email: string; password: string; callbackURL: string }
+      const callArg = mockSignUp.mock.calls[0][0] as { name: string; email: string; password: string; callbackURL: string; fetchOptions: { body: { role: string } } }
       expect(callArg.name).toBe("John Doe")
       expect(callArg.email).toBe("test@example.com")
       expect(callArg.password).toBe("password123")
       expect(callArg.callbackURL).toBe("/")
+      expect(callArg.fetchOptions.body.role).toBe("student")
     })
 
     test("should show success state after registration", async () => {
       mockSignUp.mockResolvedValueOnce({ error: null })
 
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const nameInput = screen.getByLabelText("Full Name")
       const emailInput = screen.getByLabelText("Email")
@@ -372,7 +374,7 @@ describe("SignupForm", () => {
         error: { message: "Email already exists" },
       })
 
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const nameInput = screen.getByLabelText("Full Name")
       const emailInput = screen.getByLabelText("Email")
@@ -401,7 +403,7 @@ describe("SignupForm", () => {
     test("should show loading spinner during submission", async () => {
       mockSignUp.mockImplementation(() => new Promise(() => {})) // Never resolves
 
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const nameInput = screen.getByLabelText("Full Name")
       const emailInput = screen.getByLabelText("Email")
@@ -431,7 +433,7 @@ describe("SignupForm", () => {
 
   describe("field interactions", () => {
     test("should update name field on change", () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const nameInput = screen.getByLabelText("Full Name") as HTMLInputElement
       fireEvent.change(nameInput, { target: { value: "Jane Smith" } })
@@ -440,7 +442,7 @@ describe("SignupForm", () => {
     })
 
     test("should update email field on change", () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const emailInput = screen.getByLabelText("Email") as HTMLInputElement
       fireEvent.change(emailInput, { target: { value: "jane@example.com" } })
@@ -449,7 +451,7 @@ describe("SignupForm", () => {
     })
 
     test("should update password field on change", () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const passwordInput = screen.getByLabelText("Password") as HTMLInputElement
       fireEvent.change(passwordInput, { target: { value: "mypassword123" } })
@@ -458,7 +460,7 @@ describe("SignupForm", () => {
     })
 
     test("should update confirm password field on change", () => {
-      render(<SignupForm />)
+      render(<StudentSignupForm onBack={() => {}} />)
 
       const confirmInput = screen.getByLabelText("Confirm Password") as HTMLInputElement
       fireEvent.change(confirmInput, { target: { value: "mypassword123" } })

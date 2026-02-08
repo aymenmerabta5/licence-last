@@ -28,13 +28,29 @@ src/
 │   │   ├── page.tsx
 │   │   ├── _components/
 │   │   └── (auth)/         (auth route group)
-│   ├── api/                (API routes)
+│   ├── api/
+│   │   ├── auth/[...all]/  (Better Auth)
+│   │   └── rpc/[...rest]/  (oRPC catch-all handler)
 │   ├── layout.tsx          (root layout — fonts, html)
 │   ├── globals.css
 │   └── page.tsx            (redirects to /en)
 ├── components/             (shared UI components)
-├── lib/                    (utilities, auth, validations)
-├── server/                 (DB, queries, mutations)
+├── lib/
+│   ├── schemas/            (client-safe Zod schemas)
+│   ├── auth.ts             (Better Auth server config)
+│   ├── auth-client.ts      (Better Auth client)
+│   └── auth-guards.ts      (RSC layout guards)
+├── server/
+│   ├── db/                 (Drizzle schema + seed)
+│   ├── email/              (email sending)
+│   ├── services/           (Model — pure business logic)
+│   │   ├── companies/      (get, list, create, approve, reject)
+│   │   └── users/          (get-me, promote)
+│   └── orpc/               (Controller — oRPC router)
+│       ├── middleware.ts    (auth chain)
+│       ├── router.ts       (all routes combined)
+│       ├── client.ts       (oRPC client + TanStack Query utils)
+│       └── routes/         (companies.ts, users.ts)
 ├── i18n/                   (routing.ts, request.ts)
 ├── messages/               (en.json, fr.json, ar.json)
 ├── env.ts                  (T3 Env validation)
@@ -60,51 +76,86 @@ For that you should use the skill 'vercel-composition-patterns' and 'vercel-reac
 ### 5. Design Pattern
 You should use the existing design style and the color palette and you should use the basic shadcn components to do that, you should use the design skills to help you desgin better
 
-### 6. Data Fetching & Mutations (Drizzle + Type-Safe Contracts)
+### 6. MVC Architecture (Services + oRPC + TanStack Query)
 
-This project uses **Drizzle + Postgres**. The preferred architecture is **server-first** with type-safe contracts for client queries.
+This project uses **Drizzle + Postgres** with an **MVC architecture**:
 
-- **Server-only domain modules**: Put DB access in small functions (not large classes) under `src/server/<domain>/`.
-  - Reads: `src/server/<domain>/queries/*.ts` (prefer `list.ts`, `get.ts`)
-  - Writes: `src/server/<domain>/mutations/*.ts` (prefer `create.ts`, `update.ts`, `delete.ts`)
-  - Add `import "server-only"` at the top of these modules to prevent accidental client imports.
+- **Model** (`src/server/services/`) — Pure business logic functions, `import "server-only"`, no auth/framework coupling
+- **Controller** (`src/server/orpc/`) — oRPC router handles ALL client-server communication with auth middleware
+- **View** — React components (Server Components + Client Components)
 
-- **Server Components (default reads)**: Server Components call `src/server/<domain>/queries/*` directly.
-  - Avoid creating `/api` endpoints when the data is only needed on the server.
+#### Services (Model Layer)
 
-- **TanStack Query reads (client / infinite lists)**: Client Components (e.g. `useInfiniteQuery`) fetch from `src/app/api/*`.
-  - API routes are **not type-safe by default**, so we enforce a contract with shared Zod schemas.
+Put pure business logic in `src/server/services/<domain>/`:
+- Reads: `get.ts`, `list.ts`
+- Writes: `create.ts`, `update.ts`, `approve.ts`, `reject.ts`
+- Always add `import "server-only"` at the top
+- Functions take plain data + userId — **never** handle auth themselves
+- Return typed data — no `NextResponse`, no `ORPCError`
 
-- **Server routers for `/app/api/*` (required)**: Keep `src/app/api/*` files as thin re-exports and put route logic in server-only router modules.
-  - Location: `src/server/routers/<domain>/*.ts` (prefer `list.ts`, `get.ts`)
-  - Router modules:
-    - Start with `import "server-only"`
-    - Parse input with Zod schemas
-    - Call `src/server/<domain>/queries/*`
-    - Validate output with `...ResponseSchema`
-    - Return `NextResponse.json(...)`
+```typescript
+// src/server/services/companies/create.ts
+import "server-only"
+export async function createCompany(data: {...}, userId: string) {
+  // Pure DB logic, no auth
+  return { companyId, slug }
+}
+```
 
-- **Zod contracts for routes (Option 1)**: For every `src/app/api/*` endpoint, create a shared contract file:
-  - `src/lib/contracts/<domain>.ts` exports:
-    - `...QuerySchema` / `...BodySchema` (inputs)
-    - `...ResponseSchema` (output)
-    - `z.infer<>` types
-  - Server router module: `parse()` input and `parse()` the JSON response payload before returning.
-  - Client fetcher: `parse()` the JSON using the same `...ResponseSchema`.
+#### oRPC (Controller Layer)
 
-- **Prefetch + hydration (recommended for infinite feeds)**:
-  - Server page: `prefetchQuery/prefetchInfiniteQuery` using the server query function (Drizzle direct, no HTTP)
-  - Wrap the client component with `HydrationBoundary(dehydrate(queryClient))`
-  - Client hook uses the same query key and continues fetching via `/api`.
+All client reads AND mutations go through oRPC procedures at `src/server/orpc/routes/`:
 
-- **Mutations**:
-  - Use **Server Actions** for writes.
-  - Validate on the server with Zod (optionally `next-safe-action` for typed inputs/outputs).
-  - After success: invalidate TanStack Query caches and (if needed) `revalidatePath/revalidateTag` for RSC freshness.
+```typescript
+// src/server/orpc/routes/companies.ts
+import { companyAdminProcedure } from "../middleware"
+import { createCompany } from "@/server/services/companies/create"
 
-- **Client-side form validation (required)**:
-  - When building frontend forms, use **TanStack Form** to validate on the client (using the same Zod schema) before calling the Server Action Or Any Form Or Mutation.
-  - Server-side validation still remains mandatory.
+export const createCompanyProcedure = companyAdminProcedure
+  .input(z.object({ name: z.string().min(2), ... }))
+  .handler(async ({ input, context }) => createCompany(input, context.user.id))
+```
+
+**Middleware chain** (`src/server/orpc/middleware.ts`):
+- `publicProcedure` — no auth
+- `authedProcedure` — requires session
+- `adminProcedure` — admin or super_admin
+- `superAdminProcedure` — super_admin only
+- `companyAdminProcedure` — company_admin + injects membership
+
+#### Client Usage
+
+```typescript
+// Direct call (forms, one-off mutations)
+import { orpcClient } from "@/server/orpc/client"
+const me = await orpcClient.users.getMe()
+
+// TanStack Query (reactive data)
+import { orpc } from "@/server/orpc/client"
+const { data } = useQuery(orpc.companies.list.queryOptions({ input: { status: "approved" } }))
+const { mutateAsync } = useMutation(orpc.companies.create.mutationOptions())
+```
+
+#### Server Components (RSC)
+
+Server Components call services **directly** — no oRPC needed:
+```typescript
+import { getCompanyByUserId } from "@/server/services/companies/get"
+const company = await getCompanyByUserId(session.user.id)
+```
+
+#### Shared Schemas
+
+Client-safe Zod schemas live in `src/lib/schemas/` (NO `server-only`):
+- `auth.ts` — login, signup, reset password schemas
+- `company.ts` — company onboarding schema
+
+Used by both TanStack Form (client validation) and oRPC procedures (server validation).
+
+#### Client-side form validation (required)
+
+When building frontend forms, use **TanStack Form** to validate on the client (using schemas from `src/lib/schemas/`) before calling oRPC mutations.
+Server-side validation via oRPC `.input()` still remains mandatory.
 
 ---
 
@@ -273,16 +324,16 @@ src/
 ├── lib/
 │   ├── utils.ts
 │   └── utils.test.ts              # Test for utils.ts
-├── lib/validations/
+├── lib/schemas/
 │   ├── auth.ts
 │   └── auth.test.ts               # Test for auth.ts
 ├── components/ui/
 │   ├── button.tsx
 │   └── button.test.tsx            # Test for button.tsx
 └── server/
-    └── db/queries/
-        ├── list.ts
-        └── list.test.ts           # Test for list.ts
+    └── services/companies/
+        ├── create.ts
+        └── create.test.ts         # Test for create.ts
 ```
 
 **Why co-location:**
@@ -315,14 +366,14 @@ describe("myModule", () => {
 
 **Must test:**
 - Utility functions (`src/lib/utils.ts`)
-- Validation schemas (`src/lib/validations/*.ts`)
-- Business logic in server queries/mutations
+- Schemas (`src/lib/schemas/*.ts`)
+- Service functions (`src/server/services/**/*.ts`)
 - Complex component logic (custom hooks, utilities)
 
 **Test coverage goals:**
 - All exported utility functions
 - All validation schemas (valid and invalid inputs)
-- Server query/mutation functions
+- Service functions (business logic)
 - Edge cases and error handling
 
 ### Test Commands

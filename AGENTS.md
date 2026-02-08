@@ -46,75 +46,67 @@ bun test:coverage     # With coverage report
 
 ---
 
-## Data Access, Fetching & Mutations (Next.js 16)
+## MVC Architecture (Services + oRPC + TanStack Query)
 
-This project uses **Postgres + Drizzle** (`src/server/db/*`). Prefer a **server-first** architecture, and use shared Zod contracts to make `/app/api/*` routes effectively type-safe.
+This project uses **Postgres + Drizzle** (`src/server/db/*`) with an MVC architecture:
 
-### Server-Only Data Modules (Required)
+- **Model** (`src/server/services/`) — Pure business logic, `import "server-only"`, no auth coupling
+- **Controller** (`src/server/orpc/`) — oRPC router for ALL client-server communication
+- **View** — React components (Server Components + Client Components)
 
-- Put all DB access in small domain functions (avoid big OOP service classes).
-- Location:
-  - Reads: `src/server/<domain>/queries/*.ts` (prefer `list.ts`, `get.ts`)
-  - Writes: `src/server/<domain>/mutations/*.ts` (prefer `create.ts`, `update.ts`, `delete.ts`)
-- Add `import "server-only"` at the top of these files.
-- Import `db` from `@/server/db` and schema from `@/server/db/schema`.
+### Services (Model Layer)
 
-### Fetching (Reads)
+Put all business logic in `src/server/services/<domain>/`:
+- Reads: `get.ts`, `list.ts`
+- Writes: `create.ts`, `update.ts`, `approve.ts`, `reject.ts`
+- Always add `import "server-only"` at the top
+- Functions take plain data + userId — never handle auth themselves
+- Import `db` from `@/server/db` and schema from `@/server/db/schema`
 
-- **Server Components (default)**: Call `src/server/<domain>/queries/*` directly from `src/app/[locale]/**/page.tsx` and other Server Components.
-- **Client Components (TanStack Query)**: Use `/app/api/*` for client reads, especially for `useInfiniteQuery`.
-  - Keep `src/app/api/*` thin (re-export from `src/server/routers/**`); routers call the server query function and return JSON.
+### oRPC Controller Layer
 
-### Server Routers for `/app/api/*` (Required)
+All client reads AND mutations go through oRPC at `src/server/orpc/`:
 
-Keep all route handler logic in **server-only router modules**, and keep `src/app/api/*` files as thin re-exports.
+- **Middleware** (`middleware.ts`): Auth chain — `publicProcedure`, `authedProcedure`, `adminProcedure`, `superAdminProcedure`, `companyAdminProcedure`
+- **Routes** (`routes/*.ts`): Define procedures with `.input(zodSchema).handler(fn)`
+- **Router** (`router.ts`): Combines all route procedures into `appRouter`
+- **Client** (`client.ts`): `orpcClient` for direct calls, `orpc` for TanStack Query utils
+- **API handler** (`src/app/api/rpc/[...rest]/route.ts`): Catch-all oRPC handler
 
-- Location: `src/server/routers/<domain>/*.ts` (prefer `list.ts`, `get.ts`)
-  - Example mapping:
-    - `src/app/api/internships/route.ts` exports `GET` from `src/server/routers/internships/list.ts`
-    - `src/app/api/internships/[id]/route.ts` exports `GET` from `src/server/routers/internships/get.ts`
-- Router modules:
-  - Start with `import "server-only"`
-  - Parse input with Zod contract schemas
-  - Call `src/server/<domain>/queries/*`
-  - Parse/validate output with `...ResponseSchema`
-  - Return `NextResponse.json(...)`
+### Client Usage Patterns
 
-### Type-Safe Route Handlers (Option 1 - Required For /api)
+```typescript
+// Direct call (forms, one-off operations)
+import { orpcClient } from "@/server/orpc/client"
+const me = await orpcClient.users.getMe()
 
-Because `app/api/*` is not type-safe by default, enforce a shared contract:
+// TanStack Query (reactive reads)
+import { orpc } from "@/server/orpc/client"
+const { data } = useQuery(orpc.companies.list.queryOptions({ input: { status: "approved" } }))
 
-- Create `src/lib/contracts/<domain>.ts` with Zod schemas and inferred types:
-  - Input schema(s): `...QuerySchema` for `searchParams`, `...BodySchema` for JSON bodies
-  - Output schema: `...ResponseSchema`
-- In the server router module (e.g. `src/server/routers/<domain>/list.ts` / `src/server/routers/<domain>/get.ts`):
-  - `parse()` the incoming params/body with the input schema
-  - `parse()` the output payload with the response schema before returning
-- In the Next route file (`src/app/api/**/route.ts`):
-  - Re-export the handler from `src/server/routers/**` (keep it thin)
-- In the client fetcher (e.g. `src/lib/api/<domain>.ts`):
-  - `parse()` the response JSON with the same `...ResponseSchema`
+// TanStack Query (mutations)
+const { mutateAsync } = useMutation(orpc.companies.create.mutationOptions())
+```
 
-### React Query Prefetch + Hydration (Recommended)
+### Server Components (RSC)
 
-- For client-heavy pages (feeds, infinite lists), prefetch on the server with a `QueryClient` and hydrate:
-  - Server page: `prefetchQuery/prefetchInfiniteQuery` using the server query function (Drizzle direct; no HTTP)
-  - Render: `<HydrationBoundary state={dehydrate(queryClient)}>` around the client component
-  - Client: `useQuery/useInfiniteQuery` continues fetching via `/api` using the same query key
+Server Components call services **directly** — no oRPC needed:
+```typescript
+import { getCompanyByUserId } from "@/server/services/companies/get"
+const company = await getCompanyByUserId(session.user.id)
+```
 
-### Mutations (Writes)
+### Shared Schemas
 
-- Use **Server Actions** for creates/updates/deletes.
-  - Validate on the server with Zod (optionally use `next-safe-action` for typed results and consistent errors).
-- After a successful mutation:
-  - Invalidate TanStack Query caches (`queryClient.invalidateQueries({ queryKey: ... })`)
-  - If the mutated data also appears in Server Components with Next caching, use `revalidatePath` / `revalidateTag` as needed
+Client-safe Zod schemas in `src/lib/schemas/` (NO `server-only`):
+- `auth.ts` — login, signup, reset password schemas
+- `company.ts` — company onboarding schema
 
 ### Frontend Form Validation (Required)
 
-- When building form-based UI, use **TanStack Form** to validate in the client before executing the Server Action or Any Form Or Mutation.
-- Use the same Zod schema for client validation and server validation.
-- Client validation improves UX; server validation remains mandatory.
+- Use **TanStack Form** with schemas from `src/lib/schemas/` for client validation
+- oRPC `.input()` provides mandatory server-side validation
+- After mutations, invalidate TanStack Query caches as needed
 
 ---
 
@@ -257,7 +249,8 @@ src/
 │   │       ├── signup/
 │   │       └── reset-password/
 │   └── api/                    # API routes
-│       └── auth/[...all]/
+│       ├── auth/[...all]/      # Better Auth
+│       └── rpc/[...rest]/      # oRPC catch-all
 ├── components/                 # Shared components
 │   ├── ui/                     # shadcn/ui components (auto-generated)
 │   │   ├── button.tsx
@@ -272,15 +265,23 @@ src/
 │   ├── utils.test.ts           # Tests for utils.ts
 │   ├── auth.ts                 # Better Auth server config
 │   ├── auth-client.ts          # Better Auth client
-│   ├── safe-action.ts          # next-safe-action clients
-│   └── validations/            # Zod schemas
+│   ├── auth-guards.ts          # RSC layout guards
+│   └── schemas/                # Client-safe Zod schemas
 │       ├── auth.ts
-│       └── auth.test.ts        # Tests for auth.ts
-├── server/                     # Server-only code (DB, routers)
-│   └── db/
-│       ├── index.ts            # Drizzle client
-│       └── schema/
-│           └── auth.ts
+│       └── company.ts
+├── server/                     # Server-only code
+│   ├── db/
+│   │   ├── index.ts            # Drizzle client
+│   │   └── schema/
+│   │       └── auth.ts
+│   ├── services/               # Pure business logic (Model)
+│   │   ├── companies/          # get, list, create, approve, reject
+│   │   └── users/              # get-me, promote
+│   └── orpc/                   # oRPC controller layer
+│       ├── middleware.ts        # Auth middleware chain
+│       ├── router.ts           # Combined router
+│       ├── client.ts           # Client + TanStack Query utils
+│       └── routes/             # Procedure definitions
 ├── i18n/                       # next-intl configuration
 │   ├── routing.ts
 │   └── request.ts
@@ -357,17 +358,16 @@ describe("cn utility", () => {
 
 **Required locations for tests:**
 - `src/lib/*.test.ts` - Utility functions
-- `src/lib/validations/*.test.ts` - Zod schemas and validation logic
-- `src/server/*/queries/*.test.ts` - Database query functions
-- `src/server/*/mutations/*.test.ts` - Database mutation functions
+- `src/lib/schemas/*.test.ts` - Zod schemas and validation logic
+- `src/server/services/**/*.test.ts` - Service functions (business logic)
 - `src/components/ui/*.test.tsx` - UI components (when logic is complex)
 
 ### When to Write Tests
 
 **Always write tests for:**
 1. ✅ Utility functions in `src/lib/utils.ts`
-2. ✅ All validation schemas in `src/lib/validations/`
-3. ✅ Server-side business logic (queries/mutations)
+2. ✅ All schemas in `src/lib/schemas/`
+3. ✅ Service functions in `src/server/services/`
 4. ✅ Complex helper functions with branching logic
 
 **Example scenarios requiring tests:**

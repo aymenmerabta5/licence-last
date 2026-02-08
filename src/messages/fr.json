@@ -118,6 +118,24 @@
       "pageTitle": "Créer un Compte",
       "title": "Rejoignez Internex",
       "subtitle": "Créez votre compte et commencez votre parcours",
+      "roleSelection": {
+        "title": "Choisissez Votre Parcours",
+        "subtitle": "Sélectionnez comment vous souhaitez utiliser Internex",
+        "student": {
+          "title": "Je suis Étudiant",
+          "description": "Trouvez des stages, construisez votre profil et connectez-vous aux entreprises."
+        },
+        "company": {
+          "title": "Je suis une Entreprise",
+          "description": "Publiez des offres de stage, découvrez des talents et gérez les candidatures."
+        }
+      },
+      "companySignup": {
+        "title": "Inscription Entreprise",
+        "subtitle": "Créez votre compte administrateur entreprise",
+        "emailPlaceholder": "vous@entreprise.com",
+        "verifyDescription": "Nous vous avons envoyé un lien de vérification. Ouvrez-le, puis complétez la configuration de votre entreprise."
+      },
       "name": "Nom complet",
       "namePlaceholder": "Jean Dupont",
       "email": "Adresse email",
@@ -134,6 +152,7 @@
       "hasAccount": "Vous avez déjà un compte ?",
       "signIn": "Se connecter",
       "or": "ou",
+      "back": "Retour",
       "passwordHint": "Au moins 8 caractères",
       "passwordMismatch": "Les mots de passe ne correspondent pas",
       "termsRequired": "Vous devez accepter les conditions",
@@ -167,7 +186,51 @@
       "nameMin": "Le nom doit contenir au moins 2 caractères",
       "confirmRequired": "Veuillez confirmer votre mot de passe",
       "passwordMismatch": "Les mots de passe ne correspondent pas",
-      "termsRequired": "Vous devez accepter les conditions"
+      "termsRequired": "Vous devez accepter les conditions",
+      "companyNameMin": "Le nom de l'entreprise doit contenir au moins 2 caractères",
+      "websiteUrlInvalid": "Veuillez entrer une URL valide",
+      "wilayaRequired": "Veuillez sélectionner une wilaya",
+      "wilayaInvalid": "Code wilaya invalide"
+    }
+  },
+  "onboarding": {
+    "company": {
+      "pageTitle": "Configuration Entreprise",
+      "title": "Configurez Votre Entreprise",
+      "subtitle": "Parlez-nous de votre organisation pour commencer",
+      "name": "Nom de l'entreprise",
+      "namePlaceholder": "Acme Corporation",
+      "description": "Description",
+      "descriptionPlaceholder": "Brève description de votre entreprise...",
+      "websiteUrl": "Site web",
+      "websiteUrlPlaceholder": "https://exemple.com",
+      "wilaya": "Wilaya",
+      "wilayaPlaceholder": "Sélectionnez votre wilaya",
+      "address": "Adresse",
+      "addressPlaceholder": "123 Rue Principale",
+      "submit": "Terminer la Configuration",
+      "error": "Une erreur s'est produite. Veuillez réessayer."
+    }
+  },
+  "dashboard": {
+    "company": {
+      "pending": {
+        "pageTitle": "En Cours d'Examen",
+        "title": "Votre Entreprise Est en Cours d'Examen",
+        "subtitle": "Nous examinons votre inscription. Cela prend généralement 1 à 2 jours ouvrables.",
+        "submittedOn": "Soumis le",
+        "companyName": "Entreprise",
+        "checkStatus": "Vérifier le Statut",
+        "contactSupport": "Contacter le Support"
+      },
+      "rejected": {
+        "pageTitle": "Inscription Refusée",
+        "title": "Inscription Non Approuvée",
+        "subtitle": "Malheureusement, votre inscription d'entreprise n'a pas été approuvée.",
+        "reason": "Raison",
+        "contactSupport": "Contacter le Support",
+        "reapply": "Modifier et Resoumettre"
+      }
     }
   },
   "howItWorks": {
