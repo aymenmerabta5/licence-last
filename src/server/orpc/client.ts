@@ -3,12 +3,13 @@ import { RPCLink } from "@orpc/client/fetch"
 import { createTanstackQueryUtils } from "@orpc/tanstack-query"
 import type { AppRouter } from "./router"
 import type { RouterClient } from "@orpc/server"
+import { env } from "@/env"
 
 const link = new RPCLink({
   url:
     typeof window !== "undefined"
       ? `${window.location.origin}/api/rpc`
-      : "http://localhost:3000/api/rpc",
+      : `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/api/rpc`,
   headers: async () => {
     if (typeof window !== "undefined") {
       return {}

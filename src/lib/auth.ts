@@ -9,6 +9,8 @@ import { and, eq, inArray } from "drizzle-orm"
 import { db } from "@/server/db"
 import { universityDomain } from "@/server/db/schema/universities"
 import { sendEmail } from "@/server/email/sendEmail"
+import ResetPasswordEmail from "@/server/email/emails/ResetPasswordEmail"
+import VerifyEmailEmail from "@/server/email/emails/VerifyEmailEmail"
 import { env } from "@/env"
 import { getEmailDomain, domainCandidates } from "./auth-utils"
 
@@ -97,22 +99,14 @@ export const auth = betterAuth({
     sendOnSignIn: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
-      void sendEmail({
-        to: user.email,
-        subject: "Verify your email address",
-        text: `Verify your email by clicking this link: ${url}`,
-      })
+      void sendEmail(user.email, "Verify your email address", VerifyEmailEmail, { link: url })
     },
   },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
     sendResetPassword: async ({ user, url }) => {
-      void sendEmail({
-        to: user.email,
-        subject: "Reset your password",
-        text: `Reset your password by clicking this link: ${url}`,
-      })
+      void sendEmail(user.email, "Reset your password", ResetPasswordEmail, { link: url })
     },
   },
   plugins: [nextCookies()], // must be last — handles Set-Cookie in server actions

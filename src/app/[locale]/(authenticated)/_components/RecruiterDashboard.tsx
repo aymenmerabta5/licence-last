@@ -54,20 +54,20 @@ export function RecruiterDashboard({ }: { user: { name: string | null; email: st
           <div className="flex items-center justify-between">
             <h2 className="font-serif text-2xl font-bold text-heading">{t("pipeline")}</h2>
             <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80 group">
-              View pipeline <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
+              View pipeline <ArrowRight className="h-4 w-4 ms-2 transition-transform group-hover:translate-x-1" />
             </Button>
           </div>
           <Card className="border border-border/40 shadow-sm bg-background rounded-2xl overflow-hidden">
              <CardContent className="p-0">
                 <div className="overflow-x-auto">
-                   <table className="w-full text-sm text-left">
+                   <table className="w-full text-sm text-start">
                      <thead className="text-[10px] uppercase text-muted-foreground/60 bg-secondary/20 border-b border-border/40">
                        <tr>
                          <th className="px-6 py-4 font-bold tracking-[0.1em]">Candidate</th>
                          <th className="px-6 py-4 font-bold tracking-[0.1em]">Target Role</th>
                          <th className="px-6 py-4 font-bold tracking-[0.1em]">Skill Match</th>
                          <th className="px-6 py-4 font-bold tracking-[0.1em]">Status</th>
-                         <th className="px-6 py-4 font-bold tracking-[0.1em] text-right">Action</th>
+                         <th className="px-6 py-4 font-bold tracking-[0.1em] text-end">Action</th>
                        </tr>
                      </thead>
                      <tbody className="divide-y divide-border/20">
@@ -85,9 +85,9 @@ export function RecruiterDashboard({ }: { user: { name: string | null; email: st
                                 <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" /> {app.status}
                               </span>
                            </td>
-                           <td className="px-6 py-5 text-right">
+                           <td className="px-6 py-5 text-end">
                              <Button variant="ghost" size="sm" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-primary hover:bg-transparent transition-all">
-                                Details <ArrowRight className="h-3 w-3 ml-1 opacity-0 group-hover/row:opacity-100 transition-all -translate-x-2 group-hover/row:translate-x-0" />
+                                Details <ArrowRight className="h-3 w-3 ms-1 opacity-0 group-hover/row:opacity-100 transition-all -translate-x-2 group-hover/row:translate-x-0" />
                              </Button>
                            </td>
                          </tr>
@@ -103,7 +103,7 @@ export function RecruiterDashboard({ }: { user: { name: string | null; email: st
            <h2 className="font-serif text-2xl font-bold text-heading">Quick Actions</h2>
            <div className="space-y-4">
                <Button className="w-full justify-between h-auto py-5 px-6 rounded-2xl group transition-all" variant="default">
-                  <div className="text-left">
+                  <div className="text-start">
                      <p className="font-bold text-sm">{t("actions.postOffer")}</p>
                      <p className="text-[10px] opacity-70 font-medium mt-0.5">Publish a new internship position</p>
                   </div>
@@ -112,7 +112,7 @@ export function RecruiterDashboard({ }: { user: { name: string | null; email: st
                   </div>
                </Button>
                <Button className="w-full justify-between h-auto py-5 px-6 rounded-2xl bg-background border border-border/40 text-heading hover:bg-secondary/20 group transition-all">
-                  <div className="text-left">
+                  <div className="text-start">
                      <p className="font-bold text-sm tracking-tight">{t("actions.manageOffers")}</p>
                      <p className="text-[10px] text-muted-foreground font-medium mt-0.5">Edit or close existing offers</p>
                   </div>

@@ -51,8 +51,8 @@ export default function ProfilePage() {
       <section className="relative">
         <div className="h-48 sm:h-64 w-full rounded-3xl bg-gradient-to-r from-primary/20 via-primary/5 to-secondary/10 overflow-hidden relative">
            <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px] opacity-10" />
-           <div className="absolute top-10 right-10 w-64 h-64 bg-primary/10 blur-[100px] rounded-full" />
-           <div className="absolute bottom-0 left-20 w-48 h-48 bg-secondary/10 blur-[80px] rounded-full" />
+           <div className="absolute top-10 end-10 w-64 h-64 bg-primary/10 blur-[100px] rounded-full" />
+           <div className="absolute bottom-0 start-20 w-48 h-48 bg-secondary/10 blur-[80px] rounded-full" />
         </div>
         
         <div className="px-6 sm:px-10 -mt-16 sm:-mt-20 relative z-10 flex flex-col sm:flex-row sm:items-end gap-6">
@@ -68,7 +68,7 @@ export default function ProfilePage() {
                  <div className="flex gap-3">
                     <Link href="/dashboard/settings">
                       <Button variant="editorial" className="rounded-xl h-11 px-6 shadow-lg shadow-primary/20">
-                        <Edit3 className="h-4 w-4 mr-2" /> Edit Profile
+                        <Edit3 className="h-4 w-4 me-2" /> Edit Profile
                       </Button>
                     </Link>
                     <Button variant="editorial-outline" className="rounded-xl h-11 px-6 bg-background border-border/40 hover:border-primary">
@@ -148,10 +148,10 @@ export default function ProfilePage() {
                 <h2 className="font-serif text-2xl font-bold text-heading">Experience</h2>
                 <ShieldCheck className="h-5 w-5 text-green-500" />
               </div>
-              <div className="relative space-y-8 before:absolute before:inset-y-0 before:left-4 before:w-px before:bg-border/30">
+              <div className="relative space-y-8 before:absolute before:inset-y-0 before:start-4 before:w-px before:bg-border/30">
                  {user.experience.map((exp, i) => (
-                    <div key={i} className="relative pl-12">
-                       <div className="absolute left-2 top-2 h-4 w-4 rounded-full bg-primary ring-4 ring-background z-10" />
+                    <div key={i} className="relative ps-12">
+                       <div className="absolute start-2 top-2 h-4 w-4 rounded-full bg-primary ring-4 ring-background z-10" />
                        <Card className="p-6 border-border/40 bg-background rounded-2xl shadow-sm hover:shadow-md transition-all group">
                           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-4">
                              <div>
