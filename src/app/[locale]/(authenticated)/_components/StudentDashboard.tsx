@@ -79,7 +79,7 @@ export function StudentDashboard({ user }: { user: { name: string | null; email:
             Ready to secure your <span className="text-primary italic">dream internship</span>, {user.name?.split(" ")[0]}?
           </h2>
           <p className="text-white/60 text-sm font-light leading-relaxed">
-            Your profile is attractingattention. 3 companies viewed your CV this week. 
+            Your profile is attracting attention. 3 companies viewed your CV this week. 
             Complete your last skill test to become a Top 5% candidate.
           </p>
           <div className="flex flex-wrap gap-4 pt-4">
@@ -109,7 +109,7 @@ export function StudentDashboard({ user }: { user: { name: string | null; email:
           <div className="flex items-center justify-between">
             <h2 className="font-serif text-2xl font-bold text-heading">{t("recentOffers")}</h2>
             <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80 group text-xs font-bold uppercase tracking-widest">
-              Explore All <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
+              Explore All <ArrowRight className="h-4 w-4 ms-2 transition-transform group-hover:translate-x-1" />
             </Button>
           </div>
           <div className="space-y-4">
@@ -173,7 +173,7 @@ export function StudentDashboard({ user }: { user: { name: string | null; email:
                    </div>
                  ))}
                  <Button variant="editorial-outline" size="editorial-sm" className="w-full mt-4 text-[9px] h-10 border-border/60 hover:border-primary">
-                   Skill Assessment <ArrowRight className="h-4 w-4 ml-2" />
+                   Skill Assessment <ArrowRight className="h-4 w-4 ms-2" />
                  </Button>
               </CardContent>
             </Card>

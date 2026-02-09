@@ -23,7 +23,11 @@ export const listCompaniesProcedure = authedProcedure
       })
       .optional(),
   )
-  .handler(async ({ input }) => listCompanies(input?.status))
+  .handler(async ({ input, context }) => {
+    const isAdmin = context.user.role === "admin" || context.user.role === "super_admin"
+    const effectiveStatus = isAdmin ? input?.status : "approved"
+    return listCompanies(effectiveStatus)
+  })
 
 export const getCompanyByIdProcedure = authedProcedure
   .input(z.object({ companyId: z.string().min(1) }))

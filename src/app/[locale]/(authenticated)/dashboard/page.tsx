@@ -1,21 +1,11 @@
 import { getTranslations } from "next-intl/server"
-import { headers } from "next/headers"
-import { auth } from "@/lib/auth"
+import { requireRole } from "@/lib/auth-guards"
 import { StudentDashboard } from "@/app/[locale]/(authenticated)/_components/StudentDashboard"
 import { RecruiterDashboard } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard"
 import { AdminDashboard } from "@/app/[locale]/(authenticated)/_components/AdminDashboard"
 
 export default async function DashboardPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
-
-  // ⚠️ PREVIEW MODE
-  const user = session?.user || {
-    name: "Preview User",
-    email: "preview@example.com",
-    role: "student",
-  }
+  const user = await requireRole(["student", "company_admin", "admin", "super_admin"])
   const t = await getTranslations("dashboard")
 
   const greeting = t("welcome")

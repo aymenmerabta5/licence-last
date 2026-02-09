@@ -1,64 +1,78 @@
+/*
+ *   Copyright (c) 2025 Aimen Merabta
+ *   All rights reserved.
+ *   Strict Notice: Unauthorized copying, use, or distribution of this code is strictly prohibited. Violators may be prosecuted and reported to law enforcement.
+ */
 import "server-only"
 
-import type { env as EnvType } from "@/env"
+import { env } from "@/env";
+import { Resend } from "resend";
+import { render } from "@react-email/render";
+import React from "react";
 
-export interface SendEmailArgs {
-  to: string
-  subject: string
-  text: string
-  html?: string
-}
+export const sendEmail = async <T>(
+  to: string | string[],
+  subject: string,
+  EmailComponent: React.ComponentType<T>,
+  componentProps: T,
+  options?: {
+    from?: string;
+    replyTo?: string;
+    cc?: string | string[];
+    bcc?: string | string[];
+  },
+) => {
+  try {
+    if (!env.RESEND_API_KEY) {
+      console.warn("RESEND_API_KEY not configured — skipping email to:", to)
+      return { success: false, error: "Email not configured" }
+    }
+    const resend = new Resend(env.RESEND_API_KEY)
 
-interface EmailEnv {
-  EMAIL_FROM?: string
-  RESEND_API_KEY?: string
-}
+    const emailJSX = React.createElement(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      EmailComponent as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      componentProps as any,
+    );
 
-// Lazy load env to avoid issues during testing
-let _env: typeof EnvType | undefined
-function getEnv(): typeof EnvType {
-  if (!_env) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    _env = require("@/env").env as typeof EnvType
-  }
-  return _env!
-}
+    const html = await render(emailJSX);
 
-export async function sendEmail(
-  { to, subject, text, html }: SendEmailArgs,
-  emailEnv?: EmailEnv
-) {
-  // Use provided env or lazy-load from @/env
-  const from = emailEnv?.EMAIL_FROM ?? getEnv().EMAIL_FROM
-  const resendKey = emailEnv?.RESEND_API_KEY ?? getEnv().RESEND_API_KEY
+    const from = options?.from ?? env.EMAIL_FROM;
+    if (!from) {
+      throw new Error("EMAIL_FROM environment variable is not configured");
+    }
 
-  // If a provider isn't configured, fall back to console output.
-  if (!resendKey || !from) {
-    // Keep logs clear for local development.
-    console.info("[email:dev]", { to, subject })
-    console.info(text)
-    return
-  }
-
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${resendKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+    const { data, error } = await resend.emails.send({
       from,
-      to,
+      to: Array.isArray(to) ? to : [to],
       subject,
-      text,
       html,
-    }),
-  })
+      replyTo: options?.replyTo,
+      cc: options?.cc,
+      bcc: options?.bcc,
+    });
 
-  if (!response.ok) {
-    const body = await response.text().catch(() => "")
-    throw new Error(
-      `Failed to send email (status ${response.status}): ${body || response.statusText}`,
-    )
+    if (error) {
+      console.error("Resend API error:", error);
+      throw new Error(`Email sending failed: ${error.message}`);
+    }
+
+    if (!data) {
+      throw new Error("Email sending failed: No response data");
+    }
+
+    console.log("Email sent successfully:", data.id);
+    return {
+      success: true,
+      code: "EMAIL_SENT",
+      message: "Email sent successfully.",
+    };
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error occurred",
+    };
   }
-}
+};
