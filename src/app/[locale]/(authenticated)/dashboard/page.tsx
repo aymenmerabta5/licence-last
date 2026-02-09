@@ -29,14 +29,14 @@ export default async function DashboardPage() {
         </h1>
         <p className="text-muted-foreground text-sm font-light tracking-wide max-w-2xl">
           {user.role === "student" && "Your next career milestone is just a few clicks away. Explore new opportunities tailored to your skills."}
-          {user.role === "recruiter" && "Manage your active internship offers and discover top student talent for your organization."}
+          {user.role === "company_admin" && "Manage your active internship offers and discover top student talent for your organization."}
           {user.role === "admin" && "Monitor platform growth, validate internship agreements, and access detailed placement analytics."}
         </p>
       </header>
 
       {/* ── Role-Specific Content ── */}
       {user.role === "student" && <StudentDashboard user={user} />}
-      {user.role === "recruiter" && <RecruiterDashboard user={user} />}
+      {user.role === "company_admin" && <RecruiterDashboard user={user} />}
       {(user.role === "admin" || user.role === "super_admin") && <AdminDashboard user={user} />}
     </div>
   )

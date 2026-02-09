@@ -9,7 +9,7 @@ export default async function AuthenticatedLayout({
   children: React.ReactNode
   params: Promise<{ locale: string }>
 }) {
-  const { locale } = await params
+  await params
   const session = await auth.api.getSession({
     headers: await headers(),
   })

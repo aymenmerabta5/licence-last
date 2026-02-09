@@ -1,33 +1,25 @@
 "use client"
 
-import * as motion from "motion/react-client"
-import { useTranslations } from "next-intl"
-import { 
-  User, 
-  Mail, 
-  MapPin, 
-  Link as LinkIcon, 
-  Github, 
-  Linkedin, 
-  Twitter, 
-  Globe, 
-  Calendar, 
-  Award, 
-  BookOpen, 
+import {
+  Mail,
+  MapPin,
+  Github,
+  Linkedin,
+  Globe,
+  Award,
+  BookOpen,
   Briefcase,
   Edit3,
-  ExternalLink,
   ShieldCheck
 } from "lucide-react"
 
-import { Card, CardContent } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { StatsCard } from "../../_components/StatsCard"
 import { Link } from "@/i18n/routing"
 
 export default function ProfilePage() {
-  const t = useTranslations("dashboard")
   
   // Dummy user data - in a real app this would come from a session/database
   const user = {

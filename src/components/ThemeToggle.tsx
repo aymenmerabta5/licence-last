@@ -1,21 +1,17 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useSyncExternalStore } from "react"
 import { useTranslations } from "next-intl"
 import { useTheme } from "next-themes"
 import { Sun, Moon } from "lucide-react"
 import * as motion from "motion/react-client"
 
-import { Button } from "@/components/ui/button"
+const emptySubscribe = () => () => {}
 
 export function ThemeToggle() {
   const t = useTranslations("theme.toggle")
   const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false)
 
   if (!mounted) {
     return (
@@ -30,27 +26,30 @@ export function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="relative p-2.5 rounded-full hover:bg-secondary/80 transition-all group overflow-hidden"
+      className="relative h-10 w-10 rounded-full hover:bg-secondary/80 transition-all group overflow-hidden"
       aria-label={isDark ? t("toLight") : t("toDark")}
     >
       <motion.div
         initial={false}
-        animate={{ 
-          y: isDark ? 0 : 40,
-          rotate: isDark ? 0 : 45
+        animate={{
+          y: isDark ? 0 : -30,
+          opacity: isDark ? 1 : 0,
+          rotate: isDark ? 0 : 45,
         }}
+        className="absolute inset-0 flex items-center justify-center"
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
         <Moon className="h-5 w-5 text-primary" />
       </motion.div>
-      
+
       <motion.div
         initial={false}
-        animate={{ 
-          y: isDark ? -40 : -20,
-          rotate: isDark ? -45 : 0
+        animate={{
+          y: isDark ? 30 : 0,
+          opacity: isDark ? 0 : 1,
+          rotate: isDark ? -45 : 0,
         }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        className="absolute inset-0 flex items-center justify-center"
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
         <Sun className="h-5 w-5 text-orange-500" />

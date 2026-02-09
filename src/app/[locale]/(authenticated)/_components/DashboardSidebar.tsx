@@ -15,18 +15,16 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react"
-import { useTranslations } from "next-intl"
 import { Link, usePathname } from "@/i18n/routing"
 import { useState } from "react"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import { authClient } from "@/lib/auth-client"
 
 interface NavItem {
   label: string
   href: string
-  icon: any
+  icon: React.ComponentType<{ className?: string }>
   roles: string[]
 }
 
@@ -88,7 +86,6 @@ const navItems: NavItem[] = [
 ]
 
 export function DashboardSidebar({ role = "student" }: { role?: string }) {
-  const t = useTranslations("dashboard")
   const pathname = usePathname()
   const [isCollapsed, setIsCollapsed] = useState(false)
 
@@ -138,7 +135,7 @@ export function DashboardSidebar({ role = "student" }: { role?: string }) {
           const Icon = item.icon
 
           return (
-            <Link key={item.href} href={item.href as any}>
+            <Link key={item.href} href={item.href as "/dashboard"}>
               <span
                 className={cn(
                   "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-300 group relative",

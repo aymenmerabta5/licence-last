@@ -38,7 +38,6 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const locale = pathname.match(/^\/(en|fr|ar)/)?.[1] ?? "en"
 
-  // Redirect unauthenticated users away from protected routes
   if (isProtectedPath(pathname)) {
     const sessionCookie = getSessionCookie(request)
     if (!sessionCookie) {
