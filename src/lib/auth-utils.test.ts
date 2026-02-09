@@ -20,7 +20,9 @@ describe("getEmailDomain", () => {
     })
 
     test("should handle email with hyphens in domain", () => {
-      expect(getEmailDomain("user@my-university.ac.uk")).toBe("my-university.ac.uk")
+      expect(getEmailDomain("user@my-university.ac.uk")).toBe(
+        "my-university.ac.uk",
+      )
     })
   })
 
@@ -93,7 +95,9 @@ describe("getEmailDomain", () => {
     })
 
     test("should handle special characters in domain", () => {
-      expect(getEmailDomain("user@sub_domain.example.com")).toBe("sub_domain.example.com")
+      expect(getEmailDomain("user@sub_domain.example.com")).toBe(
+        "sub_domain.example.com",
+      )
     })
   })
 })
@@ -102,10 +106,7 @@ describe("domainCandidates", () => {
   describe("multi-level domains", () => {
     test("should generate candidates for three-part domain (excluding TLD)", () => {
       // For univ.edu.dz, generates candidates but excludes single-part "dz"
-      expect(domainCandidates("univ.edu.dz")).toEqual([
-        "univ.edu.dz",
-        "edu.dz",
-      ])
+      expect(domainCandidates("univ.edu.dz")).toEqual(["univ.edu.dz", "edu.dz"])
     })
 
     test("should generate candidates for four-part domain", () => {
@@ -152,17 +153,11 @@ describe("domainCandidates", () => {
 
   describe("whitespace handling", () => {
     test("should trim whitespace from parts", () => {
-      expect(domainCandidates(" univ . edu . dz ")).toEqual([
-        "univ.edu.dz",
-        "edu.dz",
-      ])
+      expect(domainCandidates(" univ . edu . dz ")).toEqual(["univ.edu.dz", "edu.dz"])
     })
 
     test("should handle internal whitespace", () => {
-      expect(domainCandidates("univ. edu.dz")).toEqual([
-        "univ.edu.dz",
-        "edu.dz",
-      ])
+      expect(domainCandidates("univ. edu.dz")).toEqual(["univ.edu.dz", "edu.dz"])
     })
   })
 
@@ -177,10 +172,7 @@ describe("domainCandidates", () => {
     })
 
     test("should filter out empty parts from consecutive dots", () => {
-      expect(domainCandidates("univ..edu.dz")).toEqual([
-        "univ.edu.dz",
-        "edu.dz",
-      ])
+      expect(domainCandidates("univ..edu.dz")).toEqual(["univ.edu.dz", "edu.dz"])
     })
   })
 
@@ -197,10 +189,7 @@ describe("domainCandidates", () => {
     })
 
     test("should handle UK academic domains", () => {
-      expect(domainCandidates("cam.ac.uk")).toEqual([
-        "cam.ac.uk",
-        "ac.uk",
-      ])
+      expect(domainCandidates("cam.ac.uk")).toEqual(["cam.ac.uk", "ac.uk"])
       expect(domainCandidates("cs.ox.ac.uk")).toEqual([
         "cs.ox.ac.uk",
         "ox.ac.uk",
@@ -243,37 +232,27 @@ describe("integration: email to domain candidates", () => {
     const email = "student@cs.univ.edu.dz"
     const domain = getEmailDomain(email)
     expect(domain).toBe("cs.univ.edu.dz")
-    
+
     const candidates = domainCandidates(domain!)
-    expect(candidates).toEqual([
-      "cs.univ.edu.dz",
-      "univ.edu.dz",
-      "edu.dz",
-    ])
+    expect(candidates).toEqual(["cs.univ.edu.dz", "univ.edu.dz", "edu.dz"])
   })
 
   test("should handle email with subdomain and plus sign", () => {
     const email = "student+cs2024@eng.usthb.dz"
     const domain = getEmailDomain(email)
     expect(domain).toBe("eng.usthb.dz")
-    
+
     const candidates = domainCandidates(domain!)
-    expect(candidates).toEqual([
-      "eng.usthb.dz",
-      "usthb.dz",
-    ])
+    expect(candidates).toEqual(["eng.usthb.dz", "usthb.dz"])
   })
 
   test("should handle mixed case email", () => {
     const email = "Student@CS.Univ.EDU.DZ"
     const domain = getEmailDomain(email)
     expect(domain).toBe("cs.univ.edu.dz")
-    
+
     const candidates = domainCandidates(domain!)
-    expect(candidates).toEqual([
-      "cs.univ.edu.dz",
-      "univ.edu.dz",
-      "edu.dz",
-    ])
+    expect(candidates).toEqual(["cs.univ.edu.dz", "univ.edu.dz", "edu.dz"])
   })
 })
+
