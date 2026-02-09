@@ -35,7 +35,7 @@ const navItems: NavItem[] = [
     label: "Dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
-    roles: ["student", "recruiter", "admin", "super_admin"],
+    roles: ["student", "company_admin", "admin", "super_admin"],
   },
   {
     label: "Explore Internships",
@@ -53,13 +53,13 @@ const navItems: NavItem[] = [
     label: "Manage Offers",
     href: "/dashboard/offers",
     icon: Briefcase,
-    roles: ["recruiter"],
+    roles: ["company_admin"],
   },
   {
     label: "Candidate Pipeline",
     href: "/dashboard/candidates",
     icon: Users,
-    roles: ["recruiter"],
+    roles: ["company_admin"],
   },
   {
     label: "Validate Placements",
@@ -77,13 +77,13 @@ const navItems: NavItem[] = [
     label: "Profile",
     href: "/dashboard/profile",
     icon: User,
-    roles: ["student", "recruiter", "admin", "super_admin"],
+    roles: ["student", "company_admin", "admin", "super_admin"],
   },
   {
     label: "Settings",
     href: "/dashboard/settings",
     icon: Settings,
-    roles: ["student", "recruiter", "admin", "super_admin"],
+    roles: ["student", "company_admin", "admin", "super_admin"],
   },
 ]
 

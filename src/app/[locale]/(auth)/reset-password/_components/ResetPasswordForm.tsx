@@ -15,7 +15,7 @@ import {
 
 import { Link } from "@/i18n/routing"
 import { authClient } from "@/lib/auth-client"
-import { createResetPasswordSchema, errorMessage } from "@/lib/validations/auth"
+import { createResetPasswordSchema, errorMessage } from "@/lib/schemas/auth"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import {

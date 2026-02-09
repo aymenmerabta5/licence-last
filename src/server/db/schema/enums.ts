@@ -2,9 +2,16 @@ import { pgEnum } from "drizzle-orm/pg-core"
 
 export const userRoleEnum = pgEnum("user_role", [
   "student",
-  "recruiter",
+  "company_admin",
   "admin",
   "super_admin",
+])
+
+export const companyStatusEnum = pgEnum("company_status", [
+  "pending",
+  "approved",
+  "rejected",
+  "suspended",
 ])
 
 export const universityDomainStatusEnum = pgEnum("university_domain_status", [
