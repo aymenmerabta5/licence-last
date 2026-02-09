@@ -6,11 +6,11 @@ import { useTranslations } from "next-intl"
 import { Briefcase, Heart, MessageSquare, MapPin, Calendar, ArrowRight } from "lucide-react"
 
 import { StatsCard } from "./StatsCard"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
-export function StudentDashboard({ user }: { user: any }) {
+export function StudentDashboard({ user }: { user: { name: string | null; email: string; role: string | null | undefined } }) {
   const t = useTranslations("dashboard.student")
 
   const stats = [

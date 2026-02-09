@@ -4,10 +4,10 @@ import { useTranslations } from "next-intl"
 import { ShieldCheck, FileText, Globe, Activity, ArrowRight, Download } from "lucide-react"
 
 import { StatsCard } from "./StatsCard"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
-export function AdminDashboard({ user }: { user: any }) {
+export function AdminDashboard({ }: { user: { name: string | null; email: string; role: string | null | undefined } }) {
   const t = useTranslations("dashboard.admin")
 
   const stats = [

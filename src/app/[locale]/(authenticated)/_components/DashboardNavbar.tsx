@@ -1,7 +1,6 @@
 "use client"
 
-import { Bell, Search, User, ChevronDown, Menu } from "lucide-react"
-import { useTranslations } from "next-intl"
+import { Bell, Search, User, Menu } from "lucide-react"
 import { usePathname, Link } from "@/i18n/routing"
 
 import { ThemeToggle } from "@/components/ThemeToggle"
@@ -17,17 +16,14 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useDashboard } from "./DashboardClientProvider"
 import { authClient } from "@/lib/auth-client"
-import { useEffect, useState } from "react"
+import { useSyncExternalStore } from "react"
 
-export function DashboardNavbar({ user }: { user: any }) {
-  const t = useTranslations("dashboard")
+const emptySubscribe = () => () => {}
+
+export function DashboardNavbar({ user }: { user: { name: string | null; email: string; role: string | null | undefined } }) {
   const pathname = usePathname()
   const { setIsSidebarOpen } = useDashboard()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false)
 
   const handleLogout = async () => {
     await authClient.signOut({

@@ -1,14 +1,14 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { Briefcase, Users, CheckCircle, TrendingUp, Plus, ArrowRight } from "lucide-react"
+import { Briefcase, Users, CheckCircle, Plus, ArrowRight } from "lucide-react"
 
 import { StatsCard } from "./StatsCard"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
-export function RecruiterDashboard({ user }: { user: any }) {
+export function RecruiterDashboard({ }: { user: { name: string | null; email: string; role: string | null | undefined } }) {
   const t = useTranslations("dashboard.recruiter")
 
   const stats = [
