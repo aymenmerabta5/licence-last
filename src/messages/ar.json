@@ -315,5 +315,59 @@
       "button": "ابدأ مجانًا",
       "aria": "البدء مع إنترنكس مجانًا"
     }
+  },
+  "dashboard": {
+    "welcome": "مرحباً بعودتك،",
+    "roles": {
+      "student": "طالب",
+      "recruiter": "مسؤول توظيف",
+      "admin": "مشرف"
+    },
+    "student": {
+      "title": "لوحة تحكم الطالب",
+      "subtitle": "اكتشف وأدر رحلتك المهنية",
+      "stats": {
+        "applications": "الطلبات",
+        "savedOffers": "العروض المحفوظة",
+        "interviews": "المقابلات"
+      },
+      "actions": {
+        "buildCV": "أكمل سيرتك الذاتية الرقمية",
+        "searchOffers": "البحث عن تدريبات",
+        "viewApplications": "تتبع الطلبات"
+      },
+      "skillsSection": "مجموعة مهاراتك",
+      "recentOffers": "موصى به لك"
+    },
+    "recruiter": {
+      "title": "بوابة التوظيف",
+      "subtitle": "أدر خط أنابيب المواهب الخاص بك",
+      "stats": {
+        "activeOffers": "العروض النشطة",
+        "totalApplicants": "إجمالي المتقدمين",
+        "hired": "تم توظيفهم بنجاح"
+      },
+      "actions": {
+        "postOffer": "نشر عرض جديد",
+        "manageOffers": "إدارة العروض",
+        "reviewCandidates": "مراجعة الطلبات"
+      },
+      "pipeline": "خط أنابيب المرشحين"
+    },
+    "admin": {
+      "title": "مركز قيادة المشرف",
+      "subtitle": "نظرة عامة على نشاط المنصة",
+      "stats": {
+        "totalPlacements": "إجمالي التوظيفات",
+        "pendingValidation": "في انتظار التحقق",
+        "docsGenerated": "المستندات المنشأة"
+      },
+      "actions": {
+        "validatePlacements": "التحقق من التوظيفات",
+        "systemHealth": "حالة النظام",
+        "exportReports": "تصدير التقارير"
+      },
+      "globalStats": "تحليلات التوظيف العالمية"
+    }
   }
 }

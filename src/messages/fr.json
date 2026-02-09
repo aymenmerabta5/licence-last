@@ -315,5 +315,59 @@
       "button": "Commencer Gratuitement",
       "aria": "Commencer avec Internex gratuitement"
     }
+  },
+  "dashboard": {
+    "welcome": "Bon retour,",
+    "roles": {
+      "student": "Étudiant",
+      "recruiter": "Recruteur",
+      "admin": "Administrateur"
+    },
+    "student": {
+      "title": "Tableau de Bord Étudiant",
+      "subtitle": "Découvrez et gérez votre parcours professionnel",
+      "stats": {
+        "applications": "Candidatures",
+        "savedOffers": "Offres Enregistrées",
+        "interviews": "Entretiens"
+      },
+      "actions": {
+        "buildCV": "Compléter le CV Digital",
+        "searchOffers": "Rechercher des Stages",
+        "viewApplications": "Suivre les Candidatures"
+      },
+      "skillsSection": "Votre Stack de Compétences",
+      "recentOffers": "Recommandé pour Vous"
+    },
+    "recruiter": {
+      "title": "Portail Recruteur",
+      "subtitle": "Gérez votre vivier de talents",
+      "stats": {
+        "activeOffers": "Offres Actives",
+        "totalApplicants": "Total Candidats",
+        "hired": "Placements Réussis"
+      },
+      "actions": {
+        "postOffer": "Publier une Offre",
+        "manageOffers": "Gérer les Offres",
+        "reviewCandidates": "Examiner les Candidatures"
+      },
+      "pipeline": "Pipeline de Candidats"
+    },
+    "admin": {
+      "title": "Centre de Commandement Admin",
+      "subtitle": "Aperçu de l'activité de la plateforme",
+      "stats": {
+        "totalPlacements": "Total Placements",
+        "pendingValidation": "En Attente de Validation",
+        "docsGenerated": "Documents Générés"
+      },
+      "actions": {
+        "validatePlacements": "Valider les Placements",
+        "systemHealth": "Santé du Système",
+        "exportReports": "Exporter les Rapports"
+      },
+      "globalStats": "Analyses Globales de Placement"
+    }
   }
 }
