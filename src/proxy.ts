@@ -7,7 +7,7 @@ import { routing } from "@/i18n/routing"
 
 const intlMiddleware = createMiddleware(routing)
 
-export const PROTECTED_PATHS = ["/dashboard", "/onboarding"]
+export const PROTECTED_PATHS = ["/dashboard", "/onboarding", "/profile"]
 export const AUTH_PATHS = ["/login", "/signup", "/reset-password"]
 
 /**

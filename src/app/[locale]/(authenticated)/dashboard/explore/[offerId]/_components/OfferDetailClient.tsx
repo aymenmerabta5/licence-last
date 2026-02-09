@@ -125,18 +125,21 @@ export function OfferDetailClient({
             transition={{ duration: 0.5, ease, delay: 0.05 }}
             className="space-y-3"
           >
-            <div className="flex items-start gap-4">
-              {offer.companyLogoUrl ? (
-                <img
-                  src={offer.companyLogoUrl}
-                  alt={offer.companyName}
-                  className="h-12 w-12 rounded border border-border object-cover shrink-0"
-                />
-              ) : (
-                <div className="h-12 w-12 rounded border border-border bg-primary/10 flex items-center justify-center text-lg font-serif text-primary shrink-0">
-                  {companyInitial}
-                </div>
-              )}
+              <div className="flex items-start gap-4">
+                {offer.companyLogoUrl ? (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={offer.companyLogoUrl}
+                      alt={offer.companyName}
+                      className="h-12 w-12 rounded border border-border object-cover shrink-0"
+                    />
+                  </>
+                ) : (
+                  <div className="h-12 w-12 rounded border border-border bg-primary/10 flex items-center justify-center text-lg font-serif text-primary shrink-0">
+                    {companyInitial}
+                  </div>
+                )}
               <div className="min-w-0">
                 <h1 className="font-serif text-2xl lg:text-3xl text-heading tracking-tight">
                   {offer.title}
@@ -356,11 +359,14 @@ export function OfferDetailClient({
             </h3>
             <div className="flex items-center gap-3">
               {offer.companyLogoUrl ? (
-                <img
-                  src={offer.companyLogoUrl}
-                  alt={offer.companyName}
-                  className="h-10 w-10 rounded border border-border object-cover"
-                />
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={offer.companyLogoUrl}
+                    alt={offer.companyName}
+                    className="h-10 w-10 rounded border border-border object-cover"
+                  />
+                </>
               ) : (
                 <div className="h-10 w-10 rounded border border-border bg-primary/10 flex items-center justify-center text-base font-serif text-primary">
                   {companyInitial}

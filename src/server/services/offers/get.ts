@@ -1,6 +1,6 @@
 import "server-only"
 
-import { eq, and, ne, sql, count } from "drizzle-orm"
+import { eq, and, ne, count } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import {

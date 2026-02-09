@@ -38,13 +38,16 @@ export function OfferCard({ offer }: OfferCardProps) {
     >
       <article className="border border-border p-5 space-y-3 h-full transition-all duration-300 hover:border-primary/30 hover:shadow-sm">
         {/* Company row */}
-        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
           {offer.companyLogoUrl ? (
-            <img
-              src={offer.companyLogoUrl}
-              alt={offer.companyName}
-              className="h-9 w-9 rounded object-cover border border-border"
-            />
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={offer.companyLogoUrl}
+                alt={offer.companyName}
+                className="h-9 w-9 rounded object-cover border border-border"
+              />
+            </>
           ) : (
             <div className="h-9 w-9 rounded border border-border bg-primary/10 flex items-center justify-center text-sm font-serif text-primary">
               {initial}

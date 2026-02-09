@@ -3,8 +3,8 @@
 import { useState } from "react"
 
 import { RoleSelector } from "./RoleSelector"
-import { StudentSignupForm } from "./StudentSignupForm"
-import { CompanySignupForm } from "./CompanySignupForm"
+import { StudentSignupForm } from "./SignupForm/StudentSignupForm"
+import { CompanySignupForm } from "./SignupForm/CompanySignupForm"
 
 type Step = "role-selection" | "student-form" | "company-form"
 

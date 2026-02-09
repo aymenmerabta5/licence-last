@@ -295,6 +295,124 @@ src/
 public/                         # Static assets (root level)
 ```
 
+---
+
+## Large Component Structure Pattern
+
+When a component exceeds **400 lines** or contains multiple logical sections, use the **folder-based co-location pattern**:
+
+### Folder Structure
+
+```
+_components/
+├── ComponentName/
+│   ├── index.tsx              # Main component (orchestration, ~60-100 lines)
+│   ├── types.ts               # TypeScript interfaces
+│   ├── utils.ts               # Helper functions, constants
+│   ├── components/            # Sub-components used only by this feature
+│   │   ├── HeaderSection.tsx
+│   │   ├── ContentCard.tsx
+│   │   └── ActionButtons.tsx
+│   └── hooks/                 # Hooks specific to this feature
+│       └── useComponentData.ts
+```
+
+### When to Split
+
+| Extract to Hook | Extract to Component |
+|-----------------|---------------------|
+| State management logic | UI/JSX blocks |
+| API calls & data fetching | Repeated markup patterns |
+| Complex event handlers | Independent visual sections |
+| Computed/derived values | Sub-components with own props |
+
+### Example: ProfileContent (591 lines → folder)
+
+**Before:** Single 591-line file with header, stats, contact, skills, bio, education, experience.
+
+**After:**
+```
+ProfileContent/
+├── index.tsx                  # Main orchestration (~70 lines)
+├── types.ts                   # StudentData, ProfileUser, etc.
+├── utils.ts                   # roleLabels, getInitials, formatMemberSince
+├── components/
+│   ├── ProfileHeader.tsx      # Cover + Avatar + Name
+│   ├── ProfileStats.tsx       # Stats grid
+│   ├── ContactInfoCard.tsx    # Email, phone, location
+│   ├── SkillsCard.tsx         # Skills display
+│   ├── SocialLinks.tsx        # GitHub, Portfolio
+│   ├── BioSection.tsx         # Bio display
+│   ├── EducationSection.tsx   # University info
+│   └── ExperienceSection.tsx  # Experience placeholder
+└── hooks/
+    └── useProfileData.ts      # Computed values from props
+```
+
+### Shared Components
+
+Components reused across multiple features go in `src/components/`:
+
+```
+src/components/
+├── ui/                        # Primitives (shadcn)
+├── form-fields/               # Shared form fields (new)
+│   ├── TextField.tsx
+│   ├── TextAreaField.tsx
+│   ├── SelectField.tsx
+│   ├── PasswordField.tsx
+│   ├── CheckboxField.tsx
+│   ├── FormSection.tsx
+│   └── index.ts
+├── ServerError.tsx            # Shared error display
+├── SuccessMessage.tsx         # Shared success display
+├── FormHeader.tsx             # Shared header with back button
+├── SubmitButton.tsx           # Shared submit with loading
+└── ...
+```
+
+### Shared Hooks
+
+Hooks reused across multiple features go in `src/hooks/`:
+
+```
+src/hooks/
+├── use-mobile.ts              # Existing
+├── use-skill-grouping.ts      # Groups skills by category
+├── use-skill-selection.ts     # Selection state + toggle logic
+└── index.ts
+```
+
+### Naming Conventions
+
+- **Folder name**: Matches the original component name (`ProfileContent/`, `OfferForm/`)
+- **Main file**: `index.tsx` (enables clean imports)
+- **Sub-components**: Descriptive, focused names (`ProfileHeader`, `ContactInfoCard`)
+- **Hooks**: `use + FeatureName + Purpose` (`useOnboardingForm`, `useProfileData`)
+- **Types file**: `types.ts` (all interfaces for the feature)
+- **Utils file**: `utils.ts` (constants, formatters, helpers)
+
+### Import Pattern
+
+```typescript
+// Before
+import { ProfileContent } from "./_components/ProfileContent"
+
+// After (same import path, folder resolves to index.tsx)
+import { ProfileContent } from "./_components/ProfileContent"
+```
+
+### Decision Tree
+
+```
+Component > 400 lines?
+├── Yes → Split into ComponentName/ folder
+│   ├── Has stateful logic? → Extract to hooks/
+│   ├── Has distinct UI sections? → Extract to components/
+│   └── Has shared types/constants? → Extract to types.ts / utils.ts
+└── No → Keep as single file
+```
+
 ### Error Handling
 
 - Use early returns for guard clauses
