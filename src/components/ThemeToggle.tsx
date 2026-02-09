@@ -1,10 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-
 import { useTranslations } from "next-intl"
 import { useTheme } from "next-themes"
 import { Sun, Moon } from "lucide-react"
+import * as motion from "motion/react-client"
 
 import { Button } from "@/components/ui/button"
 
@@ -14,42 +14,47 @@ export function ThemeToggle() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 0)
-    return () => clearTimeout(timer)
+    setMounted(true)
   }, [])
 
   if (!mounted) {
     return (
-      <Button
-        variant="editorial-ghost"
-        size="editorial-icon"
-        className="group"
-        aria-label={t("aria")}
-      >
-        <span className="transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:rotate-[30deg]">
-          <span className="h-4 w-4" />
-        </span>
-      </Button>
+      <button className="p-2.5 rounded-full hover:bg-secondary transition-colors opacity-0">
+        <Sun className="h-4 w-4" />
+      </button>
     )
   }
 
   const isDark = theme === "dark"
 
   return (
-    <Button
-      variant="editorial-ghost"
-      size="editorial-icon"
-      className="group"
+    <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
+      className="relative p-2.5 rounded-full hover:bg-secondary/80 transition-all group overflow-hidden"
       aria-label={isDark ? t("toLight") : t("toDark")}
     >
-      <span className="transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:rotate-[30deg]">
-        {isDark ? (
-          <Sun className="h-4 w-4 text-primary" />
-        ) : (
-          <Moon className="h-4 w-4 text-muted-foreground" />
-        )}
-      </span>
-    </Button>
+      <motion.div
+        initial={false}
+        animate={{ 
+          y: isDark ? 0 : 40,
+          rotate: isDark ? 0 : 45
+        }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      >
+        <Moon className="h-5 w-5 text-primary" />
+      </motion.div>
+      
+      <motion.div
+        initial={false}
+        animate={{ 
+          y: isDark ? -40 : -20,
+          rotate: isDark ? -45 : 0
+        }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      >
+        <Sun className="h-5 w-5 text-orange-500" />
+      </motion.div>
+    </button>
   )
 }
