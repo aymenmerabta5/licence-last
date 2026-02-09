@@ -1,5 +1,10 @@
 import { Window } from "happy-dom"
 
+// Ensure required client env vars exist for modules importing `src/env.ts` in tests.
+if (!process.env.NEXT_PUBLIC_BETTER_AUTH_URL) {
+  process.env.NEXT_PUBLIC_BETTER_AUTH_URL = "http://localhost:3000"
+}
+
 // Initialize happy-dom before any imports
 const window = new Window({
   url: "http://localhost:3000",
@@ -68,7 +73,10 @@ if (!window.matchMedia) {
   })
 }
 
-import { expect } from "bun:test"
+import { expect, mock } from "bun:test"
 import * as matchers from "@testing-library/jest-dom/matchers"
+
+// Next.js "server-only" guard throws at runtime; in unit tests we treat it as a no-op.
+mock.module("server-only", () => ({}))
 
 expect.extend(matchers)
