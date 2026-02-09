@@ -20,39 +20,33 @@ export function parseDomains(input: string | undefined): string[] {
     .filter(Boolean)
 }
 
-async function main() {
-  const databaseUrl = process.env.DATABASE_URL
-  if (!databaseUrl) {
-    throw new Error("DATABASE_URL is required")
-  }
+type SeedUniversity = { name: string; domains: string[] }
 
-  const client = postgres(databaseUrl, { max: 1 })
-  const db = drizzle(client, { schema })
+const SEED_UNIVERSITIES: SeedUniversity[] = [
+  {
+    name: "University Of Constantine 2",
+    domains: ["univ-constantine2.dz"],
+  },
+]
 
-  const name = process.env.SEED_UNIVERSITY_NAME?.trim() || "Example University"
-  const domains = parseDomains(process.env.SEED_UNIVERSITY_DOMAINS)
-
-  if (domains.length === 0) {
-    console.info(
-      "Seed skipped: set SEED_UNIVERSITY_DOMAINS (comma-separated), e.g. univ.edu.dz,umc.edu.dz",
-    )
-    return
-  }
-
-  const [existingUniversity] = await db
+async function seedUniversity(
+  db: ReturnType<typeof drizzle>,
+  entry: SeedUniversity,
+) {
+  const [existing] = await db
     .select({ id: university.id })
     .from(university)
-    .where(eq(university.name, name))
+    .where(eq(university.name, entry.name))
     .limit(1)
 
-  const universityId = existingUniversity?.id ?? randomUUID()
+  const universityId = existing?.id ?? randomUUID()
 
-  if (!existingUniversity) {
-    await db.insert(university).values({ id: universityId, name })
-    console.info(`Seeded university: ${name}`)
+  if (!existing) {
+    await db.insert(university).values({ id: universityId, name: entry.name })
+    console.info(`Seeded university: ${entry.name}`)
   }
 
-  for (const domain of domains) {
+  for (const domain of entry.domains) {
     const [existingDomain] = await db
       .select({ id: universityDomain.id, status: universityDomain.status })
       .from(universityDomain)
@@ -67,7 +61,7 @@ async function main() {
         status: "approved",
         requestNote: "seed",
       })
-      console.info(`Approved domain: ${domain}`)
+      console.info(`  Approved domain: ${domain}`)
       continue
     }
 
@@ -81,8 +75,31 @@ async function main() {
           reviewReason: "seed",
         })
         .where(eq(universityDomain.id, existingDomain.id))
-      console.info(`Updated domain to approved: ${domain}`)
+      console.info(`  Updated domain to approved: ${domain}`)
     }
+  }
+}
+
+async function main() {
+  const databaseUrl = process.env.DATABASE_URL
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL is required")
+  }
+
+  const client = postgres(databaseUrl, { max: 1 })
+  const db = drizzle(client, { schema })
+
+  // ── Seed built-in universities ──
+  for (const entry of SEED_UNIVERSITIES) {
+    await seedUniversity(db, entry)
+  }
+
+  // ── Seed env-based university (optional extra) ──
+  const envDomains = parseDomains(process.env.SEED_UNIVERSITY_DOMAINS)
+  if (envDomains.length > 0) {
+    const envName =
+      process.env.SEED_UNIVERSITY_NAME?.trim() || "Example University"
+    await seedUniversity(db, { name: envName, domains: envDomains })
   }
 
   // ── Seed super_admin user ──
@@ -131,7 +148,7 @@ async function main() {
 }
 
 // Only run main if this file is executed directly (not imported)
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.main) {
   main()
     .then(() => {
       console.info("Seed complete")
