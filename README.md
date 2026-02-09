@@ -36,6 +36,34 @@ A Next.js 16 application connecting university students with company internship 
 bun install
 ```
 
+### Environment
+
+Create your local development env file:
+
+```bash
+cp .env.example .env.development
+```
+
+Then fill in at least `DATABASE_URL`, `BETTER_AUTH_SECRET`, and `NEXT_PUBLIC_BETTER_AUTH_URL`.
+
+### Database (Drizzle)
+
+DB scripts load `.env.development` by default.
+
+```bash
+bun db:generate   # Generate migrations from schema
+bun db:migrate    # Apply migrations (dev DB)
+bun db:push       # Push schema (dev only)
+bun db:studio     # Drizzle Studio
+```
+
+Production helpers (use carefully):
+
+```bash
+bun db:migrate:prod
+bun db:studio:prod
+```
+
 ### Development
 
 ```bash
