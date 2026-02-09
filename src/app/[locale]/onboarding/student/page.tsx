@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 import { headers } from "next/headers"
 
 import { auth } from "@/lib/auth"
-import { StudentOnboardingForm } from "./_components/StudentOnboardingForm"
+import { StudentOnboardingForm } from "./_components/StudentOnboarding"
 
 export default async function StudentOnboardingPage() {
   const session = await auth.api.getSession({

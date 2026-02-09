@@ -182,13 +182,16 @@ export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
         <Label className="text-[11px] font-medium tracking-[0.1em] uppercase text-muted-foreground">
           {t("logo")}
         </Label>
-        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4">
           {logoUrl ? (
-            <img
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
               src={logoUrl}
               alt="Company logo"
               className="h-16 w-16 rounded-lg object-cover border border-border"
-            />
+              />
+            </>
           ) : (
             <div className="h-16 w-16 rounded-lg border border-dashed border-border flex items-center justify-center">
               <ImagePlus className="h-6 w-6 text-muted-foreground/40" />

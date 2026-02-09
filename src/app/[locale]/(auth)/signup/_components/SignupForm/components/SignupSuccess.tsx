@@ -1,0 +1,43 @@
+"use client"
+
+import * as motion from "motion/react-client"
+import { CheckCircle2, ArrowLeft } from "lucide-react"
+
+import { Link } from "@/i18n/routing"
+
+interface SignupSuccessProps {
+  title: string
+  description: string
+  backToLogin: string
+}
+
+export function SignupSuccess({ title, description, backToLogin }: SignupSuccessProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="space-y-8"
+    >
+      <div className="flex items-start gap-3 p-4 text-sm bg-primary/5 border border-primary/15">
+        <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5 text-primary" />
+        <div className="space-y-1">
+          <p className="font-medium text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
+            {title}
+          </p>
+          <p className="text-muted-foreground font-light">
+            {description}
+          </p>
+        </div>
+      </div>
+
+      <Link
+        href="/login"
+        className="inline-flex items-center gap-2 text-sm font-bold text-heading hover:text-primary transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] uppercase tracking-wide group [[dir=rtl]_&]:tracking-normal"
+      >
+        <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+        {backToLogin}
+      </Link>
+    </motion.div>
+  )
+}

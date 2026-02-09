@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, afterEach, mock } from "bun:test"
 import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react"
-import { StudentSignupForm } from "./StudentSignupForm"
+import { StudentSignupForm } from "./SignupForm/StudentSignupForm"
 
 // Mock next-intl
 mock.module("next-intl", () => ({

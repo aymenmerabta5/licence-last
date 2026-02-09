@@ -1,31 +1,43 @@
 "use client"
 
 import { useState } from "react"
-import { 
-  User, 
-  Lock, 
-  Bell, 
-  Shield, 
-  Globe, 
-  Moon, 
-  Sun, 
+import { useTheme } from "next-themes"
+import {
+  Bell,
+  Briefcase,
   Camera,
   Check,
   ChevronRight,
-  Monitor
+  FileText,
+  Globe,
+  Lock,
+  MapPin,
+  Monitor,
+  Moon,
+  Shield,
+  Sun,
+  User,
 } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { useTheme } from "next-themes"
+import { TextAreaField, TextField } from "@/components/form-fields"
+
+import { SkillsManager } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager"
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile")
   const { theme, setTheme } = useTheme()
+
+  const [fullName, setFullName] = useState("Aymen Merabta")
+  const [primaryRole, setPrimaryRole] = useState("Senior Full Stack Student")
+  const [location, setLocation] = useState("Algiers, Algeria")
+  const [linkedinUrl, setLinkedinUrl] = useState("linkedin.com/in/amerabta")
+  const [bio, setBio] = useState(
+    "Passionate about building scalable web applications and elegant user interfaces. Currently focusing on Next.js, TypeScript, and AI-driven experiences.",
+  )
   
   const tabs = [
     { id: "profile", label: "Profile", icon: User },
@@ -33,6 +45,8 @@ export default function SettingsPage() {
     { id: "notifications", label: "Notifications", icon: Bell },
     { id: "preferences", label: "Preferences", icon: Globe },
   ]
+
+  const avatarInitial = (fullName.trim().charAt(0) || "A").toUpperCase()
 
   return (
     <div className="space-y-10 pb-20">
@@ -70,9 +84,9 @@ export default function SettingsPage() {
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-500">
               {/* Profile Header Card */}
               <Card className="border-border/40 bg-background rounded-3xl overflow-hidden shadow-sm">
-                <CardHeader className="bg-secondary/10 px-8 py-10 relative">
-                   <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
-                      <User className="h-32 w-32" />
+                <CardHeader className="bg-secondary/10 px-8 py-10 relative overflow-hidden border-b border-border/20">
+                   <div className="absolute inset-y-0 end-6 flex items-center opacity-[0.06] pointer-events-none" aria-hidden="true">
+                      <User className="h-44 w-44" />
                    </div>
                    <CardTitle className="font-serif text-2xl">Profile Identity</CardTitle>
                    <CardDescription className="font-medium">Information that will be visible to companies and administrators</CardDescription>
@@ -80,15 +94,15 @@ export default function SettingsPage() {
                 <CardContent className="p-8 space-y-8">
                    {/* Avatar Upload */}
                    <div className="flex flex-col sm:flex-row sm:items-center gap-8">
-                      <div className="relative group">
-                         <div className="h-28 w-28 rounded-3xl bg-primary/10 flex items-center justify-center text-primary text-4xl font-serif font-bold transition-all group-hover:bg-primary/20">
-                            A
-                         </div>
-                         <button className="absolute -bottom-2 -right-2 h-10 w-10 rounded-2xl bg-white border border-border shadow-lg flex items-center justify-center hover:scale-110 transition-transform dark:bg-card">
-                            <Camera className="h-4 w-4" />
-                         </button>
-                      </div>
-                      <div className="space-y-2">
+                        <div className="relative group">
+                           <div className="h-28 w-28 rounded-3xl bg-primary/10 flex items-center justify-center text-primary text-4xl font-serif font-bold transition-all group-hover:bg-primary/20">
+                              {avatarInitial}
+                           </div>
+                          <button className="absolute -bottom-2 -end-2 h-10 w-10 rounded-2xl bg-background border border-border shadow-lg flex items-center justify-center hover:scale-110 transition-transform dark:bg-card">
+                             <Camera className="h-4 w-4" />
+                          </button>
+                       </div>
+                       <div className="space-y-2">
                          <h4 className="font-bold text-sm">Profile Picture</h4>
                          <p className="text-xs text-muted-foreground max-w-xs">We recommend an image of at least 400x400. Gifs work too!</p>
                          <div className="flex gap-2 pt-2">
@@ -100,40 +114,59 @@ export default function SettingsPage() {
 
                    <div className="h-px bg-border/20 w-full" />
 
-                   {/* Basic Info Form */}
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Full Name</Label>
-                        <Input defaultValue="Aymen Merabta" className="rounded-xl border-border/60 focus:ring-primary/10" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Primary Role</Label>
-                        <Input defaultValue="Senior Full Stack Student" className="rounded-xl border-border/60" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Location</Label>
-                        <Input defaultValue="Algiers, Algeria" className="rounded-xl border-border/60" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">LinkedIn URL</Label>
-                        <Input defaultValue="linkedin.com/in/amerabta" className="rounded-xl border-border/60" />
-                      </div>
-                   </div>
-
-                   <div className="space-y-2">
-                      <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Professional Narrative (Bio)</Label>
-                      <Textarea 
-                        defaultValue="Passionate about building scalable web applications and elegant user interfaces. Currently focusing on Next.js, TypeScript, and AI-driven experiences."
-                        className="rounded-xl border-border/60 min-h-[120px] resize-none"
+                    {/* Basic Info Form */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <TextField
+                        id="settings-full-name"
+                        label="Full Name"
+                        icon={User}
+                        value={fullName}
+                        onChange={setFullName}
                       />
-                   </div>
+                      <TextField
+                        id="settings-primary-role"
+                        label="Primary Role"
+                        icon={Briefcase}
+                        value={primaryRole}
+                        onChange={setPrimaryRole}
+                      />
+                      <TextField
+                        id="settings-location"
+                        label="Location"
+                        icon={MapPin}
+                        value={location}
+                        onChange={setLocation}
+                      />
+                      <TextField
+                        id="settings-linkedin-url"
+                        label="LinkedIn URL"
+                        icon={Globe}
+                        type="url"
+                        value={linkedinUrl}
+                        onChange={setLinkedinUrl}
+                      />
+                    </div>
 
-                   <div className="pt-6 flex justify-end gap-3">
-                      <Button variant="editorial-outline" className="rounded-xl h-12 px-8 bg-background border-border/40">Cancel</Button>
-                      <Button variant="editorial" className="rounded-xl h-12 px-8 shadow-lg shadow-primary/20">Save Changes</Button>
-                   </div>
-                </CardContent>
-              </Card>
+                    <TextAreaField
+                      id="settings-bio"
+                      label="Professional Narrative (Bio)"
+                      icon={FileText}
+                      value={bio}
+                      onChange={setBio}
+                      rows={5}
+                      className="min-h-[140px]"
+                    />
+
+                    <div className="h-px bg-border/20 w-full" />
+
+                    <SkillsManager />
+
+                    <div className="pt-6 flex justify-end gap-3">
+                       <Button variant="editorial-outline" className="rounded-xl h-12 px-8 bg-background border-border/40">Cancel</Button>
+                       <Button variant="editorial" className="rounded-xl h-12 px-8 shadow-lg shadow-primary/20">Save Changes</Button>
+                    </div>
+                 </CardContent>
+               </Card>
             </div>
           )}
 

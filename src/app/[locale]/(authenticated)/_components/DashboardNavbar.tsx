@@ -117,9 +117,6 @@ export function DashboardNavbar({ user }: { user: { name: string | null; email: 
                       <User className="h-4 w-4 me-2" /> Profile Settings
                     </DropdownMenuItem>
                   </Link>
-                  <DropdownMenuItem className="rounded-lg h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">
-                    Account Verification
-                  </DropdownMenuItem>
                 </DropdownMenuGroup>
                 
                 <DropdownMenuSeparator className="my-1.5 opacity-50" />
