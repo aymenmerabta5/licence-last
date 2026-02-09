@@ -61,13 +61,13 @@ export function StatsCard({
           </div>
           
           {/* Subtle decoration */}
-          <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+          <div className="absolute top-0 end-0 p-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
              <Icon className="h-16 w-16" />
           </div>
         </CardContent>
-        
+
         {/* Border accent */}
-        <div className="absolute bottom-0 left-0 h-1 w-0 bg-primary group-hover:w-full transition-all duration-500" />
+        <div className="absolute bottom-0 start-0 h-1 w-0 bg-primary group-hover:w-full transition-all duration-500" />
       </Card>
     </motion.div>
   )

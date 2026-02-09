@@ -7,6 +7,7 @@ import { drizzle } from "drizzle-orm/postgres-js"
 import * as schema from "./schema"
 import { university, universityDomain } from "./schema/universities"
 import { user, account } from "./schema/auth"
+import { skillTag } from "./schema/skills"
 
 /**
  * Parse a comma-separated string of domains into an array of normalized domains.
@@ -59,7 +60,6 @@ async function seedUniversity(
         universityId,
         domain,
         status: "approved",
-        requestNote: "seed",
       })
       console.info(`  Approved domain: ${domain}`)
       continue
@@ -71,11 +71,101 @@ async function seedUniversity(
         .set({
           status: "approved",
           universityId,
-          reviewedAt: new Date(),
-          reviewReason: "seed",
         })
         .where(eq(universityDomain.id, existingDomain.id))
       console.info(`  Updated domain to approved: ${domain}`)
+    }
+  }
+}
+
+/* ── Skill tag data ── */
+
+const SEED_SKILL_TAGS: { name: string; category: string }[] = [
+  // Frontend
+  { name: "React", category: "frontend" },
+  { name: "Angular", category: "frontend" },
+  { name: "Vue.js", category: "frontend" },
+  { name: "HTML/CSS", category: "frontend" },
+  { name: "TypeScript", category: "frontend" },
+  { name: "JavaScript", category: "frontend" },
+  { name: "Tailwind CSS", category: "frontend" },
+
+  // Backend
+  { name: "Node.js", category: "backend" },
+  { name: "Express", category: "backend" },
+  { name: "Django", category: "backend" },
+  { name: "Flask", category: "backend" },
+  { name: "Spring Boot", category: "backend" },
+  { name: "Laravel", category: "backend" },
+  { name: "FastAPI", category: "backend" },
+
+  // Languages
+  { name: "Python", category: "languages" },
+  { name: "Java", category: "languages" },
+  { name: "C/C++", category: "languages" },
+  { name: "PHP", category: "languages" },
+  { name: "Go", category: "languages" },
+  { name: "Rust", category: "languages" },
+  { name: "C#", category: "languages" },
+
+  // Database
+  { name: "PostgreSQL", category: "database" },
+  { name: "MySQL", category: "database" },
+  { name: "MongoDB", category: "database" },
+  { name: "Redis", category: "database" },
+  { name: "SQLite", category: "database" },
+
+  // DevOps
+  { name: "Docker", category: "devops" },
+  { name: "Kubernetes", category: "devops" },
+  { name: "Git", category: "devops" },
+  { name: "CI/CD", category: "devops" },
+  { name: "Linux", category: "devops" },
+  { name: "AWS", category: "devops" },
+
+  // Mobile
+  { name: "React Native", category: "mobile" },
+  { name: "Flutter", category: "mobile" },
+  { name: "Swift", category: "mobile" },
+  { name: "Kotlin", category: "mobile" },
+
+  // Data & AI
+  { name: "Machine Learning", category: "data_ai" },
+  { name: "Data Science", category: "data_ai" },
+  { name: "TensorFlow", category: "data_ai" },
+  { name: "PyTorch", category: "data_ai" },
+
+  // Other
+  { name: "REST API", category: "other" },
+  { name: "GraphQL", category: "other" },
+  { name: "Microservices", category: "other" },
+  { name: "Agile/Scrum", category: "other" },
+]
+
+function toSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+}
+
+async function seedSkillTags(db: ReturnType<typeof drizzle>) {
+  for (const entry of SEED_SKILL_TAGS) {
+    const slug = toSlug(entry.name)
+    const [existing] = await db
+      .select({ id: skillTag.id })
+      .from(skillTag)
+      .where(eq(skillTag.slug, slug))
+      .limit(1)
+
+    if (!existing) {
+      await db.insert(skillTag).values({
+        id: randomUUID(),
+        name: entry.name,
+        slug,
+        category: entry.category,
+      })
+      console.info(`Seeded skill tag: ${entry.name}`)
     }
   }
 }
@@ -101,6 +191,9 @@ async function main() {
       process.env.SEED_UNIVERSITY_NAME?.trim() || "Example University"
     await seedUniversity(db, { name: envName, domains: envDomains })
   }
+
+  // ── Seed skill tags ──
+  await seedSkillTags(db)
 
   // ── Seed super_admin user ──
   const adminEmail = process.env.SEED_ADMIN_EMAIL?.trim()

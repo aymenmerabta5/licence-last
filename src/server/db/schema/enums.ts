@@ -52,6 +52,13 @@ export const documentTypeEnum = pgEnum("document_type", [
   "certificate",
 ])
 
+export const internshipTypeEnum = pgEnum("internship_type", [
+  "pfe",
+  "immersion",
+  "summer",
+  "practical",
+])
+
 export const documentStatusEnum = pgEnum("document_status", [
   "pending",
   "generated",

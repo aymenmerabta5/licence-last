@@ -7,6 +7,12 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: z.string(),
     RESEND_API_KEY: z.string().min(1).optional(),
     EMAIL_FROM: z.string().min(3).optional(),
+    S3_BUCKET: z.string().min(1).optional(),
+    S3_ENDPOINT: z.url().optional(),
+    S3_ACCESS_KEY_ID: z.string().min(1).optional(),
+    S3_SECRET_ACCESS_KEY: z.string().min(1).optional(),
+    S3_REGION: z.string().default("auto"),
+    S3_PUBLIC_URL: z.string().url().optional(),
   },
   client: {
     NEXT_PUBLIC_BETTER_AUTH_URL: z.string().url(),

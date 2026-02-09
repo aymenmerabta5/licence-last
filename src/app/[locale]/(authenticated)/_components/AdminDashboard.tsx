@@ -74,7 +74,7 @@ export function AdminDashboard({ }: { user: { name: string | null; email: string
         </div>
 
         <div className="lg:col-span-4 space-y-8">
-           <h2 className="font-serif text-2xl font-bold text-heading text-heading/80 uppercase tracking-widest text-[11px]">Administrative Actions</h2>
+           <h2 className="font-serif text-2xl font-bold text-heading">Administrative Actions</h2>
            <div className="grid grid-cols-1 gap-5">
               <Card className="p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer bg-background border border-border/40 group rounded-2xl">
                  <div className="p-2.5 rounded-xl bg-primary/5 text-primary w-fit mb-4 group-hover:bg-primary group-hover:text-white transition-all">

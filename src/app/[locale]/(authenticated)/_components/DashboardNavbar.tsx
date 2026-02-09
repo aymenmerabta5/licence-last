@@ -72,11 +72,11 @@ export function DashboardNavbar({ user }: { user: { name: string | null; email: 
       <div className="flex items-center gap-2 sm:gap-5">
         {/* Search Bar - Improved Design */}
         <div className="hidden md:flex items-center w-64 lg:w-80 relative group focus-within:w-72 lg:focus-within:w-96 transition-all duration-500">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60 group-focus-within:text-primary transition-colors" />
+          <Search className="absolute start-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60 group-focus-within:text-primary transition-colors" />
           <input
             type="text"
             placeholder="Search..."
-            className="w-full bg-secondary/[0.08] hover:bg-secondary/[0.12] border border-transparent focus:bg-background focus:border-primary/20 rounded-full py-2.5 pl-11 pr-5 text-[13px] focus:outline-none focus:ring-4 focus:ring-primary/5 transition-all outline-none"
+            className="w-full bg-secondary/[0.08] hover:bg-secondary/[0.12] border border-transparent focus:bg-background focus:border-primary/20 rounded-full py-2.5 ps-11 pe-5 text-[13px] focus:outline-none focus:ring-4 focus:ring-primary/5 transition-all outline-none"
           />
         </div>
 
@@ -94,7 +94,7 @@ export function DashboardNavbar({ user }: { user: { name: string | null; email: 
 
             <button className="relative p-2.5 rounded-full hover:bg-secondary/80 transition-all group">
               <Bell className="h-5 w-5 text-foreground/60 group-hover:text-primary transition-colors" />
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full ring-2 ring-background animate-pulse" />
+              <span className="absolute top-2.5 end-2.5 w-2 h-2 bg-primary rounded-full ring-2 ring-background animate-pulse" />
             </button>
 
             <DropdownMenu>
@@ -102,7 +102,7 @@ export function DashboardNavbar({ user }: { user: { name: string | null; email: 
                 <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[13px] shrink-0 group-hover:bg-primary group-hover:text-white transition-all ring-2 ring-transparent group-hover:ring-primary/20">
                     {user?.name?.charAt(0) || "U"}
                 </div>
-                <div className="hidden sm:block text-start pr-1">
+                <div className="hidden sm:block text-start pe-1">
                   <p className="text-xs font-bold leading-none text-heading">{user?.name || "User Name"}</p>
                   <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider font-medium">{user?.role || "Student"}</p>
                 </div>
@@ -114,7 +114,7 @@ export function DashboardNavbar({ user }: { user: { name: string | null; email: 
                   </DropdownMenuLabel>
                   <Link href="/dashboard/settings">
                     <DropdownMenuItem className="rounded-lg h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">
-                      <User className="h-4 w-4 mr-2" /> Profile Settings
+                      <User className="h-4 w-4 me-2" /> Profile Settings
                     </DropdownMenuItem>
                   </Link>
                   <DropdownMenuItem className="rounded-lg h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">

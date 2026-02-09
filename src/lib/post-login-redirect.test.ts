@@ -19,8 +19,16 @@ function baseMe(): MeResult {
 
 describe("src/lib/post-login-redirect", () => {
   describe("getPostLoginRedirectPath", () => {
-    test("should redirect students to student dashboard", () => {
+    test("should redirect non-onboarded students to student onboarding", () => {
       const me = baseMe()
+      expect(getPostLoginRedirectPath(me)).toBe("/onboarding/student")
+    })
+
+    test("should redirect onboarded students to student dashboard", () => {
+      const me: MeResult = {
+        ...baseMe(),
+        user: { ...baseMe().user, onboardingCompleted: true },
+      }
       expect(getPostLoginRedirectPath(me)).toBe("/dashboard/student")
     })
 

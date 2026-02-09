@@ -8,6 +8,7 @@ import {
   User,
   Settings,
   Briefcase,
+  Building2,
   Users,
   BarChart3,
   CheckCircle2,
@@ -48,8 +49,14 @@ const navItems: NavItem[] = [
     roles: ["student"],
   },
   {
+    label: "Company Profile",
+    href: "/dashboard/company/profile",
+    icon: Building2,
+    roles: ["company_admin"],
+  },
+  {
     label: "Manage Offers",
-    href: "/dashboard/offers",
+    href: "/dashboard/company/offers",
     icon: Briefcase,
     roles: ["company_admin"],
   },

@@ -56,9 +56,7 @@ export function proxy(request: NextRequest) {
   }
 
   // Delegate to next-intl for locale routing
-  const response = intlMiddleware(request)
-  response.headers.set("x-pathname", pathname)
-  return response
+  return intlMiddleware(request)
 }
 
 export const config = {

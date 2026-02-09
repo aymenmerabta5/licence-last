@@ -7,7 +7,7 @@ export default async function OnboardingLayout({
 }: {
   children: React.ReactNode
 }) {
-  await requireRole(["company_admin"])
+  await requireRole(["company_admin", "student"])
 
   return (
     <div className="min-h-screen flex flex-col bg-background transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">

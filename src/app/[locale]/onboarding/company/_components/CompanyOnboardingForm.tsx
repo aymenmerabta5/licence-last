@@ -18,6 +18,7 @@ import { useRouter } from "@/i18n/routing"
 import { createCompanyOnboardingSchema } from "@/lib/schemas/company"
 import { errorMessage } from "@/lib/schemas/auth"
 import { orpcClient } from "@/server/orpc/client"
+import { WILAYAS } from "@/lib/wilayas"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import {
@@ -31,23 +32,6 @@ const reveal = {
   animate: { opacity: 1, y: 0 },
 }
 const ease = [0.4, 0, 0.2, 1] as const
-
-/* ── Wilayas of Algeria (1-58) ── */
-const WILAYAS = [
-  "Adrar", "Chlef", "Laghouat", "Oum El Bouaghi", "Batna",
-  "Béjaïa", "Biskra", "Béchar", "Blida", "Bouira",
-  "Tamanrasset", "Tébessa", "Tlemcen", "Tiaret", "Tizi Ouzou",
-  "Alger", "Djelfa", "Jijel", "Sétif", "Saïda",
-  "Skikda", "Sidi Bel Abbès", "Annaba", "Guelma", "Constantine",
-  "Médéa", "Mostaganem", "M'Sila", "Mascara", "Ouargla",
-  "Oran", "El Bayadh", "Illizi", "Bordj Bou Arréridj", "Boumerdès",
-  "El Tarf", "Tindouf", "Tissemsilt", "El Oued", "Khenchela",
-  "Souk Ahras", "Tipaza", "Mila", "Aïn Defla", "Naâma",
-  "Aïn Témouchent", "Ghardaïa", "Relizane",
-  "El M'Ghair", "El Meniaa", "Ouled Djellal", "Bordj Badji Mokhtar",
-  "Béni Abbès", "Timimoun", "Touggourt", "Djanet",
-  "In Salah", "In Guezzam",
-] as const
 
 export function CompanyOnboardingForm() {
   const t = useTranslations("onboarding.company")
