@@ -75,6 +75,7 @@ function WorkflowStep({
 
 /* ── User Type Column ── */
 function UserTypeColumn({
+    id,
     icon: Icon,
     title,
     subtitle,
@@ -82,6 +83,7 @@ function UserTypeColumn({
     columnIndex,
     accentClass,
 }: {
+    id?: string
     icon: LucideIcon
     title: string
     subtitle: string
@@ -91,6 +93,7 @@ function UserTypeColumn({
 }) {
     return (
         <motion.div
+            id={id}
             {...reveal}
             transition={{ duration: 0.7, ease, delay: 0.2 + columnIndex * 0.15 }}
             className="relative flex flex-col"
@@ -126,6 +129,7 @@ export function HowItWorksSection() {
 
     const userTypes = [
         {
+            id: "for-students",
             icon: GraduationCap,
             title: t("student.title"),
             subtitle: t("student.subtitle"),
@@ -158,6 +162,7 @@ export function HowItWorksSection() {
             ],
         },
         {
+            id: "for-recruiters",
             icon: Building2,
             title: t("company.title"),
             subtitle: t("company.subtitle"),

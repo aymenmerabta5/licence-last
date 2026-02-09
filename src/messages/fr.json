@@ -9,9 +9,15 @@
     "forRecruiters": "Pour Recruteurs",
     "about": "À Propos",
     "getStarted": "Commencer",
+    "dashboard": "Tableau de bord",
+    "logout": "Se d\u00e9connecter",
+    "menu": "Sections et compte",
     "aria": {
       "mainNav": "Navigation principale",
-      "getStarted": "Commencer avec Internex"
+      "getStarted": "Commencer avec Internex",
+      "openMenu": "Ouvrir le menu",
+      "dashboard": "Aller au tableau de bord",
+      "accountMenu": "Ouvrir le menu du compte"
     }
   },
   "hero": {
@@ -190,7 +196,19 @@
       "companyNameMin": "Le nom de l'entreprise doit contenir au moins 2 caractères",
       "websiteUrlInvalid": "Veuillez entrer une URL valide",
       "wilayaRequired": "Veuillez sélectionner une wilaya",
-      "wilayaInvalid": "Code wilaya invalide"
+      "wilayaInvalid": "Code wilaya invalide",
+      "githubUrlInvalid": "Veuillez entrer une URL GitHub valide",
+      "portfolioUrlInvalid": "Veuillez entrer une URL de portfolio valide",
+      "skillsMin": "Veuillez sélectionner au moins une compétence",
+      "skillsMax": "Vous pouvez sélectionner jusqu'à 10 compétences",
+      "offerTitleMin": "Le titre doit contenir au moins 3 caractères",
+      "offerDescriptionMin": "La description doit contenir au moins 10 caractères",
+      "internshipTypeRequired": "Veuillez sélectionner un type de stage",
+      "durationWeeksMin": "La durée doit être d'au moins 1 semaine",
+      "durationWeeksMax": "La durée ne peut pas dépasser 52 semaines",
+      "maxPositionsMin": "Au moins 1 poste est requis",
+      "maxPositionsMax": "Ne peut pas dépasser 100 postes",
+      "offerSkillsMax": "Vous pouvez sélectionner jusqu'à 20 compétences"
     }
   },
   "onboarding": {
@@ -209,6 +227,37 @@
       "address": "Adresse",
       "addressPlaceholder": "123 Rue Principale",
       "submit": "Terminer la Configuration",
+      "error": "Une erreur s'est produite. Veuillez réessayer."
+    },
+    "student": {
+      "pageTitle": "Configuration du Profil Étudiant",
+      "title": "Construisez Votre CV Digital",
+      "subtitle": "Parlez-nous de vous et de vos compétences pour commencer",
+      "personalSection": "Informations Personnelles",
+      "bio": "Bio",
+      "bioPlaceholder": "Parlez-nous un peu de vous...",
+      "phone": "Numéro de téléphone",
+      "phonePlaceholder": "0555 123 456",
+      "studentNumber": "Numéro étudiant",
+      "studentNumberPlaceholder": "ex. ETU2025001",
+      "department": "Département",
+      "departmentPlaceholder": "ex. Informatique",
+      "level": "Niveau",
+      "levelPlaceholder": "ex. L3, M1, M2",
+      "locationSection": "Localisation",
+      "wilaya": "Wilaya",
+      "wilayaPlaceholder": "Sélectionnez votre wilaya",
+      "address": "Adresse",
+      "addressPlaceholder": "123 Rue Principale",
+      "linksSection": "Liens",
+      "githubUrl": "GitHub",
+      "githubUrlPlaceholder": "https://github.com/utilisateur",
+      "portfolioUrl": "Portfolio",
+      "portfolioUrlPlaceholder": "https://votre-portfolio.com",
+      "skillsSection": "Compétences Techniques",
+      "skillsHint": "Sélectionnez jusqu'à 10 compétences qui décrivent le mieux votre expertise",
+      "skillsSelected": "sélectionnées",
+      "submit": "Compléter le Profil",
       "error": "Une erreur s'est produite. Veuillez réessayer."
     }
   },
@@ -230,7 +279,267 @@
         "reason": "Raison",
         "contactSupport": "Contacter le Support",
         "reapply": "Modifier et Resoumettre"
+      },
+      "profile": {
+        "pageTitle": "Profil de l'Entreprise",
+        "title": "Profil de l'Entreprise",
+        "subtitle": "Gérez le profil public et les informations de contact de votre entreprise",
+        "description": "Description",
+        "descriptionPlaceholder": "Décrivez votre entreprise et ce qui en fait un excellent lieu de stage...",
+        "logo": "Logo de l'Entreprise",
+        "logoHint": "Téléchargez un logo (JPEG, PNG, WebP, SVG, max 2 Mo)",
+        "logoUpload": "Télécharger le Logo",
+        "logoUploading": "Téléchargement...",
+        "websiteUrl": "Site Web",
+        "websiteUrlPlaceholder": "https://exemple.com",
+        "phone": "Téléphone",
+        "phonePlaceholder": "0555 123 456",
+        "contactEmail": "Email de Contact",
+        "contactEmailPlaceholder": "contact@entreprise.com",
+        "representativeName": "Nom du Représentant",
+        "representativeNamePlaceholder": "Jean Dupont",
+        "wilaya": "Wilaya",
+        "wilayaPlaceholder": "Sélectionnez votre wilaya",
+        "address": "Adresse",
+        "addressPlaceholder": "123 Rue Principale",
+        "submit": "Enregistrer les Modifications",
+        "success": "Profil de l'entreprise mis à jour avec succès",
+        "error": "Une erreur s'est produite. Veuillez réessayer."
+      },
+      "offers": {
+        "pageTitle": "Gérer les Offres",
+        "title": "Offres de Stage",
+        "subtitle": "Créez et gérez vos postes de stage",
+        "createOffer": "Créer une Offre",
+        "empty": "Aucune offre pour le moment. Créez votre première offre de stage pour commencer à attirer des talents.",
+        "status": {
+          "draft": "Brouillon",
+          "published": "Publiée",
+          "closed": "Fermée"
+        },
+        "type": {
+          "pfe": "PFE",
+          "immersion": "Immersion",
+          "summer": "Été",
+          "practical": "Pratique"
+        },
+        "workMode": {
+          "on_site": "Sur site",
+          "hybrid": "Hybride",
+          "remote": "À distance"
+        },
+        "actions": {
+          "edit": "Modifier",
+          "publish": "Publier",
+          "close": "Fermer",
+          "delete": "Supprimer",
+          "confirmDelete": "Êtes-vous sûr ? Les brouillons seront définitivement supprimés.",
+          "confirmClose": "Êtes-vous sûr ? Cela fermera l'offre aux nouveaux candidats."
+        },
+        "positions": "postes",
+        "weeks": "semaines",
+        "skills": "Compétences",
+        "form": {
+          "createTitle": "Créer une Nouvelle Offre",
+          "createSubtitle": "Remplissez les détails de votre nouveau poste de stage",
+          "editTitle": "Modifier l'Offre",
+          "editSubtitle": "Mettez à jour les détails de votre poste de stage",
+          "basicInfo": "Informations de Base",
+          "title": "Titre",
+          "titlePlaceholder": "ex. Stagiaire Développeur Frontend",
+          "description": "Description",
+          "descriptionPlaceholder": "Décrivez le rôle du stage, les responsabilités et ce que le stagiaire apprendra...",
+          "details": "Détails",
+          "internshipType": "Type de Stage",
+          "internshipTypePlaceholder": "Sélectionnez le type",
+          "workMode": "Mode de Travail",
+          "workModePlaceholder": "Sélectionnez le mode",
+          "wilaya": "Localisation (Wilaya)",
+          "wilayaPlaceholder": "Sélectionnez la wilaya",
+          "durationWeeks": "Durée (semaines)",
+          "durationWeeksPlaceholder": "ex. 12",
+          "maxPositions": "Postes Maximum",
+          "maxPositionsPlaceholder": "ex. 3",
+          "skillsSection": "Compétences Requises",
+          "skillsHint": "Sélectionnez jusqu'à 20 compétences correspondant à ce poste",
+          "skillsSelected": "sélectionnées",
+          "submit": "Créer l'Offre",
+          "submitEdit": "Enregistrer les Modifications",
+          "cancel": "Annuler",
+          "success": "Offre créée avec succès",
+          "successEdit": "Offre mise à jour avec succès",
+          "error": "Une erreur s'est produite. Veuillez réessayer."
+        }
       }
+    },
+    "welcome": "Bon retour,",
+    "roles": {
+      "student": "Étudiant",
+      "recruiter": "Recruteur",
+      "admin": "Administrateur"
+    },
+    "student": {
+      "title": "Tableau de Bord Étudiant",
+      "subtitle": "Découvrez et gérez votre parcours professionnel",
+      "stats": {
+        "applications": "Candidatures",
+        "savedOffers": "Offres Enregistrées",
+        "interviews": "Entretiens"
+      },
+      "actions": {
+        "buildCV": "Compléter le CV Digital",
+        "searchOffers": "Rechercher des Stages",
+        "viewApplications": "Suivre les Candidatures"
+      },
+      "skillsSection": "Votre Stack de Compétences",
+      "recentOffers": "Recommandé pour Vous",
+      "profile": {
+        "title": "Votre CV Digital",
+        "subtitle": "Votre profil professionnel visible par les recruteurs",
+        "edit": "Modifier le Profil",
+        "personalInfo": "Informations Personnelles",
+        "name": "Nom",
+        "email": "Email",
+        "phone": "Téléphone",
+        "studentNumber": "Numéro Étudiant",
+        "department": "Département",
+        "level": "Niveau",
+        "bio": "Bio",
+        "location": "Localisation",
+        "wilaya": "Wilaya",
+        "address": "Adresse",
+        "links": "Liens",
+        "skills": "Compétences Techniques"
+      }
+    },
+    "recruiter": {
+      "title": "Portail Recruteur",
+      "subtitle": "Gérez votre vivier de talents",
+      "stats": {
+        "activeOffers": "Offres Actives",
+        "totalApplicants": "Total Candidats",
+        "hired": "Placements Réussis"
+      },
+      "actions": {
+        "postOffer": "Publier une Offre",
+        "manageOffers": "Gérer les Offres",
+        "reviewCandidates": "Examiner les Candidatures"
+      },
+      "pipeline": "Pipeline de Candidats"
+    },
+    "explore": {
+      "pageTitle": "Explorer les Stages",
+      "title": "Explorer les Stages",
+      "subtitle": "Découvrez des opportunités qui correspondent à vos compétences et ambitions",
+      "searchPlaceholder": "Rechercher par titre ou mot-clé...",
+      "filters": "Filtres",
+      "clearFilters": "Tout effacer",
+      "wilaya": "Wilaya",
+      "wilayaPlaceholder": "Toutes les localisations",
+      "internshipType": "Type de Stage",
+      "workMode": "Mode de Travail",
+      "skills": "Compétences",
+      "skillsPlaceholder": "Filtrer par compétences",
+      "noResults": "Aucun stage trouvé correspondant à vos critères. Essayez d'ajuster vos filtres.",
+      "loadMore": "Charger plus",
+      "loading": "Chargement...",
+      "positions": "postes",
+      "weeks": "semaines",
+      "closesOn": "Clôture le",
+      "type": {
+        "pfe": "PFE",
+        "immersion": "Immersion",
+        "summer": "Été",
+        "practical": "Pratique"
+      },
+      "workModeLabel": {
+        "on_site": "Sur site",
+        "hybrid": "Hybride",
+        "remote": "À distance"
+      }
+    },
+    "offerDetail": {
+      "back": "Retour à la recherche",
+      "description": "Description",
+      "requiredSkills": "Compétences Requises",
+      "details": "Détails",
+      "internshipType": "Type",
+      "workMode": "Mode de Travail",
+      "location": "Localisation",
+      "duration": "Durée",
+      "positions": "Postes",
+      "deadline": "Date Limite",
+      "noDeadline": "Pas de date limite",
+      "weeks": "semaines",
+      "aboutCompany": "À Propos de l'Entreprise",
+      "applyNow": "Postuler Maintenant",
+      "alreadyApplied": "Déjà Postulé",
+      "applicationStatus": "Statut de la Candidature",
+      "coverLetter": "Lettre de Motivation",
+      "coverLetterPlaceholder": "Expliquez à l'entreprise pourquoi ce poste vous intéresse... (optionnel)",
+      "submitApplication": "Envoyer la Candidature",
+      "submitting": "Envoi en cours...",
+      "applicationSuccess": "Candidature envoyée avec succès !",
+      "applicationError": "Échec de l'envoi de la candidature. Veuillez réessayer.",
+      "offerClosed": "Cette offre n'accepte plus de candidatures",
+      "type": {
+        "pfe": "PFE",
+        "immersion": "Immersion",
+        "summer": "Été",
+        "practical": "Pratique"
+      },
+      "workModeLabel": {
+        "on_site": "Sur site",
+        "hybrid": "Hybride",
+        "remote": "À distance"
+      }
+    },
+    "applications": {
+      "pageTitle": "Mes Candidatures",
+      "title": "Mes Candidatures",
+      "subtitle": "Suivez le statut de vos candidatures de stage",
+      "statusFilter": {
+        "all": "Toutes",
+        "applied": "Envoyées",
+        "company_accepted": "Acceptées",
+        "company_refused": "Refusées",
+        "admin_validated": "Validées",
+        "admin_rejected": "Rejetées",
+        "withdrawn": "Retirées"
+      },
+      "status": {
+        "applied": "Envoyée",
+        "company_accepted": "Acceptée",
+        "company_refused": "Refusée",
+        "admin_validated": "Validée",
+        "admin_rejected": "Rejetée",
+        "withdrawn": "Retirée"
+      },
+      "empty": "Aucune candidature pour le moment. Commencez à explorer les stages pour trouver votre match parfait !",
+      "emptyFiltered": "Aucune candidature avec ce statut.",
+      "appliedOn": "Postulé le",
+      "withdraw": "Retirer",
+      "withdrawConfirm": "Êtes-vous sûr de vouloir retirer cette candidature ? Cette action est irréversible.",
+      "withdrawSuccess": "Candidature retirée avec succès.",
+      "withdrawError": "Échec du retrait de la candidature.",
+      "loading": "Chargement...",
+      "loadMore": "Charger plus",
+      "exploreOffers": "Explorer les Stages"
+    },
+    "admin": {
+      "title": "Centre de Commandement Admin",
+      "subtitle": "Aperçu de l'activité de la plateforme",
+      "stats": {
+        "totalPlacements": "Total Placements",
+        "pendingValidation": "En Attente de Validation",
+        "docsGenerated": "Documents Générés"
+      },
+      "actions": {
+        "validatePlacements": "Valider les Placements",
+        "systemHealth": "Santé du Système",
+        "exportReports": "Exporter les Rapports"
+      },
+      "globalStats": "Analyses Globales de Placement"
     }
   },
   "howItWorks": {
@@ -314,60 +623,6 @@
       "text": "Prêt à transformer votre expérience de stage ?",
       "button": "Commencer Gratuitement",
       "aria": "Commencer avec Internex gratuitement"
-    }
-  },
-  "dashboard": {
-    "welcome": "Bon retour,",
-    "roles": {
-      "student": "Étudiant",
-      "recruiter": "Recruteur",
-      "admin": "Administrateur"
-    },
-    "student": {
-      "title": "Tableau de Bord Étudiant",
-      "subtitle": "Découvrez et gérez votre parcours professionnel",
-      "stats": {
-        "applications": "Candidatures",
-        "savedOffers": "Offres Enregistrées",
-        "interviews": "Entretiens"
-      },
-      "actions": {
-        "buildCV": "Compléter le CV Digital",
-        "searchOffers": "Rechercher des Stages",
-        "viewApplications": "Suivre les Candidatures"
-      },
-      "skillsSection": "Votre Stack de Compétences",
-      "recentOffers": "Recommandé pour Vous"
-    },
-    "recruiter": {
-      "title": "Portail Recruteur",
-      "subtitle": "Gérez votre vivier de talents",
-      "stats": {
-        "activeOffers": "Offres Actives",
-        "totalApplicants": "Total Candidats",
-        "hired": "Placements Réussis"
-      },
-      "actions": {
-        "postOffer": "Publier une Offre",
-        "manageOffers": "Gérer les Offres",
-        "reviewCandidates": "Examiner les Candidatures"
-      },
-      "pipeline": "Pipeline de Candidats"
-    },
-    "admin": {
-      "title": "Centre de Commandement Admin",
-      "subtitle": "Aperçu de l'activité de la plateforme",
-      "stats": {
-        "totalPlacements": "Total Placements",
-        "pendingValidation": "En Attente de Validation",
-        "docsGenerated": "Documents Générés"
-      },
-      "actions": {
-        "validatePlacements": "Valider les Placements",
-        "systemHealth": "Santé du Système",
-        "exportReports": "Exporter les Rapports"
-      },
-      "globalStats": "Analyses Globales de Placement"
     }
   }
 }

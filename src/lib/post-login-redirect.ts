@@ -9,6 +9,7 @@ export function getPostLoginRedirectPath(me: MeResult): string {
 
   switch (user.role) {
     case "student":
+      if (!user.onboardingCompleted) return "/onboarding/student"
       return "/dashboard/student"
 
     case "company_admin":

@@ -22,8 +22,8 @@ export const placement = pgTable(
       onDelete: "set null",
     }),
     validatedAt: timestamp("validated_at").defaultNow().notNull(),
-    startDate: timestamp("start_date"),
-    endDate: timestamp("end_date"),
+    startDate: timestamp("start_date").notNull(),
+    endDate: timestamp("end_date").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

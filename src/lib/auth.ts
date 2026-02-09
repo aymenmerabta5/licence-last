@@ -27,6 +27,9 @@ export const auth = betterAuth({
         type: ["student", "company_admin", "admin", "super_admin"],
         required: false,
         defaultValue: "student",
+        // input: true is required for company_admin self-registration.
+        // The databaseHooks.user.create.before hook enforces an allowlist
+        // (only "student" and "company_admin" are accepted).
         input: true,
       },
       universityId: {
@@ -46,12 +49,16 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (data) => {
-          const role = data.role ?? "student"
-          if (role !== "student" && role !== "company_admin") {
+          // Defense-in-depth: only allow self-registration as student or company_admin.
+          // Any other value (admin, super_admin, etc.) is rejected.
+          const ALLOWED_SIGNUP_ROLES = new Set<string>(["student", "company_admin"])
+          const requestedRole = (data.role as string | undefined) ?? "student"
+          if (!ALLOWED_SIGNUP_ROLES.has(requestedRole)) {
             throw new APIError("BAD_REQUEST", {
               message: "Invalid role for self-registration",
             })
           }
+          const role = requestedRole as "student" | "company_admin"
 
           if (role !== "student") {
             return { data: { ...data, role } }
@@ -99,14 +106,14 @@ export const auth = betterAuth({
     sendOnSignIn: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
-      void sendEmail(user.email, "Verify your email address", VerifyEmailEmail, { link: url })
+      await sendEmail(user.email, "Verify your email address", VerifyEmailEmail, { link: url })
     },
   },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
     sendResetPassword: async ({ user, url }) => {
-      void sendEmail(user.email, "Reset your password", ResetPasswordEmail, { link: url })
+      await sendEmail(user.email, "Reset your password", ResetPasswordEmail, { link: url })
     },
   },
   plugins: [nextCookies()], // must be last — handles Set-Cookie in server actions

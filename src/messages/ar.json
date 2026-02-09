@@ -9,9 +9,15 @@
     "forRecruiters": "للشركات",
     "about": "حول",
     "getStarted": "ابدأ الآن",
+    "dashboard": "لوحة التحكم",
+    "logout": "تسجيل الخروج",
+    "menu": "الأقسام والحساب",
     "aria": {
       "mainNav": "التنقل الرئيسي",
-      "getStarted": "البدء مع إنترنكس"
+      "getStarted": "البدء مع إنترنكس",
+      "openMenu": "فتح القائمة",
+      "dashboard": "الانتقال إلى لوحة التحكم",
+      "accountMenu": "فتح قائمة الحساب"
     }
   },
   "hero": {
@@ -190,7 +196,19 @@
       "companyNameMin": "يجب أن يتكون اسم الشركة من حرفين على الأقل",
       "websiteUrlInvalid": "يرجى إدخال رابط صالح",
       "wilayaRequired": "يرجى اختيار ولاية",
-      "wilayaInvalid": "رمز ولاية غير صالح"
+      "wilayaInvalid": "رمز ولاية غير صالح",
+      "githubUrlInvalid": "يرجى إدخال رابط GitHub صالح",
+      "portfolioUrlInvalid": "يرجى إدخال رابط محفظة صالح",
+      "skillsMin": "يرجى اختيار مهارة واحدة على الأقل",
+      "skillsMax": "يمكنك اختيار حتى ١٠ مهارات",
+      "offerTitleMin": "يجب أن يتكون العنوان من ٣ أحرف على الأقل",
+      "offerDescriptionMin": "يجب أن يتكون الوصف من ١٠ أحرف على الأقل",
+      "internshipTypeRequired": "يرجى اختيار نوع التدريب",
+      "durationWeeksMin": "يجب أن تكون المدة أسبوعاً واحداً على الأقل",
+      "durationWeeksMax": "لا يمكن أن تتجاوز المدة ٥٢ أسبوعاً",
+      "maxPositionsMin": "مطلوب منصب واحد على الأقل",
+      "maxPositionsMax": "لا يمكن أن يتجاوز ١٠٠ منصب",
+      "offerSkillsMax": "يمكنك اختيار حتى ٢٠ مهارة"
     }
   },
   "onboarding": {
@@ -209,6 +227,37 @@
       "address": "العنوان",
       "addressPlaceholder": "١٢٣ الشارع الرئيسي",
       "submit": "إكمال الإعداد",
+      "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    },
+    "student": {
+      "pageTitle": "إعداد الملف الشخصي",
+      "title": "أنشئ سيرتك الذاتية الرقمية",
+      "subtitle": "أخبرنا عن نفسك ومهاراتك للبدء",
+      "personalSection": "المعلومات الشخصية",
+      "bio": "نبذة",
+      "bioPlaceholder": "أخبرنا قليلاً عن نفسك...",
+      "phone": "رقم الهاتف",
+      "phonePlaceholder": "٠٥٥٥ ١٢٣ ٤٥٦",
+      "studentNumber": "رقم الطالب",
+      "studentNumberPlaceholder": "مثال: STU2025001",
+      "department": "القسم",
+      "departmentPlaceholder": "مثال: علوم الحاسوب",
+      "level": "المستوى",
+      "levelPlaceholder": "مثال: ل٣، م١، م٢",
+      "locationSection": "الموقع",
+      "wilaya": "الولاية",
+      "wilayaPlaceholder": "اختر ولايتك",
+      "address": "العنوان",
+      "addressPlaceholder": "١٢٣ الشارع الرئيسي",
+      "linksSection": "الروابط",
+      "githubUrl": "GitHub",
+      "githubUrlPlaceholder": "https://github.com/username",
+      "portfolioUrl": "المحفظة",
+      "portfolioUrlPlaceholder": "https://your-portfolio.com",
+      "skillsSection": "المهارات التقنية",
+      "skillsHint": "اختر حتى ١٠ مهارات تصف خبرتك بشكل أفضل",
+      "skillsSelected": "مختارة",
+      "submit": "إكمال الملف الشخصي",
       "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
     }
   },
@@ -230,7 +279,267 @@
         "reason": "السبب",
         "contactSupport": "التواصل مع الدعم",
         "reapply": "تعديل وإعادة التقديم"
+      },
+      "profile": {
+        "pageTitle": "ملف الشركة",
+        "title": "ملف الشركة",
+        "subtitle": "إدارة الملف العام ومعلومات الاتصال لشركتك",
+        "description": "الوصف",
+        "descriptionPlaceholder": "صف شركتك وما يجعلها مكاناً رائعاً للتدريب...",
+        "logo": "شعار الشركة",
+        "logoHint": "ارفع شعاراً (JPEG، PNG، WebP، SVG، الحد الأقصى ٢ ميغابايت)",
+        "logoUpload": "رفع الشعار",
+        "logoUploading": "جاري الرفع...",
+        "websiteUrl": "الموقع الإلكتروني",
+        "websiteUrlPlaceholder": "https://example.com",
+        "phone": "الهاتف",
+        "phonePlaceholder": "٠٥٥٥ ١٢٣ ٤٥٦",
+        "contactEmail": "البريد الإلكتروني للتواصل",
+        "contactEmailPlaceholder": "contact@company.com",
+        "representativeName": "اسم المُمثّل",
+        "representativeNamePlaceholder": "محمد أحمد",
+        "wilaya": "الولاية",
+        "wilayaPlaceholder": "اختر ولايتك",
+        "address": "العنوان",
+        "addressPlaceholder": "١٢٣ الشارع الرئيسي",
+        "submit": "حفظ التغييرات",
+        "success": "تم تحديث ملف الشركة بنجاح",
+        "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+      },
+      "offers": {
+        "pageTitle": "إدارة العروض",
+        "title": "عروض التدريب",
+        "subtitle": "إنشاء وإدارة مناصب التدريب الخاصة بك",
+        "createOffer": "إنشاء عرض",
+        "empty": "لا توجد عروض حالياً. أنشئ أول عرض تدريب لبدء جذب المواهب.",
+        "status": {
+          "draft": "مسودة",
+          "published": "منشور",
+          "closed": "مغلق"
+        },
+        "type": {
+          "pfe": "مشروع نهاية الدراسة",
+          "immersion": "تدريب انغماسي",
+          "summer": "تدريب صيفي",
+          "practical": "تدريب عملي"
+        },
+        "workMode": {
+          "on_site": "حضوري",
+          "hybrid": "هجين",
+          "remote": "عن بُعد"
+        },
+        "actions": {
+          "edit": "تعديل",
+          "publish": "نشر",
+          "close": "إغلاق",
+          "delete": "حذف",
+          "confirmDelete": "هل أنت متأكد؟ سيتم حذف المسودات نهائياً.",
+          "confirmClose": "هل أنت متأكد؟ سيتم إغلاق العرض أمام المتقدمين الجدد."
+        },
+        "positions": "مناصب",
+        "weeks": "أسابيع",
+        "skills": "المهارات",
+        "form": {
+          "createTitle": "إنشاء عرض جديد",
+          "createSubtitle": "املأ تفاصيل منصب التدريب الجديد",
+          "editTitle": "تعديل العرض",
+          "editSubtitle": "تحديث تفاصيل منصب التدريب",
+          "basicInfo": "المعلومات الأساسية",
+          "title": "العنوان",
+          "titlePlaceholder": "مثال: متدرب مطور واجهات أمامية",
+          "description": "الوصف",
+          "descriptionPlaceholder": "صف دور التدريب والمسؤوليات وما سيتعلمه المتدرب...",
+          "details": "التفاصيل",
+          "internshipType": "نوع التدريب",
+          "internshipTypePlaceholder": "اختر النوع",
+          "workMode": "نمط العمل",
+          "workModePlaceholder": "اختر نمط العمل",
+          "wilaya": "الموقع (الولاية)",
+          "wilayaPlaceholder": "اختر الولاية",
+          "durationWeeks": "المدة (أسابيع)",
+          "durationWeeksPlaceholder": "مثال: ١٢",
+          "maxPositions": "الحد الأقصى للمناصب",
+          "maxPositionsPlaceholder": "مثال: ٣",
+          "skillsSection": "المهارات المطلوبة",
+          "skillsHint": "اختر حتى ٢٠ مهارة تتناسب مع هذا المنصب",
+          "skillsSelected": "مختارة",
+          "submit": "إنشاء العرض",
+          "submitEdit": "حفظ التغييرات",
+          "cancel": "إلغاء",
+          "success": "تم إنشاء العرض بنجاح",
+          "successEdit": "تم تحديث العرض بنجاح",
+          "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+        }
       }
+    },
+    "welcome": "مرحباً بعودتك،",
+    "roles": {
+      "student": "طالب",
+      "recruiter": "مسؤول توظيف",
+      "admin": "مشرف"
+    },
+    "student": {
+      "title": "لوحة تحكم الطالب",
+      "subtitle": "اكتشف وأدر رحلتك المهنية",
+      "stats": {
+        "applications": "الطلبات",
+        "savedOffers": "العروض المحفوظة",
+        "interviews": "المقابلات"
+      },
+      "actions": {
+        "buildCV": "أكمل سيرتك الذاتية الرقمية",
+        "searchOffers": "البحث عن تدريبات",
+        "viewApplications": "تتبع الطلبات"
+      },
+      "skillsSection": "مجموعة مهاراتك",
+      "recentOffers": "موصى به لك",
+      "profile": {
+        "title": "سيرتك الذاتية الرقمية",
+        "subtitle": "ملفك المهني المرئي للمجندين",
+        "edit": "تعديل الملف الشخصي",
+        "personalInfo": "المعلومات الشخصية",
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "studentNumber": "رقم الطالب",
+        "department": "القسم",
+        "level": "المستوى",
+        "bio": "نبذة",
+        "location": "الموقع",
+        "wilaya": "الولاية",
+        "address": "العنوان",
+        "links": "الروابط",
+        "skills": "المهارات التقنية"
+      }
+    },
+    "recruiter": {
+      "title": "بوابة التوظيف",
+      "subtitle": "أدر خط أنابيب المواهب الخاص بك",
+      "stats": {
+        "activeOffers": "العروض النشطة",
+        "totalApplicants": "إجمالي المتقدمين",
+        "hired": "تم توظيفهم بنجاح"
+      },
+      "actions": {
+        "postOffer": "نشر عرض جديد",
+        "manageOffers": "إدارة العروض",
+        "reviewCandidates": "مراجعة الطلبات"
+      },
+      "pipeline": "خط أنابيب المرشحين"
+    },
+    "explore": {
+      "pageTitle": "استكشاف التدريبات",
+      "title": "استكشاف التدريبات",
+      "subtitle": "اكتشف فرصاً تتوافق مع مهاراتك وطموحاتك",
+      "searchPlaceholder": "البحث بالعنوان أو الكلمة المفتاحية...",
+      "filters": "الفلاتر",
+      "clearFilters": "مسح الكل",
+      "wilaya": "الولاية",
+      "wilayaPlaceholder": "جميع المواقع",
+      "internshipType": "نوع التدريب",
+      "workMode": "نمط العمل",
+      "skills": "المهارات",
+      "skillsPlaceholder": "تصفية حسب المهارات",
+      "noResults": "لم يتم العثور على تدريبات تطابق معاييرك. حاول تعديل الفلاتر.",
+      "loadMore": "تحميل المزيد",
+      "loading": "جاري التحميل...",
+      "positions": "مناصب",
+      "weeks": "أسابيع",
+      "closesOn": "يُغلق في",
+      "type": {
+        "pfe": "مشروع نهاية الدراسة",
+        "immersion": "تدريب انغماسي",
+        "summer": "تدريب صيفي",
+        "practical": "تدريب عملي"
+      },
+      "workModeLabel": {
+        "on_site": "حضوري",
+        "hybrid": "هجين",
+        "remote": "عن بُعد"
+      }
+    },
+    "offerDetail": {
+      "back": "العودة للبحث",
+      "description": "الوصف",
+      "requiredSkills": "المهارات المطلوبة",
+      "details": "التفاصيل",
+      "internshipType": "النوع",
+      "workMode": "نمط العمل",
+      "location": "الموقع",
+      "duration": "المدة",
+      "positions": "المناصب",
+      "deadline": "الموعد النهائي",
+      "noDeadline": "بدون موعد نهائي",
+      "weeks": "أسابيع",
+      "aboutCompany": "عن الشركة",
+      "applyNow": "تقدّم الآن",
+      "alreadyApplied": "تم التقديم مسبقاً",
+      "applicationStatus": "حالة الطلب",
+      "coverLetter": "خطاب التقديم",
+      "coverLetterPlaceholder": "أخبر الشركة لماذا أنت مهتم بهذا المنصب... (اختياري)",
+      "submitApplication": "إرسال الطلب",
+      "submitting": "جاري الإرسال...",
+      "applicationSuccess": "تم إرسال الطلب بنجاح!",
+      "applicationError": "فشل إرسال الطلب. يرجى المحاولة مرة أخرى.",
+      "offerClosed": "هذا العرض لم يعد يقبل طلبات",
+      "type": {
+        "pfe": "مشروع نهاية الدراسة",
+        "immersion": "تدريب انغماسي",
+        "summer": "تدريب صيفي",
+        "practical": "تدريب عملي"
+      },
+      "workModeLabel": {
+        "on_site": "حضوري",
+        "hybrid": "هجين",
+        "remote": "عن بُعد"
+      }
+    },
+    "applications": {
+      "pageTitle": "طلباتي",
+      "title": "طلباتي",
+      "subtitle": "تتبع حالة طلبات التدريب الخاصة بك",
+      "statusFilter": {
+        "all": "الكل",
+        "applied": "مُقدّمة",
+        "company_accepted": "مقبولة",
+        "company_refused": "مرفوضة",
+        "admin_validated": "مُصادق عليها",
+        "admin_rejected": "مرفوضة إدارياً",
+        "withdrawn": "مسحوبة"
+      },
+      "status": {
+        "applied": "مُقدّمة",
+        "company_accepted": "مقبولة",
+        "company_refused": "مرفوضة",
+        "admin_validated": "مُصادق عليها",
+        "admin_rejected": "مرفوضة إدارياً",
+        "withdrawn": "مسحوبة"
+      },
+      "empty": "لا توجد طلبات حالياً. ابدأ باستكشاف التدريبات للعثور على فرصتك المثالية!",
+      "emptyFiltered": "لا توجد طلبات بهذه الحالة.",
+      "appliedOn": "تاريخ التقديم",
+      "withdraw": "سحب",
+      "withdrawConfirm": "هل أنت متأكد من رغبتك في سحب هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.",
+      "withdrawSuccess": "تم سحب الطلب بنجاح.",
+      "withdrawError": "فشل سحب الطلب.",
+      "loading": "جاري التحميل...",
+      "loadMore": "تحميل المزيد",
+      "exploreOffers": "استكشاف التدريبات"
+    },
+    "admin": {
+      "title": "مركز قيادة المشرف",
+      "subtitle": "نظرة عامة على نشاط المنصة",
+      "stats": {
+        "totalPlacements": "إجمالي التوظيفات",
+        "pendingValidation": "في انتظار التحقق",
+        "docsGenerated": "المستندات المنشأة"
+      },
+      "actions": {
+        "validatePlacements": "التحقق من التوظيفات",
+        "systemHealth": "حالة النظام",
+        "exportReports": "تصدير التقارير"
+      },
+      "globalStats": "تحليلات التوظيف العالمية"
     }
   },
   "howItWorks": {
@@ -314,60 +623,6 @@
       "text": "هل أنت مستعد لتحويل تجربة التدريب الخاصة بك؟",
       "button": "ابدأ مجانًا",
       "aria": "البدء مع إنترنكس مجانًا"
-    }
-  },
-  "dashboard": {
-    "welcome": "مرحباً بعودتك،",
-    "roles": {
-      "student": "طالب",
-      "recruiter": "مسؤول توظيف",
-      "admin": "مشرف"
-    },
-    "student": {
-      "title": "لوحة تحكم الطالب",
-      "subtitle": "اكتشف وأدر رحلتك المهنية",
-      "stats": {
-        "applications": "الطلبات",
-        "savedOffers": "العروض المحفوظة",
-        "interviews": "المقابلات"
-      },
-      "actions": {
-        "buildCV": "أكمل سيرتك الذاتية الرقمية",
-        "searchOffers": "البحث عن تدريبات",
-        "viewApplications": "تتبع الطلبات"
-      },
-      "skillsSection": "مجموعة مهاراتك",
-      "recentOffers": "موصى به لك"
-    },
-    "recruiter": {
-      "title": "بوابة التوظيف",
-      "subtitle": "أدر خط أنابيب المواهب الخاص بك",
-      "stats": {
-        "activeOffers": "العروض النشطة",
-        "totalApplicants": "إجمالي المتقدمين",
-        "hired": "تم توظيفهم بنجاح"
-      },
-      "actions": {
-        "postOffer": "نشر عرض جديد",
-        "manageOffers": "إدارة العروض",
-        "reviewCandidates": "مراجعة الطلبات"
-      },
-      "pipeline": "خط أنابيب المرشحين"
-    },
-    "admin": {
-      "title": "مركز قيادة المشرف",
-      "subtitle": "نظرة عامة على نشاط المنصة",
-      "stats": {
-        "totalPlacements": "إجمالي التوظيفات",
-        "pendingValidation": "في انتظار التحقق",
-        "docsGenerated": "المستندات المنشأة"
-      },
-      "actions": {
-        "validatePlacements": "التحقق من التوظيفات",
-        "systemHealth": "حالة النظام",
-        "exportReports": "تصدير التقارير"
-      },
-      "globalStats": "تحليلات التوظيف العالمية"
     }
   }
 }

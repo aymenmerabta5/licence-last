@@ -1,13 +1,20 @@
-import { pgTable, text, timestamp, index } from "drizzle-orm/pg-core"
+import { pgTable, text, timestamp, integer, index } from "drizzle-orm/pg-core"
 
 import { universityDomainStatusEnum } from "./enums"
-import { user } from "./auth"
 
 export const university = pgTable(
   "university",
   {
     id: text("id").primaryKey(),
     name: text("name").notNull().unique(),
+    abbreviation: text("abbreviation"),
+    address: text("address"),
+    city: text("city"),
+    wilayaCode: integer("wilaya_code"),
+    phone: text("phone"),
+    logoUrl: text("logo_url"),
+    departmentName: text("department_name"),
+    deanName: text("dean_name"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -25,18 +32,7 @@ export const universityDomain = pgTable(
       .notNull()
       .references(() => university.id, { onDelete: "cascade" }),
     domain: text("domain").notNull().unique(),
-    status: universityDomainStatusEnum("status").default("pending").notNull(),
-
-    requestedByEmail: text("requested_by_email"),
-    requestedAt: timestamp("requested_at").defaultNow().notNull(),
-    requestNote: text("request_note"),
-
-    reviewedByUserId: text("reviewed_by_user_id").references(() => user.id, {
-      onDelete: "set null",
-    }),
-    reviewedAt: timestamp("reviewed_at"),
-    reviewReason: text("review_reason"),
-
+    status: universityDomainStatusEnum("status").default("approved").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

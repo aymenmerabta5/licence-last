@@ -1,3 +1,5 @@
+import "server-only"
+
 import { os, ORPCError } from "@orpc/server"
 import { headers } from "next/headers"
 import { eq } from "drizzle-orm"
@@ -5,6 +7,7 @@ import { eq } from "drizzle-orm"
 import { auth } from "@/lib/auth"
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
+import { studentProfile } from "@/server/db/schema/students"
 
 /** Public — no auth required. */
 export const publicProcedure = os
@@ -61,6 +64,31 @@ export const companyAdminProcedure = authedProcedure.use(
       .where(eq(companyMember.userId, context.user.id))
       .limit(1)
 
-    return next({ context: { ...context, companyMembership: membership ?? null } })
+    if (!membership) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "No company membership found",
+      })
+    }
+
+    return next({ context: { ...context, companyMembership: membership } })
+  },
+)
+
+/** Student — requires student role, injects student profile. */
+export const studentProcedure = authedProcedure.use(
+  async ({ context, next }) => {
+    if (context.user.role !== "student") {
+      throw new ORPCError("FORBIDDEN", {
+        message: "Student access required",
+      })
+    }
+
+    const [profile] = await db
+      .select()
+      .from(studentProfile)
+      .where(eq(studentProfile.userId, context.user.id))
+      .limit(1)
+
+    return next({ context: { ...context, studentProfile: profile ?? null } })
   },
 )

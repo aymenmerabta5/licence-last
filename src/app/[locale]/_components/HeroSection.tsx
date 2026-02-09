@@ -97,7 +97,7 @@ export function HeroSection() {
   ]
 
   return (
-    <section className="relative px-8 lg:px-16 pt-16 pb-20">
+    <section id="discover" className="relative px-8 lg:px-16 pt-16 pb-20">
       {/* Subtle warm glow — only visible in dark mode */}
       <div className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100" aria-hidden="true">
         <div className="absolute -top-24 -start-24 h-80 w-80 rounded-full bg-primary/8 blur-3xl" />

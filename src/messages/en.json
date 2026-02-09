@@ -9,9 +9,15 @@
     "forRecruiters": "For Recruiters",
     "about": "About",
     "getStarted": "Get Started",
+    "dashboard": "Dashboard",
+    "logout": "Log out",
+    "menu": "Sections and account",
     "aria": {
       "mainNav": "Main navigation",
-      "getStarted": "Get started with Internex"
+      "getStarted": "Get started with Internex",
+      "openMenu": "Open menu",
+      "dashboard": "Go to dashboard",
+      "accountMenu": "Open account menu"
     }
   },
   "hero": {
@@ -190,7 +196,19 @@
       "companyNameMin": "Company name must be at least 2 characters",
       "websiteUrlInvalid": "Please enter a valid URL",
       "wilayaRequired": "Please select a wilaya",
-      "wilayaInvalid": "Invalid wilaya code"
+      "wilayaInvalid": "Invalid wilaya code",
+      "githubUrlInvalid": "Please enter a valid GitHub URL",
+      "portfolioUrlInvalid": "Please enter a valid portfolio URL",
+      "skillsMin": "Please select at least one skill",
+      "skillsMax": "You can select up to 10 skills",
+      "offerTitleMin": "Title must be at least 3 characters",
+      "offerDescriptionMin": "Description must be at least 10 characters",
+      "internshipTypeRequired": "Please select an internship type",
+      "durationWeeksMin": "Duration must be at least 1 week",
+      "durationWeeksMax": "Duration cannot exceed 52 weeks",
+      "maxPositionsMin": "At least 1 position is required",
+      "maxPositionsMax": "Cannot exceed 100 positions",
+      "offerSkillsMax": "You can select up to 20 skills"
     }
   },
   "onboarding": {
@@ -209,6 +227,37 @@
       "address": "Address",
       "addressPlaceholder": "123 Main Street",
       "submit": "Complete Setup",
+      "error": "Something went wrong. Please try again."
+    },
+    "student": {
+      "pageTitle": "Student Profile Setup",
+      "title": "Build Your Digital CV",
+      "subtitle": "Tell us about yourself and your skills to get started",
+      "personalSection": "Personal Information",
+      "bio": "Bio",
+      "bioPlaceholder": "Tell us a bit about yourself...",
+      "phone": "Phone number",
+      "phonePlaceholder": "0555 123 456",
+      "studentNumber": "Student number",
+      "studentNumberPlaceholder": "e.g. STU2025001",
+      "department": "Department",
+      "departmentPlaceholder": "e.g. Computer Science",
+      "level": "Level",
+      "levelPlaceholder": "e.g. L3, M1, M2",
+      "locationSection": "Location",
+      "wilaya": "Wilaya",
+      "wilayaPlaceholder": "Select your wilaya",
+      "address": "Address",
+      "addressPlaceholder": "123 Main Street",
+      "linksSection": "Links",
+      "githubUrl": "GitHub",
+      "githubUrlPlaceholder": "https://github.com/username",
+      "portfolioUrl": "Portfolio",
+      "portfolioUrlPlaceholder": "https://your-portfolio.com",
+      "skillsSection": "Technical Skills",
+      "skillsHint": "Select up to 10 skills that best describe your expertise",
+      "skillsSelected": "selected",
+      "submit": "Complete Profile",
       "error": "Something went wrong. Please try again."
     }
   },
@@ -230,7 +279,267 @@
         "reason": "Reason",
         "contactSupport": "Contact Support",
         "reapply": "Update & Resubmit"
+      },
+      "profile": {
+        "pageTitle": "Company Profile",
+        "title": "Company Profile",
+        "subtitle": "Manage your company's public profile and contact information",
+        "description": "Description",
+        "descriptionPlaceholder": "Describe your company and what makes it a great place to intern...",
+        "logo": "Company Logo",
+        "logoHint": "Upload a logo (JPEG, PNG, WebP, SVG, max 2MB)",
+        "logoUpload": "Upload Logo",
+        "logoUploading": "Uploading...",
+        "websiteUrl": "Website",
+        "websiteUrlPlaceholder": "https://example.com",
+        "phone": "Phone",
+        "phonePlaceholder": "0555 123 456",
+        "contactEmail": "Contact Email",
+        "contactEmailPlaceholder": "contact@company.com",
+        "representativeName": "Representative Name",
+        "representativeNamePlaceholder": "John Doe",
+        "wilaya": "Wilaya",
+        "wilayaPlaceholder": "Select your wilaya",
+        "address": "Address",
+        "addressPlaceholder": "123 Main Street",
+        "submit": "Save Changes",
+        "success": "Company profile updated successfully",
+        "error": "Something went wrong. Please try again."
+      },
+      "offers": {
+        "pageTitle": "Manage Offers",
+        "title": "Internship Offers",
+        "subtitle": "Create and manage your internship positions",
+        "createOffer": "Create Offer",
+        "empty": "No offers yet. Create your first internship offer to start attracting talent.",
+        "status": {
+          "draft": "Draft",
+          "published": "Published",
+          "closed": "Closed"
+        },
+        "type": {
+          "pfe": "PFE",
+          "immersion": "Immersion",
+          "summer": "Summer",
+          "practical": "Practical"
+        },
+        "workMode": {
+          "on_site": "On-site",
+          "hybrid": "Hybrid",
+          "remote": "Remote"
+        },
+        "actions": {
+          "edit": "Edit",
+          "publish": "Publish",
+          "close": "Close",
+          "delete": "Delete",
+          "confirmDelete": "Are you sure? Draft offers will be permanently deleted.",
+          "confirmClose": "Are you sure? This will close the offer to new applicants."
+        },
+        "positions": "positions",
+        "weeks": "weeks",
+        "skills": "Skills",
+        "form": {
+          "createTitle": "Create New Offer",
+          "createSubtitle": "Fill in the details for your new internship position",
+          "editTitle": "Edit Offer",
+          "editSubtitle": "Update the details of your internship position",
+          "basicInfo": "Basic Information",
+          "title": "Title",
+          "titlePlaceholder": "e.g. Frontend Developer Intern",
+          "description": "Description",
+          "descriptionPlaceholder": "Describe the internship role, responsibilities, and what the intern will learn...",
+          "details": "Details",
+          "internshipType": "Internship Type",
+          "internshipTypePlaceholder": "Select type",
+          "workMode": "Work Mode",
+          "workModePlaceholder": "Select work mode",
+          "wilaya": "Location (Wilaya)",
+          "wilayaPlaceholder": "Select wilaya",
+          "durationWeeks": "Duration (weeks)",
+          "durationWeeksPlaceholder": "e.g. 12",
+          "maxPositions": "Max Positions",
+          "maxPositionsPlaceholder": "e.g. 3",
+          "skillsSection": "Required Skills",
+          "skillsHint": "Select up to 20 skills that best match this position",
+          "skillsSelected": "selected",
+          "submit": "Create Offer",
+          "submitEdit": "Save Changes",
+          "cancel": "Cancel",
+          "success": "Offer created successfully",
+          "successEdit": "Offer updated successfully",
+          "error": "Something went wrong. Please try again."
+        }
       }
+    },
+    "welcome": "Welcome back,",
+    "roles": {
+      "student": "Student",
+      "recruiter": "Recruiter",
+      "admin": "Administrator"
+    },
+    "student": {
+      "title": "Student Dashboard",
+      "subtitle": "Discover and manage your career journey",
+      "stats": {
+        "applications": "Applications",
+        "savedOffers": "Saved Offers",
+        "interviews": "Interviews"
+      },
+      "actions": {
+        "buildCV": "Complete Digital CV",
+        "searchOffers": "Search Internships",
+        "viewApplications": "Track Applications"
+      },
+      "skillsSection": "Your Skill Stack",
+      "recentOffers": "Recommended for You",
+      "profile": {
+        "title": "Your Digital CV",
+        "subtitle": "Your professional profile visible to recruiters",
+        "edit": "Edit Profile",
+        "personalInfo": "Personal Information",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "studentNumber": "Student Number",
+        "department": "Department",
+        "level": "Level",
+        "bio": "Bio",
+        "location": "Location",
+        "wilaya": "Wilaya",
+        "address": "Address",
+        "links": "Links",
+        "skills": "Technical Skills"
+      }
+    },
+    "recruiter": {
+      "title": "Recruiter Portal",
+      "subtitle": "Manage your talent pipeline",
+      "stats": {
+        "activeOffers": "Active Offers",
+        "totalApplicants": "Total Applicants",
+        "hired": "Successfully Placed"
+      },
+      "actions": {
+        "postOffer": "Post New Offer",
+        "manageOffers": "Manage Offers",
+        "reviewCandidates": "Review Applications"
+      },
+      "pipeline": "Candidate Pipeline"
+    },
+    "explore": {
+      "pageTitle": "Explore Internships",
+      "title": "Explore Internships",
+      "subtitle": "Discover opportunities that match your skills and ambitions",
+      "searchPlaceholder": "Search by title or keyword...",
+      "filters": "Filters",
+      "clearFilters": "Clear all",
+      "wilaya": "Wilaya",
+      "wilayaPlaceholder": "Any location",
+      "internshipType": "Internship Type",
+      "workMode": "Work Mode",
+      "skills": "Skills",
+      "skillsPlaceholder": "Filter by skills",
+      "noResults": "No internships found matching your criteria. Try adjusting your filters.",
+      "loadMore": "Load more",
+      "loading": "Loading...",
+      "positions": "positions",
+      "weeks": "weeks",
+      "closesOn": "Closes on",
+      "type": {
+        "pfe": "PFE",
+        "immersion": "Immersion",
+        "summer": "Summer",
+        "practical": "Practical"
+      },
+      "workModeLabel": {
+        "on_site": "On-site",
+        "hybrid": "Hybrid",
+        "remote": "Remote"
+      }
+    },
+    "offerDetail": {
+      "back": "Back to search",
+      "description": "Description",
+      "requiredSkills": "Required Skills",
+      "details": "Details",
+      "internshipType": "Type",
+      "workMode": "Work Mode",
+      "location": "Location",
+      "duration": "Duration",
+      "positions": "Positions",
+      "deadline": "Deadline",
+      "noDeadline": "No deadline",
+      "weeks": "weeks",
+      "aboutCompany": "About the Company",
+      "applyNow": "Apply Now",
+      "alreadyApplied": "Already Applied",
+      "applicationStatus": "Application Status",
+      "coverLetter": "Cover Letter",
+      "coverLetterPlaceholder": "Tell the company why you're interested in this position... (optional)",
+      "submitApplication": "Submit Application",
+      "submitting": "Submitting...",
+      "applicationSuccess": "Application submitted successfully!",
+      "applicationError": "Failed to submit application. Please try again.",
+      "offerClosed": "This offer is no longer accepting applications",
+      "type": {
+        "pfe": "PFE",
+        "immersion": "Immersion",
+        "summer": "Summer",
+        "practical": "Practical"
+      },
+      "workModeLabel": {
+        "on_site": "On-site",
+        "hybrid": "Hybrid",
+        "remote": "Remote"
+      }
+    },
+    "applications": {
+      "pageTitle": "My Applications",
+      "title": "My Applications",
+      "subtitle": "Track the status of your internship applications",
+      "statusFilter": {
+        "all": "All",
+        "applied": "Applied",
+        "company_accepted": "Accepted",
+        "company_refused": "Refused",
+        "admin_validated": "Validated",
+        "admin_rejected": "Rejected",
+        "withdrawn": "Withdrawn"
+      },
+      "status": {
+        "applied": "Applied",
+        "company_accepted": "Accepted",
+        "company_refused": "Refused",
+        "admin_validated": "Validated",
+        "admin_rejected": "Rejected",
+        "withdrawn": "Withdrawn"
+      },
+      "empty": "No applications yet. Start exploring internships to find your perfect match!",
+      "emptyFiltered": "No applications with this status.",
+      "appliedOn": "Applied on",
+      "withdraw": "Withdraw",
+      "withdrawConfirm": "Are you sure you want to withdraw this application? This action cannot be undone.",
+      "withdrawSuccess": "Application withdrawn successfully.",
+      "withdrawError": "Failed to withdraw application.",
+      "loading": "Loading...",
+      "loadMore": "Load more",
+      "exploreOffers": "Explore Internships"
+    },
+    "admin": {
+      "title": "Admin Command Center",
+      "subtitle": "Overview of platform activity",
+      "stats": {
+        "totalPlacements": "Total Placements",
+        "pendingValidation": "Pending Validation",
+        "docsGenerated": "Documents Generated"
+      },
+      "actions": {
+        "validatePlacements": "Validate Placements",
+        "systemHealth": "System Health",
+        "exportReports": "Export Reports"
+      },
+      "globalStats": "Global Placement Analytics"
     }
   },
   "howItWorks": {
@@ -314,60 +623,6 @@
       "text": "Ready to transform your internship experience?",
       "button": "Get Started Free",
       "aria": "Get started with Internex for free"
-    }
-  },
-  "dashboard": {
-    "welcome": "Welcome back,",
-    "roles": {
-      "student": "Student",
-      "recruiter": "Recruiter",
-      "admin": "Administrator"
-    },
-    "student": {
-      "title": "Student Dashboard",
-      "subtitle": "Discover and manage your career journey",
-      "stats": {
-        "applications": "Applications",
-        "savedOffers": "Saved Offers",
-        "interviews": "Interviews"
-      },
-      "actions": {
-        "buildCV": "Complete Digital CV",
-        "searchOffers": "Search Internships",
-        "viewApplications": "Track Applications"
-      },
-      "skillsSection": "Your Skill Stack",
-      "recentOffers": "Recommended for You"
-    },
-    "recruiter": {
-      "title": "Recruiter Portal",
-      "subtitle": "Manage your talent pipeline",
-      "stats": {
-        "activeOffers": "Active Offers",
-        "totalApplicants": "Total Applicants",
-        "hired": "Successfully Placed"
-      },
-      "actions": {
-        "postOffer": "Post New Offer",
-        "manageOffers": "Manage Offers",
-        "reviewCandidates": "Review Applications"
-      },
-      "pipeline": "Candidate Pipeline"
-    },
-    "admin": {
-      "title": "Admin Command Center",
-      "subtitle": "Overview of platform activity",
-      "stats": {
-        "totalPlacements": "Total Placements",
-        "pendingValidation": "Pending Validation",
-        "docsGenerated": "Documents Generated"
-      },
-      "actions": {
-        "validatePlacements": "Validate Placements",
-        "systemHealth": "System Health",
-        "exportReports": "Export Reports"
-      },
-      "globalStats": "Global Placement Analytics"
     }
   }
 }

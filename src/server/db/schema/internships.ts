@@ -7,7 +7,7 @@ import {
   index,
 } from "drizzle-orm/pg-core"
 
-import { offerStatusEnum, workModeEnum } from "./enums"
+import { internshipTypeEnum, offerStatusEnum, workModeEnum } from "./enums"
 import { company } from "./companies"
 import { skillTag } from "./skills"
 
@@ -20,9 +20,11 @@ export const internshipOffer = pgTable(
       .references(() => company.id, { onDelete: "cascade" }),
     title: text("title").notNull(),
     description: text("description").notNull(),
-    internshipType: text("internship_type").notNull(),
+    internshipType: internshipTypeEnum("internship_type").notNull(),
     workMode: workModeEnum("work_mode"),
     wilayaCode: integer("wilaya_code"),
+    durationWeeks: integer("duration_weeks"),
+    maxPositions: integer("max_positions").default(1).notNull(),
     status: offerStatusEnum("status").default("draft").notNull(),
     publishedAt: timestamp("published_at"),
     closesAt: timestamp("closes_at"),

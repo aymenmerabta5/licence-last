@@ -1,13 +1,16 @@
 import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core"
 
 import { userRoleEnum } from "./enums"
+import { university } from "./universities"
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   role: userRoleEnum("role").default("student").notNull(),
-  universityId: text("university_id"),
+  universityId: text("university_id").references(() => university.id, {
+    onDelete: "set null",
+  }),
   onboardingCompleted: boolean("onboarding_completed").default(false).notNull(),
   name: text("name"),
   image: text("image"),
