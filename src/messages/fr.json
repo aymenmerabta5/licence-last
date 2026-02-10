@@ -262,6 +262,59 @@
     }
   },
   "dashboard": {
+    "nav": {
+      "dashboard": "Tableau de bord",
+      "exploreInternships": "Explorer les stages",
+      "myApplications": "Mes candidatures",
+      "companyProfile": "Profil entreprise",
+      "manageOffers": "Gérer les offres",
+      "candidatePipeline": "Pipeline candidats",
+      "assistant": "Assistant",
+      "validatePlacements": "Valider les placements",
+      "statistics": "Statistiques",
+      "settings": "Paramètres",
+      "logout": "Se déconnecter"
+    },
+    "assistant": {
+      "kicker": "Outils entreprise",
+      "title": "Assistant <accent>Copilote</accent>",
+      "subtitle": "Rédigez des offres, ajustez le ton et obtenez des suggestions. Lorsqu'un outil nécessite une autorisation, vous recevrez un lien sécurisé.",
+      "badge": "Suggestions uniquement",
+      "empty": "Commencez avec une invite d'offre (rôle, durée, lieu, stack), ou collez votre brouillon pour une révision.",
+      "toolLabel": "Outil : {toolName}",
+      "retry": "Réessayer",
+      "toolPreparing": "Préparation des paramètres de l'outil...",
+      "authRequired": "Cet outil nécessite une autorisation pour votre compte.",
+      "openAuthLink": "Ouvrir le lien d'autorisation",
+      "checkStatus": "Vérifier le statut",
+      "retryTool": "Relancer l'outil",
+      "authStatus": "Statut : {status}",
+      "unknown": "inconnu",
+      "inputPlaceholder": "Demandez un brouillon d'offre, une réécriture ou des suggestions de compétences",
+      "chatStatus": "Statut : {status}",
+      "send": "Envoyer",
+      "promptIdeas": {
+        "title": "Idées d'invite",
+        "idea1": "Rédige une offre de stage pour un poste <highlight>React + Node</highlight>, 12 semaines, Alger.",
+        "idea2": "Réécris cette offre pour la rendre plus concise et inclusive.",
+        "idea3": "Suggère 10 tags de compétences pour cette description et regroupe-les par catégorie.",
+        "note": "Les appels d'outils peuvent nécessiter une autorisation unique par fournisseur."
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "unreadCount": "{count} non lues",
+      "summarize": "Résumer",
+      "markAllRead": "Tout marquer comme lu",
+      "empty": "Aucune notification pour le moment.",
+      "prompts": {
+        "summarize": "Résumer les notifications"
+      },
+      "aiSummary": {
+        "title": "Résumé IA",
+        "suggestedNextActions": "Actions suivantes suggérées"
+      }
+    },
     "company": {
       "pending": {
         "pageTitle": "En Cours d'Examen",
@@ -370,7 +423,36 @@
           "cancel": "Annuler",
           "success": "Offre créée avec succès",
           "successEdit": "Offre mise à jour avec succès",
-          "error": "Une erreur s'est produite. Veuillez réessayer."
+          "error": "Une erreur s'est produite. Veuillez réessayer.",
+          "skillCategory": {
+            "frontend": "Front-end",
+            "backend": "Back-end",
+            "languages": "Langages",
+            "database": "Base de données",
+            "devops": "DevOps",
+            "mobile": "Mobile",
+            "data_ai": "Données & IA",
+            "other": "Autre"
+          },
+          "copilot": {
+            "title": "Copilote IA",
+            "description": "Suggestions uniquement. Prévisualisez d'abord, puis appliquez au formulaire.",
+            "badge": "Brouillon + Compétences",
+            "promptLabel": "Invite (optionnelle)",
+            "promptPlaceholder": "Rôle, stack, contraintes (ex. 12 sem., remote, React + Node)",
+            "generateDraft": "Générer un brouillon",
+            "improveDescription": "Améliorer la description",
+            "suggestSkills": "Suggérer des compétences",
+            "status": "Statut : {status}",
+            "preview": "Aperçu",
+            "applyToForm": "Appliquer au formulaire",
+            "waiting": "En attente de la réponse de l'IA...",
+            "prompts": {
+              "generateDraft": "Générer une offre de stage (brouillon)",
+              "improveDescription": "Améliorer la description de l'offre",
+              "suggestSkills": "Suggérer des tags de compétences pour cette offre"
+            }
+          }
         }
       },
       "candidates": {
@@ -402,7 +484,21 @@
         "appliedOn": "Candidaté le",
         "skillMatch": "correspondance",
         "coverLetter": "Lettre de Motivation",
-        "portfolio": "Portfolio"
+        "portfolio": "Portfolio",
+        "ai": {
+          "summaryTitle": "Résumé IA",
+          "strengths": "Points forts",
+          "concerns": "Points de vigilance",
+          "followUps": "Questions de suivi",
+          "summarize": "Résumer",
+          "draftingNote": "Rédaction de la note...",
+          "draftRefusalWithAi": "Rédiger une note avec l'IA",
+          "aiStatus": "IA : {status}",
+          "prompts": {
+            "summarize": "Résumer ce candidat",
+            "refusalNote": "Rédiger une courte note de refus"
+          }
+        }
       }
     },
     "welcome": "Bon retour,",
@@ -489,6 +585,14 @@
         "on_site": "Sur site",
         "hybrid": "Hybride",
         "remote": "À distance"
+      },
+      "copilot": {
+        "title": "Copilote de recherche",
+        "description": "Décrivez ce que vous voulez. Vous examinerez les filtres avant de les appliquer.",
+        "aiStatus": "IA : {status}",
+        "placeholder": "ex. Stage d'été à distance à Alger, React + Node",
+        "parseFilters": "Analyser les filtres",
+        "apply": "Appliquer"
       }
     },
     "offerDetail": {
@@ -525,6 +629,15 @@
         "on_site": "Sur site",
         "hybrid": "Hybride",
         "remote": "À distance"
+      },
+      "copilot": {
+        "draftWithAi": "Rédiger avec l'IA",
+        "aiStatus": "IA : {status}",
+        "previewTitle": "Aperçu du brouillon IA",
+        "applyDraft": "Appliquer le brouillon",
+        "prompts": {
+          "draftCoverLetter": "Rédiger une lettre de motivation"
+        }
       }
     },
     "applications": {
@@ -571,6 +684,79 @@
         "validatePlacements": "Valider les Placements",
         "systemHealth": "Santé du Système",
         "exportReports": "Exporter les Rapports"
+      },
+      "validations": {
+        "backToDashboard": "Retour au tableau de bord",
+        "title": "Valider les placements",
+        "description": "Examinez les candidatures acceptées par l'entreprise et validez les placements.",
+        "empty": "Aucun placement en attente de validation.",
+        "companyAcceptedOn": "Accepté par l'entreprise le",
+        "detail": {
+          "backToList": "Retour aux validations",
+          "title": "Détails de validation",
+          "notFound": "Candidature introuvable.",
+          "studentInfo": "Infos étudiant",
+          "name": "Nom",
+          "email": "Email",
+          "phone": "Téléphone",
+          "studentNumber": "Matricule",
+          "department": "Département",
+          "level": "Niveau",
+          "university": "Université",
+          "dean": "Doyen",
+          "address": "Adresse",
+          "skills": "Compétences",
+          "companyInfo": "Infos entreprise",
+          "companyName": "Nom de l'entreprise",
+          "representative": "Représentant",
+          "offerDetails": "Détails de l'offre",
+          "type": "Type",
+          "internshipTypeLabel": {
+            "pfe": "Projet de fin d'études (PFE)",
+            "immersion": "Stage d'immersion",
+            "summer": "Stage d'été",
+            "practical": "Stage pratique"
+          },
+          "workMode": "Mode de travail",
+          "workModeLabel": {
+            "on_site": "Sur site",
+            "hybrid": "Hybride",
+            "remote": "À distance"
+          },
+          "duration": "Durée",
+          "durationWeeks": "{count} semaines",
+          "timeline": "Chronologie",
+          "appliedOn": "Candidaté le",
+          "companyAcceptedOn": "Accepté par l'entreprise le",
+          "coverLetter": "Lettre de motivation",
+          "setInternshipPeriod": "Définir la période du stage",
+          "startDate": "Date de début",
+          "endDate": "Date de fin",
+          "selectDates": "Veuillez sélectionner les dates de début et de fin.",
+          "invalidDates": "La date de fin doit être après la date de début.",
+          "confirmValidate": "Valider ce placement ?",
+          "generatingPdf": "Génération du PDF...",
+          "validateAndGenerate": "Valider et générer",
+          "reject": "Rejeter",
+          "rejectTitle": "Rejeter le placement",
+          "rejectDescription": "Indiquez une raison courte pour rejeter {name} (optionnel).",
+          "rejectReasonPlaceholder": "Raison (optionnelle)...",
+          "cancel": "Annuler",
+          "confirmReject": "Confirmer le rejet",
+          "notAvailable": "N/A",
+          "ai": {
+            "title": "Résumé IA",
+            "description": "Résumé rapide et liste de contrôle. Aucune décision valider/rejeter.",
+            "generate": "Générer",
+            "summary": "Résumé",
+            "checklist": "Liste de contrôle",
+            "noMissingItems": "Aucun élément manquant détecté.",
+            "potentialInconsistencies": "Incohérences potentielles",
+            "generating": "Génération du résumé...",
+            "hint": "Cliquez sur Générer pour produire un résumé.",
+            "prompt": "Résumer ce dossier de validation"
+          }
+        }
       },
       "globalStats": "Analyses Globales de Placement"
     }

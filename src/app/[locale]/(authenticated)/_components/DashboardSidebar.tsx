@@ -1,6 +1,8 @@
 "use client"
 
+import { useState } from "react"
 import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
 import {
   LayoutDashboard,
   Search,
@@ -11,18 +13,18 @@ import {
   Users,
   BarChart3,
   CheckCircle2,
+  Sparkles,
   LogOut,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react"
 import { Link, usePathname } from "@/i18n/routing"
-import { useState } from "react"
 
 import { cn } from "@/lib/utils"
 import { authClient } from "@/lib/auth-client"
 
 interface NavItem {
-  label: string
+  labelKey: string
   href: string
   icon: React.ComponentType<{ className?: string }>
   roles: string[]
@@ -30,55 +32,61 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   {
-    label: "Dashboard",
+    labelKey: "dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
     roles: ["student", "company_admin", "admin", "super_admin"],
   },
   {
-    label: "Explore Internships",
+    labelKey: "exploreInternships",
     href: "/dashboard/explore",
     icon: Search,
     roles: ["student"],
   },
   {
-    label: "My Applications",
+    labelKey: "myApplications",
     href: "/dashboard/applications",
     icon: FileText,
     roles: ["student"],
   },
   {
-    label: "Company Profile",
+    labelKey: "companyProfile",
     href: "/dashboard/company/profile",
     icon: Building2,
     roles: ["company_admin"],
   },
   {
-    label: "Manage Offers",
+    labelKey: "manageOffers",
     href: "/dashboard/company/offers",
     icon: Briefcase,
     roles: ["company_admin"],
   },
   {
-    label: "Candidate Pipeline",
+    labelKey: "candidatePipeline",
     href: "/dashboard/candidates",
     icon: Users,
     roles: ["company_admin"],
   },
   {
-    label: "Validate Placements",
+    labelKey: "assistant",
+    href: "/dashboard/assistant",
+    icon: Sparkles,
+    roles: ["company_admin"],
+  },
+  {
+    labelKey: "validatePlacements",
     href: "/dashboard/validate",
     icon: CheckCircle2,
     roles: ["admin", "super_admin"],
   },
   {
-    label: "Statistics",
+    labelKey: "statistics",
     href: "/dashboard/stats",
     icon: BarChart3,
     roles: ["admin", "super_admin"],
   },
   {
-    label: "Settings",
+    labelKey: "settings",
     href: "/dashboard/settings",
     icon: Settings,
     roles: ["student", "company_admin", "admin", "super_admin"],
@@ -86,6 +94,7 @@ const navItems: NavItem[] = [
 ]
 
 export function DashboardSidebar({ role = "student" }: { role?: string }) {
+  const t = useTranslations("dashboard.nav")
   const pathname = usePathname()
   const [isCollapsed, setIsCollapsed] = useState(false)
 
@@ -151,7 +160,7 @@ export function DashboardSidebar({ role = "student" }: { role?: string }) {
                     animate={{ opacity: 1, x: 0 }}
                     className="text-sm tracking-wide"
                   >
-                    {item.label}
+                    {t(item.labelKey)}
                   </motion.span>
                 )}
                 
@@ -178,7 +187,7 @@ export function DashboardSidebar({ role = "student" }: { role?: string }) {
           )}
         >
           <LogOut className="h-5 w-5 shrink-0" />
-          {!isCollapsed && <span className="text-sm font-medium">Log Out</span>}
+          {!isCollapsed && <span className="text-sm font-medium">{t("logout")}</span>}
         </button>
 
         <button
