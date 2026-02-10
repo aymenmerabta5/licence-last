@@ -20,7 +20,6 @@ import {
 import { createCompanyProfileSchema } from "@/lib/schemas/offer"
 import { errorMessage } from "@/lib/schemas/auth"
 import { orpcClient } from "@/server/orpc/client"
-import { uploadFileAction } from "@/server/actions/upload"
 import { WILAYAS } from "@/lib/wilayas"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -121,21 +120,12 @@ export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
     setServerError("")
 
     try {
-      const formData = new FormData()
-      formData.append("file", file)
-      formData.append("folder", "logos")
-
-      const result = await uploadFileAction(formData)
-
-      if ("error" in result) {
-        setServerError(result.error)
-        return
-      }
+      const result = await orpcClient.companies.uploadLogo({ file })
 
       setLogoUrl(result.url)
       form.setFieldValue("logoUrl", result.url)
-    } catch {
-      setServerError(t("error"))
+    } catch (err) {
+      setServerError(err instanceof Error ? err.message : t("error"))
     } finally {
       setIsUploading(false)
     }
@@ -212,7 +202,7 @@ export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
               )}
               <input
                 type="file"
-                accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                accept="image/jpeg,image/png,image/webp"
                 className="hidden"
                 onChange={handleLogoUpload}
                 disabled={isUploading}

@@ -1,6 +1,11 @@
 import { describe, test, expect, mock, beforeEach } from "bun:test"
 
 // Mock transaction internals
+const mockSelect = mock(() => ({}))
+const mockFrom = mock(() => ({}))
+const mockSelectWhere = mock(() => ({}))
+const mockLimit = mock(() => Promise.resolve([]))
+
 const mockInsert = mock(() => ({}))
 const mockValues = mock(() => ({}))
 const mockOnConflictDoUpdate = mock(() => Promise.resolve())
@@ -11,6 +16,7 @@ const mockSet = mock(() => ({}))
 const mockUpdateWhere = mock(() => Promise.resolve())
 
 const mockTx = {
+  select: mockSelect,
   insert: mockInsert,
   delete: mockDelete,
   update: mockUpdate,
@@ -29,6 +35,10 @@ mock.module("@/server/db", () => ({
 describe("src/server/services/students/upsert-profile", () => {
   beforeEach(() => {
     mockTransaction.mockClear()
+    mockSelect.mockClear()
+    mockFrom.mockClear()
+    mockSelectWhere.mockClear()
+    mockLimit.mockClear()
     mockInsert.mockClear()
     mockValues.mockClear()
     mockOnConflictDoUpdate.mockClear()
@@ -39,6 +49,11 @@ describe("src/server/services/students/upsert-profile", () => {
     mockUpdateWhere.mockClear()
 
     // Reset mock chain
+    mockSelect.mockReturnValue({ from: mockFrom })
+    mockFrom.mockReturnValue({ where: mockSelectWhere })
+    mockSelectWhere.mockReturnValue({ limit: mockLimit })
+    mockLimit.mockResolvedValue([])
+
     mockInsert.mockReturnValue({ values: mockValues })
     mockValues.mockReturnValue({ onConflictDoUpdate: mockOnConflictDoUpdate })
     mockOnConflictDoUpdate.mockResolvedValue(undefined)

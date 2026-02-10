@@ -15,6 +15,7 @@ import { rejectCompany } from "@/server/services/companies/reject"
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
 import { eq } from "drizzle-orm"
+import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
 
 /* ── Reads ── */
 
@@ -131,3 +132,35 @@ export const rejectCompanyProcedure = adminProcedure
   .handler(async ({ input }) =>
     rejectCompany(input.companyId, input.reason),
   )
+
+/* ── Uploads ── */
+
+export const uploadCompanyLogoProcedure = companyAdminProcedure
+  .input(
+    z.object({
+      file: z.file(),
+    }),
+  )
+  .handler(async ({ input }) => {
+    try {
+      return await uploadImageToS3({ file: input.file, folder: "logos" })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Upload failed"
+
+      if (
+        message.startsWith("Invalid file type") ||
+        message.startsWith("File too large") ||
+        message.startsWith("File content")
+      ) {
+        throw new ORPCError("BAD_REQUEST", { message })
+      }
+
+      if (message.startsWith("S3 is not configured")) {
+        throw new ORPCError("INTERNAL_SERVER_ERROR", { message })
+      }
+
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "Upload failed. Please try again.",
+      })
+    }
+  })

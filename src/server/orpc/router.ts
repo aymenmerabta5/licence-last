@@ -1,4 +1,4 @@
-import { getMeProcedure, promoteUserProcedure } from "./routes/users"
+import { getMeProcedure, promoteUserProcedure, updateMeProcedure } from "./routes/users"
 import {
   listCompaniesProcedure,
   getCompanyByIdProcedure,
@@ -6,12 +6,14 @@ import {
   updateCompanyProcedure,
   approveCompanyProcedure,
   rejectCompanyProcedure,
+  uploadCompanyLogoProcedure,
 } from "./routes/companies"
 import { listSkillTagsProcedure } from "./routes/skills"
 import {
   getStudentProfileProcedure,
   getPublicStudentProfileProcedure,
   upsertStudentProfileProcedure,
+  upsertStudentProfileDetailsProcedure,
 } from "./routes/students"
 import {
   getOfferByIdProcedure,
@@ -47,6 +49,7 @@ import { getAdminStatsProcedure } from "./routes/stats"
 export const appRouter = {
   users: {
     getMe: getMeProcedure,
+    updateMe: updateMeProcedure,
     promote: promoteUserProcedure,
   },
   companies: {
@@ -56,6 +59,7 @@ export const appRouter = {
     update: updateCompanyProcedure,
     approve: approveCompanyProcedure,
     reject: rejectCompanyProcedure,
+    uploadLogo: uploadCompanyLogoProcedure,
   },
   skills: {
     list: listSkillTagsProcedure,
@@ -64,6 +68,7 @@ export const appRouter = {
     getProfile: getStudentProfileProcedure,
     getPublicProfile: getPublicStudentProfileProcedure,
     upsertProfile: upsertStudentProfileProcedure,
+    upsertProfileDetails: upsertStudentProfileDetailsProcedure,
   },
   offers: {
     getById: getOfferByIdProcedure,

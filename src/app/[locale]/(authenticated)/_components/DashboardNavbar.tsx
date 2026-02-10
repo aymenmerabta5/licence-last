@@ -42,7 +42,7 @@ export function DashboardNavbar({ user }: { user: { id: string; name: string | n
   const currentSection = segments[segments.length - 1] || "overview"
 
   return (
-    <header className="sticky top-0 z-20 h-20 flex items-center justify-between px-4 sm:px-8 bg-background/60 backdrop-blur-xl border-b border-border/40 transition-colors duration-500">
+    <header className="sticky top-0 z-20 h-20 flex items-center justify-between ps-4 pe-6 sm:ps-8 sm:pe-10 bg-background/60 backdrop-blur-xl border-b border-border/40 transition-colors duration-500">
       <div className="flex items-center gap-4">
         {/* Mobile Menu Trigger */}
         <button 
@@ -91,8 +91,9 @@ export function DashboardNavbar({ user }: { user: { id: string; name: string | n
             <div className="hidden xs:flex items-center gap-3">
               <LanguageSwitcher />
               <div className="h-4 w-px bg-border/40 mx-1" />
-              <ThemeToggle />
             </div>
+
+            <ThemeToggle />
 
             <NotificationBell />
 
