@@ -12,12 +12,22 @@ export const listPendingProcedure = adminProcedure
   .input(
     z
       .object({
-        cursor: z.object({ createdAt: z.string(), id: z.string() }).optional(),
+        cursor: z
+          .object({ companyActionAt: z.string(), id: z.string() })
+          .optional(),
         limit: z.coerce.number().int().min(1).max(50).optional(),
       })
       .optional(),
   )
-  .handler(async ({ input }) => listPendingApplications(input))
+  .handler(async ({ input, context }) =>
+    listPendingApplications(
+      input ?? {},
+      {
+        role: context.user.role === "super_admin" ? "super_admin" : "admin",
+        universityId: context.user.universityId ?? null,
+      },
+    ),
+  )
 
 /* ── Validate Placement (admin only) ── */
 
@@ -42,6 +52,8 @@ export const validateProcedure = adminProcedure
       return await validatePlacement({
         applicationId: input.applicationId,
         adminUserId: context.user.id,
+        adminRole: context.user.role === "super_admin" ? "super_admin" : "admin",
+        adminUniversityId: context.user.universityId ?? null,
         startDate: input.startDate,
         endDate: input.endDate,
       })
@@ -65,9 +77,14 @@ export const rejectProcedure = adminProcedure
   .handler(async ({ input, context }) => {
     try {
       return await rejectPlacement(
-        input.applicationId,
-        context.user.id,
-        input.reason,
+        {
+          applicationId: input.applicationId,
+          adminUserId: context.user.id,
+          adminRole:
+            context.user.role === "super_admin" ? "super_admin" : "admin",
+          adminUniversityId: context.user.universityId ?? null,
+          reason: input.reason,
+        },
       )
     } catch (error) {
       throw new ORPCError("BAD_REQUEST", {

@@ -10,7 +10,8 @@ const mockLimit = mock(() => {
 })
 
 const mockWhereWithLimit = mock(() => ({ limit: mockLimit }))
-const mockJoin2 = mock(() => ({ where: mockWhereWithLimit }))
+const mockJoin3 = mock(() => ({ where: mockWhereWithLimit }))
+const mockJoin2 = mock(() => ({ innerJoin: mockJoin3 }))
 const mockJoin1 = mock(() => ({ innerJoin: mockJoin2 }))
 const mockFromWithTwoJoins = mock(() => ({ innerJoin: mockJoin1 }))
 
@@ -55,6 +56,7 @@ describe("src/server/services/applications/company-accept", () => {
     mockWhereWithLimit.mockClear()
     mockJoin1.mockClear()
     mockJoin2.mockClear()
+    mockJoin3.mockClear()
     mockFromWithTwoJoins.mockClear()
 
     mockAdminsWhere.mockClear()
@@ -69,7 +71,8 @@ describe("src/server/services/applications/company-accept", () => {
 
     mockFromWithTwoJoins.mockReturnValue({ innerJoin: mockJoin1 })
     mockJoin1.mockReturnValue({ innerJoin: mockJoin2 })
-    mockJoin2.mockReturnValue({ where: mockWhereWithLimit })
+    mockJoin2.mockReturnValue({ innerJoin: mockJoin3 })
+    mockJoin3.mockReturnValue({ where: mockWhereWithLimit })
     mockWhereWithLimit.mockReturnValue({ limit: mockLimit })
 
     mockFromAdmins.mockReturnValue({ where: mockAdminsWhere })
@@ -101,6 +104,7 @@ describe("src/server/services/applications/company-accept", () => {
         offerTitle: "Offer 1",
         offerCompanyId: "company-1",
         companyName: "Acme",
+        studentUniversityId: "uni-1",
       },
     ])
     mockSelectResults.push([{ id: "admin-1" }, { id: "admin-2" }])

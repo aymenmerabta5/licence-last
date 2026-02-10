@@ -1,6 +1,6 @@
 import "server-only"
 
-import { eq, and, desc } from "drizzle-orm"
+import { eq, and, desc, lt, or, isNotNull } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
@@ -14,7 +14,7 @@ import { company } from "@/server/db/schema/companies"
 export interface PendingApplication {
   id: string
   createdAt: Date
-  companyActionAt: Date | null
+  companyActionAt: Date
   coverLetter: string | null
   student: {
     id: string
@@ -66,27 +66,53 @@ export interface PendingApplication {
 
 export interface ListPendingApplicationsResult {
   applications: PendingApplication[]
-  nextCursor: { createdAt: string; id: string } | undefined
+  nextCursor: { companyActionAt: string; id: string } | undefined
   hasMore: boolean
 }
 
 interface ListPendingParams {
-  cursor?: { createdAt: string; id: string }
+  cursor?: { companyActionAt: string; id: string }
   limit?: number
+}
+
+interface ListPendingViewer {
+  role: "admin" | "super_admin"
+  universityId: string | null
 }
 
 export async function listPendingApplications(
   params: ListPendingParams = {},
+  viewer: ListPendingViewer,
 ): Promise<ListPendingApplicationsResult> {
   const { cursor, limit = 20 } = params
+  const { role, universityId } = viewer
 
-  const conditions = [eq(application.status, "company_accepted")]
+  // University admins can only see their own university's pending validations.
+  // Super admins can see all.
+  if (role !== "super_admin" && !universityId) {
+    return { applications: [], nextCursor: undefined, hasMore: false }
+  }
+
+  const conditions = [
+    eq(application.status, "company_accepted"),
+    // status implies this should exist, but keep pagination stable
+    isNotNull(application.companyActionAt),
+  ]
+
+  if (role !== "super_admin") {
+    // universityId is guaranteed by the guard above
+    conditions.push(eq(user.universityId, universityId!))
+  }
 
   if (cursor) {
+    const cursorDate = new Date(cursor.companyActionAt)
     conditions.push(
-      and(
-        desc(application.companyActionAt),
-        eq(application.id, cursor.id),
+      or(
+        lt(application.companyActionAt, cursorDate),
+        and(
+          eq(application.companyActionAt, cursorDate),
+          lt(application.id, cursor.id),
+        ),
       )!,
     )
   }
@@ -198,7 +224,7 @@ export async function listPendingApplications(
     return {
       id: app.id,
       createdAt: app.createdAt,
-      companyActionAt: app.companyActionAt,
+      companyActionAt: app.companyActionAt ?? app.createdAt,
       coverLetter: app.coverLetter,
       student: {
         id: app.studentId,
@@ -256,7 +282,7 @@ export async function listPendingApplications(
   const lastApp = result[result.length - 1]
   const nextCursor =
     hasMore && lastApp
-      ? { createdAt: lastApp.createdAt.toISOString(), id: lastApp.id }
+      ? { companyActionAt: lastApp.companyActionAt.toISOString(), id: lastApp.id }
       : undefined
 
   return { applications: result, nextCursor, hasMore }

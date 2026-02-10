@@ -7,12 +7,21 @@ import { application } from "@/server/db/schema/applications"
 import { notification } from "@/server/db/schema/notifications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { company, companyMember } from "@/server/db/schema/companies"
+import { user } from "@/server/db/schema/auth"
+
+export interface RejectPlacementInput {
+  applicationId: string
+  adminUserId: string
+  adminRole: "admin" | "super_admin"
+  adminUniversityId: string | null
+  reason?: string
+}
 
 export async function rejectPlacement(
-  applicationId: string,
-  adminUserId: string,
-  reason?: string,
+  input: RejectPlacementInput,
 ) {
+  const { applicationId, adminUserId, adminRole, adminUniversityId, reason } = input
+
   const [app] = await db
     .select({
       id: application.id,
@@ -22,10 +31,12 @@ export async function rejectPlacement(
       offerTitle: internshipOffer.title,
       companyId: internshipOffer.companyId,
       companyName: company.name,
+      studentUniversityId: user.universityId,
     })
     .from(application)
     .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
     .innerJoin(company, eq(internshipOffer.companyId, company.id))
+    .innerJoin(user, eq(application.studentUserId, user.id))
     .where(eq(application.id, applicationId))
     .limit(1)
 
@@ -35,6 +46,17 @@ export async function rejectPlacement(
 
   if (app.status !== "company_accepted") {
     throw new Error("Only company-accepted applications can be rejected by admin")
+  }
+
+  // University admin scoping: admins can only reject placements for students
+  // within their own university. Super admins can reject any.
+  if (adminRole !== "super_admin") {
+    if (!adminUniversityId) {
+      throw new Error("Admin university not set")
+    }
+    if (!app.studentUniversityId || app.studentUniversityId !== adminUniversityId) {
+      throw new Error("You do not have access to reject this application")
+    }
   }
 
   const now = new Date()

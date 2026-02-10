@@ -13,6 +13,8 @@ import { user } from "@/server/db/schema/auth"
 export interface ValidatePlacementInput {
   applicationId: string
   adminUserId: string
+  adminRole: "admin" | "super_admin"
+  adminUniversityId: string | null
   startDate: Date
   endDate: Date
 }
@@ -26,7 +28,14 @@ export interface ValidatePlacementResult {
 export async function validatePlacement(
   input: ValidatePlacementInput,
 ): Promise<ValidatePlacementResult> {
-  const { applicationId, adminUserId, startDate, endDate } = input
+  const {
+    applicationId,
+    adminUserId,
+    adminRole,
+    adminUniversityId,
+    startDate,
+    endDate,
+  } = input
 
   const [app] = await db
     .select({
@@ -58,6 +67,17 @@ export async function validatePlacement(
 
   if (app.status !== "company_accepted") {
     throw new Error("Only company-accepted applications can be validated")
+  }
+
+  // University admin scoping: admins can only validate placements for students
+  // within their own university. Super admins can validate any.
+  if (adminRole !== "super_admin") {
+    if (!adminUniversityId) {
+      throw new Error("Admin university not set")
+    }
+    if (!app.universityId || app.universityId !== adminUniversityId) {
+      throw new Error("You do not have access to validate this application")
+    }
   }
 
   // Check if placement already exists
