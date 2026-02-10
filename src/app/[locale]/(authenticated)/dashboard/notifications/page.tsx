@@ -2,11 +2,11 @@ import { requireRole } from "@/lib/auth-guards"
 import { NotificationsClient } from "./_components/NotificationsClient"
 
 export default async function NotificationsPage() {
-  await requireRole(["student", "company_admin", "admin", "super_admin"])
+  const user = await requireRole(["student", "company_admin", "admin", "super_admin"])
 
   return (
     <div className="max-w-4xl mx-auto">
-      <NotificationsClient />
+      <NotificationsClient role={(user.role as string) ?? "student"} />
     </div>
   )
 }

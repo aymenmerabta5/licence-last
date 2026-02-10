@@ -85,7 +85,16 @@ export const getCompanyByIdProcedure = authedProcedure
 
 /* ── Mutations ── */
 
-export const createCompanyProcedure = companyAdminProcedure
+export const createCompanyProcedure = authedProcedure
+  .use(async ({ context, next }) => {
+    // Only company_admin role can create companies
+    if (context.user.role !== "company_admin") {
+      throw new ORPCError("FORBIDDEN", {
+        message: "Company admin access required",
+      })
+    }
+    return next({ context })
+  })
   .input(
     z.object({
       name: z.string().min(2),

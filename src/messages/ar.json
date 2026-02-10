@@ -262,6 +262,70 @@
     }
   },
   "dashboard": {
+    "nav": {
+      "dashboard": "لوحة التحكم",
+      "exploreInternships": "استكشاف التدريبات",
+      "myApplications": "طلباتي",
+      "companyProfile": "ملف الشركة",
+      "manageOffers": "إدارة العروض",
+      "candidatePipeline": "مسار المرشحين",
+      "assistant": "المساعد",
+      "validatePlacements": "اعتماد التوظيفات",
+      "statistics": "الإحصائيات",
+      "settings": "الإعدادات",
+      "logout": "تسجيل الخروج"
+    },
+    "assistant": {
+      "kicker": "أدوات الشركة",
+      "title": "المساعد <accent>المعاون</accent>",
+      "subtitle": "اكتب عروض التدريب، حسّن الصياغة، واحصل على اقتراحات. عند الحاجة لتفويض أداة، ستحصل على رابط آمن.",
+      "badge": "اقتراحات فقط",
+      "conversations": "المحادثات",
+      "conversation": "محادثة",
+      "newConversation": "جديد",
+      "noConversations": "لا توجد محادثات بعد.",
+      "loadingConversations": "جارٍ تحميل المحادثات...",
+      "loadingMessages": "جارٍ تحميل الرسائل...",
+      "model": "النموذج",
+      "selectModel": "اختر",
+      "empty": "ابدأ بكتابة وصف مختصر (الدور، المدة، الموقع، التقنيات)، أو الصق مسودتك لتحسينها.",
+      "toolLabel": "الأداة: {toolName}",
+      "toolState": "الحالة: {state}",
+      "toolInput": "المدخلات",
+      "toolOutput": "المخرجات",
+      "retry": "إعادة المحاولة",
+      "toolPreparing": "جارٍ تجهيز مدخلات الأداة...",
+      "authRequired": "تتطلب هذه الأداة تفويضاً لحسابك.",
+      "openAuthLink": "فتح رابط التفويض",
+      "checkStatus": "التحقق من الحالة",
+      "retryTool": "إعادة تشغيل الأداة الآن",
+      "authStatus": "الحالة: {status}",
+      "unknown": "غير معروف",
+      "inputPlaceholder": "اطلب مسودة عرض، إعادة صياغة، أو اقتراح وسوم مهارات",
+      "chatStatus": "الحالة: {status}",
+      "send": "إرسال",
+      "promptIdeas": {
+        "title": "أفكار للطلب",
+        "idea1": "اكتب عرض تدريب لدور <highlight>React + Node</highlight> لمدة 12 أسبوعاً في الجزائر.",
+        "idea2": "أعد صياغة هذا العرض ليكون أكثر اختصاراً وشمولاً.",
+        "idea3": "اقترح 10 وسوماً للمهارات لهذه الوصف وصنّفها حسب الفئة.",
+        "note": "قد تتطلب استدعاءات الأدوات تفويضاً لمرة واحدة لكل مزوّد."
+      }
+    },
+    "notifications": {
+      "title": "الإشعارات",
+      "unreadCount": "{count} غير مقروءة",
+      "summarize": "تلخيص",
+      "markAllRead": "وضع الكل كمقروء",
+      "empty": "لا توجد إشعارات بعد.",
+      "prompts": {
+        "summarize": "تلخيص الإشعارات"
+      },
+      "aiSummary": {
+        "title": "ملخص بالذكاء الاصطناعي",
+        "suggestedNextActions": "خطوات تالية مقترحة"
+      }
+    },
     "company": {
       "pending": {
         "pageTitle": "قيد المراجعة",
@@ -374,7 +438,36 @@
           "cancel": "إلغاء",
           "success": "تم إنشاء العرض بنجاح",
           "successEdit": "تم تحديث العرض بنجاح",
-          "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+          "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+          "skillCategory": {
+            "frontend": "الواجهة الأمامية",
+            "backend": "الواجهة الخلفية",
+            "languages": "اللغات",
+            "database": "قواعد البيانات",
+            "devops": "DevOps",
+            "mobile": "المحمول",
+            "data_ai": "البيانات والذكاء الاصطناعي",
+            "other": "أخرى"
+          },
+          "copilot": {
+            "title": "مساعد الذكاء الاصطناعي",
+            "description": "اقتراحات فقط. راجع أولاً ثم طبّق على النموذج.",
+            "badge": "مسودة + مهارات",
+            "promptLabel": "طلب (اختياري)",
+            "promptPlaceholder": "الدور، التقنيات، القيود (مثل 12 أسبوعاً، عن بُعد، React + Node)",
+            "generateDraft": "إنشاء مسودة",
+            "improveDescription": "تحسين الوصف",
+            "suggestSkills": "اقتراح مهارات",
+            "status": "الحالة: {status}",
+            "preview": "معاينة",
+            "applyToForm": "تطبيق على النموذج",
+            "waiting": "بانتظار مخرجات الذكاء الاصطناعي...",
+            "prompts": {
+              "generateDraft": "إنشاء مسودة عرض تدريب",
+              "improveDescription": "تحسين وصف العرض",
+              "suggestSkills": "اقتراح وسوم مهارات لهذا العرض"
+            }
+          }
         }
       },
       "candidates": {
@@ -406,8 +499,38 @@
         "appliedOn": "تقدم في",
         "skillMatch": "تطابق",
         "coverLetter": "رسالة التغطية",
-        "portfolio": "معرض الأعمال"
+        "portfolio": "معرض الأعمال",
+        "ai": {
+          "summaryTitle": "ملخص بالذكاء الاصطناعي",
+          "strengths": "نقاط القوة",
+          "concerns": "ملاحظات",
+          "followUps": "أسئلة متابعة",
+          "summarize": "تلخيص",
+          "draftingNote": "جارٍ صياغة الملاحظة...",
+          "draftRefusalWithAi": "صياغة ملاحظة بالذكاء الاصطناعي",
+          "aiStatus": "الذكاء الاصطناعي: {status}",
+          "prompts": {
+            "summarize": "تلخيص هذا المرشح",
+            "refusalNote": "صياغة ملاحظة رفض قصيرة"
+          }
+        }
       }
+    },
+    "candidates": {
+      "title": "مسار المرشحين",
+      "description": "إدارة {count} من المرشحين عبر جميع عروضك",
+      "stats": {
+        "totalOffers": "إجمالي العروض",
+        "activeOffers": "العروض النشطة",
+        "totalCandidates": "إجمالي المرشحين"
+      },
+      "offersWithCandidates": "العروض مع المرشحين",
+      "noCandidatesYet": "لا يوجد مرشحون بعد",
+      "noCandidatesDescription": "سيظهر المرشحون هنا عندما يتقدم الطلاب لعروضك",
+      "manageOffers": "إدارة عروضك",
+      "viewAllOffers": "عرض جميع العروض",
+      "candidate": "مرشح",
+      "candidates": "مرشحون"
     },
     "welcome": "مرحباً بعودتك،",
     "roles": {
@@ -493,6 +616,14 @@
         "on_site": "حضوري",
         "hybrid": "هجين",
         "remote": "عن بُعد"
+      },
+      "copilot": {
+        "title": "مساعد البحث",
+        "description": "صف ما تريد. ستراجع الفلاتر قبل تطبيقها.",
+        "aiStatus": "الذكاء الاصطناعي: {status}",
+        "placeholder": "مثال: تدريب صيفي عن بُعد في الجزائر، React + Node",
+        "parseFilters": "تحليل الفلاتر",
+        "apply": "تطبيق"
       }
     },
     "offerDetail": {
@@ -529,6 +660,15 @@
         "on_site": "حضوري",
         "hybrid": "هجين",
         "remote": "عن بُعد"
+      },
+      "copilot": {
+        "draftWithAi": "كتابة بالذكاء الاصطناعي",
+        "aiStatus": "الذكاء الاصطناعي: {status}",
+        "previewTitle": "معاينة مسودة الذكاء الاصطناعي",
+        "applyDraft": "تطبيق المسودة",
+        "prompts": {
+          "draftCoverLetter": "صياغة رسالة تغطية"
+        }
       }
     },
     "applications": {
@@ -575,6 +715,79 @@
         "validatePlacements": "التحقق من التوظيفات",
         "systemHealth": "حالة النظام",
         "exportReports": "تصدير التقارير"
+      },
+      "validations": {
+        "backToDashboard": "العودة إلى لوحة التحكم",
+        "title": "اعتماد التوظيفات",
+        "description": "راجع الطلبات المقبولة من الشركة واعتمد التوظيفات.",
+        "empty": "لا توجد توظيفات بانتظار الاعتماد.",
+        "companyAcceptedOn": "قُبل من الشركة في",
+        "detail": {
+          "backToList": "العودة إلى قائمة الاعتماد",
+          "title": "تفاصيل الاعتماد",
+          "notFound": "لم يتم العثور على الطلب.",
+          "studentInfo": "معلومات الطالب",
+          "name": "الاسم",
+          "email": "البريد الإلكتروني",
+          "phone": "الهاتف",
+          "studentNumber": "رقم الطالب",
+          "department": "القسم",
+          "level": "المستوى",
+          "university": "الجامعة",
+          "dean": "العميد",
+          "address": "العنوان",
+          "skills": "المهارات",
+          "companyInfo": "معلومات الشركة",
+          "companyName": "اسم الشركة",
+          "representative": "الممثل",
+          "offerDetails": "تفاصيل العرض",
+          "type": "النوع",
+          "internshipTypeLabel": {
+            "pfe": "مشروع تخرج (PFE)",
+            "immersion": "تدريب اندماج",
+            "summer": "تدريب صيفي",
+            "practical": "تدريب عملي"
+          },
+          "workMode": "نمط العمل",
+          "workModeLabel": {
+            "on_site": "حضوري",
+            "hybrid": "هجين",
+            "remote": "عن بُعد"
+          },
+          "duration": "المدة",
+          "durationWeeks": "{count} أسبوع",
+          "timeline": "الجدول الزمني",
+          "appliedOn": "تاريخ التقديم",
+          "companyAcceptedOn": "تاريخ قبول الشركة",
+          "coverLetter": "رسالة التغطية",
+          "setInternshipPeriod": "تحديد فترة التدريب",
+          "startDate": "تاريخ البدء",
+          "endDate": "تاريخ الانتهاء",
+          "selectDates": "يرجى اختيار تاريخي البدء والانتهاء.",
+          "invalidDates": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء.",
+          "confirmValidate": "هل تريد اعتماد هذا التوظيف؟",
+          "generatingPdf": "جارٍ إنشاء PDF...",
+          "validateAndGenerate": "اعتماد وإنشاء",
+          "reject": "رفض",
+          "rejectTitle": "رفض التوظيف",
+          "rejectDescription": "أضف سبباً قصيراً لرفض {name} (اختياري).",
+          "rejectReasonPlaceholder": "السبب (اختياري)...",
+          "cancel": "إلغاء",
+          "confirmReject": "تأكيد الرفض",
+          "notAvailable": "غير متاح",
+          "ai": {
+            "title": "ملخص بالذكاء الاصطناعي",
+            "description": "ملخص سريع وقائمة تحقق. بدون قرار اعتماد/رفض.",
+            "generate": "إنشاء",
+            "summary": "ملخص",
+            "checklist": "قائمة تحقق",
+            "noMissingItems": "لم يتم العثور على عناصر ناقصة.",
+            "potentialInconsistencies": "تناقضات محتملة",
+            "generating": "جارٍ إنشاء الملخص...",
+            "hint": "اضغط \"إنشاء\" لإنتاج ملخص.",
+            "prompt": "تلخيص حالة اعتماد"
+          }
+        }
       },
       "globalStats": "تحليلات التوظيف العالمية"
     }

@@ -1,8 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import * as motion from "motion/react-client"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
+import { DefaultChatTransport } from "ai"
+import { useChat } from "@ai-sdk/react"
 import { useMutation } from "@tanstack/react-query"
 import {
   ArrowLeft,
@@ -16,9 +18,11 @@ import {
   CheckCircle2,
   Loader2,
   Send,
+  Sparkles,
 } from "lucide-react"
 
 import { Link } from "@/i18n/routing"
+import { asRecord, findLatestToolOutput, getStringProp } from "@/lib/ai/tool-output"
 import { orpc } from "@/server/orpc/client"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -78,12 +82,42 @@ export function OfferDetailClient({
   existingApplication,
 }: OfferDetailClientProps) {
   const t = useTranslations("dashboard.offerDetail")
+  const locale = useLocale()
   const statusT = useTranslations("dashboard.applications.status")
 
   const [showApplyForm, setShowApplyForm] = useState(false)
   const [coverLetter, setCoverLetter] = useState("")
+  const [coverLetterDraft, setCoverLetterDraft] = useState<string | null>(null)
   const [application, setApplication] = useState(existingApplication)
   const [successMsg, setSuccessMsg] = useState("")
+
+  const aiActiveRef = useRef(false)
+
+  const aiTransport = useState(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/assistant/chat",
+      }),
+  )[0]
+
+  const {
+    status: aiStatus,
+    error: aiError,
+    sendMessage: sendAiMessage,
+    setMessages: setAiMessages,
+  } = useChat({
+    transport: aiTransport,
+    onFinish: ({ messages }) => {
+      if (!aiActiveRef.current) return
+      aiActiveRef.current = false
+
+      const out = asRecord(findLatestToolOutput(messages, "student_cover_letter_draft"))
+      const coverLetter = getStringProp(out, "coverLetter")
+      if (!coverLetter) return
+
+      setCoverLetterDraft(coverLetter)
+    },
+  })
 
   const isOfferClosed = offer.closesAt && new Date(offer.closesAt) < new Date()
 
@@ -260,7 +294,7 @@ export function OfferDetailClient({
                 <dt className="text-muted-foreground">{t("deadline")}:</dt>
                 <dd className="font-medium ms-auto">
                   {offer.closesAt
-                    ? new Date(offer.closesAt).toLocaleDateString()
+                    ? new Date(offer.closesAt).toLocaleDateString(locale)
                     : t("noDeadline")}
                 </dd>
               </div>
@@ -298,6 +332,54 @@ export function OfferDetailClient({
                   <Label htmlFor="coverLetter" className="text-sm">
                     {t("coverLetter")}
                   </Label>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                      disabled={aiStatus !== "ready"}
+                      onClick={() => {
+                        aiActiveRef.current = true
+                        setCoverLetterDraft(null)
+                        setAiMessages([])
+
+                        const context = {
+                          intent: "student_cover_letter_draft",
+                          offer: {
+                            title: offer.title,
+                            description: offer.description,
+                            internshipType: offer.internshipType,
+                            workMode: offer.workMode,
+                            wilayaCode: offer.wilayaCode,
+                            durationWeeks: offer.durationWeeks,
+                            skills: offer.skills.map((s) => ({
+                              id: s.id,
+                              name: s.name,
+                              category: s.category ?? null,
+                            })),
+                          },
+                          company: {
+                            name: offer.companyName,
+                            description: offer.companyDescription,
+                            address: offer.companyAddress,
+                          },
+                          currentCoverLetter: coverLetter || null,
+                        }
+
+                        void sendAiMessage(
+                          { text: t("copilot.prompts.draftCoverLetter") },
+                          { body: { context } },
+                        )
+                      }}
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      {t("copilot.draftWithAi")}
+                    </Button>
+                    <p className="text-[11px] text-muted-foreground">{t("copilot.aiStatus", { status: aiStatus })}</p>
+                  </div>
+
                   <Textarea
                     id="coverLetter"
                     value={coverLetter}
@@ -306,6 +388,30 @@ export function OfferDetailClient({
                     rows={6}
                     maxLength={5000}
                   />
+
+                  {aiError && <p className="text-xs text-destructive">{aiError.message}</p>}
+
+                  {coverLetterDraft && (
+                    <div className="border border-border bg-primary/5 p-3 rounded-none space-y-2">
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                        {t("copilot.previewTitle")}
+                      </p>
+                      <p className="text-xs text-muted-foreground whitespace-pre-wrap">
+                        {coverLetterDraft}
+                      </p>
+                      <div className="flex justify-end">
+                        <Button
+                          type="button"
+                          variant="editorial"
+                          size="editorial"
+                          className="h-9"
+                          onClick={() => setCoverLetter(coverLetterDraft)}
+                        >
+                          {t("copilot.applyDraft")}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {applyMutation.error && (

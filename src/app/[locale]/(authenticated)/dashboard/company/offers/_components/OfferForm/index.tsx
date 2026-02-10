@@ -3,6 +3,8 @@
 import { useState, useMemo } from "react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+import { DefaultChatTransport } from "ai"
+import { useChat } from "@ai-sdk/react"
 import { useForm } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
 import {
@@ -15,9 +17,19 @@ import {
   ArrowRight,
   Loader2,
   Check,
+  Sparkles,
+  Wand2,
+  Tag,
 } from "lucide-react"
 
 import { useRouter } from "@/i18n/routing"
+import {
+  asRecord,
+  findLatestToolOutput,
+  getNumber,
+  getString,
+  getStringArray,
+} from "@/lib/ai/tool-output"
 import { createOfferSchema } from "@/lib/schemas/offer"
 import { errorMessage } from "@/lib/schemas/auth"
 import { orpcClient, orpc } from "@/server/orpc/client"
@@ -30,48 +42,8 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group"
 
-const reveal = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-}
-const ease = [0.4, 0, 0.2, 1] as const
-
-const CATEGORY_ORDER = [
-  "frontend",
-  "backend",
-  "languages",
-  "database",
-  "devops",
-  "mobile",
-  "data_ai",
-  "other",
-] as const
-
-const CATEGORY_LABELS: Record<string, string> = {
-  frontend: "Frontend",
-  backend: "Backend",
-  languages: "Languages",
-  database: "Database",
-  devops: "DevOps",
-  mobile: "Mobile",
-  data_ai: "Data & AI",
-  other: "Other",
-}
-
-interface OfferFormProps {
-  mode: "create" | "edit"
-  initialData?: {
-    offerId: string
-    title: string
-    description: string
-    internshipType: string
-    workMode: string | null
-    wilayaCode: number | null
-    durationWeeks: number | null
-    maxPositions: number
-    skillTagIds: string[]
-  }
-}
+import type { OfferCopilotIntent, OfferFormProps } from "./types"
+import { ease, groupSkillsByCategory, isInternshipType, isWorkMode, reveal, CATEGORY_ORDER } from "./utils"
 
 export function OfferForm({ mode, initialData }: OfferFormProps) {
   const t = useTranslations("dashboard.company.offers.form")
@@ -80,7 +52,28 @@ export function OfferForm({ mode, initialData }: OfferFormProps) {
 
   const [serverError, setServerError] = useState("")
 
+  const [aiPrompt, setAiPrompt] = useState("")
+  const [aiIntent, setAiIntent] = useState<OfferCopilotIntent | null>(null)
+
   const { data: skillTags = [] } = useQuery(orpc.skills.list.queryOptions())
+
+  const aiTransport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/assistant/chat",
+      }),
+    [],
+  )
+
+  const {
+    messages: aiMessages,
+    status: aiStatus,
+    error: aiError,
+    sendMessage: sendAiMessage,
+    setMessages: setAiMessages,
+  } = useChat({
+    transport: aiTransport,
+  })
 
   const schema = useMemo(() => createOfferSchema(tv), [tv])
 
@@ -151,15 +144,7 @@ export function OfferForm({ mode, initialData }: OfferFormProps) {
   })
 
   // Group skills by category
-  const groupedSkills = useMemo(() => {
-    const groups: Record<string, typeof skillTags> = {}
-    for (const skill of skillTags) {
-      const cat = skill.category || "other"
-      if (!groups[cat]) groups[cat] = []
-      groups[cat].push(skill)
-    }
-    return groups
-  }, [skillTags])
+  const groupedSkills = useMemo(() => groupSkillsByCategory(skillTags), [skillTags])
 
   return (
     <form
@@ -190,6 +175,233 @@ export function OfferForm({ mode, initialData }: OfferFormProps) {
           <span>{serverError}</span>
         </motion.div>
       )}
+
+      {/* ── AI Copilot ── */}
+      <motion.div
+        {...reveal}
+        transition={{ duration: 0.6, ease, delay: 0.08 }}
+        className="border border-border bg-primary/5 p-4 sm:p-5 rounded-none space-y-4"
+       >
+         <div className="flex items-start justify-between gap-3">
+           <div className="space-y-1">
+             <p className="text-[10px] font-semibold tracking-[0.15em] uppercase text-muted-foreground/70">
+              {t("copilot.title")}
+              </p>
+              <p className="text-sm text-muted-foreground font-light">
+              {t("copilot.description")}
+              </p>
+            </div>
+            <div className="hidden sm:flex items-center gap-2 text-muted-foreground">
+              <Sparkles className="h-4 w-4" />
+              <span className="text-xs tracking-wide">{t("copilot.badge")}</span>
+            </div>
+          </div>
+
+        <div className="grid gap-3 sm:grid-cols-[1fr,auto]">
+          <div className="space-y-2">
+            <Label
+              htmlFor="offer-ai-prompt"
+              className="text-[11px] font-medium tracking-[0.1em] uppercase text-muted-foreground"
+            >
+              {t("copilot.promptLabel")}
+            </Label>
+            <InputGroup className="rounded-none h-11">
+              <InputGroupAddon align="inline-start">
+                <Wand2 className="h-4 w-4" />
+              </InputGroupAddon>
+              <InputGroupInput
+                id="offer-ai-prompt"
+                type="text"
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+                placeholder={t("copilot.promptPlaceholder")}
+              />
+            </InputGroup>
+          </div>
+
+          <Button
+            type="button"
+            variant="editorial"
+            size="editorial"
+            className="h-11 mt-[26px]"
+            disabled={aiStatus !== "ready"}
+            onClick={() => {
+              setAiIntent("offer_generate_draft")
+              setAiMessages([])
+              const v = form.state.values
+              const context = {
+                intent: "offer_generate_draft",
+                prompt: aiPrompt.trim() || undefined,
+                title: v.title,
+                internshipType: v.internshipType,
+                workMode: v.workMode || null,
+                wilayaCode: v.wilayaCode || null,
+                durationWeeks: v.durationWeeks || null,
+                maxPositions: v.maxPositions,
+                description: v.description,
+                availableSkillTags: skillTags.map((s) => ({
+                  id: s.id,
+                  name: s.name,
+                  category: s.category ?? null,
+                })),
+              }
+              void sendAiMessage(
+                { text: aiPrompt.trim() || t("copilot.prompts.generateDraft") },
+                { body: { context } },
+              )
+            }}
+          >
+            {t("copilot.generateDraft")}
+          </Button>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            disabled={aiStatus !== "ready"}
+            onClick={() => {
+              setAiIntent("offer_improve_description")
+              setAiMessages([])
+              const v = form.state.values
+              const context = {
+                intent: "offer_improve_description",
+                title: v.title,
+                internshipType: v.internshipType,
+                workMode: v.workMode || null,
+                wilayaCode: v.wilayaCode || null,
+                durationWeeks: v.durationWeeks || null,
+                maxPositions: v.maxPositions,
+                description: v.description,
+              }
+              void sendAiMessage(
+                { text: t("copilot.prompts.improveDescription") },
+                { body: { context } },
+              )
+            }}
+          >
+            {t("copilot.improveDescription")}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={aiStatus !== "ready"}
+            onClick={() => {
+              setAiIntent("offer_suggest_skill_tags")
+              setAiMessages([])
+              const v = form.state.values
+              const context = {
+                intent: "offer_suggest_skill_tags",
+                title: v.title,
+                internshipType: v.internshipType,
+                workMode: v.workMode || null,
+                wilayaCode: v.wilayaCode || null,
+                durationWeeks: v.durationWeeks || null,
+                maxPositions: v.maxPositions,
+                description: v.description,
+                availableSkillTags: skillTags.map((s) => ({
+                  id: s.id,
+                  name: s.name,
+                  category: s.category ?? null,
+                })),
+              }
+              void sendAiMessage(
+                { text: t("copilot.prompts.suggestSkills") },
+                { body: { context } },
+              )
+            }}
+          >
+            <Tag className="h-4 w-4" />
+            {t("copilot.suggestSkills")}
+          </Button>
+          <p className="text-[11px] text-muted-foreground self-center">
+            {t("copilot.status", { status: aiStatus })}
+          </p>
+        </div>
+
+        {aiError && <p className="text-[11px] text-destructive">{aiError.message}</p>}
+
+        {aiIntent && (
+          <div className="border border-border bg-background/60 p-4 rounded-none space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-[10px] font-semibold tracking-[0.15em] uppercase text-muted-foreground/70">
+                {t("copilot.preview")}
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={aiStatus !== "ready"}
+                onClick={() => {
+                  const out = findLatestToolOutput(aiMessages, aiIntent)
+                  const outRecord = asRecord(out)
+                  if (!outRecord) return
+
+                  // Apply title/description/fields if present
+                  const nextTitle = getString(outRecord.title)
+                  const nextDescription = getString(outRecord.description)
+                  const nextInternshipType = getString(outRecord.internshipType)
+                  const nextWorkMode = getString(outRecord.workMode)
+                  const nextWilayaCode = getNumber(outRecord.wilayaCode)
+                  const nextDurationWeeks = getNumber(outRecord.durationWeeks)
+                  const nextMaxPositions = getNumber(outRecord.maxPositions)
+
+                  if (nextTitle) form.setFieldValue("title", nextTitle)
+                  if (nextDescription) form.setFieldValue("description", nextDescription)
+                  if (nextInternshipType && isInternshipType(nextInternshipType)) {
+                    form.setFieldValue("internshipType", nextInternshipType)
+                  }
+                  if (nextWorkMode && isWorkMode(nextWorkMode)) {
+                    form.setFieldValue("workMode", nextWorkMode)
+                  }
+                  if (nextWilayaCode != null) form.setFieldValue("wilayaCode", nextWilayaCode)
+                  if (nextDurationWeeks != null) form.setFieldValue("durationWeeks", nextDurationWeeks)
+                  if (nextMaxPositions != null) form.setFieldValue("maxPositions", nextMaxPositions)
+
+                  const suggestedIds = getStringArray(outRecord.skillTagIds ?? outRecord.suggestedSkillTagIds)
+                  const suggestedNames = getStringArray(outRecord.skillTagNames ?? outRecord.suggestedSkillTagNames)
+
+                  if (aiIntent === "offer_suggest_skill_tags" || aiIntent === "offer_generate_draft") {
+                    const availableById = new Set(skillTags.map((s) => s.id))
+                    const availableByName = new Map(
+                      skillTags.map((s) => [s.name.toLowerCase(), s.id] as const),
+                    )
+
+                    const mapped: string[] = []
+                    for (const id of suggestedIds) {
+                      if (availableById.has(id)) mapped.push(id)
+                    }
+                    for (const name of suggestedNames) {
+                      const id = availableByName.get(name.toLowerCase())
+                      if (id) mapped.push(id)
+                    }
+
+                    const deduped = Array.from(new Set(mapped)).slice(0, 20)
+                    if (deduped.length > 0) {
+                      form.setFieldValue("skillTagIds", deduped)
+                    }
+                  }
+                }}
+              >
+                {t("copilot.applyToForm")}
+              </Button>
+            </div>
+
+            {(() => {
+              const out = findLatestToolOutput(aiMessages, aiIntent)
+                if (!out) {
+                  return <p className="text-xs text-muted-foreground">{t("copilot.waiting")}</p>
+                }
+
+              return (
+                <pre className="text-xs rounded-md border border-border/60 bg-muted/20 p-3 overflow-x-auto">
+                  {JSON.stringify(out, null, 2)}
+                </pre>
+              )
+            })()}
+          </div>
+        )}
+      </motion.div>
 
       {/* ── Basic Info ── */}
       <motion.div
@@ -460,7 +672,7 @@ export function OfferForm({ mode, initialData }: OfferFormProps) {
                 return (
                   <div key={category} className="space-y-2">
                     <p className="text-[10px] font-semibold tracking-[0.12em] uppercase text-muted-foreground/70">
-                      {CATEGORY_LABELS[category] ?? category}
+                      {t(`skillCategory.${category}` as "skillCategory.frontend")}
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {skills.map((skill) => {

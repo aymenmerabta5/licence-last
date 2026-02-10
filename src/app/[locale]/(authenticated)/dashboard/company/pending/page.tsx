@@ -74,24 +74,24 @@ export default async function CompanyPendingPage({ params }: { params: Params })
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <Button
-          variant="editorial"
-          size="editorial"
-          className="w-full sm:w-auto"
-          nativeButton={false}
-          render={<Link href="/dashboard/company/profile" />}
-        >
-          {t("checkStatus")}
-        </Button>
-        <Button
-          variant="editorial-outline"
-          size="editorial"
-          className="w-full sm:w-auto"
-          nativeButton={false}
-          render={<a href="mailto:support@internex.io" />}
-        >
-          {t("contactSupport")}
-        </Button>
+        <Link href="/dashboard/company/profile" className="w-full sm:w-auto">
+          <Button
+            variant="editorial"
+            size="editorial"
+            className="w-full"
+          >
+            {t("checkStatus")}
+          </Button>
+        </Link>
+        <a href="mailto:support@internex.io" className="w-full sm:w-auto">
+          <Button
+            variant="editorial-outline"
+            size="editorial"
+            className="w-full"
+          >
+            {t("contactSupport")}
+          </Button>
+        </a>
       </div>
     </div>
   )

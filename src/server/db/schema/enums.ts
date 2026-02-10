@@ -59,6 +59,12 @@ export const internshipTypeEnum = pgEnum("internship_type", [
   "practical",
 ])
 
+export const assistantMessageRoleEnum = pgEnum("assistant_message_role", [
+  "system",
+  "user",
+  "assistant",
+])
+
 export const documentStatusEnum = pgEnum("document_status", [
   "pending",
   "generated",

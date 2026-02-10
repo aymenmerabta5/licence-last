@@ -3,9 +3,12 @@
 import { useState, useRef, useCallback, useEffect } from "react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+import { DefaultChatTransport } from "ai"
+import { useChat } from "@ai-sdk/react"
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
-import { Search, SlidersHorizontal, X, Loader2 } from "lucide-react"
+import { Search, SlidersHorizontal, X, Loader2, Sparkles } from "lucide-react"
 
+import { asRecord, findLatestToolOutput, getNumber, getString, getStringArray } from "@/lib/ai/tool-output"
 import { orpcClient, orpc } from "@/server/orpc/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -16,8 +19,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { OfferCard } from "./OfferCard"
-import { SearchFilters } from "./SearchFilters"
+import { OfferCard } from "../OfferCard"
+import { SearchFilters } from "../SearchFilters"
 
 const reveal = {
   initial: { opacity: 0, y: 20 },
@@ -41,6 +44,50 @@ export function ExploreClient() {
     internshipTypes: [],
     workModes: [],
     skillTagIds: [],
+  })
+
+  const [aiQuery, setAiQuery] = useState("")
+  const [aiSuggestion, setAiSuggestion] = useState<
+    | (FilterState & { keyword?: string; explanation?: string | null })
+    | null
+  >(null)
+
+  const aiActiveRef = useRef(false)
+
+  const aiTransport = useState(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/assistant/chat",
+      }),
+  )[0]
+
+  const {
+    status: aiStatus,
+    error: aiError,
+    sendMessage: sendAiMessage,
+    setMessages: setAiMessages,
+  } = useChat({
+    transport: aiTransport,
+    onFinish: ({ messages }) => {
+      if (!aiActiveRef.current) return
+      aiActiveRef.current = false
+
+      const out = asRecord(findLatestToolOutput(messages, "student_search_parse"))
+      if (!out) return
+
+      const keyword = getString(out.keyword) ?? undefined
+      const explanation = getString(out.explanation)
+      const wilayaCode = getNumber(out.wilayaCode) ?? undefined
+
+      setAiSuggestion({
+        keyword,
+        explanation,
+        wilayaCode,
+        internshipTypes: getStringArray(out.internshipTypes),
+        workModes: getStringArray(out.workModes),
+        skillTagIds: getStringArray(out.skillTagIds),
+      })
+    },
   })
 
   // Debounce keyword
@@ -186,6 +233,94 @@ export function ExploreClient() {
             <X className="h-3.5 w-3.5" />
             {t("clearFilters")}
           </Button>
+        )}
+      </motion.div>
+
+      {/* Search Copilot */}
+      <motion.div
+        {...reveal}
+        transition={{ duration: 0.5, ease, delay: 0.08 }}
+        className="border border-border bg-primary/5 p-4 rounded-none space-y-3"
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-1">
+            <p className="text-[10px] font-semibold tracking-[0.15em] uppercase text-muted-foreground/70">
+              {t("copilot.title")}
+            </p>
+            <p className="text-sm text-muted-foreground font-light">
+              {t("copilot.description")}
+            </p>
+          </div>
+          <p className="text-[11px] text-muted-foreground">{t("copilot.aiStatus", { status: aiStatus })}</p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Input
+            value={aiQuery}
+            onChange={(e) => setAiQuery(e.target.value)}
+            placeholder={t("copilot.placeholder")}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            className="gap-2"
+            disabled={aiStatus !== "ready" || aiQuery.trim().length === 0}
+            onClick={() => {
+              aiActiveRef.current = true
+              setAiSuggestion(null)
+              setAiMessages([])
+
+              const context = {
+                intent: "student_search_parse",
+                query: aiQuery,
+                availableSkillTags: skills.map((s) => ({
+                  id: s.id,
+                  name: s.name,
+                  category: s.category ?? null,
+                })),
+              }
+
+              void sendAiMessage(
+                { text: aiQuery },
+                { body: { context } },
+              )
+            }}
+          >
+            <Sparkles className="h-4 w-4" />
+            {t("copilot.parseFilters")}
+          </Button>
+          {aiSuggestion && (
+            <Button
+              type="button"
+              variant="editorial"
+              size="editorial"
+              className="h-9"
+              onClick={() => {
+                const availableIds = new Set(skills.map((s) => s.id))
+                const safeSkillIds = aiSuggestion.skillTagIds.filter((id) => availableIds.has(id))
+                setFilters({
+                  wilayaCode: aiSuggestion.wilayaCode,
+                  internshipTypes: aiSuggestion.internshipTypes,
+                  workModes: aiSuggestion.workModes,
+                  skillTagIds: safeSkillIds,
+                })
+                if (aiSuggestion.keyword) setKeyword(aiSuggestion.keyword)
+              }}
+            >
+              {t("copilot.apply")}
+            </Button>
+          )}
+        </div>
+
+        {aiError && <p className="text-xs text-destructive">{aiError.message}</p>}
+
+        {aiSuggestion && (
+          <div className="border border-border bg-background/60 p-3 rounded-none space-y-2">
+            {aiSuggestion.explanation && (
+              <p className="text-xs text-muted-foreground">{aiSuggestion.explanation}</p>
+            )}
+            <pre className="text-xs overflow-x-auto">{JSON.stringify(aiSuggestion, null, 2)}</pre>
+          </div>
         )}
       </motion.div>
 

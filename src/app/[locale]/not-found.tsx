@@ -1,7 +1,5 @@
-"use client"
-
 import * as motion from "motion/react-client"
-import { useTranslations } from "next-intl"
+import { getTranslations } from "next-intl/server"
 import { ArrowRight } from "lucide-react"
 
 import { Link } from "@/i18n/routing"
@@ -43,8 +41,8 @@ function DotSeparator({
   )
 }
 
-export default function NotFoundPage() {
-  const t = useTranslations("notFound")
+export default async function NotFoundPage() {
+  const t = await getTranslations("notFound")
 
   return (
     <main className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">

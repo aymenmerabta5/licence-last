@@ -262,6 +262,70 @@
     }
   },
   "dashboard": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "exploreInternships": "Explore Internships",
+      "myApplications": "My Applications",
+      "companyProfile": "Company Profile",
+      "manageOffers": "Manage Offers",
+      "candidatePipeline": "Candidate Pipeline",
+      "assistant": "Assistant",
+      "validatePlacements": "Validate Placements",
+      "statistics": "Statistics",
+      "settings": "Settings",
+      "logout": "Log out"
+    },
+    "assistant": {
+      "kicker": "Company Tools",
+      "title": "Assistant <accent>Copilot</accent>",
+      "subtitle": "Draft offers, refine tone, and get suggestions. When a tool needs authorization, you'll get a secure link.",
+      "badge": "Suggest-only",
+      "conversations": "Conversations",
+      "conversation": "Conversation",
+      "newConversation": "New",
+      "noConversations": "No conversations yet.",
+      "loadingConversations": "Loading conversations...",
+      "loadingMessages": "Loading messages...",
+      "model": "Model",
+      "selectModel": "Select",
+      "empty": "Start with an offer prompt (role, duration, location, stack), or paste your draft for a polish pass.",
+      "toolLabel": "Tool: {toolName}",
+      "toolState": "State: {state}",
+      "toolInput": "Input",
+      "toolOutput": "Output",
+      "retry": "Retry",
+      "toolPreparing": "Preparing tool input...",
+      "authRequired": "This tool requires authorization for your account.",
+      "openAuthLink": "Open authorization link",
+      "checkStatus": "Check status",
+      "retryTool": "Retry tool now",
+      "authStatus": "Status: {status}",
+      "unknown": "unknown",
+      "inputPlaceholder": "Ask for an offer draft, rewrite, or skill tag suggestions",
+      "chatStatus": "Status: {status}",
+      "send": "Send",
+      "promptIdeas": {
+        "title": "Prompt Ideas",
+        "idea1": "Draft an internship offer for a <highlight>React + Node</highlight> role, 12 weeks, Algiers.",
+        "idea2": "Rewrite this offer to be more concise and inclusive.",
+        "idea3": "Suggest 10 skill tags for this description and group them by category.",
+        "note": "Tool calls may require a one-time authorization per provider."
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "unreadCount": "{count} unread",
+      "summarize": "Summarize",
+      "markAllRead": "Mark all read",
+      "empty": "No notifications yet.",
+      "prompts": {
+        "summarize": "Summarize notifications"
+      },
+      "aiSummary": {
+        "title": "AI Summary",
+        "suggestedNextActions": "Suggested Next Actions"
+      }
+    },
     "company": {
       "pending": {
         "pageTitle": "Under Review",
@@ -370,7 +434,36 @@
           "cancel": "Cancel",
           "success": "Offer created successfully",
           "successEdit": "Offer updated successfully",
-          "error": "Something went wrong. Please try again."
+          "error": "Something went wrong. Please try again.",
+          "skillCategory": {
+            "frontend": "Frontend",
+            "backend": "Backend",
+            "languages": "Languages",
+            "database": "Database",
+            "devops": "DevOps",
+            "mobile": "Mobile",
+            "data_ai": "Data & AI",
+            "other": "Other"
+          },
+        "copilot": {
+            "title": "AI Copilot",
+            "description": "Suggestions only. Preview first, then apply to the form.",
+            "badge": "Draft + Skills",
+            "promptLabel": "Prompt (optional)",
+            "promptPlaceholder": "Role, stack, constraints (e.g. 12w, remote, React + Node)",
+            "generateDraft": "Generate Draft",
+            "improveDescription": "Improve Description",
+            "suggestSkills": "Suggest Skills",
+            "status": "Status: {status}",
+            "preview": "Preview",
+          "applyToForm": "Apply to form",
+          "waiting": "Waiting for AI output...",
+          "prompts": {
+            "generateDraft": "Generate a draft offer",
+            "improveDescription": "Improve the offer description",
+            "suggestSkills": "Suggest skill tags for this offer"
+          }
+        }
         }
       },
       "candidates": {
@@ -402,8 +495,38 @@
         "appliedOn": "Applied on",
         "skillMatch": "match",
         "coverLetter": "Cover Letter",
-        "portfolio": "Portfolio"
+        "portfolio": "Portfolio",
+        "ai": {
+          "summaryTitle": "AI Summary",
+          "strengths": "Strengths",
+          "concerns": "Concerns",
+          "followUps": "Follow-ups",
+          "summarize": "Summarize",
+          "draftingNote": "Drafting note...",
+          "draftRefusalWithAi": "Draft note with AI",
+          "aiStatus": "AI: {status}",
+          "prompts": {
+            "summarize": "Summarize this candidate",
+            "refusalNote": "Draft a short refusal note"
+          }
+        }
       }
+    },
+    "candidates": {
+      "title": "Candidate Pipeline",
+      "description": "Manage {count, plural, =0 {candidates} one {# candidate} other {# candidates}} across all your offers",
+      "stats": {
+        "totalOffers": "Total Offers",
+        "activeOffers": "Active Offers",
+        "totalCandidates": "Total Candidates"
+      },
+      "offersWithCandidates": "Offers with Candidates",
+      "noCandidatesYet": "No candidates yet",
+      "noCandidatesDescription": "Candidates will appear here when students apply to your offers",
+      "manageOffers": "Manage your offers",
+      "viewAllOffers": "View all offers",
+      "candidate": "candidate",
+      "candidates": "candidates"
     },
     "welcome": "Welcome back,",
     "roles": {
@@ -489,6 +612,14 @@
         "on_site": "On-site",
         "hybrid": "Hybrid",
         "remote": "Remote"
+      },
+      "copilot": {
+        "title": "Search Copilot",
+        "description": "Describe what you want. You'll review filters before applying.",
+        "aiStatus": "AI: {status}",
+        "placeholder": "e.g. Remote summer internship in Algiers, React + Node",
+        "parseFilters": "Parse Filters",
+        "apply": "Apply"
       }
     },
     "offerDetail": {
@@ -525,6 +656,15 @@
         "on_site": "On-site",
         "hybrid": "Hybrid",
         "remote": "Remote"
+      },
+      "copilot": {
+        "draftWithAi": "Draft with AI",
+        "aiStatus": "AI: {status}",
+        "previewTitle": "AI Draft Preview",
+        "applyDraft": "Apply draft",
+        "prompts": {
+          "draftCoverLetter": "Draft a cover letter"
+        }
       }
     },
     "applications": {
@@ -571,6 +711,78 @@
         "validatePlacements": "Validate Placements",
         "systemHealth": "System Health",
         "exportReports": "Export Reports"
+      },
+      "validations": {
+        "backToDashboard": "Back to dashboard",
+        "title": "Validate Placements",
+        "description": "Review company-accepted applications and validate placements.",
+        "empty": "No placements pending validation.",
+        "companyAcceptedOn": "Company accepted on",
+        "detail": {
+          "backToList": "Back to validations",
+          "title": "Validation Details",
+          "notFound": "Application not found.",
+          "studentInfo": "Student Info",
+          "name": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "studentNumber": "Student number",
+          "department": "Department",
+          "level": "Level",
+          "university": "University",
+          "dean": "Dean",
+          "address": "Address",
+          "skills": "Skills",
+          "companyInfo": "Company Info",
+          "companyName": "Company name",
+          "representative": "Representative",
+          "offerDetails": "Offer Details",
+          "type": "Type",
+          "internshipTypeLabel": {
+            "pfe": "Final Year Project (PFE)",
+            "immersion": "Immersion Internship",
+            "summer": "Summer Internship",
+            "practical": "Practical Training"
+          },
+          "workMode": "Work mode",
+          "workModeLabel": {
+            "on_site": "On-site",
+            "hybrid": "Hybrid",
+            "remote": "Remote"
+          },
+          "duration": "Duration",
+          "durationWeeks": "{count} weeks",
+          "timeline": "Timeline",
+          "appliedOn": "Applied on",
+          "companyAcceptedOn": "Company accepted on",
+          "coverLetter": "Cover letter",
+          "setInternshipPeriod": "Set internship period",
+          "startDate": "Start date",
+          "endDate": "End date",
+          "selectDates": "Please select both start and end dates.",
+          "invalidDates": "End date must be after start date.",
+          "confirmValidate": "Validate this placement?",
+          "generatingPdf": "Generating PDF...",
+          "validateAndGenerate": "Validate & generate",
+          "reject": "Reject",
+          "rejectTitle": "Reject placement",
+          "rejectDescription": "Provide a short reason for rejecting {name} (optional).",
+          "rejectReasonPlaceholder": "Reason (optional)...",
+          "cancel": "Cancel",
+          "confirmReject": "Confirm reject",
+          "notAvailable": "N/A",
+          "ai": {
+            "title": "AI Summary",
+            "description": "Quick summary and checklist. No validate/reject decisions.",
+            "generate": "Generate",
+            "summary": "Summary",
+            "checklist": "Checklist",
+            "noMissingItems": "No missing items detected.",
+            "potentialInconsistencies": "Potential Inconsistencies",
+            "generating": "Generating summary...",
+            "hint": "Click Generate to produce a summary."
+          }
+        }
       },
       "globalStats": "Global Placement Analytics"
     }

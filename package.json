@@ -30,6 +30,9 @@
     "db:seed:dev": "bun --env-file=.env.development run src/server/db/seed.ts"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.26",
+    "@ai-sdk/react": "^3.0.80",
+    "@arcadeai/arcadejs": "^2.2.0",
     "@base-ui/react": "^1.1.0",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/modifiers": "^9.0.0",
@@ -48,6 +51,7 @@
     "@tanstack/react-query": "^5.90.20",
     "@tanstack/react-query-devtools": "^5.91.3",
     "@tanstack/react-table": "^8.21.3",
+    "ai": "^6.0.78",
     "better-auth": "^1.4.18",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

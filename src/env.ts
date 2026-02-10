@@ -5,6 +5,14 @@ export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
     BETTER_AUTH_SECRET: z.string(),
+
+    // AI (Phase 1)
+    POE_API_KEY: z.string().min(1),
+    POE_MODEL: z.string().min(1).optional(),
+    POE_ALLOWED_MODELS: z.string().min(1).optional(),
+    POE_BASE_URL: z.string().url().optional(),
+    ARCADE_API_KEY: z.string().min(1),
+
     RESEND_API_KEY: z.string().min(1).optional(),
     EMAIL_FROM: z.string().min(3).optional(),
     S3_BUCKET: z.string().min(1).optional(),
