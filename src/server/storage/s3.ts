@@ -27,8 +27,6 @@ function getClient() {
     )
   }
 
-  // Bun's S3 API requires the Bun runtime. Avoid importing from "bun" so this
-  // module can be loaded in Node-based Next.js environments without crashing.
   if (typeof Bun === "undefined" || !Bun.S3Client) {
     throw new Error("Bun runtime is required for S3 operations (Bun.S3Client is not available).")
   }
@@ -45,27 +43,12 @@ function getClient() {
       )
     }
 
-    // Default to path-style (endpoint/bucket/key). This matches how Cloudflare R2
-    // is commonly configured when the endpoint is the account-level hostname.
-    // If the endpoint already includes the bucket as a subdomain, switch to
-    // virtual-hosted-style (bucket.endpoint/key).
-    let virtualHostedStyle = false
-    try {
-      const endpointUrl = new URL(endpoint)
-      if (endpointUrl.host.startsWith(`${bucket}.`)) {
-        virtualHostedStyle = true
-      }
-    } catch {
-      // env schema should prevent this, but keep a safe default
-    }
-
     client = new Bun.S3Client({
       endpoint,
       accessKeyId,
       secretAccessKey,
       region: env.S3_REGION,
       bucket,
-      // virtualHostedStyle,
     })
   }
 
