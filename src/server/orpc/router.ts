@@ -30,6 +30,12 @@ import {
   companyAcceptProcedure,
   companyRefuseProcedure,
 } from "./routes/applications"
+import {
+  listPendingProcedure,
+  validateProcedure,
+  rejectProcedure,
+} from "./routes/placements"
+import { generateAgreementProcedure } from "./routes/documents"
 
 export const appRouter = {
   users: {
@@ -68,6 +74,14 @@ export const appRouter = {
     listByOffer: listByOfferProcedure,
     companyAccept: companyAcceptProcedure,
     companyRefuse: companyRefuseProcedure,
+  },
+  placements: {
+    listPending: listPendingProcedure,
+    validate: validateProcedure,
+    reject: rejectProcedure,
+  },
+  documents: {
+    generateAgreement: generateAgreementProcedure,
   },
 }
 
