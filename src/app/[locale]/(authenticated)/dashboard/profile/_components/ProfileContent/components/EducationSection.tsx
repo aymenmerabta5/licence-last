@@ -12,7 +12,7 @@ import type { StudentProfile, StudentUniversity } from "../types"
 interface EducationSectionProps {
   profile?: StudentProfile | null
   university?: StudentUniversity | null
-  isStudent: boolean
+  canEdit: boolean
   labels: {
     education: string
     emptyMessage: string
@@ -20,8 +20,8 @@ interface EducationSectionProps {
   }
 }
 
-export function EducationSection({ profile, university, isStudent, labels }: EducationSectionProps) {
-  const hasEducation = isStudent && university
+export function EducationSection({ profile, university, canEdit, labels }: EducationSectionProps) {
+  const hasEducation = !!university
 
   return (
     <motion.section
@@ -62,15 +62,17 @@ export function EducationSection({ profile, university, isStudent, labels }: Edu
               <p className="text-sm text-muted-foreground italic">
                 {labels.emptyMessage}
               </p>
-              <Link href="/dashboard/settings">
-                <Button
-                  variant="editorial-outline"
-                  size="editorial-sm"
-                  className="rounded-xl border-border/40 hover:border-primary"
-                >
-                  {labels.addEducation}
-                </Button>
-              </Link>
+              {canEdit && (
+                <Link href="/dashboard/settings">
+                  <Button
+                    variant="editorial-outline"
+                    size="editorial-sm"
+                    className="rounded-xl border-border/40 hover:border-primary"
+                  >
+                    {labels.addEducation}
+                  </Button>
+                </Link>
+              )}
             </>
           )}
         </div>

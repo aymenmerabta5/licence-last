@@ -5,7 +5,6 @@ import {
   LayoutDashboard,
   Search,
   FileText,
-  User,
   Settings,
   Briefcase,
   Building2,
@@ -79,12 +78,6 @@ const navItems: NavItem[] = [
     roles: ["admin", "super_admin"],
   },
   {
-    label: "Profile",
-    href: "/dashboard/profile",
-    icon: User,
-    roles: ["student", "company_admin", "admin", "super_admin"],
-  },
-  {
     label: "Settings",
     href: "/dashboard/settings",
     icon: Settings,
@@ -145,7 +138,7 @@ export function DashboardSidebar({ role = "student" }: { role?: string }) {
             <Link key={item.href} href={item.href as "/dashboard"}>
               <span
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-300 group relative",
+                  "flex items-center gap-3 px-3 py-2.5 transition-all duration-300 group relative",
                   isActive
                     ? "bg-primary text-white shadow-lg shadow-primary/20 font-bold"
                     : "text-muted-foreground hover:bg-primary/5 hover:text-primary"

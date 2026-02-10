@@ -11,7 +11,7 @@ import type { StudentProfile } from "../types"
 
 interface BioSectionProps {
   profile?: StudentProfile | null
-  isStudent: boolean
+  canEdit: boolean
   labels: {
     bio: string
     emptyMessage: string
@@ -19,8 +19,8 @@ interface BioSectionProps {
   }
 }
 
-export function BioSection({ profile, isStudent, labels }: BioSectionProps) {
-  const hasBio = isStudent && profile?.bio
+export function BioSection({ profile, canEdit, labels }: BioSectionProps) {
+  const hasBio = !!profile?.bio
 
   return (
     <motion.section
@@ -46,15 +46,17 @@ export function BioSection({ profile, isStudent, labels }: BioSectionProps) {
               <p className="text-sm text-muted-foreground italic leading-relaxed">
                 {labels.emptyMessage}
               </p>
-              <Link href="/dashboard/settings" className="inline-block mt-4">
-                <Button
-                  variant="editorial-outline"
-                  size="editorial-sm"
-                  className="rounded-xl border-border/40 hover:border-primary"
-                >
-                  <Edit3 className="h-3.5 w-3.5 me-2" /> {labels.writeBio}
-                </Button>
-              </Link>
+              {canEdit && (
+                <Link href="/dashboard/settings" className="inline-block mt-4">
+                  <Button
+                    variant="editorial-outline"
+                    size="editorial-sm"
+                    className="rounded-xl border-border/40 hover:border-primary"
+                  >
+                    <Edit3 className="h-3.5 w-3.5 me-2" /> {labels.writeBio}
+                  </Button>
+                </Link>
+              )}
             </>
           )}
         </div>

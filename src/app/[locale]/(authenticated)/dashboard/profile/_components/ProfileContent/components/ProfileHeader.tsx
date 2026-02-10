@@ -13,9 +13,10 @@ import { ROLE_LABELS, getInitials, formatMemberSince } from "../utils"
 interface ProfileHeaderProps {
   user: ProfileUser
   editButtonLabel: string
+  canEdit: boolean
 }
 
-export function ProfileHeader({ user, editButtonLabel }: ProfileHeaderProps) {
+export function ProfileHeader({ user, editButtonLabel, canEdit }: ProfileHeaderProps) {
   const initials = getInitials(user.name)
   const memberSince = formatMemberSince(user.createdAt)
 
@@ -84,14 +85,16 @@ export function ProfileHeader({ user, editButtonLabel }: ProfileHeaderProps) {
               transition={{ delay: 0.4 }}
               className="flex gap-3"
             >
-              <Link href="/dashboard/settings">
-                <Button
-                  variant="editorial"
-                  className="rounded-xl h-10 px-5 shadow-lg shadow-primary/15 border-primary bg-primary text-white hover:bg-primary/90"
-                >
-                  {editButtonLabel}
-                </Button>
-              </Link>
+              {canEdit && (
+                <Link href="/dashboard/settings">
+                  <Button
+                    variant="editorial"
+                    className="rounded-xl h-10 px-5 shadow-lg shadow-primary/15 border-primary bg-primary text-white hover:bg-primary/90"
+                  >
+                    {editButtonLabel}
+                  </Button>
+                </Link>
+              )}
             </motion.div>
           </div>
         </div>

@@ -17,10 +17,11 @@ import {
 import { useDashboard } from "./DashboardClientProvider"
 import { authClient } from "@/lib/auth-client"
 import { useSyncExternalStore } from "react"
+import { Route } from "next"
 
 const emptySubscribe = () => () => {}
 
-export function DashboardNavbar({ user }: { user: { name: string | null; email: string; role: string | null | undefined } }) {
+export function DashboardNavbar({ user }: { user: { id: string; name: string | null; email: string; role: string | null | undefined } }) {
   const pathname = usePathname()
   const { setIsSidebarOpen } = useDashboard()
   const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false)
@@ -112,6 +113,11 @@ export function DashboardNavbar({ user }: { user: { name: string | null; email: 
                   <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-1">
                     Account Settings
                   </DropdownMenuLabel>
+                  <Link href={`/profile/${user.id}` as Route}>
+                    <DropdownMenuItem className="rounded-lg h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">
+                      <User className="h-4 w-4 me-2" /> View Profile
+                    </DropdownMenuItem>
+                  </Link>
                   <Link href="/dashboard/settings">
                     <DropdownMenuItem className="rounded-lg h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">
                       <User className="h-4 w-4 me-2" /> Profile Settings

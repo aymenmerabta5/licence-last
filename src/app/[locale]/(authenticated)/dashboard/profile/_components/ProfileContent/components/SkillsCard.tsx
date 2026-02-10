@@ -12,7 +12,7 @@ import type { StudentSkill } from "../types"
 
 interface SkillsCardProps {
   skills: StudentSkill[]
-  isStudent: boolean
+  canEdit: boolean
   labels: {
     skills: string
     addSkills: string
@@ -20,8 +20,8 @@ interface SkillsCardProps {
   }
 }
 
-export function SkillsCard({ skills, isStudent, labels }: SkillsCardProps) {
-  const hasSkills = isStudent && skills.length > 0
+export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
+  const hasSkills = skills.length > 0
 
   return (
     <motion.section
@@ -47,11 +47,17 @@ export function SkillsCard({ skills, isStudent, labels }: SkillsCardProps) {
             ))}
           </div>
         ) : (
-          <EmptyState
-            icon={Award}
-            message={labels.emptyMessage}
-            buttonText={labels.addSkills}
-          />
+          canEdit ? (
+            <EmptyState
+              icon={Award}
+              message={labels.emptyMessage}
+              buttonText={labels.addSkills}
+            />
+          ) : (
+            <p className="text-xs text-muted-foreground/60 font-medium leading-relaxed">
+              No skills listed yet.
+            </p>
+          )
         )}
       </Card>
     </motion.section>

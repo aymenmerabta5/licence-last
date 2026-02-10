@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 
 import type { SkillTag } from "../types"
+import { Route } from "next"
 
 interface SkillsSidebarProps {
   skills: SkillTag[]
+  profileUserId: string
   labels: {
     title: string
     manageSkills: string
@@ -19,7 +21,7 @@ interface SkillsSidebarProps {
   }
 }
 
-export function SkillsSidebar({ skills, labels }: SkillsSidebarProps) {
+export function SkillsSidebar({ skills, profileUserId, labels }: SkillsSidebarProps) {
   const hasSkills = skills.length > 0
 
   return (
@@ -27,7 +29,7 @@ export function SkillsSidebar({ skills, labels }: SkillsSidebarProps) {
       <h2 className="font-serif text-xl font-bold text-heading">
         {labels.title}
       </h2>
-      <Card className="bg-background border-border/40 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all">
+      <Card className="bg-background border-border/40 overflow-hidden shadow-sm hover:shadow-md transition-all">
         <CardContent className="p-6">
           {hasSkills ? (
             <div className="space-y-4">
@@ -42,7 +44,7 @@ export function SkillsSidebar({ skills, labels }: SkillsSidebarProps) {
                   </Badge>
                 ))}
               </div>
-              <Link href="/dashboard/profile">
+              <Link href={`/profile/${profileUserId}` as Route}>
                 <Button
                   variant="editorial-outline"
                   size="editorial-sm"
@@ -61,7 +63,7 @@ export function SkillsSidebar({ skills, labels }: SkillsSidebarProps) {
               <p className="text-xs text-muted-foreground/60 font-medium max-w-[200px] mx-auto leading-relaxed">
                 {labels.emptyMessage}
               </p>
-              <Link href="/dashboard/profile">
+              <Link href={`/profile/${profileUserId}` as Route}>
                 <Button
                   variant="editorial-outline"
                   size="editorial-sm"

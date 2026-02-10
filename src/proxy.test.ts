@@ -15,6 +15,14 @@ describe("isProtectedPath", () => {
       expect(isProtectedPath("/dashboard/settings")).toBe(true)
     })
 
+    test("should identify /profile as protected", () => {
+      expect(isProtectedPath("/profile")).toBe(true)
+    })
+
+    test("should identify /profile/user-1 as protected", () => {
+      expect(isProtectedPath("/profile/user-1")).toBe(true)
+    })
+
     test("should identify /dashboard/internships as protected", () => {
       expect(isProtectedPath("/dashboard/internships")).toBe(true)
     })
@@ -36,6 +44,10 @@ describe("isProtectedPath", () => {
     test("should identify /en/dashboard/settings as protected", () => {
       expect(isProtectedPath("/en/dashboard/settings")).toBe(true)
     })
+
+    test("should identify /en/profile/user-1 as protected", () => {
+      expect(isProtectedPath("/en/profile/user-1")).toBe(true)
+    })
   })
 
   describe("protected paths with French locale", () => {
@@ -50,6 +62,10 @@ describe("isProtectedPath", () => {
     test("should identify /fr/dashboard/settings as protected", () => {
       expect(isProtectedPath("/fr/dashboard/settings")).toBe(true)
     })
+
+    test("should identify /fr/profile/user-1 as protected", () => {
+      expect(isProtectedPath("/fr/profile/user-1")).toBe(true)
+    })
   })
 
   describe("protected paths with Arabic locale", () => {
@@ -63,6 +79,10 @@ describe("isProtectedPath", () => {
 
     test("should identify /ar/dashboard/settings as protected", () => {
       expect(isProtectedPath("/ar/dashboard/settings")).toBe(true)
+    })
+
+    test("should identify /ar/profile/user-1 as protected", () => {
+      expect(isProtectedPath("/ar/profile/user-1")).toBe(true)
     })
   })
 
@@ -186,6 +206,10 @@ describe("PROTECTED_PATHS", () => {
 
   test("should contain /onboarding", () => {
     expect(PROTECTED_PATHS).toContain("/onboarding")
+  })
+
+  test("should contain /profile", () => {
+    expect(PROTECTED_PATHS).toContain("/profile")
   })
 
   test("should be an array", () => {

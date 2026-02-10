@@ -13,9 +13,13 @@ import { BioSection } from "./components/BioSection"
 import { EducationSection } from "./components/EducationSection"
 import { ExperienceSection } from "./components/ExperienceSection"
 
-export function ProfileContent({ user, studentData }: ProfileContentProps) {
+export function ProfileContent({ viewer, user, studentData }: ProfileContentProps) {
   const t = useTranslations("dashboard")
-  const { isStudent, profile, stats, university, skills } = useProfileData(user, studentData)
+  const { canEdit, profile, stats, university, skills } = useProfileData(
+    viewer,
+    user,
+    studentData,
+  )
 
   const sidebarLabels = {
     personalInfo: t("student.profile.personalInfo"),
@@ -59,22 +63,22 @@ export function ProfileContent({ user, studentData }: ProfileContentProps) {
       <ProfileHeader
         user={user}
         editButtonLabel={t("student.profile.edit")}
+        canEdit={canEdit}
       />
 
-      <ProfileStats stats={stats} />
+      {stats.length > 0 && <ProfileStats stats={stats} />}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         <div className="lg:col-span-4 space-y-8">
           <ContactInfoCard
             user={user}
             profile={profile}
-            isStudent={isStudent}
             labels={sidebarLabels}
           />
           <SkillsCard
             skills={skills}
-            isStudent={isStudent}
             labels={skillsLabels}
+            canEdit={canEdit}
           />
           <SocialLinks
             profile={profile}
@@ -85,16 +89,16 @@ export function ProfileContent({ user, studentData }: ProfileContentProps) {
         <div className="lg:col-span-8 space-y-10">
           <BioSection
             profile={profile}
-            isStudent={isStudent}
             labels={bioLabels}
+            canEdit={canEdit}
           />
           <EducationSection
             profile={profile}
             university={university}
-            isStudent={isStudent}
             labels={educationLabels}
+            canEdit={canEdit}
           />
-          <ExperienceSection labels={experienceLabels} />
+          <ExperienceSection labels={experienceLabels} canEdit={canEdit} />
         </div>
       </div>
     </div>

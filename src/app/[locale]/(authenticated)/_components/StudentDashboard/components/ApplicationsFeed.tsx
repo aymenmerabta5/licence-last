@@ -45,7 +45,7 @@ export function ApplicationsFeed({ applications, labels }: ApplicationsFeedProps
           ))}
         </div>
       ) : (
-        <Card className="border-border/40 bg-background rounded-2xl shadow-sm">
+        <Card className="border-border/40 bg-background shadow-sm">
           <CardContent className="p-10 text-center space-y-4">
             <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-secondary/10">
               <Briefcase className="h-6 w-6 text-muted-foreground/30" />

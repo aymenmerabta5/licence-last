@@ -58,6 +58,7 @@ export function StudentDashboard({ user, data }: StudentDashboardProps) {
       <WelcomeHero
         userName={user.name}
         profileCompleteness={data.profileCompleteness}
+        profileUserId={user.id}
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -82,6 +83,7 @@ export function StudentDashboard({ user, data }: StudentDashboardProps) {
           <SkillsSidebar
             skills={data.skills}
             labels={skillsLabels}
+            profileUserId={user.id}
           />
         </div>
       </div>
