@@ -45,6 +45,16 @@ import {
   markNotificationReadProcedure,
 } from "./routes/notifications"
 import { getAdminStatsProcedure } from "./routes/stats"
+import {
+  appendAssistantMessageProcedure,
+  createAssistantConversationProcedure,
+  getAssistantConversationProcedure,
+  listAssistantModelsProcedure,
+  listAssistantConversationsProcedure,
+  listAssistantMessagesProcedure,
+  updateAssistantConversationModelProcedure,
+  updateAssistantConversationTitleProcedure,
+} from "./routes/assistant"
 
 export const appRouter = {
   users: {
@@ -103,6 +113,17 @@ export const appRouter = {
   },
   stats: {
     getAdminStats: getAdminStatsProcedure,
+  },
+
+  assistant: {
+    listModels: listAssistantModelsProcedure,
+    listConversations: listAssistantConversationsProcedure,
+    createConversation: createAssistantConversationProcedure,
+    getConversation: getAssistantConversationProcedure,
+    listMessages: listAssistantMessagesProcedure,
+    updateConversationModel: updateAssistantConversationModelProcedure,
+    updateConversationTitle: updateAssistantConversationTitleProcedure,
+    appendMessage: appendAssistantMessageProcedure,
   },
 }
 

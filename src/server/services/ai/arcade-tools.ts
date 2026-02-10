@@ -1,7 +1,10 @@
 import "server-only"
 
 import Arcade from "@arcadeai/arcadejs"
-import type { ExecuteToolResponse } from "@arcadeai/arcadejs/resources/tools/tools"
+import type {
+  ExecuteToolResponse,
+  ToolDefinition,
+} from "@arcadeai/arcadejs/resources/tools/tools"
 import {
   executeOrAuthorizeZodTool,
   toZodToolSet,
@@ -54,28 +57,65 @@ export async function getArcadeTools({
     apiKey: env.ARCADE_API_KEY,
   })
 
-  const listLimit = config?.allowedToolkits
-    ? Math.max(config?.limit ?? 20, 50)
-    : (config?.limit ?? 20)
+  const desiredLimit = config?.limit ?? 20
+  const pageLimit = Math.max(desiredLimit, 50)
 
-  const toolsPage = await arcade.tools.list({
-    user_id: userId,
-    toolkit: config?.toolkit,
-    limit: listLimit,
-  })
+  const toolsToConvert: ToolDefinition[] = await (async () => {
+    // Fast path: if allowedToolkits is provided, use the server-side `toolkit` filter.
+    // This avoids relying on pagination order across the entire global tool catalogue.
+    if (config?.allowedToolkits && config.allowedToolkits.length > 0) {
+      const out: ToolDefinition[] = []
 
-  const allowedSet = config?.allowedToolkits
-    ? new Set(config.allowedToolkits.map((t) => t.toLowerCase()))
-    : null
+      for (const toolkitName of config.allowedToolkits) {
+        const page = await arcade.tools.list({
+          user_id: userId,
+          toolkit: toolkitName,
+          limit: pageLimit,
+        })
 
-  const toolsToConvert = allowedSet
-    ? toolsPage.items.filter((t) => allowedSet.has(t.toolkit.name.toLowerCase()))
-    : toolsPage.items
+        out.push(...page.items)
+
+        // Some toolkits can have more than one page. Only fetch extra pages if needed.
+        let current = page
+        while (out.length < desiredLimit && current.hasNextPage()) {
+          current = await current.getNextPage()
+          out.push(...current.items)
+        }
+
+        if (out.length >= desiredLimit) break
+      }
+
+      // Deduplicate by qualified name to keep deterministic output.
+      const seen = new Set<string>()
+      return out.filter((t) => {
+        const key = t.qualified_name
+        if (seen.has(key)) return false
+        seen.add(key)
+        return true
+      })
+    }
+
+    // Fallback: list without allowedToolkits. Paginate until we have enough.
+    const out: ToolDefinition[] = []
+    let page = await arcade.tools.list({
+      user_id: userId,
+      toolkit: config?.toolkit,
+      limit: pageLimit,
+    })
+    out.push(...page.items)
+
+    while (out.length < desiredLimit && page.hasNextPage()) {
+      page = await page.getNextPage()
+      out.push(...page.items)
+    }
+
+    return out
+  })()
 
   type ArcadeToolOutput = ExecuteToolResponse | ToolAuthorizationResponse
 
   const zodToolSet = toZodToolSet<ArcadeToolOutput>({
-    tools: toolsToConvert.slice(0, config?.limit ?? 20),
+    tools: toolsToConvert.slice(0, desiredLimit),
     client: arcade,
     userId,
     executeFactory: executeOrAuthorizeZodTool,

@@ -280,8 +280,19 @@
       "title": "Assistant <accent>Copilot</accent>",
       "subtitle": "Draft offers, refine tone, and get suggestions. When a tool needs authorization, you'll get a secure link.",
       "badge": "Suggest-only",
+      "conversations": "Conversations",
+      "conversation": "Conversation",
+      "newConversation": "New",
+      "noConversations": "No conversations yet.",
+      "loadingConversations": "Loading conversations...",
+      "loadingMessages": "Loading messages...",
+      "model": "Model",
+      "selectModel": "Select",
       "empty": "Start with an offer prompt (role, duration, location, stack), or paste your draft for a polish pass.",
       "toolLabel": "Tool: {toolName}",
+      "toolState": "State: {state}",
+      "toolInput": "Input",
+      "toolOutput": "Output",
       "retry": "Retry",
       "toolPreparing": "Preparing tool input...",
       "authRequired": "This tool requires authorization for your account.",
@@ -500,6 +511,22 @@
           }
         }
       }
+    },
+    "candidates": {
+      "title": "Candidate Pipeline",
+      "description": "Manage {count, plural, =0 {candidates} one {# candidate} other {# candidates}} across all your offers",
+      "stats": {
+        "totalOffers": "Total Offers",
+        "activeOffers": "Active Offers",
+        "totalCandidates": "Total Candidates"
+      },
+      "offersWithCandidates": "Offers with Candidates",
+      "noCandidatesYet": "No candidates yet",
+      "noCandidatesDescription": "Candidates will appear here when students apply to your offers",
+      "manageOffers": "Manage your offers",
+      "viewAllOffers": "View all offers",
+      "candidate": "candidate",
+      "candidates": "candidates"
     },
     "welcome": "Welcome back,",
     "roles": {

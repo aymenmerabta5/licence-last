@@ -280,8 +280,19 @@
       "title": "المساعد <accent>المعاون</accent>",
       "subtitle": "اكتب عروض التدريب، حسّن الصياغة، واحصل على اقتراحات. عند الحاجة لتفويض أداة، ستحصل على رابط آمن.",
       "badge": "اقتراحات فقط",
+      "conversations": "المحادثات",
+      "conversation": "محادثة",
+      "newConversation": "جديد",
+      "noConversations": "لا توجد محادثات بعد.",
+      "loadingConversations": "جارٍ تحميل المحادثات...",
+      "loadingMessages": "جارٍ تحميل الرسائل...",
+      "model": "النموذج",
+      "selectModel": "اختر",
       "empty": "ابدأ بكتابة وصف مختصر (الدور، المدة، الموقع، التقنيات)، أو الصق مسودتك لتحسينها.",
       "toolLabel": "الأداة: {toolName}",
+      "toolState": "الحالة: {state}",
+      "toolInput": "المدخلات",
+      "toolOutput": "المخرجات",
       "retry": "إعادة المحاولة",
       "toolPreparing": "جارٍ تجهيز مدخلات الأداة...",
       "authRequired": "تتطلب هذه الأداة تفويضاً لحسابك.",
@@ -504,6 +515,22 @@
           }
         }
       }
+    },
+    "candidates": {
+      "title": "مسار المرشحين",
+      "description": "إدارة {count} من المرشحين عبر جميع عروضك",
+      "stats": {
+        "totalOffers": "إجمالي العروض",
+        "activeOffers": "العروض النشطة",
+        "totalCandidates": "إجمالي المرشحين"
+      },
+      "offersWithCandidates": "العروض مع المرشحين",
+      "noCandidatesYet": "لا يوجد مرشحون بعد",
+      "noCandidatesDescription": "سيظهر المرشحون هنا عندما يتقدم الطلاب لعروضك",
+      "manageOffers": "إدارة عروضك",
+      "viewAllOffers": "عرض جميع العروض",
+      "candidate": "مرشح",
+      "candidates": "مرشحون"
     },
     "welcome": "مرحباً بعودتك،",
     "roles": {

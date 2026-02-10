@@ -1,10 +1,14 @@
 import { headers } from "next/headers"
+import { eq } from "drizzle-orm"
+
 
 import {
   convertToModelMessages,
+  createUIMessageStream,
+  createUIMessageStreamResponse,
+  streamText,
   generateObject,
   stepCountIs,
-  streamText,
   tool,
   type ToolSet,
   type UIMessage,
@@ -13,6 +17,14 @@ import { z } from "zod"
 
 import { auth } from "@/lib/auth"
 import { asRecord, getStringProp } from "@/lib/ai/tool-output"
+import { db } from "@/server/db"
+import { companyMember } from "@/server/db/schema/companies"
+import { getAssistantConversationByIdForCompany } from "@/server/services/assistant/get"
+import {
+  appendAssistantMessage,
+  getLatestAssistantMessage,
+} from "@/server/services/assistant/messages"
+import { extractTextFromParts } from "@/server/services/assistant/utils"
 import { isRoleAllowedForIntent } from "@/server/services/ai/access"
 import { getArcadeTools } from "@/server/services/ai/arcade-tools"
 import { assistantContextToJson } from "@/server/services/ai/context"
@@ -62,10 +74,44 @@ function errorToText(error: unknown) {
   return JSON.stringify(error)
 }
 
+function sanitizeUIMessagesForModel(messages: UIMessage[]): Array<Omit<UIMessage, "id">> {
+  // Poe's OpenAI-compatible endpoint runs in Zero Data Retention mode for some orgs.
+  // In that mode, referencing provider-side item IDs from previous responses can fail.
+  // The AI SDK may attach provider metadata to message parts; strip it before sending.
+  return messages.map((message) => {
+    const rest = { ...message }
+    delete (rest as { id?: string }).id
+
+    const parts = rest.parts.map((part) => {
+      if (part && typeof part === "object") {
+        const record = part as Record<string, unknown>
+
+        // Remove any provider metadata that could include persisted item ids.
+        if ("providerMetadata" in record || "callProviderMetadata" in record) {
+          const next = { ...record }
+          delete next.providerMetadata
+          delete next.callProviderMetadata
+          return next as unknown as typeof part
+        }
+      }
+      return part
+    })
+
+    return {
+      ...rest,
+      parts,
+    }
+  })
+}
+
 export async function POST(req: Request) {
-  let body: { messages: UIMessage[]; context?: unknown }
+  let body: { messages: UIMessage[]; context?: unknown; conversationId?: unknown }
   try {
-    body = (await req.json()) as { messages: UIMessage[]; context?: unknown }
+    body = (await req.json()) as {
+      messages: UIMessage[]
+      context?: unknown
+      conversationId?: unknown
+    }
   } catch {
     return new Response("Invalid JSON", { status: 400 })
   }
@@ -89,6 +135,76 @@ export async function POST(req: Request) {
   const allowedForIntent = isRoleAllowedForIntent({ role, intent })
   if (!allowedForIntent) {
     return new Response("Forbidden", { status: 403 })
+  }
+
+  const conversationId = typeof body.conversationId === "string" ? body.conversationId : null
+
+  // Persist only for the free-form Company Admin assistant chat.
+  const shouldPersist =
+    role === "company_admin" && intent === null && conversationId !== null && conversationId.length > 0
+
+  const persistence = shouldPersist
+    ? await (async () => {
+        const [membership] = await db
+          .select({ companyId: companyMember.companyId })
+          .from(companyMember)
+          .where(eq(companyMember.userId, session.user.id))
+          .limit(1)
+
+        if (!membership) {
+          return { ok: false as const, status: 403 as const, companyId: null, modelId: null }
+        }
+
+        const conversation = await getAssistantConversationByIdForCompany({
+          conversationId,
+          companyId: membership.companyId,
+        })
+
+        if (!conversation) {
+          return { ok: false as const, status: 404 as const, companyId: null, modelId: null }
+        }
+
+        return {
+          ok: true as const,
+          status: 200 as const,
+          companyId: membership.companyId,
+          modelId: conversation.model,
+        }
+      })()
+    : null
+
+  if (persistence && !persistence.ok) {
+    return new Response(persistence.status === 404 ? "Conversation not found" : "Forbidden", {
+      status: persistence.status,
+    })
+  }
+
+  if (persistence?.ok) {
+    const persistedConversationId = conversationId
+    if (persistedConversationId) {
+      const lastUiMessage = body.messages[body.messages.length - 1]
+      const latestUserMessage = lastUiMessage?.role === "user" ? lastUiMessage : null
+
+      if (latestUserMessage) {
+        const lastStored = await getLatestAssistantMessage({
+          conversationId: persistedConversationId,
+          companyId: persistence.companyId,
+        })
+
+        const latestUserText = extractTextFromParts(latestUserMessage.parts as unknown[])
+        const shouldAppendUser =
+          lastStored?.role !== "user" || (lastStored?.text ?? "") !== latestUserText
+
+        if (shouldAppendUser) {
+          await appendAssistantMessage({
+            conversationId: persistedConversationId,
+            companyId: persistence.companyId,
+            role: "user",
+            parts: latestUserMessage.parts,
+          })
+        }
+      }
+    }
   }
 
   const contextJson = assistantContextToJson(body.context)
@@ -370,6 +486,29 @@ export async function POST(req: Request) {
 
   const shouldForceTool = intent ? Object.prototype.hasOwnProperty.call(internalTools, intent) : false
 
+  function getLatestUserText(messages: UIMessage[]): string {
+    const last = [...messages].reverse().find((m) => m.role === "user")
+    if (!last) return ""
+    return last.parts
+      .map((p) => (p.type === "text" ? p.text : ""))
+      .filter(Boolean)
+      .join("")
+  }
+
+  const latestUserText = getLatestUserText(body.messages)
+  const wantsEmailAction = /\b(send|email)\b/i.test(latestUserText) && /@/.test(latestUserText)
+
+  const arcadeEnabled = role === "company_admin" && !shouldForceTool && intent === null
+  const arcadeTools = arcadeEnabled
+    ? await getArcadeTools({
+        userId: session.user.id,
+        config: {
+          allowedToolkits: wantsEmailAction ? ["gmail"] : ["github", "gmail"],
+          limit: wantsEmailAction ? 50 : 20,
+        },
+      })
+    : {}
+
   const persona =
     intent === "admin_validation_summary" || role === "admin" || role === "super_admin"
       ? "Internex Admin Copilot"
@@ -379,47 +518,121 @@ export async function POST(req: Request) {
 
   const system = [
     `You are ${persona}.`,
-    "Be concise, practical, and suggest-only. Do not claim to have performed actions you did not perform.",
-    "Do not request, infer, or output personal contact information (email, phone) unless explicitly required by the task.",
+    arcadeEnabled
+      ? [
+          "You can use tools to perform actions for the user (e.g. send an email).",
+          "Only perform actions when the user explicitly asks you to.",
+          "If an action is unclear or irreversible, ask exactly one short clarification question before using a tool.",
+          "If the user asks to send an email and does not specify a subject, use subject 'Hi' by default.",
+          "Never pretend you performed an action. Use tools, then report the actual result.",
+          "Personal contact info (email/phone) is allowed only when required by the task and explicitly provided by the user.",
+        ].join(" ")
+      : "Be concise, practical, and suggest-only. Do not claim to have performed actions you did not perform.",
     body.context ? `Context (redacted):\n${contextJson}` : null,
   ]
     .filter((s): s is string => Boolean(s))
     .join("\n\n")
-
-  const arcadeEnabled = role === "company_admin" && !shouldForceTool && intent === null
-  const arcadeTools = arcadeEnabled
-    ? await getArcadeTools({
-        userId: session.user.id,
-        config: {
-          allowedToolkits: ["github", "gmail"],
-          limit: 20,
-        },
-      })
-    : {}
 
   const tools: ToolSet = {
     ...internalTools,
     ...arcadeTools,
   }
 
+  function pickBestGmailToolName(names: string[]): string | null {
+    if (names.length === 0) return null
+    const ranked = [...names].sort((a, b) => {
+      const score = (s: string) => {
+        const v = s.toLowerCase()
+        let n = 0
+        if (v.includes("send")) n += 5
+        if (v.includes("email")) n += 3
+        if (v.includes("message")) n += 2
+        if (v.includes("draft")) n += 1
+        // Prefer more specific (often includes send_email) but keep stable ordering.
+        n -= Math.min(v.length, 80) / 100
+        return n
+      }
+      return score(b) - score(a)
+    })
+    return ranked[0] ?? null
+  }
+
+  const gmailToolCandidates = Object.keys(arcadeTools).filter((name) => {
+    if (!wantsEmailAction) {
+      return /gmail/i.test(name) && /(send|draft|message|email)/i.test(name)
+    }
+
+    // Email request: match on semantic name (qualified_name -> underscores).
+    const n = name.toLowerCase()
+    const startsWithGmail = n.startsWith("gmail_")
+    const hasEmail = n.includes("email")
+    const hasSendLike = n.includes("send") || n.includes("draft")
+    return startsWithGmail && hasEmail && hasSendLike
+  })
+
+  const forcedArcadeToolName =
+    arcadeEnabled && !shouldForceTool && wantsEmailAction
+      ? (arcadeTools.Gmail_SendEmail
+          ? "Gmail_SendEmail"
+          : pickBestGmailToolName(gmailToolCandidates))
+      : null
+
   console.info("[assistant] request", {
     role,
     intent,
     forcedTool: shouldForceTool,
+    arcadeEnabled,
+    forcedArcadeToolName,
+    arcadeToolsCount: Object.keys(arcadeTools).length,
   })
 
-  const result = streamText({
-    model: getPoeModel(),
-    system,
-    messages: await convertToModelMessages(body.messages),
+  const modelMessages = await convertToModelMessages(sanitizeUIMessagesForModel(body.messages), {
     tools,
-    activeTools: shouldForceTool && intent ? [intent] : undefined,
-    toolChoice:
-      shouldForceTool && intent ? ({ type: "tool", toolName: intent } as const) : undefined,
-    stopWhen: stepCountIs(5),
+    ignoreIncompleteToolCalls: true,
   })
 
-  return result.toUIMessageStreamResponse({
+  const stream = createUIMessageStream({
+    originalMessages: body.messages,
     onError: errorToText,
+    onFinish: async ({ responseMessage }) => {
+      if (!persistence?.ok) return
+
+      const persistedConversationId = conversationId
+      if (!persistedConversationId) return
+
+      await appendAssistantMessage({
+        conversationId: persistedConversationId,
+        companyId: persistence.companyId,
+        role: "assistant",
+        parts: responseMessage.parts,
+      })
+    },
+    execute: async ({ writer }) => {
+      const result = streamText({
+        model: getPoeModel(persistence?.ok ? persistence.modelId : undefined),
+        system,
+        messages: modelMessages,
+        tools,
+        activeTools:
+          shouldForceTool && intent
+            ? [intent]
+            : forcedArcadeToolName
+              ? [forcedArcadeToolName]
+              : undefined,
+        toolChoice:
+          shouldForceTool && intent
+            ? ({ type: "tool", toolName: intent } as const)
+            : forcedArcadeToolName
+               ? ({ type: "tool", toolName: forcedArcadeToolName } as const)
+               : undefined,
+        stopWhen: stepCountIs(arcadeEnabled ? 12 : 5),
+      })
+
+      for await (const chunk of result.toUIMessageStream()) {
+        writer.write(chunk)
+      }
+    },
   })
+
+  return createUIMessageStreamResponse({ stream })
 }

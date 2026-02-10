@@ -280,8 +280,19 @@
       "title": "Assistant <accent>Copilote</accent>",
       "subtitle": "Rédigez des offres, ajustez le ton et obtenez des suggestions. Lorsqu'un outil nécessite une autorisation, vous recevrez un lien sécurisé.",
       "badge": "Suggestions uniquement",
+      "conversations": "Conversations",
+      "conversation": "Conversation",
+      "newConversation": "Nouveau",
+      "noConversations": "Aucune conversation pour le moment.",
+      "loadingConversations": "Chargement des conversations...",
+      "loadingMessages": "Chargement des messages...",
+      "model": "Modèle",
+      "selectModel": "Sélectionner",
       "empty": "Commencez avec une invite d'offre (rôle, durée, lieu, stack), ou collez votre brouillon pour une révision.",
       "toolLabel": "Outil : {toolName}",
+      "toolState": "Statut : {state}",
+      "toolInput": "Entrée",
+      "toolOutput": "Sortie",
       "retry": "Réessayer",
       "toolPreparing": "Préparation des paramètres de l'outil...",
       "authRequired": "Cet outil nécessite une autorisation pour votre compte.",
@@ -500,6 +511,22 @@
           }
         }
       }
+    },
+    "candidates": {
+      "title": "Pipeline Candidats",
+      "description": "Gérez {count, plural, =0 {les candidats} one {# candidat} other {# candidats}} sur toutes vos offres",
+      "stats": {
+        "totalOffers": "Offres Totales",
+        "activeOffers": "Offres Actives",
+        "totalCandidates": "Candidats Totaux"
+      },
+      "offersWithCandidates": "Offres avec Candidats",
+      "noCandidatesYet": "Aucun candidat pour le moment",
+      "noCandidatesDescription": "Les candidats apparaîtront ici lorsque les étudiants postuleront à vos offres",
+      "manageOffers": "Gérer vos offres",
+      "viewAllOffers": "Voir toutes les offres",
+      "candidate": "candidat",
+      "candidates": "candidats"
     },
     "welcome": "Bon retour,",
     "roles": {

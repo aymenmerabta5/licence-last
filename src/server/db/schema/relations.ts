@@ -3,6 +3,7 @@ import { relations } from "drizzle-orm"
 import { user } from "./auth"
 import { university, universityDomain } from "./universities"
 import { company, companyMember } from "./companies"
+import { assistantConversation, assistantMessage } from "./assistant"
 import { studentProfile, studentSkill } from "./students"
 import { skillTag } from "./skills"
 import { internshipOffer, internshipOfferSkill } from "./internships"
@@ -79,6 +80,7 @@ export const skillTagRelations = relations(skillTag, ({ many }) => ({
 export const companyRelations = relations(company, ({ many }) => ({
   members: many(companyMember),
   offers: many(internshipOffer),
+  assistantConversations: many(assistantConversation),
 }))
 
 export const companyMemberRelations = relations(companyMember, ({ one }) => ({
@@ -89,6 +91,30 @@ export const companyMemberRelations = relations(companyMember, ({ one }) => ({
   user: one(user, {
     fields: [companyMember.userId],
     references: [user.id],
+  }),
+}))
+
+// ── Assistant (Company Copilot) ────────────────────────
+
+export const assistantConversationRelations = relations(
+  assistantConversation,
+  ({ one, many }) => ({
+    company: one(company, {
+      fields: [assistantConversation.companyId],
+      references: [company.id],
+    }),
+    createdBy: one(user, {
+      fields: [assistantConversation.createdByUserId],
+      references: [user.id],
+    }),
+    messages: many(assistantMessage),
+  }),
+)
+
+export const assistantMessageRelations = relations(assistantMessage, ({ one }) => ({
+  conversation: one(assistantConversation, {
+    fields: [assistantMessage.conversationId],
+    references: [assistantConversation.id],
   }),
 }))
 

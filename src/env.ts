@@ -9,6 +9,7 @@ export const env = createEnv({
     // AI (Phase 1)
     POE_API_KEY: z.string().min(1),
     POE_MODEL: z.string().min(1).optional(),
+    POE_ALLOWED_MODELS: z.string().min(1).optional(),
     POE_BASE_URL: z.string().url().optional(),
     ARCADE_API_KEY: z.string().min(1),
 
