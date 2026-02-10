@@ -1,16 +1,37 @@
 import "server-only"
 
-import { eq, desc, inArray } from "drizzle-orm"
+import { eq, desc, inArray, count } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
 import { skillTag } from "@/server/db/schema/skills"
+import { application } from "@/server/db/schema/applications"
 
-/**
- * List all offers for a company, ordered by creation date (newest first).
- * Batch-fetches skills for all offers to avoid N+1.
- */
-export async function listOffersByCompany(companyId: string) {
+interface OfferWithSkills {
+  id: string
+  companyId: string
+  title: string
+  description: string
+  internshipType: "pfe" | "immersion" | "summer" | "practical"
+  workMode: "on_site" | "hybrid" | "remote" | null
+  wilayaCode: number | null
+  durationWeeks: number | null
+  maxPositions: number
+  status: "draft" | "published" | "closed"
+  publishedAt: Date | null
+  closesAt: Date | null
+  createdAt: Date
+  updatedAt: Date
+  skills: Array<{
+    id: string
+    name: string
+    slug: string
+    category: string | null
+  }>
+  candidatesCount: number
+}
+
+export async function listOffersByCompany(companyId: string): Promise<OfferWithSkills[]> {
   const offers = await db
     .select()
     .from(internshipOffer)
@@ -33,12 +54,25 @@ export async function listOffersByCompany(companyId: string) {
     .innerJoin(skillTag, eq(internshipOfferSkill.skillTagId, skillTag.id))
     .where(inArray(internshipOfferSkill.offerId, offerIds))
 
-  // Group skills by offerId
+  const applicationCounts = await db
+    .select({
+      offerId: application.offerId,
+      count: count(),
+    })
+    .from(application)
+    .where(inArray(application.offerId, offerIds))
+    .groupBy(application.offerId)
+
   const skillsByOffer = new Map<string, typeof offerSkills>()
   for (const row of offerSkills) {
     const existing = skillsByOffer.get(row.offerId) ?? []
     existing.push(row)
     skillsByOffer.set(row.offerId, existing)
+  }
+
+  const countsByOffer = new Map<string, number>()
+  for (const row of applicationCounts) {
+    countsByOffer.set(row.offerId, row.count)
   }
 
   return offers.map((offer) => ({
@@ -49,5 +83,6 @@ export async function listOffersByCompany(companyId: string) {
       slug: s.skillSlug,
       category: s.skillCategory,
     })),
+    candidatesCount: countsByOffer.get(offer.id) ?? 0,
   }))
 }

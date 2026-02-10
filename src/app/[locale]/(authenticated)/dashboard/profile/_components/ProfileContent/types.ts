@@ -33,19 +33,26 @@ export interface StudentUniversity {
 export interface StudentData {
   profile: StudentProfile | null
   skills: StudentSkill[]
-  stats: StudentStats
   university: StudentUniversity | null
+  stats: StudentStats | null
+}
+
+export interface ViewerIdentity {
+  id: string
+  role: string | null | undefined
 }
 
 export interface ProfileUser {
+  id: string
   name: string | null
-  email: string
+  email: string | null
   role: string | null | undefined
   image: string | null | undefined
   createdAt: string
 }
 
 export interface ProfileContentProps {
+  viewer: ViewerIdentity
   user: ProfileUser
   studentData?: StudentData
 }

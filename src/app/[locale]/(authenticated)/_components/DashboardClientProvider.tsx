@@ -19,7 +19,7 @@ export function DashboardClientProvider({
   user,
 }: {
   children: React.ReactNode
-  user: { name: string | null; email: string; role: string | null | undefined }
+  user: { id: string; name: string | null; email: string; role: string | null | undefined }
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 

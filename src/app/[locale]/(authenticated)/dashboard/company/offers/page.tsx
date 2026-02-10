@@ -15,6 +15,7 @@ import {
   Clock,
   Users,
   Loader2,
+  UserCheck,
 } from "lucide-react"
 
 import { Link } from "@/i18n/routing"
@@ -242,6 +243,19 @@ export default function CompanyOffersPage() {
                     </span>
                   ))}
                 </div>
+              )}
+
+              {/* ── Candidates ── */}
+              {offer.status !== "draft" && (
+                <Link
+                  href={`/dashboard/company/offers/${offer.id}/candidates` as "/dashboard"}
+                  className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <UserCheck className="h-3.5 w-3.5" />
+                  <span>
+                    {offer.candidatesCount} {t("candidates", { count: offer.candidatesCount })}
+                  </span>
+                </Link>
               )}
             </motion.div>
           ))}

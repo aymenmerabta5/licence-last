@@ -26,6 +26,9 @@ import {
   applyToOfferProcedure,
   listStudentApplicationsProcedure,
   withdrawApplicationProcedure,
+  listByOfferProcedure,
+  companyAcceptProcedure,
+  companyRefuseProcedure,
 } from "./routes/applications"
 
 export const appRouter = {
@@ -62,6 +65,9 @@ export const appRouter = {
     apply: applyToOfferProcedure,
     listByStudent: listStudentApplicationsProcedure,
     withdraw: withdrawApplicationProcedure,
+    listByOffer: listByOfferProcedure,
+    companyAccept: companyAcceptProcedure,
+    companyRefuse: companyRefuseProcedure,
   },
 }
 

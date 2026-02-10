@@ -339,6 +339,8 @@
         "positions": "positions",
         "weeks": "weeks",
         "skills": "Skills",
+        "candidates_one": "candidate",
+        "candidates_other": "candidates",
         "form": {
           "createTitle": "Create New Offer",
           "createSubtitle": "Fill in the details for your new internship position",
@@ -370,6 +372,37 @@
           "successEdit": "Offer updated successfully",
           "error": "Something went wrong. Please try again."
         }
+      },
+      "candidates": {
+        "title": "Candidates",
+        "backToOffers": "Back to offers",
+        "empty": "No applications yet. Your offer is visible to students.",
+        "emptyFiltered": "No applications match this filter.",
+        "viewProfile": "View Profile",
+        "accept": "Accept",
+        "refuse": "Refuse",
+        "confirmAccept": "Accept this candidate? This will notify administrators for placement validation.",
+        "confirmRefuse": "Refuse this candidate? They will be notified.",
+        "refuseTitle": "Refuse Candidate",
+        "refuseDescription": "Are you sure you want to refuse {name}?",
+        "refuseNotePlaceholder": "Optional: Provide feedback to the candidate...",
+        "cancel": "Cancel",
+        "confirmRefuseButton": "Refuse",
+        "statusFilter": {
+          "all": "All",
+          "applied": "Pending",
+          "company_accepted": "Accepted",
+          "company_refused": "Refused"
+        },
+        "status": {
+          "applied": "Pending",
+          "company_accepted": "Accepted",
+          "company_refused": "Refused"
+        },
+        "appliedOn": "Applied on",
+        "skillMatch": "match",
+        "coverLetter": "Cover Letter",
+        "portfolio": "Portfolio"
       }
     },
     "welcome": "Welcome back,",

@@ -46,6 +46,7 @@ export interface StudentDashboardData {
 
 export interface StudentDashboardProps {
   user: {
+    id: string
     name: string | null
     email: string
     role: string | null | undefined

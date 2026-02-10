@@ -13,9 +13,10 @@ interface ExperienceSectionProps {
     emptyMessage: string
     addExperience: string
   }
+  canEdit: boolean
 }
 
-export function ExperienceSection({ labels }: ExperienceSectionProps) {
+export function ExperienceSection({ labels, canEdit }: ExperienceSectionProps) {
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
@@ -35,15 +36,17 @@ export function ExperienceSection({ labels }: ExperienceSectionProps) {
           <p className="text-xs text-muted-foreground/60 font-medium leading-relaxed">
             {labels.emptyMessage}
           </p>
-          <Link href="/dashboard/settings">
-            <Button
-              variant="editorial-outline"
-              size="editorial-sm"
-              className="rounded-xl border-border/40 hover:border-primary mt-2"
-            >
-              {labels.addExperience}
-            </Button>
-          </Link>
+          {canEdit && (
+            <Link href="/dashboard/settings">
+              <Button
+                variant="editorial-outline"
+                size="editorial-sm"
+                className="rounded-xl border-border/40 hover:border-primary mt-2"
+              >
+                {labels.addExperience}
+              </Button>
+            </Link>
+          )}
         </div>
       </Card>
     </motion.section>

@@ -9,6 +9,7 @@ import {
   Hash,
   GraduationCap,
 } from "lucide-react"
+import { Fragment } from "react"
 
 import { Card } from "@/components/ui/card"
 
@@ -19,7 +20,6 @@ import { getWilayaName } from "@/lib/wilayas"
 interface ContactInfoCardProps {
   user: ProfileUser
   profile?: StudentProfile | null
-  isStudent: boolean
   labels: {
     personalInfo: string
     email: string
@@ -30,8 +30,78 @@ interface ContactInfoCardProps {
   }
 }
 
-export function ContactInfoCard({ user, profile, isStudent, labels }: ContactInfoCardProps) {
+export function ContactInfoCard({ user, profile, labels }: ContactInfoCardProps) {
   const wilayaName = profile?.wilayaCode ? getWilayaName(profile.wilayaCode) : null
+  const roleLabel = ROLE_LABELS[user.role || "student"] || user.role || "User"
+
+  const rows = [
+    {
+      key: "email",
+      node: user.email ? (
+        <ContactField
+          icon={Mail}
+          label={labels.email}
+          value={user.email}
+          hasValue
+        />
+      ) : null,
+    },
+    {
+      key: "phone",
+      node: profile?.phone ? (
+        <ContactField
+          icon={Phone}
+          label={labels.phone}
+          value={profile.phone}
+          hasValue
+        />
+      ) : null,
+    },
+    {
+      key: "role",
+      node: (
+        <ContactField
+          icon={ShieldCheck}
+          label="Role"
+          value={roleLabel}
+          hasValue
+        />
+      ),
+    },
+    {
+      key: "location",
+      node: (
+        <ContactField
+          icon={MapPin}
+          label={labels.location}
+          value={wilayaName}
+          placeholder="Not set yet"
+        />
+      ),
+    },
+    {
+      key: "studentNumber",
+      node: profile?.studentNumber ? (
+        <ContactField
+          icon={Hash}
+          label={labels.studentNumber}
+          value={profile.studentNumber}
+          hasValue
+        />
+      ) : null,
+    },
+    {
+      key: "department",
+      node: profile?.department ? (
+        <ContactField
+          icon={GraduationCap}
+          label={labels.department}
+          value={profile.level ? `${profile.department} — ${profile.level}` : profile.department}
+          hasValue
+        />
+      ) : null,
+    },
+  ].filter((row) => row.node !== null)
 
   return (
     <motion.section
@@ -45,66 +115,12 @@ export function ContactInfoCard({ user, profile, isStudent, labels }: ContactInf
       </h2>
       <Card className="bg-background border-border/40 rounded-2xl p-6 shadow-sm">
         <div className="space-y-5">
-          <ContactField
-            icon={Mail}
-            label={labels.email}
-            value={user.email}
-            hasValue
-          />
-
-          {isStudent && (
-            <>
-              <Divider />
-              <ContactField
-                icon={Phone}
-                label={labels.phone}
-                value={profile?.phone}
-                placeholder="Not set yet"
-              />
-            </>
-          )}
-
-          <Divider />
-
-          <ContactField
-            icon={ShieldCheck}
-            label="Role"
-            value={ROLE_LABELS[user.role || "student"] || user.role}
-            hasValue
-          />
-
-          <Divider />
-
-          <ContactField
-            icon={MapPin}
-            label={labels.location}
-            value={wilayaName}
-            placeholder="Not set yet"
-          />
-
-          {isStudent && profile?.studentNumber && (
-            <>
-              <Divider />
-              <ContactField
-                icon={Hash}
-                label={labels.studentNumber}
-                value={profile.studentNumber}
-                hasValue
-              />
-            </>
-          )}
-
-          {isStudent && profile?.department && (
-            <>
-              <Divider />
-              <ContactField
-                icon={GraduationCap}
-                label={labels.department}
-                value={profile.level ? `${profile.department} — ${profile.level}` : profile.department}
-                hasValue
-              />
-            </>
-          )}
+          {rows.map((row, idx) => (
+            <Fragment key={row.key}>
+              {idx > 0 && <Divider />}
+              {row.node}
+            </Fragment>
+          ))}
         </div>
       </Card>
     </motion.section>

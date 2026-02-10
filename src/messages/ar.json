@@ -339,6 +339,12 @@
         "positions": "مناصب",
         "weeks": "أسابيع",
         "skills": "المهارات",
+        "candidates_zero": "مرشح",
+        "candidates_one": "مرشح",
+        "candidates_two": "مرشحين",
+        "candidates_few": "مرشحين",
+        "candidates_many": "مرشحين",
+        "candidates_other": "مرشحين",
         "form": {
           "createTitle": "إنشاء عرض جديد",
           "createSubtitle": "املأ تفاصيل منصب التدريب الجديد",
@@ -370,6 +376,37 @@
           "successEdit": "تم تحديث العرض بنجاح",
           "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
         }
+      },
+      "candidates": {
+        "title": "المرشحون",
+        "backToOffers": "العودة إلى العروض",
+        "empty": "لا توجد طلبات حتى الآن. عرضك مرئي للطلاب.",
+        "emptyFiltered": "لا توجد طلبات تطابق هذا الفلتر.",
+        "viewProfile": "عرض الملف الشخصي",
+        "accept": "قبول",
+        "refuse": "رفض",
+        "confirmAccept": "قبول هذا المرشح؟ سيتم إخطار المشرفين للتحقق من صحة التعيين.",
+        "confirmRefuse": "رفض هذا المرشح؟ سيتم إخطاره.",
+        "refuseTitle": "رفض المرشح",
+        "refuseDescription": "هل أنت متأكد أنك تريد رفض {name}؟",
+        "refuseNotePlaceholder": "اختياري: قدم ملاحظات للمرشح...",
+        "cancel": "إلغاء",
+        "confirmRefuseButton": "رفض",
+        "statusFilter": {
+          "all": "الكل",
+          "applied": "قيد الانتظار",
+          "company_accepted": "مقبول",
+          "company_refused": "مرفوض"
+        },
+        "status": {
+          "applied": "قيد الانتظار",
+          "company_accepted": "مقبول",
+          "company_refused": "مرفوض"
+        },
+        "appliedOn": "تقدم في",
+        "skillMatch": "تطابق",
+        "coverLetter": "رسالة التغطية",
+        "portfolio": "معرض الأعمال"
       }
     },
     "welcome": "مرحباً بعودتك،",

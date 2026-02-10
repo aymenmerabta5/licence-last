@@ -29,7 +29,7 @@ export function StatsCard({
       transition={{ duration: 0.5, delay: index * 0.1 }}
       className={cn("h-full", className)}
     >
-      <Card className="p-0 border border-border/40 bg-background hover:border-primary/30 transition-all duration-300 group shadow-sm hover:shadow-md h-full rounded-2xl overflow-hidden relative">
+      <Card className="p-0 border border-border/40 bg-background hover:border-primary/30 transition-all duration-300 group shadow-sm hover:shadow-md h-full overflow-hidden relative">
         <CardContent className="p-6">
           <div className="flex items-start justify-between">
             <div className="space-y-4">

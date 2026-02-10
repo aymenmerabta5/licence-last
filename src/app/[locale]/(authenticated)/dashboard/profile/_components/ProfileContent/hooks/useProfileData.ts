@@ -1,14 +1,21 @@
 import { useMemo } from "react"
 
-import type { ProfileUser, StudentData } from "../types"
 import { Briefcase, Award, ShieldCheck } from "lucide-react"
 
-export function useProfileData(user: ProfileUser, studentData?: StudentData) {
+import type { ProfileUser, StudentData, ViewerIdentity } from "../types"
+
+export function useProfileData(
+  viewer: ViewerIdentity,
+  user: ProfileUser,
+  studentData?: StudentData,
+) {
+  const isOwner = viewer.id === user.id
+  const canEdit = isOwner && user.role === "student"
   const isStudent: boolean = user.role === "student" && !!studentData
   const profile = studentData?.profile
 
   const stats = useMemo(() => {
-    if (isStudent && studentData) {
+    if (canEdit && isStudent && studentData?.stats) {
       return [
         {
           title: "Applications",
@@ -31,30 +38,13 @@ export function useProfileData(user: ProfileUser, studentData?: StudentData) {
       ]
     }
 
-    return [
-      {
-        title: "Profile Views",
-        value: "—",
-        description: "Coming soon",
-        icon: Briefcase,
-      },
-      {
-        title: "Applications",
-        value: "—",
-        description: "Coming soon",
-        icon: Briefcase,
-      },
-      {
-        title: "Skill Score",
-        value: "—",
-        description: "Coming soon",
-        icon: Award,
-      },
-    ]
-  }, [isStudent, studentData])
+    return []
+  }, [canEdit, isStudent, studentData])
 
   return {
     isStudent,
+    isOwner,
+    canEdit,
     profile,
     stats,
     university: studentData?.university,

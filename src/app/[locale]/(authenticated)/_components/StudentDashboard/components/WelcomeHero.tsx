@@ -5,20 +5,22 @@ import * as motion from "motion/react-client"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
+import { Route } from "next"
 
 interface WelcomeHeroProps {
   userName: string | null
   profileCompleteness: number
+  profileUserId: string
 }
 
-export function WelcomeHero({ userName, profileCompleteness }: WelcomeHeroProps) {
+export function WelcomeHero({ userName, profileCompleteness, profileUserId }: WelcomeHeroProps) {
   const firstName = userName?.split(" ")[0]
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden rounded-2xl border border-border bg-card p-8"
+      className="relative overflow-hidden border border-border bg-card p-8"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(900px_380px_at_20%_0%,theme(colors.primary/12),transparent_60%),radial-gradient(700px_320px_at_92%_10%,theme(colors.primary/10),transparent_55%),linear-gradient(to_bottom,transparent,theme(colors.primary/6))]" />
       <div className="relative z-10 max-w-2xl space-y-4">
@@ -40,7 +42,7 @@ export function WelcomeHero({ userName, profileCompleteness }: WelcomeHeroProps)
         </p>
         <div className="flex flex-wrap gap-4 pt-4">
           {profileCompleteness < 100 && (
-            <Link href="/dashboard/profile">
+            <Link href={`/profile/${profileUserId}` as Route}>
               <Button
                 variant="editorial"
                 size="editorial"

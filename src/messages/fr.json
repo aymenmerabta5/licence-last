@@ -339,6 +339,8 @@
         "positions": "postes",
         "weeks": "semaines",
         "skills": "Compétences",
+        "candidates_one": "candidat",
+        "candidates_other": "candidats",
         "form": {
           "createTitle": "Créer une Nouvelle Offre",
           "createSubtitle": "Remplissez les détails de votre nouveau poste de stage",
@@ -370,6 +372,37 @@
           "successEdit": "Offre mise à jour avec succès",
           "error": "Une erreur s'est produite. Veuillez réessayer."
         }
+      },
+      "candidates": {
+        "title": "Candidats",
+        "backToOffers": "Retour aux offres",
+        "empty": "Aucune candidature pour le moment. Votre offre est visible pour les étudiants.",
+        "emptyFiltered": "Aucune candidature ne correspond à ce filtre.",
+        "viewProfile": "Voir le Profil",
+        "accept": "Accepter",
+        "refuse": "Refuser",
+        "confirmAccept": "Accepter ce candidat ? Cela notifiera les administrateurs pour la validation du placement.",
+        "confirmRefuse": "Refuser ce candidat ? Il sera notifié.",
+        "refuseTitle": "Refuser le Candidat",
+        "refuseDescription": "Êtes-vous sûr de vouloir refuser {name} ?",
+        "refuseNotePlaceholder": "Optionnel : Fournissez un retour au candidat...",
+        "cancel": "Annuler",
+        "confirmRefuseButton": "Refuser",
+        "statusFilter": {
+          "all": "Tous",
+          "applied": "En attente",
+          "company_accepted": "Acceptés",
+          "company_refused": "Refusés"
+        },
+        "status": {
+          "applied": "En attente",
+          "company_accepted": "Accepté",
+          "company_refused": "Refusé"
+        },
+        "appliedOn": "Candidaté le",
+        "skillMatch": "correspondance",
+        "coverLetter": "Lettre de Motivation",
+        "portfolio": "Portfolio"
       }
     },
     "welcome": "Bon retour,",
