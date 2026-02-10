@@ -149,6 +149,8 @@ describe("src/server/services/placements/validate", () => {
       validatePlacement({
         applicationId: "app-1",
         adminUserId: "admin-1",
+        adminRole: "super_admin",
+        adminUniversityId: null,
         startDate: new Date("2030-01-01"),
         endDate: new Date("2030-02-01"),
       }),
@@ -181,6 +183,8 @@ describe("src/server/services/placements/validate", () => {
     const result = await validatePlacement({
       applicationId: "app-1",
       adminUserId: "admin-1",
+      adminRole: "super_admin",
+      adminUniversityId: null,
       startDate: new Date("2030-01-01"),
       endDate: new Date("2030-02-01"),
     })

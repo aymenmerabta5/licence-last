@@ -23,10 +23,12 @@ export async function companyAcceptApplication(
       offerTitle: internshipOffer.title,
       offerCompanyId: internshipOffer.companyId,
       companyName: company.name,
+      studentUniversityId: user.universityId,
     })
     .from(application)
     .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
     .innerJoin(company, eq(internshipOffer.companyId, company.id))
+    .innerJoin(user, eq(application.studentUserId, user.id))
     .where(eq(application.id, applicationId))
     .limit(1)
 
@@ -53,6 +55,11 @@ export async function companyAcceptApplication(
     })
     .where(eq(application.id, applicationId))
 
+  // Notify the relevant university admins only.
+  if (!app.studentUniversityId) {
+    return { success: true, applicationId }
+  }
+
   const admins = await db
     .select({ id: user.id })
     .from(user)
@@ -60,6 +67,7 @@ export async function companyAcceptApplication(
       and(
         eq(user.role, "admin"),
         eq(user.onboardingCompleted, true),
+        eq(user.universityId, app.studentUniversityId),
       ),
     )
 

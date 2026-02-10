@@ -63,11 +63,13 @@ export default function AdminValidationsPage() {
     queryKey: ["placements", "listPending"],
     queryFn: async ({ pageParam }) => {
       return orpcClient.placements.listPending({
-        cursor: pageParam as { createdAt: string; id: string } | undefined,
+        cursor: pageParam as { companyActionAt: string; id: string } | undefined,
         limit: 15,
       })
     },
-    initialPageParam: undefined as { createdAt: string; id: string } | undefined,
+    initialPageParam: undefined as
+      | { companyActionAt: string; id: string }
+      | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   })
 

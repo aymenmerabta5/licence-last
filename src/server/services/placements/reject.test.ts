@@ -10,7 +10,8 @@ const mockLimit = mock(() => {
 })
 
 const mockWhereWithLimit = mock(() => ({ limit: mockLimit }))
-const mockJoin2 = mock(() => ({ where: mockWhereWithLimit }))
+const mockJoin3 = mock(() => ({ where: mockWhereWithLimit }))
+const mockJoin2 = mock(() => ({ innerJoin: mockJoin3 }))
 const mockJoin1 = mock(() => ({ innerJoin: mockJoin2 }))
 const mockFromJoin = mock(() => ({ innerJoin: mockJoin1 }))
 
@@ -56,6 +57,7 @@ describe("src/server/services/placements/reject", () => {
     mockWhereWithLimit.mockClear()
     mockJoin1.mockClear()
     mockJoin2.mockClear()
+    mockJoin3.mockClear()
     mockFromJoin.mockClear()
 
     mockUpdate.mockClear()
@@ -70,7 +72,8 @@ describe("src/server/services/placements/reject", () => {
 
     mockFromJoin.mockReturnValue({ innerJoin: mockJoin1 })
     mockJoin1.mockReturnValue({ innerJoin: mockJoin2 })
-    mockJoin2.mockReturnValue({ where: mockWhereWithLimit })
+    mockJoin2.mockReturnValue({ innerJoin: mockJoin3 })
+    mockJoin3.mockReturnValue({ where: mockWhereWithLimit })
     mockWhereWithLimit.mockReturnValue({ limit: mockLimit })
 
     mockUpdate.mockReturnValue({ set: mockSet })
@@ -98,7 +101,13 @@ describe("src/server/services/placements/reject", () => {
     mockSelectResults.push([{ userId: "member-1" }])
 
     const { rejectPlacement } = await import("./reject")
-    const result = await rejectPlacement("app-1", "admin-1", "No papers")
+    const result = await rejectPlacement({
+      applicationId: "app-1",
+      adminUserId: "admin-1",
+      adminRole: "super_admin",
+      adminUniversityId: null,
+      reason: "No papers",
+    })
 
     expect(result.success).toBe(true)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
