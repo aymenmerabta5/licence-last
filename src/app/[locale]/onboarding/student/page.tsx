@@ -1,18 +1,21 @@
 import { redirect } from "next/navigation"
 import { headers } from "next/headers"
+import { getLocale } from "next-intl/server"
 
 import { auth } from "@/lib/auth"
 import { StudentOnboardingForm } from "./_components/StudentOnboarding"
 
 export default async function StudentOnboardingPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const [session, locale] = await Promise.all([
+    auth.api.getSession({
+      headers: await headers(),
+    }),
+    getLocale(),
+  ])
 
   // If already onboarded, redirect to dashboard
   if (session?.user.onboardingCompleted) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    redirect("/dashboard" as any)
+    redirect(`/${locale}/dashboard`)
   }
 
   return <StudentOnboardingForm />

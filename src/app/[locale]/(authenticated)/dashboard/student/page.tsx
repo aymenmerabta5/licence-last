@@ -20,8 +20,7 @@ export default async function StudentDashboardPage({
   const [{ locale }, user] = await Promise.all([params, requireRole(["student"])])
 
   if (!user.onboardingCompleted) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    redirect(`/${locale}/onboarding/student` as any)
+    redirect(`/${locale}/onboarding/student`)
   }
 
   const t = await getTranslations("dashboard")

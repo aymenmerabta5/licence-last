@@ -10,7 +10,6 @@ import {
   Loader2,
   Check,
   X,
-  ExternalLink,
   Github,
   Globe,
   GraduationCap,
@@ -20,6 +19,8 @@ import { Link } from "@/i18n/routing"
 import { orpc, orpcClient } from "@/server/orpc/client"
 import { Button } from "@/components/ui/button"
 import type { ListApplicationsByOfferResult } from "@/server/services/applications/list-by-offer"
+
+import { StudentProfileView } from "@/app/[locale]/(authenticated)/dashboard/company/_components/StudentProfileView"
 
 const reveal = {
   initial: { opacity: 0, y: 20 },
@@ -337,15 +338,10 @@ export default function CandidatesPage({ params }: CandidatePageProps) {
                 </div>
 
                 <div className="flex flex-col gap-2 shrink-0">
-                  <Link
-                    href={`/profile/${app.student.id}` as "/profile"}
-                    className="inline-flex"
-                  >
-                    <Button variant="outline" size="sm" className="gap-1.5 text-xs">
-                      <ExternalLink className="h-3.5 w-3.5" />
-                      {t("viewProfile")}
-                    </Button>
-                  </Link>
+                  <StudentProfileView
+                    studentUserId={app.student.id}
+                    label={t("viewProfile")}
+                  />
 
                   {app.status === "applied" && (
                     <>

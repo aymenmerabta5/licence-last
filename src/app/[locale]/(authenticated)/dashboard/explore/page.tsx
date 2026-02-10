@@ -1,7 +1,6 @@
-import { redirect } from "@/i18n/routing"
+import type { Route } from "next"
 
-import { requireRole } from "@/lib/auth-guards"
-import { ExploreClient } from "./_components/ExploreClient"
+import { redirect } from "next/navigation"
 
 type Params = Promise<{ locale: string }>
 
@@ -10,15 +9,6 @@ export default async function ExplorePage({
 }: {
   params: Params
 }) {
-  const [{ }, user] = await Promise.all([
-    params,
-    requireRole(["student"]),
-  ])
-
-  if (!user.onboardingCompleted) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    redirect(`/onboarding/student` as any)
-  }
-
-  return <ExploreClient />
+  const { locale } = await params
+  redirect(`/${locale}/dashboard/student/search` as Route)
 }

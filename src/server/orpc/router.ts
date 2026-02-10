@@ -10,6 +10,7 @@ import {
 import { listSkillTagsProcedure } from "./routes/skills"
 import {
   getStudentProfileProcedure,
+  getPublicStudentProfileProcedure,
   upsertStudentProfileProcedure,
 } from "./routes/students"
 import {
@@ -36,6 +37,12 @@ import {
   rejectProcedure,
 } from "./routes/placements"
 import { generateAgreementProcedure } from "./routes/documents"
+import {
+  listNotificationsProcedure,
+  markAllNotificationsReadProcedure,
+  markNotificationReadProcedure,
+} from "./routes/notifications"
+import { getAdminStatsProcedure } from "./routes/stats"
 
 export const appRouter = {
   users: {
@@ -55,6 +62,7 @@ export const appRouter = {
   },
   students: {
     getProfile: getStudentProfileProcedure,
+    getPublicProfile: getPublicStudentProfileProcedure,
     upsertProfile: upsertStudentProfileProcedure,
   },
   offers: {
@@ -82,6 +90,14 @@ export const appRouter = {
   },
   documents: {
     generateAgreement: generateAgreementProcedure,
+  },
+  notifications: {
+    list: listNotificationsProcedure,
+    markRead: markNotificationReadProcedure,
+    markAllRead: markAllNotificationsReadProcedure,
+  },
+  stats: {
+    getAdminStats: getAdminStatsProcedure,
   },
 }
 

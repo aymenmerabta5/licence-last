@@ -9,6 +9,5 @@ export default async function ProfilePage() {
   const locale = await getLocale()
 
   // Keep /dashboard/profile for backwards compatibility; the profile is now public at /profile/[userId].
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  redirect(`/${locale}/profile/${user.id}` as any)
+  redirect(`/${locale}/profile/${user.id}`)
 }

@@ -1,19 +1,21 @@
 import { redirect } from "next/navigation"
-import { getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
 
 import { requireRole } from "@/lib/auth-guards"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 import { CompanyProfileForm } from "./_components/CompanyProfileForm"
 
 export default async function CompanyProfilePage() {
-  const sessionUser = await requireRole(["company_admin"])
-  const t = await getTranslations("dashboard.company.profile")
+  const [sessionUser, locale, t] = await Promise.all([
+    requireRole(["company_admin"]),
+    getLocale(),
+    getTranslations("dashboard.company.profile"),
+  ])
 
   const company = await getCompanyByUserId(sessionUser.id)
 
   if (!company) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    redirect("/onboarding/company" as any)
+    redirect(`/${locale}/onboarding/company`)
   }
 
   return (

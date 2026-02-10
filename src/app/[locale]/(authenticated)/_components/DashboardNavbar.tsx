@@ -1,10 +1,11 @@
 "use client"
 
-import { Bell, Search, User, Menu } from "lucide-react"
+import { Search, User, Menu } from "lucide-react"
 import { usePathname, Link } from "@/i18n/routing"
 
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
+import { NotificationBell } from "@/components/NotificationBell"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -93,10 +94,7 @@ export function DashboardNavbar({ user }: { user: { id: string; name: string | n
               <ThemeToggle />
             </div>
 
-            <button className="relative p-2.5 rounded-full hover:bg-secondary/80 transition-all group">
-              <Bell className="h-5 w-5 text-foreground/60 group-hover:text-primary transition-colors" />
-              <span className="absolute top-2.5 end-2.5 w-2 h-2 bg-primary rounded-full ring-2 ring-background animate-pulse" />
-            </button>
+            <NotificationBell />
 
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center gap-2.5 p-1 rounded-full hover:bg-secondary/80 transition-all outline-none group">
