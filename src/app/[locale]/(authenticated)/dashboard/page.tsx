@@ -1,4 +1,6 @@
-import { getTranslations } from "next-intl/server"
+import { redirect } from "next/navigation"
+import { getLocale, getTranslations } from "next-intl/server"
+
 import { requireRole } from "@/lib/auth-guards"
 import { StudentDashboard } from "@/app/[locale]/(authenticated)/_components/StudentDashboard"
 import { RecruiterDashboard } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard"
@@ -10,8 +12,19 @@ import { searchOffers } from "@/server/services/offers/search"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 
 export default async function DashboardPage() {
-  const user = await requireRole(["student", "company_admin", "admin", "super_admin"])
-  const t = await getTranslations("dashboard")
+  const [user, locale, t] = await Promise.all([
+    requireRole(["student", "company_admin", "admin", "super_admin"]),
+    getLocale(),
+    getTranslations("dashboard"),
+  ])
+
+  if (user.role === "student" && !user.onboardingCompleted) {
+    redirect(`/${locale}/onboarding/student`)
+  }
+
+  if (user.role === "company_admin" && !user.onboardingCompleted) {
+    redirect(`/${locale}/onboarding/company`)
+  }
 
   const greeting = t("welcome")
 

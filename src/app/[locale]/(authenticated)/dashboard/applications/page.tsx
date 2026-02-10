@@ -1,7 +1,6 @@
-import { redirect } from "next/navigation"
+import type { Route } from "next"
 
-import { requireRole } from "@/lib/auth-guards"
-import { ApplicationsClient } from "./_components/ApplicationsClient"
+import { redirect } from "next/navigation"
 
 type Params = Promise<{ locale: string }>
 
@@ -10,15 +9,6 @@ export default async function ApplicationsPage({
 }: {
   params: Params
 }) {
-  const [{ locale }, user] = await Promise.all([
-    params,
-    requireRole(["student"]),
-  ])
-
-  if (!user.onboardingCompleted) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    redirect(`/${locale}/onboarding/student` as any)
-  }
-
-  return <ApplicationsClient />
+  const { locale } = await params
+  redirect(`/${locale}/dashboard/student/applications` as Route)
 }

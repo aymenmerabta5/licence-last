@@ -9,7 +9,5 @@ export default async function StudentProfilePage() {
   const locale = await getLocale()
 
   // Legacy route; the canonical profile route is /profile/[userId].
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  redirect(`/${locale}/profile/${user.id}` as any)
+  redirect(`/${locale}/profile/${user.id}`)
 }
-

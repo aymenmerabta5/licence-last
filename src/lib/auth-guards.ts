@@ -2,6 +2,7 @@ import "server-only"
 
 import { redirect } from "next/navigation"
 import { headers } from "next/headers"
+import { getLocale } from "next-intl/server"
 
 import { auth } from "@/lib/auth"
 
@@ -13,20 +14,19 @@ type UserRole = "student" | "company_admin" | "admin" | "super_admin"
  * Returns the session user on success.
  */
 export async function requireRole(allowedRoles: UserRole[]) {
+  const locale = await getLocale()
   const session = await auth.api.getSession({
     headers: await headers(),
   })
 
   if (!session) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    redirect("/login" as any)
+    redirect(`/${locale}/login`)
   }
 
   const { user } = session
 
   if (!allowedRoles.includes(user.role as UserRole)) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    redirect("/" as any)
+    redirect(`/${locale}`)
   }
 
   return user

@@ -20,20 +20,17 @@ export default async function CompanyDashboardPage({
   ])
 
   if (!user.onboardingCompleted) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    redirect(`/${locale}/onboarding/company` as any)
+    redirect(`/${locale}/onboarding/company`)
   }
 
   const company = await getCompanyByUserId(user.id)
 
   if (company?.status === "rejected") {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    redirect(`/${locale}/dashboard/company/rejected` as any)
+    redirect(`/${locale}/dashboard/company/rejected`)
   }
 
   if (company?.status !== "approved") {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    redirect(`/${locale}/dashboard/company/pending` as any)
+    redirect(`/${locale}/dashboard/company/pending`)
   }
 
   const t = await getTranslations("dashboard")

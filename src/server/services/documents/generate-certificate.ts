@@ -1,0 +1,134 @@
+import "server-only"
+
+import { createElement } from "react"
+import { renderToBuffer } from "@react-pdf/renderer"
+import { eq } from "drizzle-orm"
+
+import { db } from "@/server/db"
+import { placement, placementDocument } from "@/server/db/schema/placements"
+import { application } from "@/server/db/schema/applications"
+import { internshipOffer } from "@/server/db/schema/internships"
+import { company } from "@/server/db/schema/companies"
+import { user } from "@/server/db/schema/auth"
+import { university } from "@/server/db/schema/universities"
+import {
+  InternshipCertificateTemplate,
+  type CertificateData,
+} from "./templates/certificate"
+
+export interface GenerateCertificateInput {
+  placementId: string
+  locale?: string
+}
+
+export interface GenerateCertificateResult {
+  success: boolean
+  documentId: string
+  buffer?: Buffer
+}
+
+export async function generateCertificate(
+  input: GenerateCertificateInput,
+): Promise<GenerateCertificateResult> {
+  const { placementId, locale = "en" } = input
+
+  const [placementRecord] = await db
+    .select()
+    .from(placement)
+    .where(eq(placement.id, placementId))
+    .limit(1)
+
+  if (!placementRecord) {
+    throw new Error("Placement not found")
+  }
+
+  const [app] = await db
+    .select({
+      applicationId: application.id,
+      offerTitle: internshipOffer.title,
+      offerInternshipType: internshipOffer.internshipType,
+      companyName: company.name,
+      studentName: user.name,
+      studentEmail: user.email,
+      studentUniversityId: user.universityId,
+    })
+    .from(application)
+    .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
+    .innerJoin(company, eq(internshipOffer.companyId, company.id))
+    .innerJoin(user, eq(application.studentUserId, user.id))
+    .where(eq(application.id, placementRecord.applicationId))
+    .limit(1)
+
+  if (!app) {
+    throw new Error("Application not found")
+  }
+
+  let uniName: string | null = null
+  if (app.studentUniversityId) {
+    const [uni] = await db
+      .select({ name: university.name })
+      .from(university)
+      .where(eq(university.id, app.studentUniversityId))
+      .limit(1)
+    uniName = uni?.name ?? null
+  }
+
+  const data: CertificateData = {
+    studentName: app.studentName ?? "Unknown",
+    studentEmail: app.studentEmail,
+    universityName: uniName,
+    companyName: app.companyName,
+    offerTitle: app.offerTitle,
+    internshipType: app.offerInternshipType,
+    startDate: placementRecord.startDate,
+    endDate: placementRecord.endDate,
+  }
+
+  const pdfBuffer = await renderToBuffer(
+    createElement(InternshipCertificateTemplate, { data, locale }) as unknown as Parameters<
+      typeof renderToBuffer
+    >[0],
+  )
+
+  let [documentRecord] = await db
+    .select()
+    .from(placementDocument)
+    .where(eq(placementDocument.placementId, placementId))
+    .limit(1)
+
+  if (!documentRecord) {
+    const [newDoc] = await db
+      .insert(placementDocument)
+      .values({
+        id: crypto.randomUUID(),
+        placementId,
+        type: "certificate",
+        status: "generated",
+        meta: {
+          generatedAt: new Date().toISOString(),
+          locale,
+          fileName: `certificate_${placementId}.pdf`,
+        },
+      })
+      .returning()
+    documentRecord = newDoc
+  } else {
+    await db
+      .update(placementDocument)
+      .set({
+        status: "generated",
+        meta: {
+          generatedAt: new Date().toISOString(),
+          locale,
+          fileName: `certificate_${placementId}.pdf`,
+        },
+      })
+      .where(eq(placementDocument.id, documentRecord.id))
+  }
+
+  return {
+    success: true,
+    documentId: documentRecord.id,
+    buffer: Buffer.from(pdfBuffer),
+  }
+}
