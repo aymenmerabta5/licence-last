@@ -8,6 +8,7 @@ import { orpc } from "@/server/orpc/client"
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -72,20 +73,22 @@ export function NotificationBell() {
         align="end"
         className="w-80 mt-2 p-1.5 rounded-xl border-border/40 shadow-xl backdrop-blur-xl bg-background/95"
       >
-        <div className="flex items-center justify-between px-2 py-1">
-          <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
-            Notifications
-          </DropdownMenuLabel>
-          <button
-            type="button"
-            onClick={() => markAllReadMutation.mutate({})}
-            disabled={unreadCount === 0 || markAllReadMutation.isPending}
-            className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground hover:text-primary disabled:opacity-50 disabled:hover:text-muted-foreground transition-colors"
-          >
-            <CheckCheck className="h-3.5 w-3.5" />
-            Mark all read
-          </button>
-        </div>
+        <DropdownMenuGroup>
+          <div className="flex items-center justify-between px-2 py-1">
+            <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+              Notifications
+            </DropdownMenuLabel>
+            <button
+              type="button"
+              onClick={() => markAllReadMutation.mutate({})}
+              disabled={unreadCount === 0 || markAllReadMutation.isPending}
+              className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground hover:text-primary disabled:opacity-50 disabled:hover:text-muted-foreground transition-colors"
+            >
+              <CheckCheck className="h-3.5 w-3.5" />
+              Mark all read
+            </button>
+          </div>
+        </DropdownMenuGroup>
 
         <DropdownMenuSeparator className="my-1 opacity-50" />
 

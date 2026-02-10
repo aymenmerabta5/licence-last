@@ -5,6 +5,7 @@ import { authedProcedure } from "../middleware"
 import { getStudentProfile } from "@/server/services/students/get-profile"
 import { getPublicStudentProfile } from "@/server/services/students/get-public-profile"
 import { upsertStudentProfile } from "@/server/services/students/upsert-profile"
+import { upsertStudentProfileDetails } from "@/server/services/students/upsert-profile-details"
 
 /* ── Reads ── */
 
@@ -83,4 +84,28 @@ export const upsertStudentProfileProcedure = authedProcedure
 
     const { skillTagIds, ...data } = input
     return upsertStudentProfile(data, skillTagIds, context.user.id)
+  })
+
+export const upsertStudentProfileDetailsProcedure = authedProcedure
+  .input(
+    z.object({
+      bio: z.string().optional(),
+      phone: z.string().optional(),
+      githubUrl: z.string().url().optional().or(z.literal("")),
+      portfolioUrl: z.string().url().optional().or(z.literal("")),
+      studentNumber: z.string().optional(),
+      department: z.string().optional(),
+      level: z.string().optional(),
+      wilayaCode: z.coerce.number().int().min(1).max(58).optional().or(z.literal(0)),
+      address: z.string().optional(),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    if (context.user.role !== "student") {
+      throw new ORPCError("FORBIDDEN", {
+        message: "Only students can update their profile",
+      })
+    }
+
+    return upsertStudentProfileDetails(input, context.user.id)
   })
