@@ -1,6 +1,6 @@
 # AGENTS.md — Coding Guidelines for AI Agents
 
-> Last updated: 2026-02-06  
+> Last updated: 2026-02-11
 > Project: Internex — A Next.js 16 + React 19 application with editorial design aesthetic, for linking companies internship programs with university students
 
 ---
@@ -17,6 +17,9 @@ bun run build
 # Production server (after build)
 bun run start
 
+# Type checking
+bun run typecheck
+
 # Linting (ESLint with Next.js config)
 bun run lint
 
@@ -24,6 +27,21 @@ bun run lint
 bun test              # Run all tests
 bun test:watch        # Watch mode
 bun test:coverage     # With coverage report
+
+# Database (auto-loads .env.development)
+bun run db:generate         # Generate migrations from schema
+bun run db:migrate          # Apply migrations (dev DB)
+bun run db:push             # Push schema changes (dev only)
+bun run db:studio           # Drizzle Studio GUI
+bun run db:reset            # Reset database
+bun run db:seed             # Seed database with sample data
+
+# Production database (use carefully)
+bun run db:migrate:prod     # Migrate production database
+bun run db:studio:prod      # Studio for production
+
+# MCP Server (development only)
+bun run mcp:dev             # Start MCP development server
 ```
 
 **Note:** This project uses Bun as the package manager (`bun.lock` present).
@@ -32,17 +50,67 @@ bun test:coverage     # With coverage report
 
 ## Technology Stack
 
-| Category | Technology |
-|----------|------------|
-| Framework | Next.js 16 (App Router) |
-| React | 19.2.3 |
-| Language | TypeScript 5 (strict mode) |
-| Styling | Tailwind CSS 4 + `@theme inline` |
-| UI Components | shadcn/ui (base-nova style) |
-| Animation | motion (Framer Motion successor) |
-| Icons | lucide-react |
-| Fonts | DM Sans, DM Serif Display (Google Fonts) |
-| Testing | Bun Test Runner (built-in) |
+| Category | Technology | Version |
+|----------|------------|---------|
+| Framework | Next.js | 16.1.6 |
+| React | React | 19.2.3 |
+| Language | TypeScript | 5.x (strict mode) |
+| Styling | Tailwind CSS | 4.x + `@theme inline` |
+| UI Components | shadcn/ui | 3.8.3 (base-nova style) |
+| Animation | motion | 12.33.0 (Framer Motion successor) |
+| Icons | lucide-react | 0.563.0 |
+| Fonts | DM Sans, DM Serif Display, Noto Sans Arabic | Google Fonts |
+| Testing | Bun Test Runner | Built-in |
+| Test Utils | @testing-library/react | 16.3.2 |
+| DOM Testing | happy-dom | 20.5.0 |
+
+### State Management & Data
+| Category | Technology | Version |
+|----------|------------|---------|
+| Server State | @tanstack/react-query | 5.90.20 |
+| Forms | @tanstack/react-form | 1.28.0 |
+| ORM | drizzle-orm | 0.45.1 |
+| Database | PostgreSQL | via postgres driver |
+| Migrations | drizzle-kit | 0.31.9 |
+| Validation | zod | 4.3.6 |
+
+### Backend & API
+| Category | Technology | Version |
+|----------|------------|---------|
+| API Framework | @orpc/server | 1.13.4 |
+| API Client | @orpc/client | 1.13.4 |
+| Query Integration | @orpc/tanstack-query | 1.13.4 |
+| Rate Limiting | @orpc/experimental-ratelimit | 1.13.5 |
+| Authentication | better-auth | 1.4.18 |
+| Server Marker | server-only | 0.0.1 |
+
+### AI & External Services
+| Category | Technology | Version |
+|----------|------------|---------|
+| AI SDK | ai | 6.0.78 |
+| OpenAI Provider | @ai-sdk/openai | 3.0.26 |
+| React AI Hooks | @ai-sdk/react | 3.0.80 |
+| Arcade Tools | @arcadeai/arcadejs | 2.2.0 |
+| Email Sending | resend | 6.9.1 |
+| Email Templates | @react-email/components | 1.0.7 |
+| PDF Generation | @react-pdf/renderer | 4.3.2 |
+
+### i18n & Theming
+| Category | Technology | Version |
+|----------|------------|---------|
+| Internationalization | next-intl | 4.8.2 |
+| Theming | next-themes | 0.4.6 |
+
+### Utilities
+| Category | Technology | Version |
+|----------|------------|---------|
+| Class Variance | class-variance-authority | 0.7.1 |
+| Class Merging | tailwind-merge | 3.4.0 |
+| Conditional Classes | clsx | 2.1.1 |
+| Environment | @t3-oss/env-nextjs | 0.13.10 |
+| Charts | recharts | 2.15.4 |
+| Toast Notifications | sonner | 2.0.7 |
+| Drawers | vaul | 1.1.2 |
 
 ---
 
@@ -58,20 +126,88 @@ This project uses **Postgres + Drizzle** (`src/server/db/*`) with an MVC archite
 
 Put all business logic in `src/server/services/<domain>/`:
 - Reads: `get.ts`, `list.ts`
-- Writes: `create.ts`, `update.ts`, `approve.ts`, `reject.ts`
+- Writes: `create.ts`, `update.ts`, `approve.ts`, `reject.ts`, `delete.ts`
 - Always add `import "server-only"` at the top
 - Functions take plain data + userId — never handle auth themselves
 - Import `db` from `@/server/db` and schema from `@/server/db/schema`
+
+**Service Pattern:**
+```typescript
+import "server-only"
+import { db } from "@/server/db"
+import { companies } from "@/server/db/schema/companies"
+
+export async function createCompany(data: CreateCompanyInput, userId: string) {
+  // Pure DB logic, no auth checks
+  const [company] = await db.insert(companies).values({ ...data, userId }).returning()
+  return { companyId: company.id, slug: company.slug }
+}
+```
+
+**Service Domains (17 total):**
+- `ai/` — AI/LLM integration (rate limits, context, model config, arcade tools)
+- `applications/` — Internship applications (apply, withdraw, pipeline, company actions)
+- `assistant/` — AI assistant conversations (CRUD, messages)
+- `companies/` — Company management (CRUD, approval, trust index, reports)
+- `documents/` — Document generation (agreements, certificates)
+- `matching/` — Student-offer matching (scoring, skill gaps, readiness)
+- `notifications/` — User notifications (create, list, mark read)
+- `offers/` — Internship offers (CRUD, search, status management)
+- `placements/` — Placement validation (list pending, validate, reject)
+- `skills/` — Skills/tags management
+- `students/` — Student profiles (get, upsert, public profiles)
+- `universities/` — University data
+- `uploads/` — File upload handling (S3)
+- `users/` — User management (get-me, update, promote)
 
 ### oRPC Controller Layer
 
 All client reads AND mutations go through oRPC at `src/server/orpc/`:
 
-- **Middleware** (`middleware.ts`): Auth chain — `publicProcedure`, `authedProcedure`, `adminProcedure`, `superAdminProcedure`, `companyAdminProcedure`
-- **Routes** (`routes/*.ts`): Define procedures with `.input(zodSchema).handler(fn)`
+**Core Files:**
+- **Middleware** (`middleware.ts`): Auth procedure chain
+- **Rate-Limited Procedures** (`rate-limited-procedures.ts`): Pre-composed rate-limited variants
+- **Rate Limit Middleware** (`ratelimit-middleware.ts`): Rate limiting factory
 - **Router** (`router.ts`): Combines all route procedures into `appRouter`
 - **Client** (`client.ts`): `orpcClient` for direct calls, `orpc` for TanStack Query utils
 - **API handler** (`src/app/api/rpc/[...rest]/route.ts`): Catch-all oRPC handler
+
+**Auth Procedures (Middleware Chain):**
+```typescript
+publicProcedure              // No auth required
+├── authedProcedure          // Valid session required
+│   ├── adminProcedure       // admin or super_admin role
+│   ├── superAdminProcedure  // super_admin only
+│   ├── companyAdminProcedure // company_admin + injects companyMembership
+│   └── studentProcedure     // student role + injects studentProfile
+```
+
+**Rate-Limited Procedures:**
+```typescript
+// Pre-composed procedures with rate limiting
+publicProcedureStrict        // 5 req/min (auth endpoints)
+publicProcedureStandard      // 100 req/min (public reads)
+authedProcedureStandard      // 100 req/min (general API)
+authedProcedureGenerous      // 300 req/min (listings, searches)
+authedProcedureStrict        // 5 req/min (sensitive ops)
+adminProcedureGenerous       // 300 req/min (bulk admin ops)
+assistantProcedureLimited    // 20 req/min (AI calls)
+companyAdminProcedure*       // Various limits for company admins
+```
+
+**oRPC Routes (12 total):**
+- `users.ts` — getMe, updateMe, promoteUser
+- `companies.ts` — CRUD, approval, trust index, reports, logo upload
+- `students.ts` — Profile management
+- `offers.ts` — Offer CRUD, status updates
+- `applications.ts` — Apply, withdraw, pipeline, company actions
+- `skills.ts` — Skill tag listing
+- `placements.ts` — Validation workflows
+- `documents.ts` — Agreement generation
+- `notifications.ts` — Notification management
+- `stats.ts` — Admin statistics
+- `assistant.ts` — AI assistant conversations
+- `matching.ts` — Matching scores, skill gaps
 
 ### Client Usage Patterns
 
@@ -84,8 +220,15 @@ const me = await orpcClient.users.getMe()
 import { orpc } from "@/server/orpc/client"
 const { data } = useQuery(orpc.companies.list.queryOptions({ input: { status: "approved" } }))
 
-// TanStack Query (mutations)
-const { mutateAsync } = useMutation(orpc.companies.create.mutationOptions())
+// TanStack Query (mutations with cache invalidation)
+const queryClient = useQueryClient()
+const { mutateAsync } = useMutation(
+  orpc.companies.create.mutationOptions({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: orpc.companies.list.queryOptions().queryKey })
+    },
+  })
+)
 ```
 
 ### Server Components (RSC)
@@ -100,13 +243,45 @@ const company = await getCompanyByUserId(session.user.id)
 
 Client-safe Zod schemas in `src/lib/schemas/` (NO `server-only`):
 - `auth.ts` — login, signup, reset password schemas
-- `company.ts` — company onboarding schema
+- `company.ts` — company onboarding and profile schemas
+- `student.ts` — student profile schemas (education, experience, skills)
+- `offer.ts` — internship offer creation schemas
+- `search.ts` — search and filter schemas
+- `matching.ts` — matching criteria schemas
+
+**Schema Factory Pattern (with i18n):**
+```typescript
+export function createLoginSchema(t: TranslationFn) {
+  return z.object({
+    email: z.string().email({ message: t("emailInvalid") }),
+    password: z.string().min(8, { message: t("passwordMin") }),
+  })
+}
+```
 
 ### Frontend Form Validation (Required)
 
 - Use **TanStack Form** with schemas from `src/lib/schemas/` for client validation
 - oRPC `.input()` provides mandatory server-side validation
 - After mutations, invalidate TanStack Query caches as needed
+
+**TanStack Form Pattern:**
+```typescript
+const form = useForm({
+  defaultValues: { email: "", password: "" },
+  validators: {
+    onSubmit: ({ value }) => {
+      const result = schema.safeParse(value)
+      if (!result.success) {
+        return { fields: mapErrors(result.error) }
+      }
+    },
+  },
+  onSubmit: async ({ value }) => {
+    await authClient.signIn.email({ email: value.email, password: value.password })
+  },
+})
+```
 
 ---
 
@@ -210,7 +385,7 @@ export { ComponentName, componentVariants }
   - `--color-heading` (for editorial headlines)
   - `--color-muted`, `--color-accent`
 - **Radius tokens**: `--radius-sm`, `--radius-md`, `--radius-lg`, etc.
-- **Typography**: `--font-sans` (DM Sans), `--font-serif` (DM Serif)
+- **Typography**: `--font-sans` (DM Sans), `--font-serif` (DM Serif), `--font-arabic` (Noto Sans Arabic)
 
 - **Utility classes** via `cn()` from `@/lib/utils`:
   ```typescript
@@ -229,6 +404,20 @@ This project follows a "Morning Press / Night Edition" editorial aesthetic:
   - Use `motion` (`motion/react-client`) for orchestrated animations (reveals, staggers, marquee/continuous motion)
   - Do not add custom CSS keyframes or global `.ed-*` utility classes in `src/app/globals.css`
 
+### Animation Patterns
+
+**Reveal Animation (Standard):**
+```typescript
+const reveal = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+}
+const ease = [0.4, 0, 0.2, 1] as const
+
+// Usage
+<motion.div {...reveal} transition={{ duration: 0.6, ease, delay: 0.1 }}>
+```
+
 ### File Organization
 
 All source code lives under the `src/` directory. Configuration files stay at root.
@@ -239,60 +428,71 @@ src/
 │   ├── page.tsx                # Root redirect → /en
 │   ├── layout.tsx              # Root layout (fonts, html)
 │   ├── globals.css             # Global styles + theme variables
-│   ├── [locale]/               # i18n routes
-│   │   ├── layout.tsx          # Locale layout (providers)
-│   │   ├── page.tsx            # Home page
-│   │   ├── _components/        # Route-specific components
-│   │   └── (auth)/             # Auth route group
-│   │       ├── layout.tsx
-│   │       ├── login/
-│   │       ├── signup/
-│   │       └── reset-password/
-│   └── api/                    # API routes
-│       ├── auth/[...all]/      # Better Auth
-│       └── rpc/[...rest]/      # oRPC catch-all
+│   ├── api/                    # API routes
+│   │   ├── auth/[...all]/      # Better Auth
+│   │   └── rpc/[...rest]/      # oRPC catch-all
+│   └── [locale]/               # i18n routes
+│       ├── layout.tsx          # Locale layout (providers)
+│       ├── page.tsx            # Home page
+│       ├── _components/        # Route-specific components
+│       ├── (auth)/             # Auth route group
+│       │   ├── layout.tsx
+│       │   ├── login/
+│       │   ├── signup/
+│       │   └── reset-password/
+│       ├── (authenticated)/    # Protected routes
+│       │   └── dashboard/      # Dashboard routes
+│       └── onboarding/         # Onboarding flows
+│
 ├── components/                 # Shared components
 │   ├── ui/                     # shadcn/ui components (auto-generated)
-│   │   ├── button.tsx
-│   │   └── card.tsx
+│   ├── form-fields/            # Shared form field components
 │   ├── providers/              # Context providers
-│   │   └── QueryProvider.tsx
-│   ├── Navbar.tsx
-│   ├── ThemeToggle.tsx
-│   └── LanguageSwitcher.tsx
+│   └── [ComponentName].tsx     # Shared components
+│
 ├── lib/                        # Utilities & shared logic
 │   ├── utils.ts                # cn() utility
-│   ├── utils.test.ts           # Tests for utils.ts
 │   ├── auth.ts                 # Better Auth server config
 │   ├── auth-client.ts          # Better Auth client
 │   ├── auth-guards.ts          # RSC layout guards
-│   └── schemas/                # Client-safe Zod schemas
-│       ├── auth.ts
-│       └── company.ts
+│   ├── schemas/                # Client-safe Zod schemas
+│   └── [utility].ts            # Other utilities
+│
+├── hooks/                      # Shared hooks
+│   ├── use-mobile.ts
+│   ├── use-skill-selection.ts
+│   ├── use-skill-grouping.ts
+│   └── index.ts                # Barrel export
+│
 ├── server/                     # Server-only code
-│   ├── db/
+│   ├── db/                     # Drizzle database
 │   │   ├── index.ts            # Drizzle client
-│   │   └── schema/
-│   │       └── auth.ts
-│   ├── services/               # Pure business logic (Model)
-│   │   ├── companies/          # get, list, create, approve, reject
-│   │   └── users/              # get-me, promote
-│   └── orpc/                   # oRPC controller layer
-│       ├── middleware.ts        # Auth middleware chain
-│       ├── router.ts           # Combined router
-│       ├── client.ts           # Client + TanStack Query utils
-│       └── routes/             # Procedure definitions
+│   │   ├── schema/             # Database schemas (17 modules)
+│   │   └── migrations/         # Migration files
+│   ├── orpc/                   # oRPC controller layer
+│   │   ├── middleware.ts       # Auth procedures
+│   │   ├── rate-limited-procedures.ts
+│   │   ├── router.ts           # Combined router
+│   │   ├── client.ts           # Client + TanStack Query
+│   │   └── routes/             # Procedure definitions
+│   ├── services/               # Pure business logic (17 domains)
+│   ├── actions/                # Server Actions
+│   ├── storage/                # S3 file storage
+│   ├── email/                  # Email service
+│   ├── caching/                # Redis caching
+│   └── mcp/                    # Model Context Protocol
+│
 ├── i18n/                       # next-intl configuration
 │   ├── routing.ts
 │   └── request.ts
+│
 ├── messages/                   # Translation JSON files
 │   ├── en.json
 │   ├── fr.json
 │   └── ar.json
+│
 ├── env.ts                      # T3 Env validation
 └── proxy.ts                    # Next.js middleware (i18n + auth)
-
-public/                         # Static assets (root level)
 ```
 
 ---
@@ -646,11 +846,304 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 ### Translation Keys Organization
 ```
 src/messages/
-├── metadata    (page title, description)
-├── nav         (navigation labels)
-├── hero        (headline, descriptions, CTAs)
-├── features    (feature cards)
-├── marquee     (scrolling items)
-├── stats       (statistics labels)
-└── language    (language switcher labels)
+├── metadata         (page titles, descriptions)
+├── nav              (navigation labels)
+├── hero             (headlines, CTAs)
+├── features         (feature cards)
+├── marquee          (scrolling items)
+├── stats            (statistics display)
+├── language         (language switcher)
+├── theme            (theme toggle)
+├── notFound         (404 page)
+├── auth             (login, signup, reset-password, validation)
+├── onboarding       (company, student setup)
+└── dashboard        (extensive nested structure)
+    ├── nav          (sidebar navigation)
+    ├── assistant    (AI assistant interface)
+    ├── notifications (notification center)
+    ├── company      (offers, candidates, profile)
+    ├── student      (profile, applications)
+    ├── explore      (internship search)
+    ├── offerDetail  (application flow)
+    ├── applications (tracking)
+    └── admin        (validations, stats)
+```
+
+---
+
+## Form Fields Library
+
+Shared form field components in `src/components/form-fields/` provide consistent styling and behavior:
+
+### Available Components
+
+```typescript
+import {
+  TextField,
+  TextAreaField,
+  SelectField,
+  PasswordField,
+  CheckboxField,
+  FormSection,
+} from "@/components/form-fields"
+```
+
+### TextField Pattern
+
+```typescript
+interface TextFieldProps {
+  id: string
+  label: string
+  placeholder?: string
+  icon?: LucideIcon
+  value: string
+  onChange: (value: string) => void
+  onBlur?: () => void
+  error?: string
+  disabled?: boolean
+  className?: string
+}
+
+// Usage with TanStack Form
+<form.Field name="email">
+  {(field) => (
+    <TextField
+      id="email"
+      label={t("emailLabel")}
+      placeholder="user@example.com"
+      icon={Mail}
+      value={field.state.value}
+      onChange={(v) => field.handleChange(v)}
+      onBlur={field.handleBlur}
+      error={field.state.meta.errors[0]}
+    />
+  )}
+</form.Field>
+```
+
+### FormSection Pattern
+
+```typescript
+<FormSection
+  title={t("sectionTitle")}
+  description={t("sectionDescription")}
+>
+  {/* Form fields */}
+</FormSection>
+```
+
+---
+
+## Testing Configuration
+
+### Test Setup Files
+
+**`bunfig.toml`:**
+```toml
+[test]
+preload = ["./src/test-setup.ts"]
+```
+
+**`src/test-setup.ts`:**
+```typescript
+import { Window } from "happy-dom"
+
+// Initialize happy-dom before any imports
+const window = new Window({ url: "http://localhost:3000" })
+global.window = window
+global.document = window.document
+// ... other globals
+
+import { expect, mock } from "bun:test"
+import * as matchers from "@testing-library/jest-dom/matchers"
+
+// Mock server-only guard for tests
+mock.module("server-only", () => ({}))
+
+expect.extend(matchers)
+```
+
+### React Component Testing
+
+```typescript
+import { describe, test, expect, beforeEach, mock } from "bun:test"
+import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react"
+
+describe("LoginForm", () => {
+  beforeEach(() => {
+    mockFn.mockClear()
+  })
+
+  afterEach(() => {
+    cleanup()
+  })
+
+  test("should render form", () => {
+    render(<LoginForm />)
+    expect(screen.getByText("Sign In")).toBeDefined()
+  })
+})
+```
+
+### Schema Testing Pattern (with i18n)
+
+```typescript
+function t(key: string) { return `t:${key}` }
+
+describe("login schema", () => {
+  const schema = createLoginSchema(t)
+
+  test("accepts valid email and password", () => {
+    const result = schema.safeParse({
+      email: "user@example.com",
+      password: "password123"
+    })
+    expect(result.success).toBe(true)
+  })
+
+  test("rejects invalid email", () => {
+    const result = schema.safeParse({
+      email: "not-an-email",
+      password: "password123"
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0].message).toBe("t:emailInvalid")
+    }
+  })
+})
+```
+
+---
+
+## Additional Server Patterns
+
+### Rate Limiting
+
+Conditional Redis-based rate limiting with graceful fallback:
+
+**`src/server/caching/redis-ratelimiter.ts`:**
+```typescript
+import "server-only"
+import { RedisRatelimiter } from "@orpc/experimental-ratelimit/redis"
+
+export function getRateLimiter(): RedisRatelimiter | null
+export function isRateLimitingEnabled(): boolean
+```
+
+### MCP (Model Context Protocol) Server
+
+Development-only MCP server for AI tool testing:
+
+**`src/server/mcp/`:**
+- `index.ts` - Entry point with stdio transport
+- `server.ts` - MCP server setup
+- `guards.ts` - Environment safety checks
+- `confirmation.ts` - Mutating operation guards
+- `mock/ledger.ts` - Mock state for testing
+
+**Dev script:** `bun run mcp:dev`
+
+### S3 File Storage
+
+**`src/server/storage/s3.ts`:**
+```typescript
+import "server-only"
+
+export async function uploadFile(
+  key: string,
+  data: Buffer | ReadableStream,
+  contentType: string
+): Promise<string>
+
+export async function deleteFile(key: string): Promise<void>
+```
+
+### Email Service
+
+**`src/server/email/sendEmail.ts`:**
+```typescript
+import "server-only"
+
+export async function sendEmail({
+  to,
+  subject,
+  react,
+}: {
+  to: string
+  subject: string
+  react: React.ReactElement
+}): Promise<void>
+```
+
+Uses React Email components (`@react-email/*`) and Resend for delivery.
+
+### Document Generation (PDF)
+
+**`src/server/services/documents/`:**
+- `generate-agreement.ts` — Generate internship agreements
+- `generate-certificate.ts` — Generate completion certificates
+
+Uses `@react-pdf/renderer` with React PDF templates.
+
+### AI/Assistant Feature
+
+**Services:** `src/server/services/assistant/`
+- `get.ts`, `list.ts` — Conversation CRUD
+- `create.ts`, `update.ts` — Mutations
+- `messages.ts` — Message handling
+
+**Routes:** `src/server/orpc/routes/assistant.ts`
+
+**Features:**
+- AI-powered chat interface
+- Tool calling with authorization
+- Conversation persistence
+- Rate limiting for AI calls
+
+### Matching System
+
+**`src/server/services/matching/`:**
+- `score.ts` — Calculate student-offer match scores
+- `skill-gap.ts` — Identify missing skills
+- `readiness-history.ts` — Track readiness over time
+
+### Trust System
+
+**`src/server/services/companies/trust-index.ts`:**
+- Calculate company trust scores
+- Handle trust reports and feedback
+
+---
+
+## Environment Variables
+
+### Server Variables
+```
+DATABASE_URL                    # Required - PostgreSQL connection
+BETTER_AUTH_SECRET             # Required - Auth secret
+POE_API_KEY                    # Required - AI provider API key
+POE_MODEL                      # Optional - Default AI model
+POE_ALLOWED_MODELS             # Optional - Comma-separated model list
+POE_BASE_URL                   # Optional - Custom AI endpoint
+ARCADE_API_KEY                 # Required - Arcade AI tools API key
+RESEND_API_KEY                 # Optional - Email service API key
+EMAIL_FROM                     # Optional - Default sender email
+S3_BUCKET                      # Optional - S3 bucket name
+S3_ENDPOINT                    # Optional - S3 endpoint URL
+S3_ACCESS_KEY_ID               # Optional - S3 access key
+S3_SECRET_ACCESS_KEY           # Optional - S3 secret key
+S3_REGION                      # Optional - Default: "auto"
+S3_PUBLIC_URL                  # Optional - Public S3 URL
+AWS_ACCESS_KEY_ID              # Optional - AWS access (alternative)
+AWS_SECRET_ACCESS_KEY          # Optional - AWS secret (alternative)
+REDIS_URL                      # Optional - Redis connection URL
+REDIS_RATE_LIMIT_ENABLED       # Optional - Default: "false"
+```
+
+### Client Variables
+```
+NEXT_PUBLIC_BETTER_AUTH_URL    # Required - Auth callback URL
+NEXT_PUBLIC_S3_ENDPOINT        # Optional - Public S3 endpoint
+NEXT_PUBLIC_S3_URL             # Optional - Public S3 base URL
 ```
