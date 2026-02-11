@@ -85,7 +85,8 @@ mock.module("next/cache", () => ({
   cacheTag: () => {},
   revalidateTag: () => {},
   revalidatePath: () => {},
-  unstable_cache: (fn: Function) => fn,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  unstable_cache: (fn: (...args: any[]) => any) => fn,
 }))
 
 expect.extend(matchers)
