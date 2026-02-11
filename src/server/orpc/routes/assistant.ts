@@ -2,7 +2,11 @@ import "server-only"
 
 import { z } from "zod"
 
-import { companyAdminProcedure } from "@/server/orpc/middleware"
+import {
+  companyAdminProcedureGenerous,
+  companyAdminProcedureStandard,
+  companyAdminProcedureAssistant,
+} from "@/server/orpc/rate-limited-procedures"
 import {
   getAllowedPoeModelIds,
   getDefaultPoeModelId,
@@ -24,7 +28,7 @@ const ASSISTANT_MODEL_SCHEMA = z
   .min(1)
   .refine((v) => isAllowedPoeModelId(v), { message: "Model not allowed" })
 
-export const listAssistantModelsProcedure = companyAdminProcedure
+export const listAssistantModelsProcedure = companyAdminProcedureGenerous
   .input(z.undefined().optional())
   .handler(async () => {
     return {
@@ -33,7 +37,7 @@ export const listAssistantModelsProcedure = companyAdminProcedure
     }
   })
 
-export const listAssistantConversationsProcedure = companyAdminProcedure
+export const listAssistantConversationsProcedure = companyAdminProcedureGenerous
   .input(z.object({ limit: z.number().int().min(1).max(200).optional() }).optional())
   .handler(async ({ input, context }) => {
     return listAssistantConversationsByCompanyId({
@@ -42,7 +46,7 @@ export const listAssistantConversationsProcedure = companyAdminProcedure
     })
   })
 
-export const createAssistantConversationProcedure = companyAdminProcedure
+export const createAssistantConversationProcedure = companyAdminProcedureStandard
   .input(
     z.object({
       title: z.string().min(1).max(120).optional(),
@@ -58,7 +62,7 @@ export const createAssistantConversationProcedure = companyAdminProcedure
     })
   })
 
-export const getAssistantConversationProcedure = companyAdminProcedure
+export const getAssistantConversationProcedure = companyAdminProcedureGenerous
   .input(z.object({ conversationId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     const conversation = await getAssistantConversationByIdForCompany({
@@ -69,7 +73,7 @@ export const getAssistantConversationProcedure = companyAdminProcedure
     return { conversation }
   })
 
-export const listAssistantMessagesProcedure = companyAdminProcedure
+export const listAssistantMessagesProcedure = companyAdminProcedureGenerous
   .input(z.object({ conversationId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     return listAssistantMessages({
@@ -78,7 +82,7 @@ export const listAssistantMessagesProcedure = companyAdminProcedure
     })
   })
 
-export const updateAssistantConversationModelProcedure = companyAdminProcedure
+export const updateAssistantConversationModelProcedure = companyAdminProcedureStandard
   .input(
     z.object({
       conversationId: z.string().min(1),
@@ -93,7 +97,7 @@ export const updateAssistantConversationModelProcedure = companyAdminProcedure
     })
   })
 
-export const updateAssistantConversationTitleProcedure = companyAdminProcedure
+export const updateAssistantConversationTitleProcedure = companyAdminProcedureStandard
   .input(
     z.object({
       conversationId: z.string().min(1),
@@ -108,9 +112,8 @@ export const updateAssistantConversationTitleProcedure = companyAdminProcedure
     })
   })
 
-// Optional utility: persist a message from the client without hitting the model.
-// This is useful if we ever add client-side notes or manual tool call annotations.
-export const appendAssistantMessageProcedure = companyAdminProcedure
+// AI message operation - uses strict rate limiting (20 req/min)
+export const appendAssistantMessageProcedure = companyAdminProcedureAssistant
   .input(
     z.object({
       conversationId: z.string().min(1),

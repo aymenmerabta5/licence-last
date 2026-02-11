@@ -24,6 +24,10 @@ export const env = createEnv({
     S3_BUCKET_NAME: z.string().min(1).optional(),
     AWS_ACCESS_KEY_ID: z.string().min(1).optional(),
     AWS_SECRET_ACCESS_KEY: z.string().min(1).optional(),
+
+    // Redis (for rate limiting)
+    REDIS_URL: z.string().url().optional(),
+    REDIS_RATE_LIMIT_ENABLED: z.enum(["true", "false"]).default("false"),
   },
   client: {
     NEXT_PUBLIC_BETTER_AUTH_URL: z.string().url(),
