@@ -47,3 +47,4 @@ next-env.d.ts
 PROMPT.txt
 phases
 .ralph
+.agent/mcp/

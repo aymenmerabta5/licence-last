@@ -194,7 +194,7 @@ export function ProfileImageUpload({
           <div className="flex justify-center py-6">
             <div className="h-40 w-40 rounded-3xl overflow-hidden border-2 border-border">
               {previewUrl ? (
-                <img
+                <Image
                   src={previewUrl}
                   alt="Preview"
                   className="h-full w-full object-cover"

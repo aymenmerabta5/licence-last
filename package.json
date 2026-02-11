@@ -27,7 +27,8 @@
     "db:reset:dev": "bun --env-file=.env.development run src/server/db/reset.ts",
     "db:reset:prod": "bun --env-file=.env.production run src/server/db/reset.ts",
     "db:seed": "bun run db:seed:dev",
-    "db:seed:dev": "bun --env-file=.env.development run src/server/db/seed.ts"
+    "db:seed:dev": "bun --env-file=.env.development run src/server/db/seed.ts",
+    "mcp:dev": "bun --env-file=.env.development run src/server/mcp/index.ts --mcp-dev"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.26",
