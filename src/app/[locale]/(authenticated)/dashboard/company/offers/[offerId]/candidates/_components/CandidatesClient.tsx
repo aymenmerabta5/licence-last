@@ -1,36 +1,22 @@
 "use client"
 
-import { useState, useRef, useCallback, useEffect } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import * as motion from "motion/react-client"
 import { useLocale, useTranslations } from "next-intl"
-import { DefaultChatTransport } from "ai"
-import { useChat } from "@ai-sdk/react"
-import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   ArrowLeft,
-  Users,
-  Loader2,
   Check,
-  X,
-  Github,
-  Globe,
   GraduationCap,
-  Sparkles,
-  Wand2,
+  Loader2,
+  Users,
+  X,
 } from "lucide-react"
 
 import { Link } from "@/i18n/routing"
-import {
-  asRecord,
-  findLatestToolOutput,
-  getString,
-  getStringArray,
-} from "@/lib/ai/tool-output"
 import { orpc, orpcClient } from "@/server/orpc/client"
 import { Button } from "@/components/ui/button"
 import type { ListApplicationsByOfferResult } from "@/server/services/applications/list-by-offer"
-
-import { StudentProfileView } from "@/app/[locale]/(authenticated)/dashboard/company/_components/StudentProfileView"
 
 const reveal = {
   initial: { opacity: 0, y: 20 },
@@ -38,8 +24,25 @@ const reveal = {
 }
 const ease = [0.4, 0, 0.2, 1] as const
 
-const STATUS_TABS = ["all", "applied", "company_accepted", "company_refused"] as const
-type StatusFilter = (typeof STATUS_TABS)[number]
+const STAGE_COLUMNS = [
+  "applied",
+  "screening",
+  "interview",
+  "offer",
+  "accepted",
+  "rejected",
+] as const
+
+type PipelineStage = (typeof STAGE_COLUMNS)[number]
+
+const STAGE_LABELS: Record<PipelineStage, string> = {
+  applied: "Applied",
+  screening: "Screening",
+  interview: "Interview",
+  offer: "Offer",
+  accepted: "Accepted",
+  rejected: "Rejected",
+}
 
 const STATUS_COLORS: Record<string, string> = {
   applied:
@@ -48,31 +51,54 @@ const STATUS_COLORS: Record<string, string> = {
     "bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800",
   company_refused:
     "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800",
-}
-
-const MATCH_COLORS: Record<string, string> = {
-  high: "text-green-600 dark:text-green-400",
-  medium: "text-amber-600 dark:text-amber-400",
-  low: "text-red-600 dark:text-red-400",
-}
-
-type CandidateCopilotIntent = "candidate_summarize" | "candidate_draft_refusal_note"
-
-type CandidateSummary = {
-  summary: string
-  strengths: string[]
-  concerns: string[]
-  followUps: string[]
-}
-
-function getMatchLevel(percentage: number): string {
-  if (percentage >= 70) return "high"
-  if (percentage >= 40) return "medium"
-  return "low"
+  admin_validated:
+    "bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800",
+  admin_rejected:
+    "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800",
+  withdrawn:
+    "bg-zinc-100 text-zinc-700 border-zinc-200 dark:bg-zinc-800/40 dark:text-zinc-400 dark:border-zinc-700",
 }
 
 interface CandidatesClientProps {
   offerId: string
+}
+
+function MatchPreview({
+  offerId,
+  studentUserId,
+}: {
+  offerId: string
+  studentUserId: string
+}) {
+  const query = useQuery(
+    orpc.matching.getScore.queryOptions({
+      input: { offerId, studentUserId },
+    }),
+  )
+
+  if (query.isLoading) {
+    return (
+      <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+        <Loader2 className="h-3 w-3 animate-spin" />
+        Scoring...
+      </div>
+    )
+  }
+
+  if (!query.data) return null
+
+  return (
+    <div className="space-y-1.5 border-t border-border pt-2">
+      <p className="text-[11px] text-muted-foreground uppercase tracking-wider">
+        Fit score <span className="text-foreground font-semibold">{query.data.score}/100</span>
+      </p>
+      {query.data.reasons.slice(0, 2).map((reason) => (
+        <p key={reason.key} className="text-[11px] text-muted-foreground">
+          <span className="text-foreground font-medium">{reason.title}:</span> {reason.detail}
+        </p>
+      ))}
+    </div>
+  )
 }
 
 export function CandidatesClient({ offerId }: CandidatesClientProps) {
@@ -80,82 +106,15 @@ export function CandidatesClient({ offerId }: CandidatesClientProps) {
   const locale = useLocale()
   const queryClient = useQueryClient()
 
-  const [activeTab, setActiveTab] = useState<StatusFilter>("all")
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [refuseModal, setRefuseModal] = useState<{
     applicationId: string
     studentName: string
   } | null>(null)
   const [refuseNote, setRefuseNote] = useState("")
-
-  const [aiActive, setAiActive] = useState<
-    | { intent: CandidateCopilotIntent; applicationId: string }
-    | null
-  >(null)
-  const [candidateSummaries, setCandidateSummaries] = useState<Record<string, CandidateSummary>>({})
-
-  const aiActiveRef = useRef<
-    | { intent: CandidateCopilotIntent; applicationId: string }
-    | null
-  >(null)
-
-  const setAiActiveWithRef = (next: { intent: CandidateCopilotIntent; applicationId: string } | null) => {
-    aiActiveRef.current = next
-    setAiActive(next)
-  }
-
-  const aiTransport = useState(
-    () =>
-      new DefaultChatTransport({
-        api: "/api/assistant/chat",
-      }),
-  )[0]
-
-  const {
-    status: aiStatus,
-    error: aiError,
-    sendMessage: sendAiMessage,
-    setMessages: setAiMessages,
-  } = useChat({
-    transport: aiTransport,
-    onFinish: ({ messages }) => {
-      const active = aiActiveRef.current
-      if (!active) return
-
-      const output = findLatestToolOutput(messages, active.intent)
-      const record = asRecord(output)
-      if (!record) return
-
-      if (active.intent === "candidate_summarize") {
-        const summary = getString(record.summary)
-        if (!summary) return
-
-        setCandidateSummaries((prev) => ({
-          ...prev,
-          [active.applicationId]: {
-            summary,
-            strengths: getStringArray(record.strengths),
-            concerns: getStringArray(record.concerns),
-            followUps: getStringArray(record.followUps),
-          },
-        }))
-        setAiActiveWithRef(null)
-        return
-      }
-
-      if (active.intent === "candidate_draft_refusal_note") {
-        const note = getString(record.note)
-        if (!note) return
-        setRefuseNote(note)
-        setAiActiveWithRef(null)
-      }
-    },
-  })
+  const [openedTimelineFor, setOpenedTimelineFor] = useState<string | null>(null)
 
   const safeOfferId = offerId
-
-  const statusParam =
-    activeTab === "all" ? undefined : (activeTab as "applied" | "company_accepted" | "company_refused")
 
   const { data: offer, isLoading: offerLoading } = useQuery({
     ...orpc.offers.getById.queryOptions({ input: { offerId: safeOfferId } }),
@@ -169,57 +128,66 @@ export function CandidatesClient({ offerId }: CandidatesClientProps) {
     isFetchingNextPage,
     isLoading: applicationsLoading,
   } = useInfiniteQuery<ListApplicationsByOfferResult>({
-    queryKey: ["applications", "listByOffer", safeOfferId, activeTab],
-    queryFn: async ({ pageParam }) => {
-      return orpcClient.applications.listByOffer({
+    queryKey: ["applications", "listByOffer", safeOfferId],
+    queryFn: async ({ pageParam }) =>
+      orpcClient.applications.listByOffer({
         offerId: safeOfferId,
-        status: statusParam,
         cursor: pageParam as { createdAt: string; id: string } | undefined,
-        limit: 10,
-      })
-    },
+        limit: 24,
+      }),
     enabled: !!safeOfferId,
     initialPageParam: undefined as { createdAt: string; id: string } | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   })
 
-  const applications = data?.pages.flatMap((p) => p.applications) ?? []
+  const applications = data?.pages.flatMap((page) => page.applications) ?? []
+
+  const timelineQuery = useQuery({
+    ...orpc.applications.getTimeline.queryOptions({
+      input: { applicationId: openedTimelineFor ?? "" },
+    }),
+    enabled: !!openedTimelineFor,
+  })
+
+  const stageMutation = useMutation(
+    orpc.applications.updatePipelineStage.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["applications", "listByOffer", safeOfferId] })
+      },
+    }),
+  )
 
   const acceptMutation = useMutation(
     orpc.applications.companyAccept.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["applications", "listByOffer"] })
-        queryClient.invalidateQueries({ queryKey: orpc.offers.listByCompany.queryOptions().queryKey })
+        queryClient.invalidateQueries({ queryKey: ["applications", "listByOffer", safeOfferId] })
+        queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
         setActionLoading(null)
       },
-      onError: () => {
-        setActionLoading(null)
-      },
+      onError: () => setActionLoading(null),
     }),
   )
 
   const refuseMutation = useMutation(
     orpc.applications.companyRefuse.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["applications", "listByOffer"] })
-        queryClient.invalidateQueries({ queryKey: orpc.offers.listByCompany.queryOptions().queryKey })
+        queryClient.invalidateQueries({ queryKey: ["applications", "listByOffer", safeOfferId] })
+        queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
+        setActionLoading(null)
         setRefuseModal(null)
         setRefuseNote("")
-        setActionLoading(null)
       },
-      onError: () => {
-        setActionLoading(null)
-      },
+      onError: () => setActionLoading(null),
     }),
   )
 
-  const handleAccept = async (applicationId: string) => {
+  const handleAccept = (applicationId: string) => {
     if (!window.confirm(t("confirmAccept"))) return
     setActionLoading(applicationId)
     acceptMutation.mutate({ applicationId })
   }
 
-  const handleRefuse = async () => {
+  const handleRefuse = () => {
     if (!refuseModal) return
     setActionLoading(refuseModal.applicationId)
     refuseMutation.mutate({
@@ -241,17 +209,24 @@ export function CandidatesClient({ offerId }: CandidatesClientProps) {
   useEffect(() => {
     const el = sentinelRef.current
     if (!el) return
-    const observer = new IntersectionObserver(handleIntersection, {
-      rootMargin: "200px",
-    })
+    const observer = new IntersectionObserver(handleIntersection, { rootMargin: "200px" })
     observer.observe(el)
     return () => observer.disconnect()
   }, [handleIntersection])
 
   const isLoading = offerLoading || applicationsLoading || !safeOfferId
 
+  const grouped = new Map<PipelineStage, typeof applications>()
+  for (const stage of STAGE_COLUMNS) {
+    grouped.set(stage, [])
+  }
+  for (const app of applications) {
+    const stage = (app.pipelineStage ?? "applied") as PipelineStage
+    grouped.get(stage)?.push(app)
+  }
+
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-[1400px] mx-auto space-y-8">
       <motion.div {...reveal} transition={{ duration: 0.6, ease }}>
         <Link
           href={"/dashboard/company/offers" as "/dashboard"}
@@ -263,34 +238,10 @@ export function CandidatesClient({ offerId }: CandidatesClientProps) {
 
         <div className="space-y-1">
           <h1 className="font-serif text-3xl text-heading tracking-tight">
-            {t("title")}
+            {t("title")} - Pipeline
           </h1>
-          {offer && (
-            <p className="text-sm text-muted-foreground font-light">
-              {offer.title}
-            </p>
-          )}
+          {offer && <p className="text-sm text-muted-foreground font-light">{offer.title}</p>}
         </div>
-      </motion.div>
-
-      <motion.div
-        {...reveal}
-        transition={{ duration: 0.5, ease, delay: 0.05 }}
-        className="flex flex-wrap gap-1.5"
-      >
-        {STATUS_TABS.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-3 py-1.5 text-xs font-medium tracking-wide transition-all duration-200 border ${
-              activeTab === tab
-                ? "bg-primary text-white border-primary"
-                : "bg-transparent text-muted-foreground border-border hover:border-primary/30 hover:text-primary"
-            }`}
-          >
-            {t(`statusFilter.${tab}`)}
-          </button>
-        ))}
       </motion.div>
 
       {isLoading && (
@@ -306,229 +257,139 @@ export function CandidatesClient({ offerId }: CandidatesClientProps) {
           className="border border-dashed border-border p-12 text-center space-y-2"
         >
           <Users className="h-12 w-12 text-muted-foreground/30 mx-auto" />
-          <p className="text-sm text-muted-foreground">
-            {activeTab === "all" ? t("empty") : t("emptyFiltered")}
-          </p>
+          <p className="text-sm text-muted-foreground">{t("empty")}</p>
         </motion.div>
       )}
 
-      {applications.length > 0 && (
-        <div className="space-y-4">
-          {applications.map((app, i) => (
-            <motion.div
-              key={app.id}
-              {...reveal}
-              transition={{ duration: 0.4, ease, delay: 0.03 * i }}
-              className="border border-border p-5 space-y-4"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0 space-y-2 flex-1">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium text-primary">
-                      {app.student.name?.charAt(0).toUpperCase() ?? "?"}
-                    </div>
-                    <div>
-                      <Link
-                        href={`/profile/${app.student.id}` as "/profile"}
-                        className="font-serif text-lg text-heading hover:text-primary transition-colors"
-                      >
-                        {app.student.name || "Anonymous"}
-                      </Link>
-                      {app.university && (
-                        <p className="text-xs text-muted-foreground flex items-center gap-1">
-                          <GraduationCap className="h-3 w-3" />
-                          {app.university.abbreviation || app.university.name}
-                          {app.profile?.level && ` • ${app.profile.level}`}
-                        </p>
-                      )}
-                    </div>
-                  </div>
+      {!isLoading && applications.length > 0 && (
+        <div className="overflow-x-auto pb-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6 gap-3 min-w-[1120px]">
+            {STAGE_COLUMNS.map((stage) => {
+              const stageApps = grouped.get(stage) ?? []
+              return (
+                <section
+                  key={stage}
+                  className="border border-border bg-secondary/10 p-3 space-y-3 min-h-[420px]"
+                >
+                  <header className="flex items-center justify-between">
+                    <h2 className="text-xs font-semibold tracking-wider uppercase text-heading">
+                      {STAGE_LABELS[stage]}
+                    </h2>
+                    <span className="text-[10px] text-muted-foreground">{stageApps.length}</span>
+                  </header>
 
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span
-                      className={`inline-flex items-center px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase border ${STATUS_COLORS[app.status] ?? ""}`}
-                    >
-                      {t(`status.${app.status}`)}
-                    </span>
-
-                    <span
-                      className={`text-xs font-medium ${MATCH_COLORS[getMatchLevel(app.skillMatchPercentage)]}`}
-                    >
-                      {app.skillMatchPercentage}% {t("skillMatch")}
-                    </span>
-
-                    {app.profile?.githubUrl && (
-                      <a
-                        href={app.profile.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        <Github className="h-3.5 w-3.5" />
-                        GitHub
-                      </a>
+                  <div className="space-y-2">
+                    {stageApps.length === 0 && (
+                      <p className="text-[11px] text-muted-foreground">No applications</p>
                     )}
 
-                    {app.profile?.portfolioUrl && (
-                      <a
-                        href={app.profile.portfolioUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        <Globe className="h-3.5 w-3.5" />
-                        {t("portfolio")}
-                      </a>
-                    )}
-                  </div>
+                    {stageApps.map((app) => (
+                      <article key={app.id} className="border border-border bg-background p-3 space-y-3">
+                        <div className="space-y-1">
+                          <p className="font-medium text-sm text-heading">{app.student.name || "Anonymous"}</p>
+                          {app.university && (
+                            <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+                              <GraduationCap className="h-3 w-3" />
+                              {app.university.abbreviation || app.university.name}
+                            </p>
+                          )}
+                        </div>
 
-                  {app.skills.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {app.skills.slice(0, 6).map((skill) => (
-                        <span
-                          key={skill.id}
-                          className="inline-flex items-center px-2 py-0.5 text-[10px] bg-primary/10 border border-primary/20 text-primary"
-                        >
-                          {skill.name}
-                        </span>
-                      ))}
-                      {app.skills.length > 6 && (
-                        <span className="inline-flex items-center px-2 py-0.5 text-[10px] text-muted-foreground">
-                          +{app.skills.length - 6}
-                        </span>
-                      )}
-                    </div>
-                  )}
+                        <div className="flex items-center justify-between gap-2">
+                          <span
+                            className={`inline-flex items-center px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase border ${STATUS_COLORS[app.status] ?? ""}`}
+                          >
+                            {app.status.replace("_", " ")}
+                          </span>
+                          <span className="text-[10px] text-muted-foreground">
+                            {new Date(app.createdAt).toLocaleDateString(locale)}
+                          </span>
+                        </div>
 
-                  {app.coverLetter && (
-                    <div className="pt-2 border-t border-border">
-                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
-                        {t("coverLetter")}
-                      </p>
-                      <p className="text-xs text-muted-foreground line-clamp-3">
-                        {app.coverLetter}
-                      </p>
-                    </div>
-                  )}
+                        <MatchPreview
+                          offerId={safeOfferId}
+                          studentUserId={app.student.id}
+                        />
 
-                  {candidateSummaries[app.id] && (
-                    <div className="pt-2 border-t border-border space-y-2">
-                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                        {t("ai.summaryTitle")}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {candidateSummaries[app.id].summary}
-                      </p>
-                      {candidateSummaries[app.id].strengths.length > 0 && (
-                        <p className="text-[11px] text-muted-foreground">
-                          <span className="font-medium text-foreground">{t("ai.strengths")}:</span>{" "}
-                          {candidateSummaries[app.id].strengths.join(", ")}
-                        </p>
-                      )}
-                      {candidateSummaries[app.id].concerns.length > 0 && (
-                        <p className="text-[11px] text-muted-foreground">
-                          <span className="font-medium text-foreground">{t("ai.concerns")}:</span>{" "}
-                          {candidateSummaries[app.id].concerns.join(", ")}
-                        </p>
-                      )}
-                      {candidateSummaries[app.id].followUps.length > 0 && (
-                        <p className="text-[11px] text-muted-foreground">
-                          <span className="font-medium text-foreground">{t("ai.followUps")}:</span>{" "}
-                          {candidateSummaries[app.id].followUps.join(", ")}
-                        </p>
-                      )}
-                    </div>
-                  )}
+                        <label className="block space-y-1">
+                          <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                            Pipeline Stage
+                          </span>
+                          <select
+                            value={app.pipelineStage}
+                            onChange={(event) =>
+                              stageMutation.mutate({
+                                applicationId: app.id,
+                                toStage: event.target.value as PipelineStage,
+                              })
+                            }
+                            disabled={
+                              stageMutation.isPending ||
+                              app.pipelineStage === "accepted" ||
+                              app.pipelineStage === "rejected"
+                            }
+                            className="w-full h-8 border border-border bg-background px-2 text-xs"
+                          >
+                            {STAGE_COLUMNS.map((option) => (
+                              <option
+                                key={option}
+                                value={option}
+                                disabled={option === "accepted"}
+                              >
+                                {STAGE_LABELS[option]}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
 
-                  <p className="text-[10px] text-muted-foreground">
-                    {t("appliedOn")} {new Date(app.createdAt).toLocaleDateString(locale)}
-                  </p>
-                </div>
+                        {app.status === "applied" && (
+                          <div className="flex items-center gap-2">
+                            <Button
+                              size="sm"
+                              className="h-7 text-[11px] gap-1.5 bg-green-600 hover:bg-green-700"
+                              onClick={() => handleAccept(app.id)}
+                              disabled={actionLoading === app.id}
+                            >
+                              {actionLoading === app.id ? (
+                                <Loader2 className="h-3 w-3 animate-spin" />
+                              ) : (
+                                <Check className="h-3 w-3" />
+                              )}
+                              {t("accept")}
+                            </Button>
 
-                <div className="flex flex-col gap-2 shrink-0">
-                  <StudentProfileView
-                    studentUserId={app.student.id}
-                    label={t("viewProfile")}
-                  />
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-1.5 text-xs"
-                    disabled={aiStatus !== "ready"}
-                    onClick={() => {
-                      if (!offer) return
-                      setAiActiveWithRef({ intent: "candidate_summarize", applicationId: app.id })
-                      setAiMessages([])
-
-                      const context = {
-                        intent: "candidate_summarize",
-                        offer: {
-                          title: offer.title,
-                          skills: offer.skills.map((s) => ({
-                            id: s.id,
-                            name: s.name,
-                            category: s.category ?? null,
-                          })),
-                        },
-                        applicant: {
-                          name: app.student.name,
-                          skills: app.skills.map((s) => ({
-                            id: s.id,
-                            name: s.name,
-                            category: s.category ?? null,
-                          })),
-                          coverLetter: app.coverLetter ?? "",
-                        },
-                      }
-
-                      void sendAiMessage(
-                        { text: t("ai.prompts.summarize") },
-                        { body: { context } },
-                      )
-                    }}
-                  >
-                    <Sparkles className="h-3.5 w-3.5" />
-                    {t("ai.summarize")}
-                  </Button>
-
-                  {app.status === "applied" && (
-                    <>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        className="gap-1.5 text-xs bg-green-600 hover:bg-green-700"
-                        onClick={() => handleAccept(app.id)}
-                        disabled={actionLoading === app.id}
-                      >
-                        {actionLoading === app.id ? (
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                        ) : (
-                          <Check className="h-3.5 w-3.5" />
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 text-[11px] gap-1.5 text-destructive border-destructive/30 hover:bg-destructive/10"
+                              onClick={() =>
+                                setRefuseModal({
+                                  applicationId: app.id,
+                                  studentName: app.student.name || "Student",
+                                })
+                              }
+                            >
+                              <X className="h-3 w-3" />
+                              {t("refuse")}
+                            </Button>
+                          </div>
                         )}
-                        {t("accept")}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-1.5 text-xs text-destructive border-destructive/30 hover:bg-destructive/10"
-                        onClick={() =>
-                          setRefuseModal({
-                            applicationId: app.id,
-                            studentName: app.student.name || "Student",
-                          })
-                        }
-                        disabled={actionLoading === app.id}
-                      >
-                        <X className="h-3.5 w-3.5" />
-                        {t("refuse")}
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          ))}
+
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 text-[11px] px-0"
+                          onClick={() => setOpenedTimelineFor(app.id)}
+                        >
+                          View timeline
+                        </Button>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              )
+            })}
+          </div>
         </div>
       )}
 
@@ -537,6 +398,50 @@ export function CandidatesClient({ offerId }: CandidatesClientProps) {
       {isFetchingNextPage && (
         <div className="flex justify-center py-8">
           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+        </div>
+      )}
+
+      {openedTimelineFor && (
+        <div className="fixed inset-0 bg-black/50 z-50 p-4 flex items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-background border border-border p-6 max-w-lg w-full space-y-4"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <h3 className="font-serif text-lg text-heading">Timeline</h3>
+              <Button variant="ghost" size="sm" onClick={() => setOpenedTimelineFor(null)}>
+                Close
+              </Button>
+            </div>
+
+            {timelineQuery.isLoading && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                Loading timeline...
+              </div>
+            )}
+
+            {!timelineQuery.isLoading && (timelineQuery.data?.length ?? 0) === 0 && (
+              <p className="text-sm text-muted-foreground">No timeline events yet.</p>
+            )}
+
+            {(timelineQuery.data ?? []).map((event) => (
+              <div key={event.id} className="border border-border p-3">
+                <p className="text-xs font-medium text-foreground">{event.eventType.replace(/_/g, " ")}</p>
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  {new Date(event.createdAt).toLocaleString(locale)}
+                </p>
+                {event.fromStage && event.toStage && (
+                  <p className="text-[11px] text-muted-foreground mt-1">
+                    {event.fromStage}
+                    {" -> "}
+                    {event.toStage}
+                  </p>
+                )}
+              </div>
+            ))}
+          </motion.div>
         </div>
       )}
 
@@ -553,51 +458,10 @@ export function CandidatesClient({ offerId }: CandidatesClientProps) {
             </p>
             <textarea
               value={refuseNote}
-              onChange={(e) => setRefuseNote(e.target.value)}
+              onChange={(event) => setRefuseNote(event.target.value)}
               placeholder={t("refuseNotePlaceholder")}
               className="w-full min-h-[80px] px-3 py-2 text-sm border border-border bg-background resize-none focus:outline-none focus:ring-1 focus:ring-primary"
             />
-
-            {aiError && <p className="text-xs text-destructive">{aiError.message}</p>}
-            {aiActive?.intent === "candidate_draft_refusal_note" && (
-              <p className="text-xs text-muted-foreground">{t("ai.draftingNote")}</p>
-            )}
-
-            <div className="flex items-center justify-between gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                disabled={aiStatus !== "ready"}
-                onClick={() => {
-                  if (!offer) return
-                  setAiActiveWithRef({
-                    intent: "candidate_draft_refusal_note",
-                    applicationId: refuseModal.applicationId,
-                  })
-                  setAiMessages([])
-
-                  const context = {
-                    intent: "candidate_draft_refusal_note",
-                    offer: {
-                      title: offer.title,
-                    },
-                    applicant: {
-                      name: refuseModal.studentName,
-                    },
-                  }
-
-                  void sendAiMessage(
-                    { text: t("ai.prompts.refusalNote") },
-                    { body: { context } },
-                  )
-                }}
-              >
-                <Wand2 className="h-3.5 w-3.5" />
-                {t("ai.draftRefusalWithAi")}
-              </Button>
-              <p className="text-[11px] text-muted-foreground">{t("ai.aiStatus", { status: aiStatus })}</p>
-            </div>
 
             <div className="flex gap-2 justify-end">
               <Button

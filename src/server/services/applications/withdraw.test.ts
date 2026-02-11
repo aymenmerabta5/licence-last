@@ -17,6 +17,10 @@ const mockUpdate = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSet = mock(() => ({}) as any)
 const mockUpdateWhere = mock(() => Promise.resolve())
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockInsert = mock(() => ({}) as any)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockValues = mock((): any => Promise.resolve())
 
 mock.module("@/server/db", () => ({
   db: {
@@ -25,6 +29,7 @@ mock.module("@/server/db", () => ({
       return { from: mockFrom }
     },
     update: mockUpdate,
+    insert: mockInsert,
   },
 }))
 
@@ -40,6 +45,8 @@ describe("src/server/services/applications/withdraw", () => {
     mockUpdate.mockClear()
     mockSet.mockClear()
     mockUpdateWhere.mockClear()
+    mockInsert.mockClear()
+    mockValues.mockClear()
 
     mockFrom.mockReturnValue({ where: mockWhere })
     mockWhere.mockReturnValue({ limit: mockLimit })
@@ -47,6 +54,8 @@ describe("src/server/services/applications/withdraw", () => {
     mockUpdate.mockReturnValue({ set: mockSet })
     mockSet.mockReturnValue({ where: mockUpdateWhere })
     mockUpdateWhere.mockResolvedValue(undefined)
+    mockInsert.mockReturnValue({ values: mockValues })
+    mockValues.mockResolvedValue(undefined)
   })
 
   test("should throw when application is not found", async () => {
@@ -75,5 +84,6 @@ describe("src/server/services/applications/withdraw", () => {
     const result = await withdrawApplication("app-1", "student-1")
     expect(result.newStatus).toBe("withdrawn")
     expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockInsert).toHaveBeenCalledTimes(1)
   })
 })

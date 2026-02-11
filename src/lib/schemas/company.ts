@@ -23,3 +23,23 @@ export function createCompanyOnboardingSchema(t: TranslationFn) {
     address: z.string().optional(),
   })
 }
+
+export const companyQualityFeedbackSchema = z.object({
+  placementId: z.string().min(1),
+  rating: z.coerce.number().int().min(1).max(5),
+  wouldRecommend: z.boolean().default(false),
+  comment: z.string().max(2000).optional(),
+})
+
+export const companyReportSchema = z.object({
+  companyId: z.string().min(1),
+  category: z.string().min(1).max(100),
+  severity: z.enum(["low", "medium", "high", "critical"]).default("medium"),
+  description: z.string().min(10).max(4000),
+})
+
+export const resolveCompanyReportSchema = z.object({
+  reportId: z.string().min(1),
+  status: z.enum(["resolved", "dismissed"]),
+  resolutionNote: z.string().max(2000).optional(),
+})

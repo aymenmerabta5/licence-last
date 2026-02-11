@@ -13,6 +13,12 @@ function formatPercent(n: number) {
 
 export function AdminStatsClient() {
   const { data, isLoading } = useQuery(orpc.stats.getAdminStats.queryOptions())
+  const trustIndicesQuery = useQuery(
+    orpc.companies.listTrustIndices.queryOptions({ input: { limit: 12 } }),
+  )
+  const reportsQuery = useQuery(
+    orpc.companies.listReports.queryOptions({ input: { status: "open", limit: 12 } }),
+  )
 
   const cards = data
     ? [
@@ -113,6 +119,46 @@ export function AdminStatsClient() {
           </CardContent>
         </Card>
       )}
+
+      <Card className="border-border/40 bg-background">
+        <CardContent className="p-6 space-y-4">
+          <h2 className="font-serif text-lg text-heading tracking-tight">Company Trust Index</h2>
+          {trustIndicesQuery.isLoading && (
+            <p className="text-sm text-muted-foreground">Loading trust metrics...</p>
+          )}
+          {(trustIndicesQuery.data ?? []).slice(0, 8).map((row) => (
+            <div key={row.companyId} className="border border-border p-3 flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-medium text-heading">{row.companyName}</p>
+                <p className="text-[11px] text-muted-foreground uppercase tracking-wider">
+                  {row.tier} · {row.companyStatus}
+                </p>
+              </div>
+              <p className="font-serif text-xl text-heading">{row.trustScore}</p>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card className="border-border/40 bg-background">
+        <CardContent className="p-6 space-y-4">
+          <h2 className="font-serif text-lg text-heading tracking-tight">Open Company Reports</h2>
+          {reportsQuery.isLoading && (
+            <p className="text-sm text-muted-foreground">Loading reports...</p>
+          )}
+          {(reportsQuery.data ?? []).length === 0 && !reportsQuery.isLoading && (
+            <p className="text-sm text-muted-foreground">No open reports.</p>
+          )}
+          {(reportsQuery.data ?? []).map((report) => (
+            <div key={report.id} className="border border-border p-3">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                {report.severity} · {report.category}
+              </p>
+              <p className="text-sm text-foreground mt-1">{report.description}</p>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
     </div>
   )
 }

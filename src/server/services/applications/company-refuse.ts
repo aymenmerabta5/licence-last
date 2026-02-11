@@ -7,6 +7,7 @@ import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { notification } from "@/server/db/schema/notifications"
 import { company } from "@/server/db/schema/companies"
+import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 
 export async function companyRefuseApplication(
   applicationId: string,
@@ -18,6 +19,7 @@ export async function companyRefuseApplication(
     .select({
       id: application.id,
       status: application.status,
+      pipelineStage: application.pipelineStage,
       offerId: application.offerId,
       studentUserId: application.studentUserId,
       offerTitle: internshipOffer.title,
@@ -48,11 +50,24 @@ export async function companyRefuseApplication(
     .update(application)
     .set({
       status: "company_refused",
+      pipelineStage: "rejected",
+      pipelineStageUpdatedAt: now,
       companyActionByUserId: actionByUserId,
       companyActionAt: now,
       companyNote: note ?? null,
     })
     .where(eq(application.id, applicationId))
+
+  await appendTimelineEvent({
+    applicationId,
+    actorUserId: actionByUserId,
+    eventType: "application_status_changed",
+    fromStage: app.pipelineStage,
+    toStage: "rejected",
+    fromStatus: app.status,
+    toStatus: "company_refused",
+    payload: { companyNote: note ?? null },
+  })
 
   await db.insert(notification).values({
     id: crypto.randomUUID(),
@@ -64,6 +79,8 @@ export async function companyRefuseApplication(
       offerTitle: app.offerTitle,
       companyName: app.companyName,
       companyNote: note ?? null,
+      stage: "rejected",
+      status: "company_refused",
     },
   })
 

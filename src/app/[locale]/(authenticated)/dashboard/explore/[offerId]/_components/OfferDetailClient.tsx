@@ -1,11 +1,11 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import * as motion from "motion/react-client"
 import { useLocale, useTranslations } from "next-intl"
 import { DefaultChatTransport } from "ai"
 import { useChat } from "@ai-sdk/react"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import {
   ArrowLeft,
   MapPin,
@@ -52,6 +52,7 @@ const STATUS_COLORS: Record<string, string> = {
 interface OfferDetailClientProps {
   offer: {
     id: string
+    companyId: string
     title: string
     description: string
     internshipType: string
@@ -75,11 +76,13 @@ interface OfferDetailClientProps {
     status: string
     createdAt: Date
   } | null
+  studentUserId: string
 }
 
 export function OfferDetailClient({
   offer,
   existingApplication,
+  studentUserId,
 }: OfferDetailClientProps) {
   const t = useTranslations("dashboard.offerDetail")
   const locale = useLocale()
@@ -90,6 +93,7 @@ export function OfferDetailClient({
   const [coverLetterDraft, setCoverLetterDraft] = useState<string | null>(null)
   const [application, setApplication] = useState(existingApplication)
   const [successMsg, setSuccessMsg] = useState("")
+  const hasCapturedReadinessRef = useRef(false)
 
   const aiActiveRef = useRef(false)
 
@@ -135,7 +139,55 @@ export function OfferDetailClient({
     }),
   )
 
+  const matchScoreQuery = useQuery(
+    orpc.matching.getScore.queryOptions({
+      input: { studentUserId, offerId: offer.id },
+    }),
+  )
+
+  const skillGapQuery = useQuery(
+    orpc.matching.getSkillGap.queryOptions({
+      input: { studentUserId, offerId: offer.id },
+    }),
+  )
+
+  const readinessHistoryQuery = useQuery(
+    orpc.matching.getReadinessHistory.queryOptions({
+      input: { studentUserId, offerId: offer.id, limit: 6 },
+    }),
+  )
+
+  const trustIndexQuery = useQuery(
+    orpc.companies.getTrustIndex.queryOptions({
+      input: { companyId: offer.companyId },
+    }),
+  )
+
+  const captureSnapshotMutation = useMutation(
+    orpc.matching.captureReadinessSnapshot.mutationOptions(),
+  )
+  const captureReadinessSnapshot = captureSnapshotMutation.mutate
+  const isCapturingReadiness = captureSnapshotMutation.isPending
+
   const companyInitial = offer.companyName.charAt(0).toUpperCase()
+  const readinessPoints = readinessHistoryQuery.data?.points ?? []
+  const latestReadiness = readinessPoints[0]?.readyPercent
+  const previousReadiness = readinessPoints[1]?.readyPercent
+  const readinessDelta =
+    typeof latestReadiness === "number" && typeof previousReadiness === "number"
+      ? latestReadiness - previousReadiness
+      : null
+
+  useEffect(() => {
+    if (!hasCapturedReadinessRef.current && !isCapturingReadiness) {
+      hasCapturedReadinessRef.current = true
+      captureReadinessSnapshot({ offerId: offer.id, source: "offer_view" })
+    }
+  }, [
+    captureReadinessSnapshot,
+    isCapturingReadiness,
+    offer.id,
+  ])
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
@@ -458,11 +510,87 @@ export function OfferDetailClient({
             )}
           </div>
 
+          {/* Why this match */}
+          <div className="border border-border p-5 space-y-4">
+            <h3 className="font-serif text-base text-heading">Why this match?</h3>
+            {matchScoreQuery.isLoading ? (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                Computing fit score...
+              </div>
+            ) : matchScoreQuery.data ? (
+              <div className="space-y-3">
+                <div className="flex items-end justify-between">
+                  <p className="font-serif text-3xl text-heading tabular-nums">
+                    {matchScoreQuery.data.score}
+                    <span className="text-base text-muted-foreground">/100</span>
+                  </p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                    {matchScoreQuery.data.version}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  {matchScoreQuery.data.reasons.slice(0, 3).map((reason) => (
+                    <div key={reason.key} className="text-xs">
+                      <p className="font-medium text-foreground">{reason.title}</p>
+                      <p className="text-muted-foreground">{reason.detail}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {skillGapQuery.data && skillGapQuery.data.missingSkills.length > 0 && (
+                  <div className="space-y-2 pt-2 border-t border-border">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                      Missing skills roadmap
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {skillGapQuery.data.missingSkills.slice(0, 5).map((skill) => (
+                        <span
+                          key={skill.id}
+                          className="inline-flex items-center px-2 py-0.5 text-[10px] bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300"
+                        >
+                          {skill.name}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-muted-foreground">
+                      Estimated improvement: +{skillGapQuery.data.estimatedDelta}% readiness
+                    </p>
+                  </div>
+                )}
+
+                <div className="pt-2 border-t border-border space-y-1">
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                    Readiness trend
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Latest: {latestReadiness ?? matchScoreQuery.data.readinessPercent}%
+                    {readinessDelta !== null && (
+                      <span className={readinessDelta >= 0 ? "text-green-600 ms-1" : "text-red-600 ms-1"}>
+                        ({readinessDelta >= 0 ? "+" : ""}{readinessDelta}%)
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground">Score unavailable right now.</p>
+            )}
+          </div>
+
           {/* Company info card */}
           <div className="border border-border p-5 space-y-3">
             <h3 className="font-serif text-base text-heading">
               {t("aboutCompany")}
             </h3>
+            {trustIndexQuery.data && (
+              <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-wider">
+                <span className="text-muted-foreground">Trust index</span>
+                <span className="font-semibold text-heading">{trustIndexQuery.data.trustScore}/100</span>
+                <span className="text-muted-foreground">({trustIndexQuery.data.tier})</span>
+              </div>
+            )}
             <div className="flex items-center gap-3">
               {offer.companyLogoUrl ? (
                 <>

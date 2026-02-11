@@ -8,6 +8,7 @@ import { internshipOffer } from "@/server/db/schema/internships"
 import { notification } from "@/server/db/schema/notifications"
 import { user } from "@/server/db/schema/auth"
 import { company } from "@/server/db/schema/companies"
+import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 
 export async function companyAcceptApplication(
   applicationId: string,
@@ -18,6 +19,7 @@ export async function companyAcceptApplication(
     .select({
       id: application.id,
       status: application.status,
+      pipelineStage: application.pipelineStage,
       offerId: application.offerId,
       studentUserId: application.studentUserId,
       offerTitle: internshipOffer.title,
@@ -50,10 +52,36 @@ export async function companyAcceptApplication(
     .update(application)
     .set({
       status: "company_accepted",
+      pipelineStage: "offer",
+      pipelineStageUpdatedAt: now,
       companyActionByUserId: actionByUserId,
       companyActionAt: now,
     })
     .where(eq(application.id, applicationId))
+
+  await appendTimelineEvent({
+    applicationId,
+    actorUserId: actionByUserId,
+    eventType: "application_status_changed",
+    fromStage: app.pipelineStage,
+    toStage: "offer",
+    fromStatus: app.status,
+    toStatus: "company_accepted",
+    payload: { reason: "company_accepted" },
+  })
+
+  await db.insert(notification).values({
+    id: crypto.randomUUID(),
+    userId: app.studentUserId,
+    type: "application_stage_changed",
+    payload: {
+      applicationId,
+      offerId: app.offerId,
+      offerTitle: app.offerTitle,
+      stage: "offer",
+      status: "company_accepted",
+    },
+  })
 
   // Notify the relevant university admins only.
   if (!app.studentUniversityId) {

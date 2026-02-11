@@ -4,6 +4,7 @@ import { eq, and } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
+import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 
 /**
  * Withdraw an application.
@@ -34,8 +35,23 @@ export async function withdrawApplication(
 
   await db
     .update(application)
-    .set({ status: "withdrawn" })
+    .set({
+      status: "withdrawn",
+      pipelineStage: "rejected",
+      pipelineStageUpdatedAt: new Date(),
+    })
     .where(eq(application.id, applicationId))
+
+  await appendTimelineEvent({
+    applicationId,
+    actorUserId: studentUserId,
+    eventType: "application_status_changed",
+    fromStage: app.pipelineStage,
+    toStage: "rejected",
+    fromStatus: app.status,
+    toStatus: "withdrawn",
+    payload: { reason: "withdrawn_by_student" },
+  })
 
   return { applicationId, newStatus: "withdrawn" as const }
 }

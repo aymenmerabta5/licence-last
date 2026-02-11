@@ -7,6 +7,12 @@ import {
   approveCompanyProcedure,
   rejectCompanyProcedure,
   uploadCompanyLogoProcedure,
+  getCompanyTrustIndexProcedure,
+  listCompanyTrustIndicesProcedure,
+  submitCompanyQualityFeedbackProcedure,
+  submitCompanyReportProcedure,
+  listCompanyReportsProcedure,
+  resolveCompanyReportProcedure,
 } from "./routes/companies"
 import { listSkillTagsProcedure } from "./routes/skills"
 import {
@@ -32,6 +38,8 @@ import {
   listByOfferProcedure,
   companyAcceptProcedure,
   companyRefuseProcedure,
+  updatePipelineStageProcedure,
+  getTimelineProcedure,
 } from "./routes/applications"
 import {
   listPendingProcedure,
@@ -55,6 +63,12 @@ import {
   updateAssistantConversationModelProcedure,
   updateAssistantConversationTitleProcedure,
 } from "./routes/assistant"
+import {
+  captureReadinessSnapshotProcedure,
+  getReadinessHistoryProcedure,
+  getScoreProcedure,
+  getSkillGapProcedure,
+} from "./routes/matching"
 
 export const appRouter = {
   users: {
@@ -70,6 +84,12 @@ export const appRouter = {
     approve: approveCompanyProcedure,
     reject: rejectCompanyProcedure,
     uploadLogo: uploadCompanyLogoProcedure,
+    getTrustIndex: getCompanyTrustIndexProcedure,
+    listTrustIndices: listCompanyTrustIndicesProcedure,
+    submitQualityFeedback: submitCompanyQualityFeedbackProcedure,
+    submitReport: submitCompanyReportProcedure,
+    listReports: listCompanyReportsProcedure,
+    resolveReport: resolveCompanyReportProcedure,
   },
   skills: {
     list: listSkillTagsProcedure,
@@ -97,6 +117,14 @@ export const appRouter = {
     listByOffer: listByOfferProcedure,
     companyAccept: companyAcceptProcedure,
     companyRefuse: companyRefuseProcedure,
+    updatePipelineStage: updatePipelineStageProcedure,
+    getTimeline: getTimelineProcedure,
+  },
+  matching: {
+    getScore: getScoreProcedure,
+    getSkillGap: getSkillGapProcedure,
+    getReadinessHistory: getReadinessHistoryProcedure,
+    captureReadinessSnapshot: captureReadinessSnapshotProcedure,
   },
   placements: {
     listPending: listPendingProcedure,
