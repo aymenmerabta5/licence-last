@@ -10,6 +10,7 @@ let redisClient: any | null = null
  * Get or create the Redis client singleton.
  * Returns null if REDIS_URL is not configured.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getRedisClient(): any | null {
   if (!env.REDIS_URL) {
     return null
@@ -17,7 +18,7 @@ export function getRedisClient(): any | null {
 
   if (!redisClient) {
     // Dynamic import to avoid loading bun module at build time
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { RedisClient } = require("bun")
     redisClient = new RedisClient(env.REDIS_URL)
   }
@@ -31,7 +32,6 @@ export function getRedisClient(): any | null {
  */
 export async function closeRedisConnection(): Promise<void> {
   if (redisClient) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     redisClient.close()
     redisClient = null
   }

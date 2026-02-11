@@ -1,6 +1,5 @@
 import { Suspense } from "react"
 
-import { ProfileContent } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ProfileData } from "./_components/ProfileData"
 

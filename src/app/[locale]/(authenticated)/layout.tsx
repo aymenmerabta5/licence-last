@@ -1,7 +1,5 @@
 import { Suspense } from "react"
 
-import { requireRole } from "@/lib/auth-guards"
-import { DashboardClientProvider } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import { AuthenticatedContent } from "./_components/AuthenticatedContent"
 
 /**
