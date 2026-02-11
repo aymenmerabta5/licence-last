@@ -1,7 +1,6 @@
-import { redirect } from "next/navigation"
-
 import { getTranslations } from "next-intl/server"
 
+import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
 import { StudentDashboard } from "@/app/[locale]/(authenticated)/_components/StudentDashboard"
 import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
@@ -10,17 +9,11 @@ import { listApplicationsByStudent } from "@/server/services/applications/list-b
 import { searchOffers } from "@/server/services/offers/search"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 
-type Params = Promise<{ locale: string }>
-
-export default async function StudentDashboardPage({
-  params,
-}: {
-  params: Params
-}) {
-  const [{ locale }, user] = await Promise.all([params, requireRole(["student"])])
+export default async function StudentDashboardPage() {
+  const user = await requireRole(["student"])
 
   if (!user.onboardingCompleted) {
-    redirect(`/${locale}/onboarding/student`)
+    return localeRedirect("/onboarding/student")
   }
 
   const t = await getTranslations("dashboard")

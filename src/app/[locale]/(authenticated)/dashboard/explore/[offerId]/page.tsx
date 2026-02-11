@@ -1,14 +1,23 @@
-import type { Route } from "next"
+import { Suspense } from "react"
 
-import { redirect } from "next/navigation"
+import { OfferDetailRedirect } from "./_components/OfferDetailRedirect"
 
-type Params = Promise<{ locale: string; offerId: string }>
+type Params = Promise<{ offerId: string }>
 
+/**
+ * Offer detail page wrapper with cacheComponents support.
+ * Uses Suspense boundary for the redirect logic.
+ */
 export default async function OfferDetailPage({
   params,
 }: {
   params: Params
 }) {
-  const { locale, offerId } = await params
-  redirect(`/${locale}/dashboard/student/offers/${offerId}` as Route)
+  const { offerId } = await params
+
+  return (
+    <Suspense fallback={null}>
+      <OfferDetailRedirect offerId={offerId} />
+    </Suspense>
+  )
 }

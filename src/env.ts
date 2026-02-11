@@ -4,7 +4,7 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
-    BETTER_AUTH_SECRET: z.string(),
+    BETTER_AUTH_SECRET: z.string().min(32, "Auth secret must be at least 32 characters"),
 
     // AI (Phase 1)
     POE_API_KEY: z.string().min(1),

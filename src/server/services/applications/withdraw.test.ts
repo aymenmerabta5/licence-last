@@ -33,6 +33,10 @@ mock.module("@/server/db", () => ({
   },
 }))
 
+mock.module("@/server/services/applications/pipeline", () => ({
+  appendTimelineEvent: mock(() => Promise.resolve({ eventId: "evt-1" })),
+}))
+
 describe("src/server/services/applications/withdraw", () => {
   beforeEach(() => {
     selectCallIdx = 0
@@ -84,6 +88,7 @@ describe("src/server/services/applications/withdraw", () => {
     const result = await withdrawApplication("app-1", "student-1")
     expect(result.newStatus).toBe("withdrawn")
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockInsert).toHaveBeenCalledTimes(1)
+    // withdraw has no direct db.insert — only appendTimelineEvent (mocked)
+    expect(mockInsert).toHaveBeenCalledTimes(0)
   })
 })

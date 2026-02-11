@@ -1,21 +1,20 @@
-import { redirect } from "next/navigation"
-import { getLocale, getTranslations } from "next-intl/server"
+import { getTranslations } from "next-intl/server"
 
+import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 import { CompanyProfileForm } from "./_components/CompanyProfileForm"
 
 export default async function CompanyProfilePage() {
-  const [sessionUser, locale, t] = await Promise.all([
+  const [sessionUser, t] = await Promise.all([
     requireRole(["company_admin"]),
-    getLocale(),
     getTranslations("dashboard.company.profile"),
   ])
 
   const company = await getCompanyByUserId(sessionUser.id)
 
   if (!company) {
-    redirect(`/${locale}/onboarding/company`)
+    return localeRedirect("/onboarding/company")
   }
 
   return (

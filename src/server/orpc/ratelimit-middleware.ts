@@ -16,6 +16,33 @@ export interface RateLimitConfig {
 }
 
 /**
+ * Extract the client IP from x-forwarded-for.
+ * Takes the first (leftmost) IP which is the original client,
+ * assuming a trusted reverse proxy (Vercel, Cloudflare) that appends.
+ * Falls back to x-real-ip or "unknown".
+ */
+function extractClientIp(headersList: Headers): string {
+  // Prefer platform-specific headers that cannot be spoofed
+  const vercelIp = headersList.get("x-vercel-forwarded-for")
+  if (vercelIp) {
+    return vercelIp.split(",")[0]!.trim()
+  }
+
+  const realIp = headersList.get("x-real-ip")
+  if (realIp) {
+    return realIp.trim()
+  }
+
+  const forwarded = headersList.get("x-forwarded-for")
+  if (forwarded) {
+    // First entry is the original client when behind a trusted proxy
+    return forwarded.split(",")[0]!.trim()
+  }
+
+  return "unknown"
+}
+
+/**
  * Default key generator - uses userId if available, otherwise IP
  */
 function defaultKeyGenerator(ctx: { userId?: string; ip: string }): string {
@@ -54,9 +81,7 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     key: async ({ context }, _input) => {
       const headersList = await headers()
-      const ip = headersList.get("x-forwarded-for") || 
-                 headersList.get("x-real-ip") || 
-                 "unknown"
+      const ip = extractClientIp(headersList)
 
       const userId = (context as { user?: { id: string } }).user?.id
 

@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
+import { updateTag } from "next/cache"
 
 import {
   authedProcedure,
@@ -31,6 +32,7 @@ import {
   submitCompanyQualityFeedback,
   submitCompanyReport,
 } from "@/server/services/companies/trust-actions"
+import { CACHE_TAGS } from "@/lib/cache"
 
 /* ── Reads ── */
 
@@ -206,15 +208,26 @@ export const updateCompanyProcedure = companyAdminProcedure
       address: z.string().optional(),
     }),
   )
-  .handler(async ({ input, context }) =>
-    updateCompany(context.companyMembership.companyId, input),
-  )
+  .handler(async ({ input, context }) => {
+    const result = await updateCompany(context.companyMembership.companyId, input)
+
+    // Invalidate company cache
+    updateTag(CACHE_TAGS.COMPANY_PROFILE(context.companyMembership.companyId))
+    updateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`))
+
+    return result
+  })
 
 export const approveCompanyProcedure = adminProcedure
   .input(z.object({ companyId: z.string().min(1) }))
-  .handler(async ({ input, context }) =>
-    approveCompany(input.companyId, context.user.id),
-  )
+  .handler(async ({ input, context }) => {
+    const result = await approveCompany(input.companyId, context.user.id)
+
+    // Invalidate company cache when approved
+    updateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId))
+
+    return result
+  })
 
 export const rejectCompanyProcedure = adminProcedure
   .input(
@@ -223,9 +236,14 @@ export const rejectCompanyProcedure = adminProcedure
       reason: z.string().min(1),
     }),
   )
-  .handler(async ({ input }) =>
-    rejectCompany(input.companyId, input.reason),
-  )
+  .handler(async ({ input }) => {
+    const result = await rejectCompany(input.companyId, input.reason)
+
+    // Invalidate company cache when rejected
+    updateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId))
+
+    return result
+  })
 
 /* ── Uploads ── */
 

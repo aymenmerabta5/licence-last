@@ -1,20 +1,25 @@
 import "server-only"
 
-import { RedisClient } from "bun"
 import { env } from "@/env"
 
-let redisClient: RedisClient | null = null
+// Use any type to avoid importing bun at build time
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let redisClient: any | null = null
 
 /**
  * Get or create the Redis client singleton.
  * Returns null if REDIS_URL is not configured.
  */
-export function getRedisClient(): RedisClient | null {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getRedisClient(): any | null {
   if (!env.REDIS_URL) {
     return null
   }
 
   if (!redisClient) {
+    // Dynamic import to avoid loading bun module at build time
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { RedisClient } = require("bun")
     redisClient = new RedisClient(env.REDIS_URL)
   }
 

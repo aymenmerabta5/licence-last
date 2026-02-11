@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
   reactCompiler: true,
   output: "standalone",
+  cacheComponents: true,
+  serverExternalPackages: ["better-auth"],
   async headers() {
     return [
       {
@@ -16,14 +18,14 @@ const nextConfig: NextConfig = {
           { key: "X-Frame-Options", value: "DENY" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+          { key: "X-DNS-Prefetch-Control", value: "on" },
         ],
       },
     ];
   },
   allowedDevOrigins: [
     "http://localhost:3000",
-    "http://xendate.com",
-    "https://xendate.com"
   ]
 };
 

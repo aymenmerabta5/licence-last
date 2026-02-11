@@ -1,36 +1,26 @@
-import { redirect } from "next/navigation"
-
 import { getTranslations } from "next-intl/server"
 
+import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
 import { formatDateLong } from "@/lib/date"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 import { RecruiterDashboard } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard"
 
-type Params = Promise<{ locale: string }>
-
-export default async function CompanyDashboardPage({
-  params,
-}: {
-  params: Params
-}) {
-  const [{ locale }, user] = await Promise.all([
-    params,
-    requireRole(["company_admin"]),
-  ])
+export default async function CompanyDashboardPage() {
+  const user = await requireRole(["company_admin"])
 
   if (!user.onboardingCompleted) {
-    redirect(`/${locale}/onboarding/company`)
+    return localeRedirect("/onboarding/company")
   }
 
   const company = await getCompanyByUserId(user.id)
 
   if (company?.status === "rejected") {
-    redirect(`/${locale}/dashboard/company/rejected`)
+    return localeRedirect("/dashboard/company/rejected")
   }
 
   if (company?.status !== "approved") {
-    redirect(`/${locale}/dashboard/company/pending`)
+    return localeRedirect("/dashboard/company/pending")
   }
 
   const t = await getTranslations("dashboard")

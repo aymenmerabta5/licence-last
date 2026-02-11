@@ -112,8 +112,18 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    minPasswordLength: 8,
+    maxPasswordLength: 128,
     sendResetPassword: async ({ user, url }) => {
       await sendEmail(user.email, "Reset your password", ResetPasswordEmail, { link: url })
+    },
+  },
+  session: {
+    expiresIn: 60 * 60 * 24, // 24 hours
+    updateAge: 60 * 60, // Refresh token every hour
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // 5 minutes
     },
   },
   plugins: [nextCookies()], // must be last — handles Set-Cookie in server actions

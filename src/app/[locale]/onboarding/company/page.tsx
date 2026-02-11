@@ -1,7 +1,7 @@
-import { redirect } from "next/navigation"
 import { headers } from "next/headers"
 
 import { auth } from "@/lib/auth"
+import { localeRedirect } from "@/lib/navigation"
 import { CompanyOnboardingForm } from "./_components/CompanyOnboardingForm"
 
 export default async function CompanyOnboardingPage() {
@@ -11,8 +11,7 @@ export default async function CompanyOnboardingPage() {
 
   // If already onboarded, redirect to dashboard
   if (session?.user.onboardingCompleted) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    redirect("/dashboard/company/pending" as any)
+    return localeRedirect("/dashboard/company/pending")
   }
 
   return <CompanyOnboardingForm />

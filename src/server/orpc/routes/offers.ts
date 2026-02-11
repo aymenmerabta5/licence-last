@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
+import { updateTag } from "next/cache"
 
 import { authedProcedure, companyAdminProcedure } from "../middleware"
 import { getOfferById } from "@/server/services/offers/get"
@@ -11,6 +12,7 @@ import { updateOfferStatus } from "@/server/services/offers/update-status"
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
 import { eq } from "drizzle-orm"
+import { CACHE_TAGS } from "@/lib/cache"
 
 /* ── Reads ── */
 
@@ -65,12 +67,19 @@ export const createOfferProcedure = companyAdminProcedure
       skillTagIds: z.array(z.string()).max(20).default([]),
     }),
   )
-  .handler(async ({ input, context }) =>
-    createOffer({
+  .handler(async ({ input, context }) => {
+    const result = await createOffer({
       companyId: context.companyMembership.companyId,
       ...input,
-    }),
-  )
+    })
+
+    // Invalidate company offers cache and public offer search
+    updateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId))
+    updateTag(CACHE_TAGS.OFFER_SEARCH)
+    updateTag(CACHE_TAGS.OFFERS_PUBLIC)
+
+    return result
+  })
 
 export const updateOfferProcedure = companyAdminProcedure
   .input(
@@ -88,14 +97,30 @@ export const updateOfferProcedure = companyAdminProcedure
   )
   .handler(async ({ input, context }) => {
     const { offerId, ...data } = input
-    return updateOffer(offerId, context.companyMembership.companyId, data)
+    const result = await updateOffer(offerId, context.companyMembership.companyId, data)
+
+    // Invalidate offer caches
+    updateTag(CACHE_TAGS.OFFER_DETAIL(offerId))
+    updateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId))
+    updateTag(CACHE_TAGS.OFFER_SEARCH)
+    updateTag(CACHE_TAGS.OFFERS_PUBLIC)
+
+    return result
   })
 
 export const deleteOfferProcedure = companyAdminProcedure
   .input(z.object({ offerId: z.string().min(1) }))
-  .handler(async ({ input, context }) =>
-    deleteOffer(input.offerId, context.companyMembership.companyId),
-  )
+  .handler(async ({ input, context }) => {
+    const result = await deleteOffer(input.offerId, context.companyMembership.companyId)
+
+    // Invalidate offer caches
+    updateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId))
+    updateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId))
+    updateTag(CACHE_TAGS.OFFER_SEARCH)
+    updateTag(CACHE_TAGS.OFFERS_PUBLIC)
+
+    return result
+  })
 
 export const updateOfferStatusProcedure = companyAdminProcedure
   .input(
@@ -104,10 +129,18 @@ export const updateOfferStatusProcedure = companyAdminProcedure
       action: z.enum(["publish", "close"]),
     }),
   )
-  .handler(async ({ input, context }) =>
-    updateOfferStatus(
+  .handler(async ({ input, context }) => {
+    const result = await updateOfferStatus(
       input.offerId,
       context.companyMembership.companyId,
       input.action,
-    ),
-  )
+    )
+
+    // Invalidate offer caches when status changes
+    updateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId))
+    updateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId))
+    updateTag(CACHE_TAGS.OFFER_SEARCH)
+    updateTag(CACHE_TAGS.OFFERS_PUBLIC)
+
+    return result
+  })

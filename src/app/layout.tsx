@@ -2,57 +2,11 @@ import "./globals.css"
 
 import type { ReactNode } from "react"
 
-import { DM_Sans, DM_Serif_Display, Noto_Sans_Arabic } from "next/font/google"
-import { getLocale } from "next-intl/server"
-import { ThemeProvider } from "next-themes"
-
-import { QueryProvider } from "@/components/providers/QueryProvider"
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-dm-sans",
-  display: "swap",
-})
-
-const dmSerif = DM_Serif_Display({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-dm-serif",
-  display: "swap",
-})
-
-const notoSansArabic = Noto_Sans_Arabic({
-  subsets: ["arabic"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-arabic",
-  display: "swap",
-})
-
-interface RootLayoutProps {
-  children: ReactNode
-}
-
-export default async function RootLayout({ children }: RootLayoutProps) {
-  const locale = await getLocale()
-  const isRTL = locale === "ar"
-  const rtlFontVars = isRTL
-    ? "[--font-sans:var(--font-arabic),var(--font-dm-sans)] [--font-serif:var(--font-arabic),var(--font-dm-serif)]"
-    : ""
-
-  return (
-    <html
-      lang={locale}
-      dir={isRTL ? "rtl" : "ltr"}
-      suppressHydrationWarning
-    >
-      <body
-        className={`${dmSans.variable} ${dmSerif.variable} ${notoSansArabic.variable} ${rtlFontVars} font-sans antialiased`}
-      >
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-          <QueryProvider>{children}</QueryProvider>
-        </ThemeProvider>
-      </body>
-    </html>
-  )
+/**
+ * Minimal root layout — delegates <html>/<body> to [locale]/layout.tsx
+ * so that lang/dir attributes can be set from the locale param
+ * without accessing dynamic headers (cacheComponents compatible).
+ */
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return children
 }

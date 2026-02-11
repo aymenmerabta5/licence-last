@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
+import { updateTag } from "next/cache"
 
 import { authedProcedure, studentProcedure, companyAdminProcedure } from "../middleware"
 import {
@@ -24,6 +25,7 @@ import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { companyMember } from "@/server/db/schema/companies"
+import { CACHE_TAGS } from "@/lib/cache"
 
 /* ── Offer Search (any authenticated user) ── */
 
@@ -43,11 +45,17 @@ export const applyToOfferProcedure = studentProcedure
   .input(applyToOfferSchema)
   .handler(async ({ input, context }) => {
     try {
-      return await applyToOffer(
+      const result = await applyToOffer(
         input.offerId,
         context.user.id,
         input.coverLetter,
       )
+
+      // Invalidate student applications cache
+      updateTag(CACHE_TAGS.STUDENT_APPLICATIONS(context.user.id))
+      updateTag(CACHE_TAGS.STUDENT_STATS(context.user.id))
+
+      return result
     } catch (error) {
       throw new ORPCError("BAD_REQUEST", {
         message:
@@ -66,7 +74,13 @@ export const withdrawApplicationProcedure = studentProcedure
   .input(z.object({ applicationId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     try {
-      return await withdrawApplication(input.applicationId, context.user.id)
+      const result = await withdrawApplication(input.applicationId, context.user.id)
+
+      // Invalidate student applications cache
+      updateTag(CACHE_TAGS.STUDENT_APPLICATIONS(context.user.id))
+      updateTag(CACHE_TAGS.STUDENT_STATS(context.user.id))
+
+      return result
     } catch (error) {
       throw new ORPCError("BAD_REQUEST", {
         message:
@@ -122,11 +136,16 @@ export const companyAcceptProcedure = companyAdminProcedure
   .input(z.object({ applicationId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     try {
-      return await companyAcceptApplication(
+      const result = await companyAcceptApplication(
         input.applicationId,
         context.companyMembership.companyId,
         context.user.id,
       )
+
+      // Invalidate company candidates cache
+      updateTag(CACHE_TAGS.COMPANY_CANDIDATES(context.companyMembership.companyId))
+
+      return result
     } catch (error) {
       throw new ORPCError("BAD_REQUEST", {
         message:
@@ -144,12 +163,17 @@ export const companyRefuseProcedure = companyAdminProcedure
   )
   .handler(async ({ input, context }) => {
     try {
-      return await companyRefuseApplication(
+      const result = await companyRefuseApplication(
         input.applicationId,
         context.companyMembership.companyId,
         context.user.id,
         input.note,
       )
+
+      // Invalidate company candidates cache
+      updateTag(CACHE_TAGS.COMPANY_CANDIDATES(context.companyMembership.companyId))
+
+      return result
     } catch (error) {
       throw new ORPCError("BAD_REQUEST", {
         message:
