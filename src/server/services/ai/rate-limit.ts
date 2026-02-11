@@ -1,10 +1,13 @@
 import "server-only"
 
+import { lt, sql } from "drizzle-orm"
+
 interface RateLimitOptions {
   key: string
   limit: number
   windowMs: number
   now?: number
+  store?: RateLimitStore
 }
 
 interface RateLimitResult {
@@ -14,19 +17,98 @@ interface RateLimitResult {
   retryAfterMs: number
 }
 
-type Bucket = {
+interface RateLimitStore {
+  increment(input: {
+    key: string
+    windowMs: number
+    windowStartMs: number
+    nowMs: number
+  }): Promise<number>
+}
+
+type InMemoryBucket = {
   count: number
   resetAt: number
 }
 
-const buckets = new Map<string, Bucket>()
+const inMemoryBuckets = new Map<string, InMemoryBucket>()
+let lastCleanupAtMs = 0
 
-export function checkRateLimit({
+const inMemoryStore: RateLimitStore = {
+  async increment({ key, windowMs, windowStartMs }) {
+    const bucketKey = `${key}:${windowMs}:${windowStartMs}`
+    const resetAt = windowStartMs + windowMs
+    const existing = inMemoryBuckets.get(bucketKey)
+
+    if (!existing) {
+      inMemoryBuckets.set(bucketKey, { count: 1, resetAt })
+      return 1
+    }
+
+    existing.count += 1
+    inMemoryBuckets.set(bucketKey, existing)
+    return existing.count
+  },
+}
+
+const dbStore: RateLimitStore = {
+  async increment({ key, windowMs, windowStartMs, nowMs }) {
+    const [{ db }, { rateLimitBucket }] = await Promise.all([
+      import("@/server/db"),
+      import("@/server/db/schema/rate-limits"),
+    ])
+
+    const now = new Date(nowMs)
+    const windowStart = new Date(windowStartMs)
+
+    const [row] = await db
+      .insert(rateLimitBucket)
+      .values({
+        bucketKey: key,
+        windowMs,
+        windowStart,
+        count: 1,
+        updatedAt: now,
+      })
+      .onConflictDoUpdate({
+        target: [
+          rateLimitBucket.bucketKey,
+          rateLimitBucket.windowMs,
+          rateLimitBucket.windowStart,
+        ],
+        set: {
+          count: sql`${rateLimitBucket.count} + 1`,
+          updatedAt: now,
+        },
+      })
+      .returning({ count: rateLimitBucket.count })
+
+    // Periodic cleanup to keep the table bounded.
+    const cleanupEveryMs = 5 * 60 * 1000
+    if (nowMs - lastCleanupAtMs > cleanupEveryMs) {
+      lastCleanupAtMs = nowMs
+      const pruneBefore = new Date(nowMs - 24 * 60 * 60 * 1000)
+      void db
+        .delete(rateLimitBucket)
+        .where(lt(rateLimitBucket.updatedAt, pruneBefore))
+        .catch(() => undefined)
+    }
+
+    return row?.count ?? 1
+  },
+}
+
+function getDefaultStore(): RateLimitStore {
+  return process.env.NODE_ENV === "test" ? inMemoryStore : dbStore
+}
+
+export async function checkRateLimit({
   key,
   limit,
   windowMs,
   now = Date.now(),
-}: RateLimitOptions): RateLimitResult {
+  store = getDefaultStore(),
+}: RateLimitOptions): Promise<RateLimitResult> {
   if (limit <= 0 || windowMs <= 0) {
     return {
       ok: true,
@@ -36,38 +118,28 @@ export function checkRateLimit({
     }
   }
 
-  const existing = buckets.get(key)
-  if (!existing || now >= existing.resetAt) {
-    const resetAt = now + windowMs
-    buckets.set(key, { count: 1, resetAt })
-    return {
-      ok: true,
-      remaining: Math.max(0, limit - 1),
-      resetAt,
-      retryAfterMs: 0,
-    }
-  }
+  const windowStartMs = Math.floor(now / windowMs) * windowMs
+  const resetAt = windowStartMs + windowMs
 
-  if (existing.count >= limit) {
-    return {
-      ok: false,
-      remaining: 0,
-      resetAt: existing.resetAt,
-      retryAfterMs: Math.max(0, existing.resetAt - now),
-    }
-  }
+  const count = await store.increment({
+    key,
+    windowMs,
+    windowStartMs,
+    nowMs: now,
+  })
 
-  existing.count += 1
-  buckets.set(key, existing)
+  const remaining = Math.max(0, limit - count)
+  const ok = count <= limit
 
   return {
-    ok: true,
-    remaining: Math.max(0, limit - existing.count),
-    resetAt: existing.resetAt,
-    retryAfterMs: 0,
+    ok,
+    remaining,
+    resetAt,
+    retryAfterMs: ok ? 0 : Math.max(0, resetAt - now),
   }
 }
 
 export function _resetRateLimitForTests() {
-  buckets.clear()
+  inMemoryBuckets.clear()
+  lastCleanupAtMs = 0
 }
