@@ -30,8 +30,8 @@ export async function POST(req: Request) {
     return new Response("Forbidden", { status: 403 })
   }
 
-  const rl = checkRateLimit({
-    key: session.user.id,
+  const rl = await checkRateLimit({
+    key: `assistant:auth:${session.user.id}`,
     limit: 60,
     windowMs: 60_000,
   })

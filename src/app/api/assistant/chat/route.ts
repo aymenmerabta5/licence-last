@@ -209,8 +209,8 @@ export async function POST(req: Request) {
 
   const contextJson = assistantContextToJson(body.context)
 
-  const rl = checkRateLimit({
-    key: session.user.id,
+  const rl = await checkRateLimit({
+    key: `assistant:chat:${session.user.id}`,
     limit: 30,
     windowMs: 60_000,
   })
