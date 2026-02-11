@@ -79,4 +79,13 @@ import * as matchers from "@testing-library/jest-dom/matchers"
 // Next.js "server-only" guard throws at runtime; in unit tests we treat it as a no-op.
 mock.module("server-only", () => ({}))
 
+// Next.js cacheLife/cacheTag require the cacheComponents runtime; stub them for unit tests.
+mock.module("next/cache", () => ({
+  cacheLife: () => {},
+  cacheTag: () => {},
+  revalidateTag: () => {},
+  revalidatePath: () => {},
+  unstable_cache: (fn: Function) => fn,
+}))
+
 expect.extend(matchers)

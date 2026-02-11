@@ -47,6 +47,10 @@ mock.module("@/server/db", () => ({
   },
 }))
 
+mock.module("@/server/services/applications/pipeline", () => ({
+  appendTimelineEvent: mock(() => Promise.resolve({ eventId: "evt-1" })),
+}))
+
 describe("src/server/services/applications/company-accept", () => {
   beforeEach(() => {
     selectCallIdx = 0
@@ -118,6 +122,7 @@ describe("src/server/services/applications/company-accept", () => {
 
     expect(result.success).toBe(true)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockInsert).toHaveBeenCalledTimes(3)
+    // 2 inserts: student notification + admin notifications (timeline is via appendTimelineEvent, mocked)
+    expect(mockInsert).toHaveBeenCalledTimes(2)
   })
 })
