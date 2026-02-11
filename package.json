@@ -36,6 +36,7 @@
     "@arcadeai/arcadejs": "^2.2.0",
     "@base-ui/react": "^1.1.0",
     "@orpc/client": "^1.13.4",
+    "@orpc/experimental-ratelimit": "^1.13.5",
     "@orpc/server": "^1.13.4",
     "@orpc/tanstack-query": "^1.13.4",
     "@react-email/components": "^1.0.7",
