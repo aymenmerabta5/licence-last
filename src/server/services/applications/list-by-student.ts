@@ -1,11 +1,15 @@
+"use cache"
+
 import "server-only"
 
 import { eq, and, desc, lt, or } from "drizzle-orm"
+import { cacheTag, cacheLife } from "next/cache"
 
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { company } from "@/server/db/schema/companies"
+import { CACHE_TAGS } from "@/lib/cache"
 
 type ApplicationStatus =
   | "applied"
@@ -30,12 +34,15 @@ interface ListParams {
 
 /**
  * List a student's applications with offer + company info.
- * Supports cursor pagination and optional status filter.
+ * Cached for 5 minutes per user.
  */
 export async function listApplicationsByStudent(
   studentUserId: string,
   params: ListParams,
 ) {
+  cacheLife("minutes")
+  cacheTag(CACHE_TAGS.STUDENT_APPLICATIONS(studentUserId))
+
   const { status, pipelineStage, cursor, limit } = params
 
   const conditions = [eq(application.studentUserId, studentUserId)]

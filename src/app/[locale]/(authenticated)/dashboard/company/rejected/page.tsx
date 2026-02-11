@@ -1,38 +1,29 @@
-import { redirect } from "next/navigation"
-
 import { getTranslations } from "next-intl/server"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Link } from "@/i18n/routing"
+import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
 import { formatDateLong } from "@/lib/date"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 
-type Params = Promise<{ locale: string }>
-
-export default async function CompanyRejectedPage({ params }: { params: Params }) {
-  const [{ locale }, user] = await Promise.all([
-    params,
-    requireRole(["company_admin"]),
-  ])
+export default async function CompanyRejectedPage() {
+  const user = await requireRole(["company_admin"])
 
   if (!user.onboardingCompleted) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    redirect(`/${locale}/onboarding/company` as any)
+    return localeRedirect("/onboarding/company")
   }
 
   const company = await getCompanyByUserId(user.id)
 
   if (company?.status === "approved") {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    redirect(`/${locale}/dashboard/company` as any)
+    return localeRedirect("/dashboard/company")
   }
 
   if (company?.status !== "rejected") {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    redirect(`/${locale}/dashboard/company/pending` as any)
+    return localeRedirect("/dashboard/company/pending")
   }
 
   const [t, tp] = await Promise.all([

@@ -1,14 +1,24 @@
+"use cache"
+
 import "server-only"
 
 import { eq } from "drizzle-orm"
+import { cacheTag, cacheLife } from "next/cache"
 
 import { db } from "@/server/db"
 import { studentProfile, studentSkill } from "@/server/db/schema/students"
 import { skillTag } from "@/server/db/schema/skills"
 import { user } from "@/server/db/schema/auth"
+import { CACHE_TAGS } from "@/lib/cache"
 
-/** Get a student's profile with their skills. Returns null if no profile exists. */
+/**
+ * Get a student's profile with their skills. Returns null if no profile exists.
+ * Cached for 15 minutes per user.
+ */
 export async function getStudentProfile(userId: string) {
+  cacheLife("minutes")
+  cacheTag(CACHE_TAGS.STUDENT_PROFILE(userId))
+  cacheTag(CACHE_TAGS.PUBLIC_PROFILE(userId))
   const [profile] = await db
     .select()
     .from(studentProfile)

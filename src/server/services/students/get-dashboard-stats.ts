@@ -1,12 +1,23 @@
+"use cache"
+
 import "server-only"
 
 import { eq, and, count, inArray } from "drizzle-orm"
+import { cacheTag, cacheLife } from "next/cache"
 
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { studentSkill } from "@/server/db/schema/students"
+import { CACHE_TAGS } from "@/lib/cache"
 
+/**
+ * Get student dashboard statistics.
+ * Cached for 5 minutes per user.
+ */
 export async function getStudentDashboardStats(userId: string) {
+  cacheLife("minutes")
+  cacheTag(CACHE_TAGS.STUDENT_STATS(userId))
+  cacheTag(CACHE_TAGS.STUDENT_APPLICATIONS(userId))
   const [totalResult, pendingResult, acceptedResult, skillsResult] =
     await Promise.all([
       db

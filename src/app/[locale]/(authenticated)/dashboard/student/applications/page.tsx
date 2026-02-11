@@ -1,24 +1,12 @@
-import type { Route } from "next"
-
-import { redirect } from "next/navigation"
-
+import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
 import { ApplicationsClient } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsClient"
 
-type Params = Promise<{ locale: string }>
-
-export default async function StudentApplicationsPage({
-  params,
-}: {
-  params: Params
-}) {
-  const [{ locale }, user] = await Promise.all([
-    params,
-    requireRole(["student"]),
-  ])
+export default async function StudentApplicationsPage() {
+  const user = await requireRole(["student"])
 
   if (!user.onboardingCompleted) {
-    redirect(`/${locale}/onboarding/student` as Route)
+    return localeRedirect("/onboarding/student")
   }
 
   return <ApplicationsClient />

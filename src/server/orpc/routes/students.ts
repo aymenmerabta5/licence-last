@@ -1,11 +1,13 @@
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
+import { updateTag } from "next/cache"
 
 import { authedProcedure } from "../middleware"
 import { getStudentProfile } from "@/server/services/students/get-profile"
 import { getPublicStudentProfile } from "@/server/services/students/get-public-profile"
 import { upsertStudentProfile } from "@/server/services/students/upsert-profile"
 import { upsertStudentProfileDetails } from "@/server/services/students/upsert-profile-details"
+import { CACHE_TAGS } from "@/lib/cache"
 
 /* ── Reads ── */
 
@@ -83,7 +85,14 @@ export const upsertStudentProfileProcedure = authedProcedure
     }
 
     const { skillTagIds, ...data } = input
-    return upsertStudentProfile(data, skillTagIds, context.user.id)
+    const result = await upsertStudentProfile(data, skillTagIds, context.user.id)
+
+    // Invalidate profile caches after update
+    updateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id))
+    updateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id))
+    updateTag(CACHE_TAGS.STUDENT_STATS(context.user.id))
+
+    return result
   })
 
 export const upsertStudentProfileDetailsProcedure = authedProcedure
@@ -107,5 +116,11 @@ export const upsertStudentProfileDetailsProcedure = authedProcedure
       })
     }
 
-    return upsertStudentProfileDetails(input, context.user.id)
+    const result = await upsertStudentProfileDetails(input, context.user.id)
+
+    // Invalidate profile caches after update
+    updateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id))
+    updateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id))
+
+    return result
   })

@@ -1,7 +1,6 @@
-import type { Route } from "next"
+import { notFound } from "next/navigation"
 
-import { redirect, notFound } from "next/navigation"
-
+import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
 import {
   getOfferById,
@@ -9,20 +8,20 @@ import {
 } from "@/server/services/offers/get"
 import { OfferDetailClient } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetailClient"
 
-type Params = Promise<{ locale: string; offerId: string }>
+type Params = Promise<{ offerId: string }>
 
 export default async function StudentOfferDetailPage({
   params,
 }: {
   params: Params
 }) {
-  const [{ locale, offerId }, user] = await Promise.all([
+  const [{ offerId }, user] = await Promise.all([
     params,
     requireRole(["student"]),
   ])
 
   if (!user.onboardingCompleted) {
-    redirect(`/${locale}/onboarding/student` as Route)
+    return localeRedirect("/onboarding/student")
   }
 
   const offer = await getOfferById(offerId)

@@ -1,12 +1,18 @@
+"use cache"
+
 import "server-only"
 
 import { eq } from "drizzle-orm"
+import { cacheTag, cacheLife } from "next/cache"
 
 import { db } from "@/server/db"
 import { company, companyMember } from "@/server/db/schema/companies"
+import { CACHE_TAGS } from "@/lib/cache"
 
-/** Get a company by its ID. */
+/** Get a company by its ID. Cached for 15 minutes. */
 export async function getCompanyById(companyId: string) {
+  cacheLife("minutes")
+  cacheTag(CACHE_TAGS.COMPANY_PROFILE(companyId))
   const [result] = await db
     .select()
     .from(company)
@@ -16,8 +22,13 @@ export async function getCompanyById(companyId: string) {
   return result ?? null
 }
 
-/** Get the company a user belongs to (via companyMember). */
+/**
+ * Get the company a user belongs to (via companyMember).
+ * Cached for 15 minutes per user.
+ */
 export async function getCompanyByUserId(userId: string) {
+  cacheLife("minutes")
+  cacheTag(CACHE_TAGS.COMPANY_PROFILE(`user-${userId}`))
   const [result] = await db
     .select({
       id: company.id,

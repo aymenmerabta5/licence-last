@@ -1,14 +1,5 @@
-import type { Route } from "next"
+import { localeRedirect } from "@/lib/navigation"
 
-import { redirect } from "next/navigation"
-
-type Params = Promise<{ locale: string }>
-
-export default async function ApplicationsPage({
-  params,
-}: {
-  params: Params
-}) {
-  const { locale } = await params
-  redirect(`/${locale}/dashboard/student/applications` as Route)
+export default async function ApplicationsPage() {
+  return localeRedirect("/dashboard/student/applications")
 }

@@ -1,35 +1,25 @@
-import { redirect } from "next/navigation"
-
 import { getTranslations } from "next-intl/server"
 
 import { requireRole } from "@/lib/auth-guards"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 import { listOffersByCompany } from "@/server/services/offers/list-by-company"
 import { Link } from "@/i18n/routing"
+import { localeRedirect } from "@/lib/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Briefcase, Users, ArrowRight } from "lucide-react"
 
-type Params = Promise<{ locale: string }>
-
-export default async function CandidatesPipelinePage({
-  params,
-}: {
-  params: Params
-}) {
-  const [{ locale }, user] = await Promise.all([
-    params,
-    requireRole(["company_admin"]),
-  ])
+export default async function CandidatesPipelinePage() {
+  const user = await requireRole(["company_admin"])
 
   const company = await getCompanyByUserId(user.id)
 
   if (!company) {
-    redirect(`/${locale}/dashboard/company/profile`)
+    return localeRedirect("/dashboard/company/profile")
   }
 
   if (company.status !== "approved") {
-    redirect(`/${locale}/dashboard/company`)
+    return localeRedirect("/dashboard/company")
   }
 
   const t = await getTranslations("dashboard")

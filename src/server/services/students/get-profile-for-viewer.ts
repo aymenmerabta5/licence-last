@@ -1,11 +1,15 @@
+"use cache"
+
 import "server-only"
 
 import { eq } from "drizzle-orm"
+import { cacheTag, cacheLife } from "next/cache"
 
 import { db } from "@/server/db"
 import { studentProfile, studentSkill } from "@/server/db/schema/students"
 import { skillTag } from "@/server/db/schema/skills"
 import { getUserById } from "@/server/services/users/get-by-id"
+import { CACHE_TAGS } from "@/lib/cache"
 
 export interface ViewerIdentity {
   id: string
@@ -55,10 +59,7 @@ function canViewPrivateFields(viewer: ViewerIdentity, targetUserId: string) {
 
 /**
  * Fetch a user's profile for display at /profile/[userId], applying "public-safe"
- * privacy defaults (hide contact info from non-owners).
- *
- * - Always returns the base user if found.
- * - Returns student profile + skills only if the student profile row exists.
+ * privacy defaults. Cached for 15 minutes per target user.
  */
 export async function getStudentProfileForViewer({
   viewer,
@@ -67,6 +68,9 @@ export async function getStudentProfileForViewer({
   viewer: ViewerIdentity
   targetUserId: string
 }): Promise<StudentProfileForViewerResult | null> {
+  cacheLife("minutes")
+  cacheTag(CACHE_TAGS.PUBLIC_PROFILE(targetUserId))
+
   const targetUser = await getUserById(targetUserId)
   if (!targetUser) return null
 

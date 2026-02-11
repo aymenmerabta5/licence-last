@@ -1,11 +1,15 @@
+"use cache"
+
 import "server-only"
 
 import { eq, desc, inArray, count } from "drizzle-orm"
+import { cacheTag, cacheLife } from "next/cache"
 
 import { db } from "@/server/db"
 import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
 import { skillTag } from "@/server/db/schema/skills"
 import { application } from "@/server/db/schema/applications"
+import { CACHE_TAGS } from "@/lib/cache"
 
 interface OfferWithSkills {
   id: string
@@ -31,7 +35,13 @@ interface OfferWithSkills {
   candidatesCount: number
 }
 
+/**
+ * List all offers for a company with skills and candidate counts.
+ * Cached for 5 minutes per company.
+ */
 export async function listOffersByCompany(companyId: string): Promise<OfferWithSkills[]> {
+  cacheLife("minutes")
+  cacheTag(CACHE_TAGS.COMPANY_OFFERS(companyId))
   const offers = await db
     .select()
     .from(internshipOffer)

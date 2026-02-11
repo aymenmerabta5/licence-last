@@ -1,3 +1,5 @@
+"use cache"
+
 import "server-only"
 
 import {
@@ -12,6 +14,7 @@ import {
   isNull,
   gt,
 } from "drizzle-orm"
+import { cacheTag, cacheLife } from "next/cache"
 
 import { db } from "@/server/db"
 import {
@@ -20,6 +23,7 @@ import {
 } from "@/server/db/schema/internships"
 import { company } from "@/server/db/schema/companies"
 import { skillTag } from "@/server/db/schema/skills"
+import { CACHE_TAGS } from "@/lib/cache"
 
 interface SearchParams {
   keyword?: string
@@ -31,7 +35,28 @@ interface SearchParams {
   limit: number
 }
 
+/**
+ * Search published internship offers with filtering.
+ * Cached for 2 minutes with tag-based invalidation.
+ */
 export async function searchOffers(params: SearchParams) {
+  cacheLife("minutes")
+  cacheTag(CACHE_TAGS.OFFER_SEARCH)
+  cacheTag(CACHE_TAGS.OFFERS_PUBLIC)
+
+  if (params.wilayaCode) {
+    cacheTag(`offers-wilaya-${params.wilayaCode}`)
+  }
+  if (params.internshipTypes?.length) {
+    for (const type of params.internshipTypes) {
+      cacheTag(`offers-type-${type}`)
+    }
+  }
+  if (params.skillTagIds?.length) {
+    for (const skillId of params.skillTagIds) {
+      cacheTag(`offers-skill-${skillId}`)
+    }
+  }
   const {
     keyword,
     wilayaCode,
@@ -64,7 +89,9 @@ export async function searchOffers(params: SearchParams) {
   }
 
   if (keyword) {
-    const pattern = `%${keyword}%`
+    // Escape LIKE special characters to prevent wildcard injection
+    const escapedKeyword = keyword.replace(/[%_\\]/g, "\\$&")
+    const pattern = `%${escapedKeyword}%`
     conditions.push(
       or(
         ilike(internshipOffer.title, pattern),

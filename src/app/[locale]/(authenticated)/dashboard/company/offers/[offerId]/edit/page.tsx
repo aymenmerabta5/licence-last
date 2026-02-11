@@ -1,7 +1,4 @@
-import { redirect } from "next/navigation"
-
-import { getLocale } from "next-intl/server"
-
+import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
 import { getOfferById } from "@/server/services/offers/get"
 import { getCompanyByUserId } from "@/server/services/companies/get"
@@ -15,18 +12,16 @@ export default async function EditOfferPage({
   const sessionUser = await requireRole(["company_admin"])
   const { offerId } = await params
 
-  const locale = await getLocale()
-
   const offer = await getOfferById(offerId)
 
   if (!offer) {
-    redirect(`/${locale}/dashboard/company/offers`)
+    return localeRedirect("/dashboard/company/offers")
   }
 
   // Verify ownership
   const company = await getCompanyByUserId(sessionUser.id)
   if (!company || offer.companyId !== company.id) {
-    redirect(`/${locale}/dashboard/company/offers`)
+    return localeRedirect("/dashboard/company/offers")
   }
 
   return (
