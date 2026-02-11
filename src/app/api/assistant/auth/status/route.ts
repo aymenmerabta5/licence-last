@@ -4,7 +4,7 @@ import Arcade from "@arcadeai/arcadejs"
 
 import { env } from "@/env"
 import { auth } from "@/lib/auth"
-import { checkRateLimit } from "@/server/services/ai/rate-limit"
+import { checkRateLimit } from "@/server/ai/rate-limit"
 
 export async function POST(req: Request) {
   let body: { toolName?: unknown }

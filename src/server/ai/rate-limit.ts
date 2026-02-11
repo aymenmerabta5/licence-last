@@ -33,9 +33,23 @@ type InMemoryBucket = {
 
 const inMemoryBuckets = new Map<string, InMemoryBucket>()
 let lastCleanupAtMs = 0
+const CLEANUP_INTERVAL_MS = 5 * 60 * 1000
+
+function cleanupStaleInMemoryBuckets(nowMs: number) {
+  if (nowMs - lastCleanupAtMs < CLEANUP_INTERVAL_MS) return
+  lastCleanupAtMs = nowMs
+
+  for (const [key, bucket] of inMemoryBuckets) {
+    if (bucket.resetAt <= nowMs) {
+      inMemoryBuckets.delete(key)
+    }
+  }
+}
 
 const inMemoryStore: RateLimitStore = {
-  async increment({ key, windowMs, windowStartMs }) {
+  async increment({ key, windowMs, windowStartMs, nowMs }) {
+    cleanupStaleInMemoryBuckets(nowMs)
+
     const bucketKey = `${key}:${windowMs}:${windowStartMs}`
     const resetAt = windowStartMs + windowMs
     const existing = inMemoryBuckets.get(bucketKey)

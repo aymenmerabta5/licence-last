@@ -11,10 +11,11 @@ import {
   getAllowedPoeModelIds,
   getDefaultPoeModelId,
   isAllowedPoeModelId,
-} from "@/server/services/ai/model"
+} from "@/server/ai/model"
 import {
   createAssistantConversation,
 } from "@/server/services/assistant/create"
+import { deleteAssistantConversation } from "@/server/services/assistant/delete"
 import { getAssistantConversationByIdForCompany } from "@/server/services/assistant/get"
 import { listAssistantConversationsByCompanyId } from "@/server/services/assistant/list"
 import { appendAssistantMessage, listAssistantMessages } from "@/server/services/assistant/messages"
@@ -117,7 +118,7 @@ export const appendAssistantMessageProcedure = companyAdminProcedureAssistant
   .input(
     z.object({
       conversationId: z.string().min(1),
-      role: z.enum(["system", "user", "assistant"]),
+      role: z.literal("user"),
       parts: z.array(z.unknown()).default([]),
     }),
   )
@@ -127,5 +128,18 @@ export const appendAssistantMessageProcedure = companyAdminProcedureAssistant
       companyId: context.companyMembership.companyId,
       role: input.role,
       parts: input.parts,
+    })
+  })
+
+export const deleteAssistantConversationProcedure = companyAdminProcedureStandard
+  .input(
+    z.object({
+      conversationId: z.string().min(1),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    return deleteAssistantConversation({
+      conversationId: input.conversationId,
+      companyId: context.companyMembership.companyId,
     })
   })

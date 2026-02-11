@@ -230,5 +230,5 @@ export function minimizeAssistantContext(context: unknown): unknown {
 }
 
 export function assistantContextToJson(context: unknown): string {
-  return JSON.stringify(minimizeAssistantContext(context), null, 2)
+  return JSON.stringify(minimizeAssistantContext(context))
 }

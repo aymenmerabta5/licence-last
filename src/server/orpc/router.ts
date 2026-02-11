@@ -56,6 +56,7 @@ import { getAdminStatsProcedure } from "./routes/stats"
 import {
   appendAssistantMessageProcedure,
   createAssistantConversationProcedure,
+  deleteAssistantConversationProcedure,
   getAssistantConversationProcedure,
   listAssistantModelsProcedure,
   listAssistantConversationsProcedure,
@@ -147,6 +148,7 @@ export const appRouter = {
     listModels: listAssistantModelsProcedure,
     listConversations: listAssistantConversationsProcedure,
     createConversation: createAssistantConversationProcedure,
+    deleteConversation: deleteAssistantConversationProcedure,
     getConversation: getAssistantConversationProcedure,
     listMessages: listAssistantMessagesProcedure,
     updateConversationModel: updateAssistantConversationModelProcedure,

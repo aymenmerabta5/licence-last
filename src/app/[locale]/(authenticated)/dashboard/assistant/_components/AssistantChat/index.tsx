@@ -77,10 +77,7 @@ export function AssistantChat() {
     () => orpc.assistant.listConversations.queryOptions({ input: { limit: 100 } }),
     [],
   )
-  const {
-    data: conversationsData,
-    isLoading: conversationsLoading,
-  } = useQuery(listConversationsQuery)
+  const { data: conversationsData, isLoading: conversationsLoading } = useQuery(listConversationsQuery)
 
   const conversations = useMemo(
     () => conversationsData?.conversations ?? [],
@@ -105,6 +102,19 @@ export function AssistantChat() {
   const updateModelMutation = useMutation(
     orpc.assistant.updateConversationModel.mutationOptions({
       onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: listConversationsQuery.queryKey })
+      },
+    }),
+  )
+
+  const deleteConversationMutation = useMutation(
+    orpc.assistant.deleteConversation.mutationOptions({
+      onSuccess: async () => {
+        // If we deleted the active conversation, select another one
+        if (selectedConversationId === activeConversationId) {
+          const remaining = conversations.filter((c) => c.id !== activeConversationId)
+          setSelectedConversationId(remaining[0]?.id ?? null)
+        }
         await queryClient.invalidateQueries({ queryKey: listConversationsQuery.queryKey })
       },
     }),
@@ -140,51 +150,67 @@ export function AssistantChat() {
 
   const activeModel = selectedConversation?.model ?? defaultModelId
 
+  const handleDeleteConversation = async (conversationId: string) => {
+    await deleteConversationMutation.mutateAsync({ conversationId })
+  }
+
+  const handleSelectConversation = (id: string) => {
+    setSelectedConversationId(id)
+  }
+
   return (
-    <div className="space-y-8">
+    <div className="flex flex-col h-[calc(100vh-8rem)] min-h-[600px]">
+      {/* Header */}
       <motion.header
         {...reveal}
         transition={{ duration: 0.6, ease }}
-        className="space-y-3"
+        className="space-y-3 mb-6"
       >
-        <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50">
-          {t("kicker")}
-        </p>
-
-        <div className="flex items-start justify-between gap-4">
-          <div className="space-y-2">
-            <h1 className="font-serif text-[clamp(2rem,4.5vw,2.75rem)] leading-none tracking-tight text-heading">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50">
+              {t("kicker")}
+            </p>
+            <h1 className="font-serif text-[clamp(1.75rem,4vw,2.5rem)] leading-none tracking-tight text-heading">
               {t.rich("title", {
                 accent: (chunks) => <span className="text-primary">{chunks}</span>,
               })}
             </h1>
-            <p className="text-sm text-muted-foreground font-light tracking-wide max-w-2xl">
-              {t("subtitle")}
-            </p>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 text-muted-foreground">
-            <Sparkles className="h-4 w-4" />
-            <span className="text-xs tracking-wide">{t("badge")}</span>
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 text-muted-foreground">
+              <Sparkles className="h-4 w-4" />
+              <span className="text-xs tracking-wide">{t("badge")}</span>
+            </div>
           </div>
         </div>
       </motion.header>
 
-      <div className="grid gap-6 lg:grid-cols-[320px,1fr]">
-        <ConversationSidebar
-          conversations={conversations}
-          selectedConversationId={activeConversationId}
-          isLoading={conversationsLoading}
-          onSelect={(id) => setSelectedConversationId(id)}
-          onCreate={() => {
-            const modelId = defaultModelId ?? (models[0]?.id ?? null)
-            if (!modelId) return
-            createConversationMutation.mutate({ model: modelId })
-          }}
-        />
+      {/* Main content */}
+      <div className="flex-1 grid gap-6 lg:grid-cols-[320px,1fr] min-h-0">
+        {/* Desktop sidebar */}
+        <div className="hidden lg:block">
+          <div className="h-full">
+            <ConversationSidebar
+              conversations={conversations}
+              selectedConversationId={activeConversationId}
+              isLoading={conversationsLoading}
+              onSelect={handleSelectConversation}
+              onCreate={() => {
+                const modelId = defaultModelId ?? (models[0]?.id ?? null)
+                if (!modelId) return
+                createConversationMutation.mutate({ model: modelId })
+              }}
+              onDelete={handleDeleteConversation}
+            />
+          </div>
+        </div>
 
-        <Card className="rounded-none border-border/60 bg-card/60 backdrop-blur supports-[backdrop-filter]:bg-card/40">
-          <div className="border-b border-border/60 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        {/* Chat area */}
+        <Card className="rounded-none border-border/60 bg-card/60 backdrop-blur supports-[backdrop-filter]:bg-card/40 flex flex-col h-full overflow-hidden">
+          {/* Chat header */}
+          <div className="border-b border-border/60 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shrink-0">
             <div className="min-w-0">
               <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-muted-foreground">
                 {t("conversation")}
@@ -200,13 +226,11 @@ export function AssistantChat() {
                   {t("model")}
                 </p>
                 <Select
-                  value={activeModel ?? null}
+                  value={activeModel ?? undefined}
                   onValueChange={(value) => {
-                    const conversationId = activeConversationId
-                    if (!conversationId) return
-                    if (!value) return
+                    if (!activeConversationId || !value) return
                     updateModelMutation.mutate({
-                      conversationId,
+                      conversationId: activeConversationId,
                       model: value,
                     })
                   }}
@@ -241,9 +265,10 @@ export function AssistantChat() {
             </div>
           </div>
 
-          <div className="p-4 sm:p-5">
+          {/* Messages thread */}
+          <div className="flex-1 overflow-hidden p-4 sm:p-5">
             {!activeConversationId || messagesLoading ? (
-              <div className="py-12 text-center text-sm text-muted-foreground">
+              <div className="h-full flex items-center justify-center text-sm text-muted-foreground">
                 {t("loadingMessages")}
               </div>
             ) : (
