@@ -9,6 +9,7 @@ import { notification } from "@/server/db/schema/notifications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { company, companyMember } from "@/server/db/schema/companies"
 import { user } from "@/server/db/schema/auth"
+import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 
 export interface ValidatePlacementInput {
   applicationId: string
@@ -41,6 +42,7 @@ export async function validatePlacement(
     .select({
       id: application.id,
       status: application.status,
+      pipelineStage: application.pipelineStage,
       studentUserId: application.studentUserId,
       offerId: application.offerId,
       offerTitle: internshipOffer.title,
@@ -111,6 +113,8 @@ export async function validatePlacement(
       .update(application)
       .set({
         status: "admin_validated",
+        pipelineStage: "accepted",
+        pipelineStageUpdatedAt: now,
         adminActionByUserId: adminUserId,
         adminActionAt: now,
       })
@@ -136,6 +140,22 @@ export async function validatePlacement(
       offerId: app.offerId,
       offerTitle: app.offerTitle,
       companyName: app.companyName,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+      stage: "accepted",
+      status: "admin_validated",
+    },
+  })
+
+  await appendTimelineEvent({
+    applicationId,
+    actorUserId: adminUserId,
+    eventType: "application_status_changed",
+    fromStage: app.pipelineStage,
+    toStage: "accepted",
+    fromStatus: app.status,
+    toStatus: "admin_validated",
+    payload: {
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
     },

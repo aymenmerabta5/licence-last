@@ -17,6 +17,13 @@ type ApplicationStatus =
 
 interface ListParams {
   status?: ApplicationStatus
+  pipelineStage?:
+    | "applied"
+    | "screening"
+    | "interview"
+    | "offer"
+    | "accepted"
+    | "rejected"
   cursor?: { createdAt: string; id: string }
   limit: number
 }
@@ -29,12 +36,16 @@ export async function listApplicationsByStudent(
   studentUserId: string,
   params: ListParams,
 ) {
-  const { status, cursor, limit } = params
+  const { status, pipelineStage, cursor, limit } = params
 
   const conditions = [eq(application.studentUserId, studentUserId)]
 
   if (status) {
     conditions.push(eq(application.status, status))
+  }
+
+  if (pipelineStage) {
+    conditions.push(eq(application.pipelineStage, pipelineStage))
   }
 
   if (cursor) {
@@ -54,6 +65,7 @@ export async function listApplicationsByStudent(
     .select({
       id: application.id,
       status: application.status,
+      pipelineStage: application.pipelineStage,
       coverLetter: application.coverLetter,
       createdAt: application.createdAt,
       offerId: internshipOffer.id,

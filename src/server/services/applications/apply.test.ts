@@ -118,6 +118,6 @@ describe("src/server/services/applications/apply", () => {
     )
 
     expect(result.applicationId).toBeDefined()
-    expect(mockInsert).toHaveBeenCalledTimes(2)
+    expect(mockInsert).toHaveBeenCalledTimes(3)
   })
 })

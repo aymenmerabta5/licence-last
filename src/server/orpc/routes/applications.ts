@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
+import { eq } from "drizzle-orm"
 
 import { authedProcedure, studentProcedure, companyAdminProcedure } from "../middleware"
 import {
@@ -15,6 +16,14 @@ import { withdrawApplication } from "@/server/services/applications/withdraw"
 import { listApplicationsByOffer } from "@/server/services/applications/list-by-offer"
 import { companyAcceptApplication } from "@/server/services/applications/company-accept"
 import { companyRefuseApplication } from "@/server/services/applications/company-refuse"
+import {
+  listApplicationTimeline,
+  updateApplicationPipelineStage,
+} from "@/server/services/applications/pipeline"
+import { db } from "@/server/db"
+import { application } from "@/server/db/schema/applications"
+import { internshipOffer } from "@/server/db/schema/internships"
+import { companyMember } from "@/server/db/schema/companies"
 
 /* ── Offer Search (any authenticated user) ── */
 
@@ -77,11 +86,21 @@ const applicationStatusSchema = z.enum([
   "withdrawn",
 ])
 
+const pipelineStageSchema = z.enum([
+  "applied",
+  "screening",
+  "interview",
+  "offer",
+  "accepted",
+  "rejected",
+])
+
 export const listByOfferProcedure = companyAdminProcedure
   .input(
     z.object({
       offerId: z.string().min(1),
       status: applicationStatusSchema.optional(),
+      pipelineStage: pipelineStageSchema.optional(),
       cursor: z.object({ createdAt: z.string(), id: z.string() }).optional(),
       limit: z.coerce.number().int().min(1).max(50).optional(),
     }),
@@ -92,6 +111,7 @@ export const listByOfferProcedure = companyAdminProcedure
       context.companyMembership.companyId,
       {
         status: input.status,
+        pipelineStage: input.pipelineStage,
         cursor: input.cursor,
         limit: input.limit,
       },
@@ -136,4 +156,71 @@ export const companyRefuseProcedure = companyAdminProcedure
           error instanceof Error ? error.message : "Failed to refuse application",
       })
     }
+  })
+
+export const updatePipelineStageProcedure = companyAdminProcedure
+  .input(
+    z.object({
+      applicationId: z.string().min(1),
+      toStage: pipelineStageSchema,
+      note: z.string().max(500).optional(),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    try {
+      return await updateApplicationPipelineStage({
+        applicationId: input.applicationId,
+        actorUserId: context.user.id,
+        companyId: context.companyMembership.companyId,
+        toStage: input.toStage,
+        note: input.note,
+      })
+    } catch (error) {
+      throw new ORPCError("BAD_REQUEST", {
+        message:
+          error instanceof Error ? error.message : "Failed to update pipeline stage",
+      })
+    }
+  })
+
+export const getTimelineProcedure = authedProcedure
+  .input(z.object({ applicationId: z.string().min(1) }))
+  .handler(async ({ input, context }) => {
+    const [row] = await db
+      .select({
+        id: application.id,
+        studentUserId: application.studentUserId,
+        companyId: internshipOffer.companyId,
+      })
+      .from(application)
+      .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
+      .where(eq(application.id, input.applicationId))
+      .limit(1)
+
+    if (!row) {
+      throw new ORPCError("NOT_FOUND", { message: "Application not found" })
+    }
+
+    const isAdmin =
+      context.user.role === "admin" || context.user.role === "super_admin"
+    const isStudentOwner =
+      context.user.role === "student" && context.user.id === row.studentUserId
+
+    let isCompanyOwner = false
+    if (context.user.role === "company_admin") {
+      const [membership] = await db
+        .select({ companyId: companyMember.companyId })
+        .from(companyMember)
+        .where(eq(companyMember.userId, context.user.id))
+        .limit(1)
+      isCompanyOwner = membership?.companyId === row.companyId
+    }
+
+    if (!isAdmin && !isStudentOwner && !isCompanyOwner) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "You do not have access to this timeline",
+      })
+    }
+
+    return listApplicationTimeline(input.applicationId)
   })

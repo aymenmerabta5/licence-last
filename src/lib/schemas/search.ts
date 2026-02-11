@@ -45,6 +45,9 @@ export const listStudentApplicationsSchema = z.object({
       "withdrawn",
     ])
     .optional(),
+  pipelineStage: z
+    .enum(["applied", "screening", "interview", "offer", "accepted", "rejected"])
+    .optional(),
   cursor: cursorSchema,
   limit: z.coerce.number().int().min(1).max(50).default(12),
 })

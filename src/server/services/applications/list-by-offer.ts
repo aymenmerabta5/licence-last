@@ -20,6 +20,13 @@ type ApplicationStatus =
 
 interface ListParams {
   status?: ApplicationStatus
+  pipelineStage?:
+    | "applied"
+    | "screening"
+    | "interview"
+    | "offer"
+    | "accepted"
+    | "rejected"
   cursor?: { createdAt: string; id: string }
   limit?: number
 }
@@ -27,6 +34,13 @@ interface ListParams {
 export interface ApplicationWithStudent {
   id: string
   status: ApplicationStatus
+  pipelineStage:
+    | "applied"
+    | "screening"
+    | "interview"
+    | "offer"
+    | "accepted"
+    | "rejected"
   coverLetter: string | null
   createdAt: Date
   companyActionAt: Date | null
@@ -69,7 +83,7 @@ export async function listApplicationsByOffer(
   companyId: string,
   params: ListParams = {},
 ): Promise<ListApplicationsByOfferResult> {
-  const { status, cursor, limit = 20 } = params
+  const { status, pipelineStage, cursor, limit = 20 } = params
 
   const [offer] = await db
     .select({ id: internshipOffer.id, companyId: internshipOffer.companyId })
@@ -98,6 +112,10 @@ export async function listApplicationsByOffer(
     conditions.push(eq(application.status, status))
   }
 
+  if (pipelineStage) {
+    conditions.push(eq(application.pipelineStage, pipelineStage))
+  }
+
   if (cursor) {
     const cursorDate = new Date(cursor.createdAt)
     conditions.push(
@@ -115,6 +133,7 @@ export async function listApplicationsByOffer(
     .select({
       id: application.id,
       status: application.status,
+      pipelineStage: application.pipelineStage,
       coverLetter: application.coverLetter,
       createdAt: application.createdAt,
       companyActionAt: application.companyActionAt,
@@ -183,6 +202,7 @@ export async function listApplicationsByOffer(
     return {
       id: app.id,
       status: app.status as ApplicationStatus,
+      pipelineStage: app.pipelineStage,
       coverLetter: app.coverLetter,
       createdAt: app.createdAt,
       companyActionAt: app.companyActionAt,

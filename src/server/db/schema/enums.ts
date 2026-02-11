@@ -47,6 +47,15 @@ export const applicationStatusEnum = pgEnum("application_status", [
   "withdrawn",
 ])
 
+export const applicationPipelineStageEnum = pgEnum("application_pipeline_stage", [
+  "applied",
+  "screening",
+  "interview",
+  "offer",
+  "accepted",
+  "rejected",
+])
+
 export const documentTypeEnum = pgEnum("document_type", [
   "agreement",
   "certificate",
@@ -69,4 +78,28 @@ export const documentStatusEnum = pgEnum("document_status", [
   "pending",
   "generated",
   "failed",
+])
+
+export const proficiencyLevelEnum = pgEnum("proficiency_level", [
+  "a1",
+  "a2",
+  "b1",
+  "b2",
+  "c1",
+  "c2",
+  "native",
+])
+
+export const companyReportStatusEnum = pgEnum("company_report_status", [
+  "open",
+  "reviewing",
+  "resolved",
+  "dismissed",
+])
+
+export const companyReportSeverityEnum = pgEnum("company_report_severity", [
+  "low",
+  "medium",
+  "high",
+  "critical",
 ])

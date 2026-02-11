@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { redirect } from "next/navigation"
 import { getLocale, getTranslations } from "next-intl/server"
 
@@ -5,11 +6,75 @@ import { requireRole } from "@/lib/auth-guards"
 import { StudentDashboard } from "@/app/[locale]/(authenticated)/_components/StudentDashboard"
 import { RecruiterDashboard } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard"
 import { AdminDashboard } from "@/app/[locale]/(authenticated)/_components/AdminDashboard"
+import { Skeleton } from "@/components/ui/skeleton"
 import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
 import { getStudentProfile } from "@/server/services/students/get-profile"
 import { listApplicationsByStudent } from "@/server/services/applications/list-by-student"
 import { searchOffers } from "@/server/services/offers/search"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
+
+type DashboardUser = Awaited<ReturnType<typeof requireRole>>
+
+function StudentDashboardFallback() {
+  return (
+    <div className="space-y-8">
+      <Skeleton className="h-32 rounded-2xl" />
+
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <Skeleton className="h-28 rounded-2xl" />
+        <Skeleton className="h-28 rounded-2xl" />
+        <Skeleton className="h-28 rounded-2xl" />
+      </div>
+
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <div className="space-y-6 lg:col-span-8">
+          <Skeleton className="h-64 rounded-2xl" />
+          <Skeleton className="h-64 rounded-2xl" />
+        </div>
+        <div className="space-y-6 lg:col-span-4">
+          <Skeleton className="h-64 rounded-2xl" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+async function StudentDashboardSection({ user }: { user: DashboardUser }) {
+  const [stats, recentAppsResult, profile, recommendedResult] = await Promise.all([
+    getStudentDashboardStats(user.id),
+    listApplicationsByStudent(user.id, { limit: 5 }),
+    getStudentProfile(user.id),
+    searchOffers({ limit: 3 }),
+  ])
+
+  const profileCompleteness = calculateProfileCompleteness({
+    bio: profile?.profile.bio,
+    phone: profile?.profile.phone,
+    wilayaCode: profile?.profile.wilayaCode,
+    githubUrl: profile?.profile.githubUrl,
+    portfolioUrl: profile?.profile.portfolioUrl,
+    studentNumber: profile?.profile.studentNumber,
+    department: profile?.profile.department,
+    skillsCount: profile?.skills.length ?? 0,
+  })
+
+  const studentData = {
+    stats,
+    recentApplications: recentAppsResult.applications.map((app) => ({
+      ...app,
+      createdAt: app.createdAt.toISOString(),
+    })),
+    recommendedOffers: recommendedResult.offers.map((offer) => ({
+      ...offer,
+      closesAt: offer.closesAt?.toISOString() ?? null,
+      createdAt: offer.createdAt.toISOString(),
+    })),
+    skills: profile?.skills ?? [],
+    profileCompleteness,
+  }
+
+  return <StudentDashboard user={user} data={studentData} />
+}
 
 export default async function DashboardPage() {
   const [user, locale, t] = await Promise.all([
@@ -37,43 +102,6 @@ export default async function DashboardPage() {
 
   const subtitle = t(roleSubtitleKey[user.role as keyof typeof roleSubtitleKey] || "student.subtitle")
 
-  // Fetch student-specific data in parallel
-  let studentData = undefined
-  if (user.role === "student") {
-    const [stats, recentAppsResult, profile, recommendedResult] = await Promise.all([
-      getStudentDashboardStats(user.id),
-      listApplicationsByStudent(user.id, { limit: 5 }),
-      getStudentProfile(user.id),
-      searchOffers({ limit: 3 }),
-    ])
-
-    const profileCompleteness = calculateProfileCompleteness({
-      bio: profile?.profile.bio,
-      phone: profile?.profile.phone,
-      wilayaCode: profile?.profile.wilayaCode,
-      githubUrl: profile?.profile.githubUrl,
-      portfolioUrl: profile?.profile.portfolioUrl,
-      studentNumber: profile?.profile.studentNumber,
-      department: profile?.profile.department,
-      skillsCount: profile?.skills.length ?? 0,
-    })
-
-    studentData = {
-      stats,
-      recentApplications: recentAppsResult.applications.map((app) => ({
-        ...app,
-        createdAt: app.createdAt.toISOString(),
-      })),
-      recommendedOffers: recommendedResult.offers.map((offer) => ({
-        ...offer,
-        closesAt: offer.closesAt?.toISOString() ?? null,
-        createdAt: offer.createdAt.toISOString(),
-      })),
-      skills: profile?.skills ?? [],
-      profileCompleteness,
-    }
-  }
-
   return (
     <div className="max-w-7xl mx-auto space-y-10">
       {/* ── Page Header ── */}
@@ -90,7 +118,11 @@ export default async function DashboardPage() {
       </header>
 
       {/* ── Role-Specific Content ── */}
-      {user.role === "student" && <StudentDashboard user={user} data={studentData!} />}
+      {user.role === "student" && (
+        <Suspense fallback={<StudentDashboardFallback />}>
+          <StudentDashboardSection user={user} />
+        </Suspense>
+      )}
       {user.role === "company_admin" && <RecruiterDashboard user={user} />}
       {(user.role === "admin" || user.role === "super_admin") && <AdminDashboard user={user} />}
     </div>

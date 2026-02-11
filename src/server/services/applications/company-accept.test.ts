@@ -118,6 +118,6 @@ describe("src/server/services/applications/company-accept", () => {
 
     expect(result.success).toBe(true)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    expect(mockInsert).toHaveBeenCalledTimes(1)
+    expect(mockInsert).toHaveBeenCalledTimes(3)
   })
 })

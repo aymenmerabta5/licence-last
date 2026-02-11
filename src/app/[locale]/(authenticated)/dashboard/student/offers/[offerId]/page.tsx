@@ -37,6 +37,7 @@ export default async function StudentOfferDetailPage({
     <OfferDetailClient
       offer={offer}
       existingApplication={existingApplication}
+      studentUserId={user.id}
     />
   )
 }

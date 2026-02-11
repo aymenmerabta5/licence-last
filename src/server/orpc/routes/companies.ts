@@ -12,10 +12,25 @@ import { createCompany } from "@/server/services/companies/create"
 import { updateCompany } from "@/server/services/companies/update"
 import { approveCompany } from "@/server/services/companies/approve"
 import { rejectCompany } from "@/server/services/companies/reject"
+import {
+  companyQualityFeedbackSchema,
+  companyReportSchema,
+  resolveCompanyReportSchema,
+} from "@/lib/schemas/company"
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
 import { eq } from "drizzle-orm"
 import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
+import {
+  getCompanyTrustIndex,
+  listCompanyTrustIndices,
+} from "@/server/services/companies/trust-index"
+import {
+  listCompanyReports,
+  resolveCompanyReport,
+  submitCompanyQualityFeedback,
+  submitCompanyReport,
+} from "@/server/services/companies/trust-actions"
 
 /* ── Reads ── */
 
@@ -82,6 +97,76 @@ export const getCompanyByIdProcedure = authedProcedure
       // representativeName, rejectionReason
     }
   })
+
+export const getCompanyTrustIndexProcedure = authedProcedure
+  .input(z.object({ companyId: z.string().min(1) }))
+  .handler(async ({ input }) => {
+    try {
+      return await getCompanyTrustIndex(input.companyId)
+    } catch (error) {
+      if (error instanceof Error && error.message === "Company not found") {
+        throw new ORPCError("NOT_FOUND", { message: error.message })
+      }
+      throw error
+    }
+  })
+
+export const listCompanyTrustIndicesProcedure = adminProcedure
+  .input(z.object({ limit: z.coerce.number().int().min(1).max(200).optional() }).optional())
+  .handler(async ({ input }) => listCompanyTrustIndices(input?.limit ?? 50))
+
+export const submitCompanyQualityFeedbackProcedure = authedProcedure
+  .input(companyQualityFeedbackSchema)
+  .handler(async ({ input, context }) => {
+    if (context.user.role !== "student") {
+      throw new ORPCError("FORBIDDEN", {
+        message: "Only students can submit quality feedback",
+      })
+    }
+
+    try {
+      return await submitCompanyQualityFeedback({
+        studentUserId: context.user.id,
+        ...input,
+      })
+    } catch (error) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: error instanceof Error ? error.message : "Failed to submit feedback",
+      })
+    }
+  })
+
+export const submitCompanyReportProcedure = authedProcedure
+  .input(companyReportSchema)
+  .handler(async ({ input, context }) =>
+    submitCompanyReport({
+      reporterUserId: context.user.id,
+      ...input,
+    }),
+  )
+
+export const listCompanyReportsProcedure = adminProcedure
+  .input(
+    z
+      .object({
+        companyId: z.string().min(1).optional(),
+        status: z.enum(["open", "reviewing", "resolved", "dismissed"]).optional(),
+        limit: z.coerce.number().int().min(1).max(200).optional(),
+      })
+      .optional(),
+  )
+  .handler(async ({ input }) => listCompanyReports(input))
+
+export const resolveCompanyReportProcedure = adminProcedure
+  .input(resolveCompanyReportSchema)
+  .handler(async ({ input, context }) =>
+    resolveCompanyReport({
+      reportId: input.reportId,
+      adminUserId: context.user.id,
+      status: input.status,
+      resolutionNote: input.resolutionNote,
+    }),
+  )
 
 /* ── Mutations ── */
 

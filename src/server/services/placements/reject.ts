@@ -8,6 +8,7 @@ import { notification } from "@/server/db/schema/notifications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { company, companyMember } from "@/server/db/schema/companies"
 import { user } from "@/server/db/schema/auth"
+import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 
 export interface RejectPlacementInput {
   applicationId: string
@@ -26,6 +27,7 @@ export async function rejectPlacement(
     .select({
       id: application.id,
       status: application.status,
+      pipelineStage: application.pipelineStage,
       studentUserId: application.studentUserId,
       offerId: application.offerId,
       offerTitle: internshipOffer.title,
@@ -65,6 +67,8 @@ export async function rejectPlacement(
     .update(application)
     .set({
       status: "admin_rejected",
+      pipelineStage: "rejected",
+      pipelineStageUpdatedAt: now,
       adminActionByUserId: adminUserId,
       adminActionAt: now,
       adminNote: reason ?? null,
@@ -82,7 +86,20 @@ export async function rejectPlacement(
       offerTitle: app.offerTitle,
       companyName: app.companyName,
       reason: reason ?? null,
+      stage: "rejected",
+      status: "admin_rejected",
     },
+  })
+
+  await appendTimelineEvent({
+    applicationId,
+    actorUserId: adminUserId,
+    eventType: "application_status_changed",
+    fromStage: app.pipelineStage,
+    toStage: "rejected",
+    fromStatus: app.status,
+    toStatus: "admin_rejected",
+    payload: { reason: reason ?? null },
   })
 
   // Get company members to notify

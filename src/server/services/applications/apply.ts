@@ -7,6 +7,7 @@ import { internshipOffer } from "@/server/db/schema/internships"
 import { application } from "@/server/db/schema/applications"
 import { companyMember } from "@/server/db/schema/companies"
 import { notification } from "@/server/db/schema/notifications"
+import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 
 /**
  * Apply to an internship offer.
@@ -76,6 +77,17 @@ export async function applyToOffer(
     studentUserId,
     coverLetter: coverLetter ?? null,
     status: "applied",
+    pipelineStage: "applied",
+    pipelineStageUpdatedAt: new Date(),
+  })
+
+  await appendTimelineEvent({
+    applicationId,
+    actorUserId: studentUserId,
+    eventType: "application_created",
+    toStage: "applied",
+    toStatus: "applied",
+    payload: { offerId },
   })
 
   // 5. Notify all company members
