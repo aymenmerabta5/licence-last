@@ -27,31 +27,53 @@ src/
 │   │   ├── layout.tsx      (locale providers)
 │   │   ├── page.tsx
 │   │   ├── _components/
-│   │   └── (auth)/         (auth route group)
+│   │   ├── (auth)/         (auth route group)
+│   │   ├── (authenticated)/ (protected routes)
+│   │   └── onboarding/     (onboarding flows)
 │   ├── api/
 │   │   ├── auth/[...all]/  (Better Auth)
-│   │   └── rpc/[...rest]/  (oRPC catch-all handler)
+│   │   ├── rpc/[...rest]/  (oRPC catch-all)
+│   │   └── assistant/      (AI assistant endpoints)
 │   ├── layout.tsx          (root layout — fonts, html)
 │   ├── globals.css
 │   └── page.tsx            (redirects to /en)
 ├── components/             (shared UI components)
+│   ├── ui/                 (shadcn/ui primitives)
+│   ├── form-fields/        (shared form components)
+│   └── [shared].tsx
 ├── lib/
 │   ├── schemas/            (client-safe Zod schemas)
 │   ├── auth.ts             (Better Auth server config)
 │   ├── auth-client.ts      (Better Auth client)
 │   └── auth-guards.ts      (RSC layout guards)
+├── hooks/                  (shared hooks)
 ├── server/
 │   ├── db/                 (Drizzle schema + seed)
-│   ├── email/              (email sending)
-│   ├── services/           (Model — pure business logic)
-│   │   ├── companies/      (get, list, create, approve, reject)
-│   │   └── users/          (get-me, promote)
-│   └── orpc/               (Controller — oRPC router)
-│       ├── middleware.ts    (auth chain)
-│       ├── router.ts       (all routes combined)
-│       ├── client.ts       (oRPC client + TanStack Query utils)
-│       └── routes/         (companies.ts, users.ts)
-├── i18n/                   (routing.ts, request.ts)
+│   ├── orpc/               (Controller — oRPC router)
+│   │   ├── middleware.ts   (auth chain)
+│   │   ├── rate-limited-procedures.ts
+│   │   ├── router.ts
+│   │   ├── client.ts
+│   │   └── routes/         (12 route files)
+│   ├── services/           (Model — 17 service domains)
+│   │   ├── ai/             (AI integration)
+│   │   ├── applications/
+│   │   ├── assistant/      (AI assistant)
+│   │   ├── companies/
+│   │   ├── documents/      (PDF generation)
+│   │   ├── matching/       (Student-offer matching)
+│   │   ├── notifications/
+│   │   ├── offers/
+│   │   ├── placements/
+│   │   ├── students/
+│   │   ├── uploads/        (S3 file storage)
+│   │   └── users/
+│   ├── actions/            (Server Actions)
+│   ├── storage/            (S3 client)
+│   ├── email/              (Email service)
+│   ├── caching/            (Redis caching)
+│   └── mcp/                (Model Context Protocol)
+├── i18n/                   (next-intl config)
 ├── messages/               (en.json, fr.json, ar.json)
 ├── env.ts                  (T3 Env validation)
 └── proxy.ts                (middleware)
@@ -117,11 +139,25 @@ export const createCompanyProcedure = companyAdminProcedure
 ```
 
 **Middleware chain** (`src/server/orpc/middleware.ts`):
-- `publicProcedure` — no auth
-- `authedProcedure` — requires session
-- `adminProcedure` — admin or super_admin
-- `superAdminProcedure` — super_admin only
-- `companyAdminProcedure` — company_admin + injects membership
+```
+publicProcedure              — No auth required
+├── authedProcedure          — Valid session required
+│   ├── adminProcedure       — admin or super_admin role
+│   ├── superAdminProcedure  — super_admin only
+│   ├── companyAdminProcedure — company_admin + injects companyMembership
+│   └── studentProcedure     — student role + injects studentProfile
+```
+
+**Rate-Limited Procedures** (`src/server/orpc/rate-limited-procedures.ts`):
+```typescript
+publicProcedureStrict        // 5 req/min (auth endpoints)
+publicProcedureStandard      // 100 req/min (public reads)
+authedProcedureStandard      // 100 req/min (general API)
+authedProcedureGenerous      // 300 req/min (listings, searches)
+authedProcedureStrict        // 5 req/min (sensitive ops)
+adminProcedureGenerous       // 300 req/min (bulk admin ops)
+assistantProcedureLimited    // 20 req/min (AI calls)
+```
 
 #### Client Usage
 
@@ -148,7 +184,11 @@ const company = await getCompanyByUserId(session.user.id)
 
 Client-safe Zod schemas live in `src/lib/schemas/` (NO `server-only`):
 - `auth.ts` — login, signup, reset password schemas
-- `company.ts` — company onboarding schema
+- `company.ts` — company onboarding and profile schemas
+- `student.ts` — student profile (education, experience, skills)
+- `offer.ts` — internship offer creation schemas
+- `search.ts` — search and filter schemas
+- `matching.ts` — matching criteria schemas
 
 Used by both TanStack Form (client validation) and oRPC procedures (server validation).
 
@@ -227,13 +267,27 @@ export function Component() {
 ### Translation Structure
 ```
 src/messages/
-├── metadata    → title, description
-├── nav         → discover, forStudents, forRecruiters, about, getStarted
-├── hero        → volume, headline, description1, description2, cta
-├── features    → studentSpace, companyPortal, adminDashboard
-├── marquee     → items[]
-├── stats       → students, companies, universities, placementRate
-└── language    → switcher labels
+├── metadata         → page titles, descriptions
+├── nav              → navigation labels
+├── hero             → headlines, CTAs
+├── features         → feature cards
+├── marquee          → scrolling items
+├── stats            → statistics labels
+├── language         → language switcher
+├── theme            → theme toggle
+├── notFound         → 404 page
+├── auth             → login, signup, reset-password, validation
+├── onboarding       → company, student setup
+└── dashboard        → extensive nested structure
+    ├── nav          → sidebar navigation
+    ├── assistant    → AI assistant interface
+    ├── notifications → notification center
+    ├── company      → offers, candidates, profile
+    ├── student      → profile, applications
+    ├── explore      → internship search
+    ├── offerDetail  → application flow
+    ├── applications → tracking
+    └── admin        → validations, stats
 ```
 
 ---
@@ -431,3 +485,66 @@ describe("login schema", () => {
   })
 })
 ```
+
+---
+
+## Additional Server Architecture
+
+### Rate Limiting
+
+Redis-based rate limiting with graceful fallback when Redis is unavailable:
+
+**`src/server/caching/redis-ratelimiter.ts`:**
+```typescript
+export function getRateLimiter(): RedisRatelimiter | null
+export function isRateLimitingEnabled(): boolean
+```
+
+### MCP (Model Context Protocol)
+
+Development-only MCP server for AI tool testing at `src/server/mcp/`:
+- Guards for environment safety checks
+- Confirmation flows for sensitive operations
+- Mock ledger system for testing
+
+**Run:** `bun run mcp:dev`
+
+### File Storage (S3)
+
+**`src/server/storage/s3.ts`:**
+```typescript
+export async function uploadFile(key, data, contentType): Promise<string>
+export async function deleteFile(key): Promise<void>
+```
+
+### Email System
+
+**`src/server/email/sendEmail.ts`** uses React Email + Resend:
+```typescript
+export async function sendEmail({ to, subject, react }): Promise<void>
+```
+
+### Document Generation
+
+PDF generation using `@react-pdf/renderer`:
+- Internship agreements
+- Completion certificates
+
+### AI/Assistant Features
+
+**Services:** `src/server/services/assistant/`
+- AI-powered chat interface
+- Tool calling with authorization
+- Conversation persistence
+- Rate limited via `assistantProcedureLimited`
+
+### Matching & Trust Systems
+
+**Matching** (`src/server/services/matching/`):
+- Student-offer match scores
+- Skill gap analysis
+- Readiness history tracking
+
+**Trust** (`src/server/services/companies/trust-index.ts`):
+- Company trust scores
+- Trust reports and feedback
