@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useMemo } from "react"
 import * as motion from "motion/react-client"
 import { useLocale, useTranslations } from "next-intl"
 import { DefaultChatTransport } from "ai"
@@ -97,12 +97,13 @@ export function OfferDetailClient({
 
   const aiActiveRef = useRef(false)
 
-  const aiTransport = useState(
+  const aiTransport = useMemo(
     () =>
       new DefaultChatTransport({
         api: "/api/assistant/chat",
       }),
-  )[0]
+    [],
+  )
 
   const {
     status: aiStatus,

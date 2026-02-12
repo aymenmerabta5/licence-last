@@ -7,6 +7,51 @@ import { companyQualityFeedback, companyReport } from "@/server/db/schema/trust"
 import { placement } from "@/server/db/schema/placements"
 import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
+import { companyMember } from "@/server/db/schema/companies"
+
+async function hasRelationshipWithCompany(
+  userId: string,
+  companyId: string,
+): Promise<boolean> {
+  const [asApplicant] = await db
+    .select({ id: application.id })
+    .from(application)
+    .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
+    .where(
+      and(
+        eq(application.studentUserId, userId),
+        eq(internshipOffer.companyId, companyId),
+      ),
+    )
+    .limit(1)
+
+  if (asApplicant) return true
+
+  const [asPlacement] = await db
+    .select({ id: placement.id })
+    .from(placement)
+    .innerJoin(application, eq(placement.applicationId, application.id))
+    .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
+    .where(
+      and(
+        eq(application.studentUserId, userId),
+        eq(internshipOffer.companyId, companyId),
+      ),
+    )
+    .limit(1)
+
+  if (asPlacement) return true
+
+  const [asCompanyMember] = await db
+    .select({ companyId: companyMember.companyId })
+    .from(companyMember)
+    .where(
+      and(eq(companyMember.userId, userId), eq(companyMember.companyId, companyId)),
+    )
+    .limit(1)
+
+  return !!asCompanyMember
+}
 
 export async function submitCompanyQualityFeedback(input: {
   studentUserId: string
@@ -73,6 +118,17 @@ export async function submitCompanyReport(input: {
   severity: "low" | "medium" | "high" | "critical"
   description: string
 }) {
+  const hasRelationship = await hasRelationshipWithCompany(
+    input.reporterUserId,
+    input.companyId,
+  )
+
+  if (!hasRelationship) {
+    throw new Error(
+      "You can only report companies you have applied to, worked with, or are a member of",
+    )
+  }
+
   const reportId = crypto.randomUUID()
   await db.insert(companyReport).values({
     id: reportId,

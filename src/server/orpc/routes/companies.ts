@@ -1,3 +1,5 @@
+import "server-only"
+
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
 import { updateTag } from "next/cache"
@@ -6,21 +8,21 @@ import {
   authedProcedure,
   adminProcedure,
   companyAdminProcedure,
+  isAdminRole,
 } from "../middleware"
+import { companyStatusSchema, companyReportStatusSchema } from "@/lib/schemas/enums"
 import { listCompanies } from "@/server/services/companies/list"
 import { getCompanyById } from "@/server/services/companies/get"
 import { createCompany } from "@/server/services/companies/create"
 import { updateCompany } from "@/server/services/companies/update"
 import { approveCompany } from "@/server/services/companies/approve"
 import { rejectCompany } from "@/server/services/companies/reject"
+import { getCompanyMembership } from "@/server/services/companies/membership"
 import {
   companyQualityFeedbackSchema,
   companyReportSchema,
   resolveCompanyReportSchema,
 } from "@/lib/schemas/company"
-import { db } from "@/server/db"
-import { companyMember } from "@/server/db/schema/companies"
-import { eq } from "drizzle-orm"
 import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
 import {
   getCompanyTrustIndex,
@@ -40,16 +42,20 @@ export const listCompaniesProcedure = authedProcedure
   .input(
     z
       .object({
-        status: z
-          .enum(["pending", "approved", "rejected", "suspended"])
-          .optional(),
+        status: companyStatusSchema.optional(),
+        limit: z.coerce.number().int().min(1).max(200).optional(),
+        offset: z.coerce.number().int().min(0).optional(),
       })
       .optional(),
   )
   .handler(async ({ input, context }) => {
-    const isAdmin = context.user.role === "admin" || context.user.role === "super_admin"
+    const isAdmin = isAdminRole(context.user.role)
     const effectiveStatus = isAdmin ? input?.status : "approved"
-    return listCompanies(effectiveStatus)
+    return listCompanies({
+      status: effectiveStatus,
+      limit: input?.limit,
+      offset: input?.offset,
+    })
   })
 
 export const getCompanyByIdProcedure = authedProcedure
@@ -58,21 +64,14 @@ export const getCompanyByIdProcedure = authedProcedure
     const company = await getCompanyById(input.companyId)
     if (!company) return null
 
-    const isAdmin =
-      context.user.role === "admin" || context.user.role === "super_admin"
+    const isAdmin = isAdminRole(context.user.role)
 
-    // Check if user is a member of this company
     let isOwner = false
     if (context.user.role === "company_admin") {
-      const [membership] = await db
-        .select()
-        .from(companyMember)
-        .where(eq(companyMember.userId, context.user.id))
-        .limit(1)
+      const membership = await getCompanyMembership(context.user.id)
       isOwner = membership?.companyId === company.id
     }
 
-    // Admins and owners see full data
     if (isAdmin || isOwner) {
       return company
     }
@@ -152,7 +151,7 @@ export const listCompanyReportsProcedure = adminProcedure
     z
       .object({
         companyId: z.string().min(1).optional(),
-        status: z.enum(["open", "reviewing", "resolved", "dismissed"]).optional(),
+        status: companyReportStatusSchema.optional(),
         limit: z.coerce.number().int().min(1).max(200).optional(),
       })
       .optional(),

@@ -38,6 +38,7 @@ export const internshipOffer = pgTable(
     index("internship_offer_companyId_idx").on(table.companyId),
     index("internship_offer_status_idx").on(table.status),
     index("internship_offer_wilayaCode_idx").on(table.wilayaCode),
+    index("internship_offer_createdAt_idx").on(table.createdAt),
   ],
 )
 

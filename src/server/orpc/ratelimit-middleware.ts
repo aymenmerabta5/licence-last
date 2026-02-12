@@ -4,6 +4,10 @@ import { createRatelimitMiddleware } from "@orpc/experimental-ratelimit"
 import { getRateLimiter } from "@/server/caching/redis-ratelimiter"
 import { headers } from "next/headers"
 
+interface ContextWithUser {
+  user?: { id: string }
+}
+
 export interface RateLimitConfig {
   /** Maximum number of requests allowed in the window */
   maxRequests: number
@@ -83,7 +87,7 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
       const headersList = await headers()
       const ip = extractClientIp(headersList)
 
-      const userId = (context as { user?: { id: string } }).user?.id
+      const userId = (context as ContextWithUser).user?.id
 
       const keyGenerator = config.keyGenerator || defaultKeyGenerator
       const key = keyGenerator({ userId, ip })

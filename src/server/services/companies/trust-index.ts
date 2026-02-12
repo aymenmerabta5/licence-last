@@ -193,13 +193,188 @@ export async function listCompanyTrustIndices(limit = 50) {
     .orderBy(desc(company.createdAt))
     .limit(limit)
 
-  const rows = await Promise.all(
-    companies.map(async (entry) => ({
-      companyName: entry.name,
-      companyStatus: entry.status,
-      ...(await getCompanyTrustIndex(entry.id)),
-    })),
-  )
+  if (companies.length === 0) {
+    return []
+  }
+
+  const companyIds = companies.map((c) => c.id)
+
+  const [offers, feedbackRows, reports] = await Promise.all([
+    db
+      .select({
+        companyId: internshipOffer.companyId,
+        offerId: internshipOffer.id,
+      })
+      .from(internshipOffer)
+      .where(inArray(internshipOffer.companyId, companyIds)),
+    db
+      .select({
+        companyId: companyQualityFeedback.companyId,
+        rating: companyQualityFeedback.rating,
+        wouldRecommend: companyQualityFeedback.wouldRecommend,
+      })
+      .from(companyQualityFeedback)
+      .where(inArray(companyQualityFeedback.companyId, companyIds)),
+    db
+      .select({
+        companyId: companyReport.companyId,
+        severity: companyReport.severity,
+        status: companyReport.status,
+      })
+      .from(companyReport)
+      .where(inArray(companyReport.companyId, companyIds)),
+  ])
+
+  const offersByCompany = new Map<string, string[]>()
+  for (const offer of offers) {
+    const existing = offersByCompany.get(offer.companyId) ?? []
+    existing.push(offer.offerId)
+    offersByCompany.set(offer.companyId, existing)
+  }
+
+  const feedbackByCompany = new Map<
+    string,
+    { rating: number; wouldRecommend: boolean }[]
+  >()
+  for (const fb of feedbackRows) {
+    const existing = feedbackByCompany.get(fb.companyId) ?? []
+    existing.push({ rating: fb.rating, wouldRecommend: fb.wouldRecommend })
+    feedbackByCompany.set(fb.companyId, existing)
+  }
+
+  const reportsByCompany = new Map<
+    string,
+    { severity: string; status: string }[]
+  >()
+  for (const report of reports) {
+    const existing = reportsByCompany.get(report.companyId) ?? []
+    existing.push({ severity: report.severity, status: report.status })
+    reportsByCompany.set(report.companyId, existing)
+  }
+
+  const allOfferIds = offers.map((o) => o.offerId)
+
+  const applicationCounts = await db
+    .select({
+      offerId: application.offerId,
+      status: application.status,
+      count: count(),
+    })
+    .from(application)
+    .where(inArray(application.offerId, allOfferIds))
+    .groupBy(application.offerId, application.status)
+
+  const appCountsByOffer = new Map<string, Map<string, number>>()
+  for (const row of applicationCounts) {
+    const existing = appCountsByOffer.get(row.offerId) ?? new Map()
+    existing.set(row.status, row.count)
+    appCountsByOffer.set(row.offerId, existing)
+  }
+
+  function computeTrustIndex(companyId: string): CompanyTrustIndex {
+    const alerts: string[] = []
+    let responseRate = 100
+    let completionRate = 100
+
+    const companyOffers = offersByCompany.get(companyId) ?? []
+
+    if (companyOffers.length > 0) {
+      let totalApplications = 0
+      let respondedApplications = 0
+      let acceptedApplications = 0
+      let validatedApplications = 0
+
+      for (const offerId of companyOffers) {
+        const counts = appCountsByOffer.get(offerId)
+        if (!counts) continue
+
+        for (const [status, cnt] of counts) {
+          totalApplications += cnt
+          if (
+            ["company_accepted", "company_refused", "admin_validated", "admin_rejected"].includes(
+              status,
+            )
+          ) {
+            respondedApplications += cnt
+          }
+          if (["company_accepted", "admin_validated"].includes(status)) {
+            acceptedApplications += cnt
+          }
+          if (status === "admin_validated") {
+            validatedApplications += cnt
+          }
+        }
+      }
+
+      responseRate =
+        totalApplications > 0
+          ? clamp((respondedApplications / totalApplications) * 100)
+          : 100
+      completionRate =
+        acceptedApplications > 0
+          ? clamp((validatedApplications / acceptedApplications) * 100)
+          : 100
+    } else {
+      alerts.push("No published pipeline data yet.")
+    }
+
+    const companyFeedback = feedbackByCompany.get(companyId) ?? []
+    const avgRating =
+      companyFeedback.length > 0
+        ? companyFeedback.reduce((sum, fb) => sum + fb.rating, 0) / companyFeedback.length
+        : 0
+    const recommendRate =
+      companyFeedback.length > 0
+        ? companyFeedback.filter((fb) => fb.wouldRecommend).length / companyFeedback.length
+        : 0
+    const feedbackScore =
+      companyFeedback.length > 0
+        ? clamp((avgRating / 5) * 70 + recommendRate * 30)
+        : 60
+
+    const companyReports = reportsByCompany.get(companyId) ?? []
+    const unresolvedReports = companyReports.filter(
+      (r) => r.status === "open" || r.status === "reviewing",
+    )
+    const reportPenalty = unresolvedReports.reduce((sum, r) => {
+      const weight = REPORT_SEVERITY_WEIGHT[r.severity] ?? 8
+      return sum + weight
+    }, 0)
+
+    if (unresolvedReports.length >= 3) {
+      alerts.push("Multiple unresolved reports are open.")
+    }
+    if (responseRate < 45) {
+      alerts.push("Response rate is below platform expectations.")
+    }
+
+    const trustScore = clamp(
+      responseRate * 0.3 +
+        completionRate * 0.3 +
+        feedbackScore * 0.3 -
+        Math.min(40, reportPenalty) +
+        10,
+    )
+
+    return {
+      companyId,
+      trustScore,
+      tier: toTier(trustScore),
+      factors: {
+        responseRate,
+        completionRate,
+        feedbackScore,
+        reportPenalty: Math.min(100, reportPenalty),
+      },
+      alerts,
+    }
+  }
+
+  const rows = companies.map((entry) => ({
+    companyName: entry.name,
+    companyStatus: entry.status,
+    ...computeTrustIndex(entry.id),
+  }))
 
   return rows.sort((a, b) => b.trustScore - a.trustScore)
 }

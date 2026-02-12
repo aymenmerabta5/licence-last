@@ -7,6 +7,7 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import { ThemeProvider } from "next-themes"
 
 import { QueryProvider } from "@/components/providers/QueryProvider"
+import { Toaster } from "@/components/ui/sonner"
 import { routing } from "@/i18n/routing"
 
 const dmSans = DM_Sans({
@@ -82,6 +83,7 @@ export default async function LocaleLayout({
               {children}
             </NextIntlClientProvider>
           </QueryProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

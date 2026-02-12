@@ -29,11 +29,16 @@ export function SkillsManager() {
     [],
   )
 
-  const { data: allSkills = [], isLoading: isLoadingSkills } = useQuery(
+  const { data: allSkillsResult, isLoading: isLoadingSkills } = useQuery(
     skillsQueryOptions,
   )
   const { data: profileData, isLoading: isLoadingProfile } = useQuery(
     profileQueryOptions,
+  )
+
+  const allSkills = useMemo(
+    () => allSkillsResult?.skills ?? [],
+    [allSkillsResult?.skills],
   )
 
   const initialSkillIds = useMemo(() => {

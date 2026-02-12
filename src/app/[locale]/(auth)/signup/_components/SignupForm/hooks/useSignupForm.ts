@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl"
 
 import { authClient } from "@/lib/auth-client"
 import { createSignupSchema } from "@/lib/schemas/auth"
+import { mapZodErrors } from "@/lib/schemas/map-errors"
 
 import type { SignupFormValues, SignupRole } from "../types"
 
@@ -24,31 +25,20 @@ export function useSignupForm(role: SignupRole) {
     } as SignupFormValues,
     validators: {
       onSubmit: ({ value }) => {
-        const result = signupSchema.safeParse(value)
+        const result = mapZodErrors(signupSchema.safeParse(value))
+        if (result) return result
+
         const fieldErrors: Record<string, string> = {}
 
-        if (!result.success) {
-          for (const issue of result.error.issues) {
-            const path = issue.path[0]
-            if (path !== undefined && !fieldErrors[String(path)]) {
-              fieldErrors[String(path)] = issue.message
-            }
-          }
+        if (value.password !== value.confirmPassword) {
+          fieldErrors.confirmPassword = t("passwordMismatch")
         }
 
-        if (!fieldErrors.password && !fieldErrors.confirmPassword) {
-          if (value.password !== value.confirmPassword) {
-            fieldErrors.confirmPassword = t("passwordMismatch")
-          }
-        }
-
-        if (!fieldErrors.agreeToTerms && !value.agreeToTerms) {
+        if (!value.agreeToTerms) {
           fieldErrors.agreeToTerms = t("termsRequired")
         }
 
-        return Object.keys(fieldErrors).length > 0
-          ? { fields: fieldErrors }
-          : undefined
+        return Object.keys(fieldErrors).length > 0 ? { fields: fieldErrors } : undefined
       },
     },
     onSubmit: async ({ value }) => {

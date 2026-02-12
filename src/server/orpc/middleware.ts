@@ -9,6 +9,13 @@ import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
 import { studentProfile } from "@/server/db/schema/students"
 
+/**
+ * Check if a user role has admin privileges (admin or super_admin).
+ */
+export function isAdminRole(role: string | null | undefined): boolean {
+  return role === "admin" || role === "super_admin"
+}
+
 /** Public — no auth required. */
 export const publicProcedure = os
 
@@ -28,7 +35,7 @@ export const authedProcedure = os.use(async ({ next }) => {
 /** Admin — requires admin or super_admin role. */
 export const adminProcedure = authedProcedure.use(
   async ({ context, next }) => {
-    if (context.user.role !== "admin" && context.user.role !== "super_admin") {
+    if (!isAdminRole(context.user.role)) {
       throw new ORPCError("FORBIDDEN", {
         message: "Admin access required",
       })

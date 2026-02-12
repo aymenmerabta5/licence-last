@@ -1,3 +1,5 @@
+import "server-only"
+
 import { adminProcedure } from "../middleware"
 import { getAdminStats } from "@/server/services/stats/get-admin-stats"
 

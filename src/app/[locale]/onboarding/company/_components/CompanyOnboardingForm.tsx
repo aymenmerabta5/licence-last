@@ -3,22 +3,20 @@
 import { useMemo, useState } from "react"
 import * as motion from "motion/react-client"
 import { useForm } from "@tanstack/react-form"
-import { AlertCircle, ArrowRight, Building2, FileText, Globe, Loader2, MapPin } from "lucide-react"
+import { ArrowRight, Building2, FileText, Globe, Loader2, MapPin } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import { SelectField, TextAreaField, TextField } from "@/components/form-fields"
+import { ServerError } from "@/components/ServerError"
 import { useRouter } from "@/i18n/routing"
 import { errorMessage } from "@/lib/schemas/auth"
+import { mapZodErrors } from "@/lib/schemas/map-errors"
+import { getErrorMessage } from "@/lib/error-message"
+import { reveal, ease } from "@/lib/animations"
 import { createCompanyOnboardingSchema } from "@/lib/schemas/company"
-import { WILAYAS } from "@/lib/wilayas"
+import { WILAYA_OPTIONS } from "@/lib/wilayas"
 import { orpcClient } from "@/server/orpc/client"
-
-const reveal = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-}
-const ease = [0.4, 0, 0.2, 1] as const
 
 export function CompanyOnboardingForm() {
   const t = useTranslations("onboarding.company")
@@ -37,21 +35,7 @@ export function CompanyOnboardingForm() {
       address: "",
     },
     validators: {
-      onSubmit: ({ value }) => {
-        const result = schema.safeParse(value)
-        const fieldErrors: Record<string, string> = {}
-
-        if (!result.success) {
-          for (const issue of result.error.issues) {
-            const path = issue.path[0]
-            if (path !== undefined && !fieldErrors[String(path)]) {
-              fieldErrors[String(path)] = issue.message
-            }
-          }
-        }
-
-        return Object.keys(fieldErrors).length > 0 ? { fields: fieldErrors } : undefined
-      },
+      onSubmit: ({ value }) => mapZodErrors(schema.safeParse(value)),
     },
     onSubmit: async ({ value }) => {
       setServerError("")
@@ -67,7 +51,7 @@ export function CompanyOnboardingForm() {
 
         router.push("/dashboard/company/pending")
       } catch (err) {
-        setServerError(err instanceof Error ? err.message : t("error"))
+        setServerError(getErrorMessage(err, t("error")))
       }
     },
   })
@@ -89,16 +73,7 @@ export function CompanyOnboardingForm() {
         </p>
       </motion.div>
 
-      {serverError && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          className="flex items-start gap-2.5 p-3.5 text-sm text-destructive bg-destructive/5 border border-destructive/15"
-        >
-          <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
-          <span>{serverError}</span>
-        </motion.div>
-      )}
+      <ServerError message={serverError} />
 
       <motion.div
         {...reveal}
@@ -169,10 +144,7 @@ export function CompanyOnboardingForm() {
               onChange={(value) => field.handleChange(Number(value))}
               onBlur={field.handleBlur}
               placeholder={t("wilayaPlaceholder")}
-              options={WILAYAS.map((name, i) => ({
-                value: i + 1,
-                label: `${String(i + 1).padStart(2, "0")} - ${name}`,
-              }))}
+              options={WILAYA_OPTIONS}
               error={
                 field.state.meta.errors.length > 0
                   ? errorMessage(field.state.meta.errors[0])

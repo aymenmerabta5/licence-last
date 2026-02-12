@@ -9,16 +9,32 @@ import { db } from "@/server/db"
 import { skillTag } from "@/server/db/schema/skills"
 import { CACHE_TAGS, CACHE_PROFILES } from "@/lib/cache"
 
-/**
- * List all skill tags, optionally filtered by category.
- * Cached for 1 hour (reference data changes infrequently).
- */
-export async function listSkillTags(category?: string) {
+export interface ListSkillTagsInput {
+  category?: string
+  limit?: number
+  offset?: number
+}
+
+export interface ListSkillTagsResult {
+  skills: {
+    id: string
+    name: string
+    slug: string
+    category: string | null
+  }[]
+  hasMore: boolean
+}
+
+export async function listSkillTags(input?: ListSkillTagsInput): Promise<ListSkillTagsResult> {
   CACHE_PROFILES.REFERENCE()
   cacheTag(CACHE_TAGS.SKILLS)
-  if (category) {
-    cacheTag(`${CACHE_TAGS.SKILLS}-${category}`)
+  if (input?.category) {
+    cacheTag(`${CACHE_TAGS.SKILLS}-${input.category}`)
   }
+
+  const limit = Math.min(input?.limit ?? 100, 500)
+  const offset = input?.offset ?? 0
+
   const query = db
     .select({
       id: skillTag.id,
@@ -28,10 +44,13 @@ export async function listSkillTags(category?: string) {
     })
     .from(skillTag)
     .orderBy(asc(skillTag.name))
+    .limit(limit + 1)
+    .offset(offset)
 
-  if (category) {
-    return query.where(eq(skillTag.category, category))
+  const rows = input?.category ? await query.where(eq(skillTag.category, input.category)) : await query
+
+  return {
+    skills: rows.slice(0, limit),
+    hasMore: rows.length > limit,
   }
-
-  return query
 }

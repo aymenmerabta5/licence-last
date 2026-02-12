@@ -97,7 +97,8 @@ export function ExploreClient() {
   }, [keyword])
 
   // Fetch skills for filter panel
-  const { data: skills = [] } = useQuery(orpc.skills.list.queryOptions())
+  const { data: skillsResult } = useQuery(orpc.skills.list.queryOptions())
+  const skills = skillsResult?.skills ?? []
 
   const {
     data,

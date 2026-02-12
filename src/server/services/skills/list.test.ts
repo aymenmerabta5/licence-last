@@ -7,15 +7,20 @@ interface SkillTag {
   category: string | null
 }
 
-// Mock the db module
-const mockOrderBy = mock<() => Promise<SkillTag[]>>(() => Promise.resolve([]))
 const mockWhere = mock<() => Promise<SkillTag[]>>(() => Promise.resolve([]))
+
+const createMockQuery = () => {
+  const query = Object.assign(Promise.resolve([] as SkillTag[]), {
+    where: mockWhere,
+  })
+  return query
+}
+
+const mockOffset = mock(() => createMockQuery())
+const mockLimit = mock(() => ({ offset: mockOffset, where: mockWhere }))
+const mockOrderBy = mock(() => ({ limit: mockLimit, where: mockWhere }))
 const mockFrom = mock(() => ({ orderBy: mockOrderBy }))
 const mockSelect = mock(() => ({ from: mockFrom }))
-
-mockOrderBy.mockReturnValue(
-  Object.assign(Promise.resolve([] as SkillTag[]), { where: mockWhere }),
-)
 
 mock.module("@/server/db", () => ({
   db: {
@@ -29,41 +34,43 @@ describe("src/server/services/skills/list", () => {
     mockFrom.mockClear()
     mockOrderBy.mockClear()
     mockWhere.mockClear()
+    mockLimit.mockClear()
+    mockOffset.mockClear()
 
     mockSelect.mockReturnValue({ from: mockFrom })
     mockFrom.mockReturnValue({ orderBy: mockOrderBy })
-    mockOrderBy.mockReturnValue(
-      Object.assign(Promise.resolve([] as SkillTag[]), { where: mockWhere }),
-    )
+    mockOrderBy.mockReturnValue({ limit: mockLimit, where: mockWhere })
+    mockLimit.mockReturnValue({ offset: mockOffset, where: mockWhere })
+    mockOffset.mockReturnValue(createMockQuery())
   })
 
   test("should return all skills when no category filter", async () => {
-    const mockSkills: SkillTag[] = [
+    const skills: SkillTag[] = [
       { id: "1", name: "React", slug: "react", category: "frontend" },
       { id: "2", name: "Node.js", slug: "node-js", category: "backend" },
     ]
-    mockOrderBy.mockReturnValue(
-      Object.assign(Promise.resolve(mockSkills), { where: mockWhere }),
-    )
+    const mockQuery = Object.assign(Promise.resolve(skills), { where: mockWhere })
+    mockOffset.mockReturnValue(mockQuery)
 
     const { listSkillTags } = await import("./list")
     const result = await listSkillTags()
 
-    expect(result).toEqual(mockSkills)
+    expect(result.skills).toEqual(skills)
+    expect(result.hasMore).toBe(false)
     expect(mockSelect).toHaveBeenCalled()
     expect(mockFrom).toHaveBeenCalled()
   })
 
   test("should filter by category when provided", async () => {
-    const mockSkills: SkillTag[] = [
+    const skills: SkillTag[] = [
       { id: "1", name: "React", slug: "react", category: "frontend" },
     ]
-    mockWhere.mockResolvedValue(mockSkills)
+    mockWhere.mockResolvedValue(skills)
 
     const { listSkillTags } = await import("./list")
-    const result = await listSkillTags("frontend")
+    const result = await listSkillTags({ category: "frontend" })
 
-    expect(result).toEqual(mockSkills)
+    expect(result.skills).toEqual(skills)
     expect(mockWhere).toHaveBeenCalled()
   })
 })

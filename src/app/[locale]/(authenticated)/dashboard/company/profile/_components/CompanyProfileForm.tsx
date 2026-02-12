@@ -4,8 +4,6 @@ import { useMemo, useState } from "react"
 import * as motion from "motion/react-client"
 import { useForm } from "@tanstack/react-form"
 import {
-  AlertCircle,
-  CheckCircle2,
   FileText,
   Globe,
   ImagePlus,
@@ -20,16 +18,15 @@ import { useTranslations } from "next-intl"
 import { SelectField, TextAreaField, TextField } from "@/components/form-fields"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { ServerError } from "@/components/ServerError"
+import { SuccessMessage } from "@/components/SuccessMessage"
 import { errorMessage } from "@/lib/schemas/auth"
+import { mapZodErrors } from "@/lib/schemas/map-errors"
+import { getErrorMessage } from "@/lib/error-message"
+import { reveal, ease } from "@/lib/animations"
 import { createCompanyProfileSchema } from "@/lib/schemas/offer"
-import { WILAYAS } from "@/lib/wilayas"
+import { WILAYA_OPTIONS } from "@/lib/wilayas"
 import { orpcClient } from "@/server/orpc/client"
-
-const reveal = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-}
-const ease = [0.4, 0, 0.2, 1] as const
 
 interface CompanyProfileFormProps {
   initialData: {
@@ -67,21 +64,7 @@ export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
       address: initialData.address,
     },
     validators: {
-      onSubmit: ({ value }) => {
-        const result = schema.safeParse(value)
-        const fieldErrors: Record<string, string> = {}
-
-        if (!result.success) {
-          for (const issue of result.error.issues) {
-            const path = issue.path[0]
-            if (path !== undefined && !fieldErrors[String(path)]) {
-              fieldErrors[String(path)] = issue.message
-            }
-          }
-        }
-
-        return Object.keys(fieldErrors).length > 0 ? { fields: fieldErrors } : undefined
-      },
+      onSubmit: ({ value }) => mapZodErrors(schema.safeParse(value)),
     },
     onSubmit: async ({ value }) => {
       setServerError("")
@@ -101,7 +84,7 @@ export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
 
         setSuccessMessage(t("success"))
       } catch (err) {
-        setServerError(err instanceof Error ? err.message : t("error"))
+        setServerError(getErrorMessage(err, t("error")))
       }
     },
   })
@@ -118,7 +101,7 @@ export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
       setLogoUrl(result.url)
       form.setFieldValue("logoUrl", result.url)
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : t("error"))
+      setServerError(getErrorMessage(err, t("error")))
     } finally {
       setIsUploading(false)
     }
@@ -132,27 +115,8 @@ export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
       }}
       className="space-y-7"
     >
-      {serverError && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          className="flex items-start gap-2.5 p-3.5 text-sm text-destructive bg-destructive/5 border border-destructive/15"
-        >
-          <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
-          <span>{serverError}</span>
-        </motion.div>
-      )}
-
-      {successMessage && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          className="flex items-start gap-2.5 p-3.5 text-sm text-green-700 bg-green-50 border border-green-200 dark:text-green-400 dark:bg-green-950/20 dark:border-green-800"
-        >
-          <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" />
-          <span>{successMessage}</span>
-        </motion.div>
-      )}
+      <ServerError message={serverError} />
+      <SuccessMessage message={successMessage} />
 
       <motion.div
         {...reveal}
@@ -302,10 +266,7 @@ export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
               onChange={(value) => field.handleChange(Number(value))}
               onBlur={field.handleBlur}
               placeholder={t("wilayaPlaceholder")}
-              options={WILAYAS.map((name, i) => ({
-                value: i + 1,
-                label: `${String(i + 1).padStart(2, "0")} - ${name}`,
-              }))}
+              options={WILAYA_OPTIONS}
               error={
                 field.state.meta.errors.length > 0
                   ? errorMessage(field.state.meta.errors[0])

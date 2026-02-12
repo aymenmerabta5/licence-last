@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query"
 
 import { useRouter } from "@/i18n/routing"
 import { createStudentProfileSchema } from "@/lib/schemas/student"
+import { mapZodErrors } from "@/lib/schemas/map-errors"
+import { getErrorMessage } from "@/lib/error-message"
 import { orpcClient, orpc } from "@/server/orpc/client"
 
 import type { StudentOnboardingFormValues } from "../types"
@@ -16,7 +18,11 @@ export function useOnboardingForm() {
 
   const [serverError, setServerError] = useState("")
 
-  const { data: skillTags = [] } = useQuery(orpc.skills.list.queryOptions())
+  const { data: skillTagsResult } = useQuery(orpc.skills.list.queryOptions())
+  const skillTags = useMemo(
+    () => skillTagsResult?.skills ?? [],
+    [skillTagsResult?.skills],
+  )
 
   const schema = useMemo(() => createStudentProfileSchema(tv), [tv])
 
@@ -34,23 +40,7 @@ export function useOnboardingForm() {
       skillTagIds: [] as string[],
     } as StudentOnboardingFormValues,
     validators: {
-      onSubmit: ({ value }) => {
-        const result = schema.safeParse(value)
-        const fieldErrors: Record<string, string> = {}
-
-        if (!result.success) {
-          for (const issue of result.error.issues) {
-            const path = issue.path[0]
-            if (path !== undefined && !fieldErrors[String(path)]) {
-              fieldErrors[String(path)] = issue.message
-            }
-          }
-        }
-
-        return Object.keys(fieldErrors).length > 0
-          ? { fields: fieldErrors }
-          : undefined
-      },
+      onSubmit: ({ value }) => mapZodErrors(schema.safeParse(value)),
     },
     onSubmit: async ({ value }) => {
       setServerError("")
@@ -71,9 +61,7 @@ export function useOnboardingForm() {
 
         router.push("/dashboard")
       } catch (err) {
-        setServerError(
-          err instanceof Error ? err.message : t("error")
-        )
+        setServerError(getErrorMessage(err, t("error")))
       }
     },
   })

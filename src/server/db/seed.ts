@@ -231,9 +231,9 @@ async function main() {
         password: hashedPassword,
       })
 
-      console.info(`Seeded super_admin: ${adminEmail}`)
+      console.info("Seeded super_admin user")
     } else {
-      console.info(`Super admin already exists: ${adminEmail}`)
+      console.info("Super admin user already exists")
     }
   }
 

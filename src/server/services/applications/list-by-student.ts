@@ -10,24 +10,11 @@ import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { company } from "@/server/db/schema/companies"
 import { CACHE_TAGS } from "@/lib/cache"
-
-type ApplicationStatus =
-  | "applied"
-  | "company_accepted"
-  | "company_refused"
-  | "admin_validated"
-  | "admin_rejected"
-  | "withdrawn"
+import type { ApplicationStatus, PipelineStage } from "@/lib/schemas/enums"
 
 interface ListParams {
   status?: ApplicationStatus
-  pipelineStage?:
-    | "applied"
-    | "screening"
-    | "interview"
-    | "offer"
-    | "accepted"
-    | "rejected"
+  pipelineStage?: PipelineStage
   cursor?: { createdAt: string; id: string }
   limit: number
 }

@@ -1,8 +1,11 @@
 import { pgTable, text, timestamp, index, jsonb } from "drizzle-orm/pg-core"
+import type { UIMessage } from "ai"
 
 import { assistantMessageRoleEnum } from "./enums"
 import { user } from "./auth"
 import { company } from "./companies"
+
+export type AssistantMessageParts = UIMessage["parts"]
 
 export const assistantConversation = pgTable(
   "assistant_conversation",
@@ -39,7 +42,7 @@ export const assistantMessage = pgTable(
     role: assistantMessageRoleEnum("role").notNull(),
     // Plain-text projection for quick rendering/search; the full UI parts are persisted in `parts`.
     text: text("text"),
-    parts: jsonb("parts").$type<unknown[]>().notNull(),
+    parts: jsonb("parts").$type<AssistantMessageParts>().notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [

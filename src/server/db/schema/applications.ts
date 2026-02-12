@@ -14,6 +14,12 @@ import {
 import { internshipOffer } from "./internships"
 import { user } from "./auth"
 
+export interface TimelineEventPayload {
+  note?: string
+  reason?: string
+  [key: string]: unknown
+}
+
 export const application = pgTable(
   "application",
   {
@@ -61,6 +67,12 @@ export const application = pgTable(
     index("application_studentUserId_idx").on(table.studentUserId),
     index("application_status_idx").on(table.status),
     index("application_pipelineStage_idx").on(table.pipelineStage),
+    index("application_createdAt_idx").on(table.createdAt),
+    index("application_offerId_status_idx").on(table.offerId, table.status),
+    index("application_studentUserId_status_idx").on(
+      table.studentUserId,
+      table.status,
+    ),
   ],
 )
 
@@ -79,7 +91,7 @@ export const applicationTimelineEvent = pgTable(
     toStage: applicationPipelineStageEnum("to_stage"),
     fromStatus: applicationStatusEnum("from_status"),
     toStatus: applicationStatusEnum("to_status"),
-    payload: jsonb("payload").default({}).notNull(),
+    payload: jsonb("payload").$type<TimelineEventPayload>().default({}).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
