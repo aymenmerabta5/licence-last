@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm"
 import postgres from "postgres"
 import { drizzle } from "drizzle-orm/postgres-js"
 
+import { logger } from "@/server/logging"
 import * as schema from "./schema"
 import { university, universityDomain } from "./schema/universities"
 import { user, account } from "./schema/auth"
@@ -44,7 +45,7 @@ async function seedUniversity(
 
   if (!existing) {
     await db.insert(university).values({ id: universityId, name: entry.name })
-    console.info(`Seeded university: ${entry.name}`)
+    logger.info({ event: "university_seeded", name: entry.name })
   }
 
   for (const domain of entry.domains) {
@@ -61,7 +62,7 @@ async function seedUniversity(
         domain,
         status: "approved",
       })
-      console.info(`  Approved domain: ${domain}`)
+      logger.info({ event: "domain_approved", domain })
       continue
     }
 
@@ -73,7 +74,7 @@ async function seedUniversity(
           universityId,
         })
         .where(eq(universityDomain.id, existingDomain.id))
-      console.info(`  Updated domain to approved: ${domain}`)
+      logger.info({ event: "domain_updated", domain, status: "approved" })
     }
   }
 }
@@ -165,7 +166,7 @@ async function seedSkillTags(db: ReturnType<typeof drizzle>) {
         slug,
         category: entry.category,
       })
-      console.info(`Seeded skill tag: ${entry.name}`)
+      logger.info({ event: "skill_tag_seeded", name: entry.name })
     }
   }
 }
@@ -231,9 +232,9 @@ async function main() {
         password: hashedPassword,
       })
 
-      console.info("Seeded super_admin user")
+      logger.info({ event: "admin_seeded", role: "super_admin" })
     } else {
-      console.info("Super admin user already exists")
+      logger.info({ event: "admin_exists", role: "super_admin" })
     }
   }
 
@@ -244,10 +245,10 @@ async function main() {
 if (import.meta.main) {
   main()
     .then(() => {
-      console.info("Seed complete")
+      logger.info({ event: "seed_complete" })
     })
     .catch((err) => {
-      console.error(err)
+      logger.error({ err, event: "seed_failed" }, "Database seeding failed")
       process.exitCode = 1
     })
 }

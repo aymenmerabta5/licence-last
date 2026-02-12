@@ -5,6 +5,7 @@ import { eq, and } from "drizzle-orm"
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
+import { ApplicationServiceError } from "./errors"
 
 /**
  * Withdraw an application.
@@ -26,11 +27,11 @@ export async function withdrawApplication(
     .limit(1)
 
   if (!app) {
-    throw new Error("Application not found")
+    throw new ApplicationServiceError("APPLICATION_NOT_FOUND", "Application not found")
   }
 
   if (app.status !== "applied") {
-    throw new Error("Only pending applications can be withdrawn")
+    throw new ApplicationServiceError("APPLICATION_INVALID_STATE", "Only pending applications can be withdrawn")
   }
 
   await db

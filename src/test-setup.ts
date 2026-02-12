@@ -4,6 +4,18 @@ import { Window } from "happy-dom"
 if (!process.env.NEXT_PUBLIC_BETTER_AUTH_URL) {
   process.env.NEXT_PUBLIC_BETTER_AUTH_URL = "http://localhost:3000"
 }
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = "postgresql://localhost:5432/test"
+}
+if (!process.env.BETTER_AUTH_SECRET) {
+  process.env.BETTER_AUTH_SECRET = "test-secret-key-for-testing"
+}
+if (!process.env.POE_API_KEY) {
+  process.env.POE_API_KEY = "test-poe-api-key"
+}
+if (!process.env.ARCADE_API_KEY) {
+  process.env.ARCADE_API_KEY = "test-arcade-api-key"
+}
 
 // Initialize happy-dom before any imports
 const window = new Window({
@@ -85,8 +97,38 @@ mock.module("next/cache", () => ({
   cacheTag: () => {},
   revalidateTag: () => {},
   revalidatePath: () => {},
+  updateTag: () => {},
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   unstable_cache: (fn: (...args: any[]) => any) => fn,
+}))
+
+// Logger imports read validated env at module load time; stub them in tests.
+mock.module("@/server/logging", () => {
+  const createMockLogger = () => ({
+    fatal: () => {},
+    error: () => {},
+    warn: () => {},
+    info: () => {},
+    debug: () => {},
+    trace: () => {},
+    child: () => createMockLogger(),
+  })
+
+  const logger = createMockLogger()
+  return {
+    logger,
+    createLogger: () => createMockLogger(),
+    createModuleLogger: () => createMockLogger(),
+  }
+})
+
+// Mock next-intl/server for page component tests
+mock.module("next-intl/server", () => ({
+  getTranslations: mock(() => Promise.resolve((key: string) => key)),
+  getLocale: mock(() => Promise.resolve("en")),
+  getMessages: mock(() => Promise.resolve({})),
+  getTimeZone: mock(() => Promise.resolve("UTC")),
+  getNow: mock(() => Promise.resolve(new Date())),
 }))
 
 expect.extend(matchers)

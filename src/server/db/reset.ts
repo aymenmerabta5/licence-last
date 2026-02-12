@@ -2,6 +2,8 @@ import postgres from "postgres"
 import { drizzle } from "drizzle-orm/postgres-js"
 import { sql } from "drizzle-orm"
 
+import { logger } from "@/server/logging"
+
 async function resetDatabase() {
   const databaseUrl = process.env.DATABASE_URL
   if (!databaseUrl) {
@@ -22,7 +24,7 @@ async function resetDatabase() {
       await db.execute(
         sql`DROP TYPE IF EXISTS "${sql.raw(type.typname)}" CASCADE;`,
       )
-      console.info(`Dropped type: ${type.typname}`)
+      logger.info({ event: "type_dropped", type: type.typname })
     }
 
     const tablesResult = await db.execute<{ table_name: string }>(sql`
@@ -36,12 +38,12 @@ async function resetDatabase() {
       await db.execute(
         sql`DROP TABLE IF EXISTS "${sql.raw(table.table_name)}" CASCADE;`,
       )
-      console.info(`Dropped table: ${table.table_name}`)
+      logger.info({ event: "table_dropped", table: table.table_name })
     }
 
-    console.info("Database reset successfully: all tables and types dropped")
+    logger.info({ event: "reset_complete" }, "Database reset successfully")
   } catch (error) {
-    console.error("Error resetting database:", error)
+    logger.error({ err: error, event: "reset_error" }, "Error resetting database")
     throw error
   } finally {
     await client.end({ timeout: 5 })
@@ -52,10 +54,10 @@ async function resetDatabase() {
 if (import.meta.main) {
   resetDatabase()
     .then(() => {
-      console.info("Reset complete")
+      logger.info({ event: "reset_complete" })
     })
     .catch((err) => {
-      console.error(err)
+      logger.error({ err, event: "reset_failed" }, "Database reset failed")
       process.exitCode = 1
     })
 }

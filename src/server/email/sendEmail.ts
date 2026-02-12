@@ -5,6 +5,7 @@
  */
 import "server-only"
 
+import { logger } from "@/server/logging"
 import { env } from "@/env";
 import { Resend } from "resend";
 import { render } from "@react-email/render";
@@ -24,7 +25,7 @@ export const sendEmail = async <T>(
 ) => {
   try {
     if (!env.RESEND_API_KEY) {
-      console.warn("RESEND_API_KEY not configured — skipping email delivery")
+      logger.warn({ event: "email_config_missing", provider: "resend" }, "RESEND_API_KEY not configured — skipping email delivery")
       return { success: false, error: "Email not configured" }
     }
     const resend = new Resend(env.RESEND_API_KEY)
@@ -54,7 +55,7 @@ export const sendEmail = async <T>(
     });
 
     if (error) {
-      console.error("Resend API error:", error.message)
+      logger.error({ err: error, event: "email_send_failed", provider: "resend", to, subject }, "Resend API error")
       throw new Error(`Email sending failed: ${error.message}`);
     }
 
@@ -62,14 +63,14 @@ export const sendEmail = async <T>(
       throw new Error("Email sending failed: No response data");
     }
 
-    console.info("Email sent successfully")
+    logger.info({ event: "email_sent", provider: "resend", to, subject, messageId: data?.id }, "Email sent successfully")
     return {
       success: true,
       code: "EMAIL_SENT",
       message: "Email sent successfully.",
     };
   } catch (error) {
-    console.error("Error sending email:", error instanceof Error ? error.message : "Unknown error")
+    logger.error({ err: error, event: "email_send_error", provider: "resend", to, subject }, "Error sending email")
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",

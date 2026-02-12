@@ -8,6 +8,8 @@ import { mapZodErrors } from "@/lib/schemas/map-errors"
 
 import type { SignupFormValues, SignupRole } from "../types"
 
+export type SignupFormApi = ReturnType<typeof useSignupForm>["form"]
+
 export function useSignupForm(role: SignupRole) {
   const t = useTranslations("auth.validation")
   const [serverError, setServerError] = useState("")

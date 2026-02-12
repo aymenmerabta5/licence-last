@@ -24,7 +24,14 @@ import {
   listApplicationTimeline,
   updateApplicationPipelineStage,
 } from "@/server/services/applications/pipeline"
+import { isApplicationServiceError } from "@/server/services/applications/errors"
 import { db } from "@/server/db"
+import {
+  getApplyToOfferStatus,
+  getWithdrawStatus,
+  getCompanyActionStatus,
+  createApplicationORPCError,
+} from "./applications.error-mapping"
 import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { companyMember } from "@/server/db/schema/companies"
@@ -60,9 +67,11 @@ export const applyToOfferProcedure = studentProcedure
 
       return result
     } catch (error) {
-      throw new ORPCError("BAD_REQUEST", {
-        message:
-          error instanceof Error ? error.message : "Failed to apply",
+      if (isApplicationServiceError(error)) {
+        throw createApplicationORPCError(error, getApplyToOfferStatus(error.code))
+      }
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "Failed to apply",
       })
     }
   })
@@ -85,9 +94,11 @@ export const withdrawApplicationProcedure = studentProcedure
 
       return result
     } catch (error) {
-      throw new ORPCError("BAD_REQUEST", {
-        message:
-          error instanceof Error ? error.message : "Failed to withdraw",
+      if (isApplicationServiceError(error)) {
+        throw createApplicationORPCError(error, getWithdrawStatus(error.code))
+      }
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "Failed to withdraw",
       })
     }
   })
@@ -132,9 +143,11 @@ export const companyAcceptProcedure = companyAdminProcedure
 
       return result
     } catch (error) {
-      throw new ORPCError("BAD_REQUEST", {
-        message:
-          error instanceof Error ? error.message : "Failed to accept application",
+      if (isApplicationServiceError(error)) {
+        throw createApplicationORPCError(error, getCompanyActionStatus(error.code))
+      }
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "Failed to accept application",
       })
     }
   })
@@ -160,9 +173,11 @@ export const companyRefuseProcedure = companyAdminProcedure
 
       return result
     } catch (error) {
-      throw new ORPCError("BAD_REQUEST", {
-        message:
-          error instanceof Error ? error.message : "Failed to refuse application",
+      if (isApplicationServiceError(error)) {
+        throw createApplicationORPCError(error, getCompanyActionStatus(error.code))
+      }
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "Failed to refuse application",
       })
     }
   })
