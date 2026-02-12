@@ -1,5 +1,6 @@
 "use client"
 
+import { useMemo } from "react"
 import { RefreshCw, Sparkles, User } from "lucide-react"
 import { useTranslations } from "next-intl"
 
@@ -20,22 +21,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value)
 }
 
-function formatRelativeTime(date: Date): string {
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffMins = Math.floor(diffMs / 60000)
-  const diffHours = Math.floor(diffMs / 3600000)
-  const diffDays = Math.floor(diffMs / 86400000)
-
-  if (diffMins < 1) return "just now"
-  if (diffMins < 60) return `${diffMins}m ago`
-  if (diffHours < 24) return `${diffHours}h ago`
-  if (diffDays < 7) return `${diffDays}d ago`
-  return date.toLocaleDateString()
-}
-
 interface MessageBubbleProps {
   message: UIMessage
+  createdAt?: string | Date
   authByTool: Record<string, AuthStatus>
   onCheckAuth: (toolName: string) => void
   onRegenerateFrom: (messageId: string) => void
@@ -44,6 +32,7 @@ interface MessageBubbleProps {
 
 export function MessageBubble({
   message,
+  createdAt,
   authByTool,
   onCheckAuth,
   onRegenerateFrom,
@@ -52,6 +41,24 @@ export function MessageBubble({
   const t = useTranslations("dashboard.assistant")
   const isUser = message.role === "user"
   const isAssistant = message.role === "assistant"
+  const relativeTimestamp = useMemo(() => {
+    if (!createdAt) return null
+
+    const date = typeof createdAt === "string" ? new Date(createdAt) : createdAt
+    if (Number.isNaN(date.getTime())) return null
+
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffMins = Math.floor(diffMs / 60000)
+    const diffHours = Math.floor(diffMs / 3600000)
+    const diffDays = Math.floor(diffMs / 86400000)
+
+    if (diffMins < 1) return t("relativeNow")
+    if (diffMins < 60) return t("relativeMinutesAgo", { count: diffMins })
+    if (diffHours < 24) return t("relativeHoursAgo", { count: diffHours })
+    if (diffDays < 7) return t("relativeDaysAgo", { count: diffDays })
+    return date.toLocaleDateString()
+  }, [createdAt, t])
 
   // Get text content from message parts
   const textContent = message.parts
@@ -75,14 +82,14 @@ export function MessageBubble({
         <div
           className={cn(
             "absolute -top-3 flex items-center gap-1.5",
-            isUser ? "right-0" : "left-0"
+            isUser ? "end-0" : "start-0"
           )}
         >
           {isAssistant && (
             <div className="flex items-center gap-1.5 px-2 py-0.5 bg-muted/50 rounded-none">
               <Sparkles className="h-3 w-3 text-primary" />
               <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                AI
+                {t("assistantActor")}
               </span>
             </div>
           )}
@@ -90,7 +97,7 @@ export function MessageBubble({
             <div className="flex items-center gap-1.5 px-2 py-0.5 bg-primary rounded-none">
               <User className="h-3 w-3 text-primary-foreground" />
               <span className="text-[10px] font-medium text-primary-foreground uppercase tracking-wider">
-                You
+                {t("userActor")}
               </span>
             </div>
           )}
@@ -169,14 +176,16 @@ export function MessageBubble({
         </div>
 
         {/* Timestamp */}
-        <p
-          className={cn(
-            "mt-1 text-[10px] text-muted-foreground/60 opacity-0 group-hover:opacity-100 transition-opacity",
-            isUser ? "text-end" : "text-start"
-          )}
-        >
-          {formatRelativeTime(new Date())}
-        </p>
+        {relativeTimestamp && (
+          <p
+            className={cn(
+              "mt-1 text-[10px] text-muted-foreground/60 opacity-0 group-hover:opacity-100 transition-opacity",
+              isUser ? "text-end" : "text-start"
+            )}
+          >
+            {relativeTimestamp}
+          </p>
+        )}
       </div>
     </div>
   )

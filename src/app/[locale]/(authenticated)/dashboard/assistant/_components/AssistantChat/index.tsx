@@ -129,6 +129,15 @@ export function AssistantChat() {
 
   const persistedMessages = useMemo(() => messagesData?.messages ?? [], [messagesData])
   const initialMessages = useMemo(() => toChatMessages(persistedMessages), [persistedMessages])
+  const messageCreatedAtById = useMemo<Record<string, string | Date | undefined>>(() => {
+    const createdAtById: Record<string, string | Date | undefined> = {}
+
+    for (const message of persistedMessages) {
+      createdAtById[message.id] = message.createdAt
+    }
+
+    return createdAtById
+  }, [persistedMessages])
 
   useEffect(() => {
     if (conversationsLoading || modelsLoading) return
@@ -276,6 +285,7 @@ export function AssistantChat() {
                 key={activeConversationId}
                 conversationId={activeConversationId}
                 initialMessages={initialMessages}
+                messageCreatedAtById={messageCreatedAtById}
               />
             )}
           </div>

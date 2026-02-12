@@ -15,7 +15,15 @@ export const AUTH_PATHS = ["/login", "/signup", "/reset-password"]
  * e.g. /en/dashboard -> /dashboard, /fr/login -> /login
  */
 function stripLocale(pathname: string): string {
-  return pathname.replace(/^\/(en|fr|ar)/, "")
+  return pathname.replace(/^\/(en|fr|ar)(?=\/|$)/, "")
+}
+
+function matchesPath(path: string, base: string): boolean {
+  if (path === base) return true
+  if (!path.startsWith(base)) return false
+
+  const nextChar = path.charAt(base.length)
+  return nextChar === "/" || nextChar === "?" || nextChar === "#"
 }
 
 /**
@@ -23,7 +31,7 @@ function stripLocale(pathname: string): string {
  */
 export function isProtectedPath(pathname: string): boolean {
   const path = stripLocale(pathname)
-  return PROTECTED_PATHS.some((p) => path.startsWith(p))
+  return PROTECTED_PATHS.some((p) => matchesPath(path, p))
 }
 
 /**
@@ -31,12 +39,12 @@ export function isProtectedPath(pathname: string): boolean {
  */
 export function isAuthPath(pathname: string): boolean {
   const path = stripLocale(pathname)
-  return AUTH_PATHS.some((p) => path.startsWith(p))
+  return AUTH_PATHS.some((p) => matchesPath(path, p))
 }
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
-  const locale = pathname.match(/^\/(en|fr|ar)/)?.[1] ?? "en"
+  const locale = pathname.match(/^\/(en|fr|ar)(?=\/|$)/)?.[1] ?? "en"
 
   if (isProtectedPath(pathname)) {
     const sessionCookie = getSessionCookie(request)
