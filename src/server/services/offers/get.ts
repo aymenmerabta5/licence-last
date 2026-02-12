@@ -1,6 +1,6 @@
 import "server-only"
 
-import { eq, and, ne, count } from "drizzle-orm"
+import { eq, and, ne, count, sql } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import {
@@ -13,8 +13,20 @@ import { application } from "@/server/db/schema/applications"
 
 /**
  * Get an internship offer by ID, with its skills, company info, and application count.
+ * Uses 2 queries: one for offer+company+count, one for skills.
  */
 export async function getOfferById(offerId: string) {
+  // Subquery to count non-withdrawn applications per offer
+  const applicationCountSubquery = db
+    .select({
+      offerId: application.offerId,
+      count: count().as("count"),
+    })
+    .from(application)
+    .where(ne(application.status, "withdrawn"))
+    .groupBy(application.offerId)
+    .as("app_count")
+
   const [row] = await db
     .select({
       id: internshipOffer.id,
@@ -37,9 +49,14 @@ export async function getOfferById(offerId: string) {
       companyDescription: company.description,
       companyWilayaCode: company.wilayaCode,
       companyAddress: company.address,
+      applicationCount: sql<number | null>`COALESCE(${applicationCountSubquery.count}, 0)`,
     })
     .from(internshipOffer)
     .innerJoin(company, eq(internshipOffer.companyId, company.id))
+    .leftJoin(
+      applicationCountSubquery,
+      eq(internshipOffer.id, applicationCountSubquery.offerId),
+    )
     .where(eq(internshipOffer.id, offerId))
     .limit(1)
 
@@ -56,21 +73,10 @@ export async function getOfferById(offerId: string) {
     .innerJoin(skillTag, eq(internshipOfferSkill.skillTagId, skillTag.id))
     .where(eq(internshipOfferSkill.offerId, offerId))
 
-  // Count non-withdrawn applications
-  const [countResult] = await db
-    .select({ value: count() })
-    .from(application)
-    .where(
-      and(
-        eq(application.offerId, offerId),
-        ne(application.status, "withdrawn"),
-      ),
-    )
-
   return {
     ...row,
     skills,
-    applicationCount: countResult?.value ?? 0,
+    applicationCount: row.applicationCount ?? 0,
   }
 }
 

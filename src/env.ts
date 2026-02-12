@@ -28,6 +28,9 @@ export const env = createEnv({
     // Redis (for rate limiting)
     REDIS_URL: z.string().url().optional(),
     REDIS_RATE_LIMIT_ENABLED: z.enum(["true", "false"]).default("false"),
+
+    // Logging
+    LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
   },
   client: {
     NEXT_PUBLIC_BETTER_AUTH_URL: z.string().url(),

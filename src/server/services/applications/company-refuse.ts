@@ -8,6 +8,7 @@ import { internshipOffer } from "@/server/db/schema/internships"
 import { notification } from "@/server/db/schema/notifications"
 import { company } from "@/server/db/schema/companies"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
+import { ApplicationServiceError } from "./errors"
 
 export async function companyRefuseApplication(
   applicationId: string,
@@ -33,15 +34,15 @@ export async function companyRefuseApplication(
     .limit(1)
 
   if (!app) {
-    throw new Error("Application not found")
+    throw new ApplicationServiceError("APPLICATION_NOT_FOUND", "Application not found")
   }
 
   if (app.offerCompanyId !== companyId) {
-    throw new Error("You do not have access to this application")
+    throw new ApplicationServiceError("APPLICATION_FORBIDDEN", "You do not have access to this application")
   }
 
   if (app.status !== "applied") {
-    throw new Error("Only pending applications can be refused")
+    throw new ApplicationServiceError("APPLICATION_INVALID_STATE", "Only pending applications can be refused")
   }
 
   const now = new Date()

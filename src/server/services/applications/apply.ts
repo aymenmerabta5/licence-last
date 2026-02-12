@@ -8,6 +8,7 @@ import { application } from "@/server/db/schema/applications"
 import { companyMember } from "@/server/db/schema/companies"
 import { notification } from "@/server/db/schema/notifications"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
+import { ApplicationServiceError } from "./errors"
 
 /**
  * Apply to an internship offer.
@@ -35,15 +36,15 @@ export async function applyToOffer(
       .limit(1)
 
     if (!offer) {
-      throw new Error("Offer not found")
+      throw new ApplicationServiceError("OFFER_NOT_FOUND", "Offer not found")
     }
 
     if (offer.status !== "published") {
-      throw new Error("Offer is not accepting applications")
+      throw new ApplicationServiceError("OFFER_NOT_OPEN", "Offer is not accepting applications")
     }
 
     if (offer.closesAt && offer.closesAt < new Date()) {
-      throw new Error("Offer application deadline has passed")
+      throw new ApplicationServiceError("OFFER_DEADLINE_PASSED", "Offer application deadline has passed")
     }
 
     // 2. Check positions not full (count admin_validated applications)
@@ -58,7 +59,7 @@ export async function applyToOffer(
       )
 
     if ((validatedCount?.value ?? 0) >= offer.maxPositions) {
-      throw new Error("All positions have been filled")
+      throw new ApplicationServiceError("OFFER_FULL", "All positions have been filled")
     }
 
     // 3. Check student hasn't already applied
@@ -74,7 +75,7 @@ export async function applyToOffer(
       .limit(1)
 
     if (existing) {
-      throw new Error("You have already applied to this offer")
+      throw new ApplicationServiceError("ALREADY_APPLIED", "You have already applied to this offer")
     }
 
     // 4. Insert application (inside transaction)

@@ -48,3 +48,5 @@ PROMPT.txt
 phases
 .ralph
 .agent/mcp/
+playwright-report
+test-results

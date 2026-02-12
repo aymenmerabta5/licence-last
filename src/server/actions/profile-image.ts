@@ -9,6 +9,7 @@ import { auth } from "@/lib/auth"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { uploadFile, deleteFile } from "@/server/storage/s3"
+import { logger } from "@/server/logging"
 
 const ALLOWED_TYPES = new Set([
   "image/jpeg",
@@ -119,7 +120,7 @@ export async function uploadProfileImage(
 
     return { success: true, url }
   } catch (error) {
-    console.error("[uploadProfileImage] Error:", error)
+    logger.error({ err: error, operation: "uploadProfileImage", userId: session.user.id }, "Profile image upload failed")
     return { success: false, error: `Upload failed: ${error instanceof Error ? error.message : "Unknown error"}` }
   }
 }
