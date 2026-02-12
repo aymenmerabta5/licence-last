@@ -1,6 +1,6 @@
 import "server-only"
 
-import { eq, and, desc, lt, or, isNotNull } from "drizzle-orm"
+import { eq, and, desc, lt, or, isNotNull, inArray } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
@@ -78,6 +78,10 @@ interface ListPendingParams {
 interface ListPendingViewer {
   role: "admin" | "super_admin"
   universityId: string | null
+}
+
+function hasNonEmptyProfileValue(value: string | null): boolean {
+  return value !== null && value.trim().length > 0
 }
 
 export async function listPendingApplications(
@@ -167,7 +171,7 @@ export async function listPendingApplications(
   const hasMore = rows.length > limit
   const applications = hasMore ? rows.slice(0, limit) : rows
 
-  const studentIds = applications.map((a) => a.studentId)
+  const studentIds = [...new Set(applications.map((a) => a.studentId))]
 
   // Get skills for all students
   const skillsByStudent = new Map<string, Array<{
@@ -189,37 +193,24 @@ export async function listPendingApplications(
       })
       .from(studentSkill)
       .innerJoin(skillTag, eq(studentSkill.skillTagId, skillTag.id))
-      .where(eq(studentSkill.userId, studentIds[0]!))
+      .where(inArray(studentSkill.userId, studentIds))
 
     for (const skill of allSkills) {
       const existing = skillsByStudent.get(skill.userId) ?? []
       existing.push(skill)
       skillsByStudent.set(skill.userId, existing)
     }
-
-    // Fetch skills for remaining students
-    for (let i = 1; i < studentIds.length; i++) {
-      const studentId = studentIds[i]
-      if (studentId) {
-        const skills = await db
-          .select({
-            userId: studentSkill.userId,
-            skillId: skillTag.id,
-            skillName: skillTag.name,
-            skillSlug: skillTag.slug,
-            skillCategory: skillTag.category,
-          })
-          .from(studentSkill)
-          .innerJoin(skillTag, eq(studentSkill.skillTagId, skillTag.id))
-          .where(eq(studentSkill.userId, studentId))
-        
-        skillsByStudent.set(studentId, skills)
-      }
-    }
   }
 
   const result: PendingApplication[] = applications.map((app) => {
     const studentSkills = skillsByStudent.get(app.studentId) ?? []
+    const hasProfileData =
+      hasNonEmptyProfileValue(app.profileBio) ||
+      hasNonEmptyProfileValue(app.profilePhone) ||
+      hasNonEmptyProfileValue(app.profileStudentNumber) ||
+      hasNonEmptyProfileValue(app.profileDepartment) ||
+      hasNonEmptyProfileValue(app.profileLevel) ||
+      hasNonEmptyProfileValue(app.profileAddress)
 
     return {
       id: app.id,
@@ -232,7 +223,7 @@ export async function listPendingApplications(
         email: app.studentEmail,
         image: app.studentImage,
       },
-      profile: app.profileBio
+      profile: hasProfileData
         ? {
             bio: app.profileBio,
             phone: app.profilePhone,

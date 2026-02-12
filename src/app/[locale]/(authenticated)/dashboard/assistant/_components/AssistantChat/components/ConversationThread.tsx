@@ -30,6 +30,7 @@ type AuthStatus = {
 interface ConversationThreadProps {
   conversationId: string
   initialMessages: UIMessage[]
+  messageCreatedAtById: Record<string, string | Date | undefined>
 }
 
 // Typing indicator component
@@ -60,6 +61,7 @@ function TypingIndicator() {
 export function ConversationThread({
   conversationId,
   initialMessages,
+  messageCreatedAtById,
 }: ConversationThreadProps) {
   const t = useTranslations("dashboard.assistant")
   const queryClient = useQueryClient()
@@ -204,6 +206,7 @@ export function ConversationThread({
             >
               <MessageBubble
                 message={message}
+                createdAt={messageCreatedAtById[message.id]}
                 authByTool={authByTool}
                 onCheckAuth={checkAuth}
                 onRegenerateFrom={(messageId) => regenerate({ messageId })}
@@ -232,7 +235,7 @@ export function ConversationThread({
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="absolute bottom-24 right-6"
+          className="absolute bottom-24 end-6"
         >
           <Button
             variant="secondary"
@@ -258,14 +261,14 @@ export function ConversationThread({
             disabled={isStreaming}
             className={cn(
               "rounded-none min-h-[56px] max-h-[200px] bg-background/60 resize-none",
-              "pr-14 pb-8", // Space for button and hint
+              "pe-14 pb-8", // Space for button and hint
               "focus-visible:ring-1 focus-visible:ring-primary/30"
             )}
             rows={1}
           />
 
           {/* Send/Stop button */}
-          <div className="absolute right-2 bottom-2">
+          <div className="absolute end-2 bottom-2">
             {isStreaming ? (
               <Button
                 type="button"
@@ -290,7 +293,7 @@ export function ConversationThread({
           </div>
 
           {/* Keyboard hint */}
-          <p className="absolute left-3 bottom-2 text-[10px] text-muted-foreground/70">
+          <p className="absolute start-3 bottom-2 text-[10px] text-muted-foreground/70">
             {t("enterToSend")}
           </p>
         </div>

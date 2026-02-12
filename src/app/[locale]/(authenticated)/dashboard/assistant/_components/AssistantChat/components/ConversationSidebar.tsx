@@ -19,23 +19,6 @@ type ConversationListItem = {
   updatedAt: string | Date
 }
 
-function formatUpdatedAt(value: string | Date): string {
-  const d = typeof value === "string" ? new Date(value) : value
-  if (Number.isNaN(d.getTime())) return ""
-
-  const now = new Date()
-  const diffMs = now.getTime() - d.getTime()
-  const diffMins = Math.floor(diffMs / 60000)
-  const diffHours = Math.floor(diffMs / 3600000)
-  const diffDays = Math.floor(diffMs / 86400000)
-
-  if (diffMins < 1) return "just now"
-  if (diffMins < 60) return `${diffMins}m`
-  if (diffHours < 24) return `${diffHours}h`
-  if (diffDays < 7) return `${diffDays}d`
-  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" })
-}
-
 interface ConversationSidebarProps {
   conversations: ConversationListItem[]
   selectedConversationId: string | null
@@ -85,6 +68,23 @@ export function ConversationSidebar({
     setConfirmDeleteId(null)
   }
 
+  const formatUpdatedAt = (value: string | Date): string => {
+    const date = typeof value === "string" ? new Date(value) : value
+    if (Number.isNaN(date.getTime())) return ""
+
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffMins = Math.floor(diffMs / 60000)
+    const diffHours = Math.floor(diffMs / 3600000)
+    const diffDays = Math.floor(diffMs / 86400000)
+
+    if (diffMins < 1) return t("relativeNow")
+    if (diffMins < 60) return t("relativeMinutesShort", { count: diffMins })
+    if (diffHours < 24) return t("relativeHoursShort", { count: diffHours })
+    if (diffDays < 7) return t("relativeDaysShort", { count: diffDays })
+    return date.toLocaleDateString(undefined, { month: "short", day: "numeric" })
+  }
+
   return (
     <Card className="rounded-none border-border/60 bg-card/60 backdrop-blur supports-[backdrop-filter]:bg-card/40 flex flex-col h-full">
       {/* Header */}
@@ -106,17 +106,19 @@ export function ConversationSidebar({
         {/* Search */}
         {conversations.length > 5 && (
           <div className="relative">
-            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <Search className="absolute start-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t("searchConversations")}
-              className="h-8 pl-8 text-sm rounded-none bg-background/60"
+              className="h-8 ps-8 text-sm rounded-none bg-background/60"
             />
             {searchQuery && (
               <button
+                type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2"
+                className="absolute end-2 top-1/2 -translate-y-1/2"
+                aria-label={t("clearSearch")}
               >
                 <X className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
               </button>

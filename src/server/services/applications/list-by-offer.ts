@@ -65,6 +65,10 @@ export interface ListApplicationsByOfferResult {
   hasMore: boolean
 }
 
+function hasNonEmptyProfileValue(value: string | null): boolean {
+  return value !== null && value.trim().length > 0
+}
+
 export async function listApplicationsByOffer(
   offerId: string,
   companyId: string,
@@ -177,6 +181,13 @@ export async function listApplicationsByOffer(
   const result: ApplicationWithStudent[] = applications.map((app) => {
     const studentSkills = skillsByStudent.get(app.studentId) ?? []
     const studentSkillIds = new Set(studentSkills.map((s) => s.skillId))
+    const hasProfileData =
+      hasNonEmptyProfileValue(app.profileBio) ||
+      hasNonEmptyProfileValue(app.profilePhone) ||
+      hasNonEmptyProfileValue(app.profileGithubUrl) ||
+      hasNonEmptyProfileValue(app.profilePortfolioUrl) ||
+      hasNonEmptyProfileValue(app.profileLevel) ||
+      hasNonEmptyProfileValue(app.profileDepartment)
 
     let matchPercentage = 0
     if (offerSkillIds.size > 0) {
@@ -200,7 +211,7 @@ export async function listApplicationsByOffer(
         image: app.studentImage,
         email: app.studentEmail,
       },
-      profile: app.profileBio
+      profile: hasProfileData
         ? {
             bio: app.profileBio,
             phone: app.profilePhone,

@@ -4,7 +4,10 @@ import { z } from "zod"
 import { ORPCError } from "@orpc/server"
 import { updateTag } from "next/cache"
 
-import { authedProcedure } from "../middleware"
+import {
+  authedProcedureGenerous,
+  studentProcedureStandard,
+} from "@/server/orpc/rate-limited-procedures"
 import { getStudentProfile } from "@/server/services/students/get-profile"
 import { getPublicStudentProfile } from "@/server/services/students/get-public-profile"
 import { upsertStudentProfile } from "@/server/services/students/upsert-profile"
@@ -13,7 +16,7 @@ import { CACHE_TAGS } from "@/lib/cache"
 
 /* ── Reads ── */
 
-export const getStudentProfileProcedure = authedProcedure
+export const getStudentProfileProcedure = authedProcedureGenerous
   .input(
     z
       .object({
@@ -37,7 +40,7 @@ export const getStudentProfileProcedure = authedProcedure
     return getStudentProfile(targetUserId)
   })
 
-export const getPublicStudentProfileProcedure = authedProcedure
+export const getPublicStudentProfileProcedure = authedProcedureGenerous
   .input(
     z.object({
       userId: z.string().min(1),
@@ -64,7 +67,7 @@ export const getPublicStudentProfileProcedure = authedProcedure
 
 /* ── Mutations ── */
 
-export const upsertStudentProfileProcedure = authedProcedure
+export const upsertStudentProfileProcedure = studentProcedureStandard
   .input(
     z.object({
       bio: z.string().optional(),
@@ -80,12 +83,6 @@ export const upsertStudentProfileProcedure = authedProcedure
     }),
   )
   .handler(async ({ input, context }) => {
-    if (context.user.role !== "student") {
-      throw new ORPCError("FORBIDDEN", {
-        message: "Only students can update their profile",
-      })
-    }
-
     const { skillTagIds, ...data } = input
     const result = await upsertStudentProfile(data, skillTagIds, context.user.id)
 
@@ -97,7 +94,7 @@ export const upsertStudentProfileProcedure = authedProcedure
     return result
   })
 
-export const upsertStudentProfileDetailsProcedure = authedProcedure
+export const upsertStudentProfileDetailsProcedure = studentProcedureStandard
   .input(
     z.object({
       bio: z.string().optional(),
@@ -112,12 +109,6 @@ export const upsertStudentProfileDetailsProcedure = authedProcedure
     }),
   )
   .handler(async ({ input, context }) => {
-    if (context.user.role !== "student") {
-      throw new ORPCError("FORBIDDEN", {
-        message: "Only students can update their profile",
-      })
-    }
-
     const result = await upsertStudentProfileDetails(input, context.user.id)
 
     // Invalidate profile caches after update

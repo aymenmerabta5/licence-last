@@ -140,4 +140,43 @@ describe("src/server/services/applications/list-by-offer", () => {
     expect(result.applications).toHaveLength(1)
     expect(result.applications[0]?.skillMatchPercentage).toBe(50)
   })
+
+  test("should return profile when bio is null but other profile fields exist", async () => {
+    const createdAt = new Date("2025-01-01T00:00:00.000Z")
+
+    mockSelectResults.push([{ id: "offer-1", companyId: "company-1" }])
+    mockSelectResults.push([])
+    mockSelectResults.push([
+      {
+        id: "app-1",
+        status: "applied",
+        pipelineStage: "applied",
+        coverLetter: null,
+        createdAt,
+        companyActionAt: null,
+        companyNote: null,
+        studentId: "stu-1",
+        studentName: "Student",
+        studentImage: null,
+        studentEmail: "s@example.com",
+        universityId: null,
+        universityName: null,
+        universityAbbreviation: null,
+        profileBio: null,
+        profilePhone: "0550123456",
+        profileGithubUrl: null,
+        profilePortfolioUrl: null,
+        profileLevel: null,
+        profileDepartment: null,
+      },
+    ])
+    mockSelectResults.push([])
+
+    const { listApplicationsByOffer } = await import("./list-by-offer")
+    const result = await listApplicationsByOffer("offer-1", "company-1")
+
+    expect(result.applications).toHaveLength(1)
+    expect(result.applications[0]?.profile).not.toBeNull()
+    expect(result.applications[0]?.profile?.phone).toBe("0550123456")
+  })
 })

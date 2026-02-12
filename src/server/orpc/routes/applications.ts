@@ -5,7 +5,14 @@ import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
 import { updateTag } from "next/cache"
 
-import { authedProcedure, studentProcedure, companyAdminProcedure, isAdminRole } from "../middleware"
+import { isAdminRole } from "../middleware"
+import {
+  authedProcedureGenerous,
+  companyAdminProcedureGenerous,
+  companyAdminProcedureStandard,
+  studentProcedureGenerous,
+  studentProcedureStandard,
+} from "@/server/orpc/rate-limited-procedures"
 import { applicationStatusSchema, pipelineStageSchema } from "@/lib/schemas/enums"
 import {
   searchOffersSchema,
@@ -39,19 +46,19 @@ import { CACHE_TAGS } from "@/lib/cache"
 
 /* ── Offer Search (any authenticated user) ── */
 
-export const searchOffersProcedure = authedProcedure
+export const searchOffersProcedure = authedProcedureGenerous
   .input(searchOffersSchema)
   .handler(async ({ input }) => searchOffers(input))
 
 /* ── Application Procedures (student only) ── */
 
-export const checkApplicationProcedure = studentProcedure
+export const checkApplicationProcedure = studentProcedureGenerous
   .input(z.object({ offerId: z.string().min(1) }))
   .handler(async ({ input, context }) =>
     getStudentApplicationForOffer(input.offerId, context.user.id),
   )
 
-export const applyToOfferProcedure = studentProcedure
+export const applyToOfferProcedure = studentProcedureStandard
   .input(applyToOfferSchema)
   .handler(async ({ input, context }) => {
     try {
@@ -76,13 +83,13 @@ export const applyToOfferProcedure = studentProcedure
     }
   })
 
-export const listStudentApplicationsProcedure = studentProcedure
+export const listStudentApplicationsProcedure = studentProcedureGenerous
   .input(listStudentApplicationsSchema)
   .handler(async ({ input, context }) =>
     listApplicationsByStudent(context.user.id, input),
   )
 
-export const withdrawApplicationProcedure = studentProcedure
+export const withdrawApplicationProcedure = studentProcedureStandard
   .input(z.object({ applicationId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     try {
@@ -105,7 +112,7 @@ export const withdrawApplicationProcedure = studentProcedure
 
 /* ── Company Admin Procedures ── */
 
-export const listByOfferProcedure = companyAdminProcedure
+export const listByOfferProcedure = companyAdminProcedureGenerous
   .input(
     z.object({
       offerId: z.string().min(1),
@@ -128,7 +135,7 @@ export const listByOfferProcedure = companyAdminProcedure
     ),
   )
 
-export const companyAcceptProcedure = companyAdminProcedure
+export const companyAcceptProcedure = companyAdminProcedureStandard
   .input(z.object({ applicationId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     try {
@@ -152,7 +159,7 @@ export const companyAcceptProcedure = companyAdminProcedure
     }
   })
 
-export const companyRefuseProcedure = companyAdminProcedure
+export const companyRefuseProcedure = companyAdminProcedureStandard
   .input(
     z.object({
       applicationId: z.string().min(1),
@@ -182,7 +189,7 @@ export const companyRefuseProcedure = companyAdminProcedure
     }
   })
 
-export const updatePipelineStageProcedure = companyAdminProcedure
+export const updatePipelineStageProcedure = companyAdminProcedureStandard
   .input(
     z.object({
       applicationId: z.string().min(1),
@@ -207,7 +214,7 @@ export const updatePipelineStageProcedure = companyAdminProcedure
     }
   })
 
-export const getTimelineProcedure = authedProcedure
+export const getTimelineProcedure = authedProcedureGenerous
   .input(z.object({ applicationId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     const [row] = await db

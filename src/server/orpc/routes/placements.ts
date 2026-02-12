@@ -3,14 +3,21 @@ import "server-only"
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
 
-import { adminProcedure } from "../middleware"
+import {
+  adminProcedureGenerous,
+  adminProcedureStandard,
+} from "@/server/orpc/rate-limited-procedures"
+import {
+  parseInputDate,
+  validatePlacementDateRange,
+} from "@/server/orpc/utils/date"
 import { listPendingApplications } from "@/server/services/placements/list-pending"
 import { validatePlacement } from "@/server/services/placements/validate"
 import { rejectPlacement } from "@/server/services/placements/reject"
 
 /* ── List Pending Placements (admin only) ── */
 
-export const listPendingProcedure = adminProcedure
+export const listPendingProcedure = adminProcedureGenerous
   .input(
     z
       .object({
@@ -33,31 +40,28 @@ export const listPendingProcedure = adminProcedure
 
 /* ── Validate Placement (admin only) ── */
 
-export const validateProcedure = adminProcedure
+export const validateProcedure = adminProcedureStandard
   .input(
     z.object({
       applicationId: z.string().min(1),
-      startDate: z.string().transform((val) => new Date(val)),
-      endDate: z.string().transform((val) => new Date(val)),
+      startDate: z.string().min(1),
+      endDate: z.string().min(1),
     }),
   )
   .handler(async ({ input, context }) => {
     try {
-      // Validate dates
-      if (input.startDate >= input.endDate) {
-        throw new Error("Start date must be before end date")
-      }
-      if (input.startDate < new Date()) {
-        throw new Error("Start date cannot be in the past")
-      }
+      const startDate = parseInputDate(input.startDate, "Start date")
+      const endDate = parseInputDate(input.endDate, "End date")
+
+      validatePlacementDateRange(startDate, endDate)
 
       return await validatePlacement({
         applicationId: input.applicationId,
         adminUserId: context.user.id,
         adminRole: context.user.role === "super_admin" ? "super_admin" : "admin",
         adminUniversityId: context.user.universityId ?? null,
-        startDate: input.startDate,
-        endDate: input.endDate,
+        startDate,
+        endDate,
       })
     } catch (error) {
       throw new ORPCError("BAD_REQUEST", {
@@ -69,7 +73,7 @@ export const validateProcedure = adminProcedure
 
 /* ── Reject Placement (admin only) ── */
 
-export const rejectProcedure = adminProcedure
+export const rejectProcedure = adminProcedureStandard
   .input(
     z.object({
       applicationId: z.string().min(1),

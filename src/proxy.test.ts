@@ -130,25 +130,25 @@ describe("isProtectedPath", () => {
     })
   })
 
-  describe("similar paths that are also protected (startsWith behavior)", () => {
-    test("should identify /dashboard-public as protected (starts with /dashboard)", () => {
-      expect(isProtectedPath("/dashboard-public")).toBe(true)
+  describe("similar paths should not be treated as protected", () => {
+    test("should identify /dashboard-public as unprotected", () => {
+      expect(isProtectedPath("/dashboard-public")).toBe(false)
     })
 
-    test("should identify /dashboards as protected (starts with /dashboard)", () => {
-      expect(isProtectedPath("/dashboards")).toBe(true)
+    test("should identify /dashboards as unprotected", () => {
+      expect(isProtectedPath("/dashboards")).toBe(false)
     })
 
     test("should identify /my-dashboard as unprotected (does not start with /dashboard)", () => {
       expect(isProtectedPath("/my-dashboard")).toBe(false)
     })
 
-    test("should identify /dashboard-old as protected (starts with /dashboard)", () => {
-      expect(isProtectedPath("/dashboard-old")).toBe(true)
+    test("should identify /dashboard-old as unprotected", () => {
+      expect(isProtectedPath("/dashboard-old")).toBe(false)
     })
 
-    test("should identify /en/dashboard-public as protected", () => {
-      expect(isProtectedPath("/en/dashboard-public")).toBe(true)
+    test("should identify /en/dashboard-public as unprotected", () => {
+      expect(isProtectedPath("/en/dashboard-public")).toBe(false)
     })
   })
 
@@ -195,6 +195,8 @@ describe("isProtectedPath", () => {
     test("should handle locale-like strings that are not locales", () => {
       expect(isProtectedPath("/en-us/dashboard")).toBe(false)
       expect(isProtectedPath("/en_us/dashboard")).toBe(false)
+      expect(isProtectedPath("/english/dashboard")).toBe(false)
+      expect(isProtectedPath("/france/dashboard")).toBe(false)
     })
   })
 })
@@ -248,6 +250,10 @@ describe("isAuthPath", () => {
 
   test("should not identify /dashboard as auth path", () => {
     expect(isAuthPath("/dashboard")).toBe(false)
+  })
+
+  test("should not strip locale prefixes from words like /english", () => {
+    expect(isAuthPath("/english/login")).toBe(false)
   })
 
   test("should not identify / as auth path", () => {
