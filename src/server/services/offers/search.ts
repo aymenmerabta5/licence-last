@@ -92,12 +92,13 @@ export async function searchOffers(params: SearchParams) {
     // Escape LIKE special characters to prevent wildcard injection
     const escapedKeyword = keyword.replace(/[%_\\]/g, "\\$&")
     const pattern = `%${escapedKeyword}%`
-    conditions.push(
-      or(
-        ilike(internshipOffer.title, pattern),
-        ilike(internshipOffer.description, pattern),
-      )!,
+    const keywordCondition = or(
+      ilike(internshipOffer.title, pattern),
+      ilike(internshipOffer.description, pattern),
     )
+    if (keywordCondition) {
+      conditions.push(keywordCondition)
+    }
   }
 
   // Skill filter: offers that require ANY of the selected skills
@@ -114,15 +115,16 @@ export async function searchOffers(params: SearchParams) {
   // Cursor pagination: (createdAt, id) < (cursorCreatedAt, cursorId)
   if (cursor) {
     const cursorDate = new Date(cursor.createdAt)
-    conditions.push(
-      or(
-        lt(internshipOffer.createdAt, cursorDate),
-        and(
-          eq(internshipOffer.createdAt, cursorDate),
-          lt(internshipOffer.id, cursor.id),
-        ),
-      )!,
+    const cursorCondition = or(
+      lt(internshipOffer.createdAt, cursorDate),
+      and(
+        eq(internshipOffer.createdAt, cursorDate),
+        lt(internshipOffer.id, cursor.id),
+      ),
     )
+    if (cursorCondition) {
+      conditions.push(cursorCondition)
+    }
   }
 
   // Fetch limit + 1 to detect hasMore

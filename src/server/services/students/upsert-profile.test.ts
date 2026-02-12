@@ -1,6 +1,5 @@
 import { describe, test, expect, mock, beforeEach } from "bun:test"
 
-// Mock transaction internals
 const mockSelect = mock(() => ({}))
 const mockFrom = mock(() => ({}))
 const mockSelectWhere = mock(() => ({}))
@@ -30,6 +29,10 @@ mock.module("@/server/db", () => ({
   db: {
     transaction: mockTransaction,
   },
+}))
+
+mock.module("@/server/services/skills/validate", () => ({
+  validateSkillTagIds: mock(() => Promise.resolve()),
 }))
 
 describe("src/server/services/students/upsert-profile", () => {

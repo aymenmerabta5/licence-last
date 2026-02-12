@@ -15,6 +15,5 @@ import { getLocale } from "next-intl/server"
  */
 export async function localeRedirect(path: string): Promise<never> {
   const locale = await getLocale()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  nextRedirect(`/${locale}${path}` as any)
+  nextRedirect(`/${locale}${path}` as Parameters<typeof nextRedirect>[0])
 }

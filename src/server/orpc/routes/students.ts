@@ -1,3 +1,5 @@
+import "server-only"
+
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
 import { updateTag } from "next/cache"

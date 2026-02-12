@@ -1,9 +1,12 @@
+import "server-only"
+
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
 import { updateTag } from "next/cache"
 
-import { authedProcedure, studentProcedure, companyAdminProcedure } from "../middleware"
+import { authedProcedure, studentProcedure, companyAdminProcedure, isAdminRole } from "../middleware"
+import { applicationStatusSchema, pipelineStageSchema } from "@/lib/schemas/enums"
 import {
   searchOffersSchema,
   applyToOfferSchema,
@@ -90,24 +93,6 @@ export const withdrawApplicationProcedure = studentProcedure
   })
 
 /* ── Company Admin Procedures ── */
-
-const applicationStatusSchema = z.enum([
-  "applied",
-  "company_accepted",
-  "company_refused",
-  "admin_validated",
-  "admin_rejected",
-  "withdrawn",
-])
-
-const pipelineStageSchema = z.enum([
-  "applied",
-  "screening",
-  "interview",
-  "offer",
-  "accepted",
-  "rejected",
-])
 
 export const listByOfferProcedure = companyAdminProcedure
   .input(
@@ -225,8 +210,7 @@ export const getTimelineProcedure = authedProcedure
       throw new ORPCError("NOT_FOUND", { message: "Application not found" })
     }
 
-    const isAdmin =
-      context.user.role === "admin" || context.user.role === "super_admin"
+    const isAdmin = isAdminRole(context.user.role)
     const isStudentOwner =
       context.user.role === "student" && context.user.id === row.studentUserId
 

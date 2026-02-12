@@ -1,6 +1,5 @@
 import { describe, test, expect, beforeEach, mock } from "bun:test"
-
-type CompanyStatus = "pending" | "approved" | "rejected" | "suspended"
+import type { CompanyStatus } from "@/lib/schemas/enums"
 
 interface CompanySummary {
   id: string

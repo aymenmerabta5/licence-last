@@ -4,10 +4,8 @@ import { randomUUID } from "node:crypto"
 
 import { db } from "@/server/db"
 import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
+import { validateSkillTagIds } from "@/server/services/skills/validate"
 
-/**
- * Create a new internship offer (as draft) and attach skills.
- */
 export async function createOffer(data: {
   companyId: string
   title: string
@@ -36,6 +34,7 @@ export async function createOffer(data: {
     })
 
     if (data.skillTagIds && data.skillTagIds.length > 0) {
+      await validateSkillTagIds(data.skillTagIds)
       await tx.insert(internshipOfferSkill).values(
         data.skillTagIds.map((skillTagId) => ({
           offerId,

@@ -3,13 +3,8 @@
 import * as motion from "motion/react-client"
 import { Loader2 } from "lucide-react"
 
+import { reveal, revealWithDelay } from "@/lib/animations"
 import { Button } from "@/components/ui/button"
-
-const reveal = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-}
-const ease = [0.4, 0, 0.2, 1] as const
 
 interface SubmitButtonProps {
   isSubmitting: boolean
@@ -25,10 +20,7 @@ export function SubmitButton({
   delay = 0,
 }: SubmitButtonProps) {
   return (
-    <motion.div
-      {...reveal}
-      transition={{ duration: 0.6, ease, delay }}
-    >
+    <motion.div {...reveal} transition={revealWithDelay(delay)}>
       <Button
         type="submit"
         variant="editorial"
@@ -36,11 +28,7 @@ export function SubmitButton({
         className={`w-full h-12 ${className ?? ""}`}
         disabled={isSubmitting}
       >
-        {isSubmitting ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          children
-        )}
+        {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : children}
       </Button>
     </motion.div>
   )

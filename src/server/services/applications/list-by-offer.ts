@@ -9,24 +9,11 @@ import { user } from "@/server/db/schema/auth"
 import { studentProfile, studentSkill } from "@/server/db/schema/students"
 import { skillTag } from "@/server/db/schema/skills"
 import { university } from "@/server/db/schema/universities"
-
-type ApplicationStatus =
-  | "applied"
-  | "company_accepted"
-  | "company_refused"
-  | "admin_validated"
-  | "admin_rejected"
-  | "withdrawn"
+import type { ApplicationStatus, PipelineStage } from "@/lib/schemas/enums"
 
 interface ListParams {
   status?: ApplicationStatus
-  pipelineStage?:
-    | "applied"
-    | "screening"
-    | "interview"
-    | "offer"
-    | "accepted"
-    | "rejected"
+  pipelineStage?: PipelineStage
   cursor?: { createdAt: string; id: string }
   limit?: number
 }

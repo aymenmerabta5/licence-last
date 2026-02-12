@@ -13,7 +13,6 @@ import {
   MapPin,
   Clock,
   Users,
-  AlertCircle,
   ArrowRight,
   Loader2,
   Check,
@@ -31,11 +30,15 @@ import {
   getStringArray,
 } from "@/lib/ai/tool-output"
 import { createOfferSchema } from "@/lib/schemas/offer"
+import { mapZodErrors } from "@/lib/schemas/map-errors"
+import { reveal, ease } from "@/lib/animations"
+import { isInternshipType, isWorkMode } from "@/lib/schemas/enums"
 import { errorMessage } from "@/lib/schemas/auth"
 import { orpcClient, orpc } from "@/server/orpc/client"
 import { WILAYAS } from "@/lib/wilayas"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { ServerError } from "@/components/ServerError"
 import {
   InputGroup,
   InputGroupAddon,
@@ -43,7 +46,7 @@ import {
 } from "@/components/ui/input-group"
 
 import type { OfferCopilotIntent, OfferFormProps } from "./types"
-import { ease, groupSkillsByCategory, isInternshipType, isWorkMode, reveal, CATEGORY_ORDER } from "./utils"
+import { groupSkillsByCategory, CATEGORY_ORDER } from "./utils"
 
 export function OfferForm({ mode, initialData }: OfferFormProps) {
   const t = useTranslations("dashboard.company.offers.form")
@@ -55,7 +58,11 @@ export function OfferForm({ mode, initialData }: OfferFormProps) {
   const [aiPrompt, setAiPrompt] = useState("")
   const [aiIntent, setAiIntent] = useState<OfferCopilotIntent | null>(null)
 
-  const { data: skillTags = [] } = useQuery(orpc.skills.list.queryOptions())
+  const { data: skillTagsResult } = useQuery(orpc.skills.list.queryOptions())
+  const skillTags = useMemo(
+    () => skillTagsResult?.skills ?? [],
+    [skillTagsResult?.skills],
+  )
 
   const aiTransport = useMemo(
     () =>
@@ -89,23 +96,7 @@ export function OfferForm({ mode, initialData }: OfferFormProps) {
       skillTagIds: initialData?.skillTagIds ?? ([] as string[]),
     },
     validators: {
-      onSubmit: ({ value }) => {
-        const result = schema.safeParse(value)
-        const fieldErrors: Record<string, string> = {}
-
-        if (!result.success) {
-          for (const issue of result.error.issues) {
-            const path = issue.path[0]
-            if (path !== undefined && !fieldErrors[String(path)]) {
-              fieldErrors[String(path)] = issue.message
-            }
-          }
-        }
-
-        return Object.keys(fieldErrors).length > 0
-          ? { fields: fieldErrors }
-          : undefined
-      },
+      onSubmit: ({ value }) => mapZodErrors(schema.safeParse(value)),
     },
     onSubmit: async ({ value }) => {
       setServerError("")
@@ -164,17 +155,7 @@ export function OfferForm({ mode, initialData }: OfferFormProps) {
         </p>
       </motion.div>
 
-      {/* ── Server Error ── */}
-      {serverError && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          className="flex items-start gap-2.5 p-3.5 text-sm text-destructive bg-destructive/5 border border-destructive/15"
-        >
-          <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
-          <span>{serverError}</span>
-        </motion.div>
-      )}
+      <ServerError message={serverError} />
 
       {/* ── AI Copilot ── */}
       <motion.div

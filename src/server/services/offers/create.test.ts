@@ -19,6 +19,10 @@ mock.module("@/server/db", () => ({
   },
 }))
 
+mock.module("@/server/services/skills/validate", () => ({
+  validateSkillTagIds: mock(() => Promise.resolve()),
+}))
+
 describe("src/server/services/offers/create", () => {
   beforeEach(() => {
     mockTransaction.mockClear()
@@ -47,7 +51,6 @@ describe("src/server/services/offers/create", () => {
     expect(result.offerId).toBeDefined()
     expect(typeof result.offerId).toBe("string")
     expect(mockTransaction).toHaveBeenCalledTimes(1)
-    // insert called twice: offer + skills
     expect(mockInsert).toHaveBeenCalledTimes(2)
   })
 
@@ -63,7 +66,6 @@ describe("src/server/services/offers/create", () => {
     })
 
     expect(result.offerId).toBeDefined()
-    // insert called once: only offer (no skills)
     expect(mockInsert).toHaveBeenCalledTimes(1)
   })
 

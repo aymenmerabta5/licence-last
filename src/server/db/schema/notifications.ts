@@ -2,6 +2,10 @@ import { pgTable, text, timestamp, jsonb, index } from "drizzle-orm/pg-core"
 
 import { user } from "./auth"
 
+export interface NotificationPayload {
+  [key: string]: unknown
+}
+
 export const notification = pgTable(
   "notification",
   {
@@ -10,7 +14,7 @@ export const notification = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     type: text("type").notNull(),
-    payload: jsonb("payload").default({}).notNull(),
+    payload: jsonb("payload").$type<NotificationPayload>().default({}).notNull(),
     readAt: timestamp("read_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },

@@ -4,11 +4,8 @@ import { and, eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
+import { validateSkillTagIds } from "@/server/services/skills/validate"
 
-/**
- * Update an internship offer's fields and re-sync skills.
- * Verifies ownership (companyId) and that the offer is not closed.
- */
 export async function updateOffer(
   offerId: string,
   companyId: string,
@@ -52,12 +49,12 @@ export async function updateOffer(
       .where(eq(internshipOffer.id, offerId))
 
     if (data.skillTagIds !== undefined) {
-      // Delete all existing skills and re-insert
       await tx
         .delete(internshipOfferSkill)
         .where(eq(internshipOfferSkill.offerId, offerId))
 
       if (data.skillTagIds.length > 0) {
+        await validateSkillTagIds(data.skillTagIds)
         await tx.insert(internshipOfferSkill).values(
           data.skillTagIds.map((skillTagId) => ({
             offerId,

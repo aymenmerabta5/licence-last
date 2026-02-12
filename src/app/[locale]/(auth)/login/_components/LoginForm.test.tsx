@@ -2,6 +2,16 @@ import { describe, test, expect, beforeEach, afterEach, mock } from "bun:test"
 import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react"
 import { LoginForm } from "./LoginForm"
 
+// Mock sonner
+const mockToastError = mock(() => {})
+const mockToastSuccess = mock(() => {})
+mock.module("sonner", () => ({
+  toast: {
+    error: mockToastError,
+    success: mockToastSuccess,
+  },
+}))
+
 // Mock next-intl
 mock.module("next-intl", () => ({
   useTranslations: () => (key: string) => {
@@ -131,6 +141,8 @@ describe("LoginForm", () => {
     mockSignIn.mockClear()
     mockSendVerificationEmail.mockClear()
     mockRouterPush.mockClear()
+    mockToastError.mockClear()
+    mockToastSuccess.mockClear()
   })
 
   afterEach(() => {
@@ -374,7 +386,7 @@ describe("LoginForm", () => {
 
       await waitFor(() => {
         expect(mockSendVerificationEmail.mock.calls.length).toBe(1)
-        expect(screen.getByText("Verification email sent")).toBeDefined()
+        expect(mockToastSuccess).toHaveBeenCalledWith("Verification email sent")
       })
 
       const callArg = mockSendVerificationEmail.mock.calls[0][0] as { email: string; callbackURL: string }
@@ -411,7 +423,7 @@ describe("LoginForm", () => {
       fireEvent.click(resendButton)
 
       await waitFor(() => {
-        expect(screen.getByText("Rate limit exceeded")).toBeDefined()
+        expect(mockToastError).toHaveBeenCalledWith("Rate limit exceeded")
       })
     })
   })

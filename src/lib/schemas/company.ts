@@ -1,6 +1,7 @@
 import { z } from "zod"
 
 import type { TranslationFn } from "./auth"
+import { companyReportSeveritySchema } from "./enums"
 
 /**
  * Company onboarding form schema.
@@ -34,7 +35,7 @@ export const companyQualityFeedbackSchema = z.object({
 export const companyReportSchema = z.object({
   companyId: z.string().min(1),
   category: z.string().min(1).max(100),
-  severity: z.enum(["low", "medium", "high", "critical"]).default("medium"),
+  severity: companyReportSeveritySchema.default("medium"),
   description: z.string().min(10).max(4000),
 })
 

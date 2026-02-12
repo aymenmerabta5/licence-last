@@ -1,8 +1,11 @@
+import "server-only"
+
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
 import { updateTag } from "next/cache"
 
-import { authedProcedure, companyAdminProcedure } from "../middleware"
+import { authedProcedure, companyAdminProcedure, isAdminRole } from "../middleware"
+import { internshipTypeSchema, workModeSchema } from "@/lib/schemas/enums"
 import { getOfferById } from "@/server/services/offers/get"
 import { listOffersByCompany } from "@/server/services/offers/list-by-company"
 import { createOffer } from "@/server/services/offers/create"
@@ -25,10 +28,7 @@ export const getOfferByIdProcedure = authedProcedure
     // Published offers are visible to everyone.
     // Draft/closed offers are only visible to the owning company or admins.
     if (offer.status !== "published") {
-      const isAdmin =
-        context.user.role === "admin" || context.user.role === "super_admin"
-
-      if (!isAdmin) {
+      if (!isAdminRole(context.user.role)) {
         // Check if the user is a member of the owning company
         const [membership] = await db
           .select()
@@ -59,8 +59,8 @@ export const createOfferProcedure = companyAdminProcedure
     z.object({
       title: z.string().min(3),
       description: z.string().min(10),
-      internshipType: z.enum(["pfe", "immersion", "summer", "practical"]),
-      workMode: z.enum(["on_site", "hybrid", "remote"]).optional(),
+      internshipType: internshipTypeSchema,
+      workMode: workModeSchema.optional(),
       wilayaCode: z.coerce.number().int().min(1).max(58).optional(),
       durationWeeks: z.coerce.number().int().min(1).max(52).optional(),
       maxPositions: z.coerce.number().int().min(1).max(100).optional(),
@@ -87,8 +87,8 @@ export const updateOfferProcedure = companyAdminProcedure
       offerId: z.string().min(1),
       title: z.string().min(3).optional(),
       description: z.string().min(10).optional(),
-      internshipType: z.enum(["pfe", "immersion", "summer", "practical"]).optional(),
-      workMode: z.enum(["on_site", "hybrid", "remote"]).nullable().optional(),
+      internshipType: internshipTypeSchema.optional(),
+      workMode: workModeSchema.nullable().optional(),
       wilayaCode: z.coerce.number().int().min(1).max(58).nullable().optional(),
       durationWeeks: z.coerce.number().int().min(1).max(52).nullable().optional(),
       maxPositions: z.coerce.number().int().min(1).max(100).optional(),

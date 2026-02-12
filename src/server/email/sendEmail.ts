@@ -24,7 +24,7 @@ export const sendEmail = async <T>(
 ) => {
   try {
     if (!env.RESEND_API_KEY) {
-      console.warn("RESEND_API_KEY not configured — skipping email to:", to)
+      console.warn("RESEND_API_KEY not configured — skipping email delivery")
       return { success: false, error: "Email not configured" }
     }
     const resend = new Resend(env.RESEND_API_KEY)
@@ -54,7 +54,7 @@ export const sendEmail = async <T>(
     });
 
     if (error) {
-      console.error("Resend API error:", error);
+      console.error("Resend API error:", error.message)
       throw new Error(`Email sending failed: ${error.message}`);
     }
 
@@ -62,14 +62,14 @@ export const sendEmail = async <T>(
       throw new Error("Email sending failed: No response data");
     }
 
-    console.log("Email sent successfully:", data.id);
+    console.info("Email sent successfully")
     return {
       success: true,
       code: "EMAIL_SENT",
       message: "Email sent successfully.",
     };
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("Error sending email:", error instanceof Error ? error.message : "Unknown error")
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",

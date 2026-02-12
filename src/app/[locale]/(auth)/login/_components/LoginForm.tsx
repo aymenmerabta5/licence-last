@@ -4,38 +4,34 @@ import { useState, useMemo } from "react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { useForm } from "@tanstack/react-form"
+import { toast } from "sonner"
 import {
   Mail,
   Lock,
   Eye,
   EyeOff,
-  AlertCircle,
   ArrowRight,
   Loader2,
-  CheckCircle2,
 } from "lucide-react"
 
 import { Link, useRouter } from "@/i18n/routing"
 import { authClient } from "@/lib/auth-client"
 import { createLoginSchema, errorMessage } from "@/lib/schemas/auth"
+import { mapZodErrors } from "@/lib/schemas/map-errors"
+import { getErrorMessage } from "@/lib/error-message"
+import { reveal, ease } from "@/lib/animations"
 import { getPostLoginRedirectPath } from "@/lib/post-login-redirect"
 import { orpcClient } from "@/server/orpc/client"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
+import { ServerError } from "@/components/ServerError"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group"
-
-/* ── Shared reveal transition ── */
-const reveal = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-}
-const ease = [0.4, 0, 0.2, 1] as const
 
 export function LoginForm() {
   const t = useTranslations("auth.login")
@@ -46,7 +42,6 @@ export function LoginForm() {
   const [rememberMe, setRememberMe] = useState(false)
   const [serverError, setServerError] = useState("")
   const [needsVerification, setNeedsVerification] = useState(false)
-  const [verificationSent, setVerificationSent] = useState(false)
   const [pendingEmail, setPendingEmail] = useState("")
 
   const loginSchema = useMemo(() => createLoginSchema(tv), [tv])
@@ -57,28 +52,11 @@ export function LoginForm() {
       password: "",
     },
     validators: {
-      onSubmit: ({ value }) => {
-        const result = loginSchema.safeParse(value)
-        const fieldErrors: Record<string, string> = {}
-
-        if (!result.success) {
-          for (const issue of result.error.issues) {
-            const path = issue.path[0]
-            if (path !== undefined && !fieldErrors[String(path)]) {
-              fieldErrors[String(path)] = issue.message
-            }
-          }
-        }
-
-        return Object.keys(fieldErrors).length > 0
-          ? { fields: fieldErrors }
-          : undefined
-      },
+      onSubmit: ({ value }) => mapZodErrors(loginSchema.safeParse(value)),
     },
     onSubmit: async ({ value }) => {
       setServerError("")
       setNeedsVerification(false)
-      setVerificationSent(false)
       setPendingEmail(value.email)
 
       try {
@@ -98,12 +76,11 @@ export function LoginForm() {
           return
         }
 
-        // Fetch user profile to determine redirect
         const me = await orpcClient.users.getMe()
         const redirectPath = getPostLoginRedirectPath(me)
         router.push(redirectPath)
-      } catch {
-        setServerError(t("error"))
+      } catch (err) {
+        setServerError(getErrorMessage(err, t("error")))
       }
     },
   })
@@ -111,7 +88,6 @@ export function LoginForm() {
   async function resendVerificationEmail() {
     if (!pendingEmail) return
     setServerError("")
-    setVerificationSent(false)
 
     try {
       const result = await authClient.sendVerificationEmail({
@@ -120,13 +96,13 @@ export function LoginForm() {
       })
 
       if (result.error) {
-        setServerError(result.error.message || t("error"))
+        toast.error(result.error.message || t("error"))
         return
       }
 
-      setVerificationSent(true)
-    } catch {
-      setServerError(t("error"))
+      toast.success(t("verificationSent"))
+    } catch (err) {
+      toast.error(getErrorMessage(err, t("error")))
     }
   }
 
@@ -138,7 +114,6 @@ export function LoginForm() {
       }}
       className="space-y-8"
     >
-      {/* ── Header ── */}
       <motion.div {...reveal} transition={{ duration: 0.6, ease }}>
         <h1 className="font-serif text-3xl text-heading tracking-tight mb-2 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
           {t("title")}
@@ -148,19 +123,8 @@ export function LoginForm() {
         </p>
       </motion.div>
 
-      {/* ── Server Error Alert ── */}
-      {serverError && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          className="flex items-start gap-2.5 p-3.5 text-sm text-destructive bg-destructive/5 border border-destructive/15"
-        >
-          <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
-          <span>{serverError}</span>
-        </motion.div>
-      )}
+      <ServerError message={serverError} />
 
-      {/* ── Verification Helper ── */}
       {needsVerification && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -175,25 +139,14 @@ export function LoginForm() {
           >
             {t("resendVerification")}
           </Button>
-
-          {verificationSent && (
-            <div className="flex items-start gap-2.5 p-3.5 text-sm bg-primary/5 border border-primary/15">
-              <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-primary" />
-              <span className="text-muted-foreground">
-                {t("verificationSent")}
-              </span>
-            </div>
-          )}
         </motion.div>
       )}
 
-      {/* ── Form Fields ── */}
       <motion.div
         {...reveal}
         transition={{ duration: 0.6, ease, delay: 0.1 }}
         className="space-y-5"
       >
-        {/* Email */}
         <form.Field name="email">
           {(field) => (
             <div className="space-y-2">
@@ -229,7 +182,6 @@ export function LoginForm() {
           )}
         </form.Field>
 
-        {/* Password */}
         <form.Field name="password">
           {(field) => (
             <div className="space-y-2">
@@ -280,7 +232,6 @@ export function LoginForm() {
         </form.Field>
       </motion.div>
 
-      {/* ── Remember Me + Forgot Password ── */}
       <motion.div
         {...reveal}
         transition={{ duration: 0.6, ease, delay: 0.15 }}
@@ -321,7 +272,6 @@ export function LoginForm() {
         </Link>
       </motion.div>
 
-      {/* ── Submit Button ── */}
       <motion.div
         {...reveal}
         transition={{ duration: 0.6, ease, delay: 0.2 }}
@@ -350,7 +300,6 @@ export function LoginForm() {
         </form.Subscribe>
       </motion.div>
 
-      {/* ── Separator ── */}
       <motion.div
         {...reveal}
         transition={{ duration: 0.6, ease, delay: 0.25 }}
@@ -362,7 +311,6 @@ export function LoginForm() {
         </span>
       </motion.div>
 
-      {/* ── Sign Up Link ── */}
       <motion.p
         {...reveal}
         transition={{ duration: 0.6, ease, delay: 0.3 }}

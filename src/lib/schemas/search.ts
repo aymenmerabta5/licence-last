@@ -1,5 +1,7 @@
 import { z } from "zod"
 
+import { internshipTypeSchema, workModeSchema, applicationStatusSchema, pipelineStageSchema } from "./enums"
+
 /** Cursor for keyset pagination (createdAt + id). */
 const cursorSchema = z
   .object({
@@ -14,10 +16,8 @@ const cursorSchema = z
 export const searchOffersSchema = z.object({
   keyword: z.string().max(200).optional(),
   wilayaCode: z.coerce.number().int().min(1).max(58).optional(),
-  internshipTypes: z
-    .array(z.enum(["pfe", "immersion", "summer", "practical"]))
-    .optional(),
-  workModes: z.array(z.enum(["on_site", "hybrid", "remote"])).optional(),
+  internshipTypes: z.array(internshipTypeSchema).optional(),
+  workModes: z.array(workModeSchema).optional(),
   skillTagIds: z.array(z.string()).max(20).optional(),
   cursor: cursorSchema,
   limit: z.coerce.number().int().min(1).max(50).default(12),
@@ -35,19 +35,8 @@ export const applyToOfferSchema = z.object({
  * List a student's own applications.
  */
 export const listStudentApplicationsSchema = z.object({
-  status: z
-    .enum([
-      "applied",
-      "company_accepted",
-      "company_refused",
-      "admin_validated",
-      "admin_rejected",
-      "withdrawn",
-    ])
-    .optional(),
-  pipelineStage: z
-    .enum(["applied", "screening", "interview", "offer", "accepted", "rejected"])
-    .optional(),
+  status: applicationStatusSchema.optional(),
+  pipelineStage: pipelineStageSchema.optional(),
   cursor: cursorSchema,
   limit: z.coerce.number().int().min(1).max(50).default(12),
 })

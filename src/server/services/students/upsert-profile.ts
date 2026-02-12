@@ -5,11 +5,8 @@ import { eq } from "drizzle-orm"
 import { db } from "@/server/db"
 import { studentProfile, studentSkill } from "@/server/db/schema/students"
 import { user } from "@/server/db/schema/auth"
+import { validateSkillTagIds } from "@/server/services/skills/validate"
 
-/**
- * Create or update a student profile and replace their skills.
- * Also marks the user's onboarding as completed.
- */
 export async function upsertStudentProfile(
   data: {
     bio?: string
@@ -27,6 +24,10 @@ export async function upsertStudentProfile(
 ) {
   if (skillTagIds.length > 10) {
     throw new Error("A maximum of 10 skills is allowed")
+  }
+
+  if (skillTagIds.length > 0) {
+    await validateSkillTagIds(skillTagIds)
   }
 
   await db.transaction(async (tx) => {
@@ -66,7 +67,6 @@ export async function upsertStudentProfile(
         data.address !== undefined ? data.address || null : (existing?.address ?? null),
     }
 
-    // Upsert student profile
     await tx
       .insert(studentProfile)
       .values({
@@ -96,7 +96,6 @@ export async function upsertStudentProfile(
         },
       })
 
-    // Replace skills: delete all existing, insert new
     await tx
       .delete(studentSkill)
       .where(eq(studentSkill.userId, userId))
@@ -110,7 +109,6 @@ export async function upsertStudentProfile(
       )
     }
 
-    // Mark onboarding as completed
     await tx
       .update(user)
       .set({ onboardingCompleted: true })

@@ -4,19 +4,36 @@ import { eq, desc } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { company } from "@/server/db/schema/companies"
+import type { CompanyStatus } from "@/lib/schemas/enums"
 
-type CompanyStatus = "pending" | "approved" | "rejected" | "suspended"
+export interface ListCompaniesInput {
+  status?: CompanyStatus
+  limit?: number
+  offset?: number
+}
 
-/** List companies, optionally filtered by status. */
-export async function listCompanies(status?: CompanyStatus) {
+export interface ListCompaniesResult {
+  companies: (typeof company.$inferSelect)[]
+  hasMore: boolean
+}
+
+export async function listCompanies(
+  input?: ListCompaniesInput,
+): Promise<ListCompaniesResult> {
+  const limit = Math.min(input?.limit ?? 50, 200)
+  const offset = input?.offset ?? 0
+
   const query = db
     .select()
     .from(company)
     .orderBy(desc(company.createdAt))
+    .limit(limit + 1)
+    .offset(offset)
 
-  if (status) {
-    return query.where(eq(company.status, status))
+  const rows = input?.status ? await query.where(eq(company.status, input.status)) : await query
+
+  return {
+    companies: rows.slice(0, limit),
+    hasMore: rows.length > limit,
   }
-
-  return query
 }

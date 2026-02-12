@@ -1,6 +1,7 @@
 import { z } from "zod"
 
 import type { TranslationFn } from "./auth"
+import { internshipTypeSchema, workModeSchema } from "./enums"
 
 /**
  * Internship offer form schema.
@@ -10,12 +11,8 @@ export function createOfferSchema(t: TranslationFn) {
   return z.object({
     title: z.string().min(3, { error: t("offerTitleMin") }),
     description: z.string().min(10, { error: t("offerDescriptionMin") }),
-    internshipType: z.enum(["pfe", "immersion", "summer", "practical"], {
-      error: t("internshipTypeRequired"),
-    }),
-    workMode: z
-      .enum(["on_site", "hybrid", "remote"])
-      .optional(),
+    internshipType: internshipTypeSchema,
+    workMode: workModeSchema.optional(),
     wilayaCode: z.coerce
       .number()
       .int()

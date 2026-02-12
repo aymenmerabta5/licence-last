@@ -41,6 +41,10 @@ mock.module("@/server/db", () => ({
   },
 }))
 
+mock.module("@/server/services/skills/validate", () => ({
+  validateSkillTagIds: mock(() => Promise.resolve()),
+}))
+
 describe("src/server/services/offers/update", () => {
   beforeEach(() => {
     mockSelect.mockClear()

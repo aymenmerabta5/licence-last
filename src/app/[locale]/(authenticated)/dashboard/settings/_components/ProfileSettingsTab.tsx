@@ -3,14 +3,18 @@
 import { useMemo, useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { AlertCircle, Camera, CheckCircle2, Loader2, MapPin, User } from "lucide-react"
+import { Camera, Loader2, MapPin, User } from "lucide-react"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { SelectField, TextAreaField, TextField } from "@/components/form-fields"
+import { ServerError } from "@/components/ServerError"
+import { SuccessMessage } from "@/components/SuccessMessage"
 import { errorMessage } from "@/lib/schemas/auth"
-import { WILAYAS } from "@/lib/wilayas"
+import { mapZodErrors } from "@/lib/schemas/map-errors"
+import { getErrorMessage } from "@/lib/error-message"
+import { WILAYA_OPTIONS_WITH_PLACEHOLDER } from "@/lib/wilayas"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
 import { SkillsManager } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager"
@@ -127,20 +131,7 @@ function ProfileSettingsTabForm({ me, studentProfile }: ProfileSettingsTabFormPr
   const form = useForm({
     defaultValues: initialValues,
     validators: {
-      onSubmit: ({ value }) => {
-        const result = studentProfileDetailsSchema.safeParse(value)
-        if (result.success) return undefined
-
-        const fieldErrors: Record<string, string> = {}
-        for (const issue of result.error.issues) {
-          const path = issue.path[0]
-          if (path !== undefined && !fieldErrors[String(path)]) {
-            fieldErrors[String(path)] = issue.message
-          }
-        }
-
-        return Object.keys(fieldErrors).length > 0 ? { fields: fieldErrors } : undefined
-      },
+      onSubmit: ({ value }) => mapZodErrors(studentProfileDetailsSchema.safeParse(value)),
     },
     onSubmit: async ({ value }) => {
       if (!me.user) return
@@ -175,7 +166,7 @@ function ProfileSettingsTabForm({ me, studentProfile }: ProfileSettingsTabFormPr
         await Promise.all(tasks)
         setSuccessTick((t) => t + 1)
       } catch (err) {
-        setServerError(err instanceof Error ? err.message : "Could not save changes.")
+        setServerError(getErrorMessage(err, "Could not save changes."))
       }
     },
   })
@@ -215,19 +206,8 @@ function ProfileSettingsTabForm({ me, studentProfile }: ProfileSettingsTabFormPr
         </CardHeader>
 
         <CardContent className="p-8 space-y-8">
-          {serverError && (
-            <div className="flex items-start gap-2.5 p-3.5 text-sm text-destructive bg-destructive/5 border border-destructive/15">
-              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
-              <span>{serverError}</span>
-            </div>
-          )}
-
-          {successTick > 0 && (
-            <div className="flex items-start gap-2.5 p-3.5 text-sm text-green-700 bg-green-50 border border-green-200 dark:text-green-400 dark:bg-green-950/20 dark:border-green-800">
-              <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" />
-              <span>Saved.</span>
-            </div>
-          )}
+          <ServerError message={serverError} />
+          <SuccessMessage message={successTick > 0 ? "Saved." : ""} />
 
           <form
             onSubmit={(e) => {
@@ -341,13 +321,7 @@ function ProfileSettingsTabForm({ me, studentProfile }: ProfileSettingsTabFormPr
                         onChange={(next) => field.handleChange(Number(next))}
                         onBlur={field.handleBlur}
                         disabled={isBusy}
-                        options={[
-                          { value: 0, label: "Select a wilaya", disabled: true },
-                          ...WILAYAS.map((name, i) => ({
-                            value: i + 1,
-                            label: `${String(i + 1).padStart(2, "0")} - ${name}`,
-                          })),
-                        ]}
+                        options={WILAYA_OPTIONS_WITH_PLACEHOLDER}
                       />
                     )}
                   </form.Field>

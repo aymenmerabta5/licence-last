@@ -1,3 +1,5 @@
+import "server-only"
+
 import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
 

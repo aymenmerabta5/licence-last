@@ -24,6 +24,16 @@ interface GetArcadeToolsConfig {
 // Simple TTL cache for tool definitions per user
 const toolCache = new Map<string, { tools: ToolDefinition[]; expiresAt: number }>()
 const CACHE_TTL_MS = 5 * 60 * 1000 // 5 minutes
+const MAX_CACHE_SIZE = 100
+
+function cleanupExpiredCacheEntries() {
+  const now = Date.now()
+  for (const [key, value] of toolCache) {
+    if (value.expiresAt <= now) {
+      toolCache.delete(key)
+    }
+  }
+}
 
 function getCachedTools(userId: string): ToolDefinition[] | null {
   const cached = toolCache.get(userId)
@@ -37,6 +47,13 @@ function getCachedTools(userId: string): ToolDefinition[] | null {
 }
 
 function setCachedTools(userId: string, tools: ToolDefinition[]) {
+  cleanupExpiredCacheEntries()
+  if (toolCache.size >= MAX_CACHE_SIZE) {
+    const oldestKey = toolCache.keys().next().value
+    if (oldestKey) {
+      toolCache.delete(oldestKey)
+    }
+  }
   toolCache.set(userId, { tools, expiresAt: Date.now() + CACHE_TTL_MS })
 }
 
