@@ -3,12 +3,12 @@ import "server-only"
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
 
-import { adminProcedure } from "../middleware"
+import { adminProcedureStandard } from "@/server/orpc/rate-limited-procedures"
 import { generateAgreement } from "@/server/services/documents/generate-agreement"
 
 /* ── Generate Agreement PDF (admin only) ── */
 
-export const generateAgreementProcedure = adminProcedure
+export const generateAgreementProcedure = adminProcedureStandard
   .input(
     z.object({
       placementId: z.string().min(1),

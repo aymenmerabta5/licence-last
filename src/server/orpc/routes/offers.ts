@@ -4,7 +4,12 @@ import { z } from "zod"
 import { ORPCError } from "@orpc/server"
 import { updateTag } from "next/cache"
 
-import { authedProcedure, companyAdminProcedure, isAdminRole } from "../middleware"
+import { isAdminRole } from "../middleware"
+import {
+  authedProcedureGenerous,
+  companyAdminProcedureGenerous,
+  companyAdminProcedureStandard,
+} from "@/server/orpc/rate-limited-procedures"
 import { internshipTypeSchema, workModeSchema } from "@/lib/schemas/enums"
 import { getOfferById } from "@/server/services/offers/get"
 import { listOffersByCompany } from "@/server/services/offers/list-by-company"
@@ -19,7 +24,7 @@ import { CACHE_TAGS } from "@/lib/cache"
 
 /* ── Reads ── */
 
-export const getOfferByIdProcedure = authedProcedure
+export const getOfferByIdProcedure = authedProcedureGenerous
   .input(z.object({ offerId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     const offer = await getOfferById(input.offerId)
@@ -47,14 +52,14 @@ export const getOfferByIdProcedure = authedProcedure
     return offer
   })
 
-export const listOffersByCompanyProcedure = companyAdminProcedure
+export const listOffersByCompanyProcedure = companyAdminProcedureGenerous
   .handler(async ({ context }) =>
     listOffersByCompany(context.companyMembership.companyId),
   )
 
 /* ── Mutations ── */
 
-export const createOfferProcedure = companyAdminProcedure
+export const createOfferProcedure = companyAdminProcedureStandard
   .input(
     z.object({
       title: z.string().min(3),
@@ -81,7 +86,7 @@ export const createOfferProcedure = companyAdminProcedure
     return result
   })
 
-export const updateOfferProcedure = companyAdminProcedure
+export const updateOfferProcedure = companyAdminProcedureStandard
   .input(
     z.object({
       offerId: z.string().min(1),
@@ -108,7 +113,7 @@ export const updateOfferProcedure = companyAdminProcedure
     return result
   })
 
-export const deleteOfferProcedure = companyAdminProcedure
+export const deleteOfferProcedure = companyAdminProcedureStandard
   .input(z.object({ offerId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     const result = await deleteOffer(input.offerId, context.companyMembership.companyId)
@@ -122,7 +127,7 @@ export const deleteOfferProcedure = companyAdminProcedure
     return result
   })
 
-export const updateOfferStatusProcedure = companyAdminProcedure
+export const updateOfferStatusProcedure = companyAdminProcedureStandard
   .input(
     z.object({
       offerId: z.string().min(1),

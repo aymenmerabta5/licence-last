@@ -1,6 +1,13 @@
 import "server-only"
 
-import { publicProcedure, authedProcedure, adminProcedure, superAdminProcedure, companyAdminProcedure } from "./middleware"
+import {
+  publicProcedure,
+  authedProcedure,
+  adminProcedure,
+  superAdminProcedure,
+  companyAdminProcedure,
+  studentProcedure,
+} from "./middleware"
 import {
   createStrictRateLimitMiddleware,
   createStandardRateLimitMiddleware,
@@ -81,6 +88,15 @@ export const superAdminProcedureGenerous = superAdminProcedure.use(
 )
 
 /**
+ * Super admin procedure with standard rate limiting (100 req/min)
+ * Use for: Standard super admin operations
+ * Key: Super admin user-based
+ */
+export const superAdminProcedureStandard = superAdminProcedure.use(
+  createStandardRateLimitMiddleware("superadmin-standard")
+)
+
+/**
  * AI/Assistant procedure with specialized rate limiting (20 req/min)
  * AI calls are expensive, so limit them strictly
  * Key: User-based
@@ -114,4 +130,22 @@ export const companyAdminProcedureGenerous = companyAdminProcedure.use(
  */
 export const companyAdminProcedureAssistant = companyAdminProcedure.use(
   createAssistantRateLimitMiddleware("companyadmin-assistant")
+)
+
+/**
+ * Student procedure with standard rate limiting (100 req/min)
+ * Use for: General student operations and mutations
+ * Key: User-based
+ */
+export const studentProcedureStandard = studentProcedure.use(
+  createStandardRateLimitMiddleware("student-standard")
+)
+
+/**
+ * Student procedure with generous rate limiting (300 req/min)
+ * Use for: Student read-heavy operations
+ * Key: User-based
+ */
+export const studentProcedureGenerous = studentProcedure.use(
+  createGenerousRateLimitMiddleware("student-generous")
 )

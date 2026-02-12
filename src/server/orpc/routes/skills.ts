@@ -2,10 +2,10 @@ import "server-only"
 
 import { z } from "zod"
 
-import { publicProcedure } from "../middleware"
+import { publicProcedureStandard } from "@/server/orpc/rate-limited-procedures"
 import { listSkillTags } from "@/server/services/skills/list"
 
-export const listSkillTagsProcedure = publicProcedure
+export const listSkillTagsProcedure = publicProcedureStandard
   .input(
     z
       .object({

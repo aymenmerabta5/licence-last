@@ -4,12 +4,14 @@ import { z } from "zod"
 import { ORPCError } from "@orpc/server"
 import { updateTag } from "next/cache"
 
+import { isAdminRole } from "../middleware"
 import {
-  authedProcedure,
-  adminProcedure,
-  companyAdminProcedure,
-  isAdminRole,
-} from "../middleware"
+  adminProcedureGenerous,
+  adminProcedureStandard,
+  authedProcedureGenerous,
+  authedProcedureStandard,
+  companyAdminProcedureStandard,
+} from "@/server/orpc/rate-limited-procedures"
 import { companyStatusSchema, companyReportStatusSchema } from "@/lib/schemas/enums"
 import { listCompanies } from "@/server/services/companies/list"
 import { getCompanyById } from "@/server/services/companies/get"
@@ -38,7 +40,7 @@ import { CACHE_TAGS } from "@/lib/cache"
 
 /* ── Reads ── */
 
-export const listCompaniesProcedure = authedProcedure
+export const listCompaniesProcedure = authedProcedureGenerous
   .input(
     z
       .object({
@@ -58,7 +60,7 @@ export const listCompaniesProcedure = authedProcedure
     })
   })
 
-export const getCompanyByIdProcedure = authedProcedure
+export const getCompanyByIdProcedure = authedProcedureGenerous
   .input(z.object({ companyId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     const company = await getCompanyById(input.companyId)
@@ -99,7 +101,7 @@ export const getCompanyByIdProcedure = authedProcedure
     }
   })
 
-export const getCompanyTrustIndexProcedure = authedProcedure
+export const getCompanyTrustIndexProcedure = authedProcedureGenerous
   .input(z.object({ companyId: z.string().min(1) }))
   .handler(async ({ input }) => {
     try {
@@ -112,11 +114,11 @@ export const getCompanyTrustIndexProcedure = authedProcedure
     }
   })
 
-export const listCompanyTrustIndicesProcedure = adminProcedure
+export const listCompanyTrustIndicesProcedure = adminProcedureGenerous
   .input(z.object({ limit: z.coerce.number().int().min(1).max(200).optional() }).optional())
   .handler(async ({ input }) => listCompanyTrustIndices(input?.limit ?? 50))
 
-export const submitCompanyQualityFeedbackProcedure = authedProcedure
+export const submitCompanyQualityFeedbackProcedure = authedProcedureStandard
   .input(companyQualityFeedbackSchema)
   .handler(async ({ input, context }) => {
     if (context.user.role !== "student") {
@@ -137,7 +139,7 @@ export const submitCompanyQualityFeedbackProcedure = authedProcedure
     }
   })
 
-export const submitCompanyReportProcedure = authedProcedure
+export const submitCompanyReportProcedure = authedProcedureStandard
   .input(companyReportSchema)
   .handler(async ({ input, context }) =>
     submitCompanyReport({
@@ -146,7 +148,7 @@ export const submitCompanyReportProcedure = authedProcedure
     }),
   )
 
-export const listCompanyReportsProcedure = adminProcedure
+export const listCompanyReportsProcedure = adminProcedureGenerous
   .input(
     z
       .object({
@@ -158,7 +160,7 @@ export const listCompanyReportsProcedure = adminProcedure
   )
   .handler(async ({ input }) => listCompanyReports(input))
 
-export const resolveCompanyReportProcedure = adminProcedure
+export const resolveCompanyReportProcedure = adminProcedureStandard
   .input(resolveCompanyReportSchema)
   .handler(async ({ input, context }) =>
     resolveCompanyReport({
@@ -171,7 +173,7 @@ export const resolveCompanyReportProcedure = adminProcedure
 
 /* ── Mutations ── */
 
-export const createCompanyProcedure = authedProcedure
+export const createCompanyProcedure = authedProcedureStandard
   .use(async ({ context, next }) => {
     // Only company_admin role can create companies
     if (context.user.role !== "company_admin") {
@@ -194,7 +196,7 @@ export const createCompanyProcedure = authedProcedure
     createCompany(input, context.user.id),
   )
 
-export const updateCompanyProcedure = companyAdminProcedure
+export const updateCompanyProcedure = companyAdminProcedureStandard
   .input(
     z.object({
       description: z.string().optional(),
@@ -217,7 +219,7 @@ export const updateCompanyProcedure = companyAdminProcedure
     return result
   })
 
-export const approveCompanyProcedure = adminProcedure
+export const approveCompanyProcedure = adminProcedureStandard
   .input(z.object({ companyId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     const result = await approveCompany(input.companyId, context.user.id)
@@ -228,7 +230,7 @@ export const approveCompanyProcedure = adminProcedure
     return result
   })
 
-export const rejectCompanyProcedure = adminProcedure
+export const rejectCompanyProcedure = adminProcedureStandard
   .input(
     z.object({
       companyId: z.string().min(1),
@@ -246,7 +248,7 @@ export const rejectCompanyProcedure = adminProcedure
 
 /* ── Uploads ── */
 
-export const uploadCompanyLogoProcedure = companyAdminProcedure
+export const uploadCompanyLogoProcedure = companyAdminProcedureStandard
   .input(
     z.object({
       file: z.file(),

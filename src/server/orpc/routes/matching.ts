@@ -3,7 +3,10 @@ import "server-only"
 import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
 
-import { authedProcedure, studentProcedure } from "../middleware"
+import {
+  authedProcedureGenerous,
+  studentProcedureStandard,
+} from "@/server/orpc/rate-limited-procedures"
 import {
   captureReadinessSnapshotSchema,
   getMatchingScoreSchema,
@@ -58,21 +61,21 @@ async function assertMatchAccess(context: {
   }
 }
 
-export const getScoreProcedure = authedProcedure
+export const getScoreProcedure = authedProcedureGenerous
   .input(getMatchingScoreSchema)
   .handler(async ({ input, context }) => {
     await assertMatchAccess(context, input)
     return getExplainableMatchScore(input.studentUserId, input.offerId)
   })
 
-export const getSkillGapProcedure = authedProcedure
+export const getSkillGapProcedure = authedProcedureGenerous
   .input(getSkillGapSchema)
   .handler(async ({ input, context }) => {
     await assertMatchAccess(context, input)
     return getSkillGapRoadmap(input.studentUserId, input.offerId)
   })
 
-export const getReadinessHistoryProcedure = authedProcedure
+export const getReadinessHistoryProcedure = authedProcedureGenerous
   .input(getReadinessHistorySchema)
   .handler(async ({ input, context }) => {
     await assertMatchAccess(context, input)
@@ -84,7 +87,7 @@ export const getReadinessHistoryProcedure = authedProcedure
     return { points }
   })
 
-export const captureReadinessSnapshotProcedure = studentProcedure
+export const captureReadinessSnapshotProcedure = studentProcedureStandard
   .input(captureReadinessSnapshotSchema)
   .handler(async ({ input, context }) =>
     captureReadinessSnapshot(
