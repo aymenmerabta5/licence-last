@@ -1,6 +1,6 @@
 # AGENTS.md — Coding Guidelines for AI Agents
 
-> Last updated: 2026-02-11
+> Last updated: 2026-02-13
 > Project: Internex — A Next.js 16 + React 19 application with editorial design aesthetic, for linking companies internship programs with university students
 
 ---
@@ -60,9 +60,13 @@ bun run mcp:dev             # Start MCP development server
 | Animation | motion | 12.33.0 (Framer Motion successor) |
 | Icons | lucide-react | 0.563.0 |
 | Fonts | DM Sans, DM Serif Display, Noto Sans Arabic | Google Fonts |
+| Markdown | react-markdown + remark-gfm | 10.1.0 |
+| Syntax Highlight | react-syntax-highlighter | 16.1.0 |
+| QR Codes | qrcode.react | 4.2.0 |
 | Testing | Bun Test Runner | Built-in |
 | Test Utils | @testing-library/react | 16.3.2 |
 | DOM Testing | happy-dom | 20.5.0 |
+| E2E Testing | Playwright | latest |
 
 ### State Management & Data
 | Category | Technology | Version |
@@ -88,12 +92,14 @@ bun run mcp:dev             # Start MCP development server
 | Category | Technology | Version |
 |----------|------------|---------|
 | AI SDK | ai | 6.0.78 |
-| OpenAI Provider | @ai-sdk/openai | 3.0.26 |
+| OpenAI Provider | @ai-sdk/openai (Poe-compatible) | 3.0.26 |
 | React AI Hooks | @ai-sdk/react | 3.0.80 |
 | Arcade Tools | @arcadeai/arcadejs | 2.2.0 |
 | Email Sending | resend | 6.9.1 |
 | Email Templates | @react-email/components | 1.0.7 |
+| Email Rendering | @react-email/render + @react-email/tailwind | 2.0.4 |
 | PDF Generation | @react-pdf/renderer | 4.3.2 |
+| Logging | pino | 5.0.0 |
 
 ### i18n & Theming
 | Category | Technology | Version |
@@ -145,20 +151,21 @@ export async function createCompany(data: CreateCompanyInput, userId: string) {
 ```
 
 **Service Domains (17 total):**
-- `ai/` — AI/LLM integration (rate limits, context, model config, arcade tools)
-- `applications/` — Internship applications (apply, withdraw, pipeline, company actions)
+- `admin/` — Admin user ops (ban, create, list, remove, sessions, setPassword, setRole, update)
+- `applications/` — Internship applications (apply, withdraw, pipeline, company actions, timeline)
 - `assistant/` — AI assistant conversations (CRUD, messages)
-- `companies/` — Company management (CRUD, approval, trust index, reports)
+- `companies/` — Company management (CRUD, approval, membership, trust index, trust actions, reports)
 - `documents/` — Document generation (agreements, certificates)
-- `matching/` — Student-offer matching (scoring, skill gaps, readiness)
+- `matching/` — Student-offer matching (scoring, skill gaps, readiness history)
 - `notifications/` — User notifications (create, list, mark read)
-- `offers/` — Internship offers (CRUD, search, status management)
+- `offers/` — Internship offers (CRUD, search, status management, delete)
 - `placements/` — Placement validation (list pending, validate, reject)
-- `skills/` — Skills/tags management
-- `students/` — Student profiles (get, upsert, public profiles)
-- `universities/` — University data
+- `skills/` — Skills/tags management (list, validate)
+- `stats/` — Admin dashboard analytics
+- `students/` — Student profiles (get, upsert, public profiles, dashboard stats)
+- `universities/` — University management (CRUD, approve, reject)
 - `uploads/` — File upload handling (S3)
-- `users/` — User management (get-me, update, promote)
+- `users/` — User management (get-me, get-by-id, update, promote)
 
 ### oRPC Controller Layer
 
@@ -182,32 +189,41 @@ publicProcedure              // No auth required
 │   └── studentProcedure     // student role + injects studentProfile
 ```
 
-**Rate-Limited Procedures:**
+**Rate-Limited Procedures (15 variants):**
 ```typescript
 // Pre-composed procedures with rate limiting
-publicProcedureStrict        // 5 req/min (auth endpoints)
-publicProcedureStandard      // 100 req/min (public reads)
-authedProcedureStandard      // 100 req/min (general API)
-authedProcedureGenerous      // 300 req/min (listings, searches)
-authedProcedureStrict        // 5 req/min (sensitive ops)
-adminProcedureGenerous       // 300 req/min (bulk admin ops)
-assistantProcedureLimited    // 20 req/min (AI calls)
-companyAdminProcedure*       // Various limits for company admins
+publicProcedureStrict               // 5 req/min (auth endpoints)
+publicProcedureStandard             // 100 req/min (public reads)
+authedProcedureStandard             // 100 req/min (general API)
+authedProcedureGenerous             // 300 req/min (listings, searches)
+authedProcedureStrict               // 5 req/min (sensitive ops)
+adminProcedureStandard              // 100 req/min (admin ops)
+adminProcedureGenerous              // 300 req/min (bulk admin ops)
+superAdminProcedureStandard         // 100 req/min (super admin ops)
+superAdminProcedureGenerous         // 300 req/min (bulk super admin)
+companyAdminProcedureStandard       // 100 req/min (company ops)
+companyAdminProcedureGenerous       // 300 req/min (company reads)
+companyAdminProcedureAssistant      // 20 req/min (AI assistant)
+studentProcedureStandard            // 100 req/min (student mutations)
+studentProcedureGenerous            // 300 req/min (student reads)
+assistantProcedureLimited           // 20 req/min (AI calls)
 ```
 
-**oRPC Routes (12 total):**
-- `users.ts` — getMe, updateMe, promoteUser
-- `companies.ts` — CRUD, approval, trust index, reports, logo upload
-- `students.ts` — Profile management
-- `offers.ts` — Offer CRUD, status updates
-- `applications.ts` — Apply, withdraw, pipeline, company actions
+**oRPC Routes (14 total, 66 procedures):**
+- `users.ts` — getMe, updateMe, uploadAvatar, deleteAvatar
+- `companies.ts` — CRUD, approval, trust index, reports, quality feedback, logo upload (14 procedures)
+- `students.ts` — getProfile, getPublicProfile, upsertProfile, upsertProfileDetails
+- `offers.ts` — CRUD, status updates, search, delete (7 procedures)
+- `applications.ts` — Apply, withdraw, pipeline, company actions, timeline (8 procedures)
 - `skills.ts` — Skill tag listing
-- `placements.ts` — Validation workflows
+- `placements.ts` — listPending, validate, reject
 - `documents.ts` — Agreement generation
-- `notifications.ts` — Notification management
+- `notifications.ts` — list, markRead, markAllRead
 - `stats.ts` — Admin statistics
-- `assistant.ts` — AI assistant conversations
-- `matching.ts` — Matching scores, skill gaps
+- `admin-users.ts` — list, create, setRole, ban, unban, remove, setPassword, update, sessions (11 procedures)
+- `universities.ts` — list, getById, create, approve, reject
+- `assistant.ts` — listModels, conversations CRUD, messages, model/title updates (9 procedures)
+- `matching.ts` — getScore, getSkillGap, getReadinessHistory, captureReadinessSnapshot
 
 ### Client Usage Patterns
 
@@ -438,7 +454,10 @@ src/
 │   ├── globals.css             # Global styles + theme variables
 │   ├── api/                    # API routes
 │   │   ├── auth/[...all]/      # Better Auth
-│   │   └── rpc/[...rest]/      # oRPC catch-all
+│   │   ├── rpc/[...rest]/      # oRPC catch-all (CSRF protected)
+│   │   ├── assistant/chat/     # AI streaming endpoint
+│   │   ├── assistant/auth/status/ # Arcade auth check
+│   │   └── health/             # Health check endpoint
 │   └── [locale]/               # i18n routes
 │       ├── layout.tsx          # Locale layout (providers)
 │       ├── page.tsx            # Home page
@@ -467,9 +486,14 @@ src/
 │   └── [utility].ts            # Other utilities
 │
 ├── hooks/                      # Shared hooks
-│   ├── use-mobile.ts
-│   ├── use-skill-selection.ts
-│   ├── use-skill-grouping.ts
+│   ├── useCopilot.ts           # AI chat transport + tool output
+│   ├── useInfiniteScroll.ts    # IntersectionObserver pagination
+│   ├── useDebounce.ts          # Value debouncing
+│   ├── useLogout.ts            # Auth signout + redirect
+│   ├── useFormWithSchema.ts    # TanStack Form + Zod integration
+│   ├── use-mobile.ts           # Mobile breakpoint detection
+│   ├── use-skill-selection.ts  # Multi-select state
+│   ├── use-skill-grouping.ts   # Skill categorization
 │   └── index.ts                # Barrel export
 │
 ├── server/                     # Server-only code
@@ -484,11 +508,12 @@ src/
 │   │   ├── client.ts           # Client + TanStack Query
 │   │   └── routes/             # Procedure definitions
 │   ├── services/               # Pure business logic (17 domains)
-│   ├── actions/                # Server Actions
-│   ├── storage/                # S3 file storage
-│   ├── email/                  # Email service
-│   ├── caching/                # Redis caching
-│   └── mcp/                    # Model Context Protocol
+│   ├── ai/                     # AI integration (model, tools, context, prompts)
+│   ├── storage/                # S3 file storage (Bun.S3Client)
+│   ├── email/                  # Email service (Resend + React Email)
+│   ├── caching/                # Redis client + rate limiter
+│   ├── logging/                # Pino structured logging
+│   └── mcp/                    # Model Context Protocol (dev only)
 │
 ├── i18n/                       # next-intl configuration
 │   ├── routing.ts
@@ -744,6 +769,11 @@ describe("cn utility", () => {
 bun test              # Run all tests
 bun test:watch        # Watch mode for development
 bun test:coverage     # Generate coverage report
+bun test:unit         # src/lib + src/server
+bun test:api          # src/app/api
+bun test:pages        # src/app
+bun test:e2e          # Playwright E2E (chromium)
+bun test:ci           # unit + api + pages (CI pipeline)
 ```
 
 ### Writing Test Files
@@ -1090,18 +1120,30 @@ Development-only MCP server for AI tool testing:
 
 ### S3 File Storage
 
-**`src/server/storage/s3.ts`:**
+**`src/server/storage/s3.ts`** (uses Bun's native `Bun.S3Client`):
 ```typescript
 import "server-only"
 
-export async function uploadFile(
-  key: string,
-  data: Buffer | ReadableStream,
-  contentType: string
-): Promise<string>
-
+export async function uploadFile(key: string, data: Buffer, contentType: string): Promise<string>
 export async function deleteFile(key: string): Promise<void>
+export function isConfigured(): boolean
 ```
+
+Supports AWS S3, Cloudflare R2, or any S3-compatible endpoint.
+
+### Structured Logging
+
+**`src/server/logging/logger.ts`** (Pino):
+```typescript
+import "server-only"
+
+export const logger: pino.Logger
+export function createLogger(bindings: Record<string, unknown>): pino.Logger
+export function createModuleLogger(module: string): pino.Logger
+```
+
+Automatic redaction of sensitive fields (authorization, cookie, password, token, api_key, secret).
+Configurable log level via `LOG_LEVEL` env var (default: "info").
 
 ### Email Service
 
@@ -1109,18 +1151,18 @@ export async function deleteFile(key: string): Promise<void>
 ```typescript
 import "server-only"
 
-export async function sendEmail({
-  to,
-  subject,
-  react,
-}: {
-  to: string
-  subject: string
-  react: React.ReactElement
-}): Promise<void>
+export async function sendEmail<T>(
+  to: string | string[],
+  subject: string,
+  EmailComponent: React.ComponentType<T>,
+  componentProps: T,
+  options?: { from?: string; replyTo?: string; cc?: string[]; bcc?: string[] }
+): Promise<{ success: boolean; code?: string; message?: string; error?: string }>
 ```
 
-Uses React Email components (`@react-email/*`) and Resend for delivery.
+Uses React Email components + Resend for delivery. Graceful fallback if `RESEND_API_KEY` not configured.
+
+**Email Templates:** `VerifyEmailEmail`, `ResetPasswordEmail`, `TwoFactorOtpEmail`, `EmailLayout`
 
 ### Document Generation (PDF)
 
@@ -1183,6 +1225,7 @@ AWS_ACCESS_KEY_ID              # Optional - AWS access (alternative)
 AWS_SECRET_ACCESS_KEY          # Optional - AWS secret (alternative)
 REDIS_URL                      # Optional - Redis connection URL
 REDIS_RATE_LIMIT_ENABLED       # Optional - Default: "false"
+LOG_LEVEL                      # Optional - Pino level (default: "info")
 ```
 
 ### Client Variables

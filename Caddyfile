@@ -1,0 +1,23 @@
+{$DOMAIN_NAME:localhost} {
+	encode zstd gzip
+
+	# Cache immutable Next.js static assets (1 year)
+	handle /_next/static/* {
+		header Cache-Control "public, max-age=31536000, immutable"
+		reverse_proxy app:3000
+	}
+
+	# All other requests → Next.js
+	handle {
+		reverse_proxy app:3000 {
+			header_up X-Forwarded-Proto {scheme}
+		}
+	}
+
+	log {
+		output file /data/logs/access.log {
+			roll_size 25MiB
+			roll_keep 3
+		}
+	}
+}

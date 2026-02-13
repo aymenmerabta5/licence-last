@@ -1,60 +1,62 @@
 # -----------------------------------------------------------------------------
-# This Dockerfile.bun is specifically configured for projects using Bun
-# For npm/pnpm or yarn, refer to the Dockerfile instead
+# Multi-stage Bun Dockerfile for Internex
+# Stages: base → deps → builder → runner
 # -----------------------------------------------------------------------------
 
-# Use Bun's official image
 FROM oven/bun:1 AS base
-
 WORKDIR /app
 
-# Install dependencies with bun
+# --- Install dependencies ---
 FROM base AS deps
 COPY package.json bun.lock* ./
 RUN bun install --no-save --frozen-lockfile
 
-# Rebuild the source code only when needed
+# --- Build the application ---
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-# ENV NEXT_TELEMETRY_DISABLED=1
+# Build-time env values are required for T3 Env validation during `next build`.
+# These are safe defaults; provide real values at runtime via .env on the server.
+ARG NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
+RUN DATABASE_URL=postgresql://postgres:postgres@localhost:5432/internex \
+    BETTER_AUTH_SECRET=build-secret-not-for-production-use \
+    NEXT_PUBLIC_BETTER_AUTH_URL=$NEXT_PUBLIC_BETTER_AUTH_URL \
+    bun run build
 
- # Build-time env values are required for env validation during `next build`.
- # These are safe defaults for local builds; provide real values at runtime.
- ARG NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
- RUN DATABASE_URL=postgresql://postgres:postgres@localhost:5432/internex \
-     BETTER_AUTH_SECRET=build-secret-not-for-production \
-     NEXT_PUBLIC_BETTER_AUTH_URL=$NEXT_PUBLIC_BETTER_AUTH_URL \
-     bun run build
-
-# Production image, copy all the files and run next
+# --- Production runner ---
 FROM base AS runner
 WORKDIR /app
 
-# Uncomment the following line in case you want to disable telemetry during runtime.
-# ENV NEXT_TELEMETRY_DISABLED=1
-
 ENV NODE_ENV=production \
     PORT=3000 \
-    HOSTNAME="0.0.0.0"
+    HOSTNAME="0.0.0.0" \
+    NODE_OPTIONS="--max-old-space-size=384"
 
 RUN groupadd --system --gid 1001 nodejs && \
     useradd --system --uid 1001 --no-log-init -g nodejs nextjs
 
+# Copy built application
 COPY --from=builder /app/public ./public
-
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy migration files + drizzle config for runtime migrations
+COPY --from=builder --chown=nextjs:nodejs /app/src/server/db/migrations ./src/server/db/migrations
+COPY --from=builder --chown=nextjs:nodejs /app/src/server/db/schema ./src/server/db/schema
+COPY --from=builder --chown=nextjs:nodejs /app/src/server/db/seed.ts ./src/server/db/seed.ts
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts ./drizzle.config.ts
+
+# Copy entrypoint script
+COPY --from=builder --chown=nextjs:nodejs /app/scripts/docker-entrypoint.sh ./scripts/docker-entrypoint.sh
+RUN chmod +x ./scripts/docker-entrypoint.sh
 
 USER nextjs
 
 EXPOSE 3000
 
-CMD ["bun", "./server.js"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD bun -e "fetch('http://localhost:3000/api/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"
+
+ENTRYPOINT ["./scripts/docker-entrypoint.sh"]
