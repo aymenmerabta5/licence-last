@@ -35,7 +35,6 @@ export function PlacementDetailClient({
             aiSummary={actions.aiSummary}
             aiStatus={actions.aiStatus}
             aiError={actions.aiError}
-            aiActiveRef={actions.aiActiveRef}
             onGenerate={() => {
               actions.generateAiSummary({
                 id: application.id,

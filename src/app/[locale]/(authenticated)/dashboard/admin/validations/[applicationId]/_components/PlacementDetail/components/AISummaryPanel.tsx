@@ -1,6 +1,5 @@
 "use client"
 
-import type { MutableRefObject } from "react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { Sparkles, Loader2 } from "lucide-react"
@@ -14,7 +13,6 @@ interface AISummaryPanelProps {
   aiSummary: AdminValidationSummary | null
   aiStatus: string
   aiError: Error | undefined
-  aiActiveRef: MutableRefObject<boolean>
   onGenerate: () => void
 }
 
@@ -22,7 +20,6 @@ export function AISummaryPanel({
   aiSummary,
   aiStatus,
   aiError,
-  aiActiveRef,
   onGenerate,
 }: AISummaryPanelProps) {
   const t = useTranslations("dashboard.admin.validations.detail")
@@ -109,7 +106,7 @@ export function AISummaryPanel({
         </div>
       ) : (
         <p className="text-xs text-muted-foreground">
-          {aiActiveRef.current ? t("ai.generating") : t("ai.hint")}
+          {aiStatus !== "ready" ? t("ai.generating") : t("ai.hint")}
         </p>
       )}
     </motion.div>

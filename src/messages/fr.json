@@ -272,6 +272,8 @@
       "assistant": "Assistant",
       "validatePlacements": "Valider les placements",
       "statistics": "Statistiques",
+      "commandCenter": "Centre de commande",
+      "userManagement": "Gestion des utilisateurs",
       "settings": "Paramètres",
       "logout": "Se déconnecter"
     },
@@ -835,6 +837,147 @@
         }
       },
       "globalStats": "Analyses Globales de Placement"
+    },
+    "superAdmin": {
+      "commandCenter": {
+        "backToDashboard": "Retour au tableau de bord",
+        "kicker": "Super Admin",
+        "title": "Centre de commande",
+        "description": "Vue d'ensemble de la plateforme et contrôles administratifs.",
+        "cards": {
+          "totalUsers": "Total utilisateurs",
+          "activeUsers": "Utilisateurs actifs",
+          "bannedUsers": "Utilisateurs bannis",
+          "platformHealth": "Santé plateforme"
+        },
+        "quickActions": "Actions rapides",
+        "actions": {
+          "userManagement": "Gestion des utilisateurs",
+          "validations": "Valider les placements",
+          "statistics": "Statistiques"
+        },
+        "recentActivity": "Activité récente",
+        "noRecentActivity": "Aucune activité récente."
+      },
+      "users": {
+        "backToCommandCenter": "Retour au centre de commande",
+        "kicker": "Administration",
+        "title": "Gestion des utilisateurs",
+        "description": "Gérer tous les utilisateurs, rôles et accès de la plateforme.",
+        "searchPlaceholder": "Rechercher par email...",
+        "filterByRole": "Filtrer par rôle",
+        "allRoles": "Tous les rôles",
+        "createUser": "Créer un utilisateur",
+        "noUsers": "Aucun utilisateur trouvé.",
+        "roles": {
+          "student": "Étudiant",
+          "company_admin": "Admin entreprise",
+          "admin": "Administrateur",
+          "super_admin": "Super Admin"
+        },
+        "status": {
+          "active": "Actif",
+          "banned": "Banni"
+        },
+        "table": {
+          "user": "Utilisateur",
+          "role": "Rôle",
+          "status": "Statut",
+          "created": "Créé le",
+          "actions": "Actions"
+        },
+        "pagination": {
+          "showing": "Affichage {from}-{to} sur {total}"
+        },
+        "actions": {
+          "view": "Voir les détails",
+          "setRole": "Changer le rôle",
+          "setPassword": "Définir le mot de passe",
+          "ban": "Bannir",
+          "unban": "Débannir",
+          "delete": "Supprimer"
+        },
+        "fields": {
+          "name": "Nom",
+          "email": "Email",
+          "password": "Mot de passe",
+          "role": "Rôle"
+        },
+        "dialogs": {
+          "cancel": "Annuler",
+          "create": {
+            "title": "Créer un utilisateur",
+            "description": "Créer un nouvel utilisateur avec un rôle spécifique.",
+            "submit": "Créer"
+          },
+          "ban": {
+            "title": "Bannir l'utilisateur",
+            "description": "Bannir {email} de la plateforme.",
+            "reason": "Raison",
+            "reasonPlaceholder": "Raison optionnelle du bannissement...",
+            "duration": "Durée",
+            "durations": {
+              "permanent": "Permanent",
+              "1h": "1 heure",
+              "24h": "24 heures",
+              "7d": "7 jours",
+              "30d": "30 jours"
+            },
+            "submit": "Bannir"
+          },
+          "setRole": {
+            "title": "Changer le rôle",
+            "description": "Changer le rôle de {email}.",
+            "submit": "Mettre à jour"
+          },
+          "setPassword": {
+            "title": "Définir le mot de passe",
+            "description": "Définir un nouveau mot de passe pour {email}.",
+            "newPassword": "Nouveau mot de passe",
+            "submit": "Mettre à jour"
+          },
+          "delete": {
+            "title": "Supprimer l'utilisateur",
+            "description": "Êtes-vous sûr de vouloir supprimer définitivement {email} ? Cette action est irréversible.",
+            "submit": "Supprimer"
+          }
+        }
+      },
+      "userDetail": {
+        "backToUsers": "Retour aux utilisateurs",
+        "kicker": "Détail utilisateur",
+        "notFound": "Utilisateur non trouvé.",
+        "unnamed": "Utilisateur sans nom",
+        "roles": {
+          "student": "Étudiant",
+          "company_admin": "Admin entreprise",
+          "admin": "Administrateur",
+          "super_admin": "Super Admin"
+        },
+        "status": {
+          "active": "Actif",
+          "banned": "Banni"
+        },
+        "sessions": {
+          "title": "Sessions actives",
+          "ip": "Adresse IP",
+          "userAgent": "Agent utilisateur",
+          "created": "Créée le",
+          "expires": "Expire le",
+          "none": "Aucune session active."
+        },
+        "actions": {
+          "title": "Actions",
+          "impersonate": "Usurper l'identité",
+          "ban": "Bannir",
+          "unban": "Débannir",
+          "revokeAll": "Révoquer toutes les sessions"
+        }
+      },
+      "impersonation": {
+        "banner": "Vous usurpez l'identité de {name}",
+        "stop": "Arrêter"
+      }
     }
   },
   "howItWorks": {

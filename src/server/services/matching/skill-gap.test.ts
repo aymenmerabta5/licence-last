@@ -3,8 +3,8 @@ import { describe, test, expect, mock } from "bun:test"
 const MATCH_WEIGHT_SKILLS = 55 // From ./constants.ts MATCH_WEIGHT.skills
 
 // Mock the score module before importing skill-gap
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockGetExplainableMatchScore = mock((..._args: any[]) =>
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const mockGetExplainableMatchScore = mock((_studentUserId: string, _offerId: string) =>
   Promise.resolve({
     score: 65,
     readinessPercent: 65,
@@ -96,13 +96,13 @@ describe("src/server/services/matching/skill-gap", () => {
   })
 
   test("should handle case when all skills match", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockGetExplainableMatchScore.mockResolvedValueOnce({
       score: 100,
       readinessPercent: 100,
       missingSkills: [],
       matchedSkills: [{ id: "s1", name: "React" }],
       breakdown: {},
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
 
     const { getSkillGapRoadmap } = await import("./skill-gap")

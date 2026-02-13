@@ -1,6 +1,5 @@
 import {
   getMeProcedure,
-  promoteUserProcedure,
   updateMeProcedure,
   uploadAvatarProcedure,
   deleteAvatarProcedure,
@@ -76,12 +75,24 @@ import {
   getScoreProcedure,
   getSkillGapProcedure,
 } from "./routes/matching"
+import {
+  listUsersProcedure,
+  createUserProcedure,
+  setRoleProcedure,
+  banUserProcedure,
+  unbanUserProcedure,
+  removeUserProcedure,
+  setPasswordProcedure,
+  updateUserProcedure,
+  listUserSessionsProcedure,
+  revokeSessionProcedure,
+  revokeAllSessionsProcedure,
+} from "./routes/admin-users"
 
 export const appRouter = {
   users: {
     getMe: getMeProcedure,
     updateMe: updateMeProcedure,
-    promote: promoteUserProcedure,
     uploadAvatar: uploadAvatarProcedure,
     deleteAvatar: deleteAvatarProcedure,
   },
@@ -151,7 +162,19 @@ export const appRouter = {
   stats: {
     getAdminStats: getAdminStatsProcedure,
   },
-
+  adminUsers: {
+    list: listUsersProcedure,
+    create: createUserProcedure,
+    setRole: setRoleProcedure,
+    ban: banUserProcedure,
+    unban: unbanUserProcedure,
+    remove: removeUserProcedure,
+    setPassword: setPasswordProcedure,
+    update: updateUserProcedure,
+    listSessions: listUserSessionsProcedure,
+    revokeSession: revokeSessionProcedure,
+    revokeAllSessions: revokeAllSessionsProcedure,
+  },
   assistant: {
     listModels: listAssistantModelsProcedure,
     listConversations: listAssistantConversationsProcedure,

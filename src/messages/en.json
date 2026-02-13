@@ -272,6 +272,8 @@
       "assistant": "Assistant",
       "validatePlacements": "Validate Placements",
       "statistics": "Statistics",
+      "commandCenter": "Command Center",
+      "userManagement": "User Management",
       "settings": "Settings",
       "logout": "Log out"
     },
@@ -834,6 +836,147 @@
         }
       },
       "globalStats": "Global Placement Analytics"
+    },
+    "superAdmin": {
+      "commandCenter": {
+        "backToDashboard": "Back to dashboard",
+        "kicker": "Super Admin",
+        "title": "Command Center",
+        "description": "Platform overview and administrative controls.",
+        "cards": {
+          "totalUsers": "Total Users",
+          "activeUsers": "Active Users",
+          "bannedUsers": "Banned Users",
+          "platformHealth": "Platform Health"
+        },
+        "quickActions": "Quick Actions",
+        "actions": {
+          "userManagement": "User Management",
+          "validations": "Validate Placements",
+          "statistics": "Statistics"
+        },
+        "recentActivity": "Recent Activity",
+        "noRecentActivity": "No recent activity."
+      },
+      "users": {
+        "backToCommandCenter": "Back to command center",
+        "kicker": "Administration",
+        "title": "User Management",
+        "description": "Manage all platform users, roles, and access.",
+        "searchPlaceholder": "Search by email...",
+        "filterByRole": "Filter by role",
+        "allRoles": "All roles",
+        "createUser": "Create User",
+        "noUsers": "No users found.",
+        "roles": {
+          "student": "Student",
+          "company_admin": "Company Admin",
+          "admin": "Admin",
+          "super_admin": "Super Admin"
+        },
+        "status": {
+          "active": "Active",
+          "banned": "Banned"
+        },
+        "table": {
+          "user": "User",
+          "role": "Role",
+          "status": "Status",
+          "created": "Created",
+          "actions": "Actions"
+        },
+        "pagination": {
+          "showing": "Showing {from}-{to} of {total}"
+        },
+        "actions": {
+          "view": "View Details",
+          "setRole": "Change Role",
+          "setPassword": "Set Password",
+          "ban": "Ban User",
+          "unban": "Unban User",
+          "delete": "Delete User"
+        },
+        "fields": {
+          "name": "Name",
+          "email": "Email",
+          "password": "Password",
+          "role": "Role"
+        },
+        "dialogs": {
+          "cancel": "Cancel",
+          "create": {
+            "title": "Create User",
+            "description": "Create a new platform user with a specific role.",
+            "submit": "Create"
+          },
+          "ban": {
+            "title": "Ban User",
+            "description": "Ban {email} from the platform.",
+            "reason": "Reason",
+            "reasonPlaceholder": "Optional reason for banning...",
+            "duration": "Duration",
+            "durations": {
+              "permanent": "Permanent",
+              "1h": "1 hour",
+              "24h": "24 hours",
+              "7d": "7 days",
+              "30d": "30 days"
+            },
+            "submit": "Ban User"
+          },
+          "setRole": {
+            "title": "Change Role",
+            "description": "Change the role for {email}.",
+            "submit": "Update Role"
+          },
+          "setPassword": {
+            "title": "Set Password",
+            "description": "Set a new password for {email}.",
+            "newPassword": "New Password",
+            "submit": "Update Password"
+          },
+          "delete": {
+            "title": "Delete User",
+            "description": "Are you sure you want to permanently delete {email}? This action cannot be undone.",
+            "submit": "Delete"
+          }
+        }
+      },
+      "userDetail": {
+        "backToUsers": "Back to users",
+        "kicker": "User Detail",
+        "notFound": "User not found.",
+        "unnamed": "Unnamed User",
+        "roles": {
+          "student": "Student",
+          "company_admin": "Company Admin",
+          "admin": "Admin",
+          "super_admin": "Super Admin"
+        },
+        "status": {
+          "active": "Active",
+          "banned": "Banned"
+        },
+        "sessions": {
+          "title": "Active Sessions",
+          "ip": "IP Address",
+          "userAgent": "User Agent",
+          "created": "Created",
+          "expires": "Expires",
+          "none": "No active sessions."
+        },
+        "actions": {
+          "title": "Actions",
+          "impersonate": "Impersonate",
+          "ban": "Ban",
+          "unban": "Unban",
+          "revokeAll": "Revoke All Sessions"
+        }
+      },
+      "impersonation": {
+        "banner": "You are impersonating {name}",
+        "stop": "Stop"
+      }
     }
   },
   "howItWorks": {

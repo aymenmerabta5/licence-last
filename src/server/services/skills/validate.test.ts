@@ -3,12 +3,12 @@ import { describe, test, expect, mock, beforeEach } from "bun:test"
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockWhereResult: any[] = []
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockWhere = mock((..._args: any[]): any => Promise.resolve(mockWhereResult))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockFrom = mock((..._args: any[]): any => ({ where: mockWhere }))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSelect = mock((..._args: any[]): any => ({ from: mockFrom }))
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+const mockWhere = mock((_filter: any): any => Promise.resolve(mockWhereResult))
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+const mockFrom = mock((_table: any): any => ({ where: mockWhere }))
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+const mockSelect = mock((_columns: any): any => ({ from: mockFrom }))
 
 mock.module("@/server/db", () => ({
   db: {

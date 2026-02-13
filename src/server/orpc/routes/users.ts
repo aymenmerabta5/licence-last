@@ -7,12 +7,9 @@ import { eq } from "drizzle-orm"
 import {
   authedProcedureGenerous,
   authedProcedureStandard,
-  superAdminProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
-import { userRoleSchema } from "@/lib/schemas/enums"
 import { getMe } from "@/server/services/users/get-me"
 import { updateMe } from "@/server/services/users/update-me"
-import { promoteUser } from "@/server/services/users/promote"
 import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
@@ -36,15 +33,6 @@ export const updateMeProcedure = authedProcedureStandard
       name: input.name === "" ? null : input.name,
     })
   })
-
-export const promoteUserProcedure = superAdminProcedureStandard
-  .input(
-    z.object({
-      userId: z.string().min(1),
-      newRole: userRoleSchema,
-    }),
-  )
-  .handler(async ({ input }) => promoteUser(input.userId, input.newRole))
 
 /** Extract S3 key from public URL */
 function extractKeyFromUrl(url: string): string | null {

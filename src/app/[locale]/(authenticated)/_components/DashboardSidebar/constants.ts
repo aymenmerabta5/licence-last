@@ -9,6 +9,8 @@ import {
   BarChart3,
   CheckCircle2,
   Sparkles,
+  Shield,
+  UsersRound,
 } from "lucide-react"
 
 export interface NavItem {
@@ -63,15 +65,27 @@ export const navItems: NavItem[] = [
   },
   {
     labelKey: "validatePlacements",
-    href: "/dashboard/validate",
+    href: "/dashboard/admin/validations",
     icon: CheckCircle2,
     roles: ["admin", "super_admin"],
   },
   {
     labelKey: "statistics",
-    href: "/dashboard/stats",
+    href: "/dashboard/admin/stats",
     icon: BarChart3,
     roles: ["admin", "super_admin"],
+  },
+  {
+    labelKey: "commandCenter",
+    href: "/dashboard/admin/command-center",
+    icon: Shield,
+    roles: ["super_admin"],
+  },
+  {
+    labelKey: "userManagement",
+    href: "/dashboard/admin/users",
+    icon: UsersRound,
+    roles: ["super_admin"],
   },
   {
     labelKey: "settings",
