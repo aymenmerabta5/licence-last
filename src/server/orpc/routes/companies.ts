@@ -6,11 +6,11 @@ import { updateTag } from "next/cache"
 
 import { isAdminRole } from "../middleware"
 import {
-  adminProcedureGenerous,
-  adminProcedureStandard,
   authedProcedureGenerous,
   authedProcedureStandard,
   companyAdminProcedureStandard,
+  superAdminProcedureGenerous,
+  superAdminProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
 import { companyStatusSchema, companyReportStatusSchema } from "@/lib/schemas/enums"
 import { listCompanies } from "@/server/services/companies/list"
@@ -114,7 +114,7 @@ export const getCompanyTrustIndexProcedure = authedProcedureGenerous
     }
   })
 
-export const listCompanyTrustIndicesProcedure = adminProcedureGenerous
+export const listCompanyTrustIndicesProcedure = superAdminProcedureGenerous
   .input(z.object({ limit: z.coerce.number().int().min(1).max(200).optional() }).optional())
   .handler(async ({ input }) => listCompanyTrustIndices(input?.limit ?? 50))
 
@@ -148,7 +148,7 @@ export const submitCompanyReportProcedure = authedProcedureStandard
     }),
   )
 
-export const listCompanyReportsProcedure = adminProcedureGenerous
+export const listCompanyReportsProcedure = superAdminProcedureGenerous
   .input(
     z
       .object({
@@ -160,7 +160,7 @@ export const listCompanyReportsProcedure = adminProcedureGenerous
   )
   .handler(async ({ input }) => listCompanyReports(input))
 
-export const resolveCompanyReportProcedure = adminProcedureStandard
+export const resolveCompanyReportProcedure = superAdminProcedureStandard
   .input(resolveCompanyReportSchema)
   .handler(async ({ input, context }) =>
     resolveCompanyReport({
@@ -219,7 +219,7 @@ export const updateCompanyProcedure = companyAdminProcedureStandard
     return result
   })
 
-export const approveCompanyProcedure = adminProcedureStandard
+export const approveCompanyProcedure = superAdminProcedureStandard
   .input(z.object({ companyId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     const result = await approveCompany(input.companyId, context.user.id)
@@ -230,7 +230,7 @@ export const approveCompanyProcedure = adminProcedureStandard
     return result
   })
 
-export const rejectCompanyProcedure = adminProcedureStandard
+export const rejectCompanyProcedure = superAdminProcedureStandard
   .input(
     z.object({
       companyId: z.string().min(1),

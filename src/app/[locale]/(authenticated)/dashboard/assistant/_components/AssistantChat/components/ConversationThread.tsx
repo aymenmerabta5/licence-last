@@ -12,15 +12,9 @@ import { orpc } from "@/server/orpc/client"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
+import { reveal, ease } from "@/lib/animations"
 
 import { MessageBubble } from "./MessageBubble"
-
-const reveal = {
-  initial: { opacity: 0, y: 10 },
-  animate: { opacity: 1, y: 0 },
-}
-
-const ease = [0.4, 0, 0.2, 1] as const
 
 type AuthStatus = {
   status: string | null

@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { Camera, Loader2, X } from "lucide-react"
 
 interface AvatarSectionProps {
@@ -31,12 +32,14 @@ export function AvatarSection({
       />
 
       <div className="relative group">
-        <div className="h-28 w-28 rounded-3xl bg-primary/10 flex items-center justify-center text-primary text-4xl font-serif font-bold transition-all group-hover:bg-primary/20 overflow-hidden">
+        <div className="relative h-28 w-28 rounded-3xl bg-primary/10 flex items-center justify-center text-primary text-4xl font-serif font-bold transition-all group-hover:bg-primary/20 overflow-hidden">
           {imageUrl ? (
-            <img
+            <Image
               src={imageUrl}
               alt="Profile"
-              className="h-full w-full object-cover"
+              fill
+              className="object-cover"
+              sizes="112px"
             />
           ) : (
             avatarInitial

@@ -10,12 +10,11 @@ import { SubmitButton } from "@/components/SubmitButton"
 import { Separator } from "@/components/ui/separator"
 import { Link } from "@/i18n/routing"
 
+import { ease } from "@/lib/animations"
 import type { SignupFormProps } from "./types"
 import { useSignupForm } from "./hooks/useSignupForm"
 import { SignupFields } from "./components/SignupFields"
 import { SignupSuccess } from "./components/SignupSuccess"
-
-const ease = [0.4, 0, 0.2, 1] as const
 
 export function SignupForm({ role, onBack }: SignupFormProps) {
   const t = useTranslations("auth.signup")
@@ -25,7 +24,7 @@ export function SignupForm({ role, onBack }: SignupFormProps) {
   const tu = useTranslations("auth.signup.universitySignup")
 
   const isCompany = role === "company_admin"
-  const isUniversity = role === "admin"
+  const isUniversity = role === "university_admin"
   const title = isUniversity ? tu("title") : isCompany ? tc("title") : t("title")
   const subtitle = isUniversity ? tu("subtitle") : isCompany ? tc("subtitle") : t("subtitle")
   const emailPlaceholder = isUniversity ? tu("emailPlaceholder") : isCompany ? tc("emailPlaceholder") : t("emailPlaceholder")

@@ -1,0 +1,53 @@
+import { describe, test, expect, mock, beforeEach } from "bun:test"
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockChain: any = {
+  select: mock(() => mockChain),
+  from: mock(() => mockChain),
+  where: mock(() => mockChain),
+  orderBy: mock(() => Promise.resolve([])),
+}
+
+mock.module("@/server/db", () => ({ db: mockChain }))
+
+describe("listDepartments", () => {
+  beforeEach(() => {
+    for (const fn of Object.values(mockChain)) (fn as ReturnType<typeof mock>).mockClear()
+    mockChain.select.mockReturnValue(mockChain)
+    mockChain.from.mockReturnValue(mockChain)
+    mockChain.where.mockReturnValue(mockChain)
+  })
+
+  test("should return list of departments", async () => {
+    const depts = [
+      { id: "d1", name: "CS", headName: "Dr. A", createdAt: new Date() },
+      { id: "d2", name: "Math", headName: null, createdAt: new Date() },
+    ]
+    mockChain.orderBy.mockResolvedValue(depts)
+
+    const { listDepartments } = await import("./list")
+    const result = await listDepartments("uni-1")
+
+    expect(result).toHaveLength(2)
+    expect(result[0].name).toBe("CS")
+  })
+
+  test("should return empty array when no departments exist", async () => {
+    mockChain.orderBy.mockResolvedValue([])
+
+    const { listDepartments } = await import("./list")
+    const result = await listDepartments("uni-1")
+
+    expect(result).toHaveLength(0)
+  })
+
+  test("should call select and filter by universityId", async () => {
+    mockChain.orderBy.mockResolvedValue([])
+
+    const { listDepartments } = await import("./list")
+    await listDepartments("uni-1")
+
+    expect(mockChain.select).toHaveBeenCalled()
+    expect(mockChain.where).toHaveBeenCalled()
+  })
+})

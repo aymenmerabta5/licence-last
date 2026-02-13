@@ -8,6 +8,7 @@ import {
 } from "drizzle-orm/pg-core"
 
 import { user } from "./auth"
+import { department } from "./departments"
 import { skillTag } from "./skills"
 
 export const studentProfile = pgTable(
@@ -24,7 +25,10 @@ export const studentProfile = pgTable(
     portfolioUrl: text("portfolio_url"),
 
     studentNumber: text("student_number"),
-    department: text("department"),
+    department: text("department"), // deprecated — use departmentId
+    departmentId: text("department_id").references(() => department.id, {
+      onDelete: "set null",
+    }),
     level: text("level"),
     address: text("address"),
 

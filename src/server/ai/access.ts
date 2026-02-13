@@ -1,6 +1,6 @@
 import "server-only"
 
-export type AssistantRole = "student" | "company_admin" | "admin" | "super_admin"
+export type AssistantRole = "student" | "company_admin" | "university_admin" | "super_admin"
 
 export function isRoleAllowedForIntent({
   role,
@@ -11,7 +11,7 @@ export function isRoleAllowedForIntent({
 }): boolean {
   if (!role) return false
 
-  const isAdmin = role === "admin" || role === "super_admin"
+  const isAdmin = role === "university_admin" || role === "super_admin"
   const isCompanyAdmin = role === "company_admin"
   const isStudent = role === "student"
 

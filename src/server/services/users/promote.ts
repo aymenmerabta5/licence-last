@@ -8,7 +8,7 @@ import { db } from "@/server/db"
 const log = createModuleLogger("services/users/promote")
 import { user } from "@/server/db/schema/auth"
 
-type UserRole = "student" | "company_admin" | "admin" | "super_admin"
+type UserRole = "student" | "company_admin" | "university_admin" | "super_admin"
 
 /**
  * Promote a user to a new role.

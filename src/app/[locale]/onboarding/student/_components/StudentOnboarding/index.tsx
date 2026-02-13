@@ -27,13 +27,12 @@ import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYAS } from "@/lib/wilayas"
 import { useSkillGrouping } from "@/hooks"
 
+import { ease } from "@/lib/animations"
 import { useOnboardingForm } from "./hooks/useOnboardingForm"
-
-const ease = [0.4, 0, 0.2, 1] as const
 
 export function StudentOnboardingForm() {
   const t = useTranslations("onboarding.student")
-  const { form, serverError, skillTags } = useOnboardingForm()
+  const { form, serverError, skillTags, departments } = useOnboardingForm()
   const { groups, categoryOrder, categoryLabels } = useSkillGrouping(skillTags)
 
   return (
@@ -92,19 +91,39 @@ export function StudentOnboardingForm() {
           )}
         </form.Field>
 
-        <form.Field name="department">
-          {(field) => (
-            <TextField
-              id="student-department"
-              label={t("department")}
-              placeholder={t("departmentPlaceholder")}
-              icon={GraduationCap}
-              value={field.state.value}
-              onChange={(v) => field.handleChange(v)}
-              onBlur={field.handleBlur}
-            />
-          )}
-        </form.Field>
+        {departments.length > 0 ? (
+          <form.Field name="departmentId">
+            {(field) => (
+              <SelectField
+                id="student-department"
+                label={t("department")}
+                placeholder={t("departmentPlaceholder")}
+                icon={GraduationCap}
+                options={departments.map((d) => ({
+                  value: d.id,
+                  label: d.name,
+                }))}
+                value={field.state.value}
+                onChange={(v) => field.handleChange(String(v))}
+                onBlur={field.handleBlur}
+              />
+            )}
+          </form.Field>
+        ) : (
+          <form.Field name="department">
+            {(field) => (
+              <TextField
+                id="student-department"
+                label={t("department")}
+                placeholder={t("departmentFreetext")}
+                icon={GraduationCap}
+                value={field.state.value}
+                onChange={(v) => field.handleChange(v)}
+                onBlur={field.handleBlur}
+              />
+            )}
+          </form.Field>
+        )}
 
         <form.Field name="level">
           {(field) => (

@@ -95,7 +95,7 @@ export async function DashboardContent({
   adminComponent: AdminDashboard,
 }: DashboardContentProps) {
   const [user, t] = await Promise.all([
-    requireRole(["student", "company_admin", "admin", "super_admin"]),
+    requireRole(["student", "company_admin", "university_admin", "super_admin"]),
     getTranslations("dashboard"),
   ])
 
@@ -113,7 +113,7 @@ export async function DashboardContent({
   const roleSubtitleKey = {
     student: "student.subtitle",
     company_admin: "recruiter.subtitle",
-    admin: "admin.subtitle",
+    university_admin: "admin.subtitle",
     super_admin: "admin.subtitle",
   } as const
 
@@ -130,7 +130,7 @@ export async function DashboardContent({
               user.role === "company_admin"
                 ? "recruiter"
                 : user.role === "super_admin"
-                ? "admin"
+                ? "university_admin"
                 : user.role
             }`
           )}{" "}
@@ -155,7 +155,7 @@ export async function DashboardContent({
       )}
 
       {user.role === "company_admin" && <RecruiterDashboard user={{ ...user, role: user.role as string }} />}
-      {(user.role === "admin" || user.role === "super_admin") && (
+      {(user.role === "university_admin" || user.role === "super_admin") && (
         <AdminDashboard user={{ ...user, role: user.role as string }} />
       )}
     </div>

@@ -267,6 +267,11 @@
       "abbreviationPlaceholder": "USTHB",
       "departmentName": "Department name",
       "departmentNamePlaceholder": "Computer Science Department",
+      "departments": "Departments",
+      "departmentsHint": "Add the departments in your university (e.g. Computer Science, Mathematics)",
+      "departmentPlaceholder": "e.g. Computer Science",
+      "addDepartment": "Add department",
+      "removeDepartment": "Remove",
       "deanName": "Dean name",
       "deanNamePlaceholder": "Prof. Name",
       "phone": "Phone number",
@@ -297,7 +302,8 @@
       "studentNumber": "Student number",
       "studentNumberPlaceholder": "e.g. STU2025001",
       "department": "Department",
-      "departmentPlaceholder": "e.g. Computer Science",
+      "departmentPlaceholder": "Select your department",
+      "departmentFreetext": "Or type department name",
       "level": "Level",
       "levelPlaceholder": "e.g. L3, M1, M2",
       "locationSection": "Location",
@@ -327,6 +333,8 @@
       "candidatePipeline": "Candidate Pipeline",
       "assistant": "Assistant",
       "validatePlacements": "Validate Placements",
+      "deptValidations": "Department Validations",
+      "departments": "Departments",
       "statistics": "Statistics",
       "commandCenter": "Command Center",
       "userManagement": "User Management",
@@ -621,7 +629,8 @@
     "roles": {
       "student": "Student",
       "recruiter": "Recruiter",
-      "admin": "Administrator"
+      "dept_head": "Department Head",
+      "university_admin": "Administrator"
     },
     "student": {
       "title": "Student Dashboard",
@@ -874,6 +883,35 @@
         }
       },
       "globalStats": "Global Placement Analytics",
+      "departments": {
+        "title": "Departments",
+        "description": "Manage your university's departments and assign department heads.",
+        "backToDashboard": "Back to dashboard",
+        "empty": "No departments created yet.",
+        "addDepartment": "Add Department",
+        "name": "Department name",
+        "namePlaceholder": "e.g. Computer Science",
+        "headName": "Head name (optional)",
+        "headNamePlaceholder": "e.g. Dr. Ahmed Benali",
+        "assignHead": "Assign Head",
+        "assignHeadTitle": "Assign Department Head",
+        "assignHeadDescription": "Select a user to assign as the head of this department.",
+        "selectUser": "Select user",
+        "noUsersAvailable": "No users available to assign.",
+        "save": "Save",
+        "cancel": "Cancel",
+        "createSuccess": "Department created successfully.",
+        "updateSuccess": "Department updated successfully.",
+        "assignSuccess": "Department head assigned successfully.",
+        "error": "Something went wrong. Please try again."
+      },
+      "deptValidations": {
+        "title": "Department Validations",
+        "description": "Review and validate placements for students in your department.",
+        "empty": "No placements pending validation in your department.",
+        "backToDashboard": "Back to dashboard",
+        "companyAcceptedOn": "Company accepted on"
+      },
       "universities": {
         "backToCommandCenter": "Back to command center",
         "kicker": "Administration",
@@ -962,7 +1000,8 @@
         "roles": {
           "student": "Student",
           "company_admin": "Company Admin",
-          "admin": "Admin",
+          "dept_head": "Department Head",
+          "university_admin": "University Admin",
           "super_admin": "Super Admin"
         },
         "status": {
@@ -1041,7 +1080,8 @@
         "roles": {
           "student": "Student",
           "company_admin": "Company Admin",
-          "admin": "Admin",
+          "dept_head": "Department Head",
+          "university_admin": "University Admin",
           "super_admin": "Super Admin"
         },
         "status": {
@@ -1205,6 +1245,36 @@
       "text": "Ready to transform your internship experience?",
       "button": "Get Started Free",
       "aria": "Get started with Internex for free"
+    }
+  },
+  "verify": {
+    "title": "Document Verification",
+    "description": "Enter the verification code printed on your Internex document to confirm its authenticity.",
+    "placeholder": "INTX-XXXX-XXXX",
+    "submit": "Verify Document",
+    "checking": "Verifying...",
+    "valid": {
+      "title": "Document Verified",
+      "subtitle": "This document is authentic and was issued by Internex.",
+      "type": "Document Type",
+      "typeAgreement": "Internship Agreement",
+      "typeCertificate": "Internship Certificate",
+      "student": "Student",
+      "company": "Company",
+      "university": "University",
+      "offer": "Internship Title",
+      "period": "Period",
+      "periodTo": "to",
+      "generatedOn": "Generated On",
+      "status": "Status",
+      "statusGenerated": "Generated",
+      "statusSigned": "Signed",
+      "statusPending": "Pending"
+    },
+    "invalid": {
+      "title": "Document Not Found",
+      "subtitle": "No document was found with this verification code. Please check the code and try again.",
+      "tryAgain": "Try Another Code"
     }
   }
 }

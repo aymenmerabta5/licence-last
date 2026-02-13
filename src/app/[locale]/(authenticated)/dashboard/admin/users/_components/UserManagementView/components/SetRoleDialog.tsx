@@ -27,11 +27,11 @@ interface SetRoleDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   user: AdminUser | null
-  onSubmit: (data: { userId: string; role: "student" | "company_admin" | "admin" | "super_admin" }) => void
+  onSubmit: (data: { userId: string; role: "student" | "company_admin" | "university_admin" | "super_admin" }) => void
   isPending: boolean
 }
 
-const roles = ["student", "company_admin", "admin", "super_admin"] as const
+const roles = ["student", "company_admin", "university_admin", "super_admin"] as const
 
 export function SetRoleDialog({ open, onOpenChange, user, onSubmit, isPending }: SetRoleDialogProps) {
   const t = useTranslations("dashboard.superAdmin.users")

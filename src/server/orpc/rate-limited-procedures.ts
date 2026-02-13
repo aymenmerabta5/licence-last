@@ -7,6 +7,7 @@ import {
   superAdminProcedure,
   companyAdminProcedure,
   studentProcedure,
+  deptHeadProcedure,
 } from "./middleware"
 import {
   createStrictRateLimitMiddleware,
@@ -148,4 +149,22 @@ export const studentProcedureStandard = studentProcedure.use(
  */
 export const studentProcedureGenerous = studentProcedure.use(
   createGenerousRateLimitMiddleware("student-generous")
+)
+
+/**
+ * Department head procedure with standard rate limiting (100 req/min)
+ * Use for: General dept head operations (validate, reject)
+ * Key: User-based
+ */
+export const deptHeadProcedureStandard = deptHeadProcedure.use(
+  createStandardRateLimitMiddleware("depthead-standard")
+)
+
+/**
+ * Department head procedure with generous rate limiting (300 req/min)
+ * Use for: Read-heavy dept head operations (list pending)
+ * Key: User-based
+ */
+export const deptHeadProcedureGenerous = deptHeadProcedure.use(
+  createGenerousRateLimitMiddleware("depthead-generous")
 )

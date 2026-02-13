@@ -207,9 +207,11 @@ export const updatePipelineStageProcedure = companyAdminProcedureStandard
         note: input.note,
       })
     } catch (error) {
-      throw new ORPCError("BAD_REQUEST", {
-        message:
-          error instanceof Error ? error.message : "Failed to update pipeline stage",
+      if (isApplicationServiceError(error)) {
+        throw createApplicationORPCError(error, getCompanyActionStatus(error.code))
+      }
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "An unexpected error occurred",
       })
     }
   })

@@ -1,6 +1,6 @@
 import { createAuthClient } from "better-auth/react"
 import { adminClient, multiSessionClient, twoFactorClient } from "better-auth/client/plugins"
-import { ac, superAdmin, admin, student, companyAdmin } from "./permissions"
+import { ac, superAdmin, universityAdmin, student, companyAdmin } from "./permissions"
 import { openAPI, haveIBeenPwned  } from "better-auth/plugins"
 
 
@@ -10,7 +10,7 @@ export const authClient = createAuthClient({
       ac,
       roles: {
         super_admin: superAdmin,
-        admin,
+        university_admin: universityAdmin,
         student,
         company_admin: companyAdmin,
       },

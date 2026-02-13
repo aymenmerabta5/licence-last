@@ -23,5 +23,8 @@ export function createUniversityOnboardingSchema(t: TranslationFn) {
     domains: z
       .array(z.string().min(3))
       .min(1, { error: t("domainsRequired") }),
+    departments: z
+      .array(z.object({ name: z.string().min(2) }))
+      .optional(),
   })
 }

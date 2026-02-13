@@ -13,7 +13,7 @@ export function useUserActions() {
   }
 
   const createUser = useMutation({
-    mutationFn: (data: { email: string; password: string; name: string; role: "student" | "company_admin" | "admin" | "super_admin" }) =>
+    mutationFn: (data: { email: string; password: string; name: string; role: "student" | "company_admin" | "university_admin" | "super_admin" }) =>
       orpcClient.adminUsers.create(data),
     onSuccess: () => {
       toast.success("User created")
@@ -23,7 +23,7 @@ export function useUserActions() {
   })
 
   const setRole = useMutation({
-    mutationFn: (data: { userId: string; role: "student" | "company_admin" | "admin" | "super_admin" }) =>
+    mutationFn: (data: { userId: string; role: "student" | "company_admin" | "university_admin" | "super_admin" }) =>
       orpcClient.adminUsers.setRole(data),
     onSuccess: () => {
       toast.success("Role updated")

@@ -2,7 +2,7 @@ import "server-only"
 
 import { createElement } from "react"
 import { renderToBuffer } from "@react-pdf/renderer"
-import { eq } from "drizzle-orm"
+import { eq, and } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { placement, placementDocument } from "@/server/db/schema/placements"
@@ -14,7 +14,10 @@ import { university } from "@/server/db/schema/universities"
 import {
   InternshipCertificateTemplate,
   type CertificateData,
-} from "./templates/certificate"
+} from "@/server/pdfs/CertificateTemplate"
+import { generateVerificationCode } from "./verification-code"
+import { generateQRCodeDataUrl } from "./qr-utils"
+import { env } from "@/env"
 
 export interface GenerateCertificateInput {
   placementId: string
@@ -73,6 +76,22 @@ export async function generateCertificate(
     uniName = uni?.name ?? null
   }
 
+  // Check for existing document to preserve verification code on regeneration
+  const [existingDoc] = await db
+    .select()
+    .from(placementDocument)
+    .where(
+      and(
+        eq(placementDocument.placementId, placementId),
+        eq(placementDocument.type, "certificate"),
+      ),
+    )
+    .limit(1)
+
+  const verificationCode = existingDoc?.verificationCode ?? generateVerificationCode()
+  const verificationUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/${locale}/verify/${verificationCode}`
+  const qrCodeDataUrl = await generateQRCodeDataUrl(verificationUrl)
+
   const data: CertificateData = {
     studentName: app.studentName ?? "Unknown",
     studentEmail: app.studentEmail,
@@ -85,16 +104,15 @@ export async function generateCertificate(
   }
 
   const pdfBuffer = await renderToBuffer(
-    createElement(InternshipCertificateTemplate, { data, locale }) as unknown as Parameters<
-      typeof renderToBuffer
-    >[0],
+    createElement(InternshipCertificateTemplate, {
+      data,
+      locale,
+      verificationCode,
+      qrCodeDataUrl,
+    }) as unknown as Parameters<typeof renderToBuffer>[0],
   )
 
-  let [documentRecord] = await db
-    .select()
-    .from(placementDocument)
-    .where(eq(placementDocument.placementId, placementId))
-    .limit(1)
+  let documentRecord = existingDoc
 
   if (!documentRecord) {
     const [newDoc] = await db
@@ -104,6 +122,7 @@ export async function generateCertificate(
         placementId,
         type: "certificate",
         status: "generated",
+        verificationCode,
         meta: {
           generatedAt: new Date().toISOString(),
           locale,
@@ -117,6 +136,7 @@ export async function generateCertificate(
       .update(placementDocument)
       .set({
         status: "generated",
+        verificationCode,
         meta: {
           generatedAt: new Date().toISOString(),
           locale,

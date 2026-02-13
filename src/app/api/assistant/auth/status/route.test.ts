@@ -176,9 +176,9 @@ describe("src/app/api/assistant/auth/status/route", () => {
       expect(body).toBe("Forbidden")
     })
 
-    test("admin role returns 403", async () => {
+    test("university_admin role returns 403", async () => {
       mockGetSession.mockResolvedValue({
-        user: { id: "user-1", role: "admin" },
+        user: { id: "user-1", role: "university_admin" },
       })
 
       const { POST } = await import("./route")

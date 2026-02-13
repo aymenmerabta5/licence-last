@@ -267,6 +267,11 @@
       "abbreviationPlaceholder": "USTHB",
       "departmentName": "Nom du département",
       "departmentNamePlaceholder": "Département d'Informatique",
+      "departments": "Départements",
+      "departmentsHint": "Ajoutez les départements de votre université (ex. Informatique, Mathématiques)",
+      "departmentPlaceholder": "ex. Informatique",
+      "addDepartment": "Ajouter un département",
+      "removeDepartment": "Supprimer",
       "deanName": "Nom du doyen",
       "deanNamePlaceholder": "Prof. Nom",
       "phone": "Numéro de téléphone",
@@ -297,7 +302,8 @@
       "studentNumber": "Numéro étudiant",
       "studentNumberPlaceholder": "ex. ETU2025001",
       "department": "Département",
-      "departmentPlaceholder": "ex. Informatique",
+      "departmentPlaceholder": "Sélectionnez votre département",
+      "departmentFreetext": "Ou saisissez le nom du département",
       "level": "Niveau",
       "levelPlaceholder": "ex. L3, M1, M2",
       "locationSection": "Localisation",
@@ -327,6 +333,8 @@
       "candidatePipeline": "Pipeline candidats",
       "assistant": "Assistant",
       "validatePlacements": "Valider les placements",
+      "deptValidations": "Validations de département",
+      "departments": "Départements",
       "statistics": "Statistiques",
       "commandCenter": "Centre de commande",
       "userManagement": "Gestion des utilisateurs",
@@ -621,7 +629,8 @@
     "roles": {
       "student": "Étudiant",
       "recruiter": "Recruteur",
-      "admin": "Administrateur"
+      "dept_head": "Chef de département",
+      "university_admin": "Administrateur"
     },
     "student": {
       "title": "Tableau de Bord Étudiant",
@@ -874,6 +883,35 @@
           }
         }
       },
+      "departments": {
+        "title": "Départements",
+        "description": "Gérez les départements de votre université et assignez les chefs de département.",
+        "backToDashboard": "Retour au tableau de bord",
+        "empty": "Aucun département créé.",
+        "addDepartment": "Ajouter un département",
+        "name": "Nom du département",
+        "namePlaceholder": "ex. Informatique",
+        "headName": "Nom du chef (optionnel)",
+        "headNamePlaceholder": "ex. Dr. Ahmed Benali",
+        "assignHead": "Assigner un chef",
+        "assignHeadTitle": "Assigner le chef de département",
+        "assignHeadDescription": "Sélectionnez un utilisateur pour l'assigner comme chef de ce département.",
+        "selectUser": "Sélectionner un utilisateur",
+        "noUsersAvailable": "Aucun utilisateur disponible.",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "createSuccess": "Département créé avec succès.",
+        "updateSuccess": "Département mis à jour avec succès.",
+        "assignSuccess": "Chef de département assigné avec succès.",
+        "error": "Une erreur est survenue. Veuillez réessayer."
+      },
+      "deptValidations": {
+        "title": "Validations de département",
+        "description": "Examinez et validez les stages des étudiants de votre département.",
+        "empty": "Aucun stage en attente de validation dans votre département.",
+        "backToDashboard": "Retour au tableau de bord",
+        "companyAcceptedOn": "Accepté par l'entreprise le"
+      },
       "globalStats": "Analyses Globales de Placement",
       "universities": {
         "backToCommandCenter": "Retour au centre de commande",
@@ -963,7 +1001,8 @@
         "roles": {
           "student": "Étudiant",
           "company_admin": "Admin entreprise",
-          "admin": "Administrateur",
+          "dept_head": "Chef de département",
+          "university_admin": "Admin université",
           "super_admin": "Super Admin"
         },
         "status": {
@@ -1042,7 +1081,8 @@
         "roles": {
           "student": "Étudiant",
           "company_admin": "Admin entreprise",
-          "admin": "Administrateur",
+          "dept_head": "Chef de département",
+          "university_admin": "Admin université",
           "super_admin": "Super Admin"
         },
         "status": {
@@ -1206,6 +1246,36 @@
       "text": "Prêt à transformer votre expérience de stage ?",
       "button": "Commencer Gratuitement",
       "aria": "Commencer avec Internex gratuitement"
+    }
+  },
+  "verify": {
+    "title": "Vérification de Document",
+    "description": "Entrez le code de vérification imprimé sur votre document Internex pour confirmer son authenticité.",
+    "placeholder": "INTX-XXXX-XXXX",
+    "submit": "Vérifier le Document",
+    "checking": "Vérification...",
+    "valid": {
+      "title": "Document Vérifié",
+      "subtitle": "Ce document est authentique et a été émis par Internex.",
+      "type": "Type de Document",
+      "typeAgreement": "Convention de Stage",
+      "typeCertificate": "Certificat de Stage",
+      "student": "Stagiaire",
+      "company": "Entreprise",
+      "university": "Université",
+      "offer": "Intitulé du Stage",
+      "period": "Période",
+      "periodTo": "au",
+      "generatedOn": "Généré le",
+      "status": "Statut",
+      "statusGenerated": "Généré",
+      "statusSigned": "Signé",
+      "statusPending": "En attente"
+    },
+    "invalid": {
+      "title": "Document Non Trouvé",
+      "subtitle": "Aucun document trouvé avec ce code de vérification. Veuillez vérifier le code et réessayer.",
+      "tryAgain": "Essayer un Autre Code"
     }
   }
 }

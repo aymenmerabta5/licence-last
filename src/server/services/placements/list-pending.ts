@@ -76,8 +76,10 @@ interface ListPendingParams {
 }
 
 interface ListPendingViewer {
-  role: "admin" | "super_admin"
+  role: "university_admin" | "dept_head" | "super_admin"
   universityId: string | null
+  /** Required when role is "dept_head" */
+  departmentId?: string | null
 }
 
 function hasNonEmptyProfileValue(value: string | null): boolean {
@@ -89,11 +91,13 @@ export async function listPendingApplications(
   viewer: ListPendingViewer,
 ): Promise<ListPendingApplicationsResult> {
   const { cursor, limit = 20 } = params
-  const { role, universityId } = viewer
+  const { role, universityId, departmentId } = viewer
 
-  // University admins can only see their own university's pending validations.
-  // Super admins can see all.
-  if (role !== "super_admin" && !universityId) {
+  // Dept heads must have a departmentId, admins must have a universityId.
+  if (role === "dept_head" && !departmentId) {
+    return { applications: [], nextCursor: undefined, hasMore: false }
+  }
+  if (role === "university_admin" && !universityId) {
     return { applications: [], nextCursor: undefined, hasMore: false }
   }
 
@@ -103,8 +107,11 @@ export async function listPendingApplications(
     isNotNull(application.companyActionAt),
   ]
 
-  if (role !== "super_admin") {
-    // universityId is guaranteed by the guard above
+  if (role === "dept_head") {
+    // Dept head sees only students in their department
+    conditions.push(eq(studentProfile.departmentId, departmentId!))
+  } else if (role !== "super_admin") {
+    // Admin sees all students in their university
     conditions.push(eq(user.universityId, universityId!))
   }
 

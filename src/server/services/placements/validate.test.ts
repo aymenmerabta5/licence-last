@@ -10,7 +10,8 @@ const mockLimit1 = mock(() => {
   return Promise.resolve(results)
 })
 const mockWhere1 = mock(() => ({ limit: mockLimit1 }))
-const mockJoin3 = mock(() => ({ where: mockWhere1 }))
+const mockLeftJoin1 = mock(() => ({ where: mockWhere1 }))
+const mockJoin3 = mock(() => ({ leftJoin: mockLeftJoin1 }))
 const mockJoin2 = mock(() => ({ innerJoin: mockJoin3 }))
 const mockJoin1 = mock(() => ({ innerJoin: mockJoin2 }))
 const mockFromJoin = mock(() => ({ innerJoin: mockJoin1 }))
@@ -80,6 +81,7 @@ describe("src/server/services/placements/validate", () => {
 
     mockLimit1.mockClear()
     mockWhere1.mockClear()
+    mockLeftJoin1.mockClear()
     mockJoin1.mockClear()
     mockJoin2.mockClear()
     mockJoin3.mockClear()
@@ -105,7 +107,8 @@ describe("src/server/services/placements/validate", () => {
     mockFromJoin.mockReturnValue({ innerJoin: mockJoin1 })
     mockJoin1.mockReturnValue({ innerJoin: mockJoin2 })
     mockJoin2.mockReturnValue({ innerJoin: mockJoin3 })
-    mockJoin3.mockReturnValue({ where: mockWhere1 })
+    mockJoin3.mockReturnValue({ leftJoin: mockLeftJoin1 })
+    mockLeftJoin1.mockReturnValue({ where: mockWhere1 })
     mockWhere1.mockReturnValue({ limit: mockLimit1 })
 
     mockFrom2.mockReturnValue({ where: mockWhere2 })
@@ -140,6 +143,7 @@ describe("src/server/services/placements/validate", () => {
         studentName: "Student",
         studentEmail: "s@example.com",
         universityId: null,
+        studentDepartmentId: null,
       },
     ])
 
@@ -174,6 +178,7 @@ describe("src/server/services/placements/validate", () => {
         studentName: "Student",
         studentEmail: "s@example.com",
         universityId: null,
+        studentDepartmentId: null,
       },
     ])
     mockSelectResults.push([])

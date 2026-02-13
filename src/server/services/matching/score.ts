@@ -247,7 +247,7 @@ export function canAccessMatchScore(
     viewerCompanyId?: string
   },
 ) {
-  if (viewer.role === "admin" || viewer.role === "super_admin") return true
+  if (viewer.role === "university_admin" || viewer.role === "super_admin") return true
   if (viewer.role === "student") {
     return viewer.id === params.studentUserId && params.isOfferVisibleToStudent
   }

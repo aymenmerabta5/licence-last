@@ -223,10 +223,8 @@ export function minimizeAssistantContext(context: unknown): unknown {
     }
   }
 
-  return {
-    intent,
-    context: redactPII(record),
-  }
+  // Unknown intent — only pass the intent identifier, no arbitrary context
+  return { intent }
 }
 
 export function assistantContextToJson(context: unknown): string {

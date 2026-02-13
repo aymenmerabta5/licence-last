@@ -56,6 +56,7 @@ describe("src/server/services/students/get-profile", () => {
       portfolioUrl: null,
       studentNumber: null,
       department: "CS",
+      departmentId: null,
       level: "L3",
       wilayaCode: 25,
       address: null,

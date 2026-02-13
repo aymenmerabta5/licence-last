@@ -12,6 +12,8 @@ import {
   Shield,
   UsersRound,
   Landmark,
+  ClipboardCheck,
+  FolderTree,
 } from "lucide-react"
 
 export interface NavItem {
@@ -26,7 +28,7 @@ export const navItems: NavItem[] = [
     labelKey: "dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
-    roles: ["student", "company_admin", "admin", "super_admin"],
+    roles: ["student", "company_admin", "dept_head", "university_admin", "super_admin"],
   },
   {
     labelKey: "exploreInternships",
@@ -65,16 +67,28 @@ export const navItems: NavItem[] = [
     roles: ["company_admin"],
   },
   {
+    labelKey: "deptValidations",
+    href: "/dashboard/dept-validations",
+    icon: ClipboardCheck,
+    roles: ["dept_head"],
+  },
+  {
     labelKey: "validatePlacements",
     href: "/dashboard/admin/validations",
     icon: CheckCircle2,
-    roles: ["admin", "super_admin"],
+    roles: ["university_admin", "super_admin"],
+  },
+  {
+    labelKey: "departments",
+    href: "/dashboard/admin/departments",
+    icon: FolderTree,
+    roles: ["university_admin", "super_admin"],
   },
   {
     labelKey: "statistics",
     href: "/dashboard/admin/stats",
     icon: BarChart3,
-    roles: ["admin", "super_admin"],
+    roles: ["university_admin", "super_admin"],
   },
   {
     labelKey: "commandCenter",
@@ -98,6 +112,6 @@ export const navItems: NavItem[] = [
     labelKey: "settings",
     href: "/dashboard/settings",
     icon: Settings,
-    roles: ["student", "company_admin", "admin", "super_admin"],
+    roles: ["student", "company_admin", "dept_head", "university_admin", "super_admin"],
   },
 ]

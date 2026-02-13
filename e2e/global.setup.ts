@@ -234,7 +234,7 @@ setup("setup test database", async () => {
       id: adminId,
       email: TEST_USERS.admin.email,
       name: TEST_USERS.admin.name,
-      role: "admin",
+      role: "university_admin",
       emailVerified: true,
       onboardingCompleted: true,
     })

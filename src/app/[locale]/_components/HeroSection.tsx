@@ -12,13 +12,7 @@ import {
   CardDescription,
 } from "@/components/ui/card"
 import type { LucideIcon } from "lucide-react"
-
-/* ── Shared reveal transition ── */
-const reveal = {
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0 },
-}
-const ease = [0.4, 0, 0.2, 1] as const
+import { reveal, ease } from "@/lib/animations"
 
 /* ── Individual Feature Card ── */
 function FeatureCard({

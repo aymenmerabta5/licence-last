@@ -53,7 +53,7 @@ export interface StudentProfileForViewerResult {
 
 function canViewPrivateFields(viewer: ViewerIdentity, targetUserId: string) {
   const isOwner = viewer.id === targetUserId
-  const isAdmin = viewer.role === "admin" || viewer.role === "super_admin"
+  const isAdmin = viewer.role === "university_admin" || viewer.role === "super_admin"
   return isOwner || isAdmin
 }
 

@@ -10,10 +10,10 @@ import { companyMember } from "@/server/db/schema/companies"
 import { studentProfile } from "@/server/db/schema/students"
 
 /**
- * Check if a user role has admin privileges (admin or super_admin).
+ * Check if a user role has admin privileges (university_admin, dept_head, or super_admin).
  */
 export function isAdminRole(role: string | null | undefined): boolean {
-  return role === "admin" || role === "super_admin"
+  return role === "university_admin" || role === "dept_head" || role === "super_admin"
 }
 
 /** Public — no auth required. */
@@ -27,6 +27,10 @@ export const authedProcedure = os.use(async ({ next }) => {
 
   if (!session) {
     throw new ORPCError("UNAUTHORIZED")
+  }
+
+  if (session.user.banned) {
+    throw new ORPCError("FORBIDDEN", { message: "Account suspended" })
   }
 
   return next({ context: { session: session.session, user: session.user } })
@@ -97,5 +101,36 @@ export const studentProcedure = authedProcedure.use(
       .limit(1)
 
     return next({ context: { ...context, studentProfile: profile ?? null } })
+  },
+)
+
+/** Department head — requires dept_head role, injects departmentId + universityId. */
+export const deptHeadProcedure = authedProcedure.use(
+  async ({ context, next }) => {
+    if (context.user.role !== "dept_head") {
+      throw new ORPCError("FORBIDDEN", {
+        message: "Department head access required",
+      })
+    }
+
+    if (!context.user.universityId) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "Department head must belong to a university",
+      })
+    }
+
+    if (!context.user.departmentId) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "Department head must be assigned to a department",
+      })
+    }
+
+    return next({
+      context: {
+        ...context,
+        departmentId: context.user.departmentId,
+        universityId: context.user.universityId,
+      },
+    })
   },
 )

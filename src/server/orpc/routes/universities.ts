@@ -40,15 +40,21 @@ export const listUniversitiesProcedure = authedProcedureGenerous
 
 export const getUniversityByIdProcedure = authedProcedureGenerous
   .input(z.object({ universityId: z.string().min(1) }))
-  .handler(async ({ input }) => {
-    return getUniversityById(input.universityId)
+  .handler(async ({ input, context }) => {
+    const uni = await getUniversityById(input.universityId)
+    if (!uni) return null
+    // Non-admin users can only see approved universities
+    if (!isAdminRole(context.user.role) && uni.status !== "approved") {
+      return null
+    }
+    return uni
   })
 
 /* ── Mutations ── */
 
 export const createUniversityProcedure = authedProcedureStandard
   .use(async ({ context, next }) => {
-    if (context.user.role !== "admin") {
+    if (context.user.role !== "university_admin") {
       throw new ORPCError("FORBIDDEN", {
         message: "University admin access required",
       })
@@ -66,6 +72,7 @@ export const createUniversityProcedure = authedProcedureStandard
       city: z.string().optional(),
       address: z.string().optional(),
       domains: z.array(z.string().min(3)).min(1),
+      departments: z.array(z.object({ name: z.string().min(2) })).optional(),
     }),
   )
   .handler(async ({ input, context }) =>
@@ -85,6 +92,6 @@ export const rejectUniversityProcedure = superAdminProcedureStandard
       reason: z.string().min(1),
     }),
   )
-  .handler(async ({ input }) =>
-    rejectUniversity(input.universityId, input.reason),
+  .handler(async ({ input, context }) =>
+    rejectUniversity(input.universityId, input.reason, context.user.id),
   )

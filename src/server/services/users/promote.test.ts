@@ -28,12 +28,12 @@ describe("src/server/services/users/promote", () => {
   })
 
   test("should promote user and return updated data", async () => {
-    mockReturningResult = [{ id: "user-1", email: "test@example.com", role: "admin" }]
+    mockReturningResult = [{ id: "user-1", email: "test@example.com", role: "university_admin" }]
 
     const { promoteUser } = await import("./promote")
-    const result = await promoteUser("user-1", "admin")
+    const result = await promoteUser("user-1", "university_admin")
 
-    expect(result).toEqual({ id: "user-1", email: "test@example.com", role: "admin" })
+    expect(result).toEqual({ id: "user-1", email: "test@example.com", role: "university_admin" })
     expect(mockUpdate).toHaveBeenCalledTimes(1)
   })
 
@@ -42,11 +42,11 @@ describe("src/server/services/users/promote", () => {
 
     const { promoteUser } = await import("./promote")
 
-    await expect(promoteUser("missing", "admin")).rejects.toThrow("User not found")
+    await expect(promoteUser("missing", "university_admin")).rejects.toThrow("User not found")
   })
 
   test("should accept all valid role values", async () => {
-    const roles = ["student", "company_admin", "admin", "super_admin"] as const
+    const roles = ["student", "company_admin", "university_admin", "super_admin"] as const
 
     const { promoteUser } = await import("./promote")
 

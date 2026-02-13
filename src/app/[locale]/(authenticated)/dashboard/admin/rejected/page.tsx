@@ -8,7 +8,7 @@ import { requireRole } from "@/lib/auth-guards"
 import { getUniversityByUserId } from "@/server/services/universities/get"
 
 export default async function AdminRejectedPage() {
-  const user = await requireRole(["admin"])
+  const user = await requireRole(["university_admin"])
 
   if (!user.onboardingCompleted) {
     return localeRedirect("/onboarding/university")

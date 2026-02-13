@@ -11,8 +11,12 @@ import { university } from "@/server/db/schema/universities"
 /**
  * Reject a university application with a reason.
  */
-export async function rejectUniversity(universityId: string, reason: string) {
-  log.info({ universityId }, "Rejecting university")
+export async function rejectUniversity(
+  universityId: string,
+  reason: string,
+  rejectedByUserId: string,
+) {
+  log.info({ universityId, rejectedByUserId }, "Rejecting university")
 
   const [updated] = await db
     .update(university)

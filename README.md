@@ -8,8 +8,9 @@ Internex manages the complete internship lifecycle:
 
 - **Students** discover offers, apply, track applications, and get AI-powered cover letter help
 - **Companies** post offers, manage candidate pipelines, and use an AI assistant for recruitment
+- **Department heads** validate placements for their department's students
 - **University admins** validate placements and generate official documents (agreements, certificates)
-- **Super admins** manage the entire platform: users, companies, universities
+- **Super admins** manage the entire platform: users, companies, universities, departments
 
 ```
               Internet
@@ -23,11 +24,11 @@ Internex manages the complete internship lifecycle:
    (RSC + CC)     /     |     \
                 Auth   oRPC   Assistant
                 |       |        |
-         Better Auth  66 procs  Poe AI
+         Better Auth  83 procs  Poe AI
                 \       |      /
              +-----------------------+
              |    Services Layer     |
-             |    (17 domains)       |
+             |    (16 domains)       |
              +-----------+-----------+
                          |
            +-------------+-------------+
@@ -142,21 +143,24 @@ src/
 │   ├── [locale]/              # i18n routes (en, fr, ar)
 │   │   ├── (auth)/            # Login, signup, reset-password
 │   │   ├── (authenticated)/   # Dashboard (role-based)
-│   │   │   └── dashboard/     # 41 pages across student/company/admin
+│   │   │   └── dashboard/     # 47 pages across student/company/admin/dept-head
 │   │   └── onboarding/        # Setup wizards per role
 │   └── api/
 │       ├── auth/[...all]/     # Better Auth endpoints
-│       ├── rpc/[...rest]/     # oRPC (66 procedures, CSRF protected)
+│       ├── rpc/[...rest]/     # oRPC (83 procedures, CSRF protected)
 │       ├── assistant/         # AI chat streaming + auth status
+│       ├── openapi/           # OpenAPI spec + Swagger UI
 │       └── health/            # Health check
 ├── components/                # Shared UI (28 shadcn/ui primitives + custom)
 ├── hooks/                     # Shared hooks (useDebounce, useInfiniteScroll, useCopilot, etc.)
 ├── lib/                       # Schemas, utils, constants, animations
 ├── server/
-│   ├── db/                    # Drizzle schema + migrations + seed
-│   ├── orpc/                  # Controller layer (14 route files, 15 rate-limit variants)
-│   ├── services/              # Model layer (17 business domains)
+│   ├── db/                    # Drizzle schema (19 modules) + migrations + seed
+│   ├── orpc/                  # Controller layer (15 route files, 18 rate-limit variants)
+│   ├── services/              # Model layer (16 business domains)
 │   ├── ai/                    # AI model config, tools, prompts, personas
+│   ├── openapi/               # OpenAPI spec generation
+│   ├── pdfs/                  # PDF templates (agreements, certificates)
 │   ├── email/                 # Resend + React Email templates
 │   ├── storage/               # Bun S3Client wrapper
 │   ├── caching/               # Redis client + rate limiter
@@ -169,13 +173,13 @@ src/
 
 The project follows an **MVC pattern**:
 
-- **Model** (`server/services/`) — 17 domains of pure business logic with `import "server-only"`
-- **Controller** (`server/orpc/`) — 66 oRPC procedures with auth middleware chain and rate limiting
+- **Model** (`server/services/`) — 16 domains of pure business logic with `import "server-only"`
+- **Controller** (`server/orpc/`) — 83 oRPC procedures with auth middleware chain and rate limiting
 - **View** — React Server Components + Client Components with feature folder pattern
 
 ### Auth & Roles
 
-4 roles enforced via middleware chain: `student`, `company_admin`, `admin`, `super_admin`
+5 roles enforced via middleware chain: `student`, `company_admin`, `dept_head`, `university_admin`, `super_admin`
 
 - Email verification required on signup
 - 2FA support: TOTP, OTP (email), backup codes
@@ -183,6 +187,14 @@ The project follows an **MVC pattern**:
 - University email domain validation for student registration
 - User banning (temporary and permanent)
 - Admin impersonation with audit trail
+- Department management with dept_head role
+
+### Document Verification
+
+Public verification system for internship documents:
+- Each generated agreement/certificate gets a unique verification code + QR code
+- Public verification page at `/verify` — anyone can verify a document's authenticity
+- No authentication required for verification
 
 ### AI Assistant
 

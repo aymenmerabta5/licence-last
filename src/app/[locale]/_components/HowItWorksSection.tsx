@@ -18,13 +18,7 @@ import { useTranslations } from "next-intl"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import type { LucideIcon } from "lucide-react"
-
-/* ── Shared reveal transition ── */
-const reveal = {
-    initial: { opacity: 0, y: 24 },
-    animate: { opacity: 1, y: 0 },
-}
-const ease = [0.4, 0, 0.2, 1] as const
+import { reveal, ease } from "@/lib/animations"
 
 /* ── Workflow Step Card ── */
 function WorkflowStep({

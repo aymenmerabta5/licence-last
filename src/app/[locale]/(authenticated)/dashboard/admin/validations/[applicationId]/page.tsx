@@ -28,7 +28,7 @@ function PlacementDetailFallback() {
 export default async function PlacementDetailPage({
   params,
 }: PlacementDetailPageProps) {
-  await requireRole(["admin", "super_admin"])
+  await requireRole(["university_admin", "super_admin"])
   const { applicationId } = await params
 
   return (

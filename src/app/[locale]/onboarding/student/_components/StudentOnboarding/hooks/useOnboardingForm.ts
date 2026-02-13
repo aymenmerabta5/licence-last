@@ -18,10 +18,24 @@ export function useOnboardingForm() {
 
   const [serverError, setServerError] = useState("")
 
+  const { data: meResult } = useQuery(orpc.users.getMe.queryOptions())
+  const universityId = meResult?.university?.id ?? null
+
   const { data: skillTagsResult } = useQuery(orpc.skills.list.queryOptions())
   const skillTags = useMemo(
     () => skillTagsResult?.skills ?? [],
     [skillTagsResult?.skills],
+  )
+
+  const { data: departmentsResult } = useQuery(
+    orpc.departments.list.queryOptions({
+      input: { universityId: universityId ?? "" },
+      enabled: !!universityId,
+    }),
+  )
+  const departments = useMemo(
+    () => departmentsResult ?? [],
+    [departmentsResult],
   )
 
   const schema = useMemo(() => createStudentProfileSchema(tv), [tv])
@@ -34,6 +48,7 @@ export function useOnboardingForm() {
       portfolioUrl: "",
       studentNumber: "",
       department: "",
+      departmentId: "",
       level: "",
       wilayaCode: 0,
       address: "",
@@ -53,6 +68,7 @@ export function useOnboardingForm() {
           portfolioUrl: value.portfolioUrl || undefined,
           studentNumber: value.studentNumber || undefined,
           department: value.department || undefined,
+          departmentId: value.departmentId || undefined,
           level: value.level || undefined,
           wilayaCode: value.wilayaCode || undefined,
           address: value.address || undefined,
@@ -71,5 +87,6 @@ export function useOnboardingForm() {
     serverError,
     setServerError,
     skillTags,
+    departments,
   }
 }

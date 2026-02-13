@@ -82,6 +82,10 @@ export async function handleChatRequest(req: Request): Promise<Response> {
     return new Response("Unauthorized", { status: 401 })
   }
 
+  if (session.user.banned) {
+    return new Response("Forbidden: account suspended", { status: 403 })
+  }
+
   // Parse intent
   const contextRecord = asRecord(body.context)
   const intentRaw = getStringProp(contextRecord, "intent")

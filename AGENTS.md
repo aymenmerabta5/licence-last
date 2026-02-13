@@ -150,16 +150,17 @@ export async function createCompany(data: CreateCompanyInput, userId: string) {
 }
 ```
 
-**Service Domains (17 total):**
+**Service Domains (16 total):**
 - `admin/` — Admin user ops (ban, create, list, remove, sessions, setPassword, setRole, update)
 - `applications/` — Internship applications (apply, withdraw, pipeline, company actions, timeline)
 - `assistant/` — AI assistant conversations (CRUD, messages)
 - `companies/` — Company management (CRUD, approval, membership, trust index, trust actions, reports)
-- `documents/` — Document generation (agreements, certificates)
+- `departments/` — Department management (create, list, update, assign head)
+- `documents/` — Document generation + verification (agreements, certificates, QR codes, verification)
 - `matching/` — Student-offer matching (scoring, skill gaps, readiness history)
 - `notifications/` — User notifications (create, list, mark read)
 - `offers/` — Internship offers (CRUD, search, status management, delete)
-- `placements/` — Placement validation (list pending, validate, reject)
+- `placements/` — Placement validation (list pending, validate, reject — admin + dept head)
 - `skills/` — Skills/tags management (list, validate)
 - `stats/` — Admin dashboard analytics
 - `students/` — Student profiles (get, upsert, public profiles, dashboard stats)
@@ -183,13 +184,14 @@ All client reads AND mutations go through oRPC at `src/server/orpc/`:
 ```typescript
 publicProcedure              // No auth required
 ├── authedProcedure          // Valid session required
-│   ├── adminProcedure       // admin or super_admin role
+│   ├── adminProcedure       // university_admin, dept_head, or super_admin
 │   ├── superAdminProcedure  // super_admin only
 │   ├── companyAdminProcedure // company_admin + injects companyMembership
-│   └── studentProcedure     // student role + injects studentProfile
+│   ├── studentProcedure     // student role + injects studentProfile
+│   └── deptHeadProcedure    // dept_head + injects departmentId + universityId
 ```
 
-**Rate-Limited Procedures (15 variants):**
+**Rate-Limited Procedures (18 variants):**
 ```typescript
 // Pre-composed procedures with rate limiting
 publicProcedureStrict               // 5 req/min (auth endpoints)
@@ -201,6 +203,8 @@ adminProcedureStandard              // 100 req/min (admin ops)
 adminProcedureGenerous              // 300 req/min (bulk admin ops)
 superAdminProcedureStandard         // 100 req/min (super admin ops)
 superAdminProcedureGenerous         // 300 req/min (bulk super admin)
+deptHeadProcedureStandard           // 100 req/min (dept head ops)
+deptHeadProcedureGenerous           // 300 req/min (dept head reads)
 companyAdminProcedureStandard       // 100 req/min (company ops)
 companyAdminProcedureGenerous       // 300 req/min (company reads)
 companyAdminProcedureAssistant      // 20 req/min (AI assistant)
@@ -209,21 +213,22 @@ studentProcedureGenerous            // 300 req/min (student reads)
 assistantProcedureLimited           // 20 req/min (AI calls)
 ```
 
-**oRPC Routes (14 total, 66 procedures):**
-- `users.ts` — getMe, updateMe, uploadAvatar, deleteAvatar
-- `companies.ts` — CRUD, approval, trust index, reports, quality feedback, logo upload (14 procedures)
-- `students.ts` — getProfile, getPublicProfile, upsertProfile, upsertProfileDetails
-- `offers.ts` — CRUD, status updates, search, delete (7 procedures)
-- `applications.ts` — Apply, withdraw, pipeline, company actions, timeline (8 procedures)
-- `skills.ts` — Skill tag listing
-- `placements.ts` — listPending, validate, reject
-- `documents.ts` — Agreement generation
-- `notifications.ts` — list, markRead, markAllRead
-- `stats.ts` — Admin statistics
-- `admin-users.ts` — list, create, setRole, ban, unban, remove, setPassword, update, sessions (11 procedures)
-- `universities.ts` — list, getById, create, approve, reject
-- `assistant.ts` — listModels, conversations CRUD, messages, model/title updates (9 procedures)
-- `matching.ts` — getScore, getSkillGap, getReadinessHistory, captureReadinessSnapshot
+**oRPC Routes (15 route files, 83 procedures across 16 namespaces):**
+- `users.ts` — getMe, updateMe, uploadAvatar, deleteAvatar (4)
+- `companies.ts` — CRUD, approval, trust index, reports, quality feedback, logo upload (13)
+- `students.ts` — getProfile, getPublicProfile, upsertProfile, upsertProfileDetails (4)
+- `offers.ts` — CRUD, status updates, delete (6 — search is in applications file but offers namespace)
+- `applications.ts` — checkApplication, apply, withdraw, pipeline, company actions, timeline, search (9 in namespace + search in offers)
+- `skills.ts` — Skill tag listing (1)
+- `placements.ts` — admin: listPending, validate, reject; deptHead: listPending, validate, reject (6)
+- `departments.ts` — list, create, update, assignHead (4)
+- `documents.ts` — generateAgreement, verify (2)
+- `notifications.ts` — list, markRead, markAllRead (3)
+- `stats.ts` — Admin statistics (1)
+- `admin-users.ts` — list, create, setRole, ban, unban, remove, setPassword, update, sessions, revokeSession, revokeAllSessions (11)
+- `universities.ts` — list, getById, create, approve, reject (5)
+- `assistant.ts` — listModels, conversations CRUD, messages, model/title updates (9)
+- `matching.ts` — getScore, getSkillGap, getReadinessHistory, captureReadinessSnapshot (4)
 
 ### Client Usage Patterns
 
@@ -264,6 +269,10 @@ Client-safe Zod schemas in `src/lib/schemas/` (NO `server-only`):
 - `offer.ts` — internship offer creation schemas
 - `search.ts` — search and filter schemas
 - `matching.ts` — matching criteria schemas
+- `university.ts` — university CRUD schemas
+- `verify.ts` — document verification code schema
+- `enums.ts` — shared enum schemas
+- `map-errors.ts` — Zod error mapping utilities
 
 **Schema Factory Pattern (with i18n):**
 ```typescript
@@ -457,6 +466,7 @@ src/
 │   │   ├── rpc/[...rest]/      # oRPC catch-all (CSRF protected)
 │   │   ├── assistant/chat/     # AI streaming endpoint
 │   │   ├── assistant/auth/status/ # Arcade auth check
+│   │   ├── openapi/            # OpenAPI spec + Swagger UI
 │   │   └── health/             # Health check endpoint
 │   └── [locale]/               # i18n routes
 │       ├── layout.tsx          # Locale layout (providers)
@@ -481,8 +491,15 @@ src/
 │   ├── utils.ts                # cn() utility
 │   ├── auth.ts                 # Better Auth server config
 │   ├── auth-client.ts          # Better Auth client
-│   ├── auth-guards.ts          # RSC layout guards
-│   ├── schemas/                # Client-safe Zod schemas
+│   ├── auth-guards.ts          # RSC layout guards (requireRole)
+│   ├── auth-utils.ts           # Auth helper functions
+│   ├── date.ts                 # Date formatting utilities
+│   ├── string.ts               # String utilities (slugify, etc.)
+│   ├── profile-completeness.ts # Student profile completion %
+│   ├── csrf.ts                 # CSRF token generation/validation
+│   ├── post-login-redirect.ts  # Role-based redirect after login
+│   ├── schemas/                # Client-safe Zod schemas (10 files)
+│   ├── constants/              # Pipeline + internship constants
 │   └── [utility].ts            # Other utilities
 │
 ├── hooks/                      # Shared hooks
@@ -499,16 +516,18 @@ src/
 ├── server/                     # Server-only code
 │   ├── db/                     # Drizzle database
 │   │   ├── index.ts            # Drizzle client
-│   │   ├── schema/             # Database schemas (17 modules)
+│   │   ├── schema/             # Database schemas (19 modules)
 │   │   └── migrations/         # Migration files
 │   ├── orpc/                   # oRPC controller layer
-│   │   ├── middleware.ts       # Auth procedures
-│   │   ├── rate-limited-procedures.ts
-│   │   ├── router.ts           # Combined router
+│   │   ├── middleware.ts       # Auth procedures (7 types)
+│   │   ├── rate-limited-procedures.ts  # 18 variants
+│   │   ├── router.ts           # Combined router (83 procedures)
 │   │   ├── client.ts           # Client + TanStack Query
-│   │   └── routes/             # Procedure definitions
-│   ├── services/               # Pure business logic (17 domains)
+│   │   └── routes/             # 15 route files
+│   ├── services/               # Pure business logic (16 domains)
 │   ├── ai/                     # AI integration (model, tools, context, prompts)
+│   ├── openapi/                # OpenAPI spec generation
+│   ├── pdfs/                   # PDF templates (AgreementTemplate, CertificateTemplate)
 │   ├── storage/                # S3 file storage (Bun.S3Client)
 │   ├── email/                  # Email service (Resend + React Email)
 │   ├── caching/                # Redis client + rate limiter
@@ -1164,13 +1183,34 @@ Uses React Email components + Resend for delivery. Graceful fallback if `RESEND_
 
 **Email Templates:** `VerifyEmailEmail`, `ResetPasswordEmail`, `TwoFactorOtpEmail`, `EmailLayout`
 
-### Document Generation (PDF)
+### Document Generation & Verification (PDF)
 
 **`src/server/services/documents/`:**
 - `generate-agreement.ts` — Generate internship agreements
 - `generate-certificate.ts` — Generate completion certificates
+- `qr-utils.ts` — QR code generation for documents
+- `verification-code.ts` — Unique verification code generation
+- `verify.ts` — Public document verification by code
 
-Uses `@react-pdf/renderer` with React PDF templates.
+**`src/server/pdfs/`:**
+- `AgreementTemplate.tsx` — React PDF agreement template
+- `CertificateTemplate.tsx` — React PDF certificate template
+
+Uses `@react-pdf/renderer`. Each document gets a verification code + QR code. Public verification at `/verify/[code]`.
+
+### Department Management
+
+**`src/server/services/departments/`:**
+- `create.ts` — Create department under a university
+- `list.ts` — List departments by university
+- `update.ts` — Update department details
+- `assign-head.ts` — Assign dept_head role to a user for a department
+
+### OpenAPI
+
+**`src/server/openapi/generator.ts`** — Generates OpenAPI spec from oRPC router
+- `GET /api/openapi/spec` — JSON OpenAPI specification
+- `GET /api/openapi` — Swagger UI
 
 ### AI/Assistant Feature
 
@@ -1208,11 +1248,11 @@ Uses `@react-pdf/renderer` with React PDF templates.
 ```
 DATABASE_URL                    # Required - PostgreSQL connection
 BETTER_AUTH_SECRET             # Required - Auth secret
-POE_API_KEY                    # Required - AI provider API key
+POE_API_KEY                    # Optional - AI provider API key
 POE_MODEL                      # Optional - Default AI model
 POE_ALLOWED_MODELS             # Optional - Comma-separated model list
 POE_BASE_URL                   # Optional - Custom AI endpoint
-ARCADE_API_KEY                 # Required - Arcade AI tools API key
+ARCADE_API_KEY                 # Optional - Arcade AI tools API key
 RESEND_API_KEY                 # Optional - Email service API key
 EMAIL_FROM                     # Optional - Default sender email
 S3_BUCKET                      # Optional - S3 bucket name

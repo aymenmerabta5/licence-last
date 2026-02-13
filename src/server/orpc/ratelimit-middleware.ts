@@ -2,7 +2,24 @@ import "server-only"
 
 import { createRatelimitMiddleware } from "@orpc/experimental-ratelimit"
 import { getRateLimiter } from "@/server/caching/redis-ratelimiter"
+import { createModuleLogger } from "@/server/logging"
 import { headers } from "next/headers"
+
+const log = createModuleLogger("ratelimit")
+
+// Simple in-memory rate limit store (fallback when Redis is unavailable)
+const inMemoryStore = new Map<string, { count: number; resetAt: number }>()
+
+function checkInMemoryLimit(key: string, max: number, windowMs: number): boolean {
+  const now = Date.now()
+  const entry = inMemoryStore.get(key)
+  if (!entry || now > entry.resetAt) {
+    inMemoryStore.set(key, { count: 1, resetAt: now + windowMs })
+    return true
+  }
+  entry.count++
+  return entry.count <= max
+}
 
 interface ContextWithUser {
   user?: { id: string }
@@ -71,12 +88,28 @@ function defaultKeyGenerator(ctx: { userId?: string; ip: string }): string {
 export function createRateLimitMiddleware(config: RateLimitConfig) {
   const limiter = getRateLimiter()
 
-  // If rate limiting is disabled, return a no-op middleware
+  // If Redis is unavailable, use in-memory fallback
   if (!limiter) {
+    if (process.env.NODE_ENV === "production") {
+      log.warn("Redis unavailable — using in-memory rate limiter fallback")
+    }
     return createRatelimitMiddleware({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       limiter: () => null as unknown as any,
-      key: () => "noop",
+      key: async ({ context }) => {
+        const headersList = await headers()
+        const ip = extractClientIp(headersList)
+        const userId = (context as ContextWithUser).user?.id
+        const keyGenerator = config.keyGenerator || defaultKeyGenerator
+        const fullKey = config.keyPrefix
+          ? `${config.keyPrefix}:${keyGenerator({ userId, ip })}`
+          : keyGenerator({ userId, ip })
+
+        if (!checkInMemoryLimit(fullKey, config.maxRequests, config.windowMs)) {
+          throw new Error("Rate limit exceeded")
+        }
+        return fullKey
+      },
     })
   }
 

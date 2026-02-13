@@ -12,14 +12,24 @@ const mockGetCompanyByUserId = mock<(userId: string) => Promise<CompanySummary |
   () => Promise.resolve(null),
 )
 
+const mockGetUniversityByUserId = mock<(userId: string) => Promise<Record<string, unknown> | null>>(
+  () => Promise.resolve(null),
+)
+
 mock.module("@/server/services/companies/get", () => ({
   getCompanyByUserId: mockGetCompanyByUserId,
+}))
+
+mock.module("@/server/services/universities/get", () => ({
+  getUniversityByUserId: mockGetUniversityByUserId,
 }))
 
 describe("src/server/services/users/get-me", () => {
   beforeEach(() => {
     mockGetCompanyByUserId.mockClear()
     mockGetCompanyByUserId.mockResolvedValue(null)
+    mockGetUniversityByUserId.mockClear()
+    mockGetUniversityByUserId.mockResolvedValue(null)
   })
 
   test("should default to student role and omit company data", async () => {
@@ -76,18 +86,33 @@ describe("src/server/services/users/get-me", () => {
     expect(result.company).toBeNull()
   })
 
-  test("should not query company data for admins", async () => {
+  test("should not query company data for admins but query university", async () => {
     const { getMe } = await import("./get-me")
+    mockGetUniversityByUserId.mockResolvedValue({
+      id: "uni-1",
+      name: "University of Algiers",
+      abbreviation: "USTHB",
+      status: "approved",
+      rejectionReason: null,
+    })
 
     const result = await getMe({
       id: "user-1",
       email: "user-1@example.com",
-      role: "admin",
+      role: "university_admin",
     })
 
-    expect(result.user.role).toBe("admin")
+    expect(result.user.role).toBe("university_admin")
     expect(result.company).toBeNull()
     expect(mockGetCompanyByUserId).not.toHaveBeenCalled()
+    expect(mockGetUniversityByUserId).toHaveBeenCalledWith("user-1")
+    expect(result.university).toEqual({
+      id: "uni-1",
+      name: "University of Algiers",
+      abbreviation: "USTHB",
+      status: "approved",
+      rejectionReason: null,
+    })
   })
 })
 

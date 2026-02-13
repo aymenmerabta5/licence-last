@@ -24,7 +24,7 @@ export function getPostLoginRedirectPath(me: MeResult): string {
       }
       return "/dashboard/company/pending"
 
-    case "admin":
+    case "university_admin":
       if (!user.onboardingCompleted) {
         return "/onboarding/university"
       }

@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm"
 
 import { user } from "./auth"
+import { department } from "./departments"
 import { university, universityDomain } from "./universities"
 import { company, companyMember } from "./companies"
 import { assistantConversation, assistantMessage } from "./assistant"
@@ -27,6 +28,10 @@ export const userRelations = relations(user, ({ one, many }) => ({
     fields: [user.universityId],
     references: [university.id],
   }),
+  department: one(department, {
+    fields: [user.departmentId],
+    references: [department.id],
+  }),
   studentProfile: one(studentProfile, {
     fields: [user.id],
     references: [studentProfile.userId],
@@ -45,6 +50,7 @@ export const userRelations = relations(user, ({ one, many }) => ({
 
 export const universityRelations = relations(university, ({ one, many }) => ({
   domains: many(universityDomain),
+  departments: many(department),
   students: many(user),
   approvedBy: one(user, {
     fields: [university.approvedByUserId],
@@ -63,6 +69,17 @@ export const universityDomainRelations = relations(
   }),
 )
 
+// ── Departments ──────────────────────────────────────
+
+export const departmentRelations = relations(department, ({ one, many }) => ({
+  university: one(university, {
+    fields: [department.universityId],
+    references: [university.id],
+  }),
+  students: many(studentProfile),
+  heads: many(user),
+}))
+
 // ── Students ──────────────────────────────────────────
 
 export const studentProfileRelations = relations(
@@ -71,6 +88,10 @@ export const studentProfileRelations = relations(
     user: one(user, {
       fields: [studentProfile.userId],
       references: [user.id],
+    }),
+    department: one(department, {
+      fields: [studentProfile.departmentId],
+      references: [department.id],
     }),
   }),
 )

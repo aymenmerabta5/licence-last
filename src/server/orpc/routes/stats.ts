@@ -1,8 +1,8 @@
 import "server-only"
 
-import { adminProcedureGenerous } from "@/server/orpc/rate-limited-procedures"
+import { superAdminProcedureGenerous } from "@/server/orpc/rate-limited-procedures"
 import { getAdminStats } from "@/server/services/stats/get-admin-stats"
 
-export const getAdminStatsProcedure = adminProcedureGenerous.handler(async () =>
+export const getAdminStatsProcedure = superAdminProcedureGenerous.handler(async () =>
   getAdminStats(),
 )

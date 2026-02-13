@@ -30,7 +30,7 @@ export const getStudentProfileProcedure = authedProcedureGenerous
     // Students can only view their own profile.
     // Admins/super_admins can view any profile.
     const isAdmin =
-      context.user.role === "admin" || context.user.role === "super_admin"
+      context.user.role === "university_admin" || context.user.role === "super_admin"
     if (targetUserId !== context.user.id && !isAdmin) {
       throw new ORPCError("FORBIDDEN", {
         message: "You can only view your own profile",
@@ -48,7 +48,7 @@ export const getPublicStudentProfileProcedure = authedProcedureGenerous
   )
   .handler(async ({ input, context }) => {
     const isAdmin =
-      context.user.role === "admin" || context.user.role === "super_admin"
+      context.user.role === "university_admin" || context.user.role === "super_admin"
     const isCompanyAdmin = context.user.role === "company_admin"
     const isStudentOwner =
       context.user.role === "student" && input.userId === context.user.id
@@ -76,6 +76,7 @@ export const upsertStudentProfileProcedure = studentProcedureStandard
       portfolioUrl: z.string().url().optional().or(z.literal("")),
       studentNumber: z.string().optional(),
       department: z.string().optional(),
+      departmentId: z.string().optional(),
       level: z.string().optional(),
       wilayaCode: z.coerce.number().int().min(1).max(58).optional().or(z.literal(0)),
       address: z.string().optional(),

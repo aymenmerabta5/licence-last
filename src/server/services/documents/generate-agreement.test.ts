@@ -4,7 +4,7 @@ mock.module("@react-pdf/renderer", () => ({
   renderToBuffer: mock(async () => new Uint8Array()),
 }))
 
-mock.module("./templates/agreement", () => ({
+mock.module("@/server/pdfs/AgreementTemplate", () => ({
   ConventionDeStageTemplate: () => null,
 }))
 

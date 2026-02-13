@@ -48,7 +48,7 @@ export interface ChatRequest {
 }
 
 // Role type for RBAC
-export type AssistantRole = "student" | "company_admin" | "admin" | "super_admin"
+export type AssistantRole = "student" | "company_admin" | "university_admin" | "super_admin"
 
 // Rate limit result
 export interface RateLimitResult {
