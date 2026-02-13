@@ -10,6 +10,7 @@ import { useLoginForm } from "./hooks/useLoginForm"
 import { VerificationAlert } from "./components/VerificationAlert"
 import { LoginFields } from "./components/LoginFields"
 import { FormFooter } from "./components/FormFooter"
+import { TwoFactorStep } from "./components/TwoFactorStep"
 
 export function LoginForm() {
   const t = useTranslations("auth.login")
@@ -22,7 +23,37 @@ export function LoginForm() {
     serverError,
     needsVerification,
     resendVerificationEmail,
+    // 2FA
+    twoFactorRequired,
+    twoFactorMethod,
+    setTwoFactorMethod,
+    twoFactorCode,
+    setTwoFactorCode,
+    trustDevice,
+    setTrustDevice,
+    isVerifying2FA,
+    verify2FA,
+    sendOtpCode,
+    backToLogin,
   } = useLoginForm()
+
+  if (twoFactorRequired) {
+    return (
+      <TwoFactorStep
+        method={twoFactorMethod}
+        onMethodChange={setTwoFactorMethod}
+        code={twoFactorCode}
+        onCodeChange={setTwoFactorCode}
+        trustDevice={trustDevice}
+        onTrustDeviceChange={setTrustDevice}
+        isVerifying={isVerifying2FA}
+        onVerify={verify2FA}
+        onSendOtp={sendOtpCode}
+        onBack={backToLogin}
+        serverError={serverError}
+      />
+    )
+  }
 
   return (
     <form

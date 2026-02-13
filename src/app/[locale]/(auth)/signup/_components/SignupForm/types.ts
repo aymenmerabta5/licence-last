@@ -1,4 +1,4 @@
-export type SignupRole = "student" | "company_admin"
+export type SignupRole = "student" | "company_admin" | "admin"
 
 export interface SignupFormProps {
   role: SignupRole

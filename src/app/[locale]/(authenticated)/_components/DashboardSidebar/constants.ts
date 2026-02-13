@@ -11,6 +11,7 @@ import {
   Sparkles,
   Shield,
   UsersRound,
+  Landmark,
 } from "lucide-react"
 
 export interface NavItem {
@@ -79,6 +80,12 @@ export const navItems: NavItem[] = [
     labelKey: "commandCenter",
     href: "/dashboard/admin/command-center",
     icon: Shield,
+    roles: ["super_admin"],
+  },
+  {
+    labelKey: "universities",
+    href: "/dashboard/admin/universities",
+    icon: Landmark,
     roles: ["super_admin"],
   },
   {

@@ -22,10 +22,13 @@ export function SignupForm({ role, onBack }: SignupFormProps) {
   const tc = useTranslations("auth.signup.companySignup")
   const { form, serverError, success } = useSignupForm(role)
 
+  const tu = useTranslations("auth.signup.universitySignup")
+
   const isCompany = role === "company_admin"
-  const title = isCompany ? tc("title") : t("title")
-  const subtitle = isCompany ? tc("subtitle") : t("subtitle")
-  const emailPlaceholder = isCompany ? tc("emailPlaceholder") : t("emailPlaceholder")
+  const isUniversity = role === "admin"
+  const title = isUniversity ? tu("title") : isCompany ? tc("title") : t("title")
+  const subtitle = isUniversity ? tu("subtitle") : isCompany ? tc("subtitle") : t("subtitle")
+  const emailPlaceholder = isUniversity ? tu("emailPlaceholder") : isCompany ? tc("emailPlaceholder") : t("emailPlaceholder")
 
   const labels = {
     name: t("name"),
@@ -55,7 +58,7 @@ export function SignupForm({ role, onBack }: SignupFormProps) {
     return (
       <SignupSuccess
         title={t("verifyTitle")}
-        description={isCompany ? tc("verifyDescription") : t("verifyDescription")}
+        description={isUniversity ? tu("verifyDescription") : isCompany ? tc("verifyDescription") : t("verifyDescription")}
         backToLogin={t("backToLogin")}
       />
     )

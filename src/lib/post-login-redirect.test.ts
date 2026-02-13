@@ -13,8 +13,10 @@ function baseMe(): MeResult {
       name: null,
       image: null,
       onboardingCompleted: false,
+      twoFactorEnabled: false,
     },
     company: null,
+    university: null,
   }
 }
 
@@ -68,18 +70,47 @@ describe("src/lib/post-login-redirect", () => {
       expect(getPostLoginRedirectPath(me)).toBe("/dashboard/company/pending")
     })
 
-    test("should redirect admins and super admins to admin dashboard", () => {
-      const adminMe: MeResult = {
+    test("should redirect non-onboarded admin to university onboarding", () => {
+      const me: MeResult = {
+        ...baseMe(),
+        user: { ...baseMe().user, role: "admin", onboardingCompleted: false },
+      }
+      expect(getPostLoginRedirectPath(me)).toBe("/onboarding/university")
+    })
+
+    test("should redirect admin with approved university to admin dashboard", () => {
+      const me: MeResult = {
         ...baseMe(),
         user: { ...baseMe().user, role: "admin", onboardingCompleted: true },
+        university: { id: "u1", name: "Univ", abbreviation: null, status: "approved", rejectionReason: null },
       }
-      const superAdminMe: MeResult = {
+      expect(getPostLoginRedirectPath(me)).toBe("/dashboard/admin")
+    })
+
+    test("should redirect admin with rejected university to rejected page", () => {
+      const me: MeResult = {
+        ...baseMe(),
+        user: { ...baseMe().user, role: "admin", onboardingCompleted: true },
+        university: { id: "u1", name: "Univ", abbreviation: null, status: "rejected", rejectionReason: "Incomplete" },
+      }
+      expect(getPostLoginRedirectPath(me)).toBe("/dashboard/admin/rejected")
+    })
+
+    test("should redirect admin with pending university to pending page", () => {
+      const me: MeResult = {
+        ...baseMe(),
+        user: { ...baseMe().user, role: "admin", onboardingCompleted: true },
+        university: { id: "u1", name: "Univ", abbreviation: null, status: "pending", rejectionReason: null },
+      }
+      expect(getPostLoginRedirectPath(me)).toBe("/dashboard/admin/pending")
+    })
+
+    test("should redirect super_admin to admin dashboard", () => {
+      const me: MeResult = {
         ...baseMe(),
         user: { ...baseMe().user, role: "super_admin", onboardingCompleted: true },
       }
-
-      expect(getPostLoginRedirectPath(adminMe)).toBe("/dashboard/admin")
-      expect(getPostLoginRedirectPath(superAdminMe)).toBe("/dashboard/admin")
+      expect(getPostLoginRedirectPath(me)).toBe("/dashboard/admin")
     })
 
     test("should fall back to / for unknown roles", () => {

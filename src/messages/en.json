@@ -118,7 +118,23 @@
       "error": "Invalid email or password. Please try again.",
       "emailNotVerified": "Please verify your email address to continue.",
       "resendVerification": "Resend verification email",
-      "verificationSent": "Verification email sent. Check your inbox."
+      "verificationSent": "Verification email sent. Check your inbox.",
+      "twoFactor": {
+        "title": "Two-Factor Authentication",
+        "subtitle": "Enter your verification code to continue",
+        "codeLabel": "Verification code",
+        "codePlaceholder": "Enter 6-digit code",
+        "totp": "Authenticator App",
+        "otp": "Email Code",
+        "backup": "Backup Code",
+        "verify": "Verify",
+        "sendOtp": "Send Code",
+        "otpSent": "Code sent to your email",
+        "trustDevice": "Trust this device for 30 days",
+        "invalidCode": "Invalid code. Please try again.",
+        "error": "Verification failed. Please try again.",
+        "backToLogin": "Back to login"
+      }
     },
     "signup": {
       "pageTitle": "Create Account",
@@ -134,6 +150,10 @@
         "company": {
           "title": "I'm a Company",
           "description": "Post internship offers, discover talent, and manage applications."
+        },
+        "university": {
+          "title": "I'm a University Admin",
+          "description": "Manage your university, approve student domains, and oversee internships."
         }
       },
       "companySignup": {
@@ -141,6 +161,12 @@
         "subtitle": "Create your company admin account",
         "emailPlaceholder": "you@company.com",
         "verifyDescription": "We sent you a verification link. Open it, then complete your company setup."
+      },
+      "universitySignup": {
+        "title": "University Registration",
+        "subtitle": "Create your university admin account",
+        "emailPlaceholder": "you@university.edu",
+        "verifyDescription": "We sent you a verification link. Open it, then set up your university."
       },
       "name": "Full name",
       "namePlaceholder": "John Doe",
@@ -208,7 +234,9 @@
       "durationWeeksMax": "Duration cannot exceed 52 weeks",
       "maxPositionsMin": "At least 1 position is required",
       "maxPositionsMax": "Cannot exceed 100 positions",
-      "offerSkillsMax": "You can select up to 20 skills"
+      "offerSkillsMax": "You can select up to 20 skills",
+      "universityNameMin": "University name must be at least 2 characters",
+      "domainsRequired": "At least one email domain is required"
     }
   },
   "onboarding": {
@@ -226,6 +254,34 @@
       "wilayaPlaceholder": "Select your wilaya",
       "address": "Address",
       "addressPlaceholder": "123 Main Street",
+      "submit": "Complete Setup",
+      "error": "Something went wrong. Please try again."
+    },
+    "university": {
+      "pageTitle": "University Setup",
+      "title": "Set Up Your University",
+      "subtitle": "Tell us about your institution to get started",
+      "name": "University name",
+      "namePlaceholder": "University of Science and Technology",
+      "abbreviation": "Abbreviation",
+      "abbreviationPlaceholder": "USTHB",
+      "departmentName": "Department name",
+      "departmentNamePlaceholder": "Computer Science Department",
+      "deanName": "Dean name",
+      "deanNamePlaceholder": "Prof. Name",
+      "phone": "Phone number",
+      "phonePlaceholder": "+213 21 XX XX XX",
+      "wilaya": "Wilaya",
+      "wilayaPlaceholder": "Select your wilaya",
+      "city": "City",
+      "cityPlaceholder": "Algiers",
+      "address": "Address",
+      "addressPlaceholder": "University campus address",
+      "domains": "Email domains",
+      "domainsHint": "Add email domains that students and staff use (e.g. univ-alger.dz)",
+      "domainPlaceholder": "univ-example.dz",
+      "addDomain": "Add domain",
+      "removeDomain": "Remove",
       "submit": "Complete Setup",
       "error": "Something went wrong. Please try again."
     },
@@ -274,6 +330,7 @@
       "statistics": "Statistics",
       "commandCenter": "Command Center",
       "userManagement": "User Management",
+      "universities": "Universities",
       "settings": "Settings",
       "logout": "Log out"
     },
@@ -296,41 +353,53 @@
       "removeError": "Failed to remove account"
     },
     "assistant": {
-      "kicker": "Company Tools",
-      "title": "Assistant <accent>Copilot</accent>",
-      "subtitle": "Draft offers, refine tone, and get suggestions. When a tool needs authorization, you'll get a secure link.",
-      "badge": "Suggest-only",
-      "conversations": "Conversations",
+      "kicker": "AI Assistant",
+      "title": "Your <accent>AI Copilot</accent>",
+      "subtitle": "Get help with drafting offers, analyzing candidates, and more",
+      "badge": "AI Powered",
       "conversation": "Conversation",
-      "newConversation": "New",
-      "noConversations": "No conversations yet.",
-      "loadingConversations": "Loading conversations...",
-      "loadingMessages": "Loading messages...",
       "model": "Model",
-      "selectModel": "Select",
-      "empty": "Start with an offer prompt (role, duration, location, stack), or paste your draft for a polish pass.",
+      "selectModel": "Select model",
+      "newConversation": "New Chat",
+      "conversations": "Conversations",
+      "loadingConversations": "Loading conversations...",
+      "noConversations": "No conversations yet. Start a new chat!",
+      "noSearchResults": "No conversations found",
+      "searchConversations": "Search conversations...",
+      "loadingMessages": "Loading messages...",
+      "empty": "Start a conversation with your AI assistant",
+      "inputPlaceholder": "Type your message...",
+      "send": "Send",
+      "stop": "Stop",
+      "retry": "Retry",
+      "relativeNow": "just now",
+      "relativeMinutesShort": "{count}m",
+      "relativeHoursShort": "{count}h",
+      "relativeDaysShort": "{count}d",
+      "relativeMinutesAgo": "{count}m ago",
+      "relativeHoursAgo": "{count}h ago",
+      "relativeDaysAgo": "{count}d ago",
+      "assistantActor": "AI",
+      "userActor": "You",
+      "enterToSend": "Enter to send, Shift+Enter for new line",
+      "scrollToBottom": "Scroll to bottom",
+      "deleteConversation": "Delete conversation",
+      "confirmDelete": "Delete",
+      "openSidebar": "Open conversation list",
+      "clearSearch": "Clear search query",
+      "copyCode": "Copy code",
+      "copied": "Copied!",
       "toolLabel": "Tool: {toolName}",
-      "toolState": "State: {state}",
+      "toolState": "Status: {state}",
+      "toolPreparing": "Preparing...",
       "toolInput": "Input",
       "toolOutput": "Output",
-      "retry": "Retry",
-      "toolPreparing": "Preparing tool input...",
-      "authRequired": "This tool requires authorization for your account.",
-      "openAuthLink": "Open authorization link",
+      "authRequired": "Authentication required to use this tool",
+      "openAuthLink": "Open authentication",
       "checkStatus": "Check status",
-      "retryTool": "Retry tool now",
+      "retryTool": "Retry",
       "authStatus": "Status: {status}",
-      "unknown": "unknown",
-      "inputPlaceholder": "Ask for an offer draft, rewrite, or skill tag suggestions",
-      "chatStatus": "Status: {status}",
-      "send": "Send",
-      "promptIdeas": {
-        "title": "Prompt Ideas",
-        "idea1": "Draft an internship offer for a <highlight>React + Node</highlight> role, 12 weeks, Algiers.",
-        "idea2": "Rewrite this offer to be more concise and inclusive.",
-        "idea3": "Suggest 10 skill tags for this description and group them by category.",
-        "note": "Tool calls may require a one-time authorization per provider."
-      }
+      "unknown": "Unknown"
     },
     "notifications": {
       "title": "Notifications",
@@ -465,7 +534,7 @@
             "data_ai": "Data & AI",
             "other": "Other"
           },
-        "copilot": {
+          "copilot": {
             "title": "AI Copilot",
             "description": "Suggestions only. Preview first, then apply to the form.",
             "badge": "Draft + Skills",
@@ -476,14 +545,14 @@
             "suggestSkills": "Suggest Skills",
             "status": "Status: {status}",
             "preview": "Preview",
-          "applyToForm": "Apply to form",
-          "waiting": "Waiting for AI output...",
-          "prompts": {
-            "generateDraft": "Generate a draft offer",
-            "improveDescription": "Improve the offer description",
-            "suggestSkills": "Suggest skill tags for this offer"
+            "applyToForm": "Apply to form",
+            "waiting": "Waiting for AI output...",
+            "prompts": {
+              "generateDraft": "Generate a draft offer",
+              "improveDescription": "Improve the offer description",
+              "suggestSkills": "Suggest skill tags for this offer"
+            }
           }
-        }
         }
       },
       "candidates": {
@@ -587,55 +656,6 @@
         "links": "Links",
         "skills": "Technical Skills"
       }
-    },
-    "assistant": {
-      "kicker": "AI Assistant",
-      "title": "Your <accent>AI Copilot</accent>",
-      "subtitle": "Get help with drafting offers, analyzing candidates, and more",
-      "badge": "AI Powered",
-      "conversation": "Conversation",
-      "model": "Model",
-      "selectModel": "Select model",
-      "newConversation": "New Chat",
-      "conversations": "Conversations",
-      "loadingConversations": "Loading conversations...",
-      "noConversations": "No conversations yet. Start a new chat!",
-      "noSearchResults": "No conversations found",
-      "searchConversations": "Search conversations...",
-      "loadingMessages": "Loading messages...",
-      "empty": "Start a conversation with your AI assistant",
-      "inputPlaceholder": "Type your message...",
-      "send": "Send",
-      "stop": "Stop",
-      "retry": "Retry",
-      "relativeNow": "just now",
-      "relativeMinutesShort": "{count}m",
-      "relativeHoursShort": "{count}h",
-      "relativeDaysShort": "{count}d",
-      "relativeMinutesAgo": "{count}m ago",
-      "relativeHoursAgo": "{count}h ago",
-      "relativeDaysAgo": "{count}d ago",
-      "assistantActor": "AI",
-      "userActor": "You",
-      "enterToSend": "Enter to send, Shift+Enter for new line",
-      "scrollToBottom": "Scroll to bottom",
-      "deleteConversation": "Delete conversation",
-      "confirmDelete": "Delete",
-      "openSidebar": "Open conversation list",
-      "clearSearch": "Clear search query",
-      "copyCode": "Copy code",
-      "copied": "Copied!",
-      "toolLabel": "Tool: {toolName}",
-      "toolState": "Status: {state}",
-      "toolPreparing": "Preparing...",
-      "toolInput": "Input",
-      "toolOutput": "Output",
-      "authRequired": "Authentication required to use this tool",
-      "openAuthLink": "Open authentication",
-      "checkStatus": "Check status",
-      "retryTool": "Retry",
-      "authStatus": "Status: {status}",
-      "unknown": "Unknown"
     },
     "recruiter": {
       "title": "Recruiter Portal",
@@ -853,7 +873,60 @@
           }
         }
       },
-      "globalStats": "Global Placement Analytics"
+      "globalStats": "Global Placement Analytics",
+      "universities": {
+        "backToCommandCenter": "Back to command center",
+        "kicker": "Administration",
+        "title": "University Validation",
+        "description": "Review and approve pending university registrations.",
+        "noUniversities": "No universities found.",
+        "statusFilter": "Filter by status",
+        "allStatuses": "All statuses",
+        "status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected"
+        },
+        "approve": "Approve",
+        "reject": "Reject",
+        "approveSuccess": "University approved successfully.",
+        "rejectSuccess": "University rejected.",
+        "rejectDialog": {
+          "title": "Reject University",
+          "description": "Provide a reason for rejecting this university application.",
+          "reasonLabel": "Rejection reason",
+          "reasonPlaceholder": "Enter the reason for rejection...",
+          "cancel": "Cancel",
+          "confirm": "Reject University"
+        },
+        "card": {
+          "domains": "Domains",
+          "noDomains": "No domains registered",
+          "location": "Location",
+          "department": "Department",
+          "dean": "Dean",
+          "registeredAt": "Registered"
+        }
+      },
+      "pending": {
+        "kicker": "University Status",
+        "title": "Application Under Review",
+        "subtitle": "Your university registration is being reviewed by a super administrator. You will be notified once a decision is made.",
+        "statusLabel": "Status",
+        "statusValue": "Pending Review",
+        "whatNext": "What happens next?",
+        "step1": "A super administrator reviews your application",
+        "step2": "Your email domains are verified and approved",
+        "step3": "You get full access to the admin dashboard"
+      },
+      "rejected": {
+        "kicker": "University Status",
+        "title": "Application Rejected",
+        "subtitle": "Unfortunately, your university registration was not approved.",
+        "reasonLabel": "Reason",
+        "contactSupport": "If you believe this is an error, please contact support.",
+        "reapply": "Re-apply"
+      }
     },
     "superAdmin": {
       "commandCenter": {
@@ -994,6 +1067,60 @@
       "impersonation": {
         "banner": "You are impersonating {name}",
         "stop": "Stop"
+      }
+    },
+    "settings": {
+      "twoFactor": {
+        "title": "Two-Factor Authentication",
+        "description": "Add an extra layer of security to your account by requiring a verification code when signing in.",
+        "active": "Active",
+        "inactive": "Inactive",
+        "enable": "Enable 2FA",
+        "disable": "Disable 2FA",
+        "enableStep": {
+          "title": "Set Up Authenticator",
+          "description": "Scan the QR code with your authenticator app (Google Authenticator, Authy, etc.)",
+          "passwordLabel": "Current password",
+          "passwordPlaceholder": "Enter your password to continue",
+          "continue": "Continue",
+          "scanQr": "Scan this QR code with your authenticator app",
+          "manualEntry": "Or enter this key manually:",
+          "copySecret": "Copy secret"
+        },
+        "verifyStep": {
+          "title": "Verify Setup",
+          "description": "Enter the 6-digit code from your authenticator app to verify setup.",
+          "codeLabel": "Verification code",
+          "codePlaceholder": "Enter 6-digit code",
+          "verify": "Verify & Enable"
+        },
+        "backupCodes": {
+          "title": "Backup Codes",
+          "description": "Save these backup codes in a safe place. Each code can only be used once to sign in if you lose access to your authenticator app.",
+          "copy": "Copy all codes",
+          "download": "Download codes",
+          "copied": "Codes copied to clipboard",
+          "done": "I've saved my backup codes",
+          "warning": "These codes will not be shown again. Make sure to save them now."
+        },
+        "disableConfirm": {
+          "title": "Disable Two-Factor Authentication",
+          "description": "This will remove the extra security layer from your account. Are you sure?",
+          "passwordLabel": "Current password",
+          "passwordPlaceholder": "Enter your password to confirm",
+          "cancel": "Cancel",
+          "confirm": "Disable 2FA"
+        },
+        "success": {
+          "enabled": "Two-factor authentication enabled successfully.",
+          "disabled": "Two-factor authentication disabled."
+        },
+        "error": {
+          "enableFailed": "Failed to enable 2FA. Please try again.",
+          "disableFailed": "Failed to disable 2FA. Please try again.",
+          "verifyFailed": "Invalid verification code. Please try again.",
+          "passwordRequired": "Password is required."
+        }
       }
     }
   },

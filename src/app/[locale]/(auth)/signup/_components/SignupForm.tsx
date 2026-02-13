@@ -5,8 +5,9 @@ import { useState } from "react"
 import { RoleSelector } from "./RoleSelector"
 import { StudentSignupForm } from "./SignupForm/StudentSignupForm"
 import { CompanySignupForm } from "./SignupForm/CompanySignupForm"
+import { UniversitySignupForm } from "./SignupForm/UniversitySignupForm"
 
-type Step = "role-selection" | "student-form" | "company-form"
+type Step = "role-selection" | "student-form" | "company-form" | "university-form"
 
 export function SignupForm() {
   const [step, setStep] = useState<Step>("role-selection")
@@ -19,11 +20,17 @@ export function SignupForm() {
     return <CompanySignupForm onBack={() => setStep("role-selection")} />
   }
 
+  if (step === "university-form") {
+    return <UniversitySignupForm onBack={() => setStep("role-selection")} />
+  }
+
   return (
     <RoleSelector
-      onSelect={(role) =>
-        setStep(role === "student" ? "student-form" : "company-form")
-      }
+      onSelect={(role) => {
+        if (role === "student") setStep("student-form")
+        else if (role === "company") setStep("company-form")
+        else setStep("university-form")
+      }}
     />
   )
 }

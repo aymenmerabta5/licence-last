@@ -88,6 +88,13 @@ import {
   revokeSessionProcedure,
   revokeAllSessionsProcedure,
 } from "./routes/admin-users"
+import {
+  listUniversitiesProcedure,
+  getUniversityByIdProcedure,
+  createUniversityProcedure,
+  approveUniversityProcedure,
+  rejectUniversityProcedure,
+} from "./routes/universities"
 
 export const appRouter = {
   users: {
@@ -174,6 +181,13 @@ export const appRouter = {
     listSessions: listUserSessionsProcedure,
     revokeSession: revokeSessionProcedure,
     revokeAllSessions: revokeAllSessionsProcedure,
+  },
+  universities: {
+    list: listUniversitiesProcedure,
+    getById: getUniversityByIdProcedure,
+    create: createUniversityProcedure,
+    approve: approveUniversityProcedure,
+    reject: rejectUniversityProcedure,
   },
   assistant: {
     listModels: listAssistantModelsProcedure,

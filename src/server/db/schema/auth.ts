@@ -14,6 +14,7 @@ export const user = pgTable("user", {
   onboardingCompleted: boolean("onboarding_completed").default(false).notNull(),
   name: text("name"),
   image: text("image"),
+  twoFactorEnabled: boolean("two_factor_enabled").default(false),
   banned: boolean("banned").default(false),
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires"),

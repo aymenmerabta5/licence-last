@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { ChangePasswordDialog } from "./ChangePasswordDialog"
+import { TwoFactorSettings } from "./TwoFactorSettings"
 
 interface AccountSettingsTabProps {
   me:
@@ -14,6 +15,7 @@ interface AccountSettingsTabProps {
         user: {
           email: string
           role: string | null | undefined
+          twoFactorEnabled?: boolean
         }
       }
     | undefined
@@ -63,6 +65,8 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
           </div>
         </CardContent>
       </Card>
+
+      <TwoFactorSettings isTwoFactorEnabled={me?.user.twoFactorEnabled ?? false} />
 
       <Card className="border-destructive/20 bg-destructive/5 rounded-3xl p-8 space-y-4 opacity-60">
         <h4 className="font-bold text-destructive">Termination Zone</h4>

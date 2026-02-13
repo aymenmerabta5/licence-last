@@ -43,9 +43,14 @@ export const userRelations = relations(user, ({ one, many }) => ({
 
 // ── Universities ──────────────────────────────────────
 
-export const universityRelations = relations(university, ({ many }) => ({
+export const universityRelations = relations(university, ({ one, many }) => ({
   domains: many(universityDomain),
   students: many(user),
+  approvedBy: one(user, {
+    fields: [university.approvedByUserId],
+    references: [user.id],
+    relationName: "universityApprovedBy",
+  }),
 }))
 
 export const universityDomainRelations = relations(

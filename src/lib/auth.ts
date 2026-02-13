@@ -3,7 +3,7 @@ import "server-only"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { APIError } from "better-auth/api"
-import { admin as adminPlugin, multiSession } from "better-auth/plugins"
+import { admin as adminPlugin, multiSession, twoFactor } from "better-auth/plugins"
 import { nextCookies } from "better-auth/next-js"
 import { and, eq, inArray } from "drizzle-orm"
 
@@ -12,6 +12,7 @@ import { universityDomain } from "@/server/db/schema/universities"
 import { sendEmail } from "@/server/email/sendEmail"
 import ResetPasswordEmail from "@/server/email/emails/ResetPasswordEmail"
 import VerifyEmailEmail from "@/server/email/emails/VerifyEmailEmail"
+import TwoFactorOtpEmail from "@/server/email/emails/TwoFactorOtpEmail"
 import { env } from "@/env"
 import { getEmailDomain, domainCandidates } from "./auth-utils"
 import { ac, superAdmin, admin, student, companyAdmin } from "./permissions"
@@ -61,6 +62,12 @@ export const auth = betterAuth({
         required: false,
         input: false,
       },
+      twoFactorEnabled: {
+        type: "boolean",
+        required: false,
+        defaultValue: false,
+        input: false,
+      },
     },
   },
   databaseHooks: {
@@ -68,7 +75,7 @@ export const auth = betterAuth({
       create: {
         before: async (data) => {
           const VALID_ROLES = new Set<string>(["student", "company_admin", "admin", "super_admin"])
-          const ALLOWED_SIGNUP_ROLES = new Set<string>(["student", "company_admin"])
+          const ALLOWED_SIGNUP_ROLES = new Set<string>(["student", "company_admin", "admin"])
           const requestedRole = (data.role as string | undefined) ?? "student"
 
           // Admin-created users arrive with emailVerified: true (admin plugin default).
@@ -91,8 +98,9 @@ export const auth = betterAuth({
               message: "Invalid role for self-registration",
             })
           }
-          const role = requestedRole as "student" | "company_admin"
+          const role = requestedRole as "student" | "company_admin" | "admin"
 
+          // company_admin and admin skip domain validation
           if (role !== "student") {
             return { data: { ...data, role } }
           }
@@ -171,6 +179,25 @@ export const auth = betterAuth({
       adminRoles: ["super_admin"],
       defaultRole: "student",
       impersonationSessionDuration: 60 * 60, // 1 hour
+    }),
+    twoFactor({
+      issuer: "Internex",
+      otpOptions: {
+        async sendOTP({ user, otp }) {
+          await sendEmail(
+            user.email,
+            "Your Internex verification code",
+            TwoFactorOtpEmail,
+            { otp, userName: user.name || "User" },
+          )
+        },
+        period: 5, // OTP valid for 5 minutes
+      },
+      backupCodes: {
+        amount: 10,
+        length: 10,
+      },
+      skipVerificationOnEnable: false,
     }),
     multiSession({
       maximumSessions: 5,

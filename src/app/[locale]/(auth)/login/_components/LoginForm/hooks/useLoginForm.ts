@@ -14,9 +14,11 @@ import { getPostLoginRedirectPath } from "@/lib/post-login-redirect"
 import { orpcClient } from "@/server/orpc/client"
 
 export type LoginFormApi = ReturnType<typeof useLoginForm>["form"]
+export type TwoFactorMethod = "totp" | "otp" | "backup"
 
 export function useLoginForm() {
   const t = useTranslations("auth.login")
+  const t2fa = useTranslations("auth.login.twoFactor")
   const tv = useTranslations("auth.validation")
   const router = useRouter()
 
@@ -25,6 +27,13 @@ export function useLoginForm() {
   const [serverError, setServerError] = useState("")
   const [needsVerification, setNeedsVerification] = useState(false)
   const [pendingEmail, setPendingEmail] = useState("")
+
+  // 2FA state
+  const [twoFactorRequired, setTwoFactorRequired] = useState(false)
+  const [twoFactorMethod, setTwoFactorMethod] = useState<TwoFactorMethod>("totp")
+  const [twoFactorCode, setTwoFactorCode] = useState("")
+  const [trustDevice, setTrustDevice] = useState(false)
+  const [isVerifying2FA, setIsVerifying2FA] = useState(false)
 
   const loginSchema = useMemo(() => createLoginSchema(tv), [tv])
 
@@ -58,6 +67,13 @@ export function useLoginForm() {
           return
         }
 
+        // Check if 2FA is required
+        if (result.data && "twoFactorRedirect" in result.data) {
+          setTwoFactorRequired(true)
+          setServerError("")
+          return
+        }
+
         const me = await orpcClient.users.getMe()
         const redirectPath = getPostLoginRedirectPath(me)
         router.push(redirectPath)
@@ -66,6 +82,65 @@ export function useLoginForm() {
       }
     },
   })
+
+  async function verify2FA() {
+    if (!twoFactorCode.trim()) return
+    setIsVerifying2FA(true)
+    setServerError("")
+
+    try {
+      let result
+
+      if (twoFactorMethod === "totp") {
+        result = await authClient.twoFactor.verifyTotp({
+          code: twoFactorCode,
+          trustDevice,
+        })
+      } else if (twoFactorMethod === "otp") {
+        result = await authClient.twoFactor.verifyOtp({
+          code: twoFactorCode,
+          trustDevice,
+        })
+      } else {
+        result = await authClient.twoFactor.verifyBackupCode({
+          code: twoFactorCode,
+          trustDevice,
+        })
+      }
+
+      if (result.error) {
+        setServerError(t2fa("invalidCode"))
+        setIsVerifying2FA(false)
+        return
+      }
+
+      const me = await orpcClient.users.getMe()
+      const redirectPath = getPostLoginRedirectPath(me)
+      router.push(redirectPath)
+    } catch (err) {
+      setServerError(getErrorMessage(err, t2fa("error")))
+      setIsVerifying2FA(false)
+    }
+  }
+
+  async function sendOtpCode() {
+    try {
+      const result = await authClient.twoFactor.sendOtp()
+      if (result.error) {
+        toast.error(result.error.message || t2fa("error"))
+        return
+      }
+      toast.success(t2fa("otpSent"))
+    } catch (err) {
+      toast.error(getErrorMessage(err, t2fa("error")))
+    }
+  }
+
+  function backToLogin() {
+    setTwoFactorRequired(false)
+    setTwoFactorCode("")
+    setServerError("")
+  }
 
   async function resendVerificationEmail() {
     if (!pendingEmail) return
@@ -97,5 +172,17 @@ export function useLoginForm() {
     serverError,
     needsVerification,
     resendVerificationEmail,
+    // 2FA
+    twoFactorRequired,
+    twoFactorMethod,
+    setTwoFactorMethod,
+    twoFactorCode,
+    setTwoFactorCode,
+    trustDevice,
+    setTrustDevice,
+    isVerifying2FA,
+    verify2FA,
+    sendOtpCode,
+    backToLogin,
   }
 }

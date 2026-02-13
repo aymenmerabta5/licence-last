@@ -10,6 +10,7 @@ import {
   companyReportSeverityEnum,
   offerStatusEnum,
   proficiencyLevelEnum,
+  universityStatusEnum,
 } from "@/server/db/schema/enums"
 
 export const internshipTypeSchema = z.enum(internshipTypeEnum.enumValues)
@@ -41,6 +42,9 @@ export type OfferStatus = z.infer<typeof offerStatusSchema>
 
 export const proficiencyLevelSchema = z.enum(proficiencyLevelEnum.enumValues)
 export type ProficiencyLevel = z.infer<typeof proficiencyLevelSchema>
+
+export const universityStatusSchema = z.enum(universityStatusEnum.enumValues)
+export type UniversityStatus = z.infer<typeof universityStatusSchema>
 
 export function isInternshipType(value: string): value is InternshipType {
   return internshipTypeSchema.safeParse(value).success
