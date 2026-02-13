@@ -1,4 +1,10 @@
-import { getMeProcedure, promoteUserProcedure, updateMeProcedure } from "./routes/users"
+import {
+  getMeProcedure,
+  promoteUserProcedure,
+  updateMeProcedure,
+  uploadAvatarProcedure,
+  deleteAvatarProcedure,
+} from "./routes/users"
 import {
   listCompaniesProcedure,
   getCompanyByIdProcedure,
@@ -76,6 +82,8 @@ export const appRouter = {
     getMe: getMeProcedure,
     updateMe: updateMeProcedure,
     promote: promoteUserProcedure,
+    uploadAvatar: uploadAvatarProcedure,
+    deleteAvatar: deleteAvatarProcedure,
   },
   companies: {
     list: listCompaniesProcedure,

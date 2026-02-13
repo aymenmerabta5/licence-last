@@ -28,17 +28,17 @@ describe("src/server/services/users/update-me", () => {
   })
 
   test("should update user name and return updated data", async () => {
-    mockReturningResult = [{ id: "user-1", name: "New Name", email: "test@example.com" }]
+    mockReturningResult = [{ id: "user-1", name: "New Name", email: "test@example.com", image: null }]
 
     const { updateMe } = await import("./update-me")
     const result = await updateMe("user-1", { name: "New Name" })
 
-    expect(result).toEqual({ id: "user-1", name: "New Name", email: "test@example.com" })
+    expect(result).toEqual({ id: "user-1", name: "New Name", email: "test@example.com", image: null })
     expect(mockUpdate).toHaveBeenCalledTimes(1)
   })
 
   test("should allow setting name to null", async () => {
-    mockReturningResult = [{ id: "user-1", name: null, email: "test@example.com" }]
+    mockReturningResult = [{ id: "user-1", name: null, email: "test@example.com", image: null }]
 
     const { updateMe } = await import("./update-me")
     const result = await updateMe("user-1", { name: null })

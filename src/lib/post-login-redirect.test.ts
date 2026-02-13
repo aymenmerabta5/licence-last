@@ -11,6 +11,7 @@ function baseMe(): MeResult {
       email: "user-1@example.com",
       role: "student",
       name: null,
+      image: null,
       onboardingCompleted: false,
     },
     company: null,

@@ -1,13 +1,14 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useRef, useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { z } from "zod"
+import { toast } from "sonner"
 
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { getErrorMessage } from "@/lib/error-message"
-import { orpc } from "@/server/orpc/client"
+import { orpc, orpcClient } from "@/server/orpc/client"
 
 import type { MeResult, StudentProfileResult } from "../types"
 
@@ -56,6 +57,11 @@ export function useProfileSettings(
 
   const [serverError, setServerError] = useState("")
   const [successTick, setSuccessTick] = useState(0)
+
+  // Avatar state
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(me.user.image ?? null)
+  const [isAvatarUploading, setIsAvatarUploading] = useState(false)
+  const avatarInputRef = useRef<HTMLInputElement>(null)
 
   const updateMeMutation = useMutation(
     orpc.users.updateMe.mutationOptions({
@@ -158,6 +164,43 @@ export function useProfileSettings(
     form.setFieldValue("address", initialValues.address)
   }
 
+  const handleAvatarUpload = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (!file) return
+
+      // Reset input so the same file can be re-selected
+      if (avatarInputRef.current) avatarInputRef.current.value = ""
+
+      setIsAvatarUploading(true)
+      try {
+        const { url } = await orpcClient.users.uploadAvatar({ file })
+        setAvatarUrl(url)
+        await queryClient.invalidateQueries({ queryKey: meQueryOptions.queryKey })
+        toast.success("Profile photo updated.")
+      } catch (err) {
+        toast.error(getErrorMessage(err, "Upload failed. Please try again."))
+      } finally {
+        setIsAvatarUploading(false)
+      }
+    },
+    [queryClient, meQueryOptions.queryKey],
+  )
+
+  const handleAvatarRemove = useCallback(async () => {
+    setIsAvatarUploading(true)
+    try {
+      await orpcClient.users.deleteAvatar()
+      setAvatarUrl(null)
+      await queryClient.invalidateQueries({ queryKey: meQueryOptions.queryKey })
+      toast.success("Profile photo removed.")
+    } catch (err) {
+      toast.error(getErrorMessage(err, "Could not remove photo."))
+    } finally {
+      setIsAvatarUploading(false)
+    }
+  }, [queryClient, meQueryOptions.queryKey])
+
   return {
     form,
     isStudent,
@@ -165,5 +208,10 @@ export function useProfileSettings(
     serverError,
     successTick,
     resetToInitial,
+    avatarUrl,
+    isAvatarUploading,
+    avatarInputRef,
+    handleAvatarUpload,
+    handleAvatarRemove,
   }
 }

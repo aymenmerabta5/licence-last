@@ -1,8 +1,12 @@
 "use client"
 
+import { useState } from "react"
+
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
+import { ChangePasswordDialog } from "./ChangePasswordDialog"
 
 interface AccountSettingsTabProps {
   me:
@@ -16,6 +20,8 @@ interface AccountSettingsTabProps {
 }
 
 export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false)
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-5 duration-500">
       <Card className="border-border/40 bg-background rounded-3xl overflow-hidden shadow-sm">
@@ -41,16 +47,16 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
 
           <div className="h-px bg-border/20" />
 
-          <div className="flex items-center justify-between gap-10 opacity-60">
+          <div className="flex items-center justify-between gap-10">
             <div className="space-y-1">
               <h4 className="font-bold">Security Password</h4>
-              <p className="text-xs text-muted-foreground italic">Password change is coming soon.</p>
+              <p className="text-xs text-muted-foreground">Change your account password. Other sessions will be revoked.</p>
             </div>
             <Button
               type="button"
-              disabled
               variant="editorial-outline"
               className="rounded-xl h-11 border-border/40 hover:border-heading"
+              onClick={() => setPasswordDialogOpen(true)}
             >
               Update Password
             </Button>
@@ -72,6 +78,11 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
           Delete Account
         </Button>
       </Card>
+
+      <ChangePasswordDialog
+        open={passwordDialogOpen}
+        onOpenChange={setPasswordDialogOpen}
+      />
     </div>
   )
 }

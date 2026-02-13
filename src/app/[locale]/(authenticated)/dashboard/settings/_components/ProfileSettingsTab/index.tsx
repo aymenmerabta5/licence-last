@@ -56,8 +56,19 @@ function ProfileSettingsTabForm({
   me: NonNullable<ProfileSettingsTabProps["me"]>
   studentProfile: NonNullable<ProfileSettingsTabProps["studentProfile"]> | null
 }) {
-  const { form, isStudent, isBusy, serverError, successTick, resetToInitial } =
-    useProfileSettings(me, studentProfile)
+  const {
+    form,
+    isStudent,
+    isBusy,
+    serverError,
+    successTick,
+    resetToInitial,
+    avatarUrl,
+    isAvatarUploading,
+    avatarInputRef,
+    handleAvatarUpload,
+    handleAvatarRemove,
+  } = useProfileSettings(me, studentProfile)
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-500">
@@ -93,7 +104,16 @@ function ProfileSettingsTabForm({
             >
               {([name]) => {
                 const avatarInitial = (name.trim().charAt(0) || "A").toUpperCase()
-                return <AvatarSection avatarInitial={avatarInitial} />
+                return (
+                  <AvatarSection
+                    avatarInitial={avatarInitial}
+                    imageUrl={avatarUrl}
+                    isUploading={isAvatarUploading}
+                    inputRef={avatarInputRef}
+                    onUpload={handleAvatarUpload}
+                    onRemove={handleAvatarRemove}
+                  />
+                )
               }}
             </form.Subscribe>
 

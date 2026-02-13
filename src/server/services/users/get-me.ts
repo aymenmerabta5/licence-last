@@ -11,6 +11,7 @@ export async function getMe(user: {
   email: string
   role?: string | null
   name?: string | null
+  image?: string | null
   onboardingCompleted?: boolean | null
 }) {
   let companyData = null
@@ -32,6 +33,7 @@ export async function getMe(user: {
       email: user.email,
       role: user.role ?? "student",
       name: user.name ?? null,
+      image: user.image ?? null,
       onboardingCompleted: user.onboardingCompleted ?? false,
     },
     company: companyData,
