@@ -404,7 +404,7 @@ async function seedStudentDiscoverySegment(ctx: SeederContext, segment: number) 
   const skills = await ensureSkillTags(4, ctx)
 
   const admin = await createUserSeed(ctx, {
-    role: "admin",
+    role: "university_admin",
     label: `admin-${segment + 1}`,
     universityId,
   })
@@ -473,7 +473,7 @@ async function seedCompanyHiringFunnelSegment(ctx: SeederContext, segment: numbe
   const skills = await ensureSkillTags(6, ctx)
 
   const admin = await createUserSeed(ctx, {
-    role: "admin",
+    role: "university_admin",
     label: `funnel-admin-${segment + 1}`,
     universityId,
   })
@@ -588,7 +588,7 @@ async function seedAdminValidationQueueSegment(ctx: SeederContext, segment: numb
   const skills = await ensureSkillTags(4, ctx)
 
   const admin = await createUserSeed(ctx, {
-    role: "admin",
+    role: "university_admin",
     label: `queue-admin-${segment + 1}`,
     universityId,
   })

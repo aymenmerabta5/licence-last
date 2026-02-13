@@ -15,7 +15,7 @@ import VerifyEmailEmail from "@/server/email/emails/VerifyEmailEmail"
 import TwoFactorOtpEmail from "@/server/email/emails/TwoFactorOtpEmail"
 import { env } from "@/env"
 import { getEmailDomain, domainCandidates } from "./auth-utils"
-import { ac, superAdmin, admin, deptHead, student, companyAdmin } from "./permissions"
+import { ac, superAdmin, universityAdmin, deptHead, student, companyAdmin } from "./permissions"
 
 // Re-export for backward compatibility
 export { getEmailDomain, domainCandidates } from "./auth-utils"
@@ -27,7 +27,7 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: {
-        type: ["student", "company_admin", "dept_head", "admin", "super_admin"],
+        type: ["student", "company_admin", "dept_head", "university_admin", "super_admin"],
         required: false,
         defaultValue: "student",
         // input: true is required for company_admin self-registration.
@@ -79,7 +79,7 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (data) => {
-          const VALID_ROLES = new Set<string>(["student", "company_admin", "dept_head", "admin", "super_admin"])
+          const VALID_ROLES = new Set<string>(["student", "company_admin", "dept_head", "university_admin", "super_admin"])
           const ALLOWED_SIGNUP_ROLES = new Set<string>(["student", "company_admin"])
           const requestedRole = (data.role as string | undefined) ?? "student"
 
@@ -177,7 +177,7 @@ export const auth = betterAuth({
       ac,
       roles: {
         super_admin: superAdmin,
-        admin,
+        university_admin: universityAdmin,
         dept_head: deptHead,
         student,
         company_admin: companyAdmin,

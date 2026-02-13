@@ -18,7 +18,7 @@ import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 export interface ValidatePlacementInput {
   applicationId: string
   adminUserId: string
-  adminRole: "admin" | "dept_head" | "super_admin"
+  adminRole: "university_admin" | "dept_head" | "super_admin"
   adminUniversityId: string | null
   /** Required when adminRole is "dept_head" — scopes validation to their department */
   adminDepartmentId?: string | null

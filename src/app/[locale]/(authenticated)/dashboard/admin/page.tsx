@@ -4,7 +4,7 @@ import { requireRole } from "@/lib/auth-guards"
 import { AdminDashboard } from "@/app/[locale]/(authenticated)/_components/AdminDashboard"
 
 export default async function AdminDashboardPage() {
-  const user = await requireRole(["admin", "super_admin"])
+  const user = await requireRole(["university_admin", "super_admin"])
   const t = await getTranslations("dashboard")
   const greeting = t("welcome")
 

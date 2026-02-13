@@ -136,7 +136,7 @@ export function createInternexDevMcpServer() {
       description: "Set a user's role by id or email.",
       inputSchema: {
         userIdOrEmail: z.string().min(1),
-        newRole: z.enum(["student", "company_admin", "admin", "super_admin"]),
+        newRole: z.enum(["student", "company_admin", "university_admin", "super_admin"]),
         confirmWrite: z.boolean().optional(),
       },
     },
@@ -252,7 +252,7 @@ export function createInternexDevMcpServer() {
         companyId: z.string().optional(),
         actionByUserId: z.string().optional(),
         studentUserId: z.string().optional(),
-        adminRole: z.enum(["admin", "super_admin"]).optional(),
+        adminRole: z.enum(["university_admin", "super_admin"]).optional(),
         adminUniversityId: z.string().nullable().optional(),
         startDate: z.string().optional(),
         endDate: z.string().optional(),

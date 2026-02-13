@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm"
 import postgres from "postgres"
 import { drizzle } from "drizzle-orm/postgres-js"
 
-import { logger } from "@/server/logging"
+import { logger } from "@/server/logging/logger"
 import * as schema from "./schema"
 import { university, universityDomain } from "./schema/universities"
 import { user, account } from "./schema/auth"

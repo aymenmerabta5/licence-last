@@ -186,7 +186,7 @@ describe("src/server/services/placements/list-pending", () => {
     const { listPendingApplications } = await import("./list-pending")
     const result = await listPendingApplications(
       {},
-      { role: "admin", universityId: null },
+      { role: "university_admin", universityId: null },
     )
 
     expect(result.applications).toEqual([])

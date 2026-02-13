@@ -26,7 +26,6 @@ interface UserDropdownProps {
 
 export function UserDropdown({ user, onLogout, isLoggingOut }: UserDropdownProps) {
   const t = useTranslations("dashboard.navbar")
-  const tSwitcher = useTranslations("dashboard.accountSwitcher")
   const switcher = useAccountSwitcher(user.id)
 
   return (

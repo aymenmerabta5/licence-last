@@ -13,7 +13,7 @@ interface AuthenticatedContentProps {
  * Separated to support Next.js 16 cacheComponents with Suspense boundary.
  */
 export async function AuthenticatedContent({ children }: AuthenticatedContentProps) {
-  const user = await requireRole(["student", "company_admin", "dept_head", "admin", "super_admin"])
+  const user = await requireRole(["student", "company_admin", "dept_head", "university_admin", "super_admin"])
 
   // Check if current session is impersonated
   const session = await auth.api.getSession({ headers: await headers() })

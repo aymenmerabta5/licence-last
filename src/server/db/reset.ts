@@ -2,7 +2,7 @@ import postgres from "postgres"
 import { drizzle } from "drizzle-orm/postgres-js"
 import { sql } from "drizzle-orm"
 
-import { logger } from "@/server/logging"
+import { logger } from "@/server/logging/logger"
 
 async function resetDatabase() {
   const databaseUrl = process.env.DATABASE_URL

@@ -630,7 +630,7 @@
       "student": "Student",
       "recruiter": "Recruiter",
       "dept_head": "Department Head",
-      "admin": "Administrator"
+      "university_admin": "Administrator"
     },
     "student": {
       "title": "Student Dashboard",
@@ -1001,7 +1001,7 @@
           "student": "Student",
           "company_admin": "Company Admin",
           "dept_head": "Department Head",
-          "admin": "Admin",
+          "university_admin": "University Admin",
           "super_admin": "Super Admin"
         },
         "status": {
@@ -1081,7 +1081,7 @@
           "student": "Student",
           "company_admin": "Company Admin",
           "dept_head": "Department Head",
-          "admin": "Admin",
+          "university_admin": "University Admin",
           "super_admin": "Super Admin"
         },
         "status": {

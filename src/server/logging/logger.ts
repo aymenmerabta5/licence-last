@@ -1,14 +1,14 @@
-import "server-only"
-
 import pino from "pino"
-import { env } from "@/env"
 
 /**
  * Base configuration for the pino logger
  * Using type assertion for redact option which is supported but not in v5 types
+ *
+ * NOTE: Uses process.env directly (not @/env) so standalone scripts
+ * (db:reset, db:seed) can import this without Next.js runtime.
  */
 const loggerConfig = {
-  level: env.LOG_LEVEL,
+  level: process.env.LOG_LEVEL ?? "info",
   base: {
     service: "internex",
     runtime: "nextjs",

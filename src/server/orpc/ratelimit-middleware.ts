@@ -96,7 +96,7 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
     return createRatelimitMiddleware({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       limiter: () => null as unknown as any,
-      key: async ({ context }, _input) => {
+      key: async ({ context }) => {
         const headersList = await headers()
         const ip = extractClientIp(headersList)
         const userId = (context as ContextWithUser).user?.id

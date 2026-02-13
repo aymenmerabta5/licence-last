@@ -76,7 +76,7 @@ interface ListPendingParams {
 }
 
 interface ListPendingViewer {
-  role: "admin" | "dept_head" | "super_admin"
+  role: "university_admin" | "dept_head" | "super_admin"
   universityId: string | null
   /** Required when role is "dept_head" */
   departmentId?: string | null
@@ -97,7 +97,7 @@ export async function listPendingApplications(
   if (role === "dept_head" && !departmentId) {
     return { applications: [], nextCursor: undefined, hasMore: false }
   }
-  if (role === "admin" && !universityId) {
+  if (role === "university_admin" && !universityId) {
     return { applications: [], nextCursor: undefined, hasMore: false }
   }
 

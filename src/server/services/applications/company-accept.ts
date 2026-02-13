@@ -127,7 +127,7 @@ export async function companyAcceptApplication(
       .from(user)
       .where(
         and(
-          eq(user.role, "admin"),
+          eq(user.role, "university_admin"),
           eq(user.onboardingCompleted, true),
           eq(user.universityId, app.studentUniversityId),
         ),

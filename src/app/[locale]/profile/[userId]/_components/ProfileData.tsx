@@ -16,7 +16,7 @@ interface ProfileDataProps {
  * Separated to support Next.js 16 cacheComponents with Suspense boundary.
  */
 export async function ProfileData({ userId }: ProfileDataProps) {
-  const viewer = await requireRole(["student", "company_admin", "admin", "super_admin"])
+  const viewer = await requireRole(["student", "company_admin", "university_admin", "super_admin"])
   const isOwner = viewer.id === userId && viewer.role === "student"
 
   const result = await getStudentProfileForViewer({

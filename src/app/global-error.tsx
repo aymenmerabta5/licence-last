@@ -35,6 +35,7 @@ export default function GlobalError({
           {error.digest && <p className="digest">Error ID: {error.digest}</p>}
           <div className="actions">
             <button onClick={reset}>Try again</button>
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- Root error boundary: Next.js router may be broken, must use plain <a> */}
             <a href="/">Return home</a>
           </div>
         </div>

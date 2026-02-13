@@ -6,7 +6,7 @@ import { headers } from "next/headers"
 interface UpdateUserData {
   name?: string
   email?: string
-  role?: "student" | "company_admin" | "dept_head" | "admin" | "super_admin"
+  role?: "student" | "company_admin" | "dept_head" | "university_admin" | "super_admin"
 }
 
 export async function updateUser(userId: string, data: UpdateUserData) {

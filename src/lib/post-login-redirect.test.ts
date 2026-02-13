@@ -70,36 +70,36 @@ describe("src/lib/post-login-redirect", () => {
       expect(getPostLoginRedirectPath(me)).toBe("/dashboard/company/pending")
     })
 
-    test("should redirect non-onboarded admin to university onboarding", () => {
+    test("should redirect non-onboarded university_admin to university onboarding", () => {
       const me: MeResult = {
         ...baseMe(),
-        user: { ...baseMe().user, role: "admin", onboardingCompleted: false },
+        user: { ...baseMe().user, role: "university_admin", onboardingCompleted: false },
       }
       expect(getPostLoginRedirectPath(me)).toBe("/onboarding/university")
     })
 
-    test("should redirect admin with approved university to admin dashboard", () => {
+    test("should redirect university_admin with approved university to admin dashboard", () => {
       const me: MeResult = {
         ...baseMe(),
-        user: { ...baseMe().user, role: "admin", onboardingCompleted: true },
+        user: { ...baseMe().user, role: "university_admin", onboardingCompleted: true },
         university: { id: "u1", name: "Univ", abbreviation: null, status: "approved", rejectionReason: null },
       }
       expect(getPostLoginRedirectPath(me)).toBe("/dashboard/admin")
     })
 
-    test("should redirect admin with rejected university to rejected page", () => {
+    test("should redirect university_admin with rejected university to rejected page", () => {
       const me: MeResult = {
         ...baseMe(),
-        user: { ...baseMe().user, role: "admin", onboardingCompleted: true },
+        user: { ...baseMe().user, role: "university_admin", onboardingCompleted: true },
         university: { id: "u1", name: "Univ", abbreviation: null, status: "rejected", rejectionReason: "Incomplete" },
       }
       expect(getPostLoginRedirectPath(me)).toBe("/dashboard/admin/rejected")
     })
 
-    test("should redirect admin with pending university to pending page", () => {
+    test("should redirect university_admin with pending university to pending page", () => {
       const me: MeResult = {
         ...baseMe(),
-        user: { ...baseMe().user, role: "admin", onboardingCompleted: true },
+        user: { ...baseMe().user, role: "university_admin", onboardingCompleted: true },
         university: { id: "u1", name: "Univ", abbreviation: null, status: "pending", rejectionReason: null },
       }
       expect(getPostLoginRedirectPath(me)).toBe("/dashboard/admin/pending")

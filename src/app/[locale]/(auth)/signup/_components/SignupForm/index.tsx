@@ -24,7 +24,7 @@ export function SignupForm({ role, onBack }: SignupFormProps) {
   const tu = useTranslations("auth.signup.universitySignup")
 
   const isCompany = role === "company_admin"
-  const isUniversity = role === "admin"
+  const isUniversity = role === "university_admin"
   const title = isUniversity ? tu("title") : isCompany ? tc("title") : t("title")
   const subtitle = isUniversity ? tu("subtitle") : isCompany ? tc("subtitle") : t("subtitle")
   const emailPlaceholder = isUniversity ? tu("emailPlaceholder") : isCompany ? tc("emailPlaceholder") : t("emailPlaceholder")

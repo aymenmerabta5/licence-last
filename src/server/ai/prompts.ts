@@ -9,7 +9,7 @@ export function resolvePersona({
   intent: AssistantIntent | null
   role: string
 }): AssistantPersona {
-  if (intent === "admin_validation_summary" || role === "admin" || role === "super_admin") {
+  if (intent === "admin_validation_summary" || role === "university_admin" || role === "super_admin") {
     return "Internex Admin Copilot"
   }
   if (intent?.startsWith("student_") || role === "student") {

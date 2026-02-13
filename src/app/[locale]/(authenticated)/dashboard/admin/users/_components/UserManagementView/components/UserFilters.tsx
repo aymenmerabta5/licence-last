@@ -21,7 +21,7 @@ interface UserFiltersProps {
   onCreateClick: () => void
 }
 
-const roles = ["all", "student", "company_admin", "admin", "super_admin"] as const
+const roles = ["all", "student", "company_admin", "university_admin", "super_admin"] as const
 
 export function UserFilters({
   search,

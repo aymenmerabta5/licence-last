@@ -34,7 +34,7 @@ export const listPendingProcedure = adminProcedureGenerous
     listPendingApplications(
       input ?? {},
       {
-        role: context.user.role === "super_admin" ? "super_admin" : "admin",
+        role: context.user.role === "super_admin" ? "super_admin" : "university_admin",
         universityId: context.user.universityId ?? null,
       },
     ),
@@ -68,7 +68,7 @@ export const validateProcedure = adminProcedureStandard
       return await validatePlacement({
         applicationId: input.applicationId,
         adminUserId: context.user.id,
-        adminRole: context.user.role === "super_admin" ? "super_admin" : "admin",
+        adminRole: context.user.role === "super_admin" ? "super_admin" : "university_admin",
         adminUniversityId: context.user.universityId ?? null,
         startDate,
         endDate,
@@ -97,7 +97,7 @@ export const rejectProcedure = adminProcedureStandard
           applicationId: input.applicationId,
           adminUserId: context.user.id,
           adminRole:
-            context.user.role === "super_admin" ? "super_admin" : "admin",
+            context.user.role === "super_admin" ? "super_admin" : "university_admin",
           adminUniversityId: context.user.universityId ?? null,
           reason: input.reason,
         },

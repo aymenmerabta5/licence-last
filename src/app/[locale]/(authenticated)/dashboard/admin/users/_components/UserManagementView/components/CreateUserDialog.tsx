@@ -30,12 +30,12 @@ interface CreateUserDialogProps {
     email: string
     password: string
     name: string
-    role: "student" | "company_admin" | "admin" | "super_admin"
+    role: "student" | "company_admin" | "university_admin" | "super_admin"
   }) => void
   isPending: boolean
 }
 
-const roles = ["student", "company_admin", "admin", "super_admin"] as const
+const roles = ["student", "company_admin", "university_admin", "super_admin"] as const
 
 export function CreateUserDialog({ open, onOpenChange, onSubmit, isPending }: CreateUserDialogProps) {
   const t = useTranslations("dashboard.superAdmin.users")

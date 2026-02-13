@@ -24,7 +24,7 @@ function DepartmentsFallback() {
 }
 
 export default async function DepartmentsPage() {
-  await requireRole(["admin", "super_admin"])
+  await requireRole(["university_admin", "super_admin"])
 
   return (
     <Suspense fallback={<DepartmentsFallback />}>

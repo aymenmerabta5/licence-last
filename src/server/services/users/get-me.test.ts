@@ -99,10 +99,10 @@ describe("src/server/services/users/get-me", () => {
     const result = await getMe({
       id: "user-1",
       email: "user-1@example.com",
-      role: "admin",
+      role: "university_admin",
     })
 
-    expect(result.user.role).toBe("admin")
+    expect(result.user.role).toBe("university_admin")
     expect(result.company).toBeNull()
     expect(mockGetCompanyByUserId).not.toHaveBeenCalled()
     expect(mockGetUniversityByUserId).toHaveBeenCalledWith("user-1")

@@ -10,10 +10,10 @@ import { companyMember } from "@/server/db/schema/companies"
 import { studentProfile } from "@/server/db/schema/students"
 
 /**
- * Check if a user role has admin privileges (admin, dept_head, or super_admin).
+ * Check if a user role has admin privileges (university_admin, dept_head, or super_admin).
  */
 export function isAdminRole(role: string | null | undefined): boolean {
-  return role === "admin" || role === "dept_head" || role === "super_admin"
+  return role === "university_admin" || role === "dept_head" || role === "super_admin"
 }
 
 /** Public — no auth required. */

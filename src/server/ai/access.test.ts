@@ -5,7 +5,7 @@ import { isRoleAllowedForIntent } from "./access"
 describe("access", () => {
   describe("isRoleAllowedForIntent", () => {
     test("allows admin for admin_validation_summary", () => {
-      expect(isRoleAllowedForIntent({ role: "admin", intent: "admin_validation_summary" })).toBe(true)
+      expect(isRoleAllowedForIntent({ role: "university_admin", intent: "admin_validation_summary" })).toBe(true)
       expect(isRoleAllowedForIntent({ role: "super_admin", intent: "admin_validation_summary" })).toBe(true)
     })
 
@@ -21,13 +21,13 @@ describe("access", () => {
 
     test("denies non-student for student intents", () => {
       expect(isRoleAllowedForIntent({ role: "company_admin", intent: "student_search_parse" })).toBe(false)
-      expect(isRoleAllowedForIntent({ role: "admin", intent: "student_cover_letter_draft" })).toBe(false)
+      expect(isRoleAllowedForIntent({ role: "university_admin", intent: "student_cover_letter_draft" })).toBe(false)
     })
 
     test("allows all roles for notifications_summarize", () => {
       expect(isRoleAllowedForIntent({ role: "student", intent: "notifications_summarize" })).toBe(true)
       expect(isRoleAllowedForIntent({ role: "company_admin", intent: "notifications_summarize" })).toBe(true)
-      expect(isRoleAllowedForIntent({ role: "admin", intent: "notifications_summarize" })).toBe(true)
+      expect(isRoleAllowedForIntent({ role: "university_admin", intent: "notifications_summarize" })).toBe(true)
     })
 
     test("denies when role is null or undefined", () => {

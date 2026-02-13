@@ -54,7 +54,7 @@ export const getUniversityByIdProcedure = authedProcedureGenerous
 
 export const createUniversityProcedure = authedProcedureStandard
   .use(async ({ context, next }) => {
-    if (context.user.role !== "admin") {
+    if (context.user.role !== "university_admin") {
       throw new ORPCError("FORBIDDEN", {
         message: "University admin access required",
       })

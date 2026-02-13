@@ -634,7 +634,7 @@
       "student": "طالب",
       "recruiter": "مسؤول توظيف",
       "dept_head": "رئيس القسم",
-      "admin": "مشرف"
+      "university_admin": "مشرف"
     },
     "student": {
       "title": "لوحة تحكم الطالب",
@@ -1006,7 +1006,7 @@
           "student": "طالب",
           "company_admin": "مدير شركة",
           "dept_head": "رئيس القسم",
-          "admin": "مدير",
+          "university_admin": "مدير جامعة",
           "super_admin": "المشرف العام"
         },
         "status": {
@@ -1086,7 +1086,7 @@
           "student": "طالب",
           "company_admin": "مدير شركة",
           "dept_head": "رئيس القسم",
-          "admin": "مدير",
+          "university_admin": "مدير جامعة",
           "super_admin": "المشرف العام"
         },
         "status": {

@@ -630,7 +630,7 @@
       "student": "Étudiant",
       "recruiter": "Recruteur",
       "dept_head": "Chef de département",
-      "admin": "Administrateur"
+      "university_admin": "Administrateur"
     },
     "student": {
       "title": "Tableau de Bord Étudiant",
@@ -1002,7 +1002,7 @@
           "student": "Étudiant",
           "company_admin": "Admin entreprise",
           "dept_head": "Chef de département",
-          "admin": "Administrateur",
+          "university_admin": "Admin université",
           "super_admin": "Super Admin"
         },
         "status": {
@@ -1082,7 +1082,7 @@
           "student": "Étudiant",
           "company_admin": "Admin entreprise",
           "dept_head": "Chef de département",
-          "admin": "Administrateur",
+          "university_admin": "Admin université",
           "super_admin": "Super Admin"
         },
         "status": {
