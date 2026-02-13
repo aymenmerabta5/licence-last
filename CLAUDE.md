@@ -32,9 +32,10 @@ src/
 │   │   └── onboarding/     (onboarding flows)
 │   ├── api/
 │   │   ├── auth/[...all]/  (Better Auth)
-│   │   ├── rpc/[...rest]/  (oRPC catch-all)
-│   │   └── assistant/      (AI assistant endpoints)
-│   ├── layout.tsx          (root layout — fonts, html)
+│   │   ├── rpc/[...rest]/  (oRPC catch-all, CSRF protected)
+│   │   ├── assistant/      (AI assistant endpoints: chat, auth/status)
+│   │   └── health/         (Health check endpoint)
+│   ├── layout.tsx          (root layout — minimal pass-through)
 │   ├── globals.css
 │   └── page.tsx            (redirects to /en)
 ├── components/             (shared UI components)
@@ -51,28 +52,33 @@ src/
 │   ├── db/                 (Drizzle schema + seed)
 │   ├── orpc/               (Controller — oRPC router)
 │   │   ├── middleware.ts   (auth chain)
-│   │   ├── rate-limited-procedures.ts
+│   │   ├── rate-limited-procedures.ts (15 variants)
+│   │   ├── ratelimit-middleware.ts
 │   │   ├── router.ts
 │   │   ├── client.ts
-│   │   └── routes/         (12 route files)
+│   │   └── routes/         (14 route files, 66 procedures)
 │   ├── services/           (Model — 17 service domains)
-│   │   ├── ai/             (AI integration)
-│   │   ├── applications/
-│   │   ├── assistant/      (AI assistant)
-│   │   ├── companies/
-│   │   ├── documents/      (PDF generation)
-│   │   ├── matching/       (Student-offer matching)
-│   │   ├── notifications/
-│   │   ├── offers/
-│   │   ├── placements/
-│   │   ├── students/
+│   │   ├── admin/          (User management: ban, create, sessions, etc.)
+│   │   ├── applications/   (Application workflow + pipeline + timeline)
+│   │   ├── assistant/      (AI assistant conversations)
+│   │   ├── companies/      (CRUD, approval, trust index, reports)
+│   │   ├── documents/      (PDF generation: agreements, certificates)
+│   │   ├── matching/       (Scoring, skill gap, readiness)
+│   │   ├── notifications/  (Create, list, mark read)
+│   │   ├── offers/         (CRUD, search, status)
+│   │   ├── placements/     (Validate, reject, list pending)
+│   │   ├── skills/         (List, validate)
+│   │   ├── stats/          (Admin analytics)
+│   │   ├── students/       (Profile, public profile, dashboard stats)
+│   │   ├── universities/   (CRUD, approve, reject)
 │   │   ├── uploads/        (S3 file storage)
-│   │   └── users/
-│   ├── actions/            (Server Actions)
-│   ├── storage/            (S3 client)
-│   ├── email/              (Email service)
-│   ├── caching/            (Redis caching)
-│   └── mcp/                (Model Context Protocol)
+│   │   └── users/          (Get-me, update, promote)
+│   ├── ai/                 (AI integration: model, tools, context, prompts)
+│   ├── storage/            (Bun S3Client wrapper)
+│   ├── email/              (Resend + React Email)
+│   ├── caching/            (Redis client + rate limiter)
+│   ├── logging/            (Pino structured logging)
+│   └── mcp/                (Model Context Protocol, dev only)
 ├── i18n/                   (next-intl config)
 ├── messages/               (en.json, fr.json, ar.json)
 ├── env.ts                  (T3 Env validation)
@@ -123,6 +129,7 @@ FeatureName/
 - `src/hooks/useDebounce.ts` — Debounced value
 - `src/hooks/useLogout.ts` — Logout + redirect
 - `src/hooks/useCopilot.ts` — AI chat transport + useChat + tool output parsing
+- `src/hooks/useFormWithSchema.ts` — TanStack Form + Zod schema integration
 
 **Reference implementation**: `ProfileContent/` folder under student profile `_components/`.
 
@@ -185,13 +192,34 @@ publicProcedure              — No auth required
 
 **Rate-Limited Procedures** (`src/server/orpc/rate-limited-procedures.ts`):
 ```typescript
-publicProcedureStrict        // 5 req/min (auth endpoints)
-publicProcedureStandard      // 100 req/min (public reads)
-authedProcedureStandard      // 100 req/min (general API)
-authedProcedureGenerous      // 300 req/min (listings, searches)
-authedProcedureStrict        // 5 req/min (sensitive ops)
-adminProcedureGenerous       // 300 req/min (bulk admin ops)
-assistantProcedureLimited    // 20 req/min (AI calls)
+// Public (IP-based)
+publicProcedureStrict              // 5 req/min (auth endpoints)
+publicProcedureStandard            // 100 req/min (public reads)
+
+// Authenticated (user-based)
+authedProcedureStandard            // 100 req/min (general API)
+authedProcedureGenerous            // 300 req/min (listings, searches)
+authedProcedureStrict              // 5 req/min (sensitive ops)
+
+// Admin (admin user-based)
+adminProcedureStandard             // 100 req/min (standard admin ops)
+adminProcedureGenerous             // 300 req/min (bulk admin ops)
+
+// Super Admin (super admin user-based)
+superAdminProcedureStandard        // 100 req/min (standard super admin)
+superAdminProcedureGenerous        // 300 req/min (bulk super admin)
+
+// Company Admin (user-based)
+companyAdminProcedureStandard      // 100 req/min (general company ops)
+companyAdminProcedureGenerous      // 300 req/min (read-heavy company ops)
+companyAdminProcedureAssistant     // 20 req/min (company AI calls)
+
+// Student (user-based)
+studentProcedureStandard           // 100 req/min (general student ops)
+studentProcedureGenerous           // 300 req/min (student read-heavy)
+
+// AI
+assistantProcedureLimited          // 20 req/min (AI calls)
 ```
 
 #### Client Usage
@@ -389,13 +417,30 @@ Animation policy:
 ## Build Commands
 
 ```bash
-bun run dev      # Development
-bun run build    # Production build
-bun run lint     # ESLint
-bun run typecheck # TypeScript check
-bun test         # Run all tests
-bun test:watch   # Run tests in watch mode
-bun test:coverage # Run tests with coverage report
+bun run dev        # Development
+bun run build      # Production build
+bun run start      # Production start
+bun run lint       # ESLint
+bun run typecheck  # TypeScript check
+
+# Testing
+bun test           # Run all tests
+bun test:watch     # Watch mode
+bun test:coverage  # Coverage report
+bun test:unit      # Unit tests (src/lib + src/server)
+bun test:api       # API tests (src/app/api)
+bun test:pages     # Page tests (src/app)
+bun test:e2e       # Playwright E2E tests
+bun test:ci        # CI pipeline (unit + api + pages)
+
+# Database
+bun run db:generate    # Generate Drizzle migrations (dev)
+bun run db:migrate     # Run migrations (dev)
+bun run db:push        # Push schema changes (dev)
+bun run db:studio      # Open Drizzle Studio (dev)
+bun run db:seed        # Seed database (dev)
+bun run db:reset       # Reset database (dev)
+# Append :prod for production variants (e.g., db:migrate:prod)
 ```
 
 ---
@@ -471,6 +516,11 @@ describe("myModule", () => {
 bun test                    # Run all tests once
 bun test:watch             # Watch mode - re-run on file changes
 bun test:coverage          # Run with coverage report
+bun test:unit              # Unit tests only (src/lib + src/server)
+bun test:api               # API endpoint tests
+bun test:pages             # Page/component tests
+bun test:e2e               # Playwright end-to-end tests
+bun test:ci                # CI pipeline (unit + api + pages)
 bun test src/lib/utils.test.ts  # Run specific test file
 bun test --test-name-pattern="should handle"  # Run matching tests
 ```
@@ -523,6 +573,36 @@ describe("login schema", () => {
 
 ---
 
+## Environment Variables
+
+Validated via T3 Env (`src/env.ts`). See `.env.example` for defaults.
+
+**Required:**
+- `DATABASE_URL` — PostgreSQL connection string
+- `BETTER_AUTH_SECRET` — Auth secret (min 32 chars)
+- `NEXT_PUBLIC_BETTER_AUTH_URL` — Public app URL (e.g., `https://internex.example.com`)
+
+**Optional — AI:**
+- `POE_API_KEY`, `POE_MODEL`, `POE_BASE_URL`, `POE_ALLOWED_MODELS` — AI provider
+- `ARCADE_API_KEY` — External tools (GitHub, Gmail)
+
+**Optional — Email:**
+- `RESEND_API_KEY` — Resend email service
+- `EMAIL_FROM` — Sender address
+
+**Optional — Storage (S3):**
+- `S3_BUCKET`, `S3_ENDPOINT`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_REGION`
+- `S3_PUBLIC_URL`, `S3_BUCKET_NAME`, `NEXT_PUBLIC_S3_ENDPOINT`, `NEXT_PUBLIC_S3_URL`
+
+**Optional — Redis:**
+- `REDIS_URL` — Redis connection string
+- `REDIS_RATE_LIMIT_ENABLED` — Enable rate limiting (`"true"` / `"false"`)
+
+**Optional — Logging:**
+- `LOG_LEVEL` — Pino level: `fatal | error | warn | info | debug | trace | silent` (default: `info`)
+
+---
+
 ## Additional Server Architecture
 
 ### Rate Limiting
@@ -546,17 +626,36 @@ Development-only MCP server for AI tool testing at `src/server/mcp/`:
 
 ### File Storage (S3)
 
-**`src/server/storage/s3.ts`:**
+**`src/server/storage/s3.ts`** (uses Bun's native `Bun.S3Client`):
 ```typescript
-export async function uploadFile(key, data, contentType): Promise<string>
-export async function deleteFile(key): Promise<void>
+export async function uploadFile(key: string, data: Buffer, contentType: string): Promise<string>
+export async function deleteFile(key: string): Promise<void>
+export function isConfigured(): boolean
 ```
+Supports AWS S3, Cloudflare R2, or any S3-compatible endpoint.
+
+### Structured Logging
+
+**`src/server/logging/logger.ts`** (Pino):
+```typescript
+export const logger: pino.Logger
+export function createLogger(bindings: Record<string, unknown>): pino.Logger
+export function createModuleLogger(module: string): pino.Logger
+```
+Auto-redacts sensitive fields. Configurable via `LOG_LEVEL` env var.
 
 ### Email System
 
 **`src/server/email/sendEmail.ts`** uses React Email + Resend:
 ```typescript
-export async function sendEmail({ to, subject, react }): Promise<void>
+// 4 positional args — NOT an object!
+export async function sendEmail<T>(
+  to: string | string[],
+  subject: string,
+  EmailComponent: React.ComponentType<T>,
+  componentProps: T,
+  options?: { from?: string; replyTo?: string; cc?: string[]; bcc?: string[] }
+): Promise<{ success: boolean }>
 ```
 
 ### Document Generation
@@ -567,19 +666,30 @@ PDF generation using `@react-pdf/renderer`:
 
 ### AI/Assistant Features
 
-**Services:** `src/server/services/assistant/`
-- AI-powered chat interface
-- Tool calling with authorization
-- Conversation persistence
-- Rate limited via `assistantProcedureLimited`
+**Architecture:**
+- **Model provider**: Poe (OpenAI-compatible) via `@ai-sdk/openai`
+- **External tools**: Arcade (GitHub, Gmail integration)
+- **Config**: `src/server/ai/` (model, tools, context, prompts)
+- **Services**: `src/server/services/assistant/` (conversations, messages)
+- **API routes**: `src/app/api/assistant/chat/`, `src/app/api/assistant/auth/status/`
+- **Rate limited**: `assistantProcedureLimited` (20 req/min)
+
+**3 Personas** (role-based context injection):
+- Student persona — application guidance, offer discovery
+- Company admin persona — candidate screening, offer management
+- Admin persona — platform management
+
+**9 Internal Tools**: get-offers, get-applications, get-matching-scores, get-company-info, get-student-info, search-internships, get-stats, get-notifications, get-documents
+
+**Env vars**: `POE_API_KEY`, `POE_MODEL`, `POE_BASE_URL`, `ARCADE_API_KEY`
 
 ### Matching & Trust Systems
 
 **Matching** (`src/server/services/matching/`):
-- Student-offer match scores
-- Skill gap analysis
-- Readiness history tracking
+- Student-offer match scoring: Skills 55% + Language 20% + Location 15% + Profile 10%
+- Skill gap analysis with recommendations
+- Readiness history tracking over time
 
 **Trust** (`src/server/services/companies/trust-index.ts`):
-- Company trust scores
-- Trust reports and feedback
+- Formula: `responseRate + completionRate + feedbackScore - reportPenalties`
+- Company trust reports and feedback aggregation
