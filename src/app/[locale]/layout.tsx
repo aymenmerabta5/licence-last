@@ -8,6 +8,7 @@ import { ThemeProvider } from "next-themes"
 
 import { QueryProvider } from "@/components/providers/QueryProvider"
 import { Toaster } from "@/components/ui/sonner"
+import { env } from "@/env"
 import { routing } from "@/i18n/routing"
 
 const dmSans = DM_Sans({
@@ -50,9 +51,38 @@ export async function generateMetadata({
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: "metadata" })
 
+  const baseUrl = env.NEXT_PUBLIC_BETTER_AUTH_URL
+
   return {
-    title: t("title"),
+    metadataBase: new URL(baseUrl),
+    title: {
+      default: t("title"),
+      template: "%s | Internex",
+    },
     description: t("description"),
+    openGraph: {
+      title: {
+        default: t("title"),
+        template: "%s | Internex",
+      },
+      description: t("description"),
+      siteName: "Internex",
+      locale,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: {
+        default: t("title"),
+        template: "%s | Internex",
+      },
+      description: t("description"),
+    },
+    alternates: {
+      languages: Object.fromEntries(
+        routing.locales.map((l) => [l, `/${l}`])
+      ),
+    },
   }
 }
 

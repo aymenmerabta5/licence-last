@@ -14,7 +14,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "auth.resetPassword" })
 
   return {
-    title: `${t("pageTitle")} — Internex`,
+    title: t("pageTitle"),
   }
 }
 
