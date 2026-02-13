@@ -277,6 +277,24 @@
       "settings": "Settings",
       "logout": "Log out"
     },
+    "navbar": {
+      "accountSettings": "Account Settings",
+      "viewProfile": "View Profile",
+      "profileSettings": "Profile Settings",
+      "logout": "Log out"
+    },
+    "accountSwitcher": {
+      "title": "Accounts",
+      "activeLabel": "Active",
+      "switchTo": "Switch to {name}",
+      "addAccount": "Add another account",
+      "removeAccount": "Remove account",
+      "switching": "Switching account...",
+      "switchSuccess": "Switched to {name}",
+      "switchError": "Failed to switch account",
+      "removeSuccess": "Account removed",
+      "removeError": "Failed to remove account"
+    },
     "assistant": {
       "kicker": "Company Tools",
       "title": "Assistant <accent>Copilot</accent>",

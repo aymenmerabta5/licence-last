@@ -277,6 +277,24 @@
       "settings": "الإعدادات",
       "logout": "تسجيل الخروج"
     },
+    "navbar": {
+      "accountSettings": "إعدادات الحساب",
+      "viewProfile": "عرض الملف الشخصي",
+      "profileSettings": "إعدادات الملف الشخصي",
+      "logout": "تسجيل الخروج"
+    },
+    "accountSwitcher": {
+      "title": "الحسابات",
+      "activeLabel": "نشط",
+      "switchTo": "التبديل إلى {name}",
+      "addAccount": "إضافة حساب آخر",
+      "removeAccount": "إزالة الحساب",
+      "switching": "جارٍ تبديل الحساب...",
+      "switchSuccess": "تم التبديل إلى {name}",
+      "switchError": "فشل تبديل الحساب",
+      "removeSuccess": "تم إزالة الحساب",
+      "removeError": "فشل إزالة الحساب"
+    },
     "assistant": {
       "kicker": "أدوات الشركة",
       "title": "المساعد <accent>المعاون</accent>",

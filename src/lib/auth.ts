@@ -3,7 +3,7 @@ import "server-only"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { APIError } from "better-auth/api"
-import { admin as adminPlugin } from "better-auth/plugins"
+import { admin as adminPlugin, multiSession } from "better-auth/plugins"
 import { nextCookies } from "better-auth/next-js"
 import { and, eq, inArray } from "drizzle-orm"
 
@@ -171,6 +171,9 @@ export const auth = betterAuth({
       adminRoles: ["super_admin"],
       defaultRole: "student",
       impersonationSessionDuration: 60 * 60, // 1 hour
+    }),
+    multiSession({
+      maximumSessions: 5,
     }),
     nextCookies(), // must be last — handles Set-Cookie in server actions
   ],

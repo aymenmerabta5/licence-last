@@ -277,6 +277,24 @@
       "settings": "Paramètres",
       "logout": "Se déconnecter"
     },
+    "navbar": {
+      "accountSettings": "Paramètres du compte",
+      "viewProfile": "Voir le profil",
+      "profileSettings": "Paramètres du profil",
+      "logout": "Se déconnecter"
+    },
+    "accountSwitcher": {
+      "title": "Comptes",
+      "activeLabel": "Actif",
+      "switchTo": "Basculer vers {name}",
+      "addAccount": "Ajouter un autre compte",
+      "removeAccount": "Supprimer le compte",
+      "switching": "Changement de compte...",
+      "switchSuccess": "Basculé vers {name}",
+      "switchError": "Échec du changement de compte",
+      "removeSuccess": "Compte supprimé",
+      "removeError": "Échec de la suppression du compte"
+    },
     "assistant": {
       "kicker": "Outils entreprise",
       "title": "Assistant <accent>Copilote</accent>",
