@@ -29,6 +29,10 @@ export const authedProcedure = os.use(async ({ next }) => {
     throw new ORPCError("UNAUTHORIZED")
   }
 
+  if (session.user.banned) {
+    throw new ORPCError("FORBIDDEN", { message: "Account suspended" })
+  }
+
   return next({ context: { session: session.session, user: session.user } })
 })
 
