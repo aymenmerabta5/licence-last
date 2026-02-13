@@ -2,11 +2,11 @@
 
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { GraduationCap, Building2, ArrowRight } from "lucide-react"
+import { GraduationCap, Building2, Landmark, ArrowRight } from "lucide-react"
 
 const ease = [0.4, 0, 0.2, 1] as const
 
-type SelectedRole = "student" | "company"
+type SelectedRole = "student" | "company" | "university"
 
 interface RoleSelectorProps {
   onSelect: (role: SelectedRole) => void
@@ -15,6 +15,7 @@ interface RoleSelectorProps {
 const roles = [
   { key: "student" as const, Icon: GraduationCap },
   { key: "company" as const, Icon: Building2 },
+  { key: "university" as const, Icon: Landmark },
 ]
 
 export function RoleSelector({ onSelect }: RoleSelectorProps) {

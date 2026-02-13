@@ -6,7 +6,7 @@ import {
   getOfferById,
   getStudentApplicationForOffer,
 } from "@/server/services/offers/get"
-import { OfferDetailClient } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetailClient"
+import { OfferDetailClient } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail"
 
 type Params = Promise<{ offerId: string }>
 

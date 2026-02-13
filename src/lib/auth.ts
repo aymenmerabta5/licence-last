@@ -3,6 +3,7 @@ import "server-only"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { APIError } from "better-auth/api"
+import { admin as adminPlugin, multiSession, twoFactor } from "better-auth/plugins"
 import { nextCookies } from "better-auth/next-js"
 import { and, eq, inArray } from "drizzle-orm"
 
@@ -11,8 +12,10 @@ import { universityDomain } from "@/server/db/schema/universities"
 import { sendEmail } from "@/server/email/sendEmail"
 import ResetPasswordEmail from "@/server/email/emails/ResetPasswordEmail"
 import VerifyEmailEmail from "@/server/email/emails/VerifyEmailEmail"
+import TwoFactorOtpEmail from "@/server/email/emails/TwoFactorOtpEmail"
 import { env } from "@/env"
 import { getEmailDomain, domainCandidates } from "./auth-utils"
+import { ac, superAdmin, admin, student, companyAdmin } from "./permissions"
 
 // Re-export for backward compatibility
 export { getEmailDomain, domainCandidates } from "./auth-utils"
@@ -29,7 +32,7 @@ export const auth = betterAuth({
         defaultValue: "student",
         // input: true is required for company_admin self-registration.
         // The databaseHooks.user.create.before hook enforces an allowlist
-        // (only "student" and "company_admin" are accepted).
+        // (only "student" and "company_admin" are accepted for self-reg).
         input: true,
       },
       universityId: {
@@ -43,23 +46,61 @@ export const auth = betterAuth({
         defaultValue: false,
         input: false,
       },
+      banned: {
+        type: "boolean",
+        required: false,
+        defaultValue: false,
+        input: false,
+      },
+      banReason: {
+        type: "string",
+        required: false,
+        input: false,
+      },
+      banExpires: {
+        type: "number",
+        required: false,
+        input: false,
+      },
+      twoFactorEnabled: {
+        type: "boolean",
+        required: false,
+        defaultValue: false,
+        input: false,
+      },
     },
   },
   databaseHooks: {
     user: {
       create: {
         before: async (data) => {
-          // Defense-in-depth: only allow self-registration as student or company_admin.
-          // Any other value (admin, super_admin, etc.) is rejected.
-          const ALLOWED_SIGNUP_ROLES = new Set<string>(["student", "company_admin"])
+          const VALID_ROLES = new Set<string>(["student", "company_admin", "admin", "super_admin"])
+          const ALLOWED_SIGNUP_ROLES = new Set<string>(["student", "company_admin", "admin"])
           const requestedRole = (data.role as string | undefined) ?? "student"
+
+          // Admin-created users arrive with emailVerified: true (admin plugin default).
+          // Self-registered users have emailVerified: false (requireEmailVerification: true).
+          const isAdminCreated = data.emailVerified === true
+
+          if (isAdminCreated) {
+            // Admin creating a user — allow any valid role
+            if (!VALID_ROLES.has(requestedRole)) {
+              throw new APIError("BAD_REQUEST", {
+                message: "Invalid role",
+              })
+            }
+            return { data: { ...data, role: requestedRole } }
+          }
+
+          // Self-registration — only student or company_admin allowed
           if (!ALLOWED_SIGNUP_ROLES.has(requestedRole)) {
             throw new APIError("BAD_REQUEST", {
               message: "Invalid role for self-registration",
             })
           }
-          const role = requestedRole as "student" | "company_admin"
+          const role = requestedRole as "student" | "company_admin" | "admin"
 
+          // company_admin and admin skip domain validation
           if (role !== "student") {
             return { data: { ...data, role } }
           }
@@ -126,5 +167,41 @@ export const auth = betterAuth({
       maxAge: 5 * 60, // 5 minutes
     },
   },
-  plugins: [nextCookies()], // must be last — handles Set-Cookie in server actions
+  plugins: [
+    adminPlugin({
+      ac,
+      roles: {
+        super_admin: superAdmin,
+        admin,
+        student,
+        company_admin: companyAdmin,
+      },
+      adminRoles: ["super_admin"],
+      defaultRole: "student",
+      impersonationSessionDuration: 60 * 60, // 1 hour
+    }),
+    twoFactor({
+      issuer: "Internex",
+      otpOptions: {
+        async sendOTP({ user, otp }) {
+          await sendEmail(
+            user.email,
+            "Your Internex verification code",
+            TwoFactorOtpEmail,
+            { otp, userName: user.name || "User" },
+          )
+        },
+        period: 5, // OTP valid for 5 minutes
+      },
+      backupCodes: {
+        amount: 10,
+        length: 10,
+      },
+      skipVerificationOnEnable: false,
+    }),
+    multiSession({
+      maximumSessions: 5,
+    }),
+    nextCookies(), // must be last — handles Set-Cookie in server actions
+  ],
 })

@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 
-import { AdminValidationsPageClient } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/_components/AdminValidationsPageClient"
+import { AdminValidationsView } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/_components/AdminValidationsView"
 import { Skeleton } from "@/components/ui/skeleton"
 import { requireRole } from "@/lib/auth-guards"
 
@@ -26,7 +26,7 @@ export default async function AdminValidationsPage() {
 
   return (
     <Suspense fallback={<AdminValidationsFallback />}>
-      <AdminValidationsPageClient />
+      <AdminValidationsView />
     </Suspense>
   )
 }

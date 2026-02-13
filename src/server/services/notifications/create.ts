@@ -1,6 +1,9 @@
 import "server-only"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+
+const log = createModuleLogger("services/notifications/create")
 import { notification } from "@/server/db/schema/notifications"
 
 export interface CreateNotificationInput {
@@ -20,5 +23,6 @@ export async function createNotification(input: CreateNotificationInput) {
     payload: input.payload ?? {},
   })
 
+  log.info({ notificationId: id, userId: input.userId, type: input.type, event: "notification_created" }, "Notification created")
   return { id }
 }

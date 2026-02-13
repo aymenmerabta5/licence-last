@@ -43,7 +43,8 @@ next-env.d.ts
 
 # Drizzle migrations live in src/server/db/migrations (commit these)
 
-**/*/migrations
+# migrations are needed for production deploys (drizzle-kit migrate)
+# **/*/migrations
 PROMPT.txt
 phases
 .ralph

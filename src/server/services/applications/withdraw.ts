@@ -2,7 +2,10 @@ import "server-only"
 
 import { eq, and } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+
+const log = createModuleLogger("services/applications/withdraw")
 import { application } from "@/server/db/schema/applications"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { ApplicationServiceError } from "./errors"
@@ -30,6 +33,8 @@ export async function withdrawApplication(
     throw new ApplicationServiceError("APPLICATION_NOT_FOUND", "Application not found")
   }
 
+  log.info({ applicationId, studentUserId }, "Withdrawing application")
+
   if (app.status !== "applied") {
     throw new ApplicationServiceError("APPLICATION_INVALID_STATE", "Only pending applications can be withdrawn")
   }
@@ -54,5 +59,6 @@ export async function withdrawApplication(
     payload: { reason: "withdrawn_by_student" },
   })
 
+  log.info({ applicationId, event: "application_withdrawn" }, "Application withdrawn")
   return { applicationId, newStatus: "withdrawn" as const }
 }

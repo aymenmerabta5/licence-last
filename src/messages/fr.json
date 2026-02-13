@@ -10,7 +10,7 @@
     "about": "À Propos",
     "getStarted": "Commencer",
     "dashboard": "Tableau de bord",
-    "logout": "Se d\u00e9connecter",
+    "logout": "Se déconnecter",
     "menu": "Sections et compte",
     "aria": {
       "mainNav": "Navigation principale",
@@ -118,7 +118,23 @@
       "error": "Email ou mot de passe invalide. Veuillez réessayer.",
       "emailNotVerified": "Veuillez vérifier votre adresse email pour continuer.",
       "resendVerification": "Renvoyer l'email de vérification",
-      "verificationSent": "Email de vérification envoyé. Vérifiez votre boîte de réception."
+      "verificationSent": "Email de vérification envoyé. Vérifiez votre boîte de réception.",
+      "twoFactor": {
+        "title": "Authentification à Deux Facteurs",
+        "subtitle": "Entrez votre code de vérification pour continuer",
+        "codeLabel": "Code de vérification",
+        "codePlaceholder": "Entrez le code à 6 chiffres",
+        "totp": "Application Authenticator",
+        "otp": "Code par Email",
+        "backup": "Code de Secours",
+        "verify": "Vérifier",
+        "sendOtp": "Envoyer le Code",
+        "otpSent": "Code envoyé à votre email",
+        "trustDevice": "Faire confiance à cet appareil pendant 30 jours",
+        "invalidCode": "Code invalide. Veuillez réessayer.",
+        "error": "La vérification a échoué. Veuillez réessayer.",
+        "backToLogin": "Retour à la connexion"
+      }
     },
     "signup": {
       "pageTitle": "Créer un Compte",
@@ -134,6 +150,10 @@
         "company": {
           "title": "Je suis une Entreprise",
           "description": "Publiez des offres de stage, découvrez des talents et gérez les candidatures."
+        },
+        "university": {
+          "title": "Je suis un Administrateur Universitaire",
+          "description": "Gérez votre université, approuvez les domaines étudiants et supervisez les stages."
         }
       },
       "companySignup": {
@@ -141,6 +161,12 @@
         "subtitle": "Créez votre compte administrateur entreprise",
         "emailPlaceholder": "vous@entreprise.com",
         "verifyDescription": "Nous vous avons envoyé un lien de vérification. Ouvrez-le, puis complétez la configuration de votre entreprise."
+      },
+      "universitySignup": {
+        "title": "Inscription Universitaire",
+        "subtitle": "Créez votre compte administrateur universitaire",
+        "emailPlaceholder": "vous@universite.edu",
+        "verifyDescription": "Un lien de vérification vous a été envoyé. Ouvrez-le, puis configurez votre université."
       },
       "name": "Nom complet",
       "namePlaceholder": "Jean Dupont",
@@ -208,7 +234,9 @@
       "durationWeeksMax": "La durée ne peut pas dépasser 52 semaines",
       "maxPositionsMin": "Au moins 1 poste est requis",
       "maxPositionsMax": "Ne peut pas dépasser 100 postes",
-      "offerSkillsMax": "Vous pouvez sélectionner jusqu'à 20 compétences"
+      "offerSkillsMax": "Vous pouvez sélectionner jusqu'à 20 compétences",
+      "universityNameMin": "Le nom de l'université doit contenir au moins 2 caractères",
+      "domainsRequired": "Au moins un domaine email est requis"
     }
   },
   "onboarding": {
@@ -228,6 +256,34 @@
       "addressPlaceholder": "123 Rue Principale",
       "submit": "Terminer la Configuration",
       "error": "Une erreur s'est produite. Veuillez réessayer."
+    },
+    "university": {
+      "pageTitle": "Configuration de l'Université",
+      "title": "Configurez Votre Université",
+      "subtitle": "Parlez-nous de votre établissement pour commencer",
+      "name": "Nom de l'université",
+      "namePlaceholder": "Université des Sciences et de la Technologie",
+      "abbreviation": "Abréviation",
+      "abbreviationPlaceholder": "USTHB",
+      "departmentName": "Nom du département",
+      "departmentNamePlaceholder": "Département d'Informatique",
+      "deanName": "Nom du doyen",
+      "deanNamePlaceholder": "Prof. Nom",
+      "phone": "Numéro de téléphone",
+      "phonePlaceholder": "+213 21 XX XX XX",
+      "wilaya": "Wilaya",
+      "wilayaPlaceholder": "Sélectionnez votre wilaya",
+      "city": "Ville",
+      "cityPlaceholder": "Alger",
+      "address": "Adresse",
+      "addressPlaceholder": "Adresse du campus universitaire",
+      "domains": "Domaines email",
+      "domainsHint": "Ajoutez les domaines email utilisés par les étudiants et le personnel (ex: univ-alger.dz)",
+      "domainPlaceholder": "univ-exemple.dz",
+      "addDomain": "Ajouter un domaine",
+      "removeDomain": "Supprimer",
+      "submit": "Terminer la Configuration",
+      "error": "Une erreur est survenue. Veuillez réessayer."
     },
     "student": {
       "pageTitle": "Configuration du Profil Étudiant",
@@ -272,45 +328,78 @@
       "assistant": "Assistant",
       "validatePlacements": "Valider les placements",
       "statistics": "Statistiques",
+      "commandCenter": "Centre de commande",
+      "userManagement": "Gestion des utilisateurs",
+      "universities": "Universités",
       "settings": "Paramètres",
       "logout": "Se déconnecter"
     },
+    "navbar": {
+      "accountSettings": "Paramètres du compte",
+      "viewProfile": "Voir le profil",
+      "profileSettings": "Paramètres du profil",
+      "logout": "Se déconnecter"
+    },
+    "accountSwitcher": {
+      "title": "Comptes",
+      "activeLabel": "Actif",
+      "switchTo": "Basculer vers {name}",
+      "addAccount": "Ajouter un autre compte",
+      "removeAccount": "Supprimer le compte",
+      "switching": "Changement de compte...",
+      "switchSuccess": "Basculé vers {name}",
+      "switchError": "Échec du changement de compte",
+      "removeSuccess": "Compte supprimé",
+      "removeError": "Échec de la suppression du compte"
+    },
     "assistant": {
-      "kicker": "Outils entreprise",
-      "title": "Assistant <accent>Copilote</accent>",
-      "subtitle": "Rédigez des offres, ajustez le ton et obtenez des suggestions. Lorsqu'un outil nécessite une autorisation, vous recevrez un lien sécurisé.",
-      "badge": "Suggestions uniquement",
-      "conversations": "Conversations",
+      "kicker": "Assistant IA",
+      "title": "Votre <accent>Copilote IA</accent>",
+      "subtitle": "Obtenez de l'aide pour rédiger des offres, analyser des candidats, et plus encore",
+      "badge": "Propulsé par IA",
       "conversation": "Conversation",
-      "newConversation": "Nouveau",
-      "noConversations": "Aucune conversation pour le moment.",
-      "loadingConversations": "Chargement des conversations...",
-      "loadingMessages": "Chargement des messages...",
       "model": "Modèle",
-      "selectModel": "Sélectionner",
-      "empty": "Commencez avec une invite d'offre (rôle, durée, lieu, stack), ou collez votre brouillon pour une révision.",
+      "selectModel": "Sélectionner le modèle",
+      "newConversation": "Nouvelle Discussion",
+      "conversations": "Conversations",
+      "loadingConversations": "Chargement des conversations...",
+      "noConversations": "Aucune conversation. Commencez une nouvelle discussion !",
+      "noSearchResults": "Aucune conversation trouvée",
+      "searchConversations": "Rechercher des conversations...",
+      "loadingMessages": "Chargement des messages...",
+      "empty": "Commencez une conversation avec votre assistant IA",
+      "inputPlaceholder": "Tapez votre message...",
+      "send": "Envoyer",
+      "stop": "Arrêter",
+      "retry": "Réessayer",
+      "relativeNow": "à l'instant",
+      "relativeMinutesShort": "{count} min",
+      "relativeHoursShort": "{count} h",
+      "relativeDaysShort": "{count} j",
+      "relativeMinutesAgo": "il y a {count} min",
+      "relativeHoursAgo": "il y a {count} h",
+      "relativeDaysAgo": "il y a {count} j",
+      "assistantActor": "IA",
+      "userActor": "Vous",
+      "enterToSend": "Entrée pour envoyer, Maj+Entrée pour nouvelle ligne",
+      "scrollToBottom": "Défiler vers le bas",
+      "deleteConversation": "Supprimer la conversation",
+      "confirmDelete": "Supprimer",
+      "openSidebar": "Ouvrir la liste des conversations",
+      "clearSearch": "Effacer la recherche",
+      "copyCode": "Copier le code",
+      "copied": "Copié !",
       "toolLabel": "Outil : {toolName}",
       "toolState": "Statut : {state}",
+      "toolPreparing": "Préparation...",
       "toolInput": "Entrée",
       "toolOutput": "Sortie",
-      "retry": "Réessayer",
-      "toolPreparing": "Préparation des paramètres de l'outil...",
-      "authRequired": "Cet outil nécessite une autorisation pour votre compte.",
-      "openAuthLink": "Ouvrir le lien d'autorisation",
+      "authRequired": "Authentification requise pour utiliser cet outil",
+      "openAuthLink": "Ouvrir l'authentification",
       "checkStatus": "Vérifier le statut",
-      "retryTool": "Relancer l'outil",
+      "retryTool": "Réessayer",
       "authStatus": "Statut : {status}",
-      "unknown": "inconnu",
-      "inputPlaceholder": "Demandez un brouillon d'offre, une réécriture ou des suggestions de compétences",
-      "chatStatus": "Statut : {status}",
-      "send": "Envoyer",
-      "promptIdeas": {
-        "title": "Idées d'invite",
-        "idea1": "Rédige une offre de stage pour un poste <highlight>React + Node</highlight>, 12 semaines, Alger.",
-        "idea2": "Réécris cette offre pour la rendre plus concise et inclusive.",
-        "idea3": "Suggère 10 tags de compétences pour cette description et regroupe-les par catégorie.",
-        "note": "Les appels d'outils peuvent nécessiter une autorisation unique par fournisseur."
-      }
+      "unknown": "Inconnu"
     },
     "notifications": {
       "title": "Notifications",
@@ -568,55 +657,6 @@
         "skills": "Compétences Techniques"
       }
     },
-    "assistant": {
-      "kicker": "Assistant IA",
-      "title": "Votre <accent>Copilote IA</accent>",
-      "subtitle": "Obtenez de l'aide pour rédiger des offres, analyser des candidats, et plus encore",
-      "badge": "Propulsé par IA",
-      "conversation": "Conversation",
-      "model": "Modèle",
-      "selectModel": "Sélectionner le modèle",
-      "newConversation": "Nouvelle Discussion",
-      "conversations": "Conversations",
-      "loadingConversations": "Chargement des conversations...",
-      "noConversations": "Aucune conversation. Commencez une nouvelle discussion !",
-      "noSearchResults": "Aucune conversation trouvée",
-      "searchConversations": "Rechercher des conversations...",
-      "loadingMessages": "Chargement des messages...",
-      "empty": "Commencez une conversation avec votre assistant IA",
-      "inputPlaceholder": "Tapez votre message...",
-      "send": "Envoyer",
-      "stop": "Arrêter",
-      "retry": "Réessayer",
-      "relativeNow": "à l'instant",
-      "relativeMinutesShort": "{count} min",
-      "relativeHoursShort": "{count} h",
-      "relativeDaysShort": "{count} j",
-      "relativeMinutesAgo": "il y a {count} min",
-      "relativeHoursAgo": "il y a {count} h",
-      "relativeDaysAgo": "il y a {count} j",
-      "assistantActor": "IA",
-      "userActor": "Vous",
-      "enterToSend": "Entrée pour envoyer, Maj+Entrée pour nouvelle ligne",
-      "scrollToBottom": "Défiler vers le bas",
-      "deleteConversation": "Supprimer la conversation",
-      "confirmDelete": "Supprimer",
-      "openSidebar": "Ouvrir la liste des conversations",
-      "clearSearch": "Effacer la recherche",
-      "copyCode": "Copier le code",
-      "copied": "Copié !",
-      "toolLabel": "Outil : {toolName}",
-      "toolState": "Statut : {state}",
-      "toolPreparing": "Préparation...",
-      "toolInput": "Entrée",
-      "toolOutput": "Sortie",
-      "authRequired": "Authentification requise pour utiliser cet outil",
-      "openAuthLink": "Ouvrir l'authentification",
-      "checkStatus": "Vérifier le statut",
-      "retryTool": "Réessayer",
-      "authStatus": "Statut : {status}",
-      "unknown": "Inconnu"
-    },
     "recruiter": {
       "title": "Portail Recruteur",
       "subtitle": "Gérez votre vivier de talents",
@@ -834,7 +874,255 @@
           }
         }
       },
-      "globalStats": "Analyses Globales de Placement"
+      "globalStats": "Analyses Globales de Placement",
+      "universities": {
+        "backToCommandCenter": "Retour au centre de commande",
+        "kicker": "Administration",
+        "title": "Validation des Universités",
+        "description": "Examiner et approuver les inscriptions universitaires en attente.",
+        "noUniversities": "Aucune université trouvée.",
+        "statusFilter": "Filtrer par statut",
+        "allStatuses": "Tous les statuts",
+        "status": {
+          "pending": "En attente",
+          "approved": "Approuvée",
+          "rejected": "Rejetée"
+        },
+        "approve": "Approuver",
+        "reject": "Rejeter",
+        "approveSuccess": "Université approuvée avec succès.",
+        "rejectSuccess": "Université rejetée.",
+        "rejectDialog": {
+          "title": "Rejeter l'Université",
+          "description": "Indiquez le motif du rejet de cette candidature universitaire.",
+          "reasonLabel": "Motif du rejet",
+          "reasonPlaceholder": "Entrez le motif du rejet...",
+          "cancel": "Annuler",
+          "confirm": "Rejeter l'Université"
+        },
+        "card": {
+          "domains": "Domaines",
+          "noDomains": "Aucun domaine enregistré",
+          "location": "Localisation",
+          "department": "Département",
+          "dean": "Doyen",
+          "registeredAt": "Inscrit le"
+        }
+      },
+      "pending": {
+        "kicker": "Statut de l'Université",
+        "title": "Candidature en Cours d'Examen",
+        "subtitle": "L'inscription de votre université est en cours d'examen par un super administrateur. Vous serez notifié une fois la décision prise.",
+        "statusLabel": "Statut",
+        "statusValue": "En cours d'examen",
+        "whatNext": "Que se passe-t-il ensuite ?",
+        "step1": "Un super administrateur examine votre candidature",
+        "step2": "Vos domaines email sont vérifiés et approuvés",
+        "step3": "Vous obtenez un accès complet au tableau de bord administrateur"
+      },
+      "rejected": {
+        "kicker": "Statut de l'Université",
+        "title": "Candidature Rejetée",
+        "subtitle": "Malheureusement, l'inscription de votre université n'a pas été approuvée.",
+        "reasonLabel": "Motif",
+        "contactSupport": "Si vous pensez qu'il s'agit d'une erreur, veuillez contacter le support.",
+        "reapply": "Candidater à nouveau"
+      }
+    },
+    "superAdmin": {
+      "commandCenter": {
+        "backToDashboard": "Retour au tableau de bord",
+        "kicker": "Super Admin",
+        "title": "Centre de commande",
+        "description": "Vue d'ensemble de la plateforme et contrôles administratifs.",
+        "cards": {
+          "totalUsers": "Total utilisateurs",
+          "activeUsers": "Utilisateurs actifs",
+          "bannedUsers": "Utilisateurs bannis",
+          "platformHealth": "Santé plateforme"
+        },
+        "quickActions": "Actions rapides",
+        "actions": {
+          "userManagement": "Gestion des utilisateurs",
+          "validations": "Valider les placements",
+          "statistics": "Statistiques"
+        },
+        "recentActivity": "Activité récente",
+        "noRecentActivity": "Aucune activité récente."
+      },
+      "users": {
+        "backToCommandCenter": "Retour au centre de commande",
+        "kicker": "Administration",
+        "title": "Gestion des utilisateurs",
+        "description": "Gérer tous les utilisateurs, rôles et accès de la plateforme.",
+        "searchPlaceholder": "Rechercher par email...",
+        "filterByRole": "Filtrer par rôle",
+        "allRoles": "Tous les rôles",
+        "createUser": "Créer un utilisateur",
+        "noUsers": "Aucun utilisateur trouvé.",
+        "roles": {
+          "student": "Étudiant",
+          "company_admin": "Admin entreprise",
+          "admin": "Administrateur",
+          "super_admin": "Super Admin"
+        },
+        "status": {
+          "active": "Actif",
+          "banned": "Banni"
+        },
+        "table": {
+          "user": "Utilisateur",
+          "role": "Rôle",
+          "status": "Statut",
+          "created": "Créé le",
+          "actions": "Actions"
+        },
+        "pagination": {
+          "showing": "Affichage {from}-{to} sur {total}"
+        },
+        "actions": {
+          "view": "Voir les détails",
+          "setRole": "Changer le rôle",
+          "setPassword": "Définir le mot de passe",
+          "ban": "Bannir",
+          "unban": "Débannir",
+          "delete": "Supprimer"
+        },
+        "fields": {
+          "name": "Nom",
+          "email": "Email",
+          "password": "Mot de passe",
+          "role": "Rôle"
+        },
+        "dialogs": {
+          "cancel": "Annuler",
+          "create": {
+            "title": "Créer un utilisateur",
+            "description": "Créer un nouvel utilisateur avec un rôle spécifique.",
+            "submit": "Créer"
+          },
+          "ban": {
+            "title": "Bannir l'utilisateur",
+            "description": "Bannir {email} de la plateforme.",
+            "reason": "Raison",
+            "reasonPlaceholder": "Raison optionnelle du bannissement...",
+            "duration": "Durée",
+            "durations": {
+              "permanent": "Permanent",
+              "1h": "1 heure",
+              "24h": "24 heures",
+              "7d": "7 jours",
+              "30d": "30 jours"
+            },
+            "submit": "Bannir"
+          },
+          "setRole": {
+            "title": "Changer le rôle",
+            "description": "Changer le rôle de {email}.",
+            "submit": "Mettre à jour"
+          },
+          "setPassword": {
+            "title": "Définir le mot de passe",
+            "description": "Définir un nouveau mot de passe pour {email}.",
+            "newPassword": "Nouveau mot de passe",
+            "submit": "Mettre à jour"
+          },
+          "delete": {
+            "title": "Supprimer l'utilisateur",
+            "description": "Êtes-vous sûr de vouloir supprimer définitivement {email} ? Cette action est irréversible.",
+            "submit": "Supprimer"
+          }
+        }
+      },
+      "userDetail": {
+        "backToUsers": "Retour aux utilisateurs",
+        "kicker": "Détail utilisateur",
+        "notFound": "Utilisateur non trouvé.",
+        "unnamed": "Utilisateur sans nom",
+        "roles": {
+          "student": "Étudiant",
+          "company_admin": "Admin entreprise",
+          "admin": "Administrateur",
+          "super_admin": "Super Admin"
+        },
+        "status": {
+          "active": "Actif",
+          "banned": "Banni"
+        },
+        "sessions": {
+          "title": "Sessions actives",
+          "ip": "Adresse IP",
+          "userAgent": "Agent utilisateur",
+          "created": "Créée le",
+          "expires": "Expire le",
+          "none": "Aucune session active."
+        },
+        "actions": {
+          "title": "Actions",
+          "impersonate": "Usurper l'identité",
+          "ban": "Bannir",
+          "unban": "Débannir",
+          "revokeAll": "Révoquer toutes les sessions"
+        }
+      },
+      "impersonation": {
+        "banner": "Vous usurpez l'identité de {name}",
+        "stop": "Arrêter"
+      }
+    },
+    "settings": {
+      "twoFactor": {
+        "title": "Authentification à Deux Facteurs",
+        "description": "Ajoutez une couche de sécurité supplémentaire à votre compte en exigeant un code de vérification lors de la connexion.",
+        "active": "Active",
+        "inactive": "Inactive",
+        "enable": "Activer la 2FA",
+        "disable": "Désactiver la 2FA",
+        "enableStep": {
+          "title": "Configurer l'Authenticator",
+          "description": "Scannez le code QR avec votre application d'authentification (Google Authenticator, Authy, etc.)",
+          "passwordLabel": "Mot de passe actuel",
+          "passwordPlaceholder": "Entrez votre mot de passe pour continuer",
+          "continue": "Continuer",
+          "scanQr": "Scannez ce code QR avec votre application d'authentification",
+          "manualEntry": "Ou entrez cette clé manuellement :",
+          "copySecret": "Copier la clé"
+        },
+        "verifyStep": {
+          "title": "Vérifier la Configuration",
+          "description": "Entrez le code à 6 chiffres de votre application d'authentification pour vérifier la configuration.",
+          "codeLabel": "Code de vérification",
+          "codePlaceholder": "Entrez le code à 6 chiffres",
+          "verify": "Vérifier et Activer"
+        },
+        "backupCodes": {
+          "title": "Codes de Secours",
+          "description": "Enregistrez ces codes de secours dans un endroit sûr. Chaque code ne peut être utilisé qu'une seule fois pour vous connecter si vous perdez l'accès à votre application d'authentification.",
+          "copy": "Copier tous les codes",
+          "download": "Télécharger les codes",
+          "copied": "Codes copiés dans le presse-papiers",
+          "done": "J'ai enregistré mes codes de secours",
+          "warning": "Ces codes ne seront plus affichés. Assurez-vous de les enregistrer maintenant."
+        },
+        "disableConfirm": {
+          "title": "Désactiver l'Authentification à Deux Facteurs",
+          "description": "Cela supprimera la couche de sécurité supplémentaire de votre compte. Êtes-vous sûr ?",
+          "passwordLabel": "Mot de passe actuel",
+          "passwordPlaceholder": "Entrez votre mot de passe pour confirmer",
+          "cancel": "Annuler",
+          "confirm": "Désactiver la 2FA"
+        },
+        "success": {
+          "enabled": "Authentification à deux facteurs activée avec succès.",
+          "disabled": "Authentification à deux facteurs désactivée."
+        },
+        "error": {
+          "enableFailed": "Échec de l'activation de la 2FA. Veuillez réessayer.",
+          "disableFailed": "Échec de la désactivation de la 2FA. Veuillez réessayer.",
+          "verifyFailed": "Code de vérification invalide. Veuillez réessayer.",
+          "passwordRequired": "Le mot de passe est requis."
+        }
+      }
     }
   },
   "howItWorks": {

@@ -1,4 +1,9 @@
-import { getMeProcedure, promoteUserProcedure, updateMeProcedure } from "./routes/users"
+import {
+  getMeProcedure,
+  updateMeProcedure,
+  uploadAvatarProcedure,
+  deleteAvatarProcedure,
+} from "./routes/users"
 import {
   listCompaniesProcedure,
   getCompanyByIdProcedure,
@@ -70,12 +75,33 @@ import {
   getScoreProcedure,
   getSkillGapProcedure,
 } from "./routes/matching"
+import {
+  listUsersProcedure,
+  createUserProcedure,
+  setRoleProcedure,
+  banUserProcedure,
+  unbanUserProcedure,
+  removeUserProcedure,
+  setPasswordProcedure,
+  updateUserProcedure,
+  listUserSessionsProcedure,
+  revokeSessionProcedure,
+  revokeAllSessionsProcedure,
+} from "./routes/admin-users"
+import {
+  listUniversitiesProcedure,
+  getUniversityByIdProcedure,
+  createUniversityProcedure,
+  approveUniversityProcedure,
+  rejectUniversityProcedure,
+} from "./routes/universities"
 
 export const appRouter = {
   users: {
     getMe: getMeProcedure,
     updateMe: updateMeProcedure,
-    promote: promoteUserProcedure,
+    uploadAvatar: uploadAvatarProcedure,
+    deleteAvatar: deleteAvatarProcedure,
   },
   companies: {
     list: listCompaniesProcedure,
@@ -143,7 +169,26 @@ export const appRouter = {
   stats: {
     getAdminStats: getAdminStatsProcedure,
   },
-
+  adminUsers: {
+    list: listUsersProcedure,
+    create: createUserProcedure,
+    setRole: setRoleProcedure,
+    ban: banUserProcedure,
+    unban: unbanUserProcedure,
+    remove: removeUserProcedure,
+    setPassword: setPasswordProcedure,
+    update: updateUserProcedure,
+    listSessions: listUserSessionsProcedure,
+    revokeSession: revokeSessionProcedure,
+    revokeAllSessions: revokeAllSessionsProcedure,
+  },
+  universities: {
+    list: listUniversitiesProcedure,
+    getById: getUniversityByIdProcedure,
+    create: createUniversityProcedure,
+    approve: approveUniversityProcedure,
+    reject: rejectUniversityProcedure,
+  },
   assistant: {
     listModels: listAssistantModelsProcedure,
     listConversations: listAssistantConversationsProcedure,

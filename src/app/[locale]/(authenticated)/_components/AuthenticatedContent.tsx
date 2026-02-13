@@ -1,4 +1,7 @@
+import { headers } from "next/headers"
+
 import { requireRole } from "@/lib/auth-guards"
+import { auth } from "@/lib/auth"
 import { DashboardClientProvider } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 
 interface AuthenticatedContentProps {
@@ -12,8 +15,12 @@ interface AuthenticatedContentProps {
 export async function AuthenticatedContent({ children }: AuthenticatedContentProps) {
   const user = await requireRole(["student", "company_admin", "admin", "super_admin"])
 
+  // Check if current session is impersonated
+  const session = await auth.api.getSession({ headers: await headers() })
+  const impersonatedBy = (session?.session as { impersonatedBy?: string } | null)?.impersonatedBy ?? null
+
   return (
-    <DashboardClientProvider user={user}>
+    <DashboardClientProvider user={user} impersonatedBy={impersonatedBy}>
       {children}
     </DashboardClientProvider>
   )

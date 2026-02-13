@@ -2,7 +2,10 @@ import "server-only"
 
 import { and, desc, eq, type SQL } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+
+const log = createModuleLogger("services/companies/trust-actions")
 import { companyQualityFeedback, companyReport } from "@/server/db/schema/trust"
 import { placement } from "@/server/db/schema/placements"
 import { application } from "@/server/db/schema/applications"
@@ -86,6 +89,8 @@ export async function submitCompanyQualityFeedback(input: {
     throw new Error("Feedback can only be submitted for validated placements")
   }
 
+  log.info({ studentUserId: input.studentUserId, placementId: input.placementId }, "Submitting quality feedback")
+
   const nextFeedbackId = crypto.randomUUID()
   const [feedback] = await db
     .insert(companyQualityFeedback)
@@ -108,6 +113,7 @@ export async function submitCompanyQualityFeedback(input: {
     })
     .returning({ id: companyQualityFeedback.id })
 
+  log.info({ feedbackId: feedback?.id ?? nextFeedbackId, companyId: placementRow.companyId, event: "feedback_submitted" }, "Quality feedback submitted")
   return { feedbackId: feedback?.id ?? nextFeedbackId, companyId: placementRow.companyId }
 }
 
@@ -129,6 +135,8 @@ export async function submitCompanyReport(input: {
     )
   }
 
+  log.info({ reporterUserId: input.reporterUserId, companyId: input.companyId, severity: input.severity }, "Submitting company report")
+
   const reportId = crypto.randomUUID()
   await db.insert(companyReport).values({
     id: reportId,
@@ -139,6 +147,7 @@ export async function submitCompanyReport(input: {
     description: input.description,
   })
 
+  log.info({ reportId, event: "report_submitted" }, "Company report submitted")
   return { reportId }
 }
 
@@ -162,6 +171,8 @@ export async function resolveCompanyReport(input: {
     throw new Error("Report is already closed")
   }
 
+  log.info({ reportId: input.reportId, adminUserId: input.adminUserId, newStatus: input.status }, "Resolving company report")
+
   await db
     .update(companyReport)
     .set({
@@ -172,6 +183,7 @@ export async function resolveCompanyReport(input: {
     })
     .where(eq(companyReport.id, input.reportId))
 
+  log.info({ reportId: input.reportId, event: "report_resolved" }, "Company report resolved")
   return { reportId: input.reportId, status: input.status }
 }
 

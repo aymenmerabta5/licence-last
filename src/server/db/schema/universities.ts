@@ -1,6 +1,6 @@
 import { pgTable, text, timestamp, integer, index } from "drizzle-orm/pg-core"
 
-import { universityDomainStatusEnum } from "./enums"
+import { universityDomainStatusEnum, universityStatusEnum } from "./enums"
 
 export const university = pgTable(
   "university",
@@ -15,13 +15,20 @@ export const university = pgTable(
     logoUrl: text("logo_url"),
     departmentName: text("department_name"),
     deanName: text("dean_name"),
+    status: universityStatusEnum("status").default("approved").notNull(),
+    approvedAt: timestamp("approved_at"),
+    approvedByUserId: text("approved_by_user_id"),
+    rejectionReason: text("rejection_reason"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
       .$onUpdate(() => new Date())
       .notNull(),
   },
-  (table) => [index("university_name_idx").on(table.name)],
+  (table) => [
+    index("university_name_idx").on(table.name),
+    index("university_status_idx").on(table.status),
+  ],
 )
 
 export const universityDomain = pgTable(

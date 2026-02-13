@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 
-import { SettingsPageClient } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsPageClient"
+import { SettingsView } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView"
 import { Skeleton } from "@/components/ui/skeleton"
 
 function SettingsPageFallback() {
@@ -30,7 +30,7 @@ function SettingsPageFallback() {
 export default function SettingsPage() {
   return (
     <Suspense fallback={<SettingsPageFallback />}>
-      <SettingsPageClient />
+      <SettingsView />
     </Suspense>
   )
 }

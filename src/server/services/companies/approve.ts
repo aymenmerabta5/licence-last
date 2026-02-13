@@ -2,7 +2,10 @@ import "server-only"
 
 import { eq } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+
+const log = createModuleLogger("services/companies/approve")
 import { company } from "@/server/db/schema/companies"
 
 /**
@@ -13,6 +16,8 @@ export async function approveCompany(
   companyId: string,
   approvedByUserId: string,
 ) {
+  log.info({ companyId, approvedByUserId }, "Approving company")
+
   const [updated] = await db
     .update(company)
     .set({
@@ -28,5 +33,6 @@ export async function approveCompany(
     throw new Error("Company not found")
   }
 
+  log.info({ companyId: updated.id, event: "company_approved" }, "Company approved")
   return { companyId: updated.id, name: updated.name }
 }

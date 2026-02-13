@@ -2,7 +2,10 @@ import "server-only"
 
 import { eq } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+
+const log = createModuleLogger("services/users/promote")
 import { user } from "@/server/db/schema/auth"
 
 type UserRole = "student" | "company_admin" | "admin" | "super_admin"
@@ -12,6 +15,7 @@ type UserRole = "student" | "company_admin" | "admin" | "super_admin"
  * Pure business logic — caller must verify super_admin role.
  */
 export async function promoteUser(userId: string, newRole: UserRole) {
+  log.info({ userId, newRole }, "Promoting user")
   const [updated] = await db
     .update(user)
     .set({ role: newRole })
@@ -22,5 +26,6 @@ export async function promoteUser(userId: string, newRole: UserRole) {
     throw new Error("User not found")
   }
 
+  log.info({ userId: updated.id, role: updated.role, event: "user_promoted" }, "User promoted")
   return updated
 }

@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 
-import { CompanyOffersPageClient } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersPageClient"
+import { CompanyOffersView } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView"
 import { Skeleton } from "@/components/ui/skeleton"
 import { requireRole } from "@/lib/auth-guards"
 
@@ -30,7 +30,7 @@ export default async function CompanyOffersPage() {
 
   return (
     <Suspense fallback={<CompanyOffersFallback />}>
-      <CompanyOffersPageClient />
+      <CompanyOffersView />
     </Suspense>
   )
 }

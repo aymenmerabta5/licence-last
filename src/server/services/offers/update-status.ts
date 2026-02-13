@@ -2,8 +2,11 @@ import "server-only"
 
 import { and, eq } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { internshipOffer } from "@/server/db/schema/internships"
+
+const log = createModuleLogger("services/offers/update-status")
 
 /**
  * Transition an offer's status.
@@ -28,6 +31,8 @@ export async function updateOfferStatus(
     throw new Error("Offer not found or access denied")
   }
 
+  log.info({ offerId, companyId, action, currentStatus: existing.status }, "Updating offer status")
+
   if (action === "publish") {
     if (existing.status !== "draft") {
       throw new Error("Only draft offers can be published")
@@ -37,6 +42,7 @@ export async function updateOfferStatus(
       .set({ status: "published", publishedAt: new Date() })
       .where(eq(internshipOffer.id, offerId))
 
+    log.info({ offerId, event: "offer_published" }, "Offer published")
     return { offerId, newStatus: "published" as const }
   }
 
@@ -49,6 +55,7 @@ export async function updateOfferStatus(
       .set({ status: "closed", closesAt: new Date() })
       .where(eq(internshipOffer.id, offerId))
 
+    log.info({ offerId, event: "offer_closed" }, "Offer closed")
     return { offerId, newStatus: "closed" as const }
   }
 

@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 
-import { CandidatesClient } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesClient"
+import { CandidatesView } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView"
 import { Skeleton } from "@/components/ui/skeleton"
 import { requireRole } from "@/lib/auth-guards"
 
@@ -31,7 +31,7 @@ export default async function CandidatesPage({ params }: CandidatesPageProps) {
 
   return (
     <Suspense fallback={<CandidatesPageFallback />}>
-      <CandidatesClient offerId={offerId} />
+      <CandidatesView offerId={offerId} />
     </Suspense>
   )
 }

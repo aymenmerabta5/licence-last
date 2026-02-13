@@ -1,6 +1,6 @@
 import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
-import { ApplicationsClient } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsClient"
+import { ApplicationsView } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsView"
 
 export default async function StudentApplicationsPage() {
   const user = await requireRole(["student"])
@@ -9,5 +9,5 @@ export default async function StudentApplicationsPage() {
     return localeRedirect("/onboarding/student")
   }
 
-  return <ApplicationsClient />
+  return <ApplicationsView />
 }

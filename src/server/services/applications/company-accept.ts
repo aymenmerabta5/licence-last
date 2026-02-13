@@ -2,7 +2,10 @@ import "server-only"
 
 import { eq, and } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+
+const log = createModuleLogger("services/applications/company-accept")
 import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { notification } from "@/server/db/schema/notifications"
@@ -46,6 +49,8 @@ export async function companyAcceptApplication(
   if (app.status !== "applied") {
     throw new ApplicationServiceError("APPLICATION_INVALID_STATE", "Only pending applications can be accepted")
   }
+
+  log.info({ applicationId, companyId, actionByUserId }, "Accepting application")
 
   const now = new Date()
 
@@ -118,5 +123,6 @@ export async function companyAcceptApplication(
     )
   }
 
+  log.info({ applicationId, event: "application_accepted" }, "Application accepted by company")
   return { success: true, applicationId }
 }

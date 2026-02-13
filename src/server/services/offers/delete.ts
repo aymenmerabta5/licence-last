@@ -2,8 +2,11 @@ import "server-only"
 
 import { and, eq } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { internshipOffer } from "@/server/db/schema/internships"
+
+const log = createModuleLogger("services/offers/delete")
 
 /**
  * Delete an internship offer.
@@ -25,8 +28,11 @@ export async function deleteOffer(offerId: string, companyId: string) {
     throw new Error("Offer not found or access denied")
   }
 
+  log.info({ offerId, companyId, status: existing.status }, "Deleting offer")
+
   if (existing.status === "draft") {
     await db.delete(internshipOffer).where(eq(internshipOffer.id, offerId))
+    log.info({ offerId, event: "offer_hard_deleted" }, "Draft offer deleted")
     return { offerId, deleted: true }
   }
 
@@ -36,5 +42,6 @@ export async function deleteOffer(offerId: string, companyId: string) {
     .set({ status: "closed", closesAt: new Date() })
     .where(eq(internshipOffer.id, offerId))
 
+  log.info({ offerId, event: "offer_soft_closed" }, "Published offer soft-closed")
   return { offerId, deleted: false }
 }

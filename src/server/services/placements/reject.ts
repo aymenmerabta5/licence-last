@@ -2,7 +2,10 @@ import "server-only"
 
 import { eq } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+
+const log = createModuleLogger("services/placements/reject")
 import { application } from "@/server/db/schema/applications"
 import { notification } from "@/server/db/schema/notifications"
 import { internshipOffer } from "@/server/db/schema/internships"
@@ -60,6 +63,8 @@ export async function rejectPlacement(
       throw new Error("You do not have access to reject this application")
     }
   }
+
+  log.info({ applicationId, adminUserId }, "Rejecting placement")
 
   const now = new Date()
 
@@ -126,5 +131,6 @@ export async function rejectPlacement(
     )
   }
 
+  log.info({ applicationId, event: "placement_rejected" }, "Placement rejected")
   return { success: true, applicationId }
 }

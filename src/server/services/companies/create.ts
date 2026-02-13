@@ -4,7 +4,10 @@ import { randomUUID } from "node:crypto"
 
 import { eq } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+
+const log = createModuleLogger("services/companies/create")
 import { company, companyMember } from "@/server/db/schema/companies"
 import { user } from "@/server/db/schema/auth"
 
@@ -37,6 +40,7 @@ export async function createCompany(
 ) {
   const companyId = randomUUID()
   const slug = generateSlug(data.name)
+  log.info({ userId, companyId, slug }, "Creating company")
 
   await db.transaction(async (tx) => {
     await tx.insert(company).values({
@@ -62,5 +66,6 @@ export async function createCompany(
       .where(eq(user.id, userId))
   })
 
+  log.info({ companyId, slug, event: "company_created" }, "Company created successfully")
   return { companyId, slug }
 }

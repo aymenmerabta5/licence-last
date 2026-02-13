@@ -118,7 +118,23 @@
       "error": "البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.",
       "emailNotVerified": "يرجى التحقق من بريدك الإلكتروني للمتابعة.",
       "resendVerification": "إعادة إرسال بريد التحقق",
-      "verificationSent": "تم إرسال بريد التحقق. تحقق من صندوق الوارد."
+      "verificationSent": "تم إرسال بريد التحقق. تحقق من صندوق الوارد.",
+      "twoFactor": {
+        "title": "المصادقة الثنائية",
+        "subtitle": "أدخل رمز التحقق للمتابعة",
+        "codeLabel": "رمز التحقق",
+        "codePlaceholder": "أدخل الرمز المكون من 6 أرقام",
+        "totp": "تطبيق المصادقة",
+        "otp": "رمز البريد الإلكتروني",
+        "backup": "رمز الاحتياطي",
+        "verify": "تحقق",
+        "sendOtp": "إرسال الرمز",
+        "otpSent": "تم إرسال الرمز إلى بريدك الإلكتروني",
+        "trustDevice": "الوثوق بهذا الجهاز لمدة 30 يومًا",
+        "invalidCode": "رمز غير صالح. يرجى المحاولة مرة أخرى.",
+        "error": "فشل التحقق. يرجى المحاولة مرة أخرى.",
+        "backToLogin": "العودة لتسجيل الدخول"
+      }
     },
     "signup": {
       "pageTitle": "إنشاء حساب",
@@ -134,6 +150,10 @@
         "company": {
           "title": "أنا شركة",
           "description": "انشر عروض التدريب، اكتشف المواهب، وأدر الطلبات."
+        },
+        "university": {
+          "title": "أنا مسؤول جامعي",
+          "description": "إدارة جامعتك، الموافقة على نطاقات الطلاب، والإشراف على التدريب."
         }
       },
       "companySignup": {
@@ -141,6 +161,12 @@
         "subtitle": "أنشئ حساب مدير الشركة",
         "emailPlaceholder": "you@company.com",
         "verifyDescription": "أرسلنا لك رابط تحقق. افتحه، ثم أكمل إعداد شركتك."
+      },
+      "universitySignup": {
+        "title": "تسجيل الجامعة",
+        "subtitle": "أنشئ حساب مسؤول الجامعة الخاص بك",
+        "emailPlaceholder": "you@university.edu",
+        "verifyDescription": "تم إرسال رابط التحقق إليك. افتحه ثم قم بإعداد جامعتك."
       },
       "name": "الاسم الكامل",
       "namePlaceholder": "أحمد محمد",
@@ -208,7 +234,9 @@
       "durationWeeksMax": "لا يمكن أن تتجاوز المدة ٥٢ أسبوعاً",
       "maxPositionsMin": "مطلوب منصب واحد على الأقل",
       "maxPositionsMax": "لا يمكن أن يتجاوز ١٠٠ منصب",
-      "offerSkillsMax": "يمكنك اختيار حتى ٢٠ مهارة"
+      "offerSkillsMax": "يمكنك اختيار حتى ٢٠ مهارة",
+      "universityNameMin": "يجب أن يحتوي اسم الجامعة على حرفين على الأقل",
+      "domainsRequired": "مطلوب نطاق بريد إلكتروني واحد على الأقل"
     }
   },
   "onboarding": {
@@ -226,6 +254,34 @@
       "wilayaPlaceholder": "اختر ولايتك",
       "address": "العنوان",
       "addressPlaceholder": "١٢٣ الشارع الرئيسي",
+      "submit": "إكمال الإعداد",
+      "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    },
+    "university": {
+      "pageTitle": "إعداد الجامعة",
+      "title": "قم بإعداد جامعتك",
+      "subtitle": "أخبرنا عن مؤسستك للبدء",
+      "name": "اسم الجامعة",
+      "namePlaceholder": "جامعة العلوم والتكنولوجيا",
+      "abbreviation": "الاختصار",
+      "abbreviationPlaceholder": "USTHB",
+      "departmentName": "اسم القسم",
+      "departmentNamePlaceholder": "قسم علوم الحاسوب",
+      "deanName": "اسم العميد",
+      "deanNamePlaceholder": "أ.د. الاسم",
+      "phone": "رقم الهاتف",
+      "phonePlaceholder": "+213 21 XX XX XX",
+      "wilaya": "الولاية",
+      "wilayaPlaceholder": "اختر ولايتك",
+      "city": "المدينة",
+      "cityPlaceholder": "الجزائر",
+      "address": "العنوان",
+      "addressPlaceholder": "عنوان الحرم الجامعي",
+      "domains": "نطاقات البريد الإلكتروني",
+      "domainsHint": "أضف نطاقات البريد الإلكتروني المستخدمة من قبل الطلاب والموظفين (مثال: univ-alger.dz)",
+      "domainPlaceholder": "univ-example.dz",
+      "addDomain": "إضافة نطاق",
+      "removeDomain": "حذف",
       "submit": "إكمال الإعداد",
       "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
     },
@@ -272,45 +328,78 @@
       "assistant": "المساعد",
       "validatePlacements": "اعتماد التوظيفات",
       "statistics": "الإحصائيات",
+      "commandCenter": "مركز التحكم",
+      "userManagement": "إدارة المستخدمين",
+      "universities": "الجامعات",
       "settings": "الإعدادات",
       "logout": "تسجيل الخروج"
     },
+    "navbar": {
+      "accountSettings": "إعدادات الحساب",
+      "viewProfile": "عرض الملف الشخصي",
+      "profileSettings": "إعدادات الملف الشخصي",
+      "logout": "تسجيل الخروج"
+    },
+    "accountSwitcher": {
+      "title": "الحسابات",
+      "activeLabel": "نشط",
+      "switchTo": "التبديل إلى {name}",
+      "addAccount": "إضافة حساب آخر",
+      "removeAccount": "إزالة الحساب",
+      "switching": "جارٍ تبديل الحساب...",
+      "switchSuccess": "تم التبديل إلى {name}",
+      "switchError": "فشل تبديل الحساب",
+      "removeSuccess": "تم إزالة الحساب",
+      "removeError": "فشل إزالة الحساب"
+    },
     "assistant": {
-      "kicker": "أدوات الشركة",
-      "title": "المساعد <accent>المعاون</accent>",
-      "subtitle": "اكتب عروض التدريب، حسّن الصياغة، واحصل على اقتراحات. عند الحاجة لتفويض أداة، ستحصل على رابط آمن.",
-      "badge": "اقتراحات فقط",
-      "conversations": "المحادثات",
-      "conversation": "محادثة",
-      "newConversation": "جديد",
-      "noConversations": "لا توجد محادثات بعد.",
-      "loadingConversations": "جارٍ تحميل المحادثات...",
-      "loadingMessages": "جارٍ تحميل الرسائل...",
+      "kicker": "المساعد الذكي",
+      "title": "<accent>مساعدك الذكي</accent>",
+      "subtitle": "احصل على المساعدة في صياغة العروض وتحليل المرشحين والمزيد",
+      "badge": "مدعوم بالذكاء الاصطناعي",
+      "conversation": "المحادثة",
       "model": "النموذج",
-      "selectModel": "اختر",
-      "empty": "ابدأ بكتابة وصف مختصر (الدور، المدة، الموقع، التقنيات)، أو الصق مسودتك لتحسينها.",
+      "selectModel": "اختر النموذج",
+      "newConversation": "محادثة جديدة",
+      "conversations": "المحادثات",
+      "loadingConversations": "جاري تحميل المحادثات...",
+      "noConversations": "لا توجد محادثات. ابدأ محادثة جديدة!",
+      "noSearchResults": "لم يتم العثور على محادثات",
+      "searchConversations": "البحث في المحادثات...",
+      "loadingMessages": "جاري تحميل الرسائل...",
+      "empty": "ابدأ محادثة مع مساعدك الذكي",
+      "inputPlaceholder": "اكتب رسالتك...",
+      "send": "إرسال",
+      "stop": "إيقاف",
+      "retry": "إعادة المحاولة",
+      "relativeNow": "الآن",
+      "relativeMinutesShort": "{count} د",
+      "relativeHoursShort": "{count} س",
+      "relativeDaysShort": "{count} ي",
+      "relativeMinutesAgo": "منذ {count} د",
+      "relativeHoursAgo": "منذ {count} س",
+      "relativeDaysAgo": "منذ {count} ي",
+      "assistantActor": "ذكاء اصطناعي",
+      "userActor": "أنت",
+      "enterToSend": "Enter للإرسال، Shift+Enter لسطر جديد",
+      "scrollToBottom": "التمرير للأسفل",
+      "deleteConversation": "حذف المحادثة",
+      "confirmDelete": "حذف",
+      "openSidebar": "فتح قائمة المحادثات",
+      "clearSearch": "مسح البحث",
+      "copyCode": "نسخ الكود",
+      "copied": "تم النسخ!",
       "toolLabel": "الأداة: {toolName}",
       "toolState": "الحالة: {state}",
+      "toolPreparing": "جاري التحضير...",
       "toolInput": "المدخلات",
       "toolOutput": "المخرجات",
-      "retry": "إعادة المحاولة",
-      "toolPreparing": "جارٍ تجهيز مدخلات الأداة...",
-      "authRequired": "تتطلب هذه الأداة تفويضاً لحسابك.",
-      "openAuthLink": "فتح رابط التفويض",
+      "authRequired": "مطلوب المصادقة لاستخدام هذه الأداة",
+      "openAuthLink": "فتح المصادقة",
       "checkStatus": "التحقق من الحالة",
-      "retryTool": "إعادة تشغيل الأداة الآن",
+      "retryTool": "إعادة المحاولة",
       "authStatus": "الحالة: {status}",
-      "unknown": "غير معروف",
-      "inputPlaceholder": "اطلب مسودة عرض، إعادة صياغة، أو اقتراح وسوم مهارات",
-      "chatStatus": "الحالة: {status}",
-      "send": "إرسال",
-      "promptIdeas": {
-        "title": "أفكار للطلب",
-        "idea1": "اكتب عرض تدريب لدور <highlight>React + Node</highlight> لمدة 12 أسبوعاً في الجزائر.",
-        "idea2": "أعد صياغة هذا العرض ليكون أكثر اختصاراً وشمولاً.",
-        "idea3": "اقترح 10 وسوماً للمهارات لهذه الوصف وصنّفها حسب الفئة.",
-        "note": "قد تتطلب استدعاءات الأدوات تفويضاً لمرة واحدة لكل مزوّد."
-      }
+      "unknown": "غير معروف"
     },
     "notifications": {
       "title": "الإشعارات",
@@ -572,55 +661,6 @@
         "skills": "المهارات التقنية"
       }
     },
-    "assistant": {
-      "kicker": "المساعد الذكي",
-      "title": "<accent>مساعدك الذكي</accent>",
-      "subtitle": "احصل على المساعدة في صياغة العروض وتحليل المرشحين والمزيد",
-      "badge": "مدعوم بالذكاء الاصطناعي",
-      "conversation": "المحادثة",
-      "model": "النموذج",
-      "selectModel": "اختر النموذج",
-      "newConversation": "محادثة جديدة",
-      "conversations": "المحادثات",
-      "loadingConversations": "جاري تحميل المحادثات...",
-      "noConversations": "لا توجد محادثات. ابدأ محادثة جديدة!",
-      "noSearchResults": "لم يتم العثور على محادثات",
-      "searchConversations": "البحث في المحادثات...",
-      "loadingMessages": "جاري تحميل الرسائل...",
-      "empty": "ابدأ محادثة مع مساعدك الذكي",
-      "inputPlaceholder": "اكتب رسالتك...",
-      "send": "إرسال",
-      "stop": "إيقاف",
-      "retry": "إعادة المحاولة",
-      "relativeNow": "الآن",
-      "relativeMinutesShort": "{count} د",
-      "relativeHoursShort": "{count} س",
-      "relativeDaysShort": "{count} ي",
-      "relativeMinutesAgo": "منذ {count} د",
-      "relativeHoursAgo": "منذ {count} س",
-      "relativeDaysAgo": "منذ {count} ي",
-      "assistantActor": "ذكاء اصطناعي",
-      "userActor": "أنت",
-      "enterToSend": "Enter للإرسال، Shift+Enter لسطر جديد",
-      "scrollToBottom": "التمرير للأسفل",
-      "deleteConversation": "حذف المحادثة",
-      "confirmDelete": "حذف",
-      "openSidebar": "فتح قائمة المحادثات",
-      "clearSearch": "مسح البحث",
-      "copyCode": "نسخ الكود",
-      "copied": "تم النسخ!",
-      "toolLabel": "الأداة: {toolName}",
-      "toolState": "الحالة: {state}",
-      "toolPreparing": "جاري التحضير...",
-      "toolInput": "المدخلات",
-      "toolOutput": "المخرجات",
-      "authRequired": "مطلوب المصادقة لاستخدام هذه الأداة",
-      "openAuthLink": "فتح المصادقة",
-      "checkStatus": "التحقق من الحالة",
-      "retryTool": "إعادة المحاولة",
-      "authStatus": "الحالة: {status}",
-      "unknown": "غير معروف"
-    },
     "recruiter": {
       "title": "بوابة التوظيف",
       "subtitle": "أدر خط أنابيب المواهب الخاص بك",
@@ -838,7 +878,255 @@
           }
         }
       },
-      "globalStats": "تحليلات التوظيف العالمية"
+      "globalStats": "تحليلات التوظيف العالمية",
+      "universities": {
+        "backToCommandCenter": "العودة إلى مركز التحكم",
+        "kicker": "الإدارة",
+        "title": "التحقق من الجامعات",
+        "description": "مراجعة والموافقة على طلبات تسجيل الجامعات المعلقة.",
+        "noUniversities": "لم يتم العثور على جامعات.",
+        "statusFilter": "تصفية حسب الحالة",
+        "allStatuses": "جميع الحالات",
+        "status": {
+          "pending": "قيد الانتظار",
+          "approved": "موافق عليها",
+          "rejected": "مرفوضة"
+        },
+        "approve": "موافقة",
+        "reject": "رفض",
+        "approveSuccess": "تمت الموافقة على الجامعة بنجاح.",
+        "rejectSuccess": "تم رفض الجامعة.",
+        "rejectDialog": {
+          "title": "رفض الجامعة",
+          "description": "قدم سبب رفض طلب هذه الجامعة.",
+          "reasonLabel": "سبب الرفض",
+          "reasonPlaceholder": "أدخل سبب الرفض...",
+          "cancel": "إلغاء",
+          "confirm": "رفض الجامعة"
+        },
+        "card": {
+          "domains": "النطاقات",
+          "noDomains": "لا توجد نطاقات مسجلة",
+          "location": "الموقع",
+          "department": "القسم",
+          "dean": "العميد",
+          "registeredAt": "تاريخ التسجيل"
+        }
+      },
+      "pending": {
+        "kicker": "حالة الجامعة",
+        "title": "الطلب قيد المراجعة",
+        "subtitle": "يتم مراجعة تسجيل جامعتك من قبل المسؤول الأعلى. سيتم إخطارك بمجرد اتخاذ القرار.",
+        "statusLabel": "الحالة",
+        "statusValue": "قيد المراجعة",
+        "whatNext": "ماذا يحدث بعد ذلك؟",
+        "step1": "يقوم المسؤول الأعلى بمراجعة طلبك",
+        "step2": "يتم التحقق من نطاقات بريدك الإلكتروني والموافقة عليها",
+        "step3": "تحصل على وصول كامل للوحة التحكم"
+      },
+      "rejected": {
+        "kicker": "حالة الجامعة",
+        "title": "تم رفض الطلب",
+        "subtitle": "للأسف، لم تتم الموافقة على تسجيل جامعتك.",
+        "reasonLabel": "السبب",
+        "contactSupport": "إذا كنت تعتقد أن هذا خطأ، يرجى الاتصال بالدعم.",
+        "reapply": "إعادة التقديم"
+      }
+    },
+    "superAdmin": {
+      "commandCenter": {
+        "backToDashboard": "العودة إلى لوحة التحكم",
+        "kicker": "المشرف العام",
+        "title": "مركز التحكم",
+        "description": "نظرة عامة على المنصة وأدوات الإدارة.",
+        "cards": {
+          "totalUsers": "إجمالي المستخدمين",
+          "activeUsers": "المستخدمون النشطون",
+          "bannedUsers": "المستخدمون المحظورون",
+          "platformHealth": "صحة المنصة"
+        },
+        "quickActions": "إجراءات سريعة",
+        "actions": {
+          "userManagement": "إدارة المستخدمين",
+          "validations": "اعتماد التوظيفات",
+          "statistics": "الإحصائيات"
+        },
+        "recentActivity": "النشاط الأخير",
+        "noRecentActivity": "لا يوجد نشاط حديث."
+      },
+      "users": {
+        "backToCommandCenter": "العودة إلى مركز التحكم",
+        "kicker": "الإدارة",
+        "title": "إدارة المستخدمين",
+        "description": "إدارة جميع مستخدمي المنصة والأدوار والصلاحيات.",
+        "searchPlaceholder": "البحث بالبريد الإلكتروني...",
+        "filterByRole": "تصفية حسب الدور",
+        "allRoles": "جميع الأدوار",
+        "createUser": "إنشاء مستخدم",
+        "noUsers": "لم يتم العثور على مستخدمين.",
+        "roles": {
+          "student": "طالب",
+          "company_admin": "مدير شركة",
+          "admin": "مدير",
+          "super_admin": "المشرف العام"
+        },
+        "status": {
+          "active": "نشط",
+          "banned": "محظور"
+        },
+        "table": {
+          "user": "المستخدم",
+          "role": "الدور",
+          "status": "الحالة",
+          "created": "تاريخ الإنشاء",
+          "actions": "الإجراءات"
+        },
+        "pagination": {
+          "showing": "عرض {from}-{to} من {total}"
+        },
+        "actions": {
+          "view": "عرض التفاصيل",
+          "setRole": "تغيير الدور",
+          "setPassword": "تعيين كلمة المرور",
+          "ban": "حظر",
+          "unban": "إلغاء الحظر",
+          "delete": "حذف"
+        },
+        "fields": {
+          "name": "الاسم",
+          "email": "البريد الإلكتروني",
+          "password": "كلمة المرور",
+          "role": "الدور"
+        },
+        "dialogs": {
+          "cancel": "إلغاء",
+          "create": {
+            "title": "إنشاء مستخدم",
+            "description": "إنشاء مستخدم جديد بدور محدد.",
+            "submit": "إنشاء"
+          },
+          "ban": {
+            "title": "حظر المستخدم",
+            "description": "حظر {email} من المنصة.",
+            "reason": "السبب",
+            "reasonPlaceholder": "سبب اختياري للحظر...",
+            "duration": "المدة",
+            "durations": {
+              "permanent": "دائم",
+              "1h": "ساعة واحدة",
+              "24h": "24 ساعة",
+              "7d": "7 أيام",
+              "30d": "30 يومًا"
+            },
+            "submit": "حظر"
+          },
+          "setRole": {
+            "title": "تغيير الدور",
+            "description": "تغيير دور {email}.",
+            "submit": "تحديث"
+          },
+          "setPassword": {
+            "title": "تعيين كلمة المرور",
+            "description": "تعيين كلمة مرور جديدة لـ {email}.",
+            "newPassword": "كلمة المرور الجديدة",
+            "submit": "تحديث"
+          },
+          "delete": {
+            "title": "حذف المستخدم",
+            "description": "هل أنت متأكد من حذف {email} نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",
+            "submit": "حذف"
+          }
+        }
+      },
+      "userDetail": {
+        "backToUsers": "العودة إلى المستخدمين",
+        "kicker": "تفاصيل المستخدم",
+        "notFound": "لم يتم العثور على المستخدم.",
+        "unnamed": "مستخدم بدون اسم",
+        "roles": {
+          "student": "طالب",
+          "company_admin": "مدير شركة",
+          "admin": "مدير",
+          "super_admin": "المشرف العام"
+        },
+        "status": {
+          "active": "نشط",
+          "banned": "محظور"
+        },
+        "sessions": {
+          "title": "الجلسات النشطة",
+          "ip": "عنوان IP",
+          "userAgent": "وكيل المستخدم",
+          "created": "أُنشئت",
+          "expires": "تنتهي",
+          "none": "لا توجد جلسات نشطة."
+        },
+        "actions": {
+          "title": "الإجراءات",
+          "impersonate": "انتحال الهوية",
+          "ban": "حظر",
+          "unban": "إلغاء الحظر",
+          "revokeAll": "إلغاء جميع الجلسات"
+        }
+      },
+      "impersonation": {
+        "banner": "أنت تنتحل هوية {name}",
+        "stop": "إيقاف"
+      }
+    },
+    "settings": {
+      "twoFactor": {
+        "title": "المصادقة الثنائية",
+        "description": "أضف طبقة أمان إضافية لحسابك من خلال طلب رمز تحقق عند تسجيل الدخول.",
+        "active": "مفعّلة",
+        "inactive": "غير مفعّلة",
+        "enable": "تفعيل المصادقة الثنائية",
+        "disable": "تعطيل المصادقة الثنائية",
+        "enableStep": {
+          "title": "إعداد تطبيق المصادقة",
+          "description": "امسح رمز QR بتطبيق المصادقة الخاص بك (Google Authenticator، Authy، إلخ)",
+          "passwordLabel": "كلمة المرور الحالية",
+          "passwordPlaceholder": "أدخل كلمة المرور للمتابعة",
+          "continue": "متابعة",
+          "scanQr": "امسح رمز QR هذا بتطبيق المصادقة",
+          "manualEntry": "أو أدخل هذا المفتاح يدويًا:",
+          "copySecret": "نسخ المفتاح"
+        },
+        "verifyStep": {
+          "title": "التحقق من الإعداد",
+          "description": "أدخل الرمز المكون من 6 أرقام من تطبيق المصادقة للتحقق من الإعداد.",
+          "codeLabel": "رمز التحقق",
+          "codePlaceholder": "أدخل الرمز المكون من 6 أرقام",
+          "verify": "تحقق وتفعيل"
+        },
+        "backupCodes": {
+          "title": "رموز الاحتياط",
+          "description": "احفظ رموز الاحتياط هذه في مكان آمن. يمكن استخدام كل رمز مرة واحدة فقط لتسجيل الدخول إذا فقدت الوصول إلى تطبيق المصادقة.",
+          "copy": "نسخ جميع الرموز",
+          "download": "تنزيل الرموز",
+          "copied": "تم نسخ الرموز إلى الحافظة",
+          "done": "لقد حفظت رموز الاحتياط",
+          "warning": "لن يتم عرض هذه الرموز مرة أخرى. تأكد من حفظها الآن."
+        },
+        "disableConfirm": {
+          "title": "تعطيل المصادقة الثنائية",
+          "description": "سيؤدي هذا إلى إزالة طبقة الأمان الإضافية من حسابك. هل أنت متأكد؟",
+          "passwordLabel": "كلمة المرور الحالية",
+          "passwordPlaceholder": "أدخل كلمة المرور للتأكيد",
+          "cancel": "إلغاء",
+          "confirm": "تعطيل المصادقة الثنائية"
+        },
+        "success": {
+          "enabled": "تم تفعيل المصادقة الثنائية بنجاح.",
+          "disabled": "تم تعطيل المصادقة الثنائية."
+        },
+        "error": {
+          "enableFailed": "فشل تفعيل المصادقة الثنائية. يرجى المحاولة مرة أخرى.",
+          "disableFailed": "فشل تعطيل المصادقة الثنائية. يرجى المحاولة مرة أخرى.",
+          "verifyFailed": "رمز تحقق غير صالح. يرجى المحاولة مرة أخرى.",
+          "passwordRequired": "كلمة المرور مطلوبة."
+        }
+      }
     }
   },
   "howItWorks": {

@@ -103,3 +103,9 @@ export const companyReportSeverityEnum = pgEnum("company_report_severity", [
   "high",
   "critical",
 ])
+
+export const universityStatusEnum = pgEnum("university_status", [
+  "pending",
+  "approved",
+  "rejected",
+])

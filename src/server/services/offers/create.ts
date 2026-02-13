@@ -2,7 +2,10 @@ import "server-only"
 
 import { randomUUID } from "node:crypto"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+
+const log = createModuleLogger("services/offers/create")
 import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
 import { validateSkillTagIds } from "@/server/services/skills/validate"
 
@@ -18,6 +21,7 @@ export async function createOffer(data: {
   skillTagIds?: string[]
 }) {
   const offerId = randomUUID()
+  log.info({ companyId: data.companyId, offerId, title: data.title }, "Creating offer")
 
   await db.transaction(async (tx) => {
     await tx.insert(internshipOffer).values({
@@ -44,5 +48,6 @@ export async function createOffer(data: {
     }
   })
 
+  log.info({ offerId, event: "offer_created" }, "Offer created successfully")
   return { offerId }
 }
