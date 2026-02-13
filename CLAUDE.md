@@ -92,11 +92,46 @@ The app automatically handles RTL when locale is 'ar':
 - Generous whitespace
 - Asymmetrical layouts
 
-### 4. Components Pattern
-For that you should use the skill 'vercel-composition-patterns' and 'vercel-react-best-practices' whenever you will create a component
+### 4. Feature Folder Architecture (Components)
+
+Any `_components/` client component exceeding **150 lines** must be a **feature folder** with 3 layers:
+
+```
+FeatureName/
+  index.tsx              ← Orchestrator (max 120 lines): layout + wiring only
+  hooks/
+    useFeatureData.ts    ← All useQuery/useMutation/useInfiniteQuery
+    useFeatureState.ts   ← Complex UI state (3+ useState, optional)
+  components/
+    SectionA.tsx         ← Pure UI, props only (max 200 lines each)
+    SectionB.tsx
+  types.ts
+  constants.ts           ← Feature-specific only (optional)
+  utils.ts               ← (optional)
+```
+
+**Layer Rules:**
+- **index.tsx**: No `useQuery`, no `useMutation`, no complex JSX. Only imports hooks + components and wires them together.
+- **hooks/**: All data fetching. Returns clean objects. Imports from `@/server/orpc/client`.
+- **components/**: Pure UI via props. Can use `useTranslations` and `motion`.
+
+**Shared Infrastructure** (never define locally):
+- `src/lib/constants/pipeline.ts` — `STATUS_COLORS`, `STAGE_COLUMNS`, `STAGE_LABELS`
+- `src/lib/constants/internship.ts` — `INTERNSHIP_TYPE_LABELS`, `INTERNSHIP_TYPE_COLORS`
+- `src/lib/animations.ts` — `reveal`, `ease`, `fadeIn`, etc. (NEVER define `reveal`/`ease` locally)
+- `src/hooks/useInfiniteScroll.ts` — IntersectionObserver + fetchNextPage
+- `src/hooks/useDebounce.ts` — Debounced value
+- `src/hooks/useLogout.ts` — Logout + redirect
+- `src/hooks/useCopilot.ts` — AI chat transport + useChat + tool output parsing
+
+**Reference implementation**: `ProfileContent/` folder under student profile `_components/`.
+
+Use the skill `vercel-composition-patterns` and `vercel-react-best-practices` when creating components. See AGENTS.md for the full decision tree and migration mapping.
+
+**NOTE** When a component or a custom hook used in multiple places it will be moved to the general componenets, in the root components folder
 
 ### 5. Design Pattern
-You should use the existing design style and the color palette and you should use the basic shadcn components to do that, you should use the design skills to help you desgin better
+Use the existing editorial design style, color palette, and shadcn/ui primitives. Use design skills for guidance.
 
 ### 6. MVC Architecture (Services + oRPC + TanStack Query)
 

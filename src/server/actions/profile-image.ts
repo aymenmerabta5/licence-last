@@ -9,38 +9,15 @@ import { auth } from "@/lib/auth"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { uploadFile, deleteFile } from "@/server/storage/s3"
-import { logger } from "@/server/logging"
+import { createModuleLogger } from "@/server/logging"
+import {
+  ALLOWED_IMAGE_TYPES,
+  MAX_IMAGE_SIZE,
+  IMAGE_EXT_MAP,
+  validateMagicBytes,
+} from "@/lib/image-validation"
 
-const ALLOWED_TYPES = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-])
-
-const MAX_SIZE = 2 * 1024 * 1024 // 2MB
-
-const EXT_MAP: Record<string, string> = {
-  "image/jpeg": "jpg",
-  "image/png": "png",
-  "image/webp": "webp",
-}
-
-// Magic bytes for each allowed image type
-const MAGIC_BYTES: Record<string, number[][]> = {
-  "image/jpeg": [[0xff, 0xd8, 0xff]],
-  "image/png": [[0x89, 0x50, 0x4e, 0x47]],
-  "image/webp": [[0x52, 0x49, 0x46, 0x46]], // RIFF header
-}
-
-/** Validate file content matches declared MIME type via magic bytes. */
-function validateMagicBytes(buffer: Buffer, declaredType: string): boolean {
-  const signatures = MAGIC_BYTES[declaredType]
-  if (!signatures) return false
-
-  return signatures.some((sig) =>
-    sig.every((byte, i) => buffer[i] === byte),
-  )
-}
+const log = createModuleLogger("actions/profile-image")
 
 /** Extract S3 key from public URL */
 function extractKeyFromUrl(url: string): string | null {
@@ -69,11 +46,11 @@ export async function uploadProfileImage(
     return { success: false, error: "No file provided" }
   }
 
-  if (!ALLOWED_TYPES.has(file.type)) {
+  if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
     return { success: false, error: "Invalid file type. Allowed: JPEG, PNG, WebP" }
   }
 
-  if (file.size > MAX_SIZE) {
+  if (file.size > MAX_IMAGE_SIZE) {
     return { success: false, error: "File too large. Maximum size is 2MB" }
   }
 
@@ -84,7 +61,7 @@ export async function uploadProfileImage(
     return { success: false, error: "File content does not match declared type" }
   }
 
-  const ext = EXT_MAP[file.type] ?? "jpg"
+  const ext = IMAGE_EXT_MAP[file.type] ?? "jpg"
   const key = `profiles/${session.user.id}/${randomUUID()}.${ext}`
 
   try {
@@ -100,8 +77,8 @@ export async function uploadProfileImage(
       if (oldKey) {
         try {
           await deleteFile(oldKey)
-        } catch {
-          // Ignore deletion errors, proceed with upload
+        } catch (err) {
+          log.warn({ err, oldKey, userId: session.user.id }, "Failed to delete old profile image")
         }
       }
     }
@@ -120,7 +97,7 @@ export async function uploadProfileImage(
 
     return { success: true, url }
   } catch (error) {
-    logger.error({ err: error, operation: "uploadProfileImage", userId: session.user.id }, "Profile image upload failed")
+    log.error({ err: error, userId: session.user.id, event: "profile_image_upload_failed" }, "Profile image upload failed")
     return { success: false, error: `Upload failed: ${error instanceof Error ? error.message : "Unknown error"}` }
   }
 }
@@ -147,8 +124,8 @@ export async function deleteProfileImage(): Promise<{ success: true } | { succes
       if (key) {
         try {
           await deleteFile(key)
-        } catch {
-          // Ignore deletion errors, proceed with DB update
+        } catch (err) {
+          log.warn({ err, key, userId: session.user.id }, "Failed to delete profile image from S3")
         }
       }
     }

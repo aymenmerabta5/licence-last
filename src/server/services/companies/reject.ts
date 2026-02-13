@@ -2,7 +2,10 @@ import "server-only"
 
 import { eq } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+
+const log = createModuleLogger("services/companies/reject")
 import { company } from "@/server/db/schema/companies"
 
 /**
@@ -10,6 +13,7 @@ import { company } from "@/server/db/schema/companies"
  * Pure business logic — caller must verify admin role.
  */
 export async function rejectCompany(companyId: string, reason: string) {
+  log.info({ companyId }, "Rejecting company")
   const [updated] = await db
     .update(company)
     .set({
@@ -23,5 +27,6 @@ export async function rejectCompany(companyId: string, reason: string) {
     throw new Error("Company not found")
   }
 
+  log.info({ companyId: updated.id, event: "company_rejected" }, "Company rejected")
   return { companyId: updated.id, name: updated.name }
 }

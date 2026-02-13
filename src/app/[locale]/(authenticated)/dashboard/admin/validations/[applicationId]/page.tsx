@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 
-import { PlacementDetailClient } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetailClient"
+import { PlacementDetailClient } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail"
 import { Skeleton } from "@/components/ui/skeleton"
 import { requireRole } from "@/lib/auth-guards"
 

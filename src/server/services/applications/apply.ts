@@ -2,7 +2,10 @@ import "server-only"
 
 import { eq, and, count } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+
+const log = createModuleLogger("services/applications/apply")
 import { internshipOffer } from "@/server/db/schema/internships"
 import { application } from "@/server/db/schema/applications"
 import { companyMember } from "@/server/db/schema/companies"
@@ -24,6 +27,7 @@ export async function applyToOffer(
   coverLetter?: string,
 ) {
   const applicationId = crypto.randomUUID()
+  log.info({ offerId, studentUserId, applicationId }, "Applying to offer")
 
   // Wrap all validation + insert in a transaction to prevent TOCTOU races
   await db.transaction(async (tx) => {
@@ -130,5 +134,6 @@ export async function applyToOffer(
     }
   }
 
+  log.info({ applicationId, offerId, event: "application_created" }, "Application created successfully")
   return { applicationId }
 }

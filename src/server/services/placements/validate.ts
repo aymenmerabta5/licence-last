@@ -2,7 +2,10 @@ import "server-only"
 
 import { eq } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+
+const log = createModuleLogger("services/placements/validate")
 import { application } from "@/server/db/schema/applications"
 import { placement, placementDocument } from "@/server/db/schema/placements"
 import { notification } from "@/server/db/schema/notifications"
@@ -95,6 +98,7 @@ export async function validatePlacement(
 
   const now = new Date()
   const placementId = crypto.randomUUID()
+  log.info({ applicationId, adminUserId, placementId }, "Validating placement")
 
   // Create placement and update application in a transaction
   await db.transaction(async (tx) => {
@@ -188,6 +192,7 @@ export async function validatePlacement(
     )
   }
 
+  log.info({ placementId, applicationId, event: "placement_validated" }, "Placement validated successfully")
   return {
     success: true,
     placementId,

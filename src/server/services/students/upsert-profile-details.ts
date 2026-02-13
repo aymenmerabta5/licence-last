@@ -2,7 +2,10 @@ import "server-only"
 
 import { eq } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+
+const log = createModuleLogger("services/students/upsert-profile-details")
 import { studentProfile } from "@/server/db/schema/students"
 
 type StudentProfileDetailsInput = {
@@ -35,6 +38,8 @@ export async function upsertStudentProfileDetails(
   input: StudentProfileDetailsInput,
   userId: string,
 ) {
+  log.info({ userId }, "Upserting student profile details")
+
   const [existing] = await db
     .select()
     .from(studentProfile)
@@ -94,5 +99,6 @@ export async function upsertStudentProfileDetails(
     },
   })
 
+  log.info({ userId, event: "student_profile_details_upserted" }, "Student profile details upserted")
   return { userId }
 }

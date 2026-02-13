@@ -2,7 +2,10 @@ import "server-only"
 
 import { eq } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+
+const log = createModuleLogger("services/students/upsert-profile")
 import { studentProfile, studentSkill } from "@/server/db/schema/students"
 import { user } from "@/server/db/schema/auth"
 import { validateSkillTagIds } from "@/server/services/skills/validate"
@@ -22,6 +25,8 @@ export async function upsertStudentProfile(
   skillTagIds: string[],
   userId: string,
 ) {
+  log.info({ userId, skillCount: skillTagIds.length }, "Upserting student profile")
+
   if (skillTagIds.length > 10) {
     throw new Error("A maximum of 10 skills is allowed")
   }
@@ -115,5 +120,6 @@ export async function upsertStudentProfile(
       .where(eq(user.id, userId))
   })
 
+  log.info({ userId, event: "student_profile_upserted" }, "Student profile upserted")
   return { userId }
 }

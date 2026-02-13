@@ -2,7 +2,10 @@ import "server-only"
 
 import { eq } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+
+const log = createModuleLogger("services/users/update-me")
 import { user } from "@/server/db/schema/auth"
 
 /**
@@ -10,6 +13,7 @@ import { user } from "@/server/db/schema/auth"
  * Pure business logic — caller must provide an authenticated user id.
  */
 export async function updateMe(userId: string, data: { name: string | null }) {
+  log.info({ userId }, "Updating user profile")
   const [updated] = await db
     .update(user)
     .set({ name: data.name })
@@ -20,5 +24,6 @@ export async function updateMe(userId: string, data: { name: string | null }) {
     throw new Error("User not found")
   }
 
+  log.info({ userId: updated.id, event: "user_updated" }, "User profile updated")
   return updated
 }

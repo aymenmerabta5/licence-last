@@ -406,17 +406,25 @@ This project follows a "Morning Press / Night Edition" editorial aesthetic:
 
 ### Animation Patterns
 
-**Reveal Animation (Standard):**
+**NEVER define `reveal`/`ease` locally — always import from `src/lib/animations.ts`:**
+
 ```typescript
-const reveal = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-}
-const ease = [0.4, 0, 0.2, 1] as const
+import { reveal, ease, revealWithDelay } from "@/lib/animations"
 
 // Usage
 <motion.div {...reveal} transition={{ duration: 0.6, ease, delay: 0.1 }}>
+
+// With pre-built delay helper
+<motion.div {...reveal} transition={revealWithDelay(0.2)}>
 ```
+
+Available exports from `@/lib/animations`:
+- `reveal` — opacity 0→1 + y 20→0
+- `ease` — cubic bezier [0.4, 0, 0.2, 1]
+- `revealTransition` — `{ duration: 0.6, ease }`
+- `revealWithDelay(delay)` — `{ duration: 0.6, ease, delay }`
+- `fadeIn` — opacity only
+- `slideUp` — y translation only
 
 ### File Organization
 
@@ -497,57 +505,59 @@ src/
 
 ---
 
-## Large Component Structure Pattern
+## Feature Folder Architecture
 
-When a component exceeds **400 lines** or contains multiple logical sections, use the **folder-based co-location pattern**:
+Any `_components/` client component exceeding **150 lines** must become a **feature folder**. This is mandatory — no exceptions.
 
-### Folder Structure
+### The Feature Folder Shape
 
 ```
-_components/
-├── ComponentName/
-│   ├── index.tsx              # Main component (orchestration, ~60-100 lines)
-│   ├── types.ts               # TypeScript interfaces
-│   ├── utils.ts               # Helper functions, constants
-│   ├── components/            # Sub-components used only by this feature
-│   │   ├── HeaderSection.tsx
-│   │   ├── ContentCard.tsx
-│   │   └── ActionButtons.tsx
-│   └── hooks/                 # Hooks specific to this feature
-│       └── useComponentData.ts
+FeatureName/
+  index.tsx                    # Orchestrator (MAX 120 lines)
+  hooks/
+    useFeatureData.ts          # All useQuery/useMutation/useInfiniteQuery
+    useFeatureState.ts         # Complex UI state (3+ useState, optional)
+  components/
+    SectionA.tsx               # Pure UI, props only (max 200 lines)
+    SectionB.tsx               # Pure UI, props only (max 200 lines)
+  types.ts                     # TypeScript interfaces for the feature
+  constants.ts                 # Feature-specific constants only (optional)
+  utils.ts                     # Helpers, formatters (optional)
 ```
 
-### When to Split
+### Layer Rules
 
-| Extract to Hook | Extract to Component |
-|-----------------|---------------------|
-| State management logic | UI/JSX blocks |
-| API calls & data fetching | Repeated markup patterns |
-| Complex event handlers | Independent visual sections |
-| Computed/derived values | Sub-components with own props |
+**index.tsx (Orchestrator)**
+- Only layout + wiring. Imports hooks and components, passes data as props.
+- **No** `useQuery`, `useMutation`, `useInfiniteQuery` — these belong in `hooks/`.
+- **No** complex JSX blocks (> 30 lines of JSX per section → extract to `components/`).
+- MAX 120 lines.
 
-### Example: ProfileContent (591 lines → folder)
+**hooks/ (Data Layer)**
+- All data fetching lives here. Returns clean typed objects.
+- Import from `@/server/orpc/client` for queries/mutations.
+- One hook per concern: `useFeatureData.ts` (queries), `useFeatureState.ts` (UI state).
+- Mutations return `{ mutateAsync, isPending }` patterns.
 
-**Before:** Single 591-line file with header, stats, contact, skills, bio, education, experience.
+**components/ (UI Layer)**
+- Pure UI. Receives ALL data via props.
+- Can use `useTranslations` and `motion` — these are UI concerns.
+- Max 200 lines each. If larger, split further.
+- No direct imports from `@/server/orpc/client`.
 
-**After:**
-```
-ProfileContent/
-├── index.tsx                  # Main orchestration (~70 lines)
-├── types.ts                   # StudentData, ProfileUser, etc.
-├── utils.ts                   # roleLabels, getInitials, formatMemberSince
-├── components/
-│   ├── ProfileHeader.tsx      # Cover + Avatar + Name
-│   ├── ProfileStats.tsx       # Stats grid
-│   ├── ContactInfoCard.tsx    # Email, phone, location
-│   ├── SkillsCard.tsx         # Skills display
-│   ├── SocialLinks.tsx        # GitHub, Portfolio
-│   ├── BioSection.tsx         # Bio display
-│   ├── EducationSection.tsx   # University info
-│   └── ExperienceSection.tsx  # Experience placeholder
-└── hooks/
-    └── useProfileData.ts      # Computed values from props
-```
+**NOTE** When a component or a custom hook used in multiple places it will be moved to the general componenets, in the root components folder
+
+### Shared Infrastructure (NEVER define locally)
+
+| Module | Exports | Used by |
+|--------|---------|---------|
+| `src/lib/constants/pipeline.ts` | `STATUS_COLORS`, `STAGE_COLUMNS`, `STAGE_LABELS`, `PipelineStage` | Applications, Candidates, OfferDetail, Admin |
+| `src/lib/constants/internship.ts` | `INTERNSHIP_TYPE_LABELS`, `INTERNSHIP_TYPE_COLORS` | Admin validations, Explore, OfferDetail |
+| `src/lib/animations.ts` | `reveal`, `ease`, `fadeIn`, `slideUp`, `revealTransition`, `revealWithDelay` | All animated components |
+| `src/hooks/useInfiniteScroll.ts` | `useInfiniteScroll(fetchNextPage, hasNextPage)` | Applications, Candidates, Explore |
+| `src/hooks/useDebounce.ts` | `useDebounce(value, delay)` | Explore, SkillsManager |
+| `src/hooks/useLogout.ts` | `useLogout()` → `{ logout, isLoggingOut }` | Navbar, DashboardSidebar, DashboardNavbar |
+| `src/hooks/useCopilot.ts` | `useCopilot({ toolName, onResult })` | OfferDetail, OfferForm, PlacementDetail, Explore |
 
 ### Shared Components
 
@@ -556,7 +566,7 @@ Components reused across multiple features go in `src/components/`:
 ```
 src/components/
 ├── ui/                        # Primitives (shadcn)
-├── form-fields/               # Shared form fields (new)
+├── form-fields/               # Shared form field components
 │   ├── TextField.tsx
 │   ├── TextAreaField.tsx
 │   ├── SelectField.tsx
@@ -577,41 +587,75 @@ Hooks reused across multiple features go in `src/hooks/`:
 
 ```
 src/hooks/
-├── use-mobile.ts              # Existing
+├── use-mobile.ts              # Mobile breakpoint detection
 ├── use-skill-grouping.ts      # Groups skills by category
 ├── use-skill-selection.ts     # Selection state + toggle logic
-└── index.ts
+├── useInfiniteScroll.ts       # IntersectionObserver + fetchNextPage
+├── useDebounce.ts             # Debounced value
+├── useLogout.ts               # Logout + redirect
+├── useCopilot.ts              # AI chat transport + useChat + tool output
+└── index.ts                   # Barrel export
+```
+
+### Reference Implementation: ProfileContent
+
+```
+ProfileContent/
+├── index.tsx                  # 108 lines — layout + wiring
+├── types.ts                   # StudentData, ProfileUser, etc.
+├── utils.ts                   # roleLabels, getInitials, formatMemberSince
+├── components/
+│   ├── ProfileHeader.tsx      # Cover + Avatar + Name
+│   ├── ProfileStats.tsx       # Stats grid
+│   ├── ContactInfoCard.tsx    # Email, phone, location
+│   ├── SkillsCard.tsx         # Skills display
+│   ├── SocialLinks.tsx        # GitHub, Portfolio
+│   ├── BioSection.tsx         # Bio display
+│   ├── EducationSection.tsx   # University info
+│   └── ExperienceSection.tsx  # Experience placeholder
+└── hooks/
+    └── useProfileData.ts      # Computed values from props
 ```
 
 ### Naming Conventions
 
-- **Folder name**: Matches the original component name (`ProfileContent/`, `OfferForm/`)
-- **Main file**: `index.tsx` (enables clean imports)
+- **Folder name**: Matches the component name (`ProfileContent/`, `OfferForm/`)
+- **Main file**: `index.tsx` (enables same import path as before)
 - **Sub-components**: Descriptive, focused names (`ProfileHeader`, `ContactInfoCard`)
-- **Hooks**: `use + FeatureName + Purpose` (`useOnboardingForm`, `useProfileData`)
+- **Hooks**: `use + FeatureName + Purpose` (`useOfferData`, `useCandidateActions`)
 - **Types file**: `types.ts` (all interfaces for the feature)
 - **Utils file**: `utils.ts` (constants, formatters, helpers)
-
-### Import Pattern
-
-```typescript
-// Before
-import { ProfileContent } from "./_components/ProfileContent"
-
-// After (same import path, folder resolves to index.tsx)
-import { ProfileContent } from "./_components/ProfileContent"
-```
 
 ### Decision Tree
 
 ```
-Component > 400 lines?
-├── Yes → Split into ComponentName/ folder
-│   ├── Has stateful logic? → Extract to hooks/
-│   ├── Has distinct UI sections? → Extract to components/
-│   └── Has shared types/constants? → Extract to types.ts / utils.ts
+Component > 150 lines?
+├── Yes → Feature folder (mandatory)
+│   ├── Has useQuery/useMutation? → hooks/useFeatureData.ts
+│   ├── Has 3+ useState? → hooks/useFeatureState.ts
+│   ├── Has STATUS_COLORS/STAGE_LABELS? → import from src/lib/constants/pipeline
+│   ├── Has INTERNSHIP_TYPE_*? → import from src/lib/constants/internship
+│   ├── Has reveal/ease? → import from src/lib/animations (NEVER local)
+│   ├── Has IntersectionObserver? → use src/hooks/useInfiniteScroll
+│   ├── Has useChat/DefaultChatTransport? → use src/hooks/useCopilot
+│   └── Has distinct UI sections? → components/
 └── No → Keep as single file
 ```
+
+### Migration Mapping
+
+| Component | Lines | Target Folder | Key Extractions |
+|-----------|-------|---------------|-----------------|
+| CompanyOffersPageClient | 295 | `CompanyOffersView/` | hooks: queries + mutations |
+| SkillsManager | 260 | `SkillsManager/` | hooks: skills + search state |
+| ApplicationsClient | 312 | `ApplicationsView/` | hooks: infiniteQuery; shared: pipeline constants, useInfiniteScroll |
+| CandidatesClient | 495 | `CandidatesView/` | hooks: infiniteQuery + actions; shared: pipeline constants, useInfiniteScroll |
+| ExploreClient | 390 | `ExploreClient/` | hooks: search + copilot; shared: useInfiniteScroll, useCopilot |
+| AssistantChat | 296 | `AssistantChat/` | hooks: chat session; already has components/ |
+| ProfileSettingsTab | 432 | `ProfileSettingsTab/` | hooks: form + mutations |
+| OfferForm | 750 | `OfferForm/` | hooks: form + copilot; already has types.ts + utils.ts |
+| OfferDetailClient | 631 | `OfferDetail/` | hooks: matching + application + copilot |
+| PlacementDetailClient | 635 | `PlacementDetail/` | hooks: data + actions + copilot |
 
 ### Error Handling
 

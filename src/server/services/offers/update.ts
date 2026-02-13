@@ -2,9 +2,12 @@ import "server-only"
 
 import { and, eq } from "drizzle-orm"
 
+import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
 import { validateSkillTagIds } from "@/server/services/skills/validate"
+
+const log = createModuleLogger("services/offers/update")
 
 export async function updateOffer(
   offerId: string,
@@ -29,6 +32,8 @@ export async function updateOffer(
   if (!existing) {
     throw new Error("Offer not found or access denied")
   }
+
+  log.info({ offerId, companyId }, "Updating offer")
 
   if (existing.status === "closed") {
     throw new Error("Cannot update a closed offer")
@@ -65,5 +70,6 @@ export async function updateOffer(
     }
   })
 
+  log.info({ offerId, event: "offer_updated" }, "Offer updated successfully")
   return { offerId }
 }
