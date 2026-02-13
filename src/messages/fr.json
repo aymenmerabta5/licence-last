@@ -1247,5 +1247,35 @@
       "button": "Commencer Gratuitement",
       "aria": "Commencer avec Internex gratuitement"
     }
+  },
+  "verify": {
+    "title": "Vérification de Document",
+    "description": "Entrez le code de vérification imprimé sur votre document Internex pour confirmer son authenticité.",
+    "placeholder": "INTX-XXXX-XXXX",
+    "submit": "Vérifier le Document",
+    "checking": "Vérification...",
+    "valid": {
+      "title": "Document Vérifié",
+      "subtitle": "Ce document est authentique et a été émis par Internex.",
+      "type": "Type de Document",
+      "typeAgreement": "Convention de Stage",
+      "typeCertificate": "Certificat de Stage",
+      "student": "Stagiaire",
+      "company": "Entreprise",
+      "university": "Université",
+      "offer": "Intitulé du Stage",
+      "period": "Période",
+      "periodTo": "au",
+      "generatedOn": "Généré le",
+      "status": "Statut",
+      "statusGenerated": "Généré",
+      "statusSigned": "Signé",
+      "statusPending": "En attente"
+    },
+    "invalid": {
+      "title": "Document Non Trouvé",
+      "subtitle": "Aucun document trouvé avec ce code de vérification. Veuillez vérifier le code et réessayer.",
+      "tryAgain": "Essayer un Autre Code"
+    }
   }
 }

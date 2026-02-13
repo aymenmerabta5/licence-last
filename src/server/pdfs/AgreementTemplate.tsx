@@ -3,6 +3,7 @@ import {
   Page,
   Text,
   View,
+  Image,
   StyleSheet,
   Font,
 } from "@react-pdf/renderer"
@@ -119,6 +120,33 @@ const styles = StyleSheet.create({
     fontSize: 9,
     color: "#666666",
   },
+  verificationBar: {
+    position: "absolute",
+    bottom: 55,
+    left: 50,
+    right: 50,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    borderTopWidth: 1,
+    borderTopColor: "#dddddd",
+    paddingTop: 8,
+  },
+  qrCode: {
+    width: 60,
+    height: 60,
+  },
+  verificationText: {
+    fontSize: 8,
+    color: "#666666",
+  },
+  verificationCode: {
+    fontFamily: "DejaVu Sans Bold",
+    fontSize: 10,
+    color: "#333333",
+    marginBottom: 2,
+  },
   footer: {
     position: "absolute",
     bottom: 30,
@@ -165,11 +193,15 @@ export interface AgreementData {
 interface ConventionDeStageTemplateProps {
   data: AgreementData
   locale?: string
+  verificationCode?: string
+  qrCodeDataUrl?: string
 }
 
 export function ConventionDeStageTemplate({
   data,
   locale = "en",
+  verificationCode,
+  qrCodeDataUrl,
 }: ConventionDeStageTemplateProps) {
   const formatDate = (date: Date) => {
     return date.toLocaleDateString(locale === "fr" ? "fr-FR" : "en-US", {
@@ -363,6 +395,26 @@ export function ConventionDeStageTemplate({
             </Text>
           </View>
         </View>
+
+        {/* Verification */}
+        {verificationCode && (
+          <View style={styles.verificationBar}>
+            {qrCodeDataUrl && (
+              // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image, not HTML img
+              <Image style={styles.qrCode} src={qrCodeDataUrl} />
+            )}
+            <View>
+              <Text style={styles.verificationCode}>{verificationCode}</Text>
+              <Text style={styles.verificationText}>
+                {locale === "fr"
+                  ? "Vérifiez ce document sur internex.dz/verify"
+                  : locale === "ar"
+                    ? "تحقق من هذه الوثيقة على internex.dz/verify"
+                    : "Verify this document at internex.dz/verify"}
+              </Text>
+            </View>
+          </View>
+        )}
 
         {/* Footer */}
         <View style={styles.footer}>

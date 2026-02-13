@@ -3,8 +3,13 @@ import "server-only"
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
 
-import { adminProcedureStandard } from "@/server/orpc/rate-limited-procedures"
+import {
+  adminProcedureStandard,
+  publicProcedureStandard,
+} from "@/server/orpc/rate-limited-procedures"
 import { generateAgreement } from "@/server/services/documents/generate-agreement"
+import { verifyDocument } from "@/server/services/documents/verify"
+import { verifyCodeSchema } from "@/lib/schemas/verify"
 
 /* ── Generate Agreement PDF (admin only) ── */
 
@@ -35,4 +40,12 @@ export const generateAgreementProcedure = adminProcedureStandard
           error instanceof Error ? error.message : "Failed to generate agreement",
       })
     }
+  })
+
+/* ── Verify Document (public) ── */
+
+export const verifyDocumentProcedure = publicProcedureStandard
+  .input(verifyCodeSchema)
+  .handler(async ({ input }) => {
+    return verifyDocument(input.code)
   })

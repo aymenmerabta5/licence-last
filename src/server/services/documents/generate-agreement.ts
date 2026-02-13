@@ -16,6 +16,9 @@ import {
   ConventionDeStageTemplate,
   type AgreementData,
 } from "@/server/pdfs/AgreementTemplate"
+import { generateVerificationCode } from "./verification-code"
+import { generateQRCodeDataUrl } from "./qr-utils"
+import { env } from "@/env"
 
 export interface GenerateAgreementInput {
   placementId: string
@@ -86,6 +89,22 @@ export async function generateAgreement(
     throw new Error("Application not found")
   }
 
+  // Check for existing document to preserve verification code on regeneration
+  const [existingDoc] = await db
+    .select()
+    .from(placementDocument)
+    .where(
+      and(
+        eq(placementDocument.placementId, placementId),
+        eq(placementDocument.type, "agreement"),
+      ),
+    )
+    .limit(1)
+
+  const verificationCode = existingDoc?.verificationCode ?? generateVerificationCode()
+  const verificationUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/${locale}/verify/${verificationCode}`
+  const qrCodeDataUrl = await generateQRCodeDataUrl(verificationUrl)
+
   const data: AgreementData = {
     // Student info
     studentName: row.studentName ?? "Unknown",
@@ -119,21 +138,15 @@ export async function generateAgreement(
   }
 
   const pdfBuffer = await renderToBuffer(
-    createElement(ConventionDeStageTemplate, { data, locale }) as unknown as Parameters<
-      typeof renderToBuffer
-    >[0],
+    createElement(ConventionDeStageTemplate, {
+      data,
+      locale,
+      verificationCode,
+      qrCodeDataUrl,
+    }) as unknown as Parameters<typeof renderToBuffer>[0],
   )
 
-  let [documentRecord] = await db
-    .select()
-    .from(placementDocument)
-    .where(
-      and(
-        eq(placementDocument.placementId, placementId),
-        eq(placementDocument.type, "agreement"),
-      ),
-    )
-    .limit(1)
+  let documentRecord = existingDoc
 
   if (!documentRecord) {
     const [newDoc] = await db
@@ -143,6 +156,7 @@ export async function generateAgreement(
         placementId,
         type: "agreement",
         status: "generated",
+        verificationCode,
         meta: {
           generatedAt: new Date().toISOString(),
           locale,
@@ -158,6 +172,7 @@ export async function generateAgreement(
       .update(placementDocument)
       .set({
         status: "generated",
+        verificationCode,
         meta: {
           generatedAt: new Date().toISOString(),
           locale,

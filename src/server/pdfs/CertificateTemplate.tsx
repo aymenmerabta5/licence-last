@@ -3,6 +3,7 @@ import {
   Page,
   Text,
   View,
+  Image,
   StyleSheet,
   Font,
 } from "@react-pdf/renderer"
@@ -65,6 +66,30 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: "#666666",
   },
+  verificationBar: {
+    marginTop: 40,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    borderTopWidth: 1,
+    borderTopColor: "#dddddd",
+    paddingTop: 8,
+  },
+  qrCode: {
+    width: 60,
+    height: 60,
+  },
+  verificationText: {
+    fontSize: 8,
+    color: "#666666",
+  },
+  verificationCode: {
+    fontFamily: "DejaVu Sans Bold",
+    fontSize: 10,
+    color: "#333333",
+    marginBottom: 2,
+  },
 })
 
 export interface CertificateData {
@@ -81,11 +106,15 @@ export interface CertificateData {
 interface CertificateTemplateProps {
   data: CertificateData
   locale?: string
+  verificationCode?: string
+  qrCodeDataUrl?: string
 }
 
 export function InternshipCertificateTemplate({
   data,
   locale = "en",
+  verificationCode,
+  qrCodeDataUrl,
 }: CertificateTemplateProps) {
   const formatDate = (date: Date) =>
     date.toLocaleDateString(locale === "fr" ? "fr-FR" : "en-US", {
@@ -179,6 +208,26 @@ export function InternshipCertificateTemplate({
             </Text>
           </View>
         </View>
+
+        {/* Verification */}
+        {verificationCode && (
+          <View style={styles.verificationBar}>
+            {qrCodeDataUrl && (
+              // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image, not HTML img
+              <Image style={styles.qrCode} src={qrCodeDataUrl} />
+            )}
+            <View>
+              <Text style={styles.verificationCode}>{verificationCode}</Text>
+              <Text style={styles.verificationText}>
+                {locale === "fr"
+                  ? "Vérifiez ce document sur internex.dz/verify"
+                  : locale === "ar"
+                    ? "تحقق من هذه الوثيقة على internex.dz/verify"
+                    : "Verify this document at internex.dz/verify"}
+              </Text>
+            </View>
+          </View>
+        )}
       </Page>
     </Document>
   )

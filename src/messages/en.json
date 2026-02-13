@@ -1246,5 +1246,35 @@
       "button": "Get Started Free",
       "aria": "Get started with Internex for free"
     }
+  },
+  "verify": {
+    "title": "Document Verification",
+    "description": "Enter the verification code printed on your Internex document to confirm its authenticity.",
+    "placeholder": "INTX-XXXX-XXXX",
+    "submit": "Verify Document",
+    "checking": "Verifying...",
+    "valid": {
+      "title": "Document Verified",
+      "subtitle": "This document is authentic and was issued by Internex.",
+      "type": "Document Type",
+      "typeAgreement": "Internship Agreement",
+      "typeCertificate": "Internship Certificate",
+      "student": "Student",
+      "company": "Company",
+      "university": "University",
+      "offer": "Internship Title",
+      "period": "Period",
+      "periodTo": "to",
+      "generatedOn": "Generated On",
+      "status": "Status",
+      "statusGenerated": "Generated",
+      "statusSigned": "Signed",
+      "statusPending": "Pending"
+    },
+    "invalid": {
+      "title": "Document Not Found",
+      "subtitle": "No document was found with this verification code. Please check the code and try again.",
+      "tryAgain": "Try Another Code"
+    }
   }
 }

@@ -47,11 +47,13 @@ export const placementDocument = pgTable(
     status: documentStatusEnum("status").default("pending").notNull(),
     storageKey: text("storage_key"),
     url: text("url"),
+    verificationCode: text("verification_code"),
     meta: jsonb("meta"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
     uniqueIndex("document_placement_type_uidx").on(table.placementId, table.type),
+    uniqueIndex("document_verification_code_uidx").on(table.verificationCode),
     index("document_placementId_idx").on(table.placementId),
     index("document_type_idx").on(table.type),
     index("document_status_idx").on(table.status),

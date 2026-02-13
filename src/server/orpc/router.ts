@@ -60,7 +60,10 @@ import {
   updateDepartmentProcedure,
   assignDepartmentHeadProcedure,
 } from "./routes/departments"
-import { generateAgreementProcedure } from "./routes/documents"
+import {
+  generateAgreementProcedure,
+  verifyDocumentProcedure,
+} from "./routes/documents"
 import {
   listNotificationsProcedure,
   markAllNotificationsReadProcedure,
@@ -180,6 +183,7 @@ export const appRouter = {
   },
   documents: {
     generateAgreement: generateAgreementProcedure,
+    verify: verifyDocumentProcedure,
   },
   notifications: {
     list: listNotificationsProcedure,
