@@ -5,7 +5,7 @@ import { headers } from "next/headers"
 import { localeRedirect } from "@/lib/navigation"
 import { auth } from "@/lib/auth"
 
-type UserRole = "student" | "company_admin" | "admin" | "super_admin"
+type UserRole = "student" | "company_admin" | "dept_head" | "admin" | "super_admin"
 
 /**
  * Server-side role guard for layout.tsx files.

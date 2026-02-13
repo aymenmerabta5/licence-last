@@ -14,7 +14,7 @@ import { university } from "@/server/db/schema/universities"
 import {
   InternshipCertificateTemplate,
   type CertificateData,
-} from "./templates/certificate"
+} from "@/server/pdfs/CertificateTemplate"
 
 export interface GenerateCertificateInput {
   placementId: string

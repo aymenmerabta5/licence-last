@@ -27,6 +27,12 @@ export const admin = ac.newRole({
   session: ["list"],
 })
 
+/** dept_head — department head, same as admin (read-only) */
+export const deptHead = ac.newRole({
+  user: ["list"],
+  session: ["list"],
+})
+
 /** student — no admin permissions */
 export const student = ac.newRole({
   user: [],

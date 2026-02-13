@@ -31,6 +31,7 @@ export function useUniversityOnboarding() {
       city: "",
       address: "",
       domains: [""],
+      departments: [] as { name: string }[],
     },
     validators: {
       onSubmit: ({ value }) => mapZodErrors(schema.safeParse(value)),
@@ -41,6 +42,8 @@ export function useUniversityOnboarding() {
       try {
         // Filter out empty domain strings
         const domains = value.domains.filter((d) => d.trim().length > 0)
+        // Filter out empty department names
+        const departments = value.departments.filter((d) => d.name.trim().length > 0)
 
         await orpcClient.universities.create({
           name: value.name,
@@ -52,6 +55,7 @@ export function useUniversityOnboarding() {
           city: value.city || undefined,
           address: value.address || undefined,
           domains,
+          departments: departments.length > 0 ? departments : undefined,
         })
 
         router.push("/dashboard/admin/pending")

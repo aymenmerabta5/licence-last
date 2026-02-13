@@ -9,6 +9,7 @@ import { db } from "@/server/db"
 
 const log = createModuleLogger("services/universities/create")
 import { university, universityDomain } from "@/server/db/schema/universities"
+import { department } from "@/server/db/schema/departments"
 import { user } from "@/server/db/schema/auth"
 
 /**
@@ -26,6 +27,7 @@ export async function createUniversity(
     city?: string
     address?: string
     domains: string[]
+    departments?: { name: string }[]
   },
   userId: string,
 ) {
@@ -54,6 +56,17 @@ export async function createUniversity(
           universityId,
           domain: domain.toLowerCase().trim(),
           status: "pending" as const,
+        })),
+      )
+    }
+
+    // Insert departments
+    if (data.departments && data.departments.length > 0) {
+      await tx.insert(department).values(
+        data.departments.map((dept) => ({
+          id: randomUUID(),
+          universityId,
+          name: dept.name.trim(),
         })),
       )
     }

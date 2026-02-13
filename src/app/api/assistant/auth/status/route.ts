@@ -4,9 +4,14 @@ import Arcade from "@arcadeai/arcadejs"
 
 import { env } from "@/env"
 import { auth } from "@/lib/auth"
+import { isValidOrigin } from "@/lib/csrf"
 import { checkRateLimit } from "@/server/ai/rate-limit"
 
 export async function POST(req: Request) {
+  if (!isValidOrigin(req)) {
+    return new Response("Forbidden: invalid origin", { status: 403 })
+  }
+
   let body: { toolName?: unknown }
   try {
     body = (await req.json()) as { toolName?: unknown }
@@ -24,6 +29,10 @@ export async function POST(req: Request) {
 
   if (!session) {
     return new Response("Unauthorized", { status: 401 })
+  }
+
+  if (session.user.banned) {
+    return new Response("Forbidden: account suspended", { status: 403 })
   }
 
   if (session.user.role !== "company_admin") {

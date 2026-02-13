@@ -11,20 +11,23 @@ import { notification } from "@/server/db/schema/notifications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { company, companyMember } from "@/server/db/schema/companies"
 import { user } from "@/server/db/schema/auth"
+import { studentProfile } from "@/server/db/schema/students"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 
 export interface RejectPlacementInput {
   applicationId: string
   adminUserId: string
-  adminRole: "admin" | "super_admin"
+  adminRole: "admin" | "dept_head" | "super_admin"
   adminUniversityId: string | null
+  /** Required when adminRole is "dept_head" */
+  adminDepartmentId?: string | null
   reason?: string
 }
 
 export async function rejectPlacement(
   input: RejectPlacementInput,
 ) {
-  const { applicationId, adminUserId, adminRole, adminUniversityId, reason } = input
+  const { applicationId, adminUserId, adminRole, adminUniversityId, adminDepartmentId, reason } = input
 
   const [app] = await db
     .select({
@@ -37,11 +40,13 @@ export async function rejectPlacement(
       companyId: internshipOffer.companyId,
       companyName: company.name,
       studentUniversityId: user.universityId,
+      studentDepartmentId: studentProfile.departmentId,
     })
     .from(application)
     .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
     .innerJoin(company, eq(internshipOffer.companyId, company.id))
     .innerJoin(user, eq(application.studentUserId, user.id))
+    .leftJoin(studentProfile, eq(user.id, studentProfile.userId))
     .where(eq(application.id, applicationId))
     .limit(1)
 
@@ -53,9 +58,15 @@ export async function rejectPlacement(
     throw new Error("Only company-accepted applications can be rejected by admin")
   }
 
-  // University admin scoping: admins can only reject placements for students
-  // within their own university. Super admins can reject any.
-  if (adminRole !== "super_admin") {
+  // Scoping: dept_head → department, admin → university, super_admin → any
+  if (adminRole === "dept_head") {
+    if (!adminDepartmentId) {
+      throw new Error("Department head department not set")
+    }
+    if (!app.studentDepartmentId || app.studentDepartmentId !== adminDepartmentId) {
+      throw new Error("You can only reject placements for students in your department")
+    }
+  } else if (adminRole !== "super_admin") {
     if (!adminUniversityId) {
       throw new Error("Admin university not set")
     }

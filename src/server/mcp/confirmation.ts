@@ -62,13 +62,12 @@ export function consumeConfirmationToken(
     throw new DevMcpError("INVALID_CONFIRMATION", "Unknown confirmation token")
   }
 
-  pending.delete(token)
-
   if (existing.action !== action) {
     throw new DevMcpError("INVALID_CONFIRMATION", "Confirmation token action mismatch")
   }
 
   if (Date.now() > existing.expiresAt) {
+    pending.delete(token)
     throw new DevMcpError("INVALID_CONFIRMATION", "Confirmation token expired")
   }
 
@@ -79,6 +78,8 @@ export function consumeConfirmationToken(
       "Confirmation payload mismatch. Recreate cleanup plan.",
     )
   }
+
+  pending.delete(token)
 }
 
 export function clearConfirmationTokensForTests() {

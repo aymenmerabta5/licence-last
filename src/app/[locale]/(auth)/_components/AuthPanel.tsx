@@ -5,12 +5,7 @@ import { useTranslations } from "next-intl"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 
-/* ── Shared reveal transition ── */
-const reveal = {
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-}
-const ease = [0.4, 0, 0.2, 1] as const
+import { reveal, ease } from "@/lib/animations"
 
 /* ── Decorative Dot Separator ── */
 function DotSeparator({

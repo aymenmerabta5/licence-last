@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test"
 
-import { minimizeAssistantContext, assistantContextToJson } from "../context"
+import { minimizeAssistantContext, assistantContextToJson } from "./context"
 
 describe("context", () => {
   describe("minimizeAssistantContext", () => {

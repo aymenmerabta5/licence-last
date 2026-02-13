@@ -15,7 +15,7 @@ import { university } from "@/server/db/schema/universities"
 import {
   ConventionDeStageTemplate,
   type AgreementData,
-} from "./templates/agreement"
+} from "@/server/pdfs/AgreementTemplate"
 
 export interface GenerateAgreementInput {
   placementId: string

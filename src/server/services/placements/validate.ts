@@ -12,13 +12,16 @@ import { notification } from "@/server/db/schema/notifications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { company, companyMember } from "@/server/db/schema/companies"
 import { user } from "@/server/db/schema/auth"
+import { studentProfile } from "@/server/db/schema/students"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 
 export interface ValidatePlacementInput {
   applicationId: string
   adminUserId: string
-  adminRole: "admin" | "super_admin"
+  adminRole: "admin" | "dept_head" | "super_admin"
   adminUniversityId: string | null
+  /** Required when adminRole is "dept_head" — scopes validation to their department */
+  adminDepartmentId?: string | null
   startDate: Date
   endDate: Date
 }
@@ -37,6 +40,7 @@ export async function validatePlacement(
     adminUserId,
     adminRole,
     adminUniversityId,
+    adminDepartmentId,
     startDate,
     endDate,
   } = input
@@ -58,11 +62,13 @@ export async function validatePlacement(
       studentName: user.name,
       studentEmail: user.email,
       universityId: user.universityId,
+      studentDepartmentId: studentProfile.departmentId,
     })
     .from(application)
     .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
     .innerJoin(company, eq(internshipOffer.companyId, company.id))
     .innerJoin(user, eq(application.studentUserId, user.id))
+    .leftJoin(studentProfile, eq(user.id, studentProfile.userId))
     .where(eq(application.id, applicationId))
     .limit(1)
 
@@ -74,9 +80,17 @@ export async function validatePlacement(
     throw new Error("Only company-accepted applications can be validated")
   }
 
-  // University admin scoping: admins can only validate placements for students
-  // within their own university. Super admins can validate any.
-  if (adminRole !== "super_admin") {
+  // Scoping: dept_head can only validate students in their department,
+  // admin can only validate students in their university,
+  // super_admin can validate any.
+  if (adminRole === "dept_head") {
+    if (!adminDepartmentId) {
+      throw new Error("Department head department not set")
+    }
+    if (!app.studentDepartmentId || app.studentDepartmentId !== adminDepartmentId) {
+      throw new Error("You can only validate placements for students in your department")
+    }
+  } else if (adminRole !== "super_admin") {
     if (!adminUniversityId) {
       throw new Error("Admin university not set")
     }

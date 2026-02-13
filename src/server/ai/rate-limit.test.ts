@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach } from "bun:test"
 
-import { _resetRateLimitForTests, checkRateLimit } from "../rate-limit"
+import { _resetRateLimitForTests, checkRateLimit } from "./rate-limit"
 
 describe("rate-limit", () => {
   beforeEach(() => {

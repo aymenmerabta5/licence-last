@@ -5,6 +5,7 @@ export interface StudentOnboardingFormValues {
   portfolioUrl: string
   studentNumber: string
   department: string
+  departmentId: string
   level: string
   wilayaCode: number
   address: string

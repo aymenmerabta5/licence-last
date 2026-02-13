@@ -6,6 +6,8 @@ import { ORPCError } from "@orpc/server"
 import {
   adminProcedureGenerous,
   adminProcedureStandard,
+  deptHeadProcedureGenerous,
+  deptHeadProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
 import {
   parseInputDate,
@@ -49,12 +51,20 @@ export const validateProcedure = adminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
+    // Validate dates first — these throw user-facing messages
+    let startDate: Date
+    let endDate: Date
     try {
-      const startDate = parseInputDate(input.startDate, "Start date")
-      const endDate = parseInputDate(input.endDate, "End date")
-
+      startDate = parseInputDate(input.startDate, "Start date")
+      endDate = parseInputDate(input.endDate, "End date")
       validatePlacementDateRange(startDate, endDate)
+    } catch (error) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: error instanceof Error ? error.message : "Invalid date input",
+      })
+    }
 
+    try {
       return await validatePlacement({
         applicationId: input.applicationId,
         adminUserId: context.user.id,
@@ -64,9 +74,9 @@ export const validateProcedure = adminProcedureStandard
         endDate,
       })
     } catch (error) {
-      throw new ORPCError("BAD_REQUEST", {
-        message:
-          error instanceof Error ? error.message : "Failed to validate placement",
+      if (error instanceof ORPCError) throw error
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "An unexpected error occurred",
       })
     }
   })
@@ -93,9 +103,101 @@ export const rejectProcedure = adminProcedureStandard
         },
       )
     } catch (error) {
+      if (error instanceof ORPCError) throw error
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "An unexpected error occurred",
+      })
+    }
+  })
+
+/* ── Dept Head: List Pending Placements ── */
+
+export const deptHeadListPendingProcedure = deptHeadProcedureGenerous
+  .input(
+    z
+      .object({
+        cursor: z
+          .object({ companyActionAt: z.string(), id: z.string() })
+          .optional(),
+        limit: z.coerce.number().int().min(1).max(50).optional(),
+      })
+      .optional(),
+  )
+  .handler(async ({ input, context }) =>
+    listPendingApplications(
+      input ?? {},
+      {
+        role: "dept_head",
+        universityId: context.universityId,
+        departmentId: context.departmentId,
+      },
+    ),
+  )
+
+/* ── Dept Head: Validate Placement ── */
+
+export const deptHeadValidateProcedure = deptHeadProcedureStandard
+  .input(
+    z.object({
+      applicationId: z.string().min(1),
+      startDate: z.string().min(1),
+      endDate: z.string().min(1),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    let startDate: Date
+    let endDate: Date
+    try {
+      startDate = parseInputDate(input.startDate, "Start date")
+      endDate = parseInputDate(input.endDate, "End date")
+      validatePlacementDateRange(startDate, endDate)
+    } catch (error) {
       throw new ORPCError("BAD_REQUEST", {
-        message:
-          error instanceof Error ? error.message : "Failed to reject placement",
+        message: error instanceof Error ? error.message : "Invalid date input",
+      })
+    }
+
+    try {
+      return await validatePlacement({
+        applicationId: input.applicationId,
+        adminUserId: context.user.id,
+        adminRole: "dept_head",
+        adminUniversityId: context.universityId,
+        adminDepartmentId: context.departmentId,
+        startDate,
+        endDate,
+      })
+    } catch (error) {
+      if (error instanceof ORPCError) throw error
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "An unexpected error occurred",
+      })
+    }
+  })
+
+/* ── Dept Head: Reject Placement ── */
+
+export const deptHeadRejectProcedure = deptHeadProcedureStandard
+  .input(
+    z.object({
+      applicationId: z.string().min(1),
+      reason: z.string().max(500).optional(),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    try {
+      return await rejectPlacement({
+        applicationId: input.applicationId,
+        adminUserId: context.user.id,
+        adminRole: "dept_head",
+        adminUniversityId: context.universityId,
+        adminDepartmentId: context.departmentId,
+        reason: input.reason,
+      })
+    } catch (error) {
+      if (error instanceof ORPCError) throw error
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "An unexpected error occurred",
       })
     }
   })

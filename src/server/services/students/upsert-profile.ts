@@ -18,6 +18,7 @@ export async function upsertStudentProfile(
     portfolioUrl?: string
     studentNumber?: string
     department?: string
+    departmentId?: string
     level?: string
     wilayaCode?: number
     address?: string
@@ -63,6 +64,10 @@ export async function upsertStudentProfile(
         data.department !== undefined
           ? data.department || null
           : (existing?.department ?? null),
+      departmentId:
+        data.departmentId !== undefined
+          ? data.departmentId || null
+          : (existing?.departmentId ?? null),
       level: data.level !== undefined ? data.level || null : (existing?.level ?? null),
       wilayaCode:
         data.wilayaCode !== undefined
@@ -82,6 +87,7 @@ export async function upsertStudentProfile(
         portfolioUrl: nextProfile.portfolioUrl,
         studentNumber: nextProfile.studentNumber,
         department: nextProfile.department,
+        departmentId: nextProfile.departmentId,
         level: nextProfile.level,
         wilayaCode: nextProfile.wilayaCode,
         address: nextProfile.address,
@@ -95,6 +101,7 @@ export async function upsertStudentProfile(
           portfolioUrl: nextProfile.portfolioUrl,
           studentNumber: nextProfile.studentNumber,
           department: nextProfile.department,
+          departmentId: nextProfile.departmentId,
           level: nextProfile.level,
           wilayaCode: nextProfile.wilayaCode,
           address: nextProfile.address,

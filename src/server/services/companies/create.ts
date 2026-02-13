@@ -20,7 +20,7 @@ function generateSlug(name: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
-  const suffix = randomUUID().slice(0, 6)
+  const suffix = randomUUID().slice(0, 12)
   return `${base}-${suffix}`
 }
 

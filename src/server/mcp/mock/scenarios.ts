@@ -353,12 +353,17 @@ async function createPlacementSeed(
 ) {
   const placementId = ctx.nextId("placement")
 
+  const startDate = new Date()
+  startDate.setDate(startDate.getDate() + 14)
+  const endDate = new Date(startDate)
+  endDate.setDate(endDate.getDate() + 16 * 7)
+
   await db.insert(placement).values({
     id: placementId,
     applicationId: input.applicationId,
     validatedByUserId: input.validatedByUserId,
-    startDate: new Date("2026-03-01T00:00:00.000Z"),
-    endDate: new Date("2026-06-30T00:00:00.000Z"),
+    startDate,
+    endDate,
   })
 
   const documentId = ctx.nextId("document")
@@ -709,17 +714,19 @@ export async function runSeedScenario(
   }
 
   for (let segment = 0; segment < scale; segment += 1) {
-    if (scenario === "student_discovery") {
-      await seedStudentDiscoverySegment(ctx, segment)
-      continue
+    switch (scenario) {
+      case "student_discovery":
+        await seedStudentDiscoverySegment(ctx, segment)
+        break
+      case "company_hiring_funnel":
+        await seedCompanyHiringFunnelSegment(ctx, segment)
+        break
+      case "admin_validation_queue":
+        await seedAdminValidationQueueSegment(ctx, segment)
+        break
+      default:
+        throw new Error(`Unhandled scenario: ${scenario satisfies never}`)
     }
-
-    if (scenario === "company_hiring_funnel") {
-      await seedCompanyHiringFunnelSegment(ctx, segment)
-      continue
-    }
-
-    await seedAdminValidationQueueSegment(ctx, segment)
   }
 
   const createdAt = new Date().toISOString()

@@ -76,6 +76,7 @@ export const upsertStudentProfileProcedure = studentProcedureStandard
       portfolioUrl: z.string().url().optional().or(z.literal("")),
       studentNumber: z.string().optional(),
       department: z.string().optional(),
+      departmentId: z.string().optional(),
       level: z.string().optional(),
       wilayaCode: z.coerce.number().int().min(1).max(58).optional().or(z.literal(0)),
       address: z.string().optional(),

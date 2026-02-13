@@ -282,6 +282,11 @@
       "domainPlaceholder": "univ-example.dz",
       "addDomain": "إضافة نطاق",
       "removeDomain": "حذف",
+      "departments": "الأقسام",
+      "departmentsHint": "أضف أقسام جامعتك (مثلاً: علوم الحاسوب، الرياضيات)",
+      "departmentPlaceholder": "مثال: علوم الحاسوب",
+      "addDepartment": "إضافة قسم",
+      "removeDepartment": "إزالة",
       "submit": "إكمال الإعداد",
       "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
     },
@@ -297,7 +302,8 @@
       "studentNumber": "رقم الطالب",
       "studentNumberPlaceholder": "مثال: STU2025001",
       "department": "القسم",
-      "departmentPlaceholder": "مثال: علوم الحاسوب",
+      "departmentPlaceholder": "اختر قسمك",
+      "departmentFreetext": "أو اكتب اسم القسم",
       "level": "المستوى",
       "levelPlaceholder": "مثال: ل٣، م١، م٢",
       "locationSection": "الموقع",
@@ -327,6 +333,8 @@
       "candidatePipeline": "مسار المرشحين",
       "assistant": "المساعد",
       "validatePlacements": "اعتماد التوظيفات",
+      "deptValidations": "تصديقات القسم",
+      "departments": "الأقسام",
       "statistics": "الإحصائيات",
       "commandCenter": "مركز التحكم",
       "userManagement": "إدارة المستخدمين",
@@ -625,6 +633,7 @@
     "roles": {
       "student": "طالب",
       "recruiter": "مسؤول توظيف",
+      "dept_head": "رئيس القسم",
       "admin": "مشرف"
     },
     "student": {
@@ -878,6 +887,35 @@
           }
         }
       },
+      "departments": {
+        "title": "الأقسام",
+        "description": "إدارة أقسام الجامعة وتعيين رؤساء الأقسام.",
+        "backToDashboard": "العودة إلى لوحة التحكم",
+        "empty": "لم يتم إنشاء أي أقسام بعد.",
+        "addDepartment": "إضافة قسم",
+        "name": "اسم القسم",
+        "namePlaceholder": "مثال: علوم الحاسوب",
+        "headName": "اسم الرئيس (اختياري)",
+        "headNamePlaceholder": "مثال: د. أحمد بن علي",
+        "assignHead": "تعيين رئيس",
+        "assignHeadTitle": "تعيين رئيس القسم",
+        "assignHeadDescription": "اختر مستخدماً لتعيينه كرئيس لهذا القسم.",
+        "selectUser": "اختر مستخدم",
+        "noUsersAvailable": "لا يوجد مستخدمون متاحون.",
+        "save": "حفظ",
+        "cancel": "إلغاء",
+        "createSuccess": "تم إنشاء القسم بنجاح.",
+        "updateSuccess": "تم تحديث القسم بنجاح.",
+        "assignSuccess": "تم تعيين رئيس القسم بنجاح.",
+        "error": "حدث خطأ. يرجى المحاولة مرة أخرى."
+      },
+      "deptValidations": {
+        "title": "تصديقات القسم",
+        "description": "مراجعة وتصديق التربصات لطلاب قسمك.",
+        "empty": "لا توجد تربصات بانتظار التصديق في قسمك.",
+        "backToDashboard": "العودة إلى لوحة التحكم",
+        "companyAcceptedOn": "قبلتها الشركة في"
+      },
       "globalStats": "تحليلات التوظيف العالمية",
       "universities": {
         "backToCommandCenter": "العودة إلى مركز التحكم",
@@ -967,6 +1005,7 @@
         "roles": {
           "student": "طالب",
           "company_admin": "مدير شركة",
+          "dept_head": "رئيس القسم",
           "admin": "مدير",
           "super_admin": "المشرف العام"
         },
@@ -1046,6 +1085,7 @@
         "roles": {
           "student": "طالب",
           "company_admin": "مدير شركة",
+          "dept_head": "رئيس القسم",
           "admin": "مدير",
           "super_admin": "المشرف العام"
         },

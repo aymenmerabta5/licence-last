@@ -48,7 +48,7 @@ describe("src/server/services/companies/create", () => {
     )
 
     expect(result.companyId).toBeDefined()
-    expect(result.slug).toMatch(/^acme-corp-[a-z0-9]{6}$/)
+    expect(result.slug).toMatch(/^acme-corp-[a-f0-9-]{12}$/)
   })
 
   test("should call insert for company and companyMember in transaction", async () => {
@@ -79,6 +79,6 @@ describe("src/server/services/companies/create", () => {
     )
 
     // Slug should strip special chars and lowercase
-    expect(result.slug).toMatch(/^my-company-[a-z0-9]{6}$/)
+    expect(result.slug).toMatch(/^my-company-[a-f0-9-]{12}$/)
   })
 })

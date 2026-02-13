@@ -5,13 +5,7 @@ import { ArrowRight } from "lucide-react"
 import { Link } from "@/i18n/routing"
 import { Navbar } from "@/components/Navbar"
 import { Separator } from "@/components/ui/separator"
-
-/* ── Shared reveal transition ── */
-const reveal = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-}
-const ease = [0.4, 0, 0.2, 1] as const
+import { reveal, ease } from "@/lib/animations"
 
 /* ── Decorative Dot Separator ── */
 function DotSeparator({

@@ -4,7 +4,7 @@ import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { GraduationCap, Building2, Landmark, ArrowRight } from "lucide-react"
 
-const ease = [0.4, 0, 0.2, 1] as const
+import { ease } from "@/lib/animations"
 
 type SelectedRole = "student" | "company" | "university"
 

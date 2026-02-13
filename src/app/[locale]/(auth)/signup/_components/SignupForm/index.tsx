@@ -10,12 +10,11 @@ import { SubmitButton } from "@/components/SubmitButton"
 import { Separator } from "@/components/ui/separator"
 import { Link } from "@/i18n/routing"
 
+import { ease } from "@/lib/animations"
 import type { SignupFormProps } from "./types"
 import { useSignupForm } from "./hooks/useSignupForm"
 import { SignupFields } from "./components/SignupFields"
 import { SignupSuccess } from "./components/SignupSuccess"
-
-const ease = [0.4, 0, 0.2, 1] as const
 
 export function SignupForm({ role, onBack }: SignupFormProps) {
   const t = useTranslations("auth.signup")

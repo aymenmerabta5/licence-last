@@ -7,7 +7,7 @@ interface CreateUserData {
   email: string
   password: string
   name: string
-  role: "student" | "company_admin" | "admin" | "super_admin"
+  role: "student" | "company_admin" | "dept_head" | "admin" | "super_admin"
 }
 
 export async function createUser(data: CreateUserData) {

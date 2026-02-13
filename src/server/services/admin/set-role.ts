@@ -3,7 +3,7 @@ import "server-only"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 
-type UserRole = "student" | "company_admin" | "admin" | "super_admin"
+type UserRole = "student" | "company_admin" | "dept_head" | "admin" | "super_admin"
 
 export async function setUserRole(userId: string, role: UserRole) {
   const result = await auth.api.setRole({

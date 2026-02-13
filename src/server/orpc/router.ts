@@ -50,7 +50,16 @@ import {
   listPendingProcedure,
   validateProcedure,
   rejectProcedure,
+  deptHeadListPendingProcedure,
+  deptHeadValidateProcedure,
+  deptHeadRejectProcedure,
 } from "./routes/placements"
+import {
+  listDepartmentsProcedure,
+  createDepartmentProcedure,
+  updateDepartmentProcedure,
+  assignDepartmentHeadProcedure,
+} from "./routes/departments"
 import { generateAgreementProcedure } from "./routes/documents"
 import {
   listNotificationsProcedure,
@@ -157,6 +166,17 @@ export const appRouter = {
     listPending: listPendingProcedure,
     validate: validateProcedure,
     reject: rejectProcedure,
+  },
+  deptHead: {
+    listPending: deptHeadListPendingProcedure,
+    validate: deptHeadValidateProcedure,
+    reject: deptHeadRejectProcedure,
+  },
+  departments: {
+    list: listDepartmentsProcedure,
+    create: createDepartmentProcedure,
+    update: updateDepartmentProcedure,
+    assignHead: assignDepartmentHeadProcedure,
   },
   documents: {
     generateAgreement: generateAgreementProcedure,

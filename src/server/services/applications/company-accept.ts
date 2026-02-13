@@ -10,6 +10,7 @@ import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { notification } from "@/server/db/schema/notifications"
 import { user } from "@/server/db/schema/auth"
+import { studentProfile } from "@/server/db/schema/students"
 import { company } from "@/server/db/schema/companies"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { ApplicationServiceError } from "./errors"
@@ -30,11 +31,13 @@ export async function companyAcceptApplication(
       offerCompanyId: internshipOffer.companyId,
       companyName: company.name,
       studentUniversityId: user.universityId,
+      studentDepartmentId: studentProfile.departmentId,
     })
     .from(application)
     .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
     .innerJoin(company, eq(internshipOffer.companyId, company.id))
     .innerJoin(user, eq(application.studentUserId, user.id))
+    .leftJoin(studentProfile, eq(user.id, studentProfile.userId))
     .where(eq(application.id, applicationId))
     .limit(1)
 
@@ -89,36 +92,55 @@ export async function companyAcceptApplication(
     },
   })
 
-  // Notify the relevant university admins only.
+  // Notify the relevant validators: dept_head first, fallback to admin.
   if (!app.studentUniversityId) {
     return { success: true, applicationId }
   }
 
-  const admins = await db
-    .select({ id: user.id })
-    .from(user)
-    .where(
-      and(
-        eq(user.role, "admin"),
-        eq(user.onboardingCompleted, true),
-        eq(user.universityId, app.studentUniversityId),
-      ),
-    )
+  const notificationPayload = {
+    applicationId,
+    offerId: app.offerId,
+    offerTitle: app.offerTitle,
+    studentUserId: app.studentUserId,
+    companyId,
+    companyName: app.companyName,
+  }
 
-  if (admins.length > 0) {
+  // Try to find dept_head(s) for the student's department first
+  let validators: { id: string }[] = []
+  if (app.studentDepartmentId) {
+    validators = await db
+      .select({ id: user.id })
+      .from(user)
+      .where(
+        and(
+          eq(user.role, "dept_head"),
+          eq(user.departmentId, app.studentDepartmentId),
+        ),
+      )
+  }
+
+  // Fallback: if no dept_head found, notify university admins
+  if (validators.length === 0) {
+    validators = await db
+      .select({ id: user.id })
+      .from(user)
+      .where(
+        and(
+          eq(user.role, "admin"),
+          eq(user.onboardingCompleted, true),
+          eq(user.universityId, app.studentUniversityId),
+        ),
+      )
+  }
+
+  if (validators.length > 0) {
     await db.insert(notification).values(
-      admins.map((admin) => ({
+      validators.map((v) => ({
         id: crypto.randomUUID(),
-        userId: admin.id,
+        userId: v.id,
         type: "placement_pending_validation",
-        payload: {
-          applicationId,
-          offerId: app.offerId,
-          offerTitle: app.offerTitle,
-          studentUserId: app.studentUserId,
-          companyId,
-          companyName: app.companyName,
-        },
+        payload: notificationPayload,
       })),
     )
   }

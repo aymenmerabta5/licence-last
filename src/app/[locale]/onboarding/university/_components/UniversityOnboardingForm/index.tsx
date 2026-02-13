@@ -13,6 +13,7 @@ import { OnboardingHeader } from "./components/OnboardingHeader"
 import { UniversityFields } from "./components/UniversityFields"
 import { LocationFields } from "./components/LocationFields"
 import { DomainFields } from "./components/DomainFields"
+import { DepartmentFields } from "./components/DepartmentFields"
 
 export function UniversityOnboardingForm() {
   const t = useTranslations("onboarding.university")
@@ -37,6 +38,7 @@ export function UniversityOnboardingForm() {
         <UniversityFields form={form} />
         <LocationFields form={form} />
         <DomainFields form={form} />
+        <DepartmentFields form={form} />
       </motion.div>
 
       <motion.div

@@ -15,7 +15,7 @@ import VerifyEmailEmail from "@/server/email/emails/VerifyEmailEmail"
 import TwoFactorOtpEmail from "@/server/email/emails/TwoFactorOtpEmail"
 import { env } from "@/env"
 import { getEmailDomain, domainCandidates } from "./auth-utils"
-import { ac, superAdmin, admin, student, companyAdmin } from "./permissions"
+import { ac, superAdmin, admin, deptHead, student, companyAdmin } from "./permissions"
 
 // Re-export for backward compatibility
 export { getEmailDomain, domainCandidates } from "./auth-utils"
@@ -27,7 +27,7 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: {
-        type: ["student", "company_admin", "admin", "super_admin"],
+        type: ["student", "company_admin", "dept_head", "admin", "super_admin"],
         required: false,
         defaultValue: "student",
         // input: true is required for company_admin self-registration.
@@ -36,6 +36,11 @@ export const auth = betterAuth({
         input: true,
       },
       universityId: {
+        type: "string",
+        required: false,
+        input: false,
+      },
+      departmentId: {
         type: "string",
         required: false,
         input: false,
@@ -74,8 +79,8 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (data) => {
-          const VALID_ROLES = new Set<string>(["student", "company_admin", "admin", "super_admin"])
-          const ALLOWED_SIGNUP_ROLES = new Set<string>(["student", "company_admin", "admin"])
+          const VALID_ROLES = new Set<string>(["student", "company_admin", "dept_head", "admin", "super_admin"])
+          const ALLOWED_SIGNUP_ROLES = new Set<string>(["student", "company_admin"])
           const requestedRole = (data.role as string | undefined) ?? "student"
 
           // Admin-created users arrive with emailVerified: true (admin plugin default).
@@ -98,9 +103,9 @@ export const auth = betterAuth({
               message: "Invalid role for self-registration",
             })
           }
-          const role = requestedRole as "student" | "company_admin" | "admin"
+          const role = requestedRole as "student" | "company_admin"
 
-          // company_admin and admin skip domain validation
+          // company_admin skips domain validation
           if (role !== "student") {
             return { data: { ...data, role } }
           }
@@ -173,6 +178,7 @@ export const auth = betterAuth({
       roles: {
         super_admin: superAdmin,
         admin,
+        dept_head: deptHead,
         student,
         company_admin: companyAdmin,
       },

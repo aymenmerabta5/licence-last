@@ -30,7 +30,7 @@ export async function getMe(user: {
   }
 
   let universityData = null
-  if (user.role === "admin") {
+  if (user.role === "admin" || user.role === "dept_head") {
     const uni = await getUniversityByUserId(user.id)
     if (uni) {
       universityData = {

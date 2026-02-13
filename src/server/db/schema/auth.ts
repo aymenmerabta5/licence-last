@@ -2,6 +2,7 @@ import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core"
 
 import { userRoleEnum } from "./enums"
 import { university } from "./universities"
+import { department } from "./departments"
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -9,6 +10,9 @@ export const user = pgTable("user", {
   emailVerified: boolean("email_verified").default(false).notNull(),
   role: userRoleEnum("role").default("student").notNull(),
   universityId: text("university_id").references(() => university.id, {
+    onDelete: "set null",
+  }),
+  departmentId: text("department_id").references(() => department.id, {
     onDelete: "set null",
   }),
   onboardingCompleted: boolean("onboarding_completed").default(false).notNull(),
