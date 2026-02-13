@@ -29,14 +29,19 @@ src/
 │   │   ├── _components/
 │   │   ├── (auth)/         (auth route group)
 │   │   ├── (authenticated)/ (protected routes)
-│   │   └── onboarding/     (onboarding flows)
+│   │   ├── onboarding/     (onboarding flows)
+│   │   └── verify/         (document verification — public)
 │   ├── api/
 │   │   ├── auth/[...all]/  (Better Auth)
 │   │   ├── rpc/[...rest]/  (oRPC catch-all, CSRF protected)
 │   │   ├── assistant/      (AI assistant endpoints: chat, auth/status)
+│   │   ├── openapi/        (OpenAPI spec + UI)
 │   │   └── health/         (Health check endpoint)
 │   ├── layout.tsx          (root layout — minimal pass-through)
 │   ├── globals.css
+│   ├── robots.ts           (SEO robots.txt)
+│   ├── sitemap.ts          (SEO sitemap)
+│   ├── global-error.tsx    (global error boundary)
 │   └── page.tsx            (redirects to /en)
 ├── components/             (shared UI components)
 │   ├── ui/                 (shadcn/ui primitives)
@@ -44,25 +49,34 @@ src/
 │   └── [shared].tsx
 ├── lib/
 │   ├── schemas/            (client-safe Zod schemas)
+│   ├── constants/          (pipeline, internship constants)
 │   ├── auth.ts             (Better Auth server config)
 │   ├── auth-client.ts      (Better Auth client)
-│   └── auth-guards.ts      (RSC layout guards)
+│   ├── auth-guards.ts      (RSC layout guards)
+│   ├── auth-utils.ts       (auth helpers)
+│   ├── date.ts             (date formatting)
+│   ├── string.ts           (string utilities — slugify, etc.)
+│   ├── profile-completeness.ts (student profile completion %)
+│   ├── csrf.ts             (CSRF token generation)
+│   ├── post-login-redirect.ts (role-based redirect)
+│   └── ...
 ├── hooks/                  (shared hooks)
 ├── server/
-│   ├── db/                 (Drizzle schema + seed)
+│   ├── db/                 (Drizzle schema — 19 modules + seed)
 │   ├── orpc/               (Controller — oRPC router)
-│   │   ├── middleware.ts   (auth chain)
-│   │   ├── rate-limited-procedures.ts (15 variants)
+│   │   ├── middleware.ts   (auth chain — 7 procedure types)
+│   │   ├── rate-limited-procedures.ts (18 variants)
 │   │   ├── ratelimit-middleware.ts
 │   │   ├── router.ts
 │   │   ├── client.ts
-│   │   └── routes/         (14 route files, 66 procedures)
-│   ├── services/           (Model — 17 service domains)
+│   │   └── routes/         (15 route files, 83 procedures)
+│   ├── services/           (Model — 16 service domains)
 │   │   ├── admin/          (User management: ban, create, sessions, etc.)
 │   │   ├── applications/   (Application workflow + pipeline + timeline)
 │   │   ├── assistant/      (AI assistant conversations)
 │   │   ├── companies/      (CRUD, approval, trust index, reports)
-│   │   ├── documents/      (PDF generation: agreements, certificates)
+│   │   ├── departments/    (CRUD, assign head — NEW)
+│   │   ├── documents/      (PDF generation + QR + verification)
 │   │   ├── matching/       (Scoring, skill gap, readiness)
 │   │   ├── notifications/  (Create, list, mark read)
 │   │   ├── offers/         (CRUD, search, status)
@@ -74,6 +88,8 @@ src/
 │   │   ├── uploads/        (S3 file storage)
 │   │   └── users/          (Get-me, update, promote)
 │   ├── ai/                 (AI integration: model, tools, context, prompts)
+│   ├── openapi/            (OpenAPI spec generation)
+│   ├── pdfs/               (PDF templates: agreement, certificate)
 │   ├── storage/            (Bun S3Client wrapper)
 │   ├── email/              (Resend + React Email)
 │   ├── caching/            (Redis client + rate limiter)
@@ -184,13 +200,14 @@ export const createCompanyProcedure = companyAdminProcedure
 ```
 publicProcedure              — No auth required
 ├── authedProcedure          — Valid session required
-│   ├── adminProcedure       — admin or super_admin role
+│   ├── adminProcedure       — university_admin, dept_head, or super_admin
 │   ├── superAdminProcedure  — super_admin only
 │   ├── companyAdminProcedure — company_admin + injects companyMembership
-│   └── studentProcedure     — student role + injects studentProfile
+│   ├── studentProcedure     — student role + injects studentProfile
+│   └── deptHeadProcedure    — dept_head + injects departmentId + universityId
 ```
 
-**Rate-Limited Procedures** (`src/server/orpc/rate-limited-procedures.ts`):
+**Rate-Limited Procedures** (`src/server/orpc/rate-limited-procedures.ts`) — 18 variants:
 ```typescript
 // Public (IP-based)
 publicProcedureStrict              // 5 req/min (auth endpoints)
@@ -201,20 +218,24 @@ authedProcedureStandard            // 100 req/min (general API)
 authedProcedureGenerous            // 300 req/min (listings, searches)
 authedProcedureStrict              // 5 req/min (sensitive ops)
 
-// Admin (admin user-based)
+// Admin (university_admin/dept_head/super_admin)
 adminProcedureStandard             // 100 req/min (standard admin ops)
 adminProcedureGenerous             // 300 req/min (bulk admin ops)
 
-// Super Admin (super admin user-based)
+// Super Admin (super_admin only)
 superAdminProcedureStandard        // 100 req/min (standard super admin)
 superAdminProcedureGenerous        // 300 req/min (bulk super admin)
 
-// Company Admin (user-based)
+// Department Head (dept_head)
+deptHeadProcedureStandard          // 100 req/min (dept head ops)
+deptHeadProcedureGenerous          // 300 req/min (dept head reads)
+
+// Company Admin (company_admin)
 companyAdminProcedureStandard      // 100 req/min (general company ops)
 companyAdminProcedureGenerous      // 300 req/min (read-heavy company ops)
 companyAdminProcedureAssistant     // 20 req/min (company AI calls)
 
-// Student (user-based)
+// Student (student)
 studentProcedureStandard           // 100 req/min (general student ops)
 studentProcedureGenerous           // 300 req/min (student read-heavy)
 
@@ -252,6 +273,10 @@ Client-safe Zod schemas live in `src/lib/schemas/` (NO `server-only`):
 - `offer.ts` — internship offer creation schemas
 - `search.ts` — search and filter schemas
 - `matching.ts` — matching criteria schemas
+- `university.ts` — university CRUD schemas
+- `verify.ts` — document verification code schema
+- `enums.ts` — shared enum schemas
+- `map-errors.ts` — Zod error mapping utilities
 
 Used by both TanStack Form (client validation) and oRPC procedures (server validation).
 
@@ -658,11 +683,27 @@ export async function sendEmail<T>(
 ): Promise<{ success: boolean }>
 ```
 
-### Document Generation
+### Document Generation & Verification
 
 PDF generation using `@react-pdf/renderer`:
-- Internship agreements
-- Completion certificates
+- Internship agreements (`src/server/pdfs/AgreementTemplate.tsx`)
+- Completion certificates (`src/server/pdfs/CertificateTemplate.tsx`)
+- Each document gets a unique **verification code** + QR code
+- Public verification page at `/verify` and `/verify/[code]`
+- Services: `generate-agreement.ts`, `generate-certificate.ts`, `qr-utils.ts`, `verification-code.ts`, `verify.ts`
+
+### Department Management (NEW)
+
+**`src/server/services/departments/`:**
+- `create.ts` — Create department under a university
+- `list.ts` — List departments by university
+- `update.ts` — Update department details
+- `assign-head.ts` — Assign a dept_head user to a department
+
+### OpenAPI
+
+- **`src/server/openapi/generator.ts`** — Generates OpenAPI spec from oRPC router
+- **API routes**: `/api/openapi/spec` (JSON spec), `/api/openapi` (Swagger UI)
 
 ### AI/Assistant Features
 
@@ -693,3 +734,21 @@ PDF generation using `@react-pdf/renderer`:
 **Trust** (`src/server/services/companies/trust-index.ts`):
 - Formula: `responseRate + completionRate + feedbackScore - reportPenalties`
 - Company trust reports and feedback aggregation
+
+### SEO
+
+- `src/app/robots.ts` — Dynamic robots.txt generation
+- `src/app/sitemap.ts` — Dynamic sitemap generation
+- `src/app/global-error.tsx` — Global error boundary
+
+### User Roles (5 total)
+
+| Role | Description |
+|------|-------------|
+| `student` | University-affiliated user — browse offers, apply, track applications |
+| `company_admin` | Company recruiter — create offers, manage pipeline, AI assistant |
+| `dept_head` | Department head — validate placements for their department |
+| `university_admin` | University administrator — validate placements, view stats |
+| `super_admin` | Platform operator — full control: users, companies, universities |
+
+**Note**: The old `admin` role was renamed to `university_admin`. The `adminProcedure` middleware now accepts `university_admin`, `dept_head`, or `super_admin`.

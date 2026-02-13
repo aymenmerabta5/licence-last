@@ -42,11 +42,11 @@
              (RSC + CC)     /     |     \
                           Auth   oRPC   Assistant
                           |       |        |
-                   Better Auth  66 procs  Poe AI
+                   Better Auth  83 procs  Poe AI
                           \       |      /
                        ┌──────────────────────┐
                        │   Services Layer     │
-                       │  (17 domains)        │
+                       │  (16 domains)        │
                        └──────────┬───────────┘
                                   |
                     ┌─────────────┼─────────────┐
@@ -61,8 +61,9 @@
 |------|-------------|-------------|
 | `student` | University-affiliated user | Browse offers, apply, track applications |
 | `company_admin` | Company recruiter | Create offers, manage pipeline, AI assistant |
-| `admin` | University administrator | Validate placements, view stats |
-| `super_admin` | Platform operator | Full control: users, companies, universities |
+| `dept_head` | Department head | Validate placements for their department |
+| `university_admin` | University administrator | Validate placements, manage departments, view stats |
+| `super_admin` | Platform operator | Full control: users, companies, universities, departments |
 
 ---
 
@@ -154,6 +155,8 @@ src/
 │   │   ├── rpc/[...rest]/            # oRPC catch-all (CSRF protected)
 │   │   ├── assistant/chat/           # AI streaming endpoint
 │   │   ├── assistant/auth/status/    # Arcade auth check
+│   │   ├── openapi/spec/            # OpenAPI JSON specification
+│   │   ├── openapi/                  # Swagger UI
 │   │   └── health/                   # Health check (GET)
 │   └── [locale]/                     # i18n routes (en, fr, ar)
 │       ├── layout.tsx                # Locale layout (providers, fonts)
@@ -181,6 +184,9 @@ src/
 │       │   ├── company/
 │       │   ├── student/
 │       │   └── university/
+│       ├── verify/                   # Document verification (public)
+│       │   ├── page.tsx              # Verification form
+│       │   └── [code]/page.tsx       # Verification result
 │       └── profile/[userId]/         # Public profiles
 │
 ├── components/                       # Shared UI components
@@ -222,9 +228,9 @@ src/
 │   ├── error-message.ts              # Error extraction
 │   ├── image-validation.ts           # File type validation
 │   ├── wilayas.ts                    # Algerian provinces
-│   ├── schemas/                      # Zod schemas (shared client+server)
+│   ├── schemas/                      # Zod schemas (shared client+server, 10 files)
 │   │   ├── auth.ts, company.ts, student.ts, offer.ts
-│   │   ├── search.ts, matching.ts, university.ts
+│   │   ├── search.ts, matching.ts, university.ts, verify.ts
 │   │   ├── enums.ts, map-errors.ts
 │   └── constants/
 │       ├── pipeline.ts               # STAGE_COLUMNS, STATUS_COLORS
@@ -233,33 +239,34 @@ src/
 ├── server/                           # Server-only code
 │   ├── db/
 │   │   ├── index.ts                  # Drizzle client
-│   │   ├── schema/                   # 15 schema modules
+│   │   ├── schema/                   # 19 schema modules
 │   │   ├── migrations/               # Drizzle migrations
 │   │   ├── seed.ts                   # Seed data (universities, skills, admin)
 │   │   └── reset.ts                  # Database reset script
 │   ├── orpc/                         # Controller layer
-│   │   ├── middleware.ts             # Auth procedure chain
-│   │   ├── rate-limited-procedures.ts
+│   │   ├── middleware.ts             # Auth procedure chain (7 types)
+│   │   ├── rate-limited-procedures.ts  # 18 variants
 │   │   ├── ratelimit-middleware.ts
-│   │   ├── router.ts                 # Combined router (66 procedures)
+│   │   ├── router.ts                 # Combined router (83 procedures)
 │   │   ├── client.ts                 # orpcClient + orpc (TanStack)
-│   │   └── routes/                   # 14 route files
-│   ├── services/                     # Business logic (17 domains)
-│   │   ├── admin/                    # User management (7 files)
+│   │   └── routes/                   # 15 route files
+│   ├── services/                     # Business logic (16 domains)
+│   │   ├── admin/                    # User management (8 files)
 │   │   ├── applications/             # Application workflow (7 files)
-│   │   ├── assistant/                # AI conversations (6 files)
+│   │   ├── assistant/                # AI conversations (7 files)
 │   │   ├── companies/                # Company management (9 files)
-│   │   ├── documents/                # PDF generation (2 files)
-│   │   ├── matching/                 # Scoring algorithm (4 files)
+│   │   ├── departments/              # Department management (4 files)
+│   │   ├── documents/                # PDF gen + verification (5 files)
+│   │   ├── matching/                 # Scoring algorithm (3 files)
 │   │   ├── notifications/            # Notification CRUD (3 files)
-│   │   ├── offers/                   # Offer management (7 files)
+│   │   ├── offers/                   # Offer management (8 files)
 │   │   ├── placements/               # Placement validation (3 files)
 │   │   ├── skills/                   # Skill tags (2 files)
 │   │   ├── stats/                    # Analytics (1 file)
 │   │   ├── students/                 # Profile management (5 files)
 │   │   ├── universities/             # University management (5 files)
 │   │   ├── uploads/                  # S3 file storage (1 file)
-│   │   └── users/                    # Current user ops (4 files)
+│   │   └── users/                    # Current user ops (3 files)
 │   ├── ai/                           # AI integration
 │   │   ├── model.ts                  # Poe model config
 │   │   ├── chat-handler.ts           # Stream handler
@@ -267,6 +274,10 @@ src/
 │   │   ├── context.ts                # Context minimization
 │   │   ├── prompts.ts                # System prompts per persona
 │   │   └── access.ts                 # Intent-based access control
+│   ├── openapi/generator.ts          # OpenAPI spec from oRPC router
+│   ├── pdfs/                         # PDF templates
+│   │   ├── AgreementTemplate.tsx     # Internship agreement
+│   │   └── CertificateTemplate.tsx   # Completion certificate
 │   ├── storage/s3.ts                 # Bun S3Client wrapper
 │   ├── email/sendEmail.ts            # Resend + React Email
 │   ├── caching/                      # Redis client + rate limiter
@@ -293,7 +304,9 @@ src/
 ### Entity-Relationship Overview
 
 ```
-University ──1:N──> User (students via universityId)
+University ──1:N──> Department ──1:N──> User (dept_head via departmentId)
+     |                                    |
+     ├──1:N──> User (students via universityId)
      |                |
      |            1:1 |──> StudentProfile
      |                |──> StudentSkill ──N:1──> SkillTag
@@ -325,7 +338,7 @@ TwoFactor (user 2FA secrets)
 
 | Enum | Values |
 |------|--------|
-| `userRole` | student, company_admin, admin, super_admin |
+| `userRole` | student, company_admin, dept_head, university_admin, super_admin |
 | `companyStatus` | pending, approved, rejected, suspended |
 | `universityStatus` | pending, approved, rejected |
 | `universityDomainStatus` | pending, approved, rejected, disabled |
@@ -346,7 +359,7 @@ TwoFactor (user 2FA secrets)
 
 **Authentication**: `user`, `session`, `account`, `verification`, `twoFactor`
 
-**Academic**: `university`, `universityDomain`
+**Academic**: `university`, `universityDomain`, `department`
 
 **Corporate**: `company`, `companyMember`
 
@@ -380,25 +393,26 @@ Pure business logic functions. Every file starts with `import "server-only"`.
 - Use transactions for multi-table operations
 - Row-level locking where needed (e.g., `applyToOffer` prevents race conditions)
 
-**17 Service Domains**:
+**16 Service Domains**:
 
 | Domain | Files | Key Functions |
 |--------|-------|--------------|
-| `admin/` | 7 | banUser, createUser, listUsers, removeUser, sessionManagement, setPassword, setRole |
+| `admin/` | 8 | banUser, createUser, listUsers, removeUser, sessionManagement, setPassword, setRole, updateUser |
 | `applications/` | 7 | applyToOffer, companyAccept, companyRefuse, withdraw, pipeline, listByOffer, listByStudent |
-| `assistant/` | 6 | CRUD conversations, messages, utils |
+| `assistant/` | 7 | CRUD conversations, messages, delete, utils |
 | `companies/` | 9 | create, get, list, update, approve, reject, membership, trustIndex, trustActions |
-| `documents/` | 2 | generateAgreement, generateCertificate |
-| `matching/` | 4 | score, skillGap, readinessHistory, constants |
+| `departments/` | 4 | create, list, update, assignHead |
+| `documents/` | 5 | generateAgreement, generateCertificate, qrUtils, verificationCode, verify |
+| `matching/` | 3 | skillGap, readinessHistory, constants |
 | `notifications/` | 3 | create, list, markRead |
-| `offers/` | 7 | create, get, listByCompany, search, update, updateStatus, delete |
+| `offers/` | 8 | create, get, listByCompany, search, update, updateStatus, delete |
 | `placements/` | 3 | validate, reject, listPending |
 | `skills/` | 2 | list, validate |
 | `stats/` | 1 | getAdminStats |
-| `students/` | 5 | getProfile, getPublicProfile, upsertProfile, upsertProfileDetails, getDashboardStats |
+| `students/` | 5 | getProfile, getPublicProfile, getProfileForViewer, upsertProfileDetails, getDashboardStats |
 | `universities/` | 5 | create, get, list, approve, reject |
 | `uploads/` | 1 | uploadImageToS3 |
-| `users/` | 4 | getMe, getById, updateMe, promote |
+| `users/` | 3 | getById, updateMe |
 
 ### Controller Layer (`src/server/orpc/`)
 
@@ -408,13 +422,14 @@ oRPC router handling ALL client-server communication with auth middleware.
 ```
 publicProcedure              -- No auth required
 ├── authedProcedure          -- Valid session required
-│   ├── adminProcedure       -- admin or super_admin role
+│   ├── adminProcedure       -- university_admin, dept_head, or super_admin
 │   ├── superAdminProcedure  -- super_admin only
 │   ├── companyAdminProcedure -- company_admin + injects companyMembership
-│   └── studentProcedure     -- student role + injects studentProfile
+│   ├── studentProcedure     -- student role + injects studentProfile
+│   └── deptHeadProcedure    -- dept_head + injects departmentId + universityId
 ```
 
-**Rate-Limited Procedure Variants (15)**:
+**Rate-Limited Procedure Variants (18)**:
 
 | Procedure | Limit | Use Case |
 |-----------|-------|----------|
@@ -427,6 +442,8 @@ publicProcedure              -- No auth required
 | adminProcedureGenerous | 300/min | Bulk admin |
 | superAdminProcedureStandard | 100/min | Super admin ops |
 | superAdminProcedureGenerous | 300/min | Bulk super admin |
+| deptHeadProcedureStandard | 100/min | Dept head ops |
+| deptHeadProcedureGenerous | 300/min | Dept head reads |
 | companyAdminProcedureStandard | 100/min | Company ops |
 | companyAdminProcedureGenerous | 300/min | Company reads |
 | companyAdminProcedureAssistant | 20/min | AI assistant |
@@ -434,8 +451,8 @@ publicProcedure              -- No auth required
 | studentProcedureGenerous | 300/min | Student reads |
 | assistantProcedureLimited | 20/min | AI calls |
 
-**66 Total Procedures across 14 Route Files**:
-users (4), companies (14), skills (1), students (4), offers (7), applications (8), matching (4), placements (3), documents (1), notifications (3), stats (1), adminUsers (11), universities (5), assistant (9)
+**83 Total Procedures across 15 Route Files (16 Router Namespaces)**:
+users (4), companies (13), skills (1), students (4), offers (7), applications (9), matching (4), placements (3), deptHead (3), departments (4), documents (2), notifications (3), stats (1), adminUsers (11), universities (5), assistant (9)
 
 ### View Layer
 
@@ -474,6 +491,7 @@ Student signup flow:
 
 ```typescript
 // src/lib/auth-guards.ts
+// Available roles: "student" | "company_admin" | "dept_head" | "university_admin" | "super_admin"
 const user = await requireRole(["company_admin", "super_admin"])
 // Redirects to login (no session) or home (wrong role)
 ```
@@ -493,9 +511,11 @@ const user = await requireRole(["company_admin", "super_admin"])
 | Method | Path | Purpose |
 |--------|------|---------|
 | ALL | `/api/auth/[...all]` | Better Auth (login, signup, 2FA, sessions) |
-| ALL | `/api/rpc/[...rest]` | oRPC (66 procedures, CSRF protected) |
+| ALL | `/api/rpc/[...rest]` | oRPC (83 procedures, CSRF protected) |
 | POST | `/api/assistant/chat` | AI streaming (60s timeout) |
 | POST | `/api/assistant/auth/status` | Arcade tool auth check |
+| GET | `/api/openapi/spec` | OpenAPI JSON specification |
+| GET | `/api/openapi` | Swagger UI |
 | GET | `/api/health` | Health check (`{ status: "ok" }`) |
 
 ### CSRF Protection
@@ -518,9 +538,9 @@ SSR requests forward cookies via `next/headers` for auth.
 
 ## 8. Frontend Architecture
 
-### Route Structure (41 pages)
+### Route Structure (~47 pages)
 
-**Public**: Landing page, public profiles
+**Public**: Landing page, public profiles, document verification (`/verify`, `/verify/[code]`)
 
 **Auth** (`(auth)/`): Login, signup, reset-password
 
@@ -529,7 +549,8 @@ SSR requests forward cookies via `next/headers` for auth.
 **Dashboard** (`(authenticated)/dashboard/`):
 - **Company**: Offers CRUD, candidates pipeline, profile, pending/rejected states
 - **Student**: Search, applications, offer detail, profile
-- **Admin**: Command center, pending/rejected validations, users, universities, stats
+- **Admin**: Command center, pending/rejected validations, users, universities, departments, stats
+- **Dept Head**: Placement validations (`dept-validations/`, `dept-validations/[applicationId]`)
 - **Shared**: Explorer, notifications, assistant, profile, settings
 
 ### Layout Hierarchy
@@ -763,6 +784,46 @@ score = (responseRate x 0.3) + (completionRate x 0.3) + (feedbackScore x 0.3) - 
 - Completion rate: % of accepted applications that reach validation
 - Feedback score: Average rating (70%) + recommend rate (30%)
 - Report penalty: Severity-weighted unresolved reports (max -40)
+
+### Department Management
+
+University departments with designated heads who can validate placements for their department's students.
+
+**Schema**: `department` (id, universityId, name, headName, createdAt, updatedAt)
+
+**User fields**: `departmentId` on `user` table links dept_head users to their department.
+
+**Services** (`src/server/services/departments/`):
+- `create.ts` — Create department under a university
+- `list.ts` — List departments by university
+- `update.ts` — Update department details
+- `assign-head.ts` — Assign dept_head role to a user
+
+**oRPC**: `departments` namespace (4 procedures) + `deptHead` namespace (3 placement procedures)
+
+### Document Verification System
+
+Public document verification using unique codes and QR codes.
+
+**Flow**:
+1. Document generated (agreement/certificate) with unique verification code
+2. QR code embedded in the PDF pointing to `/verify/[code]`
+3. Anyone can verify by visiting the URL or entering the code at `/verify`
+4. No authentication required for verification
+
+**Services** (`src/server/services/documents/`):
+- `generate-agreement.ts`, `generate-certificate.ts` — PDF generation
+- `verification-code.ts` — Unique code generation
+- `qr-utils.ts` — QR code generation for documents
+- `verify.ts` — Public lookup by verification code
+
+**Schema**: `placementDocument.verificationCode` stores the unique code.
+
+### SEO
+
+- `src/app/robots.ts` — Dynamic robots.txt generation
+- `src/app/sitemap.ts` — Dynamic sitemap generation
+- `src/app/global-error.tsx` — Global error boundary
 
 ---
 
