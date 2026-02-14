@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import { useEffect, useMemo, useRef, useState, useCallback } from "react"
-import { DefaultChatTransport, type UIMessage } from "ai"
-import { useChat } from "@ai-sdk/react"
-import { useQueryClient } from "@tanstack/react-query"
-import { Send, Square, ChevronDown } from "lucide-react"
-import { useTranslations } from "next-intl"
-import * as motion from "motion/react-client"
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { DefaultChatTransport, type UIMessage } from "ai";
+import { useChat } from "@ai-sdk/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Send, Square, ChevronDown } from "lucide-react";
+import { useTranslations } from "next-intl";
+import * as motion from "motion/react-client";
 
-import { orpc } from "@/server/orpc/client"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { cn } from "@/lib/utils"
-import { reveal, ease } from "@/lib/animations"
+import { orpc } from "@/server/orpc/client";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { reveal, ease } from "@/lib/animations";
 
-import { MessageBubble } from "./MessageBubble"
+import { MessageBubble } from "./MessageBubble";
 
 type AuthStatus = {
-  status: string | null
-  url: string | null
-}
+  status: string | null;
+  url: string | null;
+};
 
 interface ConversationThreadProps {
-  conversationId: string
-  initialMessages: UIMessage[]
-  messageCreatedAtById: Record<string, string | Date | undefined>
+  conversationId: string;
+  initialMessages: UIMessage[];
+  messageCreatedAtById: Record<string, string | Date | undefined>;
 }
 
 // Typing indicator component
@@ -33,23 +33,26 @@ function TypingIndicator() {
     <div className="flex items-center gap-1 px-4 py-3 bg-muted/30 border-s-2 border-primary/20">
       <div className="flex gap-1">
         <motion.span
+          key="dot-1"
           className="w-2 h-2 bg-primary/60 rounded-full"
           animate={{ opacity: [0.4, 1, 0.4] }}
           transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
         />
         <motion.span
+          key="dot-2"
           className="w-2 h-2 bg-primary/60 rounded-full"
           animate={{ opacity: [0.4, 1, 0.4] }}
           transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
         />
         <motion.span
+          key="dot-3"
           className="w-2 h-2 bg-primary/60 rounded-full"
           animate={{ opacity: [0.4, 1, 0.4] }}
           transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}
         />
       </div>
     </div>
-  )
+  );
 }
 
 export function ConversationThread({
@@ -57,16 +60,16 @@ export function ConversationThread({
   initialMessages,
   messageCreatedAtById,
 }: ConversationThreadProps) {
-  const t = useTranslations("dashboard.assistant")
-  const queryClient = useQueryClient()
+  const t = useTranslations("dashboard.assistant");
+  const queryClient = useQueryClient();
 
-  const [input, setInput] = useState("")
-  const [authByTool, setAuthByTool] = useState<Record<string, AuthStatus>>({})
-  const [showScrollButton, setShowScrollButton] = useState(false)
+  const [input, setInput] = useState("");
+  const [authByTool, setAuthByTool] = useState<Record<string, AuthStatus>>({});
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const messagesContainerRef = useRef<HTMLDivElement>(null)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const transport = useMemo(
     () =>
@@ -74,50 +77,56 @@ export function ConversationThread({
         api: "/api/assistant/chat",
         body: { conversationId },
       }),
-    [conversationId]
-  )
+    [conversationId],
+  );
 
   const { messages, status, error, sendMessage, regenerate, stop } = useChat({
     transport,
     messages: initialMessages,
     onFinish: async () => {
-      const listConversationsQuery = orpc.assistant.listConversations.queryOptions({
-        input: { limit: 100 },
-      })
+      const listConversationsQuery =
+        orpc.assistant.listConversations.queryOptions({
+          input: { limit: 100 },
+        });
       const listMessagesQuery = orpc.assistant.listMessages.queryOptions({
         input: { conversationId },
-      })
+      });
 
-      await queryClient.invalidateQueries({ queryKey: listConversationsQuery.queryKey })
-      await queryClient.invalidateQueries({ queryKey: listMessagesQuery.queryKey })
+      await queryClient.invalidateQueries({
+        queryKey: listConversationsQuery.queryKey,
+      });
+      await queryClient.invalidateQueries({
+        queryKey: listMessagesQuery.queryKey,
+      });
     },
-  })
+  });
 
   // Auto-scroll to bottom on new messages
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [])
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages, scrollToBottom])
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
 
   // Show scroll-to-bottom button when user scrolls up
   const handleScroll = useCallback(() => {
-    if (!messagesContainerRef.current) return
+    if (!messagesContainerRef.current) return;
 
-    const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current
-    const isNearBottom = scrollHeight - scrollTop - clientHeight < 100
-    setShowScrollButton(!isNearBottom)
-  }, [])
+    const { scrollTop, scrollHeight, clientHeight } =
+      messagesContainerRef.current;
+    const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
+    setShowScrollButton(!isNearBottom);
+  }, []);
 
   useEffect(() => {
-    const container = messagesContainerRef.current
+    const container = messagesContainerRef.current;
     if (container) {
-      container.addEventListener("scroll", handleScroll)
-      return () => container.removeEventListener("scroll", handleScroll)
+      container.addEventListener("scroll", handleScroll);
+      return () => container.removeEventListener("scroll", handleScroll);
     }
-  }, [handleScroll])
+  }, [handleScroll]);
 
   // Check auth status for tools
   async function checkAuth(toolName: string) {
@@ -127,56 +136,56 @@ export function ConversationThread({
         "content-type": "application/json",
       },
       body: JSON.stringify({ toolName }),
-    })
+    });
 
     if (!res.ok) {
       setAuthByTool((prev) => ({
         ...prev,
         [toolName]: { status: "error", url: null },
-      }))
-      return
+      }));
+      return;
     }
 
-    const json = (await res.json()) as AuthStatus
+    const json = (await res.json()) as AuthStatus;
     setAuthByTool((prev) => ({
       ...prev,
       [toolName]: { status: json.status ?? null, url: json.url ?? null },
-    }))
+    }));
   }
 
   // Handle form submission
   function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    const text = input.trim()
-    if (!text || status !== "ready") return
-    sendMessage({ text })
-    setInput("")
+    e.preventDefault();
+    const text = input.trim();
+    if (!text || status !== "ready") return;
+    sendMessage({ text });
+    setInput("");
     // Reset textarea height
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto"
+      textareaRef.current.style.height = "auto";
     }
   }
 
   // Handle Enter key (send on Enter, newline on Shift+Enter)
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSubmit(e as unknown as React.FormEvent)
+      e.preventDefault();
+      handleSubmit(e as unknown as React.FormEvent);
     }
   }
 
   // Auto-resize textarea
   function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    setInput(e.target.value)
-    const textarea = e.target
-    textarea.style.height = "auto"
-    textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`
+    setInput(e.target.value);
+    const textarea = e.target;
+    textarea.style.height = "auto";
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`;
   }
 
-  const isStreaming = status === "streaming" || status === "submitted"
+  const isStreaming = status === "streaming" || status === "submitted";
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       {/* Messages area */}
       <div
         ref={messagesContainerRef}
@@ -204,7 +213,9 @@ export function ConversationThread({
                 authByTool={authByTool}
                 onCheckAuth={checkAuth}
                 onRegenerateFrom={(messageId) => regenerate({ messageId })}
-                showRegenerate={status === "ready" && message.role === "assistant"}
+                showRegenerate={
+                  status === "ready" && message.role === "assistant"
+                }
               />
             </motion.div>
           ))
@@ -256,7 +267,7 @@ export function ConversationThread({
             className={cn(
               "rounded-none min-h-[56px] max-h-[200px] bg-background/60 resize-none",
               "pe-14 pb-8", // Space for button and hint
-              "focus-visible:ring-1 focus-visible:ring-primary/30"
+              "focus-visible:ring-1 focus-visible:ring-primary/30",
             )}
             rows={1}
           />
@@ -303,5 +314,5 @@ export function ConversationThread({
         )}
       </form>
     </div>
-  )
+  );
 }
