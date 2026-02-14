@@ -81,7 +81,7 @@ const poe = createOpenAI({
   fetch: poeFetch as typeof globalThis.fetch,
 })
 
-const FALLBACK_ALLOWED_MODELS = ["GPT-4o", "GPT-4o-mini"]
+const FALLBACK_ALLOWED_MODELS = ["GPT-5.2", "GPT-4o", "GPT-4o-mini"]
 
 function parseAllowedModels(raw: string | undefined): string[] {
   if (!raw) return [...FALLBACK_ALLOWED_MODELS]

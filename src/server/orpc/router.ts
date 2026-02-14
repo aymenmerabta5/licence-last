@@ -33,6 +33,7 @@ import {
   updateOfferProcedure,
   deleteOfferProcedure,
   updateOfferStatusProcedure,
+  parseSearchQueryProcedure,
 } from "./routes/offers"
 import {
   searchOffersProcedure,
@@ -147,6 +148,7 @@ export const appRouter = {
     delete: deleteOfferProcedure,
     updateStatus: updateOfferStatusProcedure,
     search: searchOffersProcedure,
+    parseSearchQuery: parseSearchQueryProcedure,
   },
   applications: {
     checkApplication: checkApplicationProcedure,

@@ -188,38 +188,39 @@ export function createInternalTools({ contextJson }: CreateInternalToolsParams):
           explanation: z.string().optional(),
         })
 
-        // Extract user query and skills from the context
-        let userQuery = ""
-        let skillsList = ""
+        // Enrich the original context JSON with reference data
+        let enrichedContext: Record<string, unknown> = {}
         try {
-          const ctx = JSON.parse(contextJson)
-          userQuery = ctx.query || ctx.intent || ""
-          if (ctx.availableSkillTags) {
-            // Only pass id+name to keep prompt compact
-            const tags = ctx.availableSkillTags as { id: string; name: string }[]
-            skillsList = tags.map((s) => `${s.id}:${s.name}`).join(", ")
-          }
+          enrichedContext = JSON.parse(contextJson) as Record<string, unknown>
         } catch {
-          userQuery = contextJson
+          enrichedContext = { query: contextJson }
         }
 
-        // Compact wilaya reference: code=name
-        const wilayaRef = WILAYAS.map((name, i) => `${i + 1}=${name}`).join(", ")
+        // Inject reference mappings into context
+        enrichedContext.wilayaCodes = Object.fromEntries(
+          WILAYAS.map((name, i) => [name, i + 1]),
+        )
+        enrichedContext.internshipTypeMapping = {
+          pfe: "Projet de Fin d'Études / graduation project / مشروع نهاية الدراسة",
+          immersion: "stage d'immersion / exploratory internship / تدريب استكشافي",
+          summer: "stage d'été / summer internship / تدريب صيفي",
+          practical: "stage pratique / hands-on training / تدريب تطبيقي",
+        }
+        enrichedContext.workModeMapping = {
+          on_site: "présentiel / in-office / حضوري",
+          hybrid: "hybride / mixed / هجين",
+          remote: "à distance / fully remote / عن بعد",
+        }
 
         const prompt = [
-          "Parse this internship search query into structured filters for an Algerian internship platform.",
-          "The user may write in French, Arabic, or English.",
-          "",
-          `User query: "${userQuery}"`,
-          "",
-          "Internship types: pfe (Projet de Fin d'Études/graduation project), immersion (stage d'immersion/exploratory), summer (stage d'été/summer internship/تدريب صيفي), practical (stage pratique/hands-on training)",
-          "Work modes: on_site (présentiel/حضوري), hybrid (hybride/هجين), remote (à distance/عن بعد)",
-          `Wilaya codes: ${wilayaRef}`,
-          skillsList ? `Available skill tags (id:name): ${skillsList}` : "",
-          "",
-          "Rules: Only set fields the user mentioned. Match city names across languages (e.g. Alger/Algiers/الجزائر=16, Oran/وهران=31, Constantine/قسنطينة=25). Only use skillTagIds from the list above.",
-          "Return only valid JSON matching the schema.",
-        ].filter(Boolean).join("\n")
+          "Convert the user's natural-language internship search query into structured filters.",
+          "Extract ALL matching filters from the query in a single response: internshipTypes, workModes, wilayaCode, and skillTagIds.",
+          "Use wilayaCodes mapping to resolve city names (in French, Arabic, or English) to numeric codes.",
+          "Use workModeMapping to detect work preferences: words like 'remote', 'à distance', 'عن بعد' → [\"remote\"]; 'présentiel', 'on-site', 'حضوري' → [\"on_site\"]; 'hybride', 'hybrid' → [\"hybrid\"].",
+          "Only include skillTagIds that exist in the provided availableSkillTags list.",
+          "If unsure about a field, omit it. Return only the JSON that matches the schema.",
+          `Context JSON:\n${JSON.stringify(enrichedContext)}`,
+        ].join("\n\n")
 
         return safeGenerateObject({ schema, prompt })
       },

@@ -11,6 +11,7 @@ import {
   companyAdminProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
 import { internshipTypeSchema, workModeSchema } from "@/lib/schemas/enums"
+import { authedProcedureStrict } from "@/server/orpc/rate-limited-procedures"
 import { getOfferById } from "@/server/services/offers/get"
 import { listOffersByCompany } from "@/server/services/offers/list-by-company"
 import { createOffer } from "@/server/services/offers/create"
@@ -148,4 +149,23 @@ export const updateOfferStatusProcedure = companyAdminProcedureStandard
     revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, "max")
 
     return result
+  })
+
+/* ── AI Search Parsing ── */
+
+export const parseSearchQueryProcedure = authedProcedureStrict
+  .input(
+    z.object({
+      query: z.string().min(1).max(500),
+      availableSkillTags: z
+        .array(z.object({ id: z.string(), name: z.string() }))
+        .max(300)
+        .default([]),
+    }),
+  )
+  .handler(async ({ input }) => {
+    const { parseSearchQuery } = await import(
+      "@/server/services/offers/parse-search"
+    )
+    return parseSearchQuery(input)
   })
