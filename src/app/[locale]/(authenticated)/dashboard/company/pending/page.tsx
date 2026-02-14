@@ -1,32 +1,33 @@
-import { getTranslations } from "next-intl/server"
+import { getTranslations } from "next-intl/server";
 
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Link } from "@/i18n/routing"
-import { localeRedirect } from "@/lib/navigation"
-import { requireRole } from "@/lib/auth-guards"
-import { formatDateLong } from "@/lib/date"
-import { getCompanyByUserId } from "@/server/services/companies/get"
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Link } from "@/i18n/routing";
+import { localeRedirect } from "@/lib/navigation";
+import { requireRole } from "@/lib/auth-guards";
+import { formatDateLong } from "@/lib/date";
+import { getCompanyByUserId } from "@/server/services/companies/get";
 
 export default async function CompanyPendingPage() {
-  const user = await requireRole(["company_admin"])
+  const user = await requireRole(["company_admin"]);
+  const company = await getCompanyByUserId(user.id);
 
-  if (!user.onboardingCompleted) {
-    return localeRedirect("/onboarding/company")
+  // Redirect to onboarding only if no company exists AND session says onboarding isn't complete
+  // (We check company existence to handle stale sessions immediately after onboarding submission)
+  if (!user.onboardingCompleted && !company) {
+    return localeRedirect("/onboarding/company");
   }
 
-  const company = await getCompanyByUserId(user.id)
-
   if (company?.status === "approved") {
-    return localeRedirect("/dashboard/company")
+    return localeRedirect("/dashboard/company");
   }
 
   if (company?.status === "rejected") {
-    return localeRedirect("/dashboard/company/rejected")
+    return localeRedirect("/dashboard/company/rejected");
   }
 
-  const t = await getTranslations("dashboard.company.pending")
+  const t = await getTranslations("dashboard.company.pending");
 
   return (
     <div className="max-w-3xl mx-auto space-y-10">
@@ -66,11 +67,7 @@ export default async function CompanyPendingPage() {
 
       <div className="flex flex-col sm:flex-row gap-3">
         <Link href="/dashboard/company/profile" className="w-full sm:w-auto">
-          <Button
-            variant="editorial"
-            size="editorial"
-            className="w-full"
-          >
+          <Button variant="editorial" size="editorial" className="w-full">
             {t("checkStatus")}
           </Button>
         </Link>
@@ -85,5 +82,5 @@ export default async function CompanyPendingPage() {
         </a>
       </div>
     </div>
-  )
+  );
 }
