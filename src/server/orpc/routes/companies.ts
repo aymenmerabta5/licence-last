@@ -2,7 +2,7 @@ import "server-only"
 
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
-import { updateTag } from "next/cache"
+import { revalidateTag } from "next/cache"
 
 import { isAdminRole } from "../middleware"
 import {
@@ -213,8 +213,8 @@ export const updateCompanyProcedure = companyAdminProcedureStandard
     const result = await updateCompany(context.companyMembership.companyId, input)
 
     // Invalidate company cache
-    updateTag(CACHE_TAGS.COMPANY_PROFILE(context.companyMembership.companyId))
-    updateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`))
+    revalidateTag(CACHE_TAGS.COMPANY_PROFILE(context.companyMembership.companyId), "max")
+    revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`), "max")
 
     return result
   })
@@ -225,7 +225,7 @@ export const approveCompanyProcedure = superAdminProcedureStandard
     const result = await approveCompany(input.companyId, context.user.id)
 
     // Invalidate company cache when approved
-    updateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId))
+    revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
 
     return result
   })
@@ -241,7 +241,7 @@ export const rejectCompanyProcedure = superAdminProcedureStandard
     const result = await rejectCompany(input.companyId, input.reason)
 
     // Invalidate company cache when rejected
-    updateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId))
+    revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
 
     return result
   })

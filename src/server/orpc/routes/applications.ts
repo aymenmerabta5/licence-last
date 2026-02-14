@@ -3,7 +3,7 @@ import "server-only"
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
-import { updateTag } from "next/cache"
+import { revalidateTag } from "next/cache"
 
 import { isAdminRole } from "../middleware"
 import {
@@ -69,8 +69,8 @@ export const applyToOfferProcedure = studentProcedureStandard
       )
 
       // Invalidate student applications cache
-      updateTag(CACHE_TAGS.STUDENT_APPLICATIONS(context.user.id))
-      updateTag(CACHE_TAGS.STUDENT_STATS(context.user.id))
+      revalidateTag(CACHE_TAGS.STUDENT_APPLICATIONS(context.user.id), "max")
+      revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), "max")
 
       return result
     } catch (error) {
@@ -96,8 +96,8 @@ export const withdrawApplicationProcedure = studentProcedureStandard
       const result = await withdrawApplication(input.applicationId, context.user.id)
 
       // Invalidate student applications cache
-      updateTag(CACHE_TAGS.STUDENT_APPLICATIONS(context.user.id))
-      updateTag(CACHE_TAGS.STUDENT_STATS(context.user.id))
+      revalidateTag(CACHE_TAGS.STUDENT_APPLICATIONS(context.user.id), "max")
+      revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), "max")
 
       return result
     } catch (error) {
@@ -146,7 +146,7 @@ export const companyAcceptProcedure = companyAdminProcedureStandard
       )
 
       // Invalidate company candidates cache
-      updateTag(CACHE_TAGS.COMPANY_CANDIDATES(context.companyMembership.companyId))
+      revalidateTag(CACHE_TAGS.COMPANY_CANDIDATES(context.companyMembership.companyId), "max")
 
       return result
     } catch (error) {
@@ -176,7 +176,7 @@ export const companyRefuseProcedure = companyAdminProcedureStandard
       )
 
       // Invalidate company candidates cache
-      updateTag(CACHE_TAGS.COMPANY_CANDIDATES(context.companyMembership.companyId))
+      revalidateTag(CACHE_TAGS.COMPANY_CANDIDATES(context.companyMembership.companyId), "max")
 
       return result
     } catch (error) {
