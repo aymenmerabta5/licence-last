@@ -31,13 +31,10 @@ export function getRateLimiter(): RedisRatelimiter | null {
     return null
   }
 
-  // Create the Redis rate limiter with Bun's Redis client
-  // Note: Bun Redis uses send() for raw commands instead of direct method calls
+  // ioredis .eval() runs Redis EVAL command (server-side Lua, not JS eval)
   rateLimiter = new RedisRatelimiter({
     eval: async (script, numKeys, ...args) => {
-      // Convert args to strings as required by Bun's Redis send()
-      const stringArgs = args.map(arg => String(arg))
-      return redis.send("EVAL", [script, String(numKeys), ...stringArgs])
+      return redis.eval(script, numKeys, ...args)
     },
     maxRequests: 100,
     window: 60000, // 60 seconds
