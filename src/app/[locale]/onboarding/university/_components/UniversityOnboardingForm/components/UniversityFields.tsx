@@ -48,20 +48,6 @@ export function UniversityFields({ form }: UniversityFieldsProps) {
         )}
       </form.Field>
 
-      <form.Field name="departmentName">
-        {(field) => (
-          <TextField
-            id="university-department"
-            label={t("departmentName")}
-            icon={Landmark}
-            value={field.state.value}
-            onChange={field.handleChange}
-            onBlur={field.handleBlur}
-            placeholder={t("departmentNamePlaceholder")}
-          />
-        )}
-      </form.Field>
-
       <form.Field name="deanName">
         {(field) => (
           <TextField
