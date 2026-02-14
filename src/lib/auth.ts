@@ -27,13 +27,12 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: {
-        type: ["student", "company_admin", "dept_head", "university_admin", "super_admin"],
+        type: "string",
         required: false,
         defaultValue: "student",
-        // input: true is required for company_admin self-registration.
-        // The databaseHooks.user.create.before hook enforces an allowlist
-        // (only "student" and "company_admin" are accepted for self-reg).
-        input: true,
+        // input: false — admin plugin forces this. Role is set by the
+        // databaseHooks.user.create.before hook using ctx.body.accountType.
+        input: false,
       },
       universityId: {
         type: "string",
@@ -78,17 +77,14 @@ export const auth = betterAuth({
   databaseHooks: {
     user: {
       create: {
-        before: async (data) => {
+        before: async (data, ctx) => {
           const VALID_ROLES = new Set<string>(["student", "company_admin", "dept_head", "university_admin", "super_admin"])
-          const ALLOWED_SIGNUP_ROLES = new Set<string>(["student", "company_admin"])
-          const requestedRole = (data.role as string | undefined) ?? "student"
-
-          // Admin-created users arrive with emailVerified: true (admin plugin default).
-          // Self-registered users have emailVerified: false (requireEmailVerification: true).
+          const ALLOWED_SIGNUP_ROLES = new Set<string>(["student", "company_admin", "university_admin"])
           const isAdminCreated = data.emailVerified === true
 
           if (isAdminCreated) {
-            // Admin creating a user — allow any valid role
+            // Admin creating a user — role is set directly by admin endpoint
+            const requestedRole = (data.role as string | undefined) ?? "student"
             if (!VALID_ROLES.has(requestedRole)) {
               throw new APIError("BAD_REQUEST", {
                 message: "Invalid role",
@@ -97,15 +93,18 @@ export const auth = betterAuth({
             return { data: { ...data, role: requestedRole } }
           }
 
-          // Self-registration — only student or company_admin allowed
+          // Self-registration — read accountType from raw request body
+          // (role field has input:false via admin plugin, so we use a separate body field)
+          const requestedRole = (ctx?.body?.accountType as string | undefined) ?? "student"
           if (!ALLOWED_SIGNUP_ROLES.has(requestedRole)) {
             throw new APIError("BAD_REQUEST", {
-              message: "Invalid role for self-registration",
+              code: "ROLE_IS_NOT_ALLOWED_TO_BE_SET",
+              message: "role is not allowed to be set",
             })
           }
-          const role = requestedRole as "student" | "company_admin"
+          const role = requestedRole as "student" | "company_admin" | "university_admin"
 
-          // company_admin skips domain validation
+          // company_admin and university_admin skip university domain validation
           if (role !== "student") {
             return { data: { ...data, role } }
           }

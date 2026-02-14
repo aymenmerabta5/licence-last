@@ -54,7 +54,7 @@ export function useSignupForm(role: SignupRole) {
           name: value.name,
           callbackURL: "/",
           fetchOptions: {
-            body: { role },
+            body: { accountType: role },
           },
         })
 
