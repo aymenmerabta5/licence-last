@@ -24,7 +24,7 @@ export function useUniversityOnboarding() {
     defaultValues: {
       name: "",
       abbreviation: "",
-      departmentName: "",
+
       deanName: "",
       phone: "",
       wilayaCode: 0,
@@ -48,7 +48,7 @@ export function useUniversityOnboarding() {
         await orpcClient.universities.create({
           name: value.name,
           abbreviation: value.abbreviation || undefined,
-          departmentName: value.departmentName || undefined,
+
           deanName: value.deanName || undefined,
           phone: value.phone || undefined,
           wilayaCode: value.wilayaCode || undefined,

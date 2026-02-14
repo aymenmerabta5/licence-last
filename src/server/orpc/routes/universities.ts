@@ -65,7 +65,7 @@ export const createUniversityProcedure = authedProcedureStandard
     z.object({
       name: z.string().min(2),
       abbreviation: z.string().optional(),
-      departmentName: z.string().optional(),
+
       deanName: z.string().optional(),
       phone: z.string().optional(),
       wilayaCode: z.coerce.number().int().min(1).max(58).optional(),
