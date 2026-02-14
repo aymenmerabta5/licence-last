@@ -2,7 +2,7 @@ import "server-only"
 
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
-import { updateTag } from "next/cache"
+import { revalidateTag } from "next/cache"
 
 import { isAdminRole } from "../middleware"
 import {
@@ -79,9 +79,9 @@ export const createOfferProcedure = companyAdminProcedureStandard
     })
 
     // Invalidate company offers cache and public offer search
-    updateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId))
-    updateTag(CACHE_TAGS.OFFER_SEARCH)
-    updateTag(CACHE_TAGS.OFFERS_PUBLIC)
+    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), "max")
+    revalidateTag(CACHE_TAGS.OFFER_SEARCH, "max")
+    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, "max")
 
     return result
   })
@@ -105,10 +105,10 @@ export const updateOfferProcedure = companyAdminProcedureStandard
     const result = await updateOffer(offerId, context.companyMembership.companyId, data)
 
     // Invalidate offer caches
-    updateTag(CACHE_TAGS.OFFER_DETAIL(offerId))
-    updateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId))
-    updateTag(CACHE_TAGS.OFFER_SEARCH)
-    updateTag(CACHE_TAGS.OFFERS_PUBLIC)
+    revalidateTag(CACHE_TAGS.OFFER_DETAIL(offerId), "max")
+    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), "max")
+    revalidateTag(CACHE_TAGS.OFFER_SEARCH, "max")
+    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, "max")
 
     return result
   })
@@ -119,10 +119,10 @@ export const deleteOfferProcedure = companyAdminProcedureStandard
     const result = await deleteOffer(input.offerId, context.companyMembership.companyId)
 
     // Invalidate offer caches
-    updateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId))
-    updateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId))
-    updateTag(CACHE_TAGS.OFFER_SEARCH)
-    updateTag(CACHE_TAGS.OFFERS_PUBLIC)
+    revalidateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId), "max")
+    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), "max")
+    revalidateTag(CACHE_TAGS.OFFER_SEARCH, "max")
+    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, "max")
 
     return result
   })
@@ -142,10 +142,10 @@ export const updateOfferStatusProcedure = companyAdminProcedureStandard
     )
 
     // Invalidate offer caches when status changes
-    updateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId))
-    updateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId))
-    updateTag(CACHE_TAGS.OFFER_SEARCH)
-    updateTag(CACHE_TAGS.OFFERS_PUBLIC)
+    revalidateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId), "max")
+    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), "max")
+    revalidateTag(CACHE_TAGS.OFFER_SEARCH, "max")
+    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, "max")
 
     return result
   })

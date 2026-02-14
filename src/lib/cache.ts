@@ -13,7 +13,7 @@ import { cacheLife } from "next/cache";
 
 /**
  * Cache tags for cache invalidation via revalidateTag
- * Use these tags with revalidateTag() in Server Actions after mutations
+ * Use these tags with revalidateTag(tag, "max") in Route Handlers/Server Actions after mutations
  */
 export const CACHE_TAGS = {
   // Reference data
