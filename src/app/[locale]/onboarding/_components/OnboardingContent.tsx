@@ -9,7 +9,7 @@ interface OnboardingContentProps {
  * Separated to support Next.js 16 cacheComponents with Suspense boundary.
  */
 export async function OnboardingContent({ children }: OnboardingContentProps) {
-  await requireRole(["company_admin", "student"])
+  await requireRole(["company_admin", "student", "university_admin"])
 
   return <>{children}</>
 }
