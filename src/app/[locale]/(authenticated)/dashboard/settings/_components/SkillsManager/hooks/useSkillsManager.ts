@@ -11,20 +11,25 @@ const MAX_SKILLS = 10
 export function useSkillsManager() {
   const queryClient = useQueryClient()
 
-  const skillsQueryOptions = useMemo(
-    () => orpc.skills.list.queryOptions(),
-    [],
-  )
   const profileQueryOptions = useMemo(
     () => orpc.students.getProfile.queryOptions(),
     [],
   )
+  const { data: profileData, isLoading: isLoadingProfile } = useQuery(
+    profileQueryOptions,
+  )
+
+  // Filter skills by student's department when available
+  const departmentId = profileData?.profile?.departmentId ?? undefined
+  const skillsQueryOptions = useMemo(
+    () => orpc.skills.list.queryOptions({
+      input: departmentId ? { departmentId } : undefined,
+    }),
+    [departmentId],
+  )
 
   const { data: allSkillsResult, isLoading: isLoadingSkills } = useQuery(
     skillsQueryOptions,
-  )
-  const { data: profileData, isLoading: isLoadingProfile } = useQuery(
-    profileQueryOptions,
   )
 
   const allSkills = useMemo(

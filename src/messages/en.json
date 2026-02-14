@@ -318,6 +318,7 @@
       "portfolioUrlPlaceholder": "https://your-portfolio.com",
       "skillsSection": "Technical Skills",
       "skillsHint": "Select up to 10 skills that best describe your expertise",
+      "skillsSelectDepartmentFirst": "Please select a department first to see relevant skills",
       "skillsSelected": "selected",
       "submit": "Complete Profile",
       "error": "Something went wrong. Please try again."

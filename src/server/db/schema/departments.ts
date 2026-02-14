@@ -4,9 +4,11 @@ import {
   timestamp,
   index,
   uniqueIndex,
+  primaryKey,
 } from "drizzle-orm/pg-core"
 
 import { university } from "./universities"
+import { skillTag } from "./skills"
 
 export const department = pgTable(
   "department",
@@ -29,5 +31,22 @@ export const department = pgTable(
       table.universityId,
     ),
     index("department_universityId_idx").on(table.universityId),
+  ],
+)
+
+export const departmentSkill = pgTable(
+  "department_skill",
+  {
+    departmentId: text("department_id")
+      .notNull()
+      .references(() => department.id, { onDelete: "cascade" }),
+    skillTagId: text("skill_tag_id")
+      .notNull()
+      .references(() => skillTag.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.departmentId, table.skillTagId] }),
+    index("department_skill_skillTagId_idx").on(table.skillTagId),
   ],
 )

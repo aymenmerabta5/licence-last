@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef } from "react"
 import { useTranslations } from "next-intl"
 import { useForm } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
@@ -17,11 +17,17 @@ export function useOnboardingForm() {
   const router = useRouter()
 
   const [serverError, setServerError] = useState("")
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState("")
 
   const { data: meResult } = useQuery(orpc.users.getMe.queryOptions())
   const universityId = meResult?.university?.id ?? null
 
-  const { data: skillTagsResult } = useQuery(orpc.skills.list.queryOptions())
+  // Fetch skills filtered by selected department (falls back to all skills if no dept)
+  const { data: skillTagsResult } = useQuery(
+    orpc.skills.list.queryOptions({
+      input: selectedDepartmentId ? { departmentId: selectedDepartmentId } : undefined,
+    }),
+  )
   const skillTags = useMemo(
     () => skillTagsResult?.skills ?? [],
     [skillTagsResult?.skills],
@@ -80,11 +86,25 @@ export function useOnboardingForm() {
     },
   })
 
+  // Track previous department to clear skills on change
+  const prevDeptRef = useRef("")
+  const handleDepartmentChange = (departmentId: string) => {
+    setSelectedDepartmentId(departmentId)
+
+    // Clear selected skills when switching departments (old skills may not exist in new dept)
+    if (prevDeptRef.current && prevDeptRef.current !== departmentId) {
+      form.setFieldValue("skillTagIds", [])
+    }
+    prevDeptRef.current = departmentId
+  }
+
   return {
     form,
     serverError,
     setServerError,
     skillTags,
     departments,
+    selectedDepartmentId,
+    handleDepartmentChange,
   }
 }

@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm"
 
 import { user } from "./auth"
-import { department } from "./departments"
+import { department, departmentSkill } from "./departments"
 import { university, universityDomain } from "./universities"
 import { company, companyMember } from "./companies"
 import { assistantConversation, assistantMessage } from "./assistant"
@@ -78,6 +78,18 @@ export const departmentRelations = relations(department, ({ one, many }) => ({
   }),
   students: many(studentProfile),
   heads: many(user),
+  skills: many(departmentSkill),
+}))
+
+export const departmentSkillRelations = relations(departmentSkill, ({ one }) => ({
+  department: one(department, {
+    fields: [departmentSkill.departmentId],
+    references: [department.id],
+  }),
+  skill: one(skillTag, {
+    fields: [departmentSkill.skillTagId],
+    references: [skillTag.id],
+  }),
 }))
 
 // ── Students ──────────────────────────────────────────
@@ -119,6 +131,7 @@ export const studentLanguageRelations = relations(studentLanguage, ({ one }) => 
 export const skillTagRelations = relations(skillTag, ({ many }) => ({
   studentSkills: many(studentSkill),
   offerSkills: many(internshipOfferSkill),
+  departmentSkills: many(departmentSkill),
 }))
 
 // ── Companies ─────────────────────────────────────────
