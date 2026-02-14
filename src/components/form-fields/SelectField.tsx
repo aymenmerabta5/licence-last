@@ -1,6 +1,18 @@
+"use client"
+
 import type { LucideIcon } from "lucide-react"
 
 import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select"
+import {
+  InputGroup,
+  InputGroupAddon,
+} from "@/components/ui/input-group"
 
 interface SelectOption {
   value: string | number
@@ -35,6 +47,9 @@ export function SelectField({
   disabled,
   className,
 }: SelectFieldProps) {
+  const stringValue = String(value ?? "")
+  const selectedLabel = options.find((o) => String(o.value) === stringValue)?.label
+
   return (
     <div className="space-y-2">
       <Label
@@ -43,34 +58,42 @@ export function SelectField({
       >
         {label}
       </Label>
-      <div className="relative">
-        {Icon && (
-          <Icon className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60 pointer-events-none" />
-        )}
-        <select
-          id={id}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onBlur={onBlur}
-          disabled={disabled}
-          className={`w-full h-11 rounded-none border border-input bg-transparent ${Icon ? "ps-10" : "ps-3"} pe-3 text-sm appearance-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${className ?? ""}`}
-        >
-          {placeholder && (
-            <option value="" disabled>
-              {placeholder}
-            </option>
+      <Select
+        value={stringValue}
+        onValueChange={(v) => v && onChange(String(v))}
+        disabled={disabled}
+      >
+        <InputGroup className={`rounded-none h-11 ${className ?? ""}`}>
+          {Icon && (
+            <InputGroupAddon align="inline-start">
+              <Icon className="h-4 w-4" />
+            </InputGroupAddon>
           )}
+          <SelectTrigger
+            id={id}
+            onBlur={onBlur}
+            aria-invalid={!!error}
+            className="h-full w-full border-0 bg-transparent shadow-none ring-0 hover:border-0 focus-visible:ring-0 focus-visible:border-0"
+          >
+            <span className="flex flex-1 text-start truncate">
+              {selectedLabel ?? (
+                <span className="text-muted-foreground">{placeholder}</span>
+              )}
+            </span>
+          </SelectTrigger>
+        </InputGroup>
+        <SelectContent>
           {options.map((option) => (
-            <option
+            <SelectItem
               key={option.value}
-              value={option.value}
+              value={String(option.value)}
               disabled={option.disabled}
             >
               {option.label}
-            </option>
+            </SelectItem>
           ))}
-        </select>
-      </div>
+        </SelectContent>
+      </Select>
       {error && (
         <p className="text-destructive text-[11px] tracking-wide" role="alert">
           {error}

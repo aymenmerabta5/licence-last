@@ -10,6 +10,7 @@ export const listSkillTagsProcedure = publicProcedureStandard
     z
       .object({
         category: z.string().optional(),
+        departmentId: z.string().optional(),
         limit: z.coerce.number().int().min(1).max(500).optional(),
         offset: z.coerce.number().int().min(0).optional(),
       })
@@ -18,6 +19,7 @@ export const listSkillTagsProcedure = publicProcedureStandard
   .handler(async ({ input }) =>
     listSkillTags({
       category: input?.category,
+      departmentId: input?.departmentId,
       limit: input?.limit,
       offset: input?.offset,
     }),

@@ -318,6 +318,7 @@
       "portfolioUrlPlaceholder": "https://votre-portfolio.com",
       "skillsSection": "Compétences Techniques",
       "skillsHint": "Sélectionnez jusqu'à 10 compétences qui décrivent le mieux votre expertise",
+      "skillsSelectDepartmentFirst": "Veuillez d'abord sélectionner un département pour voir les compétences pertinentes",
       "skillsSelected": "sélectionnées",
       "submit": "Compléter le Profil",
       "error": "Une erreur s'est produite. Veuillez réessayer."

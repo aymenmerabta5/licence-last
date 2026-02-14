@@ -8,7 +8,16 @@ const CATEGORY_ORDER = [
   "devops",
   "mobile",
   "data_ai",
-  "other",
+  "software_engineering",
+  "math_stats",
+  "science",
+  "electronics",
+  "engineering",
+  "architecture",
+  "law",
+  "economics",
+  "humanities",
+  "general",
 ] as const
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -19,7 +28,16 @@ const CATEGORY_LABELS: Record<string, string> = {
   devops: "DevOps",
   mobile: "Mobile",
   data_ai: "Data & AI",
-  other: "Other",
+  software_engineering: "Software Engineering",
+  math_stats: "Math & Statistics",
+  science: "Science & Research",
+  electronics: "Electronics & Embedded",
+  engineering: "Engineering",
+  architecture: "Architecture & Design",
+  law: "Law",
+  economics: "Economics & Business",
+  humanities: "Humanities & Languages",
+  general: "General",
 }
 
 interface SkillTag {
@@ -32,16 +50,21 @@ interface SkillTag {
 export function useSkillGrouping(skills: SkillTag[]) {
   return useMemo(() => {
     const groups: Record<string, SkillTag[]> = {}
-    
+
     for (const skill of skills) {
-      const cat = skill.category || "other"
+      const cat = skill.category || "general"
       if (!groups[cat]) groups[cat] = []
       groups[cat].push(skill)
     }
-    
+
+    // Build dynamic order: show CATEGORY_ORDER categories first, then any extras
+    const knownSet = new Set<string>(CATEGORY_ORDER)
+    const extraCategories = Object.keys(groups).filter((c) => !knownSet.has(c))
+    const categoryOrder = [...CATEGORY_ORDER, ...extraCategories]
+
     return {
       groups,
-      categoryOrder: CATEGORY_ORDER,
+      categoryOrder,
       categoryLabels: CATEGORY_LABELS,
     }
   }, [skills])

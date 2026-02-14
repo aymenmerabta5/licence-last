@@ -2,15 +2,17 @@
 
 import "server-only"
 
-import { eq, asc } from "drizzle-orm"
+import { eq, asc, and, inArray } from "drizzle-orm"
 import { cacheTag } from "next/cache"
 
 import { db } from "@/server/db"
 import { skillTag } from "@/server/db/schema/skills"
+import { departmentSkill } from "@/server/db/schema/departments"
 import { CACHE_TAGS, CACHE_PROFILES } from "@/lib/cache"
 
 export interface ListSkillTagsInput {
   category?: string
+  departmentId?: string
   limit?: number
   offset?: number
 }
@@ -31,9 +33,26 @@ export async function listSkillTags(input?: ListSkillTagsInput): Promise<ListSki
   if (input?.category) {
     cacheTag(`${CACHE_TAGS.SKILLS}-${input.category}`)
   }
+  if (input?.departmentId) {
+    cacheTag(`${CACHE_TAGS.SKILLS}-dept-${input.departmentId}`)
+  }
 
   const limit = Math.min(input?.limit ?? 100, 500)
   const offset = input?.offset ?? 0
+
+  // Build conditions
+  const conditions = []
+  if (input?.category) {
+    conditions.push(eq(skillTag.category, input.category))
+  }
+  if (input?.departmentId) {
+    // Subquery: get skill IDs linked to this department
+    const deptSkillIds = db
+      .select({ skillTagId: departmentSkill.skillTagId })
+      .from(departmentSkill)
+      .where(eq(departmentSkill.departmentId, input.departmentId))
+    conditions.push(inArray(skillTag.id, deptSkillIds))
+  }
 
   const query = db
     .select({
@@ -43,11 +62,12 @@ export async function listSkillTags(input?: ListSkillTagsInput): Promise<ListSki
       category: skillTag.category,
     })
     .from(skillTag)
+    .where(conditions.length > 0 ? and(...conditions) : undefined)
     .orderBy(asc(skillTag.name))
     .limit(limit + 1)
     .offset(offset)
 
-  const rows = input?.category ? await query.where(eq(skillTag.category, input.category)) : await query
+  const rows = await query
 
   return {
     skills: rows.slice(0, limit),

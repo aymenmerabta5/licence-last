@@ -318,6 +318,7 @@
       "portfolioUrlPlaceholder": "https://your-portfolio.com",
       "skillsSection": "المهارات التقنية",
       "skillsHint": "اختر حتى ١٠ مهارات تصف خبرتك بشكل أفضل",
+      "skillsSelectDepartmentFirst": "يرجى اختيار القسم أولاً لعرض المهارات المتعلقة",
       "skillsSelected": "مختارة",
       "submit": "إكمال الملف الشخصي",
       "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."

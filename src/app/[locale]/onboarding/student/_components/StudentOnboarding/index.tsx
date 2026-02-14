@@ -32,7 +32,7 @@ import { useOnboardingForm } from "./hooks/useOnboardingForm"
 
 export function StudentOnboardingForm() {
   const t = useTranslations("onboarding.student")
-  const { form, serverError, skillTags, departments } = useOnboardingForm()
+  const { form, serverError, skillTags, departments, selectedDepartmentId, handleDepartmentChange } = useOnboardingForm()
   const { groups, categoryOrder, categoryLabels } = useSkillGrouping(skillTags)
 
   return (
@@ -103,7 +103,10 @@ export function StudentOnboardingForm() {
                 label: d.name,
               }))}
               value={field.state.value}
-              onChange={(v) => field.handleChange(String(v))}
+              onChange={(v) => {
+                field.handleChange(String(v))
+                handleDepartmentChange(String(v))
+              }}
               onBlur={field.handleBlur}
             />
           )}
@@ -206,7 +209,9 @@ export function StudentOnboardingForm() {
       </FormSection>
 
       <FormSection title={t("skillsSection")} delay={0.15}>
-        <p className="text-xs text-muted-foreground">{t("skillsHint")}</p>
+        <p className="text-xs text-muted-foreground">
+          {selectedDepartmentId ? t("skillsHint") : t("skillsSelectDepartmentFirst")}
+        </p>
 
         <form.Field name="skillTagIds">
           {(field) => (
