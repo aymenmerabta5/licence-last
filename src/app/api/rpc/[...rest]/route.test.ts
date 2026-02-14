@@ -1,5 +1,12 @@
 import { describe, test, expect, beforeEach, mock } from "bun:test"
 
+// Mock CSRF — must be explicit since mock.module is process-global
+const mockIsValidOrigin = mock<(req: Request) => boolean>()
+
+mock.module("@/lib/csrf", () => ({
+  isValidOrigin: mockIsValidOrigin,
+}))
+
 // Mock env module
 const mockEnv = {
   NEXT_PUBLIC_BETTER_AUTH_URL: "http://localhost:3000",
@@ -31,8 +38,16 @@ mock.module("@/server/orpc/router", () => ({
 describe("src/app/api/rpc/[...rest]/route", () => {
   beforeEach(() => {
     mockHandle.mockClear()
+    mockIsValidOrigin.mockClear()
     mockHandle.mockResolvedValue({
       response: new Response("OK", { status: 200 }),
+    })
+    // Default: simulate real CSRF behavior based on method + origin
+    mockIsValidOrigin.mockImplementation((req: Request) => {
+      if (req.method === "GET" || req.method === "HEAD") return true
+      const origin = req.headers.get("origin")
+      if (!origin) return false
+      return origin === mockEnv.NEXT_PUBLIC_BETTER_AUTH_URL
     })
   })
 
@@ -123,6 +138,11 @@ describe("src/app/api/rpc/[...rest]/route", () => {
   })
 
   describe("RPCHandler integration", () => {
+    beforeEach(() => {
+      // Allow all requests through CSRF for handler integration tests
+      mockIsValidOrigin.mockReturnValue(true)
+    })
+
     test("returns 404 when handler returns no response", async () => {
       mockHandle.mockResolvedValue({
         response: undefined as unknown as Response,

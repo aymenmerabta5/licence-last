@@ -1,7 +1,6 @@
 import { describe, test, expect, mock, beforeEach } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockAdminUpdateUser = mock((..._args: any[]) =>
+const mockAdminUpdateUser = mock(() =>
   Promise.resolve({ user: { id: "u1", name: "Updated" } }),
 )
 const mockHeaders = mock(() => Promise.resolve(new Headers()))

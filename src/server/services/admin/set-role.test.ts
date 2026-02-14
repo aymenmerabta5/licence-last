@@ -1,7 +1,6 @@
 import { describe, test, expect, mock, beforeEach } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSetRole = mock((..._args: any[]) => Promise.resolve({ success: true }))
+const mockSetRole = mock(() => Promise.resolve({ success: true }))
 const mockHeaders = mock(() => Promise.resolve(new Headers()))
 
 mock.module("@/lib/auth", () => ({

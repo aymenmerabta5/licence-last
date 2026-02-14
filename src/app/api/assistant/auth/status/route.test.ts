@@ -10,6 +10,11 @@ mock.module("next/headers", () => ({
   }),
 }))
 
+// Mock CSRF
+mock.module("@/lib/csrf", () => ({
+  isValidOrigin: () => true,
+}))
+
 // Mock auth
 const mockGetSession = mock<() => Promise<{ user: { id: string; role: string } } | null>>()
 

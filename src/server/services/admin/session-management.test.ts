@@ -1,11 +1,8 @@
 import { describe, test, expect, mock, beforeEach } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockListUserSessions = mock((..._args: any[]) => Promise.resolve({ sessions: [] }))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockRevokeUserSession = mock((..._args: any[]) => Promise.resolve({ success: true }))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockRevokeUserSessions = mock((..._args: any[]) => Promise.resolve({ success: true }))
+const mockListUserSessions = mock(() => Promise.resolve({ sessions: [] }))
+const mockRevokeUserSession = mock(() => Promise.resolve({ success: true }))
+const mockRevokeUserSessions = mock(() => Promise.resolve({ success: true }))
 const mockHeaders = mock(() => Promise.resolve(new Headers()))
 
 mock.module("@/lib/auth", () => ({

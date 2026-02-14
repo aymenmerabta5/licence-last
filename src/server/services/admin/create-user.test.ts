@@ -1,7 +1,6 @@
 import { describe, test, expect, mock, beforeEach } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockCreateUser = mock((..._args: any[]) => Promise.resolve({ user: { id: "new-user", email: "a@b.com" } }))
+const mockCreateUser = mock(() => Promise.resolve({ user: { id: "new-user", email: "a@b.com" } }))
 const mockHeaders = mock(() => Promise.resolve(new Headers()))
 
 mock.module("@/lib/auth", () => ({
