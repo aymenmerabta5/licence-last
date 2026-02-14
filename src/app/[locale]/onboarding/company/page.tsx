@@ -11,7 +11,7 @@ export default async function CompanyOnboardingPage() {
 
   // If already onboarded, redirect to dashboard
   if (session?.user.onboardingCompleted) {
-    return localeRedirect("/dashboard/company/pending")
+    return localeRedirect("/status/company/pending")
   }
 
   return <CompanyOnboardingForm />

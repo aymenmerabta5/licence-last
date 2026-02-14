@@ -17,7 +17,8 @@ describe("updateUser", () => {
     const { updateUser } = await import("./update-user")
     await updateUser("user-1", { name: "New Name" })
 
-    const call = mockAdminUpdateUser.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockAdminUpdateUser.mock.calls as any)[0][0]
     expect(call.body.userId).toBe("user-1")
     expect(call.body.data.name).toBe("New Name")
   })
@@ -26,7 +27,8 @@ describe("updateUser", () => {
     const { updateUser } = await import("./update-user")
     await updateUser("user-1", { email: "new@example.com" })
 
-    const call = mockAdminUpdateUser.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockAdminUpdateUser.mock.calls as any)[0][0]
     expect(call.body.data.email).toBe("new@example.com")
   })
 
@@ -34,7 +36,8 @@ describe("updateUser", () => {
     const { updateUser } = await import("./update-user")
     await updateUser("user-1", { role: "company_admin" })
 
-    const call = mockAdminUpdateUser.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockAdminUpdateUser.mock.calls as any)[0][0]
     expect(call.body.data.role).toBe("company_admin")
   })
 

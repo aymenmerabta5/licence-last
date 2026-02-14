@@ -73,6 +73,23 @@ export const auth = betterAuth({
         input: false,
       },
     },
+    deleteUser: {
+      enabled: true,
+      beforeDelete: async (user) => {
+        // Clean up S3 avatar if the user has one
+        if (user.image) {
+          try {
+            const key = new URL(user.image).pathname.slice(1)
+            if (key) {
+              const { deleteFile } = await import("@/server/storage/s3")
+              await deleteFile(key)
+            }
+          } catch {
+            // S3 cleanup is best-effort — don't block deletion
+          }
+        }
+      },
+    },
   },
   databaseHooks: {
     user: {

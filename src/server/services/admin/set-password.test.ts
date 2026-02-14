@@ -15,7 +15,8 @@ describe("setUserPassword", () => {
     const { setUserPassword } = await import("./set-password")
     await setUserPassword("user-1", "newpass123")
 
-    const call = mockSetUserPassword.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockSetUserPassword.mock.calls as any)[0][0]
     expect(call.body.userId).toBe("user-1")
     expect(call.body.newPassword).toBe("newpass123")
   })

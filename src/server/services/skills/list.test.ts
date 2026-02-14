@@ -7,19 +7,13 @@ interface SkillTag {
   category: string | null
 }
 
-const mockWhere = mock<() => Promise<SkillTag[]>>(() => Promise.resolve([]))
+const mockResult: SkillTag[] = []
 
-const createMockQuery = () => {
-  const query = Object.assign(Promise.resolve([] as SkillTag[]), {
-    where: mockWhere,
-  })
-  return query
-}
-
-const mockOffset = mock(() => createMockQuery())
-const mockLimit = mock(() => ({ offset: mockOffset, where: mockWhere }))
-const mockOrderBy = mock(() => ({ limit: mockLimit, where: mockWhere }))
-const mockFrom = mock(() => ({ orderBy: mockOrderBy }))
+const mockOffset = mock(() => Promise.resolve(mockResult))
+const mockLimit = mock(() => ({ offset: mockOffset }))
+const mockOrderBy = mock(() => ({ limit: mockLimit }))
+const mockWhere = mock(() => ({ orderBy: mockOrderBy }))
+const mockFrom = mock(() => ({ where: mockWhere }))
 const mockSelect = mock(() => ({ from: mockFrom }))
 
 mock.module("@/server/db", () => ({
@@ -32,16 +26,17 @@ describe("src/server/services/skills/list", () => {
   beforeEach(() => {
     mockSelect.mockClear()
     mockFrom.mockClear()
-    mockOrderBy.mockClear()
     mockWhere.mockClear()
+    mockOrderBy.mockClear()
     mockLimit.mockClear()
     mockOffset.mockClear()
 
     mockSelect.mockReturnValue({ from: mockFrom })
-    mockFrom.mockReturnValue({ orderBy: mockOrderBy })
-    mockOrderBy.mockReturnValue({ limit: mockLimit, where: mockWhere })
-    mockLimit.mockReturnValue({ offset: mockOffset, where: mockWhere })
-    mockOffset.mockReturnValue(createMockQuery())
+    mockFrom.mockReturnValue({ where: mockWhere })
+    mockWhere.mockReturnValue({ orderBy: mockOrderBy })
+    mockOrderBy.mockReturnValue({ limit: mockLimit })
+    mockLimit.mockReturnValue({ offset: mockOffset })
+    mockOffset.mockResolvedValue([])
   })
 
   test("should return all skills when no category filter", async () => {
@@ -49,8 +44,7 @@ describe("src/server/services/skills/list", () => {
       { id: "1", name: "React", slug: "react", category: "frontend" },
       { id: "2", name: "Node.js", slug: "node-js", category: "backend" },
     ]
-    const mockQuery = Object.assign(Promise.resolve(skills), { where: mockWhere })
-    mockOffset.mockReturnValue(mockQuery)
+    mockOffset.mockResolvedValue(skills)
 
     const { listSkillTags } = await import("./list")
     const result = await listSkillTags()
@@ -65,7 +59,7 @@ describe("src/server/services/skills/list", () => {
     const skills: SkillTag[] = [
       { id: "1", name: "React", slug: "react", category: "frontend" },
     ]
-    mockWhere.mockResolvedValue(skills)
+    mockOffset.mockResolvedValue(skills)
 
     const { listSkillTags } = await import("./list")
     const result = await listSkillTags({ category: "frontend" })

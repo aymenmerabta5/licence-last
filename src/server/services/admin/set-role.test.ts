@@ -15,7 +15,8 @@ describe("setUserRole", () => {
     const { setUserRole } = await import("./set-role")
     await setUserRole("user-1", "super_admin")
 
-    const call = mockSetRole.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockSetRole.mock.calls as any)[0][0]
     expect(call.body.userId).toBe("user-1")
     expect(call.body.role).toBe("super_admin")
   })

@@ -58,7 +58,7 @@ export function useUniversityOnboarding() {
           departments: departments.length > 0 ? departments : undefined,
         })
 
-        router.push("/dashboard/admin/pending")
+        router.push("/status/university/pending")
       } catch (err) {
         setServerError(getErrorMessage(err, t("error")))
       }

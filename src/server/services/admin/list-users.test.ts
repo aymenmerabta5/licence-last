@@ -15,7 +15,8 @@ describe("listUsers", () => {
     const { listUsers } = await import("./list-users")
     await listUsers({})
 
-    const call = mockListUsers.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockListUsers.mock.calls as any)[0][0]
     expect(call.query.limit).toBe(20)
     expect(call.query.offset).toBe(0)
   })
@@ -24,7 +25,8 @@ describe("listUsers", () => {
     const { listUsers } = await import("./list-users")
     await listUsers({ limit: 50, offset: 10 })
 
-    const call = mockListUsers.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockListUsers.mock.calls as any)[0][0]
     expect(call.query.limit).toBe(50)
     expect(call.query.offset).toBe(10)
   })
@@ -33,7 +35,8 @@ describe("listUsers", () => {
     const { listUsers } = await import("./list-users")
     await listUsers({ searchValue: "test@", searchField: "email" })
 
-    const call = mockListUsers.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockListUsers.mock.calls as any)[0][0]
     expect(call.query.searchValue).toBe("test@")
     expect(call.query.searchField).toBe("email")
     expect(call.query.searchOperator).toBe("contains")
@@ -43,7 +46,8 @@ describe("listUsers", () => {
     const { listUsers } = await import("./list-users")
     await listUsers({ sortBy: "name", sortDirection: "desc" })
 
-    const call = mockListUsers.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockListUsers.mock.calls as any)[0][0]
     expect(call.query.sortBy).toBe("name")
     expect(call.query.sortDirection).toBe("desc")
   })
@@ -52,7 +56,8 @@ describe("listUsers", () => {
     const { listUsers } = await import("./list-users")
     await listUsers({ filterField: "role", filterValue: "student", filterOperator: "eq" })
 
-    const call = mockListUsers.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockListUsers.mock.calls as any)[0][0]
     expect(call.query.filterField).toBe("role")
     expect(call.query.filterValue).toBe("student")
   })

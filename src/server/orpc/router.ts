@@ -3,6 +3,9 @@ import {
   updateMeProcedure,
   uploadAvatarProcedure,
   deleteAvatarProcedure,
+  listMySessionsProcedure,
+  revokeMySessionProcedure,
+  revokeOtherSessionsProcedure,
 } from "./routes/users"
 import {
   listCompaniesProcedure,
@@ -115,6 +118,9 @@ export const appRouter = {
     updateMe: updateMeProcedure,
     uploadAvatar: uploadAvatarProcedure,
     deleteAvatar: deleteAvatarProcedure,
+    listMySessions: listMySessionsProcedure,
+    revokeMySession: revokeMySessionProcedure,
+    revokeOtherSessions: revokeOtherSessionsProcedure,
   },
   companies: {
     list: listCompaniesProcedure,

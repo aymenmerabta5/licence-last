@@ -11,6 +11,11 @@ import {
 import { getMe } from "@/server/services/users/get-me"
 import { updateMe } from "@/server/services/users/update-me"
 import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
+import {
+  listMySessions,
+  revokeMySession,
+  revokeOtherSessions,
+} from "@/server/services/users/session-management"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { deleteFile } from "@/server/storage/s3"
@@ -112,4 +117,32 @@ export const deleteAvatarProcedure = authedProcedureStandard.handler(
     await updateMe(context.user.id, { image: null })
     return { success: true }
   },
+)
+
+// ── Session management (self-service) ───────────────────────────
+
+export const listMySessionsProcedure = authedProcedureGenerous.handler(
+  async ({ context }) => {
+    const sessions = await listMySessions(context.user.id)
+    return sessions.map((s) => ({
+      ...s,
+      isCurrent: s.token === context.session.token,
+    }))
+  },
+)
+
+export const revokeMySessionProcedure = authedProcedureStandard
+  .input(z.object({ sessionToken: z.string().min(1) }))
+  .handler(async ({ input, context }) => {
+    if (input.sessionToken === context.session.token) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "Cannot revoke your current session. Use logout instead.",
+      })
+    }
+    return revokeMySession(input.sessionToken, context.user.id)
+  })
+
+export const revokeOtherSessionsProcedure = authedProcedureStandard.handler(
+  async ({ context }) =>
+    revokeOtherSessions(context.user.id, context.session.token),
 )

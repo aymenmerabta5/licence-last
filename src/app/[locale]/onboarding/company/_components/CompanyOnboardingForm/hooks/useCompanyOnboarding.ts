@@ -43,7 +43,7 @@ export function useCompanyOnboarding() {
           address: value.address || undefined,
         })
 
-        router.push("/dashboard/company/pending")
+        router.push("/status/company/pending")
       } catch (err) {
         setServerError(getErrorMessage(err, t("error")))
       }

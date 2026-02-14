@@ -1,7 +1,8 @@
 export const ROLE_LABELS: Record<string, string> = {
   student: "Student",
   company_admin: "Recruiter",
-  admin: "Administrator",
+  dept_head: "Dept. Head",
+  university_admin: "University Admin",
   super_admin: "Super Admin",
 }
 

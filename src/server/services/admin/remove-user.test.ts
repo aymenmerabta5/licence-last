@@ -15,7 +15,8 @@ describe("removeUser", () => {
     const { removeUser } = await import("./remove-user")
     await removeUser("user-1")
     expect(mockRemoveUser).toHaveBeenCalledTimes(1)
-    const call = mockRemoveUser.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockRemoveUser.mock.calls as any)[0][0]
     expect(call.body.userId).toBe("user-1")
   })
 

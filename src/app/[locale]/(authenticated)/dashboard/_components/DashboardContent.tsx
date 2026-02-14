@@ -3,7 +3,6 @@ import { localeRedirect } from "@/lib/navigation";
 import { Suspense } from "react";
 
 import { requireRole } from "@/lib/auth-guards";
-import { getCompanyByUserId } from "@/server/services/companies/get";
 import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats";
 import { getStudentProfile } from "@/server/services/students/get-profile";
 import { listApplicationsByStudent } from "@/server/services/applications/list-by-student";
@@ -123,22 +122,6 @@ export async function DashboardContent({
   // Redirects for incomplete onboarding
   if (user.role === "student" && !user.onboardingCompleted) {
     return localeRedirect("/onboarding/student");
-  }
-
-  if (user.role === "company_admin") {
-    const company = await getCompanyByUserId(user.id);
-
-    if (!user.onboardingCompleted && !company) {
-      return localeRedirect("/onboarding/company");
-    }
-
-    if (company?.status === "pending") {
-      return localeRedirect("/dashboard/company/pending");
-    }
-
-    if (company?.status === "rejected") {
-      return localeRedirect("/dashboard/company/rejected");
-    }
   }
 
   const greeting = t("welcome");

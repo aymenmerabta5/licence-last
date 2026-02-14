@@ -1,11 +1,11 @@
 "use client"
 
 import * as motion from "motion/react-client"
-import { Briefcase, ShieldCheck } from "lucide-react"
+import { Briefcase } from "lucide-react"
 
-import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
+import { ease } from "@/lib/animations"
 
 interface ExperienceSectionProps {
   labels: {
@@ -21,34 +21,38 @@ export function ExperienceSection({ labels, canEdit }: ExperienceSectionProps) {
     <motion.section
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.4 }}
-      className="space-y-4"
+      transition={{ delay: 0.4, duration: 0.6, ease }}
     >
-      <div className="flex items-center justify-between">
-        <h2 className="font-serif text-2xl font-bold text-heading">{labels.experience}</h2>
-        <ShieldCheck className="h-5 w-5 text-green-500/50" />
+      {/* Section header with accent */}
+      <div className="flex items-center gap-3 mb-6">
+        <div className="h-5 w-0.5 bg-primary" />
+        <h2 className="font-serif text-2xl font-bold text-heading tracking-tight">
+          {labels.experience}
+        </h2>
       </div>
-      <Card className="p-8 border-border/40 bg-background rounded-2xl shadow-sm text-center">
-        <div className="space-y-3 max-w-xs mx-auto">
-          <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-secondary/10">
-            <Briefcase className="h-6 w-6 text-muted-foreground/30" />
+
+      <div className="border border-dashed border-border/30 p-8 sm:p-10 relative overflow-hidden">
+        <div className="absolute top-0 end-0 w-24 h-24 bg-primary/[0.02] blur-[50px] rounded-full" />
+        <div className="relative text-center space-y-3 max-w-sm mx-auto">
+          <div className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/5">
+            <Briefcase className="h-5 w-5 text-primary/30" />
           </div>
-          <p className="text-xs text-muted-foreground/60 font-medium leading-relaxed">
+          <p className="text-sm text-muted-foreground/50 font-light leading-relaxed">
             {labels.emptyMessage}
           </p>
           {canEdit && (
-            <Link href="/dashboard/settings">
+            <Link href="/dashboard/settings" className="inline-block mt-2">
               <Button
                 variant="editorial-outline"
-                size="editorial-sm"
-                className="rounded-xl border-border/40 hover:border-primary mt-2"
+                size="sm"
+                className="border-border/40 hover:border-primary h-9 px-5"
               >
                 {labels.addExperience}
               </Button>
             </Link>
           )}
         </div>
-      </Card>
+      </div>
     </motion.section>
   )
 }

@@ -58,7 +58,7 @@ describe("src/lib/post-login-redirect", () => {
         user: { ...baseMe().user, role: "company_admin", onboardingCompleted: true },
         company: { id: "c1", name: "Acme", slug: "acme", status: "rejected" },
       }
-      expect(getPostLoginRedirectPath(me)).toBe("/dashboard/company/rejected")
+      expect(getPostLoginRedirectPath(me)).toBe("/status/company/rejected")
     })
 
     test("should redirect company admins to pending page for other cases", () => {
@@ -67,7 +67,7 @@ describe("src/lib/post-login-redirect", () => {
         user: { ...baseMe().user, role: "company_admin", onboardingCompleted: true },
         company: null,
       }
-      expect(getPostLoginRedirectPath(me)).toBe("/dashboard/company/pending")
+      expect(getPostLoginRedirectPath(me)).toBe("/status/company/pending")
     })
 
     test("should redirect non-onboarded university_admin to university onboarding", () => {
@@ -93,7 +93,7 @@ describe("src/lib/post-login-redirect", () => {
         user: { ...baseMe().user, role: "university_admin", onboardingCompleted: true },
         university: { id: "u1", name: "Univ", abbreviation: null, status: "rejected", rejectionReason: "Incomplete" },
       }
-      expect(getPostLoginRedirectPath(me)).toBe("/dashboard/admin/rejected")
+      expect(getPostLoginRedirectPath(me)).toBe("/status/university/rejected")
     })
 
     test("should redirect university_admin with pending university to pending page", () => {
@@ -102,7 +102,7 @@ describe("src/lib/post-login-redirect", () => {
         user: { ...baseMe().user, role: "university_admin", onboardingCompleted: true },
         university: { id: "u1", name: "Univ", abbreviation: null, status: "pending", rejectionReason: null },
       }
-      expect(getPostLoginRedirectPath(me)).toBe("/dashboard/admin/pending")
+      expect(getPostLoginRedirectPath(me)).toBe("/status/university/pending")
     })
 
     test("should redirect super_admin to admin dashboard", () => {

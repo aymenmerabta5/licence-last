@@ -100,6 +100,11 @@
     "returnHome": "Retour à l'Accueil",
     "suggestion": "Nous vous conseillons de repartir de l'édition principale"
   },
+  "goodbye": {
+    "headline": "Compte Supprimé",
+    "description": "Votre compte et toutes les données associées ont été définitivement supprimés. Nous sommes désolés de vous voir partir. Vous êtes toujours bienvenu pour créer un nouveau compte à l'avenir.",
+    "returnHome": "Retour à l'Accueil"
+  },
   "auth": {
     "login": {
       "pageTitle": "Connexion",
@@ -337,7 +342,6 @@
       "deptValidations": "Validations de département",
       "departments": "Départements",
       "statistics": "Statistiques",
-      "commandCenter": "Centre de commande",
       "userManagement": "Gestion des utilisateurs",
       "universities": "Universités",
       "settings": "Paramètres",
@@ -802,7 +806,7 @@
       "exploreOffers": "Explorer les Stages"
     },
     "admin": {
-      "title": "Centre de Commandement Admin",
+      "title": "Tableau de Bord Admin",
       "subtitle": "Aperçu de l'activité de la plateforme",
       "stats": {
         "totalPlacements": "Total Placements",
@@ -918,7 +922,6 @@
       },
       "globalStats": "Analyses Globales de Placement",
       "universities": {
-        "backToCommandCenter": "Retour au centre de commande",
         "kicker": "Administration",
         "title": "Validation des Universités",
         "description": "Examiner et approuver les inscriptions universitaires en attente.",
@@ -972,28 +975,7 @@
       }
     },
     "superAdmin": {
-      "commandCenter": {
-        "backToDashboard": "Retour au tableau de bord",
-        "kicker": "Super Admin",
-        "title": "Centre de commande",
-        "description": "Vue d'ensemble de la plateforme et contrôles administratifs.",
-        "cards": {
-          "totalUsers": "Total utilisateurs",
-          "activeUsers": "Utilisateurs actifs",
-          "bannedUsers": "Utilisateurs bannis",
-          "platformHealth": "Santé plateforme"
-        },
-        "quickActions": "Actions rapides",
-        "actions": {
-          "userManagement": "Gestion des utilisateurs",
-          "validations": "Valider les placements",
-          "statistics": "Statistiques"
-        },
-        "recentActivity": "Activité récente",
-        "noRecentActivity": "Aucune activité récente."
-      },
       "users": {
-        "backToCommandCenter": "Retour au centre de commande",
         "kicker": "Administration",
         "title": "Gestion des utilisateurs",
         "description": "Gérer tous les utilisateurs, rôles et accès de la plateforme.",
@@ -1166,6 +1148,48 @@
           "verifyFailed": "Code de vérification invalide. Veuillez réessayer.",
           "passwordRequired": "Le mot de passe est requis."
         }
+      },
+      "sessions": {
+        "title": "Sessions Actives",
+        "description": "Gérez les appareils où votre compte est actuellement connecté.",
+        "currentDevice": "Actuel",
+        "lastActive": "Dernière activité :",
+        "revoke": "Déconnecter",
+        "revokeOthers": "Déconnecter toutes les autres sessions",
+        "noSessions": "Aucune session active trouvée.",
+        "loading": "Chargement des sessions…",
+        "revokeSuccess": "Session déconnectée avec succès.",
+        "revokeError": "Échec de la déconnexion de la session. Veuillez réessayer.",
+        "revokeOthersSuccess": "{count, plural, one {# session déconnectée} other {# sessions déconnectées}} avec succès.",
+        "revokeOthersError": "Échec de la déconnexion des autres sessions. Veuillez réessayer.",
+        "revokeDialog": {
+          "title": "Déconnecter la Session",
+          "description": "Cela déconnectera l'appareil sélectionné. L'utilisateur sur cet appareil devra se reconnecter.",
+          "cancel": "Annuler",
+          "confirm": "Déconnecter"
+        },
+        "revokeAllDialog": {
+          "title": "Déconnecter toutes les autres sessions",
+          "description": "Cela déconnectera {count, plural, one {# autre session} other {# autres sessions}}. Ces appareils devront se reconnecter.",
+          "cancel": "Annuler",
+          "confirm": "Tout déconnecter"
+        }
+      },
+      "deleteAccount": {
+        "title": "Supprimer le Compte",
+        "description": "Cela supprimera définitivement votre compte et toutes les données associées. Cette action est irréversible.",
+        "warning": "Toutes vos données, y compris votre profil, candidatures, conversations et documents seront définitivement supprimées. Cette action ne peut pas être annulée.",
+        "passwordLabel": "Mot de passe actuel",
+        "passwordPlaceholder": "Entrez votre mot de passe pour confirmer",
+        "confirmLabel": "Tapez \"{phrase}\" pour confirmer",
+        "confirmPhrase": "supprimer mon compte",
+        "confirm": "Supprimer Mon Compte Définitivement",
+        "deleting": "Suppression du compte…",
+        "error": {
+          "passwordRequired": "Le mot de passe est requis.",
+          "confirmRequired": "Veuillez taper la phrase de confirmation.",
+          "deleteFailed": "Échec de la suppression du compte. Veuillez vérifier votre mot de passe et réessayer."
+        }
       }
     },
     "departments": {
@@ -1297,6 +1321,195 @@
       "title": "Document Non Trouvé",
       "subtitle": "Aucun document trouvé avec ce code de vérification. Veuillez vérifier le code et réessayer.",
       "tryAgain": "Essayer un Autre Code"
+    }
+  },
+  "pages": {
+    "discover": {
+      "metadata": {
+        "title": "Découvrir — Internex",
+        "description": "Découvrez comment Internex connecte les étudiants aux opportunités de stage grâce au matching intelligent."
+      },
+      "hero": {
+        "kicker": "Aperçu de la Plateforme",
+        "headline": "Découvrez ce qu'Internex peut faire",
+        "headlineHighlight": "peut faire",
+        "description": "Une plateforme complète qui digitalise tout le cycle de vie du stage—de la découverte à la Convention de Stage officielle."
+      },
+      "features": {
+        "label": "Fonctionnalités",
+        "headline": "Tout ce dont vous avez besoin",
+        "items": {
+          "matching": {
+            "num": "01",
+            "title": "Matching par Compétences",
+            "desc": "Notre algorithme évalue les candidats par rapport aux offres en utilisant compétences, langues, localisation et profil."
+          },
+          "search": {
+            "num": "02",
+            "title": "Recherche & Filtres Intelligents",
+            "desc": "Trouvez le stage parfait avec des filtres par localisation, type, mode de travail, compétences et plus."
+          },
+          "assistant": {
+            "num": "03",
+            "title": "Assistant IA",
+            "desc": "Obtenez de l'aide pour rédiger des lettres de motivation, analyser des candidats et naviguer sur la plateforme."
+          },
+          "cv": {
+            "num": "04",
+            "title": "CV Digital",
+            "desc": "Construisez un profil professionnel avec compétences, expérience, GitHub et liens portfolio."
+          },
+          "documents": {
+            "num": "05",
+            "title": "Documents Automatisés",
+            "desc": "Convention de Stage et attestations générées automatiquement avec codes de vérification QR."
+          },
+          "tracking": {
+            "num": "06",
+            "title": "Suivi en Temps Réel",
+            "desc": "Suivez chaque candidature de la soumission au placement avec des mises à jour en direct."
+          }
+        }
+      },
+      "matching": {
+        "label": "Comment fonctionne le Matching",
+        "headline": "Scoring Intelligent",
+        "description": "Notre algorithme évalue les candidats selon quatre dimensions pour trouver le meilleur match.",
+        "skills": { "label": "Compétences", "value": "55%", "desc": "Correspondance des compétences techniques entre le profil étudiant et les exigences de l'offre." },
+        "language": { "label": "Langues", "value": "20%", "desc": "Compatibilité linguistique entre l'étudiant et l'entreprise." },
+        "location": { "label": "Localisation", "value": "15%", "desc": "Proximité géographique et préférences de mode de travail." },
+        "profile": { "label": "Profil", "value": "10%", "desc": "Complétude du profil et qualifications supplémentaires." }
+      },
+      "types": {
+        "label": "Types de Stages",
+        "headline": "Quatre Parcours",
+        "pfe": { "title": "PFE", "fullTitle": "Projet de Fin d'Études", "desc": "Projet de fin d'études intégrant la recherche académique à la pratique industrielle." },
+        "immersion": { "title": "Immersion", "fullTitle": "Stage d'Immersion", "desc": "Intégration complète dans un environnement d'entreprise pour une expérience professionnelle pratique." },
+        "summer": { "title": "Été", "fullTitle": "Stage d'Été", "desc": "Opportunités saisonnières pendant les vacances universitaires pour une expérience supplémentaire." },
+        "practical": { "title": "Pratique", "fullTitle": "Formation Pratique", "desc": "Travail pratique structuré aligné sur les exigences du programme académique." }
+      },
+      "cta": {
+        "headline": "Prêt à explorer ?",
+        "description": "Rejoignez des milliers d'étudiants et d'entreprises qui utilisent déjà Internex.",
+        "button": "Commencer Gratuitement"
+      }
+    },
+    "forStudents": {
+      "metadata": {
+        "title": "Pour Étudiants — Internex",
+        "description": "Construisez votre CV digital, trouvez des stages correspondant à vos compétences et suivez vos candidatures."
+      },
+      "hero": {
+        "kicker": "Pour Étudiants",
+        "headline": "Votre Parcours Professionnel Commence Ici",
+        "headlineHighlight": "Commence Ici",
+        "description": "Construisez votre CV digital, découvrez des stages correspondant à vos compétences et suivez chaque candidature de la soumission au placement."
+      },
+      "benefits": {
+        "label": "Pourquoi Internex",
+        "headline": "Conçu pour Votre Réussite",
+        "cv": { "title": "CV Digital", "desc": "Créez un profil professionnel avec vos compétences, expérience, GitHub et portfolio. Les recruteurs vous trouvent." },
+        "matching": { "title": "Matching Intelligent", "desc": "Notre algorithme trouve les stages correspondant exactement à vos compétences. Fini le défilement interminable." },
+        "apply": { "title": "Candidature en Un Clic", "desc": "Envoyez votre profil directement aux entreprises. L'IA vous aide à rédiger des lettres de motivation qui se démarquent." },
+        "tracking": { "title": "Suivi en Direct", "desc": "Suivez chaque candidature en temps réel. Sachez exactement où vous en êtes à chaque étape." },
+        "assistant": { "title": "Copilote IA", "desc": "Obtenez des conseils personnalisés sur les candidatures, la préparation aux entretiens et la stratégie de carrière." },
+        "documents": { "title": "Documents Auto", "desc": "Votre Convention de Stage et attestations de fin de stage sont générées automatiquement une fois validées." }
+      },
+      "journey": {
+        "label": "Votre Parcours",
+        "headline": "De l'Inscription au Placement",
+        "step1": { "num": "01", "title": "Créez Votre Compte", "desc": "Inscrivez-vous avec votre email universitaire et vérifiez votre statut d'étudiant." },
+        "step2": { "num": "02", "title": "Construisez Votre Profil", "desc": "Ajoutez vos compétences, liez votre GitHub, téléchargez votre portfolio. Rendez-vous visible." },
+        "step3": { "num": "03", "title": "Découvrez & Postulez", "desc": "Cherchez avec des filtres intelligents ou laissez notre moteur de matching trouver les opportunités pour vous." },
+        "step4": { "num": "04", "title": "Obtenez Votre Stage", "desc": "Une fois accepté, votre université valide le placement et les documents sont générés." }
+      },
+      "cta": {
+        "headline": "Commencez votre parcours aujourd'hui",
+        "description": "C'est gratuit pour les étudiants. Toujours.",
+        "button": "Créer Votre Compte",
+        "free": "Gratuit pour les Étudiants"
+      }
+    },
+    "forCompanies": {
+      "metadata": {
+        "title": "Pour Entreprises — Internex",
+        "description": "Trouvez et recrutez les meilleurs talents étudiants avec le screening IA et la conformité automatisée."
+      },
+      "hero": {
+        "kicker": "Pour Entreprises",
+        "headline": "Trouvez les Talents de Demain Aujourd'hui",
+        "headlineHighlight": "Talents de Demain",
+        "description": "Publiez des offres de stage, filtrez les candidats avec l'IA et laissez la plateforme gérer la conformité et les documents automatiquement."
+      },
+      "benefits": {
+        "label": "Pourquoi Internex",
+        "headline": "Recrutez Plus Intelligemment",
+        "pipeline": { "title": "Pipeline de Talents", "desc": "Gérez tous les candidats au même endroit. Filtrez par compétences, expérience et score de matching." },
+        "ai": { "title": "Screening IA", "desc": "Laissez l'IA résumer les candidats, mettre en avant les forces et rédiger les communications—économisant des heures." },
+        "trust": { "title": "Indice de Confiance", "desc": "Construisez la réputation de votre entreprise grâce aux taux de réponse, de complétion et aux scores de feedback." },
+        "compliance": { "title": "Conformité Auto", "desc": "Une fois le candidat accepté, l'université valide et tous les documents officiels sont générés automatiquement." }
+      },
+      "workflow": {
+        "label": "Comment ça marche",
+        "headline": "Quatre Étapes Simples",
+        "step1": { "num": "01", "title": "Configurez Votre Entreprise", "desc": "Créez votre profil entreprise avec logo, description et détails du bureau." },
+        "step2": { "num": "02", "title": "Publiez des Offres", "desc": "Créez des postes de stage avec les compétences requises, durée et mode de travail." },
+        "step3": { "num": "03", "title": "Évaluez & Acceptez", "desc": "Filtrez les candidats, utilisez les résumés IA et acceptez les meilleurs talents." },
+        "step4": { "num": "04", "title": "Workflow Automatisé", "desc": "Le reste se fait automatiquement—validation, documents et suivi." }
+      },
+      "stats": {
+        "label": "En Chiffres",
+        "students": { "value": "2 500+", "label": "Étudiants Actifs" },
+        "placement": { "value": "96%", "label": "Taux de Placement" },
+        "universities": { "value": "45", "label": "Universités Partenaires" },
+        "avgTime": { "value": "< 48h", "label": "Temps de Réponse Moy." }
+      },
+      "cta": {
+        "headline": "Prêt à trouver des talents ?",
+        "description": "Rejoignez plus de 350 entreprises qui recrutent déjà sur Internex.",
+        "button": "Inscrire Votre Entreprise"
+      }
+    },
+    "about": {
+      "metadata": {
+        "title": "À Propos — Internex",
+        "description": "Découvrez la mission d'Internex pour digitaliser le cycle de vie du stage et renforcer le lien Université-Entreprise."
+      },
+      "hero": {
+        "kicker": "À Propos d'Internex",
+        "headline": "Rapprocher Université & Entreprise",
+        "headlineHighlight": "Université & Entreprise",
+        "description": "Dans le cadre de la stratégie du MESRS pour renforcer le lien Université-Entreprise, Internex digitalise tout le cycle de vie du stage de la découverte à la Convention de Stage officielle."
+      },
+      "mission": {
+        "label": "Notre Mission",
+        "headline": "Pourquoi nous avons créé Internex",
+        "paragraphs": {
+          "p1": "Le processus de stage en Algérie a longtemps été fragmenté—les étudiants cherchent manuellement, les entreprises gèrent des candidatures papier et les universités traitent des piles de documents administratifs.",
+          "p2": "Internex a été conçu pour résoudre cela. Une seule plateforme où les étudiants découvrent des opportunités correspondant à leurs compétences, les entreprises gèrent efficacement leurs pipelines de talents et les administrateurs génèrent des documents officiels en un clic.",
+          "p3": "Aligné avec la stratégie du MESRS pour moderniser l'enseignement supérieur, Internex digitalise chaque étape : de la recherche initiale à la Convention de Stage finale et l'attestation de fin de stage."
+        }
+      },
+      "values": {
+        "label": "Nos Valeurs",
+        "headline": "Ce qui nous guide",
+        "innovation": { "title": "Innovation", "desc": "Matching IA, documents automatisés et assistants intelligents qui rendent le processus sans effort." },
+        "accessibility": { "title": "Accessibilité", "desc": "Gratuit pour les étudiants, disponible en trois langues, conçu pour tous les appareils et vitesses de connexion." },
+        "transparency": { "title": "Transparence", "desc": "Suivi en temps réel, indices de confiance et codes de vérification pour que chaque étape soit visible et vérifiable." },
+        "reliability": { "title": "Fiabilité", "desc": "Construit sur une infrastructure moderne avec conformité automatisée, garantissant que chaque document respecte les normes officielles." }
+      },
+      "stats": {
+        "label": "Impact de la Plateforme",
+        "students": { "value": "2 500+", "label": "Étudiants Connectés" },
+        "companies": { "value": "350+", "label": "Entreprises Partenaires" },
+        "universities": { "value": "45", "label": "Universités" },
+        "placement": { "value": "96%", "label": "Taux de Placement" }
+      },
+      "cta": {
+        "headline": "Faites partie de l'avenir",
+        "description": "Que vous soyez étudiant, entreprise ou université—Internex est pour vous.",
+        "button": "Commencer"
+      }
     }
   }
 }
