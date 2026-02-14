@@ -9,6 +9,7 @@ import * as schema from "./schema"
 import { university, universityDomain } from "./schema/universities"
 import { user, account } from "./schema/auth"
 import { skillTag } from "./schema/skills"
+import { department } from "./schema/departments"
 
 /**
  * Parse a comma-separated string of domains into an array of normalized domains.
@@ -171,6 +172,56 @@ async function seedSkillTags(db: ReturnType<typeof drizzle>) {
   }
 }
 
+/* ── Department data ── */
+
+const SEED_DEPARTMENTS: string[] = [
+  "Computer Science",
+  "Mathematics",
+  "Physics",
+  "Chemistry",
+  "Biology",
+  "Electronics",
+  "Law",
+  "Economics",
+  "Literature",
+  "Foreign Languages",
+  "History",
+  "Political Science",
+  "Civil Engineering",
+  "Mechanical Engineering",
+  "Architecture",
+]
+
+async function seedDepartments(db: ReturnType<typeof drizzle>) {
+  const [uni] = await db
+    .select({ id: university.id })
+    .from(university)
+    .where(eq(university.name, "University Of Constantine 2"))
+    .limit(1)
+
+  if (!uni) {
+    logger.warn({ event: "department_seed_skipped", reason: "university not found" })
+    return
+  }
+
+  for (const name of SEED_DEPARTMENTS) {
+    const [existing] = await db
+      .select({ id: department.id })
+      .from(department)
+      .where(eq(department.name, name))
+      .limit(1)
+
+    if (!existing) {
+      await db.insert(department).values({
+        id: randomUUID(),
+        universityId: uni.id,
+        name,
+      })
+      logger.info({ event: "department_seeded", name })
+    }
+  }
+}
+
 async function main() {
   const databaseUrl = process.env.DATABASE_URL
   if (!databaseUrl) {
@@ -192,6 +243,9 @@ async function main() {
       process.env.SEED_UNIVERSITY_NAME?.trim() || "Example University"
     await seedUniversity(db, { name: envName, domains: envDomains })
   }
+
+  // ── Seed departments ──
+  await seedDepartments(db)
 
   // ── Seed skill tags ──
   await seedSkillTags(db)

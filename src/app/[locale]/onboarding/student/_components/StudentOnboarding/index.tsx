@@ -91,39 +91,23 @@ export function StudentOnboardingForm() {
           )}
         </form.Field>
 
-        {departments.length > 0 ? (
-          <form.Field name="departmentId">
-            {(field) => (
-              <SelectField
-                id="student-department"
-                label={t("department")}
-                placeholder={t("departmentPlaceholder")}
-                icon={GraduationCap}
-                options={departments.map((d) => ({
-                  value: d.id,
-                  label: d.name,
-                }))}
-                value={field.state.value}
-                onChange={(v) => field.handleChange(String(v))}
-                onBlur={field.handleBlur}
-              />
-            )}
-          </form.Field>
-        ) : (
-          <form.Field name="department">
-            {(field) => (
-              <TextField
-                id="student-department"
-                label={t("department")}
-                placeholder={t("departmentFreetext")}
-                icon={GraduationCap}
-                value={field.state.value}
-                onChange={(v) => field.handleChange(v)}
-                onBlur={field.handleBlur}
-              />
-            )}
-          </form.Field>
-        )}
+        <form.Field name="departmentId">
+          {(field) => (
+            <SelectField
+              id="student-department"
+              label={t("department")}
+              placeholder={t("departmentPlaceholder")}
+              icon={GraduationCap}
+              options={departments.map((d) => ({
+                value: d.id,
+                label: d.name,
+              }))}
+              value={field.state.value}
+              onChange={(v) => field.handleChange(String(v))}
+              onBlur={field.handleBlur}
+            />
+          )}
+        </form.Field>
 
         <form.Field name="level">
           {(field) => (

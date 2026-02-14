@@ -1,27 +1,24 @@
 import "server-only"
 
+import Redis from "ioredis"
 import { env } from "@/env"
 
-interface BunRedisClient {
-  send(command: string, args: string[]): Promise<unknown>
-  close(): void
-}
-
-let redisClient: BunRedisClient | null = null
+let redisClient: Redis | null = null
 
 /**
  * Get or create the Redis client singleton.
  * Returns null if REDIS_URL is not configured.
  */
-export function getRedisClient(): BunRedisClient | null {
+export function getRedisClient(): Redis | null {
   if (!env.REDIS_URL) {
     return null
   }
 
   if (!redisClient) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { RedisClient } = require("bun")
-    redisClient = new RedisClient(env.REDIS_URL)
+    redisClient = new Redis(env.REDIS_URL, {
+      maxRetriesPerRequest: 3,
+      lazyConnect: true,
+    })
   }
 
   return redisClient
@@ -33,7 +30,7 @@ export function getRedisClient(): BunRedisClient | null {
  */
 export async function closeRedisConnection(): Promise<void> {
   if (redisClient) {
-    redisClient.close()
+    await redisClient.quit()
     redisClient = null
   }
 }
