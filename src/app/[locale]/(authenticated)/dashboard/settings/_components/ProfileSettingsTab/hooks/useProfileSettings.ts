@@ -187,20 +187,6 @@ export function useProfileSettings(
     [queryClient, meQueryOptions.queryKey],
   )
 
-  const handleAvatarRemove = useCallback(async () => {
-    setIsAvatarUploading(true)
-    try {
-      await orpcClient.users.deleteAvatar()
-      setAvatarUrl(null)
-      await queryClient.invalidateQueries({ queryKey: meQueryOptions.queryKey })
-      toast.success("Profile photo removed.")
-    } catch (err) {
-      toast.error(getErrorMessage(err, "Could not remove photo."))
-    } finally {
-      setIsAvatarUploading(false)
-    }
-  }, [queryClient, meQueryOptions.queryKey])
-
   return {
     form,
     isStudent,
@@ -212,6 +198,5 @@ export function useProfileSettings(
     isAvatarUploading,
     avatarInputRef,
     handleAvatarUpload,
-    handleAvatarRemove,
   }
 }

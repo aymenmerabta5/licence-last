@@ -20,27 +20,28 @@ export function RecommendedOffers({ offers, labels }: RecommendedOffersProps) {
   if (offers.length === 0) return null
 
   return (
-    <div className="space-y-6 pt-4">
-      <div className="flex items-center justify-between">
-        <h2 className="font-serif text-2xl font-bold text-heading">
+    <section>
+      {/* Editorial section header */}
+      <div className="flex items-center justify-between pb-4 border-b-2 border-foreground dark:border-foreground/15 mb-6">
+        <h2 className="font-serif text-xl font-bold text-heading">
           {labels.title}
         </h2>
         <Link href="/dashboard/explore">
           <Button
             variant="ghost"
             size="sm"
-            className="text-primary hover:text-primary/80 group text-xs font-bold uppercase tracking-widest"
+            className="text-primary hover:text-primary/80 group text-[9px] font-bold uppercase tracking-[0.15em] [[dir=rtl]_&]:tracking-normal"
           >
             {labels.exploreAll}{" "}
-            <ArrowRight className="h-4 w-4 ms-2 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="h-3.5 w-3.5 ms-1.5 transition-transform group-hover:translate-x-1" />
           </Button>
         </Link>
       </div>
-      <div className="space-y-4">
+      <div className="divide-y divide-border/40">
         {offers.map((offer) => (
           <OfferCard key={offer.id} offer={offer} />
         ))}
       </div>
-    </div>
+    </section>
   )
 }

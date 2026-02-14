@@ -3,6 +3,7 @@ import "server-only"
 import { generateObject, tool, type ToolSet } from "ai"
 import { z } from "zod"
 
+import { WILAYAS } from "@/lib/wilayas"
 import { getPoeModel } from "../model"
 
 interface CreateInternalToolsParams {
@@ -12,15 +13,18 @@ interface CreateInternalToolsParams {
 async function safeGenerateObject<T>({
   schema,
   prompt,
+  system,
 }: {
   schema: z.ZodType<T>
   prompt: string
+  system?: string
 }): Promise<T | { error: string; detail: string }> {
   try {
     const result = await generateObject({
       model: getPoeModel(),
       schema,
       prompt,
+      ...(system && { system }),
     })
     return result.object as T
   } catch (e) {
@@ -184,13 +188,38 @@ export function createInternalTools({ contextJson }: CreateInternalToolsParams):
           explanation: z.string().optional(),
         })
 
+        // Extract user query and skills from the context
+        let userQuery = ""
+        let skillsList = ""
+        try {
+          const ctx = JSON.parse(contextJson)
+          userQuery = ctx.query || ctx.intent || ""
+          if (ctx.availableSkillTags) {
+            // Only pass id+name to keep prompt compact
+            const tags = ctx.availableSkillTags as { id: string; name: string }[]
+            skillsList = tags.map((s) => `${s.id}:${s.name}`).join(", ")
+          }
+        } catch {
+          userQuery = contextJson
+        }
+
+        // Compact wilaya reference: code=name
+        const wilayaRef = WILAYAS.map((name, i) => `${i + 1}=${name}`).join(", ")
+
         const prompt = [
-          "Convert the user's natural-language internship search query into structured filters.",
-          "Only include skillTagIds that exist in the provided availableSkillTags list.",
-          "If unsure about a wilaya, omit wilayaCode.",
-          "Return only the JSON that matches the schema.",
-          `Context JSON:\n${contextJson}`,
-        ].join("\n\n")
+          "Parse this internship search query into structured filters for an Algerian internship platform.",
+          "The user may write in French, Arabic, or English.",
+          "",
+          `User query: "${userQuery}"`,
+          "",
+          "Internship types: pfe (Projet de Fin d'Études/graduation project), immersion (stage d'immersion/exploratory), summer (stage d'été/summer internship/تدريب صيفي), practical (stage pratique/hands-on training)",
+          "Work modes: on_site (présentiel/حضوري), hybrid (hybride/هجين), remote (à distance/عن بعد)",
+          `Wilaya codes: ${wilayaRef}`,
+          skillsList ? `Available skill tags (id:name): ${skillsList}` : "",
+          "",
+          "Rules: Only set fields the user mentioned. Match city names across languages (e.g. Alger/Algiers/الجزائر=16, Oran/وهران=31, Constantine/قسنطينة=25). Only use skillTagIds from the list above.",
+          "Return only valid JSON matching the schema.",
+        ].filter(Boolean).join("\n")
 
         return safeGenerateObject({ schema, prompt })
       },

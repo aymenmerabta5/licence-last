@@ -69,6 +69,8 @@ export const uploadAvatarProcedure = authedProcedureStandard
     } catch (error) {
       const message = error instanceof Error ? error.message : "Upload failed"
 
+      log.error({ err: error }, "Avatar upload failed")
+
       if (
         message.startsWith("Invalid file type") ||
         message.startsWith("File too large") ||
@@ -77,12 +79,16 @@ export const uploadAvatarProcedure = authedProcedureStandard
         throw new ORPCError("BAD_REQUEST", { message })
       }
 
-      if (message.startsWith("S3 is not configured")) {
+      if (
+        message.startsWith("S3 is not configured") ||
+        message.startsWith("Bun runtime is required")
+      ) {
         throw new ORPCError("INTERNAL_SERVER_ERROR", { message })
       }
 
       throw new ORPCError("INTERNAL_SERVER_ERROR", {
         message: "Upload failed. Please try again.",
+        cause: error,
       })
     }
   })

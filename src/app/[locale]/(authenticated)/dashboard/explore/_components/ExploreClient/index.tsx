@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useRef } from "react"
 import { useTranslations } from "next-intl"
 
 import { SearchFilters } from "../SearchFilters"
@@ -27,6 +28,7 @@ export function ExploreClient() {
     isFetchingNextPage,
     sentinelRef,
     hasActiveFilters,
+    activeFilterCount,
     clearFilters,
   } = useOfferSearch()
 
@@ -38,6 +40,25 @@ export function ExploreClient() {
     aiError,
     parseFilters,
   } = useSearchCopilot()
+
+  // Auto-apply AI suggestion when it arrives
+  const prevSuggestionRef = useRef(aiSuggestion)
+  useEffect(() => {
+    if (aiSuggestion && aiSuggestion !== prevSuggestionRef.current) {
+      const availableIds = new Set(skills.map((s) => s.id))
+      const safeSkillIds = aiSuggestion.skillTagIds.filter((id) =>
+        availableIds.has(id),
+      )
+      setFilters({
+        wilayaCode: aiSuggestion.wilayaCode,
+        internshipTypes: aiSuggestion.internshipTypes,
+        workModes: aiSuggestion.workModes,
+        skillTagIds: safeSkillIds,
+      })
+      if (aiSuggestion.keyword) setKeyword(aiSuggestion.keyword)
+    }
+    prevSuggestionRef.current = aiSuggestion
+  }, [aiSuggestion, skills, setFilters, setKeyword])
 
   const filterPanel = (
     <SearchFilters
@@ -56,6 +77,7 @@ export function ExploreClient() {
         keyword={keyword}
         onKeywordChange={setKeyword}
         hasActiveFilters={hasActiveFilters}
+        activeFilterCount={activeFilterCount}
         onClearFilters={clearFilters}
         filterPanel={filterPanel}
       />
@@ -68,23 +90,11 @@ export function ExploreClient() {
         aiSuggestion={aiSuggestion}
         skills={skills}
         onParseFilters={parseFilters}
-        onApplySuggestion={(suggestion) => {
-          const availableIds = new Set(skills.map((s) => s.id))
-          const safeSkillIds = suggestion.skillTagIds.filter((id) =>
-            availableIds.has(id),
-          )
-          setFilters({
-            wilayaCode: suggestion.wilayaCode,
-            internshipTypes: suggestion.internshipTypes,
-            workModes: suggestion.workModes,
-            skillTagIds: safeSkillIds,
-          })
-          if (suggestion.keyword) setKeyword(suggestion.keyword)
-        }}
       />
 
       <OffersGrid
         offers={offers}
+        totalCount={offers.length}
         isLoading={isLoading}
         isFetchingNextPage={isFetchingNextPage}
         sentinelRef={sentinelRef}

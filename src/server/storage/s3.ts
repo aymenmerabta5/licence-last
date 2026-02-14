@@ -1,58 +1,54 @@
 import "server-only"
 
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3"
 import { env } from "@/env"
+import { createModuleLogger } from "@/server/logging"
 
-function isConfigured(): boolean {
+const log = createModuleLogger("storage/s3")
+
+function getConfig() {
   const bucket = env.S3_BUCKET ?? env.S3_BUCKET_NAME
   const endpoint = env.S3_ENDPOINT ?? env.NEXT_PUBLIC_S3_ENDPOINT
   const accessKeyId = env.S3_ACCESS_KEY_ID ?? env.AWS_ACCESS_KEY_ID
   const secretAccessKey = env.S3_SECRET_ACCESS_KEY ?? env.AWS_SECRET_ACCESS_KEY
   const publicUrl = env.S3_PUBLIC_URL ?? env.NEXT_PUBLIC_S3_URL
 
-  return !!(
-    bucket &&
-    endpoint &&
-    accessKeyId &&
-    secretAccessKey &&
-    publicUrl
-  )
-}
-
-let client: InstanceType<typeof Bun.S3Client> | null = null
-
-function getClient() {
-  if (!isConfigured()) {
+  if (!bucket || !endpoint || !accessKeyId || !secretAccessKey || !publicUrl) {
     throw new Error(
       "S3 is not configured. Set S3_PUBLIC_URL (or NEXT_PUBLIC_S3_URL) and either (S3_BUCKET, S3_ENDPOINT, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY) or (S3_BUCKET_NAME, NEXT_PUBLIC_S3_ENDPOINT, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY).",
     )
   }
 
-  if (typeof Bun === "undefined" || !Bun.S3Client) {
-    throw new Error("Bun runtime is required for S3 operations (Bun.S3Client is not available).")
-  }
+  return { bucket, endpoint, accessKeyId, secretAccessKey, publicUrl }
+}
 
+let client: S3Client | null = null
+
+function getClient() {
   if (!client) {
-    const bucket = env.S3_BUCKET ?? env.S3_BUCKET_NAME
-    const endpoint = env.S3_ENDPOINT ?? env.NEXT_PUBLIC_S3_ENDPOINT
-    const accessKeyId = env.S3_ACCESS_KEY_ID ?? env.AWS_ACCESS_KEY_ID
-    const secretAccessKey = env.S3_SECRET_ACCESS_KEY ?? env.AWS_SECRET_ACCESS_KEY
+    const { endpoint, accessKeyId, secretAccessKey } = getConfig()
 
-    if (!bucket || !endpoint || !accessKeyId || !secretAccessKey) {
-      throw new Error(
-        "S3 is not configured. Missing bucket/endpoint/credentials after resolving env vars.",
-      )
-    }
-
-    client = new Bun.S3Client({
+    client = new S3Client({
       endpoint,
-      accessKeyId,
-      secretAccessKey,
-      region: env.S3_REGION,
-      bucket,
+      region: env.S3_REGION ?? "auto",
+      credentials: {
+        accessKeyId,
+        secretAccessKey,
+      },
+      forcePathStyle: true,
     })
   }
 
   return client
+}
+
+export function isConfigured(): boolean {
+  try {
+    getConfig()
+    return true
+  } catch {
+    return false
+  }
 }
 
 export async function uploadFile(
@@ -61,16 +57,29 @@ export async function uploadFile(
   contentType: string,
 ): Promise<string> {
   const s3 = getClient()
-  const publicUrl = env.S3_PUBLIC_URL ?? env.NEXT_PUBLIC_S3_URL
-  if (!publicUrl) {
-    throw new Error("S3 is not configured. Missing S3_PUBLIC_URL (or NEXT_PUBLIC_S3_URL).")
+  const { bucket, publicUrl } = getConfig()
+
+  try {
+    await s3.send(new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      Body: data,
+      ContentType: contentType,
+    }))
+  } catch (err) {
+    log.error({ err, key, contentType, size: data.length }, "S3 write failed")
+    throw err
   }
 
-  await s3.file(key).write(data, { type: contentType })
   return `${publicUrl}/${key}`
 }
 
 export async function deleteFile(key: string): Promise<void> {
   const s3 = getClient()
-  await s3.file(key).delete()
+  const { bucket } = getConfig()
+
+  await s3.send(new DeleteObjectCommand({
+    Bucket: bucket,
+    Key: key,
+  }))
 }

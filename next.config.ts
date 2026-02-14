@@ -23,6 +23,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "xendate.com",
+      },
+    ],
+  },
   allowedDevOrigins: [
     "http://localhost:3000",
   ]

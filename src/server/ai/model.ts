@@ -4,9 +4,81 @@ import { createOpenAI } from "@ai-sdk/openai"
 
 import { env } from "@/env"
 
+/**
+ * Poe's OpenAI-compatible streaming API omits `choices[].index` in SSE chunks,
+ * which @ai-sdk/openai v3 requires. This fetch wrapper patches each SSE line
+ * to add the missing field so Zod validation passes.
+ */
+async function poeFetch(
+  input: RequestInfo | URL,
+  init?: RequestInit,
+): Promise<Response> {
+  const response = await globalThis.fetch(input, init)
+
+  if (
+    !response.body ||
+    !response.headers.get("content-type")?.includes("text/event-stream")
+  ) {
+    return response
+  }
+
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder()
+  const encoder = new TextEncoder()
+  let buffer = ""
+
+  const patched = new ReadableStream<Uint8Array>({
+    async pull(controller) {
+      const { done, value } = await reader.read()
+
+      if (done) {
+        if (buffer) controller.enqueue(encoder.encode(buffer))
+        controller.close()
+        return
+      }
+
+      buffer += decoder.decode(value, { stream: true })
+      const lines = buffer.split("\n")
+      buffer = lines.pop() ?? ""
+
+      for (const line of lines) {
+        controller.enqueue(encoder.encode(patchSSELine(line) + "\n"))
+      }
+    },
+  })
+
+  return new Response(patched, {
+    headers: response.headers,
+    status: response.status,
+    statusText: response.statusText,
+  })
+}
+
+function patchSSELine(line: string): string {
+  if (!line.startsWith("data: ") || line === "data: [DONE]") return line
+
+  try {
+    const json = JSON.parse(line.slice(6))
+    if (Array.isArray(json.choices)) {
+      let changed = false
+      for (let i = 0; i < json.choices.length; i++) {
+        if (json.choices[i].index == null) {
+          json.choices[i].index = i
+          changed = true
+        }
+      }
+      if (changed) return `data: ${JSON.stringify(json)}`
+    }
+  } catch {
+    // Not valid JSON — pass through unchanged
+  }
+  return line
+}
+
 const poe = createOpenAI({
   apiKey: env.POE_API_KEY,
   baseURL: env.POE_BASE_URL ?? "https://api.poe.com/v1",
+  fetch: poeFetch as typeof globalThis.fetch,
 })
 
 const FALLBACK_ALLOWED_MODELS = ["GPT-4o", "GPT-4o-mini"]
