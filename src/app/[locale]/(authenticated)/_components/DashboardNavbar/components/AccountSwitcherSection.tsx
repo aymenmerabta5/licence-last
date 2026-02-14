@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import { UserPlus } from "lucide-react"
-import { useTranslations } from "next-intl"
+import { UserPlus } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"
-import { Skeleton } from "@/components/ui/skeleton"
-import { AccountRow } from "./AccountRow"
-import type { DeviceSession } from "../types"
+} from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+import { AccountRow } from "./AccountRow";
+import type { DeviceSession } from "../types";
 
 interface AccountSwitcherSectionProps {
-  sessions: DeviceSession[]
-  isLoading: boolean
-  currentUserId: string
-  switchingToken: string | null
-  removingToken: string | null
-  onSwitch: (token: string, name: string) => void
-  onRemove: (token: string) => void
-  onAdd: () => void
+  sessions: DeviceSession[];
+  isLoading: boolean;
+  currentUserId: string;
+  switchingToken: string | null;
+  removingToken: string | null;
+  onSwitch: (token: string, name: string) => void;
+  onRemove: (token: string) => void;
+  onAdd: () => void;
 }
 
 export function AccountSwitcherSection({
@@ -34,7 +34,7 @@ export function AccountSwitcherSection({
   onRemove,
   onAdd,
 }: AccountSwitcherSectionProps) {
-  const t = useTranslations("dashboard.accountSwitcher")
+  const t = useTranslations("dashboard.accountSwitcher");
 
   return (
     <>
@@ -46,14 +46,14 @@ export function AccountSwitcherSection({
 
         {isLoading ? (
           <div className="space-y-2 px-2 py-1">
-            <div className="flex items-center gap-3">
+            <div key="skeleton-1" className="flex items-center gap-3">
               <Skeleton className="h-8 w-8 rounded-full" />
               <div className="space-y-1.5 flex-1">
                 <Skeleton className="h-3 w-24" />
                 <Skeleton className="h-2.5 w-16" />
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div key="skeleton-2" className="flex items-center gap-3">
               <Skeleton className="h-8 w-8 rounded-full" />
               <div className="space-y-1.5 flex-1">
                 <Skeleton className="h-3 w-20" />
@@ -86,5 +86,5 @@ export function AccountSwitcherSection({
         </DropdownMenuItem>
       </DropdownMenuGroup>
     </>
-  )
+  );
 }
