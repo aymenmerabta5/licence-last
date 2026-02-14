@@ -1163,6 +1163,23 @@
           "passwordRequired": "Password is required."
         }
       }
+    },
+    "departments": {
+      "pageTitle": "Departments Management",
+      "title": "Departments Management",
+      "description": "Create and manage university departments and assign heads.",
+      "empty": "No departments found. Start by creating one.",
+      "addDepartment": "Add Department",
+      "assignHead": "Assign Head",
+      "assignHeadDescription": "Enter the email of the user to assign as Department Head:",
+      "backToDashboard": "Back to dashboard",
+      "name": "Department Name",
+      "namePlaceholder": "e.g. Computer Science",
+      "headName": "Head Name (Optional)",
+      "headNamePlaceholder": "e.g. Dr. Smith",
+      "save": "Create Department",
+      "success": "Department created",
+      "error": "Failed to create department"
     }
   },
   "howItWorks": {
