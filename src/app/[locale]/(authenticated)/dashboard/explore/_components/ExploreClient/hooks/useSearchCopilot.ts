@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
+import { useMutation } from "@tanstack/react-query"
 
-import { getNumber, getString, getStringArray } from "@/lib/ai/tool-output"
-import { useCopilot } from "@/hooks"
+import { orpcClient } from "@/server/orpc/client"
 
 import type { FilterState } from "./useOfferSearch"
 
@@ -16,16 +16,23 @@ export function useSearchCopilot() {
   const [aiQuery, setAiQuery] = useState("")
   const [aiSuggestion, setAiSuggestion] = useState<AiSuggestion | null>(null)
 
-  const { sendMessage, status: aiStatus, error: aiError, reset } = useCopilot({
-    toolName: "student_search_parse",
-    onResult: (out) => {
+  const {
+    mutate,
+    isPending,
+    error: aiError,
+  } = useMutation({
+    mutationFn: (input: {
+      query: string
+      availableSkillTags: { id: string; name: string }[]
+    }) => orpcClient.offers.parseSearchQuery(input),
+    onSuccess: (data) => {
       setAiSuggestion({
-        keyword: getString(out.keyword) ?? undefined,
-        explanation: getString(out.explanation),
-        wilayaCode: getNumber(out.wilayaCode) ?? undefined,
-        internshipTypes: getStringArray(out.internshipTypes),
-        workModes: getStringArray(out.workModes),
-        skillTagIds: getStringArray(out.skillTagIds),
+        keyword: data.keyword,
+        explanation: data.explanation,
+        wilayaCode: data.wilayaCode ?? undefined,
+        internshipTypes: data.internshipTypes,
+        workModes: data.workModes,
+        skillTagIds: data.skillTagIds,
       })
     },
   })
@@ -35,21 +42,24 @@ export function useSearchCopilot() {
     availableSkillTags: { id: string; name: string; category: string | null }[],
   ) => {
     setAiSuggestion(null)
-    const context = {
-      intent: "student_search_parse",
+    mutate({
       query,
-      availableSkillTags,
-    }
-    void sendMessage({ text: query }, { body: { context } })
+      availableSkillTags: availableSkillTags.map((s) => ({
+        id: s.id,
+        name: s.name,
+      })),
+    })
   }
+
+  // Map to the same status interface the panel expects
+  const aiStatus = isPending ? "streaming" : "ready"
 
   return {
     aiQuery,
     setAiQuery,
     aiSuggestion,
     aiStatus,
-    aiError,
+    aiError: aiError ?? undefined,
     parseFilters,
-    reset,
   }
 }

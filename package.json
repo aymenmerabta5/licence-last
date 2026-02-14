@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -39,6 +39,7 @@
     "@ai-sdk/openai": "^3.0.26",
     "@ai-sdk/react": "^3.0.80",
     "@arcadeai/arcadejs": "^2.2.0",
+    "@aws-sdk/client-s3": "^3.990.0",
     "@base-ui/react": "^1.1.0",
     "@orpc/client": "^1.13.4",
     "@orpc/experimental-ratelimit": "^1.13.5",
@@ -91,7 +92,6 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^20",
-
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/react-syntax-highlighter": "^15.5.13",

@@ -1,6 +1,6 @@
 "use client"
 
-import { User } from "lucide-react"
+import { Fingerprint } from "lucide-react"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ServerError } from "@/components/ServerError"
@@ -22,9 +22,9 @@ export function ProfileSettingsTab({
 }: ProfileSettingsTabProps) {
   if (isLoading || !me) {
     return (
-      <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-500">
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
         <Card className="border-border/40 bg-background rounded-3xl overflow-hidden shadow-sm">
-          <CardHeader className="bg-secondary/10 px-8 py-10 border-b border-border/20">
+          <CardHeader className="bg-gradient-to-b from-secondary/15 to-transparent px-8 py-10 border-b border-border/15">
             <CardTitle className="font-serif text-2xl">
               Profile Identity
             </CardTitle>
@@ -33,10 +33,16 @@ export function ProfileSettingsTab({
             </CardDescription>
           </CardHeader>
           <CardContent className="p-8">
-            <div className="space-y-3">
-              <div className="h-4 w-2/3 bg-secondary/30 rounded" />
-              <div className="h-4 w-1/2 bg-secondary/30 rounded" />
-              <div className="h-4 w-3/5 bg-secondary/30 rounded" />
+            <div className="flex items-center gap-6 mb-8">
+              <div className="h-24 w-24 rounded-2xl bg-secondary/20 animate-pulse" />
+              <div className="space-y-2">
+                <div className="h-4 w-32 bg-secondary/20 rounded animate-pulse" />
+                <div className="h-3 w-48 bg-secondary/15 rounded animate-pulse" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="h-12 bg-secondary/15 rounded-xl animate-pulse" />
+              <div className="h-12 bg-secondary/15 rounded-xl animate-pulse" />
             </div>
           </CardContent>
         </Card>
@@ -67,24 +73,31 @@ function ProfileSettingsTabForm({
     isAvatarUploading,
     avatarInputRef,
     handleAvatarUpload,
-    handleAvatarRemove,
   } = useProfileSettings(me, studentProfile)
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-500">
-      <Card className="border-border/40 bg-background rounded-3xl overflow-hidden shadow-sm">
-        <CardHeader className="bg-secondary/10 px-8 py-10 relative overflow-hidden border-b border-border/20">
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
+      {/* Profile card */}
+      <Card className="border-border/40 bg-background rounded-3xl overflow-hidden shadow-sm pt-0">
+        <CardHeader className="pt-7 relative overflow-hidden px-8 pb-5 border-b border-border/15 bg-gradient-to-b from-secondary/10 to-transparent">
+          {/* Decorative watermark */}
           <div
-            className="absolute inset-y-0 end-6 flex items-center opacity-[0.06] pointer-events-none"
+            className="absolute inset-y-0 end-8 flex items-center opacity-[0.03] pointer-events-none"
             aria-hidden="true"
           >
-            <User className="h-44 w-44" />
+            <Fingerprint className="h-24 w-24" />
           </div>
-          <CardTitle className="font-serif text-2xl">
-            Profile Identity
-          </CardTitle>
-          <CardDescription className="font-medium">
-            Information that will be visible to companies and administrators
+
+          <div className="flex items-center gap-2.5 mb-1">
+            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
+              <Fingerprint className="h-3.5 w-3.5 text-primary" />
+            </span>
+            <CardTitle className="font-serif text-2xl tracking-tight">
+              Profile Identity
+            </CardTitle>
+          </div>
+          <CardDescription className="font-medium ps-10">
+            How companies and administrators see you on the platform.
           </CardDescription>
         </CardHeader>
 
@@ -111,19 +124,27 @@ function ProfileSettingsTabForm({
                     isUploading={isAvatarUploading}
                     inputRef={avatarInputRef}
                     onUpload={handleAvatarUpload}
-                    onRemove={handleAvatarRemove}
                   />
                 )
               }}
             </form.Subscribe>
 
-            <div className="h-px bg-border/20 w-full" />
+            {/* Section: Personal Info */}
+            <div className="space-y-5">
+              <div className="flex items-center gap-3">
+                <div className="h-px flex-1 bg-border/20" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 shrink-0">
+                  Personal Information
+                </span>
+                <div className="h-px flex-1 bg-border/20" />
+              </div>
 
-            <PersonalInfoSection
-              form={form}
-              email={me.user.email ?? ""}
-              isBusy={isBusy}
-            />
+              <PersonalInfoSection
+                form={form}
+                email={me.user.email ?? ""}
+                isBusy={isBusy}
+              />
+            </div>
 
             {isStudent && (
               <StudentDetailsSection form={form} isBusy={isBusy} />

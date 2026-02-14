@@ -3,6 +3,7 @@ import "server-only"
 import { generateObject, tool, type ToolSet } from "ai"
 import { z } from "zod"
 
+import { WILAYAS } from "@/lib/wilayas"
 import { getPoeModel } from "../model"
 
 interface CreateInternalToolsParams {
@@ -12,15 +13,18 @@ interface CreateInternalToolsParams {
 async function safeGenerateObject<T>({
   schema,
   prompt,
+  system,
 }: {
   schema: z.ZodType<T>
   prompt: string
+  system?: string
 }): Promise<T | { error: string; detail: string }> {
   try {
     const result = await generateObject({
       model: getPoeModel(),
       schema,
       prompt,
+      ...(system && { system }),
     })
     return result.object as T
   } catch (e) {
@@ -184,12 +188,38 @@ export function createInternalTools({ contextJson }: CreateInternalToolsParams):
           explanation: z.string().optional(),
         })
 
+        // Enrich the original context JSON with reference data
+        let enrichedContext: Record<string, unknown> = {}
+        try {
+          enrichedContext = JSON.parse(contextJson) as Record<string, unknown>
+        } catch {
+          enrichedContext = { query: contextJson }
+        }
+
+        // Inject reference mappings into context
+        enrichedContext.wilayaCodes = Object.fromEntries(
+          WILAYAS.map((name, i) => [name, i + 1]),
+        )
+        enrichedContext.internshipTypeMapping = {
+          pfe: "Projet de Fin d'Études / graduation project / مشروع نهاية الدراسة",
+          immersion: "stage d'immersion / exploratory internship / تدريب استكشافي",
+          summer: "stage d'été / summer internship / تدريب صيفي",
+          practical: "stage pratique / hands-on training / تدريب تطبيقي",
+        }
+        enrichedContext.workModeMapping = {
+          on_site: "présentiel / in-office / حضوري",
+          hybrid: "hybride / mixed / هجين",
+          remote: "à distance / fully remote / عن بعد",
+        }
+
         const prompt = [
           "Convert the user's natural-language internship search query into structured filters.",
+          "Extract ALL matching filters from the query in a single response: internshipTypes, workModes, wilayaCode, and skillTagIds.",
+          "Use wilayaCodes mapping to resolve city names (in French, Arabic, or English) to numeric codes.",
+          "Use workModeMapping to detect work preferences: words like 'remote', 'à distance', 'عن بعد' → [\"remote\"]; 'présentiel', 'on-site', 'حضوري' → [\"on_site\"]; 'hybride', 'hybrid' → [\"hybrid\"].",
           "Only include skillTagIds that exist in the provided availableSkillTags list.",
-          "If unsure about a wilaya, omit wilayaCode.",
-          "Return only the JSON that matches the schema.",
-          `Context JSON:\n${contextJson}`,
+          "If unsure about a field, omit it. Return only the JSON that matches the schema.",
+          `Context JSON:\n${JSON.stringify(enrichedContext)}`,
         ].join("\n\n")
 
         return safeGenerateObject({ schema, prompt })

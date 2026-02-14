@@ -64,11 +64,13 @@ export function useOfferSearch() {
 
   const sentinelRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage)
 
-  const hasActiveFilters =
-    !!filters.wilayaCode ||
-    filters.internshipTypes.length > 0 ||
-    filters.workModes.length > 0 ||
-    filters.skillTagIds.length > 0
+  const activeFilterCount =
+    (filters.wilayaCode ? 1 : 0) +
+    filters.internshipTypes.length +
+    filters.workModes.length +
+    filters.skillTagIds.length
+
+  const hasActiveFilters = activeFilterCount > 0
 
   const clearFilters = () => setFilters(EMPTY_FILTERS)
 
@@ -83,6 +85,7 @@ export function useOfferSearch() {
     isFetchingNextPage,
     sentinelRef,
     hasActiveFilters,
+    activeFilterCount,
     clearFilters,
   }
 }

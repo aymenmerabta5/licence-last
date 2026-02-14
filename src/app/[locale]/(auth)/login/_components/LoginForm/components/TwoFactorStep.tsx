@@ -6,8 +6,6 @@ import { ShieldCheck, Mail, Key, ArrowLeft, Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
 import { ServerError } from "@/components/ServerError"
 import { reveal, ease } from "@/lib/animations"
 
@@ -49,7 +47,8 @@ export function TwoFactorStep({
   const t = useTranslations("auth.login.twoFactor")
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-8">
+      {/* Header */}
       <motion.div {...reveal} transition={{ duration: 0.6, ease }}>
         <h1 className="font-serif text-3xl text-heading tracking-tight mb-2 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
           {t("title")}
@@ -61,48 +60,58 @@ export function TwoFactorStep({
 
       <ServerError message={serverError} />
 
-      {/* Method tabs */}
+      {/* Method tabs — editorial underline style */}
       <motion.div
         {...reveal}
         transition={{ duration: 0.6, ease, delay: 0.05 }}
-        className="flex gap-1 p-1 border border-border/40 bg-muted/30"
+        className="border-b border-border/60"
       >
-        {methods.map(({ key, Icon }) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => onMethodChange(key)}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold uppercase tracking-widest transition-all duration-200 ${
-              method === key
-                ? "bg-background text-heading shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Icon className="h-3.5 w-3.5" />
-            {t(key)}
-          </button>
-        ))}
+        <div className="flex">
+          {methods.map(({ key, Icon }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => onMethodChange(key)}
+              className={`relative flex-1 flex items-center justify-center gap-1.5 pb-3 text-[11px] font-bold uppercase tracking-[0.1em] transition-colors duration-200 ${
+                method === key
+                  ? "text-heading"
+                  : "text-muted-foreground/60 hover:text-muted-foreground"
+              }`}
+            >
+              <Icon className="h-3.5 w-3.5" />
+              <span>{t(key)}</span>
+              {/* Active indicator — editorial bottom border */}
+              {method === key && (
+                <motion.span
+                  layoutId="2fa-tab-indicator"
+                  className="absolute inset-x-0 -bottom-px h-0.5 bg-primary"
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+            </button>
+          ))}
+        </div>
       </motion.div>
 
       {/* Code input */}
       <motion.div
         {...reveal}
         transition={{ duration: 0.6, ease, delay: 0.1 }}
-        className="space-y-4"
+        className="space-y-5"
       >
         <div className="space-y-2">
-          <Label
+          <label
             htmlFor="two-factor-code"
-            className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
+            className="text-[11px] font-medium tracking-[0.1em] uppercase text-muted-foreground"
           >
             {t("codeLabel")}
-          </Label>
+          </label>
           <Input
             id="two-factor-code"
             value={code}
             onChange={(e) => onCodeChange(e.target.value)}
             placeholder={t("codePlaceholder")}
-            className="h-12 text-center text-lg tracking-[0.3em] font-mono border-border/40"
+            className="h-12 rounded-none text-center text-lg tracking-[0.3em] font-mono border-border/60 focus-visible:border-ring"
             maxLength={method === "backup" ? 10 : 6}
             autoFocus
             autoComplete="one-time-code"
@@ -118,9 +127,9 @@ export function TwoFactorStep({
         {method === "otp" && (
           <Button
             type="button"
-            variant="outline"
-            size="sm"
-            className="w-full h-9 text-xs border-dashed"
+            variant="editorial-outline"
+            size="editorial-sm"
+            className="w-full"
             onClick={onSendOtp}
           >
             <Mail className="h-3.5 w-3.5 me-1.5" />
@@ -128,27 +137,40 @@ export function TwoFactorStep({
           </Button>
         )}
 
-        {/* Trust device */}
-        <div className="flex items-center gap-2">
-          <Checkbox
-            id="trust-device"
-            checked={trustDevice}
-            onCheckedChange={(checked) => onTrustDeviceChange(checked === true)}
-          />
-          <Label
-            htmlFor="trust-device"
-            className="text-xs text-muted-foreground cursor-pointer"
-          >
+        {/* Trust device — editorial square checkbox */}
+        <label className="flex items-center gap-2.5 cursor-pointer select-none">
+          <div className="relative flex items-center justify-center">
+            <input
+              type="checkbox"
+              checked={trustDevice}
+              onChange={(e) => onTrustDeviceChange(e.target.checked)}
+              className="peer h-4 w-4 appearance-none border border-border bg-transparent checked:bg-primary checked:border-primary focus-visible:ring-2 focus-visible:ring-ring/50 transition-colors cursor-pointer"
+            />
+            <svg
+              className="absolute h-3 w-3 text-primary-foreground pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={3}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </div>
+          <span className="text-sm text-muted-foreground">
             {t("trustDevice")}
-          </Label>
-        </div>
+          </span>
+        </label>
       </motion.div>
 
       {/* Actions */}
       <motion.div
         {...reveal}
         transition={{ duration: 0.6, ease, delay: 0.15 }}
-        className="space-y-3"
+        className="space-y-4"
       >
         <Button
           type="button"
@@ -168,7 +190,7 @@ export function TwoFactorStep({
         <button
           type="button"
           onClick={onBack}
-          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors duration-200 mx-auto"
+          className="flex items-center justify-center gap-1.5 w-full text-xs font-medium text-muted-foreground hover:text-primary transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] uppercase tracking-wide [[dir=rtl]_&]:tracking-normal"
         >
           <ArrowLeft className="h-3.5 w-3.5 [[dir=rtl]_&]:rotate-180" />
           {t("backToLogin")}

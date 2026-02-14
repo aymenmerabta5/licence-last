@@ -1,6 +1,6 @@
 "use client"
 
-import { User } from "lucide-react"
+import { Mail, User } from "lucide-react"
 
 import { TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
@@ -43,7 +43,7 @@ export function PersonalInfoSection({
       <TextField
         id="settings-email"
         label="Email"
-        icon={User}
+        icon={Mail}
         value={email}
         onChange={() => {}}
         disabled

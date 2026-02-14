@@ -16,40 +16,55 @@ export function SidebarNav({ items, pathname, isCollapsed }: SidebarNavProps) {
   const t = useTranslations("dashboard.nav")
 
   return (
-    <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
+    <nav className="flex-1 px-3 py-6 space-y-0.5 overflow-y-auto">
       {items.map((item) => {
-        const isActive = item.href === "/dashboard"
-          ? pathname === "/dashboard"
-          : pathname.startsWith(item.href)
+        const isActive =
+          item.href === "/dashboard"
+            ? pathname === "/dashboard"
+            : pathname.startsWith(item.href)
         const Icon = item.icon
 
         return (
           <Link key={item.href} href={item.href as "/dashboard"}>
             <span
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 transition-all duration-300 group relative",
+                "flex items-center gap-3 py-2.5 transition-all duration-200 group relative",
+                isCollapsed ? "justify-center px-2" : "px-4",
                 isActive
-                  ? "bg-primary text-white shadow-lg shadow-primary/20 font-bold"
-                  : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+                  ? "text-heading font-bold"
+                  : "text-muted-foreground hover:text-primary",
               )}
             >
-              <Icon className={cn("h-5 w-5 shrink-0", isActive ? "text-white" : "group-hover:text-primary")} />
+              {/* Editorial active accent — thin start border */}
+              <div
+                className={cn(
+                  "absolute inset-y-1 start-0 w-0.5 transition-all duration-200",
+                  isActive
+                    ? "bg-primary"
+                    : "bg-transparent group-hover:bg-primary/20",
+                )}
+              />
+
+              <Icon
+                className={cn(
+                  "h-[18px] w-[18px] shrink-0 transition-colors",
+                  isActive ? "text-primary" : "group-hover:text-primary",
+                )}
+              />
+
               {!isCollapsed && (
                 <motion.span
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="text-sm tracking-wide"
+                  className={cn(
+                    "text-[13px] tracking-wide",
+                    isActive
+                      ? "font-bold"
+                      : "font-medium group-hover:font-semibold",
+                  )}
                 >
                   {t(item.labelKey)}
                 </motion.span>
-              )}
-
-              {/* Active Indicator Bar */}
-              {isActive && (
-                <motion.div
-                  layoutId="active-nav"
-                  className="absolute start-0 w-1 h-6 bg-primary rounded-e-full"
-                />
               )}
             </span>
           </Link>

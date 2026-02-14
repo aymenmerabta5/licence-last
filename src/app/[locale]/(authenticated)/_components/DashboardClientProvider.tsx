@@ -1,66 +1,69 @@
-"use client";
+"use client"
 
-import { useState, createContext, useContext } from "react";
-import { DashboardSidebar } from "./DashboardSidebar";
-import { DashboardNavbar } from "./DashboardNavbar";
-import { ImpersonationBanner } from "@/components/ImpersonationBanner";
+import { useState, createContext, useContext } from "react"
+import { DashboardSidebar } from "./DashboardSidebar"
+import { DashboardNavbar } from "./DashboardNavbar"
+import { ImpersonationBanner } from "@/components/ImpersonationBanner"
 
 const DashboardContext = createContext<{
-  isSidebarOpen: boolean;
-  setIsSidebarOpen: (open: boolean) => void;
+  isSidebarOpen: boolean
+  setIsSidebarOpen: (open: boolean) => void
 }>({
   isSidebarOpen: false,
   setIsSidebarOpen: () => {},
-});
+})
 
-export const useDashboard = () => useContext(DashboardContext);
+export const useDashboard = () => useContext(DashboardContext)
 
 export function DashboardClientProvider({
   children,
   user,
   impersonatedBy,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
   user: {
-    id: string;
-    name: string | null;
-    email: string;
-    role: string | null | undefined;
-  };
-  impersonatedBy?: string | null;
+    id: string
+    name: string | null
+    email: string
+    role: string | null | undefined
+  }
+  impersonatedBy?: string | null
 }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
     <DashboardContext.Provider value={{ isSidebarOpen, setIsSidebarOpen }}>
       {impersonatedBy && (
         <ImpersonationBanner userName={user.name ?? user.email} />
       )}
-      {/* Background with a subtle gradient/texture to make cards pop */}
-      <div className="flex min-h-screen bg-[#F9F9F8] dark:bg-background text-foreground transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] selection:bg-primary/10 selection:text-primary">
+
+      <div className="flex min-h-screen bg-background text-foreground transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] selection:bg-primary/10 selection:text-primary">
         {/* Desktop Sidebar */}
-        <div className="hidden lg:block shrink-0 border-e border-border/40 bg-white dark:bg-card">
+        <div className="hidden lg:block shrink-0">
           <DashboardSidebar role={user.role as string} />
         </div>
 
-        {/* Mobile Sidebar (Overlay) */}
+        {/* Mobile Sidebar — Overlay backdrop */}
         {isSidebarOpen && (
           <div
-            className="fixed inset-0 z-40 bg-heading/20 backdrop-blur-sm lg:hidden transition-all duration-500 animate-in fade-in"
+            className="fixed inset-0 z-40 bg-foreground/10 backdrop-blur-sm lg:hidden transition-all duration-500 animate-in fade-in"
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
+
+        {/* Mobile Sidebar — Drawer */}
         <div
           className={`fixed inset-y-0 start-0 z-50 lg:hidden transform transition-all duration-500 ease-[cubic-bezier(0.4,1,0.2,1)] ${isSidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"}`}
         >
-          <div className="bg-white dark:bg-background h-full shadow-2xl">
+          <div className="bg-background h-full shadow-2xl shadow-foreground/5">
             <DashboardSidebar role={user.role as string} />
           </div>
         </div>
 
+        {/* Main content area */}
         <div className="flex-1 flex flex-col min-w-0 min-h-screen relative overflow-hidden">
-          {/* Subtle background glow */}
-          <div className="absolute top-0 end-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2" />
+          {/* Subtle background glow — dark mode only */}
+          <div className="absolute top-0 end-0 w-[500px] h-[500px] bg-primary/3 blur-[120px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2 opacity-0 dark:opacity-100" />
 
           <DashboardNavbar user={user} />
 
@@ -70,5 +73,5 @@ export function DashboardClientProvider({
         </div>
       </div>
     </DashboardContext.Provider>
-  );
+  )
 }
