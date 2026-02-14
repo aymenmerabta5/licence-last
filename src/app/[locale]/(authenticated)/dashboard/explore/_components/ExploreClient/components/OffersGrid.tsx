@@ -33,7 +33,7 @@ export function OffersGrid({
       <motion.aside
         {...reveal}
         transition={{ duration: 0.5, ease, delay: 0.1 }}
-        className="hidden lg:block w-60 shrink-0 sticky top-24 self-start max-h-[calc(100vh-8rem)] overflow-y-auto"
+        className="hidden lg:block w-60 shrink-0 sticky top-24 self-start max-h-[calc(100vh-8rem)] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {filterPanel}
       </motion.aside>

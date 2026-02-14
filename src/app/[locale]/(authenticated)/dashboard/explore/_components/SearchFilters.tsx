@@ -1,7 +1,11 @@
 "use client"
 
+import { useState, useMemo } from "react"
+import { Search, X } from "lucide-react"
+
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -50,13 +54,6 @@ export function SearchFilters({
         : [...arr, value],
     })
   }
-
-  // Group skills by category
-  const categorized = skills.reduce<Record<string, typeof skills>>((acc, s) => {
-    const cat = s.category ?? "Other"
-    ;(acc[cat] ??= []).push(s)
-    return acc
-  }, {})
 
   return (
     <div className="space-y-7">
@@ -143,36 +140,156 @@ export function SearchFilters({
         </div>
       </FilterSection>
 
-      {/* Skills — grouped by category */}
+      {/* Skills — searchable, grouped by category */}
       {skills.length > 0 && (
-        <FilterSection label={t("skills")} count={filters.skillTagIds.length}>
-          <div className="space-y-4 max-h-64 overflow-y-auto pe-1">
-            {Object.entries(categorized).map(([category, categorySkills]) => (
-              <div key={category} className="space-y-2">
-                <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-muted-foreground/40 [[dir=rtl]_&]:tracking-normal">
-                  {category}
-                </p>
-                {categorySkills.map((skill) => (
-                  <label
-                    key={skill.id}
-                    className={cn(
-                      "flex items-center gap-2.5 cursor-pointer py-0.5 px-2 -mx-2 transition-colors",
-                      filters.skillTagIds.includes(skill.id) && "bg-primary/[0.03]",
-                    )}
-                  >
-                    <Checkbox
-                      checked={filters.skillTagIds.includes(skill.id)}
-                      onCheckedChange={() => toggleArrayItem("skillTagIds", skill.id)}
-                    />
-                    <span className="text-sm">{skill.name}</span>
-                  </label>
-                ))}
-              </div>
-            ))}
-          </div>
-        </FilterSection>
+        <SkillsFilter
+          skills={skills}
+          selectedIds={filters.skillTagIds}
+          onToggle={(id) => toggleArrayItem("skillTagIds", id)}
+          t={t}
+        />
       )}
     </div>
+  )
+}
+
+/** Skills filter with search and selected-first sorting */
+function SkillsFilter({
+  skills,
+  selectedIds,
+  onToggle,
+  t,
+}: {
+  skills: { id: string; name: string; category: string | null }[]
+  selectedIds: string[]
+  onToggle: (id: string) => void
+  t: (key: string) => string
+}) {
+  const [query, setQuery] = useState("")
+  const lowerQuery = query.toLowerCase()
+
+  const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds])
+
+  // Filter skills by search query, then group by category
+  const filtered = useMemo(() => {
+    const matched = lowerQuery
+      ? skills.filter((s) => s.name.toLowerCase().includes(lowerQuery))
+      : skills
+
+    // Selected skills first, then group rest by category
+    const selected = matched.filter((s) => selectedSet.has(s.id))
+    const unselected = matched.filter((s) => !selectedSet.has(s.id))
+
+    const categorized = unselected.reduce<Record<string, typeof skills>>(
+      (acc, s) => {
+        const cat = s.category ?? "Other"
+        ;(acc[cat] ??= []).push(s)
+        return acc
+      },
+      {},
+    )
+
+    return { selected, categorized }
+  }, [skills, lowerQuery, selectedSet])
+
+  const totalResults = filtered.selected.length +
+    Object.values(filtered.categorized).reduce((sum, arr) => sum + arr.length, 0)
+
+  return (
+    <FilterSection label={t("skills")} count={selectedIds.length}>
+      {/* Search input */}
+      <div className="relative">
+        <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground/40" />
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={t("skillsPlaceholder")}
+          className="rounded-none border-foreground/10 bg-transparent h-8 text-xs ps-8 pe-8 placeholder:text-muted-foreground/30"
+        />
+        {query && (
+          <button
+            type="button"
+            onClick={() => setQuery("")}
+            className="absolute end-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/40 hover:text-foreground transition-colors"
+          >
+            <X className="h-3 w-3" />
+          </button>
+        )}
+      </div>
+
+      {/* Skill list */}
+      <div className="space-y-3 max-h-56 overflow-y-auto overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {/* Selected skills pinned at top */}
+        {filtered.selected.length > 0 && (
+          <div className="space-y-1">
+            {filtered.selected.map((skill) => (
+              <SkillCheckbox
+                key={skill.id}
+                skill={skill}
+                checked
+                onToggle={onToggle}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Separator between selected and unselected */}
+        {filtered.selected.length > 0 &&
+          Object.keys(filtered.categorized).length > 0 && (
+            <div className="border-t border-foreground/5" />
+          )}
+
+        {/* Unselected skills grouped by category */}
+        {Object.entries(filtered.categorized).map(([category, categorySkills]) => (
+          <div key={category} className="space-y-1">
+            <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-muted-foreground/40 [[dir=rtl]_&]:tracking-normal sticky top-0 bg-background py-0.5">
+              {category}
+            </p>
+            {categorySkills.map((skill) => (
+              <SkillCheckbox
+                key={skill.id}
+                skill={skill}
+                checked={false}
+                onToggle={onToggle}
+              />
+            ))}
+          </div>
+        ))}
+
+        {/* Empty state */}
+        {totalResults === 0 && query && (
+          <p className="text-xs text-muted-foreground/40 text-center py-3">
+            No skills match &ldquo;{query}&rdquo;
+          </p>
+        )}
+      </div>
+    </FilterSection>
+  )
+}
+
+/** Single skill checkbox row */
+function SkillCheckbox({
+  skill,
+  checked,
+  onToggle,
+}: {
+  skill: { id: string; name: string }
+  checked: boolean
+  onToggle: (id: string) => void
+}) {
+  return (
+    <label
+      className={cn(
+        "flex items-center gap-2.5 cursor-pointer py-1 px-2 -mx-2 transition-colors",
+        checked && "bg-primary/[0.04]",
+      )}
+    >
+      <Checkbox
+        checked={checked}
+        onCheckedChange={() => onToggle(skill.id)}
+      />
+      <span className={cn("text-sm", checked && "font-medium")}>{skill.name}</span>
+    </label>
   )
 }
 
