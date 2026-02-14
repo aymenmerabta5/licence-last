@@ -1,31 +1,31 @@
-"use client"
+"use client";
 
-import { useState, useMemo } from "react"
-import { Trash2, Search, X, MessageSquare } from "lucide-react"
-import { useTranslations } from "next-intl"
-import * as motion from "motion/react-client"
+import { useState, useMemo } from "react";
+import { Trash2, Search, X, MessageSquare } from "lucide-react";
+import { useTranslations } from "next-intl";
+import * as motion from "motion/react-client";
 
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
-import { formatConversationTitle } from "../utils"
+import { formatConversationTitle } from "../utils";
 
 type ConversationListItem = {
-  id: string
-  title: string | null
-  model: string
-  updatedAt: string | Date
-}
+  id: string;
+  title: string | null;
+  model: string;
+  updatedAt: string | Date;
+};
 
 interface ConversationSidebarProps {
-  conversations: ConversationListItem[]
-  selectedConversationId: string | null
-  isLoading: boolean
-  onSelect: (conversationId: string) => void
-  onCreate: () => void
-  onDelete: (conversationId: string) => void
+  conversations: ConversationListItem[];
+  selectedConversationId: string | null;
+  isLoading: boolean;
+  onSelect: (conversationId: string) => void;
+  onCreate: () => void;
+  onDelete: (conversationId: string) => void;
 }
 
 export function ConversationSidebar({
@@ -36,54 +36,57 @@ export function ConversationSidebar({
   onCreate,
   onDelete,
 }: ConversationSidebarProps) {
-  const t = useTranslations("dashboard.assistant")
-  const [searchQuery, setSearchQuery] = useState("")
-  const [deletingId, setDeletingId] = useState<string | null>(null)
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  const t = useTranslations("dashboard.assistant");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const filteredConversations = useMemo(() => {
-    if (!searchQuery.trim()) return conversations
-    const query = searchQuery.toLowerCase()
+    if (!searchQuery.trim()) return conversations;
+    const query = searchQuery.toLowerCase();
     return conversations.filter((c) =>
-      formatConversationTitle(c.title).toLowerCase().includes(query)
-    )
-  }, [conversations, searchQuery])
+      formatConversationTitle(c.title).toLowerCase().includes(query),
+    );
+  }, [conversations, searchQuery]);
 
   const handleDelete = async (id: string) => {
     if (confirmDeleteId === id) {
-      setDeletingId(id)
-      await onDelete(id)
-      setDeletingId(null)
-      setConfirmDeleteId(null)
+      setDeletingId(id);
+      await onDelete(id);
+      setDeletingId(null);
+      setConfirmDeleteId(null);
     } else {
-      setConfirmDeleteId(id)
+      setConfirmDeleteId(id);
       // Auto-clear confirmation after 3 seconds
       setTimeout(() => {
-        setConfirmDeleteId((current) => (current === id ? null : current))
-      }, 3000)
+        setConfirmDeleteId((current) => (current === id ? null : current));
+      }, 3000);
     }
-  }
+  };
 
   const handleCancelDelete = () => {
-    setConfirmDeleteId(null)
-  }
+    setConfirmDeleteId(null);
+  };
 
   const formatUpdatedAt = (value: string | Date): string => {
-    const date = typeof value === "string" ? new Date(value) : value
-    if (Number.isNaN(date.getTime())) return ""
+    const date = typeof value === "string" ? new Date(value) : value;
+    if (Number.isNaN(date.getTime())) return "";
 
-    const now = new Date()
-    const diffMs = now.getTime() - date.getTime()
-    const diffMins = Math.floor(diffMs / 60000)
-    const diffHours = Math.floor(diffMs / 3600000)
-    const diffDays = Math.floor(diffMs / 86400000)
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 1) return t("relativeNow")
-    if (diffMins < 60) return t("relativeMinutesShort", { count: diffMins })
-    if (diffHours < 24) return t("relativeHoursShort", { count: diffHours })
-    if (diffDays < 7) return t("relativeDaysShort", { count: diffDays })
-    return date.toLocaleDateString(undefined, { month: "short", day: "numeric" })
-  }
+    if (diffMins < 1) return t("relativeNow");
+    if (diffMins < 60) return t("relativeMinutesShort", { count: diffMins });
+    if (diffHours < 24) return t("relativeHoursShort", { count: diffHours });
+    if (diffDays < 7) return t("relativeDaysShort", { count: diffDays });
+    return date.toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   return (
     <Card className="rounded-none border-border/60 bg-card/60 backdrop-blur supports-[backdrop-filter]:bg-card/40 flex flex-col h-full">
@@ -136,19 +139,23 @@ export function ConversationSidebar({
         ) : conversations.length === 0 ? (
           <div className="p-8 text-center">
             <MessageSquare className="h-8 w-8 text-muted-foreground/30 mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground">{t("noConversations")}</p>
+            <p className="text-sm text-muted-foreground">
+              {t("noConversations")}
+            </p>
           </div>
         ) : filteredConversations.length === 0 ? (
           <div className="p-8 text-center">
             <Search className="h-8 w-8 text-muted-foreground/30 mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground">{t("noSearchResults")}</p>
+            <p className="text-sm text-muted-foreground">
+              {t("noSearchResults")}
+            </p>
           </div>
         ) : (
           <div className="space-y-1">
             {filteredConversations.map((c, index) => {
-              const active = c.id === selectedConversationId
-              const isConfirmingDelete = confirmDeleteId === c.id
-              const isDeleting = deletingId === c.id
+              const active = c.id === selectedConversationId;
+              const isConfirmingDelete = confirmDeleteId === c.id;
+              const isDeleting = deletingId === c.id;
 
               return (
                 <motion.div
@@ -161,7 +168,7 @@ export function ConversationSidebar({
                     "border border-transparent px-3 py-2.5 transition-all",
                     "hover:border-border/70 hover:bg-muted/20",
                     active && "border-primary/30 bg-primary/5",
-                    isDeleting && "opacity-50 pointer-events-none"
+                    isDeleting && "opacity-50 pointer-events-none",
                   )}
                 >
                   <button
@@ -186,7 +193,7 @@ export function ConversationSidebar({
                   {/* Delete button / confirmation */}
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                     {isConfirmingDelete ? (
-                      <div className="flex items-center gap-1">
+                      <div key="confirm" className="flex items-center gap-1">
                         <Button
                           type="button"
                           variant="ghost"
@@ -208,6 +215,7 @@ export function ConversationSidebar({
                       </div>
                     ) : (
                       <Button
+                        key="delete"
                         type="button"
                         variant="ghost"
                         size="icon-sm"
@@ -220,7 +228,7 @@ export function ConversationSidebar({
                     )}
                   </div>
                 </motion.div>
-              )
+              );
             })}
           </div>
         )}
@@ -230,10 +238,11 @@ export function ConversationSidebar({
       {!isLoading && conversations.length > 0 && (
         <div className="p-3 border-t border-border/60 text-center">
           <p className="text-[10px] text-muted-foreground">
-            {filteredConversations.length} / {conversations.length} {t("conversations")}
+            {filteredConversations.length} / {conversations.length}{" "}
+            {t("conversations")}
           </p>
         </div>
       )}
     </Card>
-  )
+  );
 }

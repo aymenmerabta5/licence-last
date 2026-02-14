@@ -1,11 +1,11 @@
-import * as motion from "motion/react-client"
-import { useTranslations } from "next-intl"
-import { Sparkles } from "lucide-react"
+import * as motion from "motion/react-client";
+import { useTranslations } from "next-intl";
+import { Sparkles } from "lucide-react";
 
-import { reveal, ease } from "@/lib/animations"
+import { reveal, ease } from "@/lib/animations";
 
 export function AssistantHeader() {
-  const t = useTranslations("dashboard.assistant")
+  const t = useTranslations("dashboard.assistant");
 
   return (
     <motion.header
@@ -21,7 +21,9 @@ export function AssistantHeader() {
           <h1 className="font-serif text-[clamp(1.75rem,4vw,2.5rem)] leading-none tracking-tight text-heading">
             {t.rich("title", {
               accent: (chunks) => (
-                <span className="text-primary">{chunks}</span>
+                <span key="accent" className="text-primary">
+                  {chunks}
+                </span>
               ),
             })}
           </h1>
@@ -35,5 +37,5 @@ export function AssistantHeader() {
         </div>
       </div>
     </motion.header>
-  )
+  );
 }
