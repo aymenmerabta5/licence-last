@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, afterEach } from "bun:test"
+import { describe, test, expect, beforeEach } from "bun:test"
 import { renderHook, act } from "@testing-library/react"
 
 import { useDebounce } from "./useDebounce"

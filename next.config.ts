@@ -8,7 +8,6 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   output: "standalone",
   cacheComponents: true,
-  serverExternalPackages: ["better-auth"],
   async headers() {
     return [
       {
