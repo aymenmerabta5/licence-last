@@ -2,7 +2,7 @@ import "server-only"
 
 import { z } from "zod"
 import { ORPCError } from "@orpc/server"
-import { updateTag } from "next/cache"
+import { revalidateTag } from "next/cache"
 
 import {
   authedProcedureGenerous,
@@ -88,9 +88,9 @@ export const upsertStudentProfileProcedure = studentProcedureStandard
     const result = await upsertStudentProfile(data, skillTagIds, context.user.id)
 
     // Invalidate profile caches after update
-    updateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id))
-    updateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id))
-    updateTag(CACHE_TAGS.STUDENT_STATS(context.user.id))
+    revalidateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id), "max")
+    revalidateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id), "max")
+    revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), "max")
 
     return result
   })
@@ -113,8 +113,8 @@ export const upsertStudentProfileDetailsProcedure = studentProcedureStandard
     const result = await upsertStudentProfileDetails(input, context.user.id)
 
     // Invalidate profile caches after update
-    updateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id))
-    updateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id))
+    revalidateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id), "max")
+    revalidateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id), "max")
 
     return result
   })
