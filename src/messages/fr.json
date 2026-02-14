@@ -1164,6 +1164,23 @@
           "passwordRequired": "Le mot de passe est requis."
         }
       }
+    },
+    "departments": {
+      "pageTitle": "Gestion des départements",
+      "title": "Gestion des départements",
+      "description": "Créez et gérez les départements universitaires et assignez des chefs.",
+      "empty": "Aucun département trouvé. Commencez par en créer un.",
+      "addDepartment": "Ajouter un département",
+      "assignHead": "Assigner un chef",
+      "assignHeadDescription": "Entrez l'email de l'utilisateur à assigner comme chef de département :",
+      "backToDashboard": "Retour au tableau de bord",
+      "name": "Nom du département",
+      "namePlaceholder": "ex: Informatique",
+      "headName": "Nom du chef (Optionnel)",
+      "headNamePlaceholder": "ex: Dr. Benali",
+      "save": "Créer le département",
+      "success": "Département créé avec succès",
+      "error": "Échec de la création du département"
     }
   },
   "howItWorks": {
