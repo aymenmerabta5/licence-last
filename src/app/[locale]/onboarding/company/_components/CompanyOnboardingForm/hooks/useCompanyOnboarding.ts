@@ -9,6 +9,7 @@ import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { getErrorMessage } from "@/lib/error-message"
 import { createCompanyOnboardingSchema } from "@/lib/schemas/company"
 import { orpcClient } from "@/server/orpc/client"
+import { authClient } from "@/lib/auth-client"
 
 export type CompanyOnboardingFormApi = ReturnType<typeof useCompanyOnboarding>["form"]
 
@@ -42,6 +43,9 @@ export function useCompanyOnboarding() {
           wilayaCode: value.wilayaCode,
           address: value.address || undefined,
         })
+
+        // Refresh session cookie cache so downstream pages see onboardingCompleted=true
+        await authClient.getSession({ query: { disableCookieCache: true } })
 
         router.push("/status/company/pending")
       } catch (err) {

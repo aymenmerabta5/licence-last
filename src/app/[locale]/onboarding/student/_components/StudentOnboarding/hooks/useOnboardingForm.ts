@@ -8,6 +8,7 @@ import { createStudentProfileSchema } from "@/lib/schemas/student"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { getErrorMessage } from "@/lib/error-message"
 import { orpcClient, orpc } from "@/server/orpc/client"
+import { authClient } from "@/lib/auth-client"
 
 import type { StudentOnboardingFormValues } from "../types"
 
@@ -78,6 +79,9 @@ export function useOnboardingForm() {
           address: value.address || undefined,
           skillTagIds: value.skillTagIds,
         })
+
+        // Refresh session cookie cache so the dashboard sees onboardingCompleted=true
+        await authClient.getSession({ query: { disableCookieCache: true } })
 
         router.push("/dashboard")
       } catch (err) {

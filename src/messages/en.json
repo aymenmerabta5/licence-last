@@ -506,8 +506,7 @@
         "positions": "positions",
         "weeks": "weeks",
         "skills": "Skills",
-        "candidates_one": "candidate",
-        "candidates_other": "candidates",
+        "candidates": "{count, plural, one {candidate} other {candidates}}",
         "form": {
           "createTitle": "Create New Offer",
           "createSubtitle": "Fill in the details for your new internship position",
@@ -532,6 +531,8 @@
           "skillsSection": "Required Skills",
           "skillsHint": "Select up to 20 skills that best match this position",
           "skillsSelected": "selected",
+          "skillsSearchPlaceholder": "Search skills…",
+          "skillsMaxReached": "Maximum reached — remove a skill to add another.",
           "submit": "Create Offer",
           "submitEdit": "Save Changes",
           "cancel": "Cancel",
@@ -551,21 +552,23 @@
           "copilot": {
             "title": "AI Copilot",
             "description": "Suggestions only. Preview first, then apply to the form.",
-            "badge": "Draft + Skills",
-            "promptLabel": "Prompt (optional)",
             "promptPlaceholder": "Role, stack, constraints (e.g. 12w, remote, React + Node)",
             "generateDraft": "Generate Draft",
             "improveDescription": "Improve Description",
             "suggestSkills": "Suggest Skills",
-            "status": "Status: {status}",
-            "preview": "Preview",
             "applyToForm": "Apply to form",
-            "waiting": "Waiting for AI output...",
-            "prompts": {
-              "generateDraft": "Generate a draft offer",
-              "improveDescription": "Improve the offer description",
-              "suggestSkills": "Suggest skill tags for this offer"
-            }
+            "thinking": "Thinking…",
+            "ready": "Ready",
+            "appliedToForm": "Applied to form",
+            "generating": "Generating draft…",
+            "improving": "Improving description…",
+            "suggesting": "Suggesting skills…",
+            "previewTitle": "Title",
+            "previewDescription": "Description",
+            "previewDetails": "Details",
+            "previewSkills": "Skills",
+            "duration": "{weeks}w",
+            "positions": "{count} pos."
           }
         }
       },
@@ -629,7 +632,14 @@
       "manageOffers": "Manage your offers",
       "viewAllOffers": "View all offers",
       "candidate": "candidate",
-      "candidates": "candidates"
+      "candidates": "candidates",
+      "offers": {
+        "status": {
+          "draft": "Draft",
+          "published": "Published",
+          "closed": "Closed"
+        }
+      }
     },
     "welcome": "Welcome back,",
     "roles": {

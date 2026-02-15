@@ -37,6 +37,9 @@ import {
   deleteOfferProcedure,
   updateOfferStatusProcedure,
   parseSearchQueryProcedure,
+  generateOfferDraftProcedure,
+  improveOfferDescriptionProcedure,
+  suggestOfferSkillsProcedure,
 } from "./routes/offers"
 import {
   searchOffersProcedure,
@@ -155,6 +158,9 @@ export const appRouter = {
     updateStatus: updateOfferStatusProcedure,
     search: searchOffersProcedure,
     parseSearchQuery: parseSearchQueryProcedure,
+    generateDraft: generateOfferDraftProcedure,
+    improveDescription: improveOfferDescriptionProcedure,
+    suggestSkills: suggestOfferSkillsProcedure,
   },
   applications: {
     checkApplication: checkApplicationProcedure,

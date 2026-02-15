@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm"
 
 import {
   authedSessionProcedureGenerous,
-  authedProcedureGenerous,
+  authedSessionProcedureStandard,
   authedProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
 import { getMe } from "@/server/services/users/get-me"
@@ -122,9 +122,9 @@ export const deleteAvatarProcedure = authedProcedureStandard.handler(
 
 // ── Session management (self-service) ───────────────────────────
 
-export const listMySessionsProcedure = authedProcedureGenerous.handler(
+export const listMySessionsProcedure = authedSessionProcedureGenerous.handler(
   async ({ context }) => {
-    const sessions = await listMySessions(context.user.id)
+    const sessions = await listMySessions()
     return sessions.map((s) => ({
       ...s,
       isCurrent: s.token === context.session.token,
@@ -132,7 +132,7 @@ export const listMySessionsProcedure = authedProcedureGenerous.handler(
   },
 )
 
-export const revokeMySessionProcedure = authedProcedureStandard
+export const revokeMySessionProcedure = authedSessionProcedureStandard
   .input(z.object({ sessionToken: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     if (input.sessionToken === context.session.token) {
@@ -140,10 +140,9 @@ export const revokeMySessionProcedure = authedProcedureStandard
         message: "Cannot revoke your current session. Use logout instead.",
       })
     }
-    return revokeMySession(input.sessionToken, context.user.id)
+    return revokeMySession(input.sessionToken)
   })
 
-export const revokeOtherSessionsProcedure = authedProcedureStandard.handler(
-  async ({ context }) =>
-    revokeOtherSessions(context.user.id, context.session.token),
+export const revokeOtherSessionsProcedure = authedSessionProcedureStandard.handler(
+  async ({ context }) => revokeOtherSessions(context.session.token),
 )

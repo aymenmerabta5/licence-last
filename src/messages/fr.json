@@ -506,8 +506,7 @@
         "positions": "postes",
         "weeks": "semaines",
         "skills": "Compétences",
-        "candidates_one": "candidat",
-        "candidates_other": "candidats",
+        "candidates": "{count, plural, one {candidat} other {candidats}}",
         "form": {
           "createTitle": "Créer une Nouvelle Offre",
           "createSubtitle": "Remplissez les détails de votre nouveau poste de stage",
@@ -532,6 +531,8 @@
           "skillsSection": "Compétences Requises",
           "skillsHint": "Sélectionnez jusqu'à 20 compétences correspondant à ce poste",
           "skillsSelected": "sélectionnées",
+          "skillsSearchPlaceholder": "Rechercher des compétences…",
+          "skillsMaxReached": "Maximum atteint — supprimez une compétence pour en ajouter une autre.",
           "submit": "Créer l'Offre",
           "submitEdit": "Enregistrer les Modifications",
           "cancel": "Annuler",
@@ -551,21 +552,23 @@
           "copilot": {
             "title": "Copilote IA",
             "description": "Suggestions uniquement. Prévisualisez d'abord, puis appliquez au formulaire.",
-            "badge": "Brouillon + Compétences",
-            "promptLabel": "Invite (optionnelle)",
             "promptPlaceholder": "Rôle, stack, contraintes (ex. 12 sem., remote, React + Node)",
             "generateDraft": "Générer un brouillon",
             "improveDescription": "Améliorer la description",
             "suggestSkills": "Suggérer des compétences",
-            "status": "Statut : {status}",
-            "preview": "Aperçu",
             "applyToForm": "Appliquer au formulaire",
-            "waiting": "En attente de la réponse de l'IA...",
-            "prompts": {
-              "generateDraft": "Générer une offre de stage (brouillon)",
-              "improveDescription": "Améliorer la description de l'offre",
-              "suggestSkills": "Suggérer des tags de compétences pour cette offre"
-            }
+            "thinking": "Réflexion…",
+            "ready": "Prêt",
+            "appliedToForm": "Appliqué au formulaire",
+            "generating": "Génération du brouillon…",
+            "improving": "Amélioration de la description…",
+            "suggesting": "Suggestion de compétences…",
+            "previewTitle": "Titre",
+            "previewDescription": "Description",
+            "previewDetails": "Détails",
+            "previewSkills": "Compétences",
+            "duration": "{weeks} sem.",
+            "positions": "{count} postes"
           }
         }
       },
@@ -629,7 +632,14 @@
       "manageOffers": "Gérer vos offres",
       "viewAllOffers": "Voir toutes les offres",
       "candidate": "candidat",
-      "candidates": "candidats"
+      "candidates": "candidats",
+      "offers": {
+        "status": {
+          "draft": "Brouillon",
+          "published": "Publiée",
+          "closed": "Fermée"
+        }
+      }
     },
     "welcome": "Bon retour,",
     "roles": {

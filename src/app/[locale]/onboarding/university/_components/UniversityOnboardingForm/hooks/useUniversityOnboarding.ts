@@ -9,6 +9,7 @@ import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { getErrorMessage } from "@/lib/error-message"
 import { createUniversityOnboardingSchema } from "@/lib/schemas/university"
 import { orpcClient } from "@/server/orpc/client"
+import { authClient } from "@/lib/auth-client"
 
 export type UniversityOnboardingFormApi = ReturnType<typeof useUniversityOnboarding>["form"]
 
@@ -57,6 +58,9 @@ export function useUniversityOnboarding() {
           domains,
           departments: departments.length > 0 ? departments : undefined,
         })
+
+        // Refresh session cookie cache so downstream pages see onboardingCompleted=true
+        await authClient.getSession({ query: { disableCookieCache: true } })
 
         router.push("/status/university/pending")
       } catch (err) {

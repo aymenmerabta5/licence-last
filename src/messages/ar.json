@@ -506,12 +506,7 @@
         "positions": "مناصب",
         "weeks": "أسابيع",
         "skills": "المهارات",
-        "candidates_zero": "مرشح",
-        "candidates_one": "مرشح",
-        "candidates_two": "مرشحين",
-        "candidates_few": "مرشحين",
-        "candidates_many": "مرشحين",
-        "candidates_other": "مرشحين",
+        "candidates": "{count, plural, zero {مرشح} one {مرشح} two {مرشحين} few {مرشحين} many {مرشحين} other {مرشحين}}",
         "form": {
           "createTitle": "إنشاء عرض جديد",
           "createSubtitle": "املأ تفاصيل منصب التدريب الجديد",
@@ -536,6 +531,8 @@
           "skillsSection": "المهارات المطلوبة",
           "skillsHint": "اختر حتى ٢٠ مهارة تتناسب مع هذا المنصب",
           "skillsSelected": "مختارة",
+          "skillsSearchPlaceholder": "البحث عن مهارات…",
+          "skillsMaxReached": "تم الوصول إلى الحد الأقصى — أزل مهارة لإضافة أخرى.",
           "submit": "إنشاء العرض",
           "submitEdit": "حفظ التغييرات",
           "cancel": "إلغاء",
@@ -555,21 +552,23 @@
           "copilot": {
             "title": "مساعد الذكاء الاصطناعي",
             "description": "اقتراحات فقط. راجع أولاً ثم طبّق على النموذج.",
-            "badge": "مسودة + مهارات",
-            "promptLabel": "طلب (اختياري)",
             "promptPlaceholder": "الدور، التقنيات، القيود (مثل 12 أسبوعاً، عن بُعد، React + Node)",
             "generateDraft": "إنشاء مسودة",
             "improveDescription": "تحسين الوصف",
             "suggestSkills": "اقتراح مهارات",
-            "status": "الحالة: {status}",
-            "preview": "معاينة",
             "applyToForm": "تطبيق على النموذج",
-            "waiting": "بانتظار مخرجات الذكاء الاصطناعي...",
-            "prompts": {
-              "generateDraft": "إنشاء مسودة عرض تدريب",
-              "improveDescription": "تحسين وصف العرض",
-              "suggestSkills": "اقتراح وسوم مهارات لهذا العرض"
-            }
+            "thinking": "جارٍ التفكير…",
+            "ready": "جاهز",
+            "appliedToForm": "تم التطبيق على النموذج",
+            "generating": "جارٍ إنشاء المسودة…",
+            "improving": "جارٍ تحسين الوصف…",
+            "suggesting": "جارٍ اقتراح المهارات…",
+            "previewTitle": "العنوان",
+            "previewDescription": "الوصف",
+            "previewDetails": "التفاصيل",
+            "previewSkills": "المهارات",
+            "duration": "{weeks} أسبوع",
+            "positions": "{count} منصب"
           }
         }
       },
@@ -633,7 +632,14 @@
       "manageOffers": "إدارة عروضك",
       "viewAllOffers": "عرض جميع العروض",
       "candidate": "مرشح",
-      "candidates": "مرشحون"
+      "candidates": "مرشحون",
+      "offers": {
+        "status": {
+          "draft": "مسودة",
+          "published": "منشور",
+          "closed": "مغلق"
+        }
+      }
     },
     "welcome": "مرحباً بعودتك،",
     "roles": {

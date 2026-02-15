@@ -6,6 +6,19 @@ export type OfferCopilotIntent =
 export type InternshipType = "pfe" | "immersion" | "summer" | "practical"
 export type WorkMode = "on_site" | "hybrid" | "remote"
 
+export interface CopilotResult {
+  intent: OfferCopilotIntent
+  title?: string
+  description?: string
+  internshipType?: string
+  workMode?: string | null
+  wilayaCode?: number | null
+  durationWeeks?: number | null
+  maxPositions?: number
+  skillTagIds?: string[]
+  skillTagNames?: string[]
+}
+
 export interface OfferFormProps {
   mode: "create" | "edit"
   initialData?: {
