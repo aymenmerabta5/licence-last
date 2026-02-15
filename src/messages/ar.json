@@ -587,6 +587,13 @@
         "refuseNotePlaceholder": "اختياري: قدم ملاحظات للمرشح...",
         "cancel": "إلغاء",
         "confirmRefuseButton": "رفض",
+        "dragHint": "اسحب وأفلت المرشحين بين الأعمدة لتحديث مرحلة المسار.",
+        "pipelineStage": "مرحلة المسار",
+        "noApplications": "لا توجد طلبات",
+        "candidateCardAria": "بطاقة المرشح {name}",
+        "kanbanColumnAria": "عمود {stage}",
+        "invalidStageTransition": "هذا الانتقال بين المراحل غير مسموح.",
+        "stageUpdateFailed": "فشل تحديث مرحلة المسار. تمت استعادة البطاقة.",
         "statusFilter": {
           "all": "الكل",
           "applied": "قيد الانتظار",

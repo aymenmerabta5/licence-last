@@ -23,6 +23,23 @@ export const STAGE_LABELS: Record<PipelineStage, string> = {
   rejected: "Rejected",
 }
 
+/**
+ * Keep this map in sync with server transition rules in
+ * src/server/services/applications/pipeline.ts.
+ */
+export const STAGE_TRANSITIONS: Record<PipelineStage, PipelineStage[]> = {
+  applied: ["screening", "interview", "offer", "rejected"],
+  screening: ["applied", "interview", "offer", "rejected"],
+  interview: ["screening", "offer", "rejected"],
+  offer: ["rejected", "interview"],
+  accepted: [],
+  rejected: [],
+}
+
+export function canTransitionStage(from: PipelineStage, to: PipelineStage) {
+  return STAGE_TRANSITIONS[from].includes(to)
+}
+
 export const STATUS_COLORS: Record<string, string> = {
   applied:
     "bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800",

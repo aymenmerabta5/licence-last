@@ -587,6 +587,13 @@
         "refuseNotePlaceholder": "Optional: Provide feedback to the candidate...",
         "cancel": "Cancel",
         "confirmRefuseButton": "Refuse",
+        "dragHint": "Drag and drop candidates between columns to update their pipeline stage.",
+        "pipelineStage": "Pipeline Stage",
+        "noApplications": "No applications",
+        "candidateCardAria": "{name} candidate card",
+        "kanbanColumnAria": "{stage} column",
+        "invalidStageTransition": "This stage transition is not allowed.",
+        "stageUpdateFailed": "Failed to update pipeline stage. The card was restored.",
         "statusFilter": {
           "all": "All",
           "applied": "Pending",

@@ -31,7 +31,7 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
     setRefuseNote,
     handleRefuse,
     handleStageChange,
-    isStagePending,
+    pendingStageById,
     openedTimelineFor,
     setOpenedTimelineFor,
     timelineData,
@@ -39,7 +39,7 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
   } = useCandidates(offerId)
 
   return (
-    <div className="max-w-[1400px] mx-auto space-y-8">
+    <div className="w-full space-y-8">
       <CandidatesHeader offerTitle={offer?.title} />
 
       <PipelineGrid
@@ -48,7 +48,7 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
         isLoading={isLoading}
         offerId={offerId}
         actionLoading={actionLoading}
-        isStagePending={isStagePending}
+        pendingStageById={pendingStageById}
         onAccept={(appId) => handleAccept(appId, t("confirmAccept"))}
         onRefuse={(app) =>
           setRefuseModal({

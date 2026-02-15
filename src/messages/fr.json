@@ -587,6 +587,13 @@
         "refuseNotePlaceholder": "Optionnel : Fournissez un retour au candidat...",
         "cancel": "Annuler",
         "confirmRefuseButton": "Refuser",
+        "dragHint": "Glissez-deposez les candidats entre les colonnes pour mettre a jour leur etape du pipeline.",
+        "pipelineStage": "Etape du pipeline",
+        "noApplications": "Aucune candidature",
+        "candidateCardAria": "Carte candidat {name}",
+        "kanbanColumnAria": "Colonne {stage}",
+        "invalidStageTransition": "Cette transition d'etape n'est pas autorisee.",
+        "stageUpdateFailed": "Echec de la mise a jour de l'etape. La carte a ete restauree.",
         "statusFilter": {
           "all": "Tous",
           "applied": "En attente",
