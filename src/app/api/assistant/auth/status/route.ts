@@ -1,4 +1,5 @@
 import { headers } from "next/headers"
+import { eq } from "drizzle-orm"
 
 import Arcade from "@arcadeai/arcadejs"
 
@@ -6,6 +7,8 @@ import { env } from "@/env"
 import { auth } from "@/lib/auth"
 import { isValidOrigin } from "@/lib/csrf"
 import { checkRateLimit } from "@/server/ai/rate-limit"
+import { db } from "@/server/db"
+import { company, companyMember } from "@/server/db/schema/companies"
 
 export async function POST(req: Request) {
   if (!isValidOrigin(req)) {
@@ -37,6 +40,19 @@ export async function POST(req: Request) {
 
   if (session.user.role !== "company_admin") {
     return new Response("Forbidden", { status: 403 })
+  }
+
+  if (session.user.onboardingCompleted) {
+    const [membership] = await db
+      .select({ status: company.status })
+      .from(companyMember)
+      .innerJoin(company, eq(companyMember.companyId, company.id))
+      .where(eq(companyMember.userId, session.user.id))
+      .limit(1)
+
+    if (!membership || membership.status !== "approved") {
+      return new Response("Forbidden", { status: 403 })
+    }
   }
 
   const rl = await checkRateLimit({

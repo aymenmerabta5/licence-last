@@ -26,6 +26,15 @@ import {
   resolveCompanyReportSchema,
 } from "@/lib/schemas/company"
 import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
+import { createNotification } from "@/server/services/notifications/create"
+import { sendEmail } from "@/server/email/sendEmail"
+import CompanyApprovedEmail from "@/server/email/emails/CompanyApprovedEmail"
+import CompanyRejectedEmail from "@/server/email/emails/CompanyRejectedEmail"
+import { db } from "@/server/db"
+import { companyMember } from "@/server/db/schema/companies"
+import { user } from "@/server/db/schema/auth"
+import { eq } from "drizzle-orm"
+import { env } from "@/env"
 import {
   getCompanyTrustIndex,
   listCompanyTrustIndices,
@@ -227,6 +236,28 @@ export const approveCompanyProcedure = superAdminProcedureStandard
     // Invalidate company cache when approved
     revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
 
+    // Notify company members (in-app + email)
+    const members = await db
+      .select({ userId: companyMember.userId, email: user.email })
+      .from(companyMember)
+      .innerJoin(user, eq(companyMember.userId, user.id))
+      .where(eq(companyMember.companyId, input.companyId))
+
+    const dashboardUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/dashboard`
+    for (const m of members) {
+      await createNotification({
+        userId: m.userId,
+        type: "company_approved",
+        payload: { companyId: input.companyId, companyName: result.name },
+      })
+      sendEmail(
+        m.email,
+        `${result.name} has been approved — Internex`,
+        CompanyApprovedEmail,
+        { companyName: result.name, dashboardUrl },
+      )
+    }
+
     return result
   })
 
@@ -237,11 +268,32 @@ export const rejectCompanyProcedure = superAdminProcedureStandard
       reason: z.string().min(1),
     }),
   )
-  .handler(async ({ input }) => {
-    const result = await rejectCompany(input.companyId, input.reason)
+  .handler(async ({ input, context }) => {
+    const result = await rejectCompany(input.companyId, input.reason, context.user.id)
 
     // Invalidate company cache when rejected
     revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
+
+    // Notify company members (in-app + email)
+    const members = await db
+      .select({ userId: companyMember.userId, email: user.email })
+      .from(companyMember)
+      .innerJoin(user, eq(companyMember.userId, user.id))
+      .where(eq(companyMember.companyId, input.companyId))
+
+    for (const m of members) {
+      await createNotification({
+        userId: m.userId,
+        type: "company_rejected",
+        payload: { companyId: input.companyId, companyName: result.name, reason: input.reason },
+      })
+      sendEmail(
+        m.email,
+        `Update on your ${result.name} application — Internex`,
+        CompanyRejectedEmail,
+        { companyName: result.name, reason: input.reason },
+      )
+    }
 
     return result
   })

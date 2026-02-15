@@ -51,7 +51,7 @@ export function ChatHeader({
             {t("model")}
           </p>
           <Select
-            value={activeModel ?? undefined}
+            value={activeModel ?? ""}
             onValueChange={(val) => { if (val) onUpdateModel(val) }}
           >
             <SelectTrigger size="sm" className="rounded-none">

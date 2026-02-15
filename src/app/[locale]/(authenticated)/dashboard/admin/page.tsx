@@ -23,7 +23,7 @@ export default async function AdminDashboardPage() {
         </p>
       </header>
 
-      <AdminDashboard user={user} />
+      <AdminDashboard user={{ ...user, role: user.role as string }} />
     </div>
   )
 }

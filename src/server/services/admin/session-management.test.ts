@@ -22,7 +22,8 @@ describe("listUserSessions", () => {
   test("should call auth.api.listUserSessions with userId", async () => {
     const { listUserSessions } = await import("./session-management")
     await listUserSessions("user-1")
-    const call = mockListUserSessions.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockListUserSessions.mock.calls as any)[0][0]
     expect(call.body.userId).toBe("user-1")
   })
 })
@@ -33,7 +34,8 @@ describe("revokeSession", () => {
   test("should call auth.api.revokeUserSession with token", async () => {
     const { revokeSession } = await import("./session-management")
     await revokeSession("session-token-abc")
-    const call = mockRevokeUserSession.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockRevokeUserSession.mock.calls as any)[0][0]
     expect(call.body.sessionToken).toBe("session-token-abc")
   })
 })
@@ -44,7 +46,8 @@ describe("revokeAllSessions", () => {
   test("should call auth.api.revokeUserSessions with userId", async () => {
     const { revokeAllSessions } = await import("./session-management")
     await revokeAllSessions("user-1")
-    const call = mockRevokeUserSessions.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockRevokeUserSessions.mock.calls as any)[0][0]
     expect(call.body.userId).toBe("user-1")
   })
 

@@ -3,6 +3,9 @@ import {
   updateMeProcedure,
   uploadAvatarProcedure,
   deleteAvatarProcedure,
+  listMySessionsProcedure,
+  revokeMySessionProcedure,
+  revokeOtherSessionsProcedure,
 } from "./routes/users"
 import {
   listCompaniesProcedure,
@@ -34,6 +37,9 @@ import {
   deleteOfferProcedure,
   updateOfferStatusProcedure,
   parseSearchQueryProcedure,
+  generateOfferDraftProcedure,
+  improveOfferDescriptionProcedure,
+  suggestOfferSkillsProcedure,
 } from "./routes/offers"
 import {
   searchOffersProcedure,
@@ -115,6 +121,9 @@ export const appRouter = {
     updateMe: updateMeProcedure,
     uploadAvatar: uploadAvatarProcedure,
     deleteAvatar: deleteAvatarProcedure,
+    listMySessions: listMySessionsProcedure,
+    revokeMySession: revokeMySessionProcedure,
+    revokeOtherSessions: revokeOtherSessionsProcedure,
   },
   companies: {
     list: listCompaniesProcedure,
@@ -149,6 +158,9 @@ export const appRouter = {
     updateStatus: updateOfferStatusProcedure,
     search: searchOffersProcedure,
     parseSearchQuery: parseSearchQueryProcedure,
+    generateDraft: generateOfferDraftProcedure,
+    improveDescription: improveOfferDescriptionProcedure,
+    suggestSkills: suggestOfferSkillsProcedure,
   },
   applications: {
     checkApplication: checkApplicationProcedure,

@@ -142,8 +142,8 @@ export function MessageBubble({
                 ? (authByTool[toolName] ?? null)
                 : null;
               const toolCallId =
-                isRecord(part) && typeof part.toolCallId === "string"
-                  ? part.toolCallId
+                isRecord(part) && typeof (part as Record<string, unknown>).toolCallId === "string"
+                  ? ((part as Record<string, unknown>).toolCallId as string)
                   : `tool-${idx}`;
 
               return (

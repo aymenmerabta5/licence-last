@@ -31,7 +31,7 @@ describe("src/server/services/companies/reject", () => {
     mockReturningResult = [{ id: "company-1", name: "Bad Corp" }]
 
     const { rejectCompany } = await import("./reject")
-    const result = await rejectCompany("company-1", "Incomplete documentation")
+    const result = await rejectCompany("company-1", "Incomplete documentation", "admin-1")
 
     expect(result).toEqual({ companyId: "company-1", name: "Bad Corp" })
     expect(mockUpdate).toHaveBeenCalledTimes(1)
@@ -42,6 +42,6 @@ describe("src/server/services/companies/reject", () => {
 
     const { rejectCompany } = await import("./reject")
 
-    await expect(rejectCompany("missing", "reason")).rejects.toThrow("Company not found")
+    await expect(rejectCompany("missing", "reason", "admin-1")).rejects.toThrow("Company not found")
   })
 })

@@ -9,6 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 import { ChangePasswordDialog } from "./ChangePasswordDialog"
 import { TwoFactorSettings } from "./TwoFactorSettings"
+import { SessionManagement } from "./SessionManagement"
+import { DeleteAccountDialog } from "./DeleteAccountDialog"
 
 interface AccountSettingsTabProps {
   me:
@@ -24,6 +26,7 @@ interface AccountSettingsTabProps {
 
 export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
   const [passwordDialogOpen, setPasswordDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -103,6 +106,9 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
       {/* Two-Factor Auth */}
       <TwoFactorSettings isTwoFactorEnabled={me?.user.twoFactorEnabled ?? false} />
 
+      {/* Active Sessions */}
+      <SessionManagement />
+
       {/* Danger Zone */}
       <Card className="border-destructive/15 bg-destructive/[0.03] rounded-3xl overflow-hidden">
         <div className="px-8 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -119,10 +125,10 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
           </div>
           <Button
             type="button"
-            disabled
             variant="editorial-outline"
             size="editorial-sm"
-            className="rounded-xl border-destructive/30 text-destructive/60 hover:bg-destructive/5 ms-13 sm:ms-0"
+            className="rounded-xl border-destructive/30 text-destructive/70 hover:bg-destructive/5 ms-13 sm:ms-0"
+            onClick={() => setDeleteDialogOpen(true)}
           >
             Delete Account
           </Button>
@@ -132,6 +138,11 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
       <ChangePasswordDialog
         open={passwordDialogOpen}
         onOpenChange={setPasswordDialogOpen}
+      />
+
+      <DeleteAccountDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
       />
     </div>
   )

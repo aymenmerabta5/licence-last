@@ -332,12 +332,12 @@ describe("StudentSignupForm", () => {
         expect(mockSignUp.mock.calls.length).toBe(1)
       })
 
-      const callArg = mockSignUp.mock.calls[0][0] as { name: string; email: string; password: string; callbackURL: string; fetchOptions: { body: { role: string } } }
+      const callArg = mockSignUp.mock.calls[0][0] as { name: string; email: string; password: string; callbackURL: string; fetchOptions: { body: { accountType: string } } }
       expect(callArg.name).toBe("John Doe")
       expect(callArg.email).toBe("test@example.com")
       expect(callArg.password).toBe("password123")
       expect(callArg.callbackURL).toBe("/")
-      expect(callArg.fetchOptions.body.role).toBe("student")
+      expect(callArg.fetchOptions.body.accountType).toBe("student")
     })
 
     test("should show success state after registration", async () => {

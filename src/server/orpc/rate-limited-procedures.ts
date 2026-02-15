@@ -2,6 +2,7 @@ import "server-only"
 
 import {
   publicProcedure,
+  authedSessionProcedure,
   authedProcedure,
   adminProcedure,
   superAdminProcedure,
@@ -44,12 +45,28 @@ export const authedProcedureStandard = authedProcedure.use(
 )
 
 /**
+ * Authenticated session-only procedure with standard rate limiting (100 req/min)
+ * Bypasses approval gate; use only for bootstrap/session endpoints.
+ */
+export const authedSessionProcedureStandard = authedSessionProcedure.use(
+  createStandardRateLimitMiddleware("authed-session-standard")
+)
+
+/**
  * Authenticated procedure with generous rate limiting (300 req/min)
  * Use for: Read-heavy operations, listings, searches
  * Key: User-based
  */
 export const authedProcedureGenerous = authedProcedure.use(
   createGenerousRateLimitMiddleware("authed-generous")
+)
+
+/**
+ * Authenticated session-only procedure with generous rate limiting (300 req/min)
+ * Bypasses approval gate; use only for bootstrap/session endpoints.
+ */
+export const authedSessionProcedureGenerous = authedSessionProcedure.use(
+  createGenerousRateLimitMiddleware("authed-session-generous")
 )
 
 /**

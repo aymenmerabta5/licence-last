@@ -100,6 +100,11 @@
     "returnHome": "Return to Home",
     "suggestion": "We suggest starting from the main edition"
   },
+  "goodbye": {
+    "headline": "Account Deleted",
+    "description": "Your account and all associated data have been permanently deleted. We're sorry to see you go. You're always welcome to create a new account in the future.",
+    "returnHome": "Return to Home"
+  },
   "auth": {
     "login": {
       "pageTitle": "Sign In",
@@ -337,8 +342,8 @@
       "deptValidations": "Department Validations",
       "departments": "Departments",
       "statistics": "Statistics",
-      "commandCenter": "Command Center",
       "userManagement": "User Management",
+      "companies": "Companies",
       "universities": "Universities",
       "settings": "Settings",
       "logout": "Log out"
@@ -501,8 +506,7 @@
         "positions": "positions",
         "weeks": "weeks",
         "skills": "Skills",
-        "candidates_one": "candidate",
-        "candidates_other": "candidates",
+        "candidates": "{count, plural, one {candidate} other {candidates}}",
         "form": {
           "createTitle": "Create New Offer",
           "createSubtitle": "Fill in the details for your new internship position",
@@ -527,6 +531,8 @@
           "skillsSection": "Required Skills",
           "skillsHint": "Select up to 20 skills that best match this position",
           "skillsSelected": "selected",
+          "skillsSearchPlaceholder": "Search skills…",
+          "skillsMaxReached": "Maximum reached — remove a skill to add another.",
           "submit": "Create Offer",
           "submitEdit": "Save Changes",
           "cancel": "Cancel",
@@ -546,21 +552,23 @@
           "copilot": {
             "title": "AI Copilot",
             "description": "Suggestions only. Preview first, then apply to the form.",
-            "badge": "Draft + Skills",
-            "promptLabel": "Prompt (optional)",
             "promptPlaceholder": "Role, stack, constraints (e.g. 12w, remote, React + Node)",
             "generateDraft": "Generate Draft",
             "improveDescription": "Improve Description",
             "suggestSkills": "Suggest Skills",
-            "status": "Status: {status}",
-            "preview": "Preview",
             "applyToForm": "Apply to form",
-            "waiting": "Waiting for AI output...",
-            "prompts": {
-              "generateDraft": "Generate a draft offer",
-              "improveDescription": "Improve the offer description",
-              "suggestSkills": "Suggest skill tags for this offer"
-            }
+            "thinking": "Thinking…",
+            "ready": "Ready",
+            "appliedToForm": "Applied to form",
+            "generating": "Generating draft…",
+            "improving": "Improving description…",
+            "suggesting": "Suggesting skills…",
+            "previewTitle": "Title",
+            "previewDescription": "Description",
+            "previewDetails": "Details",
+            "previewSkills": "Skills",
+            "duration": "{weeks}w",
+            "positions": "{count} pos."
           }
         }
       },
@@ -579,6 +587,13 @@
         "refuseNotePlaceholder": "Optional: Provide feedback to the candidate...",
         "cancel": "Cancel",
         "confirmRefuseButton": "Refuse",
+        "dragHint": "Drag and drop candidates between columns to update their pipeline stage.",
+        "pipelineStage": "Pipeline Stage",
+        "noApplications": "No applications",
+        "candidateCardAria": "{name} candidate card",
+        "kanbanColumnAria": "{stage} column",
+        "invalidStageTransition": "This stage transition is not allowed.",
+        "stageUpdateFailed": "Failed to update pipeline stage. The card was restored.",
         "statusFilter": {
           "all": "All",
           "applied": "Pending",
@@ -624,7 +639,14 @@
       "manageOffers": "Manage your offers",
       "viewAllOffers": "View all offers",
       "candidate": "candidate",
-      "candidates": "candidates"
+      "candidates": "candidates",
+      "offers": {
+        "status": {
+          "draft": "Draft",
+          "published": "Published",
+          "closed": "Closed"
+        }
+      }
     },
     "welcome": "Welcome back,",
     "roles": {
@@ -802,7 +824,7 @@
       "exploreOffers": "Explore Internships"
     },
     "admin": {
-      "title": "Admin Command Center",
+      "title": "Admin Dashboard",
       "subtitle": "Overview of platform activity",
       "stats": {
         "totalPlacements": "Total Placements",
@@ -917,7 +939,6 @@
         "companyAcceptedOn": "Company accepted on"
       },
       "universities": {
-        "backToCommandCenter": "Back to command center",
         "kicker": "Administration",
         "title": "University Validation",
         "description": "Review and approve pending university registrations.",
@@ -950,6 +971,39 @@
           "registeredAt": "Registered"
         }
       },
+      "companies": {
+        "kicker": "Administration",
+        "title": "Company Validation",
+        "description": "Review and approve pending company registrations.",
+        "noCompanies": "No companies found.",
+        "statusFilter": "Filter by status",
+        "allStatuses": "All statuses",
+        "status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "suspended": "Suspended"
+        },
+        "approve": "Approve",
+        "reject": "Reject",
+        "approveSuccess": "Company approved successfully.",
+        "rejectSuccess": "Company rejected.",
+        "rejectDialog": {
+          "title": "Reject Company",
+          "description": "Provide a reason for rejecting this company application.",
+          "reasonLabel": "Rejection reason",
+          "reasonPlaceholder": "Enter the reason for rejection...",
+          "cancel": "Cancel",
+          "confirm": "Reject Company"
+        },
+        "card": {
+          "website": "Website",
+          "location": "Location",
+          "representative": "Representative",
+          "contact": "Contact",
+          "registeredAt": "Registered"
+        }
+      },
       "pending": {
         "kicker": "University Status",
         "title": "Application Under Review",
@@ -971,28 +1025,7 @@
       }
     },
     "superAdmin": {
-      "commandCenter": {
-        "backToDashboard": "Back to dashboard",
-        "kicker": "Super Admin",
-        "title": "Command Center",
-        "description": "Platform overview and administrative controls.",
-        "cards": {
-          "totalUsers": "Total Users",
-          "activeUsers": "Active Users",
-          "bannedUsers": "Banned Users",
-          "platformHealth": "Platform Health"
-        },
-        "quickActions": "Quick Actions",
-        "actions": {
-          "userManagement": "User Management",
-          "validations": "Validate Placements",
-          "statistics": "Statistics"
-        },
-        "recentActivity": "Recent Activity",
-        "noRecentActivity": "No recent activity."
-      },
       "users": {
-        "backToCommandCenter": "Back to command center",
         "kicker": "Administration",
         "title": "User Management",
         "description": "Manage all platform users, roles, and access.",
@@ -1165,6 +1198,48 @@
           "verifyFailed": "Invalid verification code. Please try again.",
           "passwordRequired": "Password is required."
         }
+      },
+      "sessions": {
+        "title": "Active Sessions",
+        "description": "Manage devices where your account is currently signed in.",
+        "currentDevice": "Current",
+        "lastActive": "Last active:",
+        "revoke": "Sign Out",
+        "revokeOthers": "Sign Out All Other Sessions",
+        "noSessions": "No active sessions found.",
+        "loading": "Loading sessions…",
+        "revokeSuccess": "Session signed out successfully.",
+        "revokeError": "Failed to sign out session. Please try again.",
+        "revokeOthersSuccess": "Signed out {count, plural, one {# session} other {# sessions}} successfully.",
+        "revokeOthersError": "Failed to sign out other sessions. Please try again.",
+        "revokeDialog": {
+          "title": "Sign Out Session",
+          "description": "This will sign out the selected device. The user on that device will need to log in again.",
+          "cancel": "Cancel",
+          "confirm": "Sign Out"
+        },
+        "revokeAllDialog": {
+          "title": "Sign Out All Other Sessions",
+          "description": "This will sign out {count, plural, one {# other session} other {# other sessions}}. Those devices will need to log in again.",
+          "cancel": "Cancel",
+          "confirm": "Sign Out All"
+        }
+      },
+      "deleteAccount": {
+        "title": "Delete Account",
+        "description": "This will permanently delete your account and all associated data. This action cannot be undone.",
+        "warning": "All your data including your profile, applications, conversations, and documents will be permanently deleted. This cannot be reversed.",
+        "passwordLabel": "Current Password",
+        "passwordPlaceholder": "Enter your password to confirm",
+        "confirmLabel": "Type \"{phrase}\" to confirm",
+        "confirmPhrase": "delete my account",
+        "confirm": "Delete My Account Permanently",
+        "deleting": "Deleting account…",
+        "error": {
+          "passwordRequired": "Password is required.",
+          "confirmRequired": "Please type the confirmation phrase.",
+          "deleteFailed": "Failed to delete account. Please check your password and try again."
+        }
       }
     },
     "departments": {
@@ -1296,6 +1371,358 @@
       "title": "Document Not Found",
       "subtitle": "No document was found with this verification code. Please check the code and try again.",
       "tryAgain": "Try Another Code"
+    }
+  },
+  "pages": {
+    "discover": {
+      "metadata": {
+        "title": "Discover — Internex",
+        "description": "Explore how Internex connects students with internship opportunities through intelligent matching."
+      },
+      "hero": {
+        "kicker": "Platform Overview",
+        "headline": "Discover What Internex Can Do",
+        "headlineHighlight": "Can Do",
+        "description": "A comprehensive platform that digitizes the entire internship lifecycle—from discovery to official Convention de Stage."
+      },
+      "features": {
+        "label": "Core Features",
+        "headline": "Everything You Need",
+        "items": {
+          "matching": {
+            "num": "01",
+            "title": "Skill-Based Matching",
+            "desc": "Our algorithm scores candidates against offers using skills, language, location, and profile completeness."
+          },
+          "search": {
+            "num": "02",
+            "title": "Smart Search & Filters",
+            "desc": "Find the perfect internship with filters for location, type, work mode, skills, and more."
+          },
+          "assistant": {
+            "num": "03",
+            "title": "AI-Powered Assistant",
+            "desc": "Get help drafting cover letters, analyzing candidates, and navigating the platform with AI."
+          },
+          "cv": {
+            "num": "04",
+            "title": "Digital CV Builder",
+            "desc": "Build a professional profile with skills, experience, GitHub, and portfolio links."
+          },
+          "documents": {
+            "num": "05",
+            "title": "Automated Documents",
+            "desc": "Convention de Stage and certificates generated automatically with QR verification codes."
+          },
+          "tracking": {
+            "num": "06",
+            "title": "Real-Time Tracking",
+            "desc": "Follow every application from submission to placement with live status updates."
+          }
+        }
+      },
+      "matching": {
+        "label": "How Matching Works",
+        "headline": "Intelligent Scoring",
+        "description": "Our matching algorithm evaluates candidates across four dimensions to find the best fit.",
+        "skills": {
+          "label": "Skills",
+          "value": "55%",
+          "desc": "Technical skills overlap between student profile and offer requirements."
+        },
+        "language": {
+          "label": "Language",
+          "value": "20%",
+          "desc": "Language compatibility between student and company."
+        },
+        "location": {
+          "label": "Location",
+          "value": "15%",
+          "desc": "Geographic proximity and work mode preferences."
+        },
+        "profile": {
+          "label": "Profile",
+          "value": "10%",
+          "desc": "Profile completeness and additional qualifications."
+        }
+      },
+      "types": {
+        "label": "Internship Types",
+        "headline": "Four Pathways",
+        "pfe": {
+          "title": "PFE",
+          "fullTitle": "Final Year Project",
+          "desc": "End-of-studies project integrating academic research with industry practice."
+        },
+        "immersion": {
+          "title": "Immersion",
+          "fullTitle": "Immersion Internship",
+          "desc": "Full integration into a company environment for hands-on professional experience."
+        },
+        "summer": {
+          "title": "Summer",
+          "fullTitle": "Summer Internship",
+          "desc": "Seasonal opportunities during university breaks for additional experience."
+        },
+        "practical": {
+          "title": "Practical",
+          "fullTitle": "Practical Training",
+          "desc": "Structured practical work aligned with academic curriculum requirements."
+        }
+      },
+      "cta": {
+        "headline": "Ready to explore?",
+        "description": "Join thousands of students and companies already using Internex.",
+        "button": "Get Started Free"
+      }
+    },
+    "forStudents": {
+      "metadata": {
+        "title": "For Students — Internex",
+        "description": "Build your digital CV, find matching internships, and track your applications—all in one place."
+      },
+      "hero": {
+        "kicker": "For Students",
+        "headline": "Your Career Journey Starts Here",
+        "headlineHighlight": "Starts Here",
+        "description": "Build your digital CV, discover internships matched to your skills, and track every application from submission to placement."
+      },
+      "benefits": {
+        "label": "Why Internex",
+        "headline": "Built for Your Success",
+        "cv": {
+          "title": "Digital CV",
+          "desc": "Create a professional profile with your skills, experience, GitHub, and portfolio. Recruiters find you."
+        },
+        "matching": {
+          "title": "Smart Matching",
+          "desc": "Our algorithm finds internships that match your exact skill set. No more scrolling through irrelevant listings."
+        },
+        "apply": {
+          "title": "One-Click Apply",
+          "desc": "Send your profile directly to companies. AI helps you draft cover letters that stand out."
+        },
+        "tracking": {
+          "title": "Live Tracking",
+          "desc": "Follow every application in real-time. Know exactly where you stand at every stage."
+        },
+        "assistant": {
+          "title": "AI Copilot",
+          "desc": "Get personalized guidance on applications, interview prep, and career strategy from your AI assistant."
+        },
+        "documents": {
+          "title": "Auto Documents",
+          "desc": "Your Convention de Stage and completion certificates are generated automatically when validated."
+        }
+      },
+      "journey": {
+        "label": "Your Journey",
+        "headline": "From Sign-Up to Placement",
+        "step1": {
+          "num": "01",
+          "title": "Create Your Account",
+          "desc": "Register with your university email and verify your student status."
+        },
+        "step2": {
+          "num": "02",
+          "title": "Build Your Profile",
+          "desc": "Add skills, link your GitHub, upload your portfolio. Make yourself discoverable."
+        },
+        "step3": {
+          "num": "03",
+          "title": "Discover & Apply",
+          "desc": "Search with smart filters or let our matching engine find opportunities for you."
+        },
+        "step4": {
+          "num": "04",
+          "title": "Get Placed",
+          "desc": "Once accepted, your university validates the placement and documents are generated."
+        }
+      },
+      "cta": {
+        "headline": "Start your journey today",
+        "description": "It's free for students. Always.",
+        "button": "Create Your Account",
+        "free": "Free for Students"
+      }
+    },
+    "forCompanies": {
+      "metadata": {
+        "title": "For Companies — Internex",
+        "description": "Find and recruit the best student talent with AI-powered screening and automated compliance."
+      },
+      "hero": {
+        "kicker": "For Companies",
+        "headline": "Find Tomorrow's Talent Today",
+        "headlineHighlight": "Tomorrow's Talent",
+        "description": "Publish internship offers, screen candidates with AI, and let the platform handle compliance and documents automatically."
+      },
+      "benefits": {
+        "label": "Why Internex",
+        "headline": "Recruit Smarter",
+        "pipeline": {
+          "title": "Talent Pipeline",
+          "desc": "Manage all candidates in one place. Filter by skills, experience, and match score to find the best fit."
+        },
+        "ai": {
+          "title": "AI Screening",
+          "desc": "Let AI summarize candidates, highlight strengths, and draft communication—saving hours of manual review."
+        },
+        "trust": {
+          "title": "Trust Index",
+          "desc": "Build your company's reputation on the platform through response rates, completion rates, and feedback scores."
+        },
+        "compliance": {
+          "title": "Auto Compliance",
+          "desc": "Once you accept a candidate, the university validates and all official documents are generated automatically."
+        }
+      },
+      "workflow": {
+        "label": "How It Works",
+        "headline": "Four Simple Steps",
+        "step1": {
+          "num": "01",
+          "title": "Set Up Your Company",
+          "desc": "Create your company profile with logo, description, and office details."
+        },
+        "step2": {
+          "num": "02",
+          "title": "Publish Offers",
+          "desc": "Create internship positions with skill requirements, duration, and work mode."
+        },
+        "step3": {
+          "num": "03",
+          "title": "Review & Accept",
+          "desc": "Screen applicants, use AI summaries, and accept the best candidates."
+        },
+        "step4": {
+          "num": "04",
+          "title": "Automated Workflow",
+          "desc": "The rest happens automatically—validation, documents, and tracking."
+        }
+      },
+      "stats": {
+        "label": "By The Numbers",
+        "students": {
+          "value": "2,500+",
+          "label": "Active Students"
+        },
+        "placement": {
+          "value": "96%",
+          "label": "Placement Rate"
+        },
+        "universities": {
+          "value": "45",
+          "label": "Partner Universities"
+        },
+        "avgTime": {
+          "value": "< 48h",
+          "label": "Avg. Response Time"
+        }
+      },
+      "cta": {
+        "headline": "Ready to find talent?",
+        "description": "Join 350+ companies already recruiting on Internex.",
+        "button": "Register Your Company"
+      }
+    },
+    "about": {
+      "metadata": {
+        "title": "About — Internex",
+        "description": "Learn about Internex's mission to digitize the internship lifecycle and strengthen the University-Enterprise link."
+      },
+      "hero": {
+        "kicker": "About Internex",
+        "headline": "Bridging University & Enterprise",
+        "headlineHighlight": "University & Enterprise",
+        "description": "Within the framework of MESRS strategy to strengthen the University-Enterprise link, Internex digitizes the entire internship lifecycle from discovery to official Convention de Stage."
+      },
+      "mission": {
+        "label": "Our Mission",
+        "headline": "Why We Built Internex",
+        "paragraphs": {
+          "p1": "The internship process in Algeria has long been fragmented—students search manually, companies manage paper applications, and universities handle piles of administrative documents.",
+          "p2": "Internex was built to solve this. A single platform where students discover opportunities matched to their skills, companies manage talent pipelines efficiently, and administrators generate official documents with one click.",
+          "p3": "Aligned with the MESRS strategy to modernize higher education, Internex digitizes every step: from the initial search to the final Convention de Stage and completion certificate."
+        }
+      },
+      "values": {
+        "label": "Our Values",
+        "headline": "What Guides Us",
+        "innovation": {
+          "title": "Innovation",
+          "desc": "AI-powered matching, automated documents, and intelligent assistants that make the process effortless."
+        },
+        "accessibility": {
+          "title": "Accessibility",
+          "desc": "Free for students, available in three languages, and designed for every device and connection speed."
+        },
+        "transparency": {
+          "title": "Transparency",
+          "desc": "Real-time tracking, trust indices, and verification codes so every step is visible and verifiable."
+        },
+        "reliability": {
+          "title": "Reliability",
+          "desc": "Built on modern infrastructure with automated compliance, ensuring every document meets official standards."
+        }
+      },
+      "stats": {
+        "label": "Platform Impact",
+        "students": {
+          "value": "2,500+",
+          "label": "Students Connected"
+        },
+        "companies": {
+          "value": "350+",
+          "label": "Partner Companies"
+        },
+        "universities": {
+          "value": "45",
+          "label": "Universities"
+        },
+        "placement": {
+          "value": "96%",
+          "label": "Placement Rate"
+        }
+      },
+      "cta": {
+        "headline": "Be part of the future",
+        "description": "Whether you're a student, company, or university—Internex is for you.",
+        "button": "Get Started"
+      }
+    }
+  },
+  "footer": {
+    "description": "Connecting the brightest students with world-class opportunities. The future of internships starts here.",
+    "sections": {
+      "platform": "Platform",
+      "company": "Company",
+      "newsletter": "Stay Updated"
+    },
+    "links": {
+      "discover": "Discover",
+      "forStudents": "For Students",
+      "forCompanies": "For Companies",
+      "aboutUs": "About Us",
+      "signIn": "Sign In",
+      "getStarted": "Get Started"
+    },
+    "newsletter": {
+      "description": "Subscribe to our newsletter for the latest internship opportunities and career tips.",
+      "emailPlaceholder": "Enter your email",
+      "subscribe": "Subscribe"
+    },
+    "legal": {
+      "copyright": "(c) {year} Internex.io. All rights reserved.",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service",
+      "cookiePolicy": "Cookie Policy"
+    },
+    "social": {
+      "twitter": "Twitter",
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "instagram": "Instagram"
     }
   }
 }

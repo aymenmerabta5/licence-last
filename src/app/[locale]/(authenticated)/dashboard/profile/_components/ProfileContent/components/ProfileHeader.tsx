@@ -1,11 +1,14 @@
 "use client"
 
 import * as motion from "motion/react-client"
-import { Calendar } from "lucide-react"
+import { Calendar, Copy, Check as CheckIcon } from "lucide-react"
+import { useState } from "react"
+import { toast } from "sonner"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
+import { ease } from "@/lib/animations"
 
 import type { ProfileUser } from "../types"
 import { ROLE_LABELS, getInitials, formatMemberSince } from "../utils"
@@ -14,88 +17,142 @@ interface ProfileHeaderProps {
   user: ProfileUser
   editButtonLabel: string
   canEdit: boolean
+  profileText: string
 }
 
-export function ProfileHeader({ user, editButtonLabel, canEdit }: ProfileHeaderProps) {
+export function ProfileHeader({
+  user,
+  editButtonLabel,
+  canEdit,
+  profileText,
+}: ProfileHeaderProps) {
   const initials = getInitials(user.name)
   const memberSince = formatMemberSince(user.createdAt)
+  const [copied, setCopied] = useState(false)
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(profileText)
+      setCopied(true)
+      toast.success("Profile copied to clipboard")
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      toast.error("Failed to copy profile")
+    }
+  }
 
   return (
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.6, ease }}
       className="relative"
     >
-      <div className="h-44 sm:h-56 w-full rounded-2xl bg-gradient-to-br from-primary/15 via-primary/5 to-secondary/10 overflow-hidden relative">
-        <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.06]" />
-        <div className="absolute top-8 end-8 w-56 h-56 bg-primary/10 blur-[100px] rounded-full" />
-        <div className="absolute bottom-0 start-16 w-40 h-40 bg-secondary/10 blur-[80px] rounded-full" />
-
-        <div className="absolute top-5 start-6">
-          <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50">
-            Profile Edition
-          </span>
+      {/* Editorial masthead */}
+      <div className="h-0.5 bg-primary" />
+      <div className="border border-t-0 border-border/50 relative overflow-hidden">
+        {/* Dark mode glow */}
+        <div className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100">
+          <div className="absolute -top-20 end-0 h-40 w-40 rounded-full bg-primary/5 blur-3xl" />
+          <div className="absolute bottom-0 start-16 w-32 h-32 bg-primary/3 blur-[80px] rounded-full" />
         </div>
-      </div>
 
-      <div className="px-6 sm:px-8 -mt-14 sm:-mt-18 relative z-10 flex flex-col sm:flex-row sm:items-end gap-5">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.4, type: "spring" }}
-          className="h-28 w-28 sm:h-36 sm:w-36 rounded-full border-[6px] border-background bg-primary flex items-center justify-center text-white text-4xl sm:text-5xl font-serif shadow-2xl shadow-primary/20 shrink-0"
-        >
-          {user.image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={user.image}
-              alt={user.name || "Profile"}
-              className="h-full w-full rounded-full object-cover"
-            />
-          ) : (
-            initials
-          )}
-        </motion.div>
+        {/* Light mode texture */}
+        <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.03] dark:opacity-0" />
 
-        <div className="flex-1 pb-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="relative p-8 md:p-10">
+          {/* Kicker row */}
+          <div className="flex items-center justify-between mb-8">
+            <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary [[dir=rtl]_&]:tracking-normal">
+              Profile
+            </span>
+            <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hidden sm:block [[dir=rtl]_&]:tracking-normal">
+              Member since {memberSince}
+            </span>
+          </div>
+
+          {/* Main layout: Avatar + Name + Actions */}
+          <div className="flex flex-col sm:flex-row sm:items-end gap-7">
+            {/* Portrait */}
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.15, duration: 0.5, ease }}
+              className="relative shrink-0"
             >
-              <h1 className="text-3xl sm:text-4xl font-serif font-bold text-heading tracking-tight leading-none">
-                {user.name || "Anonymous User"}
-              </h1>
-              <div className="flex items-center gap-3 mt-2">
-                <Badge className="bg-primary/10 text-primary border-none text-[9px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full">
-                  {ROLE_LABELS[user.role || "student"] || user.role}
-                </Badge>
-                <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground/60 uppercase tracking-wider font-medium">
-                  <Calendar className="h-3 w-3" />
-                  Member since {memberSince}
-                </span>
+              <div className="h-28 w-28 sm:h-32 sm:w-32 rounded-full border-4 border-primary/20 bg-primary flex items-center justify-center text-white text-4xl sm:text-5xl font-serif shadow-xl shadow-primary/10">
+                {user.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={user.image}
+                    alt={user.name || "Profile"}
+                    className="h-full w-full rounded-full object-cover"
+                  />
+                ) : (
+                  initials
+                )}
               </div>
+              {/* Status dot */}
+              <div className="absolute bottom-1 end-1 h-4 w-4 rounded-full bg-emerald-500 border-[3px] border-background" />
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-              className="flex gap-3"
-            >
-              {canEdit && (
-                <Link href="/dashboard/settings">
-                  <Button
-                    variant="editorial"
-                    className="rounded-xl h-10 px-5 shadow-lg shadow-primary/15 border-primary bg-primary text-white hover:bg-primary/90"
-                  >
-                    {editButtonLabel}
-                  </Button>
-                </Link>
-              )}
-            </motion.div>
+            {/* Name + meta */}
+            <div className="flex-1 space-y-4">
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25, duration: 0.5, ease }}
+              >
+                <h1 className="font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-heading">
+                  {user.name || "Anonymous User"}
+                </h1>
+
+                <div className="flex flex-wrap items-center gap-3 mt-3">
+                  <Badge className="bg-primary/10 text-primary border-none text-[9px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full">
+                    {ROLE_LABELS[user.role || "student"] || user.role}
+                  </Badge>
+                  <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground/50 uppercase tracking-wider font-medium sm:hidden">
+                    <Calendar className="h-3 w-3" />
+                    Since {memberSince}
+                  </span>
+                </div>
+              </motion.div>
+
+              {/* Actions */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.4, ease }}
+                className="flex flex-wrap gap-3"
+              >
+                <Button
+                  type="button"
+                  variant="editorial-outline"
+                  size="sm"
+                  className="h-9 px-4 border-border/40 hover:border-primary transition-colors"
+                  onClick={handleCopy}
+                >
+                  {copied ? (
+                    <CheckIcon className="h-3.5 w-3.5 me-2 text-emerald-500" />
+                  ) : (
+                    <Copy className="h-3.5 w-3.5 me-2" />
+                  )}
+                  {copied ? "Copied!" : "Copy Profile"}
+                </Button>
+
+                {canEdit && (
+                  <Link href="/dashboard/settings">
+                    <Button
+                      variant="editorial"
+                      size="sm"
+                      className="h-9 px-5"
+                    >
+                      {editButtonLabel}
+                    </Button>
+                  </Link>
+                )}
+              </motion.div>
+            </div>
           </div>
         </div>
       </div>

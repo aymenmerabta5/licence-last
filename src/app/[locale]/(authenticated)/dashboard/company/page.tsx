@@ -8,19 +8,11 @@ import { RecruiterDashboard } from "@/app/[locale]/(authenticated)/_components/R
 
 export default async function CompanyDashboardPage() {
   const user = await requireRole(["company_admin"])
-
-  if (!user.onboardingCompleted) {
-    return localeRedirect("/onboarding/company")
-  }
-
   const company = await getCompanyByUserId(user.id)
 
-  if (company?.status === "rejected") {
-    return localeRedirect("/dashboard/company/rejected")
-  }
-
-  if (company?.status !== "approved") {
-    return localeRedirect("/dashboard/company/pending")
+  // AuthenticatedContent already blocks unapproved users — this is a safety net
+  if (!company || company.status !== "approved") {
+    return localeRedirect("/status/company/pending")
   }
 
   const t = await getTranslations("dashboard")
@@ -43,7 +35,7 @@ export default async function CompanyDashboardPage() {
         </p>
       </header>
 
-      <RecruiterDashboard user={user} />
+      <RecruiterDashboard user={{ ...user, role: user.role as string }} />
     </div>
   )
 }

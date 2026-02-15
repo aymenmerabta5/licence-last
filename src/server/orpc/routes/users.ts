@@ -5,12 +5,18 @@ import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
 
 import {
-  authedProcedureGenerous,
+  authedSessionProcedureGenerous,
+  authedSessionProcedureStandard,
   authedProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
 import { getMe } from "@/server/services/users/get-me"
 import { updateMe } from "@/server/services/users/update-me"
 import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
+import {
+  listMySessions,
+  revokeMySession,
+  revokeOtherSessions,
+} from "@/server/services/users/session-management"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { deleteFile } from "@/server/storage/s3"
@@ -18,7 +24,7 @@ import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("orpc/routes/users")
 
-export const getMeProcedure = authedProcedureGenerous.handler(async ({ context }) =>
+export const getMeProcedure = authedSessionProcedureGenerous.handler(async ({ context }) =>
   getMe(context.user),
 )
 
@@ -112,4 +118,31 @@ export const deleteAvatarProcedure = authedProcedureStandard.handler(
     await updateMe(context.user.id, { image: null })
     return { success: true }
   },
+)
+
+// ── Session management (self-service) ───────────────────────────
+
+export const listMySessionsProcedure = authedSessionProcedureGenerous.handler(
+  async ({ context }) => {
+    const sessions = await listMySessions()
+    return sessions.map((s) => ({
+      ...s,
+      isCurrent: s.token === context.session.token,
+    }))
+  },
+)
+
+export const revokeMySessionProcedure = authedSessionProcedureStandard
+  .input(z.object({ sessionToken: z.string().min(1) }))
+  .handler(async ({ input, context }) => {
+    if (input.sessionToken === context.session.token) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "Cannot revoke your current session. Use logout instead.",
+      })
+    }
+    return revokeMySession(input.sessionToken)
+  })
+
+export const revokeOtherSessionsProcedure = authedSessionProcedureStandard.handler(
+  async ({ context }) => revokeOtherSessions(context.session.token),
 )

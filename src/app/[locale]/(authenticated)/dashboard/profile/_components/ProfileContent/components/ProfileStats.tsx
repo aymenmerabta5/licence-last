@@ -1,6 +1,9 @@
-import type { LucideIcon } from "lucide-react"
+"use client"
 
-import { StatsCard } from "@/app/[locale]/(authenticated)/_components/StatsCard"
+import * as motion from "motion/react-client"
+import type { LucideIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { ease } from "@/lib/animations"
 
 interface StatItem {
   title: string
@@ -15,10 +18,47 @@ interface ProfileStatsProps {
 
 export function ProfileStats({ stats }: ProfileStatsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {stats.map((stat, i) => (
-        <StatsCard key={i} index={i} {...stat} />
-      ))}
-    </div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6, delay: 0.15, ease }}
+      className="border-y-2 border-foreground dark:border-foreground/15"
+    >
+      <div className="grid grid-cols-3">
+        {stats.map((stat, i) => {
+          const Icon = stat.icon
+          const isHighlight = stat.title === "Profile" && stat.value === "100%"
+
+          return (
+            <div
+              key={i}
+              className={cn(
+                "py-7 px-5 text-center relative group transition-colors",
+                "hover:bg-primary/[0.02]",
+                i < stats.length - 1 && "border-e border-border/40",
+              )}
+            >
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <Icon className="h-3.5 w-3.5 text-primary" />
+                <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
+                  {stat.title}
+                </span>
+              </div>
+              <h3
+                className={cn(
+                  "font-serif text-4xl font-bold leading-none tracking-tight",
+                  isHighlight ? "text-primary" : "text-heading",
+                )}
+              >
+                {stat.value}
+              </h3>
+              <p className="text-[10px] text-muted-foreground/40 font-medium mt-2">
+                {stat.description}
+              </p>
+            </div>
+          )
+        })}
+      </div>
+    </motion.div>
   )
 }

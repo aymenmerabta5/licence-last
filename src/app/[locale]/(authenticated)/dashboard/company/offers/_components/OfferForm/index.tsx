@@ -49,10 +49,11 @@ export function OfferForm({ mode, initialData }: OfferFormProps) {
       <CopilotPanel
         aiPrompt={copilot.aiPrompt}
         onAiPromptChange={copilot.setAiPrompt}
-        aiIntent={copilot.aiIntent}
-        aiStatus={copilot.aiStatus}
-        aiError={copilot.aiError}
-        previewOutput={copilot.getPreviewOutput()}
+        activeIntent={copilot.activeIntent}
+        isPending={copilot.isPending}
+        error={copilot.error}
+        result={copilot.result}
+        skillTags={skillTags}
         onSendIntent={copilot.sendIntent}
         onApply={copilot.applyToForm}
       />

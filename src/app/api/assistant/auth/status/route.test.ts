@@ -16,7 +16,13 @@ mock.module("@/lib/csrf", () => ({
 }))
 
 // Mock auth
-const mockGetSession = mock<() => Promise<{ user: { id: string; role: string } } | null>>()
+const mockGetSession = mock<() => Promise<{
+  user: {
+    id: string
+    role: string
+    onboardingCompleted?: boolean
+  }
+} | null>>()
 
 mock.module("@/lib/auth", () => ({
   auth: {
@@ -51,11 +57,29 @@ mock.module("@/env", () => ({
   },
 }))
 
+// Mock DB chain used by approval gate
+const mockDbLimit = mock<() => Promise<Array<{ status: string }>>>()
+const mockDbWhere = mock(() => ({ limit: mockDbLimit }))
+const mockDbInnerJoin = mock(() => ({ where: mockDbWhere }))
+const mockDbFrom = mock(() => ({ innerJoin: mockDbInnerJoin, where: mockDbWhere }))
+const mockDbSelect = mock(() => ({ from: mockDbFrom }))
+
+mock.module("@/server/db", () => ({
+  db: {
+    select: mockDbSelect,
+  },
+}))
+
 describe("src/app/api/assistant/auth/status/route", () => {
   beforeEach(() => {
     mockGetSession.mockClear()
     mockCheckRateLimit.mockClear()
     mockAuthorize.mockClear()
+    mockDbSelect.mockClear()
+    mockDbFrom.mockClear()
+    mockDbInnerJoin.mockClear()
+    mockDbWhere.mockClear()
+    mockDbLimit.mockClear()
     mockHeadersData = {}
 
     // Default successful mocks
@@ -64,6 +88,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
     })
     mockCheckRateLimit.mockResolvedValue({ ok: true, retryAfterMs: 0 })
     mockAuthorize.mockResolvedValue({ status: "completed", url: "http://auth.url" })
+    mockDbLimit.mockResolvedValue([{ status: "approved" }])
   })
 
   describe("request validation", () => {
@@ -204,6 +229,26 @@ describe("src/app/api/assistant/auth/status/route", () => {
       mockGetSession.mockResolvedValue({
         user: { id: "user-1", role: "super_admin" },
       })
+
+      const { POST } = await import("./route")
+
+      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ toolName: "gmail.send" }),
+      })
+
+      const response = await POST(request)
+      expect(response.status).toBe(403)
+      const body = await response.text()
+      expect(body).toBe("Forbidden")
+    })
+
+    test("pending company_admin returns 403", async () => {
+      mockGetSession.mockResolvedValue({
+        user: { id: "user-1", role: "company_admin", onboardingCompleted: true },
+      })
+      mockDbLimit.mockResolvedValue([{ status: "pending" }])
 
       const { POST } = await import("./route")
 

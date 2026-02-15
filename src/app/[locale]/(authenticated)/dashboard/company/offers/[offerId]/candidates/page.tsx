@@ -10,16 +10,16 @@ interface CandidatesPageProps {
 
 function CandidatesPageFallback() {
   return (
-    <div className="max-w-[1400px] mx-auto space-y-8" aria-busy="true" aria-live="polite">
+    <div className="w-full space-y-8" aria-busy="true" aria-live="polite">
       <div className="space-y-3">
         <Skeleton className="h-4 w-36" />
         <Skeleton className="h-10 w-64" />
       </div>
 
-      <div className="grid grid-cols-1 gap-3 xl:grid-cols-3 2xl:grid-cols-6">
-        <Skeleton className="h-80" />
-        <Skeleton className="h-80" />
-        <Skeleton className="h-80" />
+      <div className="grid grid-flow-col auto-cols-[minmax(280px,1fr)] gap-4 min-w-[1760px] overflow-hidden">
+        <Skeleton className="h-[70vh]" />
+        <Skeleton className="h-[70vh]" />
+        <Skeleton className="h-[70vh]" />
       </div>
     </div>
   )

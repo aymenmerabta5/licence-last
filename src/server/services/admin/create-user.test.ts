@@ -21,7 +21,8 @@ describe("createUser", () => {
     })
 
     expect(mockCreateUser).toHaveBeenCalledTimes(1)
-    const call = mockCreateUser.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockCreateUser.mock.calls as any)[0][0]
     expect(call.body.email).toBe("test@example.com")
     expect(call.body.name).toBe("Test User")
     expect(call.body.role).toBe("student")
@@ -46,7 +47,8 @@ describe("createUser", () => {
     const { createUser } = await import("./create-user")
     await createUser({ email: "a@b.com", password: "pw", name: "A", role: "student" })
 
-    const call = mockCreateUser.mock.calls[0][0]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockCreateUser.mock.calls as any)[0][0]
     expect(call.headers).toBe(h)
   })
 })

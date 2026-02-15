@@ -14,8 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { AccountSwitcherSection } from "./AccountSwitcherSection"
-import { useAccountSwitcher } from "../hooks/useAccountSwitcher"
 import type { NavbarUser } from "../types"
 
 interface UserDropdownProps {
@@ -26,11 +24,10 @@ interface UserDropdownProps {
 
 export function UserDropdown({ user, onLogout, isLoggingOut }: UserDropdownProps) {
   const t = useTranslations("dashboard.navbar")
-  const switcher = useAccountSwitcher(user.id)
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-2.5 p-1 rounded-full hover:bg-secondary/80 transition-all outline-none group">
+      <DropdownMenuTrigger className="flex items-center gap-2.5 px-2 py-1.5 rounded-full hover:bg-secondary/80 transition-all outline-none group">
         <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[13px] shrink-0 group-hover:bg-primary group-hover:text-white transition-all ring-2 ring-transparent group-hover:ring-primary/20">
           {user.name?.charAt(0) || "U"}
         </div>
@@ -57,18 +54,6 @@ export function UserDropdown({ user, onLogout, isLoggingOut }: UserDropdownProps
             </DropdownMenuItem>
           </Link>
         </DropdownMenuGroup>
-
-        {/* Account Switcher */}
-        <AccountSwitcherSection
-          sessions={switcher.sessions}
-          isLoading={switcher.isLoading}
-          currentUserId={switcher.currentUserId}
-          switchingToken={switcher.switchingToken}
-          removingToken={switcher.removingToken}
-          onSwitch={switcher.switchAccount}
-          onRemove={switcher.removeAccount}
-          onAdd={switcher.addAccount}
-        />
 
         {/* Logout */}
         <DropdownMenuSeparator className="my-1.5 opacity-50" />

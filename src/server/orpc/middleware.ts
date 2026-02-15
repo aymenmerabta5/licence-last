@@ -6,8 +6,9 @@ import { eq } from "drizzle-orm"
 
 import { auth } from "@/lib/auth"
 import { db } from "@/server/db"
-import { companyMember } from "@/server/db/schema/companies"
+import { company, companyMember } from "@/server/db/schema/companies"
 import { studentProfile } from "@/server/db/schema/students"
+import { university } from "@/server/db/schema/universities"
 
 /**
  * Check if a user role has admin privileges (university_admin, dept_head, or super_admin).
@@ -19,8 +20,8 @@ export function isAdminRole(role: string | null | undefined): boolean {
 /** Public — no auth required. */
 export const publicProcedure = os
 
-/** Authenticated — requires a valid session. */
-export const authedProcedure = os.use(async ({ next }) => {
+/** Authenticated session — requires a valid session. */
+export const authedSessionProcedure = os.use(async ({ next }) => {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -35,6 +36,62 @@ export const authedProcedure = os.use(async ({ next }) => {
 
   return next({ context: { session: session.session, user: session.user } })
 })
+
+/** Enforce super-admin approval for onboarded company/university admins. */
+async function assertApprovedAdminAccess(user: {
+  id: string
+  role?: string | null
+  onboardingCompleted?: boolean | null
+  universityId?: string | null
+}) {
+  if (!user.onboardingCompleted) {
+    return
+  }
+
+  if (user.role === "company_admin") {
+    const [membership] = await db
+      .select({ status: company.status })
+      .from(companyMember)
+      .innerJoin(company, eq(companyMember.companyId, company.id))
+      .where(eq(companyMember.userId, user.id))
+      .limit(1)
+
+    if (!membership || membership.status !== "approved") {
+      throw new ORPCError("FORBIDDEN", {
+        message: "Company account is not approved by super admin yet",
+      })
+    }
+    return
+  }
+
+  if (user.role === "university_admin") {
+    if (!user.universityId) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "University account is not approved by super admin yet",
+      })
+    }
+
+    const [uni] = await db
+      .select({ status: university.status })
+      .from(university)
+      .where(eq(university.id, user.universityId))
+      .limit(1)
+
+    if (!uni || uni.status !== "approved") {
+      throw new ORPCError("FORBIDDEN", {
+        message: "University account is not approved by super admin yet",
+      })
+    }
+  }
+}
+
+/** Authenticated + approval gate for onboarded admin accounts. */
+export const authedProcedure = authedSessionProcedure.use(
+  async ({ context, next }) => {
+    await assertApprovedAdminAccess(context.user)
+    return next({ context })
+  },
+)
 
 /** Admin — requires admin or super_admin role. */
 export const adminProcedure = authedProcedure.use(

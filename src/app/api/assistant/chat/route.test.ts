@@ -17,13 +17,33 @@ mock.module("@/lib/csrf", () => ({
 }))
 
 // Mock auth
-const mockGetSession = mock<() => Promise<{ user: { id: string; role: string } } | null>>()
+const mockGetSession = mock<() => Promise<{
+  user: {
+    id: string
+    role: string
+    onboardingCompleted?: boolean
+    universityId?: string | null
+  }
+} | null>>()
 
 mock.module("@/lib/auth", () => ({
   auth: {
     api: {
       getSession: mockGetSession,
     },
+  },
+}))
+
+// Mock DB chain used by approval gate
+const mockDbLimit = mock<() => Promise<Array<{ status: string }>>>()
+const mockDbWhere = mock(() => ({ limit: mockDbLimit }))
+const mockDbInnerJoin = mock(() => ({ where: mockDbWhere }))
+const mockDbFrom = mock(() => ({ innerJoin: mockDbInnerJoin, where: mockDbWhere }))
+const mockDbSelect = mock(() => ({ from: mockDbFrom }))
+
+mock.module("@/server/db", () => ({
+  db: {
+    select: mockDbSelect,
   },
 }))
 
@@ -155,6 +175,11 @@ describe("src/app/api/assistant/chat/route", () => {
     mockIsRoleAllowedForIntent.mockClear()
     mockResolvePersistence.mockClear()
     mockGetAssistantConversationByIdForCompany.mockClear()
+    mockDbSelect.mockClear()
+    mockDbFrom.mockClear()
+    mockDbInnerJoin.mockClear()
+    mockDbWhere.mockClear()
+    mockDbLimit.mockClear()
     mockHeadersData = {}
 
     // Default successful mocks
@@ -165,6 +190,7 @@ describe("src/app/api/assistant/chat/route", () => {
     mockIsRoleAllowedForIntent.mockReturnValue(true)
     mockResolvePersistence.mockResolvedValue({ ok: true, companyId: "company-1", modelId: null })
     mockGetAssistantConversationByIdForCompany.mockResolvedValue({ title: null })
+    mockDbLimit.mockResolvedValue([{ status: "approved" }])
   })
 
   describe("request validation", () => {
@@ -310,6 +336,33 @@ describe("src/app/api/assistant/chat/route", () => {
             parts: [{ type: "text", text: "Hello" }],
           }],
           context: { intent: "search_offers" },
+        }),
+      })
+
+      const response = await POST(request)
+      expect(response.status).toBe(403)
+      const body = await response.text()
+      expect(body).toBe("Forbidden")
+    })
+
+    test("pending company_admin returns 403 before RBAC intent checks", async () => {
+      mockGetSession.mockResolvedValue({
+        user: { id: "user-1", role: "company_admin", onboardingCompleted: true },
+      })
+      mockDbLimit.mockResolvedValue([{ status: "pending" }])
+
+      const { POST } = await import("./route")
+
+      const request = new Request("http://localhost:3000/api/assistant/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [{
+            id: "msg-1",
+            role: "user",
+            content: "Hello",
+            parts: [{ type: "text", text: "Hello" }],
+          }],
         }),
       })
 

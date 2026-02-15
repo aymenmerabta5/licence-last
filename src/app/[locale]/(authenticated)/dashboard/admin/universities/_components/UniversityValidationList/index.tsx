@@ -2,10 +2,10 @@
 
 import { useState } from "react"
 import { useTranslations } from "next-intl"
-import { ArrowLeft, Loader2 } from "lucide-react"
+import * as motion from "motion/react-client"
+import { Loader2, GraduationCap } from "lucide-react"
 
-import { Link } from "@/i18n/routing"
-import { Separator } from "@/components/ui/separator"
+import { ease } from "@/lib/animations"
 import {
   Select,
   SelectContent,
@@ -50,65 +50,102 @@ export function UniversityValidationList() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-10 pb-20">
-      <header className="space-y-3">
-        <Link
-          href="/dashboard/admin/command-center"
-          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="h-3.5 w-3.5 [[dir=rtl]_&]:rotate-180" />
-          {t("backToCommandCenter")}
-        </Link>
-        <p className="text-[10px] uppercase tracking-[0.35em] font-bold text-primary [[dir=rtl]_&]:tracking-normal">
-          {t("kicker")}
-        </p>
-        <h1 className="font-serif text-[clamp(2.25rem,4vw,3rem)] leading-tight tracking-tight text-heading">
-          {t("title")}
-        </h1>
-        <p className="text-muted-foreground text-sm leading-relaxed font-light max-w-2xl">
-          {t("description")}
-        </p>
-      </header>
+      {/* Editorial Header */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, ease }}
+        className="relative"
+      >
+        <div className="h-0.5 bg-primary" />
+        <div className="border border-t-0 border-border/50 p-8 md:p-10">
+          <div className="absolute -top-20 end-0 h-40 w-40 rounded-full bg-primary/5 blur-3xl dark:bg-primary/10" />
 
-      <Separator className="bg-border/60" />
+          <div className="flex items-center justify-between mb-6">
+            <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary [[dir=rtl]_&]:tracking-normal">
+              {t("kicker")}
+            </span>
+            <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40">
+              {universities.length} {t("title").toLowerCase()}
+            </span>
+          </div>
 
-      {/* Filter */}
-      <div className="flex items-center gap-3">
-        <Select
-          value={statusFilter}
-          onValueChange={(v) => setStatusFilter(v as UniversityStatus | "all")}
-        >
-          <SelectTrigger className="w-48 h-10 border-border/40">
-            <SelectValue placeholder={t("statusFilter")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t("allStatuses")}</SelectItem>
-            <SelectItem value="pending">{t("status.pending")}</SelectItem>
-            <SelectItem value="approved">{t("status.approved")}</SelectItem>
-            <SelectItem value="rejected">{t("status.rejected")}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+          <h1 className="font-serif text-[clamp(1.75rem,3.5vw,2.5rem)] leading-[1.08] tracking-tight text-heading max-w-xl">
+            {t("title")}
+          </h1>
+          <p className="text-muted-foreground text-sm font-light leading-relaxed max-w-lg mt-3">
+            {t("description")}
+          </p>
+        </div>
+      </motion.div>
 
-      {/* List */}
+      {/* Filter Bar */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.15, ease }}
+        className="flex items-center gap-4"
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 [[dir=rtl]_&]:tracking-normal">
+            Filter
+          </span>
+          <Select
+            value={statusFilter}
+            onValueChange={(v) => setStatusFilter(v as UniversityStatus | "all")}
+          >
+            <SelectTrigger className="w-48 h-10 border-border/40 bg-background">
+              <SelectValue placeholder={t("statusFilter")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t("allStatuses")}</SelectItem>
+              <SelectItem value="pending">{t("status.pending")}</SelectItem>
+              <SelectItem value="approved">{t("status.approved")}</SelectItem>
+              <SelectItem value="rejected">{t("status.rejected")}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </motion.div>
+
+      {/* University List */}
       {isLoading ? (
-        <div className="flex justify-center py-12">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <div className="flex flex-col items-center justify-center py-16 gap-3">
+          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+          <span className="text-sm text-muted-foreground font-medium">
+            Loading universities...
+          </span>
         </div>
       ) : universities.length === 0 ? (
-        <p className="text-center py-12 text-muted-foreground text-sm">
-          {t("noUniversities")}
-        </p>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, ease }}
+          className="py-16 text-center space-y-3"
+        >
+          <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-secondary/10">
+            <GraduationCap className="h-6 w-6 text-muted-foreground/30" />
+          </div>
+          <p className="text-sm text-muted-foreground font-medium">
+            {t("noUniversities")}
+          </p>
+        </motion.div>
       ) : (
         <div className="space-y-4">
-          {universities.map((uni) => (
-            <UniversityCard
+          {universities.map((uni, i) => (
+            <motion.div
               key={uni.id}
-              university={uni}
-              onApprove={approveUniversity}
-              onReject={handleRejectClick}
-              isApproving={isApproving}
-              isRejecting={isRejecting}
-            />
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 + i * 0.06, ease }}
+            >
+              <UniversityCard
+                university={uni}
+                onApprove={approveUniversity}
+                onReject={handleRejectClick}
+                isApproving={isApproving}
+                isRejecting={isRejecting}
+              />
+            </motion.div>
           ))}
         </div>
       )}

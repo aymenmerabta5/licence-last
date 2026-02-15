@@ -10,7 +10,7 @@ export default async function UniversityOnboardingPage() {
   })
 
   if (session?.user.onboardingCompleted) {
-    return localeRedirect("/dashboard/admin/pending")
+    return localeRedirect("/status/university/pending")
   }
 
   return <UniversityOnboardingForm />

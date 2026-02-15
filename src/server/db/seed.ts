@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto"
 import { eq } from "drizzle-orm"
 import postgres from "postgres"
 import { drizzle } from "drizzle-orm/postgres-js"
+import { hashPassword } from "better-auth/crypto"
 
 import { logger } from "@/server/logging/logger"
 import * as schema from "./schema"
@@ -411,12 +412,12 @@ async function seedDepartmentSkills(db: ReturnType<typeof drizzle>) {
       }
 
       // onConflictDoNothing skips if the (departmentId, skillTagId) pair already exists
-      const result = await db
+      await db
         .insert(departmentSkill)
         .values({ departmentId: deptId, skillTagId: skillId })
         .onConflictDoNothing()
 
-      if (result.rowCount && result.rowCount > 0) seeded++
+      seeded++
     }
 
     if (seeded > 0) {
@@ -427,6 +428,47 @@ async function seedDepartmentSkills(db: ReturnType<typeof drizzle>) {
       })
     }
   }
+}
+
+const SEED_SUPER_ADMIN = {
+  email: "aymenmerabta12@gmail.com",
+  password: "Aymenlouaianes1",
+  name: "Aymen Merabta",
+}
+
+async function seedSuperAdmin(db: ReturnType<typeof drizzle>) {
+  const [existing] = await db
+    .select({ id: user.id })
+    .from(user)
+    .where(eq(user.email, SEED_SUPER_ADMIN.email))
+    .limit(1)
+
+  if (existing) {
+    logger.info({ event: "admin_exists", email: SEED_SUPER_ADMIN.email })
+    return
+  }
+
+  const userId = randomUUID()
+  const hashedPassword = await hashPassword(SEED_SUPER_ADMIN.password)
+
+  await db.insert(user).values({
+    id: userId,
+    email: SEED_SUPER_ADMIN.email,
+    name: SEED_SUPER_ADMIN.name,
+    role: "super_admin",
+    emailVerified: true,
+    onboardingCompleted: true,
+  })
+
+  await db.insert(account).values({
+    id: randomUUID(),
+    accountId: userId,
+    providerId: "credential",
+    userId,
+    password: hashedPassword,
+  })
+
+  logger.info({ event: "admin_seeded", email: SEED_SUPER_ADMIN.email, role: "super_admin" })
 }
 
 async function main() {
@@ -461,46 +503,7 @@ async function main() {
   await seedDepartmentSkills(db)
 
   // ── Seed super_admin user ──
-  const adminEmail = process.env.SEED_ADMIN_EMAIL?.trim()
-  const adminPassword = process.env.SEED_ADMIN_PASSWORD?.trim()
-
-  if (adminEmail && adminPassword) {
-    const [existingAdmin] = await db
-      .select({ id: user.id })
-      .from(user)
-      .where(eq(user.email, adminEmail))
-      .limit(1)
-
-    if (!existingAdmin) {
-      const userId = randomUUID()
-      // Hash the password using Bun's built-in bcrypt
-      const hashedPassword = await Bun.password.hash(adminPassword, {
-        algorithm: "bcrypt",
-        cost: 10,
-      })
-
-      await db.insert(user).values({
-        id: userId,
-        email: adminEmail,
-        name: "Super Admin",
-        role: "super_admin",
-        emailVerified: true,
-        onboardingCompleted: true,
-      })
-
-      await db.insert(account).values({
-        id: randomUUID(),
-        accountId: userId,
-        providerId: "credential",
-        userId,
-        password: hashedPassword,
-      })
-
-      logger.info({ event: "admin_seeded", role: "super_admin" })
-    } else {
-      logger.info({ event: "admin_exists", role: "super_admin" })
-    }
-  }
+  await seedSuperAdmin(db)
 
   await client.end({ timeout: 5 })
 }

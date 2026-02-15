@@ -33,10 +33,10 @@ export function Navbar() {
 
   const navItems = useMemo(
     () => [
-      { href: "#discover", label: t("discover") },
-      { href: "#for-students", label: t("forStudents") },
-      { href: "#for-recruiters", label: t("forRecruiters") },
-      { href: "#about", label: t("about") },
+      { href: "/discover" as const, label: t("discover") },
+      { href: "/for-students" as const, label: t("forStudents") },
+      { href: "/for-companies" as const, label: t("forRecruiters") },
+      { href: "/about" as const, label: t("about") },
     ],
     [t]
   )
@@ -88,13 +88,13 @@ export function Navbar() {
 
         <div className="hidden md:flex items-center gap-10">
           {navItems.map((item) => (
-            <a
+            <Link
               key={item.href}
               href={item.href}
               className="relative text-sm font-medium tracking-wide cursor-pointer text-foreground/45 hover:text-primary transition-colors duration-300"
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </div>
 
@@ -199,7 +199,7 @@ export function Navbar() {
           <div className="p-6 space-y-6">
             <nav className="space-y-2">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
@@ -213,7 +213,7 @@ export function Navbar() {
                     className="h-4 w-4 text-foreground/30"
                     aria-hidden="true"
                   />
-                </a>
+                </Link>
               ))}
             </nav>
 

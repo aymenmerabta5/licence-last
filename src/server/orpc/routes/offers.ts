@@ -7,6 +7,7 @@ import { revalidateTag } from "next/cache"
 import { isAdminRole } from "../middleware"
 import {
   authedProcedureGenerous,
+  companyAdminProcedureAssistant,
   companyAdminProcedureGenerous,
   companyAdminProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
@@ -149,6 +150,59 @@ export const updateOfferStatusProcedure = companyAdminProcedureStandard
     revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, "max")
 
     return result
+  })
+
+/* ── AI Offer Copilot ── */
+
+const offerFormContextSchema = z.object({
+  title: z.string().optional(),
+  description: z.string().optional(),
+  internshipType: z.string().optional(),
+  workMode: z.string().nullable().optional(),
+  wilayaCode: z.number().int().nullable().optional(),
+  durationWeeks: z.number().int().nullable().optional(),
+  maxPositions: z.number().int().optional(),
+})
+
+const availableSkillTagsSchema = z
+  .array(z.object({ id: z.string(), name: z.string() }))
+  .max(300)
+  .default([])
+
+export const generateOfferDraftProcedure = companyAdminProcedureAssistant
+  .input(
+    offerFormContextSchema.extend({
+      prompt: z.string().max(500).optional(),
+      availableSkillTags: availableSkillTagsSchema,
+    }),
+  )
+  .handler(async ({ input }) => {
+    const { generateOfferDraft } = await import(
+      "@/server/services/offers/generate-draft"
+    )
+    return generateOfferDraft(input)
+  })
+
+export const improveOfferDescriptionProcedure = companyAdminProcedureAssistant
+  .input(offerFormContextSchema)
+  .handler(async ({ input }) => {
+    const { improveOfferDescription } = await import(
+      "@/server/services/offers/improve-description"
+    )
+    return improveOfferDescription(input)
+  })
+
+export const suggestOfferSkillsProcedure = companyAdminProcedureAssistant
+  .input(
+    offerFormContextSchema
+      .pick({ title: true, description: true, internshipType: true, workMode: true })
+      .extend({ availableSkillTags: availableSkillTagsSchema }),
+  )
+  .handler(async ({ input }) => {
+    const { suggestOfferSkills } = await import(
+      "@/server/services/offers/suggest-skills"
+    )
+    return suggestOfferSkills(input)
   })
 
 /* ── AI Search Parsing ── */

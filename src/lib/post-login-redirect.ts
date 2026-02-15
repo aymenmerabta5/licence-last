@@ -20,9 +20,9 @@ export function getPostLoginRedirectPath(me: MeResult): string {
         return "/dashboard/company"
       }
       if (company?.status === "rejected") {
-        return "/dashboard/company/rejected"
+        return "/status/company/rejected"
       }
-      return "/dashboard/company/pending"
+      return "/status/company/pending"
 
     case "university_admin":
       if (!user.onboardingCompleted) {
@@ -32,9 +32,9 @@ export function getPostLoginRedirectPath(me: MeResult): string {
         return "/dashboard/admin"
       }
       if (university?.status === "rejected") {
-        return "/dashboard/admin/rejected"
+        return "/status/university/rejected"
       }
-      return "/dashboard/admin/pending"
+      return "/status/university/pending"
 
     case "super_admin":
       return "/dashboard/admin"

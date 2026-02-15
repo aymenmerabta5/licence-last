@@ -9,7 +9,6 @@ import {
   BarChart3,
   CheckCircle2,
   Sparkles,
-  Shield,
   UsersRound,
   Landmark,
   ClipboardCheck,
@@ -76,13 +75,13 @@ export const navItems: NavItem[] = [
     labelKey: "validatePlacements",
     href: "/dashboard/admin/validations",
     icon: CheckCircle2,
-    roles: ["university_admin", "super_admin"],
+    roles: ["university_admin"],
   },
   {
     labelKey: "departments",
     href: "/dashboard/admin/departments",
     icon: FolderTree,
-    roles: ["university_admin", "super_admin"],
+    roles: ["university_admin"],
   },
   {
     labelKey: "statistics",
@@ -91,9 +90,9 @@ export const navItems: NavItem[] = [
     roles: ["university_admin", "super_admin"],
   },
   {
-    labelKey: "commandCenter",
-    href: "/dashboard/admin/command-center",
-    icon: Shield,
+    labelKey: "companies",
+    href: "/dashboard/admin/companies",
+    icon: Building2,
     roles: ["super_admin"],
   },
   {

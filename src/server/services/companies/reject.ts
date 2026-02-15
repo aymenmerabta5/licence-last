@@ -12,8 +12,12 @@ import { company } from "@/server/db/schema/companies"
  * Reject a company application with a reason.
  * Pure business logic — caller must verify admin role.
  */
-export async function rejectCompany(companyId: string, reason: string) {
-  log.info({ companyId }, "Rejecting company")
+export async function rejectCompany(
+  companyId: string,
+  reason: string,
+  rejectedByUserId: string,
+) {
+  log.info({ companyId, rejectedByUserId }, "Rejecting company")
   const [updated] = await db
     .update(company)
     .set({

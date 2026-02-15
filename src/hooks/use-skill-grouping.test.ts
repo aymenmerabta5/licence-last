@@ -20,16 +20,16 @@ describe("useSkillGrouping", () => {
     expect(result.current.groups.languages).toHaveLength(1)
   })
 
-  test("should put null-category skills in 'other' group", () => {
+  test("should put null-category skills in 'general' group", () => {
     const { result } = renderHook(() => useSkillGrouping(skills))
 
-    expect(result.current.groups.other).toHaveLength(1)
-    expect(result.current.groups.other[0].name).toBe("Unknown")
+    expect(result.current.groups.general).toHaveLength(1)
+    expect(result.current.groups.general[0].name).toBe("Unknown")
   })
 
   test("should return category order", () => {
     const { result } = renderHook(() => useSkillGrouping(skills))
-    expect(result.current.categoryOrder).toBe(CATEGORY_ORDER)
+    expect(result.current.categoryOrder).toEqual([...CATEGORY_ORDER])
     expect(result.current.categoryOrder).toContain("frontend")
     expect(result.current.categoryOrder).toContain("backend")
   })
@@ -48,16 +48,16 @@ describe("useSkillGrouping", () => {
 })
 
 describe("CATEGORY_ORDER", () => {
-  test("should have 8 categories", () => {
-    expect(CATEGORY_ORDER).toHaveLength(8)
+  test("should have 17 categories", () => {
+    expect(CATEGORY_ORDER).toHaveLength(17)
   })
 
   test("should start with frontend", () => {
     expect(CATEGORY_ORDER[0]).toBe("frontend")
   })
 
-  test("should end with other", () => {
-    expect(CATEGORY_ORDER[CATEGORY_ORDER.length - 1]).toBe("other")
+  test("should end with general", () => {
+    expect(CATEGORY_ORDER[CATEGORY_ORDER.length - 1]).toBe("general")
   })
 })
 

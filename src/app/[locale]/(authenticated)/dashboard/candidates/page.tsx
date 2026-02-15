@@ -18,10 +18,6 @@ export default async function CandidatesPipelinePage() {
     return localeRedirect("/dashboard/company/profile")
   }
 
-  if (company.status !== "approved") {
-    return localeRedirect("/dashboard/company")
-  }
-
   const t = await getTranslations("dashboard")
   const offers = await listOffersByCompany(company.id)
 

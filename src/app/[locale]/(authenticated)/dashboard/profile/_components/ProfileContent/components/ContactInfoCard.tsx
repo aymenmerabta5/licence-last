@@ -9,9 +9,7 @@ import {
   Hash,
   GraduationCap,
 } from "lucide-react"
-import { Fragment } from "react"
-
-import { Card } from "@/components/ui/card"
+import { ease } from "@/lib/animations"
 
 import type { StudentProfile, ProfileUser } from "../types"
 import { ROLE_LABELS } from "../utils"
@@ -35,131 +33,74 @@ export function ContactInfoCard({ user, profile, labels }: ContactInfoCardProps)
   const roleLabel = ROLE_LABELS[user.role || "student"] || user.role || "User"
 
   const rows = [
-    {
-      key: "email",
-      node: user.email ? (
-        <ContactField
-          icon={Mail}
-          label={labels.email}
-          value={user.email}
-          hasValue
-        />
-      ) : null,
-    },
-    {
-      key: "phone",
-      node: profile?.phone ? (
-        <ContactField
-          icon={Phone}
-          label={labels.phone}
-          value={profile.phone}
-          hasValue
-        />
-      ) : null,
-    },
-    {
-      key: "role",
-      node: (
-        <ContactField
-          icon={ShieldCheck}
-          label="Role"
-          value={roleLabel}
-          hasValue
-        />
-      ),
-    },
-    {
-      key: "location",
-      node: (
-        <ContactField
-          icon={MapPin}
-          label={labels.location}
-          value={wilayaName}
-          placeholder="Not set yet"
-        />
-      ),
-    },
-    {
-      key: "studentNumber",
-      node: profile?.studentNumber ? (
-        <ContactField
-          icon={Hash}
-          label={labels.studentNumber}
-          value={profile.studentNumber}
-          hasValue
-        />
-      ) : null,
-    },
+    { key: "email", icon: Mail, label: labels.email, value: user.email },
+    { key: "phone", icon: Phone, label: labels.phone, value: profile?.phone },
+    { key: "role", icon: ShieldCheck, label: "Role", value: roleLabel },
+    { key: "location", icon: MapPin, label: labels.location, value: wilayaName, placeholder: "Not set yet" },
+    { key: "studentNumber", icon: Hash, label: labels.studentNumber, value: profile?.studentNumber },
     {
       key: "department",
-      node: profile?.department ? (
-        <ContactField
-          icon={GraduationCap}
-          label={labels.department}
-          value={profile.level ? `${profile.department} — ${profile.level}` : profile.department}
-          hasValue
-        />
-      ) : null,
+      icon: GraduationCap,
+      label: labels.department,
+      value: profile?.department
+        ? profile.level
+          ? `${profile.department} — ${profile.level}`
+          : profile.department
+        : null,
     },
-  ].filter((row) => row.node !== null)
+  ].filter((row) => row.value || row.placeholder)
 
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2 }}
-      className="space-y-3"
+      transition={{ delay: 0.2, duration: 0.6, ease }}
+      className="space-y-0"
     >
-      <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50">
-        {labels.personalInfo}
-      </h2>
-      <Card className="bg-background border-border/40 rounded-2xl p-6 shadow-sm">
-        <div className="space-y-5">
-          {rows.map((row, idx) => (
-            <Fragment key={row.key}>
-              {idx > 0 && <Divider />}
-              {row.node}
-            </Fragment>
-          ))}
-        </div>
-      </Card>
+      {/* Section header */}
+      <div className="flex items-center gap-2 mb-5">
+        <div className="h-px flex-1 bg-border/30" />
+        <h2 className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50 shrink-0 [[dir=rtl]_&]:tracking-normal">
+          {labels.personalInfo}
+        </h2>
+        <div className="h-px flex-1 bg-border/30" />
+      </div>
+
+      {/* Contact rows */}
+      <div className="border border-border/40 divide-y divide-border/20">
+        {rows.map((row, idx) => {
+          const Icon = row.icon
+          const hasValue = !!row.value
+
+          return (
+            <motion.div
+              key={row.key}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.25 + idx * 0.04, duration: 0.4, ease }}
+              className="flex items-center gap-3.5 px-5 py-4 transition-colors hover:bg-primary/[0.02] group"
+            >
+              <div className="p-1.5 rounded-md bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-200">
+                <Icon className="h-3.5 w-3.5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40 font-bold mb-0.5 [[dir=rtl]_&]:tracking-normal">
+                  {row.label}
+                </p>
+                <p
+                  className={
+                    hasValue
+                      ? "text-sm font-bold text-heading truncate"
+                      : "text-sm text-muted-foreground/40 font-medium italic truncate"
+                  }
+                >
+                  {row.value || row.placeholder}
+                </p>
+              </div>
+            </motion.div>
+          )
+        })}
+      </div>
     </motion.section>
   )
-}
-
-function ContactField({
-  icon: Icon,
-  label,
-  value,
-  placeholder,
-  hasValue = false,
-}: {
-  icon: typeof Mail
-  label: string
-  value?: string | null
-  placeholder?: string
-  hasValue?: boolean
-}) {
-  const displayValue = hasValue || value ? value : placeholder
-  const textClass = hasValue || value
-    ? "text-sm font-bold text-heading"
-    : "text-sm text-muted-foreground font-medium italic"
-
-  return (
-    <div className="flex items-center gap-3.5">
-      <div className="p-2 rounded-lg bg-primary/5 text-primary">
-        <Icon className="h-4 w-4" />
-      </div>
-      <div className="min-w-0">
-        <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 font-bold mb-0.5">
-          {label}
-        </p>
-        <p className={`${textClass} truncate`}>{displayValue}</p>
-      </div>
-    </div>
-  )
-}
-
-function Divider() {
-  return <div className="h-px bg-border/20" />
 }
