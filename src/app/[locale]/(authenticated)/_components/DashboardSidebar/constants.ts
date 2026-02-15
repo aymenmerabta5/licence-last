@@ -90,6 +90,12 @@ export const navItems: NavItem[] = [
     roles: ["university_admin", "super_admin"],
   },
   {
+    labelKey: "companies",
+    href: "/dashboard/admin/companies",
+    icon: Building2,
+    roles: ["super_admin"],
+  },
+  {
     labelKey: "universities",
     href: "/dashboard/admin/universities",
     icon: Landmark,

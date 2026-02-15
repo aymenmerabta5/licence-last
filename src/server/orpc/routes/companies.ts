@@ -26,6 +26,10 @@ import {
   resolveCompanyReportSchema,
 } from "@/lib/schemas/company"
 import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
+import { createNotification } from "@/server/services/notifications/create"
+import { db } from "@/server/db"
+import { companyMember } from "@/server/db/schema/companies"
+import { eq } from "drizzle-orm"
 import {
   getCompanyTrustIndex,
   listCompanyTrustIndices,
@@ -227,6 +231,19 @@ export const approveCompanyProcedure = superAdminProcedureStandard
     // Invalidate company cache when approved
     revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
 
+    // Notify company owner
+    const members = await db
+      .select({ userId: companyMember.userId })
+      .from(companyMember)
+      .where(eq(companyMember.companyId, input.companyId))
+    for (const m of members) {
+      await createNotification({
+        userId: m.userId,
+        type: "company_approved",
+        payload: { companyId: input.companyId, companyName: result.name },
+      })
+    }
+
     return result
   })
 
@@ -237,11 +254,24 @@ export const rejectCompanyProcedure = superAdminProcedureStandard
       reason: z.string().min(1),
     }),
   )
-  .handler(async ({ input }) => {
-    const result = await rejectCompany(input.companyId, input.reason)
+  .handler(async ({ input, context }) => {
+    const result = await rejectCompany(input.companyId, input.reason, context.user.id)
 
     // Invalidate company cache when rejected
     revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
+
+    // Notify company owner
+    const members = await db
+      .select({ userId: companyMember.userId })
+      .from(companyMember)
+      .where(eq(companyMember.companyId, input.companyId))
+    for (const m of members) {
+      await createNotification({
+        userId: m.userId,
+        type: "company_rejected",
+        payload: { companyId: input.companyId, companyName: result.name, reason: input.reason },
+      })
+    }
 
     return result
   })

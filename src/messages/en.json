@@ -343,6 +343,7 @@
       "departments": "Departments",
       "statistics": "Statistics",
       "userManagement": "User Management",
+      "companies": "Companies",
       "universities": "Universities",
       "settings": "Settings",
       "logout": "Log out"
@@ -953,6 +954,39 @@
           "registeredAt": "Registered"
         }
       },
+      "companies": {
+        "kicker": "Administration",
+        "title": "Company Validation",
+        "description": "Review and approve pending company registrations.",
+        "noCompanies": "No companies found.",
+        "statusFilter": "Filter by status",
+        "allStatuses": "All statuses",
+        "status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "suspended": "Suspended"
+        },
+        "approve": "Approve",
+        "reject": "Reject",
+        "approveSuccess": "Company approved successfully.",
+        "rejectSuccess": "Company rejected.",
+        "rejectDialog": {
+          "title": "Reject Company",
+          "description": "Provide a reason for rejecting this company application.",
+          "reasonLabel": "Rejection reason",
+          "reasonPlaceholder": "Enter the reason for rejection...",
+          "cancel": "Cancel",
+          "confirm": "Reject Company"
+        },
+        "card": {
+          "website": "Website",
+          "location": "Location",
+          "representative": "Representative",
+          "contact": "Contact",
+          "registeredAt": "Registered"
+        }
+      },
       "pending": {
         "kicker": "University Status",
         "title": "Application Under Review",
@@ -1374,18 +1408,50 @@
         "label": "How Matching Works",
         "headline": "Intelligent Scoring",
         "description": "Our matching algorithm evaluates candidates across four dimensions to find the best fit.",
-        "skills": { "label": "Skills", "value": "55%", "desc": "Technical skills overlap between student profile and offer requirements." },
-        "language": { "label": "Language", "value": "20%", "desc": "Language compatibility between student and company." },
-        "location": { "label": "Location", "value": "15%", "desc": "Geographic proximity and work mode preferences." },
-        "profile": { "label": "Profile", "value": "10%", "desc": "Profile completeness and additional qualifications." }
+        "skills": {
+          "label": "Skills",
+          "value": "55%",
+          "desc": "Technical skills overlap between student profile and offer requirements."
+        },
+        "language": {
+          "label": "Language",
+          "value": "20%",
+          "desc": "Language compatibility between student and company."
+        },
+        "location": {
+          "label": "Location",
+          "value": "15%",
+          "desc": "Geographic proximity and work mode preferences."
+        },
+        "profile": {
+          "label": "Profile",
+          "value": "10%",
+          "desc": "Profile completeness and additional qualifications."
+        }
       },
       "types": {
         "label": "Internship Types",
         "headline": "Four Pathways",
-        "pfe": { "title": "PFE", "fullTitle": "Final Year Project", "desc": "End-of-studies project integrating academic research with industry practice." },
-        "immersion": { "title": "Immersion", "fullTitle": "Immersion Internship", "desc": "Full integration into a company environment for hands-on professional experience." },
-        "summer": { "title": "Summer", "fullTitle": "Summer Internship", "desc": "Seasonal opportunities during university breaks for additional experience." },
-        "practical": { "title": "Practical", "fullTitle": "Practical Training", "desc": "Structured practical work aligned with academic curriculum requirements." }
+        "pfe": {
+          "title": "PFE",
+          "fullTitle": "Final Year Project",
+          "desc": "End-of-studies project integrating academic research with industry practice."
+        },
+        "immersion": {
+          "title": "Immersion",
+          "fullTitle": "Immersion Internship",
+          "desc": "Full integration into a company environment for hands-on professional experience."
+        },
+        "summer": {
+          "title": "Summer",
+          "fullTitle": "Summer Internship",
+          "desc": "Seasonal opportunities during university breaks for additional experience."
+        },
+        "practical": {
+          "title": "Practical",
+          "fullTitle": "Practical Training",
+          "desc": "Structured practical work aligned with academic curriculum requirements."
+        }
       },
       "cta": {
         "headline": "Ready to explore?",
@@ -1407,20 +1473,54 @@
       "benefits": {
         "label": "Why Internex",
         "headline": "Built for Your Success",
-        "cv": { "title": "Digital CV", "desc": "Create a professional profile with your skills, experience, GitHub, and portfolio. Recruiters find you." },
-        "matching": { "title": "Smart Matching", "desc": "Our algorithm finds internships that match your exact skill set. No more scrolling through irrelevant listings." },
-        "apply": { "title": "One-Click Apply", "desc": "Send your profile directly to companies. AI helps you draft cover letters that stand out." },
-        "tracking": { "title": "Live Tracking", "desc": "Follow every application in real-time. Know exactly where you stand at every stage." },
-        "assistant": { "title": "AI Copilot", "desc": "Get personalized guidance on applications, interview prep, and career strategy from your AI assistant." },
-        "documents": { "title": "Auto Documents", "desc": "Your Convention de Stage and completion certificates are generated automatically when validated." }
+        "cv": {
+          "title": "Digital CV",
+          "desc": "Create a professional profile with your skills, experience, GitHub, and portfolio. Recruiters find you."
+        },
+        "matching": {
+          "title": "Smart Matching",
+          "desc": "Our algorithm finds internships that match your exact skill set. No more scrolling through irrelevant listings."
+        },
+        "apply": {
+          "title": "One-Click Apply",
+          "desc": "Send your profile directly to companies. AI helps you draft cover letters that stand out."
+        },
+        "tracking": {
+          "title": "Live Tracking",
+          "desc": "Follow every application in real-time. Know exactly where you stand at every stage."
+        },
+        "assistant": {
+          "title": "AI Copilot",
+          "desc": "Get personalized guidance on applications, interview prep, and career strategy from your AI assistant."
+        },
+        "documents": {
+          "title": "Auto Documents",
+          "desc": "Your Convention de Stage and completion certificates are generated automatically when validated."
+        }
       },
       "journey": {
         "label": "Your Journey",
         "headline": "From Sign-Up to Placement",
-        "step1": { "num": "01", "title": "Create Your Account", "desc": "Register with your university email and verify your student status." },
-        "step2": { "num": "02", "title": "Build Your Profile", "desc": "Add skills, link your GitHub, upload your portfolio. Make yourself discoverable." },
-        "step3": { "num": "03", "title": "Discover & Apply", "desc": "Search with smart filters or let our matching engine find opportunities for you." },
-        "step4": { "num": "04", "title": "Get Placed", "desc": "Once accepted, your university validates the placement and documents are generated." }
+        "step1": {
+          "num": "01",
+          "title": "Create Your Account",
+          "desc": "Register with your university email and verify your student status."
+        },
+        "step2": {
+          "num": "02",
+          "title": "Build Your Profile",
+          "desc": "Add skills, link your GitHub, upload your portfolio. Make yourself discoverable."
+        },
+        "step3": {
+          "num": "03",
+          "title": "Discover & Apply",
+          "desc": "Search with smart filters or let our matching engine find opportunities for you."
+        },
+        "step4": {
+          "num": "04",
+          "title": "Get Placed",
+          "desc": "Once accepted, your university validates the placement and documents are generated."
+        }
       },
       "cta": {
         "headline": "Start your journey today",
@@ -1443,25 +1543,65 @@
       "benefits": {
         "label": "Why Internex",
         "headline": "Recruit Smarter",
-        "pipeline": { "title": "Talent Pipeline", "desc": "Manage all candidates in one place. Filter by skills, experience, and match score to find the best fit." },
-        "ai": { "title": "AI Screening", "desc": "Let AI summarize candidates, highlight strengths, and draft communication—saving hours of manual review." },
-        "trust": { "title": "Trust Index", "desc": "Build your company's reputation on the platform through response rates, completion rates, and feedback scores." },
-        "compliance": { "title": "Auto Compliance", "desc": "Once you accept a candidate, the university validates and all official documents are generated automatically." }
+        "pipeline": {
+          "title": "Talent Pipeline",
+          "desc": "Manage all candidates in one place. Filter by skills, experience, and match score to find the best fit."
+        },
+        "ai": {
+          "title": "AI Screening",
+          "desc": "Let AI summarize candidates, highlight strengths, and draft communication—saving hours of manual review."
+        },
+        "trust": {
+          "title": "Trust Index",
+          "desc": "Build your company's reputation on the platform through response rates, completion rates, and feedback scores."
+        },
+        "compliance": {
+          "title": "Auto Compliance",
+          "desc": "Once you accept a candidate, the university validates and all official documents are generated automatically."
+        }
       },
       "workflow": {
         "label": "How It Works",
         "headline": "Four Simple Steps",
-        "step1": { "num": "01", "title": "Set Up Your Company", "desc": "Create your company profile with logo, description, and office details." },
-        "step2": { "num": "02", "title": "Publish Offers", "desc": "Create internship positions with skill requirements, duration, and work mode." },
-        "step3": { "num": "03", "title": "Review & Accept", "desc": "Screen applicants, use AI summaries, and accept the best candidates." },
-        "step4": { "num": "04", "title": "Automated Workflow", "desc": "The rest happens automatically—validation, documents, and tracking." }
+        "step1": {
+          "num": "01",
+          "title": "Set Up Your Company",
+          "desc": "Create your company profile with logo, description, and office details."
+        },
+        "step2": {
+          "num": "02",
+          "title": "Publish Offers",
+          "desc": "Create internship positions with skill requirements, duration, and work mode."
+        },
+        "step3": {
+          "num": "03",
+          "title": "Review & Accept",
+          "desc": "Screen applicants, use AI summaries, and accept the best candidates."
+        },
+        "step4": {
+          "num": "04",
+          "title": "Automated Workflow",
+          "desc": "The rest happens automatically—validation, documents, and tracking."
+        }
       },
       "stats": {
         "label": "By The Numbers",
-        "students": { "value": "2,500+", "label": "Active Students" },
-        "placement": { "value": "96%", "label": "Placement Rate" },
-        "universities": { "value": "45", "label": "Partner Universities" },
-        "avgTime": { "value": "< 48h", "label": "Avg. Response Time" }
+        "students": {
+          "value": "2,500+",
+          "label": "Active Students"
+        },
+        "placement": {
+          "value": "96%",
+          "label": "Placement Rate"
+        },
+        "universities": {
+          "value": "45",
+          "label": "Partner Universities"
+        },
+        "avgTime": {
+          "value": "< 48h",
+          "label": "Avg. Response Time"
+        }
       },
       "cta": {
         "headline": "Ready to find talent?",
@@ -1492,23 +1632,80 @@
       "values": {
         "label": "Our Values",
         "headline": "What Guides Us",
-        "innovation": { "title": "Innovation", "desc": "AI-powered matching, automated documents, and intelligent assistants that make the process effortless." },
-        "accessibility": { "title": "Accessibility", "desc": "Free for students, available in three languages, and designed for every device and connection speed." },
-        "transparency": { "title": "Transparency", "desc": "Real-time tracking, trust indices, and verification codes so every step is visible and verifiable." },
-        "reliability": { "title": "Reliability", "desc": "Built on modern infrastructure with automated compliance, ensuring every document meets official standards." }
+        "innovation": {
+          "title": "Innovation",
+          "desc": "AI-powered matching, automated documents, and intelligent assistants that make the process effortless."
+        },
+        "accessibility": {
+          "title": "Accessibility",
+          "desc": "Free for students, available in three languages, and designed for every device and connection speed."
+        },
+        "transparency": {
+          "title": "Transparency",
+          "desc": "Real-time tracking, trust indices, and verification codes so every step is visible and verifiable."
+        },
+        "reliability": {
+          "title": "Reliability",
+          "desc": "Built on modern infrastructure with automated compliance, ensuring every document meets official standards."
+        }
       },
       "stats": {
         "label": "Platform Impact",
-        "students": { "value": "2,500+", "label": "Students Connected" },
-        "companies": { "value": "350+", "label": "Partner Companies" },
-        "universities": { "value": "45", "label": "Universities" },
-        "placement": { "value": "96%", "label": "Placement Rate" }
+        "students": {
+          "value": "2,500+",
+          "label": "Students Connected"
+        },
+        "companies": {
+          "value": "350+",
+          "label": "Partner Companies"
+        },
+        "universities": {
+          "value": "45",
+          "label": "Universities"
+        },
+        "placement": {
+          "value": "96%",
+          "label": "Placement Rate"
+        }
       },
       "cta": {
         "headline": "Be part of the future",
         "description": "Whether you're a student, company, or university—Internex is for you.",
         "button": "Get Started"
       }
+    }
+  },
+  "footer": {
+    "description": "Connecting the brightest students with world-class opportunities. The future of internships starts here.",
+    "sections": {
+      "platform": "Platform",
+      "company": "Company",
+      "newsletter": "Stay Updated"
+    },
+    "links": {
+      "discover": "Discover",
+      "forStudents": "For Students",
+      "forCompanies": "For Companies",
+      "aboutUs": "About Us",
+      "signIn": "Sign In",
+      "getStarted": "Get Started"
+    },
+    "newsletter": {
+      "description": "Subscribe to our newsletter for the latest internship opportunities and career tips.",
+      "emailPlaceholder": "Enter your email",
+      "subscribe": "Subscribe"
+    },
+    "legal": {
+      "copyright": "(c) {year} Internex.io. All rights reserved.",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service",
+      "cookiePolicy": "Cookie Policy"
+    },
+    "social": {
+      "twitter": "Twitter",
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "instagram": "Instagram"
     }
   }
 }

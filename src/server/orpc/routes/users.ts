@@ -5,6 +5,7 @@ import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
 
 import {
+  authedSessionProcedureGenerous,
   authedProcedureGenerous,
   authedProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
@@ -23,7 +24,7 @@ import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("orpc/routes/users")
 
-export const getMeProcedure = authedProcedureGenerous.handler(async ({ context }) =>
+export const getMeProcedure = authedSessionProcedureGenerous.handler(async ({ context }) =>
   getMe(context.user),
 )
 

@@ -4,6 +4,8 @@ import { describe, test, expect, mock, beforeEach } from "bun:test"
 const mockGetSession = mock((): any => Promise.resolve(null))
 const mockLocaleRedirect = mock((path: string) => `redirect:${path}`)
 const mockHeaders = mock(() => Promise.resolve(new Headers()))
+const mockGetCompanyByUserId = mock(async () => null as { status: string } | null)
+const mockGetUniversityByUserId = mock(async () => null as { status: string } | null)
 
 mock.module("@/lib/auth", () => ({
   auth: {
@@ -21,13 +23,25 @@ mock.module("@/lib/navigation", () => ({
   localeRedirect: mockLocaleRedirect,
 }))
 
+mock.module("@/server/services/companies/get", () => ({
+  getCompanyByUserId: mockGetCompanyByUserId,
+}))
+
+mock.module("@/server/services/universities/get", () => ({
+  getUniversityByUserId: mockGetUniversityByUserId,
+}))
+
 describe("requireRole", () => {
   beforeEach(() => {
     mockGetSession.mockClear()
     mockLocaleRedirect.mockClear()
     mockHeaders.mockClear()
+    mockGetCompanyByUserId.mockClear()
+    mockGetUniversityByUserId.mockClear()
 
     mockHeaders.mockResolvedValue(new Headers())
+    mockGetCompanyByUserId.mockResolvedValue(null)
+    mockGetUniversityByUserId.mockResolvedValue(null)
   })
 
   test("should redirect to /login when no session exists", async () => {
@@ -96,5 +110,46 @@ describe("requireRole", () => {
     await requireRole(["university_admin"])
 
     expect(mockLocaleRedirect).toHaveBeenCalledWith("/")
+  })
+
+  test("should redirect pending company_admin to company pending status", async () => {
+    mockGetSession.mockResolvedValue({
+      user: { id: "user-4", role: "company_admin", onboardingCompleted: true },
+      session: {},
+    })
+    mockGetCompanyByUserId.mockResolvedValue({ status: "pending" })
+
+    const { requireRole } = await import("./auth-guards")
+    await requireRole(["company_admin"])
+
+    expect(mockLocaleRedirect).toHaveBeenCalledWith("/status/company/pending")
+  })
+
+  test("should redirect pending university_admin to university pending status", async () => {
+    mockGetSession.mockResolvedValue({
+      user: { id: "user-5", role: "university_admin", onboardingCompleted: true },
+      session: {},
+    })
+    mockGetUniversityByUserId.mockResolvedValue({ status: "pending" })
+
+    const { requireRole } = await import("./auth-guards")
+    await requireRole(["university_admin"])
+
+    expect(mockLocaleRedirect).toHaveBeenCalledWith("/status/university/pending")
+  })
+
+  test("should allow pending users when allowUnapproved is true", async () => {
+    mockGetSession.mockResolvedValue({
+      user: { id: "user-6", role: "company_admin", onboardingCompleted: true },
+      session: {},
+    })
+    mockGetCompanyByUserId.mockResolvedValue({ status: "pending" })
+
+    const { requireRole } = await import("./auth-guards")
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await requireRole(["company_admin"], { allowUnapproved: true }) as any
+
+    expect(result.id).toBe("user-6")
+    expect(result.role).toBe("company_admin")
   })
 })

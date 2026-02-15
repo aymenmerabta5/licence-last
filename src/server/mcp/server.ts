@@ -179,7 +179,7 @@ export function createInternexDevMcpServer() {
         if (!reason) {
           throw new Error("reason is required when status=rejected")
         }
-        return rejectCompany(companyId, reason)
+        return rejectCompany(companyId, reason, "mcp-system")
       }
 
       const [updated] =

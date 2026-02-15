@@ -9,7 +9,7 @@ interface StatusContentProps {
  * Only company_admin and university_admin can view status pages.
  */
 export async function StatusContent({ children }: StatusContentProps) {
-  await requireRole(["company_admin", "university_admin"])
+  await requireRole(["company_admin", "university_admin"], { allowUnapproved: true })
 
   return <>{children}</>
 }

@@ -1,6 +1,7 @@
 import "server-only"
 
 import { headers } from "next/headers"
+import { eq } from "drizzle-orm"
 import {
   convertToModelMessages,
   createUIMessageStream,
@@ -13,6 +14,9 @@ import {
 
 import { auth } from "@/lib/auth"
 import { asRecord, getStringProp } from "@/lib/ai/tool-output"
+import { db } from "@/server/db"
+import { company, companyMember } from "@/server/db/schema/companies"
+import { university } from "@/server/db/schema/universities"
 import { getAssistantConversationByIdForCompany } from "@/server/services/assistant/get"
 import { appendAssistantMessage } from "@/server/services/assistant/messages"
 import { extractTextFromParts } from "@/server/services/assistant/utils"
@@ -84,6 +88,37 @@ export async function handleChatRequest(req: Request): Promise<Response> {
 
   if (session.user.banned) {
     return new Response("Forbidden: account suspended", { status: 403 })
+  }
+
+  if (session.user.onboardingCompleted) {
+    if (session.user.role === "company_admin") {
+      const [membership] = await db
+        .select({ status: company.status })
+        .from(companyMember)
+        .innerJoin(company, eq(companyMember.companyId, company.id))
+        .where(eq(companyMember.userId, session.user.id))
+        .limit(1)
+
+      if (!membership || membership.status !== "approved") {
+        return new Response("Forbidden", { status: 403 })
+      }
+    }
+
+    if (session.user.role === "university_admin") {
+      if (!session.user.universityId) {
+        return new Response("Forbidden", { status: 403 })
+      }
+
+      const [uni] = await db
+        .select({ status: university.status })
+        .from(university)
+        .where(eq(university.id, session.user.universityId))
+        .limit(1)
+
+      if (!uni || uni.status !== "approved") {
+        return new Response("Forbidden", { status: 403 })
+      }
+    }
   }
 
   // Parse intent

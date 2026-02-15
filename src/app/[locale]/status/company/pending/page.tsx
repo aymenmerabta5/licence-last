@@ -9,7 +9,7 @@ import { formatDateLong } from "@/lib/date"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 
 export default async function CompanyPendingPage() {
-  const user = await requireRole(["company_admin"])
+  const user = await requireRole(["company_admin"], { allowUnapproved: true })
   const company = await getCompanyByUserId(user.id)
 
   if (!user.onboardingCompleted && !company) {
