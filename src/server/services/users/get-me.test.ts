@@ -1,5 +1,7 @@
-import { describe, test, expect, beforeEach, mock } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 import type { CompanyStatus } from "@/lib/schemas/enums"
+
+import { getMe } from "./get-me"
 
 interface CompanySummary {
   id: string
@@ -8,21 +10,21 @@ interface CompanySummary {
   status: CompanyStatus
 }
 
+interface UniversitySummary {
+  id: string
+  name: string
+  abbreviation: string
+  status: string
+  rejectionReason: string | null
+}
+
 const mockGetCompanyByUserId = mock<(userId: string) => Promise<CompanySummary | null>>(
   () => Promise.resolve(null),
 )
 
-const mockGetUniversityByUserId = mock<(userId: string) => Promise<Record<string, unknown> | null>>(
+const mockGetUniversityByUserId = mock<(userId: string) => Promise<UniversitySummary | null>>(
   () => Promise.resolve(null),
 )
-
-mock.module("@/server/services/companies/get", () => ({
-  getCompanyByUserId: mockGetCompanyByUserId,
-}))
-
-mock.module("@/server/services/universities/get", () => ({
-  getUniversityByUserId: mockGetUniversityByUserId,
-}))
 
 describe("src/server/services/users/get-me", () => {
   beforeEach(() => {
@@ -33,11 +35,12 @@ describe("src/server/services/users/get-me", () => {
   })
 
   test("should default to student role and omit company data", async () => {
-    const { getMe } = await import("./get-me")
-
     const result = await getMe({
       id: "user-1",
       email: "user-1@example.com",
+    }, {
+      getCompanyByUserId: mockGetCompanyByUserId,
+      getUniversityByUserId: mockGetUniversityByUserId,
     })
 
     expect(result.user.role).toBe("student")
@@ -48,7 +51,6 @@ describe("src/server/services/users/get-me", () => {
   })
 
   test("should include company summary for company_admins with membership", async () => {
-    const { getMe } = await import("./get-me")
     mockGetCompanyByUserId.mockResolvedValue({
       id: "company-1",
       name: "Acme",
@@ -61,6 +63,9 @@ describe("src/server/services/users/get-me", () => {
       email: "user-1@example.com",
       role: "company_admin",
       onboardingCompleted: true,
+    }, {
+      getCompanyByUserId: mockGetCompanyByUserId,
+      getUniversityByUserId: mockGetUniversityByUserId,
     })
 
     expect(mockGetCompanyByUserId).toHaveBeenCalledWith("user-1")
@@ -73,13 +78,15 @@ describe("src/server/services/users/get-me", () => {
   })
 
   test("should return null company when company_admin has no membership", async () => {
-    const { getMe } = await import("./get-me")
     mockGetCompanyByUserId.mockResolvedValue(null)
 
     const result = await getMe({
       id: "user-1",
       email: "user-1@example.com",
       role: "company_admin",
+    }, {
+      getCompanyByUserId: mockGetCompanyByUserId,
+      getUniversityByUserId: mockGetUniversityByUserId,
     })
 
     expect(mockGetCompanyByUserId).toHaveBeenCalledWith("user-1")
@@ -87,7 +94,6 @@ describe("src/server/services/users/get-me", () => {
   })
 
   test("should not query company data for admins but query university", async () => {
-    const { getMe } = await import("./get-me")
     mockGetUniversityByUserId.mockResolvedValue({
       id: "uni-1",
       name: "University of Algiers",
@@ -100,6 +106,9 @@ describe("src/server/services/users/get-me", () => {
       id: "user-1",
       email: "user-1@example.com",
       role: "university_admin",
+    }, {
+      getCompanyByUserId: mockGetCompanyByUserId,
+      getUniversityByUserId: mockGetUniversityByUserId,
     })
 
     expect(result.user.role).toBe("university_admin")
@@ -115,4 +124,3 @@ describe("src/server/services/users/get-me", () => {
     })
   })
 })
-

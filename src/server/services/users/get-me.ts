@@ -1,7 +1,35 @@
 import "server-only"
 
-import { getCompanyByUserId } from "@/server/services/companies/get"
-import { getUniversityByUserId } from "@/server/services/universities/get"
+interface CompanySummary {
+  id: string
+  name: string
+  slug: string
+  status: string
+}
+
+interface UniversitySummary {
+  id: string
+  name: string
+  abbreviation: string | null
+  status: string
+  rejectionReason: string | null
+}
+
+interface GetMeDependencies {
+  getCompanyByUserId: (userId: string) => Promise<CompanySummary | null>
+  getUniversityByUserId: (userId: string) => Promise<UniversitySummary | null>
+}
+
+const DEFAULT_GET_ME_DEPENDENCIES: GetMeDependencies = {
+  getCompanyByUserId: async (userId) => {
+    const { getCompanyByUserId } = await import("@/server/services/companies/get")
+    return getCompanyByUserId(userId)
+  },
+  getUniversityByUserId: async (userId) => {
+    const { getUniversityByUserId } = await import("@/server/services/universities/get")
+    return getUniversityByUserId(userId)
+  },
+}
 
 /**
  * Get the current user's profile + company/university data.
@@ -15,10 +43,12 @@ export async function getMe(user: {
   image?: string | null
   onboardingCompleted?: boolean | null
   twoFactorEnabled?: boolean | null
-}) {
+}, dependencies: Partial<GetMeDependencies> = {}) {
+  const resolvedDependencies = { ...DEFAULT_GET_ME_DEPENDENCIES, ...dependencies }
+
   let companyData = null
   if (user.role === "company_admin") {
-    const company = await getCompanyByUserId(user.id)
+    const company = await resolvedDependencies.getCompanyByUserId(user.id)
     if (company) {
       companyData = {
         id: company.id,
@@ -31,7 +61,7 @@ export async function getMe(user: {
 
   let universityData = null
   if (user.role === "student" || user.role === "university_admin" || user.role === "dept_head") {
-    const uni = await getUniversityByUserId(user.id)
+    const uni = await resolvedDependencies.getUniversityByUserId(user.id)
     if (uni) {
       universityData = {
         id: uni.id,

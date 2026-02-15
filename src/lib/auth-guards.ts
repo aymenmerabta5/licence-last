@@ -3,13 +3,46 @@ import "server-only"
 import { headers } from "next/headers"
 
 import { localeRedirect } from "@/lib/navigation"
-import { auth } from "@/lib/auth"
-import { getCompanyByUserId } from "@/server/services/companies/get"
-import { getUniversityByUserId } from "@/server/services/universities/get"
 
 type UserRole = "student" | "company_admin" | "dept_head" | "university_admin" | "super_admin"
 interface RequireRoleOptions {
   allowUnapproved?: boolean
+}
+
+interface SessionUser {
+  id: string
+  role: string
+  name: string | null
+  email: string
+  onboardingCompleted?: boolean | null
+  [key: string]: unknown
+}
+
+type SessionResult = { user: SessionUser } | null
+
+interface RequireRoleDependencies {
+  getHeaders: typeof headers
+  getSession: (input: { headers: Awaited<ReturnType<typeof headers>> }) => Promise<SessionResult | null>
+  localeRedirect: (path: string) => Promise<never>
+  getCompanyByUserId: (userId: string) => Promise<{ status: string } | null>
+  getUniversityByUserId: (userId: string) => Promise<{ status: string } | null>
+}
+
+const DEFAULT_REQUIRE_ROLE_DEPENDENCIES: RequireRoleDependencies = {
+  getHeaders: headers,
+  getSession: async ({ headers: requestHeaders }) => {
+    const { auth } = await import("@/lib/auth")
+    return auth.api.getSession({ headers: requestHeaders }) as Promise<SessionResult | null>
+  },
+  localeRedirect,
+  getCompanyByUserId: async (userId) => {
+    const { getCompanyByUserId } = await import("@/server/services/companies/get")
+    return getCompanyByUserId(userId)
+  },
+  getUniversityByUserId: async (userId) => {
+    const { getUniversityByUserId } = await import("@/server/services/universities/get")
+    return getUniversityByUserId(userId)
+  },
 }
 
 /**
@@ -20,39 +53,42 @@ interface RequireRoleOptions {
 export async function requireRole(
   allowedRoles: UserRole[],
   options: RequireRoleOptions = {},
+  dependencies: Partial<RequireRoleDependencies> = {},
 ) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
+  const resolvedDependencies = { ...DEFAULT_REQUIRE_ROLE_DEPENDENCIES, ...dependencies }
+
+  const session = await resolvedDependencies.getSession({
+    headers: await resolvedDependencies.getHeaders(),
   })
 
   if (!session) {
-    return localeRedirect("/login")
+    return resolvedDependencies.localeRedirect("/login")
   }
 
   const { user } = session
 
   if (!allowedRoles.includes(user.role as UserRole)) {
-    return localeRedirect("/")
+    return resolvedDependencies.localeRedirect("/")
   }
 
   if (!options.allowUnapproved && user.onboardingCompleted) {
     if (user.role === "company_admin") {
-      const company = await getCompanyByUserId(user.id)
+      const company = await resolvedDependencies.getCompanyByUserId(user.id)
       if (!company || company.status === "pending" || company.status === "suspended") {
-        return localeRedirect("/status/company/pending")
+        return resolvedDependencies.localeRedirect("/status/company/pending")
       }
       if (company.status === "rejected") {
-        return localeRedirect("/status/company/rejected")
+        return resolvedDependencies.localeRedirect("/status/company/rejected")
       }
     }
 
     if (user.role === "university_admin") {
-      const university = await getUniversityByUserId(user.id)
+      const university = await resolvedDependencies.getUniversityByUserId(user.id)
       if (!university || university.status === "pending") {
-        return localeRedirect("/status/university/pending")
+        return resolvedDependencies.localeRedirect("/status/university/pending")
       }
       if (university.status === "rejected") {
-        return localeRedirect("/status/university/rejected")
+        return resolvedDependencies.localeRedirect("/status/university/rejected")
       }
     }
   }

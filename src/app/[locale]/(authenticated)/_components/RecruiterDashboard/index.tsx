@@ -19,7 +19,7 @@ interface RecruiterDashboardProps {
   }
 }
 
-export function RecruiterDashboard({ user }: RecruiterDashboardProps) {
+export function RecruiterDashboard(_props: RecruiterDashboardProps) {
   const {
     activeOffers,
     draftOffers,
