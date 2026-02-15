@@ -1,6 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import Image from "next/image"
 import { MapPin, Building2, Globe, User, Calendar, Check, X, Mail } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -53,10 +54,13 @@ export function CompanyCard({
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             {company.logoUrl ? (
-              <img
+              <Image
                 src={company.logoUrl}
                 alt={company.name}
+                width={40}
+                height={40}
                 className="h-10 w-10 rounded-lg object-cover border border-border/30"
+                unoptimized
               />
             ) : (
               <div className="p-2 rounded-lg bg-primary/5 text-primary">
