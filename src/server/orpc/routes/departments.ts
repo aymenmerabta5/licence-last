@@ -16,10 +16,51 @@ import { assignDepartmentHead } from "@/server/services/departments/assign-head"
 import { assignDepartmentHeadByEmail } from "@/server/services/departments/assign-head-by-email"
 import { bulkCreateDepartmentsWithHeads } from "@/server/services/departments/bulk-create-with-heads"
 import { createDepartment } from "@/server/services/departments/create"
+import { deleteDepartment } from "@/server/services/departments/delete"
 import { getDepartmentSkillIds } from "@/server/services/departments/get-skills"
 import { listDepartments } from "@/server/services/departments/list"
 import { syncDepartmentSkills } from "@/server/services/departments/sync-skills"
+import { unassignDepartmentHead } from "@/server/services/departments/unassign-head"
 import { updateDepartment } from "@/server/services/departments/update"
+
+interface DepartmentAdminContext {
+  user: {
+    role: string | null | undefined
+    universityId?: string | null
+  }
+}
+
+async function assertCanManageDepartment(
+  departmentId: string,
+  context: DepartmentAdminContext,
+) {
+  if (context.user.role !== "university_admin" && context.user.role !== "super_admin") {
+    throw new ORPCError("FORBIDDEN", {
+      message: "Only university admins can manage departments",
+    })
+  }
+
+  const [dept] = await db
+    .select({ universityId: department.universityId })
+    .from(department)
+    .where(eq(department.id, departmentId))
+    .limit(1)
+
+  if (!dept) {
+    throw new ORPCError("NOT_FOUND", {
+      message: "Department not found",
+    })
+  }
+
+  if (context.user.role !== "super_admin") {
+    const universityId = context.user.universityId
+    if (!universityId || dept.universityId !== universityId) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "Department does not belong to your university",
+      })
+    }
+  }
+}
 
 export const listDepartmentsProcedure = authedProcedureGenerous
   .input(z.object({ universityId: z.string().min(1) }))
@@ -75,32 +116,7 @@ export const assignDepartmentHeadProcedure = adminProcedureStandard
       ),
   )
   .handler(async ({ input, context }) => {
-    if (context.user.role !== "university_admin" && context.user.role !== "super_admin") {
-      throw new ORPCError("FORBIDDEN", {
-        message: "Only university admins can assign department heads",
-      })
-    }
-
-    const [dept] = await db
-      .select({ universityId: department.universityId })
-      .from(department)
-      .where(eq(department.id, input.departmentId))
-      .limit(1)
-
-    if (!dept) {
-      throw new ORPCError("NOT_FOUND", {
-        message: "Department not found",
-      })
-    }
-
-    if (context.user.role !== "super_admin") {
-      const universityId = context.user.universityId
-      if (!universityId || dept.universityId !== universityId) {
-        throw new ORPCError("FORBIDDEN", {
-          message: "Department does not belong to your university",
-        })
-      }
-    }
+    await assertCanManageDepartment(input.departmentId, context)
 
     if (input.userId) {
       return assignDepartmentHead(input.departmentId, input.userId)
@@ -111,6 +127,28 @@ export const assignDepartmentHeadProcedure = adminProcedureStandard
       headEmail: input.headEmail!,
       headName: input.headName!,
     })
+  })
+
+export const unassignDepartmentHeadProcedure = adminProcedureStandard
+  .input(
+    z.object({
+      departmentId: z.string().min(1),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    await assertCanManageDepartment(input.departmentId, context)
+    return unassignDepartmentHead(input.departmentId)
+  })
+
+export const deleteDepartmentProcedure = adminProcedureStandard
+  .input(
+    z.object({
+      departmentId: z.string().min(1),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    await assertCanManageDepartment(input.departmentId, context)
+    return deleteDepartment(input.departmentId)
   })
 
 export const bulkCreateDepartmentsProcedure = adminProcedureStandard

@@ -110,6 +110,9 @@ describe("assignDepartmentHeadByEmail", () => {
 
     expect(result.userId).toBe("new-user-id")
     expect(mockCreateUser).toHaveBeenCalledTimes(1)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const call = (mockCreateUser.mock.calls as any)[0][0]
+    expect(call.body.data.emailVerified).toBe(true)
     expect(mockRequestPasswordReset).toHaveBeenCalledTimes(1)
     expect(pendingWelcomeEmails.has("new-head@university.dz")).toBe(true)
   })

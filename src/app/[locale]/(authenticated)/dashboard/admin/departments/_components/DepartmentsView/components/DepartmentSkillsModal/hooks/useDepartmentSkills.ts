@@ -30,7 +30,6 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
   const [draftOverride, setDraftOverride] = useState<string[] | null>(null)
   const [query, setQuery] = useState("")
   const [saveError, setSaveError] = useState("")
-  const [saveTick, setSaveTick] = useState(0)
 
   // Derive active IDs: user's draft if modified, otherwise server data
   const draftIds = draftOverride ?? currentSkillIds ?? []
@@ -40,7 +39,6 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
     setDraftOverride(null)
     setQuery("")
     setSaveError("")
-    setSaveTick(0)
   }, [])
 
   const filteredSkills = useMemo(() => {
@@ -54,9 +52,15 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
   const syncMutation = useMutation(
     orpc.departments.syncSkills.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["departments"] })
+        queryClient.invalidateQueries({
+          predicate: (query) =>
+            query.queryKey.some(
+              (segment) =>
+                typeof segment === "string"
+                && segment.toLowerCase().includes("departments"),
+            ),
+        })
         setDraftOverride(null)
-        setSaveTick((t) => t + 1)
       },
     }),
   )
@@ -70,7 +74,6 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
 
   function toggleSkill(skillId: string) {
     setSaveError("")
-    setSaveTick(0)
     setDraftOverride((prev) => {
       const base = prev ?? currentSkillIds ?? []
       if (base.includes(skillId)) return base.filter((id) => id !== skillId)
@@ -81,16 +84,17 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
 
   async function save() {
     setSaveError("")
-    setSaveTick(0)
     try {
       await syncMutation.mutateAsync({
         departmentId,
         skillTagIds: draftIds,
       })
+      return true
     } catch (err) {
       setSaveError(
         err instanceof Error ? err.message : "Could not update skills.",
       )
+      return false
     }
   }
 
@@ -103,7 +107,6 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
     isSaving: syncMutation.isPending,
     isDirty,
     saveError,
-    saveTick,
     groups,
     categoryOrder,
     categoryLabels,

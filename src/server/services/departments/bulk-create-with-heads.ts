@@ -71,6 +71,9 @@ export async function bulkCreateDepartmentsWithHeads(
             password,
             name: row.headName,
             role: "dept_head",
+            data: {
+              emailVerified: true,
+            },
           },
         })
         userId = created.user.id

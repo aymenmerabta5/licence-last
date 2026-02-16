@@ -1,7 +1,7 @@
 # Architecture Document — Internex Platform
 
-> Last updated: 2026-02-13
-> Version: 1.0
+> Last updated: 2026-02-16
+> Version: 1.1
 
 ---
 
@@ -42,7 +42,7 @@
              (RSC + CC)     /     |     \
                           Auth   oRPC   Assistant
                           |       |        |
-                   Better Auth  83 procs  Poe AI
+                   Better Auth  88 procs  Poe AI
                           \       |      /
                        ┌──────────────────────┐
                        │   Services Layer     │
@@ -247,7 +247,7 @@ src/
 │   │   ├── middleware.ts             # Auth procedure chain (7 types)
 │   │   ├── rate-limited-procedures.ts  # 18 variants
 │   │   ├── ratelimit-middleware.ts
-│   │   ├── router.ts                 # Combined router (83 procedures)
+│   │   ├── router.ts                 # Combined router (88 procedures)
 │   │   ├── client.ts                 # orpcClient + orpc (TanStack)
 │   │   └── routes/                   # 15 route files
 │   ├── services/                     # Business logic (16 domains)
@@ -255,7 +255,7 @@ src/
 │   │   ├── applications/             # Application workflow (7 files)
 │   │   ├── assistant/                # AI conversations (7 files)
 │   │   ├── companies/                # Company management (9 files)
-│   │   ├── departments/              # Department management (4 files)
+│   │   ├── departments/              # Department management (10 files)
 │   │   ├── documents/                # PDF gen + verification (5 files)
 │   │   ├── matching/                 # Scoring algorithm (3 files)
 │   │   ├── notifications/            # Notification CRUD (3 files)
@@ -401,7 +401,7 @@ Pure business logic functions. Every file starts with `import "server-only"`.
 | `applications/` | 7 | applyToOffer, companyAccept, companyRefuse, withdraw, pipeline, listByOffer, listByStudent |
 | `assistant/` | 7 | CRUD conversations, messages, delete, utils |
 | `companies/` | 9 | create, get, list, update, approve, reject, membership, trustIndex, trustActions |
-| `departments/` | 4 | create, list, update, assignHead |
+| `departments/` | 10 | create, list, update, delete, assignHead, assignHeadByEmail, unassignHead, bulkCreateWithHeads, syncSkills, getSkills |
 | `documents/` | 5 | generateAgreement, generateCertificate, qrUtils, verificationCode, verify |
 | `matching/` | 3 | skillGap, readinessHistory, constants |
 | `notifications/` | 3 | create, list, markRead |
@@ -451,8 +451,8 @@ publicProcedure              -- No auth required
 | studentProcedureGenerous | 300/min | Student reads |
 | assistantProcedureLimited | 20/min | AI calls |
 
-**83 Total Procedures across 15 Route Files (16 Router Namespaces)**:
-users (4), companies (13), skills (1), students (4), offers (7), applications (9), matching (4), placements (3), deptHead (3), departments (4), documents (2), notifications (3), stats (1), adminUsers (11), universities (5), assistant (9)
+**88 Total Procedures across 15 Route Files (16 Router Namespaces)**:
+users (4), companies (13), skills (1), students (4), offers (7), applications (9), matching (4), placements (3), deptHead (3), departments (9), documents (2), notifications (3), stats (1), adminUsers (11), universities (5), assistant (9)
 
 ### View Layer
 
@@ -511,7 +511,7 @@ const user = await requireRole(["company_admin", "super_admin"])
 | Method | Path | Purpose |
 |--------|------|---------|
 | ALL | `/api/auth/[...all]` | Better Auth (login, signup, 2FA, sessions) |
-| ALL | `/api/rpc/[...rest]` | oRPC (83 procedures, CSRF protected) |
+| ALL | `/api/rpc/[...rest]` | oRPC (88 procedures, CSRF protected) |
 | POST | `/api/assistant/chat` | AI streaming (60s timeout) |
 | POST | `/api/assistant/auth/status` | Arcade tool auth check |
 | GET | `/api/openapi/spec` | OpenAPI JSON specification |
@@ -787,19 +787,41 @@ score = (responseRate x 0.3) + (completionRate x 0.3) + (feedbackScore x 0.3) - 
 
 ### Department Management
 
-University departments with designated heads who can validate placements for their department's students.
+University departments with designated heads who can validate placements for their department's students. Full CRUD with bulk operations, skills management, and email-based head onboarding.
 
-**Schema**: `department` (id, universityId, name, headName, createdAt, updatedAt)
+**Schema**: `department` (id, universityId, name, headName, createdAt, updatedAt), `departmentSkill` (departmentId, skillTagId)
 
 **User fields**: `departmentId` on `user` table links dept_head users to their department.
 
-**Services** (`src/server/services/departments/`):
-- `create.ts` — Create department under a university
-- `list.ts` — List departments by university
-- `update.ts` — Update department details
-- `assign-head.ts` — Assign dept_head role to a user
+**Services** (`src/server/services/departments/`, 10 files):
+- `create.ts` — Create department under a university (duplicate name check)
+- `list.ts` — List departments by university (with skill counts via SQL subquery)
+- `update.ts` — Update department details (partial update, trims inputs)
+- `delete.ts` — Delete department (transactional: demotes all dept_heads to student role, then deletes record)
+- `assign-head.ts` — Assign dept_head role by user ID (bidirectional: updates user role/department + department headName)
+- `assign-head-by-email.ts` — Assign head by email (auto-creates user if not found, triggers password reset, queues welcome email)
+- `unassign-head.ts` — Remove head from department (transactional: demotes user to student, clears headName)
+- `bulk-create-with-heads.ts` — Bulk create departments with heads from CSV/form (per-row error handling, partial success pattern, max 50 rows)
+- `sync-skills.ts` — Sync department-specific skills (idempotent delete-then-insert, max 200 skills, validates skill IDs)
+- `get-skills.ts` — Get department skill tag IDs
 
-**oRPC**: `departments` namespace (4 procedures) + `deptHead` namespace (3 placement procedures)
+**oRPC** (`departments` namespace, 9 procedures):
+- `list` (authedProcedureGenerous) — List departments for a university
+- `create` (adminProcedureStandard) — Create department
+- `update` (adminProcedureStandard) — Update department details
+- `assignHead` (adminProcedureStandard) — Assign head by user ID or email (auto-creates user)
+- `unassignHead` (adminProcedureStandard) — Remove department head
+- `delete` (adminProcedureStandard) — Delete department
+- `bulkCreateWithHeads` (adminProcedureStandard) — Bulk import departments
+- `syncSkills` (adminProcedureStandard) — Sync department skills
+- `getSkills` (authedProcedureGenerous) — Get department skills
+
+**Authorization helper**: `assertCanManageDepartment()` validates role (university_admin/super_admin) and scopes non-super_admin to their own university.
+
+`deptHead` namespace (3 placement procedures): listPending, validate, reject
+
+**UI** (`dashboard/admin/departments/_components/DepartmentsView/`):
+Feature folder with orchestrator pattern, hooks layer, and pure UI components including DeleteDepartmentDialog, RemoveHeadDialog, DepartmentSkillsModal, and BulkCreateForm sub-feature.
 
 ### Document Verification System
 
@@ -963,3 +985,16 @@ src/server/services/...  --> src/server/services/...test.ts
 8. Cache tags invalidated: `STUDENT_APPLICATIONS`, `STUDENT_STATS`
 9. Response returned to client
 10. TanStack Query invalidates local cache
+
+---
+
+## Appendix: Documentation Sync Policy
+
+When adding or modifying features, **update all relevant documentation files** to keep them in sync:
+
+| File | Purpose | What to update |
+|------|---------|----------------|
+| `CLAUDE.md` | Project context for Claude | Service domains, procedure counts, directory tree, patterns |
+| `AGENTS.md` | Coding guidelines for AI agents | Service lists, route procedure tables, feature folder references |
+| `docs/ARCHITECTURE.md` | Full system architecture | Data model, service tables, procedure counts, file counts |
+| `README.md` | Project overview | High-level capabilities, architecture summary |

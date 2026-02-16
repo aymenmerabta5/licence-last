@@ -74,6 +74,9 @@ export async function assignDepartmentHeadByEmail({
         password,
         name: normalizedName,
         role: "dept_head",
+        data: {
+          emailVerified: true,
+        },
       },
     })
     userId = created.user.id

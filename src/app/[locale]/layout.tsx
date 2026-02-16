@@ -113,7 +113,7 @@ export default async function LocaleLayout({
               {children}
             </NextIntlClientProvider>
           </QueryProvider>
-          <Toaster />
+          <Toaster richColors />
         </ThemeProvider>
       </body>
     </html>

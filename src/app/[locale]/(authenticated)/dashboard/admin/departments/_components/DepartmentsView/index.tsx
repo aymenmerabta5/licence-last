@@ -14,8 +14,11 @@ import { AssignHeadDialog } from "./components/AssignHeadDialog"
 import { BulkCreateForm } from "./components/BulkCreateForm"
 import { CreateDepartmentForm } from "./components/CreateDepartmentForm"
 import { DepartmentCard } from "./components/DepartmentCard"
+import { DeleteDepartmentDialog } from "./components/DeleteDepartmentDialog"
 import { DepartmentsHeader } from "./components/DepartmentsHeader"
 import { DepartmentSkillsModal } from "./components/DepartmentSkillsModal"
+import { RemoveHeadDialog } from "./components/RemoveHeadDialog"
+import type { DepartmentItem } from "./types"
 
 export function DepartmentsView() {
   const t = useTranslations("dashboard.admin.departments")
@@ -24,6 +27,8 @@ export function DepartmentsView() {
   const actions = useDepartmentsActions()
 
   const [skillsModalDeptId, setSkillsModalDeptId] = useState<string | null>(null)
+  const [removeHeadTarget, setRemoveHeadTarget] = useState<DepartmentItem | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<DepartmentItem | null>(null)
   const assignHeadDialog = useAssignHeadDialog({ onAssign: actions.assignHead })
   const hasUniversityContext = Boolean(universityId)
 
@@ -76,6 +81,8 @@ export function DepartmentsView() {
               <DepartmentCard
                 department={department}
                 onAssignHead={assignHeadDialog.open}
+                onRemoveHead={setRemoveHeadTarget}
+                onDeleteDepartment={setDeleteTarget}
                 onManageSkills={setSkillsModalDeptId}
               />
             </motion.div>
@@ -106,6 +113,36 @@ export function DepartmentsView() {
         }}
         onConfirm={assignHeadDialog.submit}
         isSaving={actions.isAssigningHead}
+      />
+
+      <RemoveHeadDialog
+        open={Boolean(removeHeadTarget)}
+        onOpenChange={(open) => !open && setRemoveHeadTarget(null)}
+        department={removeHeadTarget}
+        onConfirm={async (departmentId) => {
+          try {
+            await actions.unassignHead(departmentId)
+            setRemoveHeadTarget(null)
+          } catch {
+            // Error feedback is handled by the mutation hook.
+          }
+        }}
+        isPending={actions.isUnassigningHead}
+      />
+
+      <DeleteDepartmentDialog
+        open={Boolean(deleteTarget)}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        department={deleteTarget}
+        onConfirm={async (departmentId) => {
+          try {
+            await actions.removeDepartment(departmentId)
+            setDeleteTarget(null)
+          } catch {
+            // Error feedback is handled by the mutation hook.
+          }
+        }}
+        isPending={actions.isDeletingDepartment}
       />
     </div>
   )

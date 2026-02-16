@@ -69,13 +69,13 @@ src/
 │   │   ├── ratelimit-middleware.ts
 │   │   ├── router.ts
 │   │   ├── client.ts
-│   │   └── routes/         (15 route files, 83 procedures)
+│   │   └── routes/         (15 route files, 88 procedures)
 │   ├── services/           (Model — 16 service domains)
 │   │   ├── admin/          (User management: ban, create, sessions, etc.)
 │   │   ├── applications/   (Application workflow + pipeline + timeline)
 │   │   ├── assistant/      (AI assistant conversations)
 │   │   ├── companies/      (CRUD, approval, trust index, reports)
-│   │   ├── departments/    (CRUD, assign head — NEW)
+│   │   ├── departments/    (CRUD, delete, assign/unassign head, bulk create, skills)
 │   │   ├── documents/      (PDF generation + QR + verification)
 │   │   ├── matching/       (Scoring, skill gap, readiness)
 │   │   ├── notifications/  (Create, list, mark read)
@@ -692,13 +692,21 @@ PDF generation using `@react-pdf/renderer`:
 - Public verification page at `/verify` and `/verify/[code]`
 - Services: `generate-agreement.ts`, `generate-certificate.ts`, `qr-utils.ts`, `verification-code.ts`, `verify.ts`
 
-### Department Management (NEW)
+### Department Management
 
-**`src/server/services/departments/`:**
-- `create.ts` — Create department under a university
-- `list.ts` — List departments by university
-- `update.ts` — Update department details
-- `assign-head.ts` — Assign a dept_head user to a department
+**`src/server/services/departments/` (10 files):**
+- `create.ts` — Create department under a university (duplicate name check)
+- `list.ts` — List departments by university (with skill counts)
+- `update.ts` — Update department details (partial update)
+- `delete.ts` — Delete department (transactional: demotes dept_heads to student, then deletes)
+- `assign-head.ts` — Assign dept_head role by user ID (bidirectional user + department update)
+- `assign-head-by-email.ts` — Assign head by email (auto-creates user if needed, triggers password reset)
+- `unassign-head.ts` — Remove head from department (transactional: demotes role, clears headName)
+- `bulk-create-with-heads.ts` — Bulk create departments with heads from CSV (per-row error handling, partial success)
+- `sync-skills.ts` — Sync department-specific skills (delete-then-insert, max 200)
+- `get-skills.ts` — Get department skill IDs
+
+**oRPC**: `departments` namespace (9 procedures) + `deptHead` namespace (3 placement procedures)
 
 ### OpenAPI
 
@@ -752,3 +760,23 @@ PDF generation using `@react-pdf/renderer`:
 | `super_admin` | Platform operator — full control: users, companies, universities |
 
 **Note**: The old `admin` role was renamed to `university_admin`. The `adminProcedure` middleware now accepts `university_admin`, `dept_head`, or `super_admin`.
+
+---
+
+## Documentation Sync Policy
+
+When adding or modifying features (services, procedures, components, translations), **update all relevant documentation files**:
+
+| File | Purpose | What to update |
+|------|---------|----------------|
+| `CLAUDE.md` | Project context for Claude | Service domains, procedure counts, directory tree, patterns |
+| `AGENTS.md` | Coding guidelines for AI agents | Service lists, route procedure tables, feature folder references |
+| `docs/ARCHITECTURE.md` | Full system architecture | Data model, service tables, procedure counts, file counts |
+| `README.md` | Project overview | High-level capabilities, architecture summary |
+
+**Checklist for new features:**
+1. Add new service files to the relevant domain in all docs
+2. Update procedure counts (total and per-namespace)
+3. Update file counts in service domain tables
+4. Add new UI components to feature folder references if applicable
+5. Add translation keys to the translation structure if new namespaces

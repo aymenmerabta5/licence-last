@@ -9,7 +9,7 @@ Internex manages the complete internship lifecycle:
 - **Students** discover offers, apply, track applications, and get AI-powered cover letter help
 - **Companies** post offers, manage candidate pipelines, and use an AI assistant for recruitment
 - **Department heads** validate placements for their department's students
-- **University admins** validate placements and generate official documents (agreements, certificates)
+- **University admins** manage departments (CRUD, bulk import, skills, head assignment by email), validate placements, and generate official documents (agreements, certificates)
 - **Super admins** manage the entire platform: users, companies, universities, departments
 
 ```
@@ -24,7 +24,7 @@ Internex manages the complete internship lifecycle:
    (RSC + CC)     /     |     \
                 Auth   oRPC   Assistant
                 |       |        |
-         Better Auth  83 procs  Poe AI
+         Better Auth  88 procs  Poe AI
                 \       |      /
              +-----------------------+
              |    Services Layer     |
@@ -147,7 +147,7 @@ src/
 │   │   └── onboarding/        # Setup wizards per role
 │   └── api/
 │       ├── auth/[...all]/     # Better Auth endpoints
-│       ├── rpc/[...rest]/     # oRPC (83 procedures, CSRF protected)
+│       ├── rpc/[...rest]/     # oRPC (88 procedures, CSRF protected)
 │       ├── assistant/         # AI chat streaming + auth status
 │       ├── openapi/           # OpenAPI spec + Swagger UI
 │       └── health/            # Health check
@@ -174,7 +174,7 @@ src/
 The project follows an **MVC pattern**:
 
 - **Model** (`server/services/`) — 16 domains of pure business logic with `import "server-only"`
-- **Controller** (`server/orpc/`) — 83 oRPC procedures with auth middleware chain and rate limiting
+- **Controller** (`server/orpc/`) — 88 oRPC procedures with auth middleware chain and rate limiting
 - **View** — React Server Components + Client Components with feature folder pattern
 
 ### Auth & Roles
@@ -187,7 +187,7 @@ The project follows an **MVC pattern**:
 - University email domain validation for student registration
 - User banning (temporary and permanent)
 - Admin impersonation with audit trail
-- Department management with dept_head role
+- Department management: CRUD, bulk import, skills, head assign/unassign by email (auto-creates users)
 
 ### Document Verification
 
@@ -263,6 +263,8 @@ See [docs/DEPLOYMENT_INCHALLAH.md](docs/DEPLOYMENT_INCHALLAH.md) for the full gu
 | [DEPLOYMENT_INCHALLAH.md](docs/DEPLOYMENT_INCHALLAH.md) | Server setup, Docker Compose, Caddy, Watchtower guide |
 | [CLAUDE.md](CLAUDE.md) | Project conventions and patterns for Claude Code |
 | [AGENTS.md](AGENTS.md) | Agent instructions and codebase reference |
+
+> **Note:** When adding features, update all 4 docs to keep them in sync. See the "Documentation Sync Policy" section in CLAUDE.md/AGENTS.md for the checklist.
 
 ## License
 

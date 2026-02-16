@@ -1,7 +1,8 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { CheckCircle2, Loader2, Search } from "lucide-react"
+import { Loader2, Search } from "lucide-react"
+import { toast } from "sonner"
 
 import {
   Dialog,
@@ -39,7 +40,6 @@ export function DepartmentSkillsModal({
     isSaving,
     isDirty,
     saveError,
-    saveTick,
     groups,
     categoryOrder,
     categoryLabels,
@@ -51,6 +51,14 @@ export function DepartmentSkillsModal({
   const handleOpenChange = (next: boolean) => {
     if (!next) resetState()
     onOpenChange(next)
+  }
+
+  const handleSave = async () => {
+    const isSuccess = await save()
+    if (!isSuccess) return
+
+    toast.success(t("saveSuccess"))
+    handleOpenChange(false)
   }
 
   return (
@@ -98,12 +106,6 @@ export function DepartmentSkillsModal({
                 {saveError}
               </p>
             )}
-            {saveTick > 0 && !saveError && (
-              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
-                <CheckCircle2 className="h-3 w-3" />
-                {t("saveSuccess")}
-              </p>
-            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -119,7 +121,7 @@ export function DepartmentSkillsModal({
               type="button"
               variant="editorial"
               size="editorial-sm"
-              onClick={save}
+              onClick={handleSave}
               disabled={isSaving || !isDirty}
             >
               {isSaving ? (

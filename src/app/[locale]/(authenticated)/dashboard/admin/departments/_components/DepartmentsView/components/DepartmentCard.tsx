@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl"
-import { Boxes, FolderTree, UserCheck } from "lucide-react"
+import { Boxes, FolderTree, Trash2, UserCheck, UserMinus } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -9,10 +9,18 @@ import type { DepartmentItem } from "../types"
 interface DepartmentCardProps {
   department: DepartmentItem
   onAssignHead: (department: DepartmentItem) => void
+  onRemoveHead: (department: DepartmentItem) => void
+  onDeleteDepartment: (department: DepartmentItem) => void
   onManageSkills: (departmentId: string) => void
 }
 
-export function DepartmentCard({ department, onAssignHead, onManageSkills }: DepartmentCardProps) {
+export function DepartmentCard({
+  department,
+  onAssignHead,
+  onRemoveHead,
+  onDeleteDepartment,
+  onManageSkills,
+}: DepartmentCardProps) {
   const t = useTranslations("dashboard.admin.departments")
 
   return (
@@ -54,14 +62,37 @@ export function DepartmentCard({ department, onAssignHead, onManageSkills }: Dep
             <Boxes className="h-3.5 w-3.5" />
             {t("manageSkills")}
           </Button>
+          {department.headName ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => onRemoveHead(department)}
+              className="rounded-lg px-3"
+            >
+              <UserMinus className="h-3.5 w-3.5" />
+              {t("removeHead")}
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              variant="editorial"
+              size="sm"
+              onClick={() => onAssignHead(department)}
+              className="rounded-lg px-3"
+            >
+              {t("assignHead")}
+            </Button>
+          )}
           <Button
             type="button"
-            variant="editorial"
+            variant="destructive"
             size="sm"
-            onClick={() => onAssignHead(department)}
+            onClick={() => onDeleteDepartment(department)}
             className="rounded-lg px-3"
           >
-            {t("assignHead")}
+            <Trash2 className="h-3.5 w-3.5" />
+            {t("deleteDepartment")}
           </Button>
         </div>
       </div>

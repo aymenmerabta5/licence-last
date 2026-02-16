@@ -18,6 +18,9 @@ export async function createUser(data: CreateUserData) {
       password: data.password,
       name: data.name,
       role: data.role,
+      data: {
+        emailVerified: true,
+      },
     },
   })
 

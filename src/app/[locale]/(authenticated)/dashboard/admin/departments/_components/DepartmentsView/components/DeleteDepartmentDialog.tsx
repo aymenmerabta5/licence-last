@@ -1,0 +1,63 @@
+"use client"
+
+import { useTranslations } from "next-intl"
+import { Loader2 } from "lucide-react"
+
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+
+import type { DepartmentItem } from "../types"
+
+interface DeleteDepartmentDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  department: DepartmentItem | null
+  onConfirm: (departmentId: string) => void
+  isPending: boolean
+}
+
+export function DeleteDepartmentDialog({
+  open,
+  onOpenChange,
+  department,
+  onConfirm,
+  isPending,
+}: DeleteDepartmentDialogProps) {
+  const t = useTranslations("dashboard.admin.departments")
+
+  return (
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle className="font-serif">
+            {t("deleteDepartmentTitle")}
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            {t("deleteDepartmentDescription", { name: department?.name ?? "" })}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+
+        <AlertDialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            {t("cancel")}
+          </Button>
+          <Button
+            variant="destructive"
+            disabled={isPending}
+            onClick={() => department && onConfirm(department.id)}
+          >
+            {isPending && <Loader2 className="h-4 w-4 me-2 animate-spin" />}
+            {t("deleteDepartment")}
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}

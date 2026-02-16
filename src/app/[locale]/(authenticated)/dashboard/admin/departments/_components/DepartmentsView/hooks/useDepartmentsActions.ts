@@ -42,6 +42,30 @@ export function useDepartmentsActions() {
     }),
   )
 
+  const unassignHeadMutation = useMutation(
+    orpc.departments.unassignHead.mutationOptions({
+      onSuccess: () => {
+        invalidate()
+        toast.success(t("removeHeadSuccess"))
+      },
+      onError: (error) => {
+        toast.error(error.message || t("error"))
+      },
+    }),
+  )
+
+  const deleteDepartmentMutation = useMutation(
+    orpc.departments.delete.mutationOptions({
+      onSuccess: () => {
+        invalidate()
+        toast.success(t("deleteSuccess"))
+      },
+      onError: (error) => {
+        toast.error(error.message || t("error"))
+      },
+    }),
+  )
+
   const handleCreate = () => {
     if (!newName.trim()) return
     createMutation.mutate(
@@ -66,6 +90,12 @@ export function useDepartmentsActions() {
       headName: headName.trim(),
     })
 
+  const unassignHead = async (departmentId: string) =>
+    unassignHeadMutation.mutateAsync({ departmentId })
+
+  const removeDepartment = async (departmentId: string) =>
+    deleteDepartmentMutation.mutateAsync({ departmentId })
+
   return {
     newName,
     setNewName,
@@ -73,9 +103,12 @@ export function useDepartmentsActions() {
     setNewHeadName,
     handleCreate,
     assignHead,
+    unassignHead,
+    removeDepartment,
     isCreating: createMutation.isPending,
     isAssigningHead: assignHeadMutation.isPending,
+    isUnassigningHead: unassignHeadMutation.isPending,
+    isDeletingDepartment: deleteDepartmentMutation.isPending,
     createError: createMutation.error,
-    assignHeadMutation,
   }
 }
