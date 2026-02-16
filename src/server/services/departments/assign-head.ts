@@ -34,7 +34,7 @@ export async function assignDepartmentHead(
 
   // Verify user exists
   const [targetUser] = await db
-    .select({ id: user.id, role: user.role })
+    .select({ id: user.id, role: user.role, name: user.name })
     .from(user)
     .where(eq(user.id, userId))
     .limit(1)
@@ -56,6 +56,11 @@ export async function assignDepartmentHead(
       universityId: dept.universityId,
     })
     .where(eq(user.id, userId))
+
+  await db
+    .update(department)
+    .set({ headName: targetUser.name ?? null })
+    .where(eq(department.id, departmentId))
 
   log.info(
     { departmentId, userId, event: "dept_head_assigned" },

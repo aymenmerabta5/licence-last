@@ -7,8 +7,8 @@ const mockUpdate = mock(() => ({ set: mockSet }))
 
 const mockTx = { update: mockUpdate }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockTransaction = mock(async (fn: (tx: any) => Promise<void>) => {
-  await fn(mockTx)
+const mockTransaction = mock(async (fn: (tx: any) => Promise<any>) => {
+  return await fn(mockTx)
 })
 
 mock.module("@/server/db", () => ({
@@ -27,13 +27,13 @@ describe("approveUniversity", () => {
     mockSet.mockReturnValue({ where: mockWhere })
     mockWhere.mockReturnValue({ returning: mockReturning })
     mockReturning.mockResolvedValue([{ id: "uni-1", name: "Test Uni" }])
-    mockTransaction.mockImplementation(async (fn) => { await fn(mockTx) })
+    mockTransaction.mockImplementation(async (fn) => { return await fn(mockTx) })
   })
 
   test("should return universityId on success", async () => {
     const { approveUniversity } = await import("./approve")
     const result = await approveUniversity("uni-1", "admin-1")
-    expect(result).toEqual({ universityId: "uni-1" })
+    expect(result).toEqual({ universityId: "uni-1", name: "Test Uni" })
   })
 
   test("should use transaction", async () => {

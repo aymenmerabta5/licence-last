@@ -249,6 +249,13 @@
       "pageTitle": "Company Setup",
       "title": "Set Up Your Company",
       "subtitle": "Tell us about your organization to get started",
+      "panelHeadline": "Build Your Dream Team",
+      "panelDescription": "Connect with top university talent across Algeria and streamline your internship recruitment.",
+      "panelFeature1": "Access verified student profiles",
+      "panelFeature2": "Streamlined recruitment pipeline",
+      "panelFeature3": "Direct university partnerships",
+      "companySection": "Company Details",
+      "locationSection": "Location",
       "name": "Company name",
       "namePlaceholder": "Acme Corporation",
       "description": "Description",
@@ -266,6 +273,15 @@
       "pageTitle": "University Setup",
       "title": "Set Up Your University",
       "subtitle": "Tell us about your institution to get started",
+      "panelHeadline": "Shape Tomorrow's Leaders",
+      "panelDescription": "Partner with companies to provide meaningful internship opportunities for your students.",
+      "panelFeature1": "Manage departments and placements",
+      "panelFeature2": "Track student progress in real-time",
+      "panelFeature3": "Verify and validate internships",
+      "universitySection": "University Details",
+      "locationSection": "Location",
+      "domainsSection": "Email Domains",
+      "departmentsSection": "Departments",
       "name": "University name",
       "namePlaceholder": "University of Science and Technology",
       "abbreviation": "Abbreviation",
@@ -277,8 +293,6 @@
       "departmentPlaceholder": "e.g. Computer Science",
       "addDepartment": "Add department",
       "removeDepartment": "Remove",
-      "deanName": "Dean name",
-      "deanNamePlaceholder": "Prof. Name",
       "phone": "Phone number",
       "phonePlaceholder": "+213 21 XX XX XX",
       "wilaya": "Wilaya",
@@ -299,6 +313,11 @@
       "pageTitle": "Student Profile Setup",
       "title": "Build Your Digital CV",
       "subtitle": "Tell us about yourself and your skills to get started",
+      "panelHeadline": "Your Career Starts Here",
+      "panelDescription": "Create your professional profile and get matched with top companies across Algeria.",
+      "panelFeature1": "Get matched with top companies",
+      "panelFeature2": "Showcase your skills and projects",
+      "panelFeature3": "Track applications in real-time",
       "personalSection": "Personal Information",
       "bio": "Bio",
       "bioPlaceholder": "Tell us a bit about yourself...",
@@ -325,6 +344,8 @@
       "skillsHint": "Select up to 10 skills that best describe your expertise",
       "skillsSelectDepartmentFirst": "Please select a department first to see relevant skills",
       "skillsSelected": "selected",
+      "recommendedSkills": "Recommended for your department",
+      "otherSkills": "Other skills",
       "submit": "Complete Profile",
       "error": "Something went wrong. Please try again."
     }
@@ -451,6 +472,9 @@
         "pageTitle": "Company Profile",
         "title": "Company Profile",
         "subtitle": "Manage your company's public profile and contact information",
+        "descriptionLabel": "About",
+        "contactLabel": "Contact",
+        "locationLabel": "Location",
         "description": "Description",
         "descriptionPlaceholder": "Describe your company and what makes it a great place to intern...",
         "logo": "Company Logo",
@@ -580,7 +604,9 @@
         "viewProfile": "View Profile",
         "accept": "Accept",
         "refuse": "Refuse",
-        "confirmAccept": "Accept this candidate? This will notify administrators for placement validation.",
+        "acceptTitle": "Accept Candidate",
+        "acceptDescription": "Accept {name}? This will notify administrators for placement validation.",
+        "confirmAcceptButton": "Accept",
         "confirmRefuse": "Refuse this candidate? They will be notified.",
         "refuseTitle": "Refuse Candidate",
         "refuseDescription": "Are you sure you want to refuse {name}?",
@@ -646,6 +672,19 @@
           "published": "Published",
           "closed": "Closed"
         }
+      }
+    },
+    "offers": {
+      "status": {
+        "draft": "Draft",
+        "published": "Published",
+        "closed": "Closed"
+      },
+      "type": {
+        "pfe": "PFE",
+        "immersion": "Immersion",
+        "summer": "Summer",
+        "practical": "Practical"
       }
     },
     "welcome": "Welcome back,",
@@ -854,7 +893,6 @@
           "department": "Department",
           "level": "Level",
           "university": "University",
-          "dean": "Dean",
           "address": "Address",
           "skills": "Skills",
           "companyInfo": "Company Info",
@@ -920,16 +958,46 @@
         "headName": "Head name (optional)",
         "headNamePlaceholder": "e.g. Dr. Ahmed Benali",
         "assignHead": "Assign Head",
+        "manageSkills": "Skills",
         "assignHeadTitle": "Assign Department Head",
-        "assignHeadDescription": "Select a user to assign as the head of this department.",
+        "assignHeadDescription": "Enter the future department head details. If the user does not exist, an account will be created automatically.",
         "selectUser": "Select user",
         "noUsersAvailable": "No users available to assign.",
+        "passwordResetHint": "A password-reset link will be sent so the department head can activate access.",
         "save": "Save",
         "cancel": "Cancel",
         "createSuccess": "Department created successfully.",
         "updateSuccess": "Department updated successfully.",
         "assignSuccess": "Department head assigned successfully.",
-        "error": "Something went wrong. Please try again."
+        "error": "Something went wrong. Please try again.",
+        "skills": {
+          "title": "Skills for {name}",
+          "description": "Select the skills relevant to this department. Students will see these as recommended.",
+          "save": "Save Skills",
+          "cancel": "Cancel",
+          "skillsSelected": "skills selected",
+          "searchPlaceholder": "Search skills...",
+          "saveSuccess": "Department skills updated.",
+          "saveError": "Could not update skills."
+        },
+        "bulkCreate": {
+          "title": "Bulk Create Departments",
+          "description": "Create multiple departments and assign heads at once. Each head will receive a welcome email with a password-reset link.",
+          "departmentName": "Department name",
+          "departmentNamePlaceholder": "e.g. Computer Science",
+          "headEmail": "Head email",
+          "headEmailPlaceholder": "e.g. head@university.dz",
+          "headName": "Head name",
+          "headNamePlaceholder": "e.g. Dr. Ahmed Benali",
+          "addRow": "Add row",
+          "removeRow": "Remove row",
+          "submit": "Create All",
+          "submitting": "Creating...",
+          "successMessage": "{count} department(s) created successfully.",
+          "partialSuccess": "{created} created, {failed} failed.",
+          "rowError": "{name}: {error}",
+          "error": "Something went wrong. Please try again."
+        }
       },
       "deptValidations": {
         "title": "Department Validations",
@@ -967,7 +1035,6 @@
           "noDomains": "No domains registered",
           "location": "Location",
           "department": "Department",
-          "dean": "Dean",
           "registeredAt": "Registered"
         }
       },
@@ -1257,7 +1324,18 @@
       "headNamePlaceholder": "e.g. Dr. Smith",
       "save": "Create Department",
       "success": "Department created",
-      "error": "Failed to create department"
+      "error": "Failed to create department",
+      "manageSkills": "Skills",
+      "skills": {
+        "title": "Skills for {name}",
+        "description": "Select the skills relevant to this department. Students will see these as recommended.",
+        "save": "Save Skills",
+        "cancel": "Cancel",
+        "skillsSelected": "skills selected",
+        "searchPlaceholder": "Search skills...",
+        "saveSuccess": "Department skills updated.",
+        "saveError": "Could not update skills."
+      }
     }
   },
   "howItWorks": {

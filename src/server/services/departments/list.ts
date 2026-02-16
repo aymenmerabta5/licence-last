@@ -1,9 +1,9 @@
 import "server-only"
 
-import { eq } from "drizzle-orm"
+import { eq, sql } from "drizzle-orm"
 
 import { db } from "@/server/db"
-import { department } from "@/server/db/schema/departments"
+import { department, departmentSkill } from "@/server/db/schema/departments"
 
 export async function listDepartments(universityId: string) {
   return db
@@ -12,6 +12,10 @@ export async function listDepartments(universityId: string) {
       name: department.name,
       headName: department.headName,
       createdAt: department.createdAt,
+      skillCount: sql<number>`(
+        select count(*)::int from ${departmentSkill}
+        where ${departmentSkill.departmentId} = ${department.id}
+      )`.as("skill_count"),
     })
     .from(department)
     .where(eq(department.universityId, universityId))

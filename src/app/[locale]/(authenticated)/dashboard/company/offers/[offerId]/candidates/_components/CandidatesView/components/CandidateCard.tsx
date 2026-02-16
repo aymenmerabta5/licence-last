@@ -2,7 +2,7 @@
 
 import { useDrag } from "react-dnd"
 import { useLocale, useTranslations } from "next-intl"
-import { Check, GraduationCap, Loader2, X } from "lucide-react"
+import { Check, GraduationCap, Loader2, X, Clock } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -61,48 +61,71 @@ export function CandidateCard({
     [app.id, app.pipelineStage, canDrag],
   )
 
+  const initials = (app.student.name || "?")
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase()
+
   return (
     <article
       ref={(node) => {
         dragRef(node)
       }}
       className={cn(
-        "border border-border bg-background p-3 space-y-3 transition-[opacity,box-shadow,transform]",
-        canDrag && "cursor-grab active:cursor-grabbing",
-        isDragging && "opacity-50 scale-[0.99] shadow-lg",
+        "border border-border/50 bg-background p-3.5 space-y-3 transition-all rounded-sm",
+        canDrag && "cursor-grab active:cursor-grabbing hover:border-border hover:shadow-sm",
+        isDragging && "opacity-50 scale-[0.98] shadow-lg ring-2 ring-primary/20",
         !canDrag && "cursor-default",
       )}
       aria-label={t("candidateCardAria", {
         name: app.student.name || "Anonymous",
       })}
     >
-      <div className="space-y-1">
-        <p className="font-medium text-sm text-heading">
-          {app.student.name || "Anonymous"}
-        </p>
-        {app.university && (
-          <p className="text-[11px] text-muted-foreground flex items-center gap-1">
-            <GraduationCap className="h-3 w-3" />
-            {app.university.abbreviation || app.university.name}
+      {/* Student info row */}
+      <div className="flex items-start gap-3">
+        {/* Avatar */}
+        <div className="h-9 w-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+          <span className="text-[10px] font-bold text-primary">
+            {initials}
+          </span>
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <p className="font-medium text-sm text-heading truncate">
+            {app.student.name || "Anonymous"}
           </p>
-        )}
+          {app.university && (
+            <p className="text-[10px] text-muted-foreground/60 flex items-center gap-1 mt-0.5">
+              <GraduationCap className="h-3 w-3 shrink-0" />
+              <span className="truncate">
+                {app.university.abbreviation || app.university.name}
+              </span>
+            </p>
+          )}
+        </div>
       </div>
 
+      {/* Status + date row */}
       <div className="flex items-center justify-between gap-2">
         <span
-          className={`inline-flex items-center px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase border ${STATUS_COLORS[app.status] ?? ""}`}
+          className={`inline-flex items-center px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase border rounded-sm ${STATUS_COLORS[app.status] ?? ""}`}
         >
           {app.status.replace("_", " ")}
         </span>
-        <span className="text-[10px] text-muted-foreground">
+        <span className="text-[10px] text-muted-foreground/40 flex items-center gap-1">
+          <Clock className="h-2.5 w-2.5" />
           {new Date(app.createdAt).toLocaleDateString(locale)}
         </span>
       </div>
 
+      {/* Match score */}
       <MatchPreview offerId={offerId} studentUserId={app.student.id} />
 
-      <label className="block space-y-1">
-        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+      {/* Pipeline stage selector */}
+      <label className="block space-y-1.5">
+        <span className="text-[9px] uppercase tracking-wider text-muted-foreground/50 font-bold">
           {t("pipelineStage")}
         </span>
         <select
@@ -115,7 +138,7 @@ export function CandidateCard({
             app.pipelineStage === "accepted" ||
             app.pipelineStage === "rejected"
           }
-          className="w-full h-8 border border-border bg-background px-2 text-xs"
+          className="w-full h-8 border border-border/50 bg-secondary/10 px-2.5 text-xs rounded-sm focus:outline-none focus:ring-1 focus:ring-primary/30 transition-colors"
         >
           {STAGE_COLUMNS.map((option) => (
             <option
@@ -132,11 +155,12 @@ export function CandidateCard({
         </select>
       </label>
 
-      {app.status === "applied" && (
+      {/* Accept / Refuse — only at "offer" stage (final decision) */}
+      {app.status === "applied" && app.pipelineStage === "offer" && (
         <div className="flex items-center gap-2">
           <Button
             size="sm"
-            className="h-7 text-[11px] gap-1.5 bg-green-600 hover:bg-green-700"
+            className="h-7 text-[10px] gap-1.5 bg-emerald-600 hover:bg-emerald-700 flex-1 font-bold uppercase tracking-wider"
             onClick={onAccept}
             disabled={actionLoading === app.id}
           >
@@ -151,7 +175,7 @@ export function CandidateCard({
           <Button
             variant="outline"
             size="sm"
-            className="h-7 text-[11px] gap-1.5 text-destructive border-destructive/30 hover:bg-destructive/10"
+            className="h-7 text-[10px] gap-1.5 text-destructive border-destructive/20 hover:bg-destructive/5 flex-1 font-bold uppercase tracking-wider"
             onClick={onRefuse}
           >
             <X className="h-3 w-3" />
@@ -160,14 +184,13 @@ export function CandidateCard({
         </div>
       )}
 
-      <Button
-        variant="ghost"
-        size="sm"
-        className="h-7 text-[11px] px-0"
+      {/* Timeline button */}
+      <button
+        className="w-full text-[10px] font-bold uppercase tracking-wider text-muted-foreground/40 hover:text-primary py-1 transition-colors text-center"
         onClick={onViewTimeline}
       >
         View timeline
-      </Button>
+      </button>
     </article>
   )
 }

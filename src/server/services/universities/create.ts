@@ -20,8 +20,6 @@ export async function createUniversity(
   data: {
     name: string
     abbreviation?: string
-
-    deanName?: string
     phone?: string
     wilayaCode?: number
     city?: string
@@ -39,8 +37,6 @@ export async function createUniversity(
       id: universityId,
       name: data.name,
       abbreviation: data.abbreviation || null,
-
-      deanName: data.deanName || null,
       phone: data.phone || null,
       wilayaCode: data.wilayaCode ?? null,
       city: data.city || null,

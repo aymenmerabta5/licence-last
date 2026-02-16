@@ -1,43 +1,70 @@
 import { useTranslations } from "next-intl"
-import { FolderTree, UserCheck } from "lucide-react"
+import { Boxes, FolderTree, UserCheck } from "lucide-react"
+
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+
+import type { DepartmentItem } from "../types"
 
 interface DepartmentCardProps {
-  department: {
-    id: string
-    name: string
-    headName: string | null
-    createdAt: Date | string
-  }
-  onAssignHead: (departmentId: string) => void
+  department: DepartmentItem
+  onAssignHead: (department: DepartmentItem) => void
+  onManageSkills: (departmentId: string) => void
 }
 
-export function DepartmentCard({ department, onAssignHead }: DepartmentCardProps) {
-  const t = useTranslations("dashboard.departments")
+export function DepartmentCard({ department, onAssignHead, onManageSkills }: DepartmentCardProps) {
+  const t = useTranslations("dashboard.admin.departments")
 
   return (
-    <div className="border border-border p-5 flex items-start justify-between gap-4">
-      <div className="flex items-start gap-4 min-w-0">
-        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-          <FolderTree className="h-4 w-4 text-primary" />
+    <article className="group relative overflow-hidden border border-border/50 bg-background p-5 transition-all duration-300 hover:border-primary/30 hover:shadow-sm sm:p-6">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-primary/0 via-primary/70 to-primary/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex min-w-0 items-start gap-4">
+          <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <FolderTree className="h-4 w-4" />
+          </div>
+          <div className="min-w-0 space-y-2">
+            <h3 className="truncate font-serif text-xl leading-tight text-heading">
+              {department.name}
+            </h3>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="outline" className="text-[10px]">
+                {department.skillCount} {t("manageSkills")}
+              </Badge>
+              {department.headName ? (
+                <Badge variant="secondary" className="gap-1 text-[10px]">
+                  <UserCheck className="h-3 w-3" />
+                  {department.headName}
+                </Badge>
+              ) : null}
+            </div>
+          </div>
         </div>
-        <div className="min-w-0">
-          <p className="font-serif text-lg text-heading">{department.name}</p>
-          {department.headName && (
-            <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-              <UserCheck className="h-3.5 w-3.5" />
-              {department.headName}
-            </p>
-          )}
+
+        <div className="flex items-center gap-2 self-end sm:self-auto">
+          <Button
+            type="button"
+            variant="editorial-outline"
+            size="sm"
+            onClick={() => onManageSkills(department.id)}
+            className="rounded-lg px-3"
+          >
+            <Boxes className="h-3.5 w-3.5" />
+            {t("manageSkills")}
+          </Button>
+          <Button
+            type="button"
+            variant="editorial"
+            size="sm"
+            onClick={() => onAssignHead(department)}
+            className="rounded-lg px-3"
+          >
+            {t("assignHead")}
+          </Button>
         </div>
       </div>
-
-      <button
-        type="button"
-        onClick={() => onAssignHead(department.id)}
-        className="text-xs text-primary hover:underline whitespace-nowrap"
-      >
-        {t("assignHead")}
-      </button>
-    </div>
+    </article>
   )
 }

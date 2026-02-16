@@ -27,25 +27,18 @@ export function useCompanyOffers() {
   )
 
   const statusMutation = useMutation(
-    orpc.offers.updateStatus.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey })
-      },
-    }),
+    orpc.offers.updateStatus.mutationOptions(),
   )
 
   const deleteMutation = useMutation(
-    orpc.offers.delete.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey })
-      },
-    }),
+    orpc.offers.delete.mutationOptions(),
   )
 
   const handlePublish = async (offerId: string) => {
     setActionLoading(offerId)
     try {
       await statusMutation.mutateAsync({ offerId, action: "publish" })
+      await queryClient.invalidateQueries({ queryKey })
     } finally {
       setActionLoading(null)
     }
@@ -56,6 +49,7 @@ export function useCompanyOffers() {
     setActionLoading(offerId)
     try {
       await statusMutation.mutateAsync({ offerId, action: "close" })
+      await queryClient.invalidateQueries({ queryKey })
     } finally {
       setActionLoading(null)
     }
@@ -66,6 +60,7 @@ export function useCompanyOffers() {
     setActionLoading(offerId)
     try {
       await deleteMutation.mutateAsync({ offerId })
+      await queryClient.invalidateQueries({ queryKey })
     } finally {
       setActionLoading(null)
     }

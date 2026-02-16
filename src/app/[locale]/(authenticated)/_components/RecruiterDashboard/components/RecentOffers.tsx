@@ -17,21 +17,21 @@ interface Offer {
   createdAt: Date
 }
 
-const STATUS_STYLES: Record<string, { label: string; className: string }> = {
+const STATUS_STYLES: Record<string, { label: string; accent: string; badge: string }> = {
   published: {
     label: "Live",
-    className:
-      "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    accent: "border-s-emerald-500",
+    badge: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
   },
   draft: {
     label: "Draft",
-    className:
-      "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+    accent: "border-s-amber-500",
+    badge: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
   },
   closed: {
     label: "Closed",
-    className:
-      "bg-zinc-400/10 text-zinc-500 border-zinc-400/20",
+    accent: "border-s-zinc-400",
+    badge: "bg-zinc-400/10 text-zinc-500 border-zinc-400/20",
   },
 }
 
@@ -58,9 +58,11 @@ export function RecentOffers({ offers }: RecentOffersProps) {
         <h2 className="font-serif text-xl font-bold text-heading tracking-tight">
           Your Offers
         </h2>
-        <div className="border border-dashed border-border/60 rounded-xl p-10 text-center">
-          <Briefcase className="h-8 w-8 text-muted-foreground/20 mx-auto mb-3" />
-          <p className="text-sm text-muted-foreground/60 font-medium">
+        <div className="border border-dashed border-border/40 p-10 text-center space-y-3">
+          <div className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/5">
+            <Briefcase className="h-6 w-6 text-primary/30" />
+          </div>
+          <p className="text-sm text-muted-foreground/50 font-medium">
             No offers yet. Post your first internship position.
           </p>
         </div>
@@ -81,7 +83,7 @@ export function RecentOffers({ offers }: RecentOffersProps) {
         </h2>
         <Link
           href="/dashboard/company/offers"
-          className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary hover:text-primary/80 transition-colors group/link"
+          className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary hover:text-primary/80 transition-colors group/link [[dir=rtl]_&]:tracking-normal"
         >
           View All{" "}
           <ArrowRight className="inline h-3 w-3 group-hover/link:translate-x-0.5 transition-transform [[dir=rtl]_&]:rotate-180" />
@@ -90,7 +92,7 @@ export function RecentOffers({ offers }: RecentOffersProps) {
 
       <div className="space-y-2">
         {offers.map((offer, i) => {
-          const statusStyle = STATUS_STYLES[offer.status] ?? STATUS_STYLES.draft
+          const style = STATUS_STYLES[offer.status] ?? STATUS_STYLES.draft
           return (
             <Link
               key={offer.id}
@@ -102,7 +104,10 @@ export function RecentOffers({ offers }: RecentOffersProps) {
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: 0.35 + i * 0.06, ease }}
-                className="group flex items-center gap-4 p-4 border border-border/40 rounded-xl bg-background hover:border-border/60 hover:shadow-sm transition-all cursor-pointer"
+                className={cn(
+                  "group flex items-center gap-4 p-4 border border-border/40 border-s-4 bg-background hover:bg-secondary/5 hover:shadow-sm transition-all cursor-pointer",
+                  style.accent,
+                )}
               >
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="flex items-center gap-2">
@@ -113,18 +118,18 @@ export function RecentOffers({ offers }: RecentOffersProps) {
                       variant="outline"
                       className={cn(
                         "text-[8px] font-bold uppercase tracking-widest px-1.5 py-0 h-4 shrink-0",
-                        statusStyle.className,
+                        style.badge,
                       )}
                     >
-                      {statusStyle.label}
+                      {style.label}
                     </Badge>
                   </div>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-[10px] text-muted-foreground/50 font-medium uppercase tracking-wider">
                     {TYPE_LABELS[offer.internshipType] ?? offer.internshipType}
                   </p>
                 </div>
 
-                <div className="flex items-center gap-1.5 text-muted-foreground/60 shrink-0">
+                <div className="flex items-center gap-1.5 text-muted-foreground/40 shrink-0">
                   <Users className="h-3.5 w-3.5" />
                   <span className="text-xs font-bold text-heading tabular-nums">
                     {offer.candidatesCount}

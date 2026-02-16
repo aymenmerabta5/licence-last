@@ -28,8 +28,8 @@ import {
 import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
 import { createNotification } from "@/server/services/notifications/create"
 import { sendEmail } from "@/server/email/sendEmail"
-import CompanyApprovedEmail from "@/server/email/emails/CompanyApprovedEmail"
-import CompanyRejectedEmail from "@/server/email/emails/CompanyRejectedEmail"
+import CompanyApprovedEmail from "@/server/email/templates/CompanyApprovedEmail"
+import CompanyRejectedEmail from "@/server/email/templates/CompanyRejectedEmail"
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
 import { user } from "@/server/db/schema/auth"
@@ -306,9 +306,18 @@ export const uploadCompanyLogoProcedure = companyAdminProcedureStandard
       file: z.file(),
     }),
   )
-  .handler(async ({ input }) => {
+  .handler(async ({ input, context }) => {
     try {
-      return await uploadImageToS3({ file: input.file, folder: "logos" })
+      const result = await uploadImageToS3({ file: input.file, folder: "logos" })
+
+      // Persist the logo URL to the company record immediately
+      await updateCompany(context.companyMembership.companyId, {
+        logoUrl: result.url,
+      })
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(context.companyMembership.companyId), "max")
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`), "max")
+
+      return result
     } catch (error) {
       const message = error instanceof Error ? error.message : "Upload failed"
 

@@ -22,7 +22,7 @@ import {
   listCompanyReportsProcedure,
   resolveCompanyReportProcedure,
 } from "./routes/companies"
-import { listSkillTagsProcedure } from "./routes/skills"
+import { listSkillTagsProcedure, listSkillTagsPrioritizedProcedure } from "./routes/skills"
 import {
   getStudentProfileProcedure,
   getPublicStudentProfileProcedure,
@@ -66,6 +66,9 @@ import {
   createDepartmentProcedure,
   updateDepartmentProcedure,
   assignDepartmentHeadProcedure,
+  bulkCreateDepartmentsProcedure,
+  syncDepartmentSkillsProcedure,
+  getDepartmentSkillsProcedure,
 } from "./routes/departments"
 import {
   generateAgreementProcedure,
@@ -142,6 +145,7 @@ export const appRouter = {
   },
   skills: {
     list: listSkillTagsProcedure,
+    listPrioritized: listSkillTagsPrioritizedProcedure,
   },
   students: {
     getProfile: getStudentProfileProcedure,
@@ -194,6 +198,9 @@ export const appRouter = {
     create: createDepartmentProcedure,
     update: updateDepartmentProcedure,
     assignHead: assignDepartmentHeadProcedure,
+    bulkCreateWithHeads: bulkCreateDepartmentsProcedure,
+    syncSkills: syncDepartmentSkillsProcedure,
+    getSkills: getDepartmentSkillsProcedure,
   },
   documents: {
     generateAgreement: generateAgreementProcedure,

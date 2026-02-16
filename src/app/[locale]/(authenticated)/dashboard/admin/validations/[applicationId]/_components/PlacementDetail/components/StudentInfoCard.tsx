@@ -21,7 +21,6 @@ interface StudentInfoCardProps {
       name: string
       abbreviation?: string | null
       departmentName?: string | null
-      deanName?: string | null
       address?: string | null
     } | null
     skills: { id: string; name: string; category?: string | null }[]
@@ -84,12 +83,6 @@ export function StudentInfoCard({ application }: StudentInfoCardProps) {
               <InfoRow
                 label={t("department")}
                 value={application.university.departmentName}
-              />
-            )}
-            {application.university.deanName && (
-              <InfoRow
-                label={t("dean")}
-                value={application.university.deanName}
               />
             )}
             {application.university.address && (

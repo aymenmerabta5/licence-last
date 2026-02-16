@@ -249,6 +249,13 @@
       "pageTitle": "إعداد الشركة",
       "title": "أعدّ شركتك",
       "subtitle": "أخبرنا عن مؤسستك للبدء",
+      "panelHeadline": "ابنِ فريق أحلامك",
+      "panelDescription": "تواصل مع أفضل المواهب الجامعية عبر الجزائر وسهّل عملية توظيف المتدربين.",
+      "panelFeature1": "الوصول إلى ملفات طلابية موثقة",
+      "panelFeature2": "خط توظيف مُبسّط وفعال",
+      "panelFeature3": "شراكات جامعية مباشرة",
+      "companySection": "تفاصيل الشركة",
+      "locationSection": "الموقع",
       "name": "اسم الشركة",
       "namePlaceholder": "شركة أكمي",
       "description": "الوصف",
@@ -266,14 +273,21 @@
       "pageTitle": "إعداد الجامعة",
       "title": "قم بإعداد جامعتك",
       "subtitle": "أخبرنا عن مؤسستك للبدء",
+      "panelHeadline": "اصنع قادة الغد",
+      "panelDescription": "تشارك مع الشركات لتوفير فرص تدريب هادفة لطلابك.",
+      "panelFeature1": "إدارة الأقسام والتوظيفات",
+      "panelFeature2": "تتبع تقدم الطلاب في الوقت الفعلي",
+      "panelFeature3": "التحقق من التدريبات والمصادقة عليها",
+      "universitySection": "تفاصيل الجامعة",
+      "locationSection": "الموقع",
+      "domainsSection": "نطاقات البريد الإلكتروني",
+      "departmentsSection": "الأقسام",
       "name": "اسم الجامعة",
       "namePlaceholder": "جامعة العلوم والتكنولوجيا",
       "abbreviation": "الاختصار",
       "abbreviationPlaceholder": "USTHB",
       "departmentName": "اسم القسم",
       "departmentNamePlaceholder": "قسم علوم الحاسوب",
-      "deanName": "اسم العميد",
-      "deanNamePlaceholder": "أ.د. الاسم",
       "phone": "رقم الهاتف",
       "phonePlaceholder": "+213 21 XX XX XX",
       "wilaya": "الولاية",
@@ -299,6 +313,11 @@
       "pageTitle": "إعداد الملف الشخصي",
       "title": "أنشئ سيرتك الذاتية الرقمية",
       "subtitle": "أخبرنا عن نفسك ومهاراتك للبدء",
+      "panelHeadline": "مسيرتك المهنية تبدأ هنا",
+      "panelDescription": "أنشئ ملفك المهني وتواصل مع أفضل الشركات عبر الجزائر.",
+      "panelFeature1": "تواصل مع أفضل الشركات",
+      "panelFeature2": "اعرض مهاراتك ومشاريعك",
+      "panelFeature3": "تتبع طلباتك في الوقت الفعلي",
       "personalSection": "المعلومات الشخصية",
       "bio": "نبذة",
       "bioPlaceholder": "أخبرنا قليلاً عن نفسك...",
@@ -325,6 +344,8 @@
       "skillsHint": "اختر حتى ١٠ مهارات تصف خبرتك بشكل أفضل",
       "skillsSelectDepartmentFirst": "يرجى اختيار القسم أولاً لعرض المهارات المتعلقة",
       "skillsSelected": "مختارة",
+      "recommendedSkills": "موصى بها لقسمك",
+      "otherSkills": "مهارات أخرى",
       "submit": "إكمال الملف الشخصي",
       "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
     }
@@ -451,6 +472,9 @@
         "pageTitle": "ملف الشركة",
         "title": "ملف الشركة",
         "subtitle": "إدارة الملف العام ومعلومات الاتصال لشركتك",
+        "descriptionLabel": "حول",
+        "contactLabel": "الاتصال",
+        "locationLabel": "الموقع",
         "description": "الوصف",
         "descriptionPlaceholder": "صف شركتك وما يجعلها مكاناً رائعاً للتدريب...",
         "logo": "شعار الشركة",
@@ -580,7 +604,9 @@
         "viewProfile": "عرض الملف الشخصي",
         "accept": "قبول",
         "refuse": "رفض",
-        "confirmAccept": "قبول هذا المرشح؟ سيتم إخطار المشرفين للتحقق من صحة التعيين.",
+        "acceptTitle": "قبول المرشح",
+        "acceptDescription": "قبول {name}؟ سيتم إخطار المشرفين للتحقق من صحة التعيين.",
+        "confirmAcceptButton": "قبول",
         "confirmRefuse": "رفض هذا المرشح؟ سيتم إخطاره.",
         "refuseTitle": "رفض المرشح",
         "refuseDescription": "هل أنت متأكد أنك تريد رفض {name}؟",
@@ -646,6 +672,19 @@
           "published": "منشور",
           "closed": "مغلق"
         }
+      }
+    },
+    "offers": {
+      "status": {
+        "draft": "مسودة",
+        "published": "منشور",
+        "closed": "مغلق"
+      },
+      "type": {
+        "pfe": "مشروع نهاية الدراسة",
+        "immersion": "تدريب انغماسي",
+        "summer": "تدريب صيفي",
+        "practical": "تدريب عملي"
       }
     },
     "welcome": "مرحباً بعودتك،",
@@ -854,7 +893,6 @@
           "department": "القسم",
           "level": "المستوى",
           "university": "الجامعة",
-          "dean": "العميد",
           "address": "العنوان",
           "skills": "المهارات",
           "companyInfo": "معلومات الشركة",
@@ -920,16 +958,46 @@
         "headName": "اسم الرئيس (اختياري)",
         "headNamePlaceholder": "مثال: د. أحمد بن علي",
         "assignHead": "تعيين رئيس",
+        "manageSkills": "المهارات",
         "assignHeadTitle": "تعيين رئيس القسم",
-        "assignHeadDescription": "اختر مستخدماً لتعيينه كرئيس لهذا القسم.",
+        "assignHeadDescription": "أدخل بيانات رئيس القسم القادم. إذا لم يكن المستخدم موجوداً، سيتم إنشاء حساب له تلقائياً.",
         "selectUser": "اختر مستخدم",
         "noUsersAvailable": "لا يوجد مستخدمون متاحون.",
+        "passwordResetHint": "سيتم إرسال رابط إعادة تعيين كلمة المرور لتفعيل حساب رئيس القسم.",
         "save": "حفظ",
         "cancel": "إلغاء",
         "createSuccess": "تم إنشاء القسم بنجاح.",
         "updateSuccess": "تم تحديث القسم بنجاح.",
         "assignSuccess": "تم تعيين رئيس القسم بنجاح.",
-        "error": "حدث خطأ. يرجى المحاولة مرة أخرى."
+        "error": "حدث خطأ. يرجى المحاولة مرة أخرى.",
+        "skills": {
+          "title": "المهارات الخاصة بـ {name}",
+          "description": "اختر المهارات المناسبة لهذا القسم. سيشاهدها الطلاب كمهارات موصى بها.",
+          "save": "حفظ المهارات",
+          "cancel": "إلغاء",
+          "skillsSelected": "مهارة محددة",
+          "searchPlaceholder": "ابحث عن المهارات...",
+          "saveSuccess": "تم تحديث مهارات القسم.",
+          "saveError": "تعذر تحديث مهارات القسم."
+        },
+        "bulkCreate": {
+          "title": "إنشاء أقسام بالجملة",
+          "description": "أنشئ عدة أقسام وعيّن رؤساءها دفعة واحدة. سيتلقى كل رئيس بريد ترحيب مع رابط لتعيين كلمة المرور.",
+          "departmentName": "اسم القسم",
+          "departmentNamePlaceholder": "مثال: علوم الحاسوب",
+          "headEmail": "بريد الرئيس",
+          "headEmailPlaceholder": "مثال: رئيس@جامعة.dz",
+          "headName": "اسم الرئيس",
+          "headNamePlaceholder": "مثال: د. أحمد بن علي",
+          "addRow": "إضافة صف",
+          "removeRow": "حذف الصف",
+          "submit": "إنشاء الكل",
+          "submitting": "جارٍ الإنشاء...",
+          "successMessage": "تم إنشاء {count} قسم(أقسام) بنجاح.",
+          "partialSuccess": "تم إنشاء {created}، فشل {failed}.",
+          "rowError": "{name}: {error}",
+          "error": "حدث خطأ. يرجى المحاولة مرة أخرى."
+        }
       },
       "deptValidations": {
         "title": "تصديقات القسم",
@@ -968,7 +1036,6 @@
           "noDomains": "لا توجد نطاقات مسجلة",
           "location": "الموقع",
           "department": "القسم",
-          "dean": "العميد",
           "registeredAt": "تاريخ التسجيل"
         }
       },
@@ -1258,7 +1325,18 @@
       "headNamePlaceholder": "مثال: د. محمد",
       "save": "إنشاء القسم",
       "success": "تم إنشاء القسم بنجاح",
-      "error": "فشل إنشاء القسم"
+      "error": "فشل إنشاء القسم",
+      "manageSkills": "المهارات",
+      "skills": {
+        "title": "مهارات {name}",
+        "description": "حدد المهارات المتعلقة بهذا القسم. سيراها الطلاب كمهارات موصى بها.",
+        "save": "حفظ المهارات",
+        "cancel": "إلغاء",
+        "skillsSelected": "مهارات مختارة",
+        "searchPlaceholder": "البحث عن مهارات...",
+        "saveSuccess": "تم تحديث مهارات القسم.",
+        "saveError": "تعذر تحديث المهارات."
+      }
     }
   },
   "howItWorks": {

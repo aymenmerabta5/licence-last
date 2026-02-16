@@ -59,7 +59,7 @@ describe("assignDepartmentHead", () => {
     expect(result).toEqual({ success: true, departmentId: "dept-1", userId: "user-1" })
   })
 
-  test("should call update to set user role to dept_head", async () => {
+  test("should update both user role and department headName", async () => {
     mockLimit
       .mockResolvedValueOnce([{ id: "dept-1", universityId: "uni-1", name: "CS" }])
       .mockResolvedValueOnce([{ id: "user-1", role: "student" }])
@@ -67,8 +67,9 @@ describe("assignDepartmentHead", () => {
     const { assignDepartmentHead } = await import("./assign-head")
     await assignDepartmentHead("dept-1", "user-1")
 
-    expect(mockUpdate).toHaveBeenCalled()
-    expect(mockSet).toHaveBeenCalled()
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockSet).toHaveBeenCalledTimes(2)
+    expect(mockUpdateWhere).toHaveBeenCalledTimes(2)
   })
 
   test("should make two select queries (dept + user)", async () => {

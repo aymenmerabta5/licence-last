@@ -19,22 +19,37 @@ export function useSkillsManager() {
     profileQueryOptions,
   )
 
-  // Filter skills by student's department when available
+  // Fetch prioritized skills when student has a department
   const departmentId = profileData?.profile?.departmentId ?? undefined
-  const skillsQueryOptions = useMemo(
-    () => orpc.skills.list.queryOptions({
-      input: departmentId ? { departmentId } : undefined,
+
+  const { data: prioritizedResult, isLoading: isLoadingPrioritized } = useQuery({
+    ...orpc.skills.listPrioritized.queryOptions({
+      input: { departmentId: departmentId ?? "" },
     }),
-    [departmentId],
-  )
+    enabled: !!departmentId,
+  })
 
-  const { data: allSkillsResult, isLoading: isLoadingSkills } = useQuery(
-    skillsQueryOptions,
-  )
+  const { data: flatResult, isLoading: isLoadingFlat } = useQuery({
+    ...orpc.skills.list.queryOptions({ input: { limit: 500 } }),
+    enabled: !departmentId,
+  })
 
+  const isLoadingSkills = departmentId ? isLoadingPrioritized : isLoadingFlat
+
+  const deptSkills = useMemo(
+    () => prioritizedResult?.departmentSkills ?? [],
+    [prioritizedResult?.departmentSkills],
+  )
+  const otherSkillsRaw = useMemo(
+    () =>
+      departmentId
+        ? prioritizedResult?.otherSkills ?? []
+        : flatResult?.skills ?? [],
+    [departmentId, prioritizedResult?.otherSkills, flatResult?.skills],
+  )
   const allSkills = useMemo(
-    () => allSkillsResult?.skills ?? [],
-    [allSkillsResult?.skills],
+    () => [...deptSkills, ...otherSkillsRaw],
+    [deptSkills, otherSkillsRaw],
   )
 
   const initialSkillIds = useMemo(() => {
@@ -49,12 +64,25 @@ export function useSkillsManager() {
 
   const selectedIds = draftSelectedIds ?? initialSkillIds
 
-  const filteredSkills = useMemo(() => {
+  const filteredDeptSkills = useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return allSkills
-    return allSkills.filter((s) => s.name.toLowerCase().includes(q))
-  }, [allSkills, query])
+    if (!q) return deptSkills
+    return deptSkills.filter((s) => s.name.toLowerCase().includes(q))
+  }, [deptSkills, query])
 
+  const filteredOtherSkills = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    if (!q) return otherSkillsRaw
+    return otherSkillsRaw.filter((s) => s.name.toLowerCase().includes(q))
+  }, [otherSkillsRaw, query])
+
+  const filteredSkills = useMemo(
+    () => [...filteredDeptSkills, ...filteredOtherSkills],
+    [filteredDeptSkills, filteredOtherSkills],
+  )
+
+  const deptGrouping = useSkillGrouping(filteredDeptSkills)
+  const otherGrouping = useSkillGrouping(filteredOtherSkills)
   const { groups, categoryOrder, categoryLabels } = useSkillGrouping(filteredSkills)
 
   const upsertMutation = useMutation(
@@ -117,6 +145,9 @@ export function useSkillsManager() {
     groups,
     categoryOrder,
     categoryLabels,
+    deptGrouping,
+    otherGrouping,
+    hasDeptSkills: deptSkills.length > 0,
     toggleSkill,
     save,
     maxSkills: MAX_SKILLS,

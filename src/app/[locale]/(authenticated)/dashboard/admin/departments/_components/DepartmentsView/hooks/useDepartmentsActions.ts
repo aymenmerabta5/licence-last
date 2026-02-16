@@ -2,10 +2,13 @@
 
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 
 import { orpc } from "@/server/orpc/client"
 
 export function useDepartmentsActions() {
+  const t = useTranslations("dashboard.admin.departments")
   const queryClient = useQueryClient()
 
   const [newName, setNewName] = useState("")
@@ -16,11 +19,27 @@ export function useDepartmentsActions() {
   }
 
   const createMutation = useMutation(
-    orpc.departments.create.mutationOptions({ onSuccess: invalidate }),
+    orpc.departments.create.mutationOptions({
+      onSuccess: () => {
+        invalidate()
+        toast.success(t("createSuccess"))
+      },
+      onError: (error) => {
+        toast.error(error.message || t("error"))
+      },
+    }),
   )
 
   const assignHeadMutation = useMutation(
-    orpc.departments.assignHead.mutationOptions({ onSuccess: invalidate }),
+    orpc.departments.assignHead.mutationOptions({
+      onSuccess: () => {
+        invalidate()
+        toast.success(t("assignSuccess"))
+      },
+      onError: (error) => {
+        toast.error(error.message || t("error"))
+      },
+    }),
   )
 
   const handleCreate = () => {
@@ -36,13 +55,26 @@ export function useDepartmentsActions() {
     )
   }
 
+  const assignHead = async (
+    departmentId: string,
+    headEmail: string,
+    headName: string,
+  ) =>
+    assignHeadMutation.mutateAsync({
+      departmentId,
+      headEmail: headEmail.trim(),
+      headName: headName.trim(),
+    })
+
   return {
     newName,
     setNewName,
     newHeadName,
     setNewHeadName,
     handleCreate,
+    assignHead,
     isCreating: createMutation.isPending,
+    isAssigningHead: assignHeadMutation.isPending,
     createError: createMutation.error,
     assignHeadMutation,
   }

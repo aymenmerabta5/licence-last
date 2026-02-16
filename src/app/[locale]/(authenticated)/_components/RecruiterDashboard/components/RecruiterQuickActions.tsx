@@ -69,14 +69,14 @@ export function RecruiterQuickActions() {
         Quick Actions
       </h2>
 
-      <div className="grid grid-cols-1 gap-3">
+      <div className="grid grid-cols-1 gap-2.5">
         {actions.map((action, i) => {
           const Icon = action.icon
           return (
             <Link key={i} href={action.href as Route}>
               <div
                 className={cn(
-                  "group flex items-center gap-4 p-4 sm:p-5 rounded-xl transition-all duration-300 cursor-pointer",
+                  "group flex items-center gap-4 p-4 sm:p-5 transition-all duration-300 cursor-pointer",
                   action.primary
                     ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
                     : "border border-border/40 bg-background hover:border-border/60 hover:shadow-sm",
@@ -84,7 +84,7 @@ export function RecruiterQuickActions() {
               >
                 <div
                   className={cn(
-                    "p-2.5 rounded-xl shrink-0 transition-all duration-300",
+                    "p-2.5 shrink-0 transition-all duration-300",
                     action.primary
                       ? "bg-white/20"
                       : `${action.accent} ${action.accentHover}`,

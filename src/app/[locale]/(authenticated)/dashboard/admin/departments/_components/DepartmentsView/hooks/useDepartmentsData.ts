@@ -4,8 +4,15 @@ import { useQuery } from "@tanstack/react-query"
 
 import { orpc } from "@/server/orpc/client"
 
-export function useDepartmentsData(universityId: string | null) {
-  const { data, isLoading, refetch } = useQuery({
+import type { DepartmentItem } from "../types"
+
+export function useDepartmentsData() {
+  const { data: me, isLoading: isMeLoading } = useQuery(
+    orpc.users.getMe.queryOptions(),
+  )
+  const universityId = me?.university?.id ?? null
+
+  const { data, isLoading: isDepartmentsLoading, refetch } = useQuery({
     ...orpc.departments.list.queryOptions({
       input: { universityId: universityId ?? "" },
       enabled: !!universityId,
@@ -13,8 +20,9 @@ export function useDepartmentsData(universityId: string | null) {
   })
 
   return {
-    departments: data ?? [],
-    isLoading,
+    universityId,
+    departments: (data ?? []) as DepartmentItem[],
+    isLoading: isMeLoading || (Boolean(universityId) && isDepartmentsLoading),
     refetch,
   }
 }

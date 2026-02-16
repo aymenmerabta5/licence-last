@@ -10,15 +10,25 @@ import { and, eq, inArray } from "drizzle-orm"
 import { db } from "@/server/db"
 import { universityDomain } from "@/server/db/schema/universities"
 import { sendEmail } from "@/server/email/sendEmail"
-import ResetPasswordEmail from "@/server/email/emails/ResetPasswordEmail"
-import VerifyEmailEmail from "@/server/email/emails/VerifyEmailEmail"
-import TwoFactorOtpEmail from "@/server/email/emails/TwoFactorOtpEmail"
+import ResetPasswordEmail from "@/server/email/templates/ResetPasswordEmail"
+import DeptHeadWelcomeEmail from "@/server/email/templates/DeptHeadWelcomeEmail"
+import VerifyEmailEmail from "@/server/email/templates/VerifyEmailEmail"
+import TwoFactorOtpEmail from "@/server/email/templates/TwoFactorOtpEmail"
 import { env } from "@/env"
 import { getEmailDomain, domainCandidates } from "./auth-utils"
 import { ac, superAdmin, universityAdmin, deptHead, student, companyAdmin } from "./permissions"
 
 // Re-export for backward compatibility
 export { getEmailDomain, domainCandidates } from "./auth-utils"
+
+/**
+ * Short-lived signal map for bulk dept-head creation.
+ * Set immediately before `auth.api.requestPasswordReset()`, consumed in `sendResetPassword` callback.
+ */
+export const pendingWelcomeEmails = new Map<
+  string,
+  { name: string; departmentName: string; universityName: string }
+>()
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
@@ -177,7 +187,18 @@ export const auth = betterAuth({
     minPasswordLength: 8,
     maxPasswordLength: 128,
     sendResetPassword: async ({ user, url }) => {
-      await sendEmail(user.email, "Reset your password", ResetPasswordEmail, { link: url })
+      const welcomeData = pendingWelcomeEmails.get(user.email)
+      if (welcomeData) {
+        pendingWelcomeEmails.delete(user.email)
+        await sendEmail(
+          user.email,
+          "Welcome to Internex — Set Your Password",
+          DeptHeadWelcomeEmail,
+          { ...welcomeData, link: url },
+        )
+      } else {
+        await sendEmail(user.email, "Reset your password", ResetPasswordEmail, { link: url })
+      }
     },
   },
   session: {

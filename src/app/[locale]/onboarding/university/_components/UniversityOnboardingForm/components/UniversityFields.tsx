@@ -1,7 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { Landmark, User, Phone } from "lucide-react"
+import { Landmark, Phone } from "lucide-react"
 import { TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 import type { UniversityOnboardingFormApi } from "../hooks/useUniversityOnboarding"
@@ -44,20 +44,6 @@ export function UniversityFields({ form }: UniversityFieldsProps) {
             onChange={field.handleChange}
             onBlur={field.handleBlur}
             placeholder={t("abbreviationPlaceholder")}
-          />
-        )}
-      </form.Field>
-
-      <form.Field name="deanName">
-        {(field) => (
-          <TextField
-            id="university-dean"
-            label={t("deanName")}
-            icon={User}
-            value={field.state.value}
-            onChange={field.handleChange}
-            onBlur={field.handleBlur}
-            placeholder={t("deanNamePlaceholder")}
           />
         )}
       </form.Field>

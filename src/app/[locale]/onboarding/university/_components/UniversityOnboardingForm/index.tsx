@@ -6,10 +6,11 @@ import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import { ServerError } from "@/components/ServerError"
+import { FormHeader } from "@/components/FormHeader"
+import { FormSection } from "@/components/form-fields"
 import { reveal, ease } from "@/lib/animations"
 
 import { useUniversityOnboarding } from "./hooks/useUniversityOnboarding"
-import { OnboardingHeader } from "./components/OnboardingHeader"
 import { UniversityFields } from "./components/UniversityFields"
 import { LocationFields } from "./components/LocationFields"
 import { DomainFields } from "./components/DomainFields"
@@ -25,25 +26,31 @@ export function UniversityOnboardingForm() {
         e.preventDefault()
         form.handleSubmit()
       }}
-      className="space-y-7"
+      className="space-y-8"
     >
-      <OnboardingHeader />
+      <FormHeader title={t("title")} subtitle={t("subtitle")} />
       <ServerError message={serverError} />
 
-      <motion.div
-        {...reveal}
-        transition={{ duration: 0.6, ease, delay: 0.1 }}
-        className="space-y-5"
-      >
+      <FormSection title={`01 — ${t("universitySection")}`} delay={0.05}>
         <UniversityFields form={form} />
+      </FormSection>
+
+      <FormSection title={`02 — ${t("locationSection")}`} delay={0.1}>
         <LocationFields form={form} />
+      </FormSection>
+
+      <FormSection title={`03 — ${t("domainsSection")}`} delay={0.15}>
         <DomainFields form={form} />
+      </FormSection>
+
+      <FormSection title={`04 — ${t("departmentsSection")}`} delay={0.2}>
         <DepartmentFields form={form} />
-      </motion.div>
+      </FormSection>
 
       <motion.div
         {...reveal}
-        transition={{ duration: 0.6, ease, delay: 0.2 }}
+        transition={{ duration: 0.6, ease, delay: 0.25 }}
+        className="pt-2"
       >
         <form.Subscribe selector={(state) => [state.isSubmitting] as const}>
           {([isSubmitting]) => (

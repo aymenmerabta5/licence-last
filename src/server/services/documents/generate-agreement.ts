@@ -72,7 +72,6 @@ export async function generateAgreement(
 
       universityName: university.name,
       universityDepartmentName: university.departmentName,
-      universityDeanName: university.deanName,
       universityAddress: university.address,
       universityPhone: university.phone,
     })
@@ -124,7 +123,6 @@ export async function generateAgreement(
     // University info
     universityName: row.universityName ?? null,
     universityDepartmentName: row.universityDepartmentName ?? null,
-    universityDeanName: row.universityDeanName ?? null,
     universityAddress: row.universityAddress ?? null,
     universityPhone: row.universityPhone ?? null,
 

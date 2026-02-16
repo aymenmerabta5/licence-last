@@ -1,56 +1,39 @@
 "use client"
 
+import { useState } from "react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { useQuery } from "@tanstack/react-query"
-import { ArrowLeft, FolderTree, Loader2 } from "lucide-react"
+import { FolderTree, Loader2 } from "lucide-react"
 
-import { Link } from "@/i18n/routing"
-import { reveal, ease } from "@/lib/animations"
-import { orpc } from "@/server/orpc/client"
+import { reveal, revealWithDelay } from "@/lib/animations"
 
-import { useDepartmentsData } from "./hooks/useDepartmentsData"
 import { useDepartmentsActions } from "./hooks/useDepartmentsActions"
-import { DepartmentCard } from "./components/DepartmentCard"
+import { useAssignHeadDialog } from "./hooks/useAssignHeadDialog"
+import { useDepartmentsData } from "./hooks/useDepartmentsData"
+import { AssignHeadDialog } from "./components/AssignHeadDialog"
+import { BulkCreateForm } from "./components/BulkCreateForm"
 import { CreateDepartmentForm } from "./components/CreateDepartmentForm"
+import { DepartmentCard } from "./components/DepartmentCard"
+import { DepartmentsHeader } from "./components/DepartmentsHeader"
+import { DepartmentSkillsModal } from "./components/DepartmentSkillsModal"
 
 export function DepartmentsView() {
-  const t = useTranslations("dashboard.departments")
+  const t = useTranslations("dashboard.admin.departments")
 
-  const { data: me } = useQuery(orpc.users.getMe.queryOptions())
-  const universityId = me?.university?.id ?? null
-
-  const { departments, isLoading } = useDepartmentsData(universityId)
+  const { universityId, departments, isLoading } = useDepartmentsData()
   const actions = useDepartmentsActions()
 
-  const handleAssignHead = (departmentId: string) => {
-    const userId = window.prompt(t("assignHeadDescription"))
-    if (!userId?.trim()) return
-    actions.assignHeadMutation.mutate({ departmentId, userId: userId.trim() })
-  }
+  const [skillsModalDeptId, setSkillsModalDeptId] = useState<string | null>(null)
+  const assignHeadDialog = useAssignHeadDialog({ onAssign: actions.assignHead })
+  const hasUniversityContext = Boolean(universityId)
+
+  const skillsModalDept = departments.find((dept) => dept.id === skillsModalDeptId)
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <motion.div {...reveal} transition={{ duration: 0.6, ease }}>
-        <Link
-          href={"/dashboard/admin" as "/dashboard"}
-          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors mb-4"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          {t("backToDashboard")}
-        </Link>
+    <div className="mx-auto max-w-5xl space-y-8">
+      <DepartmentsHeader />
 
-        <div className="space-y-1">
-          <h1 className="font-serif text-3xl text-heading tracking-tight">
-            {t("title")}
-          </h1>
-          <p className="text-sm text-muted-foreground font-light">
-            {t("description")}
-          </p>
-        </div>
-      </motion.div>
-
-      <motion.div {...reveal} transition={{ duration: 0.5, ease, delay: 0.1 }}>
+      <motion.div {...reveal} transition={revealWithDelay(0.08)}>
         <CreateDepartmentForm
           name={actions.newName}
           onNameChange={actions.setNewName}
@@ -59,6 +42,10 @@ export function DepartmentsView() {
           isCreating={actions.isCreating}
           onSubmit={actions.handleCreate}
         />
+      </motion.div>
+
+      <motion.div {...reveal} transition={revealWithDelay(0.12)}>
+        <BulkCreateForm />
       </motion.div>
 
       {isLoading && (
@@ -70,30 +57,56 @@ export function DepartmentsView() {
       {!isLoading && departments.length === 0 && (
         <motion.div
           {...reveal}
-          transition={{ duration: 0.6, ease, delay: 0.15 }}
-          className="border border-dashed border-border p-12 text-center space-y-2"
+          transition={revealWithDelay(0.16)}
+          className="space-y-2 border border-dashed border-border p-12 text-center"
         >
-          <FolderTree className="h-12 w-12 text-muted-foreground/30 mx-auto" />
+          <FolderTree className="mx-auto h-12 w-12 text-muted-foreground/30" />
           <p className="text-sm text-muted-foreground">{t("empty")}</p>
         </motion.div>
       )}
 
-      {departments.length > 0 && (
+      {hasUniversityContext && departments.length > 0 && (
         <div className="space-y-3">
-          {departments.map((dept, i) => (
+          {departments.map((department, index) => (
             <motion.div
-              key={dept.id}
+              key={department.id}
               {...reveal}
-              transition={{ duration: 0.4, ease, delay: 0.03 * i }}
+              transition={revealWithDelay(0.03 * index)}
             >
               <DepartmentCard
-                department={dept}
-                onAssignHead={handleAssignHead}
+                department={department}
+                onAssignHead={assignHeadDialog.open}
+                onManageSkills={setSkillsModalDeptId}
               />
             </motion.div>
           ))}
         </div>
       )}
+
+      {skillsModalDept && (
+        <DepartmentSkillsModal
+          departmentId={skillsModalDept.id}
+          departmentName={skillsModalDept.name}
+          open={Boolean(skillsModalDeptId)}
+          onOpenChange={(open) => {
+            if (!open) setSkillsModalDeptId(null)
+          }}
+        />
+      )}
+
+      <AssignHeadDialog
+        open={Boolean(assignHeadDialog.department)}
+        departmentName={assignHeadDialog.department?.name ?? null}
+        headName={assignHeadDialog.headName}
+        onHeadNameChange={assignHeadDialog.setHeadName}
+        headEmail={assignHeadDialog.headEmail}
+        onHeadEmailChange={assignHeadDialog.setHeadEmail}
+        onOpenChange={(open) => {
+          if (!open) assignHeadDialog.close()
+        }}
+        onConfirm={assignHeadDialog.submit}
+        isSaving={actions.isAssigningHead}
+      />
     </div>
   )
 }

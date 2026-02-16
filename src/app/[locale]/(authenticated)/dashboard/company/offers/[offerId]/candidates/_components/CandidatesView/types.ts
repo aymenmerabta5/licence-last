@@ -23,6 +23,11 @@ export interface CandidateCardDragItem {
   fromStage: PipelineStage
 }
 
+export interface AcceptModalState {
+  applicationId: string
+  studentName: string
+}
+
 export interface RefuseModalState {
   applicationId: string
   studentName: string

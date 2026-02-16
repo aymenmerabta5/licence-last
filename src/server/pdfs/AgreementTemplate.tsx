@@ -177,7 +177,6 @@ export interface AgreementData {
   // University info
   universityName: string | null
   universityDepartmentName: string | null
-  universityDeanName: string | null
   universityAddress: string | null
   universityPhone: string | null
 
@@ -391,7 +390,7 @@ export function ConventionDeStageTemplate({
               {locale === "fr" ? "L'UNIVERSITÉ" : "THE UNIVERSITY"}
             </Text>
             <Text style={styles.signatureLine}>
-              {data.universityDeanName || data.universityName}
+              {data.universityName}
             </Text>
           </View>
         </View>

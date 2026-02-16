@@ -25,7 +25,6 @@ describe("createUniversityOnboardingSchema", () => {
       ...validInput,
       abbreviation: "USTHB",
       departmentName: "CS Dept",
-      deanName: "Dr. Ahmed",
       phone: "+213555123456",
       city: "Algiers",
       address: "123 University Ave",

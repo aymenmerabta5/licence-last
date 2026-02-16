@@ -23,15 +23,30 @@ export function useOnboardingForm() {
   const { data: meResult } = useQuery(orpc.users.getMe.queryOptions())
   const universityId = meResult?.university?.id ?? null
 
-  // Fetch skills filtered by selected department (falls back to all skills if no dept)
-  const { data: skillTagsResult } = useQuery(
-    orpc.skills.list.queryOptions({
-      input: selectedDepartmentId ? { departmentId: selectedDepartmentId } : undefined,
+  // Fetch prioritized skills when a department is selected
+  const { data: prioritizedResult } = useQuery({
+    ...orpc.skills.listPrioritized.queryOptions({
+      input: { departmentId: selectedDepartmentId },
     }),
+    enabled: !!selectedDepartmentId,
+  })
+
+  // Fallback: fetch all skills when no department is selected
+  const { data: allSkillsResult } = useQuery({
+    ...orpc.skills.list.queryOptions(),
+    enabled: !selectedDepartmentId,
+  })
+
+  const departmentSkills = useMemo(
+    () => prioritizedResult?.departmentSkills ?? [],
+    [prioritizedResult?.departmentSkills],
   )
-  const skillTags = useMemo(
-    () => skillTagsResult?.skills ?? [],
-    [skillTagsResult?.skills],
+  const otherSkills = useMemo(
+    () =>
+      selectedDepartmentId
+        ? prioritizedResult?.otherSkills ?? []
+        : allSkillsResult?.skills ?? [],
+    [selectedDepartmentId, prioritizedResult?.otherSkills, allSkillsResult?.skills],
   )
 
   const { data: departmentsResult } = useQuery(
@@ -106,7 +121,8 @@ export function useOnboardingForm() {
     form,
     serverError,
     setServerError,
-    skillTags,
+    departmentSkills,
+    otherSkills,
     departments,
     selectedDepartmentId,
     handleDepartmentChange,

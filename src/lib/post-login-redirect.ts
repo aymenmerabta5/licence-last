@@ -36,6 +36,9 @@ export function getPostLoginRedirectPath(me: MeResult): string {
       }
       return "/status/university/pending"
 
+    case "dept_head":
+      return "/dashboard/dept-validations"
+
     case "super_admin":
       return "/dashboard/admin"
 

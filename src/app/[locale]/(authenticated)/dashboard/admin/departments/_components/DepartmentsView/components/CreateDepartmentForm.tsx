@@ -4,6 +4,8 @@ import { useTranslations } from "next-intl"
 import { Plus, Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 interface CreateDepartmentFormProps {
   name: string
@@ -22,54 +24,63 @@ export function CreateDepartmentForm({
   isCreating,
   onSubmit,
 }: CreateDepartmentFormProps) {
-  const t = useTranslations("dashboard.departments")
+  const t = useTranslations("dashboard.admin.departments")
 
   return (
-    <div className="border border-dashed border-primary/30 bg-primary/5 p-5 space-y-4">
-      <h3 className="font-serif text-lg text-heading flex items-center gap-2">
-        <Plus className="h-4 w-4" />
-        {t("addDepartment")}
-      </h3>
+    <section className="relative overflow-hidden border border-border/50 bg-background p-5 sm:p-6">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-primary/0 via-primary/70 to-primary/0" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">
-            {t("name")} *
-          </label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => onNameChange(e.target.value)}
-            placeholder={t("namePlaceholder")}
-            className="w-full px-3 py-2 text-sm border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary"
-          />
+      <div className="space-y-5">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Plus className="h-3.5 w-3.5" />
+          </span>
+          <h3 className="font-serif text-xl text-heading">{t("addDepartment")}</h3>
         </div>
-        <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">
-            {t("headName")}
-          </label>
-          <input
-            type="text"
-            value={headName}
-            onChange={(e) => onHeadNameChange(e.target.value)}
-            placeholder={t("headNamePlaceholder")}
-            className="w-full px-3 py-2 text-sm border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary"
-          />
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label className="text-xs uppercase tracking-[0.12em] text-muted-foreground [[dir=rtl]_&]:tracking-normal">
+              {t("name")} *
+            </Label>
+            <Input
+              type="text"
+              value={name}
+              onChange={(e) => onNameChange(e.target.value)}
+              placeholder={t("namePlaceholder")}
+              className="h-10 rounded-xl border-border/60"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-xs uppercase tracking-[0.12em] text-muted-foreground [[dir=rtl]_&]:tracking-normal">
+              {t("headName")}
+            </Label>
+            <Input
+              type="text"
+              value={headName}
+              onChange={(e) => onHeadNameChange(e.target.value)}
+              placeholder={t("headNamePlaceholder")}
+              className="h-10 rounded-xl border-border/60"
+            />
+          </div>
         </div>
+
+        <Button
+          onClick={onSubmit}
+          disabled={isCreating || !name.trim()}
+          variant="editorial"
+          size="editorial-sm"
+          className="rounded-lg"
+        >
+          {isCreating ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Plus className="h-4 w-4" />
+          )}
+          {t("save")}
+        </Button>
       </div>
-
-      <Button
-        onClick={onSubmit}
-        disabled={isCreating || !name.trim()}
-        className="gap-2"
-      >
-        {isCreating ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <Plus className="h-4 w-4" />
-        )}
-        {t("save")}
-      </Button>
-    </div>
+    </section>
   )
 }

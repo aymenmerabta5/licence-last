@@ -40,8 +40,8 @@ const DEFAULT_REQUIRE_ROLE_DEPENDENCIES: RequireRoleDependencies = {
     return getCompanyByUserId(userId)
   },
   getUniversityByUserId: async (userId) => {
-    const { getUniversityByUserId } = await import("@/server/services/universities/get")
-    return getUniversityByUserId(userId)
+    const { getUniversityStatusByUserId } = await import("@/server/services/universities/get-status")
+    return getUniversityStatusByUserId(userId)
   },
 }
 

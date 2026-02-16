@@ -4,7 +4,7 @@ import { requireRole } from "@/lib/auth-guards"
 import { localeRedirect } from "@/lib/navigation"
 import { auth } from "@/lib/auth"
 import { getCompanyByUserId } from "@/server/services/companies/get"
-import { getUniversityByUserId } from "@/server/services/universities/get"
+import { getUniversityStatusByUserId } from "@/server/services/universities/get-status"
 import { DashboardClientProvider } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 
 interface AuthenticatedContentProps {
@@ -40,7 +40,7 @@ export async function AuthenticatedContent({ children }: AuthenticatedContentPro
     if (!user.onboardingCompleted) {
       return localeRedirect("/onboarding/university")
     }
-    const university = await getUniversityByUserId(user.id)
+    const university = await getUniversityStatusByUserId(user.id)
     if (!university || university.status === "pending") {
       return localeRedirect("/status/university/pending")
     }

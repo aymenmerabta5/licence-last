@@ -1,7 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { MapPin, Building2, User, Globe, Check, X, Calendar } from "lucide-react"
+import { MapPin, Building2, Globe, Check, X, Calendar } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -20,7 +20,6 @@ interface UniversityCardProps {
     city: string | null
     wilayaCode: number | null
     departmentName: string | null
-    deanName: string | null
     status: string
     createdAt: Date
   }
@@ -80,9 +79,6 @@ export function UniversityCard({
           )}
           {university.departmentName && (
             <InfoField icon={Globe} label={t("card.department")} value={university.departmentName} />
-          )}
-          {university.deanName && (
-            <InfoField icon={User} label={t("card.dean")} value={university.deanName} />
           )}
           <InfoField
             icon={Calendar}
