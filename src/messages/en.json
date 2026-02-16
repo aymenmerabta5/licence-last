@@ -200,11 +200,22 @@
     },
     "resetPassword": {
       "pageTitle": "Reset Password",
+      "verifyPageTitle": "Set New Password",
       "title": "Reset Password",
       "subtitle": "We'll send a reset link to your email",
+      "verifyTitle": "Set New Password",
+      "verifySubtitle": "Choose a secure password for your account.",
       "email": "Email address",
       "emailPlaceholder": "you@university.edu",
+      "newPassword": "New password",
+      "newPasswordPlaceholder": "At least 8 characters",
+      "confirmNewPassword": "Confirm new password",
+      "confirmNewPasswordPlaceholder": "Re-enter your new password",
       "submit": "Send Reset Link",
+      "setPassword": "Set Password",
+      "setPasswordSuccess": "Your password was updated. You can now sign in.",
+      "setPasswordError": "Could not reset password. Please try again.",
+      "invalidOrExpired": "This reset link is invalid or has expired.",
       "backToLogin": "Back to sign in",
       "success": "If an account exists with this email, you'll receive a reset link shortly.",
       "description": "Enter the email address associated with your account and we'll send you a link to reset your password."
@@ -742,6 +753,20 @@
         "reviewCandidates": "Review Applications"
       },
       "pipeline": "Candidate Pipeline"
+    },
+    "deptHeadDashboard": {
+      "subtitle": "Review placement requests for your department",
+      "kicker": "Department Operations",
+      "title": "Your validation queue is ready.",
+      "description": "Track pending placement requests and jump directly into validation details.",
+      "openQueue": "Open Validation Queue",
+      "pendingLabel": "Pending Validations",
+      "queueStatusLabel": "Queue Status",
+      "queueBusy": "More requests are waiting in your queue.",
+      "queueClear": "All caught up for now.",
+      "recentTitle": "Recent Pending Requests",
+      "empty": "No pending validations in your department.",
+      "acceptedOn": "Accepted on"
     },
     "explore": {
       "pageTitle": "Explore Internships",

@@ -22,7 +22,7 @@ export function DeptHeadPlacementDetail({
   applicationId: string
 }) {
   const t = useTranslations("dashboard.admin.validations.detail")
-  const td = useTranslations("dashboard.deptValidations")
+  const td = useTranslations("dashboard.admin.deptValidations")
   const { application, isLoading } = useDeptHeadPlacementData(applicationId)
   const actions = useDeptHeadPlacementActions(applicationId)
 

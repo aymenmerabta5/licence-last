@@ -1,5 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
 /.pnp
@@ -43,8 +41,7 @@ next-env.d.ts
 
 # Drizzle migrations live in src/server/db/migrations (commit these)
 
-# migrations are needed for production deploys (drizzle-kit migrate)
-# **/*/migrations
+**/*/migrations
 PROMPT.txt
 phases
 .ralph

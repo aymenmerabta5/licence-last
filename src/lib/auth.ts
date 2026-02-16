@@ -23,7 +23,12 @@ export { getEmailDomain, domainCandidates } from "./auth-utils"
 
 /**
  * Short-lived signal map for bulk dept-head creation.
- * Set immediately before `auth.api.requestPasswordReset()`, consumed in `sendResetPassword` callback.
+ * Set immediately before `auth.api.requestPasswordReset()`, consumed in
+ * the `sendResetPassword` callback within the same HTTP request.
+ *
+ * Safe as an in-memory Map because both the write (in assign-head-by-email.ts)
+ * and the read (in sendResetPassword below) happen synchronously within a
+ * single request lifecycle — this is never shared across concurrent requests.
  */
 export const pendingWelcomeEmails = new Map<
   string,

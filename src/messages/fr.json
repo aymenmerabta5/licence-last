@@ -200,11 +200,22 @@
     },
     "resetPassword": {
       "pageTitle": "Réinitialiser le Mot de Passe",
+      "verifyPageTitle": "Définir un Nouveau Mot de Passe",
       "title": "Réinitialiser le Mot de Passe",
       "subtitle": "Nous vous enverrons un lien de réinitialisation",
+      "verifyTitle": "Définir un Nouveau Mot de Passe",
+      "verifySubtitle": "Choisissez un mot de passe sécurisé pour votre compte.",
       "email": "Adresse email",
       "emailPlaceholder": "vous@universite.edu",
+      "newPassword": "Nouveau mot de passe",
+      "newPasswordPlaceholder": "Au moins 8 caractères",
+      "confirmNewPassword": "Confirmer le nouveau mot de passe",
+      "confirmNewPasswordPlaceholder": "Retapez votre nouveau mot de passe",
       "submit": "Envoyer le Lien",
+      "setPassword": "Définir le mot de passe",
+      "setPasswordSuccess": "Votre mot de passe a été mis à jour. Vous pouvez maintenant vous connecter.",
+      "setPasswordError": "Impossible de réinitialiser le mot de passe. Veuillez réessayer.",
+      "invalidOrExpired": "Ce lien de réinitialisation est invalide ou expiré.",
       "backToLogin": "Retour à la connexion",
       "success": "Si un compte existe avec cet email, vous recevrez un lien de réinitialisation sous peu.",
       "description": "Entrez l'adresse email associée à votre compte et nous vous enverrons un lien pour réinitialiser votre mot de passe."
@@ -742,6 +753,20 @@
         "reviewCandidates": "Examiner les Candidatures"
       },
       "pipeline": "Pipeline de Candidats"
+    },
+    "deptHeadDashboard": {
+      "subtitle": "Validez les demandes de placement de votre département",
+      "kicker": "Opérations Départementales",
+      "title": "Votre file de validation est prête.",
+      "description": "Suivez les demandes de placement en attente et accédez directement aux détails de validation.",
+      "openQueue": "Ouvrir la file de validation",
+      "pendingLabel": "Validations en attente",
+      "queueStatusLabel": "État de la file",
+      "queueBusy": "D'autres demandes vous attendent dans la file.",
+      "queueClear": "Aucune demande en attente pour le moment.",
+      "recentTitle": "Demandes récentes en attente",
+      "empty": "Aucune validation en attente dans votre département.",
+      "acceptedOn": "Acceptée le"
     },
     "explore": {
       "pageTitle": "Explorer les Stages",

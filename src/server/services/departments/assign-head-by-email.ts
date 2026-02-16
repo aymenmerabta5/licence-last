@@ -101,7 +101,7 @@ export async function assignDepartmentHeadByEmail({
   await auth.api.requestPasswordReset({
     body: {
       email: normalizedEmail,
-      redirectTo: "/login",
+      redirectTo: "/reset-password/verify",
     },
   })
 

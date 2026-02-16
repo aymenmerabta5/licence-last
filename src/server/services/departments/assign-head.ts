@@ -48,19 +48,21 @@ export async function assignDepartmentHead(
     "Assigning department head",
   )
 
-  await db
-    .update(user)
-    .set({
-      role: "dept_head",
-      departmentId,
-      universityId: dept.universityId,
-    })
-    .where(eq(user.id, userId))
+  await db.transaction(async (tx) => {
+    await tx
+      .update(user)
+      .set({
+        role: "dept_head",
+        departmentId,
+        universityId: dept.universityId,
+      })
+      .where(eq(user.id, userId))
 
-  await db
-    .update(department)
-    .set({ headName: targetUser.name ?? null })
-    .where(eq(department.id, departmentId))
+    await tx
+      .update(department)
+      .set({ headName: targetUser.name ?? null })
+      .where(eq(department.id, departmentId))
+  })
 
   log.info(
     { departmentId, userId, event: "dept_head_assigned" },

@@ -10,6 +10,17 @@ const mockUpdateWhere = mock(() => Promise.resolve())
 const mockSet = mock(() => ({ where: mockUpdateWhere }))
 const mockUpdate = mock(() => ({ set: mockSet }))
 
+// Transaction mocks — used by assignDepartmentHead (called internally)
+const mockTxUpdateWhere = mock(() => Promise.resolve())
+const mockTxUpdateSet = mock(() => ({ where: mockTxUpdateWhere }))
+const mockTxUpdate = mock(() => ({ set: mockTxUpdateSet }))
+
+const mockTransaction = mock(async (callback: (tx: { update: typeof mockTxUpdate }) => Promise<unknown>) =>
+  callback({
+    update: mockTxUpdate,
+  }),
+)
+
 const mockCreateUser = mock(() =>
   Promise.resolve({ user: { id: "new-user-id" } }),
 )
@@ -24,6 +35,7 @@ mock.module("@/server/db", () => ({
   db: {
     select: mockSelect,
     update: mockUpdate,
+    transaction: mockTransaction,
   },
 }))
 
@@ -46,6 +58,10 @@ describe("assignDepartmentHeadByEmail", () => {
     mockUpdate.mockClear()
     mockSet.mockClear()
     mockUpdateWhere.mockClear()
+    mockTxUpdate.mockClear()
+    mockTxUpdateSet.mockClear()
+    mockTxUpdateWhere.mockClear()
+    mockTransaction.mockClear()
     mockCreateUser.mockClear()
     mockRequestPasswordReset.mockClear()
     pendingWelcomeEmails.clear()
@@ -56,6 +72,9 @@ describe("assignDepartmentHeadByEmail", () => {
     mockUpdate.mockReturnValue({ set: mockSet })
     mockSet.mockReturnValue({ where: mockUpdateWhere })
     mockUpdateWhere.mockResolvedValue(undefined)
+    mockTxUpdate.mockReturnValue({ set: mockTxUpdateSet })
+    mockTxUpdateSet.mockReturnValue({ where: mockTxUpdateWhere })
+    mockTxUpdateWhere.mockResolvedValue(undefined)
   })
 
   test("should assign existing user and trigger password reset", async () => {
@@ -85,6 +104,9 @@ describe("assignDepartmentHeadByEmail", () => {
     })
     expect(mockCreateUser).not.toHaveBeenCalled()
     expect(mockRequestPasswordReset).toHaveBeenCalledTimes(1)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const resetCall = (mockRequestPasswordReset.mock.calls as any)[0][0]
+    expect(resetCall.body.redirectTo).toBe("/reset-password/verify")
   })
 
   test("should create missing user, assign head, and trigger reset", async () => {

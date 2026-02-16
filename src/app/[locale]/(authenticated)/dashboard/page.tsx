@@ -3,6 +3,7 @@ import { Suspense } from "react"
 import { StudentDashboard } from "@/app/[locale]/(authenticated)/_components/StudentDashboard"
 import { RecruiterDashboard } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard"
 import { AdminDashboard } from "@/app/[locale]/(authenticated)/_components/AdminDashboard"
+import { DeptHeadDashboard } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard"
 import { Skeleton } from "@/components/ui/skeleton"
 import { DashboardContent } from "./_components/DashboardContent"
 
@@ -99,6 +100,7 @@ export default function DashboardPage() {
         studentComponent={StudentDashboard}
         recruiterComponent={RecruiterDashboard}
         adminComponent={AdminDashboard}
+        deptHeadComponent={DeptHeadDashboard}
       />
     </Suspense>
   )

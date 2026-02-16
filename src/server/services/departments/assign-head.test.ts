@@ -1,18 +1,24 @@
 import { describe, test, expect, mock, beforeEach } from "bun:test"
 
-// Separate mocks for select chain vs update chain
+// Separate mocks for select chain vs transaction update chain
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockLimit = mock((): any => Promise.resolve([]))
 const mockSelectWhere = mock(() => ({ limit: mockLimit }))
 const mockFrom = mock(() => ({ where: mockSelectWhere }))
 const mockSelect = mock(() => ({ from: mockFrom }))
 
-const mockUpdateWhere = mock(() => Promise.resolve())
-const mockSet = mock(() => ({ where: mockUpdateWhere }))
-const mockUpdate = mock(() => ({ set: mockSet }))
+const mockTxUpdateWhere = mock(() => Promise.resolve())
+const mockTxUpdateSet = mock(() => ({ where: mockTxUpdateWhere }))
+const mockTxUpdate = mock(() => ({ set: mockTxUpdateSet }))
+
+const mockTransaction = mock(async (callback: (tx: { update: typeof mockTxUpdate }) => Promise<unknown>) =>
+  callback({
+    update: mockTxUpdate,
+  }),
+)
 
 mock.module("@/server/db", () => ({
-  db: { select: mockSelect, update: mockUpdate },
+  db: { select: mockSelect, transaction: mockTransaction },
 }))
 
 describe("assignDepartmentHead", () => {
@@ -21,16 +27,17 @@ describe("assignDepartmentHead", () => {
     mockFrom.mockClear()
     mockSelectWhere.mockClear()
     mockLimit.mockClear()
-    mockUpdate.mockClear()
-    mockSet.mockClear()
-    mockUpdateWhere.mockClear()
+    mockTxUpdate.mockClear()
+    mockTxUpdateSet.mockClear()
+    mockTxUpdateWhere.mockClear()
+    mockTransaction.mockClear()
 
     mockSelect.mockReturnValue({ from: mockFrom })
     mockFrom.mockReturnValue({ where: mockSelectWhere })
     mockSelectWhere.mockReturnValue({ limit: mockLimit })
-    mockUpdate.mockReturnValue({ set: mockSet })
-    mockSet.mockReturnValue({ where: mockUpdateWhere })
-    mockUpdateWhere.mockResolvedValue(undefined)
+    mockTxUpdate.mockReturnValue({ set: mockTxUpdateSet })
+    mockTxUpdateSet.mockReturnValue({ where: mockTxUpdateWhere })
+    mockTxUpdateWhere.mockResolvedValue(undefined)
   })
 
   test("should throw when department not found", async () => {
@@ -59,7 +66,7 @@ describe("assignDepartmentHead", () => {
     expect(result).toEqual({ success: true, departmentId: "dept-1", userId: "user-1" })
   })
 
-  test("should update both user role and department headName", async () => {
+  test("should update both user role and department headName in a transaction", async () => {
     mockLimit
       .mockResolvedValueOnce([{ id: "dept-1", universityId: "uni-1", name: "CS" }])
       .mockResolvedValueOnce([{ id: "user-1", role: "student" }])
@@ -67,9 +74,10 @@ describe("assignDepartmentHead", () => {
     const { assignDepartmentHead } = await import("./assign-head")
     await assignDepartmentHead("dept-1", "user-1")
 
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
-    expect(mockSet).toHaveBeenCalledTimes(2)
-    expect(mockUpdateWhere).toHaveBeenCalledTimes(2)
+    expect(mockTransaction).toHaveBeenCalledTimes(1)
+    expect(mockTxUpdate).toHaveBeenCalledTimes(2)
+    expect(mockTxUpdateSet).toHaveBeenCalledTimes(2)
+    expect(mockTxUpdateWhere).toHaveBeenCalledTimes(2)
   })
 
   test("should make two select queries (dept + user)", async () => {

@@ -98,7 +98,7 @@ export async function bulkCreateDepartmentsWithHeads(
       await auth.api.requestPasswordReset({
         body: {
           email: row.headEmail.toLowerCase(),
-          redirectTo: "/login",
+          redirectTo: "/reset-password/verify",
         },
       })
 

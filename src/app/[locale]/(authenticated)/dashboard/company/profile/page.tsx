@@ -31,7 +31,7 @@ export default async function CompanyProfilePage() {
           <div className="relative flex items-start gap-6">
 
             <div className="space-y-2 min-w-0">
-              <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary [[dir=rtl]_&]:tracking-normal">
+              <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary in-[[dir=rtl]]:tracking-normal">
                 {t("title")}
               </span>
               <h1 className="font-serif text-[clamp(1.75rem,3.5vw,2.5rem)] leading-[1.08] tracking-tight text-heading">
