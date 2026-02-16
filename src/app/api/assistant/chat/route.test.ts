@@ -32,6 +32,7 @@ mock.module("@/lib/auth", () => ({
       getSession: mockGetSession,
     },
   },
+  pendingWelcomeEmails: new Map(),
 }))
 
 // Mock DB chain used by approval gate

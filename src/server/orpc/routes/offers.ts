@@ -81,9 +81,9 @@ export const createOfferProcedure = companyAdminProcedureStandard
     })
 
     // Invalidate company offers cache and public offer search
-    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), "max")
-    revalidateTag(CACHE_TAGS.OFFER_SEARCH, "max")
-    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, "max")
+    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), { expire: 0 })
+    revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
+    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
 
     return result
   })
@@ -107,10 +107,10 @@ export const updateOfferProcedure = companyAdminProcedureStandard
     const result = await updateOffer(offerId, context.companyMembership.companyId, data)
 
     // Invalidate offer caches
-    revalidateTag(CACHE_TAGS.OFFER_DETAIL(offerId), "max")
-    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), "max")
-    revalidateTag(CACHE_TAGS.OFFER_SEARCH, "max")
-    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, "max")
+    revalidateTag(CACHE_TAGS.OFFER_DETAIL(offerId), { expire: 0 })
+    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), { expire: 0 })
+    revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
+    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
 
     return result
   })
@@ -121,10 +121,10 @@ export const deleteOfferProcedure = companyAdminProcedureStandard
     const result = await deleteOffer(input.offerId, context.companyMembership.companyId)
 
     // Invalidate offer caches
-    revalidateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId), "max")
-    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), "max")
-    revalidateTag(CACHE_TAGS.OFFER_SEARCH, "max")
-    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, "max")
+    revalidateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId), { expire: 0 })
+    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), { expire: 0 })
+    revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
+    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
 
     return result
   })
@@ -144,10 +144,10 @@ export const updateOfferStatusProcedure = companyAdminProcedureStandard
     )
 
     // Invalidate offer caches when status changes
-    revalidateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId), "max")
-    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), "max")
-    revalidateTag(CACHE_TAGS.OFFER_SEARCH, "max")
-    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, "max")
+    revalidateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId), { expire: 0 })
+    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), { expire: 0 })
+    revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
+    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
 
     return result
   })

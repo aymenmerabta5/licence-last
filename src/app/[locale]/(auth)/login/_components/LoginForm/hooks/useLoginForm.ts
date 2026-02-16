@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
@@ -12,6 +12,7 @@ import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { getErrorMessage } from "@/lib/error-message"
 import { getPostLoginRedirectPath } from "@/lib/post-login-redirect"
 import { orpcClient } from "@/server/orpc/client"
+import type { CaptchaHandle } from "@/components/TurnstileWidget"
 
 export type LoginFormApi = ReturnType<typeof useLoginForm>["form"]
 export type TwoFactorMethod = "totp" | "otp" | "backup"
@@ -27,6 +28,14 @@ export function useLoginForm() {
   const [serverError, setServerError] = useState("")
   const [needsVerification, setNeedsVerification] = useState(false)
   const [pendingEmail, setPendingEmail] = useState("")
+
+  // Turnstile CAPTCHA
+  const [turnstileToken, setTurnstileToken] = useState("")
+  const turnstileRef = useRef<CaptchaHandle>(null)
+  const resetTurnstile = () => {
+    setTurnstileToken("")
+    turnstileRef.current?.reset()
+  }
 
   // 2FA state
   const [twoFactorRequired, setTwoFactorRequired] = useState(false)
@@ -55,9 +64,15 @@ export function useLoginForm() {
           email: value.email,
           password: value.password,
           rememberMe,
+          fetchOptions: {
+            headers: turnstileToken
+              ? { "x-captcha-response": turnstileToken }
+              : {},
+          },
         })
 
         if (result.error) {
+          resetTurnstile()
           if (result.error.status === 403) {
             setNeedsVerification(true)
             setServerError(t("emailNotVerified"))
@@ -78,6 +93,7 @@ export function useLoginForm() {
         const redirectPath = getPostLoginRedirectPath(me)
         router.push(redirectPath)
       } catch (err) {
+        resetTurnstile()
         setServerError(getErrorMessage(err, t("error")))
       }
     },
@@ -172,6 +188,10 @@ export function useLoginForm() {
     serverError,
     needsVerification,
     resendVerificationEmail,
+    // Turnstile
+    turnstileToken,
+    setTurnstileToken,
+    turnstileRef,
     // 2FA
     twoFactorRequired,
     twoFactorMethod,

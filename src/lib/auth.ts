@@ -3,7 +3,7 @@ import "server-only"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { APIError } from "better-auth/api"
-import { admin as adminPlugin, multiSession, twoFactor } from "better-auth/plugins"
+import { admin as adminPlugin, captcha, multiSession, twoFactor } from "better-auth/plugins"
 import { nextCookies } from "better-auth/next-js"
 import { and, eq, inArray } from "drizzle-orm"
 
@@ -250,6 +250,12 @@ export const auth = betterAuth({
     multiSession({
       maximumSessions: 5,
     }),
+    ...(env.TURNSTILE_SECRET_KEY
+      ? [captcha({
+          provider: "cloudflare-turnstile",
+          secretKey: env.TURNSTILE_SECRET_KEY,
+        })]
+      : []),
     nextCookies(), // must be last — handles Set-Cookie in server actions
   ],
 })

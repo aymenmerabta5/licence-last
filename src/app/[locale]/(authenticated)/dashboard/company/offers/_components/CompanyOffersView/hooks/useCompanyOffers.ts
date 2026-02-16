@@ -37,7 +37,14 @@ export function useCompanyOffers() {
   const handlePublish = async (offerId: string) => {
     setActionLoading(offerId)
     try {
-      await statusMutation.mutateAsync({ offerId, action: "publish" })
+      const result = await statusMutation.mutateAsync({ offerId, action: "publish" })
+      queryClient.setQueryData<typeof offers>(queryKey, (current = []) =>
+        current.map((offer) =>
+          offer.id === offerId
+            ? { ...offer, status: result.newStatus }
+            : offer,
+        ),
+      )
       await queryClient.invalidateQueries({ queryKey })
     } finally {
       setActionLoading(null)
@@ -48,7 +55,14 @@ export function useCompanyOffers() {
     if (!window.confirm(confirmMessage)) return
     setActionLoading(offerId)
     try {
-      await statusMutation.mutateAsync({ offerId, action: "close" })
+      const result = await statusMutation.mutateAsync({ offerId, action: "close" })
+      queryClient.setQueryData<typeof offers>(queryKey, (current = []) =>
+        current.map((offer) =>
+          offer.id === offerId
+            ? { ...offer, status: result.newStatus }
+            : offer,
+        ),
+      )
       await queryClient.invalidateQueries({ queryKey })
     } finally {
       setActionLoading(null)
@@ -60,6 +74,9 @@ export function useCompanyOffers() {
     setActionLoading(offerId)
     try {
       await deleteMutation.mutateAsync({ offerId })
+      queryClient.setQueryData<typeof offers>(queryKey, (current = []) =>
+        current.filter((offer) => offer.id !== offerId),
+      )
       await queryClient.invalidateQueries({ queryKey })
     } finally {
       setActionLoading(null)

@@ -2,12 +2,13 @@
 
 import { useMemo, useState } from "react"
 import { useForm } from "@tanstack/react-form"
+import { useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 
 import { useRouter } from "@/i18n/routing"
 import { createOfferSchema } from "@/lib/schemas/offer"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
-import { orpcClient } from "@/server/orpc/client"
+import { orpc, orpcClient } from "@/server/orpc/client"
 
 import type { OfferFormProps } from "../types"
 
@@ -18,10 +19,15 @@ export function useOfferForm(
   const tv = useTranslations("auth.validation")
   const t = useTranslations("dashboard.company.offers.form")
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   const [serverError, setServerError] = useState("")
 
   const schema = useMemo(() => createOfferSchema(tv), [tv])
+  const offersQueryKey = useMemo(
+    () => orpc.offers.listByCompany.queryOptions().queryKey,
+    [],
+  )
 
   const form = useForm({
     defaultValues: {
@@ -87,6 +93,7 @@ export function useOfferForm(
           })
         }
 
+        await queryClient.invalidateQueries({ queryKey: offersQueryKey })
         router.push("/dashboard/company/offers" as "/dashboard")
       } catch (err) {
         setServerError(err instanceof Error ? err.message : t("error"))

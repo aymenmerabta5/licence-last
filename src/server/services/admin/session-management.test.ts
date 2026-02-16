@@ -13,6 +13,7 @@ mock.module("@/lib/auth", () => ({
       revokeUserSessions: mockRevokeUserSessions,
     },
   },
+  pendingWelcomeEmails: new Map(),
 }))
 mock.module("next/headers", () => ({ headers: mockHeaders }))
 

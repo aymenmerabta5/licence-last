@@ -1,10 +1,11 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useTranslations } from "next-intl"
 
 import { authClient } from "@/lib/auth-client"
 import { createSignupSchema } from "@/lib/schemas/auth"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
+import type { CaptchaHandle } from "@/components/TurnstileWidget"
 
 import type { SignupFormValues, SignupRole } from "../types"
 
@@ -14,6 +15,14 @@ export function useSignupForm(role: SignupRole) {
   const t = useTranslations("auth.validation")
   const [serverError, setServerError] = useState("")
   const [success, setSuccess] = useState(false)
+
+  // Turnstile CAPTCHA
+  const [turnstileToken, setTurnstileToken] = useState("")
+  const turnstileRef = useRef<CaptchaHandle>(null)
+  const resetTurnstile = () => {
+    setTurnstileToken("")
+    turnstileRef.current?.reset()
+  }
 
   const signupSchema = useMemo(() => createSignupSchema(t), [t])
 
@@ -55,16 +64,21 @@ export function useSignupForm(role: SignupRole) {
           callbackURL: "/",
           fetchOptions: {
             body: { accountType: role },
+            headers: turnstileToken
+              ? { "x-captcha-response": turnstileToken }
+              : {},
           },
         })
 
         if (result.error) {
+          resetTurnstile()
           setServerError(result.error.message || "Signup failed")
           return
         }
 
         setSuccess(true)
       } catch {
+        resetTurnstile()
         setServerError("An error occurred. Please try again.")
       }
     },
@@ -75,5 +89,9 @@ export function useSignupForm(role: SignupRole) {
     serverError,
     setServerError,
     success,
+    // Turnstile
+    turnstileToken,
+    setTurnstileToken,
+    turnstileRef,
   }
 }
