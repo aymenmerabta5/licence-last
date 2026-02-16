@@ -1,41 +1,115 @@
 import "server-only"
 
+import { ORPCError } from "@orpc/server"
+import { eq } from "drizzle-orm"
 import { z } from "zod"
 
+import { userRoleSchema } from "@/lib/schemas/enums"
+import { db } from "@/server/db"
+import { user } from "@/server/db/schema/auth"
 import {
+  adminProcedureGenerous,
+  adminProcedureStandard,
   superAdminProcedureGenerous,
   superAdminProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
-import { userRoleSchema } from "@/lib/schemas/enums"
-import { listUsers } from "@/server/services/admin/list-users"
-import { createUser } from "@/server/services/admin/create-user"
-import { setUserRole } from "@/server/services/admin/set-role"
 import { banUser, unbanUser } from "@/server/services/admin/ban-user"
-import { setUserPassword } from "@/server/services/admin/set-password"
+import { createUser } from "@/server/services/admin/create-user"
+import { listUniversityUsers } from "@/server/services/admin/list-university-users"
+import { listUsers } from "@/server/services/admin/list-users"
 import { removeUser } from "@/server/services/admin/remove-user"
-import { updateUser } from "@/server/services/admin/update-user"
 import {
   listUserSessions,
-  revokeSession,
   revokeAllSessions,
+  revokeSession,
 } from "@/server/services/admin/session-management"
+import { setUserPassword } from "@/server/services/admin/set-password"
+import { setUserRole } from "@/server/services/admin/set-role"
+import { updateUser } from "@/server/services/admin/update-user"
 
-export const listUsersProcedure = superAdminProcedureGenerous
-  .input(
-    z.object({
-      limit: z.number().min(1).max(100).optional().default(20),
-      offset: z.number().min(0).optional().default(0),
-      searchValue: z.string().optional(),
-      searchField: z.enum(["email", "name"]).optional(),
-      searchOperator: z.enum(["contains", "starts_with", "ends_with"]).optional(),
-      sortBy: z.enum(["email", "name", "role", "createdAt"]).optional(),
-      sortDirection: z.enum(["asc", "desc"]).optional(),
-      filterField: z.enum(["email", "name", "role", "id", "banned"]).optional(),
-      filterValue: z.union([z.string(), z.number(), z.boolean()]).optional(),
-      filterOperator: z.enum(["eq", "ne", "lt", "lte", "gt", "gte"]).optional(),
-    }),
-  )
-  .handler(async ({ input }) => listUsers(input))
+const listUsersInputSchema = z.object({
+  limit: z.number().min(1).max(100).optional().default(20),
+  offset: z.number().min(0).optional().default(0),
+  searchValue: z.string().optional(),
+  searchField: z.enum(["email", "name"]).optional(),
+  searchOperator: z.enum(["contains", "starts_with", "ends_with"]).optional(),
+  sortBy: z.enum(["email", "name", "role", "createdAt"]).optional(),
+  sortDirection: z.enum(["asc", "desc"]).optional(),
+  filterField: z.enum(["email", "name", "role", "id", "banned"]).optional(),
+  filterValue: z.union([z.string(), z.number(), z.boolean()]).optional(),
+  filterOperator: z.enum(["eq", "ne", "lt", "lte", "gt", "gte"]).optional(),
+})
+
+function assertUserManagementRole(role: string | null | undefined) {
+  if (role !== "super_admin" && role !== "university_admin") {
+    throw new ORPCError("FORBIDDEN", {
+      message: "User management access requires super admin or university admin role",
+    })
+  }
+}
+
+async function assertUniversityScopedTarget(args: {
+  targetUserId: string
+  actingUserId: string
+  actingUniversityId: string
+  forbidSelf?: boolean
+}) {
+  const { targetUserId, actingUserId, actingUniversityId, forbidSelf = false } = args
+  const [targetUser] = await db
+    .select({
+      id: user.id,
+      role: user.role,
+      universityId: user.universityId,
+    })
+    .from(user)
+    .where(eq(user.id, targetUserId))
+    .limit(1)
+
+  if (!targetUser) {
+    throw new ORPCError("NOT_FOUND", {
+      message: "User not found",
+    })
+  }
+
+  if (forbidSelf && targetUser.id === actingUserId) {
+    throw new ORPCError("BAD_REQUEST", {
+      message: "You cannot perform this action on your own account",
+    })
+  }
+
+  if (targetUser.role === "super_admin") {
+    throw new ORPCError("FORBIDDEN", {
+      message: "Super admin accounts cannot be managed by university admins",
+    })
+  }
+
+  if (targetUser.universityId !== actingUniversityId) {
+    throw new ORPCError("FORBIDDEN", {
+      message: "Target user does not belong to your university",
+    })
+  }
+}
+
+export const listUsersProcedure = adminProcedureGenerous
+  .input(listUsersInputSchema)
+  .handler(async ({ input, context }) => {
+    assertUserManagementRole(context.user.role)
+
+    if (context.user.role === "super_admin") {
+      return listUsers(input)
+    }
+
+    if (!context.user.universityId) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "University admin must belong to a university",
+      })
+    }
+
+    return listUniversityUsers({
+      ...input,
+      universityId: context.user.universityId,
+    })
+  })
 
 export const createUserProcedure = superAdminProcedureStandard
   .input(
@@ -57,7 +131,7 @@ export const setRoleProcedure = superAdminProcedureStandard
   )
   .handler(async ({ input }) => setUserRole(input.userId, input.role))
 
-export const banUserProcedure = superAdminProcedureStandard
+export const banUserProcedure = adminProcedureStandard
   .input(
     z.object({
       userId: z.string().min(1),
@@ -65,15 +139,77 @@ export const banUserProcedure = superAdminProcedureStandard
       banExpiresIn: z.number().positive().optional(),
     }),
   )
-  .handler(async ({ input }) => banUser(input))
+  .handler(async ({ input, context }) => {
+    assertUserManagementRole(context.user.role)
 
-export const unbanUserProcedure = superAdminProcedureStandard
-  .input(z.object({ userId: z.string().min(1) }))
-  .handler(async ({ input }) => unbanUser(input.userId))
+    if (context.user.role === "super_admin") {
+      return banUser(input)
+    }
 
-export const removeUserProcedure = superAdminProcedureStandard
+    if (!context.user.universityId) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "University admin must belong to a university",
+      })
+    }
+
+    await assertUniversityScopedTarget({
+      targetUserId: input.userId,
+      actingUserId: context.user.id,
+      actingUniversityId: context.user.universityId,
+      forbidSelf: true,
+    })
+
+    return banUser(input)
+  })
+
+export const unbanUserProcedure = adminProcedureStandard
   .input(z.object({ userId: z.string().min(1) }))
-  .handler(async ({ input }) => removeUser(input.userId))
+  .handler(async ({ input, context }) => {
+    assertUserManagementRole(context.user.role)
+
+    if (context.user.role === "super_admin") {
+      return unbanUser(input.userId)
+    }
+
+    if (!context.user.universityId) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "University admin must belong to a university",
+      })
+    }
+
+    await assertUniversityScopedTarget({
+      targetUserId: input.userId,
+      actingUserId: context.user.id,
+      actingUniversityId: context.user.universityId,
+    })
+
+    return unbanUser(input.userId)
+  })
+
+export const removeUserProcedure = adminProcedureStandard
+  .input(z.object({ userId: z.string().min(1) }))
+  .handler(async ({ input, context }) => {
+    assertUserManagementRole(context.user.role)
+
+    if (context.user.role === "super_admin") {
+      return removeUser(input.userId)
+    }
+
+    if (!context.user.universityId) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "University admin must belong to a university",
+      })
+    }
+
+    await assertUniversityScopedTarget({
+      targetUserId: input.userId,
+      actingUserId: context.user.id,
+      actingUniversityId: context.user.universityId,
+      forbidSelf: true,
+    })
+
+    return removeUser(input.userId)
+  })
 
 export const setPasswordProcedure = superAdminProcedureStandard
   .input(

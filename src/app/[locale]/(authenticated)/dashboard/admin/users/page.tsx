@@ -22,7 +22,7 @@ function UserManagementFallback() {
 }
 
 export default async function UserManagementPage() {
-  await requireRole(["super_admin"])
+  await requireRole(["university_admin", "super_admin"])
 
   return (
     <Suspense fallback={<UserManagementFallback />}>

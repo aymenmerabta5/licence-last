@@ -75,7 +75,7 @@ export const navItems: NavItem[] = [
     labelKey: "validatePlacements",
     href: "/dashboard/admin/validations",
     icon: CheckCircle2,
-    roles: ["university_admin"],
+    roles: ["super_admin"],
   },
   {
     labelKey: "departments",
@@ -87,7 +87,7 @@ export const navItems: NavItem[] = [
     labelKey: "statistics",
     href: "/dashboard/admin/stats",
     icon: BarChart3,
-    roles: ["university_admin", "super_admin"],
+    roles: ["super_admin"],
   },
   {
     labelKey: "companies",
@@ -105,7 +105,7 @@ export const navItems: NavItem[] = [
     labelKey: "userManagement",
     href: "/dashboard/admin/users",
     icon: UsersRound,
-    roles: ["super_admin"],
+    roles: ["university_admin", "super_admin"],
   },
   {
     labelKey: "settings",

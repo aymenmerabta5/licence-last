@@ -79,7 +79,10 @@ import {
   markAllNotificationsReadProcedure,
   markNotificationReadProcedure,
 } from "./routes/notifications"
-import { getAdminStatsProcedure } from "./routes/stats"
+import {
+  getAdminStatsProcedure,
+  getUniversityDashboardStatsProcedure,
+} from "./routes/stats"
 import {
   appendAssistantMessageProcedure,
   createAssistantConversationProcedure,
@@ -213,6 +216,7 @@ export const appRouter = {
   },
   stats: {
     getAdminStats: getAdminStatsProcedure,
+    getUniversityDashboardStats: getUniversityDashboardStatsProcedure,
   },
   adminUsers: {
     list: listUsersProcedure,
