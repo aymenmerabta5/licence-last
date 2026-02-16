@@ -845,14 +845,22 @@
         "hybrid": "هجين",
         "remote": "عن بُعد"
       },
+      "application": "الطلب",
+      "internshipOffer": "عرض تدريب",
+      "trustIndex": "مؤشر الثقة",
       "copilot": {
         "draftWithAi": "كتابة بالذكاء الاصطناعي",
-        "aiStatus": "الذكاء الاصطناعي: {status}",
+        "drafting": "جاري الكتابة...",
         "previewTitle": "معاينة مسودة الذكاء الاصطناعي",
-        "applyDraft": "تطبيق المسودة",
-        "prompts": {
-          "draftCoverLetter": "صياغة رسالة تغطية"
-        }
+        "applyDraft": "تطبيق المسودة"
+      },
+      "matching": {
+        "title": "لماذا هذا التطابق؟",
+        "computing": "جاري حساب درجة التوافق...",
+        "unavailable": "الدرجة غير متاحة حالياً.",
+        "missingSkills": "المهارات المفقودة",
+        "estimatedImprovement": "تحسن مقدّر: +{delta}% من الجاهزية",
+        "readinessTrend": "اتجاه الجاهزية"
       }
     },
     "applications": {

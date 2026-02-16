@@ -52,6 +52,7 @@ import {
   companyRefuseProcedure,
   updatePipelineStageProcedure,
   getTimelineProcedure,
+  generateCoverLetterProcedure,
 } from "./routes/applications"
 import {
   listPendingProcedure,
@@ -181,6 +182,7 @@ export const appRouter = {
     companyRefuse: companyRefuseProcedure,
     updatePipelineStage: updatePipelineStageProcedure,
     getTimeline: getTimelineProcedure,
+    generateCoverLetter: generateCoverLetterProcedure,
   },
   matching: {
     getScore: getScoreProcedure,

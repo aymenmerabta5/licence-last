@@ -845,14 +845,22 @@
         "hybrid": "Hybrid",
         "remote": "Remote"
       },
+      "application": "Application",
+      "internshipOffer": "Internship Offer",
+      "trustIndex": "Trust Index",
       "copilot": {
         "draftWithAi": "Draft with AI",
-        "aiStatus": "AI: {status}",
+        "drafting": "Drafting...",
         "previewTitle": "AI Draft Preview",
-        "applyDraft": "Apply draft",
-        "prompts": {
-          "draftCoverLetter": "Draft a cover letter"
-        }
+        "applyDraft": "Apply draft"
+      },
+      "matching": {
+        "title": "Why this match?",
+        "computing": "Computing fit score...",
+        "unavailable": "Score unavailable right now.",
+        "missingSkills": "Missing Skills Roadmap",
+        "estimatedImprovement": "Estimated improvement: +{delta}% readiness",
+        "readinessTrend": "Readiness Trend"
       }
     },
     "applications": {

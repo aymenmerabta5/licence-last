@@ -25,22 +25,15 @@ export function OfferDetailClient({
   const app = useOfferApplication(offer, existingApplication)
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
+    <div className="space-y-10 pb-20">
+      {/* Editorial Masthead */}
       <OfferHeader offer={offer} />
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Main content */}
-        <div className="flex-1 min-w-0 space-y-6">
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
+        {/* Main column */}
+        <div className="lg:col-span-8 space-y-10">
           <OfferBody offer={offer} />
-        </div>
-
-        {/* Sidebar */}
-        <motion.aside
-          {...reveal}
-          transition={{ duration: 0.5, ease, delay: 0.1 }}
-          className="lg:w-80 shrink-0 space-y-6"
-        >
-          <DetailsSidebar offer={offer} />
 
           <ApplicationPanel
             application={app.application}
@@ -52,12 +45,21 @@ export function OfferDetailClient({
             coverLetterDraft={app.coverLetterDraft}
             onApplyDraft={() => app.setCoverLetter(app.coverLetterDraft!)}
             successMsg={app.successMsg}
-            aiStatus={app.aiStatus}
-            aiError={app.aiError}
+            isDrafting={app.isDrafting}
+            draftError={app.draftError}
             onDraftCoverLetter={app.draftCoverLetter}
             applyMutation={app.applyMutation}
             offerId={offer.id}
           />
+        </div>
+
+        {/* Sidebar column */}
+        <motion.aside
+          {...reveal}
+          transition={{ duration: 0.5, ease, delay: 0.1 }}
+          className="lg:col-span-4 space-y-6"
+        >
+          <DetailsSidebar offer={offer} />
 
           <MatchingPanel
             matchScoreQuery={matching.matchScoreQuery}

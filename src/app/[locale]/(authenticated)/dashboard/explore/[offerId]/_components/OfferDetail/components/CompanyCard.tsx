@@ -1,7 +1,10 @@
 "use client"
 
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { MapPin } from "lucide-react"
+import { MapPin, Building } from "lucide-react"
+
+import { reveal, ease } from "@/lib/animations"
 
 import type { OfferDetailProps } from "../types"
 
@@ -11,53 +14,92 @@ interface CompanyCardProps {
   trustTier: string | undefined
 }
 
-export function CompanyCard({ offer, trustScore, trustTier }: CompanyCardProps) {
+export function CompanyCard({
+  offer,
+  trustScore,
+  trustTier,
+}: CompanyCardProps) {
   const t = useTranslations("dashboard.offerDetail")
   const companyInitial = offer.companyName.charAt(0).toUpperCase()
 
   return (
-    <div className="border border-border p-5 space-y-3">
-      <h3 className="font-serif text-base text-heading">
-        {t("aboutCompany")}
-      </h3>
-      {trustScore != null && (
-        <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-wider">
-          <span className="text-muted-foreground">Trust index</span>
-          <span className="font-semibold text-heading">
-            {trustScore}/100
-          </span>
-          <span className="text-muted-foreground">({trustTier})</span>
-        </div>
-      )}
+    <motion.div
+      {...reveal}
+      transition={{ duration: 0.5, ease, delay: 0.25 }}
+      className="border border-border p-5 space-y-4"
+    >
+      {/* Section header */}
+      <div className="flex items-center gap-2">
+        <Building className="h-3.5 w-3.5 text-muted-foreground/60" />
+        <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">
+          {t("aboutCompany")}
+        </span>
+        <div className="h-px flex-1 bg-border/30" />
+      </div>
+
+      {/* Company info */}
       <div className="flex items-center gap-3">
         {offer.companyLogoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={offer.companyLogoUrl}
             alt={offer.companyName}
-            className="h-10 w-10 rounded border border-border object-cover"
+            className="h-12 w-12 border border-border object-cover shrink-0"
           />
         ) : (
-          <div className="h-10 w-10 rounded border border-border bg-primary/10 flex items-center justify-center text-base font-serif text-primary">
+          <div className="h-12 w-12 border border-border bg-primary/10 flex items-center justify-center text-lg font-serif text-primary shrink-0">
             {companyInitial}
           </div>
         )}
-        <div>
-          <p className="font-medium text-sm">{offer.companyName}</p>
+        <div className="min-w-0">
+          <p className="font-serif text-sm font-medium text-heading truncate">
+            {offer.companyName}
+          </p>
           {offer.companyWilayaCode && (
-            <p className="text-xs text-muted-foreground flex items-center gap-1">
-              <MapPin className="h-3 w-3" />
-              {String(offer.companyWilayaCode).padStart(2, "0")}
-              {offer.companyAddress && ` - ${offer.companyAddress}`}
+            <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+              <MapPin className="h-3 w-3 shrink-0" />
+              <span className="truncate">
+                {String(offer.companyWilayaCode).padStart(2, "0")}
+                {offer.companyAddress && ` — ${offer.companyAddress}`}
+              </span>
             </p>
           )}
         </div>
       </div>
+
+      {/* Trust index */}
+      {trustScore != null && (
+        <div className="space-y-2 pt-3 border-t border-border/30">
+          <div className="flex items-center justify-between">
+            <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">
+              {t("trustIndex")}
+            </span>
+            <span className="text-xs font-medium text-foreground tabular-nums">
+              {trustScore}/100
+              {trustTier && (
+                <span className="text-muted-foreground ms-1">
+                  ({trustTier})
+                </span>
+              )}
+            </span>
+          </div>
+          <div className="h-1.5 bg-muted overflow-hidden">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${trustScore}%` }}
+              transition={{ duration: 0.8, ease, delay: 0.3 }}
+              className="h-full bg-primary"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Description */}
       {offer.companyDescription && (
-        <p className="text-xs text-muted-foreground leading-relaxed">
+        <p className="text-xs text-muted-foreground leading-relaxed pt-1">
           {offer.companyDescription}
         </p>
       )}
-    </div>
+    </motion.div>
   )
 }

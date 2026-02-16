@@ -12,6 +12,7 @@ import {
   companyAdminProcedureStandard,
   studentProcedureGenerous,
   studentProcedureStandard,
+  assistantProcedureLimited,
 } from "@/server/orpc/rate-limited-procedures"
 import { applicationStatusSchema, pipelineStageSchema } from "@/lib/schemas/enums"
 import {
@@ -214,6 +215,28 @@ export const updatePipelineStageProcedure = companyAdminProcedureStandard
         message: "An unexpected error occurred",
       })
     }
+  })
+
+/* ── AI Cover Letter Generation ── */
+
+export const generateCoverLetterProcedure = assistantProcedureLimited
+  .input(
+    z.object({
+      offerTitle: z.string().min(1),
+      offerDescription: z.string().min(1),
+      internshipType: z.string().optional(),
+      workMode: z.string().nullable().optional(),
+      skills: z.array(z.string()),
+      companyName: z.string().min(1),
+      companyDescription: z.string().nullable().optional(),
+      currentCoverLetter: z.string().nullable().optional(),
+    }),
+  )
+  .handler(async ({ input }) => {
+    const { generateCoverLetter } = await import(
+      "@/server/services/applications/generate-cover-letter"
+    )
+    return generateCoverLetter(input)
   })
 
 export const getTimelineProcedure = authedProcedureGenerous

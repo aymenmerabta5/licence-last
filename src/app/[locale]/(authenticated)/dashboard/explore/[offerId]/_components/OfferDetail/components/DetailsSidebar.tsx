@@ -1,5 +1,6 @@
 "use client"
 
+import * as motion from "motion/react-client"
 import { useLocale, useTranslations } from "next-intl"
 import {
   Briefcase,
@@ -8,7 +9,10 @@ import {
   Clock,
   Users,
   Calendar,
+  Info,
 } from "lucide-react"
+
+import { reveal, ease } from "@/lib/animations"
 
 import type { OfferDetailProps } from "../types"
 
@@ -16,71 +20,92 @@ interface DetailsSidebarProps {
   offer: OfferDetailProps["offer"]
 }
 
+function DetailRow({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: React.ComponentType<{ className?: string }>
+  label: string
+  value: React.ReactNode
+}) {
+  return (
+    <div className="flex items-center gap-3 py-2">
+      <Icon className="h-4 w-4 text-primary/70 shrink-0" />
+      <dt className="text-xs text-muted-foreground">{label}</dt>
+      <dd className="text-xs font-medium text-foreground ms-auto">{value}</dd>
+    </div>
+  )
+}
+
 export function DetailsSidebar({ offer }: DetailsSidebarProps) {
   const t = useTranslations("dashboard.offerDetail")
   const locale = useLocale()
 
   return (
-    <div className="border border-border p-5 space-y-4">
-      <h3 className="font-serif text-base text-heading">{t("details")}</h3>
+    <motion.div
+      {...reveal}
+      transition={{ duration: 0.5, ease, delay: 0.15 }}
+      className="border border-border bg-muted/30 p-5 space-y-4"
+    >
+      {/* Section divider header */}
+      <div className="flex items-center gap-2">
+        <Info className="h-3.5 w-3.5 text-muted-foreground/60" />
+        <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">
+          {t("details")}
+        </span>
+        <div className="h-px flex-1 bg-border/30" />
+      </div>
 
-      <dl className="space-y-3 text-sm">
-        <div className="flex items-center gap-2">
-          <Briefcase className="h-4 w-4 text-muted-foreground shrink-0" />
-          <dt className="text-muted-foreground">{t("internshipType")}:</dt>
-          <dd className="font-medium ms-auto">
-            {t(`type.${offer.internshipType}` as "type.pfe")}
-          </dd>
-        </div>
+      <dl className="divide-y divide-border/30">
+        <DetailRow
+          icon={Briefcase}
+          label={t("internshipType")}
+          value={t(`type.${offer.internshipType}` as "type.pfe")}
+        />
 
         {offer.workMode && (
-          <div className="flex items-center gap-2">
-            <Monitor className="h-4 w-4 text-muted-foreground shrink-0" />
-            <dt className="text-muted-foreground">{t("workMode")}:</dt>
-            <dd className="font-medium ms-auto">
-              {t(
-                `workModeLabel.${offer.workMode}` as "workModeLabel.on_site",
-              )}
-            </dd>
-          </div>
+          <DetailRow
+            icon={Monitor}
+            label={t("workMode")}
+            value={t(
+              `workModeLabel.${offer.workMode}` as "workModeLabel.on_site",
+            )}
+          />
         )}
 
         {offer.wilayaCode && (
-          <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
-            <dt className="text-muted-foreground">{t("location")}:</dt>
-            <dd className="font-medium ms-auto">
-              {String(offer.wilayaCode).padStart(2, "0")}
-            </dd>
-          </div>
+          <DetailRow
+            icon={MapPin}
+            label={t("location")}
+            value={String(offer.wilayaCode).padStart(2, "0")}
+          />
         )}
 
         {offer.durationWeeks && (
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-muted-foreground shrink-0" />
-            <dt className="text-muted-foreground">{t("duration")}:</dt>
-            <dd className="font-medium ms-auto">
-              {offer.durationWeeks} {t("weeks")}
-            </dd>
-          </div>
+          <DetailRow
+            icon={Clock}
+            label={t("duration")}
+            value={`${offer.durationWeeks} ${t("weeks")}`}
+          />
         )}
 
-        <div className="flex items-center gap-2">
-          <Users className="h-4 w-4 text-muted-foreground shrink-0" />
-          <dt className="text-muted-foreground">{t("positions")}:</dt>
-          <dd className="font-medium ms-auto">{offer.maxPositions}</dd>
-        </div>
+        <DetailRow
+          icon={Users}
+          label={t("positions")}
+          value={offer.maxPositions}
+        />
 
-        <div className="flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
-          <dt className="text-muted-foreground">{t("deadline")}:</dt>
-          <dd className="font-medium ms-auto">
-            {offer.closesAt
+        <DetailRow
+          icon={Calendar}
+          label={t("deadline")}
+          value={
+            offer.closesAt
               ? new Date(offer.closesAt).toLocaleDateString(locale)
-              : t("noDeadline")}
-          </dd>
-        </div>
+              : t("noDeadline")
+          }
+        />
       </dl>
-    </div>
+    </motion.div>
   )
 }

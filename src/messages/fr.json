@@ -845,14 +845,22 @@
         "hybrid": "Hybride",
         "remote": "À distance"
       },
+      "application": "Candidature",
+      "internshipOffer": "Offre de Stage",
+      "trustIndex": "Indice de Confiance",
       "copilot": {
         "draftWithAi": "Rédiger avec l'IA",
-        "aiStatus": "IA : {status}",
+        "drafting": "Rédaction...",
         "previewTitle": "Aperçu du brouillon IA",
-        "applyDraft": "Appliquer le brouillon",
-        "prompts": {
-          "draftCoverLetter": "Rédiger une lettre de motivation"
-        }
+        "applyDraft": "Appliquer le brouillon"
+      },
+      "matching": {
+        "title": "Pourquoi cette correspondance ?",
+        "computing": "Calcul du score...",
+        "unavailable": "Score indisponible pour le moment.",
+        "missingSkills": "Compétences manquantes",
+        "estimatedImprovement": "Amélioration estimée : +{delta}% de préparation",
+        "readinessTrend": "Tendance de Préparation"
       }
     },
     "applications": {
