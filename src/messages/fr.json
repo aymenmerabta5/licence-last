@@ -366,9 +366,11 @@
       "dashboard": "Tableau de bord",
       "exploreInternships": "Explorer les stages",
       "myApplications": "Mes candidatures",
+      "myDocuments": "Mes documents",
       "companyProfile": "Profil entreprise",
       "manageOffers": "Gérer les offres",
       "candidatePipeline": "Pipeline candidats",
+      "companyDocuments": "Documents entreprise",
       "assistant": "Assistant",
       "validatePlacements": "Valider les placements",
       "deptValidations": "Validations de département",
@@ -894,6 +896,67 @@
       "loading": "Chargement...",
       "loadMore": "Charger plus",
       "exploreOffers": "Explorer les Stages"
+    },
+    "documents": {
+      "pageTitle": "Mes documents",
+      "title": "Mes documents",
+      "subtitle": "Consultez et téléchargez vos conventions et attestations de stage",
+      "empty": "Aucun document de stage disponible pour le moment.",
+      "loadError": "Impossible de charger vos documents.",
+      "retry": "Réessayer",
+      "download": "Télécharger",
+      "downloading": "Téléchargement...",
+      "agreement": "Convention de stage",
+      "certificate": "Attestation",
+      "status": {
+        "pending": "En attente",
+        "generated": "Généré",
+        "failed": "Échec"
+      },
+      "placement": {
+        "company": "Entreprise",
+        "offer": "Offre",
+        "type": "Type",
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "validatedAt": "Validé le",
+        "verificationCode": "Code de vérification",
+        "notAvailable": "N/A"
+      },
+      "downloadError": "Échec du téléchargement du document."
+    },
+    "companyDocuments": {
+      "pageTitle": "Documents entreprise",
+      "title": "Documents entreprise",
+      "subtitle": "Générez et téléchargez les attestations des placements validés",
+      "empty": "Aucun placement validé trouvé pour votre entreprise.",
+      "loadError": "Impossible de charger les documents entreprise.",
+      "retry": "Réessayer",
+      "generate": "Générer l'attestation",
+      "generating": "Génération...",
+      "download": "Télécharger",
+      "downloading": "Téléchargement...",
+      "generatedSuccess": "Attestation générée avec succès.",
+      "generateError": "Échec de génération de l'attestation.",
+      "downloadError": "Échec du téléchargement du document.",
+      "agreement": "Convention de stage",
+      "certificate": "Attestation",
+      "status": {
+        "notGenerated": "Non généré",
+        "pending": "En attente",
+        "generated": "Généré",
+        "failed": "Échec"
+      },
+      "placement": {
+        "student": "Étudiant",
+        "offer": "Offre",
+        "type": "Type",
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "validatedAt": "Validé le",
+        "verificationCode": "Code de vérification",
+        "notAvailable": "N/A"
+      }
     },
     "admin": {
       "title": "Tableau de Bord Admin",

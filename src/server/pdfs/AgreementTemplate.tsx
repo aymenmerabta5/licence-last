@@ -7,23 +7,29 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer"
+import * as path from "node:path"
 
-// Register fonts for multi-language support
+// Register fonts from local TTF files (CDN URLs are unreliable)
+const fontsDir = path.join(process.cwd(), "node_modules/dejavu-fonts-ttf/ttf")
+
 Font.register({
   family: "DejaVu Sans",
-  src: "https://cdn.jsdelivr.net/npm/@canvas-fonts/dejavu-sans@1.0.4/DejaVuSans.ttf",
+  src: path.join(fontsDir, "DejaVuSans.ttf"),
 })
 
 Font.register({
   family: "DejaVu Sans Bold",
-  src: "https://cdn.jsdelivr.net/npm/@canvas-fonts/dejavu-sans@1.0.4/DejaVuSans-Bold.ttf",
+  src: path.join(fontsDir, "DejaVuSans-Bold.ttf"),
 })
 
 const styles = StyleSheet.create({
   page: {
     fontFamily: "DejaVu Sans",
     fontSize: 11,
-    padding: 50,
+    paddingTop: 50,
+    paddingHorizontal: 50,
+    // Reserve space for fixed verification + footer blocks.
+    paddingBottom: 165,
     lineHeight: 1.5,
   },
   header: {
@@ -122,7 +128,7 @@ const styles = StyleSheet.create({
   },
   verificationBar: {
     position: "absolute",
-    bottom: 55,
+    bottom: 78,
     left: 50,
     right: 50,
     flexDirection: "row",
@@ -149,11 +155,12 @@ const styles = StyleSheet.create({
   },
   footer: {
     position: "absolute",
-    bottom: 30,
+    bottom: 16,
     left: 50,
     right: 50,
     textAlign: "center",
     fontSize: 8,
+    lineHeight: 1.3,
     color: "#999999",
   },
 })

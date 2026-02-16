@@ -75,7 +75,12 @@ import {
   getDepartmentSkillsProcedure,
 } from "./routes/departments"
 import {
+  downloadCompanyDocumentProcedure,
   generateAgreementProcedure,
+  generateCompanyCertificateProcedure,
+  listCompanyDocumentsProcedure,
+  listStudentDocumentsProcedure,
+  downloadDocumentProcedure,
   verifyDocumentProcedure,
 } from "./routes/documents"
 import {
@@ -215,6 +220,11 @@ export const appRouter = {
   },
   documents: {
     generateAgreement: generateAgreementProcedure,
+    listByStudent: listStudentDocumentsProcedure,
+    download: downloadDocumentProcedure,
+    listByCompany: listCompanyDocumentsProcedure,
+    generateCertificateByCompany: generateCompanyCertificateProcedure,
+    downloadByCompany: downloadCompanyDocumentProcedure,
     verify: verifyDocumentProcedure,
   },
   notifications: {

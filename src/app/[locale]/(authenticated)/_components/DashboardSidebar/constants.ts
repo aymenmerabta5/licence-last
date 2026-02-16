@@ -2,6 +2,7 @@ import {
   LayoutDashboard,
   Search,
   FileText,
+  FileCheck,
   Settings,
   Briefcase,
   Building2,
@@ -42,6 +43,12 @@ export const navItems: NavItem[] = [
     roles: ["student"],
   },
   {
+    labelKey: "myDocuments",
+    href: "/dashboard/student/documents",
+    icon: FileCheck,
+    roles: ["student"],
+  },
+  {
     labelKey: "companyProfile",
     href: "/dashboard/company/profile",
     icon: Building2,
@@ -57,6 +64,12 @@ export const navItems: NavItem[] = [
     labelKey: "candidatePipeline",
     href: "/dashboard/candidates",
     icon: Users,
+    roles: ["company_admin"],
+  },
+  {
+    labelKey: "companyDocuments",
+    href: "/dashboard/company/documents",
+    icon: FileCheck,
     roles: ["company_admin"],
   },
   {

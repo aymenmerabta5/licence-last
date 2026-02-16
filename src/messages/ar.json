@@ -366,9 +366,11 @@
       "dashboard": "لوحة التحكم",
       "exploreInternships": "استكشاف التدريبات",
       "myApplications": "طلباتي",
+      "myDocuments": "مستنداتي",
       "companyProfile": "ملف الشركة",
       "manageOffers": "إدارة العروض",
       "candidatePipeline": "مسار المرشحين",
+      "companyDocuments": "وثائق الشركة",
       "assistant": "المساعد",
       "validatePlacements": "اعتماد التوظيفات",
       "deptValidations": "تصديقات القسم",
@@ -894,6 +896,67 @@
       "loading": "جاري التحميل...",
       "loadMore": "تحميل المزيد",
       "exploreOffers": "استكشاف التدريبات"
+    },
+    "documents": {
+      "pageTitle": "مستنداتي",
+      "title": "مستنداتي",
+      "subtitle": "عرض وتنزيل اتفاقيات التدريب والشهادات الخاصة بك",
+      "empty": "لا توجد مستندات تدريب متاحة بعد.",
+      "loadError": "تعذر تحميل مستنداتك.",
+      "retry": "إعادة المحاولة",
+      "download": "تنزيل",
+      "downloading": "جارٍ التنزيل...",
+      "agreement": "اتفاقية التدريب",
+      "certificate": "شهادة التدريب",
+      "status": {
+        "pending": "قيد الانتظار",
+        "generated": "مُنشأ",
+        "failed": "فشل"
+      },
+      "placement": {
+        "company": "الشركة",
+        "offer": "العرض",
+        "type": "النوع",
+        "startDate": "تاريخ البدء",
+        "endDate": "تاريخ الانتهاء",
+        "validatedAt": "تاريخ الاعتماد",
+        "verificationCode": "رمز التحقق",
+        "notAvailable": "غير متاح"
+      },
+      "downloadError": "فشل تنزيل المستند."
+    },
+    "companyDocuments": {
+      "pageTitle": "وثائق الشركة",
+      "title": "وثائق الشركة",
+      "subtitle": "إنشاء وتنزيل شهادات التربص للمواضع المعتمدة",
+      "empty": "لا توجد مواضع معتمدة لهذه الشركة.",
+      "loadError": "تعذر تحميل وثائق الشركة.",
+      "retry": "إعادة المحاولة",
+      "generate": "إنشاء الشهادة",
+      "generating": "جارٍ الإنشاء...",
+      "download": "تنزيل",
+      "downloading": "جارٍ التنزيل...",
+      "generatedSuccess": "تم إنشاء الشهادة بنجاح.",
+      "generateError": "فشل إنشاء الشهادة.",
+      "downloadError": "فشل تنزيل المستند.",
+      "agreement": "اتفاقية التدريب",
+      "certificate": "شهادة التدريب",
+      "status": {
+        "notGenerated": "غير منشأة",
+        "pending": "قيد الانتظار",
+        "generated": "مُنشأ",
+        "failed": "فشل"
+      },
+      "placement": {
+        "student": "الطالب",
+        "offer": "العرض",
+        "type": "النوع",
+        "startDate": "تاريخ البدء",
+        "endDate": "تاريخ الانتهاء",
+        "validatedAt": "تاريخ الاعتماد",
+        "verificationCode": "رمز التحقق",
+        "notAvailable": "غير متاح"
+      }
     },
     "admin": {
       "title": "لوحة تحكم المشرف",

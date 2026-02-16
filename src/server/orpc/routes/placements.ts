@@ -76,8 +76,8 @@ export const validateProcedure = adminProcedureStandard
       })
     } catch (error) {
       if (error instanceof ORPCError) throw error
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "An unexpected error occurred",
+      throw new ORPCError("BAD_REQUEST", {
+        message: error instanceof Error ? error.message : "Failed to validate placement",
       })
     }
   })
@@ -105,8 +105,8 @@ export const rejectProcedure = adminProcedureStandard
       )
     } catch (error) {
       if (error instanceof ORPCError) throw error
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "An unexpected error occurred",
+      throw new ORPCError("BAD_REQUEST", {
+        message: error instanceof Error ? error.message : "Failed to reject placement",
       })
     }
   })
@@ -170,8 +170,8 @@ export const deptHeadValidateProcedure = deptHeadProcedureStandard
       })
     } catch (error) {
       if (error instanceof ORPCError) throw error
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "An unexpected error occurred",
+      throw new ORPCError("BAD_REQUEST", {
+        message: error instanceof Error ? error.message : "Failed to validate placement",
       })
     }
   })
@@ -212,8 +212,8 @@ export const deptHeadRejectProcedure = deptHeadProcedureStandard
       })
     } catch (error) {
       if (error instanceof ORPCError) throw error
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "An unexpected error occurred",
+      throw new ORPCError("BAD_REQUEST", {
+        message: error instanceof Error ? error.message : "Failed to reject placement",
       })
     }
   })

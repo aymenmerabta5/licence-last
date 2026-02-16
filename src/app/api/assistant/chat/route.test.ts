@@ -59,6 +59,7 @@ mock.module("@/server/ai/rate-limit", () => ({
 // Mock AI SDK
 mock.module("ai", () => ({
   convertToModelMessages: (msgs: UIMessage[]) => msgs,
+  tool: <T>(definition: T) => definition,
   createUIMessageStream: ({ execute }: { execute: (args: { writer: { write: (chunk: string) => void } }) => Promise<void> }) => {
     return new ReadableStream({
       start(controller) {

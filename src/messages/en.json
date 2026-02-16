@@ -366,9 +366,11 @@
       "dashboard": "Dashboard",
       "exploreInternships": "Explore Internships",
       "myApplications": "My Applications",
+      "myDocuments": "My Documents",
       "companyProfile": "Company Profile",
       "manageOffers": "Manage Offers",
       "candidatePipeline": "Candidate Pipeline",
+      "companyDocuments": "Company Documents",
       "assistant": "Assistant",
       "validatePlacements": "Validate Placements",
       "deptValidations": "Department Validations",
@@ -894,6 +896,67 @@
       "loading": "Loading...",
       "loadMore": "Load more",
       "exploreOffers": "Explore Internships"
+    },
+    "documents": {
+      "pageTitle": "My Documents",
+      "title": "My Documents",
+      "subtitle": "View and download your internship agreements and certificates",
+      "empty": "No placement documents available yet.",
+      "loadError": "Failed to load your documents.",
+      "retry": "Retry",
+      "download": "Download",
+      "downloading": "Downloading...",
+      "agreement": "Agreement",
+      "certificate": "Certificate",
+      "status": {
+        "pending": "Pending",
+        "generated": "Generated",
+        "failed": "Failed"
+      },
+      "placement": {
+        "company": "Company",
+        "offer": "Offer",
+        "type": "Type",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "validatedAt": "Validated on",
+        "verificationCode": "Verification code",
+        "notAvailable": "Not available"
+      },
+      "downloadError": "Failed to download document."
+    },
+    "companyDocuments": {
+      "pageTitle": "Company Documents",
+      "title": "Company Documents",
+      "subtitle": "Generate and download placement certificates for your validated interns",
+      "empty": "No validated placements found for your company.",
+      "loadError": "Failed to load company documents.",
+      "retry": "Retry",
+      "generate": "Generate Certificate",
+      "generating": "Generating...",
+      "download": "Download",
+      "downloading": "Downloading...",
+      "generatedSuccess": "Certificate generated successfully.",
+      "generateError": "Failed to generate certificate.",
+      "downloadError": "Failed to download document.",
+      "agreement": "Agreement",
+      "certificate": "Certificate",
+      "status": {
+        "notGenerated": "Not generated",
+        "pending": "Pending",
+        "generated": "Generated",
+        "failed": "Failed"
+      },
+      "placement": {
+        "student": "Student",
+        "offer": "Offer",
+        "type": "Type",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "validatedAt": "Validated on",
+        "verificationCode": "Verification code",
+        "notAvailable": "Not available"
+      }
     },
     "admin": {
       "title": "Admin Dashboard",
