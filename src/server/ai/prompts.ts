@@ -9,7 +9,12 @@ export function resolvePersona({
   intent: AssistantIntent | null
   role: string
 }): AssistantPersona {
-  if (intent === "admin_validation_summary" || role === "university_admin" || role === "super_admin") {
+  if (
+    intent === "admin_validation_summary" ||
+    role === "university_admin" ||
+    role === "super_admin" ||
+    role === "dept_head"
+  ) {
     return "Internex Admin Copilot"
   }
   if (intent?.startsWith("student_") || role === "student") {
@@ -22,10 +27,12 @@ export function buildSystemPrompt({
   persona,
   arcadeEnabled,
   contextJson,
+  hasDataTools = false,
 }: {
   persona: AssistantPersona
   arcadeEnabled: boolean
   contextJson: string | null
+  hasDataTools?: boolean
 }): string {
   const parts: string[] = [
     `You are ${persona}, an AI assistant for the Internex platform.`,
@@ -53,6 +60,18 @@ export function buildSystemPrompt({
     parts.push(
       "",
       "Be concise, practical, and suggest-only. Do not claim to have performed actions you did not perform.",
+    )
+  }
+
+  if (hasDataTools) {
+    parts.push(
+      "",
+      [
+        "You have data retrieval tools that fetch real-time information from the platform.",
+        "When the user asks about offers, candidates, applications, stats, trust scores, or pending placements, ALWAYS use the appropriate tool instead of guessing.",
+        "Present the retrieved data clearly using markdown tables or bullet points.",
+        "If a tool returns an error, tell the user something went wrong and suggest they try again.",
+      ].join(" "),
     )
   }
 

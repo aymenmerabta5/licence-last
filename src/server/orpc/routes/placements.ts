@@ -8,6 +8,7 @@ import {
   adminProcedureStandard,
   deptHeadProcedureGenerous,
   deptHeadProcedureStandard,
+  assistantProcedureLimited,
 } from "@/server/orpc/rate-limited-procedures"
 import {
   parseInputDate,
@@ -173,6 +174,21 @@ export const deptHeadValidateProcedure = deptHeadProcedureStandard
         message: "An unexpected error occurred",
       })
     }
+  })
+
+/* ── AI Validation Summary (any authenticated admin/dept_head) ── */
+
+export const generateValidationSummaryProcedure = assistantProcedureLimited
+  .input(
+    z.object({
+      application: z.record(z.string(), z.unknown()),
+    }),
+  )
+  .handler(async ({ input }) => {
+    const { generateValidationSummary } = await import(
+      "@/server/services/placements/generate-validation-summary"
+    )
+    return generateValidationSummary(input)
   })
 
 /* ── Dept Head: Reject Placement ── */

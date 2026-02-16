@@ -37,6 +37,8 @@ import {
 } from "./tools/gmail-resolver"
 import { resolvePersistence, persistUserMessage } from "./persistence"
 import { generateConversationTitle } from "./auto-title"
+import { resolveToolAuthContext } from "./auth-context"
+import { createDataRetrievalTools } from "./tools/data-retrieval"
 
 // Constants
 const MAX_MESSAGES = 100
@@ -219,8 +221,13 @@ export async function handleChatRequest(req: Request): Promise<Response> {
     })
   }
 
+  // Resolve auth context for data-retrieval tools
+  const toolAuthCtx = await resolveToolAuthContext(session)
+
   // Build tools
   const internalTools = createInternalTools({ contextJson })
+  const dataTools = toolAuthCtx ? createDataRetrievalTools(toolAuthCtx) : {}
+  const hasDataTools = Object.keys(dataTools).length > 0
   const shouldForceTool = intent ? Object.prototype.hasOwnProperty.call(internalTools, intent) : false
 
   // Arcade tools
@@ -250,11 +257,13 @@ export async function handleChatRequest(req: Request): Promise<Response> {
     persona,
     arcadeEnabled,
     contextJson: contextJson || null,
+    hasDataTools,
   })
 
   // Combine tools
   const tools: ToolSet = {
     ...internalTools,
+    ...dataTools,
     ...arcadeTools,
   }
 
@@ -302,7 +311,7 @@ export async function handleChatRequest(req: Request): Promise<Response> {
             : forcedArcadeToolName
               ? ({ type: "tool", toolName: forcedArcadeToolName } as const)
               : undefined,
-        stopWhen: stepCountIs(arcadeEnabled ? 12 : 5),
+        stopWhen: stepCountIs(arcadeEnabled ? 12 : hasDataTools ? 8 : 5),
       })
 
       for await (const chunk of result.toUIMessageStream()) {

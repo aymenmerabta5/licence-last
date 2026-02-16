@@ -52,6 +52,18 @@ export async function generateCoverLetter(
     model: getPoeModel(),
     schema: coverLetterSchema,
     prompt,
+    experimental_repairText: async ({ text }) => {
+      // Poe's API sometimes returns plain text instead of JSON.
+      // If the response isn't valid JSON, wrap it in the expected schema.
+      try {
+        JSON.parse(text)
+        return text
+      } catch {
+        // Escape the raw text for safe JSON embedding
+        const escaped = JSON.stringify(text.trim())
+        return `{"coverLetter":${escaped}}`
+      }
+    },
   })
 
   return result.object

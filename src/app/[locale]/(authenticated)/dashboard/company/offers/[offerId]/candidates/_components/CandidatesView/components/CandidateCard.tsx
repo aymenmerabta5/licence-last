@@ -4,6 +4,7 @@ import { useDrag } from "react-dnd"
 import { useLocale, useTranslations } from "next-intl"
 import { Check, GraduationCap, Loader2, X, Clock } from "lucide-react"
 
+import { SelectField } from "@/components/form-fields"
 import { Button } from "@/components/ui/button"
 import {
   STATUS_COLORS,
@@ -124,36 +125,25 @@ export function CandidateCard({
       <MatchPreview offerId={offerId} studentUserId={app.student.id} />
 
       {/* Pipeline stage selector */}
-      <label className="block space-y-1.5">
-        <span className="text-[9px] uppercase tracking-wider text-muted-foreground/50 font-bold">
-          {t("pipelineStage")}
-        </span>
-        <select
-          value={app.pipelineStage}
-          onChange={(event) =>
-            onStageChange(event.target.value as PipelineStage)
-          }
-          disabled={
-            isStagePending ||
-            app.pipelineStage === "accepted" ||
-            app.pipelineStage === "rejected"
-          }
-          className="w-full h-8 border border-border/50 bg-secondary/10 px-2.5 text-xs rounded-sm focus:outline-none focus:ring-1 focus:ring-primary/30 transition-colors"
-        >
-          {STAGE_COLUMNS.map((option) => (
-            <option
-              key={option}
-              value={option}
-              disabled={
-                option !== app.pipelineStage &&
-                !canTransitionStage(app.pipelineStage, option)
-              }
-            >
-              {STAGE_LABELS[option]}
-            </option>
-          ))}
-        </select>
-      </label>
+      <SelectField
+        id={`pipeline-stage-${app.id}`}
+        label={t("pipelineStage")}
+        options={STAGE_COLUMNS.map((option) => ({
+          value: option,
+          label: STAGE_LABELS[option],
+          disabled:
+            option !== app.pipelineStage &&
+            !canTransitionStage(app.pipelineStage, option),
+        }))}
+        value={app.pipelineStage}
+        onChange={(value) => onStageChange(value as PipelineStage)}
+        disabled={
+          isStagePending ||
+          app.pipelineStage === "accepted" ||
+          app.pipelineStage === "rejected"
+        }
+        className="h-8 rounded-sm border-border/50 bg-secondary/10 text-xs"
+      />
 
       {/* Accept / Refuse — only at "offer" stage (final decision) */}
       {app.status === "applied" && app.pipelineStage === "offer" && (

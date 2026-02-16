@@ -48,7 +48,16 @@ export interface ChatRequest {
 }
 
 // Role type for RBAC
-export type AssistantRole = "student" | "company_admin" | "university_admin" | "super_admin"
+export type AssistantRole = "student" | "company_admin" | "university_admin" | "dept_head" | "super_admin"
+
+// Auth context resolved for data-retrieval tools
+export interface ToolAuthContext {
+  userId: string
+  role: AssistantRole
+  companyId: string | null
+  universityId: string | null
+  departmentId: string | null
+}
 
 // Rate limit result
 export interface RateLimitResult {

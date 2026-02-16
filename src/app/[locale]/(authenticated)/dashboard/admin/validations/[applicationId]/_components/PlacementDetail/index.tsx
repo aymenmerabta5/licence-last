@@ -33,8 +33,8 @@ export function PlacementDetailClient({
 
           <AISummaryPanel
             aiSummary={actions.aiSummary}
-            aiStatus={actions.aiStatus}
-            aiError={actions.aiError}
+            isSummarizing={actions.isSummarizing}
+            summaryError={actions.summaryError}
             onGenerate={() => {
               actions.generateAiSummary({
                 id: application.id,

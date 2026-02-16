@@ -61,6 +61,7 @@ import {
   deptHeadListPendingProcedure,
   deptHeadValidateProcedure,
   deptHeadRejectProcedure,
+  generateValidationSummaryProcedure,
 } from "./routes/placements"
 import {
   listDepartmentsProcedure,
@@ -194,6 +195,7 @@ export const appRouter = {
     listPending: listPendingProcedure,
     validate: validateProcedure,
     reject: rejectProcedure,
+    generateValidationSummary: generateValidationSummaryProcedure,
   },
   deptHead: {
     listPending: deptHeadListPendingProcedure,

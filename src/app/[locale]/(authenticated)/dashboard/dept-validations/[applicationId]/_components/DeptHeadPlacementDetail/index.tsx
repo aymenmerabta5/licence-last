@@ -6,6 +6,16 @@ import { ArrowLeft, FileText, Loader2 } from "lucide-react"
 
 import { Link } from "@/i18n/routing"
 import { reveal, ease } from "@/lib/animations"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 import { StudentInfoCard } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/StudentInfoCard"
 import { CompanyOfferCard } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/CompanyOfferCard"
@@ -74,8 +84,8 @@ export function DeptHeadPlacementDetail({
 
           <AISummaryPanel
             aiSummary={actions.aiSummary}
-            aiStatus={actions.aiStatus}
-            aiError={actions.aiError}
+            isSummarizing={actions.isSummarizing}
+            summaryError={actions.summaryError}
             onGenerate={() => {
               actions.generateAiSummary({
                 id: application.id,
@@ -139,6 +149,34 @@ export function DeptHeadPlacementDetail({
           }}
         />
       )}
+
+      <AlertDialog
+        open={actions.validateModal}
+        onOpenChange={actions.setValidateModal}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-serif">
+              {t("confirmValidate")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("validateAndGenerate")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={actions.actionLoading || actions.pdfLoading}>
+              {t("cancel")}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={actions.handleConfirmValidate}
+              disabled={actions.actionLoading || actions.pdfLoading}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              {t("validateAndGenerate")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
