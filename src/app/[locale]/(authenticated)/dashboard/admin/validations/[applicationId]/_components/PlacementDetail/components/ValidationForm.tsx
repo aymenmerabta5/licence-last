@@ -12,6 +12,9 @@ interface ValidationFormProps {
   onStartDateChange: (value: string) => void
   endDate: string
   onEndDateChange: (value: string) => void
+  expectedStartDate?: string | null
+  expectedEndDate?: string | null
+  showOutOfRangeWarning?: boolean
   actionLoading: boolean
   pdfLoading: boolean
   onValidate: () => void
@@ -23,6 +26,9 @@ export function ValidationForm({
   onStartDateChange,
   endDate,
   onEndDateChange,
+  expectedStartDate,
+  expectedEndDate,
+  showOutOfRangeWarning,
   actionLoading,
   pdfLoading,
   onValidate,
@@ -67,6 +73,19 @@ export function ValidationForm({
           />
         </div>
       </div>
+
+      {(expectedStartDate || expectedEndDate) && (
+        <p className="text-xs text-muted-foreground">
+          {t("expectedPeriod")}:{" "}
+          {expectedStartDate || t("notAvailable")} - {expectedEndDate || t("notAvailable")}
+        </p>
+      )}
+
+      {showOutOfRangeWarning && (
+        <div className="border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-700 dark:text-amber-300">
+          {t("selectedDatesOutsideExpectedRange")}
+        </div>
+      )}
 
       <div className="flex flex-col sm:flex-row gap-3 pt-4">
         <Button

@@ -100,11 +100,23 @@ export function DetailsSidebar({ offer }: DetailsSidebarProps) {
           icon={Calendar}
           label={t("deadline")}
           value={
-            offer.closesAt
-              ? new Date(offer.closesAt).toLocaleDateString(locale)
+            offer.applicationDeadlineAt
+              ? new Date(offer.applicationDeadlineAt).toLocaleDateString(locale)
               : t("noDeadline")
           }
         />
+
+        {(offer.expectedStartDate || offer.expectedEndDate) && (
+          <DetailRow
+            icon={Calendar}
+            label={t("expectedPeriod")}
+            value={
+              offer.expectedStartDate && offer.expectedEndDate
+                ? `${new Date(offer.expectedStartDate).toLocaleDateString(locale)} - ${new Date(offer.expectedEndDate).toLocaleDateString(locale)}`
+                : t("notSpecified")
+            }
+          />
+        )}
       </dl>
     </motion.div>
   )

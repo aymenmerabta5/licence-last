@@ -37,6 +37,9 @@ export default async function EditOfferPage({
           wilayaCode: offer.wilayaCode,
           durationWeeks: offer.durationWeeks,
           maxPositions: offer.maxPositions,
+          applicationDeadlineAt: offer.applicationDeadlineAt,
+          expectedStartDate: offer.expectedStartDate,
+          expectedEndDate: offer.expectedEndDate,
           skillTagIds: offer.skills.map((s) => s.id),
         }}
       />

@@ -15,6 +15,9 @@ export interface CopilotResult {
   wilayaCode?: number | null
   durationWeeks?: number | null
   maxPositions?: number
+  applicationDeadlineAt?: string | null
+  expectedStartDate?: string | null
+  expectedEndDate?: string | null
   skillTagIds?: string[]
   skillTagNames?: string[]
 }
@@ -30,6 +33,9 @@ export interface OfferFormProps {
     wilayaCode: number | null
     durationWeeks: number | null
     maxPositions: number
+    applicationDeadlineAt: Date | string | null
+    expectedStartDate: Date | string | null
+    expectedEndDate: Date | string | null
     skillTagIds: string[]
   }
 }

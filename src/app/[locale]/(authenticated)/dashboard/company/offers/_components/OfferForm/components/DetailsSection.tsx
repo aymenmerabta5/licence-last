@@ -2,7 +2,7 @@
 
 import { useMemo } from "react"
 import { useTranslations } from "next-intl"
-import { Briefcase, MapPin, Clock, Users } from "lucide-react"
+import { Briefcase, MapPin, Clock, Users, Calendar } from "lucide-react"
 
 import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYAS } from "@/lib/wilayas"
@@ -15,6 +15,7 @@ interface DetailsSectionProps {
 
 export function DetailsSection({ form }: DetailsSectionProps) {
   const t = useTranslations("dashboard.company.offers.form")
+  const today = new Date().toISOString().split("T")[0]
 
   const internshipTypeOptions = useMemo(
     () => [
@@ -39,7 +40,7 @@ export function DetailsSection({ form }: DetailsSectionProps) {
     () =>
       WILAYAS.map((name, i) => ({
         value: i + 1,
-        label: `${String(i + 1).padStart(2, "0")} — ${name}`,
+        label: `${String(i + 1).padStart(2, "0")} - ${name}`,
       })),
     [],
   )
@@ -116,6 +117,11 @@ export function DetailsSection({ form }: DetailsSectionProps) {
               onChange={(v) => field.handleChange(Number(v))}
               onBlur={field.handleBlur}
               placeholder={t("durationWeeksPlaceholder")}
+              error={
+                field.state.meta.errors.length > 0
+                  ? errorMessage(field.state.meta.errors[0])
+                  : undefined
+              }
             />
           )}
         </form.Field>
@@ -133,6 +139,78 @@ export function DetailsSection({ form }: DetailsSectionProps) {
               onChange={(v) => field.handleChange(Number(v))}
               onBlur={field.handleBlur}
               placeholder={t("maxPositionsPlaceholder")}
+              error={
+                field.state.meta.errors.length > 0
+                  ? errorMessage(field.state.meta.errors[0])
+                  : undefined
+              }
+            />
+          )}
+        </form.Field>
+
+        {/* Application Deadline */}
+        <form.Field name="applicationDeadlineAt">
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          {(field: any) => (
+            <TextField
+              id="offer-application-deadline"
+              label={t("applicationDeadline")}
+              icon={Calendar}
+              type="date"
+              value={field.state.value || ""}
+              onChange={field.handleChange}
+              onBlur={field.handleBlur}
+              min={today}
+              max={form.state.values.expectedStartDate || undefined}
+              error={
+                field.state.meta.errors.length > 0
+                  ? errorMessage(field.state.meta.errors[0])
+                  : undefined
+              }
+            />
+          )}
+        </form.Field>
+
+        {/* Expected Start Date */}
+        <form.Field name="expectedStartDate">
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          {(field: any) => (
+            <TextField
+              id="offer-expected-start-date"
+              label={t("expectedStartDate")}
+              icon={Calendar}
+              type="date"
+              value={field.state.value || ""}
+              onChange={field.handleChange}
+              onBlur={field.handleBlur}
+              min={today}
+              error={
+                field.state.meta.errors.length > 0
+                  ? errorMessage(field.state.meta.errors[0])
+                  : undefined
+              }
+            />
+          )}
+        </form.Field>
+
+        {/* Expected End Date */}
+        <form.Field name="expectedEndDate">
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          {(field: any) => (
+            <TextField
+              id="offer-expected-end-date"
+              label={t("expectedEndDate")}
+              icon={Calendar}
+              type="date"
+              value={field.state.value || ""}
+              onChange={field.handleChange}
+              onBlur={field.handleBlur}
+              min={form.state.values.expectedStartDate || today}
+              error={
+                field.state.meta.errors.length > 0
+                  ? errorMessage(field.state.meta.errors[0])
+                  : undefined
+              }
             />
           )}
         </form.Field>

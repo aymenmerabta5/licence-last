@@ -112,7 +112,7 @@ describe("src/server/services/applications/apply", () => {
         companyId: "company-1",
         title: "Frontend Intern",
         status: "published",
-        closesAt: null,
+        applicationDeadlineAt: null,
         maxPositions: 1,
       },
     ]) // tx select 1: offer
@@ -133,7 +133,7 @@ describe("src/server/services/applications/apply", () => {
         companyId: "company-1",
         title: "Frontend Intern",
         status: "published",
-        closesAt: null,
+        applicationDeadlineAt: null,
         maxPositions: 2,
       },
     ])
@@ -162,5 +162,24 @@ describe("src/server/services/applications/apply", () => {
     expect(result.applicationId).toBeDefined()
     // 1 insert inside tx (application) + 1 insert outside tx (notifications)
     expect(mockInsert).toHaveBeenCalledTimes(2)
+  })
+
+  test("should throw when application deadline has passed", async () => {
+    mockSelectResults.push([
+      {
+        id: "offer-1",
+        companyId: "company-1",
+        title: "Frontend Intern",
+        status: "published",
+        applicationDeadlineAt: new Date("2000-01-01T00:00:00.000Z"),
+        maxPositions: 2,
+      },
+    ])
+
+    const { applyToOffer } = await import("@/server/services/applications/apply")
+
+    await expect(applyToOffer("offer-1", "student-1")).rejects.toThrow(
+      "Offer application deadline has passed",
+    )
   })
 })

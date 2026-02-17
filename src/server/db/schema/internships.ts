@@ -27,6 +27,9 @@ export const internshipOffer = pgTable(
     maxPositions: integer("max_positions").default(1).notNull(),
     status: offerStatusEnum("status").default("draft").notNull(),
     publishedAt: timestamp("published_at"),
+    applicationDeadlineAt: timestamp("application_deadline_at"),
+    expectedStartDate: timestamp("expected_start_date"),
+    expectedEndDate: timestamp("expected_end_date"),
     closesAt: timestamp("closes_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")

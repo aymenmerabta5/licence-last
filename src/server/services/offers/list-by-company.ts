@@ -23,6 +23,9 @@ interface OfferWithSkills {
   maxPositions: number
   status: "draft" | "published" | "closed"
   publishedAt: Date | null
+  applicationDeadlineAt: Date | null
+  expectedStartDate: Date | null
+  expectedEndDate: Date | null
   closesAt: Date | null
   createdAt: Date
   updatedAt: Date

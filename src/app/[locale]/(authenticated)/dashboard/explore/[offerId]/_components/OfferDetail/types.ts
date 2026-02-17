@@ -9,6 +9,10 @@ export interface OfferDetailProps {
     wilayaCode: number | null
     durationWeeks: number | null
     maxPositions: number
+    status: "draft" | "published" | "closed"
+    applicationDeadlineAt: Date | null
+    expectedStartDate: Date | null
+    expectedEndDate: Date | null
     closesAt: Date | null
     createdAt: Date
     companyName: string

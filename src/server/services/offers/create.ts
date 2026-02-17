@@ -18,6 +18,9 @@ export async function createOffer(data: {
   wilayaCode?: number
   durationWeeks?: number
   maxPositions?: number
+  applicationDeadlineAt?: Date | null
+  expectedStartDate?: Date | null
+  expectedEndDate?: Date | null
   skillTagIds?: string[]
 }) {
   const offerId = randomUUID()
@@ -34,6 +37,9 @@ export async function createOffer(data: {
       wilayaCode: data.wilayaCode || null,
       durationWeeks: data.durationWeeks || null,
       maxPositions: data.maxPositions || 1,
+      applicationDeadlineAt: data.applicationDeadlineAt ?? null,
+      expectedStartDate: data.expectedStartDate ?? null,
+      expectedEndDate: data.expectedEndDate ?? null,
       status: "draft",
     })
 

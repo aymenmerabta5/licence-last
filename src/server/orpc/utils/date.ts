@@ -1,4 +1,4 @@
-export function parseInputDate(value: string, fieldLabel: "Start date" | "End date"): Date {
+export function parseInputDate(value: string, fieldLabel: string): Date {
   const parsed = new Date(value)
   if (Number.isNaN(parsed.getTime())) {
     throw new Error(`${fieldLabel} is invalid`)

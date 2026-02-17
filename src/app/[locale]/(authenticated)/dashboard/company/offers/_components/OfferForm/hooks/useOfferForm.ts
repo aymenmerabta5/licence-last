@@ -12,6 +12,18 @@ import { orpc, orpcClient } from "@/server/orpc/client"
 
 import type { OfferFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
 
+function formatDateInputValue(value: Date | string | null | undefined): string {
+  if (!value) return ""
+
+  const date = typeof value === "string" ? new Date(value) : value
+  if (Number.isNaN(date.getTime())) return ""
+
+  const year = date.getUTCFullYear()
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0")
+  const day = String(date.getUTCDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+
 export function useOfferForm(
   mode: OfferFormProps["mode"],
   initialData: OfferFormProps["initialData"],
@@ -47,6 +59,9 @@ export function useOfferForm(
       wilayaCode: initialData?.wilayaCode ?? 0,
       durationWeeks: initialData?.durationWeeks ?? 0,
       maxPositions: initialData?.maxPositions ?? 1,
+      applicationDeadlineAt: formatDateInputValue(initialData?.applicationDeadlineAt),
+      expectedStartDate: formatDateInputValue(initialData?.expectedStartDate),
+      expectedEndDate: formatDateInputValue(initialData?.expectedEndDate),
       skillTagIds: initialData?.skillTagIds ?? ([] as string[]),
     },
     validators: {
@@ -71,6 +86,9 @@ export function useOfferForm(
             wilayaCode: value.wilayaCode || undefined,
             durationWeeks: value.durationWeeks || undefined,
             maxPositions: value.maxPositions || undefined,
+            applicationDeadlineAt: value.applicationDeadlineAt || undefined,
+            expectedStartDate: value.expectedStartDate || undefined,
+            expectedEndDate: value.expectedEndDate || undefined,
             skillTagIds: value.skillTagIds,
           })
         } else {
@@ -89,6 +107,9 @@ export function useOfferForm(
             wilayaCode: value.wilayaCode || null,
             durationWeeks: value.durationWeeks || null,
             maxPositions: value.maxPositions || undefined,
+            applicationDeadlineAt: value.applicationDeadlineAt || null,
+            expectedStartDate: value.expectedStartDate || null,
+            expectedEndDate: value.expectedEndDate || null,
             skillTagIds: value.skillTagIds,
           })
         }

@@ -55,6 +55,9 @@ export function useOfferCopilot(
       wilayaCode: (v.wilayaCode || null) as number | null,
       durationWeeks: (v.durationWeeks || null) as number | null,
       maxPositions: v.maxPositions as number | undefined,
+      applicationDeadlineAt: (v.applicationDeadlineAt || null) as string | null,
+      expectedStartDate: (v.expectedStartDate || null) as string | null,
+      expectedEndDate: (v.expectedEndDate || null) as string | null,
     }
   }
 
@@ -74,6 +77,15 @@ export function useOfferCopilot(
     if (data.wilayaCode != null) form.setFieldValue("wilayaCode", data.wilayaCode)
     if (data.durationWeeks != null) form.setFieldValue("durationWeeks", data.durationWeeks)
     if (data.maxPositions != null) form.setFieldValue("maxPositions", data.maxPositions)
+    if (data.applicationDeadlineAt != null) {
+      form.setFieldValue("applicationDeadlineAt", data.applicationDeadlineAt)
+    }
+    if (data.expectedStartDate != null) {
+      form.setFieldValue("expectedStartDate", data.expectedStartDate)
+    }
+    if (data.expectedEndDate != null) {
+      form.setFieldValue("expectedEndDate", data.expectedEndDate)
+    }
 
     if (intent === "offer_generate_draft" || intent === "offer_suggest_skill_tags") {
       const resolved = resolveSkillIds(data.skillTagIds, data.skillTagNames, skillTags)
@@ -98,6 +110,9 @@ export function useOfferCopilot(
         wilayaCode: data.wilayaCode,
         durationWeeks: data.durationWeeks,
         maxPositions: data.maxPositions,
+        applicationDeadlineAt: data.applicationDeadlineAt,
+        expectedStartDate: data.expectedStartDate,
+        expectedEndDate: data.expectedEndDate,
         skillTagIds: data.suggestedSkillTagIds,
         skillTagNames: data.suggestedSkillTagNames,
       }
