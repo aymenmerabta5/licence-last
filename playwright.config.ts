@@ -1,5 +1,8 @@
 import { defineConfig, devices } from "@playwright/test"
 
+const reuseExistingServer =
+  process.env.PLAYWRIGHT_REUSE_SERVER === "1" || !process.env.CI
+
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
@@ -23,6 +26,6 @@ export default defineConfig({
   webServer: {
     command: "bun run dev",
     url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer,
   },
 })

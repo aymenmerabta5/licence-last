@@ -12,12 +12,12 @@ import {
 import { ease } from "@/lib/animations"
 
 import type { StudentProfile, ProfileUser } from "../types"
-import { ROLE_LABELS } from "../utils"
 import { getWilayaName } from "@/lib/wilayas"
 
 interface ContactInfoCardProps {
   user: ProfileUser
   profile?: StudentProfile | null
+  roleLabel: string
   labels: {
     personalInfo: string
     email: string
@@ -25,18 +25,30 @@ interface ContactInfoCardProps {
     location: string
     studentNumber: string
     department: string
+    role: string
+    notSetYet: string
   }
 }
 
-export function ContactInfoCard({ user, profile, labels }: ContactInfoCardProps) {
+export function ContactInfoCard({
+  user,
+  profile,
+  roleLabel,
+  labels,
+}: ContactInfoCardProps) {
   const wilayaName = profile?.wilayaCode ? getWilayaName(profile.wilayaCode) : null
-  const roleLabel = ROLE_LABELS[user.role || "student"] || user.role || "User"
 
   const rows = [
     { key: "email", icon: Mail, label: labels.email, value: user.email },
     { key: "phone", icon: Phone, label: labels.phone, value: profile?.phone },
-    { key: "role", icon: ShieldCheck, label: "Role", value: roleLabel },
-    { key: "location", icon: MapPin, label: labels.location, value: wilayaName, placeholder: "Not set yet" },
+    { key: "role", icon: ShieldCheck, label: labels.role, value: roleLabel },
+    {
+      key: "location",
+      icon: MapPin,
+      label: labels.location,
+      value: wilayaName,
+      placeholder: labels.notSetYet,
+    },
     { key: "studentNumber", icon: Hash, label: labels.studentNumber, value: profile?.studentNumber },
     {
       key: "department",

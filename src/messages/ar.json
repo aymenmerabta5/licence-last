@@ -713,7 +713,12 @@
       "stats": {
         "applications": "الطلبات",
         "savedOffers": "العروض المحفوظة",
-        "interviews": "المقابلات"
+        "interviews": "المقابلات",
+        "pending": "{count} قيد الانتظار",
+        "accepted": "المقبولة",
+        "acceptedDescription": "طلبات مقبولة",
+        "profileBoosted": "تم تعزيز الملف الشخصي",
+        "addMoreSkills": "أضف المزيد من المهارات"
       },
       "actions": {
         "buildCV": "أكمل سيرتك الذاتية الرقمية",
@@ -722,14 +727,59 @@
       },
       "skillsSection": "مجموعة مهاراتك",
       "recentOffers": "موصى به لك",
+      "applications": {
+        "title": "الطلبات الأخيرة",
+        "viewAll": "عرض الكل",
+        "emptyMessage": "لم تتقدم بعد لأي فرصة تدريب. ابدأ باستكشاف الفرص الآن!",
+        "exploreButton": "استكشف فرص التدريب"
+      },
+      "offers": {
+        "exploreAll": "استكشف الكل"
+      },
+      "skills": {
+        "manageSkills": "إدارة المهارات",
+        "emptyMessage": "أضف مهاراتك التقنية لتبرز أمام مسؤولي التوظيف",
+        "addSkills": "أضف مهارات"
+      },
+      "welcomeHero": {
+        "brief": "ملخص اليوم",
+        "defaultName": "هناك",
+        "headlinePrefix": "هل أنت مستعد للحصول على",
+        "headlineAccent": "تدريب أحلامك",
+        "profileIncomplete": "أكمل ملفك الشخصي لتتميز أمام مسؤولي التوظيف وتفتح فرصًا أكثر.",
+        "profileComplete": "ملفك الشخصي مكتمل! واصل استكشاف الفرص والتقديم.",
+        "completeProfile": "أكمل الملف الشخصي",
+        "exploreInternships": "استكشف فرص التدريب",
+        "profileStrength": "قوة الملف الشخصي",
+        "profileReady": "ملفك الشخصي جاهز",
+        "profileRemaining": "متبقٍ {remaining}% للاكتمال"
+      },
+      "status": {
+        "applied": "قيد الانتظار",
+        "company_accepted": "مقبول",
+        "company_refused": "مرفوض",
+        "admin_validated": "تم التحقق",
+        "admin_rejected": "تم الرفض",
+        "withdrawn": "منسحب"
+      },
       "profile": {
         "title": "سيرتك الذاتية الرقمية",
         "subtitle": "ملفك المهني المرئي للمجندين",
         "edit": "تعديل الملف الشخصي",
+        "kicker": "الملف الشخصي",
+        "memberSince": "عضو منذ {date}",
+        "since": "منذ {date}",
+        "profileImageAlt": "الملف الشخصي",
+        "copyProfile": "نسخ الملف الشخصي",
+        "copied": "تم النسخ!",
+        "copySuccess": "تم نسخ الملف الشخصي إلى الحافظة",
+        "copyError": "فشل نسخ الملف الشخصي",
         "personalInfo": "المعلومات الشخصية",
         "name": "الاسم",
         "email": "البريد الإلكتروني",
         "phone": "الهاتف",
+        "role": "الدور",
+        "notSetYet": "غير محدد بعد",
         "studentNumber": "رقم الطالب",
         "department": "القسم",
         "level": "المستوى",
@@ -737,8 +787,44 @@
         "location": "الموقع",
         "wilaya": "الولاية",
         "address": "العنوان",
+        "university": "الجامعة",
         "links": "الروابط",
-        "skills": "المهارات التقنية"
+        "skills": "المهارات التقنية",
+        "skillCount": "{count, plural, one {{count} مهارة} other {{count} مهارات}}",
+        "addMoreSkills": "أضف المزيد",
+        "noSkillsListed": "لا توجد مهارات مدرجة بعد.",
+        "generalCategory": "عام",
+        "addSkills": "أضف مهارات",
+        "skillsEmptyMessage": "أضف مهاراتك التقنية لتبرز أمام مسؤولي التوظيف",
+        "bioEmptyMessage": "لم تتم إضافة نبذة بعد. حدّث الشركات ومسؤولي التوظيف عن نفسك واهتماماتك ونوع التدريب الذي تبحث عنه.",
+        "writeBio": "اكتب نبذتك",
+        "educationTitle": "التعليم",
+        "educationEmptyMessage": "سيظهر تاريخك التعليمي هنا بعد إكمال ملفك الشخصي.",
+        "addEducation": "أضف تعليمًا",
+        "experienceTitle": "الخبرة",
+        "experienceEmptyMessage": "أضف خبراتك العملية أو مساهماتك في المصادر المفتوحة أو مشاريعك الشخصية لتعزيز ملفك الشخصي.",
+        "addExperience": "أضف خبرة",
+        "anonymousUser": "مستخدم مجهول",
+        "unknownRole": "مستخدم",
+        "roles": {
+          "student": "طالب",
+          "company_admin": "مسؤول توظيف",
+          "dept_head": "رئيس القسم",
+          "university_admin": "مشرف جامعة",
+          "super_admin": "مشرف عام"
+        },
+        "stats": {
+          "applications": "الطلبات",
+          "totalSubmitted": "إجمالي المرسلة",
+          "skills": "المهارات",
+          "skillsAdded": "{count} مهارة مضافة",
+          "profile": "الملف الشخصي",
+          "complete": "مكتمل!",
+          "keepGoing": "واصل التقدم"
+        },
+        "skillsLabel": "المهارات",
+        "githubLabel": "جيت هاب",
+        "portfolioLabel": "معرض الأعمال"
       }
     },
     "recruiter": {

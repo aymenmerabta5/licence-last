@@ -44,6 +44,7 @@ import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { companyMember } from "@/server/db/schema/companies"
 import { CACHE_TAGS } from "@/lib/cache"
+import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 
 /* ── Offer Search (any authenticated user) ── */
 
@@ -78,8 +79,9 @@ export const applyToOfferProcedure = studentProcedureStandard
       if (isApplicationServiceError(error)) {
         throw createApplicationORPCError(error, getApplyToOfferStatus(error.code))
       }
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "Failed to apply",
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "Failed to apply",
       })
     }
   })
@@ -105,8 +107,9 @@ export const withdrawApplicationProcedure = studentProcedureStandard
       if (isApplicationServiceError(error)) {
         throw createApplicationORPCError(error, getWithdrawStatus(error.code))
       }
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "Failed to withdraw",
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "Failed to withdraw",
       })
     }
   })
@@ -154,8 +157,9 @@ export const companyAcceptProcedure = companyAdminProcedureStandard
       if (isApplicationServiceError(error)) {
         throw createApplicationORPCError(error, getCompanyActionStatus(error.code))
       }
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "Failed to accept application",
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "Failed to accept application",
       })
     }
   })
@@ -184,8 +188,9 @@ export const companyRefuseProcedure = companyAdminProcedureStandard
       if (isApplicationServiceError(error)) {
         throw createApplicationORPCError(error, getCompanyActionStatus(error.code))
       }
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "Failed to refuse application",
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "Failed to refuse application",
       })
     }
   })
@@ -211,8 +216,9 @@ export const updatePipelineStageProcedure = companyAdminProcedureStandard
       if (isApplicationServiceError(error)) {
         throw createApplicationORPCError(error, getCompanyActionStatus(error.code))
       }
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "An unexpected error occurred",
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "An unexpected error occurred",
       })
     }
   })

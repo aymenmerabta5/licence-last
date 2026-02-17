@@ -27,6 +27,7 @@ bun run lint
 bun test              # Run all tests
 bun test:watch        # Watch mode
 bun test:coverage     # With coverage report
+bun test:orpc-routes  # oRPC controller route + smoke tests
 
 # Database (auto-loads .env.development)
 bun run db:generate         # Generate migrations from schema
@@ -136,6 +137,7 @@ Put all business logic in `src/server/services/<domain>/`:
 - Always add `import "server-only"` at the top
 - Functions take plain data + userId — never handle auth themselves
 - Import `db` from `@/server/db` and schema from `@/server/db/schema`
+- Throw typed `ServiceError` codes for domain failures (avoid generic `Error`)
 
 **Service Pattern:**
 ```typescript
@@ -467,7 +469,7 @@ src/
 │   │   ├── assistant/chat/     # AI streaming endpoint
 │   │   ├── assistant/auth/status/ # Arcade auth check
 │   │   ├── openapi/            # OpenAPI spec + Swagger UI
-│   │   └── health/             # Health check endpoint
+│   │   └── health/             # Dependency-aware readiness endpoint
 │   └── [locale]/               # i18n routes
 │       ├── layout.tsx          # Locale layout (providers)
 │       ├── page.tsx            # Home page
@@ -788,9 +790,10 @@ describe("cn utility", () => {
 bun test              # Run all tests
 bun test:watch        # Watch mode for development
 bun test:coverage     # Generate coverage report
-bun test:unit         # src/lib + src/server
-bun test:api          # src/app/api
-bun test:pages        # src/app
+bun test:unit         # Unit/core modules (segmented to avoid mock collisions)
+bun test:orpc-routes  # oRPC controller route + smoke tests
+bun test:api          # API route tests + oRPC route suite
+bun test:pages        # App Router page/component tests (src/app/[locale])
 bun test:e2e          # Playwright E2E (chromium)
 bun test:ci           # unit + api + pages (CI pipeline)
 ```
@@ -1123,6 +1126,18 @@ import { RedisRatelimiter } from "@orpc/experimental-ratelimit/redis"
 export function getRateLimiter(): RedisRatelimiter | null
 export function isRateLimitingEnabled(): boolean
 ```
+
+### Health Readiness Endpoint
+
+`GET /api/health` returns structured readiness details instead of a plain `"ok"`:
+
+- `checks.database` — required dependency (driven by `pingDatabase()` in `src/server/db/index.ts`)
+- `checks.redis` — optional dependency (`pingRedis()` / `isRedisAvailable()`)
+- `checks.rateLimiter` — reflects `isRateLimitingEnabled()` and Redis availability
+
+Response status:
+- `200` for `ok`/`degraded`
+- `503` for `error` when required dependencies are unhealthy
 
 ### MCP (Model Context Protocol) Server
 

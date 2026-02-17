@@ -25,3 +25,15 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export const db = drizzle(client, { schema })
+
+/**
+ * Lightweight readiness probe for the primary database.
+ */
+export async function pingDatabase(): Promise<boolean> {
+  try {
+    await client`select 1`
+    return true
+  } catch {
+    return false
+  }
+}

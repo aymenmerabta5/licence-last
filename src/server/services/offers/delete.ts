@@ -5,6 +5,7 @@ import { and, eq } from "drizzle-orm"
 import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { internshipOffer } from "@/server/db/schema/internships"
+import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/offers/delete")
 
@@ -25,7 +26,7 @@ export async function deleteOffer(offerId: string, companyId: string) {
     .limit(1)
 
   if (!existing) {
-    throw new Error("Offer not found or access denied")
+    throw new ServiceError("OFFER_NOT_FOUND", "Offer not found or access denied")
   }
 
   log.info({ offerId, companyId, status: existing.status }, "Deleting offer")

@@ -6,6 +6,7 @@ import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { department } from "@/server/db/schema/departments"
 import { user } from "@/server/db/schema/auth"
+import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/departments/assign-head")
 
@@ -29,7 +30,7 @@ export async function assignDepartmentHead(
     .limit(1)
 
   if (!dept) {
-    throw new Error("Department not found")
+    throw new ServiceError("DEPARTMENT_NOT_FOUND", "Department not found")
   }
 
   // Verify user exists
@@ -40,7 +41,7 @@ export async function assignDepartmentHead(
     .limit(1)
 
   if (!targetUser) {
-    throw new Error("User not found")
+    throw new ServiceError("USER_NOT_FOUND", "User not found")
   }
 
   log.info(

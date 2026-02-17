@@ -6,6 +6,7 @@ import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { department } from "@/server/db/schema/departments"
 import { createModuleLogger } from "@/server/logging"
+import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/departments/delete")
 
@@ -17,7 +18,7 @@ export async function deleteDepartment(departmentId: string) {
     .limit(1)
 
   if (!existingDepartment) {
-    throw new Error("Department not found")
+    throw new ServiceError("DEPARTMENT_NOT_FOUND", "Department not found")
   }
 
   log.info({ departmentId }, "Deleting department")

@@ -36,7 +36,7 @@ src/
 │   │   ├── rpc/[...rest]/  (oRPC catch-all, CSRF protected)
 │   │   ├── assistant/      (AI assistant endpoints: chat, auth/status)
 │   │   ├── openapi/        (OpenAPI spec + UI)
-│   │   └── health/         (Health check endpoint)
+│   │   └── health/         (Dependency-aware readiness endpoint)
 │   ├── layout.tsx          (root layout — minimal pass-through)
 │   ├── globals.css
 │   ├── robots.ts           (SEO robots.txt)
@@ -171,6 +171,7 @@ Put pure business logic in `src/server/services/<domain>/`:
 - Writes: `create.ts`, `update.ts`, `approve.ts`, `reject.ts`
 - Always add `import "server-only"` at the top
 - Functions take plain data + userId — **never** handle auth themselves
+- Throw typed `ServiceError` codes for domain failures (avoid generic `Error`)
 - Return typed data — no `NextResponse`, no `ORPCError`
 
 ```typescript
@@ -195,6 +196,8 @@ export const createCompanyProcedure = companyAdminProcedure
   .input(z.object({ name: z.string().min(2), ... }))
   .handler(async ({ input, context }) => createCompany(input, context.user.id))
 ```
+
+Route handlers should map service-domain failures through `createServiceORPCError(...)` so transport errors remain consistent and route-local fallback messages are explicit.
 
 **Middleware chain** (`src/server/orpc/middleware.ts`):
 ```
@@ -452,9 +455,10 @@ bun run typecheck  # TypeScript check
 bun test           # Run all tests
 bun test:watch     # Watch mode
 bun test:coverage  # Coverage report
-bun test:unit      # Unit tests (src/lib + src/server)
-bun test:api       # API tests (src/app/api)
-bun test:pages     # Page tests (src/app)
+bun test:unit      # Unit/core modules (segmented to avoid mock collisions)
+bun test:orpc-routes # oRPC controller route + smoke tests
+bun test:api       # API route tests + oRPC route suite
+bun test:pages     # App Router page/component tests (src/app/[locale])
 bun test:e2e       # Playwright E2E tests
 bun test:ci        # CI pipeline (unit + api + pages)
 
@@ -541,9 +545,10 @@ describe("myModule", () => {
 bun test                    # Run all tests once
 bun test:watch             # Watch mode - re-run on file changes
 bun test:coverage          # Run with coverage report
-bun test:unit              # Unit tests only (src/lib + src/server)
-bun test:api               # API endpoint tests
-bun test:pages             # Page/component tests
+bun test:unit              # Unit/core modules (segmented to avoid mock collisions)
+bun test:orpc-routes       # oRPC controller route + smoke tests
+bun test:api               # API endpoint tests + oRPC route suite
+bun test:pages             # App Router page/component tests (src/app/[locale])
 bun test:e2e               # Playwright end-to-end tests
 bun test:ci                # CI pipeline (unit + api + pages)
 bun test src/lib/utils.test.ts  # Run specific test file

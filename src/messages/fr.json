@@ -713,7 +713,12 @@
       "stats": {
         "applications": "Candidatures",
         "savedOffers": "Offres Enregistrées",
-        "interviews": "Entretiens"
+        "interviews": "Entretiens",
+        "pending": "{count} en attente",
+        "accepted": "Acceptées",
+        "acceptedDescription": "Candidatures acceptées",
+        "profileBoosted": "Profil renforcé",
+        "addMoreSkills": "Ajoutez plus de compétences"
       },
       "actions": {
         "buildCV": "Compléter le CV Digital",
@@ -722,14 +727,59 @@
       },
       "skillsSection": "Votre Stack de Compétences",
       "recentOffers": "Recommandé pour Vous",
+      "applications": {
+        "title": "Candidatures récentes",
+        "viewAll": "Voir tout",
+        "emptyMessage": "Vous n'avez pas encore postulé à des stages. Commencez à explorer les opportunités !",
+        "exploreButton": "Explorer les stages"
+      },
+      "offers": {
+        "exploreAll": "Tout explorer"
+      },
+      "skills": {
+        "manageSkills": "Gérer les compétences",
+        "emptyMessage": "Ajoutez vos compétences techniques pour vous démarquer auprès des recruteurs",
+        "addSkills": "Ajouter des compétences"
+      },
+      "welcomeHero": {
+        "brief": "Le brief du jour",
+        "defaultName": "vous",
+        "headlinePrefix": "Prêt à décrocher votre",
+        "headlineAccent": "stage de rêve",
+        "profileIncomplete": "Complétez votre profil pour vous démarquer auprès des recruteurs et débloquer plus d'opportunités.",
+        "profileComplete": "Votre profil est complet ! Continuez à explorer les opportunités et à postuler.",
+        "completeProfile": "Compléter le profil",
+        "exploreInternships": "Explorer les stages",
+        "profileStrength": "Force du profil",
+        "profileReady": "Votre profil est prêt",
+        "profileRemaining": "Il reste {remaining}% pour compléter"
+      },
+      "status": {
+        "applied": "En attente",
+        "company_accepted": "Acceptée",
+        "company_refused": "Refusée",
+        "admin_validated": "Validée",
+        "admin_rejected": "Rejetée",
+        "withdrawn": "Retirée"
+      },
       "profile": {
         "title": "Votre CV Digital",
         "subtitle": "Votre profil professionnel visible par les recruteurs",
         "edit": "Modifier le Profil",
+        "kicker": "Profil",
+        "memberSince": "Membre depuis {date}",
+        "since": "Depuis {date}",
+        "profileImageAlt": "Profil",
+        "copyProfile": "Copier le profil",
+        "copied": "Copié !",
+        "copySuccess": "Profil copié dans le presse-papiers",
+        "copyError": "Impossible de copier le profil",
         "personalInfo": "Informations Personnelles",
         "name": "Nom",
         "email": "Email",
         "phone": "Téléphone",
+        "role": "Rôle",
+        "notSetYet": "Non renseigné",
         "studentNumber": "Numéro Étudiant",
         "department": "Département",
         "level": "Niveau",
@@ -737,8 +787,44 @@
         "location": "Localisation",
         "wilaya": "Wilaya",
         "address": "Adresse",
+        "university": "Université",
         "links": "Liens",
-        "skills": "Compétences Techniques"
+        "skills": "Compétences Techniques",
+        "skillCount": "{count, plural, one {{count} COMPÉTENCE} other {{count} COMPÉTENCES}}",
+        "addMoreSkills": "Ajouter plus",
+        "noSkillsListed": "Aucune compétence listée pour le moment.",
+        "generalCategory": "Général",
+        "addSkills": "Ajouter des compétences",
+        "skillsEmptyMessage": "Ajoutez vos compétences techniques pour vous démarquer auprès des recruteurs",
+        "bioEmptyMessage": "Aucune bio ajoutée pour le moment. Présentez-vous aux entreprises et recruteurs, vos centres d'intérêt et le type de stage que vous recherchez.",
+        "writeBio": "Écrire votre bio",
+        "educationTitle": "Formation",
+        "educationEmptyMessage": "Votre parcours de formation apparaîtra ici une fois votre profil complété.",
+        "addEducation": "Ajouter une formation",
+        "experienceTitle": "Expérience",
+        "experienceEmptyMessage": "Ajoutez vos expériences professionnelles, contributions open source ou projets personnels pour renforcer votre profil.",
+        "addExperience": "Ajouter une expérience",
+        "anonymousUser": "Utilisateur anonyme",
+        "unknownRole": "Utilisateur",
+        "roles": {
+          "student": "Étudiant",
+          "company_admin": "Recruteur",
+          "dept_head": "Chef de département",
+          "university_admin": "Administrateur universitaire",
+          "super_admin": "Super administrateur"
+        },
+        "stats": {
+          "applications": "Candidatures",
+          "totalSubmitted": "Total soumises",
+          "skills": "Compétences",
+          "skillsAdded": "{count, plural, one {{count} compétence ajoutée} other {{count} compétences ajoutées}}",
+          "profile": "Profil",
+          "complete": "Complet !",
+          "keepGoing": "Continuez"
+        },
+        "skillsLabel": "Compétences",
+        "githubLabel": "GitHub",
+        "portfolioLabel": "Portfolio"
       }
     },
     "recruiter": {

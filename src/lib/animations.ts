@@ -31,6 +31,38 @@ export function revealWithDelay(delay: number): Transition {
 }
 
 /**
+ * Reduced-motion transition baseline used to avoid long transform animations.
+ */
+export const reducedMotionTransition: Transition = {
+  duration: 0.01,
+  delay: 0,
+} as const
+
+/**
+ * Returns fade-only reveal when reduced motion is preferred.
+ */
+export function getRevealVariants(prefersReducedMotion: boolean): Variants {
+  return prefersReducedMotion ? fadeIn : reveal
+}
+
+/**
+ * Collapses animation duration/delay when reduced motion is preferred.
+ */
+export function getTransition(
+  transition: Transition,
+  prefersReducedMotion: boolean,
+): Transition {
+  if (!prefersReducedMotion) {
+    return transition
+  }
+
+  return {
+    ...transition,
+    ...reducedMotionTransition,
+  }
+}
+
+/**
  * Fade-in animation for subtle element appearances.
  */
 export const fadeIn: Variants = {

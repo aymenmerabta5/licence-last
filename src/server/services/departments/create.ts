@@ -7,6 +7,7 @@ import { eq, and } from "drizzle-orm"
 import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { department } from "@/server/db/schema/departments"
+import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/departments/create")
 
@@ -23,7 +24,10 @@ export async function createDepartment(data: {
   })
 
   if (existing) {
-    throw new Error("Department with this name already exists")
+    throw new ServiceError(
+      "DEPARTMENT_NAME_EXISTS",
+      "Department with this name already exists",
+    )
   }
 
   const id = randomUUID()

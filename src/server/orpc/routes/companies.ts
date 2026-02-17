@@ -46,6 +46,7 @@ import {
   submitCompanyReport,
 } from "@/server/services/companies/trust-actions"
 import { CACHE_TAGS } from "@/lib/cache"
+import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 
 /* ── Reads ── */
 
@@ -219,13 +220,22 @@ export const updateCompanyProcedure = companyAdminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    const result = await updateCompany(context.companyMembership.companyId, input)
+    try {
+      const result = await updateCompany(context.companyMembership.companyId, input)
 
-    // Invalidate company cache
-    revalidateTag(CACHE_TAGS.COMPANY_PROFILE(context.companyMembership.companyId), "max")
-    revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`), "max")
+      // Invalidate company cache
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(context.companyMembership.companyId), "max")
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`), "max")
 
-    return result
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          COMPANY_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to update company profile",
+      })
+    }
   })
 
 export const approveCompanyProcedure = superAdminProcedureStandard

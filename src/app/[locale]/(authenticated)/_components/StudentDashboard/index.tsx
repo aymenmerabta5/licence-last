@@ -18,41 +18,42 @@ export function StudentDashboard({ user, data }: StudentDashboardProps) {
     {
       title: t("stats.applications"),
       value: String(data.stats.totalApplications),
-      description: `${data.stats.pendingApplications} pending`,
+      description: t("stats.pending", { count: data.stats.pendingApplications }),
       icon: Briefcase,
     },
     {
-      title: "Accepted",
+      title: t("stats.accepted"),
       value: String(data.stats.acceptedApplications),
-      description: "Accepted applications",
+      description: t("stats.acceptedDescription"),
       icon: CheckCircle2,
     },
     {
       title: t("skillsSection"),
       value: String(data.stats.skillsCount),
-      description: `${data.stats.skillsCount >= 3 ? "Profile boosted" : "Add more skills"}`,
+      description: data.stats.skillsCount >= 3
+        ? t("stats.profileBoosted")
+        : t("stats.addMoreSkills"),
       icon: Wrench,
     },
   ]
 
   const applicationsLabels = {
-    title: "Recent Applications",
-    viewAll: "View All",
-    emptyMessage:
-      "You haven't applied to any internships yet. Start exploring opportunities!",
-    exploreButton: "Explore Internships",
+    title: t("applications.title"),
+    viewAll: t("applications.viewAll"),
+    emptyMessage: t("applications.emptyMessage"),
+    exploreButton: t("applications.exploreButton"),
   }
 
   const offersLabels = {
     title: t("recentOffers"),
-    exploreAll: "Explore All",
+    exploreAll: t("offers.exploreAll"),
   }
 
   const skillsLabels = {
     title: t("skillsSection"),
-    manageSkills: "Manage Skills",
-    emptyMessage: "Add your technical skills to stand out to recruiters",
-    addSkills: "Add Skills",
+    manageSkills: t("skills.manageSkills"),
+    emptyMessage: t("skills.emptyMessage"),
+    addSkills: t("skills.addSkills"),
   }
 
   return (

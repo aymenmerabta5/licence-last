@@ -390,6 +390,7 @@ Pure business logic functions. Every file starts with `import "server-only"`.
 - Functions take plain data + userId -- **never** handle auth
 - Import `db` from `@/server/db` and schema from `@/server/db/schema`
 - Return typed data -- no `NextResponse`, no `ORPCError`
+- Throw typed `ServiceError` codes for domain failures (instead of generic `Error`)
 - Use transactions for multi-table operations
 - Row-level locking where needed (e.g., `applyToOffer` prevents race conditions)
 
@@ -516,7 +517,7 @@ const user = await requireRole(["company_admin", "super_admin"])
 | POST | `/api/assistant/auth/status` | Arcade tool auth check |
 | GET | `/api/openapi/spec` | OpenAPI JSON specification |
 | GET | `/api/openapi` | Swagger UI |
-| GET | `/api/health` | Health check (`{ status: "ok" }`) |
+| GET | `/api/health` | Readiness payload with dependency checks (`database`, `redis`, `rateLimiter`) |
 
 ### CSRF Protection
 
@@ -533,6 +534,12 @@ const url = typeof window !== "undefined"
 ```
 
 SSR requests forward cookies via `next/headers` for auth.
+
+### Service Error Mapping Contract
+
+- Services throw typed `ServiceError` instances with stable domain codes.
+- oRPC routes normalize service failures through `createServiceORPCError(...)`.
+- Unknown failures are mapped to `INTERNAL_SERVER_ERROR` with route-scoped fallback messages.
 
 ---
 
@@ -557,7 +564,7 @@ SSR requests forward cookies via `next/headers` for auth.
 
 ```
 app/layout.tsx              -- Minimal pass-through (no getLocale!)
-└── [locale]/layout.tsx     -- <html>, <body>, fonts, ThemeProvider, QueryProvider
+└── [locale]/layout.tsx     -- <html>, <body>, fonts, ThemeProvider, MotionProvider, QueryProvider
     ├── (auth)/layout.tsx   -- Split editorial panel + form
     ├── (authenticated)/layout.tsx -- requireRole guard + sidebar
     └── onboarding/layout.tsx -- Onboarding wrapper
@@ -598,7 +605,7 @@ FeatureName/
 |--------|---------|
 | `src/lib/constants/pipeline.ts` | STATUS_COLORS, STAGE_COLUMNS, STAGE_LABELS |
 | `src/lib/constants/internship.ts` | INTERNSHIP_TYPE_LABELS, INTERNSHIP_TYPE_COLORS |
-| `src/lib/animations.ts` | reveal, ease, fadeIn, slideUp, revealWithDelay |
+| `src/lib/animations.ts` | reveal, ease, fadeIn, slideUp, revealWithDelay, reduced-motion helpers |
 | `src/hooks/useInfiniteScroll.ts` | IntersectionObserver + fetchNextPage |
 | `src/hooks/useDebounce.ts` | Debounced value |
 | `src/hooks/useLogout.ts` | Logout + redirect |
@@ -884,8 +891,9 @@ CI (GitHub Actions):
   2. test:unit (parallel with 3, 4)
   3. test:api
   4. test:pages
-  5. build
-  6. test:e2e (with PostgreSQL service)
+  5. test:coverage
+  6. build
+  7. test:e2e (with PostgreSQL service)
     |
     v (on success)
 CD:
@@ -939,9 +947,10 @@ Pino structured JSON logging with automatic redaction:
 
 ```bash
 bun test              # All tests
-bun test:unit         # src/lib + src/server
-bun test:api          # src/app/api
-bun test:pages        # src/app
+bun test:unit         # Unit/core modules (segmented to avoid mock collisions)
+bun test:orpc-routes  # oRPC controller route and smoke tests
+bun test:api          # API route tests + oRPC route suite
+bun test:pages        # App Router page/component tests (src/app/[locale])
 bun test:e2e          # Playwright E2E
 bun test:coverage     # Coverage report
 ```

@@ -1,4 +1,7 @@
+"use client"
+
 import * as motion from "motion/react-client"
+import { useReducedMotion } from "motion/react"
 import { ArrowRight, GraduationCap, Building2, TrendingUp } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
@@ -12,7 +15,7 @@ import {
   CardDescription,
 } from "@/components/ui/card"
 import type { LucideIcon } from "lucide-react"
-import { reveal, ease } from "@/lib/animations"
+import { ease, getRevealVariants, getTransition } from "@/lib/animations"
 
 /* ── Individual Feature Card ── */
 function FeatureCard({
@@ -21,17 +24,24 @@ function FeatureCard({
   desc,
   icon: Icon,
   index,
+  prefersReducedMotion,
 }: {
   num: string
   title: string
   desc: string
   icon: LucideIcon
   index: number
+  prefersReducedMotion: boolean
 }) {
+  const revealVariants = getRevealVariants(prefersReducedMotion)
+
   return (
     <motion.div
-      {...reveal}
-      transition={{ duration: 0.6, ease, delay: 0.4 + index * 0.12 }}
+      {...revealVariants}
+      transition={getTransition(
+        { duration: 0.6, ease, delay: 0.4 + index * 0.12 },
+        prefersReducedMotion,
+      )}
     >
       <Card variant="editorial">
         <CardHeader>
@@ -54,6 +64,8 @@ function FeatureCard({
 /* ── Hero Section ── */
 export function HeroSection() {
   const t = useTranslations()
+  const prefersReducedMotion = useReducedMotion() ?? false
+  const revealVariants = getRevealVariants(prefersReducedMotion)
 
   const headline = t("hero.headline")
   const headlineHighlight = t("hero.headlineHighlight")
@@ -103,8 +115,11 @@ export function HeroSection() {
         <div className="lg:col-span-7">
           {/* Issue marker */}
           <motion.div
-            {...reveal}
-            transition={{ duration: 0.7, ease: "easeOut" }}
+            {...revealVariants}
+            transition={getTransition(
+              { duration: 0.7, ease: "easeOut" },
+              prefersReducedMotion,
+            )}
             className="flex items-center gap-3 mb-8"
           >
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary [[dir=rtl]_&]:tracking-normal">
@@ -115,8 +130,11 @@ export function HeroSection() {
 
           {/* Headline */}
           <motion.h1
-            {...reveal}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.12 }}
+            {...revealVariants}
+            transition={getTransition(
+              { duration: 0.7, ease: "easeOut", delay: 0.12 },
+              prefersReducedMotion,
+            )}
             className="font-serif text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
             style={{
               fontSize: "clamp(3rem, 6vw, 5.5rem)",
@@ -131,9 +149,12 @@ export function HeroSection() {
                 <span className="relative inline-block text-primary">
                   {headlineHighlight}
                   <motion.span
-                    initial={{ scaleX: 0 }}
+                    initial={{ scaleX: prefersReducedMotion ? 1 : 0 }}
                     animate={{ scaleX: 1 }}
-                    transition={{ duration: 0.6, ease, delay: 0.55 }}
+                    transition={getTransition(
+                      { duration: 0.6, ease, delay: 0.55 },
+                      prefersReducedMotion,
+                    )}
                     className="pointer-events-none absolute -bottom-1 start-0 end-0 h-[3px] bg-primary origin-left [[dir=rtl]_&]:origin-right"
                     aria-hidden="true"
                   />
@@ -147,8 +168,11 @@ export function HeroSection() {
 
           {/* Description columns */}
           <motion.div
-            {...reveal}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.24 }}
+            {...revealVariants}
+            transition={getTransition(
+              { duration: 0.7, ease: "easeOut", delay: 0.24 },
+              prefersReducedMotion,
+            )}
             className="mt-10 grid grid-cols-2 gap-8 border-t border-border pt-8 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
           >
             <p className="text-sm leading-relaxed font-light text-muted-foreground transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
@@ -161,8 +185,11 @@ export function HeroSection() {
 
           {/* CTA row */}
           <motion.div
-            {...reveal}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.36 }}
+            {...revealVariants}
+            transition={getTransition(
+              { duration: 0.7, ease: "easeOut", delay: 0.36 },
+              prefersReducedMotion,
+            )}
             className="mt-10 flex items-center gap-6"
           >
             <Button
@@ -187,7 +214,12 @@ export function HeroSection() {
         {/* ── Right column — 5 cols, staggered editorial cards ── */}
         <div className="lg:col-span-5 flex flex-col gap-5">
           {features.map((item, i) => (
-            <FeatureCard key={i} index={i} {...item} />
+            <FeatureCard
+              key={i}
+              index={i}
+              prefersReducedMotion={prefersReducedMotion}
+              {...item}
+            />
           ))}
         </div>
       </div>

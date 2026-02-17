@@ -22,6 +22,7 @@ import { listDepartments } from "@/server/services/departments/list"
 import { syncDepartmentSkills } from "@/server/services/departments/sync-skills"
 import { unassignDepartmentHead } from "@/server/services/departments/unassign-head"
 import { updateDepartment } from "@/server/services/departments/update"
+import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 
 interface DepartmentAdminContext {
   user: {
@@ -76,14 +77,25 @@ export const createDepartmentProcedure = adminProcedureStandard
   .handler(async ({ input, context }) => {
     const universityId = context.user.universityId
     if (!universityId) {
-      throw new Error("Admin must belong to a university")
+      throw new ORPCError("BAD_REQUEST", {
+        message: "Admin must belong to a university",
+      })
     }
 
-    return createDepartment({
-      universityId,
-      name: input.name,
-      headName: input.headName,
-    })
+    try {
+      return await createDepartment({
+        universityId,
+        name: input.name,
+        headName: input.headName,
+      })
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          DEPARTMENT_NAME_EXISTS: "CONFLICT",
+        },
+        fallbackMessage: "Failed to create department",
+      })
+    }
   })
 
 export const updateDepartmentProcedure = adminProcedureStandard
@@ -118,15 +130,25 @@ export const assignDepartmentHeadProcedure = adminProcedureStandard
   .handler(async ({ input, context }) => {
     await assertCanManageDepartment(input.departmentId, context)
 
-    if (input.userId) {
-      return assignDepartmentHead(input.departmentId, input.userId)
-    }
+    try {
+      if (input.userId) {
+        return await assignDepartmentHead(input.departmentId, input.userId)
+      }
 
-    return assignDepartmentHeadByEmail({
-      departmentId: input.departmentId,
-      headEmail: input.headEmail!,
-      headName: input.headName!,
-    })
+      return await assignDepartmentHeadByEmail({
+        departmentId: input.departmentId,
+        headEmail: input.headEmail!,
+        headName: input.headName!,
+      })
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          DEPARTMENT_NOT_FOUND: "NOT_FOUND",
+          USER_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to assign department head",
+      })
+    }
   })
 
 export const unassignDepartmentHeadProcedure = adminProcedureStandard
@@ -137,7 +159,16 @@ export const unassignDepartmentHeadProcedure = adminProcedureStandard
   )
   .handler(async ({ input, context }) => {
     await assertCanManageDepartment(input.departmentId, context)
-    return unassignDepartmentHead(input.departmentId)
+    try {
+      return await unassignDepartmentHead(input.departmentId)
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          DEPARTMENT_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to unassign department head",
+      })
+    }
   })
 
 export const deleteDepartmentProcedure = adminProcedureStandard
@@ -148,7 +179,16 @@ export const deleteDepartmentProcedure = adminProcedureStandard
   )
   .handler(async ({ input, context }) => {
     await assertCanManageDepartment(input.departmentId, context)
-    return deleteDepartment(input.departmentId)
+    try {
+      return await deleteDepartment(input.departmentId)
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          DEPARTMENT_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to delete department",
+      })
+    }
   })
 
 export const bulkCreateDepartmentsProcedure = adminProcedureStandard

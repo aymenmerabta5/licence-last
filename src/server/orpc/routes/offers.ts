@@ -23,6 +23,7 @@ import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
 import { eq } from "drizzle-orm"
 import { CACHE_TAGS } from "@/lib/cache"
+import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 
 /* ── Reads ── */
 
@@ -103,30 +104,49 @@ export const updateOfferProcedure = companyAdminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    const { offerId, ...data } = input
-    const result = await updateOffer(offerId, context.companyMembership.companyId, data)
+    try {
+      const { offerId, ...data } = input
+      const result = await updateOffer(offerId, context.companyMembership.companyId, data)
 
-    // Invalidate offer caches
-    revalidateTag(CACHE_TAGS.OFFER_DETAIL(offerId), { expire: 0 })
-    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), { expire: 0 })
-    revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
-    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+      // Invalidate offer caches
+      revalidateTag(CACHE_TAGS.OFFER_DETAIL(offerId), { expire: 0 })
+      revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), { expire: 0 })
+      revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
+      revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
 
-    return result
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          OFFER_NOT_FOUND: "NOT_FOUND",
+          OFFER_CLOSED: "BAD_REQUEST",
+        },
+        fallbackMessage: "Failed to update offer",
+      })
+    }
   })
 
 export const deleteOfferProcedure = companyAdminProcedureStandard
   .input(z.object({ offerId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
-    const result = await deleteOffer(input.offerId, context.companyMembership.companyId)
+    try {
+      const result = await deleteOffer(input.offerId, context.companyMembership.companyId)
 
-    // Invalidate offer caches
-    revalidateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId), { expire: 0 })
-    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), { expire: 0 })
-    revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
-    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+      // Invalidate offer caches
+      revalidateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId), { expire: 0 })
+      revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), { expire: 0 })
+      revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
+      revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
 
-    return result
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          OFFER_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to delete offer",
+      })
+    }
   })
 
 export const updateOfferStatusProcedure = companyAdminProcedureStandard
@@ -137,19 +157,31 @@ export const updateOfferStatusProcedure = companyAdminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    const result = await updateOfferStatus(
-      input.offerId,
-      context.companyMembership.companyId,
-      input.action,
-    )
+    try {
+      const result = await updateOfferStatus(
+        input.offerId,
+        context.companyMembership.companyId,
+        input.action,
+      )
 
-    // Invalidate offer caches when status changes
-    revalidateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId), { expire: 0 })
-    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), { expire: 0 })
-    revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
-    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+      // Invalidate offer caches when status changes
+      revalidateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId), { expire: 0 })
+      revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), { expire: 0 })
+      revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
+      revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
 
-    return result
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          OFFER_NOT_FOUND: "NOT_FOUND",
+          OFFER_INVALID_PUBLISH_STATUS: "BAD_REQUEST",
+          OFFER_INVALID_CLOSE_STATUS: "BAD_REQUEST",
+          OFFER_INVALID_ACTION: "BAD_REQUEST",
+        },
+        fallbackMessage: "Failed to update offer status",
+      })
+    }
   })
 
 /* ── AI Offer Copilot ── */

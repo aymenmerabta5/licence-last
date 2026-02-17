@@ -2,6 +2,7 @@
 
 import * as motion from "motion/react-client"
 import { Award } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -20,10 +21,10 @@ interface SkillsCardProps {
   }
 }
 
-function groupByCategory(skills: StudentSkill[]) {
+function groupByCategory(skills: StudentSkill[], fallbackCategory: string) {
   const groups: Record<string, StudentSkill[]> = {}
   for (const skill of skills) {
-    const cat = skill.category || "General"
+    const cat = skill.category || fallbackCategory
     if (!groups[cat]) groups[cat] = []
     groups[cat].push(skill)
   }
@@ -31,8 +32,9 @@ function groupByCategory(skills: StudentSkill[]) {
 }
 
 export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
+  const t = useTranslations("dashboard.student.profile")
   const hasSkills = skills.length > 0
-  const grouped = groupByCategory(skills)
+  const grouped = groupByCategory(skills, t("generalCategory"))
 
   return (
     <motion.section
@@ -57,12 +59,12 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
           {/* Skill count */}
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-wider [[dir=rtl]_&]:tracking-normal">
-              {skills.length} skill{skills.length !== 1 ? "s" : ""}
+              {t("skillCount", { count: skills.length })}
             </span>
             {canEdit && (
               <Link href="/dashboard/settings">
                 <button className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary hover:text-primary/80 transition-colors [[dir=rtl]_&]:tracking-normal">
-                  + Add more
+                  + {t("addMoreSkills")}
                 </button>
               </Link>
             )}
@@ -110,7 +112,7 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
             />
           ) : (
             <p className="text-xs text-muted-foreground/40 font-medium text-center">
-              No skills listed yet.
+              {t("noSkillsListed")}
             </p>
           )}
         </div>

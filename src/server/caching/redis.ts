@@ -41,3 +41,21 @@ export async function closeRedisConnection(): Promise<void> {
 export function isRedisAvailable(): boolean {
   return env.REDIS_URL !== undefined && env.REDIS_URL !== ""
 }
+
+/**
+ * Lightweight readiness probe for Redis.
+ * Returns false if Redis is not configured or if ping fails.
+ */
+export async function pingRedis(): Promise<boolean> {
+  const client = getRedisClient()
+  if (!client) {
+    return false
+  }
+
+  try {
+    const pong = await client.ping()
+    return pong === "PONG"
+  } catch {
+    return false
+  }
+}

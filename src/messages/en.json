@@ -713,7 +713,12 @@
       "stats": {
         "applications": "Applications",
         "savedOffers": "Saved Offers",
-        "interviews": "Interviews"
+        "interviews": "Interviews",
+        "pending": "{count} pending",
+        "accepted": "Accepted",
+        "acceptedDescription": "Accepted applications",
+        "profileBoosted": "Profile boosted",
+        "addMoreSkills": "Add more skills"
       },
       "actions": {
         "buildCV": "Complete Digital CV",
@@ -722,14 +727,59 @@
       },
       "skillsSection": "Your Skill Stack",
       "recentOffers": "Recommended for You",
+      "applications": {
+        "title": "Recent Applications",
+        "viewAll": "View All",
+        "emptyMessage": "You haven't applied to any internships yet. Start exploring opportunities!",
+        "exploreButton": "Explore Internships"
+      },
+      "offers": {
+        "exploreAll": "Explore All"
+      },
+      "skills": {
+        "manageSkills": "Manage Skills",
+        "emptyMessage": "Add your technical skills to stand out to recruiters",
+        "addSkills": "Add Skills"
+      },
+      "welcomeHero": {
+        "brief": "Today's Brief",
+        "defaultName": "there",
+        "headlinePrefix": "Ready to secure your",
+        "headlineAccent": "dream internship",
+        "profileIncomplete": "Complete your profile to stand out to recruiters and unlock more opportunities.",
+        "profileComplete": "Your profile is complete! Keep exploring opportunities and applying.",
+        "completeProfile": "Complete Profile",
+        "exploreInternships": "Explore Internships",
+        "profileStrength": "Profile Strength",
+        "profileReady": "Your profile is ready",
+        "profileRemaining": "{remaining}% remaining to complete"
+      },
+      "status": {
+        "applied": "Pending",
+        "company_accepted": "Accepted",
+        "company_refused": "Refused",
+        "admin_validated": "Validated",
+        "admin_rejected": "Rejected",
+        "withdrawn": "Withdrawn"
+      },
       "profile": {
         "title": "Your Digital CV",
         "subtitle": "Your professional profile visible to recruiters",
         "edit": "Edit Profile",
+        "kicker": "Profile",
+        "memberSince": "Member since {date}",
+        "since": "Since {date}",
+        "profileImageAlt": "Profile",
+        "copyProfile": "Copy Profile",
+        "copied": "Copied!",
+        "copySuccess": "Profile copied to clipboard",
+        "copyError": "Failed to copy profile",
         "personalInfo": "Personal Information",
         "name": "Name",
         "email": "Email",
         "phone": "Phone",
+        "role": "Role",
+        "notSetYet": "Not set yet",
         "studentNumber": "Student Number",
         "department": "Department",
         "level": "Level",
@@ -737,8 +787,44 @@
         "location": "Location",
         "wilaya": "Wilaya",
         "address": "Address",
+        "university": "University",
         "links": "Links",
-        "skills": "Technical Skills"
+        "skills": "Technical Skills",
+        "skillCount": "{count, plural, one {{count} SKILL} other {{count} SKILLS}}",
+        "addMoreSkills": "Add more",
+        "noSkillsListed": "No skills listed yet.",
+        "generalCategory": "General",
+        "addSkills": "Add Skills",
+        "skillsEmptyMessage": "Add your technical skills to stand out to recruiters",
+        "bioEmptyMessage": "No bio added yet. Tell companies and recruiters about yourself, your interests, and what kind of internship you are looking for.",
+        "writeBio": "Write your bio",
+        "educationTitle": "Education",
+        "educationEmptyMessage": "Your education history will appear here once you complete your profile.",
+        "addEducation": "Add Education",
+        "experienceTitle": "Experience",
+        "experienceEmptyMessage": "Add your work experience, open source contributions, or personal projects to strengthen your profile.",
+        "addExperience": "Add Experience",
+        "anonymousUser": "Anonymous User",
+        "unknownRole": "User",
+        "roles": {
+          "student": "Student",
+          "company_admin": "Recruiter",
+          "dept_head": "Dept. Head",
+          "university_admin": "University Admin",
+          "super_admin": "Super Admin"
+        },
+        "stats": {
+          "applications": "Applications",
+          "totalSubmitted": "Total submitted",
+          "skills": "Skills",
+          "skillsAdded": "{count, plural, one {{count} skill added} other {{count} skills added}}",
+          "profile": "Profile",
+          "complete": "Complete!",
+          "keepGoing": "Keep going"
+        },
+        "skillsLabel": "Skills",
+        "githubLabel": "GitHub",
+        "portfolioLabel": "Portfolio"
       }
     },
     "recruiter": {

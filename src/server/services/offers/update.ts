@@ -5,6 +5,7 @@ import { and, eq } from "drizzle-orm"
 import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
+import { ServiceError } from "@/server/services/errors"
 import { validateSkillTagIds } from "@/server/services/skills/validate"
 
 const log = createModuleLogger("services/offers/update")
@@ -30,13 +31,13 @@ export async function updateOffer(
     .limit(1)
 
   if (!existing) {
-    throw new Error("Offer not found or access denied")
+    throw new ServiceError("OFFER_NOT_FOUND", "Offer not found or access denied")
   }
 
   log.info({ offerId, companyId }, "Updating offer")
 
   if (existing.status === "closed") {
-    throw new Error("Cannot update a closed offer")
+    throw new ServiceError("OFFER_CLOSED", "Cannot update a closed offer")
   }
 
   await db.transaction(async (tx) => {

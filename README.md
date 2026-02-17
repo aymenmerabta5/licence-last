@@ -119,9 +119,11 @@ bun run typecheck      # TypeScript check
 
 # Testing
 bun test               # All tests
-bun test:unit          # Unit tests (lib + server)
-bun test:api           # API endpoint tests
-bun test:pages         # Page tests
+bun test:unit          # Unit/core tests (lib + service/data/core server modules)
+bun test:orpc-routes   # oRPC controller route and smoke tests
+bun test:api           # API route tests + oRPC route suite
+bun test:pages         # App Router page/component tests (src/app/[locale])
+bun test:coverage      # Coverage guard suite (segmented to avoid mock collisions)
 bun test:e2e           # Playwright E2E
 bun test:ci            # CI pipeline (unit + api + pages)
 
@@ -150,7 +152,7 @@ src/
 │       ├── rpc/[...rest]/     # oRPC (88 procedures, CSRF protected)
 │       ├── assistant/         # AI chat streaming + auth status
 │       ├── openapi/           # OpenAPI spec + Swagger UI
-│       └── health/            # Health check
+│       └── health/            # Dependency-aware readiness check
 ├── components/                # Shared UI (28 shadcn/ui primitives + custom)
 ├── hooks/                     # Shared hooks (useDebounce, useInfiniteScroll, useCopilot, etc.)
 ├── lib/                       # Schemas, utils, constants, animations
@@ -176,6 +178,11 @@ The project follows an **MVC pattern**:
 - **Model** (`server/services/`) — 16 domains of pure business logic with `import "server-only"`
 - **Controller** (`server/orpc/`) — 88 oRPC procedures with auth middleware chain and rate limiting
 - **View** — React Server Components + Client Components with feature folder pattern
+
+Operational contracts:
+- Services throw typed `ServiceError` codes for domain failures.
+- Route handlers map service errors to transport-safe `ORPCError` via `createServiceORPCError`.
+- `/api/health` returns per-dependency readiness (`database`, `redis`, `rateLimiter`) and returns `503` when required dependencies are down.
 
 ### Auth & Roles
 
@@ -249,7 +256,7 @@ nano .env  # Set DATABASE_URL, BETTER_AUTH_SECRET, DOMAIN_NAME, etc.
 RUN_SEED=true docker compose -f docker-compose.prod.yml up -d
 ```
 
-**Auto-deploy pipeline**: Push to `master` triggers CI (lint, typecheck, tests, build, E2E), then CD builds and pushes a Docker image to GHCR. Watchtower detects the new image within 60 seconds and restarts the app.
+**Auto-deploy pipeline**: Push to `master` triggers CI (lint, typecheck, unit/api/pages tests, coverage guard, build, E2E), then CD builds and pushes a Docker image to GHCR. Watchtower detects the new image within 60 seconds and restarts the app.
 
 Memory budget for a 2GB server: PostgreSQL 384MB, Next.js 512MB, Redis 64MB, Caddy 64MB, Watchtower 64MB.
 

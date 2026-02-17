@@ -1,10 +1,13 @@
 "use client"
 
 import * as motion from "motion/react-client"
+import { useReducedMotion } from "motion/react"
+import { useLocale, useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { Route } from "next"
+import { getTransition } from "@/lib/animations"
 
 interface WelcomeHeroProps {
   userName: string | null
@@ -17,22 +20,27 @@ export function WelcomeHero({
   profileCompleteness,
   profileUserId,
 }: WelcomeHeroProps) {
+  const t = useTranslations("dashboard.student.welcomeHero")
+  const locale = useLocale()
+  const prefersReducedMotion = useReducedMotion() ?? false
   const firstName = userName?.split(" ")[0]
+  const displayName = firstName ?? t("defaultName")
   const now = new Date()
-  const dateStr = now
-    .toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    })
-    .toUpperCase()
+  const dateStr = new Intl.DateTimeFormat(locale, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(now)
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+      initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+      animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+      transition={getTransition(
+        { duration: 0.6, ease: [0.4, 0, 0.2, 1] },
+        prefersReducedMotion,
+      )}
       className="relative"
     >
       {/* Primary accent top border */}
@@ -48,7 +56,7 @@ export function WelcomeHero({
           {/* Top row: section label + date */}
           <div className="flex items-center justify-between mb-8">
             <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary [[dir=rtl]_&]:tracking-normal">
-              Today&apos;s Brief
+              {t("brief")}
             </span>
             <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hidden sm:block [[dir=rtl]_&]:tracking-normal">
               {dateStr}
@@ -60,14 +68,14 @@ export function WelcomeHero({
             {/* Left: headline + CTAs */}
             <div className="lg:col-span-8 space-y-5">
               <h2 className="font-serif text-[clamp(1.75rem,3.5vw,2.75rem)] leading-[1.08] tracking-tight text-heading">
-                Ready to secure your{" "}
-                <span className="text-primary italic">dream internship</span>,{" "}
-                {firstName}?
+                {t("headlinePrefix")}{" "}
+                <span className="text-primary italic">{t("headlineAccent")}</span>,{" "}
+                {displayName}?
               </h2>
               <p className="text-muted-foreground text-sm font-light leading-relaxed max-w-xl">
                 {profileCompleteness < 100
-                  ? "Complete your profile to stand out to recruiters and unlock more opportunities."
-                  : "Your profile is complete! Keep exploring opportunities and applying."}
+                  ? t("profileIncomplete")
+                  : t("profileComplete")}
               </p>
               <div className="flex flex-wrap gap-4 pt-1">
                 {profileCompleteness < 100 && (
@@ -77,13 +85,13 @@ export function WelcomeHero({
                       size="editorial"
                       className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                     >
-                      Complete Profile
+                      {t("completeProfile")}
                     </Button>
                   </Link>
                 )}
                 <Link href="/dashboard/explore">
                   <Button variant="editorial-outline" size="editorial">
-                    Explore Internships
+                    {t("exploreInternships")}
                   </Button>
                 </Link>
               </div>
@@ -94,7 +102,7 @@ export function WelcomeHero({
               <div className="border-s-2 border-primary/20 ps-6 space-y-3">
                 <div className="flex items-baseline justify-between">
                   <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 [[dir=rtl]_&]:tracking-normal">
-                    Profile Strength
+                    {t("profileStrength")}
                   </span>
                   <span className="font-serif text-2xl font-bold text-heading leading-none">
                     {profileCompleteness}%
@@ -103,19 +111,26 @@ export function WelcomeHero({
                 <div className="h-0.5 w-full bg-border/30 overflow-hidden">
                   <motion.div
                     className="h-full bg-primary"
-                    initial={{ width: 0 }}
+                    initial={
+                      prefersReducedMotion
+                        ? { width: `${profileCompleteness}%` }
+                        : { width: 0 }
+                    }
                     animate={{ width: `${profileCompleteness}%` }}
-                    transition={{
-                      duration: 1,
-                      delay: 0.5,
-                      ease: [0.4, 0, 0.2, 1],
-                    }}
+                    transition={getTransition(
+                      {
+                        duration: 1,
+                        delay: 0.5,
+                        ease: [0.4, 0, 0.2, 1],
+                      },
+                      prefersReducedMotion,
+                    )}
                   />
                 </div>
                 <p className="text-[10px] text-muted-foreground/50 font-medium">
                   {profileCompleteness >= 100
-                    ? "Your profile is ready"
-                    : `${100 - profileCompleteness}% remaining to complete`}
+                    ? t("profileReady")
+                    : t("profileRemaining", { remaining: 100 - profileCompleteness })}
                 </p>
               </div>
             </div>

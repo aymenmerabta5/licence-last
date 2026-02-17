@@ -130,6 +130,18 @@
   --sidebar-ring: oklch(0.577 0.198 40);
 }
 
+/* Arabic glyphs in Noto Sans Arabic can read slightly smaller than Latin at
+   the same rem size. Apply a subtle locale-only scale for visual parity. */
+html[lang="ar"] {
+  font-size: 103.125%;
+}
+
+@media (max-width: 768px) {
+  html[lang="ar"] {
+    font-size: 101.5625%;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
