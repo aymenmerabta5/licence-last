@@ -35,11 +35,17 @@ export async function resolvePersistence({
     return null
   }
 
-  const [membership] = await db
+  const memberships = await db
     .select({ companyId: companyMember.companyId })
     .from(companyMember)
     .where(eq(companyMember.userId, userId))
-    .limit(1)
+    .limit(2)
+
+  if (memberships.length > 1) {
+    return { ok: false, status: 403, companyId: null, modelId: null }
+  }
+
+  const membership = memberships[0]
 
   if (!membership) {
     return { ok: false, status: 403, companyId: null, modelId: null }

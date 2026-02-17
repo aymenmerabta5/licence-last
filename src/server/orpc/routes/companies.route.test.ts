@@ -21,6 +21,7 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
 }
 
 const updateCompanyMock = mock(async () => ({ companyId: "company-1" }))
+const createCompanyMock = mock(async () => ({ companyId: "company-1" }))
 const revalidateTagMock = mock(() => {})
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
@@ -56,7 +57,7 @@ mock.module("@/server/services/companies/get", () => ({
   getCompanyById: mock(async () => null),
 }))
 mock.module("@/server/services/companies/create", () => ({
-  createCompany: mock(async () => ({ companyId: "company-1" })),
+  createCompany: createCompanyMock,
 }))
 mock.module("@/server/services/companies/update", () => ({
   updateCompany: updateCompanyMock,
@@ -103,8 +104,30 @@ mock.module("@/server/db", () => ({
 
 describe("src/server/orpc/routes/companies", () => {
   beforeEach(() => {
+    createCompanyMock.mockClear()
     updateCompanyMock.mockClear()
     revalidateTagMock.mockClear()
+  })
+
+  test("createCompanyProcedure maps membership conflicts", async () => {
+    createCompanyMock.mockRejectedValueOnce(
+      new ServiceError(
+        "COMPANY_MEMBERSHIP_ALREADY_EXISTS",
+        "Company admin is already assigned to a company",
+      ),
+    )
+
+    const { createCompanyProcedure } = await import("./companies")
+
+    await expect(
+      callProcedure(createCompanyProcedure, {
+        input: { name: "Acme", wilayaCode: 16 },
+        context: { user: { id: "user-1", role: "company_admin" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "CONFLICT",
+      message: "Company admin is already assigned to a company",
+    })
   })
 
   test("updateCompanyProcedure revalidates profile tags on success", async () => {

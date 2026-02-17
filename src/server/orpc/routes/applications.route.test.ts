@@ -22,6 +22,8 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
 
 const applyToOfferMock = mock(async () => ({ applicationId: "app-1" }))
 const withdrawApplicationMock = mock(async () => ({ applicationId: "app-1" }))
+const listApplicationsByOfferMock = mock(async () => ({ applications: [] }))
+const updatePipelineStageMock = mock(async () => ({ applicationId: "app-1" }))
 const revalidateTagMock = mock(() => {})
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
@@ -59,7 +61,7 @@ mock.module("@/server/services/applications/withdraw", () => ({
   withdrawApplication: withdrawApplicationMock,
 }))
 mock.module("@/server/services/applications/list-by-offer", () => ({
-  listApplicationsByOffer: mock(async () => ({ applications: [] })),
+  listApplicationsByOffer: listApplicationsByOfferMock,
 }))
 mock.module("@/server/services/applications/company-accept", () => ({
   companyAcceptApplication: mock(async () => ({ applicationId: "app-1" })),
@@ -69,7 +71,7 @@ mock.module("@/server/services/applications/company-refuse", () => ({
 }))
 mock.module("@/server/services/applications/pipeline", () => ({
   listApplicationTimeline: mock(async () => ({ events: [] })),
-  updateApplicationPipelineStage: mock(async () => ({ applicationId: "app-1" })),
+  updateApplicationPipelineStage: updatePipelineStageMock,
 }))
 mock.module("@/server/db", () => ({
   db: {
@@ -92,6 +94,8 @@ describe("src/server/orpc/routes/applications", () => {
   beforeEach(() => {
     applyToOfferMock.mockClear()
     withdrawApplicationMock.mockClear()
+    listApplicationsByOfferMock.mockClear()
+    updatePipelineStageMock.mockClear()
     revalidateTagMock.mockClear()
   })
 
@@ -156,6 +160,42 @@ describe("src/server/orpc/routes/applications", () => {
     ).rejects.toMatchObject({
       code: "NOT_FOUND",
       message: "Application not found",
+    })
+  })
+
+  test("listByOfferProcedure maps typed offer ownership errors", async () => {
+    listApplicationsByOfferMock.mockRejectedValueOnce(
+      new ApplicationServiceError("OFFER_FORBIDDEN", "You do not have access to this offer"),
+    )
+
+    const { listByOfferProcedure } = await import("./applications")
+
+    await expect(
+      callProcedure(listByOfferProcedure, {
+        input: { offerId: "offer-1" },
+        context: { companyMembership: { companyId: "company-1" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "You do not have access to this offer",
+    })
+  })
+
+  test("updatePipelineStageProcedure maps typed pipeline state errors", async () => {
+    updatePipelineStageMock.mockRejectedValueOnce(
+      new ApplicationServiceError("APPLICATION_INVALID_STATE", "Invalid stage transition"),
+    )
+
+    const { updatePipelineStageProcedure } = await import("./applications")
+
+    await expect(
+      callProcedure(updatePipelineStageProcedure, {
+        input: { applicationId: "app-1", toStage: "interview" },
+        context: { user: { id: "user-1" }, companyMembership: { companyId: "company-1" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "Invalid stage transition",
     })
   })
 })

@@ -35,11 +35,21 @@ mock.module("@/lib/auth", () => ({
   pendingWelcomeEmails: new Map(),
 }))
 
-// Mock DB chain used by approval gate
-const mockDbLimit = mock<() => Promise<Array<{ status: string }>>>()
+// Mock approval gate
+const mockCheckAdminApproval = mock<
+  () => Promise<{ ok: boolean; reason?: "company_pending" | "company_rejected" | "university_pending" | "university_rejected" }>
+>()
+
+mock.module("@/server/auth/approval-gate", () => ({
+  checkAdminApproval: mockCheckAdminApproval,
+}))
+
+// Mock DB chain used by auth-context
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let mockDbLimitResult: any[] = []
+const mockDbLimit = mock(() => Promise.resolve(mockDbLimitResult))
 const mockDbWhere = mock(() => ({ limit: mockDbLimit }))
-const mockDbInnerJoin = mock(() => ({ where: mockDbWhere }))
-const mockDbFrom = mock(() => ({ innerJoin: mockDbInnerJoin, where: mockDbWhere }))
+const mockDbFrom = mock(() => ({ where: mockDbWhere }))
 const mockDbSelect = mock(() => ({ from: mockDbFrom }))
 
 mock.module("@/server/db", () => ({
@@ -177,9 +187,9 @@ describe("src/app/api/assistant/chat/route", () => {
     mockIsRoleAllowedForIntent.mockClear()
     mockResolvePersistence.mockClear()
     mockGetAssistantConversationByIdForCompany.mockClear()
+    mockCheckAdminApproval.mockClear()
     mockDbSelect.mockClear()
     mockDbFrom.mockClear()
-    mockDbInnerJoin.mockClear()
     mockDbWhere.mockClear()
     mockDbLimit.mockClear()
     mockHeadersData = {}
@@ -188,11 +198,12 @@ describe("src/app/api/assistant/chat/route", () => {
     mockGetSession.mockResolvedValue({
       user: { id: "user-1", role: "company_admin" },
     })
+    mockCheckAdminApproval.mockResolvedValue({ ok: true })
     mockCheckRateLimit.mockResolvedValue({ ok: true, retryAfterMs: 0 })
     mockIsRoleAllowedForIntent.mockReturnValue(true)
     mockResolvePersistence.mockResolvedValue({ ok: true, companyId: "company-1", modelId: null })
     mockGetAssistantConversationByIdForCompany.mockResolvedValue({ title: null })
-    mockDbLimit.mockResolvedValue([{ status: "approved" }])
+    mockDbLimitResult = [{ companyId: "company-1" }]
   })
 
   describe("request validation", () => {
@@ -351,7 +362,7 @@ describe("src/app/api/assistant/chat/route", () => {
       mockGetSession.mockResolvedValue({
         user: { id: "user-1", role: "company_admin", onboardingCompleted: true },
       })
-      mockDbLimit.mockResolvedValue([{ status: "pending" }])
+      mockCheckAdminApproval.mockResolvedValue({ ok: false, reason: "company_pending" })
 
       const { POST } = await import("./route")
 
@@ -481,7 +492,7 @@ describe("src/app/api/assistant/chat/route", () => {
       expect(mockCheckRateLimit).toHaveBeenCalledWith(
         expect.objectContaining({
           key: "assistant:chat:user-456",
-          limit: 30,
+          limit: 20,
           windowMs: 60000,
         }),
       )

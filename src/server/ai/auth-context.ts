@@ -39,11 +39,17 @@ export async function resolveToolAuthContext(session: {
 
   // Resolve companyId for company_admin
   if (role === "company_admin") {
-    const [membership] = await db
+    const memberships = await db
       .select({ companyId: companyMember.companyId })
       .from(companyMember)
       .where(eq(companyMember.userId, session.user.id))
-      .limit(1)
+      .limit(2)
+
+    if (memberships.length > 1) {
+      throw new Error("Multiple company memberships found for user")
+    }
+
+    const membership = memberships[0]
 
     ctx.companyId = membership?.companyId ?? null
   }

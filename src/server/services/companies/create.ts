@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm"
 
 import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/companies/create")
 import { company, companyMember } from "@/server/db/schema/companies"
@@ -22,6 +23,31 @@ function generateSlug(name: string): string {
     .replace(/^-+|-+$/g, "")
   const suffix = randomUUID().slice(0, 12)
   return `${base}-${suffix}`
+}
+
+function isUniqueViolation(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code?: string }).code === "23505"
+  )
+}
+
+function isCompanyMembershipUniqueViolation(error: unknown): boolean {
+  if (!isUniqueViolation(error)) {
+    return false
+  }
+
+  const constraint =
+    typeof error === "object" && error !== null && "constraint" in error
+      ? (error as { constraint?: string }).constraint
+      : undefined
+
+  return (
+    constraint === "company_member_userId_uidx" ||
+    constraint === "company_member_pkey"
+  )
 }
 
 /**
@@ -42,29 +68,40 @@ export async function createCompany(
   const slug = generateSlug(data.name)
   log.info({ userId, companyId, slug }, "Creating company")
 
-  await db.transaction(async (tx) => {
-    await tx.insert(company).values({
-      id: companyId,
-      name: data.name,
-      slug,
-      description: data.description || null,
-      websiteUrl: data.websiteUrl || null,
-      wilayaCode: data.wilayaCode,
-      address: data.address || null,
-      status: "pending",
-    })
+  try {
+    await db.transaction(async (tx) => {
+      await tx.insert(company).values({
+        id: companyId,
+        name: data.name,
+        slug,
+        description: data.description || null,
+        websiteUrl: data.websiteUrl || null,
+        wilayaCode: data.wilayaCode,
+        address: data.address || null,
+        status: "pending",
+      })
 
-    await tx.insert(companyMember).values({
-      companyId,
-      userId,
-      role: "owner",
-    })
+      await tx.insert(companyMember).values({
+        companyId,
+        userId,
+        role: "owner",
+      })
 
-    await tx
-      .update(user)
-      .set({ onboardingCompleted: true })
-      .where(eq(user.id, userId))
-  })
+      await tx
+        .update(user)
+        .set({ onboardingCompleted: true })
+        .where(eq(user.id, userId))
+    })
+  } catch (error) {
+    if (isCompanyMembershipUniqueViolation(error)) {
+      throw new ServiceError(
+        "COMPANY_MEMBERSHIP_ALREADY_EXISTS",
+        "Company admin is already assigned to a company",
+      )
+    }
+
+    throw error
+  }
 
   log.info({ companyId, slug, event: "company_created" }, "Company created successfully")
   return { companyId, slug }

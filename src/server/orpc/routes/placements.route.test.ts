@@ -33,9 +33,9 @@ const rejectPlacementMock = mock(async () => ({
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   adminProcedureGenerous: createProcedureMock(),
   adminProcedureStandard: createProcedureMock(),
+  adminProcedureAssistant: createProcedureMock(),
   deptHeadProcedureGenerous: createProcedureMock(),
   deptHeadProcedureStandard: createProcedureMock(),
-  assistantProcedureLimited: createProcedureMock(),
 }))
 
 mock.module("@/server/orpc/utils/date", () => ({

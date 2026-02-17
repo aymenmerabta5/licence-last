@@ -4,6 +4,7 @@ import { ServiceError } from "@/server/services/errors"
 
 export type ApplicationServiceErrorCode =
   | "OFFER_NOT_FOUND"
+  | "OFFER_FORBIDDEN"
   | "OFFER_NOT_OPEN"
   | "OFFER_DEADLINE_PASSED"
   | "OFFER_FULL"

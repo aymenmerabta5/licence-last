@@ -3,6 +3,10 @@ import "server-only"
 import { headers } from "next/headers"
 
 import { localeRedirect } from "@/lib/navigation"
+import {
+  approvalDeniedReasonToRedirectPath,
+  checkAdminApproval,
+} from "@/server/auth/approval-gate"
 
 type UserRole = "student" | "company_admin" | "dept_head" | "university_admin" | "super_admin"
 interface RequireRoleOptions {
@@ -24,8 +28,8 @@ interface RequireRoleDependencies {
   getHeaders: typeof headers
   getSession: (input: { headers: Awaited<ReturnType<typeof headers>> }) => Promise<SessionResult | null>
   localeRedirect: (path: string) => Promise<never>
-  getCompanyByUserId: (userId: string) => Promise<{ status: string } | null>
-  getUniversityByUserId: (userId: string) => Promise<{ status: string } | null>
+  getCompanyStatusByUserId: (userId: string) => Promise<{ status: string } | null>
+  getUniversityStatusByUserId: (userId: string) => Promise<{ status: string } | null>
 }
 
 const DEFAULT_REQUIRE_ROLE_DEPENDENCIES: RequireRoleDependencies = {
@@ -35,11 +39,11 @@ const DEFAULT_REQUIRE_ROLE_DEPENDENCIES: RequireRoleDependencies = {
     return auth.api.getSession({ headers: requestHeaders }) as Promise<SessionResult | null>
   },
   localeRedirect,
-  getCompanyByUserId: async (userId) => {
-    const { getCompanyByUserId } = await import("@/server/services/companies/get")
-    return getCompanyByUserId(userId)
+  getCompanyStatusByUserId: async (userId) => {
+    const { getCompanyStatusByUserId } = await import("@/server/services/companies/get-status")
+    return getCompanyStatusByUserId(userId)
   },
-  getUniversityByUserId: async (userId) => {
+  getUniversityStatusByUserId: async (userId) => {
     const { getUniversityStatusByUserId } = await import("@/server/services/universities/get-status")
     return getUniversityStatusByUserId(userId)
   },
@@ -71,25 +75,18 @@ export async function requireRole(
     return resolvedDependencies.localeRedirect("/")
   }
 
-  if (!options.allowUnapproved && user.onboardingCompleted) {
-    if (user.role === "company_admin") {
-      const company = await resolvedDependencies.getCompanyByUserId(user.id)
-      if (!company || company.status === "pending" || company.status === "suspended") {
-        return resolvedDependencies.localeRedirect("/status/company/pending")
-      }
-      if (company.status === "rejected") {
-        return resolvedDependencies.localeRedirect("/status/company/rejected")
-      }
-    }
+  // Approval checks are onboarding-gated by design. Before onboarding
+  // completion, company/university admins can access onboarding/status flows.
+  if (!options.allowUnapproved) {
+    const approval = await checkAdminApproval(user, {
+      getCompanyStatusByUserId: resolvedDependencies.getCompanyStatusByUserId,
+      getUniversityStatusByUserId: resolvedDependencies.getUniversityStatusByUserId,
+    })
 
-    if (user.role === "university_admin") {
-      const university = await resolvedDependencies.getUniversityByUserId(user.id)
-      if (!university || university.status === "pending") {
-        return resolvedDependencies.localeRedirect("/status/university/pending")
-      }
-      if (university.status === "rejected") {
-        return resolvedDependencies.localeRedirect("/status/university/rejected")
-      }
+    if (!approval.ok) {
+      return resolvedDependencies.localeRedirect(
+        approvalDeniedReasonToRedirectPath(approval.reason),
+      )
     }
   }
 

@@ -36,11 +36,17 @@ async function assertMatchAccess(context: {
 
   let viewerCompanyId: string | undefined
   if (context.user.role === "company_admin") {
-    const [membership] = await db
+    const memberships = await db
       .select({ companyId: companyMember.companyId })
       .from(companyMember)
       .where(eq(companyMember.userId, context.user.id))
-      .limit(1)
+      .limit(2)
+    if (memberships.length > 1) {
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "Multiple company memberships found for user",
+      })
+    }
+    const membership = memberships[0]
     viewerCompanyId = membership?.companyId
   }
 

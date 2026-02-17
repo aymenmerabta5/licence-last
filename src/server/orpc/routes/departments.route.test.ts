@@ -22,6 +22,7 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
 
 const createDepartmentMock = mock(async () => ({ departmentId: "dept-1" }))
 const assignDepartmentHeadMock = mock(async () => ({ success: true }))
+const updateDepartmentMock = mock(async () => ({ success: true }))
 
 const dbLimitMock = mock(async () => [{ universityId: "uni-1" }])
 const dbWhereMock = mock(() => ({ limit: dbLimitMock }))
@@ -61,7 +62,7 @@ mock.module("@/server/services/departments/unassign-head", () => ({
   unassignDepartmentHead: mock(async () => ({ success: true })),
 }))
 mock.module("@/server/services/departments/update", () => ({
-  updateDepartment: mock(async () => ({ success: true })),
+  updateDepartment: updateDepartmentMock,
 }))
 
 mock.module("@/server/db", () => ({
@@ -74,6 +75,7 @@ describe("src/server/orpc/routes/departments", () => {
   beforeEach(() => {
     createDepartmentMock.mockClear()
     assignDepartmentHeadMock.mockClear()
+    updateDepartmentMock.mockClear()
     dbSelectMock.mockClear()
     dbFromMock.mockClear()
     dbWhereMock.mockClear()
@@ -127,5 +129,21 @@ describe("src/server/orpc/routes/departments", () => {
 
     expect(result).toEqual({ success: true })
     expect(assignDepartmentHeadMock).toHaveBeenCalledWith("dept-1", "user-1")
+  })
+
+  test("updateDepartmentProcedure enforces department scope", async () => {
+    const { updateDepartmentProcedure } = await import("./departments")
+
+    await expect(
+      callProcedure(updateDepartmentProcedure, {
+        input: { departmentId: "dept-1", name: "New Name" },
+        context: { user: { role: "dept_head", universityId: "uni-1" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "Only university admins can manage departments",
+    })
+
+    expect(updateDepartmentMock).not.toHaveBeenCalled()
   })
 })

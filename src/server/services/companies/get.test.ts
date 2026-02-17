@@ -68,4 +68,18 @@ describe("src/server/services/companies/get", () => {
 
     expect(result).toBeNull()
   })
+
+  test("getCompanyByUserId should throw when user has multiple memberships", async () => {
+    mockLimitResult = [
+      { id: "company-1", name: "Acme Corp", slug: "acme-corp", status: "approved" },
+      { id: "company-2", name: "Beta Corp", slug: "beta-corp", status: "approved" },
+    ]
+
+    const { getCompanyByUserId } = await import("./get")
+
+    await expect(getCompanyByUserId("user-1")).rejects.toMatchObject({
+      code: "COMPANY_MEMBERSHIP_CONFLICT",
+      message: "User belongs to multiple companies",
+    })
+  })
 })

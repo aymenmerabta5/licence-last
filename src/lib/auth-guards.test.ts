@@ -21,20 +21,20 @@ const mockGetSession = mock<(input: { headers: Headers }) => Promise<SessionResu
 )
 const mockLocaleRedirect = mock((path: string) => Promise.resolve(`redirect:${path}` as never))
 const mockHeaders = mock(() => Promise.resolve(new Headers()))
-const mockGetCompanyByUserId = mock(async () => null as { status: string } | null)
-const mockGetUniversityByUserId = mock(async () => null as { status: string } | null)
+const mockGetCompanyStatusByUserId = mock(async () => null as { status: string } | null)
+const mockGetUniversityStatusByUserId = mock(async () => null as { status: string } | null)
 
 describe("requireRole", () => {
   beforeEach(() => {
     mockGetSession.mockClear()
     mockLocaleRedirect.mockClear()
     mockHeaders.mockClear()
-    mockGetCompanyByUserId.mockClear()
-    mockGetUniversityByUserId.mockClear()
+    mockGetCompanyStatusByUserId.mockClear()
+    mockGetUniversityStatusByUserId.mockClear()
 
     mockHeaders.mockResolvedValue(new Headers())
-    mockGetCompanyByUserId.mockResolvedValue(null)
-    mockGetUniversityByUserId.mockResolvedValue(null)
+    mockGetCompanyStatusByUserId.mockResolvedValue(null)
+    mockGetUniversityStatusByUserId.mockResolvedValue(null)
   })
 
   test("should redirect to /login when no session exists", async () => {
@@ -44,8 +44,8 @@ describe("requireRole", () => {
       getSession: mockGetSession,
       getHeaders: mockHeaders,
       localeRedirect: mockLocaleRedirect,
-      getCompanyByUserId: mockGetCompanyByUserId,
-      getUniversityByUserId: mockGetUniversityByUserId,
+      getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
+      getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
     })
 
     expect(mockLocaleRedirect).toHaveBeenCalledWith("/login")
@@ -61,8 +61,8 @@ describe("requireRole", () => {
       getSession: mockGetSession,
       getHeaders: mockHeaders,
       localeRedirect: mockLocaleRedirect,
-      getCompanyByUserId: mockGetCompanyByUserId,
-      getUniversityByUserId: mockGetUniversityByUserId,
+      getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
+      getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
     })
 
     expect(mockLocaleRedirect).toHaveBeenCalledWith("/")
@@ -76,8 +76,8 @@ describe("requireRole", () => {
       getSession: mockGetSession,
       getHeaders: mockHeaders,
       localeRedirect: mockLocaleRedirect,
-      getCompanyByUserId: mockGetCompanyByUserId,
-      getUniversityByUserId: mockGetUniversityByUserId,
+      getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
+      getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
     })
 
     expect(result.id).toBe("user-1")
@@ -92,8 +92,8 @@ describe("requireRole", () => {
       getSession: mockGetSession,
       getHeaders: mockHeaders,
       localeRedirect: mockLocaleRedirect,
-      getCompanyByUserId: mockGetCompanyByUserId,
-      getUniversityByUserId: mockGetUniversityByUserId,
+      getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
+      getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
     })
 
     expect(result.id).toBe("user-2")
@@ -109,8 +109,8 @@ describe("requireRole", () => {
       getSession: mockGetSession,
       getHeaders: mockHeaders,
       localeRedirect: mockLocaleRedirect,
-      getCompanyByUserId: mockGetCompanyByUserId,
-      getUniversityByUserId: mockGetUniversityByUserId,
+      getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
+      getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
     })
 
     expect(mockGetSession).toHaveBeenCalledWith({ headers: customHeaders })
@@ -126,8 +126,8 @@ describe("requireRole", () => {
       getSession: mockGetSession,
       getHeaders: mockHeaders,
       localeRedirect: mockLocaleRedirect,
-      getCompanyByUserId: mockGetCompanyByUserId,
-      getUniversityByUserId: mockGetUniversityByUserId,
+      getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
+      getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
     })
 
     expect(mockLocaleRedirect).toHaveBeenCalledWith("/")
@@ -138,14 +138,14 @@ describe("requireRole", () => {
       user: { id: "user-4", role: "company_admin", name: "Company Admin", email: "company4@example.com", onboardingCompleted: true },
       session: {},
     })
-    mockGetCompanyByUserId.mockResolvedValue({ status: "pending" })
+    mockGetCompanyStatusByUserId.mockResolvedValue({ status: "pending" })
 
     await requireRole(["company_admin"], {}, {
       getSession: mockGetSession,
       getHeaders: mockHeaders,
       localeRedirect: mockLocaleRedirect,
-      getCompanyByUserId: mockGetCompanyByUserId,
-      getUniversityByUserId: mockGetUniversityByUserId,
+      getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
+      getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
     })
 
     expect(mockLocaleRedirect).toHaveBeenCalledWith("/status/company/pending")
@@ -156,14 +156,14 @@ describe("requireRole", () => {
       user: { id: "user-5", role: "university_admin", name: "University Admin", email: "uni5@example.com", onboardingCompleted: true },
       session: {},
     })
-    mockGetUniversityByUserId.mockResolvedValue({ status: "pending" })
+    mockGetUniversityStatusByUserId.mockResolvedValue({ status: "pending" })
 
     await requireRole(["university_admin"], {}, {
       getSession: mockGetSession,
       getHeaders: mockHeaders,
       localeRedirect: mockLocaleRedirect,
-      getCompanyByUserId: mockGetCompanyByUserId,
-      getUniversityByUserId: mockGetUniversityByUserId,
+      getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
+      getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
     })
 
     expect(mockLocaleRedirect).toHaveBeenCalledWith("/status/university/pending")
@@ -174,17 +174,35 @@ describe("requireRole", () => {
       user: { id: "user-6", role: "company_admin", name: "Company Admin", email: "company6@example.com", onboardingCompleted: true },
       session: {},
     })
-    mockGetCompanyByUserId.mockResolvedValue({ status: "pending" })
+    mockGetCompanyStatusByUserId.mockResolvedValue({ status: "pending" })
 
     const result = await requireRole(["company_admin"], { allowUnapproved: true }, {
       getSession: mockGetSession,
       getHeaders: mockHeaders,
       localeRedirect: mockLocaleRedirect,
-      getCompanyByUserId: mockGetCompanyByUserId,
-      getUniversityByUserId: mockGetUniversityByUserId,
+      getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
+      getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
     })
 
     expect(result.id).toBe("user-6")
     expect(result.role).toBe("company_admin")
+  })
+
+  test("should skip approval checks when onboarding is not completed", async () => {
+    mockGetSession.mockResolvedValue({
+      user: { id: "user-7", role: "company_admin", name: "Company Admin", email: "company7@example.com", onboardingCompleted: false },
+      session: {},
+    })
+
+    const result = await requireRole(["company_admin"], {}, {
+      getSession: mockGetSession,
+      getHeaders: mockHeaders,
+      localeRedirect: mockLocaleRedirect,
+      getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
+      getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+    })
+
+    expect(result.id).toBe("user-7")
+    expect(mockGetCompanyStatusByUserId).not.toHaveBeenCalled()
   })
 })

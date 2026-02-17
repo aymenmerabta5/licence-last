@@ -3,6 +3,7 @@ import { ORPCError } from "@orpc/server"
 import { ApplicationServiceError, isApplicationServiceError } from "@/server/services/applications/errors"
 import {
   getApplyToOfferStatus,
+  getListByOfferStatus,
   getWithdrawStatus,
   getCompanyActionStatus,
   createApplicationORPCError,
@@ -60,6 +61,24 @@ describe("ApplicationServiceError to ORPCError mapping", () => {
       // @ts-expect-error Testing unknown error code fallback
       const error = new ApplicationServiceError("UNKNOWN_CODE", "Unknown")
       expect(getWithdrawStatus(error.code)).toBe("BAD_REQUEST")
+    })
+  })
+
+  describe("listByOffer status mapping", () => {
+    test("OFFER_NOT_FOUND maps to NOT_FOUND", () => {
+      const error = new ApplicationServiceError("OFFER_NOT_FOUND", "Offer not found")
+      expect(getListByOfferStatus(error.code)).toBe("NOT_FOUND")
+    })
+
+    test("OFFER_FORBIDDEN maps to FORBIDDEN", () => {
+      const error = new ApplicationServiceError("OFFER_FORBIDDEN", "Forbidden")
+      expect(getListByOfferStatus(error.code)).toBe("FORBIDDEN")
+    })
+
+    test("Unknown code falls back to BAD_REQUEST", () => {
+      // @ts-expect-error Testing unknown error code fallback
+      const error = new ApplicationServiceError("UNKNOWN_CODE", "Unknown")
+      expect(getListByOfferStatus(error.code)).toBe("BAD_REQUEST")
     })
   })
 

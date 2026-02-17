@@ -6,9 +6,9 @@ import { ORPCError } from "@orpc/server"
 import {
   adminProcedureGenerous,
   adminProcedureStandard,
+  adminProcedureAssistant,
   deptHeadProcedureGenerous,
   deptHeadProcedureStandard,
-  assistantProcedureLimited,
 } from "@/server/orpc/rate-limited-procedures"
 import {
   parseInputDate,
@@ -192,7 +192,7 @@ export const deptHeadValidateProcedure = deptHeadProcedureStandard
 
 /* ── AI Validation Summary (any authenticated admin/dept_head) ── */
 
-export const generateValidationSummaryProcedure = assistantProcedureLimited
+export const generateValidationSummaryProcedure = adminProcedureAssistant
   .input(
     z.object({
       application: z.record(z.string(), z.unknown()),
