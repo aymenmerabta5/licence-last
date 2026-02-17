@@ -19,6 +19,9 @@ describe("src/lib/schemas/offer", () => {
         wilayaCode: 16,
         durationWeeks: 12,
         maxPositions: 3,
+        applicationDeadlineAt: "2030-01-01",
+        expectedStartDate: "2030-01-10",
+        expectedEndDate: "2030-04-10",
         skillTagIds: ["skill-1", "skill-2"],
       })
 
@@ -138,6 +141,57 @@ describe("src/lib/schemas/offer", () => {
       expect(result.success).toBe(true)
       if (result.success) {
         expect(result.data.durationWeeks).toBe(8)
+      }
+    })
+
+    test("should reject incomplete expected period", () => {
+      const result = schema.safeParse({
+        title: "Good Title",
+        description: "A long enough description",
+        internshipType: "pfe",
+        expectedStartDate: "2030-01-10",
+        skillTagIds: [],
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        const issue = result.error.issues.find((i) => i.path[0] === "expectedEndDate")
+        expect(issue?.message).toBe("t:expectedPeriodBothRequired")
+      }
+    })
+
+    test("should reject expected start date after expected end date", () => {
+      const result = schema.safeParse({
+        title: "Good Title",
+        description: "A long enough description",
+        internshipType: "pfe",
+        expectedStartDate: "2030-02-10",
+        expectedEndDate: "2030-01-10",
+        skillTagIds: [],
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        const issue = result.error.issues.find((i) => i.path[0] === "expectedEndDate")
+        expect(issue?.message).toBe("t:expectedPeriodInvalid")
+      }
+    })
+
+    test("should reject deadline after expected start date", () => {
+      const result = schema.safeParse({
+        title: "Good Title",
+        description: "A long enough description",
+        internshipType: "pfe",
+        applicationDeadlineAt: "2030-02-01",
+        expectedStartDate: "2030-01-10",
+        expectedEndDate: "2030-03-10",
+        skillTagIds: [],
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        const issue = result.error.issues.find((i) => i.path[0] === "applicationDeadlineAt")
+        expect(issue?.message).toBe("t:deadlineAfterExpectedStart")
       }
     })
   })

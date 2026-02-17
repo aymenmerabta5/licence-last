@@ -71,8 +71,8 @@ export async function searchOffers(params: SearchParams) {
   const conditions = [
     eq(internshipOffer.status, "published"),
     or(
-      isNull(internshipOffer.closesAt),
-      gt(internshipOffer.closesAt, new Date()),
+      isNull(internshipOffer.applicationDeadlineAt),
+      gt(internshipOffer.applicationDeadlineAt, new Date()),
     ),
   ]
 
@@ -140,6 +140,9 @@ export async function searchOffers(params: SearchParams) {
       durationWeeks: internshipOffer.durationWeeks,
       maxPositions: internshipOffer.maxPositions,
       status: internshipOffer.status,
+      applicationDeadlineAt: internshipOffer.applicationDeadlineAt,
+      expectedStartDate: internshipOffer.expectedStartDate,
+      expectedEndDate: internshipOffer.expectedEndDate,
       closesAt: internshipOffer.closesAt,
       createdAt: internshipOffer.createdAt,
       companyName: company.name,

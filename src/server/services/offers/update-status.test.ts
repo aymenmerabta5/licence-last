@@ -44,7 +44,14 @@ describe("src/server/services/offers/update-status", () => {
 
   test("should publish a draft offer", async () => {
     mockLimit.mockResolvedValue([
-      { id: "offer-1", companyId: "company-1", status: "draft" },
+      {
+        id: "offer-1",
+        companyId: "company-1",
+        status: "draft",
+        applicationDeadlineAt: null,
+        expectedStartDate: null,
+        expectedEndDate: null,
+      },
     ])
 
     const { updateOfferStatus } = await import("@/server/services/offers/update-status")
@@ -57,7 +64,14 @@ describe("src/server/services/offers/update-status", () => {
 
   test("should close a published offer", async () => {
     mockLimit.mockResolvedValue([
-      { id: "offer-1", companyId: "company-1", status: "published" },
+      {
+        id: "offer-1",
+        companyId: "company-1",
+        status: "published",
+        applicationDeadlineAt: null,
+        expectedStartDate: null,
+        expectedEndDate: null,
+      },
     ])
 
     const { updateOfferStatus } = await import("@/server/services/offers/update-status")
@@ -70,24 +84,38 @@ describe("src/server/services/offers/update-status", () => {
 
   test("should reject publishing a non-draft offer", async () => {
     mockLimit.mockResolvedValue([
-      { id: "offer-1", companyId: "company-1", status: "published" },
+      {
+        id: "offer-1",
+        companyId: "company-1",
+        status: "published",
+        applicationDeadlineAt: null,
+        expectedStartDate: null,
+        expectedEndDate: null,
+      },
     ])
 
     const { updateOfferStatus } = await import("@/server/services/offers/update-status")
 
-    expect(
+    await expect(
       updateOfferStatus("offer-1", "company-1", "publish"),
     ).rejects.toThrow("Only draft offers can be published")
   })
 
   test("should reject closing a non-published offer", async () => {
     mockLimit.mockResolvedValue([
-      { id: "offer-1", companyId: "company-1", status: "draft" },
+      {
+        id: "offer-1",
+        companyId: "company-1",
+        status: "draft",
+        applicationDeadlineAt: null,
+        expectedStartDate: null,
+        expectedEndDate: null,
+      },
     ])
 
     const { updateOfferStatus } = await import("@/server/services/offers/update-status")
 
-    expect(
+    await expect(
       updateOfferStatus("offer-1", "company-1", "close"),
     ).rejects.toThrow("Only published offers can be closed")
   })
@@ -97,8 +125,84 @@ describe("src/server/services/offers/update-status", () => {
 
     const { updateOfferStatus } = await import("@/server/services/offers/update-status")
 
-    expect(
+    await expect(
       updateOfferStatus("nonexistent", "company-1", "publish"),
     ).rejects.toThrow("Offer not found or access denied")
+  })
+
+  test("should reject publishing when expected period is incomplete", async () => {
+    mockLimit.mockResolvedValue([
+      {
+        id: "offer-1",
+        companyId: "company-1",
+        status: "draft",
+        applicationDeadlineAt: null,
+        expectedStartDate: new Date("2030-01-10T00:00:00.000Z"),
+        expectedEndDate: null,
+      },
+    ])
+
+    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
+
+    await expect(
+      updateOfferStatus("offer-1", "company-1", "publish"),
+    ).rejects.toThrow("Expected start and end dates must both be provided")
+  })
+
+  test("should reject publishing when expected period is invalid", async () => {
+    mockLimit.mockResolvedValue([
+      {
+        id: "offer-1",
+        companyId: "company-1",
+        status: "draft",
+        applicationDeadlineAt: null,
+        expectedStartDate: new Date("2030-01-10T00:00:00.000Z"),
+        expectedEndDate: new Date("2030-01-10T00:00:00.000Z"),
+      },
+    ])
+
+    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
+
+    await expect(
+      updateOfferStatus("offer-1", "company-1", "publish"),
+    ).rejects.toThrow("Expected start date must be before expected end date")
+  })
+
+  test("should reject publishing when deadline is after expected start", async () => {
+    mockLimit.mockResolvedValue([
+      {
+        id: "offer-1",
+        companyId: "company-1",
+        status: "draft",
+        applicationDeadlineAt: new Date("2030-01-12T00:00:00.000Z"),
+        expectedStartDate: new Date("2030-01-10T00:00:00.000Z"),
+        expectedEndDate: new Date("2030-02-10T00:00:00.000Z"),
+      },
+    ])
+
+    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
+
+    await expect(
+      updateOfferStatus("offer-1", "company-1", "publish"),
+    ).rejects.toThrow("Application deadline must be before expected start date")
+  })
+
+  test("should reject publishing when deadline is in the past", async () => {
+    mockLimit.mockResolvedValue([
+      {
+        id: "offer-1",
+        companyId: "company-1",
+        status: "draft",
+        applicationDeadlineAt: new Date("2000-01-01T00:00:00.000Z"),
+        expectedStartDate: null,
+        expectedEndDate: null,
+      },
+    ])
+
+    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
+
+    await expect(
+      updateOfferStatus("offer-1", "company-1", "publish"),
+    ).rejects.toThrow("Application deadline cannot be in the past when publishing")
   })
 })

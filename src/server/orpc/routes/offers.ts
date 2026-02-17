@@ -13,6 +13,7 @@ import {
 } from "@/server/orpc/rate-limited-procedures"
 import { internshipTypeSchema, workModeSchema } from "@/lib/schemas/enums"
 import { authedProcedureStrict } from "@/server/orpc/rate-limited-procedures"
+import { parseInputDate } from "@/server/orpc/utils/date"
 import { getOfferById } from "@/server/services/offers/get"
 import { listOffersByCompany } from "@/server/services/offers/list-by-company"
 import { createOffer } from "@/server/services/offers/create"
@@ -24,6 +25,55 @@ import { companyMember } from "@/server/db/schema/companies"
 import { eq } from "drizzle-orm"
 import { CACHE_TAGS } from "@/lib/cache"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+
+function parseOptionalDate(
+  value: string | null | undefined,
+  fieldLabel: string,
+): Date | null | undefined {
+  if (value === undefined) return undefined
+  if (value === null) return null
+  return parseInputDate(value, fieldLabel)
+}
+
+function validateOfferTiming(
+  fields: {
+    applicationDeadlineAt?: Date | null
+    expectedStartDate?: Date | null
+    expectedEndDate?: Date | null
+  },
+  requireExpectedPair: boolean,
+) {
+  const {
+    applicationDeadlineAt,
+    expectedStartDate,
+    expectedEndDate,
+  } = fields
+
+  if (
+    requireExpectedPair &&
+    ((expectedStartDate && !expectedEndDate) || (!expectedStartDate && expectedEndDate))
+  ) {
+    throw new ORPCError("BAD_REQUEST", {
+      message: "Expected start and end dates must both be provided",
+    })
+  }
+
+  if (expectedStartDate && expectedEndDate && expectedStartDate >= expectedEndDate) {
+    throw new ORPCError("BAD_REQUEST", {
+      message: "Expected start date must be before expected end date",
+    })
+  }
+
+  if (
+    applicationDeadlineAt &&
+    expectedStartDate &&
+    applicationDeadlineAt > expectedStartDate
+  ) {
+    throw new ORPCError("BAD_REQUEST", {
+      message: "Application deadline must be before expected start date",
+    })
+  }
+}
 
 /* ── Reads ── */
 
@@ -80,13 +130,69 @@ export const createOfferProcedure = companyAdminProcedureStandard
       wilayaCode: z.coerce.number().int().min(1).max(58).optional(),
       durationWeeks: z.coerce.number().int().min(1).max(52).optional(),
       maxPositions: z.coerce.number().int().min(1).max(100).optional(),
+      applicationDeadlineAt: z.string().min(1).optional(),
+      expectedStartDate: z.string().min(1).optional(),
+      expectedEndDate: z.string().min(1).optional(),
       skillTagIds: z.array(z.string()).max(20).default([]),
     }),
   )
   .handler(async ({ input, context }) => {
+    const {
+      applicationDeadlineAt: applicationDeadlineAtInput,
+      expectedStartDate: expectedStartDateInput,
+      expectedEndDate: expectedEndDateInput,
+      ...restInput
+    } = input
+
+    if (
+      (expectedStartDateInput && !expectedEndDateInput) ||
+      (!expectedStartDateInput && expectedEndDateInput)
+    ) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "Expected start and end dates must both be provided",
+      })
+    }
+
+    let applicationDeadlineAt: Date | undefined
+    let expectedStartDate: Date | undefined
+    let expectedEndDate: Date | undefined
+
+    try {
+      applicationDeadlineAt = parseOptionalDate(
+        applicationDeadlineAtInput,
+        "Application deadline",
+      ) as Date | undefined
+      expectedStartDate = parseOptionalDate(
+        expectedStartDateInput,
+        "Expected start date",
+      ) as Date | undefined
+      expectedEndDate = parseOptionalDate(
+        expectedEndDateInput,
+        "Expected end date",
+      ) as Date | undefined
+    } catch (error) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: error instanceof Error ? error.message : "Invalid date input",
+      })
+    }
+
+    validateOfferTiming(
+      {
+        applicationDeadlineAt,
+        expectedStartDate,
+        expectedEndDate,
+      },
+      true,
+    )
+
     const result = await createOffer({
       companyId: context.companyMembership.companyId,
-      ...input,
+      ...restInput,
+      ...(applicationDeadlineAt !== undefined
+        ? { applicationDeadlineAt }
+        : {}),
+      ...(expectedStartDate !== undefined ? { expectedStartDate } : {}),
+      ...(expectedEndDate !== undefined ? { expectedEndDate } : {}),
     })
 
     // Invalidate company offers cache and public offer search
@@ -108,13 +214,71 @@ export const updateOfferProcedure = companyAdminProcedureStandard
       wilayaCode: z.coerce.number().int().min(1).max(58).nullable().optional(),
       durationWeeks: z.coerce.number().int().min(1).max(52).nullable().optional(),
       maxPositions: z.coerce.number().int().min(1).max(100).optional(),
+      applicationDeadlineAt: z.string().min(1).nullable().optional(),
+      expectedStartDate: z.string().min(1).nullable().optional(),
+      expectedEndDate: z.string().min(1).nullable().optional(),
       skillTagIds: z.array(z.string()).max(20).optional(),
     }),
   )
   .handler(async ({ input, context }) => {
+    const {
+      offerId,
+      applicationDeadlineAt: applicationDeadlineAtInput,
+      expectedStartDate: expectedStartDateInput,
+      expectedEndDate: expectedEndDateInput,
+      ...restInput
+    } = input
+
+    if (
+      (expectedStartDateInput !== undefined || expectedEndDateInput !== undefined) &&
+      (expectedStartDateInput === undefined || expectedEndDateInput === undefined)
+    ) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "Expected start and end dates must both be provided",
+      })
+    }
+
+    let applicationDeadlineAt: Date | null | undefined
+    let expectedStartDate: Date | null | undefined
+    let expectedEndDate: Date | null | undefined
+
     try {
-      const { offerId, ...data } = input
-      const result = await updateOffer(offerId, context.companyMembership.companyId, data)
+      applicationDeadlineAt = parseOptionalDate(
+        applicationDeadlineAtInput,
+        "Application deadline",
+      )
+      expectedStartDate = parseOptionalDate(
+        expectedStartDateInput,
+        "Expected start date",
+      )
+      expectedEndDate = parseOptionalDate(
+        expectedEndDateInput,
+        "Expected end date",
+      )
+    } catch (error) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: error instanceof Error ? error.message : "Invalid date input",
+      })
+    }
+
+    validateOfferTiming(
+      {
+        applicationDeadlineAt,
+        expectedStartDate,
+        expectedEndDate,
+      },
+      true,
+    )
+
+    try {
+      const result = await updateOffer(offerId, context.companyMembership.companyId, {
+        ...restInput,
+        ...(applicationDeadlineAt !== undefined
+          ? { applicationDeadlineAt }
+          : {}),
+        ...(expectedStartDate !== undefined ? { expectedStartDate } : {}),
+        ...(expectedEndDate !== undefined ? { expectedEndDate } : {}),
+      })
 
       // Invalidate offer caches
       revalidateTag(CACHE_TAGS.OFFER_DETAIL(offerId), { expire: 0 })
@@ -186,6 +350,10 @@ export const updateOfferStatusProcedure = companyAdminProcedureStandard
           OFFER_INVALID_PUBLISH_STATUS: "BAD_REQUEST",
           OFFER_INVALID_CLOSE_STATUS: "BAD_REQUEST",
           OFFER_INVALID_ACTION: "BAD_REQUEST",
+          OFFER_EXPECTED_PERIOD_INCOMPLETE: "BAD_REQUEST",
+          OFFER_EXPECTED_PERIOD_INVALID: "BAD_REQUEST",
+          OFFER_DEADLINE_AFTER_START: "BAD_REQUEST",
+          OFFER_DEADLINE_IN_PAST: "BAD_REQUEST",
         },
         fallbackMessage: "Failed to update offer status",
       })
@@ -202,6 +370,9 @@ const offerFormContextSchema = z.object({
   wilayaCode: z.number().int().nullable().optional(),
   durationWeeks: z.number().int().nullable().optional(),
   maxPositions: z.number().int().optional(),
+  applicationDeadlineAt: z.string().nullable().optional(),
+  expectedStartDate: z.string().nullable().optional(),
+  expectedEndDate: z.string().nullable().optional(),
 })
 
 const availableSkillTagsSchema = z

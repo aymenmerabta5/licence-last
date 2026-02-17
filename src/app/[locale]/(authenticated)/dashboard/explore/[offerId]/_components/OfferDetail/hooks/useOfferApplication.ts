@@ -43,7 +43,8 @@ export function useOfferApplication(
   )
 
   const isOfferClosed =
-    offer.closesAt && new Date(offer.closesAt) < new Date()
+    offer.status !== "published" ||
+    (offer.applicationDeadlineAt && new Date(offer.applicationDeadlineAt) < new Date())
 
   function draftCoverLetter() {
     setCoverLetterDraft(null)

@@ -19,6 +19,9 @@ interface ImproveDescriptionInput {
   wilayaCode?: number | null
   durationWeeks?: number | null
   maxPositions?: number
+  applicationDeadlineAt?: string | null
+  expectedStartDate?: string | null
+  expectedEndDate?: string | null
 }
 
 export async function improveOfferDescription(
@@ -34,6 +37,9 @@ export async function improveOfferDescription(
     `Internship type: ${input.internshipType ?? "N/A"}`,
     `Work mode: ${input.workMode ?? "N/A"}`,
     `Duration: ${input.durationWeeks ? `${input.durationWeeks} weeks` : "N/A"}`,
+    `Application deadline: ${input.applicationDeadlineAt ?? "N/A"}`,
+    `Expected start date: ${input.expectedStartDate ?? "N/A"}`,
+    `Expected end date: ${input.expectedEndDate ?? "N/A"}`,
     "",
     `Current description to improve:\n${input.description ?? ""}`,
   ].join("\n")

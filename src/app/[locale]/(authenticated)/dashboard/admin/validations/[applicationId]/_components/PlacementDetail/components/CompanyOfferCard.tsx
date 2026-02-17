@@ -26,6 +26,9 @@ interface CompanyOfferCardProps {
       internshipType: string
       workMode?: string | null
       durationWeeks?: number | null
+      applicationDeadlineAt?: Date | string | null
+      expectedStartDate?: Date | string | null
+      expectedEndDate?: Date | string | null
     }
   }
 }
@@ -104,6 +107,31 @@ export function CompanyOfferCard({ application }: CompanyOfferCardProps) {
               })}
             />
           )}
+          <InfoRow
+            label={t("deadline")}
+            value={formatDate(
+              application.offer.applicationDeadlineAt ?? null,
+              locale,
+              t("notAvailable"),
+            )}
+          />
+          <InfoRow
+            label={t("expectedPeriod")}
+            value={
+              application.offer.expectedStartDate &&
+              application.offer.expectedEndDate
+                ? `${formatDate(
+                    application.offer.expectedStartDate,
+                    locale,
+                    t("notAvailable"),
+                  )} - ${formatDate(
+                    application.offer.expectedEndDate,
+                    locale,
+                    t("notAvailable"),
+                  )}`
+                : t("notAvailable")
+            }
+          />
         </div>
       </div>
 

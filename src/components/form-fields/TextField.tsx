@@ -12,12 +12,14 @@ interface TextFieldProps {
   label: string
   placeholder?: string
   icon?: LucideIcon
-  type?: "text" | "email" | "tel" | "url" | "number"
+  type?: "text" | "email" | "tel" | "url" | "number" | "date"
   value: string
   onChange: (value: string) => void
   onBlur?: () => void
   error?: string
   autoComplete?: string
+  min?: string
+  max?: string
   disabled?: boolean
   className?: string
 }
@@ -33,6 +35,8 @@ export function TextField({
   onBlur,
   error,
   autoComplete,
+  min,
+  max,
   disabled,
   className,
 }: TextFieldProps) {
@@ -58,6 +62,8 @@ export function TextField({
           onBlur={onBlur}
           placeholder={placeholder}
           autoComplete={autoComplete}
+          min={min}
+          max={max}
           disabled={disabled}
         />
       </InputGroup>

@@ -21,6 +21,9 @@ export async function updateOffer(
     wilayaCode?: number | null
     durationWeeks?: number | null
     maxPositions?: number
+    applicationDeadlineAt?: Date | null
+    expectedStartDate?: Date | null
+    expectedEndDate?: Date | null
     skillTagIds?: string[]
   },
 ) {
@@ -51,6 +54,9 @@ export async function updateOffer(
         wilayaCode: data.wilayaCode,
         durationWeeks: data.durationWeeks,
         maxPositions: data.maxPositions,
+        applicationDeadlineAt: data.applicationDeadlineAt,
+        expectedStartDate: data.expectedStartDate,
+        expectedEndDate: data.expectedEndDate,
       })
       .where(eq(internshipOffer.id, offerId))
 

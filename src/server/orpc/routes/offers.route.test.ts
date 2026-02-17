@@ -22,7 +22,6 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
 
 const updateOfferMock = mock(async () => ({ offerId: "offer-1" }))
 const deleteOfferMock = mock(async () => ({ offerId: "offer-1", deleted: true }))
-const updateOfferStatusMock = mock(async () => ({ offerId: "offer-1", newStatus: "published" }))
 const revalidateTagMock = mock(() => {})
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
@@ -62,9 +61,6 @@ mock.module("@/server/services/offers/update", () => ({
 mock.module("@/server/services/offers/delete", () => ({
   deleteOffer: deleteOfferMock,
 }))
-mock.module("@/server/services/offers/update-status", () => ({
-  updateOfferStatus: updateOfferStatusMock,
-}))
 mock.module("@/server/db", () => ({
   db: {
     select: () => ({
@@ -81,7 +77,6 @@ describe("src/server/orpc/routes/offers", () => {
   beforeEach(() => {
     updateOfferMock.mockClear()
     deleteOfferMock.mockClear()
-    updateOfferStatusMock.mockClear()
     revalidateTagMock.mockClear()
   })
 

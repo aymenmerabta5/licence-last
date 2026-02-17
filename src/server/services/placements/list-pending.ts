@@ -46,6 +46,9 @@ export interface PendingApplication {
     workMode: string | null
     durationWeeks: number | null
     wilayaCode: number | null
+    applicationDeadlineAt: Date | null
+    expectedStartDate: Date | null
+    expectedEndDate: Date | null
   }
   company: {
     id: string
@@ -156,6 +159,9 @@ export async function listPendingApplications(
       offerWorkMode: internshipOffer.workMode,
       offerDurationWeeks: internshipOffer.durationWeeks,
       offerWilayaCode: internshipOffer.wilayaCode,
+      offerApplicationDeadlineAt: internshipOffer.applicationDeadlineAt,
+      offerExpectedStartDate: internshipOffer.expectedStartDate,
+      offerExpectedEndDate: internshipOffer.expectedEndDate,
       companyId: company.id,
       companyName: company.name,
       companyAddress: company.address,
@@ -256,6 +262,9 @@ export async function listPendingApplications(
         workMode: app.offerWorkMode,
         durationWeeks: app.offerDurationWeeks,
         wilayaCode: app.offerWilayaCode,
+        applicationDeadlineAt: app.offerApplicationDeadlineAt,
+        expectedStartDate: app.offerExpectedStartDate,
+        expectedEndDate: app.offerExpectedEndDate,
       },
       company: {
         id: app.companyId,

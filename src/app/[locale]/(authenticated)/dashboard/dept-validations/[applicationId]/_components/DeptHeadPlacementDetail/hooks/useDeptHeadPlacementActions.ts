@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 
@@ -13,10 +13,36 @@ type ValidationSummary = {
   potentialInconsistencies: string[]
 }
 
-export function useDeptHeadPlacementActions(applicationId: string) {
+function toDateInputValue(value: Date | string | null | undefined): string {
+  if (!value) return ""
+
+  const date = typeof value === "string" ? new Date(value) : value
+  if (Number.isNaN(date.getTime())) return ""
+
+  return date.toISOString().split("T")[0]
+}
+
+function isBeforeDate(dateA: string, dateB: string): boolean {
+  return new Date(dateA).getTime() < new Date(dateB).getTime()
+}
+
+function isAfterDate(dateA: string, dateB: string): boolean {
+  return new Date(dateA).getTime() > new Date(dateB).getTime()
+}
+
+export function useDeptHeadPlacementActions(
+  applicationId: string,
+  expectedDates?: {
+    expectedStartDate?: Date | string | null
+    expectedEndDate?: Date | string | null
+  },
+) {
   const t = useTranslations("dashboard.admin.validations.detail")
   const router = useRouter()
   const queryClient = useQueryClient()
+
+  const expectedStartDate = toDateInputValue(expectedDates?.expectedStartDate)
+  const expectedEndDate = toDateInputValue(expectedDates?.expectedEndDate)
 
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
@@ -27,6 +53,15 @@ export function useDeptHeadPlacementActions(applicationId: string) {
   const [pdfLoading, setPdfLoading] = useState(false)
 
   const [aiSummary, setAiSummary] = useState<ValidationSummary | null>(null)
+
+  useEffect(() => {
+    if (!startDate && expectedStartDate) {
+      setStartDate(expectedStartDate)
+    }
+    if (!endDate && expectedEndDate) {
+      setEndDate(expectedEndDate)
+    }
+  }, [startDate, endDate, expectedStartDate, expectedEndDate])
 
   const summaryMutation = useMutation(
     orpc.placements.generateValidationSummary.mutationOptions({
@@ -130,11 +165,26 @@ export function useDeptHeadPlacementActions(applicationId: string) {
     })
   }
 
+  const isBeforeExpectedStart = expectedStartDate
+    ? isBeforeDate(startDate, expectedStartDate)
+    : false
+  const isAfterExpectedEnd = expectedEndDate
+    ? isAfterDate(endDate, expectedEndDate)
+    : false
+
+  const showOutOfRangeWarning =
+    !!startDate &&
+    !!endDate &&
+    (isBeforeExpectedStart || isAfterExpectedEnd)
+
   return {
     startDate,
     setStartDate,
     endDate,
     setEndDate,
+    expectedStartDate,
+    expectedEndDate,
+    showOutOfRangeWarning,
     validateModal,
     setValidateModal,
     rejectModal,

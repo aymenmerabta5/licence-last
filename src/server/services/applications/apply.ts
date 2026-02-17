@@ -47,7 +47,7 @@ export async function applyToOffer(
       throw new ApplicationServiceError("OFFER_NOT_OPEN", "Offer is not accepting applications")
     }
 
-    if (offer.closesAt && offer.closesAt < new Date()) {
+    if (offer.applicationDeadlineAt && offer.applicationDeadlineAt < new Date()) {
       throw new ApplicationServiceError("OFFER_DEADLINE_PASSED", "Offer application deadline has passed")
     }
 

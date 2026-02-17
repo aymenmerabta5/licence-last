@@ -3,41 +3,114 @@ import { z } from "zod"
 import type { TranslationFn } from "@/lib/schemas/auth"
 import { internshipTypeSchema, workModeSchema } from "@/lib/schemas/enums"
 
+function parseDateOnly(value: string): Date | null {
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) {
+    return null
+  }
+  return parsed
+}
+
 /**
  * Internship offer form schema.
  * Used for creating and editing internship offers.
  */
 export function createOfferSchema(t: TranslationFn) {
-  return z.object({
-    title: z.string().min(3, { error: t("offerTitleMin") }),
-    description: z.string().min(10, { error: t("offerDescriptionMin") }),
-    internshipType: internshipTypeSchema,
-    workMode: workModeSchema.optional(),
-    wilayaCode: z.coerce
-      .number()
-      .int()
-      .min(1, { error: t("wilayaRequired") })
-      .max(58, { error: t("wilayaInvalid") })
-      .optional()
-      .or(z.literal(0)),
-    durationWeeks: z.coerce
-      .number()
-      .int()
-      .min(1, { error: t("durationWeeksMin") })
-      .max(52, { error: t("durationWeeksMax") })
-      .optional()
-      .or(z.literal(0)),
-    maxPositions: z.coerce
-      .number()
-      .int()
-      .min(1, { error: t("maxPositionsMin") })
-      .max(100, { error: t("maxPositionsMax") })
-      .optional()
-      .or(z.literal(0)),
-    skillTagIds: z
-      .array(z.string())
-      .max(20, { error: t("offerSkillsMax") }),
-  })
+  return z
+    .object({
+      title: z.string().min(3, { error: t("offerTitleMin") }),
+      description: z.string().min(10, { error: t("offerDescriptionMin") }),
+      internshipType: internshipTypeSchema,
+      workMode: workModeSchema.optional(),
+      wilayaCode: z.coerce
+        .number()
+        .int()
+        .min(1, { error: t("wilayaRequired") })
+        .max(58, { error: t("wilayaInvalid") })
+        .optional()
+        .or(z.literal(0)),
+      durationWeeks: z.coerce
+        .number()
+        .int()
+        .min(1, { error: t("durationWeeksMin") })
+        .max(52, { error: t("durationWeeksMax") })
+        .optional()
+        .or(z.literal(0)),
+      maxPositions: z.coerce
+        .number()
+        .int()
+        .min(1, { error: t("maxPositionsMin") })
+        .max(100, { error: t("maxPositionsMax") })
+        .optional()
+        .or(z.literal(0)),
+      applicationDeadlineAt: z.string().optional().or(z.literal("")),
+      expectedStartDate: z.string().optional().or(z.literal("")),
+      expectedEndDate: z.string().optional().or(z.literal("")),
+      skillTagIds: z
+        .array(z.string())
+        .max(20, { error: t("offerSkillsMax") }),
+    })
+    .superRefine((data, ctx) => {
+      const applicationDeadlineAt = data.applicationDeadlineAt || undefined
+      const expectedStartDate = data.expectedStartDate || undefined
+      const expectedEndDate = data.expectedEndDate || undefined
+
+      const parsedDeadline = applicationDeadlineAt
+        ? parseDateOnly(applicationDeadlineAt)
+        : null
+      const parsedStart = expectedStartDate
+        ? parseDateOnly(expectedStartDate)
+        : null
+      const parsedEnd = expectedEndDate ? parseDateOnly(expectedEndDate) : null
+
+      if (applicationDeadlineAt && !parsedDeadline) {
+        ctx.addIssue({
+          code: "custom",
+          message: t("dateInvalid"),
+          path: ["applicationDeadlineAt"],
+        })
+      }
+
+      if (expectedStartDate && !parsedStart) {
+        ctx.addIssue({
+          code: "custom",
+          message: t("dateInvalid"),
+          path: ["expectedStartDate"],
+        })
+      }
+
+      if (expectedEndDate && !parsedEnd) {
+        ctx.addIssue({
+          code: "custom",
+          message: t("dateInvalid"),
+          path: ["expectedEndDate"],
+        })
+      }
+
+      if ((expectedStartDate && !expectedEndDate) || (!expectedStartDate && expectedEndDate)) {
+        ctx.addIssue({
+          code: "custom",
+          message: t("expectedPeriodBothRequired"),
+          path: ["expectedEndDate"],
+        })
+      }
+
+      if (parsedStart && parsedEnd && parsedStart >= parsedEnd) {
+        ctx.addIssue({
+          code: "custom",
+          message: t("expectedPeriodInvalid"),
+          path: ["expectedEndDate"],
+        })
+      }
+
+      if (parsedDeadline && parsedStart && parsedDeadline > parsedStart) {
+        ctx.addIssue({
+          code: "custom",
+          message: t("deadlineAfterExpectedStart"),
+          path: ["applicationDeadlineAt"],
+        })
+      }
+    })
 }
 
 /**

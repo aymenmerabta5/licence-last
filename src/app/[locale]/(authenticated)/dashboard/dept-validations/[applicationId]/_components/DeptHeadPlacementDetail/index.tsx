@@ -34,7 +34,10 @@ export function DeptHeadPlacementDetail({
   const t = useTranslations("dashboard.admin.validations.detail")
   const td = useTranslations("dashboard.admin.deptValidations")
   const { application, isLoading } = useDeptHeadPlacementData(applicationId)
-  const actions = useDeptHeadPlacementActions(applicationId)
+  const actions = useDeptHeadPlacementActions(applicationId, {
+    expectedStartDate: application?.offer.expectedStartDate,
+    expectedEndDate: application?.offer.expectedEndDate,
+  })
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -128,6 +131,9 @@ export function DeptHeadPlacementDetail({
             onStartDateChange={actions.setStartDate}
             endDate={actions.endDate}
             onEndDateChange={actions.setEndDate}
+            expectedStartDate={actions.expectedStartDate}
+            expectedEndDate={actions.expectedEndDate}
+            showOutOfRangeWarning={actions.showOutOfRangeWarning}
             actionLoading={actions.actionLoading}
             pdfLoading={actions.pdfLoading}
             onValidate={actions.handleValidate}

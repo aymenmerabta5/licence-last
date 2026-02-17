@@ -15,7 +15,10 @@ export function PlacementDetailClient({
   applicationId: string
 }) {
   const { application, isLoading } = usePlacementData(applicationId)
-  const actions = usePlacementActions(applicationId)
+  const actions = usePlacementActions(applicationId, {
+    expectedStartDate: application?.offer.expectedStartDate,
+    expectedEndDate: application?.offer.expectedEndDate,
+  })
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -77,6 +80,9 @@ export function PlacementDetailClient({
             onStartDateChange={actions.setStartDate}
             endDate={actions.endDate}
             onEndDateChange={actions.setEndDate}
+            expectedStartDate={actions.expectedStartDate}
+            expectedEndDate={actions.expectedEndDate}
+            showOutOfRangeWarning={actions.showOutOfRangeWarning}
             actionLoading={actions.actionLoading}
             pdfLoading={actions.pdfLoading}
             onValidate={actions.handleValidate}
