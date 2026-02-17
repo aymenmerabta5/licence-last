@@ -31,7 +31,7 @@ describe("src/server/services/documents/generate-certificate", () => {
   })
 
   test("should throw when placement does not exist", async () => {
-    const { generateCertificate } = await import("./generate-certificate")
+    const { generateCertificate } = await import("@/server/services/documents/generate-certificate")
     await expect(generateCertificate({ placementId: "p-1" })).rejects.toThrow(
       "Placement not found",
     )

@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/routing"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
-import type { AdminValidationSummary } from "../types"
+import type { AdminValidationSummary } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/types"
 
 export function usePlacementActions(applicationId: string) {
   const t = useTranslations("dashboard.admin.validations.detail")

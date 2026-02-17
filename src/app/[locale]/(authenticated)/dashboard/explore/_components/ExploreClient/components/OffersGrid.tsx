@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl"
 import { Loader2, Newspaper } from "lucide-react"
 
 import { reveal, ease } from "@/lib/animations"
-import { OfferCard } from "../../OfferCard"
+import { OfferCard } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/OfferCard"
 
 type Offer = React.ComponentProps<typeof OfferCard>["offer"]
 

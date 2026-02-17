@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server"
 import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
 import { getCompanyByUserId } from "@/server/services/companies/get"
-import { CompanyProfileForm } from "./_components/CompanyProfileForm"
+import { CompanyProfileForm } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm"
 
 export default async function CompanyProfilePage() {
   const [sessionUser, t] = await Promise.all([

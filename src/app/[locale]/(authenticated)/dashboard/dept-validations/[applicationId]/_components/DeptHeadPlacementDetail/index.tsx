@@ -23,8 +23,8 @@ import { AISummaryPanel } from "@/app/[locale]/(authenticated)/dashboard/admin/v
 import { ValidationForm } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/ValidationForm"
 import { RejectDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/RejectDialog"
 
-import { useDeptHeadPlacementData } from "./hooks/useDeptHeadPlacementData"
-import { useDeptHeadPlacementActions } from "./hooks/useDeptHeadPlacementActions"
+import { useDeptHeadPlacementData } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/[applicationId]/_components/DeptHeadPlacementDetail/hooks/useDeptHeadPlacementData"
+import { useDeptHeadPlacementActions } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/[applicationId]/_components/DeptHeadPlacementDetail/hooks/useDeptHeadPlacementActions"
 
 export function DeptHeadPlacementDetail({
   applicationId,

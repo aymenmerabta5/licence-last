@@ -33,7 +33,7 @@ mock.module("./_components/AuthRedirect", () => ({
 }))
 
 // Import AFTER all mocks using dynamic import
-const { default: Home } = await import("./page")
+const { default: Home } = await import("@/app/[locale]/page")
 
 describe("Home Page", () => {
   beforeEach(() => {

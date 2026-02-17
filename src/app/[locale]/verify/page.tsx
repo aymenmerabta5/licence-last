@@ -2,7 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server"
 
 import { Navbar } from "@/components/Navbar"
 import { Footer } from "@/components/Footer"
-import { VerifyForm } from "./_components/VerifyForm"
+import { VerifyForm } from "@/app/[locale]/verify/_components/VerifyForm"
 import { type Metadata } from "next"
 
 type Params = Promise<{ locale: string }>

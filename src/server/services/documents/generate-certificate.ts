@@ -15,8 +15,8 @@ import {
   InternshipCertificateTemplate,
   type CertificateData,
 } from "@/server/pdfs/CertificateTemplate"
-import { generateVerificationCode } from "./verification-code"
-import { generateQRCodeDataUrl } from "./qr-utils"
+import { generateVerificationCode } from "@/server/services/documents/verification-code"
+import { generateQRCodeDataUrl } from "@/server/services/documents/qr-utils"
 import { env } from "@/env"
 
 export interface GenerateCertificateInput {

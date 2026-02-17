@@ -10,8 +10,8 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AccountRow } from "./AccountRow";
-import type { DeviceSession } from "../types";
+import { AccountRow } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/components/AccountRow";
+import type { DeviceSession } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types";
 
 interface AccountSwitcherSectionProps {
   sessions: DeviceSession[];

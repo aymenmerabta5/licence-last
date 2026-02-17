@@ -6,7 +6,7 @@ import { Shield, TrendingUp, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ease } from "@/lib/animations"
 
-import type { TrustData } from "../types"
+import type { TrustData } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/types"
 
 const TIER_COLORS: Record<string, { text: string; bar: string }> = {
   excellent: { text: "text-emerald-600 dark:text-emerald-400", bar: "bg-emerald-500" },

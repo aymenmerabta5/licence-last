@@ -7,7 +7,7 @@ import { PasswordField } from "@/components/form-fields"
 import { CheckboxField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 
-import type { SignupFormApi } from "../hooks/useSignupForm"
+import type { SignupFormApi } from "@/app/[locale]/(auth)/signup/_components/SignupForm/hooks/useSignupForm"
 
 interface SignupFieldsProps {
   form: SignupFormApi

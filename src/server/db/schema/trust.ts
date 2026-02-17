@@ -1,9 +1,9 @@
 import { pgTable, text, timestamp, integer, boolean, jsonb, index, uniqueIndex } from "drizzle-orm/pg-core"
 
-import { placement } from "./placements"
-import { company } from "./companies"
-import { user } from "./auth"
-import { companyReportSeverityEnum, companyReportStatusEnum } from "./enums"
+import { placement } from "@/server/db/schema/placements"
+import { company } from "@/server/db/schema/companies"
+import { user } from "@/server/db/schema/auth"
+import { companyReportSeverityEnum, companyReportStatusEnum } from "@/server/db/schema/enums"
 
 export const companyQualityFeedback = pgTable(
   "company_quality_feedback",

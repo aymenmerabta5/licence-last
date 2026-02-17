@@ -10,7 +10,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group"
-import type { LoginFormApi } from "../hooks/useLoginForm"
+import type { LoginFormApi } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/useLoginForm"
 
 interface LoginFieldsProps {
   form: LoginFormApi

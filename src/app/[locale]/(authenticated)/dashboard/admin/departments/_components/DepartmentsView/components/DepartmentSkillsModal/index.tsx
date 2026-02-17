@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
 
-import { useDepartmentSkills } from "./hooks/useDepartmentSkills"
+import { useDepartmentSkills } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/hooks/useDepartmentSkills"
 
 interface DepartmentSkillsModalProps {
   departmentId: string

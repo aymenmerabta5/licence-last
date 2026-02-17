@@ -6,11 +6,11 @@ import { ServerError } from "@/components/ServerError"
 import { SuccessMessage } from "@/components/SuccessMessage"
 import { ease } from "@/lib/animations"
 
-import { useCompanyProfileForm } from "./hooks/useCompanyProfileForm"
-import { LogoUploadSection } from "./components/LogoUploadSection"
-import { ProfileFieldsSection } from "./components/ProfileFieldsSection"
-import { FormActions } from "./components/FormActions"
-import type { CompanyProfileFormProps } from "./types"
+import { useCompanyProfileForm } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/hooks/useCompanyProfileForm"
+import { LogoUploadSection } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/LogoUploadSection"
+import { ProfileFieldsSection } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/ProfileFieldsSection"
+import { FormActions } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/FormActions"
+import type { CompanyProfileFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/types"
 
 export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
   const {

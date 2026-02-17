@@ -41,7 +41,7 @@ describe("src/server/services/companies/list", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockOffset.mockResolvedValue(queryResult as any)
 
-    const { listCompanies } = await import("./list")
+    const { listCompanies } = await import("@/server/services/companies/list")
     const result = await listCompanies()
 
     expect(result.companies).toEqual([])
@@ -56,7 +56,7 @@ describe("src/server/services/companies/list", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockOffset.mockResolvedValue(companies as any)
 
-    const { listCompanies } = await import("./list")
+    const { listCompanies } = await import("@/server/services/companies/list")
     const result = await listCompanies()
 
     expect(result.companies.length).toBe(50)
@@ -71,7 +71,7 @@ describe("src/server/services/companies/list", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockOffset.mockResolvedValue(companies as any)
 
-    const { listCompanies } = await import("./list")
+    const { listCompanies } = await import("@/server/services/companies/list")
     const result = await listCompanies({ limit: 5 })
 
     expect(result.companies.length).toBe(5)
@@ -82,7 +82,7 @@ describe("src/server/services/companies/list", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockOffset.mockResolvedValue([] as any)
 
-    const { listCompanies } = await import("./list")
+    const { listCompanies } = await import("@/server/services/companies/list")
     await listCompanies({ limit: 500 })
 
     expect(mockLimit).toHaveBeenCalled()

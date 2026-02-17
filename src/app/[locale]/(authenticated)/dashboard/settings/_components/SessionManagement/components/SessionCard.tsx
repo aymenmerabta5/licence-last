@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import type { EnrichedSession } from "../types"
+import type { EnrichedSession } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/types"
 
 interface SessionCardProps {
   session: EnrichedSession

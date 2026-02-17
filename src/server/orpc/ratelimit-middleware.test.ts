@@ -55,7 +55,7 @@ describe("ratelimit middleware fallback policy", () => {
     mockRedisRateLimitEnabled = "true"
     mockLimiter = null
 
-    const { createRateLimitMiddleware } = await import("./ratelimit-middleware")
+    const { createRateLimitMiddleware } = await import("@/server/orpc/ratelimit-middleware")
     const middleware = createRateLimitMiddleware({
       maxRequests: 5,
       windowMs: 60_000,
@@ -77,7 +77,7 @@ describe("ratelimit middleware fallback policy", () => {
     mockRedisRateLimitEnabled = "false"
     mockLimiter = null
 
-    const { createRateLimitMiddleware } = await import("./ratelimit-middleware")
+    const { createRateLimitMiddleware } = await import("@/server/orpc/ratelimit-middleware")
     const middleware = createRateLimitMiddleware({
       maxRequests: 2,
       windowMs: 60_000,

@@ -4,8 +4,8 @@ import { useLocale } from "next-intl"
 import { Badge } from "@/components/ui/badge"
 import { Link } from "@/i18n/routing"
 
-import type { OfferRow } from "../types"
-import { relativeTime } from "../utils"
+import type { OfferRow } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
+import { relativeTime } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/utils"
 import { getWilayaName } from "@/lib/wilayas"
 
 interface OfferCardProps {

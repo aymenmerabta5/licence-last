@@ -60,7 +60,7 @@ describe("src/server/orpc/routes/placements", () => {
   })
 
   test("validateProcedure delegates to service and returns success payload", async () => {
-    const { validateProcedure } = await import("./placements")
+    const { validateProcedure } = await import("@/server/orpc/routes/placements")
 
     const result = await callProcedure(validateProcedure, {
       input: {
@@ -86,7 +86,7 @@ describe("src/server/orpc/routes/placements", () => {
         "Placement already exists for this application",
       ),
     )
-    const { validateProcedure } = await import("./placements")
+    const { validateProcedure } = await import("@/server/orpc/routes/placements")
 
     await expect(
       callProcedure(validateProcedure, {
@@ -110,7 +110,7 @@ describe("src/server/orpc/routes/placements", () => {
         "You do not have access to reject this application",
       ),
     )
-    const { rejectProcedure } = await import("./placements")
+    const { rejectProcedure } = await import("@/server/orpc/routes/placements")
 
     await expect(
       callProcedure(rejectProcedure, {

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-import { requireRole } from "./auth-guards"
+import { requireRole } from "@/lib/auth-guards"
 
 interface SessionUser {
   id: string

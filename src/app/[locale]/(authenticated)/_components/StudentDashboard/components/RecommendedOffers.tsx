@@ -5,8 +5,8 @@ import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 
-import type { OfferRow } from "../types"
-import { OfferCard } from "./OfferCard"
+import type { OfferRow } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
+import { OfferCard } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/OfferCard"
 
 interface RecommendedOffersProps {
   offers: OfferRow[]

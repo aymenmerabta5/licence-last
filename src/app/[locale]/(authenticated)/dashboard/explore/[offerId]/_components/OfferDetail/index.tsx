@@ -4,15 +4,15 @@ import * as motion from "motion/react-client"
 
 import { reveal, ease } from "@/lib/animations"
 
-import { useOfferMatching } from "./hooks/useOfferMatching"
-import { useOfferApplication } from "./hooks/useOfferApplication"
-import { OfferHeader } from "./components/OfferHeader"
-import { OfferBody } from "./components/OfferBody"
-import { DetailsSidebar } from "./components/DetailsSidebar"
-import { ApplicationPanel } from "./components/ApplicationPanel"
-import { MatchingPanel } from "./components/MatchingPanel"
-import { CompanyCard } from "./components/CompanyCard"
-import type { OfferDetailProps } from "./types"
+import { useOfferMatching } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useOfferMatching"
+import { useOfferApplication } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useOfferApplication"
+import { OfferHeader } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/OfferHeader"
+import { OfferBody } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/OfferBody"
+import { DetailsSidebar } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/DetailsSidebar"
+import { ApplicationPanel } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/ApplicationPanel"
+import { MatchingPanel } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/MatchingPanel"
+import { CompanyCard } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/CompanyCard"
+import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
 
 export type { OfferDetailProps }
 

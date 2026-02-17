@@ -38,7 +38,7 @@ describe("src/server/services/users/session-management", () => {
   })
 
   test("listMySessions should call auth.api.listSessions", async () => {
-    const { listMySessions } = await import("./session-management")
+    const { listMySessions } = await import("@/server/services/users/session-management")
 
     const result = await listMySessions()
 
@@ -50,7 +50,7 @@ describe("src/server/services/users/session-management", () => {
   })
 
   test("revokeMySession should reject unknown tokens", async () => {
-    const { revokeMySession } = await import("./session-management")
+    const { revokeMySession } = await import("@/server/services/users/session-management")
     mockListSessions.mockResolvedValue([{ token: "token-1" }])
 
     await expect(revokeMySession("token-2")).rejects.toThrow(
@@ -60,7 +60,7 @@ describe("src/server/services/users/session-management", () => {
   })
 
   test("revokeMySession should revoke owned token", async () => {
-    const { revokeMySession } = await import("./session-management")
+    const { revokeMySession } = await import("@/server/services/users/session-management")
     mockListSessions.mockResolvedValue([{ token: "token-1" }])
 
     const result = await revokeMySession("token-1")
@@ -72,7 +72,7 @@ describe("src/server/services/users/session-management", () => {
   })
 
   test("revokeOtherSessions should return 0 when no other sessions exist", async () => {
-    const { revokeOtherSessions } = await import("./session-management")
+    const { revokeOtherSessions } = await import("@/server/services/users/session-management")
     mockListSessions.mockResolvedValue([{ token: "current-token" }])
 
     const result = await revokeOtherSessions("current-token")
@@ -82,7 +82,7 @@ describe("src/server/services/users/session-management", () => {
   })
 
   test("revokeOtherSessions should revoke all non-current sessions", async () => {
-    const { revokeOtherSessions } = await import("./session-management")
+    const { revokeOtherSessions } = await import("@/server/services/users/session-management")
     mockListSessions.mockResolvedValue([
       { token: "current-token" },
       { token: "other-token-1" },

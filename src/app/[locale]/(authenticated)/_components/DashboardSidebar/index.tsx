@@ -2,10 +2,10 @@
 
 import * as motion from "motion/react-client"
 import { cn } from "@/lib/utils"
-import { useSidebar } from "./hooks/useSidebar"
-import { SidebarHeader } from "./components/SidebarHeader"
-import { SidebarNav } from "./components/SidebarNav"
-import { SidebarFooter } from "./components/SidebarFooter"
+import { useSidebar } from "@/app/[locale]/(authenticated)/_components/DashboardSidebar/hooks/useSidebar"
+import { SidebarHeader } from "@/app/[locale]/(authenticated)/_components/DashboardSidebar/components/SidebarHeader"
+import { SidebarNav } from "@/app/[locale]/(authenticated)/_components/DashboardSidebar/components/SidebarNav"
+import { SidebarFooter } from "@/app/[locale]/(authenticated)/_components/DashboardSidebar/components/SidebarFooter"
 
 export function DashboardSidebar({ role = "student" }: { role?: string }) {
   const { isCollapsed, setIsCollapsed, filteredItems, pathname, logout } = useSidebar(role)

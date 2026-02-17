@@ -52,7 +52,7 @@ describe("src/server/services/companies/trust-actions submitCompanyQualityFeedba
     ]
     mockUpsertRows = [{ id: "feedback-existing-id" }]
 
-    const { submitCompanyQualityFeedback } = await import("./trust-actions")
+    const { submitCompanyQualityFeedback } = await import("@/server/services/companies/trust-actions")
     const result = await submitCompanyQualityFeedback({
       studentUserId: "student-1",
       placementId: "placement-1",

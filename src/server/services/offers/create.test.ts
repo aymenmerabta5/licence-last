@@ -38,7 +38,7 @@ describe("src/server/services/offers/create", () => {
   })
 
   test("should create offer with skills", async () => {
-    const { createOffer } = await import("./create")
+    const { createOffer } = await import("@/server/services/offers/create")
 
     const result = await createOffer({
       companyId: "company-1",
@@ -55,7 +55,7 @@ describe("src/server/services/offers/create", () => {
   })
 
   test("should create offer without skills", async () => {
-    const { createOffer } = await import("./create")
+    const { createOffer } = await import("@/server/services/offers/create")
 
     const result = await createOffer({
       companyId: "company-1",
@@ -70,7 +70,7 @@ describe("src/server/services/offers/create", () => {
   })
 
   test("should return offerId", async () => {
-    const { createOffer } = await import("./create")
+    const { createOffer } = await import("@/server/services/offers/create")
 
     const result = await createOffer({
       companyId: "company-1",

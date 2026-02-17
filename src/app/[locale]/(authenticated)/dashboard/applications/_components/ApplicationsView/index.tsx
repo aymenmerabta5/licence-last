@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button"
 import { reveal, ease } from "@/lib/animations"
 import { STAGE_COLUMNS, STAGE_LABELS } from "@/lib/constants/pipeline"
 
-import { useApplications } from "./hooks/useApplications"
-import { ApplicationCard } from "./components/ApplicationCard"
+import { useApplications } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsView/hooks/useApplications"
+import { ApplicationCard } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsView/components/ApplicationCard"
 import { TimelineModal } from "@/components/TimelineModal"
 
 export function ApplicationsView() {

@@ -7,9 +7,9 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core"
 
-import { documentStatusEnum, documentTypeEnum } from "./enums"
-import { application } from "./applications"
-import { user } from "./auth"
+import { documentStatusEnum, documentTypeEnum } from "@/server/db/schema/enums"
+import { application } from "@/server/db/schema/applications"
+import { user } from "@/server/db/schema/auth"
 
 export const placement = pgTable(
   "placement",

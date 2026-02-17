@@ -167,7 +167,7 @@ describe("src/server/services/placements/list-pending", () => {
       },
     ])
 
-    const { listPendingApplications } = await import("./list-pending")
+    const { listPendingApplications } = await import("@/server/services/placements/list-pending")
     const result = await listPendingApplications(
       {},
       { role: "super_admin", universityId: null },
@@ -181,7 +181,7 @@ describe("src/server/services/placements/list-pending", () => {
   })
 
   test("should return empty results when admin has no university scope", async () => {
-    const { listPendingApplications } = await import("./list-pending")
+    const { listPendingApplications } = await import("@/server/services/placements/list-pending")
     const result = await listPendingApplications(
       {},
       { role: "university_admin", universityId: null },

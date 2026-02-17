@@ -86,7 +86,7 @@ describe("src/server/orpc/routes/offers", () => {
   })
 
   test("updateOfferProcedure revalidates caches on success", async () => {
-    const { updateOfferProcedure } = await import("./offers")
+    const { updateOfferProcedure } = await import("@/server/orpc/routes/offers")
 
     const result = await callProcedure(updateOfferProcedure, {
       input: { offerId: "offer-1", title: "Updated title" },
@@ -107,7 +107,7 @@ describe("src/server/orpc/routes/offers", () => {
       new ServiceError("OFFER_CLOSED", "Cannot update a closed offer"),
     )
 
-    const { updateOfferProcedure } = await import("./offers")
+    const { updateOfferProcedure } = await import("@/server/orpc/routes/offers")
 
     await expect(
       callProcedure(updateOfferProcedure, {
@@ -124,7 +124,7 @@ describe("src/server/orpc/routes/offers", () => {
     deleteOfferMock.mockRejectedValueOnce(
       new ServiceError("OFFER_NOT_FOUND", "Offer not found or access denied"),
     )
-    const { deleteOfferProcedure } = await import("./offers")
+    const { deleteOfferProcedure } = await import("@/server/orpc/routes/offers")
 
     await expect(
       callProcedure(deleteOfferProcedure, {

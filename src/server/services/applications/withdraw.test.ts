@@ -64,7 +64,7 @@ describe("src/server/services/applications/withdraw", () => {
 
   test("should throw when application is not found", async () => {
     mockSelectResults.push([])
-    const { withdrawApplication } = await import("./withdraw")
+    const { withdrawApplication } = await import("@/server/services/applications/withdraw")
     await expect(
       withdrawApplication("app-1", "student-1"),
     ).rejects.toThrow("Application not found")
@@ -74,7 +74,7 @@ describe("src/server/services/applications/withdraw", () => {
     mockSelectResults.push([
       { id: "app-1", studentUserId: "student-1", status: "company_accepted" },
     ])
-    const { withdrawApplication } = await import("./withdraw")
+    const { withdrawApplication } = await import("@/server/services/applications/withdraw")
     await expect(
       withdrawApplication("app-1", "student-1"),
     ).rejects.toThrow("Only pending applications can be withdrawn")
@@ -84,7 +84,7 @@ describe("src/server/services/applications/withdraw", () => {
     mockSelectResults.push([
       { id: "app-1", studentUserId: "student-1", status: "applied" },
     ])
-    const { withdrawApplication } = await import("./withdraw")
+    const { withdrawApplication } = await import("@/server/services/applications/withdraw")
     const result = await withdrawApplication("app-1", "student-1")
     expect(result.newStatus).toBe("withdrawn")
     expect(mockUpdate).toHaveBeenCalledTimes(1)

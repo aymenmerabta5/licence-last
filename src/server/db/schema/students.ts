@@ -7,9 +7,9 @@ import {
   index,
 } from "drizzle-orm/pg-core"
 
-import { user } from "./auth"
-import { department } from "./departments"
-import { skillTag } from "./skills"
+import { user } from "@/server/db/schema/auth"
+import { department } from "@/server/db/schema/departments"
+import { skillTag } from "@/server/db/schema/skills"
 
 export const studentProfile = pgTable(
   "student_profile",

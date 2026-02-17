@@ -9,7 +9,7 @@ import { getErrorMessage } from "@/lib/error-message"
 import { createCompanyProfileSchema } from "@/lib/schemas/offer"
 import { orpcClient } from "@/server/orpc/client"
 
-import type { CompanyProfileFormProps } from "../types"
+import type { CompanyProfileFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/types"
 
 export function useCompanyProfileForm(initialData: CompanyProfileFormProps["initialData"]) {
   const t = useTranslations("dashboard.company.profile")

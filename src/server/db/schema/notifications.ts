@@ -1,6 +1,6 @@
 import { pgTable, text, timestamp, jsonb, index } from "drizzle-orm/pg-core"
 
-import { user } from "./auth"
+import { user } from "@/server/db/schema/auth"
 
 export interface NotificationPayload {
   [key: string]: unknown

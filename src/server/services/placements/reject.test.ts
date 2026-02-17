@@ -104,7 +104,7 @@ describe("src/server/services/placements/reject", () => {
     ])
     mockSelectResults.push([{ userId: "member-1" }])
 
-    const { rejectPlacement } = await import("./reject")
+    const { rejectPlacement } = await import("@/server/services/placements/reject")
     const result = await rejectPlacement({
       applicationId: "app-1",
       adminUserId: "admin-1",

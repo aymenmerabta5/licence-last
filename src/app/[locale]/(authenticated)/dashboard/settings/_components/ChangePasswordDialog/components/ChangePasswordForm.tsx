@@ -8,7 +8,7 @@ import { ServerError } from "@/components/ServerError"
 import { SuccessMessage } from "@/components/SuccessMessage"
 import { errorMessage } from "@/lib/schemas/auth"
 
-import type { useChangePassword } from "../hooks/useChangePassword"
+import type { useChangePassword } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ChangePasswordDialog/hooks/useChangePassword"
 
 interface ChangePasswordFormProps {
   form: ReturnType<typeof useChangePassword>["form"]

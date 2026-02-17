@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test"
 
-import { getErrorMessage } from "./error-message"
+import { getErrorMessage } from "@/lib/error-message"
 
 describe("getErrorMessage", () => {
   test("should extract message from Error instance", () => {

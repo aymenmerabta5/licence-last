@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test"
 
-import { getPostLoginRedirectPath } from "./post-login-redirect"
+import { getPostLoginRedirectPath } from "@/lib/post-login-redirect"
 
 import type { MeResult } from "@/server/services/users/get-me"
 

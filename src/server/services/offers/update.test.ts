@@ -82,7 +82,7 @@ describe("src/server/services/offers/update", () => {
       { id: "offer-1", companyId: "company-1", status: "draft" },
     ])
 
-    const { updateOffer } = await import("./update")
+    const { updateOffer } = await import("@/server/services/offers/update")
 
     const result = await updateOffer("offer-1", "company-1", {
       title: "Updated Title",
@@ -100,7 +100,7 @@ describe("src/server/services/offers/update", () => {
       { id: "offer-1", companyId: "company-1", status: "closed" },
     ])
 
-    const { updateOffer } = await import("./update")
+    const { updateOffer } = await import("@/server/services/offers/update")
 
     expect(
       updateOffer("offer-1", "company-1", { title: "New" }),
@@ -110,7 +110,7 @@ describe("src/server/services/offers/update", () => {
   test("should throw when offer not found or wrong company", async () => {
     mockLimit.mockResolvedValue([])
 
-    const { updateOffer } = await import("./update")
+    const { updateOffer } = await import("@/server/services/offers/update")
 
     expect(
       updateOffer("offer-1", "wrong-company", { title: "New" }),

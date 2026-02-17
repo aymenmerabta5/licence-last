@@ -2,7 +2,7 @@ import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
 import { getOfferById } from "@/server/services/offers/get"
 import { getCompanyByUserId } from "@/server/services/companies/get"
-import { OfferForm } from "../../_components/OfferForm"
+import { OfferForm } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm"
 
 export default async function EditOfferPage({
   params,

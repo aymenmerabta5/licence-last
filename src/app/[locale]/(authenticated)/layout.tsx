@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 
-import { AuthenticatedContent } from "./_components/AuthenticatedContent"
+import { AuthenticatedContent } from "@/app/[locale]/(authenticated)/_components/AuthenticatedContent"
 
 /**
  * Authenticated layout with cacheComponents support.

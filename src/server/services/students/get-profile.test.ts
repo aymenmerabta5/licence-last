@@ -80,7 +80,7 @@ describe("src/server/services/students/get-profile", () => {
     })
     mockJoinWhere.mockResolvedValue(mockSkills)
 
-    const { getStudentProfile } = await import("./get-profile")
+    const { getStudentProfile } = await import("@/server/services/students/get-profile")
     const result = await getStudentProfile("user-1")
 
     expect(result).not.toBeNull()
@@ -97,7 +97,7 @@ describe("src/server/services/students/get-profile", () => {
       return Promise.resolve(results)
     })
 
-    const { getStudentProfile } = await import("./get-profile")
+    const { getStudentProfile } = await import("@/server/services/students/get-profile")
     const result = await getStudentProfile("user-nonexistent")
 
     expect(result).toBeNull()

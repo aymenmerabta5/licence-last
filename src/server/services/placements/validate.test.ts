@@ -147,7 +147,7 @@ describe("src/server/services/placements/validate", () => {
       },
     ])
 
-    const { validatePlacement } = await import("./validate")
+    const { validatePlacement } = await import("@/server/services/placements/validate")
 
     await expect(
       validatePlacement({
@@ -184,7 +184,7 @@ describe("src/server/services/placements/validate", () => {
     mockSelectResults.push([])
     mockSelectResults.push([{ userId: "member-1" }])
 
-    const { validatePlacement } = await import("./validate")
+    const { validatePlacement } = await import("@/server/services/placements/validate")
     const result = await validatePlacement({
       applicationId: "app-1",
       adminUserId: "admin-1",

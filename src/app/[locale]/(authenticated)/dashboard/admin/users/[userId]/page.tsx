@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 
-import { UserDetailView } from "./_components/UserDetailView"
+import { UserDetailView } from "@/app/[locale]/(authenticated)/dashboard/admin/users/[userId]/_components/UserDetailView"
 import { Skeleton } from "@/components/ui/skeleton"
 import { requireRole } from "@/lib/auth-guards"
 

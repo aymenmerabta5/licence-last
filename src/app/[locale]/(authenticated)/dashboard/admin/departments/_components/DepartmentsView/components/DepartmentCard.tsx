@@ -4,7 +4,7 @@ import { Boxes, FolderTree, Trash2, UserCheck, UserMinus } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
-import type { DepartmentItem } from "../types"
+import type { DepartmentItem } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/types"
 
 interface DepartmentCardProps {
   department: DepartmentItem

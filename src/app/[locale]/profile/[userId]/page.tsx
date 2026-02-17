@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 
 import { Skeleton } from "@/components/ui/skeleton"
-import { ProfileData } from "./_components/ProfileData"
+import { ProfileData } from "@/app/[locale]/profile/[userId]/_components/ProfileData"
 
 type Params = Promise<{ userId: string }>
 

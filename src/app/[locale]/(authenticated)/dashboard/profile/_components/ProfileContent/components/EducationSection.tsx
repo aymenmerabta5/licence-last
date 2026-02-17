@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
 
-import type { StudentProfile, StudentUniversity } from "../types"
+import type { StudentProfile, StudentUniversity } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 
 interface EducationSectionProps {
   profile?: StudentProfile | null

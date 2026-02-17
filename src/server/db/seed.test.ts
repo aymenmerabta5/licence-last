@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test"
-import { parseDomains } from "./seed"
+import { parseDomains } from "@/server/db/seed"
 
 describe("parseDomains", () => {
   describe("valid inputs", () => {

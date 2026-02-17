@@ -14,7 +14,7 @@ import {
   universityStatusSchema,
   isInternshipType,
   isWorkMode,
-} from "./enums"
+} from "@/lib/schemas/enums"
 
 describe("internshipTypeSchema", () => {
   test("should accept valid values", () => {

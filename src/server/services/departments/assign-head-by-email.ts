@@ -10,7 +10,7 @@ import { user } from "@/server/db/schema/auth"
 import { department } from "@/server/db/schema/departments"
 import { university } from "@/server/db/schema/universities"
 
-import { assignDepartmentHead } from "./assign-head"
+import { assignDepartmentHead } from "@/server/services/departments/assign-head"
 
 interface AssignDepartmentHeadByEmailInput {
   departmentId: string

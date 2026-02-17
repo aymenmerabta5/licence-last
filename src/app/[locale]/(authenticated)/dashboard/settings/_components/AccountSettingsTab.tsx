@@ -7,10 +7,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { ChangePasswordDialog } from "./ChangePasswordDialog"
-import { TwoFactorSettings } from "./TwoFactorSettings"
-import { SessionManagement } from "./SessionManagement"
-import { DeleteAccountDialog } from "./DeleteAccountDialog"
+import { ChangePasswordDialog } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ChangePasswordDialog"
+import { TwoFactorSettings } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings"
+import { SessionManagement } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement"
+import { DeleteAccountDialog } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/DeleteAccountDialog"
 
 interface AccountSettingsTabProps {
   me:

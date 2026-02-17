@@ -1,6 +1,6 @@
 import { createAuthClient } from "better-auth/react"
 import { adminClient, multiSessionClient, twoFactorClient } from "better-auth/client/plugins"
-import { ac, superAdmin, universityAdmin, student, companyAdmin } from "./permissions"
+import { ac, superAdmin, universityAdmin, student, companyAdmin } from "@/lib/permissions"
 import { openAPI, haveIBeenPwned  } from "better-auth/plugins"
 
 

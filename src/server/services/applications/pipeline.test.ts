@@ -61,7 +61,7 @@ describe("src/server/services/applications/pipeline appendTimelineEvent", () => 
   test("should insert a timeline event and return eventId", async () => {
     // appendTimelineEvent is mocked by other test files (apply.test.ts, etc.)
     // via mock.module. We verify the contract: it should return { eventId }.
-    const mod = await import("./pipeline")
+    const mod = await import("@/server/services/applications/pipeline")
 
     const result = await mod.appendTimelineEvent({
       applicationId: "app-1",
@@ -77,7 +77,7 @@ describe("src/server/services/applications/pipeline appendTimelineEvent", () => 
   })
 
   test("should handle null optional fields", async () => {
-    const mod = await import("./pipeline")
+    const mod = await import("@/server/services/applications/pipeline")
 
     const result = await mod.appendTimelineEvent({
       applicationId: "app-2",

@@ -4,7 +4,7 @@ import { Check, Loader2, X } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import type { DeviceSession } from "../types"
+import type { DeviceSession } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
 
 interface AccountRowProps {
   session: DeviceSession

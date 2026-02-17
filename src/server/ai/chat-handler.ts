@@ -20,24 +20,24 @@ import { getAssistantConversationByIdForCompany } from "@/server/services/assist
 import { appendAssistantMessage } from "@/server/services/assistant/messages"
 import { extractTextFromParts } from "@/server/services/assistant/utils"
 
-import { ASSISTANT_INTENTS, type AssistantIntent } from "./types"
-import { isRoleAllowedForIntent } from "./access"
-import { assistantContextToJson } from "./context"
-import { checkRateLimit } from "./rate-limit"
-import { getPoeModel } from "./model"
-import { sanitizeUIMessagesForModel, errorToText } from "./sanitizer"
-import { resolvePersona, buildSystemPrompt } from "./prompts"
-import { createInternalTools } from "./tools/internal"
-import { getArcadeTools } from "./tools/arcade"
+import { ASSISTANT_INTENTS, type AssistantIntent } from "@/server/ai/types"
+import { isRoleAllowedForIntent } from "@/server/ai/access"
+import { assistantContextToJson } from "@/server/ai/context"
+import { checkRateLimit } from "@/server/ai/rate-limit"
+import { getPoeModel } from "@/server/ai/model"
+import { sanitizeUIMessagesForModel, errorToText } from "@/server/ai/sanitizer"
+import { resolvePersona, buildSystemPrompt } from "@/server/ai/prompts"
+import { createInternalTools } from "@/server/ai/tools/internal"
+import { getArcadeTools } from "@/server/ai/tools/arcade"
 import {
   shouldForceGmailTool,
   resolveGmailToolName,
   getLatestUserText,
-} from "./tools/gmail-resolver"
-import { resolvePersistence, persistUserMessage } from "./persistence"
-import { generateConversationTitle } from "./auto-title"
-import { resolveToolAuthContext } from "./auth-context"
-import { createDataRetrievalTools } from "./tools/data-retrieval"
+} from "@/server/ai/tools/gmail-resolver"
+import { resolvePersistence, persistUserMessage } from "@/server/ai/persistence"
+import { generateConversationTitle } from "@/server/ai/auto-title"
+import { resolveToolAuthContext } from "@/server/ai/auth-context"
+import { createDataRetrievalTools } from "@/server/ai/tools/data-retrieval"
 
 // Constants
 const MAX_MESSAGES = 100

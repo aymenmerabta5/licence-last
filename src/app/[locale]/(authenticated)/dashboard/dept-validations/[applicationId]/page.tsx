@@ -3,7 +3,7 @@ import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { requireRole } from "@/lib/auth-guards"
 
-import { DeptHeadPlacementDetail } from "./_components/DeptHeadPlacementDetail"
+import { DeptHeadPlacementDetail } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/[applicationId]/_components/DeptHeadPlacementDetail"
 
 interface DeptHeadPlacementDetailPageProps {
   params: Promise<{ applicationId: string }>

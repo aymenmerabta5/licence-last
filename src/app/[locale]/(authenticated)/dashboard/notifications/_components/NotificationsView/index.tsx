@@ -1,10 +1,10 @@
 "use client"
 
-import { useNotifications } from "./hooks/useNotifications"
-import { useNotificationsSummary } from "./hooks/useNotificationsSummary"
-import { NotificationsHeader } from "./components/NotificationsHeader"
-import { AiSummaryBox } from "./components/AiSummaryBox"
-import { NotificationsList } from "./components/NotificationsList"
+import { useNotifications } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/hooks/useNotifications"
+import { useNotificationsSummary } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/hooks/useNotificationsSummary"
+import { NotificationsHeader } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/components/NotificationsHeader"
+import { AiSummaryBox } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/components/AiSummaryBox"
+import { NotificationsList } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/components/NotificationsList"
 
 interface NotificationsViewProps {
   role: string

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 
-import type { SkillTag } from "../types"
+import type { SkillTag } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 import { Route } from "next"
 
 interface SkillsSidebarProps {

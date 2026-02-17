@@ -1,7 +1,7 @@
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
 
-import { AuthPanel } from "./_components/AuthPanel"
+import { AuthPanel } from "@/app/[locale]/(auth)/_components/AuthPanel"
 
 export default async function AuthLayout({
   children,

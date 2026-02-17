@@ -14,9 +14,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { useCompanyValidation } from "./hooks/useCompanyValidation"
-import { CompanyCard } from "./components/CompanyCard"
-import { RejectDialog } from "./components/RejectDialog"
+import { useCompanyValidation } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/hooks/useCompanyValidation"
+import { CompanyCard } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyCard"
+import { RejectDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/RejectDialog"
 import type { CompanyStatus } from "@/lib/schemas/enums"
 
 export function CompanyValidationList() {

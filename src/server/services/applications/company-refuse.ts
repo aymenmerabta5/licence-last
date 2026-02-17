@@ -11,7 +11,7 @@ import { internshipOffer } from "@/server/db/schema/internships"
 import { notification } from "@/server/db/schema/notifications"
 import { company } from "@/server/db/schema/companies"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
-import { ApplicationServiceError } from "./errors"
+import { ApplicationServiceError } from "@/server/services/applications/errors"
 
 export async function companyRefuseApplication(
   applicationId: string,

@@ -10,7 +10,7 @@ import { createOfferSchema } from "@/lib/schemas/offer"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
-import type { OfferFormProps } from "../types"
+import type { OfferFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
 
 export function useOfferForm(
   mode: OfferFormProps["mode"],

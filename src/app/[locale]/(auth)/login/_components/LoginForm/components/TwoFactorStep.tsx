@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { ServerError } from "@/components/ServerError"
 import { reveal, ease } from "@/lib/animations"
 
-import type { TwoFactorMethod } from "../hooks/useLoginForm"
+import type { TwoFactorMethod } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/useLoginForm"
 
 interface TwoFactorStepProps {
   method: TwoFactorMethod

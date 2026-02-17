@@ -1,7 +1,7 @@
 import "server-only"
 
-import { getExplainableMatchScore } from "./score"
-import { MATCH_WEIGHT } from "./constants"
+import { getExplainableMatchScore } from "@/server/services/matching/score"
+import { MATCH_WEIGHT } from "@/server/services/matching/constants"
 
 export interface SkillGapRoadmap {
   readyPercent: number

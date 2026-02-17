@@ -12,7 +12,7 @@ import { Link } from "@/i18n/routing"
 import { ease, reveal } from "@/lib/animations"
 import { errorMessage } from "@/lib/schemas/auth"
 
-import { useResetPasswordVerify } from "./hooks/useResetPasswordVerify"
+import { useResetPasswordVerify } from "@/app/[locale]/(auth)/reset-password/verify/_components/ResetPasswordVerifyForm/hooks/useResetPasswordVerify"
 
 export function ResetPasswordVerifyForm() {
   const t = useTranslations("auth.resetPassword")

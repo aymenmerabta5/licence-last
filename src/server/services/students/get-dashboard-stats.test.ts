@@ -46,7 +46,7 @@ describe("src/server/services/students/get-dashboard-stats", () => {
     mockResults.push([{ count: 0 }])
     mockResults.push([{ count: 0 }])
 
-    const { getStudentDashboardStats } = await import("./get-dashboard-stats")
+    const { getStudentDashboardStats } = await import("@/server/services/students/get-dashboard-stats")
     const result = await getStudentDashboardStats("student-1")
 
     expect(result).toEqual({
@@ -63,7 +63,7 @@ describe("src/server/services/students/get-dashboard-stats", () => {
     mockResults.push([{ count: 2 }]) // accepted
     mockResults.push([{ count: 5 }]) // skills
 
-    const { getStudentDashboardStats } = await import("./get-dashboard-stats")
+    const { getStudentDashboardStats } = await import("@/server/services/students/get-dashboard-stats")
     const result = await getStudentDashboardStats("student-2")
 
     expect(result).toEqual({

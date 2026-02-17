@@ -1,25 +1,25 @@
 import { relations } from "drizzle-orm"
 
-import { user } from "./auth"
-import { department, departmentSkill } from "./departments"
-import { university, universityDomain } from "./universities"
-import { company, companyMember } from "./companies"
-import { assistantConversation, assistantMessage } from "./assistant"
-import { studentProfile, studentSkill } from "./students"
-import { skillTag } from "./skills"
+import { user } from "@/server/db/schema/auth"
+import { department, departmentSkill } from "@/server/db/schema/departments"
+import { university, universityDomain } from "@/server/db/schema/universities"
+import { company, companyMember } from "@/server/db/schema/companies"
+import { assistantConversation, assistantMessage } from "@/server/db/schema/assistant"
+import { studentProfile, studentSkill } from "@/server/db/schema/students"
+import { skillTag } from "@/server/db/schema/skills"
 import {
   internshipOffer,
   internshipOfferSkill,
-} from "./internships"
-import { application, applicationTimelineEvent } from "./applications"
-import { placement, placementDocument } from "./placements"
-import { notification } from "./notifications"
+} from "@/server/db/schema/internships"
+import { application, applicationTimelineEvent } from "@/server/db/schema/applications"
+import { placement, placementDocument } from "@/server/db/schema/placements"
+import { notification } from "@/server/db/schema/notifications"
 import {
   internshipOfferLanguageRequirement,
   studentLanguage,
-} from "./languages"
-import { studentOfferReadinessSnapshot } from "./matching"
-import { companyQualityFeedback, companyReport } from "./trust"
+} from "@/server/db/schema/languages"
+import { studentOfferReadinessSnapshot } from "@/server/db/schema/matching"
+import { companyQualityFeedback, companyReport } from "@/server/db/schema/trust"
 
 // ── Auth ──────────────────────────────────────────────
 

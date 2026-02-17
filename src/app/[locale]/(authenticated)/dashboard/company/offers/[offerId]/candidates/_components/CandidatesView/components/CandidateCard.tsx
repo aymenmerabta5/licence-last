@@ -18,9 +18,9 @@ import {
   CANDIDATE_CARD_DND_TYPE,
   type CandidateApp,
   type CandidateCardDragItem,
-} from "../types"
+} from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
 
-import { MatchPreview } from "./MatchPreview"
+import { MatchPreview } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/MatchPreview"
 
 interface CandidateCardProps {
   app: CandidateApp

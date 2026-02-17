@@ -8,8 +8,8 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core"
 
-import { companyMemberRoleEnum, companyStatusEnum } from "./enums"
-import { user } from "./auth"
+import { companyMemberRoleEnum, companyStatusEnum } from "@/server/db/schema/enums"
+import { user } from "@/server/db/schema/auth"
 
 export const company = pgTable(
   "company",

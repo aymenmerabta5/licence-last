@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 
-import { UserManagementView } from "./_components/UserManagementView"
+import { UserManagementView } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView"
 import { Skeleton } from "@/components/ui/skeleton"
 import { requireRole } from "@/lib/auth-guards"
 

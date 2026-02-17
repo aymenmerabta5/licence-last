@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl"
 import { Building2, FileText, Globe } from "lucide-react"
 import { TextField, TextAreaField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
-import type { CompanyOnboardingFormApi } from "../hooks/useCompanyOnboarding"
+import type { CompanyOnboardingFormApi } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm/hooks/useCompanyOnboarding"
 
 interface CompanyFieldsProps {
   form: CompanyOnboardingFormApi

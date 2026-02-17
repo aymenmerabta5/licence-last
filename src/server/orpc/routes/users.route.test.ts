@@ -68,7 +68,7 @@ describe("src/server/orpc/routes/users", () => {
   })
 
   test("updateMeProcedure updates own profile", async () => {
-    const { updateMeProcedure } = await import("./users")
+    const { updateMeProcedure } = await import("@/server/orpc/routes/users")
 
     const result = await callProcedure(updateMeProcedure, {
       input: { name: "Updated Name" },
@@ -88,7 +88,7 @@ describe("src/server/orpc/routes/users", () => {
     updateMeMock.mockRejectedValueOnce(
       new ServiceError("USER_NOT_FOUND", "User not found"),
     )
-    const { updateMeProcedure } = await import("./users")
+    const { updateMeProcedure } = await import("@/server/orpc/routes/users")
 
     await expect(
       callProcedure(updateMeProcedure, {

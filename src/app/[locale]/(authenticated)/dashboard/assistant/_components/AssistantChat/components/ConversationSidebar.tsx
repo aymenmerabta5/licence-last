@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-import { formatConversationTitle } from "../utils";
+import { formatConversationTitle } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/utils";
 
 type ConversationListItem = {
   id: string;

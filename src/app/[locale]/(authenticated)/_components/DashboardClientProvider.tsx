@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, createContext, useContext } from "react"
-import { DashboardSidebar } from "./DashboardSidebar"
-import { DashboardNavbar } from "./DashboardNavbar"
+import { DashboardSidebar } from "@/app/[locale]/(authenticated)/_components/DashboardSidebar"
+import { DashboardNavbar } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar"
 import { ImpersonationBanner } from "@/components/ImpersonationBanner"
 
 const DashboardContext = createContext<{

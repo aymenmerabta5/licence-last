@@ -5,7 +5,7 @@ import {
   MAX_IMAGE_SIZE,
   IMAGE_EXT_MAP,
   validateMagicBytes,
-} from "./image-validation"
+} from "@/lib/image-validation"
 
 describe("src/lib/image-validation", () => {
   describe("ALLOWED_IMAGE_TYPES", () => {

@@ -1,13 +1,13 @@
 "use client"
 
-import { usePlacementData } from "./hooks/usePlacementData"
-import { usePlacementActions } from "./hooks/usePlacementActions"
-import { PlacementHeader } from "./components/PlacementHeader"
-import { StudentInfoCard } from "./components/StudentInfoCard"
-import { CompanyOfferCard } from "./components/CompanyOfferCard"
-import { AISummaryPanel } from "./components/AISummaryPanel"
-import { ValidationForm } from "./components/ValidationForm"
-import { RejectDialog } from "./components/RejectDialog"
+import { usePlacementData } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/hooks/usePlacementData"
+import { usePlacementActions } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/hooks/usePlacementActions"
+import { PlacementHeader } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/PlacementHeader"
+import { StudentInfoCard } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/StudentInfoCard"
+import { CompanyOfferCard } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/CompanyOfferCard"
+import { AISummaryPanel } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/AISummaryPanel"
+import { ValidationForm } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/ValidationForm"
+import { RejectDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/RejectDialog"
 
 export function PlacementDetailClient({
   applicationId,

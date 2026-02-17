@@ -46,7 +46,7 @@ describe("src/server/services/companies/create", () => {
   })
 
   test("should create a company and return companyId and slug", async () => {
-    const { createCompany } = await import("./create")
+    const { createCompany } = await import("@/server/services/companies/create")
 
     const result = await createCompany(
       {
@@ -62,7 +62,7 @@ describe("src/server/services/companies/create", () => {
   })
 
   test("should call insert for company and companyMember in transaction", async () => {
-    const { createCompany } = await import("./create")
+    const { createCompany } = await import("@/server/services/companies/create")
 
     await createCompany(
       {
@@ -78,7 +78,7 @@ describe("src/server/services/companies/create", () => {
   })
 
   test("should generate a URL-safe slug from company name", async () => {
-    const { createCompany } = await import("./create")
+    const { createCompany } = await import("@/server/services/companies/create")
 
     const result = await createCompany(
       {
@@ -98,7 +98,7 @@ describe("src/server/services/companies/create", () => {
       constraint: "company_member_userId_uidx",
     })
 
-    const { createCompany } = await import("./create")
+    const { createCompany } = await import("@/server/services/companies/create")
 
     await expect(
       createCompany(

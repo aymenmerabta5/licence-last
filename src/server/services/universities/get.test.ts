@@ -30,7 +30,7 @@ describe("getUniversityById", () => {
     const uni = { id: "uni-1", name: "Test Uni", status: "approved" }
     mockChain.limit.mockResolvedValue([uni])
 
-    const { getUniversityById } = await import("./get")
+    const { getUniversityById } = await import("@/server/services/universities/get")
     const result = await getUniversityById("uni-1")
     expect(result).toEqual(uni as typeof result)
   })
@@ -38,7 +38,7 @@ describe("getUniversityById", () => {
   test("should return null when not found", async () => {
     mockChain.limit.mockResolvedValue([])
 
-    const { getUniversityById } = await import("./get")
+    const { getUniversityById } = await import("@/server/services/universities/get")
     const result = await getUniversityById("nonexistent")
     expect(result).toBeNull()
   })
@@ -57,7 +57,7 @@ describe("getUniversityByUserId", () => {
     const uniData = { id: "uni-1", name: "Test Uni", abbreviation: "TU", city: "Algiers", status: "approved" as const, rejectionReason: null }
     mockChain.limit.mockResolvedValue([uniData])
 
-    const { getUniversityByUserId } = await import("./get")
+    const { getUniversityByUserId } = await import("@/server/services/universities/get")
     const result = await getUniversityByUserId("user-1")
     expect(result).toEqual(uniData as typeof result)
   })
@@ -65,7 +65,7 @@ describe("getUniversityByUserId", () => {
   test("should return null when user has no university", async () => {
     mockChain.limit.mockResolvedValue([])
 
-    const { getUniversityByUserId } = await import("./get")
+    const { getUniversityByUserId } = await import("@/server/services/universities/get")
     const result = await getUniversityByUserId("user-no-uni")
     expect(result).toBeNull()
   })

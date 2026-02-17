@@ -69,7 +69,7 @@ describe("src/server/services/offers/list-by-company", () => {
   test("should return empty array for no offers", async () => {
     mockOrderBy.mockResolvedValue([])
 
-    const { listOffersByCompany } = await import("./list-by-company")
+    const { listOffersByCompany } = await import("@/server/services/offers/list-by-company")
 
     const result = await listOffersByCompany("company-1")
 
@@ -92,7 +92,7 @@ describe("src/server/services/offers/list-by-company", () => {
       { offerId: "offer-2", count: 1 },
     ])
 
-    const { listOffersByCompany } = await import("./list-by-company")
+    const { listOffersByCompany } = await import("@/server/services/offers/list-by-company")
 
     const result = await listOffersByCompany("company-1")
 

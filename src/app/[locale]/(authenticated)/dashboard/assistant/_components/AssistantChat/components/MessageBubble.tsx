@@ -9,8 +9,8 @@ import type { UIMessage } from "ai";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-import { ToolInvocationView } from "./ToolInvocationView";
-import { MarkdownMessage } from "./MarkdownMessage";
+import { ToolInvocationView } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ToolInvocationView";
+import { MarkdownMessage } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/MarkdownMessage";
 
 type AuthStatus = {
   status: string | null;

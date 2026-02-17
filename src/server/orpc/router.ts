@@ -6,7 +6,7 @@ import {
   listMySessionsProcedure,
   revokeMySessionProcedure,
   revokeOtherSessionsProcedure,
-} from "./routes/users"
+} from "@/server/orpc/routes/users"
 import {
   listCompaniesProcedure,
   getCompanyByIdProcedure,
@@ -21,14 +21,14 @@ import {
   submitCompanyReportProcedure,
   listCompanyReportsProcedure,
   resolveCompanyReportProcedure,
-} from "./routes/companies"
-import { listSkillTagsProcedure, listSkillTagsPrioritizedProcedure } from "./routes/skills"
+} from "@/server/orpc/routes/companies"
+import { listSkillTagsProcedure, listSkillTagsPrioritizedProcedure } from "@/server/orpc/routes/skills"
 import {
   getStudentProfileProcedure,
   getPublicStudentProfileProcedure,
   upsertStudentProfileProcedure,
   upsertStudentProfileDetailsProcedure,
-} from "./routes/students"
+} from "@/server/orpc/routes/students"
 import {
   getOfferByIdProcedure,
   listOffersByCompanyProcedure,
@@ -40,7 +40,7 @@ import {
   generateOfferDraftProcedure,
   improveOfferDescriptionProcedure,
   suggestOfferSkillsProcedure,
-} from "./routes/offers"
+} from "@/server/orpc/routes/offers"
 import {
   searchOffersProcedure,
   checkApplicationProcedure,
@@ -53,7 +53,7 @@ import {
   updatePipelineStageProcedure,
   getTimelineProcedure,
   generateCoverLetterProcedure,
-} from "./routes/applications"
+} from "@/server/orpc/routes/applications"
 import {
   listPendingProcedure,
   validateProcedure,
@@ -62,7 +62,7 @@ import {
   deptHeadValidateProcedure,
   deptHeadRejectProcedure,
   generateValidationSummaryProcedure,
-} from "./routes/placements"
+} from "@/server/orpc/routes/placements"
 import {
   listDepartmentsProcedure,
   createDepartmentProcedure,
@@ -73,7 +73,7 @@ import {
   bulkCreateDepartmentsProcedure,
   syncDepartmentSkillsProcedure,
   getDepartmentSkillsProcedure,
-} from "./routes/departments"
+} from "@/server/orpc/routes/departments"
 import {
   downloadCompanyDocumentProcedure,
   generateAgreementProcedure,
@@ -82,16 +82,16 @@ import {
   listStudentDocumentsProcedure,
   downloadDocumentProcedure,
   verifyDocumentProcedure,
-} from "./routes/documents"
+} from "@/server/orpc/routes/documents"
 import {
   listNotificationsProcedure,
   markAllNotificationsReadProcedure,
   markNotificationReadProcedure,
-} from "./routes/notifications"
+} from "@/server/orpc/routes/notifications"
 import {
   getAdminStatsProcedure,
   getUniversityDashboardStatsProcedure,
-} from "./routes/stats"
+} from "@/server/orpc/routes/stats"
 import {
   appendAssistantMessageProcedure,
   createAssistantConversationProcedure,
@@ -102,13 +102,13 @@ import {
   listAssistantMessagesProcedure,
   updateAssistantConversationModelProcedure,
   updateAssistantConversationTitleProcedure,
-} from "./routes/assistant"
+} from "@/server/orpc/routes/assistant"
 import {
   captureReadinessSnapshotProcedure,
   getReadinessHistoryProcedure,
   getScoreProcedure,
   getSkillGapProcedure,
-} from "./routes/matching"
+} from "@/server/orpc/routes/matching"
 import {
   listUsersProcedure,
   createUserProcedure,
@@ -121,14 +121,14 @@ import {
   listUserSessionsProcedure,
   revokeSessionProcedure,
   revokeAllSessionsProcedure,
-} from "./routes/admin-users"
+} from "@/server/orpc/routes/admin-users"
 import {
   listUniversitiesProcedure,
   getUniversityByIdProcedure,
   createUniversityProcedure,
   approveUniversityProcedure,
   rejectUniversityProcedure,
-} from "./routes/universities"
+} from "@/server/orpc/routes/universities"
 
 export const appRouter = {
   users: {

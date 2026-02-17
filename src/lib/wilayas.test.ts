@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test"
 
-import { getWilayaName, WILAYAS, WILAYA_OPTIONS, WILAYA_OPTIONS_WITH_PLACEHOLDER } from "./wilayas"
+import { getWilayaName, WILAYAS, WILAYA_OPTIONS, WILAYA_OPTIONS_WITH_PLACEHOLDER } from "@/lib/wilayas"
 
 describe("getWilayaName", () => {
   test("should return Adrar for code 1", () => {

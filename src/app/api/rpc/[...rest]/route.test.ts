@@ -53,7 +53,7 @@ describe("src/app/api/rpc/[...rest]/route", () => {
 
   describe("CSRF protection", () => {
     test("GET requests allow any origin", async () => {
-      const { GET } = await import("./route")
+      const { GET } = await import("@/app/api/rpc/[...rest]/route")
 
       const request = new Request("http://localhost:3000/api/rpc/test", {
         method: "GET",
@@ -67,7 +67,7 @@ describe("src/app/api/rpc/[...rest]/route", () => {
     })
 
     test("POST without Origin header returns 403", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/rpc/[...rest]/route")
 
       const request = new Request("http://localhost:3000/api/rpc/test", {
         method: "POST",
@@ -81,7 +81,7 @@ describe("src/app/api/rpc/[...rest]/route", () => {
     })
 
     test("POST with invalid origin returns 403", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/rpc/[...rest]/route")
 
       const request = new Request("http://localhost:3000/api/rpc/test", {
         method: "POST",
@@ -97,7 +97,7 @@ describe("src/app/api/rpc/[...rest]/route", () => {
     })
 
     test("POST with valid origin returns 200", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/rpc/[...rest]/route")
 
       const request = new Request("http://localhost:3000/api/rpc/test", {
         method: "POST",
@@ -111,7 +111,7 @@ describe("src/app/api/rpc/[...rest]/route", () => {
     })
 
     test("GET requests without origin header succeed", async () => {
-      const { GET } = await import("./route")
+      const { GET } = await import("@/app/api/rpc/[...rest]/route")
 
       const request = new Request("http://localhost:3000/api/rpc/test", {
         method: "GET",
@@ -123,7 +123,7 @@ describe("src/app/api/rpc/[...rest]/route", () => {
     })
 
     test("GET requests allow any origin even from malicious sites", async () => {
-      const { GET } = await import("./route")
+      const { GET } = await import("@/app/api/rpc/[...rest]/route")
 
       const request = new Request("http://localhost:3000/api/rpc/test", {
         method: "GET",
@@ -148,7 +148,7 @@ describe("src/app/api/rpc/[...rest]/route", () => {
         response: undefined as unknown as Response,
       })
 
-      const { GET } = await import("./route")
+      const { GET } = await import("@/app/api/rpc/[...rest]/route")
 
       const request = new Request("http://localhost:3000/api/rpc/test", {
         method: "GET",
@@ -161,7 +161,7 @@ describe("src/app/api/rpc/[...rest]/route", () => {
     })
 
     test("passes correct prefix to handler", async () => {
-      const { GET } = await import("./route")
+      const { GET } = await import("@/app/api/rpc/[...rest]/route")
 
       const request = new Request("http://localhost:3000/api/rpc/test", {
         method: "GET",

@@ -6,7 +6,7 @@ import { MapPin, Building } from "lucide-react"
 
 import { reveal, ease } from "@/lib/animations"
 
-import type { OfferDetailProps } from "../types"
+import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
 
 interface CompanyCardProps {
   offer: OfferDetailProps["offer"]

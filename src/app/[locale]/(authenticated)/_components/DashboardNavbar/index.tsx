@@ -8,9 +8,9 @@ import { ThemeToggle } from "@/components/ThemeToggle"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { NotificationBell } from "@/components/NotificationBell"
 import { useLogout } from "@/hooks/useLogout"
-import { useDashboard } from "../DashboardClientProvider"
-import { UserDropdown } from "./components/UserDropdown"
-import type { NavbarUser } from "./types"
+import { useDashboard } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
+import { UserDropdown } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/components/UserDropdown"
+import type { NavbarUser } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
 
 const emptySubscribe = () => () => {}
 

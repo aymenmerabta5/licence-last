@@ -17,7 +17,7 @@ import type { PipelineStage } from "@/lib/constants/pipeline"
 import { orpc, orpcClient } from "@/server/orpc/client"
 import type { ListApplicationsByOfferResult } from "@/server/services/applications/list-by-offer"
 
-import type { AcceptModalState, RefuseModalState } from "../types"
+import type { AcceptModalState, RefuseModalState } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
 
 export function useCandidates(offerId: string) {
   const t = useTranslations("dashboard.company.candidates")

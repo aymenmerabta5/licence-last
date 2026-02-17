@@ -2,13 +2,13 @@
 
 import { Settings } from "lucide-react"
 
-import { AccountSettingsTab } from "../AccountSettingsTab"
-import { ProfileSettingsTab } from "../ProfileSettingsTab"
+import { AccountSettingsTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/AccountSettingsTab"
+import { ProfileSettingsTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab"
 
-import { useSettingsData } from "./hooks/useSettingsData"
-import { SettingsTabs } from "./components/SettingsTabs"
-import { PreferencesTab } from "./components/PreferencesTab"
-import { NotificationsTab } from "./components/NotificationsTab"
+import { useSettingsData } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/hooks/useSettingsData"
+import { SettingsTabs } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/SettingsTabs"
+import { PreferencesTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/PreferencesTab"
+import { NotificationsTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/NotificationsTab"
 
 export function SettingsView() {
   const { activeTab, setActiveTab, me, meLoading, studentProfile, profileLoading } =

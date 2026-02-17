@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { PasswordField } from "@/components/form-fields/PasswordField"
 import { ServerError } from "@/components/ServerError"
 
-import type { useDeleteAccount } from "../hooks/useDeleteAccount"
+import type { useDeleteAccount } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/DeleteAccountDialog/hooks/useDeleteAccount"
 
 interface DeleteAccountFormProps {
   state: ReturnType<typeof useDeleteAccount>

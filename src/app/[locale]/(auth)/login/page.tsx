@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 
-import { LoginForm } from "./_components/LoginForm"
+import { LoginForm } from "@/app/[locale]/(auth)/login/_components/LoginForm"
 
 type Params = Promise<{ locale: string }>
 

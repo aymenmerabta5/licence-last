@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { errorMessage } from "@/lib/schemas/auth"
-import type { UniversityOnboardingFormApi } from "../hooks/useUniversityOnboarding"
+import type { UniversityOnboardingFormApi } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/hooks/useUniversityOnboarding"
 
 interface DomainFieldsProps {
   form: UniversityOnboardingFormApi

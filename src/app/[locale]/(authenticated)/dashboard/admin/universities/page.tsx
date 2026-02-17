@@ -1,5 +1,5 @@
 import { requireRole } from "@/lib/auth-guards"
-import { UniversityValidationList } from "./_components/UniversityValidationList"
+import { UniversityValidationList } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList"
 
 export default async function UniversityValidationPage() {
   await requireRole(["super_admin"])

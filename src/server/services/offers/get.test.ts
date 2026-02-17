@@ -132,7 +132,7 @@ describe("src/server/services/offers/get", () => {
       { id: "s1", name: "React", slug: "react", category: "frontend" },
     ])
 
-    const { getOfferById } = await import("./get")
+    const { getOfferById } = await import("@/server/services/offers/get")
     const result = await getOfferById("offer-1")
 
     expect(result?.id).toBe("offer-1")
@@ -174,7 +174,7 @@ describe("src/server/services/offers/get", () => {
     // Skills query result (index 1) - no skills
     mockQueryResults.push([])
 
-    const { getOfferById } = await import("./get")
+    const { getOfferById } = await import("@/server/services/offers/get")
     const result = await getOfferById("offer-1")
 
     expect(result?.id).toBe("offer-1")
@@ -215,7 +215,7 @@ describe("src/server/services/offers/get", () => {
     // Skills query result (index 1) - no skills
     mockQueryResults.push([])
 
-    const { getOfferById } = await import("./get")
+    const { getOfferById } = await import("@/server/services/offers/get")
     const result = await getOfferById("offer-1")
 
     expect(result?.id).toBe("offer-1")

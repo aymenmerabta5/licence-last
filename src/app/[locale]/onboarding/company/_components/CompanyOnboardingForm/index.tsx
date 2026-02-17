@@ -10,9 +10,9 @@ import { FormHeader } from "@/components/FormHeader"
 import { FormSection } from "@/components/form-fields"
 import { reveal, ease } from "@/lib/animations"
 
-import { useCompanyOnboarding } from "./hooks/useCompanyOnboarding"
-import { CompanyFields } from "./components/CompanyFields"
-import { LocationFields } from "./components/LocationFields"
+import { useCompanyOnboarding } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm/hooks/useCompanyOnboarding"
+import { CompanyFields } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm/components/CompanyFields"
+import { LocationFields } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm/components/LocationFields"
 
 export function CompanyOnboardingForm() {
   const t = useTranslations("onboarding.company")

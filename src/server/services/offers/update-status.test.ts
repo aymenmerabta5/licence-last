@@ -47,7 +47,7 @@ describe("src/server/services/offers/update-status", () => {
       { id: "offer-1", companyId: "company-1", status: "draft" },
     ])
 
-    const { updateOfferStatus } = await import("./update-status")
+    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
 
     const result = await updateOfferStatus("offer-1", "company-1", "publish")
 
@@ -60,7 +60,7 @@ describe("src/server/services/offers/update-status", () => {
       { id: "offer-1", companyId: "company-1", status: "published" },
     ])
 
-    const { updateOfferStatus } = await import("./update-status")
+    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
 
     const result = await updateOfferStatus("offer-1", "company-1", "close")
 
@@ -73,7 +73,7 @@ describe("src/server/services/offers/update-status", () => {
       { id: "offer-1", companyId: "company-1", status: "published" },
     ])
 
-    const { updateOfferStatus } = await import("./update-status")
+    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
 
     expect(
       updateOfferStatus("offer-1", "company-1", "publish"),
@@ -85,7 +85,7 @@ describe("src/server/services/offers/update-status", () => {
       { id: "offer-1", companyId: "company-1", status: "draft" },
     ])
 
-    const { updateOfferStatus } = await import("./update-status")
+    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
 
     expect(
       updateOfferStatus("offer-1", "company-1", "close"),
@@ -95,7 +95,7 @@ describe("src/server/services/offers/update-status", () => {
   test("should throw when offer not found", async () => {
     mockLimit.mockResolvedValue([])
 
-    const { updateOfferStatus } = await import("./update-status")
+    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
 
     expect(
       updateOfferStatus("nonexistent", "company-1", "publish"),

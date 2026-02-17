@@ -208,7 +208,7 @@ describe("src/app/api/assistant/chat/route", () => {
 
   describe("request validation", () => {
     test("invalid JSON returns 400", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/chat/route")
 
       const request = new Request("http://localhost:3000/api/assistant/chat", {
         method: "POST",
@@ -222,7 +222,7 @@ describe("src/app/api/assistant/chat/route", () => {
     })
 
     test("messages array too large returns 400", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/chat/route")
 
       const messages = Array.from({ length: 101 }, (_, i) => ({
         id: `msg-${i}`,
@@ -245,7 +245,7 @@ describe("src/app/api/assistant/chat/route", () => {
     })
 
     test("total chars > 500k returns 400", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/chat/route")
 
       const longText = "a".repeat(500001)
       const messages = [{
@@ -269,7 +269,7 @@ describe("src/app/api/assistant/chat/route", () => {
     })
 
     test("exactly 500k chars is allowed", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/chat/route")
 
       const exactText = "a".repeat(500000)
       const messages = [{
@@ -291,7 +291,7 @@ describe("src/app/api/assistant/chat/route", () => {
     })
 
     test("invalid messages format returns 400", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/chat/route")
 
       const request = new Request("http://localhost:3000/api/assistant/chat", {
         method: "POST",
@@ -310,7 +310,7 @@ describe("src/app/api/assistant/chat/route", () => {
     test("no session returns 401", async () => {
       mockGetSession.mockResolvedValue(null)
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/chat/route")
 
       const request = new Request("http://localhost:3000/api/assistant/chat", {
         method: "POST",
@@ -336,7 +336,7 @@ describe("src/app/api/assistant/chat/route", () => {
     test("RBAC fails returns 403", async () => {
       mockIsRoleAllowedForIntent.mockReturnValue(false)
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/chat/route")
 
       const request = new Request("http://localhost:3000/api/assistant/chat", {
         method: "POST",
@@ -364,7 +364,7 @@ describe("src/app/api/assistant/chat/route", () => {
       })
       mockCheckAdminApproval.mockResolvedValue({ ok: false, reason: "company_pending" })
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/chat/route")
 
       const request = new Request("http://localhost:3000/api/assistant/chat", {
         method: "POST",
@@ -390,7 +390,7 @@ describe("src/app/api/assistant/chat/route", () => {
     test("conversation not found returns 404", async () => {
       mockResolvePersistence.mockResolvedValue({ ok: false, status: 404 })
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/chat/route")
 
       const request = new Request("http://localhost:3000/api/assistant/chat", {
         method: "POST",
@@ -415,7 +415,7 @@ describe("src/app/api/assistant/chat/route", () => {
     test("persistence forbidden returns 403", async () => {
       mockResolvePersistence.mockResolvedValue({ ok: false, status: 403 })
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/chat/route")
 
       const request = new Request("http://localhost:3000/api/assistant/chat", {
         method: "POST",
@@ -445,7 +445,7 @@ describe("src/app/api/assistant/chat/route", () => {
         retryAfterMs: 30000,
       })
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/chat/route")
 
       const request = new Request("http://localhost:3000/api/assistant/chat", {
         method: "POST",
@@ -472,7 +472,7 @@ describe("src/app/api/assistant/chat/route", () => {
         user: { id: "user-456", role: "company_admin" },
       })
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/chat/route")
 
       const request = new Request("http://localhost:3000/api/assistant/chat", {
         method: "POST",
@@ -501,7 +501,7 @@ describe("src/app/api/assistant/chat/route", () => {
 
   describe("success", () => {
     test("success returns streaming response", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/chat/route")
 
       const request = new Request("http://localhost:3000/api/assistant/chat", {
         method: "POST",
@@ -522,7 +522,7 @@ describe("src/app/api/assistant/chat/route", () => {
     })
 
     test("handles multiple messages correctly", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/chat/route")
 
       const request = new Request("http://localhost:3000/api/assistant/chat", {
         method: "POST",
@@ -558,7 +558,7 @@ describe("src/app/api/assistant/chat/route", () => {
     test("works without conversationId", async () => {
       mockResolvePersistence.mockResolvedValue({ ok: false, status: 403 }) // Should not be called
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/chat/route")
 
       const request = new Request("http://localhost:3000/api/assistant/chat", {
         method: "POST",

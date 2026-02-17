@@ -1,1 +1,1 @@
-export { default } from "./[locale]/not-found"
+export { default } from "@/app/[locale]/not-found"

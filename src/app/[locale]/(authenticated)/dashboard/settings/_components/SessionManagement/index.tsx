@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 
-import { useSessionManagement } from "./hooks/useSessionManagement"
-import { SessionCard } from "./components/SessionCard"
-import { RevokeConfirmDialog } from "./components/RevokeConfirmDialog"
+import { useSessionManagement } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/hooks/useSessionManagement"
+import { SessionCard } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/components/SessionCard"
+import { RevokeConfirmDialog } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/components/RevokeConfirmDialog"
 
 export function SessionManagement() {
   const t = useTranslations("dashboard.settings.sessions")

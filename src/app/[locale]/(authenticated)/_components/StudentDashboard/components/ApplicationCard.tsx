@@ -1,9 +1,9 @@
 import { MapPin, Calendar } from "lucide-react"
 import { useLocale } from "next-intl"
 
-import type { ApplicationRow } from "../types"
-import { relativeTime } from "../utils"
-import { StatusBadge } from "./StatusBadge"
+import type { ApplicationRow } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
+import { relativeTime } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/utils"
+import { StatusBadge } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/StatusBadge"
 import { getWilayaName } from "@/lib/wilayas"
 
 interface ApplicationCardProps {

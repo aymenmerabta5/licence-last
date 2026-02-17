@@ -3,7 +3,7 @@ import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { requireRole } from "@/lib/auth-guards"
 
-import { DeptHeadValidationsView } from "./_components/DeptHeadValidationsView"
+import { DeptHeadValidationsView } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/_components/DeptHeadValidationsView"
 
 function DeptValidationsFallback() {
   return (

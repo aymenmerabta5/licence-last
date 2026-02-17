@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 import type { CompanyStatus } from "@/lib/schemas/enums"
 
-import { getMe } from "./get-me"
+import { getMe } from "@/server/services/users/get-me"
 
 interface CompanySummary {
   id: string

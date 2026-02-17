@@ -30,7 +30,7 @@ describe("src/server/services/users/update-me", () => {
   test("should update user name and return updated data", async () => {
     mockReturningResult = [{ id: "user-1", name: "New Name", email: "test@example.com", image: null }]
 
-    const { updateMe } = await import("./update-me")
+    const { updateMe } = await import("@/server/services/users/update-me")
     const result = await updateMe("user-1", { name: "New Name" })
 
     expect(result).toEqual({ id: "user-1", name: "New Name", email: "test@example.com", image: null })
@@ -40,7 +40,7 @@ describe("src/server/services/users/update-me", () => {
   test("should allow setting name to null", async () => {
     mockReturningResult = [{ id: "user-1", name: null, email: "test@example.com", image: null }]
 
-    const { updateMe } = await import("./update-me")
+    const { updateMe } = await import("@/server/services/users/update-me")
     const result = await updateMe("user-1", { name: null })
 
     expect(result.name).toBeNull()
@@ -49,7 +49,7 @@ describe("src/server/services/users/update-me", () => {
   test("should throw when user not found", async () => {
     mockReturningResult = []
 
-    const { updateMe } = await import("./update-me")
+    const { updateMe } = await import("@/server/services/users/update-me")
 
     await expect(updateMe("missing", { name: "Test" })).rejects.toThrow("User not found")
   })

@@ -1,5 +1,5 @@
 import { requireRole } from "@/lib/auth-guards"
-import { NotificationsView } from "./_components/NotificationsView"
+import { NotificationsView } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView"
 
 export default async function NotificationsPage() {
   const user = await requireRole(["student", "company_admin", "university_admin", "super_admin"])

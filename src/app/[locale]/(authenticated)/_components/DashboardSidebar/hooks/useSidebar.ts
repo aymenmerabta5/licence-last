@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react"
 import { usePathname } from "@/i18n/routing"
 import { useLogout } from "@/hooks/useLogout"
-import { navItems } from "../constants"
+import { navItems } from "@/app/[locale]/(authenticated)/_components/DashboardSidebar/constants"
 
 export function useSidebar(role: string) {
   const pathname = usePathname()

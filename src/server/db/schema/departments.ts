@@ -7,8 +7,8 @@ import {
   primaryKey,
 } from "drizzle-orm/pg-core"
 
-import { university } from "./universities"
-import { skillTag } from "./skills"
+import { university } from "@/server/db/schema/universities"
+import { skillTag } from "@/server/db/schema/skills"
 
 export const department = pgTable(
   "department",

@@ -10,7 +10,7 @@ import { studentProfile, studentSkill } from "@/server/db/schema/students"
 import { skillTag } from "@/server/db/schema/skills"
 import { university } from "@/server/db/schema/universities"
 import type { ApplicationStatus, PipelineStage } from "@/lib/schemas/enums"
-import { ApplicationServiceError } from "./errors"
+import { ApplicationServiceError } from "@/server/services/applications/errors"
 
 interface ListParams {
   status?: ApplicationStatus

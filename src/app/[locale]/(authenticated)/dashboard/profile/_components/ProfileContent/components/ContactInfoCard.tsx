@@ -11,7 +11,7 @@ import {
 } from "lucide-react"
 import { ease } from "@/lib/animations"
 
-import type { StudentProfile, ProfileUser } from "../types"
+import type { StudentProfile, ProfileUser } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { getWilayaName } from "@/lib/wilayas"
 
 interface ContactInfoCardProps {

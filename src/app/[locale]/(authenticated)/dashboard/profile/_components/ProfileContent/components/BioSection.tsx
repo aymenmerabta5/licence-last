@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
 
-import type { StudentProfile } from "../types"
+import type { StudentProfile } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 
 interface BioSectionProps {
   profile?: StudentProfile | null

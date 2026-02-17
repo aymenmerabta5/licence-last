@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test"
 
-import { calculateProfileCompleteness } from "./profile-completeness"
+import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 
 describe("calculateProfileCompleteness", () => {
   test("should return 0 for completely empty profile", () => {

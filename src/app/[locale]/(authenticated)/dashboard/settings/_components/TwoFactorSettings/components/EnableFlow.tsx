@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-import type { useTwoFactorSetup } from "../hooks/useTwoFactorSetup"
+import type { useTwoFactorSetup } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings/hooks/useTwoFactorSetup"
 
 type SetupState = ReturnType<typeof useTwoFactorSetup>
 

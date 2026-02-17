@@ -25,13 +25,13 @@ describe("rejectUniversity", () => {
   })
 
   test("should return universityId and name on success", async () => {
-    const { rejectUniversity } = await import("./reject")
+    const { rejectUniversity } = await import("@/server/services/universities/reject")
     const result = await rejectUniversity("uni-1", "Not eligible", "admin-1")
     expect(result).toEqual({ universityId: "uni-1", name: "Test Uni" })
   })
 
   test("should call update with rejection data", async () => {
-    const { rejectUniversity } = await import("./reject")
+    const { rejectUniversity } = await import("@/server/services/universities/reject")
     await rejectUniversity("uni-1", "Incomplete docs", "admin-1")
     expect(mockUpdate).toHaveBeenCalledTimes(1)
   })
@@ -39,7 +39,7 @@ describe("rejectUniversity", () => {
   test("should throw when university not found", async () => {
     mockReturning.mockResolvedValue([])
 
-    const { rejectUniversity } = await import("./reject")
+    const { rejectUniversity } = await import("@/server/services/universities/reject")
     expect(
       rejectUniversity("nonexistent", "reason", "admin-1"),
     ).rejects.toThrow("University not found")

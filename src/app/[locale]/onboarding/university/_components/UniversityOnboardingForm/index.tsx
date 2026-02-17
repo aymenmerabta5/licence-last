@@ -10,11 +10,11 @@ import { FormHeader } from "@/components/FormHeader"
 import { FormSection } from "@/components/form-fields"
 import { reveal, ease } from "@/lib/animations"
 
-import { useUniversityOnboarding } from "./hooks/useUniversityOnboarding"
-import { UniversityFields } from "./components/UniversityFields"
-import { LocationFields } from "./components/LocationFields"
-import { DomainFields } from "./components/DomainFields"
-import { DepartmentFields } from "./components/DepartmentFields"
+import { useUniversityOnboarding } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/hooks/useUniversityOnboarding"
+import { UniversityFields } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/components/UniversityFields"
+import { LocationFields } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/components/LocationFields"
+import { DomainFields } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/components/DomainFields"
+import { DepartmentFields } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/components/DepartmentFields"
 
 export function UniversityOnboardingForm() {
   const t = useTranslations("onboarding.university")

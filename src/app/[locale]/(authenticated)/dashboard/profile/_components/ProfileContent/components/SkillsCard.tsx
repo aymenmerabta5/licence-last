@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
 
-import type { StudentSkill } from "../types"
+import type { StudentSkill } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 
 interface SkillsCardProps {
   skills: StudentSkill[]

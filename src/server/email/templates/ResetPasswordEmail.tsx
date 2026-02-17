@@ -4,7 +4,7 @@
  *   Strict Notice: Unauthorized copying, use, or distribution of this code is strictly prohibited. Violators may be prosecuted and reported to law enforcement.
  */
 import { Button, Section, Text, Heading } from "@react-email/components";
-import EmailLayout from "./EmailLayout";
+import EmailLayout from "@/server/email/templates/EmailLayout";
 
 export default function ResetPasswordEmail({ link }: { link: string }) {
   return (

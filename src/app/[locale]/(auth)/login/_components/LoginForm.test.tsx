@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, afterEach, mock } from "bun:test"
 import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react"
-import { LoginForm } from "./LoginForm"
+import { LoginForm } from "@/app/[locale]/(auth)/login/_components/LoginForm"
 
 // Mock sonner
 const mockToastError = mock(() => {})

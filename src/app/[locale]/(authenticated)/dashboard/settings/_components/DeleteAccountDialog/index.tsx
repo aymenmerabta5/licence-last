@@ -10,8 +10,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 
-import { useDeleteAccount } from "./hooks/useDeleteAccount"
-import { DeleteAccountForm } from "./components/DeleteAccountForm"
+import { useDeleteAccount } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/DeleteAccountDialog/hooks/useDeleteAccount"
+import { DeleteAccountForm } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/DeleteAccountDialog/components/DeleteAccountForm"
 
 interface DeleteAccountDialogProps {
   open: boolean

@@ -4,7 +4,7 @@ import {
   searchOffersSchema,
   applyToOfferSchema,
   listStudentApplicationsSchema,
-} from "./search"
+} from "@/lib/schemas/search"
 
 describe("src/lib/schemas/search", () => {
   describe("searchOffersSchema", () => {

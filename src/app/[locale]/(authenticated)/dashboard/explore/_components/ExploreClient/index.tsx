@@ -3,16 +3,16 @@
 import { useEffect, useRef } from "react"
 import { useTranslations } from "next-intl"
 
-import { SearchFilters } from "../SearchFilters"
+import { SearchFilters } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters"
 
-import { useOfferSearch } from "./hooks/useOfferSearch"
-import { useSearchCopilot } from "./hooks/useSearchCopilot"
-import { ExploreHeader } from "./components/ExploreHeader"
-import { SearchBar } from "./components/SearchBar"
-import { SearchCopilotPanel } from "./components/SearchCopilotPanel"
-import { OffersGrid } from "./components/OffersGrid"
+import { useOfferSearch } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/hooks/useOfferSearch"
+import { useSearchCopilot } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/hooks/useSearchCopilot"
+import { ExploreHeader } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/components/ExploreHeader"
+import { SearchBar } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/components/SearchBar"
+import { SearchCopilotPanel } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/components/SearchCopilotPanel"
+import { OffersGrid } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/components/OffersGrid"
 
-export type { FilterState } from "./hooks/useOfferSearch"
+export type { FilterState } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/hooks/useOfferSearch"
 
 export function ExploreClient() {
   const t = useTranslations("dashboard.explore")

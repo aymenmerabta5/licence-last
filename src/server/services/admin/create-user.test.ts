@@ -13,7 +13,7 @@ describe("createUser", () => {
   beforeEach(() => { mockCreateUser.mockClear() })
 
   test("should call auth.api.createUser with all fields", async () => {
-    const { createUser } = await import("./create-user")
+    const { createUser } = await import("@/server/services/admin/create-user")
     await createUser({
       email: "test@example.com",
       password: "password123",
@@ -31,7 +31,7 @@ describe("createUser", () => {
   })
 
   test("should return the created user", async () => {
-    const { createUser } = await import("./create-user")
+    const { createUser } = await import("@/server/services/admin/create-user")
     const result = await createUser({
       email: "a@b.com",
       password: "pw",
@@ -46,7 +46,7 @@ describe("createUser", () => {
     const h = new Headers({ cookie: "session=abc" })
     mockHeaders.mockResolvedValue(h)
 
-    const { createUser } = await import("./create-user")
+    const { createUser } = await import("@/server/services/admin/create-user")
     await createUser({ email: "a@b.com", password: "pw", name: "A", role: "student" })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

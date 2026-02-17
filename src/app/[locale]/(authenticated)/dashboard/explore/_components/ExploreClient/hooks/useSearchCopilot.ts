@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query"
 
 import { orpcClient } from "@/server/orpc/client"
 
-import type { FilterState } from "./useOfferSearch"
+import type { FilterState } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/hooks/useOfferSearch"
 
 type AiSuggestion = FilterState & {
   keyword?: string

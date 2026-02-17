@@ -5,7 +5,7 @@ import { RecruiterDashboard } from "@/app/[locale]/(authenticated)/_components/R
 import { AdminDashboard } from "@/app/[locale]/(authenticated)/_components/AdminDashboard"
 import { DeptHeadDashboard } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard"
 import { Skeleton } from "@/components/ui/skeleton"
-import { DashboardContent } from "./_components/DashboardContent"
+import { DashboardContent } from "@/app/[locale]/(authenticated)/dashboard/_components/DashboardContent"
 
 // ============================================================================
 // FALLBACK UI COMPONENTS

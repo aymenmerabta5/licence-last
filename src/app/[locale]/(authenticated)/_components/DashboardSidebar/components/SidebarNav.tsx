@@ -4,7 +4,7 @@ import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { Link } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
-import type { NavItem } from "../constants"
+import type { NavItem } from "@/app/[locale]/(authenticated)/_components/DashboardSidebar/constants"
 
 interface SidebarNavProps {
   items: NavItem[]

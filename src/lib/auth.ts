@@ -15,11 +15,11 @@ import DeptHeadWelcomeEmail from "@/server/email/templates/DeptHeadWelcomeEmail"
 import VerifyEmailEmail from "@/server/email/templates/VerifyEmailEmail"
 import TwoFactorOtpEmail from "@/server/email/templates/TwoFactorOtpEmail"
 import { env } from "@/env"
-import { getEmailDomain, domainCandidates } from "./auth-utils"
-import { ac, superAdmin, universityAdmin, deptHead, student, companyAdmin } from "./permissions"
+import { getEmailDomain, domainCandidates } from "@/lib/auth-utils"
+import { ac, superAdmin, universityAdmin, deptHead, student, companyAdmin } from "@/lib/permissions"
 
 // Re-export for backward compatibility
-export { getEmailDomain, domainCandidates } from "./auth-utils"
+export { getEmailDomain, domainCandidates } from "@/lib/auth-utils"
 
 /**
  * Short-lived signal map for bulk dept-head creation.

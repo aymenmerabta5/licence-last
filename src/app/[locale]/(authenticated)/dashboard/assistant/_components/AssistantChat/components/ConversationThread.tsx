@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { reveal, ease } from "@/lib/animations";
 
-import { MessageBubble } from "./MessageBubble";
+import { MessageBubble } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/MessageBubble";
 
 type AuthStatus = {
   status: string | null;

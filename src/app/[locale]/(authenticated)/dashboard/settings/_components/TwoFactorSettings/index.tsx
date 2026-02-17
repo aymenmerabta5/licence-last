@@ -7,10 +7,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { useTwoFactorSetup } from "./hooks/useTwoFactorSetup"
-import { EnableFlow } from "./components/EnableFlow"
-import { BackupCodesDisplay } from "./components/BackupCodesDisplay"
-import { DisableConfirm } from "./components/DisableConfirm"
+import { useTwoFactorSetup } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings/hooks/useTwoFactorSetup"
+import { EnableFlow } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings/components/EnableFlow"
+import { BackupCodesDisplay } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings/components/BackupCodesDisplay"
+import { DisableConfirm } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings/components/DisableConfirm"
 
 interface TwoFactorSettingsProps {
   isTwoFactorEnabled: boolean

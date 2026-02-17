@@ -7,7 +7,7 @@ import {
   getWithdrawStatus,
   getCompanyActionStatus,
   createApplicationORPCError,
-} from "./applications.error-mapping"
+} from "@/server/orpc/routes/applications.error-mapping"
 
 describe("ApplicationServiceError to ORPCError mapping", () => {
   describe("applyToOffer status mapping", () => {

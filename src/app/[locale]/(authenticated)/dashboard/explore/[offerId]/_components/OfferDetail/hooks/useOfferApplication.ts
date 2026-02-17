@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl"
 
 import { orpc } from "@/server/orpc/client"
 
-import type { OfferDetailProps } from "../types"
+import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
 
 export function useOfferApplication(
   offer: OfferDetailProps["offer"],

@@ -111,7 +111,7 @@ describe("src/server/services/offers/search", () => {
       },
     ]
 
-    const { searchOffers } = await import("./search")
+    const { searchOffers } = await import("@/server/services/offers/search")
     const result = await searchOffers({ limit: 1 })
 
     expect(result.offers).toHaveLength(1)

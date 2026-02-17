@@ -4,7 +4,7 @@ import { generateObject, tool, type ToolSet } from "ai"
 import { z } from "zod"
 
 import { WILAYAS } from "@/lib/wilayas"
-import { getPoeModel } from "../model"
+import { getPoeModel } from "@/server/ai/model"
 
 interface CreateInternalToolsParams {
   contextJson: string

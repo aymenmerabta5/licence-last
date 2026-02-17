@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test"
-import { verifyCodeSchema } from "./verify"
+import { verifyCodeSchema } from "@/lib/schemas/verify"
 
 describe("verifyCodeSchema", () => {
   test("should accept valid verification code", () => {

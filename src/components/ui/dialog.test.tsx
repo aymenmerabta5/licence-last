@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test } from "bun:test"
 import { cleanup, render, screen } from "@testing-library/react"
 
-import { Dialog, DialogContent } from "./dialog"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 
 describe("Dialog", () => {
   afterEach(() => {

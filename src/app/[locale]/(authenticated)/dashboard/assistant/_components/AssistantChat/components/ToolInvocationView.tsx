@@ -8,7 +8,7 @@ import * as motion from "motion/react-client"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-import { getStringProp, isAuthorizationRequiredOutput, isRecord } from "../utils"
+import { getStringProp, isAuthorizationRequiredOutput, isRecord } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/utils"
 
 type ToolState =
   | "input-streaming"

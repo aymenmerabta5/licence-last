@@ -31,19 +31,19 @@ describe("approveUniversity", () => {
   })
 
   test("should return universityId on success", async () => {
-    const { approveUniversity } = await import("./approve")
+    const { approveUniversity } = await import("@/server/services/universities/approve")
     const result = await approveUniversity("uni-1", "admin-1")
     expect(result).toEqual({ universityId: "uni-1", name: "Test Uni" })
   })
 
   test("should use transaction", async () => {
-    const { approveUniversity } = await import("./approve")
+    const { approveUniversity } = await import("@/server/services/universities/approve")
     await approveUniversity("uni-1", "admin-1")
     expect(mockTransaction).toHaveBeenCalledTimes(1)
   })
 
   test("should update both university and domains", async () => {
-    const { approveUniversity } = await import("./approve")
+    const { approveUniversity } = await import("@/server/services/universities/approve")
     await approveUniversity("uni-1", "admin-1")
     // 1 university update (with returning) + 1 domain update
     expect(mockUpdate).toHaveBeenCalledTimes(2)
@@ -52,7 +52,7 @@ describe("approveUniversity", () => {
   test("should throw when university not found", async () => {
     mockReturning.mockResolvedValue([])
 
-    const { approveUniversity } = await import("./approve")
+    const { approveUniversity } = await import("@/server/services/universities/approve")
     expect(approveUniversity("nonexistent", "admin-1")).rejects.toThrow("University not found")
   })
 })

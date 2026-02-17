@@ -8,8 +8,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
-import { useChangePassword } from "./hooks/useChangePassword"
-import { ChangePasswordForm } from "./components/ChangePasswordForm"
+import { useChangePassword } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ChangePasswordDialog/hooks/useChangePassword"
+import { ChangePasswordForm } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ChangePasswordDialog/components/ChangePasswordForm"
 
 interface ChangePasswordDialogProps {
   open: boolean

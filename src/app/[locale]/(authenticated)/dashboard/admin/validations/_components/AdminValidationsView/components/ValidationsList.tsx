@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react"
 
 import { reveal, ease } from "@/lib/animations"
 
-import { ValidationCard } from "./ValidationCard"
+import { ValidationCard } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/_components/AdminValidationsView/components/ValidationCard"
 
 interface Application {
   id: string

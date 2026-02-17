@@ -2,8 +2,8 @@ import { Suspense } from "react"
 
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
-import { OnboardingContent } from "./_components/OnboardingContent"
-import { DecorativePanel, MobileHeroBanner } from "./_components/DecorativePanel"
+import { OnboardingContent } from "@/app/[locale]/onboarding/_components/OnboardingContent"
+import { DecorativePanel, MobileHeroBanner } from "@/app/[locale]/onboarding/_components/DecorativePanel"
 
 /**
  * Onboarding layout — split-panel editorial design.

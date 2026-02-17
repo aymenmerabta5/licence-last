@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { formatConversationTitle } from "../utils"
+import { formatConversationTitle } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/utils"
 
 interface Model {
   id: string

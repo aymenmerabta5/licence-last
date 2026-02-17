@@ -58,7 +58,7 @@ describe("src/server/services/offers/delete", () => {
       { id: "offer-1", companyId: "company-1", status: "draft" },
     ])
 
-    const { deleteOffer } = await import("./delete")
+    const { deleteOffer } = await import("@/server/services/offers/delete")
 
     const result = await deleteOffer("offer-1", "company-1")
 
@@ -71,7 +71,7 @@ describe("src/server/services/offers/delete", () => {
       { id: "offer-1", companyId: "company-1", status: "published" },
     ])
 
-    const { deleteOffer } = await import("./delete")
+    const { deleteOffer } = await import("@/server/services/offers/delete")
 
     const result = await deleteOffer("offer-1", "company-1")
 
@@ -82,7 +82,7 @@ describe("src/server/services/offers/delete", () => {
   test("should throw when offer not found", async () => {
     mockLimit.mockResolvedValue([])
 
-    const { deleteOffer } = await import("./delete")
+    const { deleteOffer } = await import("@/server/services/offers/delete")
 
     expect(
       deleteOffer("nonexistent", "company-1"),

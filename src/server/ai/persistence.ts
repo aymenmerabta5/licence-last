@@ -11,7 +11,7 @@ import {
 } from "@/server/services/assistant/messages"
 import { extractTextFromParts } from "@/server/services/assistant/utils"
 
-import type { PersistenceResult } from "./types"
+import type { PersistenceResult } from "@/server/ai/types"
 import type { UIMessage } from "ai"
 
 interface ResolvePersistenceParams {

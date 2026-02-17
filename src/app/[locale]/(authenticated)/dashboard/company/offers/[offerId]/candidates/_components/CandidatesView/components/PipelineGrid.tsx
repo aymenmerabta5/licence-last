@@ -16,9 +16,9 @@ import {
   CANDIDATE_CARD_DND_TYPE,
   type CandidateApp,
   type CandidateCardDragItem,
-} from "../types"
+} from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
 
-import { CandidateCard } from "./CandidateCard"
+import { CandidateCard } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidateCard"
 
 const STAGE_THEME: Record<PipelineStage, { dot: string; headerBg: string; dropBg: string }> = {
   applied: {
