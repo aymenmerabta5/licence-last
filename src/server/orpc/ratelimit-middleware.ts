@@ -12,16 +12,67 @@ import { createModuleLogger } from "@/server/logging"
 const log = createModuleLogger("ratelimit")
 
 // Simple in-memory rate limit store (fallback when Redis is unavailable)
-const inMemoryStore = new Map<string, { count: number; resetAt: number }>()
+interface InMemoryRateLimitEntry {
+  count: number
+  resetAt: number
+  touchedAt: number
+}
+
+const inMemoryStore = new Map<string, InMemoryRateLimitEntry>()
+const IN_MEMORY_SWEEP_INTERVAL_MS = 5000
+const DEFAULT_IN_MEMORY_MAX_KEYS = 10000
+let inMemoryMaxKeys = DEFAULT_IN_MEMORY_MAX_KEYS
+let lastInMemorySweepAt = 0
+
+function sweepInMemoryStore(now: number): void {
+  if (now - lastInMemorySweepAt < IN_MEMORY_SWEEP_INTERVAL_MS) {
+    return
+  }
+
+  lastInMemorySweepAt = now
+
+  for (const [key, entry] of inMemoryStore.entries()) {
+    if (now > entry.resetAt) {
+      inMemoryStore.delete(key)
+    }
+  }
+
+  if (inMemoryStore.size <= inMemoryMaxKeys) {
+    return
+  }
+
+  trimInMemoryStoreToMaxKeys()
+}
+
+function trimInMemoryStoreToMaxKeys(): void {
+  if (inMemoryStore.size <= inMemoryMaxKeys) {
+    return
+  }
+
+  const overflow = inMemoryStore.size - inMemoryMaxKeys
+  const oldestEntries = [...inMemoryStore.entries()]
+    .sort((a, b) => a[1].touchedAt - b[1].touchedAt)
+    .slice(0, overflow)
+
+  for (const [key] of oldestEntries) {
+    inMemoryStore.delete(key)
+  }
+}
 
 function checkInMemoryLimit(key: string, max: number, windowMs: number): boolean {
   const now = Date.now()
+  sweepInMemoryStore(now)
+
   const entry = inMemoryStore.get(key)
   if (!entry || now > entry.resetAt) {
-    inMemoryStore.set(key, { count: 1, resetAt: now + windowMs })
+    inMemoryStore.set(key, { count: 1, resetAt: now + windowMs, touchedAt: now })
+    trimInMemoryStoreToMaxKeys()
     return true
   }
+
   entry.count++
+  entry.touchedAt = now
+
   return entry.count <= max
 }
 
@@ -38,6 +89,24 @@ export interface RateLimitConfig {
   keyPrefix?: string
   /** Custom key generator function */
   keyGenerator?: (ctx: { userId?: string; ip: string }) => string
+}
+
+export function __resetInMemoryRateLimiterForTests(): void {
+  inMemoryStore.clear()
+  inMemoryMaxKeys = DEFAULT_IN_MEMORY_MAX_KEYS
+  lastInMemorySweepAt = 0
+}
+
+export function __setInMemoryRateLimiterMaxKeysForTests(maxKeys: number): void {
+  inMemoryMaxKeys = Math.max(1, Math.floor(maxKeys))
+}
+
+export function __getInMemoryRateLimiterSizeForTests(): number {
+  return inMemoryStore.size
+}
+
+export function __forceSweepInMemoryRateLimiterForTests(now = Date.now()): void {
+  sweepInMemoryStore(now)
 }
 
 /**

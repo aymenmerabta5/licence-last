@@ -44,10 +44,12 @@ describe("ratelimit middleware fallback policy", () => {
     })
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockRedisRateLimitEnabled = "false"
     mockLimiter = null
     setNodeEnv("test")
+    const { __resetInMemoryRateLimiterForTests } = await import("@/server/orpc/ratelimit-middleware")
+    __resetInMemoryRateLimiterForTests()
   })
 
   test("fails closed in production when Redis-backed rate limiting is enabled but unavailable", async () => {
@@ -97,5 +99,56 @@ describe("ratelimit middleware fallback policy", () => {
 
     expect(thrown instanceof Error).toBe(true)
     expect((thrown as Error).message).toBe("Rate limit exceeded")
+  })
+
+  test("caps in-memory fallback keys to avoid unbounded growth", async () => {
+    mockRedisRateLimitEnabled = "false"
+    mockLimiter = null
+
+    const {
+      createRateLimitMiddleware,
+      __setInMemoryRateLimiterMaxKeysForTests,
+      __getInMemoryRateLimiterSizeForTests,
+    } = await import("@/server/orpc/ratelimit-middleware")
+
+    __setInMemoryRateLimiterMaxKeysForTests(2)
+
+    const middleware = createRateLimitMiddleware({
+      maxRequests: 10,
+      windowMs: 60_000,
+      keyPrefix: "test",
+    }) as unknown as { key: (args: { context: { user: { id: string } } }) => Promise<string> }
+
+    await middleware.key({ context: { user: { id: "u1" } } })
+    await middleware.key({ context: { user: { id: "u2" } } })
+    await middleware.key({ context: { user: { id: "u3" } } })
+
+    expect(__getInMemoryRateLimiterSizeForTests()).toBe(2)
+  })
+
+  test("sweeps expired keys from in-memory fallback store", async () => {
+    mockRedisRateLimitEnabled = "false"
+    mockLimiter = null
+
+    const {
+      createRateLimitMiddleware,
+      __getInMemoryRateLimiterSizeForTests,
+      __forceSweepInMemoryRateLimiterForTests,
+    } = await import("@/server/orpc/ratelimit-middleware")
+
+    const middleware = createRateLimitMiddleware({
+      maxRequests: 5,
+      windowMs: 5,
+      keyPrefix: "test",
+    }) as unknown as { key: (args: { context: { user: { id: string } } }) => Promise<string> }
+
+    await middleware.key({ context: { user: { id: "u1" } } })
+    expect(__getInMemoryRateLimiterSizeForTests()).toBe(1)
+
+    await new Promise((resolve) => setTimeout(resolve, 10))
+    await middleware.key({ context: { user: { id: "u2" } } })
+    __forceSweepInMemoryRateLimiterForTests(Date.now() + 6000)
+
+    expect(__getInMemoryRateLimiterSizeForTests()).toBe(0)
   })
 })

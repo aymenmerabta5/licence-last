@@ -5,9 +5,42 @@ const fs = require("node:fs")
 const path = require("node:path")
 
 const APP_ROOT = path.join(process.cwd(), "src", "app")
-const MAX_STANDALONE_LINES = 260
-const MAX_ORCHESTRATOR_LINES = 200
-const MAX_SECTION_LINES = 330
+const MAX_STANDALONE_LINES = 150
+const MAX_ORCHESTRATOR_LINES = 120
+const MAX_SECTION_LINES = 200
+
+// Temporary carve-out for pre-existing files that violate strict limits.
+// Keep this list shrinking over time.
+const LEGACY_EXEMPTIONS = new Set([
+  "src/app/[locale]/(auth)/login/_components/LoginForm/components/TwoFactorStep.tsx",
+  "src/app/[locale]/(auth)/reset-password/verify/_components/ResetPasswordVerifyForm/index.tsx",
+  "src/app/[locale]/(auth)/signup/_components/SignupForm/index.tsx",
+  "src/app/[locale]/(authenticated)/_components/DeptHeadDashboard/index.tsx",
+  "src/app/[locale]/(authenticated)/_components/RecruiterDashboard/index.tsx",
+  "src/app/[locale]/(authenticated)/_components/StudentDashboard/index.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/index.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/index.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/index.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/index.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/index.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsView/index.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ToolInvocationView.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/PlacementCertificateCard.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/OfferCard.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/index.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/dept-validations/[applicationId]/_components/DeptHeadPlacementDetail/index.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/ApplicationPanel.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/explore/_components/OfferCard.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/index.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/index.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/index.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/index.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager/index.tsx",
+  "src/app/[locale]/_components/HeroSection.tsx",
+  "src/app/[locale]/onboarding/_components/DecorativePanel.tsx",
+  "src/app/[locale]/onboarding/student/_components/StudentOnboarding/components/StudentOnboardingFormContent.tsx",
+  "src/app/[locale]/verify/[code]/_components/VerificationResult.tsx",
+])
 
 function listTsxFiles(dirPath, files = []) {
   const entries = fs.readdirSync(dirPath, { withFileTypes: true })
@@ -43,10 +76,32 @@ function countLines(filePath) {
   return content.split(/\r?\n/).length
 }
 
+function isClientComponent(filePath) {
+  const content = fs.readFileSync(filePath, "utf8")
+  const lines = content.split(/\r?\n/)
+
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (!trimmed) {
+      continue
+    }
+    if (trimmed.startsWith("//")) {
+      continue
+    }
+    return trimmed === "\"use client\"" || trimmed === "'use client'"
+  }
+
+  return false
+}
+
 function getPolicy(filePath) {
   const normalized = relativePath(filePath)
 
   if (!normalized.includes("/_components/")) {
+    return null
+  }
+
+  if (!isClientComponent(filePath)) {
     return null
   }
 
@@ -85,13 +140,18 @@ function main() {
       continue
     }
 
+    const normalizedPath = relativePath(filePath)
+    if (LEGACY_EXEMPTIONS.has(normalizedPath)) {
+      continue
+    }
+
     const lines = countLines(filePath)
     if (lines <= policy.max) {
       continue
     }
 
     violations.push({
-      file: relativePath(filePath),
+      file: normalizedPath,
       lines,
       max: policy.max,
       kind: policy.kind,

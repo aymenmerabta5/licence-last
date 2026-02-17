@@ -68,6 +68,7 @@ export function Footer() {
                 <Input
                   placeholder={t("newsletter.emailPlaceholder")}
                   type="email"
+                  aria-label={t("newsletter.emailPlaceholder")}
                   className="rounded-none border-t-0 border-x-0 border-b-2 border-border bg-transparent px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors"
                 />
               </div>

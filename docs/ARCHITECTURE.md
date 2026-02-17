@@ -952,7 +952,7 @@ bun test:orpc-routes  # oRPC controller route and smoke tests
 bun test:api          # API route tests + oRPC route suite
 bun test:pages        # App Router page/component tests (src/app/[locale])
 bun test:e2e          # Playwright E2E
-bun test:coverage     # Coverage report
+bun test:coverage     # Segmented coverage reports (coverage/*.txt)
 ```
 
 ### Test Setup (`src/test-setup.ts`)
