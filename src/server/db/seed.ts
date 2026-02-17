@@ -6,11 +6,11 @@ import { drizzle } from "drizzle-orm/postgres-js"
 import { hashPassword } from "better-auth/crypto"
 
 import { logger } from "@/server/logging/logger"
-import * as schema from "./schema"
-import { university, universityDomain } from "./schema/universities"
-import { user, account } from "./schema/auth"
-import { skillTag } from "./schema/skills"
-import { department, departmentSkill } from "./schema/departments"
+import * as schema from "@/server/db/schema"
+import { university, universityDomain } from "@/server/db/schema/universities"
+import { user, account } from "@/server/db/schema/auth"
+import { skillTag } from "@/server/db/schema/skills"
+import { department, departmentSkill } from "@/server/db/schema/departments"
 
 /**
  * Parse a comma-separated string of domains into an array of normalized domains.

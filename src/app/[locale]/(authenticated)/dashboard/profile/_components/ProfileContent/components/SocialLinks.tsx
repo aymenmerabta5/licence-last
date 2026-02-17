@@ -5,7 +5,7 @@ import { Github, Globe, ExternalLink } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ease } from "@/lib/animations"
 
-import type { StudentProfile } from "../types"
+import type { StudentProfile } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 
 interface SocialLinksProps {
   profile?: StudentProfile | null

@@ -3,7 +3,7 @@ import "server-only"
 import { generateObject } from "ai"
 import { z } from "zod"
 
-import { getPoeModel } from "./model"
+import { getPoeModel } from "@/server/ai/model"
 
 /**
  * Generate a conversation title based on the first user message

@@ -8,7 +8,7 @@ import { toast } from "sonner"
 import { orpc } from "@/server/orpc/client"
 import { parseUserAgent } from "@/lib/user-agent"
 import { getErrorMessage } from "@/lib/error-message"
-import type { EnrichedSession } from "../types"
+import type { EnrichedSession } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/types"
 
 export function useSessionManagement() {
   const t = useTranslations("dashboard.settings.sessions")

@@ -8,9 +8,9 @@ import { Link } from "@/i18n/routing"
 import { Button } from "@/components/ui/button"
 import { ease } from "@/lib/animations"
 
-import { useCompanyOffers } from "./hooks/useCompanyOffers"
-import { OfferCard } from "./components/OfferCard"
-import { TrustBanner } from "./components/TrustBanner"
+import { useCompanyOffers } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/hooks/useCompanyOffers"
+import { OfferCard } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/OfferCard"
+import { TrustBanner } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/TrustBanner"
 
 export function CompanyOffersView() {
   const t = useTranslations("dashboard.company.offers")

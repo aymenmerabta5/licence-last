@@ -7,7 +7,7 @@ import {
   getStringArray,
   getStringProp,
   findLatestToolOutput,
-} from "./tool-output"
+} from "@/lib/ai/tool-output"
 
 describe("asRecord", () => {
   test("should return object as Record", () => {

@@ -31,7 +31,7 @@ describe("src/server/services/documents/generate-agreement", () => {
   })
 
   test("should throw when placement does not exist", async () => {
-    const { generateAgreement } = await import("./generate-agreement")
+    const { generateAgreement } = await import("@/server/services/documents/generate-agreement")
     await expect(generateAgreement({ placementId: "p-1" })).rejects.toThrow(
       "Placement not found",
     )

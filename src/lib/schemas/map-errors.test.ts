@@ -1,7 +1,7 @@
 import { describe, test, expect } from "bun:test"
 import { z } from "zod"
 
-import { mapZodErrors } from "./map-errors"
+import { mapZodErrors } from "@/lib/schemas/map-errors"
 
 describe("mapZodErrors", () => {
   const schema = z.object({

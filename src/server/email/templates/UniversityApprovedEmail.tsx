@@ -1,5 +1,5 @@
 import { Button, Section, Text, Heading } from "@react-email/components"
-import EmailLayout from "./EmailLayout"
+import EmailLayout from "@/server/email/templates/EmailLayout"
 
 interface UniversityApprovedEmailProps {
   universityName: string

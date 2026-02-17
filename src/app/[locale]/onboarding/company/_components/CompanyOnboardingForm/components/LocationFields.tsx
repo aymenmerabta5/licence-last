@@ -5,7 +5,7 @@ import { MapPin } from "lucide-react"
 import { SelectField, TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYA_OPTIONS } from "@/lib/wilayas"
-import type { CompanyOnboardingFormApi } from "../hooks/useCompanyOnboarding"
+import type { CompanyOnboardingFormApi } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm/hooks/useCompanyOnboarding"
 
 interface LocationFieldsProps {
   form: CompanyOnboardingFormApi

@@ -5,7 +5,7 @@ import { and, desc, eq, gte } from "drizzle-orm"
 import { db } from "@/server/db"
 import { studentOfferReadinessSnapshot } from "@/server/db/schema/matching"
 
-import { getSkillGapRoadmap } from "./skill-gap"
+import { getSkillGapRoadmap } from "@/server/services/matching/skill-gap"
 
 export interface ReadinessPoint {
   id: string

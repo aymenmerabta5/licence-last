@@ -7,7 +7,7 @@ import { Sparkles, Loader2 } from "lucide-react"
 import { reveal, ease } from "@/lib/animations"
 import { Button } from "@/components/ui/button"
 
-import type { AdminValidationSummary } from "../types"
+import type { AdminValidationSummary } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/types"
 
 interface AISummaryPanelProps {
   aiSummary: AdminValidationSummary | null

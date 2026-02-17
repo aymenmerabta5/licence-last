@@ -1,7 +1,7 @@
 import { pgTable, text, timestamp, integer, jsonb, index } from "drizzle-orm/pg-core"
 
-import { internshipOffer } from "./internships"
-import { user } from "./auth"
+import { internshipOffer } from "@/server/db/schema/internships"
+import { user } from "@/server/db/schema/auth"
 
 export const studentOfferReadinessSnapshot = pgTable(
   "student_offer_readiness_snapshot",

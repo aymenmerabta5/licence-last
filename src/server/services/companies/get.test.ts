@@ -33,7 +33,7 @@ describe("src/server/services/companies/get", () => {
   test("getCompanyById should return company when found", async () => {
     mockLimitResult = [{ id: "company-1", name: "Acme Corp" }]
 
-    const { getCompanyById } = await import("./get")
+    const { getCompanyById } = await import("@/server/services/companies/get")
     const result = await getCompanyById("company-1")
 
     expect(result).not.toBeNull()
@@ -44,7 +44,7 @@ describe("src/server/services/companies/get", () => {
   test("getCompanyById should return null when not found", async () => {
     mockLimitResult = []
 
-    const { getCompanyById } = await import("./get")
+    const { getCompanyById } = await import("@/server/services/companies/get")
     const result = await getCompanyById("missing")
 
     expect(result).toBeNull()
@@ -53,7 +53,7 @@ describe("src/server/services/companies/get", () => {
   test("getCompanyByUserId should return company when membership exists", async () => {
     mockLimitResult = [{ id: "company-1", name: "Acme Corp", slug: "acme-corp", status: "approved" }]
 
-    const { getCompanyByUserId } = await import("./get")
+    const { getCompanyByUserId } = await import("@/server/services/companies/get")
     const result = await getCompanyByUserId("user-1")
 
     expect(result).not.toBeNull()
@@ -63,7 +63,7 @@ describe("src/server/services/companies/get", () => {
   test("getCompanyByUserId should return null when no membership", async () => {
     mockLimitResult = []
 
-    const { getCompanyByUserId } = await import("./get")
+    const { getCompanyByUserId } = await import("@/server/services/companies/get")
     const result = await getCompanyByUserId("user-orphan")
 
     expect(result).toBeNull()
@@ -75,7 +75,7 @@ describe("src/server/services/companies/get", () => {
       { id: "company-2", name: "Beta Corp", slug: "beta-corp", status: "approved" },
     ]
 
-    const { getCompanyByUserId } = await import("./get")
+    const { getCompanyByUserId } = await import("@/server/services/companies/get")
 
     await expect(getCompanyByUserId("user-1")).rejects.toMatchObject({
       code: "COMPANY_MEMBERSHIP_CONFLICT",

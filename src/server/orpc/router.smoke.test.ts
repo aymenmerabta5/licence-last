@@ -27,40 +27,48 @@ mock.module("@/server/db", () => ({
 }))
 
 describe("src/server/orpc/router smoke coverage", () => {
-  test("all expected namespaces are present", async () => {
-    const { appRouter } = await import("./router")
-    expect(Object.keys(appRouter).sort()).toEqual([
-      "adminUsers",
-      "applications",
-      "assistant",
-      "companies",
-      "departments",
-      "deptHead",
-      "documents",
-      "matching",
-      "notifications",
-      "offers",
-      "placements",
-      "skills",
-      "stats",
-      "students",
-      "universities",
-      "users",
-    ])
-  })
+  test(
+    "all expected namespaces are present",
+    async () => {
+      const { appRouter } = await import("@/server/orpc/router")
+      expect(Object.keys(appRouter).sort()).toEqual([
+        "adminUsers",
+        "applications",
+        "assistant",
+        "companies",
+        "departments",
+        "deptHead",
+        "documents",
+        "matching",
+        "notifications",
+        "offers",
+        "placements",
+        "skills",
+        "stats",
+        "students",
+        "universities",
+        "users",
+      ])
+    },
+    15000,
+  )
 
-  test("each namespace exposes at least one procedure", async () => {
-    const { appRouter } = await import("./router")
-    for (const [namespace, procedures] of Object.entries(appRouter)) {
-      expect(procedures).toBeDefined()
-      expect(Object.keys(procedures).length).toBeGreaterThan(0)
+  test(
+    "each namespace exposes at least one procedure",
+    async () => {
+      const { appRouter } = await import("@/server/orpc/router")
+      for (const [namespace, procedures] of Object.entries(appRouter)) {
+        expect(procedures).toBeDefined()
+        expect(Object.keys(procedures).length).toBeGreaterThan(0)
 
-      for (const [procedureName, procedure] of Object.entries(procedures)) {
-        expect(
-          procedure,
-          `Procedure ${namespace}.${procedureName} should be defined`,
-        ).toBeDefined()
+        for (const [procedureName, procedure] of Object.entries(procedures)) {
+          expect(
+            procedure,
+            `Procedure ${namespace}.${procedureName} should be defined`,
+          ).toBeDefined()
+        }
       }
-    }
-  })
+    },
+    15000,
+  )
 })

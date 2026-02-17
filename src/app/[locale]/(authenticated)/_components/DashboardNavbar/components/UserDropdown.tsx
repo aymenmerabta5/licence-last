@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import type { NavbarUser } from "../types"
+import type { NavbarUser } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
 
 interface UserDropdownProps {
   user: NavbarUser

@@ -89,7 +89,7 @@ describe("assignDepartmentHeadByEmail", () => {
       ])
       .mockResolvedValueOnce([{ id: "user-1", role: "student", name: "Existing Head" }])
 
-    const { assignDepartmentHeadByEmail } = await import("./assign-head-by-email")
+    const { assignDepartmentHeadByEmail } = await import("@/server/services/departments/assign-head-by-email")
     const result = await assignDepartmentHeadByEmail({
       departmentId: "dept-1",
       headEmail: "head@university.dz",
@@ -123,7 +123,7 @@ describe("assignDepartmentHeadByEmail", () => {
         { id: "new-user-id", role: "dept_head", name: "Dr. New Head" },
       ])
 
-    const { assignDepartmentHeadByEmail } = await import("./assign-head-by-email")
+    const { assignDepartmentHeadByEmail } = await import("@/server/services/departments/assign-head-by-email")
     const result = await assignDepartmentHeadByEmail({
       departmentId: "dept-1",
       headEmail: "new-head@university.dz",
@@ -142,7 +142,7 @@ describe("assignDepartmentHeadByEmail", () => {
   test("should throw when department is not found", async () => {
     mockLimit.mockResolvedValueOnce([])
 
-    const { assignDepartmentHeadByEmail } = await import("./assign-head-by-email")
+    const { assignDepartmentHeadByEmail } = await import("@/server/services/departments/assign-head-by-email")
     expect(
       assignDepartmentHeadByEmail({
         departmentId: "missing-dept",

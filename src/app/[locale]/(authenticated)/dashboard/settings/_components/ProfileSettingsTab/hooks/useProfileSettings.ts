@@ -10,7 +10,7 @@ import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { getErrorMessage } from "@/lib/error-message"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
-import type { MeResult, StudentProfileResult } from "../types"
+import type { MeResult, StudentProfileResult } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/types"
 
 const studentProfileDetailsSchema = z.object({
   name: z

@@ -1,3 +1,5 @@
+import "server-only"
+
 export const MATCH_SCORING_VERSION = "v1.0.0"
 
 export const MATCH_WEIGHT = {

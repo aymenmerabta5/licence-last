@@ -1,6 +1,6 @@
 import { pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
-import { user } from "./auth"
+import { user } from "@/server/db/schema/auth"
 
 /**
  * Better Auth twoFactor plugin table.

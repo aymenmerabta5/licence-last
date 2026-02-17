@@ -7,12 +7,12 @@ import { ArrowLeft, Loader2 } from "lucide-react"
 import { Link } from "@/i18n/routing"
 import { reveal, ease } from "@/lib/animations"
 
-import { useUserDetail } from "./hooks/useUserDetail"
-import { useUserDetailActions } from "./hooks/useUserDetailActions"
-import { useImpersonation } from "./hooks/useImpersonation"
-import { UserInfoCard } from "./components/UserInfoCard"
-import { SessionsTable } from "./components/SessionsTable"
-import { UserActionsPanel } from "./components/UserActionsPanel"
+import { useUserDetail } from "@/app/[locale]/(authenticated)/dashboard/admin/users/[userId]/_components/UserDetailView/hooks/useUserDetail"
+import { useUserDetailActions } from "@/app/[locale]/(authenticated)/dashboard/admin/users/[userId]/_components/UserDetailView/hooks/useUserDetailActions"
+import { useImpersonation } from "@/app/[locale]/(authenticated)/dashboard/admin/users/[userId]/_components/UserDetailView/hooks/useImpersonation"
+import { UserInfoCard } from "@/app/[locale]/(authenticated)/dashboard/admin/users/[userId]/_components/UserDetailView/components/UserInfoCard"
+import { SessionsTable } from "@/app/[locale]/(authenticated)/dashboard/admin/users/[userId]/_components/UserDetailView/components/SessionsTable"
+import { UserActionsPanel } from "@/app/[locale]/(authenticated)/dashboard/admin/users/[userId]/_components/UserDetailView/components/UserActionsPanel"
 
 interface UserDetailViewProps {
   userId: string

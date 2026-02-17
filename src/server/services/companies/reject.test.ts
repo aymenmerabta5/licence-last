@@ -30,7 +30,7 @@ describe("src/server/services/companies/reject", () => {
   test("should reject a company and return its id and name", async () => {
     mockReturningResult = [{ id: "company-1", name: "Bad Corp" }]
 
-    const { rejectCompany } = await import("./reject")
+    const { rejectCompany } = await import("@/server/services/companies/reject")
     const result = await rejectCompany("company-1", "Incomplete documentation", "admin-1")
 
     expect(result).toEqual({ companyId: "company-1", name: "Bad Corp" })
@@ -40,7 +40,7 @@ describe("src/server/services/companies/reject", () => {
   test("should throw when company not found", async () => {
     mockReturningResult = []
 
-    const { rejectCompany } = await import("./reject")
+    const { rejectCompany } = await import("@/server/services/companies/reject")
 
     await expect(rejectCompany("missing", "reason", "admin-1")).rejects.toThrow("Company not found")
   })

@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge"
 import { useTranslations } from "next-intl"
 
-import { STATUS_STYLES, STATUS_TRANSLATION_KEYS } from "../utils"
+import { STATUS_STYLES, STATUS_TRANSLATION_KEYS } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/utils"
 import { cn } from "@/lib/utils"
 
 interface StatusBadgeProps {

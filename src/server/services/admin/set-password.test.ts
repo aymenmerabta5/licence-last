@@ -13,7 +13,7 @@ describe("setUserPassword", () => {
   beforeEach(() => mockSetUserPassword.mockClear())
 
   test("should call auth.api.setUserPassword with userId and newPassword", async () => {
-    const { setUserPassword } = await import("./set-password")
+    const { setUserPassword } = await import("@/server/services/admin/set-password")
     await setUserPassword("user-1", "newpass123")
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,7 +23,7 @@ describe("setUserPassword", () => {
   })
 
   test("should return result from auth API", async () => {
-    const { setUserPassword } = await import("./set-password")
+    const { setUserPassword } = await import("@/server/services/admin/set-password")
     const result = await setUserPassword("user-1", "pw")
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(result).toEqual({ success: true } as any)

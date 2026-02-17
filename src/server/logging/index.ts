@@ -1,3 +1,3 @@
 import "server-only"
 
-export { createLogger, createModuleLogger, logger } from "./logger"
+export { createLogger, createModuleLogger, logger } from "@/server/logging/logger"

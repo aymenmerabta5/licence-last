@@ -15,7 +15,7 @@ describe("updateUser", () => {
   beforeEach(() => mockAdminUpdateUser.mockClear())
 
   test("should call auth.api.adminUpdateUser with userId and data", async () => {
-    const { updateUser } = await import("./update-user")
+    const { updateUser } = await import("@/server/services/admin/update-user")
     await updateUser("user-1", { name: "New Name" })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,7 +25,7 @@ describe("updateUser", () => {
   })
 
   test("should pass email in data when provided", async () => {
-    const { updateUser } = await import("./update-user")
+    const { updateUser } = await import("@/server/services/admin/update-user")
     await updateUser("user-1", { email: "new@example.com" })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -34,7 +34,7 @@ describe("updateUser", () => {
   })
 
   test("should pass role in data when provided", async () => {
-    const { updateUser } = await import("./update-user")
+    const { updateUser } = await import("@/server/services/admin/update-user")
     await updateUser("user-1", { role: "company_admin" })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,7 +43,7 @@ describe("updateUser", () => {
   })
 
   test("should return result from auth API", async () => {
-    const { updateUser } = await import("./update-user")
+    const { updateUser } = await import("@/server/services/admin/update-user")
     const result = await updateUser("user-1", { name: "X" })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(result).toEqual({ user: { id: "u1", name: "Updated" } } as any)

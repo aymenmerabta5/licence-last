@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { internshipTypeSchema, workModeSchema, applicationStatusSchema, pipelineStageSchema } from "./enums"
+import { internshipTypeSchema, workModeSchema, applicationStatusSchema, pipelineStageSchema } from "@/lib/schemas/enums"
 
 /** Cursor for keyset pagination (createdAt + id). */
 const cursorSchema = z

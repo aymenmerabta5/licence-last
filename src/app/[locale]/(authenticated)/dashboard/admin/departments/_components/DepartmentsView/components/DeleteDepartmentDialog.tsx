@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 
-import type { DepartmentItem } from "../types"
+import type { DepartmentItem } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/types"
 
 interface DeleteDepartmentDialogProps {
   open: boolean

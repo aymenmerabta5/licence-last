@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 
-import { OfferDetailRedirect } from "./_components/OfferDetailRedirect"
+import { OfferDetailRedirect } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetailRedirect"
 
 type Params = Promise<{ offerId: string }>
 

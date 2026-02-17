@@ -7,9 +7,9 @@ import {
   index,
 } from "drizzle-orm/pg-core"
 
-import { internshipTypeEnum, offerStatusEnum, workModeEnum } from "./enums"
-import { company } from "./companies"
-import { skillTag } from "./skills"
+import { internshipTypeEnum, offerStatusEnum, workModeEnum } from "@/server/db/schema/enums"
+import { company } from "@/server/db/schema/companies"
+import { skillTag } from "@/server/db/schema/skills"
 
 export const internshipOffer = pgTable(
   "internship_offer",

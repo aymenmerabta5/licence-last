@@ -29,13 +29,13 @@ describe("src/server/services/notifications/mark-read", () => {
   })
 
   test("markNotificationRead should return updated count", async () => {
-    const { markNotificationRead } = await import("./mark-read")
+    const { markNotificationRead } = await import("@/server/services/notifications/mark-read")
     const result = await markNotificationRead("u-1", "n-1")
     expect(result.updated).toBe(1)
   })
 
   test("markAllNotificationsRead should return updated count", async () => {
-    const { markAllNotificationsRead } = await import("./mark-read")
+    const { markAllNotificationsRead } = await import("@/server/services/notifications/mark-read")
     const result = await markAllNotificationsRead("u-1")
     expect(result.success).toBe(true)
   })

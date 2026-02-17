@@ -67,7 +67,7 @@ mock.module("@/server/services/matching/skill-gap", () => ({
 
 describe("src/server/services/matching/skill-gap", () => {
   test("should return roadmap with missing skills grouped by category", async () => {
-    const { getSkillGapRoadmap } = await import("./skill-gap")
+    const { getSkillGapRoadmap } = await import("@/server/services/matching/skill-gap")
     const result = await getSkillGapRoadmap("student-1", "offer-1")
 
     expect(result.readyPercent).toBe(65)
@@ -81,7 +81,7 @@ describe("src/server/services/matching/skill-gap", () => {
   })
 
   test("should provide roadmap steps when skills are missing", async () => {
-    const { getSkillGapRoadmap } = await import("./skill-gap")
+    const { getSkillGapRoadmap } = await import("@/server/services/matching/skill-gap")
     const result = await getSkillGapRoadmap("student-1", "offer-1")
 
     expect(result.roadmapSteps.length).toBeGreaterThan(0)
@@ -89,7 +89,7 @@ describe("src/server/services/matching/skill-gap", () => {
   })
 
   test("should return positive estimated delta", async () => {
-    const { getSkillGapRoadmap } = await import("./skill-gap")
+    const { getSkillGapRoadmap } = await import("@/server/services/matching/skill-gap")
     const result = await getSkillGapRoadmap("student-1", "offer-1")
 
     expect(result.estimatedDelta).toBeGreaterThanOrEqual(0)
@@ -105,7 +105,7 @@ describe("src/server/services/matching/skill-gap", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
 
-    const { getSkillGapRoadmap } = await import("./skill-gap")
+    const { getSkillGapRoadmap } = await import("@/server/services/matching/skill-gap")
     const result = await getSkillGapRoadmap("student-perfect", "offer-1")
 
     expect(result.missingSkills).toHaveLength(0)

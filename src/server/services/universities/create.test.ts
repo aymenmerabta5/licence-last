@@ -34,7 +34,7 @@ describe("createUniversity", () => {
   })
 
   test("should return universityId", async () => {
-    const { createUniversity } = await import("./create")
+    const { createUniversity } = await import("@/server/services/universities/create")
     const result = await createUniversity(
       { name: "University of Algiers", domains: ["univ-alger.dz"] },
       "user-1",
@@ -44,7 +44,7 @@ describe("createUniversity", () => {
   })
 
   test("should use transaction for multi-table insert", async () => {
-    const { createUniversity } = await import("./create")
+    const { createUniversity } = await import("@/server/services/universities/create")
     await createUniversity(
       { name: "Test Uni", domains: ["test.dz"] },
       "user-1",
@@ -53,7 +53,7 @@ describe("createUniversity", () => {
   })
 
   test("should insert university, domains, and update user", async () => {
-    const { createUniversity } = await import("./create")
+    const { createUniversity } = await import("@/server/services/universities/create")
     await createUniversity(
       { name: "Test Uni", domains: ["test.dz", "test2.dz"] },
       "user-1",
@@ -64,7 +64,7 @@ describe("createUniversity", () => {
   })
 
   test("should insert departments when provided", async () => {
-    const { createUniversity } = await import("./create")
+    const { createUniversity } = await import("@/server/services/universities/create")
     await createUniversity(
       {
         name: "Test Uni",
@@ -78,7 +78,7 @@ describe("createUniversity", () => {
   })
 
   test("should skip domain insert when domains array is empty", async () => {
-    const { createUniversity } = await import("./create")
+    const { createUniversity } = await import("@/server/services/universities/create")
     await createUniversity(
       { name: "Test Uni", domains: [] },
       "user-1",
@@ -89,7 +89,7 @@ describe("createUniversity", () => {
   })
 
   test("should skip department insert when departments not provided", async () => {
-    const { createUniversity } = await import("./create")
+    const { createUniversity } = await import("@/server/services/universities/create")
     await createUniversity(
       { name: "Test Uni", domains: ["test.dz"] },
       "user-1",
@@ -99,7 +99,7 @@ describe("createUniversity", () => {
   })
 
   test("should handle all optional fields", async () => {
-    const { createUniversity } = await import("./create")
+    const { createUniversity } = await import("@/server/services/universities/create")
     const result = await createUniversity(
       {
         name: "University of Oran",

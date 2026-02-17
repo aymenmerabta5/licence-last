@@ -20,7 +20,7 @@ import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { ease } from "@/lib/animations"
 
-import type { OfferItem } from "../types"
+import type { OfferItem } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/types"
 
 const STATUS_CONFIG: Record<string, { label: string; accent: string; bg: string; badge: string }> = {
   draft: {

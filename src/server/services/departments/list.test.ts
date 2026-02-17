@@ -25,7 +25,7 @@ describe("listDepartments", () => {
     ]
     mockChain.orderBy.mockResolvedValue(depts)
 
-    const { listDepartments } = await import("./list")
+    const { listDepartments } = await import("@/server/services/departments/list")
     const result = await listDepartments("uni-1")
 
     expect(result).toHaveLength(2)
@@ -35,7 +35,7 @@ describe("listDepartments", () => {
   test("should return empty array when no departments exist", async () => {
     mockChain.orderBy.mockResolvedValue([])
 
-    const { listDepartments } = await import("./list")
+    const { listDepartments } = await import("@/server/services/departments/list")
     const result = await listDepartments("uni-1")
 
     expect(result).toHaveLength(0)
@@ -44,7 +44,7 @@ describe("listDepartments", () => {
   test("should call select and filter by universityId", async () => {
     mockChain.orderBy.mockResolvedValue([])
 
-    const { listDepartments } = await import("./list")
+    const { listDepartments } = await import("@/server/services/departments/list")
     await listDepartments("uni-1")
 
     expect(mockChain.select).toHaveBeenCalled()

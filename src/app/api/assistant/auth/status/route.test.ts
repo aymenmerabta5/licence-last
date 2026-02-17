@@ -94,7 +94,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
 
   describe("request validation", () => {
     test("invalid JSON returns 400", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
 
       const request = new Request("http://localhost:3000/api/assistant/auth/status", {
         method: "POST",
@@ -108,7 +108,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
     })
 
     test("missing toolName returns 400", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
 
       const request = new Request("http://localhost:3000/api/assistant/auth/status", {
         method: "POST",
@@ -123,7 +123,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
     })
 
     test("empty string toolName returns 400", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
 
       const request = new Request("http://localhost:3000/api/assistant/auth/status", {
         method: "POST",
@@ -138,7 +138,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
     })
 
     test("whitespace-only toolName returns 400", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
 
       const request = new Request("http://localhost:3000/api/assistant/auth/status", {
         method: "POST",
@@ -153,7 +153,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
     })
 
     test("non-string toolName returns 400", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
 
       const request = new Request("http://localhost:3000/api/assistant/auth/status", {
         method: "POST",
@@ -172,7 +172,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
     test("no session returns 401", async () => {
       mockGetSession.mockResolvedValue(null)
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
 
       const request = new Request("http://localhost:3000/api/assistant/auth/status", {
         method: "POST",
@@ -193,7 +193,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
         user: { id: "user-1", role: "student" },
       })
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
 
       const request = new Request("http://localhost:3000/api/assistant/auth/status", {
         method: "POST",
@@ -212,7 +212,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
         user: { id: "user-1", role: "university_admin" },
       })
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
 
       const request = new Request("http://localhost:3000/api/assistant/auth/status", {
         method: "POST",
@@ -231,7 +231,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
         user: { id: "user-1", role: "super_admin" },
       })
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
 
       const request = new Request("http://localhost:3000/api/assistant/auth/status", {
         method: "POST",
@@ -251,7 +251,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
       })
       mockDbLimit.mockResolvedValue([{ status: "pending" }])
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
 
       const request = new Request("http://localhost:3000/api/assistant/auth/status", {
         method: "POST",
@@ -273,7 +273,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
         retryAfterMs: 45000,
       })
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
 
       const request = new Request("http://localhost:3000/api/assistant/auth/status", {
         method: "POST",
@@ -293,7 +293,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
         user: { id: "user-123", role: "company_admin" },
       })
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
 
       const request = new Request("http://localhost:3000/api/assistant/auth/status", {
         method: "POST",
@@ -320,7 +320,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
         url: "https://auth.arcade.com/123",
       })
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
 
       const request = new Request("http://localhost:3000/api/assistant/auth/status", {
         method: "POST",
@@ -338,7 +338,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
     })
 
     test("success passes correct parameters to Arcade", async () => {
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
 
       const request = new Request("http://localhost:3000/api/assistant/auth/status", {
         method: "POST",
@@ -360,7 +360,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
         url: null as unknown as string,
       })
 
-      const { POST } = await import("./route")
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
 
       const request = new Request("http://localhost:3000/api/assistant/auth/status", {
         method: "POST",

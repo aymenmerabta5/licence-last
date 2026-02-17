@@ -31,7 +31,7 @@ describe("src/app/api/health/route", () => {
     isRedisAvailableMock.mockReturnValueOnce(false)
     isRateLimitingEnabledMock.mockReturnValueOnce(false)
 
-    const { GET } = await import("./route")
+    const { GET } = await import("@/app/api/health/route")
     const response = await GET()
     const body = await response.json()
 
@@ -48,7 +48,7 @@ describe("src/app/api/health/route", () => {
     pingRedisMock.mockResolvedValueOnce(false)
     isRateLimitingEnabledMock.mockReturnValueOnce(true)
 
-    const { GET } = await import("./route")
+    const { GET } = await import("@/app/api/health/route")
     const response = await GET()
     const body = await response.json()
 
@@ -64,7 +64,7 @@ describe("src/app/api/health/route", () => {
     pingRedisMock.mockResolvedValueOnce(true)
     isRateLimitingEnabledMock.mockReturnValueOnce(true)
 
-    const { GET } = await import("./route")
+    const { GET } = await import("@/app/api/health/route")
     const response = await GET()
     const body = await response.json()
 

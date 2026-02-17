@@ -6,8 +6,8 @@ import { Building2, Clock, MapPin, Phone, Mail } from "lucide-react"
 
 import { reveal, ease } from "@/lib/animations"
 
-import { formatDate } from "../utils"
-import { InfoRow } from "./InfoRow"
+import { formatDate } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/utils"
+import { InfoRow } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/InfoRow"
 
 interface CompanyOfferCardProps {
   application: {

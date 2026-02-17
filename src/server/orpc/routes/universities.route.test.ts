@@ -89,7 +89,7 @@ describe("src/server/orpc/routes/universities", () => {
   })
 
   test("listUniversitiesProcedure enforces approved status for non-admin users", async () => {
-    const { listUniversitiesProcedure } = await import("./universities")
+    const { listUniversitiesProcedure } = await import("@/server/orpc/routes/universities")
 
     await callProcedure(listUniversitiesProcedure, {
       input: { status: "pending", limit: 10, offset: 0 },
@@ -104,7 +104,7 @@ describe("src/server/orpc/routes/universities", () => {
   })
 
   test("approveUniversityProcedure triggers cache invalidation and notifications", async () => {
-    const { approveUniversityProcedure } = await import("./universities")
+    const { approveUniversityProcedure } = await import("@/server/orpc/routes/universities")
 
     const result = await callProcedure(approveUniversityProcedure, {
       input: { universityId: "uni-1" },

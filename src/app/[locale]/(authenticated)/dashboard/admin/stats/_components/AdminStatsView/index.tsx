@@ -13,10 +13,10 @@ import {
 import { ease } from "@/lib/animations"
 import { StatsCard } from "@/app/[locale]/(authenticated)/_components/StatsCard"
 
-import { useAdminStats } from "./hooks/useAdminStats"
-import { ApplicationsBreakdownCard } from "./components/ApplicationsBreakdownCard"
-import { CompanyTrustCard } from "./components/CompanyTrustCard"
-import { OpenReportsCard } from "./components/OpenReportsCard"
+import { useAdminStats } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/hooks/useAdminStats"
+import { ApplicationsBreakdownCard } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/components/ApplicationsBreakdownCard"
+import { CompanyTrustCard } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/components/CompanyTrustCard"
+import { OpenReportsCard } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/components/OpenReportsCard"
 
 function formatPercent(n: number) {
   return `${Math.max(0, Math.min(100, n))}%`

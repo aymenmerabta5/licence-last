@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 
-import { ResetPasswordForm } from "./_components/ResetPasswordForm"
+import { ResetPasswordForm } from "@/app/[locale]/(auth)/reset-password/_components/ResetPasswordForm"
 
 type Params = Promise<{ locale: string }>
 

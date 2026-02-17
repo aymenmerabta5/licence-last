@@ -4,9 +4,9 @@ import { Boxes, Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
-import { useSkillsManager } from "./hooks/useSkillsManager"
-import { SelectedSkillsBar } from "./components/SelectedSkillsBar"
-import { SkillSearch } from "./components/SkillSearch"
+import { useSkillsManager } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager/hooks/useSkillsManager"
+import { SelectedSkillsBar } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager/components/SelectedSkillsBar"
+import { SkillSearch } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager/components/SkillSearch"
 import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
 
 export function SkillsManager() {

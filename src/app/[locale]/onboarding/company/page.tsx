@@ -2,7 +2,7 @@ import { headers } from "next/headers"
 
 import { auth } from "@/lib/auth"
 import { localeRedirect } from "@/lib/navigation"
-import { CompanyOnboardingForm } from "./_components/CompanyOnboardingForm"
+import { CompanyOnboardingForm } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm"
 
 export default async function CompanyOnboardingPage() {
   const session = await auth.api.getSession({

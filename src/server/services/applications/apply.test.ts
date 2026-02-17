@@ -98,7 +98,7 @@ describe("src/server/services/applications/apply", () => {
   test("should throw when offer does not exist", async () => {
     mockSelectResults.push([]) // tx select 1: no offer found
 
-    const { applyToOffer } = await import("./apply")
+    const { applyToOffer } = await import("@/server/services/applications/apply")
 
     await expect(applyToOffer("offer-1", "student-1")).rejects.toThrow(
       "Offer not found",
@@ -118,7 +118,7 @@ describe("src/server/services/applications/apply", () => {
     ]) // tx select 1: offer
     mockSelectResults.push([{ value: 1 }]) // tx select 2: count = 1 (full)
 
-    const { applyToOffer } = await import("./apply")
+    const { applyToOffer } = await import("@/server/services/applications/apply")
 
     await expect(applyToOffer("offer-1", "student-1")).rejects.toThrow(
       "All positions have been filled",
@@ -151,7 +151,7 @@ describe("src/server/services/applications/apply", () => {
     // db select 5: company members
     mockSelectResults.push([{ userId: "member-1" }, { userId: "member-2" }])
 
-    const { applyToOffer } = await import("./apply")
+    const { applyToOffer } = await import("@/server/services/applications/apply")
 
     const result = await applyToOffer(
       "offer-1",

@@ -4,11 +4,11 @@ import { Loader2 } from "lucide-react"
 
 import { TimelineModal } from "@/components/TimelineModal"
 
-import { useCandidates } from "./hooks/useCandidates"
-import { CandidatesHeader } from "./components/CandidatesHeader"
-import { PipelineGrid } from "./components/PipelineGrid"
-import { AcceptModal } from "./components/AcceptModal"
-import { RefuseModal } from "./components/RefuseModal"
+import { useCandidates } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/hooks/useCandidates"
+import { CandidatesHeader } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidatesHeader"
+import { PipelineGrid } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/PipelineGrid"
+import { AcceptModal } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/AcceptModal"
+import { RefuseModal } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/RefuseModal"
 
 interface CandidatesViewProps {
   offerId: string

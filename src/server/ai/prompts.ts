@@ -1,6 +1,6 @@
 import "server-only"
 
-import type { AssistantIntent, AssistantPersona } from "./types"
+import type { AssistantIntent, AssistantPersona } from "@/server/ai/types"
 
 export function resolvePersona({
   intent,

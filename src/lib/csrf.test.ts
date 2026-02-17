@@ -11,11 +11,11 @@ describe("isValidOrigin", () => {
 
   // Deferred import after mock.module
   test("setup", async () => {
-    ;({ isValidOrigin } = await import("./csrf"))
+    ;({ isValidOrigin } = await import("@/lib/csrf"))
   })
 
   test("should allow GET requests without origin header", async () => {
-    ;({ isValidOrigin } = await import("./csrf"))
+    ;({ isValidOrigin } = await import("@/lib/csrf"))
     const req = new Request("https://internex.example.com/api/data", {
       method: "GET",
     })
@@ -23,7 +23,7 @@ describe("isValidOrigin", () => {
   })
 
   test("should allow HEAD requests without origin header", async () => {
-    ;({ isValidOrigin } = await import("./csrf"))
+    ;({ isValidOrigin } = await import("@/lib/csrf"))
     const req = new Request("https://internex.example.com/api/data", {
       method: "HEAD",
     })
@@ -31,7 +31,7 @@ describe("isValidOrigin", () => {
   })
 
   test("should reject POST requests without origin header", async () => {
-    ;({ isValidOrigin } = await import("./csrf"))
+    ;({ isValidOrigin } = await import("@/lib/csrf"))
     const req = new Request("https://internex.example.com/api/data", {
       method: "POST",
     })
@@ -39,7 +39,7 @@ describe("isValidOrigin", () => {
   })
 
   test("should allow POST requests with matching origin", async () => {
-    ;({ isValidOrigin } = await import("./csrf"))
+    ;({ isValidOrigin } = await import("@/lib/csrf"))
     const req = new Request("https://internex.example.com/api/data", {
       method: "POST",
       headers: { origin: "https://internex.example.com" },
@@ -48,7 +48,7 @@ describe("isValidOrigin", () => {
   })
 
   test("should reject POST requests with mismatching origin", async () => {
-    ;({ isValidOrigin } = await import("./csrf"))
+    ;({ isValidOrigin } = await import("@/lib/csrf"))
     const req = new Request("https://internex.example.com/api/data", {
       method: "POST",
       headers: { origin: "https://evil.example.com" },
@@ -57,7 +57,7 @@ describe("isValidOrigin", () => {
   })
 
   test("should reject DELETE requests without origin header", async () => {
-    ;({ isValidOrigin } = await import("./csrf"))
+    ;({ isValidOrigin } = await import("@/lib/csrf"))
     const req = new Request("https://internex.example.com/api/data", {
       method: "DELETE",
     })
@@ -65,7 +65,7 @@ describe("isValidOrigin", () => {
   })
 
   test("should reject PUT requests with mismatching origin", async () => {
-    ;({ isValidOrigin } = await import("./csrf"))
+    ;({ isValidOrigin } = await import("@/lib/csrf"))
     const req = new Request("https://internex.example.com/api/data", {
       method: "PUT",
       headers: { origin: "https://internex.example.com:8080" },

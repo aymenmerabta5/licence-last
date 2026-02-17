@@ -6,7 +6,7 @@ import { db } from "@/server/db"
 import { application, applicationTimelineEvent } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { notification } from "@/server/db/schema/notifications"
-import { ApplicationServiceError } from "./errors"
+import { ApplicationServiceError } from "@/server/services/applications/errors"
 
 export type PipelineStage =
   | "applied"

@@ -4,11 +4,11 @@ import { useTranslations } from "next-intl";
 
 import { Card } from "@/components/ui/card";
 
-import { ConversationSidebar } from "./components/ConversationSidebar";
-import { ConversationThread } from "./components/ConversationThread";
-import { AssistantHeader } from "./components/AssistantHeader";
-import { ChatHeader } from "./components/ChatHeader";
-import { useChatSession } from "./hooks/useChatSession";
+import { ConversationSidebar } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ConversationSidebar";
+import { ConversationThread } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ConversationThread";
+import { AssistantHeader } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/AssistantHeader";
+import { ChatHeader } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ChatHeader";
+import { useChatSession } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/hooks/useChatSession";
 
 export function AssistantChat() {
   const t = useTranslations("dashboard.assistant");

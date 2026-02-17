@@ -117,7 +117,7 @@ describe("src/server/orpc/routes/companies", () => {
       ),
     )
 
-    const { createCompanyProcedure } = await import("./companies")
+    const { createCompanyProcedure } = await import("@/server/orpc/routes/companies")
 
     await expect(
       callProcedure(createCompanyProcedure, {
@@ -131,7 +131,7 @@ describe("src/server/orpc/routes/companies", () => {
   })
 
   test("updateCompanyProcedure revalidates profile tags on success", async () => {
-    const { updateCompanyProcedure } = await import("./companies")
+    const { updateCompanyProcedure } = await import("@/server/orpc/routes/companies")
 
     const result = await callProcedure(updateCompanyProcedure, {
       input: { description: "updated" },
@@ -150,7 +150,7 @@ describe("src/server/orpc/routes/companies", () => {
     updateCompanyMock.mockRejectedValueOnce(
       new ServiceError("COMPANY_NOT_FOUND", "Company not found"),
     )
-    const { updateCompanyProcedure } = await import("./companies")
+    const { updateCompanyProcedure } = await import("@/server/orpc/routes/companies")
 
     await expect(
       callProcedure(updateCompanyProcedure, {

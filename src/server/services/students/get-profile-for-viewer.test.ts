@@ -75,7 +75,7 @@ describe("src/server/services/students/get-profile-for-viewer", () => {
     mockSelectResults.push([mockUser], [profileRow])
     mockJoinWhere.mockResolvedValue(skills)
 
-    const { getStudentProfileForViewer } = await import("./get-profile-for-viewer")
+    const { getStudentProfileForViewer } = await import("@/server/services/students/get-profile-for-viewer")
     const result = await getStudentProfileForViewer({
       viewer: { id: "user-1", role: "student" },
       targetUserId: "user-1",
@@ -115,7 +115,7 @@ describe("src/server/services/students/get-profile-for-viewer", () => {
     mockSelectResults.push([mockUser], [profileRow])
     mockJoinWhere.mockResolvedValue([])
 
-    const { getStudentProfileForViewer } = await import("./get-profile-for-viewer")
+    const { getStudentProfileForViewer } = await import("@/server/services/students/get-profile-for-viewer")
     const result = await getStudentProfileForViewer({
       viewer: { id: "viewer-2", role: "company_admin" },
       targetUserId: "user-1",
@@ -143,7 +143,7 @@ describe("src/server/services/students/get-profile-for-viewer", () => {
 
     mockSelectResults.push([mockUser], []) // no profile row
 
-    const { getStudentProfileForViewer } = await import("./get-profile-for-viewer")
+    const { getStudentProfileForViewer } = await import("@/server/services/students/get-profile-for-viewer")
     const result = await getStudentProfileForViewer({
       viewer: { id: "viewer-2", role: "student" },
       targetUserId: "user-1",

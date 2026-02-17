@@ -3,7 +3,7 @@ import { setRequestLocale } from "next-intl/server"
 import { Navbar } from "@/components/Navbar"
 import { Footer } from "@/components/Footer"
 import { verifyDocument } from "@/server/services/documents/verify"
-import { VerificationResult } from "./_components/VerificationResult"
+import { VerificationResult } from "@/app/[locale]/verify/[code]/_components/VerificationResult"
 
 type Params = Promise<{ locale: string; code: string }>
 

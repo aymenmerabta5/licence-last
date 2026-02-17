@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 
 import { authClient } from "@/lib/auth-client"
-import type { DeviceSession } from "../types"
+import type { DeviceSession } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
 
 export function useAccountSwitcher(currentUserId: string) {
   const router = useRouter()

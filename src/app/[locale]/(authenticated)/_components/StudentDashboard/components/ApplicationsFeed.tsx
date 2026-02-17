@@ -5,8 +5,8 @@ import { Briefcase, ArrowRight, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 
-import type { ApplicationRow } from "../types"
-import { ApplicationCard } from "./ApplicationCard"
+import type { ApplicationRow } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
+import { ApplicationCard } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/ApplicationCard"
 
 interface ApplicationsFeedProps {
   applications: ApplicationRow[]

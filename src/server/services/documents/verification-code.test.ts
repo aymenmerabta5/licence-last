@@ -2,7 +2,7 @@ import { describe, test, expect } from "bun:test"
 import {
   generateVerificationCode,
   isValidVerificationCodeFormat,
-} from "./verification-code"
+} from "@/server/services/documents/verification-code"
 
 describe("generateVerificationCode", () => {
   test("should produce INTX-XXXX-XXXX format", () => {

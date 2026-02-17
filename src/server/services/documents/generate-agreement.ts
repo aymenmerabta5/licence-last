@@ -16,9 +16,9 @@ import {
   ConventionDeStageTemplate,
   type AgreementData,
 } from "@/server/pdfs/AgreementTemplate"
-import { generateVerificationCode } from "./verification-code"
-import { generateQRCodeDataUrl } from "./qr-utils"
-import { sendAgreementEmail } from "./send-agreement-email"
+import { generateVerificationCode } from "@/server/services/documents/verification-code"
+import { generateQRCodeDataUrl } from "@/server/services/documents/qr-utils"
+import { sendAgreementEmail } from "@/server/services/documents/send-agreement-email"
 import { env } from "@/env"
 import { logger } from "@/server/logging"
 

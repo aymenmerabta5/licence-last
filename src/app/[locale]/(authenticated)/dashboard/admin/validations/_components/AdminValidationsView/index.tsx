@@ -7,8 +7,8 @@ import { ArrowLeft, Clock, Loader2 } from "lucide-react"
 import { Link } from "@/i18n/routing"
 import { reveal, ease } from "@/lib/animations"
 
-import { useAdminValidations } from "./hooks/useAdminValidations"
-import { ValidationsList } from "./components/ValidationsList"
+import { useAdminValidations } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/_components/AdminValidationsView/hooks/useAdminValidations"
+import { ValidationsList } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/_components/AdminValidationsView/components/ValidationsList"
 
 export function AdminValidationsView() {
   const t = useTranslations("dashboard.admin.validations")

@@ -40,7 +40,7 @@ describe("src/server/services/students/upsert-profile-details", () => {
   test("should create profile for new user", async () => {
     existingProfile = []
 
-    const { upsertStudentProfileDetails } = await import("./upsert-profile-details")
+    const { upsertStudentProfileDetails } = await import("@/server/services/students/upsert-profile-details")
     const result = await upsertStudentProfileDetails(
       { bio: "Hello world", phone: "0555123456" },
       "user-new",
@@ -64,7 +64,7 @@ describe("src/server/services/students/upsert-profile-details", () => {
       address: "Algiers",
     }]
 
-    const { upsertStudentProfileDetails } = await import("./upsert-profile-details")
+    const { upsertStudentProfileDetails } = await import("@/server/services/students/upsert-profile-details")
     // Only update bio, leave everything else
     const result = await upsertStudentProfileDetails(
       { bio: "New bio" },
@@ -78,7 +78,7 @@ describe("src/server/services/students/upsert-profile-details", () => {
   test("should handle empty string as null for optional fields", async () => {
     existingProfile = []
 
-    const { upsertStudentProfileDetails } = await import("./upsert-profile-details")
+    const { upsertStudentProfileDetails } = await import("@/server/services/students/upsert-profile-details")
     const result = await upsertStudentProfileDetails(
       { bio: "", githubUrl: "" },
       "user-2",
@@ -90,7 +90,7 @@ describe("src/server/services/students/upsert-profile-details", () => {
   test("should handle wilayaCode=0 as null", async () => {
     existingProfile = [{ wilayaCode: 16 }]
 
-    const { upsertStudentProfileDetails } = await import("./upsert-profile-details")
+    const { upsertStudentProfileDetails } = await import("@/server/services/students/upsert-profile-details")
     const result = await upsertStudentProfileDetails(
       { wilayaCode: 0 },
       "user-3",

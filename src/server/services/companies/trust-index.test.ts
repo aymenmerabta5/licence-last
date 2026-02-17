@@ -13,7 +13,7 @@ mock.module("@/server/db", () => ({
 
 describe("src/server/services/companies/trust-index getCompanyTrustIndex", () => {
   test("should throw when company does not exist", async () => {
-    const { getCompanyTrustIndex } = await import("./trust-index")
+    const { getCompanyTrustIndex } = await import("@/server/services/companies/trust-index")
 
     await expect(getCompanyTrustIndex("missing-company")).rejects.toThrow(
       "Company not found",
@@ -24,7 +24,7 @@ describe("src/server/services/companies/trust-index getCompanyTrustIndex", () =>
 
 describe("src/server/services/companies/trust-index computeTrustFactors", () => {
   test("should return excellent tier for perfect scores", async () => {
-    const { computeTrustFactors } = await import("./trust-index")
+    const { computeTrustFactors } = await import("@/server/services/companies/trust-index")
 
     const result = computeTrustFactors({
       companyId: "company-1",
@@ -49,7 +49,7 @@ describe("src/server/services/companies/trust-index computeTrustFactors", () => 
   })
 
   test("should return low tier for poor scores", async () => {
-    const { computeTrustFactors } = await import("./trust-index")
+    const { computeTrustFactors } = await import("@/server/services/companies/trust-index")
 
     const result = computeTrustFactors({
       companyId: "company-2",
@@ -76,7 +76,7 @@ describe("src/server/services/companies/trust-index computeTrustFactors", () => 
   })
 
   test("should show alert when company has no offers", async () => {
-    const { computeTrustFactors } = await import("./trust-index")
+    const { computeTrustFactors } = await import("@/server/services/companies/trust-index")
 
     const result = computeTrustFactors({
       companyId: "company-3",
@@ -96,7 +96,7 @@ describe("src/server/services/companies/trust-index computeTrustFactors", () => 
   })
 
   test("should cap report penalty at 100 in factors", async () => {
-    const { computeTrustFactors } = await import("./trust-index")
+    const { computeTrustFactors } = await import("@/server/services/companies/trust-index")
 
     const result = computeTrustFactors({
       companyId: "company-4",
@@ -120,7 +120,7 @@ describe("src/server/services/companies/trust-index computeTrustFactors", () => 
   })
 
   test("should not penalize resolved reports", async () => {
-    const { computeTrustFactors } = await import("./trust-index")
+    const { computeTrustFactors } = await import("@/server/services/companies/trust-index")
 
     const result = computeTrustFactors({
       companyId: "company-5",
@@ -140,7 +140,7 @@ describe("src/server/services/companies/trust-index computeTrustFactors", () => 
   })
 
   test("should calculate feedback score from ratings and recommendations", async () => {
-    const { computeTrustFactors } = await import("./trust-index")
+    const { computeTrustFactors } = await import("@/server/services/companies/trust-index")
 
     const result = computeTrustFactors({
       companyId: "company-6",

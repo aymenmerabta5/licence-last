@@ -43,7 +43,7 @@ describe("assignDepartmentHead", () => {
   test("should throw when department not found", async () => {
     mockLimit.mockResolvedValueOnce([])
 
-    const { assignDepartmentHead } = await import("./assign-head")
+    const { assignDepartmentHead } = await import("@/server/services/departments/assign-head")
     expect(assignDepartmentHead("dept-1", "user-1")).rejects.toThrow("Department not found")
   })
 
@@ -52,7 +52,7 @@ describe("assignDepartmentHead", () => {
       .mockResolvedValueOnce([{ id: "dept-1", universityId: "uni-1", name: "CS" }])
       .mockResolvedValueOnce([])
 
-    const { assignDepartmentHead } = await import("./assign-head")
+    const { assignDepartmentHead } = await import("@/server/services/departments/assign-head")
     expect(assignDepartmentHead("dept-1", "user-1")).rejects.toThrow("User not found")
   })
 
@@ -61,7 +61,7 @@ describe("assignDepartmentHead", () => {
       .mockResolvedValueOnce([{ id: "dept-1", universityId: "uni-1", name: "CS" }])
       .mockResolvedValueOnce([{ id: "user-1", role: "student" }])
 
-    const { assignDepartmentHead } = await import("./assign-head")
+    const { assignDepartmentHead } = await import("@/server/services/departments/assign-head")
     const result = await assignDepartmentHead("dept-1", "user-1")
     expect(result).toEqual({ success: true, departmentId: "dept-1", userId: "user-1" })
   })
@@ -71,7 +71,7 @@ describe("assignDepartmentHead", () => {
       .mockResolvedValueOnce([{ id: "dept-1", universityId: "uni-1", name: "CS" }])
       .mockResolvedValueOnce([{ id: "user-1", role: "student" }])
 
-    const { assignDepartmentHead } = await import("./assign-head")
+    const { assignDepartmentHead } = await import("@/server/services/departments/assign-head")
     await assignDepartmentHead("dept-1", "user-1")
 
     expect(mockTransaction).toHaveBeenCalledTimes(1)
@@ -85,7 +85,7 @@ describe("assignDepartmentHead", () => {
       .mockResolvedValueOnce([{ id: "dept-1", universityId: "uni-1", name: "CS" }])
       .mockResolvedValueOnce([{ id: "user-1", role: "student" }])
 
-    const { assignDepartmentHead } = await import("./assign-head")
+    const { assignDepartmentHead } = await import("@/server/services/departments/assign-head")
     await assignDepartmentHead("dept-1", "user-1")
 
     expect(mockSelect).toHaveBeenCalledTimes(2)

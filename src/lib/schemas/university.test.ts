@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test"
 
-import { createUniversityOnboardingSchema } from "./university"
+import { createUniversityOnboardingSchema } from "@/lib/schemas/university"
 
 function t(key: string) {
   return `t:${key}`

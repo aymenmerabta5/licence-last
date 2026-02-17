@@ -13,7 +13,7 @@ import { user } from "@/server/db/schema/auth"
 import { studentProfile } from "@/server/db/schema/students"
 import { company } from "@/server/db/schema/companies"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
-import { ApplicationServiceError } from "./errors"
+import { ApplicationServiceError } from "@/server/services/applications/errors"
 
 export async function companyAcceptApplication(
   applicationId: string,

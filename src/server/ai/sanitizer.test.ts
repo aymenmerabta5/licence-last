@@ -7,7 +7,7 @@ import {
   redactSecrets,
   stripProviderMetadata,
   extractTextFromParts,
-} from "./sanitizer"
+} from "@/server/ai/sanitizer"
 
 describe("sanitizer", () => {
   describe("sanitizeUIMessagesForModel", () => {

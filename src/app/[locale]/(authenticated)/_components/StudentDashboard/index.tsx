@@ -5,11 +5,11 @@ import { useTranslations } from "next-intl"
 import { Briefcase, CheckCircle2, Wrench } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-import type { StudentDashboardProps } from "./types"
-import { WelcomeHero } from "./components/WelcomeHero"
-import { ApplicationsFeed } from "./components/ApplicationsFeed"
-import { RecommendedOffers } from "./components/RecommendedOffers"
-import { SkillsSidebar } from "./components/SkillsSidebar"
+import type { StudentDashboardProps } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
+import { WelcomeHero } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/WelcomeHero"
+import { ApplicationsFeed } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/ApplicationsFeed"
+import { RecommendedOffers } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/RecommendedOffers"
+import { SkillsSidebar } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/SkillsSidebar"
 
 export function StudentDashboard({ user, data }: StudentDashboardProps) {
   const t = useTranslations("dashboard.student")

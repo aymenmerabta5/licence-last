@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 
 import { orpc } from "@/server/orpc/client"
 
-import type { DepartmentItem } from "../types"
+import type { DepartmentItem } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/types"
 
 export function useDepartmentsData() {
   const { data: me, isLoading: isMeLoading } = useQuery(

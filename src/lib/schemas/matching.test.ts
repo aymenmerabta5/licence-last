@@ -5,7 +5,7 @@ import {
   getMatchingScoreSchema,
   getReadinessHistorySchema,
   getSkillGapSchema,
-} from "./matching"
+} from "@/lib/schemas/matching"
 
 describe("src/lib/schemas/matching", () => {
   test("getMatchingScoreSchema should require student and offer ids", () => {

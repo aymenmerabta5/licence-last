@@ -69,7 +69,7 @@ describe("src/server/services/applications/list-by-student", () => {
       },
     ])
 
-    const { listApplicationsByStudent } = await import("./list-by-student")
+    const { listApplicationsByStudent } = await import("@/server/services/applications/list-by-student")
     const result = await listApplicationsByStudent("student-1", { limit: 1 })
 
     expect(result.applications).toHaveLength(1)

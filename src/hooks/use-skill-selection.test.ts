@@ -1,7 +1,7 @@
 import { describe, test, expect } from "bun:test"
 import { renderHook, act } from "@testing-library/react"
 
-import { useSkillSelection } from "./use-skill-selection"
+import { useSkillSelection } from "@/hooks/use-skill-selection"
 
 describe("useSkillSelection", () => {
   test("should start with empty selection", () => {

@@ -21,7 +21,7 @@ describe("listUserSessions", () => {
   beforeEach(() => mockListUserSessions.mockClear())
 
   test("should call auth.api.listUserSessions with userId", async () => {
-    const { listUserSessions } = await import("./session-management")
+    const { listUserSessions } = await import("@/server/services/admin/session-management")
     await listUserSessions("user-1")
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const call = (mockListUserSessions.mock.calls as any)[0][0]
@@ -33,7 +33,7 @@ describe("revokeSession", () => {
   beforeEach(() => mockRevokeUserSession.mockClear())
 
   test("should call auth.api.revokeUserSession with token", async () => {
-    const { revokeSession } = await import("./session-management")
+    const { revokeSession } = await import("@/server/services/admin/session-management")
     await revokeSession("session-token-abc")
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const call = (mockRevokeUserSession.mock.calls as any)[0][0]
@@ -45,7 +45,7 @@ describe("revokeAllSessions", () => {
   beforeEach(() => mockRevokeUserSessions.mockClear())
 
   test("should call auth.api.revokeUserSessions with userId", async () => {
-    const { revokeAllSessions } = await import("./session-management")
+    const { revokeAllSessions } = await import("@/server/services/admin/session-management")
     await revokeAllSessions("user-1")
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const call = (mockRevokeUserSessions.mock.calls as any)[0][0]
@@ -53,7 +53,7 @@ describe("revokeAllSessions", () => {
   })
 
   test("should return success result", async () => {
-    const { revokeAllSessions } = await import("./session-management")
+    const { revokeAllSessions } = await import("@/server/services/admin/session-management")
     const result = await revokeAllSessions("user-1")
     expect(result).toEqual({ success: true })
   })

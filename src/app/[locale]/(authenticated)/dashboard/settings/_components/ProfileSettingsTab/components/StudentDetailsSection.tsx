@@ -6,7 +6,7 @@ import { SelectField, TextAreaField, TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYA_OPTIONS_WITH_PLACEHOLDER } from "@/lib/wilayas"
 
-import { SkillsManager } from "../../SkillsManager"
+import { SkillsManager } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager"
 
 function SectionDivider({ icon: Icon, label }: { icon: React.ComponentType<{ className?: string }>; label: string }) {
   return (

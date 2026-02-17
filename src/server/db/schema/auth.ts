@@ -1,8 +1,8 @@
 import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core"
 
-import { userRoleEnum } from "./enums"
-import { university } from "./universities"
-import { department } from "./departments"
+import { userRoleEnum } from "@/server/db/schema/enums"
+import { university } from "@/server/db/schema/universities"
+import { department } from "@/server/db/schema/departments"
 
 export const user = pgTable(
   "user",

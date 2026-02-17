@@ -2,16 +2,16 @@
 
 import { useTranslations } from "next-intl"
 
-import type { ProfileContentProps } from "./types"
-import { useProfileData } from "./hooks/useProfileData"
-import { ProfileHeader } from "./components/ProfileHeader"
-import { ProfileStats } from "./components/ProfileStats"
-import { ContactInfoCard } from "./components/ContactInfoCard"
-import { SkillsCard, EmptyState } from "./components/SkillsCard"
-import { SocialLinks } from "./components/SocialLinks"
-import { BioSection } from "./components/BioSection"
-import { EducationSection } from "./components/EducationSection"
-import { ExperienceSection } from "./components/ExperienceSection"
+import type { ProfileContentProps } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
+import { useProfileData } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/hooks/useProfileData"
+import { ProfileHeader } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/ProfileHeader"
+import { ProfileStats } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/ProfileStats"
+import { ContactInfoCard } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/ContactInfoCard"
+import { SkillsCard, EmptyState } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/SkillsCard"
+import { SocialLinks } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/SocialLinks"
+import { BioSection } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/BioSection"
+import { EducationSection } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/EducationSection"
+import { ExperienceSection } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/ExperienceSection"
 
 function buildProfileText(
   user: ProfileContentProps["user"],

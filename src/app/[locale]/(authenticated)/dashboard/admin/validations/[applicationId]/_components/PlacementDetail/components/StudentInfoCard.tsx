@@ -6,7 +6,7 @@ import { User, Mail, Phone, MapPin, GraduationCap } from "lucide-react"
 
 import { reveal, ease } from "@/lib/animations"
 
-import { InfoRow } from "./InfoRow"
+import { InfoRow } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/InfoRow"
 
 interface StudentInfoCardProps {
   application: {

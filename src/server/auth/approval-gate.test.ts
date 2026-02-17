@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-import { checkAdminApproval } from "./approval-gate"
+import { checkAdminApproval } from "@/server/auth/approval-gate"
 
 const mockGetCompanyStatusByUserId = mock(async () => null as { status: string } | null)
 const mockGetUniversityStatusByUserId = mock(async () => null as { status: string } | null)

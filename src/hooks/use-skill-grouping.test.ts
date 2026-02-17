@@ -1,7 +1,7 @@
 import { describe, test, expect } from "bun:test"
 import { renderHook } from "@testing-library/react"
 
-import { useSkillGrouping, CATEGORY_ORDER, CATEGORY_LABELS } from "./use-skill-grouping"
+import { useSkillGrouping, CATEGORY_ORDER, CATEGORY_LABELS } from "@/hooks/use-skill-grouping"
 
 describe("useSkillGrouping", () => {
   const skills = [

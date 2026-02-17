@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-import type { DepartmentItem } from "../types"
+import type { DepartmentItem } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/types"
 
 interface UseAssignHeadDialogParams {
   onAssign: (

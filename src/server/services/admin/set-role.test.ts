@@ -13,7 +13,7 @@ describe("setUserRole", () => {
   beforeEach(() => mockSetRole.mockClear())
 
   test("should call auth.api.setRole with userId and role", async () => {
-    const { setUserRole } = await import("./set-role")
+    const { setUserRole } = await import("@/server/services/admin/set-role")
     await setUserRole("user-1", "super_admin")
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,7 +23,7 @@ describe("setUserRole", () => {
   })
 
   test("should accept all valid roles", async () => {
-    const { setUserRole } = await import("./set-role")
+    const { setUserRole } = await import("@/server/services/admin/set-role")
     const roles = ["student", "company_admin", "dept_head", "university_admin", "super_admin"] as const
     for (const role of roles) {
       mockSetRole.mockClear()
@@ -33,7 +33,7 @@ describe("setUserRole", () => {
   })
 
   test("should return result from auth API", async () => {
-    const { setUserRole } = await import("./set-role")
+    const { setUserRole } = await import("@/server/services/admin/set-role")
     const result = await setUserRole("user-1", "student")
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(result).toEqual({ success: true } as any)

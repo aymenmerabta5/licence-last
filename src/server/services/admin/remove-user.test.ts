@@ -13,7 +13,7 @@ describe("removeUser", () => {
   beforeEach(() => { mockRemoveUser.mockClear() })
 
   test("should call auth.api.removeUser with userId", async () => {
-    const { removeUser } = await import("./remove-user")
+    const { removeUser } = await import("@/server/services/admin/remove-user")
     await removeUser("user-1")
     expect(mockRemoveUser).toHaveBeenCalledTimes(1)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,7 +22,7 @@ describe("removeUser", () => {
   })
 
   test("should return result from auth API", async () => {
-    const { removeUser } = await import("./remove-user")
+    const { removeUser } = await import("@/server/services/admin/remove-user")
     const result = await removeUser("user-1")
     expect(result).toEqual({ success: true })
   })

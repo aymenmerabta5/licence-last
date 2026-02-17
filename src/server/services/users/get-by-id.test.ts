@@ -46,7 +46,7 @@ describe("src/server/services/users/get-by-id", () => {
 
     mockSelectResults.push([mockUser])
 
-    const { getUserById } = await import("./get-by-id")
+    const { getUserById } = await import("@/server/services/users/get-by-id")
     const result = await getUserById("user-1")
 
     expect(result).toEqual(mockUser)
@@ -55,7 +55,7 @@ describe("src/server/services/users/get-by-id", () => {
   test("should return null when it does not exist", async () => {
     mockSelectResults.push([])
 
-    const { getUserById } = await import("./get-by-id")
+    const { getUserById } = await import("@/server/services/users/get-by-id")
     const result = await getUserById("missing")
 
     expect(result).toBeNull()

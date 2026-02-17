@@ -8,8 +8,8 @@ import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { auth, pendingWelcomeEmails } from "@/lib/auth"
-import { createDepartment } from "./create"
-import { assignDepartmentHead } from "./assign-head"
+import { createDepartment } from "@/server/services/departments/create"
+import { assignDepartmentHead } from "@/server/services/departments/assign-head"
 import type { BulkDepartmentRow } from "@/lib/schemas/department"
 
 const log = createModuleLogger("services/departments/bulk-create-with-heads")

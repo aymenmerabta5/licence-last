@@ -84,7 +84,7 @@ describe("src/server/services/applications/company-refuse", () => {
       },
     ])
 
-    const { companyRefuseApplication } = await import("./company-refuse")
+    const { companyRefuseApplication } = await import("@/server/services/applications/company-refuse")
     const result = await companyRefuseApplication(
       "app-1",
       "company-1",

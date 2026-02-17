@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test"
 
-import { createStudentProfileSchema } from "./student"
+import { createStudentProfileSchema } from "@/lib/schemas/student"
 
 function t(key: string) {
   return `t:${key}`

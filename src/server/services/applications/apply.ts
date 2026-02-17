@@ -11,7 +11,7 @@ import { application } from "@/server/db/schema/applications"
 import { companyMember } from "@/server/db/schema/companies"
 import { notification } from "@/server/db/schema/notifications"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
-import { ApplicationServiceError } from "./errors"
+import { ApplicationServiceError } from "@/server/services/applications/errors"
 
 /**
  * Apply to an internship offer.

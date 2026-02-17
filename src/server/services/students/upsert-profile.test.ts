@@ -72,7 +72,7 @@ describe("src/server/services/students/upsert-profile", () => {
   })
 
   test("should create profile, skills, and set onboardingCompleted", async () => {
-    const { upsertStudentProfile } = await import("./upsert-profile")
+    const { upsertStudentProfile } = await import("@/server/services/students/upsert-profile")
 
     const result = await upsertStudentProfile(
       { bio: "Hello", phone: "0555" },
@@ -91,7 +91,7 @@ describe("src/server/services/students/upsert-profile", () => {
   })
 
   test("should throw if skillTagIds.length > 10", async () => {
-    const { upsertStudentProfile } = await import("./upsert-profile")
+    const { upsertStudentProfile } = await import("@/server/services/students/upsert-profile")
 
     const tooManySkills = Array.from({ length: 11 }, (_, i) => `skill-${i}`)
 
@@ -101,7 +101,7 @@ describe("src/server/services/students/upsert-profile", () => {
   })
 
   test("should replace existing skills on update (delete + insert)", async () => {
-    const { upsertStudentProfile } = await import("./upsert-profile")
+    const { upsertStudentProfile } = await import("@/server/services/students/upsert-profile")
 
     await upsertStudentProfile(
       { bio: "Updated" },

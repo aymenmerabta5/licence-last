@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query"
 import { orpcClient } from "@/server/orpc/client"
 import { isInternshipType, isWorkMode } from "@/lib/schemas/enums"
 
-import type { OfferCopilotIntent, CopilotResult } from "../types"
+import type { OfferCopilotIntent, CopilotResult } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
 
 interface SkillTag {
   id: string

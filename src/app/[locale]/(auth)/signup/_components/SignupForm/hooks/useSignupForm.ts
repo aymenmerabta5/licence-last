@@ -7,7 +7,7 @@ import { createSignupSchema } from "@/lib/schemas/auth"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import type { CaptchaHandle } from "@/components/TurnstileWidget"
 
-import type { SignupFormValues, SignupRole } from "../types"
+import type { SignupFormValues, SignupRole } from "@/app/[locale]/(auth)/signup/_components/SignupForm/types"
 
 export type SignupFormApi = ReturnType<typeof useSignupForm>["form"]
 

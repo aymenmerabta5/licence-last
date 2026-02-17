@@ -3,8 +3,8 @@ import "server-only"
 import { tool, type ToolSet } from "ai"
 import { z } from "zod"
 
-import type { ToolAuthContext } from "../types"
-import { redactForAssistant, fuzzyMatchOffer } from "./utils"
+import type { ToolAuthContext } from "@/server/ai/types"
+import { redactForAssistant, fuzzyMatchOffer } from "@/server/ai/tools/utils"
 
 // Service imports
 import { listOffersByCompany } from "@/server/services/offers/list-by-company"

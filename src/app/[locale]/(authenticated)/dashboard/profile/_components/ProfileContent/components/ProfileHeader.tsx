@@ -11,8 +11,8 @@ import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
 
-import type { ProfileUser } from "../types"
-import { getInitials } from "../utils"
+import type { ProfileUser } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
+import { getInitials } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/utils"
 
 interface ProfileHeaderProps {
   user: ProfileUser

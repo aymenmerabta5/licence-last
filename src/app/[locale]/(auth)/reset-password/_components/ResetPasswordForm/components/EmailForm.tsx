@@ -15,7 +15,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group"
-import type { ResetPasswordFormApi } from "../hooks/useResetPassword"
+import type { ResetPasswordFormApi } from "@/app/[locale]/(auth)/reset-password/_components/ResetPasswordForm/hooks/useResetPassword"
 
 interface EmailFormProps {
   form: ResetPasswordFormApi

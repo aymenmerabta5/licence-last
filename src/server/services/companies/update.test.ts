@@ -30,7 +30,7 @@ describe("src/server/services/companies/update", () => {
   test("should update company and return companyId", async () => {
     mockReturning.mockResolvedValue([{ companyId: "company-1" }])
 
-    const { updateCompany } = await import("./update")
+    const { updateCompany } = await import("@/server/services/companies/update")
 
     const result = await updateCompany("company-1", {
       description: "Updated description",
@@ -45,7 +45,7 @@ describe("src/server/services/companies/update", () => {
   test("should throw when company not found", async () => {
     mockReturning.mockResolvedValue([])
 
-    const { updateCompany } = await import("./update")
+    const { updateCompany } = await import("@/server/services/companies/update")
 
     expect(
       updateCompany("nonexistent", { description: "test" }),

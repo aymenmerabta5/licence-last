@@ -18,7 +18,7 @@ import {
   toDateTimeLocalInput,
   getNowMinDateTime,
   addDaysToDateTimeLocalInputValue,
-} from "./date"
+} from "@/lib/date"
 
 // Fixed date for deterministic tests
 const JAN_15_2024 = new Date(2024, 0, 15, 14, 30, 0)

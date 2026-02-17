@@ -100,7 +100,7 @@ describe("src/server/orpc/routes/applications", () => {
   })
 
   test("applyToOfferProcedure revalidates student tags", async () => {
-    const { applyToOfferProcedure } = await import("./applications")
+    const { applyToOfferProcedure } = await import("@/server/orpc/routes/applications")
 
     const result = await callProcedure(applyToOfferProcedure, {
       input: { offerId: "offer-1", coverLetter: "hello" },
@@ -117,7 +117,7 @@ describe("src/server/orpc/routes/applications", () => {
       new ApplicationServiceError("OFFER_FULL", "All positions have been filled"),
     )
 
-    const { applyToOfferProcedure } = await import("./applications")
+    const { applyToOfferProcedure } = await import("@/server/orpc/routes/applications")
 
     await expect(
       callProcedure(applyToOfferProcedure, {
@@ -133,7 +133,7 @@ describe("src/server/orpc/routes/applications", () => {
   test("applyToOfferProcedure maps unknown errors to internal", async () => {
     applyToOfferMock.mockRejectedValueOnce(new Error("boom"))
 
-    const { applyToOfferProcedure } = await import("./applications")
+    const { applyToOfferProcedure } = await import("@/server/orpc/routes/applications")
 
     await expect(
       callProcedure(applyToOfferProcedure, {
@@ -150,7 +150,7 @@ describe("src/server/orpc/routes/applications", () => {
       new ApplicationServiceError("APPLICATION_NOT_FOUND", "Application not found"),
     )
 
-    const { withdrawApplicationProcedure } = await import("./applications")
+    const { withdrawApplicationProcedure } = await import("@/server/orpc/routes/applications")
 
     await expect(
       callProcedure(withdrawApplicationProcedure, {
@@ -168,7 +168,7 @@ describe("src/server/orpc/routes/applications", () => {
       new ApplicationServiceError("OFFER_FORBIDDEN", "You do not have access to this offer"),
     )
 
-    const { listByOfferProcedure } = await import("./applications")
+    const { listByOfferProcedure } = await import("@/server/orpc/routes/applications")
 
     await expect(
       callProcedure(listByOfferProcedure, {
@@ -186,7 +186,7 @@ describe("src/server/orpc/routes/applications", () => {
       new ApplicationServiceError("APPLICATION_INVALID_STATE", "Invalid stage transition"),
     )
 
-    const { updatePipelineStageProcedure } = await import("./applications")
+    const { updatePipelineStageProcedure } = await import("@/server/orpc/routes/applications")
 
     await expect(
       callProcedure(updatePipelineStageProcedure, {

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { getWilayaName } from "@/lib/wilayas"
 import { INTERNSHIP_TYPE_LABELS } from "@/lib/constants/internship"
 
-import type { FilterState } from "../hooks/useOfferSearch"
+import type { FilterState } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/hooks/useOfferSearch"
 
 interface Skill {
   id: string

@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm"
 import { ORPCError } from "@orpc/server"
 import { revalidateTag } from "next/cache"
 
-import { isAdminRole } from "../middleware"
+import { isAdminRole } from "@/server/orpc/middleware"
 import {
   authedProcedureGenerous,
   authedProcedureStandard,

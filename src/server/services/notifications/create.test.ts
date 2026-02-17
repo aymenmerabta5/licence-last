@@ -21,7 +21,7 @@ describe("src/server/services/notifications/create", () => {
   })
 
   test("should insert a notification", async () => {
-    const { createNotification } = await import("./create")
+    const { createNotification } = await import("@/server/services/notifications/create")
     const result = await createNotification({
       userId: "u-1",
       type: "test",

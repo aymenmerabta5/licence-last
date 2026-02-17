@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test"
 
-import { isRoleAllowedForIntent } from "./access"
+import { isRoleAllowedForIntent } from "@/server/ai/access"
 
 describe("access", () => {
   describe("isRoleAllowedForIntent", () => {

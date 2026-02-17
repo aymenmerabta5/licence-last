@@ -9,14 +9,14 @@ import { reveal, ease } from "@/lib/animations"
 import { Button } from "@/components/ui/button"
 import { ServerError } from "@/components/ServerError"
 
-import { useOfferForm } from "./hooks/useOfferForm"
-import { useOfferCopilot } from "./hooks/useOfferCopilot"
-import { useSkillTags } from "./hooks/useSkillTags"
-import { CopilotPanel } from "./components/CopilotPanel"
-import { BasicInfoSection } from "./components/BasicInfoSection"
-import { DetailsSection } from "./components/DetailsSection"
-import { SkillsSection } from "./components/SkillsSection"
-import type { OfferFormProps } from "./types"
+import { useOfferForm } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferForm"
+import { useOfferCopilot } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferCopilot"
+import { useSkillTags } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useSkillTags"
+import { CopilotPanel } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/CopilotPanel"
+import { BasicInfoSection } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/BasicInfoSection"
+import { DetailsSection } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/DetailsSection"
+import { SkillsSection } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/SkillsSection"
+import type { OfferFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
 
 export function OfferForm({ mode, initialData }: OfferFormProps) {
   const t = useTranslations("dashboard.company.offers.form")

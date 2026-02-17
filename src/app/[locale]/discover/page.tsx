@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/card"
 import { Link } from "@/i18n/routing"
 import { reveal, ease } from "@/lib/animations"
-import { MarqueeRibbon } from "../_components/MarqueeRibbon"
+import { MarqueeRibbon } from "@/app/[locale]/_components/MarqueeRibbon"
 import { Metadata } from "next"
 
 type Params = Promise<{ locale: string }>

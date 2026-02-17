@@ -2,10 +2,10 @@
 
 import { useState } from "react"
 
-import { RoleSelector } from "./RoleSelector"
-import { StudentSignupForm } from "./SignupForm/StudentSignupForm"
-import { CompanySignupForm } from "./SignupForm/CompanySignupForm"
-import { UniversitySignupForm } from "./SignupForm/UniversitySignupForm"
+import { RoleSelector } from "@/app/[locale]/(auth)/signup/_components/RoleSelector"
+import { StudentSignupForm } from "@/app/[locale]/(auth)/signup/_components/SignupForm/StudentSignupForm"
+import { CompanySignupForm } from "@/app/[locale]/(auth)/signup/_components/SignupForm/CompanySignupForm"
+import { UniversitySignupForm } from "@/app/[locale]/(auth)/signup/_components/SignupForm/UniversitySignupForm"
 
 type Step = "role-selection" | "student-form" | "company-form" | "university-form"
 

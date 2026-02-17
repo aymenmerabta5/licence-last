@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test"
 
-import { formatPrice, getInitials } from "./string"
+import { formatPrice, getInitials } from "@/lib/string"
 
 describe("src/lib/string", () => {
   describe("getInitials", () => {

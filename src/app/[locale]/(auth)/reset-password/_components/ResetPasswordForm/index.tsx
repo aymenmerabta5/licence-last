@@ -5,9 +5,9 @@ import { useTranslations } from "next-intl"
 
 import { reveal, ease } from "@/lib/animations"
 
-import { useResetPassword } from "./hooks/useResetPassword"
-import { SuccessMessage } from "./components/SuccessMessage"
-import { EmailForm } from "./components/EmailForm"
+import { useResetPassword } from "@/app/[locale]/(auth)/reset-password/_components/ResetPasswordForm/hooks/useResetPassword"
+import { SuccessMessage } from "@/app/[locale]/(auth)/reset-password/_components/ResetPasswordForm/components/SuccessMessage"
+import { EmailForm } from "@/app/[locale]/(auth)/reset-password/_components/ResetPasswordForm/components/EmailForm"
 
 export function ResetPasswordForm() {
   const t = useTranslations("auth.resetPassword")

@@ -1,5 +1,5 @@
 import { requireRole } from "@/lib/auth-guards"
-import { AdminStatsView } from "./_components/AdminStatsView"
+import { AdminStatsView } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView"
 
 export default async function AdminStatsPage() {
   await requireRole(["super_admin"])

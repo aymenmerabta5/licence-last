@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test"
 
-import { createOfferSchema, createCompanyProfileSchema } from "./offer"
+import { createOfferSchema, createCompanyProfileSchema } from "@/lib/schemas/offer"
 
 function t(key: string) {
   return `t:${key}`

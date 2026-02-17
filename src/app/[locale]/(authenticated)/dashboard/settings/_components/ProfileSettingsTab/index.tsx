@@ -6,12 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ServerError } from "@/components/ServerError"
 import { SuccessMessage } from "@/components/SuccessMessage"
 
-import { useProfileSettings } from "./hooks/useProfileSettings"
-import { AvatarSection } from "./components/AvatarSection"
-import { PersonalInfoSection } from "./components/PersonalInfoSection"
-import { StudentDetailsSection } from "./components/StudentDetailsSection"
-import { FormActions } from "./components/FormActions"
-import type { ProfileSettingsTabProps } from "./types"
+import { useProfileSettings } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/hooks/useProfileSettings"
+import { AvatarSection } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/components/AvatarSection"
+import { PersonalInfoSection } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/components/PersonalInfoSection"
+import { StudentDetailsSection } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/components/StudentDetailsSection"
+import { FormActions } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/components/FormActions"
+import type { ProfileSettingsTabProps } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/types"
 
 export type { ProfileSettingsTabProps }
 

@@ -5,11 +5,11 @@ import { Loader2 } from "lucide-react"
 
 import { ease } from "@/lib/animations"
 
-import { PlatformBulletin } from "./components/PlatformBulletin"
-import { StatusBreakdown } from "./components/StatusBreakdown"
-import { TrustLeaderboard } from "./components/TrustLeaderboard"
-import { UniversityKpiGrid } from "./components/UniversityKpiGrid"
-import { useAdminDashboardData } from "./hooks/useAdminDashboardData"
+import { PlatformBulletin } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/PlatformBulletin"
+import { StatusBreakdown } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/StatusBreakdown"
+import { TrustLeaderboard } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/TrustLeaderboard"
+import { UniversityKpiGrid } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/UniversityKpiGrid"
+import { useAdminDashboardData } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/hooks/useAdminDashboardData"
 
 interface AdminDashboardProps {
   user: {

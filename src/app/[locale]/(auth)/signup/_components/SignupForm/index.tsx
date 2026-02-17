@@ -12,10 +12,10 @@ import { Link } from "@/i18n/routing"
 
 import { ease } from "@/lib/animations"
 import { TurnstileWidget } from "@/components/TurnstileWidget"
-import type { SignupFormProps } from "./types"
-import { useSignupForm } from "./hooks/useSignupForm"
-import { SignupFields } from "./components/SignupFields"
-import { SignupSuccess } from "./components/SignupSuccess"
+import type { SignupFormProps } from "@/app/[locale]/(auth)/signup/_components/SignupForm/types"
+import { useSignupForm } from "@/app/[locale]/(auth)/signup/_components/SignupForm/hooks/useSignupForm"
+import { SignupFields } from "@/app/[locale]/(auth)/signup/_components/SignupForm/components/SignupFields"
+import { SignupSuccess } from "@/app/[locale]/(auth)/signup/_components/SignupForm/components/SignupSuccess"
 
 export function SignupForm({ role, onBack }: SignupFormProps) {
   const t = useTranslations("auth.signup")

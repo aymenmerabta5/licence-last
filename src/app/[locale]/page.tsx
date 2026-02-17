@@ -1,12 +1,12 @@
 import { Suspense } from "react"
 
 import { Navbar } from "@/components/Navbar"
-import { MarqueeRibbon } from "./_components/MarqueeRibbon"
-import { HeroSection } from "./_components/HeroSection"
-import { StatsBar } from "./_components/StatsBar"
-import { HowItWorksSection } from "./_components/HowItWorksSection"
+import { MarqueeRibbon } from "@/app/[locale]/_components/MarqueeRibbon"
+import { HeroSection } from "@/app/[locale]/_components/HeroSection"
+import { StatsBar } from "@/app/[locale]/_components/StatsBar"
+import { HowItWorksSection } from "@/app/[locale]/_components/HowItWorksSection"
 import { Footer } from "@/components/Footer"
-import { AuthRedirect } from "./_components/AuthRedirect"
+import { AuthRedirect } from "@/app/[locale]/_components/AuthRedirect"
 
 type Params = Promise<{ locale: string }>
 

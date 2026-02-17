@@ -5,7 +5,7 @@ import {
   createResetPasswordSchema,
   createSignupSchema,
   errorMessage,
-} from "./auth"
+} from "@/lib/schemas/auth"
 
 function t(key: string) {
   return `t:${key}`

@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test"
-import { isProtectedPath, isAuthPath, PROTECTED_PATHS, AUTH_PATHS } from "./proxy"
+import { isProtectedPath, isAuthPath, PROTECTED_PATHS, AUTH_PATHS } from "@/proxy"
 
 describe("isProtectedPath", () => {
   describe("protected paths without locale", () => {

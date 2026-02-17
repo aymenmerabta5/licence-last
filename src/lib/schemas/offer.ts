@@ -1,7 +1,7 @@
 import { z } from "zod"
 
-import type { TranslationFn } from "./auth"
-import { internshipTypeSchema, workModeSchema } from "./enums"
+import type { TranslationFn } from "@/lib/schemas/auth"
+import { internshipTypeSchema, workModeSchema } from "@/lib/schemas/enums"
 
 /**
  * Internship offer form schema.

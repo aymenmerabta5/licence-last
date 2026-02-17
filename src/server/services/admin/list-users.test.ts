@@ -13,7 +13,7 @@ describe("listUsers", () => {
   beforeEach(() => { mockListUsers.mockClear() })
 
   test("should use default limit and offset", async () => {
-    const { listUsers } = await import("./list-users")
+    const { listUsers } = await import("@/server/services/admin/list-users")
     await listUsers({})
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,7 +23,7 @@ describe("listUsers", () => {
   })
 
   test("should pass custom limit and offset", async () => {
-    const { listUsers } = await import("./list-users")
+    const { listUsers } = await import("@/server/services/admin/list-users")
     await listUsers({ limit: 50, offset: 10 })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -33,7 +33,7 @@ describe("listUsers", () => {
   })
 
   test("should include search params when searchValue is provided", async () => {
-    const { listUsers } = await import("./list-users")
+    const { listUsers } = await import("@/server/services/admin/list-users")
     await listUsers({ searchValue: "test@", searchField: "email" })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -44,7 +44,7 @@ describe("listUsers", () => {
   })
 
   test("should include sort params when sortBy is provided", async () => {
-    const { listUsers } = await import("./list-users")
+    const { listUsers } = await import("@/server/services/admin/list-users")
     await listUsers({ sortBy: "name", sortDirection: "desc" })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,7 +54,7 @@ describe("listUsers", () => {
   })
 
   test("should include filter params when filterField is provided", async () => {
-    const { listUsers } = await import("./list-users")
+    const { listUsers } = await import("@/server/services/admin/list-users")
     await listUsers({ filterField: "role", filterValue: "student", filterOperator: "eq" })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

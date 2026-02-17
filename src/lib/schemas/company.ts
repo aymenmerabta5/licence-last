@@ -1,7 +1,7 @@
 import { z } from "zod"
 
-import type { TranslationFn } from "./auth"
-import { companyReportSeveritySchema } from "./enums"
+import type { TranslationFn } from "@/lib/schemas/auth"
+import { companyReportSeveritySchema } from "@/lib/schemas/enums"
 
 /**
  * Company onboarding form schema.

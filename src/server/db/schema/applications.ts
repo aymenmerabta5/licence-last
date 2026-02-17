@@ -10,9 +10,9 @@ import {
 import {
   applicationStatusEnum,
   applicationPipelineStageEnum,
-} from "./enums"
-import { internshipOffer } from "./internships"
-import { user } from "./auth"
+} from "@/server/db/schema/enums"
+import { internshipOffer } from "@/server/db/schema/internships"
+import { user } from "@/server/db/schema/auth"
 
 export interface TimelineEventPayload {
   note?: string

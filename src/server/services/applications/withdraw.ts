@@ -8,7 +8,7 @@ import { db } from "@/server/db"
 const log = createModuleLogger("services/applications/withdraw")
 import { application } from "@/server/db/schema/applications"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
-import { ApplicationServiceError } from "./errors"
+import { ApplicationServiceError } from "@/server/services/applications/errors"
 
 /**
  * Withdraw an application.

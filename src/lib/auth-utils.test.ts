@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test"
-import { getEmailDomain, domainCandidates } from "./auth-utils"
+import { getEmailDomain, domainCandidates } from "@/lib/auth-utils"
 
 describe("getEmailDomain", () => {
   describe("valid emails", () => {

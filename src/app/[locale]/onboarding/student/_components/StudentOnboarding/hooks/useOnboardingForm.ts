@@ -10,7 +10,7 @@ import { getErrorMessage } from "@/lib/error-message"
 import { orpcClient, orpc } from "@/server/orpc/client"
 import { authClient } from "@/lib/auth-client"
 
-import type { StudentOnboardingFormValues } from "../types"
+import type { StudentOnboardingFormValues } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/types"
 
 export function useOnboardingForm() {
   const t = useTranslations("onboarding.student")

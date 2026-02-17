@@ -4,11 +4,11 @@ import * as motion from "motion/react-client"
 import { Loader2 } from "lucide-react"
 import { ease } from "@/lib/animations"
 
-import { useRecruiterDashboardData } from "./hooks/useRecruiterDashboardData"
-import { OffersPulse } from "./components/OffersPulse"
-import { TrustGauge } from "./components/TrustGauge"
-import { RecentOffers } from "./components/RecentOffers"
-import { RecruiterQuickActions } from "./components/RecruiterQuickActions"
+import { useRecruiterDashboardData } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard/hooks/useRecruiterDashboardData"
+import { OffersPulse } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard/components/OffersPulse"
+import { TrustGauge } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard/components/TrustGauge"
+import { RecentOffers } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard/components/RecentOffers"
+import { RecruiterQuickActions } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard/components/RecruiterQuickActions"
 
 interface RecruiterDashboardProps {
   user: {

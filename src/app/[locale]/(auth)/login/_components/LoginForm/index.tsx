@@ -8,11 +8,11 @@ import { reveal, ease } from "@/lib/animations"
 
 import { TurnstileWidget } from "@/components/TurnstileWidget"
 
-import { useLoginForm } from "./hooks/useLoginForm"
-import { VerificationAlert } from "./components/VerificationAlert"
-import { LoginFields } from "./components/LoginFields"
-import { FormFooter } from "./components/FormFooter"
-import { TwoFactorStep } from "./components/TwoFactorStep"
+import { useLoginForm } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/useLoginForm"
+import { VerificationAlert } from "@/app/[locale]/(auth)/login/_components/LoginForm/components/VerificationAlert"
+import { LoginFields } from "@/app/[locale]/(auth)/login/_components/LoginForm/components/LoginFields"
+import { FormFooter } from "@/app/[locale]/(auth)/login/_components/LoginForm/components/FormFooter"
+import { TwoFactorStep } from "@/app/[locale]/(auth)/login/_components/LoginForm/components/TwoFactorStep"
 
 export function LoginForm() {
   const t = useTranslations("auth.login")

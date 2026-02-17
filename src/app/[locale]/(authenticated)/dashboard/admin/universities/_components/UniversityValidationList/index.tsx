@@ -14,9 +14,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { useUniversityValidation } from "./hooks/useUniversityValidation"
-import { UniversityCard } from "./components/UniversityCard"
-import { RejectDialog } from "./components/RejectDialog"
+import { useUniversityValidation } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/hooks/useUniversityValidation"
+import { UniversityCard } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/UniversityCard"
+import { RejectDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/RejectDialog"
 import type { UniversityStatus } from "@/lib/schemas/enums"
 
 export function UniversityValidationList() {

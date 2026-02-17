@@ -16,7 +16,7 @@ import {
   MATCH_SCORING_VERSION,
   MATCH_WEIGHT,
   PROFIENCY_RANK,
-} from "./constants"
+} from "@/server/services/matching/constants"
 
 type ProficiencyLevel = keyof typeof PROFIENCY_RANK
 

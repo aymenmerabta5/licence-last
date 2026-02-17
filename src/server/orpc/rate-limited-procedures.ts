@@ -9,13 +9,13 @@ import {
   companyAdminProcedure,
   studentProcedure,
   deptHeadProcedure,
-} from "./middleware"
+} from "@/server/orpc/middleware"
 import {
   createStrictRateLimitMiddleware,
   createStandardRateLimitMiddleware,
   createGenerousRateLimitMiddleware,
   createAssistantRateLimitMiddleware,
-} from "./ratelimit-middleware"
+} from "@/server/orpc/ratelimit-middleware"
 
 /**
  * Public procedure with strict rate limiting (5 req/min)

@@ -2,7 +2,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { Link } from "@/i18n/routing"
 
-import { StatusContent } from "./_components/StatusContent"
+import { StatusContent } from "@/app/[locale]/status/_components/StatusContent"
 
 export default async function StatusLayout({
   children,

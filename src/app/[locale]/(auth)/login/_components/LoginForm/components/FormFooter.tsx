@@ -7,7 +7,7 @@ import { Link } from "@/i18n/routing"
 import { reveal, ease } from "@/lib/animations"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import type { LoginFormApi } from "../hooks/useLoginForm"
+import type { LoginFormApi } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/useLoginForm"
 
 interface FormFooterProps {
   form: LoginFormApi

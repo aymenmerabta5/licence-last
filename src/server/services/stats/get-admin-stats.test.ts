@@ -66,7 +66,7 @@ describe("src/server/services/stats/get-admin-stats", () => {
       { status: "admin_validated", value: 1 },
     ])
 
-    const { getAdminStats } = await import("./get-admin-stats")
+    const { getAdminStats } = await import("@/server/services/stats/get-admin-stats")
     const stats = await getAdminStats()
 
     expect(stats.totalStudents).toBe(10)

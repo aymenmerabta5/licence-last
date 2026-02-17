@@ -24,7 +24,7 @@ describe("src/server/services/students/get-public-profile", () => {
   })
 
   test("should delegate to getStudentProfileForViewer", async () => {
-    const { getPublicStudentProfile } = await import("./get-public-profile")
+    const { getPublicStudentProfile } = await import("@/server/services/students/get-public-profile")
     const result = await getPublicStudentProfile(
       { id: "viewer-1", role: "company_admin" },
       "student-1",

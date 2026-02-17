@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import type { TranslationFn } from "./auth"
+import type { TranslationFn } from "@/lib/schemas/auth"
 
 /**
  * University onboarding form schema.

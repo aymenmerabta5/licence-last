@@ -1,6 +1,6 @@
 import { Button, Heading, Section, Text } from "@react-email/components"
 
-import EmailLayout from "./EmailLayout"
+import EmailLayout from "@/server/email/templates/EmailLayout"
 
 interface CertificateGeneratedEmailProps {
   studentName: string

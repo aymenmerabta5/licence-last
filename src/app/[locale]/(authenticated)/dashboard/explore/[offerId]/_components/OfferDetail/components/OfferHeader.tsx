@@ -7,7 +7,7 @@ import { ArrowLeft, Building2, Briefcase } from "lucide-react"
 import { Link } from "@/i18n/routing"
 import { reveal, ease } from "@/lib/animations"
 
-import type { OfferDetailProps } from "../types"
+import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
 
 interface OfferHeaderProps {
   offer: OfferDetailProps["offer"]

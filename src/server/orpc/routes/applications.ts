@@ -5,7 +5,7 @@ import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
 
-import { isAdminRole } from "../middleware"
+import { isAdminRole } from "@/server/orpc/middleware"
 import {
   authedProcedureGenerous,
   companyAdminProcedureGenerous,
@@ -40,7 +40,7 @@ import {
   getWithdrawStatus,
   getCompanyActionStatus,
   createApplicationORPCError,
-} from "./applications.error-mapping"
+} from "@/server/orpc/routes/applications.error-mapping"
 import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { companyMember } from "@/server/db/schema/companies"
