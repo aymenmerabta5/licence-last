@@ -41,6 +41,9 @@ jobs:
       - name: Lint
         run: bun run lint
 
+      - name: Architecture guard
+        run: bun run lint:architecture
+
       - name: RTL logical CSS guard
         run: bun run lint:rtl-logical
 

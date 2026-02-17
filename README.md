@@ -123,7 +123,7 @@ bun test:unit          # Unit/core tests (lib + service/data/core server modules
 bun test:orpc-routes   # oRPC controller route and smoke tests
 bun test:api           # API route tests + oRPC route suite
 bun test:pages         # App Router page/component tests (src/app/[locale])
-bun test:coverage      # Coverage guard suite (segmented to avoid mock collisions)
+bun test:coverage      # Segmented coverage run; writes reports to coverage/*.txt
 bun test:e2e           # Playwright E2E
 bun test:ci            # CI pipeline (unit + api + pages)
 
