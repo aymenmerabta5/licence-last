@@ -5,10 +5,11 @@ import { headers } from "next/headers"
 import { eq } from "drizzle-orm"
 
 import { auth } from "@/lib/auth"
+import { checkAdminApproval } from "@/server/auth/approval-gate"
 import { db } from "@/server/db"
-import { company, companyMember } from "@/server/db/schema/companies"
+import { companyMember } from "@/server/db/schema/companies"
 import { studentProfile } from "@/server/db/schema/students"
-import { university } from "@/server/db/schema/universities"
+import { isServiceError } from "@/server/services/errors"
 
 /**
  * Check if a user role has admin privileges (university_admin, dept_head, or super_admin).
@@ -42,54 +43,28 @@ async function assertApprovedAdminAccess(user: {
   id: string
   role?: string | null
   onboardingCompleted?: boolean | null
-  universityId?: string | null
 }) {
-  if (!user.onboardingCompleted) {
-    return
-  }
+  try {
+    const approval = await checkAdminApproval(user)
 
-  if (user.role === "company_admin") {
-    const memberships = await db
-      .select({ status: company.status })
-      .from(companyMember)
-      .innerJoin(company, eq(companyMember.companyId, company.id))
-      .where(eq(companyMember.userId, user.id))
-      .limit(2)
+    if (approval.ok) {
+      return
+    }
 
-    if (memberships.length > 1) {
+    const message =
+      approval.reason === "company_pending" || approval.reason === "company_rejected"
+        ? "Company account is not approved by super admin yet"
+        : "University account is not approved by super admin yet"
+
+    throw new ORPCError("FORBIDDEN", { message })
+  } catch (error) {
+    if (isServiceError(error) && error.code === "COMPANY_MEMBERSHIP_CONFLICT") {
       throw new ORPCError("INTERNAL_SERVER_ERROR", {
         message: "Multiple company memberships found for user",
       })
     }
 
-    const membership = memberships[0]
-
-    if (!membership || membership.status !== "approved") {
-      throw new ORPCError("FORBIDDEN", {
-        message: "Company account is not approved by super admin yet",
-      })
-    }
-    return
-  }
-
-  if (user.role === "university_admin") {
-    if (!user.universityId) {
-      throw new ORPCError("FORBIDDEN", {
-        message: "University account is not approved by super admin yet",
-      })
-    }
-
-    const [uni] = await db
-      .select({ status: university.status })
-      .from(university)
-      .where(eq(university.id, user.universityId))
-      .limit(1)
-
-    if (!uni || uni.status !== "approved") {
-      throw new ORPCError("FORBIDDEN", {
-        message: "University account is not approved by super admin yet",
-      })
-    }
+    throw error
   }
 }
 

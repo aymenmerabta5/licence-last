@@ -38,7 +38,10 @@ export const studentProfile = pgTable(
       .$onUpdate(() => new Date())
       .notNull(),
   },
-  (table) => [index("student_profile_wilayaCode_idx").on(table.wilayaCode)],
+  (table) => [
+    index("student_profile_wilayaCode_idx").on(table.wilayaCode),
+    index("student_profile_departmentId_idx").on(table.departmentId),
+  ],
 )
 
 export const studentSkill = pgTable(

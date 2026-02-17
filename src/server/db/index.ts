@@ -17,6 +17,8 @@ const client =
     idle_timeout: 20,
     connect_timeout: 30,
     max_lifetime: 60 * 5,
+    // Keep disabled to avoid prepared-statement issues behind poolers.
+    // Revisit only if deployment topology guarantees compatibility.
     prepare: false,
   })
 

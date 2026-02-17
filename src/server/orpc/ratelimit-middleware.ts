@@ -1,9 +1,13 @@
 import "server-only"
 
 import { createRatelimitMiddleware } from "@orpc/experimental-ratelimit"
+import { ORPCError } from "@orpc/server"
+import { headers } from "next/headers"
+
+import { env } from "@/env"
+import { ASSISTANT_RATE_LIMIT } from "@/lib/constants/rate-limits"
 import { getRateLimiter } from "@/server/caching/redis-ratelimiter"
 import { createModuleLogger } from "@/server/logging"
-import { headers } from "next/headers"
 
 const log = createModuleLogger("ratelimit")
 
@@ -72,7 +76,7 @@ function defaultKeyGenerator(ctx: { userId?: string; ip: string }): string {
 
 /**
  * Create a rate limit middleware with custom configuration.
- * 
+ *
  * @example
  * ```ts
  * const myProcedure = authedProcedure.use(
@@ -87,11 +91,26 @@ function defaultKeyGenerator(ctx: { userId?: string; ip: string }): string {
  */
 export function createRateLimitMiddleware(config: RateLimitConfig) {
   const limiter = getRateLimiter()
+  const isRedisRateLimitingEnabled = env.REDIS_RATE_LIMIT_ENABLED === "true"
 
-  // If Redis is unavailable, use in-memory fallback
+  // If Redis is unavailable, fail closed in production when Redis-backed
+  // rate limiting is explicitly enabled.
   if (!limiter) {
+    if (process.env.NODE_ENV === "production" && isRedisRateLimitingEnabled) {
+      log.error("Redis unavailable while rate limiting is enabled - failing closed")
+      return createRatelimitMiddleware({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        limiter: () => null as unknown as any,
+        key: async () => {
+          throw new ORPCError("INTERNAL_SERVER_ERROR", {
+            message: "Rate limiter backend unavailable",
+          })
+        },
+      })
+    }
+
     if (process.env.NODE_ENV === "production") {
-      log.warn("Redis unavailable — using in-memory rate limiter fallback")
+      log.warn("Redis unavailable - using in-memory rate limiter fallback")
     }
     return createRatelimitMiddleware({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -131,7 +150,7 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
     ...({
       maxRequests: config.maxRequests,
       window: config.windowMs,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any),
   })
 }
@@ -181,8 +200,8 @@ export function createGenerousRateLimitMiddleware(keyPrefix?: string) {
  */
 export function createAssistantRateLimitMiddleware(keyPrefix?: string) {
   return createRateLimitMiddleware({
-    maxRequests: 20,
-    windowMs: 60000,
+    maxRequests: ASSISTANT_RATE_LIMIT.maxRequests,
+    windowMs: ASSISTANT_RATE_LIMIT.windowMs,
     keyPrefix: keyPrefix || "assistant",
     keyGenerator: ({ userId }) => `user:${userId}`,
   })

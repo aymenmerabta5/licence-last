@@ -4,30 +4,37 @@ import { userRoleEnum } from "./enums"
 import { university } from "./universities"
 import { department } from "./departments"
 
-export const user = pgTable("user", {
-  id: text("id").primaryKey(),
-  email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified").default(false).notNull(),
-  role: userRoleEnum("role").default("student").notNull(),
-  universityId: text("university_id").references(() => university.id, {
-    onDelete: "set null",
-  }),
-  departmentId: text("department_id").references(() => department.id, {
-    onDelete: "set null",
-  }),
-  onboardingCompleted: boolean("onboarding_completed").default(false).notNull(),
-  name: text("name"),
-  image: text("image"),
-  twoFactorEnabled: boolean("two_factor_enabled").default(false),
-  banned: boolean("banned").default(false),
-  banReason: text("ban_reason"),
-  banExpires: timestamp("ban_expires"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => new Date())
-    .notNull(),
-})
+export const user = pgTable(
+  "user",
+  {
+    id: text("id").primaryKey(),
+    email: text("email").notNull().unique(),
+    emailVerified: boolean("email_verified").default(false).notNull(),
+    role: userRoleEnum("role").default("student").notNull(),
+    universityId: text("university_id").references(() => university.id, {
+      onDelete: "set null",
+    }),
+    departmentId: text("department_id").references(() => department.id, {
+      onDelete: "set null",
+    }),
+    onboardingCompleted: boolean("onboarding_completed").default(false).notNull(),
+    name: text("name"),
+    image: text("image"),
+    twoFactorEnabled: boolean("two_factor_enabled").default(false),
+    banned: boolean("banned").default(false),
+    banReason: text("ban_reason"),
+    banExpires: timestamp("ban_expires"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("user_universityId_idx").on(table.universityId),
+    index("user_role_universityId_idx").on(table.role, table.universityId),
+  ],
+)
 
 export const session = pgTable(
   "session",
