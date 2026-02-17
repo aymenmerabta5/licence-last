@@ -31,11 +31,12 @@ function getQueryClient() {
 
 export function QueryProvider({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient()
+  const showDevtools = process.env.NODE_ENV !== "production"
 
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <ReactQueryDevtools initialIsOpen={false} />
+      {showDevtools ? <ReactQueryDevtools initialIsOpen={false} /> : null}
     </QueryClientProvider>
   )
 }

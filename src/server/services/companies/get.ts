@@ -8,6 +8,7 @@ import { cacheTag, cacheLife } from "next/cache"
 import { db } from "@/server/db"
 import { company, companyMember } from "@/server/db/schema/companies"
 import { CACHE_TAGS } from "@/lib/cache"
+import { ServiceError } from "@/server/services/errors"
 
 /** Get a company by its ID. Cached for 15 minutes. */
 export async function getCompanyById(companyId: string) {
@@ -29,7 +30,7 @@ export async function getCompanyById(companyId: string) {
 export async function getCompanyByUserId(userId: string) {
   cacheLife("minutes")
   cacheTag(CACHE_TAGS.COMPANY_PROFILE(`user-${userId}`))
-  const [result] = await db
+  const rows = await db
     .select({
       id: company.id,
       name: company.name,
@@ -49,7 +50,16 @@ export async function getCompanyByUserId(userId: string) {
     .from(companyMember)
     .innerJoin(company, eq(companyMember.companyId, company.id))
     .where(eq(companyMember.userId, userId))
-    .limit(1)
+    .limit(2)
+
+  if (rows.length > 1) {
+    throw new ServiceError(
+      "COMPANY_MEMBERSHIP_CONFLICT",
+      "User belongs to multiple companies",
+    )
+  }
+
+  const result = rows[0]
 
   return result ?? null
 }

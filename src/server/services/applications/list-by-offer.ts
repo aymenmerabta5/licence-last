@@ -10,6 +10,7 @@ import { studentProfile, studentSkill } from "@/server/db/schema/students"
 import { skillTag } from "@/server/db/schema/skills"
 import { university } from "@/server/db/schema/universities"
 import type { ApplicationStatus, PipelineStage } from "@/lib/schemas/enums"
+import { ApplicationServiceError } from "./errors"
 
 interface ListParams {
   status?: ApplicationStatus
@@ -83,11 +84,14 @@ export async function listApplicationsByOffer(
     .limit(1)
 
   if (!offer) {
-    throw new Error("Offer not found")
+    throw new ApplicationServiceError("OFFER_NOT_FOUND", "Offer not found")
   }
 
   if (offer.companyId !== companyId) {
-    throw new Error("You do not have access to this offer")
+    throw new ApplicationServiceError(
+      "OFFER_FORBIDDEN",
+      "You do not have access to this offer",
+    )
   }
 
   const offerSkills = await db

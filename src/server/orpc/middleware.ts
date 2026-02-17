@@ -49,12 +49,20 @@ async function assertApprovedAdminAccess(user: {
   }
 
   if (user.role === "company_admin") {
-    const [membership] = await db
+    const memberships = await db
       .select({ status: company.status })
       .from(companyMember)
       .innerJoin(company, eq(companyMember.companyId, company.id))
       .where(eq(companyMember.userId, user.id))
-      .limit(1)
+      .limit(2)
+
+    if (memberships.length > 1) {
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "Multiple company memberships found for user",
+      })
+    }
+
+    const membership = memberships[0]
 
     if (!membership || membership.status !== "approved") {
       throw new ORPCError("FORBIDDEN", {
@@ -126,11 +134,19 @@ export const companyAdminProcedure = authedProcedure.use(
       })
     }
 
-    const [membership] = await db
+    const memberships = await db
       .select()
       .from(companyMember)
       .where(eq(companyMember.userId, context.user.id))
-      .limit(1)
+      .limit(2)
+
+    if (memberships.length > 1) {
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "Multiple company memberships found for user",
+      })
+    }
+
+    const membership = memberships[0]
 
     if (!membership) {
       throw new ORPCError("FORBIDDEN", {

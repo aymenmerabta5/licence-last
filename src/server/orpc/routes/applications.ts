@@ -36,6 +36,7 @@ import { isApplicationServiceError } from "@/server/services/applications/errors
 import { db } from "@/server/db"
 import {
   getApplyToOfferStatus,
+  getListByOfferStatus,
   getWithdrawStatus,
   getCompanyActionStatus,
   createApplicationORPCError,
@@ -126,18 +127,28 @@ export const listByOfferProcedure = companyAdminProcedureGenerous
       limit: z.coerce.number().int().min(1).max(50).optional(),
     }),
   )
-  .handler(async ({ input, context }) =>
-    listApplicationsByOffer(
-      input.offerId,
-      context.companyMembership.companyId,
-      {
-        status: input.status,
-        pipelineStage: input.pipelineStage,
-        cursor: input.cursor,
-        limit: input.limit,
-      },
-    ),
-  )
+  .handler(async ({ input, context }) => {
+    try {
+      return await listApplicationsByOffer(
+        input.offerId,
+        context.companyMembership.companyId,
+        {
+          status: input.status,
+          pipelineStage: input.pipelineStage,
+          cursor: input.cursor,
+          limit: input.limit,
+        },
+      )
+    } catch (error) {
+      if (isApplicationServiceError(error)) {
+        throw createApplicationORPCError(error, getListByOfferStatus(error.code))
+      }
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "Failed to list applications",
+      })
+    }
+  })
 
 export const companyAcceptProcedure = companyAdminProcedureStandard
   .input(z.object({ applicationId: z.string().min(1) }))
@@ -269,11 +280,17 @@ export const getTimelineProcedure = authedProcedureGenerous
 
     let isCompanyOwner = false
     if (context.user.role === "company_admin") {
-      const [membership] = await db
+      const memberships = await db
         .select({ companyId: companyMember.companyId })
         .from(companyMember)
         .where(eq(companyMember.userId, context.user.id))
-        .limit(1)
+        .limit(2)
+      if (memberships.length > 1) {
+        throw new ORPCError("INTERNAL_SERVER_ERROR", {
+          message: "Multiple company memberships found for user",
+        })
+      }
+      const membership = memberships[0]
       isCompanyOwner = membership?.companyId === row.companyId
     }
 

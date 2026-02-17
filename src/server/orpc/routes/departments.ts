@@ -106,12 +106,23 @@ export const updateDepartmentProcedure = adminProcedureStandard
       headName: z.string().max(200).nullable().optional(),
     }),
   )
-  .handler(async ({ input }) =>
-    updateDepartment(input.departmentId, {
-      name: input.name,
-      headName: input.headName,
-    }),
-  )
+  .handler(async ({ input, context }) => {
+    await assertCanManageDepartment(input.departmentId, context)
+
+    try {
+      return await updateDepartment(input.departmentId, {
+        name: input.name,
+        headName: input.headName,
+      })
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          DEPARTMENT_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to update department",
+      })
+    }
+  })
 
 export const assignDepartmentHeadProcedure = adminProcedureStandard
   .input(

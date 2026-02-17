@@ -38,11 +38,19 @@ export const getOfferByIdProcedure = authedProcedureGenerous
     if (offer.status !== "published") {
       if (!isAdminRole(context.user.role)) {
         // Check if the user is a member of the owning company
-        const [membership] = await db
+        const memberships = await db
           .select()
           .from(companyMember)
           .where(eq(companyMember.userId, context.user.id))
-          .limit(1)
+          .limit(2)
+
+        if (memberships.length > 1) {
+          throw new ORPCError("INTERNAL_SERVER_ERROR", {
+            message: "Multiple company memberships found for user",
+          })
+        }
+
+        const membership = memberships[0]
 
         if (!membership || membership.companyId !== offer.companyId) {
           throw new ORPCError("FORBIDDEN", {

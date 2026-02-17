@@ -1,4 +1,5 @@
 import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { ApplicationServiceError } from "./errors"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
@@ -178,5 +179,30 @@ describe("src/server/services/applications/list-by-offer", () => {
     expect(result.applications).toHaveLength(1)
     expect(result.applications[0]?.profile).not.toBeNull()
     expect(result.applications[0]?.profile?.phone).toBe("0550123456")
+  })
+
+  test("should throw typed not found when offer does not exist", async () => {
+    mockSelectResults.push([])
+
+    const { listApplicationsByOffer } = await import("./list-by-offer")
+    let thrown: unknown
+    try {
+      await listApplicationsByOffer("missing-offer", "company-1")
+    } catch (error) {
+      thrown = error
+    }
+
+    expect(thrown).toBeInstanceOf(ApplicationServiceError)
+    expect(thrown).toMatchObject({ code: "OFFER_NOT_FOUND" })
+  })
+
+  test("should throw typed forbidden when offer belongs to another company", async () => {
+    mockSelectResults.push([{ id: "offer-1", companyId: "company-2" }])
+
+    const { listApplicationsByOffer } = await import("./list-by-offer")
+
+    await expect(listApplicationsByOffer("offer-1", "company-1")).rejects.toMatchObject({
+      code: "OFFER_FORBIDDEN",
+    })
   })
 })

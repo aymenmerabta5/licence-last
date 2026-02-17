@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm"
 import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { department } from "@/server/db/schema/departments"
+import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/departments/update")
 
@@ -22,10 +23,15 @@ export async function updateDepartment(
 
   log.info({ departmentId, updates }, "Updating department")
 
-  await db
+  const [updatedDepartment] = await db
     .update(department)
     .set(updates)
     .where(eq(department.id, departmentId))
+    .returning({ id: department.id })
+
+  if (!updatedDepartment) {
+    throw new ServiceError("DEPARTMENT_NOT_FOUND", "Department not found")
+  }
 
   return { success: true }
 }

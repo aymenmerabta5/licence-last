@@ -97,6 +97,15 @@ export const adminProcedureStandard = adminProcedure.use(
 )
 
 /**
+ * Admin procedure with AI rate limiting (20 req/min)
+ * Use for: Expensive AI operations available to admin and dept-head roles
+ * Key: User-based
+ */
+export const adminProcedureAssistant = adminProcedure.use(
+  createAssistantRateLimitMiddleware("admin-assistant")
+)
+
+/**
  * Super admin procedure with generous rate limiting (300 req/min)
  * Super admins get highest limits
  * Key: Super admin user-based

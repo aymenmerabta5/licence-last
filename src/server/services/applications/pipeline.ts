@@ -6,6 +6,7 @@ import { db } from "@/server/db"
 import { application, applicationTimelineEvent } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { notification } from "@/server/db/schema/notifications"
+import { ApplicationServiceError } from "./errors"
 
 export type PipelineStage =
   | "applied"
@@ -107,16 +108,22 @@ export async function updateApplicationPipelineStage(input: {
     .limit(1)
 
   if (!row) {
-    throw new Error("Application not found")
+    throw new ApplicationServiceError("APPLICATION_NOT_FOUND", "Application not found")
   }
 
   if (row.offerCompanyId !== input.companyId) {
-    throw new Error("You do not have access to this application")
+    throw new ApplicationServiceError(
+      "APPLICATION_FORBIDDEN",
+      "You do not have access to this application",
+    )
   }
 
   const fromStage = row.pipelineStage
   if (!canTransitionStage(fromStage, input.toStage)) {
-    throw new Error(`Invalid stage transition: ${fromStage} -> ${input.toStage}`)
+    throw new ApplicationServiceError(
+      "APPLICATION_INVALID_STATE",
+      `Invalid stage transition: ${fromStage} -> ${input.toStage}`,
+    )
   }
 
   await db

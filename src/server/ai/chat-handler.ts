@@ -94,12 +94,18 @@ export async function handleChatRequest(req: Request): Promise<Response> {
 
   if (session.user.onboardingCompleted) {
     if (session.user.role === "company_admin") {
-      const [membership] = await db
+      const memberships = await db
         .select({ status: company.status })
         .from(companyMember)
         .innerJoin(company, eq(companyMember.companyId, company.id))
         .where(eq(companyMember.userId, session.user.id))
-        .limit(1)
+        .limit(2)
+
+      if (memberships.length > 1) {
+        return new Response("Forbidden", { status: 403 })
+      }
+
+      const membership = memberships[0]
 
       if (!membership || membership.status !== "approved") {
         return new Response("Forbidden", { status: 403 })

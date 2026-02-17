@@ -1124,8 +1124,7 @@
             "noMissingItems": "Aucun élément manquant détecté.",
             "potentialInconsistencies": "Incohérences potentielles",
             "generating": "Génération du résumé...",
-            "hint": "Cliquez sur Générer pour produire un résumé.",
-            "prompt": "Résumer ce dossier de validation"
+            "hint": "Cliquez sur Générer pour produire un résumé."
           }
         }
       },

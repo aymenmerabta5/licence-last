@@ -5,6 +5,7 @@ import {
   integer,
   primaryKey,
   index,
+  uniqueIndex,
 } from "drizzle-orm/pg-core"
 
 import { companyMemberRoleEnum, companyStatusEnum } from "./enums"
@@ -57,7 +58,7 @@ export const companyMember = pgTable(
   },
   (table) => [
     primaryKey({ columns: [table.companyId, table.userId] }),
-    index("company_member_userId_idx").on(table.userId),
+    uniqueIndex("company_member_userId_uidx").on(table.userId),
     index("company_member_companyId_idx").on(table.companyId),
   ],
 )

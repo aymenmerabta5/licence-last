@@ -5,17 +5,20 @@ const mockInsert = mock(() => ({ values: mockValues }))
 const mockWhere = mock(() => Promise.resolve())
 const mockSet = mock(() => ({ where: mockWhere }))
 const mockUpdate = mock(() => ({ set: mockSet }))
-
-const dbMock = {
-  insert: mockInsert,
-  update: mockUpdate,
+const mockTransaction = mock(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  transaction: async (fn: (tx: any) => Promise<void>) => {
+  async (fn: (tx: any) => Promise<void>) => {
     await fn({
       insert: mockInsert,
       update: mockUpdate,
     })
   },
+)
+
+const dbMock = {
+  insert: mockInsert,
+  update: mockUpdate,
+  transaction: mockTransaction,
 }
 
 mock.module("@/server/db", () => ({ db: dbMock }))
@@ -27,12 +30,19 @@ describe("src/server/services/companies/create", () => {
     mockUpdate.mockClear()
     mockSet.mockClear()
     mockWhere.mockClear()
+    mockTransaction.mockClear()
 
     mockInsert.mockReturnValue({ values: mockValues })
     mockValues.mockResolvedValue(undefined)
     mockUpdate.mockReturnValue({ set: mockSet })
     mockSet.mockReturnValue({ where: mockWhere })
     mockWhere.mockResolvedValue(undefined)
+    mockTransaction.mockImplementation(async (fn) => {
+      await fn({
+        insert: mockInsert,
+        update: mockUpdate,
+      })
+    })
   })
 
   test("should create a company and return companyId and slug", async () => {
@@ -80,5 +90,27 @@ describe("src/server/services/companies/create", () => {
 
     // Slug should strip special chars and lowercase
     expect(result.slug).toMatch(/^my-company-[a-f0-9-]{12}$/)
+  })
+
+  test("should map company membership unique conflicts to service errors", async () => {
+    mockTransaction.mockRejectedValueOnce({
+      code: "23505",
+      constraint: "company_member_userId_uidx",
+    })
+
+    const { createCompany } = await import("./create")
+
+    await expect(
+      createCompany(
+        {
+          name: "Conflict Co",
+          wilayaCode: 1,
+        },
+        "user-4",
+      ),
+    ).rejects.toMatchObject({
+      code: "COMPANY_MEMBERSHIP_ALREADY_EXISTS",
+      message: "Company admin is already assigned to a company",
+    })
   })
 })

@@ -202,9 +202,18 @@ export const createCompanyProcedure = authedProcedureStandard
       address: z.string().optional(),
     }),
   )
-  .handler(async ({ input, context }) =>
-    createCompany(input, context.user.id),
-  )
+  .handler(async ({ input, context }) => {
+    try {
+      return await createCompany(input, context.user.id)
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          COMPANY_MEMBERSHIP_ALREADY_EXISTS: "CONFLICT",
+        },
+        fallbackMessage: "Failed to create company",
+      })
+    }
+  })
 
 export const updateCompanyProcedure = companyAdminProcedureStandard
   .input(

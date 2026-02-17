@@ -21,6 +21,14 @@ export function getApplyToOfferStatus(code: string): string {
   return statusMap[code] ?? "BAD_REQUEST"
 }
 
+export function getListByOfferStatus(code: string): string {
+  const statusMap: Record<string, string> = {
+    OFFER_NOT_FOUND: "NOT_FOUND",
+    OFFER_FORBIDDEN: "FORBIDDEN",
+  }
+  return statusMap[code] ?? "BAD_REQUEST"
+}
+
 export function getWithdrawStatus(code: string): string {
   const statusMap: Record<string, string> = {
     APPLICATION_NOT_FOUND: "NOT_FOUND",
