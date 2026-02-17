@@ -30,6 +30,7 @@ mock.module("@/lib/auth", () => ({
       getSession: mockGetSession,
     },
   },
+  pendingWelcomeEmails: new Map(),
 }))
 
 // Mock rate limit

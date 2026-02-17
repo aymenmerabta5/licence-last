@@ -11,13 +11,15 @@ interface SocialLinksProps {
   profile?: StudentProfile | null
   labels: {
     links: string
+    github: string
+    portfolio: string
   }
 }
 
 export function SocialLinks({ profile, labels }: SocialLinksProps) {
   const links = [
-    { key: "github", href: profile?.githubUrl, icon: Github, label: "GitHub" },
-    { key: "portfolio", href: profile?.portfolioUrl, icon: Globe, label: "Portfolio" },
+    { key: "github", href: profile?.githubUrl, icon: Github, label: labels.github },
+    { key: "portfolio", href: profile?.portfolioUrl, icon: Globe, label: labels.portfolio },
   ]
 
   return (

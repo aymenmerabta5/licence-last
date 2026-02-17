@@ -26,6 +26,9 @@ interface UsersTableProps {
   onSetRole: (user: AdminUser) => void
   onSetPassword: (user: AdminUser) => void
   onDelete: (user: AdminUser) => void
+  canViewDetails: boolean
+  canSetRole: boolean
+  canSetPassword: boolean
 }
 
 export function UsersTable({
@@ -40,6 +43,9 @@ export function UsersTable({
   onSetRole,
   onSetPassword,
   onDelete,
+  canViewDetails,
+  canSetRole,
+  canSetPassword,
 }: UsersTableProps) {
   const t = useTranslations("dashboard.superAdmin.users")
 
@@ -81,6 +87,9 @@ export function UsersTable({
                   onSetRole={onSetRole}
                   onSetPassword={onSetPassword}
                   onDelete={onDelete}
+                  canViewDetails={canViewDetails}
+                  canSetRole={canSetRole}
+                  canSetPassword={canSetPassword}
                 />
               ))
             )}

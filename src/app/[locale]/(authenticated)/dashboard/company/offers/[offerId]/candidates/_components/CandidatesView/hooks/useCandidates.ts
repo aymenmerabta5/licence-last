@@ -17,7 +17,7 @@ import type { PipelineStage } from "@/lib/constants/pipeline"
 import { orpc, orpcClient } from "@/server/orpc/client"
 import type { ListApplicationsByOfferResult } from "@/server/services/applications/list-by-offer"
 
-import type { RefuseModalState } from "../types"
+import type { AcceptModalState, RefuseModalState } from "../types"
 
 export function useCandidates(offerId: string) {
   const t = useTranslations("dashboard.company.candidates")
@@ -27,6 +27,7 @@ export function useCandidates(offerId: string) {
   const [pendingStageById, setPendingStageById] = useState<
     Record<string, true>
   >({})
+  const [acceptModal, setAcceptModal] = useState<AcceptModalState | null>(null)
   const [refuseModal, setRefuseModal] = useState<RefuseModalState | null>(null)
   const [refuseNote, setRefuseNote] = useState("")
   const [openedTimelineFor, setOpenedTimelineFor] = useState<string | null>(
@@ -135,42 +136,41 @@ export function useCandidates(offerId: string) {
   })
 
   const acceptMutation = useMutation(
-    orpc.applications.companyAccept.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
-        queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
-        setActionLoading(null)
-      },
-      onError: () => setActionLoading(null),
-    }),
+    orpc.applications.companyAccept.mutationOptions(),
   )
 
   const refuseMutation = useMutation(
-    orpc.applications.companyRefuse.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
-        queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
-        setActionLoading(null)
-        setRefuseModal(null)
-        setRefuseNote("")
-      },
-      onError: () => setActionLoading(null),
-    }),
+    orpc.applications.companyRefuse.mutationOptions(),
   )
 
-  const handleAccept = (applicationId: string, confirmMessage: string) => {
-    if (!window.confirm(confirmMessage)) return
-    setActionLoading(applicationId)
-    acceptMutation.mutate({ applicationId })
+  const handleAccept = async () => {
+    if (!acceptModal) return
+    setActionLoading(acceptModal.applicationId)
+    try {
+      await acceptMutation.mutateAsync({ applicationId: acceptModal.applicationId })
+      await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+      queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
+      setAcceptModal(null)
+    } finally {
+      setActionLoading(null)
+    }
   }
 
-  const handleRefuse = () => {
+  const handleRefuse = async () => {
     if (!refuseModal) return
     setActionLoading(refuseModal.applicationId)
-    refuseMutation.mutate({
-      applicationId: refuseModal.applicationId,
-      note: refuseNote || undefined,
-    })
+    try {
+      await refuseMutation.mutateAsync({
+        applicationId: refuseModal.applicationId,
+        note: refuseNote || undefined,
+      })
+      await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+      queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
+      setRefuseModal(null)
+      setRefuseNote("")
+    } finally {
+      setActionLoading(null)
+    }
   }
 
   const handleStageChange = (applicationId: string, toStage: PipelineStage) => {
@@ -211,6 +211,8 @@ export function useCandidates(offerId: string) {
     grouped,
     sentinelRef,
     actionLoading,
+    acceptModal,
+    setAcceptModal,
     handleAccept,
     refuseModal,
     setRefuseModal,

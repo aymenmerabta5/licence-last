@@ -11,7 +11,7 @@ import { useDeptHeadData } from "./hooks/useDeptHeadData"
 import { ValidationsList } from "./components/ValidationsList"
 
 export function DeptHeadValidationsView() {
-  const t = useTranslations("dashboard.deptValidations")
+  const t = useTranslations("dashboard.admin.deptValidations")
 
   const { applications, isLoading, isFetchingNextPage, sentinelRef } =
     useDeptHeadData()

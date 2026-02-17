@@ -22,7 +22,7 @@ function AdminValidationsFallback() {
 }
 
 export default async function AdminValidationsPage() {
-  await requireRole(["university_admin", "super_admin"])
+  await requireRole(["super_admin"])
 
   return (
     <Suspense fallback={<AdminValidationsFallback />}>

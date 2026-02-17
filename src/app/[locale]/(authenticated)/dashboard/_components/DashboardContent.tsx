@@ -27,6 +27,9 @@ interface DashboardContentProps {
   adminComponent: React.ComponentType<{
     user: { id: string; name: string | null; email: string; role: string };
   }>;
+  deptHeadComponent: React.ComponentType<{
+    user: { id: string; name: string | null; email: string; role: string };
+  }>;
 }
 
 async function StudentDashboardContent({
@@ -108,11 +111,13 @@ export async function DashboardContent({
   studentComponent,
   recruiterComponent: RecruiterDashboard,
   adminComponent: AdminDashboard,
+  deptHeadComponent: DeptHeadDashboard,
 }: DashboardContentProps) {
   const [user, t] = await Promise.all([
     requireRole([
       "student",
       "company_admin",
+      "dept_head",
       "university_admin",
       "super_admin",
     ]),
@@ -129,6 +134,7 @@ export async function DashboardContent({
   const roleSubtitleKey = {
     student: "student.subtitle",
     company_admin: "recruiter.subtitle",
+    dept_head: "deptHeadDashboard.subtitle",
     university_admin: "admin.subtitle",
     super_admin: "admin.subtitle",
   } as const;
@@ -177,6 +183,9 @@ export async function DashboardContent({
 
       {user.role === "company_admin" && (
         <RecruiterDashboard user={{ ...user, role: user.role as string }} />
+      )}
+      {user.role === "dept_head" && (
+        <DeptHeadDashboard user={{ ...user, role: user.role as string }} />
       )}
       {(user.role === "university_admin" || user.role === "super_admin") && (
         <AdminDashboard user={{ ...user, role: user.role as string }} />

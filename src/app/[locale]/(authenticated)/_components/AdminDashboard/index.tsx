@@ -2,13 +2,14 @@
 
 import * as motion from "motion/react-client"
 import { Loader2 } from "lucide-react"
+
 import { ease } from "@/lib/animations"
 
-import { useAdminDashboardData } from "./hooks/useAdminDashboardData"
 import { PlatformBulletin } from "./components/PlatformBulletin"
-import { AttentionBanner } from "./components/AttentionBanner"
 import { StatusBreakdown } from "./components/StatusBreakdown"
 import { TrustLeaderboard } from "./components/TrustLeaderboard"
+import { UniversityKpiGrid } from "./components/UniversityKpiGrid"
+import { useAdminDashboardData } from "./hooks/useAdminDashboardData"
 
 interface AdminDashboardProps {
   user: {
@@ -23,9 +24,8 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
   const {
     isSuperAdmin,
     stats,
+    universityStats,
     isLoading,
-    pendingCount,
-    hasPendingMore,
     trustIndices,
   } = useAdminDashboardData(user.role)
 
@@ -73,12 +73,12 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
             <h2 className="font-serif text-[clamp(1.75rem,3.5vw,2.5rem)] leading-[1.08] tracking-tight text-heading max-w-xl">
               {isSuperAdmin
                 ? "Your ecosystem at a glance."
-                : "Validate, manage, and oversee."}
+                : "Track, coordinate, and steer your university."}
             </h2>
             <p className="text-muted-foreground text-sm font-light leading-relaxed max-w-lg mt-3">
               {isSuperAdmin
                 ? "Monitor platform health, validate placements, and track institutional progress across the Internex network."
-                : "Review pending placements, manage departments, and track your institution's internship program."}
+                : "Follow key student and department indicators to run your university internship operations from one place."}
             </p>
           </div>
         </div>
@@ -87,27 +87,25 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
       {/* Platform stats bar — super_admin only */}
       {isSuperAdmin && stats && <PlatformBulletin stats={stats} />}
 
-      {/* Attention banner — pending validations (university_admin only) */}
-      {!isSuperAdmin && (
-        <AttentionBanner
-          pendingCount={pendingCount}
-          hasPendingMore={hasPendingMore}
-        />
+      {/* University metrics grid — university_admin only */}
+      {!isSuperAdmin && universityStats && (
+        <UniversityKpiGrid stats={universityStats} />
       )}
 
-      {/* Content grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* Main column */}
-        <div className="lg:col-span-7 space-y-10">
-          {isSuperAdmin && stats && (
-            <StatusBreakdown
-              applicationsByStatus={stats.applicationsByStatus}
-              totalApplications={stats.totalApplications}
-            />
-          )}
-          {isSuperAdmin && <TrustLeaderboard indices={trustIndices} />}
+      {isSuperAdmin && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          {/* Main column */}
+          <div className="lg:col-span-7 space-y-10">
+            {stats && (
+              <StatusBreakdown
+                applicationsByStatus={stats.applicationsByStatus}
+                totalApplications={stats.totalApplications}
+              />
+            )}
+            <TrustLeaderboard indices={trustIndices} />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

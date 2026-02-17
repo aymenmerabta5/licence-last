@@ -5,6 +5,7 @@ const mockHeaders = mock(() => Promise.resolve(new Headers()))
 
 mock.module("@/lib/auth", () => ({
   auth: { api: { createUser: mockCreateUser } },
+  pendingWelcomeEmails: new Map(),
 }))
 mock.module("next/headers", () => ({ headers: mockHeaders }))
 
@@ -26,6 +27,7 @@ describe("createUser", () => {
     expect(call.body.email).toBe("test@example.com")
     expect(call.body.name).toBe("Test User")
     expect(call.body.role).toBe("student")
+    expect(call.body.data.emailVerified).toBe(true)
   })
 
   test("should return the created user", async () => {

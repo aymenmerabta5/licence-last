@@ -14,7 +14,6 @@ export const university = pgTable(
     phone: text("phone"),
     logoUrl: text("logo_url"),
     departmentName: text("department_name"),
-    deanName: text("dean_name"),
     status: universityStatusEnum("status").default("approved").notNull(),
     approvedAt: timestamp("approved_at"),
     approvedByUserId: text("approved_by_user_id"),

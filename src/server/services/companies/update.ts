@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm"
 
 import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/companies/update")
 import { company } from "@/server/db/schema/companies"
@@ -43,7 +44,7 @@ export async function updateCompany(
     .returning({ companyId: company.id })
 
   if (!result) {
-    throw new Error("Company not found")
+    throw new ServiceError("COMPANY_NOT_FOUND", "Company not found")
   }
 
   log.info({ companyId, event: "company_updated" }, "Company profile updated")

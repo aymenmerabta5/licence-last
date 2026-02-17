@@ -1,0 +1,120 @@
+"use client"
+
+import { useState, useCallback } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
+import { toast } from "sonner"
+
+import { orpc } from "@/server/orpc/client"
+import { bulkCreateDepartmentsSchema } from "@/lib/schemas/department"
+import type { BulkDepartmentRow } from "@/lib/schemas/department"
+
+const emptyRow = (): BulkDepartmentRow => ({
+  departmentName: "",
+  headEmail: "",
+  headName: "",
+})
+
+export function useBulkCreateForm() {
+  const t = useTranslations("dashboard.admin.departments.bulkCreate")
+  const queryClient = useQueryClient()
+
+  const [rows, setRows] = useState<BulkDepartmentRow[]>([emptyRow()])
+  const [fieldErrors, setFieldErrors] = useState<
+    Array<Partial<Record<keyof BulkDepartmentRow, string>>>
+  >([{}])
+
+  const addRow = useCallback(() => {
+    setRows((prev) => [...prev, emptyRow()])
+    setFieldErrors((prev) => [...prev, {}])
+  }, [])
+
+  const removeRow = useCallback((index: number) => {
+    setRows((prev) => prev.filter((_, i) => i !== index))
+    setFieldErrors((prev) => prev.filter((_, i) => i !== index))
+  }, [])
+
+  const updateRow = useCallback(
+    (index: number, field: keyof BulkDepartmentRow, value: string) => {
+      setRows((prev) =>
+        prev.map((row, i) => (i === index ? { ...row, [field]: value } : row)),
+      )
+      // Clear field error on edit
+      setFieldErrors((prev) =>
+        prev.map((errs, i) =>
+          i === index ? { ...errs, [field]: undefined } : errs,
+        ),
+      )
+    },
+    [],
+  )
+
+  const mutation = useMutation(
+    orpc.departments.bulkCreateWithHeads.mutationOptions({
+      onSuccess: (data) => {
+        queryClient.invalidateQueries({ queryKey: ["departments"] })
+
+        if (data.errors.length === 0) {
+          toast.success(t("successMessage", { count: data.created.length }))
+          setRows([emptyRow()])
+          setFieldErrors([{}])
+        } else if (data.created.length > 0) {
+          toast.warning(
+            t("partialSuccess", {
+              created: data.created.length,
+              failed: data.errors.length,
+            }),
+          )
+          // Show individual errors
+          for (const err of data.errors) {
+            toast.error(t("rowError", { name: err.departmentName, error: err.message }))
+          }
+          setRows([emptyRow()])
+          setFieldErrors([{}])
+        } else {
+          for (const err of data.errors) {
+            toast.error(t("rowError", { name: err.departmentName, error: err.message }))
+          }
+        }
+      },
+      onError: (error) => {
+        toast.error(error.message || t("error"))
+      },
+    }),
+  )
+
+  const handleSubmit = useCallback(() => {
+    const parsed = bulkCreateDepartmentsSchema.safeParse({ rows })
+    if (!parsed.success) {
+      // Map Zod errors to per-field errors
+      const newFieldErrors: Array<Partial<Record<keyof BulkDepartmentRow, string>>> =
+        rows.map(() => ({}))
+
+      for (const issue of parsed.error.issues) {
+        // Path like ["rows", 0, "headEmail"]
+        if (issue.path[0] === "rows" && typeof issue.path[1] === "number") {
+          const idx = issue.path[1]
+          const field = issue.path[2] as keyof BulkDepartmentRow | undefined
+          if (field && newFieldErrors[idx]) {
+            newFieldErrors[idx][field] = issue.message
+          }
+        }
+      }
+      setFieldErrors(newFieldErrors)
+      return
+    }
+
+    setFieldErrors(rows.map(() => ({})))
+    mutation.mutate(parsed.data)
+  }, [rows, mutation])
+
+  return {
+    rows,
+    fieldErrors,
+    addRow,
+    removeRow,
+    updateRow,
+    handleSubmit,
+    isPending: mutation.isPending,
+  }
+}

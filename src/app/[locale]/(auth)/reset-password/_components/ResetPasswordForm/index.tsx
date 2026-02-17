@@ -11,7 +11,7 @@ import { EmailForm } from "./components/EmailForm"
 
 export function ResetPasswordForm() {
   const t = useTranslations("auth.resetPassword")
-  const { form, serverError, success } = useResetPassword()
+  const { form, serverError, success, setTurnstileToken, turnstileRef } = useResetPassword()
 
   return (
     <div className="space-y-8">
@@ -29,7 +29,12 @@ export function ResetPasswordForm() {
       {success ? (
         <SuccessMessage />
       ) : (
-        <EmailForm form={form} serverError={serverError} />
+        <EmailForm
+          form={form}
+          serverError={serverError}
+          setTurnstileToken={setTurnstileToken}
+          turnstileRef={turnstileRef}
+        />
       )}
     </div>
   )

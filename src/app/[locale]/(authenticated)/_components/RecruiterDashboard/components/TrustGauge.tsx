@@ -63,11 +63,11 @@ export function TrustGauge({ trustData, isLoading }: TrustGaugeProps) {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.4, ease }}
-      className="border border-border/40 rounded-xl p-5 space-y-4"
+      className="border border-border/40 p-5 space-y-5"
     >
       <div className="flex items-center gap-2">
         <Shield className="h-3.5 w-3.5 text-primary" />
-        <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50">
+        <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
           Trust Index
         </span>
       </div>
@@ -80,7 +80,7 @@ export function TrustGauge({ trustData, isLoading }: TrustGaugeProps) {
         <div className="pb-1.5">
           <span
             className={cn(
-              "text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full",
+              "text-[9px] font-bold uppercase tracking-wider px-2 py-0.5",
               config.bg,
               config.color,
             )}
@@ -91,9 +91,9 @@ export function TrustGauge({ trustData, isLoading }: TrustGaugeProps) {
       </div>
 
       {/* Score bar */}
-      <div className="h-1.5 rounded-full bg-secondary/30 overflow-hidden">
+      <div className="h-1.5 bg-secondary/30 overflow-hidden">
         <motion.div
-          className={cn("h-full rounded-full", config.bar)}
+          className={cn("h-full", config.bar)}
           initial={{ width: 0 }}
           animate={{ width: `${Math.min(trustData.trustScore, 100)}%` }}
           transition={{ duration: 1, delay: 0.5, ease }}
@@ -101,23 +101,24 @@ export function TrustGauge({ trustData, isLoading }: TrustGaugeProps) {
       </div>
 
       {/* Factor breakdown */}
-      <div className="grid grid-cols-3 gap-2 pt-1">
-        {factors.map((factor) => (
-          <div key={factor.label} className="text-center">
-            <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/40">
-              {factor.label}
-            </p>
-            <p className="font-serif text-lg font-bold text-heading leading-none mt-1 tabular-nums">
-              {Math.round(factor.value)}
-            </p>
-          </div>
-        ))}
+      <div className="border-t border-border/30 pt-4">
+        <div className="grid grid-cols-3 gap-2">
+          {factors.map((factor) => (
+            <div key={factor.label} className="text-center space-y-1">
+              <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/40 [[dir=rtl]_&]:tracking-normal">
+                {factor.label}
+              </p>
+              <p className="font-serif text-lg font-bold text-heading leading-none tabular-nums">
+                {Math.round(factor.value)}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
       {trustData.factors.reportPenalty > 0 && (
-        <p className="text-[10px] text-rose-500 font-medium">
-          −{Math.round(trustData.factors.reportPenalty)} penalty from open
-          reports
+        <p className="text-[10px] text-rose-500 font-medium border-t border-border/30 pt-3">
+          -{Math.round(trustData.factors.reportPenalty)} penalty from open reports
         </p>
       )}
     </motion.div>

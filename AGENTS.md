@@ -1,6 +1,6 @@
 # AGENTS.md — Coding Guidelines for AI Agents
 
-> Last updated: 2026-02-13
+> Last updated: 2026-02-16
 > Project: Internex — A Next.js 16 + React 19 application with editorial design aesthetic, for linking companies internship programs with university students
 
 ---
@@ -27,6 +27,7 @@ bun run lint
 bun test              # Run all tests
 bun test:watch        # Watch mode
 bun test:coverage     # With coverage report
+bun test:orpc-routes  # oRPC controller route + smoke tests
 
 # Database (auto-loads .env.development)
 bun run db:generate         # Generate migrations from schema
@@ -136,6 +137,7 @@ Put all business logic in `src/server/services/<domain>/`:
 - Always add `import "server-only"` at the top
 - Functions take plain data + userId — never handle auth themselves
 - Import `db` from `@/server/db` and schema from `@/server/db/schema`
+- Throw typed `ServiceError` codes for domain failures (avoid generic `Error`)
 
 **Service Pattern:**
 ```typescript
@@ -155,7 +157,7 @@ export async function createCompany(data: CreateCompanyInput, userId: string) {
 - `applications/` — Internship applications (apply, withdraw, pipeline, company actions, timeline)
 - `assistant/` — AI assistant conversations (CRUD, messages)
 - `companies/` — Company management (CRUD, approval, membership, trust index, trust actions, reports)
-- `departments/` — Department management (create, list, update, assign head)
+- `departments/` — Department management (create, list, update, delete, assign/unassign head, assign by email, bulk create, skills sync)
 - `documents/` — Document generation + verification (agreements, certificates, QR codes, verification)
 - `matching/` — Student-offer matching (scoring, skill gaps, readiness history)
 - `notifications/` — User notifications (create, list, mark read)
@@ -213,7 +215,7 @@ studentProcedureGenerous            // 300 req/min (student reads)
 assistantProcedureLimited           // 20 req/min (AI calls)
 ```
 
-**oRPC Routes (15 route files, 83 procedures across 16 namespaces):**
+**oRPC Routes (15 route files, 88 procedures across 16 namespaces):**
 - `users.ts` — getMe, updateMe, uploadAvatar, deleteAvatar (4)
 - `companies.ts` — CRUD, approval, trust index, reports, quality feedback, logo upload (13)
 - `students.ts` — getProfile, getPublicProfile, upsertProfile, upsertProfileDetails (4)
@@ -221,7 +223,7 @@ assistantProcedureLimited           // 20 req/min (AI calls)
 - `applications.ts` — checkApplication, apply, withdraw, pipeline, company actions, timeline, search (9 in namespace + search in offers)
 - `skills.ts` — Skill tag listing (1)
 - `placements.ts` — admin: listPending, validate, reject; deptHead: listPending, validate, reject (6)
-- `departments.ts` — list, create, update, assignHead (4)
+- `departments.ts` — list, create, update, assignHead, unassignHead, delete, bulkCreateWithHeads, syncSkills, getSkills (9)
 - `documents.ts` — generateAgreement, verify (2)
 - `notifications.ts` — list, markRead, markAllRead (3)
 - `stats.ts` — Admin statistics (1)
@@ -467,7 +469,7 @@ src/
 │   │   ├── assistant/chat/     # AI streaming endpoint
 │   │   ├── assistant/auth/status/ # Arcade auth check
 │   │   ├── openapi/            # OpenAPI spec + Swagger UI
-│   │   └── health/             # Health check endpoint
+│   │   └── health/             # Dependency-aware readiness endpoint
 │   └── [locale]/               # i18n routes
 │       ├── layout.tsx          # Locale layout (providers)
 │       ├── page.tsx            # Home page
@@ -521,7 +523,7 @@ src/
 │   ├── orpc/                   # oRPC controller layer
 │   │   ├── middleware.ts       # Auth procedures (7 types)
 │   │   ├── rate-limited-procedures.ts  # 18 variants
-│   │   ├── router.ts           # Combined router (83 procedures)
+│   │   ├── router.ts           # Combined router (88 procedures)
 │   │   ├── client.ts           # Client + TanStack Query
 │   │   └── routes/             # 15 route files
 │   ├── services/               # Pure business logic (16 domains)
@@ -788,9 +790,10 @@ describe("cn utility", () => {
 bun test              # Run all tests
 bun test:watch        # Watch mode for development
 bun test:coverage     # Generate coverage report
-bun test:unit         # src/lib + src/server
-bun test:api          # src/app/api
-bun test:pages        # src/app
+bun test:unit         # Unit/core modules (segmented to avoid mock collisions)
+bun test:orpc-routes  # oRPC controller route + smoke tests
+bun test:api          # API route tests + oRPC route suite
+bun test:pages        # App Router page/component tests (src/app/[locale])
 bun test:e2e          # Playwright E2E (chromium)
 bun test:ci           # unit + api + pages (CI pipeline)
 ```
@@ -1124,6 +1127,18 @@ export function getRateLimiter(): RedisRatelimiter | null
 export function isRateLimitingEnabled(): boolean
 ```
 
+### Health Readiness Endpoint
+
+`GET /api/health` returns structured readiness details instead of a plain `"ok"`:
+
+- `checks.database` — required dependency (driven by `pingDatabase()` in `src/server/db/index.ts`)
+- `checks.redis` — optional dependency (`pingRedis()` / `isRedisAvailable()`)
+- `checks.rateLimiter` — reflects `isRateLimitingEnabled()` and Redis availability
+
+Response status:
+- `200` for `ok`/`degraded`
+- `503` for `error` when required dependencies are unhealthy
+
 ### MCP (Model Context Protocol) Server
 
 Development-only MCP server for AI tool testing:
@@ -1200,11 +1215,26 @@ Uses `@react-pdf/renderer`. Each document gets a verification code + QR code. Pu
 
 ### Department Management
 
-**`src/server/services/departments/`:**
-- `create.ts` — Create department under a university
-- `list.ts` — List departments by university
-- `update.ts` — Update department details
-- `assign-head.ts` — Assign dept_head role to a user for a department
+**`src/server/services/departments/` (10 files):**
+- `create.ts` — Create department under a university (duplicate name check)
+- `list.ts` — List departments by university (with skill counts)
+- `update.ts` — Update department details (partial update)
+- `delete.ts` — Delete department (transactional: demotes dept_heads to student, then deletes)
+- `assign-head.ts` — Assign dept_head role by user ID (bidirectional user + department update)
+- `assign-head-by-email.ts` — Assign head by email (auto-creates user if needed, triggers password reset)
+- `unassign-head.ts` — Remove head from department (transactional: demotes role, clears headName)
+- `bulk-create-with-heads.ts` — Bulk create departments with heads from CSV (per-row error handling, partial success)
+- `sync-skills.ts` — Sync department-specific skills (delete-then-insert, max 200)
+- `get-skills.ts` — Get department skill IDs
+
+**oRPC**: `departments` namespace (9 procedures) + `deptHead` namespace (3 placement procedures)
+
+**UI Components** (`dashboard/admin/departments/_components/DepartmentsView/`):
+- Feature folder with orchestrator, hooks layer (useDepartmentsData, useDepartmentsActions, useAssignHeadDialog, useDepartmentSkills), and pure UI components
+- `DeleteDepartmentDialog.tsx` — Confirmation dialog for department deletion
+- `RemoveHeadDialog.tsx` — Confirmation dialog for head removal
+- `DepartmentSkillsModal/` — Skills management with search, toggle, and sync
+- `BulkCreateForm/` — Sub-feature folder for bulk department import
 
 ### OpenAPI
 
@@ -1274,3 +1304,23 @@ NEXT_PUBLIC_BETTER_AUTH_URL    # Required - Auth callback URL
 NEXT_PUBLIC_S3_ENDPOINT        # Optional - Public S3 endpoint
 NEXT_PUBLIC_S3_URL             # Optional - Public S3 base URL
 ```
+
+---
+
+## Documentation Sync Policy
+
+When adding or modifying features, **update all relevant documentation files** to keep them in sync:
+
+| File | Purpose | What to update |
+|------|---------|----------------|
+| `CLAUDE.md` | Project context for Claude | Service domains, procedure counts, directory tree, patterns |
+| `AGENTS.md` | Coding guidelines for AI agents | Service lists, route procedure tables, feature folder references |
+| `docs/ARCHITECTURE.md` | Full system architecture | Data model, service tables, procedure counts, file counts |
+| `README.md` | Project overview | High-level capabilities, architecture summary |
+
+**Checklist for new features:**
+1. Add new service files to the relevant domain in all docs
+2. Update procedure counts (total and per-namespace)
+3. Update file counts in service domain tables
+4. Add new UI components to feature folder references if applicable
+5. Add translation keys to the translation structure if new namespaces

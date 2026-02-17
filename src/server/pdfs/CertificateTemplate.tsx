@@ -7,15 +7,19 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer"
+import * as path from "node:path"
+
+// Register fonts from local TTF files (CDN URLs are unreliable)
+const fontsDir = path.join(process.cwd(), "node_modules/dejavu-fonts-ttf/ttf")
 
 Font.register({
   family: "DejaVu Sans",
-  src: "https://cdn.jsdelivr.net/npm/@canvas-fonts/dejavu-sans@1.0.4/DejaVuSans.ttf",
+  src: path.join(fontsDir, "DejaVuSans.ttf"),
 })
 
 Font.register({
   family: "DejaVu Sans Bold",
-  src: "https://cdn.jsdelivr.net/npm/@canvas-fonts/dejavu-sans@1.0.4/DejaVuSans-Bold.ttf",
+  src: path.join(fontsDir, "DejaVuSans-Bold.ttf"),
 })
 
 const styles = StyleSheet.create({

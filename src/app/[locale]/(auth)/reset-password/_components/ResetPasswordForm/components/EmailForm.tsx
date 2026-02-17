@@ -3,9 +3,11 @@
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { Mail, AlertCircle, ArrowLeft, ArrowRight, Loader2 } from "lucide-react"
+import { type RefObject } from "react"
 import { Link } from "@/i18n/routing"
 import { errorMessage } from "@/lib/schemas/auth"
 import { reveal, ease } from "@/lib/animations"
+import { TurnstileWidget, type CaptchaHandle } from "@/components/TurnstileWidget"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import {
@@ -18,9 +20,11 @@ import type { ResetPasswordFormApi } from "../hooks/useResetPassword"
 interface EmailFormProps {
   form: ResetPasswordFormApi
   serverError: string
+  setTurnstileToken: (token: string) => void
+  turnstileRef: RefObject<CaptchaHandle | null>
 }
 
-export function EmailForm({ form, serverError }: EmailFormProps) {
+export function EmailForm({ form, serverError, setTurnstileToken, turnstileRef }: EmailFormProps) {
   const t = useTranslations("auth.resetPassword")
 
   return (
@@ -92,6 +96,12 @@ export function EmailForm({ form, serverError }: EmailFormProps) {
           )}
         </form.Field>
       </motion.div>
+
+      <TurnstileWidget
+        ref={turnstileRef}
+        onVerify={setTurnstileToken}
+        onExpire={() => setTurnstileToken("")}
+      />
 
       {/* Submit Button */}
       <motion.div

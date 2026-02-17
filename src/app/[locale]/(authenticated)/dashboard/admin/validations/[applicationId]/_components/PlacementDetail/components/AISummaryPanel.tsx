@@ -11,15 +11,15 @@ import type { AdminValidationSummary } from "../types"
 
 interface AISummaryPanelProps {
   aiSummary: AdminValidationSummary | null
-  aiStatus: string
-  aiError: Error | undefined
+  isSummarizing: boolean
+  summaryError: Error | null
   onGenerate: () => void
 }
 
 export function AISummaryPanel({
   aiSummary,
-  aiStatus,
-  aiError,
+  isSummarizing,
+  summaryError,
   onGenerate,
 }: AISummaryPanelProps) {
   const t = useTranslations("dashboard.admin.validations.detail")
@@ -44,20 +44,20 @@ export function AISummaryPanel({
           type="button"
           variant="outline"
           className="gap-2"
-          disabled={aiStatus !== "ready"}
+          disabled={isSummarizing}
           onClick={onGenerate}
         >
-          {aiStatus === "ready" ? (
-            <Sparkles className="h-4 w-4" />
-          ) : (
+          {isSummarizing ? (
             <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Sparkles className="h-4 w-4" />
           )}
           {t("ai.generate")}
         </Button>
       </div>
 
-      {aiError && (
-        <p className="text-xs text-destructive">{aiError.message}</p>
+      {summaryError && (
+        <p className="text-xs text-destructive">{summaryError.message}</p>
       )}
 
       {aiSummary ? (
@@ -106,7 +106,7 @@ export function AISummaryPanel({
         </div>
       ) : (
         <p className="text-xs text-muted-foreground">
-          {aiStatus !== "ready" ? t("ai.generating") : t("ai.hint")}
+          {isSummarizing ? t("ai.generating") : t("ai.hint")}
         </p>
       )}
     </motion.div>

@@ -10,8 +10,6 @@ export function createUniversityOnboardingSchema(t: TranslationFn) {
   return z.object({
     name: z.string().min(2, { error: t("universityNameMin") }),
     abbreviation: z.string().optional(),
-
-    deanName: z.string().optional(),
     phone: z.string().optional(),
     wilayaCode: z.coerce
       .number()

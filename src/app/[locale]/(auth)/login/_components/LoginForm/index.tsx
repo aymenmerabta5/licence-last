@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl"
 import { ServerError } from "@/components/ServerError"
 import { reveal, ease } from "@/lib/animations"
 
+import { TurnstileWidget } from "@/components/TurnstileWidget"
+
 import { useLoginForm } from "./hooks/useLoginForm"
 import { VerificationAlert } from "./components/VerificationAlert"
 import { LoginFields } from "./components/LoginFields"
@@ -23,6 +25,9 @@ export function LoginForm() {
     serverError,
     needsVerification,
     resendVerificationEmail,
+    // Turnstile
+    setTurnstileToken,
+    turnstileRef,
     // 2FA
     twoFactorRequired,
     twoFactorMethod,
@@ -91,6 +96,12 @@ export function LoginForm() {
           onTogglePassword={() => setShowPassword(!showPassword)}
         />
       </motion.div>
+
+      <TurnstileWidget
+        ref={turnstileRef}
+        onVerify={setTurnstileToken}
+        onExpire={() => setTurnstileToken("")}
+      />
 
       <FormFooter
         form={form}

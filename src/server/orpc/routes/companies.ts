@@ -28,8 +28,8 @@ import {
 import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
 import { createNotification } from "@/server/services/notifications/create"
 import { sendEmail } from "@/server/email/sendEmail"
-import CompanyApprovedEmail from "@/server/email/emails/CompanyApprovedEmail"
-import CompanyRejectedEmail from "@/server/email/emails/CompanyRejectedEmail"
+import CompanyApprovedEmail from "@/server/email/templates/CompanyApprovedEmail"
+import CompanyRejectedEmail from "@/server/email/templates/CompanyRejectedEmail"
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
 import { user } from "@/server/db/schema/auth"
@@ -46,6 +46,7 @@ import {
   submitCompanyReport,
 } from "@/server/services/companies/trust-actions"
 import { CACHE_TAGS } from "@/lib/cache"
+import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 
 /* ── Reads ── */
 
@@ -219,13 +220,22 @@ export const updateCompanyProcedure = companyAdminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    const result = await updateCompany(context.companyMembership.companyId, input)
+    try {
+      const result = await updateCompany(context.companyMembership.companyId, input)
 
-    // Invalidate company cache
-    revalidateTag(CACHE_TAGS.COMPANY_PROFILE(context.companyMembership.companyId), "max")
-    revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`), "max")
+      // Invalidate company cache
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(context.companyMembership.companyId), "max")
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`), "max")
 
-    return result
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          COMPANY_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to update company profile",
+      })
+    }
   })
 
 export const approveCompanyProcedure = superAdminProcedureStandard
@@ -306,9 +316,18 @@ export const uploadCompanyLogoProcedure = companyAdminProcedureStandard
       file: z.file(),
     }),
   )
-  .handler(async ({ input }) => {
+  .handler(async ({ input, context }) => {
     try {
-      return await uploadImageToS3({ file: input.file, folder: "logos" })
+      const result = await uploadImageToS3({ file: input.file, folder: "logos" })
+
+      // Persist the logo URL to the company record immediately
+      await updateCompany(context.companyMembership.companyId, {
+        logoUrl: result.url,
+      })
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(context.companyMembership.companyId), "max")
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`), "max")
+
+      return result
     } catch (error) {
       const message = error instanceof Error ? error.message : "Upload failed"
 

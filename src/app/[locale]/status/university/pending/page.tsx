@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator"
 import { Card } from "@/components/ui/card"
 import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
-import { getUniversityByUserId } from "@/server/services/universities/get"
+import { getUniversityStatusByUserId } from "@/server/services/universities/get-status"
 
 export default async function UniversityPendingPage() {
   const user = await requireRole(["university_admin"], { allowUnapproved: true })
@@ -13,7 +13,7 @@ export default async function UniversityPendingPage() {
     return localeRedirect("/onboarding/university")
   }
 
-  const university = await getUniversityByUserId(user.id)
+  const university = await getUniversityStatusByUserId(user.id)
 
   if (university?.status === "approved") {
     return localeRedirect("/dashboard/admin")

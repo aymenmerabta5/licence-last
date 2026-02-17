@@ -36,7 +36,7 @@ src/
 │   │   ├── rpc/[...rest]/  (oRPC catch-all, CSRF protected)
 │   │   ├── assistant/      (AI assistant endpoints: chat, auth/status)
 │   │   ├── openapi/        (OpenAPI spec + UI)
-│   │   └── health/         (Health check endpoint)
+│   │   └── health/         (Dependency-aware readiness endpoint)
 │   ├── layout.tsx          (root layout — minimal pass-through)
 │   ├── globals.css
 │   ├── robots.ts           (SEO robots.txt)
@@ -69,13 +69,13 @@ src/
 │   │   ├── ratelimit-middleware.ts
 │   │   ├── router.ts
 │   │   ├── client.ts
-│   │   └── routes/         (15 route files, 83 procedures)
+│   │   └── routes/         (15 route files, 88 procedures)
 │   ├── services/           (Model — 16 service domains)
 │   │   ├── admin/          (User management: ban, create, sessions, etc.)
 │   │   ├── applications/   (Application workflow + pipeline + timeline)
 │   │   ├── assistant/      (AI assistant conversations)
 │   │   ├── companies/      (CRUD, approval, trust index, reports)
-│   │   ├── departments/    (CRUD, assign head — NEW)
+│   │   ├── departments/    (CRUD, delete, assign/unassign head, bulk create, skills)
 │   │   ├── documents/      (PDF generation + QR + verification)
 │   │   ├── matching/       (Scoring, skill gap, readiness)
 │   │   ├── notifications/  (Create, list, mark read)
@@ -171,6 +171,7 @@ Put pure business logic in `src/server/services/<domain>/`:
 - Writes: `create.ts`, `update.ts`, `approve.ts`, `reject.ts`
 - Always add `import "server-only"` at the top
 - Functions take plain data + userId — **never** handle auth themselves
+- Throw typed `ServiceError` codes for domain failures (avoid generic `Error`)
 - Return typed data — no `NextResponse`, no `ORPCError`
 
 ```typescript
@@ -195,6 +196,8 @@ export const createCompanyProcedure = companyAdminProcedure
   .input(z.object({ name: z.string().min(2), ... }))
   .handler(async ({ input, context }) => createCompany(input, context.user.id))
 ```
+
+Route handlers should map service-domain failures through `createServiceORPCError(...)` so transport errors remain consistent and route-local fallback messages are explicit.
 
 **Middleware chain** (`src/server/orpc/middleware.ts`):
 ```
@@ -452,9 +455,10 @@ bun run typecheck  # TypeScript check
 bun test           # Run all tests
 bun test:watch     # Watch mode
 bun test:coverage  # Coverage report
-bun test:unit      # Unit tests (src/lib + src/server)
-bun test:api       # API tests (src/app/api)
-bun test:pages     # Page tests (src/app)
+bun test:unit      # Unit/core modules (segmented to avoid mock collisions)
+bun test:orpc-routes # oRPC controller route + smoke tests
+bun test:api       # API route tests + oRPC route suite
+bun test:pages     # App Router page/component tests (src/app/[locale])
 bun test:e2e       # Playwright E2E tests
 bun test:ci        # CI pipeline (unit + api + pages)
 
@@ -541,9 +545,10 @@ describe("myModule", () => {
 bun test                    # Run all tests once
 bun test:watch             # Watch mode - re-run on file changes
 bun test:coverage          # Run with coverage report
-bun test:unit              # Unit tests only (src/lib + src/server)
-bun test:api               # API endpoint tests
-bun test:pages             # Page/component tests
+bun test:unit              # Unit/core modules (segmented to avoid mock collisions)
+bun test:orpc-routes       # oRPC controller route + smoke tests
+bun test:api               # API endpoint tests + oRPC route suite
+bun test:pages             # App Router page/component tests (src/app/[locale])
 bun test:e2e               # Playwright end-to-end tests
 bun test:ci                # CI pipeline (unit + api + pages)
 bun test src/lib/utils.test.ts  # Run specific test file
@@ -692,13 +697,21 @@ PDF generation using `@react-pdf/renderer`:
 - Public verification page at `/verify` and `/verify/[code]`
 - Services: `generate-agreement.ts`, `generate-certificate.ts`, `qr-utils.ts`, `verification-code.ts`, `verify.ts`
 
-### Department Management (NEW)
+### Department Management
 
-**`src/server/services/departments/`:**
-- `create.ts` — Create department under a university
-- `list.ts` — List departments by university
-- `update.ts` — Update department details
-- `assign-head.ts` — Assign a dept_head user to a department
+**`src/server/services/departments/` (10 files):**
+- `create.ts` — Create department under a university (duplicate name check)
+- `list.ts` — List departments by university (with skill counts)
+- `update.ts` — Update department details (partial update)
+- `delete.ts` — Delete department (transactional: demotes dept_heads to student, then deletes)
+- `assign-head.ts` — Assign dept_head role by user ID (bidirectional user + department update)
+- `assign-head-by-email.ts` — Assign head by email (auto-creates user if needed, triggers password reset)
+- `unassign-head.ts` — Remove head from department (transactional: demotes role, clears headName)
+- `bulk-create-with-heads.ts` — Bulk create departments with heads from CSV (per-row error handling, partial success)
+- `sync-skills.ts` — Sync department-specific skills (delete-then-insert, max 200)
+- `get-skills.ts` — Get department skill IDs
+
+**oRPC**: `departments` namespace (9 procedures) + `deptHead` namespace (3 placement procedures)
 
 ### OpenAPI
 
@@ -752,3 +765,23 @@ PDF generation using `@react-pdf/renderer`:
 | `super_admin` | Platform operator — full control: users, companies, universities |
 
 **Note**: The old `admin` role was renamed to `university_admin`. The `adminProcedure` middleware now accepts `university_admin`, `dept_head`, or `super_admin`.
+
+---
+
+## Documentation Sync Policy
+
+When adding or modifying features (services, procedures, components, translations), **update all relevant documentation files**:
+
+| File | Purpose | What to update |
+|------|---------|----------------|
+| `CLAUDE.md` | Project context for Claude | Service domains, procedure counts, directory tree, patterns |
+| `AGENTS.md` | Coding guidelines for AI agents | Service lists, route procedure tables, feature folder references |
+| `docs/ARCHITECTURE.md` | Full system architecture | Data model, service tables, procedure counts, file counts |
+| `README.md` | Project overview | High-level capabilities, architecture summary |
+
+**Checklist for new features:**
+1. Add new service files to the relevant domain in all docs
+2. Update procedure counts (total and per-namespace)
+3. Update file counts in service domain tables
+4. Add new UI components to feature folder references if applicable
+5. Add translation keys to the translation structure if new namespaces

@@ -200,11 +200,22 @@
     },
     "resetPassword": {
       "pageTitle": "إعادة تعيين كلمة المرور",
+      "verifyPageTitle": "تعيين كلمة مرور جديدة",
       "title": "إعادة تعيين كلمة المرور",
       "subtitle": "سنرسل لك رابط إعادة التعيين عبر البريد الإلكتروني",
+      "verifyTitle": "تعيين كلمة مرور جديدة",
+      "verifySubtitle": "اختر كلمة مرور قوية لحسابك.",
       "email": "البريد الإلكتروني",
       "emailPlaceholder": "you@university.edu",
+      "newPassword": "كلمة المرور الجديدة",
+      "newPasswordPlaceholder": "8 أحرف على الأقل",
+      "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+      "confirmNewPasswordPlaceholder": "أعد إدخال كلمة المرور الجديدة",
       "submit": "إرسال رابط إعادة التعيين",
+      "setPassword": "تعيين كلمة المرور",
+      "setPasswordSuccess": "تم تحديث كلمة المرور. يمكنك الآن تسجيل الدخول.",
+      "setPasswordError": "تعذر إعادة تعيين كلمة المرور. يرجى المحاولة مرة أخرى.",
+      "invalidOrExpired": "رابط إعادة التعيين غير صالح أو منتهي الصلاحية.",
       "backToLogin": "العودة لتسجيل الدخول",
       "success": "إذا كان هناك حساب مرتبط بهذا البريد الإلكتروني، ستتلقى رابط إعادة التعيين قريباً.",
       "description": "أدخل عنوان البريد الإلكتروني المرتبط بحسابك وسنرسل لك رابطاً لإعادة تعيين كلمة المرور."
@@ -249,6 +260,13 @@
       "pageTitle": "إعداد الشركة",
       "title": "أعدّ شركتك",
       "subtitle": "أخبرنا عن مؤسستك للبدء",
+      "panelHeadline": "ابنِ فريق أحلامك",
+      "panelDescription": "تواصل مع أفضل المواهب الجامعية عبر الجزائر وسهّل عملية توظيف المتدربين.",
+      "panelFeature1": "الوصول إلى ملفات طلابية موثقة",
+      "panelFeature2": "خط توظيف مُبسّط وفعال",
+      "panelFeature3": "شراكات جامعية مباشرة",
+      "companySection": "تفاصيل الشركة",
+      "locationSection": "الموقع",
       "name": "اسم الشركة",
       "namePlaceholder": "شركة أكمي",
       "description": "الوصف",
@@ -266,14 +284,21 @@
       "pageTitle": "إعداد الجامعة",
       "title": "قم بإعداد جامعتك",
       "subtitle": "أخبرنا عن مؤسستك للبدء",
+      "panelHeadline": "اصنع قادة الغد",
+      "panelDescription": "تشارك مع الشركات لتوفير فرص تدريب هادفة لطلابك.",
+      "panelFeature1": "إدارة الأقسام والتوظيفات",
+      "panelFeature2": "تتبع تقدم الطلاب في الوقت الفعلي",
+      "panelFeature3": "التحقق من التدريبات والمصادقة عليها",
+      "universitySection": "تفاصيل الجامعة",
+      "locationSection": "الموقع",
+      "domainsSection": "نطاقات البريد الإلكتروني",
+      "departmentsSection": "الأقسام",
       "name": "اسم الجامعة",
       "namePlaceholder": "جامعة العلوم والتكنولوجيا",
       "abbreviation": "الاختصار",
       "abbreviationPlaceholder": "USTHB",
       "departmentName": "اسم القسم",
       "departmentNamePlaceholder": "قسم علوم الحاسوب",
-      "deanName": "اسم العميد",
-      "deanNamePlaceholder": "أ.د. الاسم",
       "phone": "رقم الهاتف",
       "phonePlaceholder": "+213 21 XX XX XX",
       "wilaya": "الولاية",
@@ -299,6 +324,11 @@
       "pageTitle": "إعداد الملف الشخصي",
       "title": "أنشئ سيرتك الذاتية الرقمية",
       "subtitle": "أخبرنا عن نفسك ومهاراتك للبدء",
+      "panelHeadline": "مسيرتك المهنية تبدأ هنا",
+      "panelDescription": "أنشئ ملفك المهني وتواصل مع أفضل الشركات عبر الجزائر.",
+      "panelFeature1": "تواصل مع أفضل الشركات",
+      "panelFeature2": "اعرض مهاراتك ومشاريعك",
+      "panelFeature3": "تتبع طلباتك في الوقت الفعلي",
       "personalSection": "المعلومات الشخصية",
       "bio": "نبذة",
       "bioPlaceholder": "أخبرنا قليلاً عن نفسك...",
@@ -325,6 +355,8 @@
       "skillsHint": "اختر حتى ١٠ مهارات تصف خبرتك بشكل أفضل",
       "skillsSelectDepartmentFirst": "يرجى اختيار القسم أولاً لعرض المهارات المتعلقة",
       "skillsSelected": "مختارة",
+      "recommendedSkills": "موصى بها لقسمك",
+      "otherSkills": "مهارات أخرى",
       "submit": "إكمال الملف الشخصي",
       "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
     }
@@ -334,9 +366,11 @@
       "dashboard": "لوحة التحكم",
       "exploreInternships": "استكشاف التدريبات",
       "myApplications": "طلباتي",
+      "myDocuments": "مستنداتي",
       "companyProfile": "ملف الشركة",
       "manageOffers": "إدارة العروض",
       "candidatePipeline": "مسار المرشحين",
+      "companyDocuments": "وثائق الشركة",
       "assistant": "المساعد",
       "validatePlacements": "اعتماد التوظيفات",
       "deptValidations": "تصديقات القسم",
@@ -451,6 +485,9 @@
         "pageTitle": "ملف الشركة",
         "title": "ملف الشركة",
         "subtitle": "إدارة الملف العام ومعلومات الاتصال لشركتك",
+        "descriptionLabel": "حول",
+        "contactLabel": "الاتصال",
+        "locationLabel": "الموقع",
         "description": "الوصف",
         "descriptionPlaceholder": "صف شركتك وما يجعلها مكاناً رائعاً للتدريب...",
         "logo": "شعار الشركة",
@@ -580,7 +617,9 @@
         "viewProfile": "عرض الملف الشخصي",
         "accept": "قبول",
         "refuse": "رفض",
-        "confirmAccept": "قبول هذا المرشح؟ سيتم إخطار المشرفين للتحقق من صحة التعيين.",
+        "acceptTitle": "قبول المرشح",
+        "acceptDescription": "قبول {name}؟ سيتم إخطار المشرفين للتحقق من صحة التعيين.",
+        "confirmAcceptButton": "قبول",
         "confirmRefuse": "رفض هذا المرشح؟ سيتم إخطاره.",
         "refuseTitle": "رفض المرشح",
         "refuseDescription": "هل أنت متأكد أنك تريد رفض {name}؟",
@@ -648,6 +687,19 @@
         }
       }
     },
+    "offers": {
+      "status": {
+        "draft": "مسودة",
+        "published": "منشور",
+        "closed": "مغلق"
+      },
+      "type": {
+        "pfe": "مشروع نهاية الدراسة",
+        "immersion": "تدريب انغماسي",
+        "summer": "تدريب صيفي",
+        "practical": "تدريب عملي"
+      }
+    },
     "welcome": "مرحباً بعودتك،",
     "roles": {
       "student": "طالب",
@@ -661,7 +713,12 @@
       "stats": {
         "applications": "الطلبات",
         "savedOffers": "العروض المحفوظة",
-        "interviews": "المقابلات"
+        "interviews": "المقابلات",
+        "pending": "{count} قيد الانتظار",
+        "accepted": "المقبولة",
+        "acceptedDescription": "طلبات مقبولة",
+        "profileBoosted": "تم تعزيز الملف الشخصي",
+        "addMoreSkills": "أضف المزيد من المهارات"
       },
       "actions": {
         "buildCV": "أكمل سيرتك الذاتية الرقمية",
@@ -670,14 +727,59 @@
       },
       "skillsSection": "مجموعة مهاراتك",
       "recentOffers": "موصى به لك",
+      "applications": {
+        "title": "الطلبات الأخيرة",
+        "viewAll": "عرض الكل",
+        "emptyMessage": "لم تتقدم بعد لأي فرصة تدريب. ابدأ باستكشاف الفرص الآن!",
+        "exploreButton": "استكشف فرص التدريب"
+      },
+      "offers": {
+        "exploreAll": "استكشف الكل"
+      },
+      "skills": {
+        "manageSkills": "إدارة المهارات",
+        "emptyMessage": "أضف مهاراتك التقنية لتبرز أمام مسؤولي التوظيف",
+        "addSkills": "أضف مهارات"
+      },
+      "welcomeHero": {
+        "brief": "ملخص اليوم",
+        "defaultName": "هناك",
+        "headlinePrefix": "هل أنت مستعد للحصول على",
+        "headlineAccent": "تدريب أحلامك",
+        "profileIncomplete": "أكمل ملفك الشخصي لتتميز أمام مسؤولي التوظيف وتفتح فرصًا أكثر.",
+        "profileComplete": "ملفك الشخصي مكتمل! واصل استكشاف الفرص والتقديم.",
+        "completeProfile": "أكمل الملف الشخصي",
+        "exploreInternships": "استكشف فرص التدريب",
+        "profileStrength": "قوة الملف الشخصي",
+        "profileReady": "ملفك الشخصي جاهز",
+        "profileRemaining": "متبقٍ {remaining}% للاكتمال"
+      },
+      "status": {
+        "applied": "قيد الانتظار",
+        "company_accepted": "مقبول",
+        "company_refused": "مرفوض",
+        "admin_validated": "تم التحقق",
+        "admin_rejected": "تم الرفض",
+        "withdrawn": "منسحب"
+      },
       "profile": {
         "title": "سيرتك الذاتية الرقمية",
         "subtitle": "ملفك المهني المرئي للمجندين",
         "edit": "تعديل الملف الشخصي",
+        "kicker": "الملف الشخصي",
+        "memberSince": "عضو منذ {date}",
+        "since": "منذ {date}",
+        "profileImageAlt": "الملف الشخصي",
+        "copyProfile": "نسخ الملف الشخصي",
+        "copied": "تم النسخ!",
+        "copySuccess": "تم نسخ الملف الشخصي إلى الحافظة",
+        "copyError": "فشل نسخ الملف الشخصي",
         "personalInfo": "المعلومات الشخصية",
         "name": "الاسم",
         "email": "البريد الإلكتروني",
         "phone": "الهاتف",
+        "role": "الدور",
+        "notSetYet": "غير محدد بعد",
         "studentNumber": "رقم الطالب",
         "department": "القسم",
         "level": "المستوى",
@@ -685,8 +787,44 @@
         "location": "الموقع",
         "wilaya": "الولاية",
         "address": "العنوان",
+        "university": "الجامعة",
         "links": "الروابط",
-        "skills": "المهارات التقنية"
+        "skills": "المهارات التقنية",
+        "skillCount": "{count, plural, one {{count} مهارة} other {{count} مهارات}}",
+        "addMoreSkills": "أضف المزيد",
+        "noSkillsListed": "لا توجد مهارات مدرجة بعد.",
+        "generalCategory": "عام",
+        "addSkills": "أضف مهارات",
+        "skillsEmptyMessage": "أضف مهاراتك التقنية لتبرز أمام مسؤولي التوظيف",
+        "bioEmptyMessage": "لم تتم إضافة نبذة بعد. حدّث الشركات ومسؤولي التوظيف عن نفسك واهتماماتك ونوع التدريب الذي تبحث عنه.",
+        "writeBio": "اكتب نبذتك",
+        "educationTitle": "التعليم",
+        "educationEmptyMessage": "سيظهر تاريخك التعليمي هنا بعد إكمال ملفك الشخصي.",
+        "addEducation": "أضف تعليمًا",
+        "experienceTitle": "الخبرة",
+        "experienceEmptyMessage": "أضف خبراتك العملية أو مساهماتك في المصادر المفتوحة أو مشاريعك الشخصية لتعزيز ملفك الشخصي.",
+        "addExperience": "أضف خبرة",
+        "anonymousUser": "مستخدم مجهول",
+        "unknownRole": "مستخدم",
+        "roles": {
+          "student": "طالب",
+          "company_admin": "مسؤول توظيف",
+          "dept_head": "رئيس القسم",
+          "university_admin": "مشرف جامعة",
+          "super_admin": "مشرف عام"
+        },
+        "stats": {
+          "applications": "الطلبات",
+          "totalSubmitted": "إجمالي المرسلة",
+          "skills": "المهارات",
+          "skillsAdded": "{count} مهارة مضافة",
+          "profile": "الملف الشخصي",
+          "complete": "مكتمل!",
+          "keepGoing": "واصل التقدم"
+        },
+        "skillsLabel": "المهارات",
+        "githubLabel": "جيت هاب",
+        "portfolioLabel": "معرض الأعمال"
       }
     },
     "recruiter": {
@@ -703,6 +841,20 @@
         "reviewCandidates": "مراجعة الطلبات"
       },
       "pipeline": "خط أنابيب المرشحين"
+    },
+    "deptHeadDashboard": {
+      "subtitle": "راجع طلبات التحقق الخاصة بقسمك",
+      "kicker": "عمليات القسم",
+      "title": "قائمة التحقق الخاصة بك جاهزة.",
+      "description": "تابع طلبات التربص المعلقة وانتقل مباشرة إلى تفاصيل التحقق.",
+      "openQueue": "فتح قائمة التحقق",
+      "pendingLabel": "التحققات المعلقة",
+      "queueStatusLabel": "حالة القائمة",
+      "queueBusy": "هناك طلبات إضافية تنتظر في القائمة.",
+      "queueClear": "لا توجد طلبات معلقة حالياً.",
+      "recentTitle": "أحدث الطلبات المعلقة",
+      "empty": "لا توجد تحققات معلقة في قسمك.",
+      "acceptedOn": "تم القبول في"
     },
     "explore": {
       "pageTitle": "استكشاف التدريبات",
@@ -781,14 +933,22 @@
         "hybrid": "هجين",
         "remote": "عن بُعد"
       },
+      "application": "الطلب",
+      "internshipOffer": "عرض تدريب",
+      "trustIndex": "مؤشر الثقة",
       "copilot": {
         "draftWithAi": "كتابة بالذكاء الاصطناعي",
-        "aiStatus": "الذكاء الاصطناعي: {status}",
+        "drafting": "جاري الكتابة...",
         "previewTitle": "معاينة مسودة الذكاء الاصطناعي",
-        "applyDraft": "تطبيق المسودة",
-        "prompts": {
-          "draftCoverLetter": "صياغة رسالة تغطية"
-        }
+        "applyDraft": "تطبيق المسودة"
+      },
+      "matching": {
+        "title": "لماذا هذا التطابق؟",
+        "computing": "جاري حساب درجة التوافق...",
+        "unavailable": "الدرجة غير متاحة حالياً.",
+        "missingSkills": "المهارات المفقودة",
+        "estimatedImprovement": "تحسن مقدّر: +{delta}% من الجاهزية",
+        "readinessTrend": "اتجاه الجاهزية"
       }
     },
     "applications": {
@@ -823,6 +983,67 @@
       "loadMore": "تحميل المزيد",
       "exploreOffers": "استكشاف التدريبات"
     },
+    "documents": {
+      "pageTitle": "مستنداتي",
+      "title": "مستنداتي",
+      "subtitle": "عرض وتنزيل اتفاقيات التدريب والشهادات الخاصة بك",
+      "empty": "لا توجد مستندات تدريب متاحة بعد.",
+      "loadError": "تعذر تحميل مستنداتك.",
+      "retry": "إعادة المحاولة",
+      "download": "تنزيل",
+      "downloading": "جارٍ التنزيل...",
+      "agreement": "اتفاقية التدريب",
+      "certificate": "شهادة التدريب",
+      "status": {
+        "pending": "قيد الانتظار",
+        "generated": "مُنشأ",
+        "failed": "فشل"
+      },
+      "placement": {
+        "company": "الشركة",
+        "offer": "العرض",
+        "type": "النوع",
+        "startDate": "تاريخ البدء",
+        "endDate": "تاريخ الانتهاء",
+        "validatedAt": "تاريخ الاعتماد",
+        "verificationCode": "رمز التحقق",
+        "notAvailable": "غير متاح"
+      },
+      "downloadError": "فشل تنزيل المستند."
+    },
+    "companyDocuments": {
+      "pageTitle": "وثائق الشركة",
+      "title": "وثائق الشركة",
+      "subtitle": "إنشاء وتنزيل شهادات التربص للمواضع المعتمدة",
+      "empty": "لا توجد مواضع معتمدة لهذه الشركة.",
+      "loadError": "تعذر تحميل وثائق الشركة.",
+      "retry": "إعادة المحاولة",
+      "generate": "إنشاء الشهادة",
+      "generating": "جارٍ الإنشاء...",
+      "download": "تنزيل",
+      "downloading": "جارٍ التنزيل...",
+      "generatedSuccess": "تم إنشاء الشهادة بنجاح.",
+      "generateError": "فشل إنشاء الشهادة.",
+      "downloadError": "فشل تنزيل المستند.",
+      "agreement": "اتفاقية التدريب",
+      "certificate": "شهادة التدريب",
+      "status": {
+        "notGenerated": "غير منشأة",
+        "pending": "قيد الانتظار",
+        "generated": "مُنشأ",
+        "failed": "فشل"
+      },
+      "placement": {
+        "student": "الطالب",
+        "offer": "العرض",
+        "type": "النوع",
+        "startDate": "تاريخ البدء",
+        "endDate": "تاريخ الانتهاء",
+        "validatedAt": "تاريخ الاعتماد",
+        "verificationCode": "رمز التحقق",
+        "notAvailable": "غير متاح"
+      }
+    },
     "admin": {
       "title": "لوحة تحكم المشرف",
       "subtitle": "نظرة عامة على نشاط المنصة",
@@ -854,7 +1075,6 @@
           "department": "القسم",
           "level": "المستوى",
           "university": "الجامعة",
-          "dean": "العميد",
           "address": "العنوان",
           "skills": "المهارات",
           "companyInfo": "معلومات الشركة",
@@ -920,16 +1140,54 @@
         "headName": "اسم الرئيس (اختياري)",
         "headNamePlaceholder": "مثال: د. أحمد بن علي",
         "assignHead": "تعيين رئيس",
+        "manageSkills": "المهارات",
         "assignHeadTitle": "تعيين رئيس القسم",
-        "assignHeadDescription": "اختر مستخدماً لتعيينه كرئيس لهذا القسم.",
+        "assignHeadDescription": "أدخل بيانات رئيس القسم القادم. إذا لم يكن المستخدم موجوداً، سيتم إنشاء حساب له تلقائياً.",
         "selectUser": "اختر مستخدم",
         "noUsersAvailable": "لا يوجد مستخدمون متاحون.",
+        "passwordResetHint": "سيتم إرسال رابط إعادة تعيين كلمة المرور لتفعيل حساب رئيس القسم.",
         "save": "حفظ",
         "cancel": "إلغاء",
         "createSuccess": "تم إنشاء القسم بنجاح.",
         "updateSuccess": "تم تحديث القسم بنجاح.",
         "assignSuccess": "تم تعيين رئيس القسم بنجاح.",
-        "error": "حدث خطأ. يرجى المحاولة مرة أخرى."
+        "removeHead": "إزالة الرئيس",
+        "removeHeadTitle": "إزالة رئيس القسم",
+        "removeHeadDescription": "سيتم إلغاء تعيين {headName} من قسم {name}. سيتم الاحتفاظ بحساب المستخدم.",
+        "removeHeadSuccess": "تمت إزالة رئيس القسم بنجاح.",
+        "deleteDepartment": "حذف القسم",
+        "deleteDepartmentTitle": "حذف القسم",
+        "deleteDepartmentDescription": "حذف {name}؟ لا يمكن التراجع عن هذا الإجراء.",
+        "deleteSuccess": "تم حذف القسم بنجاح.",
+        "error": "حدث خطأ. يرجى المحاولة مرة أخرى.",
+        "skills": {
+          "title": "المهارات الخاصة بـ {name}",
+          "description": "اختر المهارات المناسبة لهذا القسم. سيشاهدها الطلاب كمهارات موصى بها.",
+          "save": "حفظ المهارات",
+          "cancel": "إلغاء",
+          "skillsSelected": "مهارة محددة",
+          "searchPlaceholder": "ابحث عن المهارات...",
+          "saveSuccess": "تم تحديث مهارات القسم.",
+          "saveError": "تعذر تحديث مهارات القسم."
+        },
+        "bulkCreate": {
+          "title": "إنشاء أقسام بالجملة",
+          "description": "أنشئ عدة أقسام وعيّن رؤساءها دفعة واحدة. سيتلقى كل رئيس بريد ترحيب مع رابط لتعيين كلمة المرور.",
+          "departmentName": "اسم القسم",
+          "departmentNamePlaceholder": "مثال: علوم الحاسوب",
+          "headEmail": "بريد الرئيس",
+          "headEmailPlaceholder": "مثال: رئيس@جامعة.dz",
+          "headName": "اسم الرئيس",
+          "headNamePlaceholder": "مثال: د. أحمد بن علي",
+          "addRow": "إضافة صف",
+          "removeRow": "حذف الصف",
+          "submit": "إنشاء الكل",
+          "submitting": "جارٍ الإنشاء...",
+          "successMessage": "تم إنشاء {count} قسم(أقسام) بنجاح.",
+          "partialSuccess": "تم إنشاء {created}، فشل {failed}.",
+          "rowError": "{name}: {error}",
+          "error": "حدث خطأ. يرجى المحاولة مرة أخرى."
+        }
       },
       "deptValidations": {
         "title": "تصديقات القسم",
@@ -968,7 +1226,6 @@
           "noDomains": "لا توجد نطاقات مسجلة",
           "location": "الموقع",
           "department": "القسم",
-          "dean": "العميد",
           "registeredAt": "تاريخ التسجيل"
         }
       },
@@ -1258,7 +1515,18 @@
       "headNamePlaceholder": "مثال: د. محمد",
       "save": "إنشاء القسم",
       "success": "تم إنشاء القسم بنجاح",
-      "error": "فشل إنشاء القسم"
+      "error": "فشل إنشاء القسم",
+      "manageSkills": "المهارات",
+      "skills": {
+        "title": "مهارات {name}",
+        "description": "حدد المهارات المتعلقة بهذا القسم. سيراها الطلاب كمهارات موصى بها.",
+        "save": "حفظ المهارات",
+        "cancel": "إلغاء",
+        "skillsSelected": "مهارات مختارة",
+        "searchPlaceholder": "البحث عن مهارات...",
+        "saveSuccess": "تم تحديث مهارات القسم.",
+        "saveError": "تعذر تحديث المهارات."
+      }
     }
   },
   "howItWorks": {

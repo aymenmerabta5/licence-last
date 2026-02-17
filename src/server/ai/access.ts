@@ -1,7 +1,5 @@
 import "server-only"
 
-export type AssistantRole = "student" | "company_admin" | "university_admin" | "super_admin"
-
 export function isRoleAllowedForIntent({
   role,
   intent,
@@ -12,13 +10,16 @@ export function isRoleAllowedForIntent({
   if (!role) return false
 
   const isAdmin = role === "university_admin" || role === "super_admin"
+  const isDeptHead = role === "dept_head"
   const isCompanyAdmin = role === "company_admin"
   const isStudent = role === "student"
 
-  if (intent === "admin_validation_summary") return isAdmin
+  if (intent === "admin_validation_summary") return isAdmin || isDeptHead
   if (intent === "student_search_parse" || intent === "student_cover_letter_draft") return isStudent
   if (intent === "notifications_summarize") return true
 
-  // Default: company-facing assistants (or no intent)
+  // Free-form chat (no intent): company admins + all admin roles
+  if (!intent) return isCompanyAdmin || isAdmin || isDeptHead
+
   return isCompanyAdmin
 }

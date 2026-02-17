@@ -27,7 +27,7 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
       <div className="grid grid-cols-3">
         {stats.map((stat, i) => {
           const Icon = stat.icon
-          const isHighlight = stat.title === "Profile" && stat.value === "100%"
+          const isHighlight = stat.value === "100%"
 
           return (
             <div

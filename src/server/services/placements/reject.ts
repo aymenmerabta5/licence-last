@@ -13,6 +13,7 @@ import { company, companyMember } from "@/server/db/schema/companies"
 import { user } from "@/server/db/schema/auth"
 import { studentProfile } from "@/server/db/schema/students"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
+import { ServiceError } from "@/server/services/errors"
 
 export interface RejectPlacementInput {
   applicationId: string
@@ -51,27 +52,39 @@ export async function rejectPlacement(
     .limit(1)
 
   if (!app) {
-    throw new Error("Application not found")
+    throw new ServiceError("APPLICATION_NOT_FOUND", "Application not found")
   }
 
   if (app.status !== "company_accepted") {
-    throw new Error("Only company-accepted applications can be rejected by admin")
+    throw new ServiceError(
+      "APPLICATION_NOT_COMPANY_ACCEPTED",
+      "Only company-accepted applications can be rejected by admin",
+    )
   }
 
   // Scoping: dept_head → department, admin → university, super_admin → any
   if (adminRole === "dept_head") {
     if (!adminDepartmentId) {
-      throw new Error("Department head department not set")
+      throw new ServiceError(
+        "ADMIN_DEPARTMENT_NOT_SET",
+        "Department head department not set",
+      )
     }
     if (!app.studentDepartmentId || app.studentDepartmentId !== adminDepartmentId) {
-      throw new Error("You can only reject placements for students in your department")
+      throw new ServiceError(
+        "PLACEMENT_SCOPE_FORBIDDEN_DEPARTMENT",
+        "You can only reject placements for students in your department",
+      )
     }
   } else if (adminRole !== "super_admin") {
     if (!adminUniversityId) {
-      throw new Error("Admin university not set")
+      throw new ServiceError("ADMIN_UNIVERSITY_NOT_SET", "Admin university not set")
     }
     if (!app.studentUniversityId || app.studentUniversityId !== adminUniversityId) {
-      throw new Error("You do not have access to reject this application")
+      throw new ServiceError(
+        "PLACEMENT_SCOPE_FORBIDDEN_UNIVERSITY",
+        "You do not have access to reject this application",
+      )
     }
   }
 

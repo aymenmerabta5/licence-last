@@ -105,7 +105,6 @@ describe("createUniversity", () => {
         name: "University of Oran",
         abbreviation: "USTO",
         departments: [{ name: "CS" }],
-        deanName: "Dr. Mohamed",
         phone: "+213555111222",
         wilayaCode: 31,
         city: "Oran",

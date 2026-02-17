@@ -1,8 +1,11 @@
 import { test as setup } from "@playwright/test"
 import { randomUUID } from "crypto"
 import { execSync } from "child_process"
+import { existsSync, readFileSync } from "node:fs"
+import { join } from "node:path"
 import postgres from "postgres"
 import { drizzle } from "drizzle-orm/postgres-js"
+import { hashPassword } from "better-auth/crypto"
 
 import * as schema from "../src/server/db/schema"
 import { user, account } from "../src/server/db/schema/auth"
@@ -29,14 +32,20 @@ const TEST_USERS = {
   },
 }
 
-/**
- * Hash password using Bun's built-in bcrypt
- */
-async function hashPassword(password: string): Promise<string> {
-  return await Bun.password.hash(password, {
-    algorithm: "bcrypt",
-    cost: 10,
-  })
+function loadDatabaseUrlFromEnvFile(): string | undefined {
+  const envPath = join(process.cwd(), ".env.development")
+  if (!existsSync(envPath)) {
+    return undefined
+  }
+
+  const envLines = readFileSync(envPath, "utf8").split(/\r?\n/)
+  const databaseLine = envLines.find((line) => line.startsWith("DATABASE_URL="))
+  if (!databaseLine) {
+    return undefined
+  }
+
+  const rawValue = databaseLine.slice("DATABASE_URL=".length).trim()
+  return rawValue.replace(/^['"]|['"]$/g, "")
 }
 
 /**
@@ -48,7 +57,7 @@ async function hashPassword(password: string): Promise<string> {
 setup("setup test database", async () => {
   console.info("\n🧪 Setting up E2E test environment...\n")
 
-  const databaseUrl = process.env.DATABASE_URL
+  const databaseUrl = process.env.DATABASE_URL ?? loadDatabaseUrlFromEnvFile()
   if (!databaseUrl) {
     throw new Error("DATABASE_URL is required for E2E tests")
   }
@@ -85,24 +94,27 @@ setup("setup test database", async () => {
     for (const table of tablesResult) {
       await client.unsafe(`DROP TABLE IF EXISTS "${table.table_name}" CASCADE;`)
     }
+
+    // Reset Drizzle migration state so migrations are fully reapplied.
+    await client`DROP SCHEMA IF EXISTS "drizzle" CASCADE;`
     
     console.info("✅ Database reset complete\n")
 
     // ─────────────────────────────────────────────────────────
-    // STEP 2: Run Migrations
+    // STEP 2: Sync Database Schema
     // ─────────────────────────────────────────────────────────
-    console.info("📊 Running database migrations...")
+    console.info("📊 Syncing database schema...")
     
-    // We need to run migrations to recreate tables
-    // This uses the drizzle-kit migrate command
+    // Use schema push for E2E resets because migration history may not be present
+    // on ephemeral databases.
     try {
-      execSync("bun run db:migrate:dev", {
+      execSync("bun run db:push:dev", {
         stdio: "inherit",
         env: process.env,
       })
-      console.info("✅ Migrations complete\n")
+      console.info("✅ Schema sync complete\n")
     } catch (error) {
-      console.error("❌ Migration failed:", error)
+      console.error("❌ Schema sync failed:", error)
       throw error
     }
 

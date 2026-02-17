@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator"
 import { Link } from "@/i18n/routing"
 
 import { ease } from "@/lib/animations"
+import { TurnstileWidget } from "@/components/TurnstileWidget"
 import type { SignupFormProps } from "./types"
 import { useSignupForm } from "./hooks/useSignupForm"
 import { SignupFields } from "./components/SignupFields"
@@ -19,7 +20,7 @@ import { SignupSuccess } from "./components/SignupSuccess"
 export function SignupForm({ role, onBack }: SignupFormProps) {
   const t = useTranslations("auth.signup")
   const tc = useTranslations("auth.signup.companySignup")
-  const { form, serverError, success } = useSignupForm(role)
+  const { form, serverError, success, setTurnstileToken, turnstileRef } = useSignupForm(role)
 
   const tu = useTranslations("auth.signup.universitySignup")
 
@@ -87,6 +88,12 @@ export function SignupForm({ role, onBack }: SignupFormProps) {
       >
         <SignupFields form={form} labels={labels} />
       </motion.div>
+
+      <TurnstileWidget
+        ref={turnstileRef}
+        onVerify={setTurnstileToken}
+        onExpire={() => setTurnstileToken("")}
+      />
 
       <form.Subscribe
         selector={(state) => [state.isSubmitting] as const}

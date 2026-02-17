@@ -7,22 +7,41 @@ export const STATUS_STYLES: Record<string, string> = {
   withdrawn: "bg-muted text-muted-foreground/60",
 }
 
-export const STATUS_LABELS: Record<string, string> = {
-  applied: "Pending",
-  company_accepted: "Accepted",
-  company_refused: "Refused",
-  admin_validated: "Validated",
-  admin_rejected: "Rejected",
-  withdrawn: "Withdrawn",
+export const STATUS_TRANSLATION_KEYS: Record<string, string> = {
+  applied: "applied",
+  company_accepted: "company_accepted",
+  company_refused: "company_refused",
+  admin_validated: "admin_validated",
+  admin_rejected: "admin_rejected",
+  withdrawn: "withdrawn",
 }
 
-export function relativeTime(isoDate: string): string {
-  const diff = Date.now() - new Date(isoDate).getTime()
-  const mins = Math.floor(diff / 60000)
-  if (mins < 60) return `${mins}m ago`
-  const hrs = Math.floor(mins / 60)
-  if (hrs < 24) return `${hrs}h ago`
-  const days = Math.floor(hrs / 24)
-  if (days < 30) return `${days}d ago`
-  return `${Math.floor(days / 30)}mo ago`
+export function relativeTime(isoDate: string, locale: string): string {
+  const targetTime = new Date(isoDate).getTime()
+  if (Number.isNaN(targetTime)) {
+    return ""
+  }
+
+  const diffMinutes = Math.round((targetTime - Date.now()) / 60000)
+  const absMinutes = Math.abs(diffMinutes)
+  const formatter = new Intl.RelativeTimeFormat(locale, { numeric: "auto" })
+
+  if (absMinutes < 60) {
+    return formatter.format(diffMinutes, "minute")
+  }
+
+  const diffHours = Math.round(diffMinutes / 60)
+  const absHours = Math.abs(diffHours)
+  if (absHours < 24) {
+    return formatter.format(diffHours, "hour")
+  }
+
+  const diffDays = Math.round(diffHours / 24)
+  const absDays = Math.abs(diffDays)
+  if (absDays < 30) {
+    return formatter.format(diffDays, "day")
+  }
+
+  const diffMonths = Math.round(diffDays / 30)
+  return formatter.format(diffMonths, "month")
 }

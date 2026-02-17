@@ -21,9 +21,9 @@ export const superAdmin = ac.newRole({
   session: ["list", "revoke", "delete"],
 })
 
-/** university_admin — university admin, read-only admin panel access */
+/** university_admin — scoped university user management */
 export const universityAdmin = ac.newRole({
-  user: ["list"],
+  user: ["list", "ban", "delete"],
   session: ["list"],
 })
 

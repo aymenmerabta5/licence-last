@@ -8,6 +8,7 @@ import {
   adminProcedureStandard,
   deptHeadProcedureGenerous,
   deptHeadProcedureStandard,
+  assistantProcedureLimited,
 } from "@/server/orpc/rate-limited-procedures"
 import {
   parseInputDate,
@@ -16,6 +17,17 @@ import {
 import { listPendingApplications } from "@/server/services/placements/list-pending"
 import { validatePlacement } from "@/server/services/placements/validate"
 import { rejectPlacement } from "@/server/services/placements/reject"
+import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+
+const PLACEMENT_ERROR_MAP = {
+  APPLICATION_NOT_FOUND: "NOT_FOUND",
+  APPLICATION_NOT_COMPANY_ACCEPTED: "BAD_REQUEST",
+  ADMIN_DEPARTMENT_NOT_SET: "FORBIDDEN",
+  ADMIN_UNIVERSITY_NOT_SET: "FORBIDDEN",
+  PLACEMENT_SCOPE_FORBIDDEN_DEPARTMENT: "FORBIDDEN",
+  PLACEMENT_SCOPE_FORBIDDEN_UNIVERSITY: "FORBIDDEN",
+  PLACEMENT_ALREADY_EXISTS: "CONFLICT",
+} as const
 
 /* ── List Pending Placements (admin only) ── */
 
@@ -74,9 +86,10 @@ export const validateProcedure = adminProcedureStandard
         endDate,
       })
     } catch (error) {
-      if (error instanceof ORPCError) throw error
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "An unexpected error occurred",
+      createServiceORPCError(error, {
+        codeMap: PLACEMENT_ERROR_MAP,
+        fallbackMessage: "Failed to validate placement",
+        fallbackCode: "BAD_REQUEST",
       })
     }
   })
@@ -103,9 +116,10 @@ export const rejectProcedure = adminProcedureStandard
         },
       )
     } catch (error) {
-      if (error instanceof ORPCError) throw error
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "An unexpected error occurred",
+      createServiceORPCError(error, {
+        codeMap: PLACEMENT_ERROR_MAP,
+        fallbackMessage: "Failed to reject placement",
+        fallbackCode: "BAD_REQUEST",
       })
     }
   })
@@ -168,11 +182,27 @@ export const deptHeadValidateProcedure = deptHeadProcedureStandard
         endDate,
       })
     } catch (error) {
-      if (error instanceof ORPCError) throw error
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "An unexpected error occurred",
+      createServiceORPCError(error, {
+        codeMap: PLACEMENT_ERROR_MAP,
+        fallbackMessage: "Failed to validate placement",
+        fallbackCode: "BAD_REQUEST",
       })
     }
+  })
+
+/* ── AI Validation Summary (any authenticated admin/dept_head) ── */
+
+export const generateValidationSummaryProcedure = assistantProcedureLimited
+  .input(
+    z.object({
+      application: z.record(z.string(), z.unknown()),
+    }),
+  )
+  .handler(async ({ input }) => {
+    const { generateValidationSummary } = await import(
+      "@/server/services/placements/generate-validation-summary"
+    )
+    return generateValidationSummary(input)
   })
 
 /* ── Dept Head: Reject Placement ── */
@@ -195,9 +225,10 @@ export const deptHeadRejectProcedure = deptHeadProcedureStandard
         reason: input.reason,
       })
     } catch (error) {
-      if (error instanceof ORPCError) throw error
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "An unexpected error occurred",
+      createServiceORPCError(error, {
+        codeMap: PLACEMENT_ERROR_MAP,
+        fallbackMessage: "Failed to reject placement",
+        fallbackCode: "BAD_REQUEST",
       })
     }
   })

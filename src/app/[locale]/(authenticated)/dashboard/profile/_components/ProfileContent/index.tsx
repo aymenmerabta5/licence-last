@@ -18,9 +18,15 @@ function buildProfileText(
   profile: ReturnType<typeof useProfileData>["profile"],
   skills: ReturnType<typeof useProfileData>["skills"],
   university: ReturnType<typeof useProfileData>["university"],
+  labels: {
+    anonymousUser: string
+    skillsLabel: string
+    githubLabel: string
+    portfolioLabel: string
+  },
 ): string {
   const lines: string[] = []
-  lines.push(user.name || "Anonymous User")
+  lines.push(user.name || labels.anonymousUser)
   if (user.email) lines.push(user.email)
   if (profile?.phone) lines.push(profile.phone)
   if (profile?.department) {
@@ -34,10 +40,10 @@ function buildProfileText(
   }
   if (skills.length > 0) {
     lines.push("")
-    lines.push(`Skills: ${skills.map((s) => s.name).join(", ")}`)
+    lines.push(`${labels.skillsLabel}: ${skills.map((s) => s.name).join(", ")}`)
   }
-  if (profile?.githubUrl) lines.push(`GitHub: ${profile.githubUrl}`)
-  if (profile?.portfolioUrl) lines.push(`Portfolio: ${profile.portfolioUrl}`)
+  if (profile?.githubUrl) lines.push(`${labels.githubLabel}: ${profile.githubUrl}`)
+  if (profile?.portfolioUrl) lines.push(`${labels.portfolioLabel}: ${profile.portfolioUrl}`)
   return lines.join("\n")
 }
 
@@ -46,10 +52,25 @@ export function ProfileContent({ viewer, user, studentData }: ProfileContentProp
   const { canEdit, profile, stats, university, skills } = useProfileData(
     viewer,
     user,
+    (key, values) => t(key, values),
     studentData,
   )
 
-  const profileText = buildProfileText(user, profile, skills, university)
+  const roleLabels: Record<string, string> = {
+    student: t("student.profile.roles.student"),
+    company_admin: t("student.profile.roles.company_admin"),
+    dept_head: t("student.profile.roles.dept_head"),
+    university_admin: t("student.profile.roles.university_admin"),
+    super_admin: t("student.profile.roles.super_admin"),
+  }
+  const roleLabel = roleLabels[user.role || "student"] || user.role || t("student.profile.unknownRole")
+
+  const profileText = buildProfileText(user, profile, skills, university, {
+    anonymousUser: t("student.profile.anonymousUser"),
+    skillsLabel: t("student.profile.skillsLabel"),
+    githubLabel: t("student.profile.githubLabel"),
+    portfolioLabel: t("student.profile.portfolioLabel"),
+  })
 
   const sidebarLabels = {
     personalInfo: t("student.profile.personalInfo"),
@@ -58,34 +79,39 @@ export function ProfileContent({ viewer, user, studentData }: ProfileContentProp
     location: t("student.profile.location"),
     studentNumber: t("student.profile.studentNumber"),
     department: t("student.profile.department"),
+    role: t("student.profile.role"),
+    notSetYet: t("student.profile.notSetYet"),
   }
 
   const skillsLabels = {
     skills: t("student.profile.skills"),
-    addSkills: "Add Skills",
-    emptyMessage: "Add your technical skills to stand out to recruiters",
+    addSkills: t("student.profile.addSkills"),
+    emptyMessage: t("student.profile.skillsEmptyMessage"),
   }
 
   const socialLabels = {
     links: t("student.profile.links"),
+    github: t("student.profile.githubLabel"),
+    portfolio: t("student.profile.portfolioLabel"),
   }
 
   const bioLabels = {
     bio: t("student.profile.bio"),
-    emptyMessage: "No bio added yet. Tell companies and recruiters about yourself, your interests, and what kind of internship you are looking for.",
-    writeBio: "Write your bio",
+    emptyMessage: t("student.profile.bioEmptyMessage"),
+    writeBio: t("student.profile.writeBio"),
   }
 
   const educationLabels = {
-    education: "Education",
-    emptyMessage: "Your education history will appear here once you complete your profile.",
-    addEducation: "Add Education",
+    education: t("student.profile.educationTitle"),
+    emptyMessage: t("student.profile.educationEmptyMessage"),
+    addEducation: t("student.profile.addEducation"),
+    university: t("student.profile.university"),
   }
 
   const experienceLabels = {
-    experience: "Experience",
-    emptyMessage: "Add your work experience, open source contributions, or personal projects to strengthen your profile.",
-    addExperience: "Add Experience",
+    experience: t("student.profile.experienceTitle"),
+    emptyMessage: t("student.profile.experienceEmptyMessage"),
+    addExperience: t("student.profile.addExperience"),
   }
 
   return (
@@ -93,9 +119,9 @@ export function ProfileContent({ viewer, user, studentData }: ProfileContentProp
       {/* Editorial Masthead */}
       <ProfileHeader
         user={user}
-        editButtonLabel={t("student.profile.edit")}
         canEdit={canEdit}
         profileText={profileText}
+        roleLabel={roleLabel}
       />
 
       {/* Stats Bulletin */}
@@ -108,6 +134,7 @@ export function ProfileContent({ viewer, user, studentData }: ProfileContentProp
           <ContactInfoCard
             user={user}
             profile={profile}
+            roleLabel={roleLabel}
             labels={sidebarLabels}
           />
           <SkillsCard

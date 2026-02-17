@@ -1,17 +1,10 @@
 "use client"
 
-import { useRef, useState } from "react"
-import { DefaultChatTransport } from "ai"
-import { useChat } from "@ai-sdk/react"
+import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 
 import { useRouter } from "@/i18n/routing"
-import {
-  asRecord,
-  findLatestToolOutput,
-  getStringArray,
-} from "@/lib/ai/tool-output"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
 import type { AdminValidationSummary } from "../types"
@@ -31,38 +24,14 @@ export function usePlacementActions(applicationId: string) {
   const [aiSummary, setAiSummary] = useState<AdminValidationSummary | null>(
     null,
   )
-  const aiActiveRef = useRef(false)
 
-  const [aiTransport] = useState(
-    () => new DefaultChatTransport({ api: "/api/assistant/chat" }),
+  const summaryMutation = useMutation(
+    orpc.placements.generateValidationSummary.mutationOptions({
+      onSuccess: (data) => {
+        setAiSummary(data)
+      },
+    }),
   )
-
-  const {
-    status: aiStatus,
-    error: aiError,
-    sendMessage: sendAiMessage,
-    setMessages: setAiMessages,
-  } = useChat({
-    transport: aiTransport,
-    onFinish: ({ messages }) => {
-      if (!aiActiveRef.current) return
-      const output = findLatestToolOutput(
-        messages,
-        "admin_validation_summary",
-      )
-      const record = asRecord(output)
-      if (!record) return
-
-      setAiSummary({
-        summaryBullets: getStringArray(record.summaryBullets),
-        checklist: getStringArray(record.checklist),
-        potentialInconsistencies: getStringArray(
-          record.potentialInconsistencies,
-        ),
-      })
-      aiActiveRef.current = false
-    },
-  })
 
   const validateMutation = useMutation(
     orpc.placements.validate.mutationOptions({
@@ -133,20 +102,14 @@ export function usePlacementActions(applicationId: string) {
   }
 
   function generateAiSummary(application: Record<string, unknown>) {
-    aiActiveRef.current = true
     setAiSummary(null)
-    setAiMessages([])
-
-    const context = {
-      intent: "admin_validation_summary",
+    summaryMutation.mutate({
       application: {
         ...application,
         selectedStartDate: startDate || null,
         selectedEndDate: endDate || null,
       },
-    }
-
-    void sendAiMessage({ text: t("ai.prompt") }, { body: { context } })
+    })
   }
 
   return {
@@ -163,9 +126,8 @@ export function usePlacementActions(applicationId: string) {
     handleValidate,
     handleReject,
     aiSummary,
-    aiStatus,
-    aiError,
-    aiActiveRef,
+    isSummarizing: summaryMutation.isPending,
+    summaryError: summaryMutation.error,
     generateAiSummary,
   }
 }

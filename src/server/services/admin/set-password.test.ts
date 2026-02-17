@@ -5,6 +5,7 @@ const mockHeaders = mock(() => Promise.resolve(new Headers()))
 
 mock.module("@/lib/auth", () => ({
   auth: { api: { setUserPassword: mockSetUserPassword } },
+  pendingWelcomeEmails: new Map(),
 }))
 mock.module("next/headers", () => ({ headers: mockHeaders }))
 

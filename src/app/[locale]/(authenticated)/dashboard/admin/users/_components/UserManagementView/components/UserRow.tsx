@@ -31,6 +31,9 @@ interface UserRowProps {
   onSetRole: (user: AdminUser) => void
   onSetPassword: (user: AdminUser) => void
   onDelete: (user: AdminUser) => void
+  canViewDetails: boolean
+  canSetRole: boolean
+  canSetPassword: boolean
 }
 
 const roleBadgeVariant: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
@@ -40,8 +43,19 @@ const roleBadgeVariant: Record<string, "default" | "secondary" | "destructive" |
   student: "outline",
 }
 
-export function UserRow({ user, onBan, onUnban, onSetRole, onSetPassword, onDelete }: UserRowProps) {
+export function UserRow({
+  user,
+  onBan,
+  onUnban,
+  onSetRole,
+  onSetPassword,
+  onDelete,
+  canViewDetails,
+  canSetRole,
+  canSetPassword,
+}: UserRowProps) {
   const t = useTranslations("dashboard.superAdmin.users")
+  const hasAdminOnlyActions = canViewDetails || canSetRole || canSetPassword
 
   return (
     <TableRow>
@@ -83,21 +97,27 @@ export function UserRow({ user, onBan, onUnban, onSetRole, onSetPassword, onDele
             <MoreHorizontal className="h-4 w-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              render={<Link href={`/dashboard/admin/users/${user.id}` as "/dashboard"} />}
-            >
-              <Eye className="h-4 w-4 me-2" />
-              {t("actions.view")}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onSetRole(user)}>
-              <ShieldCheck className="h-4 w-4 me-2" />
-              {t("actions.setRole")}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onSetPassword(user)}>
-              <KeyRound className="h-4 w-4 me-2" />
-              {t("actions.setPassword")}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            {canViewDetails && (
+              <DropdownMenuItem
+                render={<Link href={`/dashboard/admin/users/${user.id}` as "/dashboard"} />}
+              >
+                <Eye className="h-4 w-4 me-2" />
+                {t("actions.view")}
+              </DropdownMenuItem>
+            )}
+            {canSetRole && (
+              <DropdownMenuItem onClick={() => onSetRole(user)}>
+                <ShieldCheck className="h-4 w-4 me-2" />
+                {t("actions.setRole")}
+              </DropdownMenuItem>
+            )}
+            {canSetPassword && (
+              <DropdownMenuItem onClick={() => onSetPassword(user)}>
+                <KeyRound className="h-4 w-4 me-2" />
+                {t("actions.setPassword")}
+              </DropdownMenuItem>
+            )}
+            {hasAdminOnlyActions && <DropdownMenuSeparator />}
             {user.banned ? (
               <DropdownMenuItem onClick={() => onUnban(user.id)}>
                 <ShieldOff className="h-4 w-4 me-2" />

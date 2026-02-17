@@ -1,17 +1,10 @@
 "use client"
 
-import { useRef, useState } from "react"
-import { DefaultChatTransport } from "ai"
-import { useChat } from "@ai-sdk/react"
+import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 
 import { useRouter } from "@/i18n/routing"
-import {
-  asRecord,
-  findLatestToolOutput,
-  getStringArray,
-} from "@/lib/ai/tool-output"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
 type ValidationSummary = {
@@ -27,44 +20,21 @@ export function useDeptHeadPlacementActions(applicationId: string) {
 
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
+  const [validateModal, setValidateModal] = useState(false)
   const [rejectModal, setRejectModal] = useState(false)
   const [rejectReason, setRejectReason] = useState("")
   const [actionLoading, setActionLoading] = useState(false)
   const [pdfLoading, setPdfLoading] = useState(false)
 
   const [aiSummary, setAiSummary] = useState<ValidationSummary | null>(null)
-  const aiActiveRef = useRef(false)
 
-  const [aiTransport] = useState(
-    () => new DefaultChatTransport({ api: "/api/assistant/chat" }),
+  const summaryMutation = useMutation(
+    orpc.placements.generateValidationSummary.mutationOptions({
+      onSuccess: (data) => {
+        setAiSummary(data)
+      },
+    }),
   )
-
-  const {
-    status: aiStatus,
-    error: aiError,
-    sendMessage: sendAiMessage,
-    setMessages: setAiMessages,
-  } = useChat({
-    transport: aiTransport,
-    onFinish: ({ messages }) => {
-      if (!aiActiveRef.current) return
-      const output = findLatestToolOutput(
-        messages,
-        "admin_validation_summary",
-      )
-      const record = asRecord(output)
-      if (!record) return
-
-      setAiSummary({
-        summaryBullets: getStringArray(record.summaryBullets),
-        checklist: getStringArray(record.checklist),
-        potentialInconsistencies: getStringArray(
-          record.potentialInconsistencies,
-        ),
-      })
-      aiActiveRef.current = false
-    },
-  })
 
   const validateMutation = useMutation(
     orpc.deptHead.validate.mutationOptions({
@@ -105,24 +75,39 @@ export function useDeptHeadPlacementActions(applicationId: string) {
     }),
   )
 
-  const handleValidate = () => {
+  const getValidatedDates = () => {
     if (!startDate || !endDate) {
       alert(t("selectDates"))
-      return
+      return null
     }
     const start = new Date(startDate)
     const end = new Date(endDate)
     if (start >= end) {
       alert(t("invalidDates"))
-      return
+      return null
     }
-    if (!window.confirm(t("confirmValidate"))) return
+
+    return { start, end }
+  }
+
+  const handleValidate = () => {
+    const dates = getValidatedDates()
+    if (!dates) return
+
+    setValidateModal(true)
+  }
+
+  const handleConfirmValidate = () => {
+    const dates = getValidatedDates()
+    if (!dates) return
+
+    setValidateModal(false)
 
     setActionLoading(true)
     validateMutation.mutate({
       applicationId,
-      startDate: start.toISOString(),
-      endDate: end.toISOString(),
+      startDate: dates.start.toISOString(),
+      endDate: dates.end.toISOString(),
     })
   }
 
@@ -135,20 +120,14 @@ export function useDeptHeadPlacementActions(applicationId: string) {
   }
 
   function generateAiSummary(application: Record<string, unknown>) {
-    aiActiveRef.current = true
     setAiSummary(null)
-    setAiMessages([])
-
-    const context = {
-      intent: "admin_validation_summary",
+    summaryMutation.mutate({
       application: {
         ...application,
         selectedStartDate: startDate || null,
         selectedEndDate: endDate || null,
       },
-    }
-
-    void sendAiMessage({ text: t("ai.prompt") }, { body: { context } })
+    })
   }
 
   return {
@@ -156,6 +135,8 @@ export function useDeptHeadPlacementActions(applicationId: string) {
     setStartDate,
     endDate,
     setEndDate,
+    validateModal,
+    setValidateModal,
     rejectModal,
     setRejectModal,
     rejectReason,
@@ -163,11 +144,11 @@ export function useDeptHeadPlacementActions(applicationId: string) {
     actionLoading,
     pdfLoading,
     handleValidate,
+    handleConfirmValidate,
     handleReject,
     aiSummary,
-    aiStatus,
-    aiError,
-    aiActiveRef,
+    isSummarizing: summaryMutation.isPending,
+    summaryError: summaryMutation.error,
     generateAiSummary,
   }
 }

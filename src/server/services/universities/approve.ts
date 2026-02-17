@@ -18,7 +18,7 @@ export async function approveUniversity(
 ) {
   log.info({ universityId, approvedByUserId }, "Approving university")
 
-  await db.transaction(async (tx) => {
+  const result = await db.transaction(async (tx) => {
     const [updated] = await tx
       .update(university)
       .set({
@@ -41,7 +41,8 @@ export async function approveUniversity(
       .where(eq(universityDomain.universityId, universityId))
 
     log.info({ universityId: updated.id, event: "university_approved" }, "University approved")
+    return updated
   })
 
-  return { universityId }
+  return { universityId: result.id, name: result.name }
 }

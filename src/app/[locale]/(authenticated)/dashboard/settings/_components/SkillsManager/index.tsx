@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { useSkillsManager } from "./hooks/useSkillsManager"
 import { SelectedSkillsBar } from "./components/SelectedSkillsBar"
 import { SkillSearch } from "./components/SkillSearch"
-import { SkillCategoryGrid } from "./components/SkillCategoryGrid"
+import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
 
 export function SkillsManager() {
   const {
@@ -22,9 +22,9 @@ export function SkillsManager() {
     isSaving,
     saveError,
     saveTick,
-    groups,
-    categoryOrder,
-    categoryLabels,
+    deptGrouping,
+    otherGrouping,
+    hasDeptSkills,
     toggleSkill,
     save,
     maxSkills,
@@ -97,10 +97,33 @@ export function SkillsManager() {
         />
 
         <div className="space-y-4">
+          {/* Tier 1: Recommended department skills */}
+          {hasDeptSkills && (
+            <>
+              <p className="text-[11px] font-semibold text-primary">
+                Recommended for your department
+              </p>
+              <SkillCategoryGrid
+                groups={deptGrouping.groups}
+                categoryOrder={deptGrouping.categoryOrder}
+                categoryLabels={deptGrouping.categoryLabels}
+                selectedIds={selectedIds}
+                maxSkills={maxSkills}
+                isLoading={isLoadingSkills}
+                onToggle={toggleSkill}
+              />
+              <div className="border-t border-border/50" />
+              <p className="text-[11px] font-semibold text-muted-foreground">
+                Other skills
+              </p>
+            </>
+          )}
+
+          {/* Tier 2: Other skills (or all skills when no department) */}
           <SkillCategoryGrid
-            groups={groups}
-            categoryOrder={categoryOrder}
-            categoryLabels={categoryLabels}
+            groups={otherGrouping.groups}
+            categoryOrder={otherGrouping.categoryOrder}
+            categoryLabels={otherGrouping.categoryLabels}
             selectedIds={selectedIds}
             maxSkills={maxSkills}
             isLoading={isLoadingSkills}

@@ -25,8 +25,6 @@ export function useUniversityOnboarding() {
     defaultValues: {
       name: "",
       abbreviation: "",
-
-      deanName: "",
       phone: "",
       wilayaCode: 0,
       city: "",
@@ -50,7 +48,6 @@ export function useUniversityOnboarding() {
           name: value.name,
           abbreviation: value.abbreviation || undefined,
 
-          deanName: value.deanName || undefined,
           phone: value.phone || undefined,
           wilayaCode: value.wilayaCode || undefined,
           city: value.city || undefined,

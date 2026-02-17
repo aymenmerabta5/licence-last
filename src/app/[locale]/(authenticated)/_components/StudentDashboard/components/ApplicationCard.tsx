@@ -1,4 +1,5 @@
 import { MapPin, Calendar } from "lucide-react"
+import { useLocale } from "next-intl"
 
 import type { ApplicationRow } from "../types"
 import { relativeTime } from "../utils"
@@ -10,6 +11,8 @@ interface ApplicationCardProps {
 }
 
 export function ApplicationCard({ application: app }: ApplicationCardProps) {
+  const locale = useLocale()
+
   return (
     <div className="group py-5 first:pt-0 last:pb-0 cursor-pointer hover:bg-secondary/5 transition-colors">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -36,7 +39,7 @@ export function ApplicationCard({ application: app }: ApplicationCardProps) {
           <StatusBadge status={app.status} />
           <span className="text-[9px] text-muted-foreground/40 flex items-center gap-1.5 uppercase tracking-wider font-medium">
             <Calendar className="h-3 w-3" />
-            {relativeTime(app.createdAt)}
+            {relativeTime(app.createdAt, locale)}
           </span>
         </div>
       </div>

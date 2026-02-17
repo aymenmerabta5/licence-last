@@ -1,5 +1,7 @@
 import "server-only"
 
+import { ServiceError } from "@/server/services/errors"
+
 export type ApplicationServiceErrorCode =
   | "OFFER_NOT_FOUND"
   | "OFFER_NOT_OPEN"
@@ -10,12 +12,9 @@ export type ApplicationServiceErrorCode =
   | "APPLICATION_FORBIDDEN"
   | "APPLICATION_INVALID_STATE"
 
-export class ApplicationServiceError extends Error {
-  readonly code: ApplicationServiceErrorCode
-
+export class ApplicationServiceError extends ServiceError<ApplicationServiceErrorCode> {
   constructor(code: ApplicationServiceErrorCode, message: string) {
-    super(message)
-    this.code = code
+    super(code, message)
     this.name = "ApplicationServiceError"
   }
 }

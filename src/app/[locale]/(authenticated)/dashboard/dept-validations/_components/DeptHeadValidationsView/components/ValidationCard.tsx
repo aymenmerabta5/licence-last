@@ -31,7 +31,7 @@ interface ValidationCardProps {
 }
 
 export function ValidationCard({ app }: ValidationCardProps) {
-  const t = useTranslations("dashboard.deptValidations")
+  const t = useTranslations("dashboard.admin.deptValidations")
 
   return (
     <Link

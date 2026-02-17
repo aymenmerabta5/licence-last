@@ -1,9 +1,11 @@
 "use client"
 
 import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { reveal, ease } from "@/lib/animations"
+import { orpc } from "@/server/orpc/client"
 
 import { useUserManagement } from "./hooks/useUserManagement"
 import { useUserActions } from "./hooks/useUserActions"
@@ -20,12 +22,14 @@ export function UserManagementView() {
   const t = useTranslations("dashboard.superAdmin.users")
   const mgmt = useUserManagement()
   const actions = useUserActions()
+  const { data: meResult } = useQuery(orpc.users.getMe.queryOptions())
 
   const [createOpen, setCreateOpen] = useState(false)
   const [banTarget, setBanTarget] = useState<AdminUser | null>(null)
   const [roleTarget, setRoleTarget] = useState<AdminUser | null>(null)
   const [pwTarget, setPwTarget] = useState<AdminUser | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<AdminUser | null>(null)
+  const isSuperAdmin = meResult?.user.role === "super_admin"
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -49,6 +53,7 @@ export function UserManagementView() {
           onSearchChange={mgmt.setSearch}
           roleFilter={mgmt.roleFilter}
           onRoleFilterChange={mgmt.setRoleFilter}
+          canCreate={isSuperAdmin}
           onCreateClick={() => setCreateOpen(true)}
         />
       </motion.div>
@@ -66,17 +71,22 @@ export function UserManagementView() {
           onSetRole={setRoleTarget}
           onSetPassword={setPwTarget}
           onDelete={setDeleteTarget}
+          canViewDetails={isSuperAdmin}
+          canSetRole={isSuperAdmin}
+          canSetPassword={isSuperAdmin}
         />
       </motion.div>
 
-      <CreateUserDialog
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-        onSubmit={(data) => {
-          actions.createUser.mutate(data, { onSuccess: () => setCreateOpen(false) })
-        }}
-        isPending={actions.createUser.isPending}
-      />
+      {isSuperAdmin && (
+        <CreateUserDialog
+          open={createOpen}
+          onOpenChange={setCreateOpen}
+          onSubmit={(data) => {
+            actions.createUser.mutate(data, { onSuccess: () => setCreateOpen(false) })
+          }}
+          isPending={actions.createUser.isPending}
+        />
+      )}
 
       <BanUserDialog
         open={!!banTarget}
@@ -88,25 +98,29 @@ export function UserManagementView() {
         isPending={actions.banUser.isPending}
       />
 
-      <SetRoleDialog
-        open={!!roleTarget}
-        onOpenChange={(open) => !open && setRoleTarget(null)}
-        user={roleTarget}
-        onSubmit={(data) => {
-          actions.setRole.mutate(data, { onSuccess: () => setRoleTarget(null) })
-        }}
-        isPending={actions.setRole.isPending}
-      />
+      {isSuperAdmin && (
+        <SetRoleDialog
+          open={!!roleTarget}
+          onOpenChange={(open) => !open && setRoleTarget(null)}
+          user={roleTarget}
+          onSubmit={(data) => {
+            actions.setRole.mutate(data, { onSuccess: () => setRoleTarget(null) })
+          }}
+          isPending={actions.setRole.isPending}
+        />
+      )}
 
-      <SetPasswordDialog
-        open={!!pwTarget}
-        onOpenChange={(open) => !open && setPwTarget(null)}
-        user={pwTarget}
-        onSubmit={(data) => {
-          actions.setPassword.mutate(data, { onSuccess: () => setPwTarget(null) })
-        }}
-        isPending={actions.setPassword.isPending}
-      />
+      {isSuperAdmin && (
+        <SetPasswordDialog
+          open={!!pwTarget}
+          onOpenChange={(open) => !open && setPwTarget(null)}
+          user={pwTarget}
+          onSubmit={(data) => {
+            actions.setPassword.mutate(data, { onSuccess: () => setPwTarget(null) })
+          }}
+          isPending={actions.setPassword.isPending}
+        />
+      )}
 
       <DeleteUserDialog
         open={!!deleteTarget}

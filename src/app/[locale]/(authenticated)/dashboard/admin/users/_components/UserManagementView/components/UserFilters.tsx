@@ -19,6 +19,7 @@ interface UserFiltersProps {
   roleFilter: string
   onRoleFilterChange: (value: string) => void
   onCreateClick: () => void
+  canCreate: boolean
 }
 
 const roles = ["all", "student", "company_admin", "university_admin", "super_admin"] as const
@@ -29,6 +30,7 @@ export function UserFilters({
   roleFilter,
   onRoleFilterChange,
   onCreateClick,
+  canCreate,
 }: UserFiltersProps) {
   const t = useTranslations("dashboard.superAdmin.users")
 
@@ -57,10 +59,12 @@ export function UserFilters({
         </SelectContent>
       </Select>
 
-      <Button onClick={onCreateClick} className="gap-2">
-        <Plus className="h-4 w-4" />
-        {t("createUser")}
-      </Button>
+      {canCreate && (
+        <Button onClick={onCreateClick} className="gap-2">
+          <Plus className="h-4 w-4" />
+          {t("createUser")}
+        </Button>
+      )}
     </div>
   )
 }

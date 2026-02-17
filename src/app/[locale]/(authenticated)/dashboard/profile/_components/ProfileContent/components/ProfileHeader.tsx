@@ -2,6 +2,7 @@
 
 import * as motion from "motion/react-client"
 import { Calendar, Copy, Check as CheckIcon } from "lucide-react"
+import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -11,33 +12,38 @@ import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
 
 import type { ProfileUser } from "../types"
-import { ROLE_LABELS, getInitials, formatMemberSince } from "../utils"
+import { getInitials } from "../utils"
 
 interface ProfileHeaderProps {
   user: ProfileUser
-  editButtonLabel: string
   canEdit: boolean
   profileText: string
+  roleLabel: string
 }
 
 export function ProfileHeader({
   user,
-  editButtonLabel,
   canEdit,
   profileText,
+  roleLabel,
 }: ProfileHeaderProps) {
+  const t = useTranslations("dashboard.student.profile")
+  const locale = useLocale()
   const initials = getInitials(user.name)
-  const memberSince = formatMemberSince(user.createdAt)
+  const memberSince = new Intl.DateTimeFormat(locale, {
+    month: "long",
+    year: "numeric",
+  }).format(new Date(user.createdAt))
   const [copied, setCopied] = useState(false)
 
   async function handleCopy() {
     try {
       await navigator.clipboard.writeText(profileText)
       setCopied(true)
-      toast.success("Profile copied to clipboard")
+      toast.success(t("copySuccess"))
       setTimeout(() => setCopied(false), 2000)
     } catch {
-      toast.error("Failed to copy profile")
+      toast.error(t("copyError"))
     }
   }
 
@@ -64,10 +70,10 @@ export function ProfileHeader({
           {/* Kicker row */}
           <div className="flex items-center justify-between mb-8">
             <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary [[dir=rtl]_&]:tracking-normal">
-              Profile
+              {t("kicker")}
             </span>
             <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hidden sm:block [[dir=rtl]_&]:tracking-normal">
-              Member since {memberSince}
+              {t("memberSince", { date: memberSince })}
             </span>
           </div>
 
@@ -85,7 +91,7 @@ export function ProfileHeader({
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={user.image}
-                    alt={user.name || "Profile"}
+                    alt={user.name || t("profileImageAlt")}
                     className="h-full w-full rounded-full object-cover"
                   />
                 ) : (
@@ -104,16 +110,16 @@ export function ProfileHeader({
                 transition={{ delay: 0.25, duration: 0.5, ease }}
               >
                 <h1 className="font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-heading">
-                  {user.name || "Anonymous User"}
+                  {user.name || t("anonymousUser")}
                 </h1>
 
                 <div className="flex flex-wrap items-center gap-3 mt-3">
                   <Badge className="bg-primary/10 text-primary border-none text-[9px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full">
-                    {ROLE_LABELS[user.role || "student"] || user.role}
+                    {roleLabel}
                   </Badge>
                   <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground/50 uppercase tracking-wider font-medium sm:hidden">
                     <Calendar className="h-3 w-3" />
-                    Since {memberSince}
+                    {t("since", { date: memberSince })}
                   </span>
                 </div>
               </motion.div>
@@ -137,7 +143,7 @@ export function ProfileHeader({
                   ) : (
                     <Copy className="h-3.5 w-3.5 me-2" />
                   )}
-                  {copied ? "Copied!" : "Copy Profile"}
+                  {copied ? t("copied") : t("copyProfile")}
                 </Button>
 
                 {canEdit && (
@@ -147,7 +153,7 @@ export function ProfileHeader({
                       size="sm"
                       className="h-9 px-5"
                     >
-                      {editButtonLabel}
+                      {t("edit")}
                     </Button>
                   </Link>
                 )}

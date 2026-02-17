@@ -6,6 +6,7 @@ import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { department } from "@/server/db/schema/departments"
 import { user } from "@/server/db/schema/auth"
+import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/departments/assign-head")
 
@@ -29,18 +30,18 @@ export async function assignDepartmentHead(
     .limit(1)
 
   if (!dept) {
-    throw new Error("Department not found")
+    throw new ServiceError("DEPARTMENT_NOT_FOUND", "Department not found")
   }
 
   // Verify user exists
   const [targetUser] = await db
-    .select({ id: user.id, role: user.role })
+    .select({ id: user.id, role: user.role, name: user.name })
     .from(user)
     .where(eq(user.id, userId))
     .limit(1)
 
   if (!targetUser) {
-    throw new Error("User not found")
+    throw new ServiceError("USER_NOT_FOUND", "User not found")
   }
 
   log.info(
@@ -48,14 +49,21 @@ export async function assignDepartmentHead(
     "Assigning department head",
   )
 
-  await db
-    .update(user)
-    .set({
-      role: "dept_head",
-      departmentId,
-      universityId: dept.universityId,
-    })
-    .where(eq(user.id, userId))
+  await db.transaction(async (tx) => {
+    await tx
+      .update(user)
+      .set({
+        role: "dept_head",
+        departmentId,
+        universityId: dept.universityId,
+      })
+      .where(eq(user.id, userId))
+
+    await tx
+      .update(department)
+      .set({ headName: targetUser.name ?? null })
+      .where(eq(department.id, departmentId))
+  })
 
   log.info(
     { departmentId, userId, event: "dept_head_assigned" },

@@ -1,4 +1,5 @@
 import { MapPin, Calendar } from "lucide-react"
+import { useLocale } from "next-intl"
 
 import { Badge } from "@/components/ui/badge"
 import { Link } from "@/i18n/routing"
@@ -12,6 +13,8 @@ interface OfferCardProps {
 }
 
 export function OfferCard({ offer }: OfferCardProps) {
+  const locale = useLocale()
+
   return (
     <Link href={`/dashboard/explore/${offer.id}`}>
       <div className="group py-5 first:pt-0 last:pb-0 cursor-pointer hover:bg-secondary/5 transition-colors">
@@ -54,7 +57,7 @@ export function OfferCard({ offer }: OfferCardProps) {
             </Badge>
             <span className="text-[9px] text-muted-foreground/40 flex items-center gap-1.5 uppercase tracking-wider font-medium">
               <Calendar className="h-3 w-3" />
-              {relativeTime(offer.createdAt)}
+              {relativeTime(offer.createdAt, locale)}
             </span>
           </div>
         </div>

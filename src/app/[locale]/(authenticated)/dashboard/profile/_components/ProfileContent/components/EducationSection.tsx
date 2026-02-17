@@ -17,6 +17,7 @@ interface EducationSectionProps {
     education: string
     emptyMessage: string
     addEducation: string
+    university: string
   }
 }
 
@@ -57,7 +58,7 @@ export function EducationSection({ profile, university, canEdit, labels }: Educa
               <div className="flex-1 space-y-2 min-w-0">
                 <div>
                   <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-primary mb-1 [[dir=rtl]_&]:tracking-normal">
-                    University
+                    {labels.university}
                   </p>
                   <h3 className="text-base font-bold text-heading leading-tight">
                     {university.name}

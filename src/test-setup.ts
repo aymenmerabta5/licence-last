@@ -91,6 +91,15 @@ import * as matchers from "@testing-library/jest-dom/matchers"
 // Next.js "server-only" guard throws at runtime; in unit tests we treat it as a no-op.
 mock.module("server-only", () => ({}))
 
+// Cloudflare Turnstile — mock both the raw library and our wrapper component
+// so tests don't hit useLocale()/useTheme() outside providers.
+mock.module("@marsidev/react-turnstile", () => ({
+  Turnstile: () => null,
+}))
+mock.module("@/components/TurnstileWidget", () => ({
+  TurnstileWidget: () => null,
+}))
+
 // Next.js cacheLife/cacheTag require the cacheComponents runtime; stub them for unit tests.
 mock.module("next/cache", () => ({
   cacheLife: () => {},

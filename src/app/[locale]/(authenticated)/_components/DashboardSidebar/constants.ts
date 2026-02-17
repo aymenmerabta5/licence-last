@@ -2,6 +2,7 @@ import {
   LayoutDashboard,
   Search,
   FileText,
+  FileCheck,
   Settings,
   Briefcase,
   Building2,
@@ -42,6 +43,12 @@ export const navItems: NavItem[] = [
     roles: ["student"],
   },
   {
+    labelKey: "myDocuments",
+    href: "/dashboard/student/documents",
+    icon: FileCheck,
+    roles: ["student"],
+  },
+  {
     labelKey: "companyProfile",
     href: "/dashboard/company/profile",
     icon: Building2,
@@ -60,6 +67,12 @@ export const navItems: NavItem[] = [
     roles: ["company_admin"],
   },
   {
+    labelKey: "companyDocuments",
+    href: "/dashboard/company/documents",
+    icon: FileCheck,
+    roles: ["company_admin"],
+  },
+  {
     labelKey: "assistant",
     href: "/dashboard/assistant",
     icon: Sparkles,
@@ -75,7 +88,7 @@ export const navItems: NavItem[] = [
     labelKey: "validatePlacements",
     href: "/dashboard/admin/validations",
     icon: CheckCircle2,
-    roles: ["university_admin"],
+    roles: ["super_admin"],
   },
   {
     labelKey: "departments",
@@ -87,7 +100,7 @@ export const navItems: NavItem[] = [
     labelKey: "statistics",
     href: "/dashboard/admin/stats",
     icon: BarChart3,
-    roles: ["university_admin", "super_admin"],
+    roles: ["super_admin"],
   },
   {
     labelKey: "companies",
@@ -105,7 +118,7 @@ export const navItems: NavItem[] = [
     labelKey: "userManagement",
     href: "/dashboard/admin/users",
     icon: UsersRound,
-    roles: ["super_admin"],
+    roles: ["university_admin", "super_admin"],
   },
   {
     labelKey: "settings",

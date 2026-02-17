@@ -22,7 +22,7 @@ import {
   listCompanyReportsProcedure,
   resolveCompanyReportProcedure,
 } from "./routes/companies"
-import { listSkillTagsProcedure } from "./routes/skills"
+import { listSkillTagsProcedure, listSkillTagsPrioritizedProcedure } from "./routes/skills"
 import {
   getStudentProfileProcedure,
   getPublicStudentProfileProcedure,
@@ -52,6 +52,7 @@ import {
   companyRefuseProcedure,
   updatePipelineStageProcedure,
   getTimelineProcedure,
+  generateCoverLetterProcedure,
 } from "./routes/applications"
 import {
   listPendingProcedure,
@@ -60,15 +61,26 @@ import {
   deptHeadListPendingProcedure,
   deptHeadValidateProcedure,
   deptHeadRejectProcedure,
+  generateValidationSummaryProcedure,
 } from "./routes/placements"
 import {
   listDepartmentsProcedure,
   createDepartmentProcedure,
   updateDepartmentProcedure,
   assignDepartmentHeadProcedure,
+  unassignDepartmentHeadProcedure,
+  deleteDepartmentProcedure,
+  bulkCreateDepartmentsProcedure,
+  syncDepartmentSkillsProcedure,
+  getDepartmentSkillsProcedure,
 } from "./routes/departments"
 import {
+  downloadCompanyDocumentProcedure,
   generateAgreementProcedure,
+  generateCompanyCertificateProcedure,
+  listCompanyDocumentsProcedure,
+  listStudentDocumentsProcedure,
+  downloadDocumentProcedure,
   verifyDocumentProcedure,
 } from "./routes/documents"
 import {
@@ -76,7 +88,10 @@ import {
   markAllNotificationsReadProcedure,
   markNotificationReadProcedure,
 } from "./routes/notifications"
-import { getAdminStatsProcedure } from "./routes/stats"
+import {
+  getAdminStatsProcedure,
+  getUniversityDashboardStatsProcedure,
+} from "./routes/stats"
 import {
   appendAssistantMessageProcedure,
   createAssistantConversationProcedure,
@@ -142,6 +157,7 @@ export const appRouter = {
   },
   skills: {
     list: listSkillTagsProcedure,
+    listPrioritized: listSkillTagsPrioritizedProcedure,
   },
   students: {
     getProfile: getStudentProfileProcedure,
@@ -172,6 +188,7 @@ export const appRouter = {
     companyRefuse: companyRefuseProcedure,
     updatePipelineStage: updatePipelineStageProcedure,
     getTimeline: getTimelineProcedure,
+    generateCoverLetter: generateCoverLetterProcedure,
   },
   matching: {
     getScore: getScoreProcedure,
@@ -183,6 +200,7 @@ export const appRouter = {
     listPending: listPendingProcedure,
     validate: validateProcedure,
     reject: rejectProcedure,
+    generateValidationSummary: generateValidationSummaryProcedure,
   },
   deptHead: {
     listPending: deptHeadListPendingProcedure,
@@ -194,9 +212,19 @@ export const appRouter = {
     create: createDepartmentProcedure,
     update: updateDepartmentProcedure,
     assignHead: assignDepartmentHeadProcedure,
+    unassignHead: unassignDepartmentHeadProcedure,
+    delete: deleteDepartmentProcedure,
+    bulkCreateWithHeads: bulkCreateDepartmentsProcedure,
+    syncSkills: syncDepartmentSkillsProcedure,
+    getSkills: getDepartmentSkillsProcedure,
   },
   documents: {
     generateAgreement: generateAgreementProcedure,
+    listByStudent: listStudentDocumentsProcedure,
+    download: downloadDocumentProcedure,
+    listByCompany: listCompanyDocumentsProcedure,
+    generateCertificateByCompany: generateCompanyCertificateProcedure,
+    downloadByCompany: downloadCompanyDocumentProcedure,
     verify: verifyDocumentProcedure,
   },
   notifications: {
@@ -206,6 +234,7 @@ export const appRouter = {
   },
   stats: {
     getAdminStats: getAdminStatsProcedure,
+    getUniversityDashboardStats: getUniversityDashboardStatsProcedure,
   },
   adminUsers: {
     list: listUsersProcedure,

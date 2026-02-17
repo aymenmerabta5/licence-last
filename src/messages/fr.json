@@ -200,11 +200,22 @@
     },
     "resetPassword": {
       "pageTitle": "Réinitialiser le Mot de Passe",
+      "verifyPageTitle": "Définir un Nouveau Mot de Passe",
       "title": "Réinitialiser le Mot de Passe",
       "subtitle": "Nous vous enverrons un lien de réinitialisation",
+      "verifyTitle": "Définir un Nouveau Mot de Passe",
+      "verifySubtitle": "Choisissez un mot de passe sécurisé pour votre compte.",
       "email": "Adresse email",
       "emailPlaceholder": "vous@universite.edu",
+      "newPassword": "Nouveau mot de passe",
+      "newPasswordPlaceholder": "Au moins 8 caractères",
+      "confirmNewPassword": "Confirmer le nouveau mot de passe",
+      "confirmNewPasswordPlaceholder": "Retapez votre nouveau mot de passe",
       "submit": "Envoyer le Lien",
+      "setPassword": "Définir le mot de passe",
+      "setPasswordSuccess": "Votre mot de passe a été mis à jour. Vous pouvez maintenant vous connecter.",
+      "setPasswordError": "Impossible de réinitialiser le mot de passe. Veuillez réessayer.",
+      "invalidOrExpired": "Ce lien de réinitialisation est invalide ou expiré.",
       "backToLogin": "Retour à la connexion",
       "success": "Si un compte existe avec cet email, vous recevrez un lien de réinitialisation sous peu.",
       "description": "Entrez l'adresse email associée à votre compte et nous vous enverrons un lien pour réinitialiser votre mot de passe."
@@ -249,6 +260,13 @@
       "pageTitle": "Configuration Entreprise",
       "title": "Configurez Votre Entreprise",
       "subtitle": "Parlez-nous de votre organisation pour commencer",
+      "panelHeadline": "Constituez Votre Équipe de Rêve",
+      "panelDescription": "Connectez-vous avec les meilleurs talents universitaires d'Algérie et simplifiez votre recrutement de stagiaires.",
+      "panelFeature1": "Accédez aux profils étudiants vérifiés",
+      "panelFeature2": "Pipeline de recrutement optimisé",
+      "panelFeature3": "Partenariats universitaires directs",
+      "companySection": "Détails de l'entreprise",
+      "locationSection": "Localisation",
       "name": "Nom de l'entreprise",
       "namePlaceholder": "Acme Corporation",
       "description": "Description",
@@ -266,6 +284,15 @@
       "pageTitle": "Configuration de l'Université",
       "title": "Configurez Votre Université",
       "subtitle": "Parlez-nous de votre établissement pour commencer",
+      "panelHeadline": "Façonnez les Leaders de Demain",
+      "panelDescription": "Associez-vous à des entreprises pour offrir des stages significatifs à vos étudiants.",
+      "panelFeature1": "Gérez les départements et les placements",
+      "panelFeature2": "Suivez les progrès des étudiants en temps réel",
+      "panelFeature3": "Vérifiez et validez les stages",
+      "universitySection": "Détails de l'université",
+      "locationSection": "Localisation",
+      "domainsSection": "Domaines Email",
+      "departmentsSection": "Départements",
       "name": "Nom de l'université",
       "namePlaceholder": "Université des Sciences et de la Technologie",
       "abbreviation": "Abréviation",
@@ -277,8 +304,6 @@
       "departmentPlaceholder": "ex. Informatique",
       "addDepartment": "Ajouter un département",
       "removeDepartment": "Supprimer",
-      "deanName": "Nom du doyen",
-      "deanNamePlaceholder": "Prof. Nom",
       "phone": "Numéro de téléphone",
       "phonePlaceholder": "+213 21 XX XX XX",
       "wilaya": "Wilaya",
@@ -299,6 +324,11 @@
       "pageTitle": "Configuration du Profil Étudiant",
       "title": "Construisez Votre CV Digital",
       "subtitle": "Parlez-nous de vous et de vos compétences pour commencer",
+      "panelHeadline": "Votre Carrière Commence Ici",
+      "panelDescription": "Créez votre profil professionnel et soyez mis en relation avec les meilleures entreprises d'Algérie.",
+      "panelFeature1": "Soyez mis en relation avec les meilleures entreprises",
+      "panelFeature2": "Mettez en valeur vos compétences et projets",
+      "panelFeature3": "Suivez vos candidatures en temps réel",
       "personalSection": "Informations Personnelles",
       "bio": "Bio",
       "bioPlaceholder": "Parlez-nous un peu de vous...",
@@ -325,6 +355,8 @@
       "skillsHint": "Sélectionnez jusqu'à 10 compétences qui décrivent le mieux votre expertise",
       "skillsSelectDepartmentFirst": "Veuillez d'abord sélectionner un département pour voir les compétences pertinentes",
       "skillsSelected": "sélectionnées",
+      "recommendedSkills": "Recommandées pour votre département",
+      "otherSkills": "Autres compétences",
       "submit": "Compléter le Profil",
       "error": "Une erreur s'est produite. Veuillez réessayer."
     }
@@ -334,9 +366,11 @@
       "dashboard": "Tableau de bord",
       "exploreInternships": "Explorer les stages",
       "myApplications": "Mes candidatures",
+      "myDocuments": "Mes documents",
       "companyProfile": "Profil entreprise",
       "manageOffers": "Gérer les offres",
       "candidatePipeline": "Pipeline candidats",
+      "companyDocuments": "Documents entreprise",
       "assistant": "Assistant",
       "validatePlacements": "Valider les placements",
       "deptValidations": "Validations de département",
@@ -451,6 +485,9 @@
         "pageTitle": "Profil de l'Entreprise",
         "title": "Profil de l'Entreprise",
         "subtitle": "Gérez le profil public et les informations de contact de votre entreprise",
+        "descriptionLabel": "À propos",
+        "contactLabel": "Contact",
+        "locationLabel": "Localisation",
         "description": "Description",
         "descriptionPlaceholder": "Décrivez votre entreprise et ce qui en fait un excellent lieu de stage...",
         "logo": "Logo de l'Entreprise",
@@ -580,7 +617,9 @@
         "viewProfile": "Voir le Profil",
         "accept": "Accepter",
         "refuse": "Refuser",
-        "confirmAccept": "Accepter ce candidat ? Cela notifiera les administrateurs pour la validation du placement.",
+        "acceptTitle": "Accepter le Candidat",
+        "acceptDescription": "Accepter {name} ? Cela notifiera les administrateurs pour la validation du placement.",
+        "confirmAcceptButton": "Accepter",
         "confirmRefuse": "Refuser ce candidat ? Il sera notifié.",
         "refuseTitle": "Refuser le Candidat",
         "refuseDescription": "Êtes-vous sûr de vouloir refuser {name} ?",
@@ -648,6 +687,19 @@
         }
       }
     },
+    "offers": {
+      "status": {
+        "draft": "Brouillon",
+        "published": "Publiée",
+        "closed": "Fermée"
+      },
+      "type": {
+        "pfe": "PFE",
+        "immersion": "Immersion",
+        "summer": "Été",
+        "practical": "Pratique"
+      }
+    },
     "welcome": "Bon retour,",
     "roles": {
       "student": "Étudiant",
@@ -661,7 +713,12 @@
       "stats": {
         "applications": "Candidatures",
         "savedOffers": "Offres Enregistrées",
-        "interviews": "Entretiens"
+        "interviews": "Entretiens",
+        "pending": "{count} en attente",
+        "accepted": "Acceptées",
+        "acceptedDescription": "Candidatures acceptées",
+        "profileBoosted": "Profil renforcé",
+        "addMoreSkills": "Ajoutez plus de compétences"
       },
       "actions": {
         "buildCV": "Compléter le CV Digital",
@@ -670,14 +727,59 @@
       },
       "skillsSection": "Votre Stack de Compétences",
       "recentOffers": "Recommandé pour Vous",
+      "applications": {
+        "title": "Candidatures récentes",
+        "viewAll": "Voir tout",
+        "emptyMessage": "Vous n'avez pas encore postulé à des stages. Commencez à explorer les opportunités !",
+        "exploreButton": "Explorer les stages"
+      },
+      "offers": {
+        "exploreAll": "Tout explorer"
+      },
+      "skills": {
+        "manageSkills": "Gérer les compétences",
+        "emptyMessage": "Ajoutez vos compétences techniques pour vous démarquer auprès des recruteurs",
+        "addSkills": "Ajouter des compétences"
+      },
+      "welcomeHero": {
+        "brief": "Le brief du jour",
+        "defaultName": "vous",
+        "headlinePrefix": "Prêt à décrocher votre",
+        "headlineAccent": "stage de rêve",
+        "profileIncomplete": "Complétez votre profil pour vous démarquer auprès des recruteurs et débloquer plus d'opportunités.",
+        "profileComplete": "Votre profil est complet ! Continuez à explorer les opportunités et à postuler.",
+        "completeProfile": "Compléter le profil",
+        "exploreInternships": "Explorer les stages",
+        "profileStrength": "Force du profil",
+        "profileReady": "Votre profil est prêt",
+        "profileRemaining": "Il reste {remaining}% pour compléter"
+      },
+      "status": {
+        "applied": "En attente",
+        "company_accepted": "Acceptée",
+        "company_refused": "Refusée",
+        "admin_validated": "Validée",
+        "admin_rejected": "Rejetée",
+        "withdrawn": "Retirée"
+      },
       "profile": {
         "title": "Votre CV Digital",
         "subtitle": "Votre profil professionnel visible par les recruteurs",
         "edit": "Modifier le Profil",
+        "kicker": "Profil",
+        "memberSince": "Membre depuis {date}",
+        "since": "Depuis {date}",
+        "profileImageAlt": "Profil",
+        "copyProfile": "Copier le profil",
+        "copied": "Copié !",
+        "copySuccess": "Profil copié dans le presse-papiers",
+        "copyError": "Impossible de copier le profil",
         "personalInfo": "Informations Personnelles",
         "name": "Nom",
         "email": "Email",
         "phone": "Téléphone",
+        "role": "Rôle",
+        "notSetYet": "Non renseigné",
         "studentNumber": "Numéro Étudiant",
         "department": "Département",
         "level": "Niveau",
@@ -685,8 +787,44 @@
         "location": "Localisation",
         "wilaya": "Wilaya",
         "address": "Adresse",
+        "university": "Université",
         "links": "Liens",
-        "skills": "Compétences Techniques"
+        "skills": "Compétences Techniques",
+        "skillCount": "{count, plural, one {{count} COMPÉTENCE} other {{count} COMPÉTENCES}}",
+        "addMoreSkills": "Ajouter plus",
+        "noSkillsListed": "Aucune compétence listée pour le moment.",
+        "generalCategory": "Général",
+        "addSkills": "Ajouter des compétences",
+        "skillsEmptyMessage": "Ajoutez vos compétences techniques pour vous démarquer auprès des recruteurs",
+        "bioEmptyMessage": "Aucune bio ajoutée pour le moment. Présentez-vous aux entreprises et recruteurs, vos centres d'intérêt et le type de stage que vous recherchez.",
+        "writeBio": "Écrire votre bio",
+        "educationTitle": "Formation",
+        "educationEmptyMessage": "Votre parcours de formation apparaîtra ici une fois votre profil complété.",
+        "addEducation": "Ajouter une formation",
+        "experienceTitle": "Expérience",
+        "experienceEmptyMessage": "Ajoutez vos expériences professionnelles, contributions open source ou projets personnels pour renforcer votre profil.",
+        "addExperience": "Ajouter une expérience",
+        "anonymousUser": "Utilisateur anonyme",
+        "unknownRole": "Utilisateur",
+        "roles": {
+          "student": "Étudiant",
+          "company_admin": "Recruteur",
+          "dept_head": "Chef de département",
+          "university_admin": "Administrateur universitaire",
+          "super_admin": "Super administrateur"
+        },
+        "stats": {
+          "applications": "Candidatures",
+          "totalSubmitted": "Total soumises",
+          "skills": "Compétences",
+          "skillsAdded": "{count, plural, one {{count} compétence ajoutée} other {{count} compétences ajoutées}}",
+          "profile": "Profil",
+          "complete": "Complet !",
+          "keepGoing": "Continuez"
+        },
+        "skillsLabel": "Compétences",
+        "githubLabel": "GitHub",
+        "portfolioLabel": "Portfolio"
       }
     },
     "recruiter": {
@@ -703,6 +841,20 @@
         "reviewCandidates": "Examiner les Candidatures"
       },
       "pipeline": "Pipeline de Candidats"
+    },
+    "deptHeadDashboard": {
+      "subtitle": "Validez les demandes de placement de votre département",
+      "kicker": "Opérations Départementales",
+      "title": "Votre file de validation est prête.",
+      "description": "Suivez les demandes de placement en attente et accédez directement aux détails de validation.",
+      "openQueue": "Ouvrir la file de validation",
+      "pendingLabel": "Validations en attente",
+      "queueStatusLabel": "État de la file",
+      "queueBusy": "D'autres demandes vous attendent dans la file.",
+      "queueClear": "Aucune demande en attente pour le moment.",
+      "recentTitle": "Demandes récentes en attente",
+      "empty": "Aucune validation en attente dans votre département.",
+      "acceptedOn": "Acceptée le"
     },
     "explore": {
       "pageTitle": "Explorer les Stages",
@@ -781,14 +933,22 @@
         "hybrid": "Hybride",
         "remote": "À distance"
       },
+      "application": "Candidature",
+      "internshipOffer": "Offre de Stage",
+      "trustIndex": "Indice de Confiance",
       "copilot": {
         "draftWithAi": "Rédiger avec l'IA",
-        "aiStatus": "IA : {status}",
+        "drafting": "Rédaction...",
         "previewTitle": "Aperçu du brouillon IA",
-        "applyDraft": "Appliquer le brouillon",
-        "prompts": {
-          "draftCoverLetter": "Rédiger une lettre de motivation"
-        }
+        "applyDraft": "Appliquer le brouillon"
+      },
+      "matching": {
+        "title": "Pourquoi cette correspondance ?",
+        "computing": "Calcul du score...",
+        "unavailable": "Score indisponible pour le moment.",
+        "missingSkills": "Compétences manquantes",
+        "estimatedImprovement": "Amélioration estimée : +{delta}% de préparation",
+        "readinessTrend": "Tendance de Préparation"
       }
     },
     "applications": {
@@ -823,6 +983,67 @@
       "loadMore": "Charger plus",
       "exploreOffers": "Explorer les Stages"
     },
+    "documents": {
+      "pageTitle": "Mes documents",
+      "title": "Mes documents",
+      "subtitle": "Consultez et téléchargez vos conventions et attestations de stage",
+      "empty": "Aucun document de stage disponible pour le moment.",
+      "loadError": "Impossible de charger vos documents.",
+      "retry": "Réessayer",
+      "download": "Télécharger",
+      "downloading": "Téléchargement...",
+      "agreement": "Convention de stage",
+      "certificate": "Attestation",
+      "status": {
+        "pending": "En attente",
+        "generated": "Généré",
+        "failed": "Échec"
+      },
+      "placement": {
+        "company": "Entreprise",
+        "offer": "Offre",
+        "type": "Type",
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "validatedAt": "Validé le",
+        "verificationCode": "Code de vérification",
+        "notAvailable": "N/A"
+      },
+      "downloadError": "Échec du téléchargement du document."
+    },
+    "companyDocuments": {
+      "pageTitle": "Documents entreprise",
+      "title": "Documents entreprise",
+      "subtitle": "Générez et téléchargez les attestations des placements validés",
+      "empty": "Aucun placement validé trouvé pour votre entreprise.",
+      "loadError": "Impossible de charger les documents entreprise.",
+      "retry": "Réessayer",
+      "generate": "Générer l'attestation",
+      "generating": "Génération...",
+      "download": "Télécharger",
+      "downloading": "Téléchargement...",
+      "generatedSuccess": "Attestation générée avec succès.",
+      "generateError": "Échec de génération de l'attestation.",
+      "downloadError": "Échec du téléchargement du document.",
+      "agreement": "Convention de stage",
+      "certificate": "Attestation",
+      "status": {
+        "notGenerated": "Non généré",
+        "pending": "En attente",
+        "generated": "Généré",
+        "failed": "Échec"
+      },
+      "placement": {
+        "student": "Étudiant",
+        "offer": "Offre",
+        "type": "Type",
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "validatedAt": "Validé le",
+        "verificationCode": "Code de vérification",
+        "notAvailable": "N/A"
+      }
+    },
     "admin": {
       "title": "Tableau de Bord Admin",
       "subtitle": "Aperçu de l'activité de la plateforme",
@@ -854,7 +1075,6 @@
           "department": "Département",
           "level": "Niveau",
           "university": "Université",
-          "dean": "Doyen",
           "address": "Adresse",
           "skills": "Compétences",
           "companyInfo": "Infos entreprise",
@@ -920,16 +1140,54 @@
         "headName": "Nom du chef (optionnel)",
         "headNamePlaceholder": "ex. Dr. Ahmed Benali",
         "assignHead": "Assigner un chef",
+        "manageSkills": "Compétences",
         "assignHeadTitle": "Assigner le chef de département",
-        "assignHeadDescription": "Sélectionnez un utilisateur pour l'assigner comme chef de ce département.",
+        "assignHeadDescription": "Saisissez les informations du futur chef de département. Si l'utilisateur n'existe pas, un compte sera créé automatiquement.",
         "selectUser": "Sélectionner un utilisateur",
         "noUsersAvailable": "Aucun utilisateur disponible.",
+        "passwordResetHint": "Un lien de réinitialisation du mot de passe sera envoyé pour activer l'accès du chef de département.",
         "save": "Enregistrer",
         "cancel": "Annuler",
         "createSuccess": "Département créé avec succès.",
         "updateSuccess": "Département mis à jour avec succès.",
         "assignSuccess": "Chef de département assigné avec succès.",
-        "error": "Une erreur est survenue. Veuillez réessayer."
+        "removeHead": "Retirer le chef",
+        "removeHeadTitle": "Retirer le chef de département",
+        "removeHeadDescription": "Cela retirera {headName} du département {name}. Le compte utilisateur sera conservé.",
+        "removeHeadSuccess": "Chef de département retiré avec succès.",
+        "deleteDepartment": "Supprimer le département",
+        "deleteDepartmentTitle": "Supprimer le département",
+        "deleteDepartmentDescription": "Supprimer {name} ? Cette action est irréversible.",
+        "deleteSuccess": "Département supprimé avec succès.",
+        "error": "Une erreur est survenue. Veuillez réessayer.",
+        "skills": {
+          "title": "Compétences pour {name}",
+          "description": "Sélectionnez les compétences pertinentes pour ce département. Les étudiants les verront comme recommandées.",
+          "save": "Enregistrer les compétences",
+          "cancel": "Annuler",
+          "skillsSelected": "compétences sélectionnées",
+          "searchPlaceholder": "Rechercher des compétences...",
+          "saveSuccess": "Compétences du département mises à jour.",
+          "saveError": "Impossible de mettre à jour les compétences."
+        },
+        "bulkCreate": {
+          "title": "Création en lot de départements",
+          "description": "Créez plusieurs départements et assignez des chefs en une seule fois. Chaque chef recevra un email de bienvenue avec un lien de réinitialisation de mot de passe.",
+          "departmentName": "Nom du département",
+          "departmentNamePlaceholder": "ex. Informatique",
+          "headEmail": "Email du chef",
+          "headEmailPlaceholder": "ex. chef@universite.dz",
+          "headName": "Nom du chef",
+          "headNamePlaceholder": "ex. Dr. Ahmed Benali",
+          "addRow": "Ajouter une ligne",
+          "removeRow": "Supprimer la ligne",
+          "submit": "Créer tout",
+          "submitting": "Création en cours...",
+          "successMessage": "{count} département(s) créé(s) avec succès.",
+          "partialSuccess": "{created} créé(s), {failed} échoué(s).",
+          "rowError": "{name} : {error}",
+          "error": "Une erreur est survenue. Veuillez réessayer."
+        }
       },
       "deptValidations": {
         "title": "Validations de département",
@@ -968,7 +1226,6 @@
           "noDomains": "Aucun domaine enregistré",
           "location": "Localisation",
           "department": "Département",
-          "dean": "Doyen",
           "registeredAt": "Inscrit le"
         }
       },
@@ -1258,7 +1515,18 @@
       "headNamePlaceholder": "ex: Dr. Benali",
       "save": "Créer le département",
       "success": "Département créé avec succès",
-      "error": "Échec de la création du département"
+      "error": "Échec de la création du département",
+      "manageSkills": "Compétences",
+      "skills": {
+        "title": "Compétences pour {name}",
+        "description": "Sélectionnez les compétences pertinentes pour ce département. Les étudiants les verront comme recommandées.",
+        "save": "Enregistrer les compétences",
+        "cancel": "Annuler",
+        "skillsSelected": "compétences sélectionnées",
+        "searchPlaceholder": "Rechercher des compétences...",
+        "saveSuccess": "Compétences du département mises à jour.",
+        "saveError": "Impossible de mettre à jour les compétences."
+      }
     }
   },
   "howItWorks": {

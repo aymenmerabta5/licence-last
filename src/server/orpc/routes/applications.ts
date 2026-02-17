@@ -12,6 +12,7 @@ import {
   companyAdminProcedureStandard,
   studentProcedureGenerous,
   studentProcedureStandard,
+  assistantProcedureLimited,
 } from "@/server/orpc/rate-limited-procedures"
 import { applicationStatusSchema, pipelineStageSchema } from "@/lib/schemas/enums"
 import {
@@ -43,6 +44,7 @@ import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { companyMember } from "@/server/db/schema/companies"
 import { CACHE_TAGS } from "@/lib/cache"
+import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 
 /* ── Offer Search (any authenticated user) ── */
 
@@ -77,8 +79,9 @@ export const applyToOfferProcedure = studentProcedureStandard
       if (isApplicationServiceError(error)) {
         throw createApplicationORPCError(error, getApplyToOfferStatus(error.code))
       }
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "Failed to apply",
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "Failed to apply",
       })
     }
   })
@@ -104,8 +107,9 @@ export const withdrawApplicationProcedure = studentProcedureStandard
       if (isApplicationServiceError(error)) {
         throw createApplicationORPCError(error, getWithdrawStatus(error.code))
       }
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "Failed to withdraw",
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "Failed to withdraw",
       })
     }
   })
@@ -153,8 +157,9 @@ export const companyAcceptProcedure = companyAdminProcedureStandard
       if (isApplicationServiceError(error)) {
         throw createApplicationORPCError(error, getCompanyActionStatus(error.code))
       }
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "Failed to accept application",
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "Failed to accept application",
       })
     }
   })
@@ -183,8 +188,9 @@ export const companyRefuseProcedure = companyAdminProcedureStandard
       if (isApplicationServiceError(error)) {
         throw createApplicationORPCError(error, getCompanyActionStatus(error.code))
       }
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "Failed to refuse application",
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "Failed to refuse application",
       })
     }
   })
@@ -210,10 +216,33 @@ export const updatePipelineStageProcedure = companyAdminProcedureStandard
       if (isApplicationServiceError(error)) {
         throw createApplicationORPCError(error, getCompanyActionStatus(error.code))
       }
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "An unexpected error occurred",
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "An unexpected error occurred",
       })
     }
+  })
+
+/* ── AI Cover Letter Generation ── */
+
+export const generateCoverLetterProcedure = assistantProcedureLimited
+  .input(
+    z.object({
+      offerTitle: z.string().min(1),
+      offerDescription: z.string().min(1),
+      internshipType: z.string().optional(),
+      workMode: z.string().nullable().optional(),
+      skills: z.array(z.string()),
+      companyName: z.string().min(1),
+      companyDescription: z.string().nullable().optional(),
+      currentCoverLetter: z.string().nullable().optional(),
+    }),
+  )
+  .handler(async ({ input }) => {
+    const { generateCoverLetter } = await import(
+      "@/server/services/applications/generate-cover-letter"
+    )
+    return generateCoverLetter(input)
   })
 
 export const getTimelineProcedure = authedProcedureGenerous

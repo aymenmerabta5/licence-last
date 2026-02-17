@@ -200,11 +200,22 @@
     },
     "resetPassword": {
       "pageTitle": "Reset Password",
+      "verifyPageTitle": "Set New Password",
       "title": "Reset Password",
       "subtitle": "We'll send a reset link to your email",
+      "verifyTitle": "Set New Password",
+      "verifySubtitle": "Choose a secure password for your account.",
       "email": "Email address",
       "emailPlaceholder": "you@university.edu",
+      "newPassword": "New password",
+      "newPasswordPlaceholder": "At least 8 characters",
+      "confirmNewPassword": "Confirm new password",
+      "confirmNewPasswordPlaceholder": "Re-enter your new password",
       "submit": "Send Reset Link",
+      "setPassword": "Set Password",
+      "setPasswordSuccess": "Your password was updated. You can now sign in.",
+      "setPasswordError": "Could not reset password. Please try again.",
+      "invalidOrExpired": "This reset link is invalid or has expired.",
       "backToLogin": "Back to sign in",
       "success": "If an account exists with this email, you'll receive a reset link shortly.",
       "description": "Enter the email address associated with your account and we'll send you a link to reset your password."
@@ -249,6 +260,13 @@
       "pageTitle": "Company Setup",
       "title": "Set Up Your Company",
       "subtitle": "Tell us about your organization to get started",
+      "panelHeadline": "Build Your Dream Team",
+      "panelDescription": "Connect with top university talent across Algeria and streamline your internship recruitment.",
+      "panelFeature1": "Access verified student profiles",
+      "panelFeature2": "Streamlined recruitment pipeline",
+      "panelFeature3": "Direct university partnerships",
+      "companySection": "Company Details",
+      "locationSection": "Location",
       "name": "Company name",
       "namePlaceholder": "Acme Corporation",
       "description": "Description",
@@ -266,6 +284,15 @@
       "pageTitle": "University Setup",
       "title": "Set Up Your University",
       "subtitle": "Tell us about your institution to get started",
+      "panelHeadline": "Shape Tomorrow's Leaders",
+      "panelDescription": "Partner with companies to provide meaningful internship opportunities for your students.",
+      "panelFeature1": "Manage departments and placements",
+      "panelFeature2": "Track student progress in real-time",
+      "panelFeature3": "Verify and validate internships",
+      "universitySection": "University Details",
+      "locationSection": "Location",
+      "domainsSection": "Email Domains",
+      "departmentsSection": "Departments",
       "name": "University name",
       "namePlaceholder": "University of Science and Technology",
       "abbreviation": "Abbreviation",
@@ -277,8 +304,6 @@
       "departmentPlaceholder": "e.g. Computer Science",
       "addDepartment": "Add department",
       "removeDepartment": "Remove",
-      "deanName": "Dean name",
-      "deanNamePlaceholder": "Prof. Name",
       "phone": "Phone number",
       "phonePlaceholder": "+213 21 XX XX XX",
       "wilaya": "Wilaya",
@@ -299,6 +324,11 @@
       "pageTitle": "Student Profile Setup",
       "title": "Build Your Digital CV",
       "subtitle": "Tell us about yourself and your skills to get started",
+      "panelHeadline": "Your Career Starts Here",
+      "panelDescription": "Create your professional profile and get matched with top companies across Algeria.",
+      "panelFeature1": "Get matched with top companies",
+      "panelFeature2": "Showcase your skills and projects",
+      "panelFeature3": "Track applications in real-time",
       "personalSection": "Personal Information",
       "bio": "Bio",
       "bioPlaceholder": "Tell us a bit about yourself...",
@@ -325,6 +355,8 @@
       "skillsHint": "Select up to 10 skills that best describe your expertise",
       "skillsSelectDepartmentFirst": "Please select a department first to see relevant skills",
       "skillsSelected": "selected",
+      "recommendedSkills": "Recommended for your department",
+      "otherSkills": "Other skills",
       "submit": "Complete Profile",
       "error": "Something went wrong. Please try again."
     }
@@ -334,9 +366,11 @@
       "dashboard": "Dashboard",
       "exploreInternships": "Explore Internships",
       "myApplications": "My Applications",
+      "myDocuments": "My Documents",
       "companyProfile": "Company Profile",
       "manageOffers": "Manage Offers",
       "candidatePipeline": "Candidate Pipeline",
+      "companyDocuments": "Company Documents",
       "assistant": "Assistant",
       "validatePlacements": "Validate Placements",
       "deptValidations": "Department Validations",
@@ -451,6 +485,9 @@
         "pageTitle": "Company Profile",
         "title": "Company Profile",
         "subtitle": "Manage your company's public profile and contact information",
+        "descriptionLabel": "About",
+        "contactLabel": "Contact",
+        "locationLabel": "Location",
         "description": "Description",
         "descriptionPlaceholder": "Describe your company and what makes it a great place to intern...",
         "logo": "Company Logo",
@@ -580,7 +617,9 @@
         "viewProfile": "View Profile",
         "accept": "Accept",
         "refuse": "Refuse",
-        "confirmAccept": "Accept this candidate? This will notify administrators for placement validation.",
+        "acceptTitle": "Accept Candidate",
+        "acceptDescription": "Accept {name}? This will notify administrators for placement validation.",
+        "confirmAcceptButton": "Accept",
         "confirmRefuse": "Refuse this candidate? They will be notified.",
         "refuseTitle": "Refuse Candidate",
         "refuseDescription": "Are you sure you want to refuse {name}?",
@@ -648,6 +687,19 @@
         }
       }
     },
+    "offers": {
+      "status": {
+        "draft": "Draft",
+        "published": "Published",
+        "closed": "Closed"
+      },
+      "type": {
+        "pfe": "PFE",
+        "immersion": "Immersion",
+        "summer": "Summer",
+        "practical": "Practical"
+      }
+    },
     "welcome": "Welcome back,",
     "roles": {
       "student": "Student",
@@ -661,7 +713,12 @@
       "stats": {
         "applications": "Applications",
         "savedOffers": "Saved Offers",
-        "interviews": "Interviews"
+        "interviews": "Interviews",
+        "pending": "{count} pending",
+        "accepted": "Accepted",
+        "acceptedDescription": "Accepted applications",
+        "profileBoosted": "Profile boosted",
+        "addMoreSkills": "Add more skills"
       },
       "actions": {
         "buildCV": "Complete Digital CV",
@@ -670,14 +727,59 @@
       },
       "skillsSection": "Your Skill Stack",
       "recentOffers": "Recommended for You",
+      "applications": {
+        "title": "Recent Applications",
+        "viewAll": "View All",
+        "emptyMessage": "You haven't applied to any internships yet. Start exploring opportunities!",
+        "exploreButton": "Explore Internships"
+      },
+      "offers": {
+        "exploreAll": "Explore All"
+      },
+      "skills": {
+        "manageSkills": "Manage Skills",
+        "emptyMessage": "Add your technical skills to stand out to recruiters",
+        "addSkills": "Add Skills"
+      },
+      "welcomeHero": {
+        "brief": "Today's Brief",
+        "defaultName": "there",
+        "headlinePrefix": "Ready to secure your",
+        "headlineAccent": "dream internship",
+        "profileIncomplete": "Complete your profile to stand out to recruiters and unlock more opportunities.",
+        "profileComplete": "Your profile is complete! Keep exploring opportunities and applying.",
+        "completeProfile": "Complete Profile",
+        "exploreInternships": "Explore Internships",
+        "profileStrength": "Profile Strength",
+        "profileReady": "Your profile is ready",
+        "profileRemaining": "{remaining}% remaining to complete"
+      },
+      "status": {
+        "applied": "Pending",
+        "company_accepted": "Accepted",
+        "company_refused": "Refused",
+        "admin_validated": "Validated",
+        "admin_rejected": "Rejected",
+        "withdrawn": "Withdrawn"
+      },
       "profile": {
         "title": "Your Digital CV",
         "subtitle": "Your professional profile visible to recruiters",
         "edit": "Edit Profile",
+        "kicker": "Profile",
+        "memberSince": "Member since {date}",
+        "since": "Since {date}",
+        "profileImageAlt": "Profile",
+        "copyProfile": "Copy Profile",
+        "copied": "Copied!",
+        "copySuccess": "Profile copied to clipboard",
+        "copyError": "Failed to copy profile",
         "personalInfo": "Personal Information",
         "name": "Name",
         "email": "Email",
         "phone": "Phone",
+        "role": "Role",
+        "notSetYet": "Not set yet",
         "studentNumber": "Student Number",
         "department": "Department",
         "level": "Level",
@@ -685,8 +787,44 @@
         "location": "Location",
         "wilaya": "Wilaya",
         "address": "Address",
+        "university": "University",
         "links": "Links",
-        "skills": "Technical Skills"
+        "skills": "Technical Skills",
+        "skillCount": "{count, plural, one {{count} SKILL} other {{count} SKILLS}}",
+        "addMoreSkills": "Add more",
+        "noSkillsListed": "No skills listed yet.",
+        "generalCategory": "General",
+        "addSkills": "Add Skills",
+        "skillsEmptyMessage": "Add your technical skills to stand out to recruiters",
+        "bioEmptyMessage": "No bio added yet. Tell companies and recruiters about yourself, your interests, and what kind of internship you are looking for.",
+        "writeBio": "Write your bio",
+        "educationTitle": "Education",
+        "educationEmptyMessage": "Your education history will appear here once you complete your profile.",
+        "addEducation": "Add Education",
+        "experienceTitle": "Experience",
+        "experienceEmptyMessage": "Add your work experience, open source contributions, or personal projects to strengthen your profile.",
+        "addExperience": "Add Experience",
+        "anonymousUser": "Anonymous User",
+        "unknownRole": "User",
+        "roles": {
+          "student": "Student",
+          "company_admin": "Recruiter",
+          "dept_head": "Dept. Head",
+          "university_admin": "University Admin",
+          "super_admin": "Super Admin"
+        },
+        "stats": {
+          "applications": "Applications",
+          "totalSubmitted": "Total submitted",
+          "skills": "Skills",
+          "skillsAdded": "{count, plural, one {{count} skill added} other {{count} skills added}}",
+          "profile": "Profile",
+          "complete": "Complete!",
+          "keepGoing": "Keep going"
+        },
+        "skillsLabel": "Skills",
+        "githubLabel": "GitHub",
+        "portfolioLabel": "Portfolio"
       }
     },
     "recruiter": {
@@ -703,6 +841,20 @@
         "reviewCandidates": "Review Applications"
       },
       "pipeline": "Candidate Pipeline"
+    },
+    "deptHeadDashboard": {
+      "subtitle": "Review placement requests for your department",
+      "kicker": "Department Operations",
+      "title": "Your validation queue is ready.",
+      "description": "Track pending placement requests and jump directly into validation details.",
+      "openQueue": "Open Validation Queue",
+      "pendingLabel": "Pending Validations",
+      "queueStatusLabel": "Queue Status",
+      "queueBusy": "More requests are waiting in your queue.",
+      "queueClear": "All caught up for now.",
+      "recentTitle": "Recent Pending Requests",
+      "empty": "No pending validations in your department.",
+      "acceptedOn": "Accepted on"
     },
     "explore": {
       "pageTitle": "Explore Internships",
@@ -781,14 +933,22 @@
         "hybrid": "Hybrid",
         "remote": "Remote"
       },
+      "application": "Application",
+      "internshipOffer": "Internship Offer",
+      "trustIndex": "Trust Index",
       "copilot": {
         "draftWithAi": "Draft with AI",
-        "aiStatus": "AI: {status}",
+        "drafting": "Drafting...",
         "previewTitle": "AI Draft Preview",
-        "applyDraft": "Apply draft",
-        "prompts": {
-          "draftCoverLetter": "Draft a cover letter"
-        }
+        "applyDraft": "Apply draft"
+      },
+      "matching": {
+        "title": "Why this match?",
+        "computing": "Computing fit score...",
+        "unavailable": "Score unavailable right now.",
+        "missingSkills": "Missing Skills Roadmap",
+        "estimatedImprovement": "Estimated improvement: +{delta}% readiness",
+        "readinessTrend": "Readiness Trend"
       }
     },
     "applications": {
@@ -823,6 +983,67 @@
       "loadMore": "Load more",
       "exploreOffers": "Explore Internships"
     },
+    "documents": {
+      "pageTitle": "My Documents",
+      "title": "My Documents",
+      "subtitle": "View and download your internship agreements and certificates",
+      "empty": "No placement documents available yet.",
+      "loadError": "Failed to load your documents.",
+      "retry": "Retry",
+      "download": "Download",
+      "downloading": "Downloading...",
+      "agreement": "Agreement",
+      "certificate": "Certificate",
+      "status": {
+        "pending": "Pending",
+        "generated": "Generated",
+        "failed": "Failed"
+      },
+      "placement": {
+        "company": "Company",
+        "offer": "Offer",
+        "type": "Type",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "validatedAt": "Validated on",
+        "verificationCode": "Verification code",
+        "notAvailable": "Not available"
+      },
+      "downloadError": "Failed to download document."
+    },
+    "companyDocuments": {
+      "pageTitle": "Company Documents",
+      "title": "Company Documents",
+      "subtitle": "Generate and download placement certificates for your validated interns",
+      "empty": "No validated placements found for your company.",
+      "loadError": "Failed to load company documents.",
+      "retry": "Retry",
+      "generate": "Generate Certificate",
+      "generating": "Generating...",
+      "download": "Download",
+      "downloading": "Downloading...",
+      "generatedSuccess": "Certificate generated successfully.",
+      "generateError": "Failed to generate certificate.",
+      "downloadError": "Failed to download document.",
+      "agreement": "Agreement",
+      "certificate": "Certificate",
+      "status": {
+        "notGenerated": "Not generated",
+        "pending": "Pending",
+        "generated": "Generated",
+        "failed": "Failed"
+      },
+      "placement": {
+        "student": "Student",
+        "offer": "Offer",
+        "type": "Type",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "validatedAt": "Validated on",
+        "verificationCode": "Verification code",
+        "notAvailable": "Not available"
+      }
+    },
     "admin": {
       "title": "Admin Dashboard",
       "subtitle": "Overview of platform activity",
@@ -854,7 +1075,6 @@
           "department": "Department",
           "level": "Level",
           "university": "University",
-          "dean": "Dean",
           "address": "Address",
           "skills": "Skills",
           "companyInfo": "Company Info",
@@ -920,16 +1140,54 @@
         "headName": "Head name (optional)",
         "headNamePlaceholder": "e.g. Dr. Ahmed Benali",
         "assignHead": "Assign Head",
+        "manageSkills": "Skills",
         "assignHeadTitle": "Assign Department Head",
-        "assignHeadDescription": "Select a user to assign as the head of this department.",
+        "assignHeadDescription": "Enter the future department head details. If the user does not exist, an account will be created automatically.",
         "selectUser": "Select user",
         "noUsersAvailable": "No users available to assign.",
+        "passwordResetHint": "A password-reset link will be sent so the department head can activate access.",
         "save": "Save",
         "cancel": "Cancel",
         "createSuccess": "Department created successfully.",
         "updateSuccess": "Department updated successfully.",
         "assignSuccess": "Department head assigned successfully.",
-        "error": "Something went wrong. Please try again."
+        "removeHead": "Remove Head",
+        "removeHeadTitle": "Remove Department Head",
+        "removeHeadDescription": "This will unassign {headName} from {name}. The user account will be kept.",
+        "removeHeadSuccess": "Department head removed successfully.",
+        "deleteDepartment": "Delete Department",
+        "deleteDepartmentTitle": "Delete Department",
+        "deleteDepartmentDescription": "Delete {name}? This action cannot be undone.",
+        "deleteSuccess": "Department deleted successfully.",
+        "error": "Something went wrong. Please try again.",
+        "skills": {
+          "title": "Skills for {name}",
+          "description": "Select the skills relevant to this department. Students will see these as recommended.",
+          "save": "Save Skills",
+          "cancel": "Cancel",
+          "skillsSelected": "skills selected",
+          "searchPlaceholder": "Search skills...",
+          "saveSuccess": "Department skills updated.",
+          "saveError": "Could not update skills."
+        },
+        "bulkCreate": {
+          "title": "Bulk Create Departments",
+          "description": "Create multiple departments and assign heads at once. Each head will receive a welcome email with a password-reset link.",
+          "departmentName": "Department name",
+          "departmentNamePlaceholder": "e.g. Computer Science",
+          "headEmail": "Head email",
+          "headEmailPlaceholder": "e.g. head@university.dz",
+          "headName": "Head name",
+          "headNamePlaceholder": "e.g. Dr. Ahmed Benali",
+          "addRow": "Add row",
+          "removeRow": "Remove row",
+          "submit": "Create All",
+          "submitting": "Creating...",
+          "successMessage": "{count} department(s) created successfully.",
+          "partialSuccess": "{created} created, {failed} failed.",
+          "rowError": "{name}: {error}",
+          "error": "Something went wrong. Please try again."
+        }
       },
       "deptValidations": {
         "title": "Department Validations",
@@ -967,7 +1225,6 @@
           "noDomains": "No domains registered",
           "location": "Location",
           "department": "Department",
-          "dean": "Dean",
           "registeredAt": "Registered"
         }
       },
@@ -1257,7 +1514,18 @@
       "headNamePlaceholder": "e.g. Dr. Smith",
       "save": "Create Department",
       "success": "Department created",
-      "error": "Failed to create department"
+      "error": "Failed to create department",
+      "manageSkills": "Skills",
+      "skills": {
+        "title": "Skills for {name}",
+        "description": "Select the skills relevant to this department. Students will see these as recommended.",
+        "save": "Save Skills",
+        "cancel": "Cancel",
+        "skillsSelected": "skills selected",
+        "searchPlaceholder": "Search skills...",
+        "saveSuccess": "Department skills updated.",
+        "saveError": "Could not update skills."
+      }
     }
   },
   "howItWorks": {

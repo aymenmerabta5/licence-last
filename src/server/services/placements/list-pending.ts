@@ -35,7 +35,6 @@ export interface PendingApplication {
     name: string
     abbreviation: string | null
     departmentName: string | null
-    deanName: string | null
     address: string | null
     city: string | null
     phone: string | null
@@ -142,7 +141,6 @@ export async function listPendingApplications(
       universityName: university.name,
       universityAbbreviation: university.abbreviation,
       universityDepartmentName: university.departmentName,
-      universityDeanName: university.deanName,
       universityAddress: university.address,
       universityCity: university.city,
       universityPhone: university.phone,
@@ -246,7 +244,6 @@ export async function listPendingApplications(
             name: app.universityName!,
             abbreviation: app.universityAbbreviation,
             departmentName: app.universityDepartmentName,
-            deanName: app.universityDeanName,
             address: app.universityAddress,
             city: app.universityCity,
             phone: app.universityPhone,

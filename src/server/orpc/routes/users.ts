@@ -21,6 +21,8 @@ import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { deleteFile } from "@/server/storage/s3"
 import { createModuleLogger } from "@/server/logging"
+import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+import { isServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("orpc/routes/users")
 
@@ -35,9 +37,18 @@ export const updateMeProcedure = authedProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    return updateMe(context.user.id, {
-      name: input.name === "" ? null : input.name,
-    })
+    try {
+      return await updateMe(context.user.id, {
+        name: input.name === "" ? null : input.name,
+      })
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          USER_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to update user profile",
+      })
+    }
   })
 
 /** Extract S3 key from public URL */
@@ -73,6 +84,16 @@ export const uploadAvatarProcedure = authedProcedureStandard
       await updateMe(context.user.id, { image: url })
       return { url }
     } catch (error) {
+      // Typed service errors should be preserved as transport-safe responses.
+      if (isServiceError(error) && error.code === "USER_NOT_FOUND") {
+        createServiceORPCError(error, {
+          codeMap: {
+            USER_NOT_FOUND: "NOT_FOUND",
+          },
+          fallbackMessage: "Failed to update avatar",
+        })
+      }
+
       const message = error instanceof Error ? error.message : "Upload failed"
 
       log.error({ err: error }, "Avatar upload failed")
@@ -115,7 +136,17 @@ export const deleteAvatarProcedure = authedProcedureStandard.handler(
       }
     }
 
-    await updateMe(context.user.id, { image: null })
+    try {
+      await updateMe(context.user.id, { image: null })
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          USER_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to delete avatar",
+      })
+    }
+
     return { success: true }
   },
 )

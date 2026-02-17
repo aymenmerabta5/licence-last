@@ -31,16 +31,21 @@ export const env = createEnv({
 
     // Logging
     LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
+
+    // Cloudflare Turnstile (CAPTCHA)
+    TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
   },
   client: {
     NEXT_PUBLIC_BETTER_AUTH_URL: z.string().url(),
     NEXT_PUBLIC_S3_ENDPOINT: z.url().optional(),
     NEXT_PUBLIC_S3_URL: z.string().url().optional(),
+    NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().min(1).optional(),
   },
 
   experimental__runtimeEnv: {
     NEXT_PUBLIC_BETTER_AUTH_URL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
     NEXT_PUBLIC_S3_ENDPOINT: process.env.NEXT_PUBLIC_S3_ENDPOINT,
     NEXT_PUBLIC_S3_URL: process.env.NEXT_PUBLIC_S3_URL,
+    NEXT_PUBLIC_TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
   }
 });

@@ -13,7 +13,6 @@ import {
   FileText,
   ArrowRight,
   Loader2,
-  Check,
 } from "lucide-react"
 
 import { ServerError } from "@/components/ServerError"
@@ -22,6 +21,7 @@ import { FormSection } from "@/components/form-fields"
 import { TextField } from "@/components/form-fields"
 import { TextAreaField } from "@/components/form-fields"
 import { SelectField } from "@/components/form-fields"
+import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
 import { Button } from "@/components/ui/button"
 import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYAS } from "@/lib/wilayas"
@@ -32,8 +32,9 @@ import { useOnboardingForm } from "./hooks/useOnboardingForm"
 
 export function StudentOnboardingForm() {
   const t = useTranslations("onboarding.student")
-  const { form, serverError, skillTags, departments, selectedDepartmentId, handleDepartmentChange } = useOnboardingForm()
-  const { groups, categoryOrder, categoryLabels } = useSkillGrouping(skillTags)
+  const { form, serverError, departmentSkills, otherSkills, departments, selectedDepartmentId, handleDepartmentChange } = useOnboardingForm()
+  const deptGroups = useSkillGrouping(departmentSkills)
+  const otherGroups = useSkillGrouping(otherSkills)
 
   return (
     <form
@@ -41,13 +42,13 @@ export function StudentOnboardingForm() {
         e.preventDefault()
         form.handleSubmit()
       }}
-      className="space-y-7"
+      className="space-y-8"
     >
       <FormHeader title={t("title")} subtitle={t("subtitle")} />
 
       <ServerError message={serverError} />
 
-      <FormSection title={t("personalSection")}>
+      <FormSection title={`01 — ${t("personalSection")}`}>
         <form.Field name="bio">
           {(field) => (
             <TextAreaField
@@ -127,7 +128,7 @@ export function StudentOnboardingForm() {
         </form.Field>
       </FormSection>
 
-      <FormSection title={t("locationSection")} delay={0.05}>
+      <FormSection title={`02 — ${t("locationSection")}`} delay={0.05}>
         <form.Field name="wilayaCode">
           {(field) => (
             <SelectField
@@ -166,7 +167,7 @@ export function StudentOnboardingForm() {
         </form.Field>
       </FormSection>
 
-      <FormSection title={t("linksSection")} delay={0.1}>
+      <FormSection title={`03 — ${t("linksSection")}`} delay={0.1}>
         <form.Field name="githubUrl">
           {(field) => (
             <TextField
@@ -208,67 +209,87 @@ export function StudentOnboardingForm() {
         </form.Field>
       </FormSection>
 
-      <FormSection title={t("skillsSection")} delay={0.15}>
+      <FormSection title={`04 — ${t("skillsSection")}`} delay={0.15}>
         <p className="text-xs text-muted-foreground">
           {selectedDepartmentId ? t("skillsHint") : t("skillsSelectDepartmentFirst")}
         </p>
 
         <form.Field name="skillTagIds">
-          {(field) => (
-            <div className="space-y-4">
-              {categoryOrder.map((category) => {
-                const skills = groups[category]
-                if (!skills || skills.length === 0) return null
+          {(field) => {
+            const toggleSkill = (skillId: string) => {
+              if (field.state.value.includes(skillId)) {
+                field.handleChange(field.state.value.filter((id: string) => id !== skillId))
+              } else if (field.state.value.length < 10) {
+                field.handleChange([...field.state.value, skillId])
+              }
+            }
 
-                return (
-                  <div key={category} className="space-y-2">
-                    <p className="text-[10px] font-semibold tracking-[0.12em] uppercase text-muted-foreground/70">
-                      {categoryLabels[category] ?? category}
+            return (
+              <div className="space-y-5">
+                {/* Tier 1: Recommended department skills */}
+                {selectedDepartmentId && departmentSkills.length > 0 && (
+                  <div className="space-y-3">
+                    <p className="text-[11px] font-semibold text-primary">
+                      {t("recommendedSkills")}
                     </p>
-                    <div className="flex flex-wrap gap-2">
-                      {skills.map((skill) => {
-                        const isSelected = field.state.value.includes(skill.id)
-                        const isAtMax = field.state.value.length >= 10
-
-                        return (
-                          <button
-                            key={skill.id}
-                            type="button"
-                            disabled={!isSelected && isAtMax}
-                            onClick={() => {
-                              if (isSelected) {
-                                field.handleChange(
-                                  field.state.value.filter((id: string) => id !== skill.id)
-                                )
-                              } else {
-                                field.handleChange([...field.state.value, skill.id])
-                              }
-                            }}
-                            className={`
-                              inline-flex items-center gap-1.5 px-3 py-1.5 text-xs border transition-colors
-                              ${
-                                isSelected
-                                  ? "bg-primary/10 border-primary/30 text-primary font-medium"
-                                  : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
-                              }
-                              ${!isSelected && isAtMax ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
-                            `}
-                          >
-                            {isSelected && <Check className="h-3 w-3" />}
-                            {skill.name}
-                          </button>
-                        )
-                      })}
-                    </div>
+                    <SkillCategoryGrid
+                      groups={deptGroups.groups}
+                      categoryOrder={deptGroups.categoryOrder}
+                      categoryLabels={deptGroups.categoryLabels}
+                      selectedIds={field.state.value}
+                      maxSkills={10}
+                      isLoading={false}
+                      onToggle={toggleSkill}
+                    />
                   </div>
-                )
-              })}
+                )}
 
-              <p className="text-[11px] text-muted-foreground">
-                {field.state.value.length}/10 {t("skillsSelected")}
-              </p>
-            </div>
-          )}
+                {/* Separator between tiers */}
+                {selectedDepartmentId && departmentSkills.length > 0 && otherSkills.length > 0 && (
+                  <div className="border-t border-border/50" />
+                )}
+
+                {/* Tier 2: Other skills (or all skills when no department) */}
+                {otherSkills.length > 0 && (
+                  <div className="space-y-3">
+                    {selectedDepartmentId && departmentSkills.length > 0 && (
+                      <p className="text-[11px] font-semibold text-muted-foreground">
+                        {t("otherSkills")}
+                      </p>
+                    )}
+                    <SkillCategoryGrid
+                      groups={otherGroups.groups}
+                      categoryOrder={otherGroups.categoryOrder}
+                      categoryLabels={otherGroups.categoryLabels}
+                      selectedIds={field.state.value}
+                      maxSkills={10}
+                      isLoading={false}
+                      onToggle={toggleSkill}
+                    />
+                  </div>
+                )}
+
+                {/* Skills counter with visual indicator */}
+                <div className="flex items-center gap-3 pt-1">
+                  <div className="flex gap-1">
+                    {Array.from({ length: 10 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${
+                          i < field.state.value.length
+                            ? "bg-primary"
+                            : "bg-border"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    {field.state.value.length}/10 {t("skillsSelected")}
+                  </p>
+                </div>
+              </div>
+            )
+          }}
         </form.Field>
       </FormSection>
 
@@ -276,6 +297,7 @@ export function StudentOnboardingForm() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease, delay: 0.2 }}
+        className="pt-2"
       >
         <form.Subscribe selector={(state) => [state.isSubmitting] as const}>
           {([isSubmitting]) => (

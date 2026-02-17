@@ -9,7 +9,7 @@ Internex manages the complete internship lifecycle:
 - **Students** discover offers, apply, track applications, and get AI-powered cover letter help
 - **Companies** post offers, manage candidate pipelines, and use an AI assistant for recruitment
 - **Department heads** validate placements for their department's students
-- **University admins** validate placements and generate official documents (agreements, certificates)
+- **University admins** manage departments (CRUD, bulk import, skills, head assignment by email), validate placements, and generate official documents (agreements, certificates)
 - **Super admins** manage the entire platform: users, companies, universities, departments
 
 ```
@@ -24,7 +24,7 @@ Internex manages the complete internship lifecycle:
    (RSC + CC)     /     |     \
                 Auth   oRPC   Assistant
                 |       |        |
-         Better Auth  83 procs  Poe AI
+         Better Auth  88 procs  Poe AI
                 \       |      /
              +-----------------------+
              |    Services Layer     |
@@ -119,9 +119,11 @@ bun run typecheck      # TypeScript check
 
 # Testing
 bun test               # All tests
-bun test:unit          # Unit tests (lib + server)
-bun test:api           # API endpoint tests
-bun test:pages         # Page tests
+bun test:unit          # Unit/core tests (lib + service/data/core server modules)
+bun test:orpc-routes   # oRPC controller route and smoke tests
+bun test:api           # API route tests + oRPC route suite
+bun test:pages         # App Router page/component tests (src/app/[locale])
+bun test:coverage      # Coverage guard suite (segmented to avoid mock collisions)
 bun test:e2e           # Playwright E2E
 bun test:ci            # CI pipeline (unit + api + pages)
 
@@ -147,10 +149,10 @@ src/
 │   │   └── onboarding/        # Setup wizards per role
 │   └── api/
 │       ├── auth/[...all]/     # Better Auth endpoints
-│       ├── rpc/[...rest]/     # oRPC (83 procedures, CSRF protected)
+│       ├── rpc/[...rest]/     # oRPC (88 procedures, CSRF protected)
 │       ├── assistant/         # AI chat streaming + auth status
 │       ├── openapi/           # OpenAPI spec + Swagger UI
-│       └── health/            # Health check
+│       └── health/            # Dependency-aware readiness check
 ├── components/                # Shared UI (28 shadcn/ui primitives + custom)
 ├── hooks/                     # Shared hooks (useDebounce, useInfiniteScroll, useCopilot, etc.)
 ├── lib/                       # Schemas, utils, constants, animations
@@ -174,8 +176,13 @@ src/
 The project follows an **MVC pattern**:
 
 - **Model** (`server/services/`) — 16 domains of pure business logic with `import "server-only"`
-- **Controller** (`server/orpc/`) — 83 oRPC procedures with auth middleware chain and rate limiting
+- **Controller** (`server/orpc/`) — 88 oRPC procedures with auth middleware chain and rate limiting
 - **View** — React Server Components + Client Components with feature folder pattern
+
+Operational contracts:
+- Services throw typed `ServiceError` codes for domain failures.
+- Route handlers map service errors to transport-safe `ORPCError` via `createServiceORPCError`.
+- `/api/health` returns per-dependency readiness (`database`, `redis`, `rateLimiter`) and returns `503` when required dependencies are down.
 
 ### Auth & Roles
 
@@ -187,7 +194,7 @@ The project follows an **MVC pattern**:
 - University email domain validation for student registration
 - User banning (temporary and permanent)
 - Admin impersonation with audit trail
-- Department management with dept_head role
+- Department management: CRUD, bulk import, skills, head assign/unassign by email (auto-creates users)
 
 ### Document Verification
 
@@ -249,7 +256,7 @@ nano .env  # Set DATABASE_URL, BETTER_AUTH_SECRET, DOMAIN_NAME, etc.
 RUN_SEED=true docker compose -f docker-compose.prod.yml up -d
 ```
 
-**Auto-deploy pipeline**: Push to `master` triggers CI (lint, typecheck, tests, build, E2E), then CD builds and pushes a Docker image to GHCR. Watchtower detects the new image within 60 seconds and restarts the app.
+**Auto-deploy pipeline**: Push to `master` triggers CI (lint, typecheck, unit/api/pages tests, coverage guard, build, E2E), then CD builds and pushes a Docker image to GHCR. Watchtower detects the new image within 60 seconds and restarts the app.
 
 Memory budget for a 2GB server: PostgreSQL 384MB, Next.js 512MB, Redis 64MB, Caddy 64MB, Watchtower 64MB.
 
@@ -263,6 +270,8 @@ See [docs/DEPLOYMENT_INCHALLAH.md](docs/DEPLOYMENT_INCHALLAH.md) for the full gu
 | [DEPLOYMENT_INCHALLAH.md](docs/DEPLOYMENT_INCHALLAH.md) | Server setup, Docker Compose, Caddy, Watchtower guide |
 | [CLAUDE.md](CLAUDE.md) | Project conventions and patterns for Claude Code |
 | [AGENTS.md](AGENTS.md) | Agent instructions and codebase reference |
+
+> **Note:** When adding features, update all 4 docs to keep them in sync. See the "Documentation Sync Policy" section in CLAUDE.md/AGENTS.md for the checklist.
 
 ## License
 

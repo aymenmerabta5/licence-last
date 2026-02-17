@@ -4,9 +4,14 @@ import { Briefcase, Award, ShieldCheck } from "lucide-react"
 
 import type { ProfileUser, StudentData, ViewerIdentity } from "../types"
 
+interface TranslationValues {
+  [key: string]: string | number | Date
+}
+
 export function useProfileData(
   viewer: ViewerIdentity,
   user: ProfileUser,
+  t: (key: string, values?: TranslationValues) => string,
   studentData?: StudentData,
 ) {
   const isOwner = viewer.id === user.id
@@ -18,28 +23,33 @@ export function useProfileData(
     if (canEdit && isStudent && studentData?.stats) {
       return [
         {
-          title: "Applications",
+          title: t("student.profile.stats.applications"),
           value: String(studentData.stats.totalApplications),
-          description: "Total submitted",
+          description: t("student.profile.stats.totalSubmitted"),
           icon: Briefcase,
         },
         {
-          title: "Skills",
+          title: t("student.profile.stats.skills"),
           value: String(studentData.stats.skillsCount),
-          description: `${studentData.stats.skillsCount} skills added`,
+          description: t("student.profile.stats.skillsAdded", {
+            count: studentData.stats.skillsCount,
+          }),
           icon: Award,
         },
         {
-          title: "Profile",
+          title: t("student.profile.stats.profile"),
           value: `${studentData.stats.profileCompleteness}%`,
-          description: studentData.stats.profileCompleteness === 100 ? "Complete!" : "Keep going",
+          description:
+            studentData.stats.profileCompleteness === 100
+              ? t("student.profile.stats.complete")
+              : t("student.profile.stats.keepGoing"),
           icon: ShieldCheck,
         },
       ]
     }
 
     return []
-  }, [canEdit, isStudent, studentData])
+  }, [canEdit, isStudent, studentData, t])
 
   return {
     isStudent,

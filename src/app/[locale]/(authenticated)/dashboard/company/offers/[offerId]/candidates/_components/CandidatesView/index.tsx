@@ -1,6 +1,5 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Loader2 } from "lucide-react"
 
 import { TimelineModal } from "@/components/TimelineModal"
@@ -8,6 +7,7 @@ import { TimelineModal } from "@/components/TimelineModal"
 import { useCandidates } from "./hooks/useCandidates"
 import { CandidatesHeader } from "./components/CandidatesHeader"
 import { PipelineGrid } from "./components/PipelineGrid"
+import { AcceptModal } from "./components/AcceptModal"
 import { RefuseModal } from "./components/RefuseModal"
 
 interface CandidatesViewProps {
@@ -15,7 +15,6 @@ interface CandidatesViewProps {
 }
 
 export function CandidatesView({ offerId }: CandidatesViewProps) {
-  const t = useTranslations("dashboard.company.candidates")
   const {
     offer,
     applications,
@@ -24,6 +23,8 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
     grouped,
     sentinelRef,
     actionLoading,
+    acceptModal,
+    setAcceptModal,
     handleAccept,
     refuseModal,
     setRefuseModal,
@@ -40,7 +41,7 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
 
   return (
     <div className="w-full space-y-8">
-      <CandidatesHeader offerTitle={offer?.title} />
+      <CandidatesHeader offerTitle={offer?.title} totalCandidates={applications.length} />
 
       <PipelineGrid
         applications={applications}
@@ -49,7 +50,12 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
         offerId={offerId}
         actionLoading={actionLoading}
         pendingStageById={pendingStageById}
-        onAccept={(appId) => handleAccept(appId, t("confirmAccept"))}
+        onAccept={(app) =>
+          setAcceptModal({
+            applicationId: app.id,
+            studentName: app.student.name || "Student",
+          })
+        }
         onRefuse={(app) =>
           setRefuseModal({
             applicationId: app.id,
@@ -73,6 +79,16 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
           events={timelineData}
           isLoading={isTimelineLoading}
           onClose={() => setOpenedTimelineFor(null)}
+        />
+      )}
+
+      {acceptModal && (
+        <AcceptModal
+          studentName={acceptModal.studentName}
+          applicationId={acceptModal.applicationId}
+          actionLoading={actionLoading}
+          onConfirm={handleAccept}
+          onCancel={() => setAcceptModal(null)}
         />
       )}
 

@@ -18,7 +18,9 @@ import {
 } from "@/server/pdfs/AgreementTemplate"
 import { generateVerificationCode } from "./verification-code"
 import { generateQRCodeDataUrl } from "./qr-utils"
+import { sendAgreementEmail } from "./send-agreement-email"
 import { env } from "@/env"
+import { logger } from "@/server/logging"
 
 export interface GenerateAgreementInput {
   placementId: string
@@ -72,7 +74,6 @@ export async function generateAgreement(
 
       universityName: university.name,
       universityDepartmentName: university.departmentName,
-      universityDeanName: university.deanName,
       universityAddress: university.address,
       universityPhone: university.phone,
     })
@@ -102,6 +103,7 @@ export async function generateAgreement(
     .limit(1)
 
   const verificationCode = existingDoc?.verificationCode ?? generateVerificationCode()
+  const shouldSendAgreementEmail = !existingDoc
   const verificationUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/${locale}/verify/${verificationCode}`
   const qrCodeDataUrl = await generateQRCodeDataUrl(verificationUrl)
 
@@ -124,7 +126,6 @@ export async function generateAgreement(
     // University info
     universityName: row.universityName ?? null,
     universityDepartmentName: row.universityDepartmentName ?? null,
-    universityDeanName: row.universityDeanName ?? null,
     universityAddress: row.universityAddress ?? null,
     universityPhone: row.universityPhone ?? null,
 
@@ -182,6 +183,30 @@ export async function generateAgreement(
         },
       })
       .where(eq(placementDocument.id, documentRecord.id))
+  }
+
+  if (shouldSendAgreementEmail) {
+    void sendAgreementEmail({
+      to: row.studentEmail,
+      studentName: row.studentName ?? "Student",
+      companyName: row.companyName,
+      offerTitle: row.offerTitle,
+      internshipType: row.internshipType,
+      startDate: placementRecord.startDate,
+      endDate: placementRecord.endDate,
+      verificationCode,
+      locale,
+    }).catch((error) => {
+      logger.error(
+        {
+          err: error,
+          event: "agreement_email_failed",
+          placementId,
+          studentEmail: row.studentEmail,
+        },
+        "Failed to send agreement generated email",
+      )
+    })
   }
 
   return {
