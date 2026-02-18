@@ -1,20 +1,18 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { describe, test, expect, mock, beforeEach, afterAll } from "bun:test"
 
 const mockListUsers = mock(() => Promise.resolve({ users: [], total: 0 }))
 const mockHeaders = mock(() => Promise.resolve(new Headers()))
 
-mock.module("@/lib/auth", () => ({
-  auth: { api: { listUsers: mockListUsers } },
-  pendingWelcomeEmails: new Map(),
-}))
-mock.module("next/headers", () => ({ headers: mockHeaders }))
+mock.module("@/lib/auth", () => ({ auth: { api: {} }, pendingWelcomeEmails: new Map() }))
 
 describe("listUsers", () => {
-  beforeEach(() => { mockListUsers.mockClear() })
+  beforeEach(() => {
+    mockListUsers.mockClear()
+  })
 
   test("should use default limit and offset", async () => {
-    const { listUsers } = await import("@/server/services/admin/list-users")
-    await listUsers({})
+    const { listUsers } = await import("@/server/services/admin/list-users?fresh=1")
+    await listUsers({}, { authApi: { listUsers: mockListUsers } as any, getHeaders: mockHeaders })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const call = (mockListUsers.mock.calls as any)[0][0]
@@ -23,8 +21,8 @@ describe("listUsers", () => {
   })
 
   test("should pass custom limit and offset", async () => {
-    const { listUsers } = await import("@/server/services/admin/list-users")
-    await listUsers({ limit: 50, offset: 10 })
+    const { listUsers } = await import("@/server/services/admin/list-users?fresh=2")
+    await listUsers({ limit: 50, offset: 10 }, { authApi: { listUsers: mockListUsers } as any, getHeaders: mockHeaders })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const call = (mockListUsers.mock.calls as any)[0][0]
@@ -33,8 +31,8 @@ describe("listUsers", () => {
   })
 
   test("should include search params when searchValue is provided", async () => {
-    const { listUsers } = await import("@/server/services/admin/list-users")
-    await listUsers({ searchValue: "test@", searchField: "email" })
+    const { listUsers } = await import("@/server/services/admin/list-users?fresh=3")
+    await listUsers({ searchValue: "test@", searchField: "email" }, { authApi: { listUsers: mockListUsers } as any, getHeaders: mockHeaders })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const call = (mockListUsers.mock.calls as any)[0][0]
@@ -44,8 +42,8 @@ describe("listUsers", () => {
   })
 
   test("should include sort params when sortBy is provided", async () => {
-    const { listUsers } = await import("@/server/services/admin/list-users")
-    await listUsers({ sortBy: "name", sortDirection: "desc" })
+    const { listUsers } = await import("@/server/services/admin/list-users?fresh=4")
+    await listUsers({ sortBy: "name", sortDirection: "desc" }, { authApi: { listUsers: mockListUsers } as any, getHeaders: mockHeaders })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const call = (mockListUsers.mock.calls as any)[0][0]
@@ -54,12 +52,13 @@ describe("listUsers", () => {
   })
 
   test("should include filter params when filterField is provided", async () => {
-    const { listUsers } = await import("@/server/services/admin/list-users")
-    await listUsers({ filterField: "role", filterValue: "student", filterOperator: "eq" })
+    const { listUsers } = await import("@/server/services/admin/list-users?fresh=5")
+    await listUsers({ filterField: "role", filterValue: "student", filterOperator: "eq" }, { authApi: { listUsers: mockListUsers } as any, getHeaders: mockHeaders })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const call = (mockListUsers.mock.calls as any)[0][0]
     expect(call.query.filterField).toBe("role")
     expect(call.query.filterValue).toBe("student")
   })
+
 })

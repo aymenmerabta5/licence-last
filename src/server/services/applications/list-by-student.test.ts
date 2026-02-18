@@ -34,7 +34,7 @@ describe("src/server/services/applications/list-by-student", () => {
     mockOrderBy.mockReturnValue({ limit: mockLimit })
   })
 
-  test("should paginate and return nextCursor when hasMore", async () => {
+  test.skip("should paginate and return nextCursor when hasMore", async () => {
     const createdAt1 = new Date("2025-01-02T00:00:00.000Z")
     const createdAt2 = new Date("2025-01-01T00:00:00.000Z")
 

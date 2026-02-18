@@ -70,14 +70,20 @@ async function mapWithConcurrency<TInput, TOutput>(
 /**
  * Rank top recent offers by personalized matching score.
  */
+interface RecommendOffersDependencies {
+  searchOffers?: (params: { limit: number }) => Promise<Awaited<ReturnType<typeof searchOffers>>>
+}
+
 export async function recommendOffersForStudent(
   input: RecommendOffersInput,
+  dependencies: RecommendOffersDependencies = {},
 ): Promise<{ offers: RankedOffer[] }> {
   const limit = Math.max(1, Math.min(input.limit ?? 3, 12))
   const candidateLimit = Math.max(20, Math.min(input.candidateLimit ?? 100, 200))
+  const searchFn = dependencies.searchOffers ?? searchOffers
 
   const [searchResult, appliedRows] = await Promise.all([
-    searchOffers({ limit: candidateLimit }),
+    searchFn({ limit: candidateLimit }),
     db
       .select({ offerId: application.offerId })
       .from(application)

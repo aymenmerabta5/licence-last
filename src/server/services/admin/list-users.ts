@@ -1,7 +1,7 @@
 import "server-only"
 
-import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
+import { auth } from "@/lib/auth"
 
 interface ListUsersParams {
   limit?: number
@@ -16,9 +16,14 @@ interface ListUsersParams {
   filterOperator?: "eq" | "ne" | "lt" | "lte" | "gt" | "gte"
 }
 
-export async function listUsers(params: ListUsersParams) {
-  const result = await auth.api.listUsers({
-    headers: await headers(),
+const getAuthApi = () => (globalThis as any).__authApi ?? auth.api
+type ListUsersDeps = { authApi?: typeof auth.api; getHeaders?: typeof headers }
+
+export async function listUsers(params: ListUsersParams, deps: ListUsersDeps = {}) {
+  const api = deps.authApi ?? getAuthApi()
+  const getHeaders = deps.getHeaders ?? headers
+  const result = await api.listUsers({
+    headers: await getHeaders(),
     query: {
       limit: params.limit ?? 20,
       offset: params.offset ?? 0,

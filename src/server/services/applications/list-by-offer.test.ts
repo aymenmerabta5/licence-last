@@ -135,7 +135,7 @@ describe("src/server/services/applications/list-by-offer", () => {
       },
     ])
 
-    const { listApplicationsByOffer } = await import("@/server/services/applications/list-by-offer")
+    const { listApplicationsByOffer } = await import("@/server/services/applications/list-by-offer?fresh=1")
     const result = await listApplicationsByOffer("offer-1", "company-1")
 
     expect(result.applications).toHaveLength(1)
@@ -173,7 +173,7 @@ describe("src/server/services/applications/list-by-offer", () => {
     ])
     mockSelectResults.push([])
 
-    const { listApplicationsByOffer } = await import("@/server/services/applications/list-by-offer")
+    const { listApplicationsByOffer } = await import("@/server/services/applications/list-by-offer?fresh=2")
     const result = await listApplicationsByOffer("offer-1", "company-1")
 
     expect(result.applications).toHaveLength(1)
@@ -184,7 +184,7 @@ describe("src/server/services/applications/list-by-offer", () => {
   test("should throw typed not found when offer does not exist", async () => {
     mockSelectResults.push([])
 
-    const { listApplicationsByOffer } = await import("@/server/services/applications/list-by-offer")
+    const { listApplicationsByOffer } = await import("@/server/services/applications/list-by-offer?fresh=3")
     let thrown: unknown
     try {
       await listApplicationsByOffer("missing-offer", "company-1")
@@ -199,7 +199,7 @@ describe("src/server/services/applications/list-by-offer", () => {
   test("should throw typed forbidden when offer belongs to another company", async () => {
     mockSelectResults.push([{ id: "offer-1", companyId: "company-2" }])
 
-    const { listApplicationsByOffer } = await import("@/server/services/applications/list-by-offer")
+    const { listApplicationsByOffer } = await import("@/server/services/applications/list-by-offer?fresh=4")
 
     await expect(listApplicationsByOffer("offer-1", "company-1")).rejects.toMatchObject({
       code: "OFFER_FORBIDDEN",

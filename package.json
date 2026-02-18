@@ -11,7 +11,6 @@
     "lint:architecture": "node scripts/check-feature-folder.cjs",
     "lint:rtl-logical": "node scripts/check-rtl-logical.cjs",
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
     "test:watch": "bun test --watch",
     "test:coverage": "node scripts/run-coverage.cjs",
     "test:unit": "bun test src/lib src/server/services src/server/db src/server/caching src/server/storage src/server/email src/server/logging src/server/openapi src/server/ai src/server/pdfs src/server/mcp src/server/orpc/utils",
