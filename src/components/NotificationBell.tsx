@@ -4,6 +4,7 @@ import { Bell, CheckCheck } from "lucide-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { Link } from "@/i18n/routing"
+import { formatNotification } from "@/lib/notifications"
 import { orpc } from "@/server/orpc/client"
 import {
   DropdownMenu,
@@ -98,35 +99,40 @@ export function NotificationBell() {
           </div>
         ) : (
           <div className="max-h-96 overflow-auto">
-            {notifications.map((n) => (
-              <DropdownMenuItem
-                key={n.id}
-                className="rounded-lg cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors items-start gap-2"
-                onSelect={(e) => {
-                  e.preventDefault()
-                  markReadMutation.mutate({ notificationId: n.id })
-                }}
-              >
-                <div className="flex-1 min-w-0 py-0.5">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-xs font-medium truncate">
-                      {n.type.replace(/_/g, " ")}
-                    </p>
-                    <span className="text-[10px] text-muted-foreground shrink-0">
-                      {formatRelative(new Date(n.createdAt))}
-                    </span>
+            {notifications.map((n) => {
+              const formatted = formatNotification({
+                type: n.type,
+                payload: n.payload,
+              })
+
+              return (
+                <DropdownMenuItem
+                  key={n.id}
+                  className="rounded-lg cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors items-start gap-2"
+                  onSelect={(e) => {
+                    e.preventDefault()
+                    markReadMutation.mutate({ notificationId: n.id })
+                  }}
+                >
+                  <div className="flex-1 min-w-0 py-0.5">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-xs font-medium truncate">{formatted.title}</p>
+                      <span className="text-[10px] text-muted-foreground shrink-0">
+                        {formatRelative(new Date(n.createdAt))}
+                      </span>
+                    </div>
+                    {formatted.message && (
+                      <p className="text-[11px] text-muted-foreground line-clamp-2">
+                        {formatted.message}
+                      </p>
+                    )}
                   </div>
-                  <p className="text-[11px] text-muted-foreground line-clamp-2">
-                    {typeof n.payload === "object" && n.payload && "offerTitle" in n.payload
-                      ? String((n.payload as { offerTitle?: unknown }).offerTitle ?? "")
-                      : ""}
-                  </p>
-                </div>
-                {n.readAt === null && (
-                  <span className="mt-2 w-2 h-2 rounded-full bg-primary shrink-0" />
-                )}
-              </DropdownMenuItem>
-            ))}
+                  {n.readAt === null && (
+                    <span className="mt-2 w-2 h-2 rounded-full bg-primary shrink-0" />
+                  )}
+                </DropdownMenuItem>
+              )
+            })}
           </div>
         )}
 

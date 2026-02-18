@@ -31,7 +31,7 @@ export const env = createEnv({
 
     // Server feature flags
     FEATURE_NOTIF_PREFERENCES: z.enum(["true", "false"]).default("false"),
-    FEATURE_SAVED_OFFERS: z.enum(["true", "false"]).default("false"),
+    FEATURE_SAVED_OFFERS: z.enum(["true", "false"]).default("true"),
     FEATURE_INTERVIEWS: z.enum(["true", "false"]).default("false"),
     FEATURE_LANGUAGE_REQUIREMENTS: z.enum(["true", "false"]).default("false"),
 
@@ -46,6 +46,7 @@ export const env = createEnv({
     NEXT_PUBLIC_S3_ENDPOINT: z.url().optional(),
     NEXT_PUBLIC_S3_URL: z.string().url().optional(),
     NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().min(1).optional(),
+    NEXT_PUBLIC_FEATURE_SAVED_OFFERS: z.enum(["true", "false"]).default("true"),
     NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS: z
       .enum(["true", "false"])
       .default("false"),
@@ -56,6 +57,8 @@ export const env = createEnv({
     NEXT_PUBLIC_S3_ENDPOINT: process.env.NEXT_PUBLIC_S3_ENDPOINT,
     NEXT_PUBLIC_S3_URL: process.env.NEXT_PUBLIC_S3_URL,
     NEXT_PUBLIC_TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
+    NEXT_PUBLIC_FEATURE_SAVED_OFFERS:
+      process.env.NEXT_PUBLIC_FEATURE_SAVED_OFFERS,
     NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS:
       process.env.NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS,
   }

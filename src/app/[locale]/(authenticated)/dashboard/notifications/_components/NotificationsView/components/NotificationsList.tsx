@@ -4,6 +4,8 @@ import { useTranslations } from "next-intl"
 import { Loader2 } from "lucide-react"
 
 import { reveal, ease } from "@/lib/animations"
+import { formatNotification } from "@/lib/notifications"
+import { cn } from "@/lib/utils"
 
 interface Notification {
   id: string
@@ -17,6 +19,7 @@ interface NotificationsListProps {
   notifications: Notification[]
   isLoading: boolean
   isFetchingNextPage: boolean
+  onMarkRead: (notificationId: string) => void
   sentinelRef: RefObject<HTMLDivElement | null>
 }
 
@@ -24,6 +27,7 @@ export function NotificationsList({
   notifications,
   isLoading,
   isFetchingNextPage,
+  onMarkRead,
   sentinelRef,
 }: NotificationsListProps) {
   const t = useTranslations("dashboard.notifications")
@@ -44,28 +48,43 @@ export function NotificationsList({
 
       {notifications.length > 0 && (
         <div className="space-y-2">
-          {notifications.map((n, i) => (
-            <motion.div
-              key={n.id}
-              {...reveal}
-              transition={{ duration: 0.4, ease, delay: 0.02 * i }}
-              className="border border-border p-4"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold tracking-wide text-heading">
-                    {n.type.replace(/_/g, " ")}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1 break-words">
-                    {JSON.stringify(n.payload)}
-                  </p>
-                </div>
-                {n.readAt === null && (
-                  <span className="mt-1 w-2 h-2 rounded-full bg-primary shrink-0" />
+          {notifications.map((n, i) => {
+            const formatted = formatNotification({
+              type: n.type,
+              payload: n.payload,
+            })
+
+            return (
+              <motion.button
+                key={n.id}
+                type="button"
+                {...reveal}
+                transition={{ duration: 0.4, ease, delay: 0.02 * i }}
+                disabled={n.readAt !== null}
+                onClick={() => onMarkRead(n.id)}
+                className={cn(
+                  "block w-full text-start border border-border p-4",
+                  n.readAt === null && "cursor-pointer transition-colors hover:bg-secondary/25",
                 )}
-              </div>
-            </motion.div>
-          ))}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold tracking-wide text-heading">
+                      {formatted.title}
+                    </p>
+                    {formatted.message && (
+                      <p className="text-xs text-muted-foreground mt-1 wrap-break-word">
+                        {formatted.message}
+                      </p>
+                    )}
+                  </div>
+                  {n.readAt === null && (
+                    <span className="mt-1 w-2 h-2 rounded-full bg-primary shrink-0" />
+                  )}
+                </div>
+              </motion.button>
+            )
+          })}
         </div>
       )}
 

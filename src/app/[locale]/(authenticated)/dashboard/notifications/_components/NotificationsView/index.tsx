@@ -17,6 +17,7 @@ export function NotificationsView({ role }: NotificationsViewProps) {
     isLoading,
     isFetchingNextPage,
     sentinelRef,
+    markRead,
     markAllRead,
     isMarkingRead,
   } = useNotifications()
@@ -49,6 +50,7 @@ export function NotificationsView({ role }: NotificationsViewProps) {
         notifications={notifications}
         isLoading={isLoading}
         isFetchingNextPage={isFetchingNextPage}
+        onMarkRead={markRead}
         sentinelRef={sentinelRef}
       />
     </div>

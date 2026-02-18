@@ -24,7 +24,15 @@ const applyToOfferMock = mock(async () => ({ applicationId: "app-1" }))
 const withdrawApplicationMock = mock(async () => ({ applicationId: "app-1" }))
 const listApplicationsByOfferMock = mock(async () => ({ applications: [] }))
 const updatePipelineStageMock = mock(async () => ({ applicationId: "app-1" }))
+const listApplicationTimelineMock = mock(async (): Promise<unknown[]> => [])
 const revalidateTagMock = mock(() => {})
+const isAdminRoleMock = mock(() => false)
+const dbLimitQueue: unknown[][] = []
+
+function getNextDbRows() {
+  const rows = dbLimitQueue.shift()
+  return rows ?? []
+}
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   publicProcedureStrict: createProcedureMock(),
@@ -86,7 +94,7 @@ mock.module("@/server/services/applications/company-refuse", () => ({
 }))
 mock.module("@/server/services/applications/pipeline", () => ({
   appendTimelineEvent: mock(async () => ({ eventId: "event-1" })),
-  listApplicationTimeline: mock(async () => ({ events: [] })),
+  listApplicationTimeline: listApplicationTimelineMock,
   updateApplicationPipelineStage: updatePipelineStageMock,
 }))
 mock.module("@/server/db", () => ({
@@ -95,15 +103,18 @@ mock.module("@/server/db", () => ({
       from: () => ({
         innerJoin: () => ({
           where: () => ({
-            limit: async () => [],
+            limit: async () => getNextDbRows(),
           }),
+        }),
+        where: () => ({
+          limit: async () => getNextDbRows(),
         }),
       }),
     }),
   },
 }))
 mock.module("@/server/orpc/middleware", () => ({
-  isAdminRole: () => false,
+  isAdminRole: isAdminRoleMock,
 }))
 
 describe("src/server/orpc/routes/applications", () => {
@@ -112,7 +123,11 @@ describe("src/server/orpc/routes/applications", () => {
     withdrawApplicationMock.mockClear()
     listApplicationsByOfferMock.mockClear()
     updatePipelineStageMock.mockClear()
+    listApplicationTimelineMock.mockClear()
     revalidateTagMock.mockClear()
+    isAdminRoleMock.mockClear()
+    isAdminRoleMock.mockImplementation(() => false)
+    dbLimitQueue.length = 0
   })
 
   test("applyToOfferProcedure revalidates student tags", async () => {
@@ -212,6 +227,107 @@ describe("src/server/orpc/routes/applications", () => {
     ).rejects.toMatchObject({
       code: "BAD_REQUEST",
       message: "Invalid stage transition",
+    })
+  })
+
+  test("getTimelineProcedure returns timeline for the owning student", async () => {
+    dbLimitQueue.push([{ id: "app-1", studentUserId: "student-1", companyId: "company-1" }])
+    listApplicationTimelineMock.mockResolvedValueOnce([
+      { id: "evt-1", eventType: "application_created" },
+    ])
+
+    const { getTimelineProcedure } = await import("@/server/orpc/routes/applications")
+
+    const result = await callProcedure(getTimelineProcedure, {
+      input: { applicationId: "app-1" },
+      context: { user: { id: "student-1", role: "student" } },
+    })
+
+    expect(result).toEqual([{ id: "evt-1", eventType: "application_created" }])
+    expect(listApplicationTimelineMock).toHaveBeenCalledWith("app-1")
+  })
+
+  test("getTimelineProcedure returns timeline for company owner membership", async () => {
+    dbLimitQueue.push([{ id: "app-1", studentUserId: "student-1", companyId: "company-1" }])
+    dbLimitQueue.push([{ companyId: "company-1" }])
+    listApplicationTimelineMock.mockResolvedValueOnce([
+      { id: "evt-1", eventType: "application_status_changed" },
+    ])
+
+    const { getTimelineProcedure } = await import("@/server/orpc/routes/applications")
+
+    const result = await callProcedure(getTimelineProcedure, {
+      input: { applicationId: "app-1" },
+      context: { user: { id: "company-user-1", role: "company_admin" } },
+    })
+
+    expect(result).toEqual([{ id: "evt-1", eventType: "application_status_changed" }])
+    expect(listApplicationTimelineMock).toHaveBeenCalledWith("app-1")
+  })
+
+  test("getTimelineProcedure rejects when application is missing", async () => {
+    dbLimitQueue.push([])
+
+    const { getTimelineProcedure } = await import("@/server/orpc/routes/applications")
+
+    await expect(
+      callProcedure(getTimelineProcedure, {
+        input: { applicationId: "app-missing" },
+        context: { user: { id: "student-1", role: "student" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "NOT_FOUND",
+      message: "Application not found",
+    })
+  })
+
+  test("getTimelineProcedure rejects unauthorized actor", async () => {
+    dbLimitQueue.push([{ id: "app-1", studentUserId: "student-1", companyId: "company-1" }])
+
+    const { getTimelineProcedure } = await import("@/server/orpc/routes/applications")
+
+    await expect(
+      callProcedure(getTimelineProcedure, {
+        input: { applicationId: "app-1" },
+        context: { user: { id: "student-2", role: "student" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "You do not have access to this timeline",
+    })
+  })
+
+  test("getTimelineProcedure rejects company admin with mismatched membership", async () => {
+    dbLimitQueue.push([{ id: "app-1", studentUserId: "student-1", companyId: "company-1" }])
+    dbLimitQueue.push([{ companyId: "company-2" }])
+
+    const { getTimelineProcedure } = await import("@/server/orpc/routes/applications")
+
+    await expect(
+      callProcedure(getTimelineProcedure, {
+        input: { applicationId: "app-1" },
+        context: { user: { id: "company-user-1", role: "company_admin" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "You do not have access to this timeline",
+    })
+  })
+
+  test("getTimelineProcedure rejects multiple company memberships", async () => {
+    dbLimitQueue.push([{ id: "app-1", studentUserId: "student-1", companyId: "company-1" }])
+    dbLimitQueue.push([{ companyId: "company-1" }, { companyId: "company-2" }])
+
+    const { getTimelineProcedure } = await import("@/server/orpc/routes/applications")
+
+    await expect(
+      callProcedure(getTimelineProcedure, {
+        input: { applicationId: "app-1" },
+        context: { user: { id: "company-user-1", role: "company_admin" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Multiple company memberships found for user",
     })
   })
 })

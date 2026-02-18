@@ -4,9 +4,11 @@ import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { reveal, ease } from "@/lib/animations"
+import { isSavedOffersEnabledOnClient } from "@/lib/feature-flags-client"
 
 export function ExploreHeader() {
   const t = useTranslations("dashboard.explore")
+  const savedOffersEnabled = isSavedOffersEnabledOnClient()
 
   const now = new Date()
   const dateStr = now
@@ -45,12 +47,14 @@ export function ExploreHeader() {
             {t("subtitle")}
           </h1>
 
-          <div className="mt-4 flex items-center justify-between gap-3">
-            <p className="text-xs text-muted-foreground">Track your favorite opportunities in saved offers.</p>
-            <Button variant="editorial-outline" size="sm" nativeButton={false} render={<Link href="/dashboard/student/saved-offers" />}>
-              Saved offers
-            </Button>
-          </div>
+          {savedOffersEnabled && (
+            <div className="mt-4 flex items-center justify-between gap-3">
+              <p className="text-xs text-muted-foreground">Track your favorite opportunities in saved offers.</p>
+              <Button variant="editorial-outline" size="sm" nativeButton={false} render={<Link href="/dashboard/student/saved-offers" />}>
+                Saved offers
+              </Button>
+            </div>
+          )}
 
           {/* Decorative bottom rule */}
           <div className="mt-5 flex items-center gap-3">

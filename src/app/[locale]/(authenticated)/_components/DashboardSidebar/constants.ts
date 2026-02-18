@@ -83,6 +83,12 @@ export const navItems: NavItem[] = [
     roles: ["company_admin"],
   },
   {
+    labelKey: "teamMembers",
+    href: "/dashboard/company/team",
+    icon: UsersRound,
+    roles: ["company_admin"],
+  },
+  {
     labelKey: "manageOffers",
     href: "/dashboard/company/offers",
     icon: Briefcase,

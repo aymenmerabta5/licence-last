@@ -20,14 +20,33 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
   return (procedure as (input: unknown) => Promise<T>)(args)
 }
 
+interface CompanyMemberRow {
+  userId: string
+  email: string
+  name: string
+  role: "owner" | "recruiter"
+  joinedAt: Date
+}
+
 const updateCompanyMock = mock(async () => ({ companyId: "company-1" }))
 const createCompanyMock = mock(async () => ({ companyId: "company-1" }))
+const listCompanyMembersMock = mock(async (): Promise<CompanyMemberRow[]> => [])
+const inviteCompanyMemberMock = mock(async () => ({
+  userId: "member-1",
+  email: "member@example.com",
+  role: "recruiter",
+  createdUser: true,
+  alreadyMember: false,
+}))
+const removeCompanyMemberMock = mock(async () => ({ removed: true, userId: "member-1" }))
 const revalidateTagMock = mock(() => {})
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   authedProcedureGenerous: createProcedureMock(),
   authedProcedureStandard: createProcedureMock(),
+  companyAdminProcedureGenerous: createProcedureMock(),
   companyAdminProcedureStandard: createProcedureMock(),
+  companyOwnerProcedureStandard: createProcedureMock(),
   superAdminProcedureGenerous: createProcedureMock(),
   superAdminProcedureStandard: createProcedureMock(),
 }))
@@ -61,6 +80,15 @@ mock.module("@/server/services/companies/create", () => ({
 }))
 mock.module("@/server/services/companies/update", () => ({
   updateCompany: updateCompanyMock,
+}))
+mock.module("@/server/services/companies/list-members", () => ({
+  listCompanyMembers: listCompanyMembersMock,
+}))
+mock.module("@/server/services/companies/invite-member", () => ({
+  inviteCompanyMember: inviteCompanyMemberMock,
+}))
+mock.module("@/server/services/companies/remove-member", () => ({
+  removeCompanyMember: removeCompanyMemberMock,
 }))
 mock.module("@/server/services/companies/approve", () => ({
   approveCompany: mock(async () => ({ name: "ACME" })),
@@ -107,6 +135,9 @@ describe("src/server/orpc/routes/companies", () => {
   beforeEach(() => {
     createCompanyMock.mockClear()
     updateCompanyMock.mockClear()
+    listCompanyMembersMock.mockClear()
+    inviteCompanyMemberMock.mockClear()
+    removeCompanyMemberMock.mockClear()
     revalidateTagMock.mockClear()
   })
 
@@ -171,4 +202,68 @@ describe("src/server/orpc/routes/companies", () => {
     })
   })
 
+  test("listCompanyMembersProcedure delegates with company id", async () => {
+    listCompanyMembersMock.mockResolvedValueOnce([
+      {
+        userId: "owner-1",
+        email: "owner@example.com",
+        name: "Owner",
+        role: "owner",
+        joinedAt: new Date("2026-01-01T00:00:00.000Z"),
+      },
+    ])
+
+    const { listCompanyMembersProcedure } = await import("@/server/orpc/routes/companies")
+
+    const result = await callProcedure(listCompanyMembersProcedure, {
+      context: { companyMembership: { companyId: "company-1" } },
+    })
+
+    expect(listCompanyMembersMock).toHaveBeenCalledWith("company-1")
+    expect(result).toHaveLength(1)
+  })
+
+  test("inviteCompanyMemberProcedure maps member conflicts", async () => {
+    inviteCompanyMemberMock.mockRejectedValueOnce(
+      new ServiceError(
+        "COMPANY_MEMBER_ALREADY_ASSIGNED",
+        "User is already assigned to another company",
+      ),
+    )
+
+    const { inviteCompanyMemberProcedure } = await import("@/server/orpc/routes/companies")
+
+    await expect(
+      callProcedure(inviteCompanyMemberProcedure, {
+        input: { email: "member@example.com" },
+        context: {
+          user: { id: "owner-1" },
+          companyMembership: { companyId: "company-1", role: "owner" },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "CONFLICT",
+      message: "User is already assigned to another company",
+    })
+  })
+
+  test("removeCompanyMemberProcedure revalidates removed user cache tag", async () => {
+    const { removeCompanyMemberProcedure } = await import("@/server/orpc/routes/companies")
+
+    const result = await callProcedure(removeCompanyMemberProcedure, {
+      input: { userId: "member-1" },
+      context: {
+        user: { id: "owner-1" },
+        companyMembership: { companyId: "company-1", role: "owner" },
+      },
+    })
+
+    expect(removeCompanyMemberMock).toHaveBeenCalledWith({
+      companyId: "company-1",
+      memberUserId: "member-1",
+      removedByUserId: "owner-1",
+    })
+    expect(result).toEqual({ removed: true, userId: "member-1" })
+    expect(revalidateTagMock).toHaveBeenCalledWith("company-user-member-1", "max")
+  })
 })

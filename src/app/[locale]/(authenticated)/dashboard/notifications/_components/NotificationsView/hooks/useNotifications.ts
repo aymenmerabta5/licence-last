@@ -46,6 +46,14 @@ export function useNotifications() {
     },
   })
 
+  const markReadMutation = useMutation({
+    mutationFn: async (notificationId: string) =>
+      orpcClient.notifications.markRead({ notificationId }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
+    },
+  })
+
   const sentinelRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage)
 
   return {
@@ -54,6 +62,7 @@ export function useNotifications() {
     isLoading,
     isFetchingNextPage,
     sentinelRef,
+    markRead: markReadMutation.mutate,
     markAllRead: markAllReadMutation.mutate,
     isMarkingRead: markAllReadMutation.isPending,
   }

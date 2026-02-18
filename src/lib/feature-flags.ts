@@ -1,14 +1,12 @@
 import "server-only"
 
-function parseBooleanEnvFlag(value: string | undefined) {
-  return value === "true"
-}
+import { env } from "@/env"
 
 export const FEATURE_FLAGS = {
-  NOTIF_PREFERENCES: parseBooleanEnvFlag(process.env.FEATURE_NOTIF_PREFERENCES),
-  SAVED_OFFERS: parseBooleanEnvFlag(process.env.FEATURE_SAVED_OFFERS),
-  INTERVIEWS: parseBooleanEnvFlag(process.env.FEATURE_INTERVIEWS),
-  LANGUAGE_REQUIREMENTS: parseBooleanEnvFlag(process.env.FEATURE_LANGUAGE_REQUIREMENTS),
+  NOTIF_PREFERENCES: env.FEATURE_NOTIF_PREFERENCES === "true",
+  SAVED_OFFERS: env.FEATURE_SAVED_OFFERS === "true",
+  INTERVIEWS: env.FEATURE_INTERVIEWS === "true",
+  LANGUAGE_REQUIREMENTS: env.FEATURE_LANGUAGE_REQUIREMENTS === "true",
 } as const
 
 export type ServerFeatureFlag = keyof typeof FEATURE_FLAGS
