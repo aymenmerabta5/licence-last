@@ -27,5 +27,9 @@ export default defineConfig({
     command: "bun run dev",
     url: "http://localhost:3000",
     reuseExistingServer,
+    env: {
+      ...process.env,
+      E2E_DISABLE_CAPTCHA: "1",
+    },
   },
 })

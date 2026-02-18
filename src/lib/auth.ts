@@ -35,6 +35,12 @@ export const pendingWelcomeEmails = new Map<
   { name: string; departmentName: string; universityName: string }
 >()
 
+const TURNSTILE_SECRET_KEY = env.TURNSTILE_SECRET_KEY
+const CAPTCHA_ENABLED =
+  Boolean(TURNSTILE_SECRET_KEY) &&
+  process.env.CI !== "true" &&
+  process.env.E2E_DISABLE_CAPTCHA !== "1"
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
   secret: env.BETTER_AUTH_SECRET,
@@ -250,10 +256,10 @@ export const auth = betterAuth({
     multiSession({
       maximumSessions: 5,
     }),
-    ...(env.TURNSTILE_SECRET_KEY
+    ...(CAPTCHA_ENABLED
       ? [captcha({
           provider: "cloudflare-turnstile",
-          secretKey: env.TURNSTILE_SECRET_KEY,
+          secretKey: TURNSTILE_SECRET_KEY!,
         })]
       : []),
     nextCookies(), // must be last — handles Set-Cookie in server actions
