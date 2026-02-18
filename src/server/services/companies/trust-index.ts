@@ -1,7 +1,9 @@
 import "server-only"
 
 import { and, count, desc, eq, inArray } from "drizzle-orm"
+import { cacheLife, cacheTag } from "next/cache"
 
+import { CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
 import { company } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
@@ -120,6 +122,11 @@ export function computeTrustFactors(input: TrustFactorInput): CompanyTrustIndex 
 }
 
 export async function getCompanyTrustIndex(companyId: string): Promise<CompanyTrustIndex> {
+  "use cache"
+  cacheLife({ expire: 60 })
+  cacheTag(CACHE_TAGS.COMPANY_PROFILE(companyId))
+  cacheTag(CACHE_TAGS.COMPANY_CANDIDATES(companyId))
+
   const [existingCompany] = await db
     .select({ id: company.id })
     .from(company)

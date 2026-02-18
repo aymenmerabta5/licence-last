@@ -1,7 +1,9 @@
 import "server-only"
 
 import { eq, and, ne, count, sql } from "drizzle-orm"
+import { cacheLife, cacheTag } from "next/cache"
 
+import { CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
 import {
   internshipOffer,
@@ -17,6 +19,10 @@ import { application } from "@/server/db/schema/applications"
  * Uses 2 queries: one for offer+company+count, one for skills.
  */
 export async function getOfferById(offerId: string) {
+  "use cache"
+  cacheLife({ expire: 60 })
+  cacheTag(CACHE_TAGS.OFFER_DETAIL(offerId))
+
   // Subquery to count non-withdrawn applications per offer
   const applicationCountSubquery = db
     .select({
