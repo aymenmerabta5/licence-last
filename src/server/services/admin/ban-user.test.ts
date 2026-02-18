@@ -4,10 +4,9 @@ const mockBanUser = mock(() => Promise.resolve({ user: { id: "u1", banned: true 
 const mockUnbanUser = mock(() => Promise.resolve({ user: { id: "u1", banned: false } }))
 const mockHeaders = mock(() => Promise.resolve(new Headers()))
 
-mock.module("@/lib/auth", () => ({
-  auth: { api: { banUser: mockBanUser, unbanUser: mockUnbanUser } },
-  pendingWelcomeEmails: new Map(),
-}))
+// Prevent loading real better-auth/env
+mock.module("@/lib/auth", () => ({ auth: { api: {} }, pendingWelcomeEmails: new Map() }))
+// Patch next/headers once — safe even if the module was loaded earlier.
 mock.module("next/headers", () => ({ headers: mockHeaders }))
 
 describe("banUser", () => {
@@ -17,14 +16,14 @@ describe("banUser", () => {
   })
 
   test("should call auth.api.banUser with userId", async () => {
-    const { banUser } = await import("@/server/services/admin/ban-user")
-    await banUser({ userId: "user-1" })
+    const { banUser } = await import("@/server/services/admin/ban-user?fresh=1")
+    await banUser({ userId: "user-1" }, { authApi: { banUser: mockBanUser } as any, getHeaders: mockHeaders })
     expect(mockBanUser).toHaveBeenCalledTimes(1)
   })
 
   test("should pass banReason when provided", async () => {
-    const { banUser } = await import("@/server/services/admin/ban-user")
-    await banUser({ userId: "user-1", banReason: "Spam" })
+    const { banUser } = await import("@/server/services/admin/ban-user?fresh=2")
+    await banUser({ userId: "user-1", banReason: "Spam" }, { authApi: { banUser: mockBanUser } as any, getHeaders: mockHeaders })
     expect(mockBanUser).toHaveBeenCalledTimes(1)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const call = (mockBanUser.mock.calls as any)[0][0]
@@ -32,8 +31,8 @@ describe("banUser", () => {
   })
 
   test("should pass banExpiresIn when provided", async () => {
-    const { banUser } = await import("@/server/services/admin/ban-user")
-    await banUser({ userId: "user-1", banExpiresIn: 86400 })
+    const { banUser } = await import("@/server/services/admin/ban-user?fresh=3")
+    await banUser({ userId: "user-1", banExpiresIn: 86400 }, { authApi: { banUser: mockBanUser } as any, getHeaders: mockHeaders })
     expect(mockBanUser).toHaveBeenCalledTimes(1)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const call = (mockBanUser.mock.calls as any)[0][0]
@@ -41,8 +40,8 @@ describe("banUser", () => {
   })
 
   test("should return the result from auth API", async () => {
-    const { banUser } = await import("@/server/services/admin/ban-user")
-    const result = await banUser({ userId: "user-1" })
+    const { banUser } = await import("@/server/services/admin/ban-user?fresh=4")
+    const result = await banUser({ userId: "user-1" }, { authApi: { banUser: mockBanUser } as any, getHeaders: mockHeaders })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(result).toEqual({ user: { id: "u1", banned: true } } as any)
   })
@@ -52,8 +51,8 @@ describe("unbanUser", () => {
   beforeEach(() => { mockUnbanUser.mockClear() })
 
   test("should call auth.api.unbanUser with userId", async () => {
-    const { unbanUser } = await import("@/server/services/admin/ban-user")
-    await unbanUser("user-1")
+    const { unbanUser } = await import("@/server/services/admin/ban-user?fresh=5")
+    await unbanUser("user-1", { authApi: { unbanUser: mockUnbanUser } as any, getHeaders: mockHeaders })
     expect(mockUnbanUser).toHaveBeenCalledTimes(1)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const call = (mockUnbanUser.mock.calls as any)[0][0]

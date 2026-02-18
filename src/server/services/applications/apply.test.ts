@@ -92,7 +92,7 @@ describe("src/server/services/applications/apply", () => {
   test("should throw when offer does not exist", async () => {
     mockSelectResults.push([])
 
-    const { applyToOffer } = await import("@/server/services/applications/apply")
+    const { applyToOffer } = await import("@/server/services/applications/apply?fresh=1")
 
     await expect(applyToOffer("offer-1", "student-1")).rejects.toThrow("Offer not found")
   })
@@ -111,7 +111,7 @@ describe("src/server/services/applications/apply", () => {
     mockSelectResults.push([{ status: "approved" }])
     mockSelectResults.push([{ value: 1 }])
 
-    const { applyToOffer } = await import("@/server/services/applications/apply")
+    const { applyToOffer } = await import("@/server/services/applications/apply?fresh=2")
 
     await expect(applyToOffer("offer-1", "student-1")).rejects.toThrow(
       "All positions have been filled",
@@ -135,7 +135,7 @@ describe("src/server/services/applications/apply", () => {
     mockSelectResults.push([{ companyId: "company-1", title: "Frontend Intern" }])
     mockSelectResults.push([{ userId: "member-1" }, { userId: "member-2" }])
 
-    const { applyToOffer } = await import("@/server/services/applications/apply")
+    const { applyToOffer } = await import("@/server/services/applications/apply?fresh=3")
 
     const result = await applyToOffer("offer-1", "student-1", "Short cover letter")
 
@@ -155,7 +155,7 @@ describe("src/server/services/applications/apply", () => {
       },
     ])
 
-    const { applyToOffer } = await import("@/server/services/applications/apply")
+    const { applyToOffer } = await import("@/server/services/applications/apply?fresh=4")
 
     await expect(applyToOffer("offer-1", "student-1")).rejects.toThrow(
       "Offer application deadline has passed",

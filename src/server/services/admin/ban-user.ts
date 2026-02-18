@@ -1,7 +1,7 @@
 import "server-only"
 
-import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
+import { auth } from "@/lib/auth"
 
 interface BanUserData {
   userId: string
@@ -9,9 +9,17 @@ interface BanUserData {
   banExpiresIn?: number
 }
 
-export async function banUser(data: BanUserData) {
-  const result = await auth.api.banUser({
-    headers: await headers(),
+interface BanUserDeps {
+  authApi?: typeof auth.api
+  getHeaders?: typeof headers
+}
+
+export async function banUser(data: BanUserData, deps: BanUserDeps = {}) {
+  const api = deps.authApi ?? auth.api
+  const getHeaders = deps.getHeaders ?? headers
+
+  const result = await api.banUser({
+    headers: await getHeaders(),
     body: {
       userId: data.userId,
       ...(data.banReason && { banReason: data.banReason }),
@@ -22,9 +30,12 @@ export async function banUser(data: BanUserData) {
   return result
 }
 
-export async function unbanUser(userId: string) {
-  const result = await auth.api.unbanUser({
-    headers: await headers(),
+export async function unbanUser(userId: string, deps: BanUserDeps = {}) {
+  const api = deps.authApi ?? auth.api
+  const getHeaders = deps.getHeaders ?? headers
+
+  const result = await api.unbanUser({
+    headers: await getHeaders(),
     body: { userId },
   })
 

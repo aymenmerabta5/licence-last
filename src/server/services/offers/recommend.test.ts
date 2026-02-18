@@ -58,10 +58,6 @@ const getExplainableMatchScoreMock = mock(async (_studentId: string, offerId: st
   score: offerId === "offer-1" ? 65 : 88,
 }))
 
-mock.module("@/server/services/offers/search", () => ({
-  searchOffers: searchOffersMock,
-}))
-
 mock.module("@/server/services/matching/score", () => ({
   getExplainableMatchScore: getExplainableMatchScoreMock,
 }))
@@ -85,7 +81,10 @@ describe("src/server/services/offers/recommend", () => {
 
   test("ranks recommended offers by match score descending", async () => {
     const { recommendOffersForStudent } = await import("@/server/services/offers/recommend")
-    const result = await recommendOffersForStudent({ studentUserId: "student-1", limit: 2 })
+    const result = await recommendOffersForStudent(
+      { studentUserId: "student-1", limit: 2 },
+      { searchOffers: searchOffersMock },
+    )
 
     expect(result.offers).toHaveLength(2)
     expect(result.offers[0]?.id).toBe("offer-2")
@@ -97,7 +96,10 @@ describe("src/server/services/offers/recommend", () => {
     mockAppliedRows = [{ offerId: "offer-2" }]
 
     const { recommendOffersForStudent } = await import("@/server/services/offers/recommend")
-    const result = await recommendOffersForStudent({ studentUserId: "student-1", limit: 2 })
+    const result = await recommendOffersForStudent(
+      { studentUserId: "student-1", limit: 2 },
+      { searchOffers: searchOffersMock },
+    )
 
     expect(result.offers).toHaveLength(1)
     expect(result.offers[0]?.id).toBe("offer-1")

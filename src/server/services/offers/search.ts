@@ -16,7 +16,6 @@ import {
 } from "drizzle-orm"
 import { cacheTag, cacheLife } from "next/cache"
 
-import { db } from "@/server/db"
 import {
   internshipOffer,
   internshipOfferSkill,
@@ -43,6 +42,8 @@ export async function searchOffers(params: SearchParams) {
   cacheLife("minutes")
   cacheTag(CACHE_TAGS.OFFER_SEARCH)
   cacheTag(CACHE_TAGS.OFFERS_PUBLIC)
+
+  const { db } = await import("@/server/db")
 
   if (params.wilayaCode) {
     cacheTag(`offers-wilaya-${params.wilayaCode}`)
