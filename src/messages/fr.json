@@ -963,6 +963,33 @@
       "application": "Candidature",
       "internshipOffer": "Offre de Stage",
       "trustIndex": "Indice de Confiance",
+      "report": {
+        "trigger": "Signaler l'entreprise",
+        "title": "Signaler l'entreprise",
+        "description": "Signalez un problème de confiance ou de sécurité concernant {companyName}.",
+        "categoryLabel": "Catégorie",
+        "categoryPlaceholder": "Sélectionner une catégorie",
+        "severityLabel": "Gravité",
+        "descriptionLabel": "Que s'est-il passé ?",
+        "descriptionPlaceholder": "Décrivez le problème en détail (10 caractères minimum).",
+        "cancel": "Annuler",
+        "submit": "Envoyer le signalement",
+        "submitting": "Envoi...",
+        "submitSuccess": "Signalement envoyé avec succès.",
+        "submitError": "Échec de l'envoi du signalement.",
+        "categories": {
+          "professional_conduct": "Conduite professionnelle",
+          "misleading_offer": "Offre trompeuse",
+          "communication_issue": "Problème de communication",
+          "other": "Autre"
+        },
+        "severity": {
+          "low": "Faible",
+          "medium": "Moyenne",
+          "high": "Élevée",
+          "critical": "Critique"
+        }
+      },
       "copilot": {
         "draftWithAi": "Rédiger avec l'IA",
         "drafting": "Rédaction...",
@@ -1035,6 +1062,22 @@
         "validatedAt": "Validé le",
         "verificationCode": "Code de vérification",
         "notAvailable": "N/A"
+      },
+      "feedback": {
+        "ctaLabel": "Laisser un avis",
+        "ctaDescription": "Aidez à améliorer l'indice de confiance en partageant votre expérience.",
+        "title": "Avis sur le placement",
+        "description": "Partagez votre expérience avec {companyName} pour \"{offerTitle}\".",
+        "descriptionFallback": "Partagez votre expérience de placement.",
+        "ratingLabel": "Note globale",
+        "wouldRecommendLabel": "Je recommanderais cette entreprise pour des stages.",
+        "commentLabel": "Commentaire (optionnel)",
+        "commentPlaceholder": "Qu'est-ce qui a bien fonctionné et que faut-il améliorer ?",
+        "cancel": "Annuler",
+        "submit": "Envoyer l'avis",
+        "submitting": "Envoi...",
+        "submitSuccess": "Avis envoyé avec succès.",
+        "submitError": "Échec de l'envoi de l'avis."
       },
       "downloadSuccess": "Document téléchargé.",
       "downloadError": "Échec du téléchargement du document."

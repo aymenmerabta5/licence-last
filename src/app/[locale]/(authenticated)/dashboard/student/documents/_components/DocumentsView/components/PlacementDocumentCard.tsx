@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
-import { Download, Loader2 } from "lucide-react"
+import { Download, Loader2, MessageSquarePlus } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 
 import { Badge } from "@/components/ui/badge"
@@ -28,6 +28,11 @@ interface PlacementDocumentCardProps {
   }
   downloadingDocumentId: string | null
   onDownload: (documentId: string) => void
+  onOpenFeedback: (placement: {
+    placementId: string
+    companyName: string
+    offerTitle: string
+  }) => void
 }
 
 const STATUS_STYLES: Record<string, string> = {
@@ -40,6 +45,7 @@ export function PlacementDocumentCard({
   placement,
   downloadingDocumentId,
   onDownload,
+  onOpenFeedback,
 }: PlacementDocumentCardProps) {
   const locale = useLocale()
   const t = useTranslations("dashboard.documents")
@@ -115,6 +121,28 @@ export function PlacementDocumentCard({
             </dd>
           </div>
         </dl>
+
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border/60 bg-muted/20 p-3">
+          <p className="text-xs text-muted-foreground">
+            {t("feedback.ctaDescription")}
+          </p>
+          <Button
+            type="button"
+            variant="editorial-outline"
+            size="sm"
+            className="gap-1.5"
+            onClick={() =>
+              onOpenFeedback({
+                placementId: placement.placementId,
+                companyName: placement.companyName,
+                offerTitle: placement.offerTitle,
+              })
+            }
+          >
+            <MessageSquarePlus className="h-3.5 w-3.5" />
+            {t("feedback.ctaLabel")}
+          </Button>
+        </div>
 
         <div className="space-y-3 border-t border-border pt-4">
           {placement.documents.map((doc) => {

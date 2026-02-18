@@ -963,6 +963,33 @@
       "application": "الطلب",
       "internshipOffer": "عرض تدريب",
       "trustIndex": "مؤشر الثقة",
+      "report": {
+        "trigger": "الإبلاغ عن الشركة",
+        "title": "الإبلاغ عن الشركة",
+        "description": "شارك مشكلة ثقة أو سلامة تخص {companyName}.",
+        "categoryLabel": "الفئة",
+        "categoryPlaceholder": "اختر فئة",
+        "severityLabel": "الخطورة",
+        "descriptionLabel": "ماذا حدث؟",
+        "descriptionPlaceholder": "اشرح المشكلة بالتفصيل (10 أحرف على الأقل).",
+        "cancel": "إلغاء",
+        "submit": "إرسال البلاغ",
+        "submitting": "جارٍ الإرسال...",
+        "submitSuccess": "تم إرسال البلاغ بنجاح.",
+        "submitError": "تعذر إرسال البلاغ.",
+        "categories": {
+          "professional_conduct": "السلوك المهني",
+          "misleading_offer": "عرض مضلل",
+          "communication_issue": "مشكلة تواصل",
+          "other": "أخرى"
+        },
+        "severity": {
+          "low": "منخفضة",
+          "medium": "متوسطة",
+          "high": "مرتفعة",
+          "critical": "حرجة"
+        }
+      },
       "copilot": {
         "draftWithAi": "كتابة بالذكاء الاصطناعي",
         "drafting": "جاري الكتابة...",
@@ -1035,6 +1062,22 @@
         "validatedAt": "تاريخ الاعتماد",
         "verificationCode": "رمز التحقق",
         "notAvailable": "غير متاح"
+      },
+      "feedback": {
+        "ctaLabel": "إضافة تقييم",
+        "ctaDescription": "ساعد في تحسين مؤشر الثقة عبر مشاركة تجربتك.",
+        "title": "تقييم فترة التدريب",
+        "description": "شارك تجربتك مع {companyName} بخصوص \"{offerTitle}\".",
+        "descriptionFallback": "شارك تجربتك في فترة التدريب.",
+        "ratingLabel": "التقييم العام",
+        "wouldRecommendLabel": "أوصي بهذه الشركة للتدريب.",
+        "commentLabel": "تعليق (اختياري)",
+        "commentPlaceholder": "ما الذي كان جيداً وما الذي يمكن تحسينه؟",
+        "cancel": "إلغاء",
+        "submit": "إرسال التقييم",
+        "submitting": "جارٍ الإرسال...",
+        "submitSuccess": "تم إرسال التقييم بنجاح.",
+        "submitError": "تعذر إرسال التقييم."
       },
       "downloadSuccess": "تم تنزيل المستند.",
       "downloadError": "فشل تنزيل المستند."

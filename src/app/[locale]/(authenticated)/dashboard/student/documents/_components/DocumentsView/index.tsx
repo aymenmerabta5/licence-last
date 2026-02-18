@@ -7,10 +7,13 @@ import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 import { PlacementDocumentCard } from "@/app/[locale]/(authenticated)/dashboard/student/documents/_components/DocumentsView/components/PlacementDocumentCard"
+import { QualityFeedbackDialog } from "@/app/[locale]/(authenticated)/dashboard/student/documents/_components/DocumentsView/components/QualityFeedbackDialog"
 import { useDocuments } from "@/app/[locale]/(authenticated)/dashboard/student/documents/_components/DocumentsView/hooks/useDocuments"
+import { useCompanyFeedback } from "@/app/[locale]/(authenticated)/dashboard/student/documents/_components/DocumentsView/hooks/useCompanyFeedback"
 
 export function DocumentsView() {
   const t = useTranslations("dashboard.documents")
+  const feedback = useCompanyFeedback()
   const {
     placements,
     isLoading,
@@ -79,11 +82,23 @@ export function DocumentsView() {
                 placement={placement}
                 downloadingDocumentId={downloadingDocumentId}
                 onDownload={handleDownload}
+                onOpenFeedback={feedback.openForPlacement}
               />
             </motion.div>
           ))}
         </div>
       )}
+
+      <QualityFeedbackDialog
+        placement={feedback.activePlacement}
+        open={feedback.isOpen}
+        onOpenChange={feedback.onOpenChange}
+        values={feedback.values}
+        errors={feedback.errors}
+        isSubmitting={feedback.isSubmitting}
+        onFieldChange={feedback.setFieldValue}
+        onSubmit={feedback.submitFeedback}
+      />
     </div>
   )
 }

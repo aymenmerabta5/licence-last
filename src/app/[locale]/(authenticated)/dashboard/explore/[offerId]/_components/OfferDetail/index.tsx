@@ -6,6 +6,7 @@ import { reveal, ease } from "@/lib/animations"
 
 import { useOfferMatching } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useOfferMatching"
 import { useOfferApplication } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useOfferApplication"
+import { useCompanyReport } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useCompanyReport"
 import { OfferHeader } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/OfferHeader"
 import { OfferBody } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/OfferBody"
 import { DetailsSidebar } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/DetailsSidebar"
@@ -23,6 +24,7 @@ export function OfferDetailClient({
 }: OfferDetailProps) {
   const matching = useOfferMatching(studentUserId, offer.id, offer.companyId)
   const app = useOfferApplication(offer, existingApplication)
+  const companyReport = useCompanyReport(offer.companyId)
 
   return (
     <div className="space-y-10 pb-20">
@@ -72,6 +74,7 @@ export function OfferDetailClient({
             offer={offer}
             trustScore={matching.trustIndexQuery.data?.trustScore}
             trustTier={matching.trustIndexQuery.data?.tier}
+            report={companyReport}
           />
         </motion.aside>
       </div>
