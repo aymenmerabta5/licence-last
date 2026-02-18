@@ -6,6 +6,7 @@ import { MapPin, Building, ShieldAlert } from "lucide-react"
 
 import { reveal, ease } from "@/lib/animations"
 import { Button } from "@/components/ui/button"
+import { Link } from "@/i18n/routing"
 import { ReportCompanyDialog } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/ReportCompanyDialog"
 import type { UseCompanyReportResult } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useCompanyReport"
 
@@ -106,7 +107,18 @@ export function CompanyCard({
         </p>
       )}
 
-      <div className="pt-2 border-t border-border/30">
+      <div className="pt-2 border-t border-border/30 space-y-2">
+        <Button
+          type="button"
+          variant="editorial-outline"
+          size="sm"
+          className="w-full"
+          nativeButton={false}
+          render={<Link href={`/company/${offer.companySlug}`} />}
+        >
+          {t("viewCompanyProfile")}
+        </Button>
+
         <Button
           type="button"
           variant="editorial-outline"

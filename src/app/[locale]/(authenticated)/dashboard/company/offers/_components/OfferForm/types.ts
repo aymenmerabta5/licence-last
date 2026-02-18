@@ -12,6 +12,8 @@ export type WorkMode = "on_site" | "hybrid" | "remote"
 export interface OfferLanguageRequirementValue {
   languageCode: LanguageCode
   minimumProficiency: ProficiencyLevel
+  isRequired: boolean
+  weight: number
 }
 
 export interface CopilotResult {

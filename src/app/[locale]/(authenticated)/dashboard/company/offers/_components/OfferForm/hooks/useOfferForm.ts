@@ -9,6 +9,8 @@ import { toast } from "sonner"
 import { useRouter } from "@/i18n/routing"
 import {
   DEFAULT_OFFER_LANGUAGE_CODE,
+  DEFAULT_OFFER_LANGUAGE_REQUIRED,
+  DEFAULT_OFFER_LANGUAGE_WEIGHT,
   DEFAULT_OFFER_MINIMUM_PROFICIENCY,
 } from "@/lib/constants/languages"
 import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"
@@ -83,6 +85,8 @@ export function useOfferForm(
               {
                 languageCode: DEFAULT_OFFER_LANGUAGE_CODE,
                 minimumProficiency: DEFAULT_OFFER_MINIMUM_PROFICIENCY,
+                isRequired: DEFAULT_OFFER_LANGUAGE_REQUIRED,
+                weight: DEFAULT_OFFER_LANGUAGE_WEIGHT,
               },
             ]
           : []),

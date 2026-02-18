@@ -45,6 +45,8 @@ export default async function EditOfferPage({
           languageRequirements: (offer.languageRequirements ?? []).map((entry) => ({
             languageCode: entry.languageCode as LanguageCode,
             minimumProficiency: entry.minimumProficiency,
+            isRequired: entry.isRequired,
+            weight: entry.weight,
           })),
         }}
       />

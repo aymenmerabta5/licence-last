@@ -2,7 +2,18 @@
 
 import { useTranslations } from "next-intl"
 import Image from "next/image"
-import { MapPin, Building2, Globe, User, Calendar, Check, X, Mail } from "lucide-react"
+import {
+  MapPin,
+  Building2,
+  Globe,
+  User,
+  Calendar,
+  Check,
+  X,
+  Mail,
+  PauseCircle,
+  PlayCircle,
+} from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -31,16 +42,24 @@ interface CompanyCardProps {
   }
   onApprove: (id: string) => void
   onReject: (id: string) => void
+  onSuspend: (id: string) => void
+  onReactivate: (id: string) => void
   isApproving: boolean
   isRejecting: boolean
+  isSuspending: boolean
+  isReactivating: boolean
 }
 
 export function CompanyCard({
   company,
   onApprove,
   onReject,
+  onSuspend,
+  onReactivate,
   isApproving,
   isRejecting,
+  isSuspending,
+  isReactivating,
 }: CompanyCardProps) {
   const t = useTranslations("dashboard.admin.companies")
 
@@ -117,30 +136,64 @@ export function CompanyCard({
         </div>
 
         {/* Actions */}
-        {company.status === "pending" && (
-          <div className="flex gap-3 pt-2 border-t border-border/30">
-            <Button
-              type="button"
-              variant="editorial"
-              size="sm"
-              className="h-9 px-5 rounded-lg"
-              disabled={isApproving}
-              onClick={() => onApprove(company.id)}
-            >
-              <Check className="h-3.5 w-3.5 me-1.5" />
-              {t("approve")}
-            </Button>
-            <Button
-              type="button"
-              variant="editorial-outline"
-              size="sm"
-              className="h-9 px-5 rounded-lg"
-              disabled={isRejecting}
-              onClick={() => onReject(company.id)}
-            >
-              <X className="h-3.5 w-3.5 me-1.5" />
-              {t("reject")}
-            </Button>
+        {(company.status === "pending" ||
+          company.status === "approved" ||
+          company.status === "suspended") && (
+          <div className="flex flex-wrap gap-3 pt-2 border-t border-border/30">
+            {company.status === "pending" ? (
+              <>
+                <Button
+                  type="button"
+                  variant="editorial"
+                  size="sm"
+                  className="h-9 px-5 rounded-lg"
+                  disabled={isApproving}
+                  onClick={() => onApprove(company.id)}
+                >
+                  <Check className="h-3.5 w-3.5 me-1.5" />
+                  {t("approve")}
+                </Button>
+                <Button
+                  type="button"
+                  variant="editorial-outline"
+                  size="sm"
+                  className="h-9 px-5 rounded-lg"
+                  disabled={isRejecting}
+                  onClick={() => onReject(company.id)}
+                >
+                  <X className="h-3.5 w-3.5 me-1.5" />
+                  {t("reject")}
+                </Button>
+              </>
+            ) : null}
+
+            {company.status === "approved" ? (
+              <Button
+                type="button"
+                variant="editorial-outline"
+                size="sm"
+                className="h-9 px-5 rounded-lg"
+                disabled={isSuspending}
+                onClick={() => onSuspend(company.id)}
+              >
+                <PauseCircle className="h-3.5 w-3.5 me-1.5" />
+                {t("suspend")}
+              </Button>
+            ) : null}
+
+            {company.status === "suspended" ? (
+              <Button
+                type="button"
+                variant="editorial"
+                size="sm"
+                className="h-9 px-5 rounded-lg"
+                disabled={isReactivating}
+                onClick={() => onReactivate(company.id)}
+              >
+                <PlayCircle className="h-3.5 w-3.5 me-1.5" />
+                {t("reactivate")}
+              </Button>
+            ) : null}
           </div>
         )}
       </div>

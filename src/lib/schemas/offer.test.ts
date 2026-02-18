@@ -173,6 +173,44 @@ describe("src/lib/schemas/offer", () => {
       expect(result.success).toBe(true)
     })
 
+    test("should reject language weight above allowed range", () => {
+      const result = schema.safeParse({
+        title: "Good Title",
+        description: "A long enough description",
+        internshipType: "pfe",
+        skillTagIds: [],
+        languageRequirements: [
+          {
+            languageCode: "en",
+            minimumProficiency: "b2",
+            weight: 9,
+            isRequired: true,
+          },
+        ],
+      })
+
+      expect(result.success).toBe(false)
+    })
+
+    test("should accept valid language metadata fields", () => {
+      const result = schema.safeParse({
+        title: "Good Title",
+        description: "A long enough description",
+        internshipType: "pfe",
+        skillTagIds: [],
+        languageRequirements: [
+          {
+            languageCode: "en",
+            minimumProficiency: "b2",
+            weight: 4,
+            isRequired: false,
+          },
+        ],
+      })
+
+      expect(result.success).toBe(true)
+    })
+
     test("should coerce durationWeeks from string to number", () => {
       const result = schema.safeParse({
         title: "Good Title",

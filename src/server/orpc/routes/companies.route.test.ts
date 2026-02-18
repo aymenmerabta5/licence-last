@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 
 import { ServiceError } from "@/server/services/errors"
 
@@ -94,6 +94,7 @@ mock.module("@/server/db", () => ({
   db: {
     select: () => ({
       from: () => ({
+        where: async () => [],
         innerJoin: () => ({
           where: async () => [],
         }),
@@ -107,6 +108,10 @@ describe("src/server/orpc/routes/companies", () => {
     createCompanyMock.mockClear()
     updateCompanyMock.mockClear()
     revalidateTagMock.mockClear()
+  })
+
+  afterAll(() => {
+    mock.restore()
   })
 
   test("createCompanyProcedure maps membership conflicts", async () => {
@@ -165,4 +170,5 @@ describe("src/server/orpc/routes/companies", () => {
       message: "Company not found",
     })
   })
+
 })

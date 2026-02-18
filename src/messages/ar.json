@@ -513,6 +513,12 @@
         "contactSupport": "التواصل مع الدعم",
         "reapply": "تعديل وإعادة التقديم"
       },
+      "suspended": {
+        "pageTitle": "الحساب معلّق",
+        "title": "تم تعليق وصول شركتك",
+        "subtitle": "تم تعليق شركتك مؤقتاً من طرف الإشراف على المنصة. يرجى التواصل مع الدعم للمساعدة.",
+        "contactSupport": "التواصل مع الدعم"
+      },
       "profile": {
         "pageTitle": "ملف الشركة",
         "title": "ملف الشركة",
@@ -649,11 +655,15 @@
             "positions": "{count} منصب"
           },
           "languageRequirementsSection": "Language Requirements",
-          "languageRequirementsHint": "All listed languages are mandatory in this version.",
+          "languageRequirementsHint": "Set minimum proficiency, required/optional flag, and priority for each language.",
           "language": "Language",
           "languagePlaceholder": "Select language",
           "minimumProficiency": "Minimum Proficiency",
           "minimumProficiencyPlaceholder": "Select minimum level",
+          "weight": "Priority Weight",
+          "weightPlaceholder": "Select priority",
+          "weightOption": "Priority {weight}",
+          "requiredLabel": "This language is mandatory",
           "addLanguageRequirement": "Add Language Requirement",
           "removeLanguageRequirementAria": "Remove {language} requirement",
           "proficiencyLevels": {
@@ -1000,6 +1010,7 @@
       "application": "الطلب",
       "internshipOffer": "عرض تدريب",
       "trustIndex": "مؤشر الثقة",
+      "viewCompanyProfile": "عرض ملف الشركة",
       "report": {
         "trigger": "الإبلاغ عن الشركة",
         "title": "الإبلاغ عن الشركة",
@@ -1361,10 +1372,16 @@
         },
         "approve": "موافقة",
         "reject": "رفض",
+        "suspend": "تعليق",
+        "reactivate": "إعادة التفعيل",
         "approveSuccess": "تمت الموافقة على الشركة بنجاح.",
         "rejectSuccess": "تم رفض الشركة.",
+        "suspendSuccess": "تم تعليق الشركة.",
+        "reactivateSuccess": "تمت إعادة تفعيل الشركة.",
         "approveError": "فشلت الموافقة على الشركة.",
         "rejectError": "فشل رفض الشركة.",
+        "suspendError": "فشل تعليق الشركة.",
+        "reactivateError": "فشلت إعادة تفعيل الشركة.",
         "rejectDialog": {
           "title": "رفض الشركة",
           "description": "قدم سبب رفض طلب هذه الشركة.",
@@ -1652,6 +1669,14 @@
         "saveError": "تعذر تحديث المهارات."
       }
     }
+  },
+  "companyPublic": {
+    "kicker": "ملف الشركة",
+    "website": "الموقع الإلكتروني",
+    "trustIndex": "مؤشر الثقة",
+    "openOffers": "العروض المفتوحة",
+    "noOffers": "لا توجد عروض منشورة نشطة حالياً.",
+    "positions": "مناصب"
   },
   "howItWorks": {
     "label": "كيف يعمل",

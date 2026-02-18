@@ -151,6 +151,24 @@ describe("requireRole", () => {
     expect(mockLocaleRedirect).toHaveBeenCalledWith("/status/company/pending")
   })
 
+  test("should redirect suspended company_admin to company suspended status", async () => {
+    mockGetSession.mockResolvedValue({
+      user: { id: "user-4b", role: "company_admin", name: "Company Admin", email: "company4b@example.com", onboardingCompleted: true },
+      session: {},
+    })
+    mockGetCompanyStatusByUserId.mockResolvedValue({ status: "suspended" })
+
+    await requireRole(["company_admin"], {}, {
+      getSession: mockGetSession,
+      getHeaders: mockHeaders,
+      localeRedirect: mockLocaleRedirect,
+      getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
+      getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+    })
+
+    expect(mockLocaleRedirect).toHaveBeenCalledWith("/status/company/suspended")
+  })
+
   test("should redirect pending university_admin to university pending status", async () => {
     mockGetSession.mockResolvedValue({
       user: { id: "user-5", role: "university_admin", name: "University Admin", email: "uni5@example.com", onboardingCompleted: true },
