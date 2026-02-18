@@ -18,10 +18,6 @@ const mockGetExplainableMatchScore = mock((_studentUserId: string, _offerId: str
   }),
 )
 
-mock.module("@/server/services/matching/score", () => ({
-  getExplainableMatchScore: mockGetExplainableMatchScore,
-}))
-
 // Override the skill-gap mock registered by readiness-history.test.ts.
 // We provide the real computation logic inline so this test exercises actual behavior.
 mock.module("@/server/services/matching/skill-gap", () => ({
