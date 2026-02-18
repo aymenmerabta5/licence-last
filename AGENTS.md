@@ -1,6 +1,6 @@
 # AGENTS.md — Coding Guidelines for AI Agents
 
-> Last updated: 2026-02-16
+> Last updated: 2026-02-18
 > Project: Internex — A Next.js 16 + React 19 application with editorial design aesthetic, for linking companies internship programs with university students
 
 ---
@@ -20,14 +20,24 @@ bun run start
 # Type checking
 bun run typecheck
 
-# Linting (ESLint with Next.js config)
+# Linting
 bun run lint
+bun run lint:imports       # Import/layer lint sweep
+bun run lint:architecture  # Feature-folder architecture guard
+bun run lint:rtl-logical   # RTL logical CSS guard
 
 # Testing
 bun test              # Run all tests
 bun test:watch        # Watch mode
 bun test:coverage     # With coverage report
+bun test:unit         # Unit/core modules
 bun test:orpc-routes  # oRPC controller route + smoke tests
+bun test:api:app-routes # App Router API route tests only
+bun test:api          # API routes + oRPC route suite
+bun test:pages        # App Router page/component tests (src/app/[locale])
+bun test:e2e          # Playwright E2E
+bun test:ci           # CI pipeline (unit + api + pages)
+bun run check:all     # Full pre-release checks (lint, typecheck, tests, build)
 
 # Database (auto-loads .env.development)
 bun run db:generate         # Generate migrations from schema
@@ -100,7 +110,7 @@ bun run mcp:dev             # Start MCP development server
 | Email Templates | @react-email/components | 1.0.7 |
 | Email Rendering | @react-email/render + @react-email/tailwind | 2.0.4 |
 | PDF Generation | @react-pdf/renderer | 4.3.2 |
-| Logging | pino | 5.0.0 |
+| Logging | pino | 10.3.1 |
 
 ### i18n & Theming
 | Category | Technology | Version |
@@ -152,14 +162,16 @@ export async function createCompany(data: CreateCompanyInput, userId: string) {
 }
 ```
 
-**Service Domains (16 total):**
+**Service Domains (18 total):**
 - `admin/` — Admin user ops (ban, create, list, remove, sessions, setPassword, setRole, update)
 - `applications/` — Internship applications (apply, withdraw, pipeline, company actions, timeline)
 - `assistant/` — AI assistant conversations (CRUD, messages)
 - `companies/` — Company management (CRUD, approval, membership, trust index, trust actions, reports)
 - `departments/` — Department management (create, list, update, delete, assign/unassign head, assign by email, bulk create, skills sync)
 - `documents/` — Document generation + verification (agreements, certificates, QR codes, verification)
+- `interviews/` — Interview slot proposals, confirmations, and listing
 - `matching/` — Student-offer matching (scoring, skill gaps, readiness history)
+- `messages/` — Company-student thread messaging (send/list/read)
 - `notifications/` — User notifications (create, list, mark read)
 - `offers/` — Internship offers (CRUD, search, status management, delete)
 - `placements/` — Placement validation (list pending, validate, reject — admin + dept head)
@@ -193,16 +205,19 @@ publicProcedure              // No auth required
 │   └── deptHeadProcedure    // dept_head + injects departmentId + universityId
 ```
 
-**Rate-Limited Procedures (18 variants):**
+**Rate-Limited Procedures (20 variants):**
 ```typescript
 // Pre-composed procedures with rate limiting
 publicProcedureStrict               // 5 req/min (auth endpoints)
 publicProcedureStandard             // 100 req/min (public reads)
 authedProcedureStandard             // 100 req/min (general API)
+authedSessionProcedureStandard      // 100 req/min (session bootstrap endpoints)
 authedProcedureGenerous             // 300 req/min (listings, searches)
+authedSessionProcedureGenerous      // 300 req/min (session bootstrap reads)
 authedProcedureStrict               // 5 req/min (sensitive ops)
 adminProcedureStandard              // 100 req/min (admin ops)
 adminProcedureGenerous              // 300 req/min (bulk admin ops)
+adminProcedureAssistant             // 20 req/min (admin AI calls)
 superAdminProcedureStandard         // 100 req/min (super admin ops)
 superAdminProcedureGenerous         // 300 req/min (bulk super admin)
 deptHeadProcedureStandard           // 100 req/min (dept head ops)
@@ -215,22 +230,25 @@ studentProcedureGenerous            // 300 req/min (student reads)
 assistantProcedureLimited           // 20 req/min (AI calls)
 ```
 
-**oRPC Routes (15 route files, 88 procedures across 16 namespaces):**
-- `users.ts` — getMe, updateMe, uploadAvatar, deleteAvatar (4)
-- `companies.ts` — CRUD, approval, trust index, reports, quality feedback, logo upload (13)
+**oRPC Routes (18 route modules, 131 procedures across 19 namespaces):**
+- `users.ts` — profile + avatar + session management (7)
+- `companies.ts` — CRUD, approval/suspension, trust index, reports, quality feedback, logo upload (15)
 - `students.ts` — getProfile, getPublicProfile, upsertProfile, upsertProfileDetails (4)
-- `offers.ts` — CRUD, status updates, delete (6 — search is in applications file but offers namespace)
-- `applications.ts` — checkApplication, apply, withdraw, pipeline, company actions, timeline, search (9 in namespace + search in offers)
-- `skills.ts` — Skill tag listing (1)
-- `placements.ts` — admin: listPending, validate, reject; deptHead: listPending, validate, reject (6)
-- `departments.ts` — list, create, update, assignHead, unassignHead, delete, bulkCreateWithHeads, syncSkills, getSkills (9)
-- `documents.ts` — generateAgreement, verify (2)
-- `notifications.ts` — list, markRead, markAllRead (3)
-- `stats.ts` — Admin statistics (1)
+- `offers.ts` — CRUD, saved offers, AI draft/description/skills helpers, search parsing (15)
+- `applications.ts` — search, apply, withdraw, timeline, pipeline actions, cover letter generation (10)
+- `skills.ts` — list + prioritized skill tags (2)
+- `placements.ts` — admin + deptHead validations plus AI summary generation (7 total: placements 4, deptHead 3)
+- `departments.ts` — list/create/update/delete, head assignment, bulk create, skills sync (9)
+- `documents.ts` — agreement/certificate generation, company/student listings, downloads, verify (7)
+- `notifications.ts` — list, preferences get/update, markRead, markAllRead (5)
+- `stats.ts` — admin + university dashboard statistics (2)
 - `admin-users.ts` — list, create, setRole, ban, unban, remove, setPassword, update, sessions, revokeSession, revokeAllSessions (11)
 - `universities.ts` — list, getById, create, approve, reject (5)
 - `assistant.ts` — listModels, conversations CRUD, messages, model/title updates (9)
 - `matching.ts` — getScore, getSkillGap, getReadinessHistory, captureReadinessSnapshot (4)
+- `interviews.ts` — list for company/student, propose slots, confirm slot (4)
+- `messages.ts` — company/student message threads, send, mark read, list thread messages (6)
+- `student-cv.ts` — CV retrieval plus experience/project/resume create/update/delete (9)
 
 ### Client Usage Patterns
 
@@ -522,11 +540,11 @@ src/
 │   │   └── migrations/         # Migration files
 │   ├── orpc/                   # oRPC controller layer
 │   │   ├── middleware.ts       # Auth procedures (7 types)
-│   │   ├── rate-limited-procedures.ts  # 18 variants
-│   │   ├── router.ts           # Combined router (88 procedures)
+│   │   ├── rate-limited-procedures.ts  # 20 variants
+│   │   ├── router.ts           # Combined router (131 procedures / 19 namespaces)
 │   │   ├── client.ts           # Client + TanStack Query
-│   │   └── routes/             # 15 route files
-│   ├── services/               # Pure business logic (16 domains)
+│   │   └── routes/             # 18 route modules
+│   ├── services/               # Pure business logic (18 domains)
 │   ├── ai/                     # AI integration (model, tools, context, prompts)
 │   ├── openapi/                # OpenAPI spec generation
 │   ├── pdfs/                   # PDF templates (AgreementTemplate, CertificateTemplate)
@@ -792,6 +810,7 @@ bun test:watch        # Watch mode for development
 bun test:coverage     # Generate coverage report
 bun test:unit         # Unit/core modules (segmented to avoid mock collisions)
 bun test:orpc-routes  # oRPC controller route + smoke tests
+bun test:api:app-routes # App Router API route tests only
 bun test:api          # API route tests + oRPC route suite
 bun test:pages        # App Router page/component tests (src/app/[locale])
 bun test:e2e          # Playwright E2E (chromium)

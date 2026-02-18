@@ -65,19 +65,21 @@ src/
 │   ├── db/                 (Drizzle schema — 19 modules + seed)
 │   ├── orpc/               (Controller — oRPC router)
 │   │   ├── middleware.ts   (auth chain — 7 procedure types)
-│   │   ├── rate-limited-procedures.ts (18 variants)
+│   │   ├── rate-limited-procedures.ts (20 variants)
 │   │   ├── ratelimit-middleware.ts
 │   │   ├── router.ts
 │   │   ├── client.ts
-│   │   └── routes/         (15 route files, 88 procedures)
-│   ├── services/           (Model — 16 service domains)
+│   │   └── routes/         (18 route modules, 19 namespaces, 131 procedures)
+│   ├── services/           (Model — 18 service domains)
 │   │   ├── admin/          (User management: ban, create, sessions, etc.)
 │   │   ├── applications/   (Application workflow + pipeline + timeline)
 │   │   ├── assistant/      (AI assistant conversations)
 │   │   ├── companies/      (CRUD, approval, trust index, reports)
 │   │   ├── departments/    (CRUD, delete, assign/unassign head, bulk create, skills)
 │   │   ├── documents/      (PDF generation + QR + verification)
+│   │   ├── interviews/     (Interview slot proposals + confirmations)
 │   │   ├── matching/       (Scoring, skill gap, readiness)
+│   │   ├── messages/       (Company <-> student message threads)
 │   │   ├── notifications/  (Create, list, mark read)
 │   │   ├── offers/         (CRUD, search, status)
 │   │   ├── placements/     (Validate, reject, list pending)
@@ -210,7 +212,7 @@ publicProcedure              — No auth required
 │   └── deptHeadProcedure    — dept_head + injects departmentId + universityId
 ```
 
-**Rate-Limited Procedures** (`src/server/orpc/rate-limited-procedures.ts`) — 18 variants:
+**Rate-Limited Procedures** (`src/server/orpc/rate-limited-procedures.ts`) — 20 variants:
 ```typescript
 // Public (IP-based)
 publicProcedureStrict              // 5 req/min (auth endpoints)
@@ -218,12 +220,15 @@ publicProcedureStandard            // 100 req/min (public reads)
 
 // Authenticated (user-based)
 authedProcedureStandard            // 100 req/min (general API)
+authedSessionProcedureStandard     // 100 req/min (session bootstrap endpoints)
 authedProcedureGenerous            // 300 req/min (listings, searches)
+authedSessionProcedureGenerous     // 300 req/min (session bootstrap reads)
 authedProcedureStrict              // 5 req/min (sensitive ops)
 
 // Admin (university_admin/dept_head/super_admin)
 adminProcedureStandard             // 100 req/min (standard admin ops)
 adminProcedureGenerous             // 300 req/min (bulk admin ops)
+adminProcedureAssistant            // 20 req/min (admin AI calls)
 
 // Super Admin (super_admin only)
 superAdminProcedureStandard        // 100 req/min (standard super admin)
@@ -449,6 +454,9 @@ bun run dev        # Development
 bun run build      # Production build
 bun run start      # Production start
 bun run lint       # ESLint
+bun run lint:imports       # Strict import/layer checks
+bun run lint:architecture  # Feature-folder architecture guard
+bun run lint:rtl-logical   # RTL logical CSS guard
 bun run typecheck  # TypeScript check
 
 # Testing
@@ -457,10 +465,12 @@ bun test:watch     # Watch mode
 bun test:coverage  # Coverage report
 bun test:unit      # Unit/core modules (segmented to avoid mock collisions)
 bun test:orpc-routes # oRPC controller route + smoke tests
+bun test:api:app-routes # App Router API route tests only
 bun test:api       # API route tests + oRPC route suite
 bun test:pages     # App Router page/component tests (src/app/[locale])
 bun test:e2e       # Playwright E2E tests
 bun test:ci        # CI pipeline (unit + api + pages)
+bun run check:all  # Full pre-release checks (lint, typecheck, tests, build)
 
 # Database
 bun run db:generate    # Generate Drizzle migrations (dev)
@@ -547,6 +557,7 @@ bun test:watch             # Watch mode - re-run on file changes
 bun test:coverage          # Run with coverage report
 bun test:unit              # Unit/core modules (segmented to avoid mock collisions)
 bun test:orpc-routes       # oRPC controller route + smoke tests
+bun test:api:app-routes    # App Router API route tests only
 bun test:api               # API endpoint tests + oRPC route suite
 bun test:pages             # App Router page/component tests (src/app/[locale])
 bun test:e2e               # Playwright end-to-end tests
