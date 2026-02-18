@@ -642,8 +642,8 @@ src/messages/{en,fr,ar}.json
 └── dashboard        -- Extensive nested structure
     ├── nav, assistant, notifications
     ├── company (offers, candidates, profile)
-    ├── student (profile, applications)
-    ├── explore, offerDetail, applications
+    ├── student (profile, applications, documents feedback)
+    ├── explore, offerDetail (application + company report), applications
     └── admin (validations, stats, users)
 ```
 
@@ -791,6 +791,12 @@ score = (responseRate x 0.3) + (completionRate x 0.3) + (feedbackScore x 0.3) - 
 - Completion rate: % of accepted applications that reach validation
 - Feedback score: Average rating (70%) + recommend rate (30%)
 - Report penalty: Severity-weighted unresolved reports (max -40)
+
+### Trust Workflow Surfaces
+
+- **Student report submission**: Offer detail company card opens a report dialog (`companies.submitReport`)
+- **Student quality feedback**: Student documents placement cards open a feedback dialog (`companies.submitQualityFeedback`)
+- **Admin moderation**: Super admin stats page open reports supports resolve/dismiss actions (`companies.resolveReport`)
 
 ### Department Management
 

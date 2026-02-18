@@ -2,9 +2,12 @@
 
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { MapPin, Building } from "lucide-react"
+import { MapPin, Building, ShieldAlert } from "lucide-react"
 
 import { reveal, ease } from "@/lib/animations"
+import { Button } from "@/components/ui/button"
+import { ReportCompanyDialog } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/ReportCompanyDialog"
+import type { UseCompanyReportResult } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useCompanyReport"
 
 import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
 
@@ -12,12 +15,14 @@ interface CompanyCardProps {
   offer: OfferDetailProps["offer"]
   trustScore: number | undefined
   trustTier: string | undefined
+  report: UseCompanyReportResult
 }
 
 export function CompanyCard({
   offer,
   trustScore,
   trustTier,
+  report,
 }: CompanyCardProps) {
   const t = useTranslations("dashboard.offerDetail")
   const companyInitial = offer.companyName.charAt(0).toUpperCase()
@@ -100,6 +105,30 @@ export function CompanyCard({
           {offer.companyDescription}
         </p>
       )}
+
+      <div className="pt-2 border-t border-border/30">
+        <Button
+          type="button"
+          variant="editorial-outline"
+          size="sm"
+          className="w-full gap-1.5"
+          onClick={() => report.onOpenChange(true)}
+        >
+          <ShieldAlert className="h-3.5 w-3.5" />
+          {t("report.trigger")}
+        </Button>
+      </div>
+
+      <ReportCompanyDialog
+        companyName={offer.companyName}
+        open={report.isOpen}
+        onOpenChange={report.onOpenChange}
+        values={report.values}
+        errors={report.errors}
+        isSubmitting={report.isSubmitting}
+        onFieldChange={report.setFieldValue}
+        onSubmit={report.submitReport}
+      />
     </motion.div>
   )
 }

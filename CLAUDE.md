@@ -374,9 +374,9 @@ src/messages/
     ├── assistant    → AI assistant interface
     ├── notifications → notification center
     ├── company      → offers, candidates, profile
-    ├── student      → profile, applications
+    ├── student      → profile, applications, documents feedback
     ├── explore      → internship search
-    ├── offerDetail  → application flow
+    ├── offerDetail  → application + company report flow
     ├── applications → tracking
     └── admin        → validations, stats
 ```
@@ -747,6 +747,9 @@ PDF generation using `@react-pdf/renderer`:
 **Trust** (`src/server/services/companies/trust-index.ts`):
 - Formula: `responseRate + completionRate + feedbackScore - reportPenalties`
 - Company trust reports and feedback aggregation
+- Student report submission from OfferDetail company card (`companies.submitReport`)
+- Student placement feedback submission from documents page (`companies.submitQualityFeedback`)
+- Super admin report resolution from Admin Stats open reports (`companies.resolveReport`)
 
 ### SEO
 

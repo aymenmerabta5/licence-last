@@ -963,6 +963,33 @@
       "application": "Application",
       "internshipOffer": "Internship Offer",
       "trustIndex": "Trust Index",
+      "report": {
+        "trigger": "Report Company",
+        "title": "Report Company",
+        "description": "Share a trust or safety issue about {companyName}.",
+        "categoryLabel": "Category",
+        "categoryPlaceholder": "Select a category",
+        "severityLabel": "Severity",
+        "descriptionLabel": "What happened?",
+        "descriptionPlaceholder": "Describe the issue in detail (minimum 10 characters).",
+        "cancel": "Cancel",
+        "submit": "Submit report",
+        "submitting": "Submitting...",
+        "submitSuccess": "Report submitted successfully.",
+        "submitError": "Failed to submit report.",
+        "categories": {
+          "professional_conduct": "Professional conduct",
+          "misleading_offer": "Misleading offer",
+          "communication_issue": "Communication issue",
+          "other": "Other"
+        },
+        "severity": {
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High",
+          "critical": "Critical"
+        }
+      },
       "copilot": {
         "draftWithAi": "Draft with AI",
         "drafting": "Drafting...",
@@ -1035,6 +1062,22 @@
         "validatedAt": "Validated on",
         "verificationCode": "Verification code",
         "notAvailable": "Not available"
+      },
+      "feedback": {
+        "ctaLabel": "Leave feedback",
+        "ctaDescription": "Help improve trust scoring by sharing your experience.",
+        "title": "Placement Feedback",
+        "description": "Share your experience with {companyName} for \"{offerTitle}\".",
+        "descriptionFallback": "Share your placement experience.",
+        "ratingLabel": "Overall rating",
+        "wouldRecommendLabel": "I would recommend this company for internships.",
+        "commentLabel": "Comment (optional)",
+        "commentPlaceholder": "What worked well and what could improve?",
+        "cancel": "Cancel",
+        "submit": "Submit feedback",
+        "submitting": "Submitting...",
+        "submitSuccess": "Feedback submitted successfully.",
+        "submitError": "Failed to submit feedback."
       },
       "downloadSuccess": "Document downloaded.",
       "downloadError": "Failed to download document."

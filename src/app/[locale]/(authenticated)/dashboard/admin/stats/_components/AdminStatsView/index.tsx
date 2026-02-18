@@ -14,6 +14,7 @@ import { ease } from "@/lib/animations"
 import { StatsCard } from "@/app/[locale]/(authenticated)/_components/StatsCard"
 
 import { useAdminStats } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/hooks/useAdminStats"
+import { useResolveReport } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/hooks/useResolveReport"
 import { ApplicationsBreakdownCard } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/components/ApplicationsBreakdownCard"
 import { CompanyTrustCard } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/components/CompanyTrustCard"
 import { OpenReportsCard } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/components/OpenReportsCard"
@@ -25,6 +26,7 @@ function formatPercent(n: number) {
 export function AdminStatsView() {
   const { stats, isLoading, trustIndices, isTrustLoading, reports, isReportsLoading } =
     useAdminStats()
+  const { resolveReport, isPending: isResolvingReport } = useResolveReport()
 
   const cards = stats
     ? [
@@ -140,7 +142,12 @@ export function AdminStatsView() {
           />
         </div>
         <div className="lg:col-span-5">
-          <OpenReportsCard reports={reports} isLoading={isReportsLoading} />
+          <OpenReportsCard
+            reports={reports}
+            isLoading={isReportsLoading}
+            onResolve={resolveReport}
+            isResolving={isResolvingReport}
+          />
         </div>
       </div>
     </div>

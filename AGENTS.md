@@ -958,9 +958,9 @@ src/messages/
     ├── assistant    (AI assistant interface)
     ├── notifications (notification center)
     ├── company      (offers, candidates, profile)
-    ├── student      (profile, applications)
+    ├── student      (profile, applications, documents feedback)
     ├── explore      (internship search)
-    ├── offerDetail  (application flow)
+    ├── offerDetail  (application + company report flow)
     ├── applications (tracking)
     └── admin        (validations, stats)
 ```
@@ -1269,6 +1269,9 @@ Uses `@react-pdf/renderer`. Each document gets a verification code + QR code. Pu
 **`src/server/services/companies/trust-index.ts`:**
 - Calculate company trust scores
 - Handle trust reports and feedback
+- Student report action in OfferDetail company card (`companies.submitReport`)
+- Student placement feedback action in documents (`companies.submitQualityFeedback`)
+- Super admin report resolution in Admin Stats Open Reports (`companies.resolveReport`)
 
 ---
 
