@@ -17,33 +17,34 @@ describe("banUser", () => {
 
   test("should call auth.api.banUser with userId", async () => {
     const { banUser } = await import("@/server/services/admin/ban-user?fresh=1")
-    await banUser({ userId: "user-1" }, { authApi: { banUser: mockBanUser } as any, getHeaders: mockHeaders })
+    await banUser({ userId: "user-1" }, { authApi: { banUser: mockBanUser, unbanUser: mockUnbanUser }, getHeaders: mockHeaders })
     expect(mockBanUser).toHaveBeenCalledTimes(1)
   })
 
   test("should pass banReason when provided", async () => {
     const { banUser } = await import("@/server/services/admin/ban-user?fresh=2")
-    await banUser({ userId: "user-1", banReason: "Spam" }, { authApi: { banUser: mockBanUser } as any, getHeaders: mockHeaders })
+    await banUser({ userId: "user-1", banReason: "Spam" }, { authApi: { banUser: mockBanUser, unbanUser: mockUnbanUser }, getHeaders: mockHeaders })
     expect(mockBanUser).toHaveBeenCalledTimes(1)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const call = (mockBanUser.mock.calls as any)[0][0]
+    const call = (mockBanUser.mock.calls as unknown[][])[0][0] as {
+      body: { banReason?: string }
+    }
     expect(call.body.banReason).toBe("Spam")
   })
 
   test("should pass banExpiresIn when provided", async () => {
     const { banUser } = await import("@/server/services/admin/ban-user?fresh=3")
-    await banUser({ userId: "user-1", banExpiresIn: 86400 }, { authApi: { banUser: mockBanUser } as any, getHeaders: mockHeaders })
+    await banUser({ userId: "user-1", banExpiresIn: 86400 }, { authApi: { banUser: mockBanUser, unbanUser: mockUnbanUser }, getHeaders: mockHeaders })
     expect(mockBanUser).toHaveBeenCalledTimes(1)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const call = (mockBanUser.mock.calls as any)[0][0]
+    const call = (mockBanUser.mock.calls as unknown[][])[0][0] as {
+      body: { banExpiresIn?: number }
+    }
     expect(call.body.banExpiresIn).toBe(86400)
   })
 
   test("should return the result from auth API", async () => {
     const { banUser } = await import("@/server/services/admin/ban-user?fresh=4")
-    const result = await banUser({ userId: "user-1" }, { authApi: { banUser: mockBanUser } as any, getHeaders: mockHeaders })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(result).toEqual({ user: { id: "u1", banned: true } } as any)
+    const result = await banUser({ userId: "user-1" }, { authApi: { banUser: mockBanUser, unbanUser: mockUnbanUser }, getHeaders: mockHeaders })
+    expect(result).toEqual({ user: { id: "u1", banned: true } })
   })
 })
 
@@ -52,10 +53,11 @@ describe("unbanUser", () => {
 
   test("should call auth.api.unbanUser with userId", async () => {
     const { unbanUser } = await import("@/server/services/admin/ban-user?fresh=5")
-    await unbanUser("user-1", { authApi: { unbanUser: mockUnbanUser } as any, getHeaders: mockHeaders })
+    await unbanUser("user-1", { authApi: { banUser: mockBanUser, unbanUser: mockUnbanUser }, getHeaders: mockHeaders })
     expect(mockUnbanUser).toHaveBeenCalledTimes(1)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const call = (mockUnbanUser.mock.calls as any)[0][0]
+    const call = (mockUnbanUser.mock.calls as unknown[][])[0][0] as {
+      body: { userId?: string }
+    }
     expect(call.body.userId).toBe("user-1")
   })
 })

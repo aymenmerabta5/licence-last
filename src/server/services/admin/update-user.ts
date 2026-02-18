@@ -9,8 +9,22 @@ interface UpdateUserData {
   role?: "student" | "company_admin" | "dept_head" | "university_admin" | "super_admin"
 }
 
-const getAuthApi = () => (globalThis as any).__authApi ?? auth.api
-type UpdateUserDeps = { authApi?: typeof auth.api; getHeaders?: typeof headers }
+type RequestHeaders = Awaited<ReturnType<typeof headers>>
+
+interface UpdateUserAuthApi {
+  adminUpdateUser(input: {
+    headers: RequestHeaders
+    body: {
+      userId: string
+      data: UpdateUserData
+    }
+  }): Promise<unknown>
+}
+
+type AuthApiGlobal = typeof globalThis & { __authApi?: UpdateUserAuthApi }
+
+const getAuthApi = () => (globalThis as AuthApiGlobal).__authApi ?? auth.api
+type UpdateUserDeps = { authApi?: UpdateUserAuthApi; getHeaders?: typeof headers }
 
 export async function updateUser(userId: string, data: UpdateUserData, deps: UpdateUserDeps = {}) {
   const api = deps.authApi ?? getAuthApi()

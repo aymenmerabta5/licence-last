@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach, afterAll } from "bun:test"
+import { describe, test, expect, mock, beforeEach } from "bun:test"
 
 const mockListUserSessions = mock(() => Promise.resolve({ sessions: [] }))
 const mockRevokeUserSession = mock(() => Promise.resolve({ success: true }))
@@ -19,11 +19,12 @@ describe("listUserSessions", () => {
         listUserSessions: mockListUserSessions,
         revokeUserSession: mockRevokeUserSession,
         revokeUserSessions: mockRevokeUserSessions,
-      } as any,
+      },
       getHeaders: mockHeaders,
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const call = (mockListUserSessions.mock.calls as any)[0][0]
+    const call = (mockListUserSessions.mock.calls as unknown[][])[0][0] as {
+      body: { userId?: string }
+    }
     expect(call.body.userId).toBe("user-1")
   })
 })
@@ -40,11 +41,12 @@ describe("revokeSession", () => {
         listUserSessions: mockListUserSessions,
         revokeUserSession: mockRevokeUserSession,
         revokeUserSessions: mockRevokeUserSessions,
-      } as any,
+      },
       getHeaders: mockHeaders,
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const call = (mockRevokeUserSession.mock.calls as any)[0][0]
+    const call = (mockRevokeUserSession.mock.calls as unknown[][])[0][0] as {
+      body: { sessionToken?: string }
+    }
     expect(call.body.sessionToken).toBe("session-token-abc")
   })
 })
@@ -61,11 +63,12 @@ describe("revokeAllSessions", () => {
         listUserSessions: mockListUserSessions,
         revokeUserSession: mockRevokeUserSession,
         revokeUserSessions: mockRevokeUserSessions,
-      } as any,
+      },
       getHeaders: mockHeaders,
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const call = (mockRevokeUserSessions.mock.calls as any)[0][0]
+    const call = (mockRevokeUserSessions.mock.calls as unknown[][])[0][0] as {
+      body: { userId?: string }
+    }
     expect(call.body.userId).toBe("user-1")
   })
 
@@ -76,7 +79,7 @@ describe("revokeAllSessions", () => {
         listUserSessions: mockListUserSessions,
         revokeUserSession: mockRevokeUserSession,
         revokeUserSessions: mockRevokeUserSessions,
-      } as any,
+      },
       getHeaders: mockHeaders,
     })
     expect(result).toEqual({ success: true })
