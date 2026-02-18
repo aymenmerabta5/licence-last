@@ -2,8 +2,9 @@
 
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { ArrowLeft, Building2, Briefcase } from "lucide-react"
+import { ArrowLeft, Bookmark, BookmarkCheck, Building2, Briefcase } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { reveal, ease } from "@/lib/animations"
 
@@ -11,9 +12,19 @@ import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/
 
 interface OfferHeaderProps {
   offer: OfferDetailProps["offer"]
+  isSaved: boolean
+  isSaveBusy: boolean
+  saveUnavailable: boolean
+  onToggleSaved: () => void
 }
 
-export function OfferHeader({ offer }: OfferHeaderProps) {
+export function OfferHeader({
+  offer,
+  isSaved,
+  isSaveBusy,
+  saveUnavailable,
+  onToggleSaved,
+}: OfferHeaderProps) {
   const t = useTranslations("dashboard.offerDetail")
   const companyInitial = offer.companyName.charAt(0).toUpperCase()
 
@@ -27,13 +38,29 @@ export function OfferHeader({ offer }: OfferHeaderProps) {
       <div className="h-0.5 bg-primary mb-6" />
 
       {/* Back link */}
-      <Link
-        href={"/dashboard/explore" as "/dashboard"}
-        className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors mb-6"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" />
-        {t("back")}
-      </Link>
+      <div className="flex items-center justify-between gap-3 mb-6">
+        <Link
+          href={"/dashboard/explore" as "/dashboard"}
+          className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          {t("back")}
+        </Link>
+
+        {!saveUnavailable && (
+          <Button
+            type="button"
+            size="sm"
+            variant="editorial-outline"
+            className="gap-1.5"
+            disabled={isSaveBusy}
+            onClick={onToggleSaved}
+          >
+            {isSaved ? <BookmarkCheck className="h-3.5 w-3.5" /> : <Bookmark className="h-3.5 w-3.5" />}
+            {isSaved ? "Saved" : "Save"}
+          </Button>
+        )}
+      </div>
 
       {/* Masthead */}
       <div className="border border-border bg-card p-6 sm:p-8 relative overflow-hidden">

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 
 import { orpc } from "@/server/orpc/client"
@@ -17,13 +17,22 @@ export function useOfferApplication(
   const [showApplyForm, setShowApplyForm] = useState(false)
   const [coverLetter, setCoverLetter] = useState("")
   const [coverLetterDraft, setCoverLetterDraft] = useState<string | null>(null)
-  const [application, setApplication] = useState(existingApp)
+  const [localApplication, setLocalApplication] = useState<OfferDetailProps["existingApplication"]>(null)
   const [successMsg, setSuccessMsg] = useState("")
+
+  const checkApplicationQuery = useQuery({
+    ...orpc.applications.checkApplication.queryOptions({
+      input: { offerId: offer.id },
+    }),
+    enabled: existingApp === null,
+  })
+
+  const application = localApplication ?? existingApp ?? checkApplicationQuery.data ?? null
 
   const applyMutation = useMutation(
     orpc.applications.apply.mutationOptions({
       onSuccess: (data) => {
-        setApplication({
+        setLocalApplication({
           id: data.applicationId,
           status: "applied",
           createdAt: new Date(),

@@ -80,6 +80,15 @@ export function DepartmentsView() {
             >
               <DepartmentCard
                 department={department}
+                onEditDepartment={async (target) => {
+                  const nextName = window.prompt(t("name"), target.name)?.trim()
+                  if (!nextName || nextName === target.name) return
+                  try {
+                    await actions.updateDepartment(target.id, { name: nextName })
+                  } catch {
+                    // Error feedback is handled by the mutation hook.
+                  }
+                }}
                 onAssignHead={assignHeadDialog.open}
                 onRemoveHead={setRemoveHeadTarget}
                 onDeleteDepartment={setDeleteTarget}

@@ -71,8 +71,10 @@ function ProfileSettingsTabForm({
     resetToInitial,
     avatarUrl,
     isAvatarUploading,
+    isAvatarDeleting,
     avatarInputRef,
     handleAvatarUpload,
+    handleAvatarDelete,
   } = useProfileSettings(me, studentProfile)
 
   return (
@@ -122,8 +124,10 @@ function ProfileSettingsTabForm({
                     avatarInitial={avatarInitial}
                     imageUrl={avatarUrl}
                     isUploading={isAvatarUploading}
+                    isDeleting={isAvatarDeleting}
                     inputRef={avatarInputRef}
                     onUpload={handleAvatarUpload}
+                    onDelete={handleAvatarDelete}
                   />
                 )
               }}

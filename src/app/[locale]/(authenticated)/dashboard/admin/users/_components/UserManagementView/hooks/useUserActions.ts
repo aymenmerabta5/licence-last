@@ -32,6 +32,19 @@ export function useUserActions() {
     onError: (err) => toast.error(err.message),
   })
 
+  const updateUser = useMutation({
+    mutationFn: (data: {
+      userId: string
+      name?: string
+      email?: string
+      role?: "student" | "company_admin" | "university_admin" | "super_admin"
+    }) => orpcClient.adminUsers.update(data),
+    onSuccess: () => {
+      invalidate()
+    },
+    onError: (err) => toast.error(err.message),
+  })
+
   const banUser = useMutation({
     mutationFn: (data: { userId: string; banReason?: string; banExpiresIn?: number }) =>
       orpcClient.adminUsers.ban(data),
@@ -72,5 +85,5 @@ export function useUserActions() {
     onError: (err) => toast.error(err.message),
   })
 
-  return { createUser, setRole, banUser, unbanUser, removeUser, setPassword }
+  return { createUser, setRole, updateUser, banUser, unbanUser, removeUser, setPassword }
 }

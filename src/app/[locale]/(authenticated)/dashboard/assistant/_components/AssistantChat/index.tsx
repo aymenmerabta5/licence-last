@@ -27,6 +27,8 @@ export function AssistantChat() {
     handleCreateConversation,
     handleDeleteConversation,
     handleUpdateModel,
+    handleUpdateTitle,
+    handleAppendNote,
   } = useChatSession();
 
   return (
@@ -58,6 +60,8 @@ export function AssistantChat() {
             models={models}
             activeModel={activeModel}
             onUpdateModel={handleUpdateModel}
+            onUpdateTitle={handleUpdateTitle}
+            onAppendNote={handleAppendNote}
             onCreateConversation={handleCreateConversation}
           />
 

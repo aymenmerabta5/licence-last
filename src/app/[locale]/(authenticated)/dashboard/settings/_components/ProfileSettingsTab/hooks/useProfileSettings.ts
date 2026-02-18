@@ -61,6 +61,7 @@ export function useProfileSettings(
   // Avatar state
   const [avatarUrl, setAvatarUrl] = useState<string | null>(me.user.image ?? null)
   const [isAvatarUploading, setIsAvatarUploading] = useState(false)
+  const [isAvatarDeleting, setIsAvatarDeleting] = useState(false)
   const avatarInputRef = useRef<HTMLInputElement>(null)
 
   const updateMeMutation = useMutation(
@@ -187,6 +188,21 @@ export function useProfileSettings(
     [queryClient, meQueryOptions.queryKey],
   )
 
+  const handleAvatarDelete = useCallback(async () => {
+    if (!avatarUrl) return
+    setIsAvatarDeleting(true)
+    try {
+      await orpcClient.users.deleteAvatar({})
+      setAvatarUrl(null)
+      await queryClient.invalidateQueries({ queryKey: meQueryOptions.queryKey })
+      toast.success("Profile photo removed.")
+    } catch (err) {
+      toast.error(getErrorMessage(err, "Could not remove profile photo."))
+    } finally {
+      setIsAvatarDeleting(false)
+    }
+  }, [avatarUrl, meQueryOptions.queryKey, queryClient])
+
   return {
     form,
     isStudent,
@@ -196,7 +212,9 @@ export function useProfileSettings(
     resetToInitial,
     avatarUrl,
     isAvatarUploading,
+    isAvatarDeleting,
     avatarInputRef,
     handleAvatarUpload,
+    handleAvatarDelete,
   }
 }

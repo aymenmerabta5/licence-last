@@ -30,6 +30,18 @@ export function useDepartmentsActions() {
     }),
   )
 
+  const updateMutation = useMutation(
+    orpc.departments.update.mutationOptions({
+      onSuccess: () => {
+        invalidate()
+        toast.success(t("updateSuccess"))
+      },
+      onError: (error) => {
+        toast.error(error.message || t("error"))
+      },
+    }),
+  )
+
   const assignHeadMutation = useMutation(
     orpc.departments.assignHead.mutationOptions({
       onSuccess: () => {
@@ -90,6 +102,11 @@ export function useDepartmentsActions() {
       headName: headName.trim(),
     })
 
+  const updateDepartment = async (
+    departmentId: string,
+    data: { name?: string; headName?: string | null },
+  ) => updateMutation.mutateAsync({ departmentId, ...data })
+
   const unassignHead = async (departmentId: string) =>
     unassignHeadMutation.mutateAsync({ departmentId })
 
@@ -102,10 +119,12 @@ export function useDepartmentsActions() {
     newHeadName,
     setNewHeadName,
     handleCreate,
+    updateDepartment,
     assignHead,
     unassignHead,
     removeDepartment,
     isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
     isAssigningHead: assignHeadMutation.isPending,
     isUnassigningHead: unassignHeadMutation.isPending,
     isDeletingDepartment: deleteDepartmentMutation.isPending,

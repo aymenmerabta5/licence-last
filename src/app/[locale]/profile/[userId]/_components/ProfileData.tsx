@@ -2,9 +2,9 @@ import { notFound } from "next/navigation"
 
 import { requireRole } from "@/lib/auth-guards"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
+import { orpcClient } from "@/server/orpc/client"
 import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
-import { getStudentProfileForViewer } from "@/server/services/students/get-profile-for-viewer"
-import { getUniversityById } from "@/server/services/universities/get"
+import { getStudentCv } from "@/server/services/students/get-cv"
 import { ProfileContent } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent"
 
 interface ProfileDataProps {
@@ -19,16 +19,16 @@ export async function ProfileData({ userId }: ProfileDataProps) {
   const viewer = await requireRole(["student", "company_admin", "university_admin", "super_admin"])
   const isOwner = viewer.id === userId && viewer.role === "student"
 
-  const result = await getStudentProfileForViewer({
-    viewer: { id: viewer.id, role: viewer.role ?? "student" },
-    targetUserId: userId,
-  })
+  const result = await orpcClient.students.getPublicProfile({ userId }).catch(() => null)
 
   if (!result) notFound()
 
-  const [university, ownerStats] = await Promise.all([
-    result.user.universityId ? getUniversityById(result.user.universityId) : null,
+  const [university, ownerStats, cvData] = await Promise.all([
+    result.user.universityId
+      ? orpcClient.universities.getById({ universityId: result.user.universityId }).catch(() => null)
+      : null,
     isOwner ? getStudentDashboardStats(viewer.id) : null,
+    result.user.role === "student" ? getStudentCv(userId) : null,
   ])
 
   const profileCompleteness = isOwner
@@ -49,6 +49,7 @@ export async function ProfileData({ userId }: ProfileDataProps) {
       ? {
           profile: result.profile,
           skills: result.skills,
+          experiences: cvData?.experiences ?? [],
           university,
           stats:
             ownerStats && profileCompleteness !== null

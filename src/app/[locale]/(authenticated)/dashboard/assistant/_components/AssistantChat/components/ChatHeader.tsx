@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl"
-import { Plus } from "lucide-react"
+import { NotebookPen, Pencil, Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -22,6 +22,8 @@ interface ChatHeaderProps {
   models: Model[]
   activeModel: string | null
   onUpdateModel: (modelId: string) => void
+  onUpdateTitle: (title: string | null) => void
+  onAppendNote: (note: string) => void
   onCreateConversation: () => void
 }
 
@@ -30,6 +32,8 @@ export function ChatHeader({
   models,
   activeModel,
   onUpdateModel,
+  onUpdateTitle,
+  onAppendNote,
   onCreateConversation,
 }: ChatHeaderProps) {
   const t = useTranslations("dashboard.assistant")
@@ -66,6 +70,38 @@ export function ChatHeader({
             </SelectContent>
           </Select>
         </div>
+
+        <Button
+          type="button"
+          variant="editorial-ghost"
+          size="editorial-sm"
+          className="gap-2"
+          onClick={() => {
+            const currentTitle = formatConversationTitle(conversationTitle)
+            const nextTitle = window.prompt(t("renamePrompt"), currentTitle)
+            if (nextTitle === null) return
+            const trimmed = nextTitle.trim()
+            onUpdateTitle(trimmed.length > 0 ? trimmed : null)
+          }}
+        >
+          <Pencil className="h-4 w-4" />
+          {t("renameConversation")}
+        </Button>
+
+        <Button
+          type="button"
+          variant="editorial-ghost"
+          size="editorial-sm"
+          className="gap-2"
+          onClick={() => {
+            const note = window.prompt(t("notePrompt"), "")
+            if (note === null) return
+            onAppendNote(note)
+          }}
+        >
+          <NotebookPen className="h-4 w-4" />
+          {t("saveNote")}
+        </Button>
 
         <Button
           type="button"
