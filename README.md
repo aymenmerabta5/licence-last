@@ -24,11 +24,11 @@ Internex manages the complete internship lifecycle:
    (RSC + CC)     /     |     \
                 Auth   oRPC   Assistant
                 |       |        |
-         Better Auth  88 procs  Poe AI
+         Better Auth 131 procs  Poe AI
                 \       |      /
              +-----------------------+
              |    Services Layer     |
-             |    (16 domains)       |
+             |    (18 domains)       |
              +-----------+-----------+
                          |
            +-------------+-------------+
@@ -115,17 +115,23 @@ bun run dev            # Start dev server
 bun run build          # Production build
 bun run start          # Start production server
 bun run lint           # ESLint
+bun run lint:imports   # Import/layer lint sweep
+bun run lint:architecture # Feature-folder architecture guard
+bun run lint:rtl-logical  # RTL logical CSS guard
 bun run typecheck      # TypeScript check
 
 # Testing
 bun test               # All tests
+bun test:watch         # Watch mode
 bun test:unit          # Unit/core tests (lib + service/data/core server modules)
 bun test:orpc-routes   # oRPC controller route and smoke tests
+bun test:api:app-routes # App Router API route tests only
 bun test:api           # API route tests + oRPC route suite
 bun test:pages         # App Router page/component tests (src/app/[locale])
 bun test:coverage      # Segmented coverage run; writes reports to coverage/*.txt
 bun test:e2e           # Playwright E2E
 bun test:ci            # CI pipeline (unit + api + pages)
+bun run check:all      # Full pre-release checks (lint, typecheck, tests, build)
 
 # Database
 bun run db:generate    # Generate Drizzle migrations
@@ -149,7 +155,7 @@ src/
 │   │   └── onboarding/        # Setup wizards per role
 │   └── api/
 │       ├── auth/[...all]/     # Better Auth endpoints
-│       ├── rpc/[...rest]/     # oRPC (88 procedures, CSRF protected)
+│       ├── rpc/[...rest]/     # oRPC (131 procedures, CSRF protected)
 │       ├── assistant/         # AI chat streaming + auth status
 │       ├── openapi/           # OpenAPI spec + Swagger UI
 │       └── health/            # Dependency-aware readiness check
@@ -158,8 +164,8 @@ src/
 ├── lib/                       # Schemas, utils, constants, animations
 ├── server/
 │   ├── db/                    # Drizzle schema (19 modules) + migrations + seed
-│   ├── orpc/                  # Controller layer (15 route files, 18 rate-limit variants)
-│   ├── services/              # Model layer (16 business domains)
+│   ├── orpc/                  # Controller layer (18 route modules, 20 rate-limit variants)
+│   ├── services/              # Model layer (18 business domains)
 │   ├── ai/                    # AI model config, tools, prompts, personas
 │   ├── openapi/               # OpenAPI spec generation
 │   ├── pdfs/                  # PDF templates (agreements, certificates)
@@ -175,8 +181,8 @@ src/
 
 The project follows an **MVC pattern**:
 
-- **Model** (`server/services/`) — 16 domains of pure business logic with `import "server-only"`
-- **Controller** (`server/orpc/`) — 88 oRPC procedures with auth middleware chain and rate limiting
+- **Model** (`server/services/`) — 18 domains of pure business logic with `import "server-only"`
+- **Controller** (`server/orpc/`) — 131 oRPC procedures across 19 namespaces with auth middleware and rate limiting
 - **View** — React Server Components + Client Components with feature folder pattern
 
 Operational contracts:

@@ -1,7 +1,7 @@
 # Architecture Document — Internex Platform
 
-> Last updated: 2026-02-16
-> Version: 1.1
+> Last updated: 2026-02-18
+> Version: 1.2
 
 ---
 
@@ -42,11 +42,11 @@
              (RSC + CC)     /     |     \
                           Auth   oRPC   Assistant
                           |       |        |
-                   Better Auth  88 procs  Poe AI
+                   Better Auth 131 procs  Poe AI
                           \       |      /
                        ┌──────────────────────┐
                        │   Services Layer     │
-                       │  (16 domains)        │
+                       │  (18 domains)        │
                        └──────────┬───────────┘
                                   |
                     ┌─────────────┼─────────────┐
@@ -138,7 +138,7 @@
 | Auto-Deploy | Watchtower |
 | CI/CD | GitHub Actions |
 | Registry | GitHub Container Registry (ghcr.io) |
-| Logging | Pino 5.x (structured JSON) |
+| Logging | Pino 10.x (structured JSON) |
 
 ---
 
@@ -245,28 +245,30 @@ src/
 │   │   └── reset.ts                  # Database reset script
 │   ├── orpc/                         # Controller layer
 │   │   ├── middleware.ts             # Auth procedure chain (7 types)
-│   │   ├── rate-limited-procedures.ts  # 18 variants
+│   │   ├── rate-limited-procedures.ts  # 20 variants
 │   │   ├── ratelimit-middleware.ts
-│   │   ├── router.ts                 # Combined router (88 procedures)
+│   │   ├── router.ts                 # Combined router (131 procedures / 19 namespaces)
 │   │   ├── client.ts                 # orpcClient + orpc (TanStack)
-│   │   └── routes/                   # 15 route files
-│   ├── services/                     # Business logic (16 domains)
-│   │   ├── admin/                    # User management (8 files)
-│   │   ├── applications/             # Application workflow (7 files)
-│   │   ├── assistant/                # AI conversations (7 files)
-│   │   ├── companies/                # Company management (9 files)
-│   │   ├── departments/              # Department management (10 files)
-│   │   ├── documents/                # PDF gen + verification (5 files)
-│   │   ├── matching/                 # Scoring algorithm (3 files)
-│   │   ├── notifications/            # Notification CRUD (3 files)
-│   │   ├── offers/                   # Offer management (8 files)
-│   │   ├── placements/               # Placement validation (3 files)
-│   │   ├── skills/                   # Skill tags (2 files)
-│   │   ├── stats/                    # Analytics (1 file)
-│   │   ├── students/                 # Profile management (5 files)
-│   │   ├── universities/             # University management (5 files)
-│   │   ├── uploads/                  # S3 file storage (1 file)
-│   │   └── users/                    # Current user ops (3 files)
+│   │   └── routes/                   # 18 route modules
+│   ├── services/                     # Business logic (18 domains)
+│   │   ├── admin/                    # User management (17 files)
+│   │   ├── applications/             # Application workflow (16 files)
+│   │   ├── assistant/                # AI conversations (8 files)
+│   │   ├── companies/                # Company management (25 files)
+│   │   ├── departments/              # Department management (17 files)
+│   │   ├── documents/                # PDF gen + verification (15 files)
+│   │   ├── interviews/               # Interview scheduling (5 files)
+│   │   ├── matching/                 # Scoring algorithm (7 files)
+│   │   ├── messages/                 # Thread messaging (7 files)
+│   │   ├── notifications/            # Notification CRUD + preferences (10 files)
+│   │   ├── offers/                   # Offer management + AI helpers (30 files)
+│   │   ├── placements/               # Placement validation + summaries (7 files)
+│   │   ├── skills/                   # Skill tags (5 files)
+│   │   ├── stats/                    # Analytics (4 files)
+│   │   ├── students/                 # Profile + CV management (24 files)
+│   │   ├── universities/             # University management (12 files)
+│   │   ├── uploads/                  # S3 file storage (2 files)
+│   │   └── users/                    # Current user/session ops (10 files)
 │   ├── ai/                           # AI integration
 │   │   ├── model.ts                  # Poe model config
 │   │   ├── chat-handler.ts           # Stream handler
@@ -394,26 +396,28 @@ Pure business logic functions. Every file starts with `import "server-only"`.
 - Use transactions for multi-table operations
 - Row-level locking where needed (e.g., `applyToOffer` prevents race conditions)
 
-**16 Service Domains**:
+**18 Service Domains**:
 
 | Domain | Files | Key Functions |
 |--------|-------|--------------|
-| `admin/` | 8 | banUser, createUser, listUsers, removeUser, sessionManagement, setPassword, setRole, updateUser |
-| `applications/` | 7 | applyToOffer, companyAccept, companyRefuse, withdraw, pipeline, listByOffer, listByStudent |
-| `assistant/` | 7 | CRUD conversations, messages, delete, utils |
-| `companies/` | 9 | create, get, list, update, approve, reject, membership, trustIndex, trustActions |
-| `departments/` | 10 | create, list, update, delete, assignHead, assignHeadByEmail, unassignHead, bulkCreateWithHeads, syncSkills, getSkills |
-| `documents/` | 5 | generateAgreement, generateCertificate, qrUtils, verificationCode, verify |
-| `matching/` | 3 | skillGap, readinessHistory, constants |
-| `notifications/` | 3 | create, list, markRead |
-| `offers/` | 8 | create, get, listByCompany, search, update, updateStatus, delete |
-| `placements/` | 3 | validate, reject, listPending |
-| `skills/` | 2 | list, validate |
-| `stats/` | 1 | getAdminStats |
-| `students/` | 5 | getProfile, getPublicProfile, getProfileForViewer, upsertProfileDetails, getDashboardStats |
-| `universities/` | 5 | create, get, list, approve, reject |
-| `uploads/` | 1 | uploadImageToS3 |
-| `users/` | 3 | getById, updateMe |
+| `admin/` | 17 | user lifecycle, role changes, bans, session revocation, password reset |
+| `applications/` | 16 | apply/withdraw, pipeline transitions, timelines, offer search helpers |
+| `assistant/` | 8 | conversation CRUD, message append/list, model/title updates |
+| `companies/` | 25 | CRUD, approval/suspension, trust index, reports, quality feedback |
+| `departments/` | 17 | CRUD, head assignment by id/email, skill sync, bulk import |
+| `documents/` | 15 | agreement/certificate generation, verification, listings, downloads |
+| `interviews/` | 5 | propose slots, confirm slot, list for company/student |
+| `matching/` | 7 | score, skill gap, readiness history and snapshots |
+| `messages/` | 7 | company/student threads, send message, mark read |
+| `notifications/` | 10 | listing/mark-read plus preference get/update |
+| `offers/` | 30 | CRUD, saved offers, AI draft/improve/suggest helpers |
+| `placements/` | 7 | pending list, validate/reject, AI validation summary |
+| `skills/` | 5 | list/prioritized skill tags and validation helpers |
+| `stats/` | 4 | admin and university dashboard aggregates |
+| `students/` | 24 | student profile CRUD and CV experience/project/resume ops |
+| `universities/` | 12 | CRUD, approval/rejection, status checks |
+| `uploads/` | 2 | S3 image/file upload helpers |
+| `users/` | 10 | me/profile/session management |
 
 ### Controller Layer (`src/server/orpc/`)
 
@@ -430,17 +434,20 @@ publicProcedure              -- No auth required
 │   └── deptHeadProcedure    -- dept_head + injects departmentId + universityId
 ```
 
-**Rate-Limited Procedure Variants (18)**:
+**Rate-Limited Procedure Variants (20)**:
 
 | Procedure | Limit | Use Case |
 |-----------|-------|----------|
 | publicProcedureStrict | 5/min | Auth endpoints |
 | publicProcedureStandard | 100/min | Public reads |
 | authedProcedureStandard | 100/min | General API |
+| authedSessionProcedureStandard | 100/min | Session bootstrap endpoints |
 | authedProcedureGenerous | 300/min | Listings/search |
+| authedSessionProcedureGenerous | 300/min | Session bootstrap reads |
 | authedProcedureStrict | 5/min | Sensitive ops |
 | adminProcedureStandard | 100/min | Admin ops |
 | adminProcedureGenerous | 300/min | Bulk admin |
+| adminProcedureAssistant | 20/min | Admin/dept-head AI calls |
 | superAdminProcedureStandard | 100/min | Super admin ops |
 | superAdminProcedureGenerous | 300/min | Bulk super admin |
 | deptHeadProcedureStandard | 100/min | Dept head ops |
@@ -452,8 +459,8 @@ publicProcedure              -- No auth required
 | studentProcedureGenerous | 300/min | Student reads |
 | assistantProcedureLimited | 20/min | AI calls |
 
-**88 Total Procedures across 15 Route Files (16 Router Namespaces)**:
-users (4), companies (13), skills (1), students (4), offers (7), applications (9), matching (4), placements (3), deptHead (3), departments (9), documents (2), notifications (3), stats (1), adminUsers (11), universities (5), assistant (9)
+**131 Total Procedures across 18 Route Modules (19 Router Namespaces)**:
+users (7), companies (15), skills (2), students (4), offers (15), applications (10), matching (4), placements (4), deptHead (3), departments (9), documents (7), notifications (5), interviews (4), messages (6), studentCv (9), stats (2), adminUsers (11), universities (5), assistant (9)
 
 ### View Layer
 
@@ -512,7 +519,7 @@ const user = await requireRole(["company_admin", "super_admin"])
 | Method | Path | Purpose |
 |--------|------|---------|
 | ALL | `/api/auth/[...all]` | Better Auth (login, signup, 2FA, sessions) |
-| ALL | `/api/rpc/[...rest]` | oRPC (88 procedures, CSRF protected) |
+| ALL | `/api/rpc/[...rest]` | oRPC (131 procedures, CSRF protected) |
 | POST | `/api/assistant/chat` | AI streaming (60s timeout) |
 | POST | `/api/assistant/auth/status` | Arcade tool auth check |
 | GET | `/api/openapi/spec` | OpenAPI JSON specification |
@@ -953,12 +960,16 @@ Pino structured JSON logging with automatic redaction:
 
 ```bash
 bun test              # All tests
+bun test:watch        # Watch mode
 bun test:unit         # Unit/core modules (segmented to avoid mock collisions)
 bun test:orpc-routes  # oRPC controller route and smoke tests
+bun test:api:app-routes # App Router API route tests only
 bun test:api          # API route tests + oRPC route suite
 bun test:pages        # App Router page/component tests (src/app/[locale])
 bun test:e2e          # Playwright E2E
 bun test:coverage     # Segmented coverage reports (coverage/*.txt)
+bun test:ci           # CI pipeline (unit + api + pages)
+bun run check:all     # Full pre-release checks (lint, typecheck, tests, build)
 ```
 
 ### Test Setup (`src/test-setup.ts`)
