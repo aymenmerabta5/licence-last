@@ -436,6 +436,12 @@
       "enterToSend": "Enter to send, Shift+Enter for new line",
       "scrollToBottom": "Scroll to bottom",
       "deleteConversation": "Delete conversation",
+      "createConversationSuccess": "Conversation created.",
+      "createConversationError": "Failed to create conversation.",
+      "deleteConversationSuccess": "Conversation deleted.",
+      "deleteConversationError": "Failed to delete conversation.",
+      "modelUpdateSuccess": "Model updated.",
+      "modelUpdateError": "Failed to update model.",
       "confirmDelete": "Delete",
       "openSidebar": "Open conversation list",
       "clearSearch": "Clear search query",
@@ -458,6 +464,8 @@
       "unreadCount": "{count} unread",
       "summarize": "Summarize",
       "markAllRead": "Mark all read",
+      "markAllReadSuccess": "All notifications marked as read.",
+      "markAllReadError": "Failed to mark notifications as read.",
       "empty": "No notifications yet.",
       "prompts": {
         "summarize": "Summarize notifications"
@@ -498,6 +506,7 @@
         "logoHint": "Upload a logo (JPEG, PNG, WebP, SVG, max 2MB)",
         "logoUpload": "Upload Logo",
         "logoUploading": "Uploading...",
+        "logoUploadSuccess": "Logo uploaded successfully.",
         "websiteUrl": "Website",
         "websiteUrlPlaceholder": "https://example.com",
         "phone": "Phone",
@@ -543,6 +552,11 @@
           "delete": "Delete",
           "confirmDelete": "Are you sure? Draft offers will be permanently deleted.",
           "confirmClose": "Are you sure? This will close the offer to new applicants."
+        },
+        "toasts": {
+          "publishSuccess": "Offer published.",
+          "closeSuccess": "Offer closed.",
+          "deleteSuccess": "Offer deleted."
         },
         "positions": "positions",
         "weeks": "weeks",
@@ -640,6 +654,10 @@
         "kanbanColumnAria": "{stage} column",
         "invalidStageTransition": "This stage transition is not allowed.",
         "stageUpdateFailed": "Failed to update pipeline stage. The card was restored.",
+        "acceptSuccess": "Candidate accepted.",
+        "acceptError": "Failed to accept candidate.",
+        "refuseSuccess": "Candidate refused.",
+        "refuseError": "Failed to refuse candidate.",
         "statusFilter": {
           "all": "All",
           "applied": "Pending",
@@ -1018,6 +1036,7 @@
         "verificationCode": "Verification code",
         "notAvailable": "Not available"
       },
+      "downloadSuccess": "Document downloaded.",
       "downloadError": "Failed to download document."
     },
     "companyDocuments": {
@@ -1118,6 +1137,11 @@
           "invalidDates": "End date must be after start date.",
           "selectedDatesOutsideExpectedRange": "Selected dates are outside the expected period defined on the offer.",
           "confirmValidate": "Validate this placement?",
+          "validateSuccess": "Placement validated.",
+          "validateError": "Failed to validate placement.",
+          "rejectSuccess": "Placement rejected.",
+          "rejectError": "Failed to reject placement.",
+          "agreementGenerationError": "Placement validated, but agreement generation failed.",
           "generatingPdf": "Generating PDF...",
           "validateAndGenerate": "Validate & generate",
           "reject": "Reject",
@@ -1224,6 +1248,8 @@
         "reject": "Reject",
         "approveSuccess": "University approved successfully.",
         "rejectSuccess": "University rejected.",
+        "approveError": "Failed to approve university.",
+        "rejectError": "Failed to reject university.",
         "rejectDialog": {
           "title": "Reject University",
           "description": "Provide a reason for rejecting this university application.",
@@ -1257,6 +1283,8 @@
         "reject": "Reject",
         "approveSuccess": "Company approved successfully.",
         "rejectSuccess": "Company rejected.",
+        "approveError": "Failed to approve company.",
+        "rejectError": "Failed to reject company.",
         "rejectDialog": {
           "title": "Reject Company",
           "description": "Provide a reason for rejecting this company application.",
@@ -1509,6 +1537,11 @@
           "confirmRequired": "Please type the confirmation phrase.",
           "deleteFailed": "Failed to delete account. Please check your password and try again."
         }
+      },
+      "skillsManager": {
+        "minRequired": "Select at least 1 skill.",
+        "saveSuccess": "Skills updated.",
+        "saveError": "Could not save skills."
       }
     },
     "departments": {

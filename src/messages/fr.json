@@ -436,6 +436,12 @@
       "enterToSend": "Entrée pour envoyer, Maj+Entrée pour nouvelle ligne",
       "scrollToBottom": "Défiler vers le bas",
       "deleteConversation": "Supprimer la conversation",
+      "createConversationSuccess": "Conversation créée.",
+      "createConversationError": "Échec de la création de la conversation.",
+      "deleteConversationSuccess": "Conversation supprimée.",
+      "deleteConversationError": "Échec de la suppression de la conversation.",
+      "modelUpdateSuccess": "Modèle mis à jour.",
+      "modelUpdateError": "Échec de la mise à jour du modèle.",
       "confirmDelete": "Supprimer",
       "openSidebar": "Ouvrir la liste des conversations",
       "clearSearch": "Effacer la recherche",
@@ -458,6 +464,8 @@
       "unreadCount": "{count} non lues",
       "summarize": "Résumer",
       "markAllRead": "Tout marquer comme lu",
+      "markAllReadSuccess": "Toutes les notifications ont été marquées comme lues.",
+      "markAllReadError": "Échec du marquage des notifications comme lues.",
       "empty": "Aucune notification pour le moment.",
       "prompts": {
         "summarize": "Résumer les notifications"
@@ -498,6 +506,7 @@
         "logoHint": "Téléchargez un logo (JPEG, PNG, WebP, SVG, max 2 Mo)",
         "logoUpload": "Télécharger le Logo",
         "logoUploading": "Téléchargement...",
+        "logoUploadSuccess": "Logo téléchargé avec succès.",
         "websiteUrl": "Site Web",
         "websiteUrlPlaceholder": "https://exemple.com",
         "phone": "Téléphone",
@@ -543,6 +552,11 @@
           "delete": "Supprimer",
           "confirmDelete": "Êtes-vous sûr ? Les brouillons seront définitivement supprimés.",
           "confirmClose": "Êtes-vous sûr ? Cela fermera l'offre aux nouveaux candidats."
+        },
+        "toasts": {
+          "publishSuccess": "Offre publiée.",
+          "closeSuccess": "Offre fermée.",
+          "deleteSuccess": "Offre supprimée."
         },
         "positions": "postes",
         "weeks": "semaines",
@@ -640,6 +654,10 @@
         "kanbanColumnAria": "Colonne {stage}",
         "invalidStageTransition": "Cette transition d'etape n'est pas autorisee.",
         "stageUpdateFailed": "Echec de la mise a jour de l'etape. La carte a ete restauree.",
+        "acceptSuccess": "Candidat accepté.",
+        "acceptError": "Échec de l'acceptation du candidat.",
+        "refuseSuccess": "Candidat refusé.",
+        "refuseError": "Échec du refus du candidat.",
         "statusFilter": {
           "all": "Tous",
           "applied": "En attente",
@@ -1018,6 +1036,7 @@
         "verificationCode": "Code de vérification",
         "notAvailable": "N/A"
       },
+      "downloadSuccess": "Document téléchargé.",
       "downloadError": "Échec du téléchargement du document."
     },
     "companyDocuments": {
@@ -1118,6 +1137,11 @@
           "invalidDates": "La date de fin doit être après la date de début.",
           "selectedDatesOutsideExpectedRange": "Les dates sélectionnées sont en dehors de la période prévue définie sur l'offre.",
           "confirmValidate": "Valider ce placement ?",
+          "validateSuccess": "Placement validé.",
+          "validateError": "Échec de la validation du placement.",
+          "rejectSuccess": "Placement rejeté.",
+          "rejectError": "Échec du rejet du placement.",
+          "agreementGenerationError": "Placement validé, mais la génération de la convention a échoué.",
           "generatingPdf": "Génération du PDF...",
           "validateAndGenerate": "Valider et générer",
           "reject": "Rejeter",
@@ -1224,6 +1248,8 @@
         "reject": "Rejeter",
         "approveSuccess": "Université approuvée avec succès.",
         "rejectSuccess": "Université rejetée.",
+        "approveError": "Échec de l'approbation de l'université.",
+        "rejectError": "Échec du rejet de l'université.",
         "rejectDialog": {
           "title": "Rejeter l'Université",
           "description": "Indiquez le motif du rejet de cette candidature universitaire.",
@@ -1257,6 +1283,8 @@
         "reject": "Rejeter",
         "approveSuccess": "Entreprise approuvée avec succès.",
         "rejectSuccess": "Entreprise rejetée.",
+        "approveError": "Échec de l'approbation de l'entreprise.",
+        "rejectError": "Échec du rejet de l'entreprise.",
         "rejectDialog": {
           "title": "Rejeter l'Entreprise",
           "description": "Indiquez le motif du rejet de cette candidature d'entreprise.",
@@ -1509,6 +1537,11 @@
           "confirmRequired": "Veuillez taper la phrase de confirmation.",
           "deleteFailed": "Échec de la suppression du compte. Veuillez vérifier votre mot de passe et réessayer."
         }
+      },
+      "skillsManager": {
+        "minRequired": "Sélectionnez au moins 1 compétence.",
+        "saveSuccess": "Compétences mises à jour.",
+        "saveError": "Impossible d'enregistrer les compétences."
       }
     },
     "departments": {

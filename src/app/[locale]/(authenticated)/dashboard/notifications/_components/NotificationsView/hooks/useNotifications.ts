@@ -2,11 +2,14 @@
 
 import { useMemo } from "react"
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 
 import { orpcClient } from "@/server/orpc/client"
 import { useInfiniteScroll } from "@/hooks"
 
 export function useNotifications() {
+  const t = useTranslations("dashboard.notifications")
   const queryClient = useQueryClient()
 
   const {
@@ -36,6 +39,10 @@ export function useNotifications() {
     mutationFn: async () => orpcClient.notifications.markAllRead(),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
+      toast.success(t("markAllReadSuccess"))
+    },
+    onError: () => {
+      toast.error(t("markAllReadError"))
     },
   })
 

@@ -50,6 +50,7 @@ export function useDocuments() {
       })
 
       downloadPdf(result.pdfBase64, result.fileName)
+      toast.success(t("downloadSuccess"))
     } catch {
       toast.error(t("downloadError"))
     } finally {

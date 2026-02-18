@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 
 import { useRouter } from "@/i18n/routing"
 import { orpc, orpcClient } from "@/server/orpc/client"
@@ -81,6 +82,7 @@ export function useDeptHeadPlacementActions(
           })
         } catch (error) {
           console.error("Failed to generate PDF:", error)
+          toast.error(t("agreementGenerationError"))
         } finally {
           setPdfLoading(false)
         }
@@ -88,9 +90,12 @@ export function useDeptHeadPlacementActions(
         queryClient.invalidateQueries({
           queryKey: ["deptHead", "listPending"],
         })
+        toast.success(t("validateSuccess"))
+        setActionLoading(false)
         router.push("/dashboard/dept-validations")
       },
       onError: () => {
+        toast.error(t("validateError"))
         setActionLoading(false)
       },
     }),
@@ -102,9 +107,12 @@ export function useDeptHeadPlacementActions(
         queryClient.invalidateQueries({
           queryKey: ["deptHead", "listPending"],
         })
+        toast.success(t("rejectSuccess"))
+        setActionLoading(false)
         router.push("/dashboard/dept-validations")
       },
       onError: () => {
+        toast.error(t("rejectError"))
         setActionLoading(false)
       },
     }),

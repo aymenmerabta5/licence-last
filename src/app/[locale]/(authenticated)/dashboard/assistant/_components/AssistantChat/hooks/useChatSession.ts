@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react"
 import type { UIMessage } from "ai"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 
 import { orpc } from "@/server/orpc/client"
 
@@ -41,6 +43,7 @@ function toChatMessages(
 }
 
 export function useChatSession() {
+  const t = useTranslations("dashboard.assistant")
   const queryClient = useQueryClient()
 
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null)
@@ -86,6 +89,10 @@ export function useChatSession() {
         await queryClient.invalidateQueries({
           queryKey: listConversationsQuery.queryKey,
         })
+        toast.success(t("modelUpdateSuccess"))
+      },
+      onError: () => {
+        toast.error(t("modelUpdateError"))
       },
     }),
   )
@@ -102,6 +109,10 @@ export function useChatSession() {
         await queryClient.invalidateQueries({
           queryKey: listConversationsQuery.queryKey,
         })
+        toast.success(t("deleteConversationSuccess"))
+      },
+      onError: () => {
+        toast.error(t("deleteConversationError"))
       },
     }),
   )
@@ -150,14 +161,23 @@ export function useChatSession() {
 
   const activeModel = selectedConversation?.model ?? defaultModelId
 
-  const handleCreateConversation = () => {
+  const handleCreateConversation = async () => {
     const modelId = defaultModelId ?? (models[0]?.id ?? null)
     if (!modelId) return
-    createConversationMutation.mutate({ model: modelId })
+    try {
+      await createConversationMutation.mutateAsync({ model: modelId })
+      toast.success(t("createConversationSuccess"))
+    } catch {
+      toast.error(t("createConversationError"))
+    }
   }
 
   const handleDeleteConversation = async (conversationId: string) => {
-    await deleteConversationMutation.mutateAsync({ conversationId })
+    try {
+      await deleteConversationMutation.mutateAsync({ conversationId })
+    } catch {
+      // onError callback handles the toast feedback.
+    }
   }
 
   const handleUpdateModel = (model: string | null) => {

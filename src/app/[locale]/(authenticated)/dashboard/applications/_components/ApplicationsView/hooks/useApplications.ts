@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react"
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 
 import { orpc, orpcClient } from "@/server/orpc/client"
 import { useInfiniteScroll } from "@/hooks"
@@ -9,6 +11,7 @@ import { STAGE_COLUMNS } from "@/lib/constants/pipeline"
 import type { PipelineStage } from "@/lib/constants/pipeline"
 
 export function useApplications() {
+  const t = useTranslations("dashboard.applications")
   const queryClient = useQueryClient()
 
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null)
@@ -47,9 +50,13 @@ export function useApplications() {
     orpc.applications.withdraw.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["applications", "listByStudent"] })
+        toast.success(t("withdrawSuccess"))
         setWithdrawingId(null)
       },
-      onError: () => setWithdrawingId(null),
+      onError: () => {
+        toast.error(t("withdrawError"))
+        setWithdrawingId(null)
+      },
     }),
   )
 
