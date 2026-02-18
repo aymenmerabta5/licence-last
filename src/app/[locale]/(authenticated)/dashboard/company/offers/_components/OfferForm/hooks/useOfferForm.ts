@@ -4,6 +4,7 @@ import { useMemo, useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 
 import { useRouter } from "@/i18n/routing"
 import { createOfferSchema } from "@/lib/schemas/offer"
@@ -115,9 +116,12 @@ export function useOfferForm(
         }
 
         await queryClient.invalidateQueries({ queryKey: offersQueryKey })
+        toast.success(mode === "create" ? t("success") : t("successEdit"))
         router.push("/dashboard/company/offers" as "/dashboard")
-      } catch (err) {
-        setServerError(err instanceof Error ? err.message : t("error"))
+      } catch {
+        const message = t("error")
+        setServerError(message)
+        toast.error(message)
       }
     },
   })

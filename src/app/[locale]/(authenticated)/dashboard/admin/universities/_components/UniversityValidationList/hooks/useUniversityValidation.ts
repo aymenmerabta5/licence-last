@@ -30,6 +30,9 @@ export function useUniversityValidation() {
       toast.success(t("approveSuccess"))
       queryClient.invalidateQueries({ queryKey: queryOptions.queryKey })
     },
+    onError: () => {
+      toast.error(t("approveError"))
+    },
   })
 
   const rejectMutation = useMutation({
@@ -38,6 +41,9 @@ export function useUniversityValidation() {
     onSuccess: () => {
       toast.success(t("rejectSuccess"))
       queryClient.invalidateQueries({ queryKey: queryOptions.queryKey })
+    },
+    onError: () => {
+      toast.error(t("rejectError"))
     },
   })
 

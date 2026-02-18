@@ -151,6 +151,9 @@ export function useCandidates(offerId: string) {
       await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
       queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
       setAcceptModal(null)
+      toast.success(t("acceptSuccess"))
+    } catch {
+      toast.error(t("acceptError"))
     } finally {
       setActionLoading(null)
     }
@@ -168,6 +171,9 @@ export function useCandidates(offerId: string) {
       queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
       setRefuseModal(null)
       setRefuseNote("")
+      toast.success(t("refuseSuccess"))
+    } catch {
+      toast.error(t("refuseError"))
     } finally {
       setActionLoading(null)
     }

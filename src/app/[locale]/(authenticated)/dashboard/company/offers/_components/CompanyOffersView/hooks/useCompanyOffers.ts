@@ -2,10 +2,13 @@
 
 import { useState, useMemo } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 
 import { orpc } from "@/server/orpc/client"
 
 export function useCompanyOffers() {
+  const t = useTranslations("dashboard.company.offers")
   const queryClient = useQueryClient()
   const [actionLoading, setActionLoading] = useState<string | null>(null)
 
@@ -46,6 +49,9 @@ export function useCompanyOffers() {
         ),
       )
       await queryClient.invalidateQueries({ queryKey })
+      toast.success(t("toasts.publishSuccess"))
+    } catch {
+      toast.error(t("form.error"))
     } finally {
       setActionLoading(null)
     }
@@ -64,6 +70,9 @@ export function useCompanyOffers() {
         ),
       )
       await queryClient.invalidateQueries({ queryKey })
+      toast.success(t("toasts.closeSuccess"))
+    } catch {
+      toast.error(t("form.error"))
     } finally {
       setActionLoading(null)
     }
@@ -78,6 +87,9 @@ export function useCompanyOffers() {
         current.filter((offer) => offer.id !== offerId),
       )
       await queryClient.invalidateQueries({ queryKey })
+      toast.success(t("toasts.deleteSuccess"))
+    } catch {
+      toast.error(t("form.error"))
     } finally {
       setActionLoading(null)
     }

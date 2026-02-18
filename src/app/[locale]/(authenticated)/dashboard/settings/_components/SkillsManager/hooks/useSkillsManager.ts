@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 
 import { useSkillGrouping } from "@/hooks"
 import { orpc } from "@/server/orpc/client"
@@ -9,6 +11,7 @@ import { orpc } from "@/server/orpc/client"
 const MAX_SKILLS = 10
 
 export function useSkillsManager() {
+  const t = useTranslations("dashboard.settings.skillsManager")
   const queryClient = useQueryClient()
 
   const profileQueryOptions = useMemo(
@@ -91,6 +94,7 @@ export function useSkillsManager() {
         await queryClient.invalidateQueries({ queryKey: profileQueryOptions.queryKey })
         setDraftSelectedIds(null)
         setSaveTick((t) => t + 1)
+        toast.success(t("saveSuccess"))
       },
     }),
   )
@@ -119,14 +123,16 @@ export function useSkillsManager() {
     setSaveTick(0)
 
     if (selectedIds.length < 1) {
-      setSaveError("Select at least 1 skill.")
+      setSaveError(t("minRequired"))
       return
     }
 
     try {
       await upsertMutation.mutateAsync({ skillTagIds: selectedIds })
-    } catch (err) {
-      setSaveError(err instanceof Error ? err.message : "Could not save skills.")
+    } catch {
+      const message = t("saveError")
+      setSaveError(message)
+      toast.error(message)
     }
   }
 

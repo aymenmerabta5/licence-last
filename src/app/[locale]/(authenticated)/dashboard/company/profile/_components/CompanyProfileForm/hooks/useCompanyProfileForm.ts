@@ -3,9 +3,9 @@
 import { useMemo, useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 
 import { mapZodErrors } from "@/lib/schemas/map-errors"
-import { getErrorMessage } from "@/lib/error-message"
 import { createCompanyProfileSchema } from "@/lib/schemas/offer"
 import { orpcClient } from "@/server/orpc/client"
 
@@ -53,8 +53,11 @@ export function useCompanyProfileForm(initialData: CompanyProfileFormProps["init
         })
 
         setSuccessMessage(t("success"))
-      } catch (err) {
-        setServerError(getErrorMessage(err, t("error")))
+        toast.success(t("success"))
+      } catch {
+        const message = t("error")
+        setServerError(message)
+        toast.error(message)
       }
     },
   })
@@ -70,8 +73,11 @@ export function useCompanyProfileForm(initialData: CompanyProfileFormProps["init
       const result = await orpcClient.companies.uploadLogo({ file })
       setLogoUrl(result.url)
       form.setFieldValue("logoUrl", result.url)
-    } catch (err) {
-      setServerError(getErrorMessage(err, t("error")))
+      toast.success(t("logoUploadSuccess"))
+    } catch {
+      const message = t("error")
+      setServerError(message)
+      toast.error(message)
     } finally {
       setIsUploading(false)
     }

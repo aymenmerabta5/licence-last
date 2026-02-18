@@ -436,6 +436,12 @@
       "enterToSend": "Enter للإرسال، Shift+Enter لسطر جديد",
       "scrollToBottom": "التمرير للأسفل",
       "deleteConversation": "حذف المحادثة",
+      "createConversationSuccess": "تم إنشاء المحادثة.",
+      "createConversationError": "فشل إنشاء المحادثة.",
+      "deleteConversationSuccess": "تم حذف المحادثة.",
+      "deleteConversationError": "فشل حذف المحادثة.",
+      "modelUpdateSuccess": "تم تحديث النموذج.",
+      "modelUpdateError": "فشل تحديث النموذج.",
       "confirmDelete": "حذف",
       "openSidebar": "فتح قائمة المحادثات",
       "clearSearch": "مسح البحث",
@@ -458,6 +464,8 @@
       "unreadCount": "{count} غير مقروءة",
       "summarize": "تلخيص",
       "markAllRead": "وضع الكل كمقروء",
+      "markAllReadSuccess": "تم وضع كل الإشعارات كمقروءة.",
+      "markAllReadError": "فشل وضع الإشعارات كمقروءة.",
       "empty": "لا توجد إشعارات بعد.",
       "prompts": {
         "summarize": "تلخيص الإشعارات"
@@ -498,6 +506,7 @@
         "logoHint": "ارفع شعاراً (JPEG، PNG، WebP، SVG، الحد الأقصى ٢ ميغابايت)",
         "logoUpload": "رفع الشعار",
         "logoUploading": "جاري الرفع...",
+        "logoUploadSuccess": "تم رفع الشعار بنجاح.",
         "websiteUrl": "الموقع الإلكتروني",
         "websiteUrlPlaceholder": "https://example.com",
         "phone": "الهاتف",
@@ -543,6 +552,11 @@
           "delete": "حذف",
           "confirmDelete": "هل أنت متأكد؟ سيتم حذف المسودات نهائياً.",
           "confirmClose": "هل أنت متأكد؟ سيتم إغلاق العرض أمام المتقدمين الجدد."
+        },
+        "toasts": {
+          "publishSuccess": "تم نشر العرض.",
+          "closeSuccess": "تم إغلاق العرض.",
+          "deleteSuccess": "تم حذف العرض."
         },
         "positions": "مناصب",
         "weeks": "أسابيع",
@@ -640,6 +654,10 @@
         "kanbanColumnAria": "عمود {stage}",
         "invalidStageTransition": "هذا الانتقال بين المراحل غير مسموح.",
         "stageUpdateFailed": "فشل تحديث مرحلة المسار. تمت استعادة البطاقة.",
+        "acceptSuccess": "تم قبول المرشح.",
+        "acceptError": "فشل قبول المرشح.",
+        "refuseSuccess": "تم رفض المرشح.",
+        "refuseError": "فشل رفض المرشح.",
         "statusFilter": {
           "all": "الكل",
           "applied": "قيد الانتظار",
@@ -1018,6 +1036,7 @@
         "verificationCode": "رمز التحقق",
         "notAvailable": "غير متاح"
       },
+      "downloadSuccess": "تم تنزيل المستند.",
       "downloadError": "فشل تنزيل المستند."
     },
     "companyDocuments": {
@@ -1118,6 +1137,11 @@
           "invalidDates": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء.",
           "selectedDatesOutsideExpectedRange": "التواريخ المحددة خارج الفترة المتوقعة المحددة في العرض.",
           "confirmValidate": "هل تريد اعتماد هذا التوظيف؟",
+          "validateSuccess": "تم اعتماد التوظيف.",
+          "validateError": "فشل اعتماد التوظيف.",
+          "rejectSuccess": "تم رفض التوظيف.",
+          "rejectError": "فشل رفض التوظيف.",
+          "agreementGenerationError": "تم اعتماد التوظيف لكن فشل إنشاء الاتفاقية.",
           "generatingPdf": "جارٍ إنشاء PDF...",
           "validateAndGenerate": "اعتماد وإنشاء",
           "reject": "رفض",
@@ -1224,6 +1248,8 @@
         "reject": "رفض",
         "approveSuccess": "تمت الموافقة على الجامعة بنجاح.",
         "rejectSuccess": "تم رفض الجامعة.",
+        "approveError": "فشلت الموافقة على الجامعة.",
+        "rejectError": "فشل رفض الجامعة.",
         "rejectDialog": {
           "title": "رفض الجامعة",
           "description": "قدم سبب رفض طلب هذه الجامعة.",
@@ -1257,6 +1283,8 @@
         "reject": "رفض",
         "approveSuccess": "تمت الموافقة على الشركة بنجاح.",
         "rejectSuccess": "تم رفض الشركة.",
+        "approveError": "فشلت الموافقة على الشركة.",
+        "rejectError": "فشل رفض الشركة.",
         "rejectDialog": {
           "title": "رفض الشركة",
           "description": "قدم سبب رفض طلب هذه الشركة.",
@@ -1509,6 +1537,11 @@
           "confirmRequired": "يرجى كتابة عبارة التأكيد.",
           "deleteFailed": "فشل حذف الحساب. يرجى التحقق من كلمة المرور والمحاولة مرة أخرى."
         }
+      },
+      "skillsManager": {
+        "minRequired": "اختر مهارة واحدة على الأقل.",
+        "saveSuccess": "تم تحديث المهارات.",
+        "saveError": "تعذر حفظ المهارات."
       }
     },
     "departments": {
