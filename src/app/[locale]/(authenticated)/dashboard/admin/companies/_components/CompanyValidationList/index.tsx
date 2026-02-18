@@ -30,6 +30,10 @@ export function CompanyValidationList() {
     isApproving,
     rejectCompany,
     isRejecting,
+    suspendCompany,
+    isSuspending,
+    reactivateCompany,
+    isReactivating,
   } = useCompanyValidation()
 
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
@@ -143,8 +147,12 @@ export function CompanyValidationList() {
                 company={comp}
                 onApprove={approveCompany}
                 onReject={handleRejectClick}
+                onSuspend={suspendCompany}
+                onReactivate={reactivateCompany}
                 isApproving={isApproving}
                 isRejecting={isRejecting}
+                isSuspending={isSuspending}
+                isReactivating={isReactivating}
               />
             </motion.div>
           ))}

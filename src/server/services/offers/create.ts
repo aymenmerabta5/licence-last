@@ -15,6 +15,8 @@ import { validateSkillTagIds } from "@/server/services/skills/validate"
 interface OfferLanguageRequirementInput {
   languageCode: string
   minimumProficiency: ProficiencyLevel
+  isRequired?: boolean
+  weight?: number
 }
 
 export async function createOffer(data: {
@@ -71,10 +73,10 @@ export async function createOffer(data: {
         normalizedLanguageRequirements.map((entry) => ({
           offerId,
           languageCode: entry.languageCode,
-          minimumProficiency: entry.minimumProficiency,
-          isRequired: true,
-          weight: 1,
-        })),
+            minimumProficiency: entry.minimumProficiency,
+            isRequired: entry.isRequired ?? true,
+            weight: entry.weight ?? 1,
+          })),
       )
     }
   })

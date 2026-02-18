@@ -5,10 +5,13 @@ import { useLocale, useTranslations } from "next-intl"
 import { Languages, Plus, Trash2 } from "lucide-react"
 
 import { FormSection } from "@/components/form-fields"
+import { CheckboxField } from "@/components/form-fields"
 import { SelectField } from "@/components/form-fields"
 import { Button } from "@/components/ui/button"
 import {
   DEFAULT_OFFER_LANGUAGE_CODE,
+  DEFAULT_OFFER_LANGUAGE_REQUIRED,
+  DEFAULT_OFFER_LANGUAGE_WEIGHT,
   DEFAULT_OFFER_MINIMUM_PROFICIENCY,
   LANGUAGE_CATALOG,
 } from "@/lib/constants/languages"
@@ -40,6 +43,15 @@ export function LanguageRequirementsSection({
     [t],
   )
 
+  const weightOptions = useMemo(
+    () =>
+      [1, 2, 3, 4, 5].map((weight) => ({
+        value: String(weight),
+        label: t("weightOption", { weight }),
+      })),
+    [t],
+  )
+
   return (
     <FormSection title={t("languageRequirementsSection")} delay={0.22}>
       <p className="text-xs text-muted-foreground">{t("languageRequirementsHint")}</p>
@@ -66,6 +78,8 @@ export function LanguageRequirementsSection({
               {
                 languageCode: nextLanguageCode,
                 minimumProficiency: DEFAULT_OFFER_MINIMUM_PROFICIENCY,
+                isRequired: DEFAULT_OFFER_LANGUAGE_REQUIRED,
+                weight: DEFAULT_OFFER_LANGUAGE_WEIGHT,
               },
             ])
           }
@@ -114,10 +128,10 @@ export function LanguageRequirementsSection({
                     ?.labels[languageLocale] ?? requirement.languageCode
 
                 return (
-                  <div
-                    key={`${requirement.languageCode}-${index}`}
-                    className="grid items-end gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
-                  >
+                    <div
+                      key={`${requirement.languageCode}-${index}`}
+                      className="grid items-end gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]"
+                    >
                     <SelectField
                       id={`offer-language-code-${index}`}
                       label={t("language")}
@@ -144,6 +158,28 @@ export function LanguageRequirementsSection({
                       onChange={(value) => updateMinimumProficiency(index, value)}
                     />
 
+                    <SelectField
+                      id={`offer-language-weight-${index}`}
+                      label={t("weight")}
+                      placeholder={t("weightPlaceholder")}
+                      icon={Languages}
+                      options={weightOptions}
+                      value={String(requirement.weight)}
+                      onChange={(value) => {
+                        field.handleChange(
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          field.state.value.map((entry: any, currentIndex: number) =>
+                            currentIndex === index
+                              ? {
+                                  ...entry,
+                                  weight: Number(value),
+                                }
+                              : entry,
+                          ),
+                        )
+                      }}
+                    />
+
                     <Button
                       type="button"
                       variant="outline"
@@ -156,6 +192,27 @@ export function LanguageRequirementsSection({
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
+
+                    <div className="sm:col-span-3">
+                      <CheckboxField
+                        id={`offer-language-is-required-${index}`}
+                        label={t("requiredLabel")}
+                        checked={Boolean(requirement.isRequired)}
+                        onChange={(checked) => {
+                          field.handleChange(
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            field.state.value.map((entry: any, currentIndex: number) =>
+                              currentIndex === index
+                                ? {
+                                    ...entry,
+                                    isRequired: checked,
+                                  }
+                                : entry,
+                            ),
+                          )
+                        }}
+                      />
+                    </div>
                   </div>
                 )
               })}

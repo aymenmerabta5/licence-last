@@ -70,6 +70,7 @@ export async function searchOffers(params: SearchParams) {
   // Build WHERE conditions
   const conditions = [
     eq(internshipOffer.status, "published"),
+    eq(company.status, "approved"),
     or(
       isNull(internshipOffer.applicationDeadlineAt),
       gt(internshipOffer.applicationDeadlineAt, new Date()),

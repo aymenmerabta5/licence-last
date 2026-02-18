@@ -52,9 +52,12 @@ async function assertApprovedAdminAccess(user: {
     }
 
     const message =
-      approval.reason === "company_pending" || approval.reason === "company_rejected"
-        ? "Company account is not approved by super admin yet"
-        : "University account is not approved by super admin yet"
+      approval.reason === "company_suspended"
+        ? "Company account is suspended"
+        : approval.reason === "company_pending" ||
+            approval.reason === "company_rejected"
+          ? "Company account is not approved by super admin yet"
+          : "University account is not approved by super admin yet"
 
     throw new ORPCError("FORBIDDEN", { message })
   } catch (error) {

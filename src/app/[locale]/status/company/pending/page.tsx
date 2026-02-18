@@ -24,6 +24,10 @@ export default async function CompanyPendingPage() {
     return localeRedirect("/status/company/rejected")
   }
 
+  if (company?.status === "suspended") {
+    return localeRedirect("/status/company/suspended")
+  }
+
   const t = await getTranslations("dashboard.company.pending")
 
   return (

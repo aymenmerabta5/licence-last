@@ -47,6 +47,30 @@ export function useCompanyValidation() {
     },
   })
 
+  const suspendMutation = useMutation({
+    mutationFn: (companyId: string) =>
+      orpcClient.companies.suspend({ companyId }),
+    onSuccess: () => {
+      toast.success(t("suspendSuccess"))
+      queryClient.invalidateQueries({ queryKey: queryOptions.queryKey })
+    },
+    onError: () => {
+      toast.error(t("suspendError"))
+    },
+  })
+
+  const reactivateMutation = useMutation({
+    mutationFn: (companyId: string) =>
+      orpcClient.companies.reactivate({ companyId }),
+    onSuccess: () => {
+      toast.success(t("reactivateSuccess"))
+      queryClient.invalidateQueries({ queryKey: queryOptions.queryKey })
+    },
+    onError: () => {
+      toast.error(t("reactivateError"))
+    },
+  })
+
   return {
     companies: data?.companies ?? [],
     hasMore: data?.hasMore ?? false,
@@ -57,5 +81,9 @@ export function useCompanyValidation() {
     isApproving: approveMutation.isPending,
     rejectCompany: rejectMutation.mutate,
     isRejecting: rejectMutation.isPending,
+    suspendCompany: suspendMutation.mutate,
+    isSuspending: suspendMutation.isPending,
+    reactivateCompany: reactivateMutation.mutate,
+    isReactivating: reactivateMutation.isPending,
   }
 }

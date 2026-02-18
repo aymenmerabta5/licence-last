@@ -8,7 +8,7 @@ import { requireRole } from "@/lib/auth-guards"
 import { formatDateLong } from "@/lib/date"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 
-export default async function CompanyRejectedPage() {
+export default async function CompanySuspendedPage() {
   const user = await requireRole(["company_admin"], { allowUnapproved: true })
 
   if (!user.onboardingCompleted) {
@@ -21,23 +21,23 @@ export default async function CompanyRejectedPage() {
     return localeRedirect("/dashboard/company")
   }
 
-  if (company?.status === "suspended") {
-    return localeRedirect("/status/company/suspended")
+  if (company?.status === "rejected") {
+    return localeRedirect("/status/company/rejected")
   }
 
-  if (company?.status !== "rejected") {
+  if (company?.status !== "suspended") {
     return localeRedirect("/status/company/pending")
   }
 
   const [t, tp] = await Promise.all([
-    getTranslations("dashboard.company.rejected"),
+    getTranslations("dashboard.company.suspended"),
     getTranslations("dashboard.company.pending"),
   ])
 
   return (
     <div className="space-y-10">
       <header className="space-y-3">
-        <p className="text-[10px] uppercase tracking-[0.35em] font-bold text-destructive [[dir=rtl]_&]:tracking-normal">
+        <p className="text-[10px] uppercase tracking-[0.35em] font-bold text-orange-600 [[dir=rtl]_&]:tracking-normal">
           {t("pageTitle")}
         </p>
         <h1 className="font-serif text-[clamp(2.25rem,4vw,3rem)] leading-tight tracking-tight text-heading">
@@ -54,10 +54,10 @@ export default async function CompanyRejectedPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground [[dir=rtl]_&]:tracking-normal">
-              {t("reason")}
+              {tp("companyName")}
             </p>
             <p className="mt-2 text-sm leading-relaxed text-foreground/80">
-              {company.rejectionReason || "—"}
+              {company.name}
             </p>
           </div>
 

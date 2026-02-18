@@ -19,6 +19,7 @@ export interface OfferRow {
   workMode: string | null
   wilayaCode: number | null
   createdAt: string
+  matchScore?: number
   skills: SkillTag[]
 }
 

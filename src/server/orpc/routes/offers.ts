@@ -93,6 +93,8 @@ function validateOfferTiming(
 const languageRequirementSchema = z.object({
   languageCode: z.enum(LANGUAGE_CODES),
   minimumProficiency: proficiencyLevelSchema,
+  isRequired: z.boolean().default(true),
+  weight: z.coerce.number().int().min(1).max(5).default(1),
 })
 
 function assertSavedOffersEnabled() {
@@ -111,30 +113,42 @@ export const getOfferByIdProcedure = authedProcedureGenerous
     const offer = await getOfferById(input.offerId)
     if (!offer) return null
 
-    // Published offers are visible to everyone.
+    async function getViewerCompanyMembership() {
+      const memberships = await db
+        .select()
+        .from(companyMember)
+        .where(eq(companyMember.userId, context.user.id))
+        .limit(2)
+
+      if (memberships.length > 1) {
+        throw new ORPCError("INTERNAL_SERVER_ERROR", {
+          message: "Multiple company memberships found for user",
+        })
+      }
+
+      return memberships[0] ?? null
+    }
+
+    const isAdmin = isAdminRole(context.user.role)
+
+    // Student-facing visibility requires an approved company.
+    // Company admins can still access their own offers.
+    if (!isAdmin && offer.companyStatus !== "approved") {
+      const membership = await getViewerCompanyMembership()
+      if (!membership || membership.companyId !== offer.companyId) {
+        throw new ORPCError("FORBIDDEN", {
+          message: "You do not have access to this offer",
+        })
+      }
+    }
+
     // Draft/closed offers are only visible to the owning company or admins.
-    if (offer.status !== "published") {
-      if (!isAdminRole(context.user.role)) {
-        // Check if the user is a member of the owning company
-        const memberships = await db
-          .select()
-          .from(companyMember)
-          .where(eq(companyMember.userId, context.user.id))
-          .limit(2)
-
-        if (memberships.length > 1) {
-          throw new ORPCError("INTERNAL_SERVER_ERROR", {
-            message: "Multiple company memberships found for user",
-          })
-        }
-
-        const membership = memberships[0]
-
-        if (!membership || membership.companyId !== offer.companyId) {
-          throw new ORPCError("FORBIDDEN", {
-            message: "You do not have access to this offer",
-          })
-        }
+    if (offer.status !== "published" && !isAdmin) {
+      const membership = await getViewerCompanyMembership()
+      if (!membership || membership.companyId !== offer.companyId) {
+        throw new ORPCError("FORBIDDEN", {
+          message: "You do not have access to this offer",
+        })
       }
     }
 

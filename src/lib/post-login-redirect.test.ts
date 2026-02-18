@@ -61,6 +61,15 @@ describe("src/lib/post-login-redirect", () => {
       expect(getPostLoginRedirectPath(me)).toBe("/status/company/rejected")
     })
 
+    test("should redirect company admins with suspended company to suspended page", () => {
+      const me: MeResult = {
+        ...baseMe(),
+        user: { ...baseMe().user, role: "company_admin", onboardingCompleted: true },
+        company: { id: "c1", name: "Acme", slug: "acme", status: "suspended" },
+      }
+      expect(getPostLoginRedirectPath(me)).toBe("/status/company/suspended")
+    })
+
     test("should redirect company admins to pending page for other cases", () => {
       const me: MeResult = {
         ...baseMe(),

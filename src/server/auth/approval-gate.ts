@@ -14,6 +14,7 @@ export interface ApprovalGateDependencies {
 export type ApprovalDeniedReason =
   | "company_pending"
   | "company_rejected"
+  | "company_suspended"
   | "university_pending"
   | "university_rejected"
 
@@ -64,6 +65,10 @@ export async function checkAdminApproval(
       return { ok: false, reason: "company_rejected" }
     }
 
+    if (company.status === "suspended") {
+      return { ok: false, reason: "company_suspended" }
+    }
+
     return { ok: false, reason: "company_pending" }
   }
 
@@ -92,6 +97,8 @@ export function approvalDeniedReasonToRedirectPath(reason: ApprovalDeniedReason)
   switch (reason) {
     case "company_rejected":
       return "/status/company/rejected"
+    case "company_suspended":
+      return "/status/company/suspended"
     case "company_pending":
       return "/status/company/pending"
     case "university_rejected":

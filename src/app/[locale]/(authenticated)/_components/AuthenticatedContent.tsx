@@ -33,6 +33,9 @@ export async function AuthenticatedContent({ children }: AuthenticatedContentPro
     if (company.status === "rejected") {
       return localeRedirect("/status/company/rejected")
     }
+    if (company.status === "suspended") {
+      return localeRedirect("/status/company/suspended")
+    }
   }
 
   // ── Block unapproved university_admin ──

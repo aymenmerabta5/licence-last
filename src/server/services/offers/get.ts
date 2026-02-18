@@ -49,6 +49,7 @@ export async function getOfferById(offerId: string) {
       updatedAt: internshipOffer.updatedAt,
       companyName: company.name,
       companySlug: company.slug,
+      companyStatus: company.status,
       companyLogoUrl: company.logoUrl,
       companyDescription: company.description,
       companyWilayaCode: company.wilayaCode,

@@ -1,6 +1,8 @@
 import { z } from "zod"
 
 import {
+  DEFAULT_OFFER_LANGUAGE_REQUIRED,
+  DEFAULT_OFFER_LANGUAGE_WEIGHT,
   LANGUAGE_CODES,
   hasDuplicateLanguageCodes,
 } from "@/lib/constants/languages"
@@ -22,6 +24,8 @@ function parseDateOnly(value: string): Date | null {
 const offerLanguageRequirementSchema = z.object({
   languageCode: z.enum(LANGUAGE_CODES),
   minimumProficiency: proficiencyLevelSchema,
+  isRequired: z.boolean().default(DEFAULT_OFFER_LANGUAGE_REQUIRED),
+  weight: z.coerce.number().int().min(1).max(5).default(DEFAULT_OFFER_LANGUAGE_WEIGHT),
 })
 
 interface OfferSchemaOptions {

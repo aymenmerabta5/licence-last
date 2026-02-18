@@ -63,7 +63,7 @@ export async function listSavedOffers(
 ): Promise<ListSavedOffersResult> {
   const { cursor, limit = 12 } = input
 
-  const conditions = [eq(savedOffer.userId, userId)]
+  const conditions = [eq(savedOffer.userId, userId), eq(company.status, "approved")]
   if (cursor) {
     const cursorDate = new Date(cursor.savedAt)
     conditions.push(

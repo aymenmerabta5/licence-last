@@ -77,6 +77,8 @@ export const DEFAULT_STUDENT_LANGUAGE_CODE: LanguageCode = "en"
 export const DEFAULT_STUDENT_LANGUAGE_PROFICIENCY = "b1"
 export const DEFAULT_OFFER_LANGUAGE_CODE: LanguageCode = "en"
 export const DEFAULT_OFFER_MINIMUM_PROFICIENCY = "b1"
+export const DEFAULT_OFFER_LANGUAGE_REQUIRED = true
+export const DEFAULT_OFFER_LANGUAGE_WEIGHT = 1
 
 export function normalizeLanguageCode(code: string) {
   return code.trim().toLowerCase()
