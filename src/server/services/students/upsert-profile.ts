@@ -7,8 +7,16 @@ import { db } from "@/server/db"
 
 const log = createModuleLogger("services/students/upsert-profile")
 import { studentProfile, studentSkill } from "@/server/db/schema/students"
+import { studentLanguage } from "@/server/db/schema/languages"
+import type { ProficiencyLevel } from "@/lib/schemas/enums"
+import { normalizeLanguageEntries } from "@/lib/constants/languages"
 import { user } from "@/server/db/schema/auth"
 import { validateSkillTagIds } from "@/server/services/skills/validate"
+
+interface StudentLanguageInput {
+  languageCode: string
+  proficiency: ProficiencyLevel
+}
 
 export async function upsertStudentProfile(
   data: {
@@ -25,6 +33,7 @@ export async function upsertStudentProfile(
   },
   skillTagIds: string[],
   userId: string,
+  languages?: StudentLanguageInput[],
 ) {
   log.info({ userId, skillCount: skillTagIds.length }, "Upserting student profile")
 
@@ -35,6 +44,9 @@ export async function upsertStudentProfile(
   if (skillTagIds.length > 0) {
     await validateSkillTagIds(skillTagIds)
   }
+
+  const normalizedLanguages =
+    languages === undefined ? undefined : normalizeLanguageEntries(languages)
 
   await db.transaction(async (tx) => {
     const [existing] = await tx
@@ -119,6 +131,22 @@ export async function upsertStudentProfile(
           skillTagId,
         })),
       )
+    }
+
+    if (normalizedLanguages !== undefined) {
+      await tx
+        .delete(studentLanguage)
+        .where(eq(studentLanguage.userId, userId))
+
+      if (normalizedLanguages.length > 0) {
+        await tx.insert(studentLanguage).values(
+          normalizedLanguages.map((entry) => ({
+            userId,
+            languageCode: entry.languageCode,
+            proficiency: entry.proficiency,
+          })),
+        )
+      }
     }
 
     await tx

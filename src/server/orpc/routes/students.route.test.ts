@@ -22,10 +22,37 @@ const getStudentProfileMock = mock(async () => ({ userId: "student-1" }))
 const getPublicStudentProfileMock = mock(async () => ({ userId: "student-1" }))
 const upsertStudentProfileMock = mock(async () => ({ success: true }))
 const revalidateTagMock = mock(() => {})
+const featureFlagsState = {
+  NOTIF_PREFERENCES: true,
+  SAVED_OFFERS: true,
+  INTERVIEWS: true,
+  LANGUAGE_REQUIREMENTS: false,
+}
+const isFeatureEnabledMock = mock(
+  (flag: keyof typeof featureFlagsState) => featureFlagsState[flag],
+)
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
+  publicProcedureStrict: createProcedureMock(),
+  publicProcedureStandard: createProcedureMock(),
+  authedSessionProcedureStandard: createProcedureMock(),
+  authedSessionProcedureGenerous: createProcedureMock(),
   authedProcedureGenerous: createProcedureMock(),
+  authedProcedureStandard: createProcedureMock(),
+  authedProcedureStrict: createProcedureMock(),
+  adminProcedureGenerous: createProcedureMock(),
+  adminProcedureStandard: createProcedureMock(),
+  adminProcedureAssistant: createProcedureMock(),
+  superAdminProcedureGenerous: createProcedureMock(),
+  superAdminProcedureStandard: createProcedureMock(),
+  assistantProcedureLimited: createProcedureMock(),
+  companyAdminProcedureStandard: createProcedureMock(),
+  companyAdminProcedureGenerous: createProcedureMock(),
+  companyAdminProcedureAssistant: createProcedureMock(),
   studentProcedureStandard: createProcedureMock(),
+  studentProcedureGenerous: createProcedureMock(),
+  deptHeadProcedureStandard: createProcedureMock(),
+  deptHeadProcedureGenerous: createProcedureMock(),
 }))
 
 mock.module("next/cache", () => ({
@@ -50,6 +77,10 @@ mock.module("@/server/services/students/upsert-profile", () => ({
 mock.module("@/server/services/students/upsert-profile-details", () => ({
   upsertStudentProfileDetails: mock(async () => ({ success: true })),
 }))
+mock.module("@/lib/feature-flags", () => ({
+  FEATURE_FLAGS: featureFlagsState,
+  isFeatureEnabled: isFeatureEnabledMock,
+}))
 
 describe("src/server/orpc/routes/students", () => {
   beforeEach(() => {
@@ -57,6 +88,10 @@ describe("src/server/orpc/routes/students", () => {
     getPublicStudentProfileMock.mockClear()
     upsertStudentProfileMock.mockClear()
     revalidateTagMock.mockClear()
+    isFeatureEnabledMock.mockClear()
+    isFeatureEnabledMock.mockImplementation(
+      (flag: keyof typeof featureFlagsState) => featureFlagsState[flag],
+    )
   })
 
   test("getStudentProfileProcedure forbids students from reading other profiles", async () => {
@@ -89,6 +124,7 @@ describe("src/server/orpc/routes/students", () => {
       { bio: "Bio" },
       ["skill-1"],
       "student-1",
+      undefined,
     )
     expect(revalidateTagMock).toHaveBeenCalledTimes(3)
   })
@@ -106,5 +142,52 @@ describe("src/server/orpc/routes/students", () => {
       { id: "company-admin-1", role: "company_admin" },
       "student-1",
     )
+  })
+
+  test("upsertStudentProfileProcedure forwards languages when language feature is enabled", async () => {
+    isFeatureEnabledMock.mockImplementation((flag: keyof typeof featureFlagsState) => {
+      if (flag === "LANGUAGE_REQUIREMENTS") return true
+      return featureFlagsState[flag]
+    })
+
+    const { upsertStudentProfileProcedure } = await import("@/server/orpc/routes/students")
+
+    await callProcedure(upsertStudentProfileProcedure, {
+      input: {
+        bio: "Bio",
+        skillTagIds: ["skill-1"],
+        languages: [{ languageCode: "en", proficiency: "b2" }],
+      },
+      context: { user: { id: "student-1" } },
+    })
+
+    expect(upsertStudentProfileMock).toHaveBeenCalledWith(
+      { bio: "Bio" },
+      ["skill-1"],
+      "student-1",
+      [{ languageCode: "en", proficiency: "b2" }],
+    )
+  })
+
+  test("upsertStudentProfileProcedure requires languages when language feature is enabled", async () => {
+    isFeatureEnabledMock.mockImplementation((flag: keyof typeof featureFlagsState) => {
+      if (flag === "LANGUAGE_REQUIREMENTS") return true
+      return featureFlagsState[flag]
+    })
+
+    const { upsertStudentProfileProcedure } = await import("@/server/orpc/routes/students")
+
+    await expect(
+      callProcedure(upsertStudentProfileProcedure, {
+        input: {
+          bio: "Bio",
+          skillTagIds: ["skill-1"],
+        },
+        context: { user: { id: "student-1" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "At least one language is required",
+    })
   })
 })

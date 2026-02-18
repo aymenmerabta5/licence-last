@@ -7,6 +7,11 @@ import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 
 import { useRouter } from "@/i18n/routing"
+import {
+  DEFAULT_OFFER_LANGUAGE_CODE,
+  DEFAULT_OFFER_MINIMUM_PROFICIENCY,
+} from "@/lib/constants/languages"
+import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"
 import { createOfferSchema } from "@/lib/schemas/offer"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { orpc, orpcClient } from "@/server/orpc/client"
@@ -33,10 +38,17 @@ export function useOfferForm(
   const t = useTranslations("dashboard.company.offers.form")
   const router = useRouter()
   const queryClient = useQueryClient()
+  const isLanguageRequirementsEnabled = isLanguageRequirementsEnabledOnClient()
 
   const [serverError, setServerError] = useState("")
 
-  const schema = useMemo(() => createOfferSchema(tv), [tv])
+  const schema = useMemo(
+    () =>
+      createOfferSchema(tv, {
+        requireLanguageRequirements: isLanguageRequirementsEnabled,
+      }),
+    [isLanguageRequirementsEnabled, tv],
+  )
   const offersQueryKey = useMemo(
     () => orpc.offers.listByCompany.queryOptions().queryKey,
     [],
@@ -64,6 +76,16 @@ export function useOfferForm(
       expectedStartDate: formatDateInputValue(initialData?.expectedStartDate),
       expectedEndDate: formatDateInputValue(initialData?.expectedEndDate),
       skillTagIds: initialData?.skillTagIds ?? ([] as string[]),
+      languageRequirements:
+        initialData?.languageRequirements ??
+        (isLanguageRequirementsEnabled
+          ? [
+              {
+                languageCode: DEFAULT_OFFER_LANGUAGE_CODE,
+                minimumProficiency: DEFAULT_OFFER_MINIMUM_PROFICIENCY,
+              },
+            ]
+          : []),
     },
     validators: {
       onSubmit: ({ value }) => mapZodErrors(schema.safeParse(value)),
@@ -91,6 +113,9 @@ export function useOfferForm(
             expectedStartDate: value.expectedStartDate || undefined,
             expectedEndDate: value.expectedEndDate || undefined,
             skillTagIds: value.skillTagIds,
+            ...(isLanguageRequirementsEnabled
+              ? { languageRequirements: value.languageRequirements }
+              : {}),
           })
         } else {
           await orpcClient.offers.update({
@@ -112,6 +137,9 @@ export function useOfferForm(
             expectedStartDate: value.expectedStartDate || null,
             expectedEndDate: value.expectedEndDate || null,
             skillTagIds: value.skillTagIds,
+            ...(isLanguageRequirementsEnabled
+              ? { languageRequirements: value.languageRequirements }
+              : {}),
           })
         }
 

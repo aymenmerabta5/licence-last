@@ -15,6 +15,9 @@ const mockFrom = mock(() => ({ where: mockWhere }))
 const mockJoinWhere = mock<() => Promise<any[]>>(() => Promise.resolve([]))
 const mockInnerJoin = mock(() => ({ where: mockJoinWhere }))
 const mockJoinFrom = mock(() => ({ innerJoin: mockInnerJoin }))
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockLanguagesWhere = mock<() => Promise<any[]>>(() => Promise.resolve([]))
+const mockLanguagesFrom = mock(() => ({ where: mockLanguagesWhere }))
 
 mock.module("@/server/db", () => ({
   db: {
@@ -23,8 +26,10 @@ mock.module("@/server/db", () => ({
       // Call 1 = user query (with limit)
       // Call 2 = student_profile query (with limit)
       // Call 3 = skills join query (no limit, returns from innerJoin.where)
+      // Call 4 = languages query (no limit, returns from where)
       if (selectCallIdx <= 2) return { from: mockFrom }
-      return { from: mockJoinFrom }
+      if (selectCallIdx === 3) return { from: mockJoinFrom }
+      return { from: mockLanguagesFrom }
     },
   },
 }))
@@ -39,11 +44,14 @@ describe("src/server/services/students/get-profile-for-viewer", () => {
     mockJoinWhere.mockClear()
     mockInnerJoin.mockClear()
     mockJoinFrom.mockClear()
+    mockLanguagesWhere.mockClear()
+    mockLanguagesFrom.mockClear()
 
     mockFrom.mockReturnValue({ where: mockWhere })
     mockWhere.mockReturnValue({ limit: mockLimit })
     mockJoinFrom.mockReturnValue({ innerJoin: mockInnerJoin })
     mockInnerJoin.mockReturnValue({ where: mockJoinWhere })
+    mockLanguagesFrom.mockReturnValue({ where: mockLanguagesWhere })
   })
 
   test("should include private fields for the owner", async () => {
@@ -74,6 +82,7 @@ describe("src/server/services/students/get-profile-for-viewer", () => {
 
     mockSelectResults.push([mockUser], [profileRow])
     mockJoinWhere.mockResolvedValue(skills)
+    mockLanguagesWhere.mockResolvedValue([])
 
     const { getStudentProfileForViewer } = await import("@/server/services/students/get-profile-for-viewer")
     const result = await getStudentProfileForViewer({
@@ -114,6 +123,7 @@ describe("src/server/services/students/get-profile-for-viewer", () => {
 
     mockSelectResults.push([mockUser], [profileRow])
     mockJoinWhere.mockResolvedValue([])
+    mockLanguagesWhere.mockResolvedValue([])
 
     const { getStudentProfileForViewer } = await import("@/server/services/students/get-profile-for-viewer")
     const result = await getStudentProfileForViewer({

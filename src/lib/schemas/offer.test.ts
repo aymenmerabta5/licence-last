@@ -6,6 +6,10 @@ function t(key: string) {
   return `t:${key}`
 }
 
+const DEFAULT_LANGUAGE_REQUIREMENTS = [
+  { languageCode: "en", minimumProficiency: "b2" as const },
+]
+
 describe("src/lib/schemas/offer", () => {
   describe("createOfferSchema", () => {
     const schema = createOfferSchema(t)
@@ -23,6 +27,7 @@ describe("src/lib/schemas/offer", () => {
         expectedStartDate: "2030-01-10",
         expectedEndDate: "2030-04-10",
         skillTagIds: ["skill-1", "skill-2"],
+        languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
       expect(result.success).toBe(true)
@@ -34,6 +39,7 @@ describe("src/lib/schemas/offer", () => {
         description: "Work with us on real projects",
         internshipType: "summer",
         skillTagIds: [],
+        languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
       expect(result.success).toBe(true)
@@ -44,6 +50,7 @@ describe("src/lib/schemas/offer", () => {
         description: "Some description here",
         internshipType: "pfe",
         skillTagIds: [],
+        languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
       expect(result.success).toBe(false)
@@ -55,6 +62,7 @@ describe("src/lib/schemas/offer", () => {
         description: "Some description here",
         internshipType: "pfe",
         skillTagIds: [],
+        languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
       expect(result.success).toBe(false)
@@ -70,6 +78,7 @@ describe("src/lib/schemas/offer", () => {
         description: "Short",
         internshipType: "pfe",
         skillTagIds: [],
+        languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
       expect(result.success).toBe(false)
@@ -85,6 +94,7 @@ describe("src/lib/schemas/offer", () => {
         description: "A long enough description",
         internshipType: "invalid_type",
         skillTagIds: [],
+        languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
       expect(result.success).toBe(false)
@@ -97,6 +107,7 @@ describe("src/lib/schemas/offer", () => {
           description: "A long enough description",
           internshipType: type,
           skillTagIds: [],
+          languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
         })
         expect(result.success).toBe(true)
       }
@@ -109,6 +120,7 @@ describe("src/lib/schemas/offer", () => {
         internshipType: "pfe",
         wilayaCode: 99,
         skillTagIds: [],
+        languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
       expect(result.success).toBe(false)
@@ -120,6 +132,7 @@ describe("src/lib/schemas/offer", () => {
         description: "A long enough description",
         internshipType: "pfe",
         skillTagIds: Array.from({ length: 21 }, (_, i) => `skill-${i}`),
+        languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
       expect(result.success).toBe(false)
@@ -129,6 +142,37 @@ describe("src/lib/schemas/offer", () => {
       }
     })
 
+    test("should reject empty language requirements when feature is enabled", () => {
+      const result = schema.safeParse({
+        title: "Good Title",
+        description: "A long enough description",
+        internshipType: "pfe",
+        skillTagIds: [],
+        languageRequirements: [],
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        const issue = result.error.issues.find((i) => i.path[0] === "languageRequirements")
+        expect(issue?.message).toBe("t:offerLanguageRequirementsMin")
+      }
+    })
+
+    test("should accept empty language requirements when feature is disabled", () => {
+      const relaxedSchema = createOfferSchema(t, {
+        requireLanguageRequirements: false,
+      })
+      const result = relaxedSchema.safeParse({
+        title: "Good Title",
+        description: "A long enough description",
+        internshipType: "pfe",
+        skillTagIds: [],
+        languageRequirements: [],
+      })
+
+      expect(result.success).toBe(true)
+    })
+
     test("should coerce durationWeeks from string to number", () => {
       const result = schema.safeParse({
         title: "Good Title",
@@ -136,6 +180,7 @@ describe("src/lib/schemas/offer", () => {
         internshipType: "pfe",
         durationWeeks: "8",
         skillTagIds: [],
+        languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
       expect(result.success).toBe(true)
@@ -151,6 +196,7 @@ describe("src/lib/schemas/offer", () => {
         internshipType: "pfe",
         expectedStartDate: "2030-01-10",
         skillTagIds: [],
+        languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
       expect(result.success).toBe(false)
@@ -168,6 +214,7 @@ describe("src/lib/schemas/offer", () => {
         expectedStartDate: "2030-02-10",
         expectedEndDate: "2030-01-10",
         skillTagIds: [],
+        languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
       expect(result.success).toBe(false)
@@ -186,6 +233,7 @@ describe("src/lib/schemas/offer", () => {
         expectedStartDate: "2030-01-10",
         expectedEndDate: "2030-03-10",
         skillTagIds: [],
+        languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
       expect(result.success).toBe(false)

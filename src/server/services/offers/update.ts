@@ -5,10 +5,18 @@ import { and, eq } from "drizzle-orm"
 import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
+import { internshipOfferLanguageRequirement } from "@/server/db/schema/languages"
 import { ServiceError } from "@/server/services/errors"
 import { validateSkillTagIds } from "@/server/services/skills/validate"
+import type { ProficiencyLevel } from "@/lib/schemas/enums"
+import { normalizeLanguageEntries } from "@/lib/constants/languages"
 
 const log = createModuleLogger("services/offers/update")
+
+interface OfferLanguageRequirementInput {
+  languageCode: string
+  minimumProficiency: ProficiencyLevel
+}
 
 export async function updateOffer(
   offerId: string,
@@ -25,6 +33,7 @@ export async function updateOffer(
     expectedStartDate?: Date | null
     expectedEndDate?: Date | null
     skillTagIds?: string[]
+    languageRequirements?: OfferLanguageRequirementInput[]
   },
 ) {
   const [existing] = await db
@@ -42,6 +51,11 @@ export async function updateOffer(
   if (existing.status === "closed") {
     throw new ServiceError("OFFER_CLOSED", "Cannot update a closed offer")
   }
+
+  const normalizedLanguageRequirements =
+    data.languageRequirements === undefined
+      ? undefined
+      : normalizeLanguageEntries(data.languageRequirements)
 
   await db.transaction(async (tx) => {
     await tx
@@ -71,6 +85,24 @@ export async function updateOffer(
           data.skillTagIds.map((skillTagId) => ({
             offerId,
             skillTagId,
+          })),
+        )
+      }
+    }
+
+    if (normalizedLanguageRequirements !== undefined) {
+      await tx
+        .delete(internshipOfferLanguageRequirement)
+        .where(eq(internshipOfferLanguageRequirement.offerId, offerId))
+
+      if (normalizedLanguageRequirements.length > 0) {
+        await tx.insert(internshipOfferLanguageRequirement).values(
+          normalizedLanguageRequirements.map((entry) => ({
+            offerId,
+            languageCode: entry.languageCode,
+            minimumProficiency: entry.minimumProficiency,
+            isRequired: true,
+            weight: 1,
           })),
         )
       }

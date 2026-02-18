@@ -1,7 +1,15 @@
 import { z } from "zod"
 
+import {
+  LANGUAGE_CODES,
+  hasDuplicateLanguageCodes,
+} from "@/lib/constants/languages"
 import type { TranslationFn } from "@/lib/schemas/auth"
-import { internshipTypeSchema, workModeSchema } from "@/lib/schemas/enums"
+import {
+  internshipTypeSchema,
+  proficiencyLevelSchema,
+  workModeSchema,
+} from "@/lib/schemas/enums"
 
 function parseDateOnly(value: string): Date | null {
   const parsed = new Date(value)
@@ -11,11 +19,30 @@ function parseDateOnly(value: string): Date | null {
   return parsed
 }
 
+const offerLanguageRequirementSchema = z.object({
+  languageCode: z.enum(LANGUAGE_CODES),
+  minimumProficiency: proficiencyLevelSchema,
+})
+
+interface OfferSchemaOptions {
+  requireLanguageRequirements?: boolean
+}
+
 /**
  * Internship offer form schema.
  * Used for creating and editing internship offers.
  */
-export function createOfferSchema(t: TranslationFn) {
+export function createOfferSchema(
+  t: TranslationFn,
+  options: OfferSchemaOptions = {},
+) {
+  const requireLanguageRequirements = options.requireLanguageRequirements ?? true
+  const languageRequirementsSchema = requireLanguageRequirements
+    ? z
+        .array(offerLanguageRequirementSchema)
+        .min(1, { error: t("offerLanguageRequirementsMin") })
+    : z.array(offerLanguageRequirementSchema)
+
   return z
     .object({
       title: z.string().min(3, { error: t("offerTitleMin") }),
@@ -49,6 +76,7 @@ export function createOfferSchema(t: TranslationFn) {
       skillTagIds: z
         .array(z.string())
         .max(20, { error: t("offerSkillsMax") }),
+      languageRequirements: languageRequirementsSchema,
     })
     .superRefine((data, ctx) => {
       const applicationDeadlineAt = data.applicationDeadlineAt || undefined
@@ -108,6 +136,14 @@ export function createOfferSchema(t: TranslationFn) {
           code: "custom",
           message: t("deadlineAfterExpectedStart"),
           path: ["applicationDeadlineAt"],
+        })
+      }
+
+      if (hasDuplicateLanguageCodes(data.languageRequirements)) {
+        ctx.addIssue({
+          code: "custom",
+          message: t("languageDuplicate"),
+          path: ["languageRequirements"],
         })
       }
     })

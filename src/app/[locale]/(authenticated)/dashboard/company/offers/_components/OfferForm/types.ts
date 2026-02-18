@@ -1,3 +1,6 @@
+import type { LanguageCode } from "@/lib/constants/languages"
+import type { ProficiencyLevel } from "@/lib/schemas/enums"
+
 export type OfferCopilotIntent =
   | "offer_generate_draft"
   | "offer_improve_description"
@@ -5,6 +8,11 @@ export type OfferCopilotIntent =
 
 export type InternshipType = "pfe" | "immersion" | "summer" | "practical"
 export type WorkMode = "on_site" | "hybrid" | "remote"
+
+export interface OfferLanguageRequirementValue {
+  languageCode: LanguageCode
+  minimumProficiency: ProficiencyLevel
+}
 
 export interface CopilotResult {
   intent: OfferCopilotIntent
@@ -20,6 +28,7 @@ export interface CopilotResult {
   expectedEndDate?: string | null
   skillTagIds?: string[]
   skillTagNames?: string[]
+  languageRequirements?: OfferLanguageRequirementValue[]
 }
 
 export interface OfferFormProps {
@@ -37,5 +46,6 @@ export interface OfferFormProps {
     expectedStartDate: Date | string | null
     expectedEndDate: Date | string | null
     skillTagIds: string[]
+    languageRequirements?: OfferLanguageRequirementValue[]
   }
 }

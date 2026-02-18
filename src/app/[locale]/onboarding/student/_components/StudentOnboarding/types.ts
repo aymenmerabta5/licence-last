@@ -1,3 +1,11 @@
+import type { LanguageCode } from "@/lib/constants/languages"
+import type { ProficiencyLevel } from "@/lib/schemas/enums"
+
+export interface StudentOnboardingLanguageValue {
+  languageCode: LanguageCode
+  proficiency: ProficiencyLevel
+}
+
 export interface StudentOnboardingFormValues {
   bio: string
   phone: string
@@ -9,4 +17,5 @@ export interface StudentOnboardingFormValues {
   wilayaCode: number
   address: string
   skillTagIds: string[]
+  languages: StudentOnboardingLanguageValue[]
 }

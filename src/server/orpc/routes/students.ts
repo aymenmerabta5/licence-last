@@ -13,6 +13,12 @@ import { getPublicStudentProfile } from "@/server/services/students/get-public-p
 import { upsertStudentProfile } from "@/server/services/students/upsert-profile"
 import { upsertStudentProfileDetails } from "@/server/services/students/upsert-profile-details"
 import { CACHE_TAGS } from "@/lib/cache"
+import {
+  LANGUAGE_CODES,
+  hasDuplicateLanguageCodes,
+} from "@/lib/constants/languages"
+import { proficiencyLevelSchema } from "@/lib/schemas/enums"
+import { isFeatureEnabled } from "@/lib/feature-flags"
 
 /* ── Reads ── */
 
@@ -81,11 +87,40 @@ export const upsertStudentProfileProcedure = studentProcedureStandard
       wilayaCode: z.coerce.number().int().min(1).max(58).optional().or(z.literal(0)),
       address: z.string().optional(),
       skillTagIds: z.array(z.string()).min(1).max(10),
+      languages: z
+        .array(
+          z.object({
+            languageCode: z.enum(LANGUAGE_CODES),
+            proficiency: proficiencyLevelSchema,
+          }),
+        )
+        .optional(),
     }),
   )
   .handler(async ({ input, context }) => {
-    const { skillTagIds, ...data } = input
-    const result = await upsertStudentProfile(data, skillTagIds, context.user.id)
+    const { skillTagIds, languages, ...data } = input
+    const isLanguageRequirementsEnabled = isFeatureEnabled("LANGUAGE_REQUIREMENTS")
+
+    if (isLanguageRequirementsEnabled) {
+      if (!languages || languages.length === 0) {
+        throw new ORPCError("BAD_REQUEST", {
+          message: "At least one language is required",
+        })
+      }
+
+      if (hasDuplicateLanguageCodes(languages)) {
+        throw new ORPCError("BAD_REQUEST", {
+          message: "Duplicate languages are not allowed",
+        })
+      }
+    }
+
+    const result = await upsertStudentProfile(
+      data,
+      skillTagIds,
+      context.user.id,
+      isLanguageRequirementsEnabled ? (languages ?? []) : undefined,
+    )
 
     // Invalidate profile caches after update
     revalidateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id), "max")
