@@ -10,16 +10,28 @@ import { skillTag } from "@/server/db/schema/skills"
 import {
   internshipOffer,
   internshipOfferSkill,
+  savedOffer,
 } from "@/server/db/schema/internships"
 import { application, applicationTimelineEvent } from "@/server/db/schema/applications"
 import { placement, placementDocument } from "@/server/db/schema/placements"
-import { notification } from "@/server/db/schema/notifications"
+import { notification, notificationPreference } from "@/server/db/schema/notifications"
 import {
   internshipOfferLanguageRequirement,
   studentLanguage,
 } from "@/server/db/schema/languages"
 import { studentOfferReadinessSnapshot } from "@/server/db/schema/matching"
 import { companyQualityFeedback, companyReport } from "@/server/db/schema/trust"
+import { interview, interviewSlot } from "@/server/db/schema/interviews"
+import {
+  offerMessage,
+  offerMessageReadState,
+  offerMessageThread,
+} from "@/server/db/schema/messages"
+import {
+  studentExperience,
+  studentProject,
+  studentResume,
+} from "@/server/db/schema/student-cv"
 
 // ── Auth ──────────────────────────────────────────────
 
@@ -40,10 +52,29 @@ export const userRelations = relations(user, ({ one, many }) => ({
   companyMemberships: many(companyMember),
   applications: many(application),
   notifications: many(notification),
+  notificationPreference: one(notificationPreference, {
+    fields: [user.id],
+    references: [notificationPreference.userId],
+  }),
+  savedOffers: many(savedOffer),
   languages: many(studentLanguage),
   readinessSnapshots: many(studentOfferReadinessSnapshot),
   qualityFeedback: many(companyQualityFeedback),
   reports: many(companyReport),
+  experiences: many(studentExperience),
+  projects: many(studentProject),
+  resume: one(studentResume, {
+    fields: [user.id],
+    references: [studentResume.userId],
+  }),
+  interviews: many(interview, { relationName: "interviewStudent" }),
+  proposedInterviews: many(interview, { relationName: "interviewProposedBy" }),
+  confirmedInterviews: many(interview, { relationName: "interviewConfirmedBy" }),
+  messageThreads: many(offerMessageThread, {
+    relationName: "offerMessageThreadStudent",
+  }),
+  sentOfferMessages: many(offerMessage, { relationName: "offerMessageSender" }),
+  offerMessageReadStates: many(offerMessageReadState),
 }))
 
 // ── Universities ──────────────────────────────────────
@@ -126,6 +157,30 @@ export const studentLanguageRelations = relations(studentLanguage, ({ one }) => 
   }),
 }))
 
+export const studentExperienceRelations = relations(
+  studentExperience,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [studentExperience.userId],
+      references: [user.id],
+    }),
+  }),
+)
+
+export const studentProjectRelations = relations(studentProject, ({ one }) => ({
+  user: one(user, {
+    fields: [studentProject.userId],
+    references: [user.id],
+  }),
+}))
+
+export const studentResumeRelations = relations(studentResume, ({ one }) => ({
+  user: one(user, {
+    fields: [studentResume.userId],
+    references: [user.id],
+  }),
+}))
+
 // ── Skills ────────────────────────────────────────────
 
 export const skillTagRelations = relations(skillTag, ({ many }) => ({
@@ -142,6 +197,8 @@ export const companyRelations = relations(company, ({ many }) => ({
   assistantConversations: many(assistantConversation),
   qualityFeedback: many(companyQualityFeedback),
   reports: many(companyReport),
+  interviews: many(interview),
+  messageThreads: many(offerMessageThread),
 }))
 
 export const companyMemberRelations = relations(companyMember, ({ one }) => ({
@@ -191,7 +248,11 @@ export const internshipOfferRelations = relations(
     requiredSkills: many(internshipOfferSkill),
     languageRequirements: many(internshipOfferLanguageRequirement),
     applications: many(application),
+    savedByStudents: many(savedOffer),
     readinessSnapshots: many(studentOfferReadinessSnapshot),
+    interviews: many(interview),
+    messageThreads: many(offerMessageThread),
+    messages: many(offerMessage),
   }),
 )
 
@@ -231,6 +292,7 @@ export const applicationRelations = relations(application, ({ one, many }) => ({
     references: [user.id],
   }),
   placement: one(placement),
+  interview: one(interview),
   timelineEvents: many(applicationTimelineEvent),
 }))
 
@@ -247,6 +309,44 @@ export const applicationTimelineEventRelations = relations(
     }),
   }),
 )
+
+export const interviewRelations = relations(interview, ({ one, many }) => ({
+  application: one(application, {
+    fields: [interview.applicationId],
+    references: [application.id],
+  }),
+  offer: one(internshipOffer, {
+    fields: [interview.offerId],
+    references: [internshipOffer.id],
+  }),
+  company: one(company, {
+    fields: [interview.companyId],
+    references: [company.id],
+  }),
+  student: one(user, {
+    fields: [interview.studentUserId],
+    references: [user.id],
+    relationName: "interviewStudent",
+  }),
+  proposedBy: one(user, {
+    fields: [interview.proposedByUserId],
+    references: [user.id],
+    relationName: "interviewProposedBy",
+  }),
+  confirmedBy: one(user, {
+    fields: [interview.confirmedByUserId],
+    references: [user.id],
+    relationName: "interviewConfirmedBy",
+  }),
+  slots: many(interviewSlot),
+}))
+
+export const interviewSlotRelations = relations(interviewSlot, ({ one }) => ({
+  interview: one(interview, {
+    fields: [interviewSlot.interviewId],
+    references: [interview.id],
+  }),
+}))
 
 // ── Placements ────────────────────────────────────────
 
@@ -281,6 +381,87 @@ export const notificationRelations = relations(notification, ({ one }) => ({
     references: [user.id],
   }),
 }))
+
+export const notificationPreferenceRelations = relations(
+  notificationPreference,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [notificationPreference.userId],
+      references: [user.id],
+    }),
+  }),
+)
+
+export const savedOfferRelations = relations(savedOffer, ({ one }) => ({
+  user: one(user, {
+    fields: [savedOffer.userId],
+    references: [user.id],
+  }),
+  offer: one(internshipOffer, {
+    fields: [savedOffer.offerId],
+    references: [internshipOffer.id],
+  }),
+}))
+
+export const offerMessageThreadRelations = relations(
+  offerMessageThread,
+  ({ one, many }) => ({
+    offer: one(internshipOffer, {
+      fields: [offerMessageThread.offerId],
+      references: [internshipOffer.id],
+    }),
+    company: one(company, {
+      fields: [offerMessageThread.companyId],
+      references: [company.id],
+    }),
+    student: one(user, {
+      fields: [offerMessageThread.studentUserId],
+      references: [user.id],
+      relationName: "offerMessageThreadStudent",
+    }),
+    createdBy: one(user, {
+      fields: [offerMessageThread.createdByUserId],
+      references: [user.id],
+      relationName: "offerMessageThreadCreatedBy",
+    }),
+    messages: many(offerMessage),
+    readStates: many(offerMessageReadState),
+  }),
+)
+
+export const offerMessageRelations = relations(offerMessage, ({ one }) => ({
+  thread: one(offerMessageThread, {
+    fields: [offerMessage.threadId],
+    references: [offerMessageThread.id],
+  }),
+  offer: one(internshipOffer, {
+    fields: [offerMessage.offerId],
+    references: [internshipOffer.id],
+  }),
+  sender: one(user, {
+    fields: [offerMessage.senderUserId],
+    references: [user.id],
+    relationName: "offerMessageSender",
+  }),
+}))
+
+export const offerMessageReadStateRelations = relations(
+  offerMessageReadState,
+  ({ one }) => ({
+    thread: one(offerMessageThread, {
+      fields: [offerMessageReadState.threadId],
+      references: [offerMessageThread.id],
+    }),
+    user: one(user, {
+      fields: [offerMessageReadState.userId],
+      references: [user.id],
+    }),
+    lastReadMessage: one(offerMessage, {
+      fields: [offerMessageReadState.lastReadMessageId],
+      references: [offerMessage.id],
+    }),
+  }),
+)
 
 export const studentOfferReadinessSnapshotRelations = relations(
   studentOfferReadinessSnapshot,

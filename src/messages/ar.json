@@ -256,7 +256,10 @@
       "expectedPeriodInvalid": "يجب أن يكون تاريخ البداية المتوقع قبل تاريخ النهاية المتوقع",
       "deadlineAfterExpectedStart": "يجب أن يكون موعد انتهاء التقديم في أو قبل تاريخ البداية المتوقع",
       "universityNameMin": "يجب أن يحتوي اسم الجامعة على حرفين على الأقل",
-      "domainsRequired": "مطلوب نطاق بريد إلكتروني واحد على الأقل"
+      "domainsRequired": "مطلوب نطاق بريد إلكتروني واحد على الأقل",
+      "studentLanguagesMin": "Please add at least one language",
+      "offerLanguageRequirementsMin": "Please add at least one required language",
+      "languageDuplicate": "Duplicate languages are not allowed"
     }
   },
   "onboarding": {
@@ -362,7 +365,24 @@
       "recommendedSkills": "موصى بها لقسمك",
       "otherSkills": "مهارات أخرى",
       "submit": "إكمال الملف الشخصي",
-      "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+      "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+      "languagesSection": "Languages",
+      "languagesHint": "Add the languages you can work in and your proficiency level.",
+      "language": "Language",
+      "languagePlaceholder": "Select language",
+      "proficiency": "Proficiency",
+      "proficiencyPlaceholder": "Select proficiency",
+      "addLanguage": "Add Language",
+      "removeLanguageAria": "Remove {language}",
+      "proficiencyLevels": {
+        "a1": "A1 (Beginner)",
+        "a2": "A2 (Elementary)",
+        "b1": "B1 (Intermediate)",
+        "b2": "B2 (Upper Intermediate)",
+        "c1": "C1 (Advanced)",
+        "c2": "C2 (Proficient)",
+        "native": "Native"
+      }
     }
   },
   "dashboard": {
@@ -627,6 +647,23 @@
             "previewSkills": "المهارات",
             "duration": "{weeks} أسبوع",
             "positions": "{count} منصب"
+          },
+          "languageRequirementsSection": "Language Requirements",
+          "languageRequirementsHint": "All listed languages are mandatory in this version.",
+          "language": "Language",
+          "languagePlaceholder": "Select language",
+          "minimumProficiency": "Minimum Proficiency",
+          "minimumProficiencyPlaceholder": "Select minimum level",
+          "addLanguageRequirement": "Add Language Requirement",
+          "removeLanguageRequirementAria": "Remove {language} requirement",
+          "proficiencyLevels": {
+            "a1": "A1 (Beginner)",
+            "a2": "A2 (Elementary)",
+            "b1": "B1 (Intermediate)",
+            "b2": "B2 (Upper Intermediate)",
+            "c1": "C1 (Advanced)",
+            "c2": "C2 (Proficient)",
+            "native": "Native"
           }
         }
       },

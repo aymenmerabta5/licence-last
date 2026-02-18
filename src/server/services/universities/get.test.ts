@@ -13,8 +13,29 @@ mock.module("@/server/db", () => ({ db: mockChain }))
 
 // Mock cache utilities
 mock.module("@/lib/cache", () => ({
-  CACHE_TAGS: { UNIVERSITIES: "universities" },
-  CACHE_PROFILES: { STATIC: () => {} },
+  CACHE_TAGS: {
+    SKILLS: "skills",
+    UNIVERSITIES: "universities",
+    STUDENT_PROFILE: (userId: string) => `student-profile-${userId}`,
+    STUDENT_STATS: (userId: string) => `student-stats-${userId}`,
+    STUDENT_APPLICATIONS: (userId: string) => `student-apps-${userId}`,
+    COMPANY_PROFILE: (companyId: string) => `company-${companyId}`,
+    COMPANY_OFFERS: (companyId: string) => `company-offers-${companyId}`,
+    COMPANY_CANDIDATES: (companyId: string) =>
+      `company-candidates-${companyId}`,
+    OFFER_SEARCH: "offer-search",
+    OFFER_DETAIL: (offerId: string) => `offer-${offerId}`,
+    OFFERS_PUBLIC: "offers-public",
+    PUBLIC_PROFILE: (userId: string) => `public-profile-${userId}`,
+  },
+  CACHE_PROFILES: {
+    STATIC: () => {},
+    REFERENCE: () => {},
+    PROFILE: () => {},
+    STATS: () => {},
+    SEARCH: () => {},
+    LISTINGS: () => {},
+  },
 }))
 
 describe("getUniversityById", () => {

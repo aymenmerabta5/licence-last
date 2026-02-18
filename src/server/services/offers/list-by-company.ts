@@ -7,6 +7,7 @@ import { cacheTag, cacheLife } from "next/cache"
 
 import { db } from "@/server/db"
 import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
+import { internshipOfferLanguageRequirement } from "@/server/db/schema/languages"
 import { skillTag } from "@/server/db/schema/skills"
 import { application } from "@/server/db/schema/applications"
 import { CACHE_TAGS } from "@/lib/cache"
@@ -34,6 +35,12 @@ interface OfferWithSkills {
     name: string
     slug: string
     category: string | null
+  }>
+  languageRequirements: Array<{
+    languageCode: string
+    minimumProficiency: "a1" | "a2" | "b1" | "b2" | "c1" | "c2" | "native"
+    isRequired: boolean
+    weight: number
   }>
   candidatesCount: number
 }
@@ -76,6 +83,18 @@ export async function listOffersByCompany(companyId: string): Promise<OfferWithS
     .where(inArray(application.offerId, offerIds))
     .groupBy(application.offerId)
 
+  const offerLanguageRequirements = await db
+    .select({
+      offerId: internshipOfferLanguageRequirement.offerId,
+      languageCode: internshipOfferLanguageRequirement.languageCode,
+      minimumProficiency:
+        internshipOfferLanguageRequirement.minimumProficiency,
+      isRequired: internshipOfferLanguageRequirement.isRequired,
+      weight: internshipOfferLanguageRequirement.weight,
+    })
+    .from(internshipOfferLanguageRequirement)
+    .where(inArray(internshipOfferLanguageRequirement.offerId, offerIds))
+
   const skillsByOffer = new Map<string, typeof offerSkills>()
   for (const row of offerSkills) {
     const existing = skillsByOffer.get(row.offerId) ?? []
@@ -88,6 +107,16 @@ export async function listOffersByCompany(companyId: string): Promise<OfferWithS
     countsByOffer.set(row.offerId, row.count)
   }
 
+  const languageRequirementsByOffer = new Map<
+    string,
+    typeof offerLanguageRequirements
+  >()
+  for (const row of offerLanguageRequirements) {
+    const existing = languageRequirementsByOffer.get(row.offerId) ?? []
+    existing.push(row)
+    languageRequirementsByOffer.set(row.offerId, existing)
+  }
+
   return offers.map((offer) => ({
     ...offer,
     skills: (skillsByOffer.get(offer.id) ?? []).map((s) => ({
@@ -95,6 +124,14 @@ export async function listOffersByCompany(companyId: string): Promise<OfferWithS
       name: s.skillName,
       slug: s.skillSlug,
       category: s.skillCategory,
+    })),
+    languageRequirements: (
+      languageRequirementsByOffer.get(offer.id) ?? []
+    ).map((entry) => ({
+      languageCode: entry.languageCode,
+      minimumProficiency: entry.minimumProficiency,
+      isRequired: entry.isRequired,
+      weight: entry.weight,
     })),
     candidatesCount: countsByOffer.get(offer.id) ?? 0,
   }))

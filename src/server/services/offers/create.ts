@@ -7,7 +7,15 @@ import { db } from "@/server/db"
 
 const log = createModuleLogger("services/offers/create")
 import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
+import { internshipOfferLanguageRequirement } from "@/server/db/schema/languages"
+import type { ProficiencyLevel } from "@/lib/schemas/enums"
+import { normalizeLanguageEntries } from "@/lib/constants/languages"
 import { validateSkillTagIds } from "@/server/services/skills/validate"
+
+interface OfferLanguageRequirementInput {
+  languageCode: string
+  minimumProficiency: ProficiencyLevel
+}
 
 export async function createOffer(data: {
   companyId: string
@@ -22,9 +30,14 @@ export async function createOffer(data: {
   expectedStartDate?: Date | null
   expectedEndDate?: Date | null
   skillTagIds?: string[]
+  languageRequirements?: OfferLanguageRequirementInput[]
 }) {
   const offerId = randomUUID()
   log.info({ companyId: data.companyId, offerId, title: data.title }, "Creating offer")
+
+  const normalizedLanguageRequirements = normalizeLanguageEntries(
+    data.languageRequirements ?? [],
+  )
 
   await db.transaction(async (tx) => {
     await tx.insert(internshipOffer).values({
@@ -49,6 +62,18 @@ export async function createOffer(data: {
         data.skillTagIds.map((skillTagId) => ({
           offerId,
           skillTagId,
+        })),
+      )
+    }
+
+    if (normalizedLanguageRequirements.length > 0) {
+      await tx.insert(internshipOfferLanguageRequirement).values(
+        normalizedLanguageRequirements.map((entry) => ({
+          offerId,
+          languageCode: entry.languageCode,
+          minimumProficiency: entry.minimumProficiency,
+          isRequired: true,
+          weight: 1,
         })),
       )
     }

@@ -4,6 +4,11 @@ import { useForm } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
 
 import { useRouter } from "@/i18n/routing"
+import {
+  DEFAULT_STUDENT_LANGUAGE_CODE,
+  DEFAULT_STUDENT_LANGUAGE_PROFICIENCY,
+} from "@/lib/constants/languages"
+import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"
 import { createStudentProfileSchema } from "@/lib/schemas/student"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { getErrorMessage } from "@/lib/error-message"
@@ -16,6 +21,7 @@ export function useOnboardingForm() {
   const t = useTranslations("onboarding.student")
   const tv = useTranslations("auth.validation")
   const router = useRouter()
+  const isLanguageRequirementsEnabled = isLanguageRequirementsEnabledOnClient()
 
   const [serverError, setServerError] = useState("")
   const [selectedDepartmentId, setSelectedDepartmentId] = useState("")
@@ -60,7 +66,13 @@ export function useOnboardingForm() {
     [departmentsResult],
   )
 
-  const schema = useMemo(() => createStudentProfileSchema(tv), [tv])
+  const schema = useMemo(
+    () =>
+      createStudentProfileSchema(tv, {
+        requireLanguages: isLanguageRequirementsEnabled,
+      }),
+    [isLanguageRequirementsEnabled, tv],
+  )
 
   const form = useForm({
     defaultValues: {
@@ -74,6 +86,14 @@ export function useOnboardingForm() {
       wilayaCode: 0,
       address: "",
       skillTagIds: [] as string[],
+      languages: isLanguageRequirementsEnabled
+        ? [
+            {
+              languageCode: DEFAULT_STUDENT_LANGUAGE_CODE,
+              proficiency: DEFAULT_STUDENT_LANGUAGE_PROFICIENCY,
+            },
+          ]
+        : [],
     } as StudentOnboardingFormValues,
     validators: {
       onSubmit: ({ value }) => mapZodErrors(schema.safeParse(value)),
@@ -93,6 +113,9 @@ export function useOnboardingForm() {
           wilayaCode: value.wilayaCode || undefined,
           address: value.address || undefined,
           skillTagIds: value.skillTagIds,
+          ...(isLanguageRequirementsEnabled
+            ? { languages: value.languages }
+            : {}),
         })
 
         // Refresh session cookie cache so the dashboard sees onboardingCompleted=true

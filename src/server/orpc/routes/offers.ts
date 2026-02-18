@@ -7,12 +7,18 @@ import { revalidateTag } from "next/cache"
 import { isAdminRole } from "@/server/orpc/middleware"
 import {
   authedProcedureGenerous,
+  authedProcedureStrict,
   companyAdminProcedureAssistant,
   companyAdminProcedureGenerous,
   companyAdminProcedureStandard,
+  studentProcedureGenerous,
+  studentProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
-import { internshipTypeSchema, workModeSchema } from "@/lib/schemas/enums"
-import { authedProcedureStrict } from "@/server/orpc/rate-limited-procedures"
+import {
+  internshipTypeSchema,
+  proficiencyLevelSchema,
+  workModeSchema,
+} from "@/lib/schemas/enums"
 import { parseInputDate } from "@/server/orpc/utils/date"
 import { getOfferById } from "@/server/services/offers/get"
 import { listOffersByCompany } from "@/server/services/offers/list-by-company"
@@ -20,11 +26,20 @@ import { createOffer } from "@/server/services/offers/create"
 import { updateOffer } from "@/server/services/offers/update"
 import { deleteOffer } from "@/server/services/offers/delete"
 import { updateOfferStatus } from "@/server/services/offers/update-status"
+import { checkOfferSaved } from "@/server/services/offers/check-saved"
+import { listSavedOffers } from "@/server/services/offers/list-saved"
+import { saveOffer } from "@/server/services/offers/save"
+import { unsaveOffer } from "@/server/services/offers/unsave"
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
 import { eq } from "drizzle-orm"
 import { CACHE_TAGS } from "@/lib/cache"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+import {
+  LANGUAGE_CODES,
+  hasDuplicateLanguageCodes,
+} from "@/lib/constants/languages"
+import { isFeatureEnabled } from "@/lib/feature-flags"
 
 function parseOptionalDate(
   value: string | null | undefined,
@@ -75,6 +90,19 @@ function validateOfferTiming(
   }
 }
 
+const languageRequirementSchema = z.object({
+  languageCode: z.enum(LANGUAGE_CODES),
+  minimumProficiency: proficiencyLevelSchema,
+})
+
+function assertSavedOffersEnabled() {
+  if (!isFeatureEnabled("SAVED_OFFERS")) {
+    throw new ORPCError("FORBIDDEN", {
+      message: "Saved offers feature is disabled",
+    })
+  }
+}
+
 /* ── Reads ── */
 
 export const getOfferByIdProcedure = authedProcedureGenerous
@@ -118,6 +146,59 @@ export const listOffersByCompanyProcedure = companyAdminProcedureGenerous
     listOffersByCompany(context.companyMembership.companyId),
   )
 
+export const listSavedOffersProcedure = studentProcedureGenerous
+  .input(
+    z
+      .object({
+        cursor: z
+          .object({
+            savedAt: z.string().datetime(),
+            offerId: z.string().min(1),
+          })
+          .optional(),
+        limit: z.coerce.number().int().min(1).max(50).optional(),
+      })
+      .optional(),
+  )
+  .handler(async ({ input, context }) => {
+    assertSavedOffersEnabled()
+    return listSavedOffers(context.user.id, input)
+  })
+
+export const checkOfferSavedProcedure = studentProcedureGenerous
+  .input(z.object({ offerId: z.string().min(1) }))
+  .handler(async ({ input, context }) => {
+    assertSavedOffersEnabled()
+    return checkOfferSaved(input.offerId, context.user.id)
+  })
+
+export const saveOfferProcedure = studentProcedureStandard
+  .input(z.object({ offerId: z.string().min(1) }))
+  .handler(async ({ input, context }) => {
+    assertSavedOffersEnabled()
+    try {
+      const result = await saveOffer(input.offerId, context.user.id)
+      revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), { expire: 0 })
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          OFFER_NOT_FOUND: "NOT_FOUND",
+          OFFER_NOT_SAVABLE: "BAD_REQUEST",
+        },
+        fallbackMessage: "Failed to save offer",
+      })
+    }
+  })
+
+export const unsaveOfferProcedure = studentProcedureStandard
+  .input(z.object({ offerId: z.string().min(1) }))
+  .handler(async ({ input, context }) => {
+    assertSavedOffersEnabled()
+    const result = await unsaveOffer(input.offerId, context.user.id)
+    revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), { expire: 0 })
+    return result
+  })
 /* ── Mutations ── */
 
 export const createOfferProcedure = companyAdminProcedureStandard
@@ -134,6 +215,7 @@ export const createOfferProcedure = companyAdminProcedureStandard
       expectedStartDate: z.string().min(1).optional(),
       expectedEndDate: z.string().min(1).optional(),
       skillTagIds: z.array(z.string()).max(20).default([]),
+      languageRequirements: z.array(languageRequirementSchema).optional(),
     }),
   )
   .handler(async ({ input, context }) => {
@@ -141,6 +223,7 @@ export const createOfferProcedure = companyAdminProcedureStandard
       applicationDeadlineAt: applicationDeadlineAtInput,
       expectedStartDate: expectedStartDateInput,
       expectedEndDate: expectedEndDateInput,
+      languageRequirements,
       ...restInput
     } = input
 
@@ -185,6 +268,22 @@ export const createOfferProcedure = companyAdminProcedureStandard
       true,
     )
 
+    const isLanguageRequirementsEnabled = isFeatureEnabled("LANGUAGE_REQUIREMENTS")
+
+    if (isLanguageRequirementsEnabled) {
+      if (!languageRequirements || languageRequirements.length === 0) {
+        throw new ORPCError("BAD_REQUEST", {
+          message: "At least one language requirement is required",
+        })
+      }
+
+      if (hasDuplicateLanguageCodes(languageRequirements)) {
+        throw new ORPCError("BAD_REQUEST", {
+          message: "Duplicate language requirements are not allowed",
+        })
+      }
+    }
+
     const result = await createOffer({
       companyId: context.companyMembership.companyId,
       ...restInput,
@@ -193,6 +292,9 @@ export const createOfferProcedure = companyAdminProcedureStandard
         : {}),
       ...(expectedStartDate !== undefined ? { expectedStartDate } : {}),
       ...(expectedEndDate !== undefined ? { expectedEndDate } : {}),
+      ...(isLanguageRequirementsEnabled
+        ? { languageRequirements: languageRequirements ?? [] }
+        : {}),
     })
 
     // Invalidate company offers cache and public offer search
@@ -218,6 +320,7 @@ export const updateOfferProcedure = companyAdminProcedureStandard
       expectedStartDate: z.string().min(1).nullable().optional(),
       expectedEndDate: z.string().min(1).nullable().optional(),
       skillTagIds: z.array(z.string()).max(20).optional(),
+      languageRequirements: z.array(languageRequirementSchema).optional(),
     }),
   )
   .handler(async ({ input, context }) => {
@@ -226,6 +329,7 @@ export const updateOfferProcedure = companyAdminProcedureStandard
       applicationDeadlineAt: applicationDeadlineAtInput,
       expectedStartDate: expectedStartDateInput,
       expectedEndDate: expectedEndDateInput,
+      languageRequirements,
       ...restInput
     } = input
 
@@ -270,6 +374,22 @@ export const updateOfferProcedure = companyAdminProcedureStandard
       true,
     )
 
+    const isLanguageRequirementsEnabled = isFeatureEnabled("LANGUAGE_REQUIREMENTS")
+
+    if (isLanguageRequirementsEnabled && languageRequirements !== undefined) {
+      if (languageRequirements.length === 0) {
+        throw new ORPCError("BAD_REQUEST", {
+          message: "At least one language requirement is required",
+        })
+      }
+
+      if (hasDuplicateLanguageCodes(languageRequirements)) {
+        throw new ORPCError("BAD_REQUEST", {
+          message: "Duplicate language requirements are not allowed",
+        })
+      }
+    }
+
     try {
       const result = await updateOffer(offerId, context.companyMembership.companyId, {
         ...restInput,
@@ -278,6 +398,9 @@ export const updateOfferProcedure = companyAdminProcedureStandard
           : {}),
         ...(expectedStartDate !== undefined ? { expectedStartDate } : {}),
         ...(expectedEndDate !== undefined ? { expectedEndDate } : {}),
+        ...(isLanguageRequirementsEnabled
+          ? { languageRequirements }
+          : {}),
       })
 
       // Invalidate offer caches
@@ -434,3 +557,4 @@ export const parseSearchQueryProcedure = authedProcedureStrict
     )
     return parseSearchQuery(input)
   })
+

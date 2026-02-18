@@ -11,7 +11,7 @@ import * as schema from "../src/server/db/schema"
 import { user, account } from "../src/server/db/schema/auth"
 import { company, companyMember } from "../src/server/db/schema/companies"
 import { studentProfile } from "../src/server/db/schema/students"
-import { university } from "../src/server/db/schema/universities"
+import { university, universityDomain } from "../src/server/db/schema/universities"
 
 // Test credentials for E2E tests - these match the auth fixtures
 const TEST_USERS = {
@@ -131,6 +131,14 @@ setup("setup test database", async () => {
     })
     console.info("  ✓ Seeded test university")
 
+    await db.insert(universityDomain).values({
+      id: randomUUID(),
+      universityId,
+      domain: "example.com",
+      status: "approved",
+    })
+    console.info("  ✓ Seeded approved university domain")
+
     // Seed skill tags
     const skillTags = [
       { name: "React", category: "frontend", slug: "react" },
@@ -246,7 +254,7 @@ setup("setup test database", async () => {
       id: adminId,
       email: TEST_USERS.admin.email,
       name: TEST_USERS.admin.name,
-      role: "university_admin",
+      role: "super_admin",
       emailVerified: true,
       onboardingCompleted: true,
     })
@@ -275,3 +283,4 @@ setup("setup test database", async () => {
     await client.end({ timeout: 5 })
   }
 })
+

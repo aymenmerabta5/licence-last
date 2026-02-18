@@ -12,6 +12,23 @@ export interface AuthSession {
   }
 }
 
+async function loginWithCredentials(
+  page: Page,
+  email: string,
+  password: string,
+): Promise<void> {
+  await page.goto("/en/login")
+  await page.waitForSelector("#login-email", { state: "visible", timeout: 15000 })
+
+  await page.fill("#login-email", email)
+  await page.fill("#login-password", password)
+  await page.click('button[type="submit"]')
+
+  await page.waitForURL(/\/en\/(dashboard|status|onboarding|verify)/, {
+    timeout: 15000,
+  })
+}
+
 /**
  * Creates an authenticated session by logging in through the UI
  * This should be called in test.setup or beforeEach hooks
@@ -40,21 +57,11 @@ export async function createAuthenticatedSession(
  * Uses test credentials from seeded data
  */
 export async function loginAsStudent(page: Page): Promise<void> {
-  await page.goto("/en/login")
-  
-  // Wait for form to be ready
-  await page.waitForSelector('input[type="email"]', { state: "visible" })
-  
-  // Fill in test student credentials
-  // These match the seeded test data in global.setup.ts
-  await page.fill('input[type="email"]', "test.student@example.com")
-  await page.fill('input[type="password"]', "TestPassword123!")
-  
-  // Submit form
-  await page.click('button[type="submit"]')
-  
-  // Wait for navigation to complete (redirect to dashboard)
-  await page.waitForURL("**/dashboard/**", { timeout: 10000 })
+  await loginWithCredentials(
+    page,
+    "test.student@example.com",
+    "TestPassword123!",
+  )
 }
 
 /**
@@ -62,20 +69,11 @@ export async function loginAsStudent(page: Page): Promise<void> {
  * Uses test credentials from seeded data
  */
 export async function loginAsCompany(page: Page): Promise<void> {
-  await page.goto("/en/login")
-  
-  // Wait for form to be ready
-  await page.waitForSelector('input[type="email"]', { state: "visible" })
-  
-  // Fill in test company credentials
-  await page.fill('input[type="email"]', "test.company@example.com")
-  await page.fill('input[type="password"]', "TestPassword123!")
-  
-  // Submit form
-  await page.click('button[type="submit"]')
-  
-  // Wait for navigation to complete
-  await page.waitForURL("**/dashboard/**", { timeout: 10000 })
+  await loginWithCredentials(
+    page,
+    "test.company@example.com",
+    "TestPassword123!",
+  )
 }
 
 /**
@@ -83,20 +81,11 @@ export async function loginAsCompany(page: Page): Promise<void> {
  * Uses test credentials from seeded data
  */
 export async function loginAsAdmin(page: Page): Promise<void> {
-  await page.goto("/en/login")
-  
-  // Wait for form to be ready
-  await page.waitForSelector('input[type="email"]', { state: "visible" })
-  
-  // Fill in test admin credentials
-  await page.fill('input[type="email"]', "test.admin@example.com")
-  await page.fill('input[type="password"]', "TestPassword123!")
-  
-  // Submit form
-  await page.click('button[type="submit"]')
-  
-  // Wait for navigation to complete
-  await page.waitForURL("**/admin/**", { timeout: 10000 })
+  await loginWithCredentials(
+    page,
+    "test.admin@example.com",
+    "TestPassword123!",
+  )
 }
 
 /**

@@ -22,14 +22,42 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
 
 const updateOfferMock = mock(async () => ({ offerId: "offer-1" }))
 const deleteOfferMock = mock(async () => ({ offerId: "offer-1", deleted: true }))
+const listSavedOffersMock = mock(async () => ({ offers: [], hasMore: false }))
+const checkOfferSavedMock = mock(async () => ({ saved: false }))
+const saveOfferMock = mock(async () => ({ saved: true }))
+const unsaveOfferMock = mock(async () => ({ saved: false }))
 const revalidateTagMock = mock(() => {})
+const featureFlagsState = {
+  NOTIF_PREFERENCES: true,
+  SAVED_OFFERS: true,
+  INTERVIEWS: true,
+  LANGUAGE_REQUIREMENTS: true,
+}
+const isFeatureEnabledMock = mock(
+  (flag: keyof typeof featureFlagsState) => featureFlagsState[flag],
+)
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
+  publicProcedureStrict: createProcedureMock(),
+  publicProcedureStandard: createProcedureMock(),
+  authedSessionProcedureStandard: createProcedureMock(),
+  authedSessionProcedureGenerous: createProcedureMock(),
   authedProcedureGenerous: createProcedureMock(),
+  authedProcedureStandard: createProcedureMock(),
   authedProcedureStrict: createProcedureMock(),
+  adminProcedureGenerous: createProcedureMock(),
+  adminProcedureStandard: createProcedureMock(),
+  adminProcedureAssistant: createProcedureMock(),
+  superAdminProcedureGenerous: createProcedureMock(),
+  superAdminProcedureStandard: createProcedureMock(),
+  assistantProcedureLimited: createProcedureMock(),
   companyAdminProcedureAssistant: createProcedureMock(),
   companyAdminProcedureGenerous: createProcedureMock(),
   companyAdminProcedureStandard: createProcedureMock(),
+  studentProcedureGenerous: createProcedureMock(),
+  studentProcedureStandard: createProcedureMock(),
+  deptHeadProcedureStandard: createProcedureMock(),
+  deptHeadProcedureGenerous: createProcedureMock(),
 }))
 
 mock.module("@/server/orpc/middleware", () => ({
@@ -61,6 +89,22 @@ mock.module("@/server/services/offers/update", () => ({
 mock.module("@/server/services/offers/delete", () => ({
   deleteOffer: deleteOfferMock,
 }))
+mock.module("@/server/services/offers/list-saved", () => ({
+  listSavedOffers: listSavedOffersMock,
+}))
+mock.module("@/server/services/offers/check-saved", () => ({
+  checkOfferSaved: checkOfferSavedMock,
+}))
+mock.module("@/server/services/offers/save", () => ({
+  saveOffer: saveOfferMock,
+}))
+mock.module("@/server/services/offers/unsave", () => ({
+  unsaveOffer: unsaveOfferMock,
+}))
+mock.module("@/lib/feature-flags", () => ({
+  FEATURE_FLAGS: featureFlagsState,
+  isFeatureEnabled: isFeatureEnabledMock,
+}))
 mock.module("@/server/db", () => ({
   db: {
     select: () => ({
@@ -77,7 +121,15 @@ describe("src/server/orpc/routes/offers", () => {
   beforeEach(() => {
     updateOfferMock.mockClear()
     deleteOfferMock.mockClear()
+    listSavedOffersMock.mockClear()
+    checkOfferSavedMock.mockClear()
+    saveOfferMock.mockClear()
+    unsaveOfferMock.mockClear()
     revalidateTagMock.mockClear()
+    isFeatureEnabledMock.mockClear()
+    isFeatureEnabledMock.mockImplementation(
+      (flag: keyof typeof featureFlagsState) => featureFlagsState[flag],
+    )
   })
 
   test("updateOfferProcedure revalidates caches on success", async () => {
@@ -128,6 +180,58 @@ describe("src/server/orpc/routes/offers", () => {
       }),
     ).rejects.toMatchObject({
       code: "NOT_FOUND",
+    })
+  })
+
+  test("listSavedOffersProcedure delegates with user and input", async () => {
+    const { listSavedOffersProcedure } = await import("@/server/orpc/routes/offers")
+
+    const input = { limit: 10 }
+    const result = await callProcedure(listSavedOffersProcedure, {
+      input,
+      context: { user: { id: "student-1" } },
+    })
+
+    expect(result).toEqual({ offers: [], hasMore: false })
+    expect(isFeatureEnabledMock).toHaveBeenCalledWith("SAVED_OFFERS")
+    expect(listSavedOffersMock).toHaveBeenCalledWith("student-1", input)
+  })
+
+  test("saveOfferProcedure rejects when saved offers feature is disabled", async () => {
+    isFeatureEnabledMock.mockImplementation((flag: keyof typeof featureFlagsState) => {
+      if (flag === "SAVED_OFFERS") return false
+      return featureFlagsState[flag]
+    })
+
+    const { saveOfferProcedure } = await import("@/server/orpc/routes/offers")
+
+    await expect(
+      callProcedure(saveOfferProcedure, {
+        input: { offerId: "offer-1" },
+        context: { user: { id: "student-1" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "Saved offers feature is disabled",
+    })
+  })
+
+  test("createOfferProcedure requires language requirements when feature is enabled", async () => {
+    const { createOfferProcedure } = await import("@/server/orpc/routes/offers")
+
+    await expect(
+      callProcedure(createOfferProcedure, {
+        input: {
+          title: "Frontend intern",
+          description: "A long enough description for validation",
+          internshipType: "pfe",
+          skillTagIds: [],
+        },
+        context: { companyMembership: { companyId: "company-1" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "At least one language requirement is required",
     })
   })
 })

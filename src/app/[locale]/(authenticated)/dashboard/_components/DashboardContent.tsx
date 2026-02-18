@@ -72,6 +72,8 @@ async function StudentDashboardContent({
       pendingApplications: stats.pendingApplications,
       acceptedApplications: stats.acceptedApplications,
       skillsCount: stats.skillsCount,
+      savedOffersCount: stats.savedOffersCount,
+      interviewsCount: stats.interviewsCount,
     },
     recentApplications: recentAppsResult.applications.map((app) => ({
       id: app.id,

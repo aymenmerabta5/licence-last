@@ -7,6 +7,7 @@ import { cacheTag, cacheLife } from "next/cache"
 
 import { db } from "@/server/db"
 import { studentProfile, studentSkill } from "@/server/db/schema/students"
+import { studentLanguage } from "@/server/db/schema/languages"
 import { skillTag } from "@/server/db/schema/skills"
 import { user } from "@/server/db/schema/auth"
 import { CACHE_TAGS } from "@/lib/cache"
@@ -48,9 +49,18 @@ export async function getStudentProfile(userId: string) {
     .innerJoin(skillTag, eq(studentSkill.skillTagId, skillTag.id))
     .where(eq(studentSkill.userId, userId))
 
+  const languages = await db
+    .select({
+      languageCode: studentLanguage.languageCode,
+      proficiency: studentLanguage.proficiency,
+    })
+    .from(studentLanguage)
+    .where(eq(studentLanguage.userId, userId))
+
   return {
     profile,
     user: studentUser ?? null,
     skills,
+    languages,
   }
 }

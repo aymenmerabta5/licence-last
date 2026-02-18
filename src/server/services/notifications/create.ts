@@ -2,9 +2,10 @@ import "server-only"
 
 import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+import { notification } from "@/server/db/schema/notifications"
+import { getNotificationPreferences } from "@/server/services/notifications/get-preferences"
 
 const log = createModuleLogger("services/notifications/create")
-import { notification } from "@/server/db/schema/notifications"
 
 export interface CreateNotificationInput {
   userId: string
@@ -14,6 +15,21 @@ export interface CreateNotificationInput {
 }
 
 export async function createNotification(input: CreateNotificationInput) {
+  const preferences = await getNotificationPreferences(input.userId)
+
+  if (!preferences.inAppEnabled) {
+    log.info(
+      {
+        userId: input.userId,
+        type: input.type,
+        event: "notification_skipped_in_app_disabled",
+      },
+      "Skipping in-app notification because user disabled in-app notifications",
+    )
+
+    return { id: null, skipped: true }
+  }
+
   const id = crypto.randomUUID()
 
   await db.insert(notification).values({
@@ -24,5 +40,5 @@ export async function createNotification(input: CreateNotificationInput) {
   })
 
   log.info({ notificationId: id, userId: input.userId, type: input.type, event: "notification_created" }, "Notification created")
-  return { id }
+  return { id, skipped: false }
 }

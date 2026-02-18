@@ -1,7 +1,7 @@
 "use client"
 
 import * as motion from "motion/react-client"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import {
   User,
   Phone,
@@ -11,6 +11,9 @@ import {
   GraduationCap,
   Hash,
   FileText,
+  Languages,
+  Plus,
+  Trash2,
   ArrowRight,
   Loader2,
 } from "lucide-react"
@@ -23,6 +26,12 @@ import { TextAreaField } from "@/components/form-fields"
 import { SelectField } from "@/components/form-fields"
 import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
 import { Button } from "@/components/ui/button"
+import {
+  DEFAULT_STUDENT_LANGUAGE_CODE,
+  DEFAULT_STUDENT_LANGUAGE_PROFICIENCY,
+  LANGUAGE_CATALOG,
+} from "@/lib/constants/languages"
+import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"
 import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYAS } from "@/lib/wilayas"
 import { useSkillGrouping } from "@/hooks"
@@ -32,9 +41,23 @@ import { useOnboardingForm } from "@/app/[locale]/onboarding/student/_components
 
 export function StudentOnboardingFormContent() {
   const t = useTranslations("onboarding.student")
+  const locale = useLocale()
+  const languageLocale =
+    locale === "fr" || locale === "ar" ? locale : "en"
+  const isLanguageRequirementsEnabled = isLanguageRequirementsEnabledOnClient()
+  const skillsSectionIndex = isLanguageRequirementsEnabled ? "05" : "04"
   const { form, serverError, departmentSkills, otherSkills, departments, selectedDepartmentId, handleDepartmentChange } = useOnboardingForm()
   const deptGroups = useSkillGrouping(departmentSkills)
   const otherGroups = useSkillGrouping(otherSkills)
+  const proficiencyOptions = [
+    { value: "a1", label: t("proficiencyLevels.a1") },
+    { value: "a2", label: t("proficiencyLevels.a2") },
+    { value: "b1", label: t("proficiencyLevels.b1") },
+    { value: "b2", label: t("proficiencyLevels.b2") },
+    { value: "c1", label: t("proficiencyLevels.c1") },
+    { value: "c2", label: t("proficiencyLevels.c2") },
+    { value: "native", label: t("proficiencyLevels.native") },
+  ]
 
   return (
     <form
@@ -209,7 +232,147 @@ export function StudentOnboardingFormContent() {
         </form.Field>
       </FormSection>
 
-      <FormSection title={`04 — ${t("skillsSection")}`} delay={0.15}>
+      {isLanguageRequirementsEnabled ? (
+        <FormSection title={`04 - ${t("languagesSection")}`} delay={0.15}>
+        <form.Field name="languages">
+          {(field) => {
+            const selectedLanguageCodes = field.state.value.map(
+              (language) => language.languageCode,
+            )
+            const canAddLanguage = field.state.value.length < LANGUAGE_CATALOG.length
+
+            const addLanguage = () => {
+              if (!canAddLanguage) return
+
+              const nextLanguageCode =
+                LANGUAGE_CATALOG.find(
+                  (entry) => !selectedLanguageCodes.includes(entry.code),
+                )?.code ?? DEFAULT_STUDENT_LANGUAGE_CODE
+
+              field.handleChange([
+                ...field.state.value,
+                {
+                  languageCode: nextLanguageCode,
+                  proficiency: DEFAULT_STUDENT_LANGUAGE_PROFICIENCY,
+                },
+              ])
+            }
+
+            const removeLanguage = (index: number) => {
+              field.handleChange(
+                field.state.value.filter((_, currentIndex) => currentIndex !== index),
+              )
+            }
+
+            const updateLanguageCode = (index: number, languageCode: string) => {
+              field.handleChange(
+                field.state.value.map((entry, currentIndex) =>
+                  currentIndex === index
+                    ? {
+                        ...entry,
+                        languageCode:
+                          languageCode as (typeof field.state.value)[number]["languageCode"],
+                      }
+                    : entry,
+                ),
+              )
+            }
+
+            const updateProficiency = (index: number, proficiency: string) => {
+              field.handleChange(
+                field.state.value.map((entry, currentIndex) =>
+                  currentIndex === index
+                    ? {
+                        ...entry,
+                        proficiency:
+                          proficiency as (typeof field.state.value)[number]["proficiency"],
+                      }
+                    : entry,
+                ),
+              )
+            }
+
+            return (
+              <div className="space-y-4">
+                <p className="text-xs text-muted-foreground">{t("languagesHint")}</p>
+
+                {field.state.value.map((language, index) => {
+                  const languageLabel =
+                    LANGUAGE_CATALOG.find((entry) => entry.code === language.languageCode)
+                      ?.labels[languageLocale] ?? language.languageCode
+
+                  return (
+                    <div
+                      key={`${language.languageCode}-${index}`}
+                      className="grid items-end gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
+                    >
+                      <SelectField
+                        id={`student-language-code-${index}`}
+                        label={t("language")}
+                        placeholder={t("languagePlaceholder")}
+                        icon={Languages}
+                        options={LANGUAGE_CATALOG.map((entry) => ({
+                          value: entry.code,
+                          label: entry.labels[languageLocale],
+                          disabled:
+                            selectedLanguageCodes.includes(entry.code) &&
+                            entry.code !== language.languageCode,
+                        }))}
+                        value={language.languageCode}
+                        onChange={(value) => updateLanguageCode(index, value)}
+                      />
+
+                      <SelectField
+                        id={`student-language-proficiency-${index}`}
+                        label={t("proficiency")}
+                        placeholder={t("proficiencyPlaceholder")}
+                        icon={GraduationCap}
+                        options={proficiencyOptions}
+                        value={language.proficiency}
+                        onChange={(value) => updateProficiency(index, value)}
+                      />
+
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-11 w-11 rounded-none"
+                        onClick={() => removeLanguage(index)}
+                        aria-label={t("removeLanguageAria", { language: languageLabel })}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )
+                })}
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-10 rounded-none"
+                  onClick={addLanguage}
+                  disabled={!canAddLanguage}
+                >
+                  <Plus className="h-4 w-4" />
+                  {t("addLanguage")}
+                </Button>
+
+                {field.state.meta.errors.length > 0 && (
+                  <p
+                    className="text-destructive text-[11px] tracking-wide"
+                    role="alert"
+                  >
+                    {errorMessage(field.state.meta.errors[0])}
+                  </p>
+                )}
+              </div>
+            )
+          }}
+        </form.Field>
+        </FormSection>
+      ) : null}
+
+      <FormSection title={`${skillsSectionIndex} — ${t("skillsSection")}`} delay={0.18}>
         <p className="text-xs text-muted-foreground">
           {selectedDepartmentId ? t("skillsHint") : t("skillsSelectDepartmentFirst")}
         </p>

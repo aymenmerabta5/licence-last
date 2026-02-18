@@ -31,6 +31,7 @@ mock.module("@/server/orpc/rate-limited-procedures", () => ({
 }))
 
 mock.module("@/server/ai/model", () => ({
+  getPoeModel: () => "model-a",
   getAllowedPoeModelIds: () => ["model-a", "model-b"],
   getDefaultPoeModelId: () => "model-a",
   isAllowedPoeModelId: (value: string) => value.startsWith("model-"),

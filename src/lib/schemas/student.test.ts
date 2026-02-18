@@ -6,6 +6,10 @@ function t(key: string) {
   return `t:${key}`
 }
 
+const DEFAULT_LANGUAGES = [
+  { languageCode: "en", proficiency: "b2" as const },
+]
+
 describe("src/lib/schemas/student", () => {
   describe("createStudentProfileSchema", () => {
     test("should accept valid input with skills array", () => {
@@ -21,6 +25,7 @@ describe("src/lib/schemas/student", () => {
         wilayaCode: 25,
         address: "123 Main Street",
         skillTagIds: ["skill-1", "skill-2", "skill-3"],
+        languages: DEFAULT_LANGUAGES,
       })
 
       expect(result.success).toBe(true)
@@ -30,6 +35,7 @@ describe("src/lib/schemas/student", () => {
       const schema = createStudentProfileSchema(t)
       const result = schema.safeParse({
         skillTagIds: ["skill-1"],
+        languages: DEFAULT_LANGUAGES,
       })
 
       expect(result.success).toBe(true)
@@ -39,6 +45,7 @@ describe("src/lib/schemas/student", () => {
       const schema = createStudentProfileSchema(t)
       const result = schema.safeParse({
         skillTagIds: [],
+        languages: DEFAULT_LANGUAGES,
       })
 
       expect(result.success).toBe(false)
@@ -48,10 +55,35 @@ describe("src/lib/schemas/student", () => {
       }
     })
 
+    test("should reject empty languages array when language requirements are enabled", () => {
+      const schema = createStudentProfileSchema(t)
+      const result = schema.safeParse({
+        skillTagIds: ["skill-1"],
+        languages: [],
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        const issue = result.error.issues.find((i) => i.path[0] === "languages")
+        expect(issue?.message).toBe("t:studentLanguagesMin")
+      }
+    })
+
+    test("should accept empty languages array when language requirements are disabled", () => {
+      const schema = createStudentProfileSchema(t, { requireLanguages: false })
+      const result = schema.safeParse({
+        skillTagIds: ["skill-1"],
+        languages: [],
+      })
+
+      expect(result.success).toBe(true)
+    })
+
     test("should reject more than 10 skills", () => {
       const schema = createStudentProfileSchema(t)
       const result = schema.safeParse({
         skillTagIds: Array.from({ length: 11 }, (_, i) => `skill-${i}`),
+        languages: DEFAULT_LANGUAGES,
       })
 
       expect(result.success).toBe(false)
@@ -66,6 +98,7 @@ describe("src/lib/schemas/student", () => {
       const result = schema.safeParse({
         githubUrl: "not-a-url",
         skillTagIds: ["skill-1"],
+        languages: DEFAULT_LANGUAGES,
       })
 
       expect(result.success).toBe(false)
@@ -80,6 +113,7 @@ describe("src/lib/schemas/student", () => {
       const result = schema.safeParse({
         portfolioUrl: "not-a-url",
         skillTagIds: ["skill-1"],
+        languages: DEFAULT_LANGUAGES,
       })
 
       expect(result.success).toBe(false)
@@ -95,6 +129,7 @@ describe("src/lib/schemas/student", () => {
         githubUrl: "",
         portfolioUrl: "",
         skillTagIds: ["skill-1"],
+        languages: DEFAULT_LANGUAGES,
       })
 
       expect(result.success).toBe(true)
@@ -109,6 +144,7 @@ describe("src/lib/schemas/student", () => {
       const result = schema.safeParse({
         wilayaCode: "25",
         skillTagIds: ["skill-1"],
+        languages: DEFAULT_LANGUAGES,
       })
 
       expect(result.success).toBe(true)

@@ -2,7 +2,7 @@
 
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Briefcase, CheckCircle2, Wrench } from "lucide-react"
+import { Briefcase, CheckCircle2, Clock3, Heart, Wrench } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 import type { StudentDashboardProps } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
@@ -34,6 +34,18 @@ export function StudentDashboard({ user, data }: StudentDashboardProps) {
         ? t("stats.profileBoosted")
         : t("stats.addMoreSkills"),
       icon: Wrench,
+    },
+    {
+      title: t("stats.savedOffers"),
+      value: String(data.stats.savedOffersCount),
+      description: t("offers.exploreAll"),
+      icon: Heart,
+    },
+    {
+      title: t("stats.interviews"),
+      value: String(data.stats.interviewsCount),
+      description: t("stats.acceptedDescription"),
+      icon: Clock3,
     },
   ]
 
@@ -69,7 +81,7 @@ export function StudentDashboard({ user, data }: StudentDashboardProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
-        className="grid grid-cols-1 sm:grid-cols-3 border-y-2 border-foreground dark:border-foreground/15"
+        className="grid grid-cols-1 sm:grid-cols-5 border-y-2 border-foreground dark:border-foreground/15"
       >
         {stats.map((stat, i) => {
           const Icon = stat.icon

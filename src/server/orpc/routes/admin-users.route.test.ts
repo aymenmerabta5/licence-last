@@ -23,10 +23,26 @@ const listUniversityUsersMock = mock(async () => ({ users: [] }))
 const banUserMock = mock(async () => ({ success: true }))
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
+  publicProcedureStrict: createProcedureMock(),
+  publicProcedureStandard: createProcedureMock(),
+  authedProcedureStandard: createProcedureMock(),
+  authedSessionProcedureStandard: createProcedureMock(),
+  authedProcedureGenerous: createProcedureMock(),
+  authedSessionProcedureGenerous: createProcedureMock(),
+  authedProcedureStrict: createProcedureMock(),
   adminProcedureGenerous: createProcedureMock(),
   adminProcedureStandard: createProcedureMock(),
+  adminProcedureAssistant: createProcedureMock(),
   superAdminProcedureGenerous: createProcedureMock(),
   superAdminProcedureStandard: createProcedureMock(),
+  assistantProcedureLimited: createProcedureMock(),
+  companyAdminProcedureStandard: createProcedureMock(),
+  companyAdminProcedureGenerous: createProcedureMock(),
+  companyAdminProcedureAssistant: createProcedureMock(),
+  studentProcedureStandard: createProcedureMock(),
+  studentProcedureGenerous: createProcedureMock(),
+  deptHeadProcedureStandard: createProcedureMock(),
+  deptHeadProcedureGenerous: createProcedureMock(),
 }))
 
 mock.module("@/server/services/admin/list-users", () => ({

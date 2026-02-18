@@ -39,8 +39,18 @@ mock.module("@/server/orpc/rate-limited-procedures", () => ({
 }))
 
 mock.module("@/server/orpc/utils/date", () => ({
-  parseInputDate: (value: string) => new Date(value),
-  validatePlacementDateRange: () => {},
+  parseInputDate: (value: string, fieldLabel: string) => {
+    const parsed = new Date(value)
+    if (Number.isNaN(parsed.getTime())) {
+      throw new Error(`${fieldLabel} is invalid`)
+    }
+    return parsed
+  },
+  validatePlacementDateRange: (startDate: Date, endDate: Date) => {
+    if (startDate >= endDate) {
+      throw new Error("Start date must be before end date")
+    }
+  },
 }))
 
 mock.module("@/server/services/placements/list-pending", () => ({

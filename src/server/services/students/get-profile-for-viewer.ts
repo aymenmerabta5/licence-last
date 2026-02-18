@@ -7,6 +7,7 @@ import { cacheTag, cacheLife } from "next/cache"
 
 import { db } from "@/server/db"
 import { studentProfile, studentSkill } from "@/server/db/schema/students"
+import { studentLanguage } from "@/server/db/schema/languages"
 import { skillTag } from "@/server/db/schema/skills"
 import { getUserById } from "@/server/services/users/get-by-id"
 import { CACHE_TAGS } from "@/lib/cache"
@@ -45,10 +46,16 @@ export interface ViewerSafeStudentSkill {
   category: string | null
 }
 
+export interface ViewerSafeStudentLanguage {
+  languageCode: string
+  proficiency: string
+}
+
 export interface StudentProfileForViewerResult {
   user: ViewerSafeUser
   profile: ViewerSafeStudentProfile | null
   skills: ViewerSafeStudentSkill[]
+  languages: ViewerSafeStudentLanguage[]
 }
 
 function canViewPrivateFields(viewer: ViewerIdentity, targetUserId: string) {
@@ -105,6 +112,7 @@ export async function getStudentProfileForViewer({
       },
       profile: null,
       skills: [],
+      languages: [],
     }
   }
 
@@ -118,6 +126,14 @@ export async function getStudentProfileForViewer({
     .from(studentSkill)
     .innerJoin(skillTag, eq(studentSkill.skillTagId, skillTag.id))
     .where(eq(studentSkill.userId, targetUserId))
+
+  const languages = await db
+    .select({
+      languageCode: studentLanguage.languageCode,
+      proficiency: studentLanguage.proficiency,
+    })
+    .from(studentLanguage)
+    .where(eq(studentLanguage.userId, targetUserId))
 
   return {
     user: {
@@ -141,6 +157,7 @@ export async function getStudentProfileForViewer({
       address: canViewPrivate ? profileRow.address : null,
     },
     skills,
+    languages,
   }
 }
 

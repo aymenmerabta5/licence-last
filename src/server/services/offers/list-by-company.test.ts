@@ -17,6 +17,11 @@ const mockInnerJoin = mock(() => ({}) as any)
 const mockSkillWhere = mock((): any => [])
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockLanguageFrom = mock(() => ({}) as any)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockLanguageWhere = mock((): any => [])
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockCountsFrom = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockCountsWhere = mock(() => ({}) as any)
@@ -38,12 +43,15 @@ describe("src/server/services/offers/list-by-company", () => {
     mockSkillFrom.mockClear()
     mockInnerJoin.mockClear()
     mockSkillWhere.mockClear()
+    mockLanguageFrom.mockClear()
+    mockLanguageWhere.mockClear()
 
     mockCountsFrom.mockClear()
     mockCountsWhere.mockClear()
     mockGroupBy.mockClear()
 
-    // Default: first call returns offers, second call returns skills
+    // Default: first call returns offers, second call returns skills,
+    // third call returns counts, fourth call returns language requirements.
     let callCount = 0
     mockSelect.mockImplementation(() => {
       callCount++
@@ -53,7 +61,10 @@ describe("src/server/services/offers/list-by-company", () => {
       if (callCount === 2) {
         return { from: mockSkillFrom }
       }
-      return { from: mockCountsFrom }
+      if (callCount === 3) {
+        return { from: mockCountsFrom }
+      }
+      return { from: mockLanguageFrom }
     })
 
     mockFrom.mockReturnValue({ where: mockSelectWhere })
@@ -61,6 +72,8 @@ describe("src/server/services/offers/list-by-company", () => {
 
     mockSkillFrom.mockReturnValue({ innerJoin: mockInnerJoin })
     mockInnerJoin.mockReturnValue({ where: mockSkillWhere })
+
+    mockLanguageFrom.mockReturnValue({ where: mockLanguageWhere })
 
     mockCountsFrom.mockReturnValue({ where: mockCountsWhere })
     mockCountsWhere.mockReturnValue({ groupBy: mockGroupBy })
@@ -87,6 +100,7 @@ describe("src/server/services/offers/list-by-company", () => {
       { offerId: "offer-1", skillId: "s2", skillName: "TypeScript", skillSlug: "typescript", skillCategory: "languages" },
       { offerId: "offer-2", skillId: "s3", skillName: "Node.js", skillSlug: "nodejs", skillCategory: "backend" },
     ])
+    mockLanguageWhere.mockResolvedValue([])
     mockGroupBy.mockResolvedValue([
       { offerId: "offer-1", count: 2 },
       { offerId: "offer-2", count: 1 },

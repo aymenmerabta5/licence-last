@@ -1,5 +1,6 @@
 import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
+import type { LanguageCode } from "@/lib/constants/languages"
 import { getOfferById } from "@/server/services/offers/get"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 import { OfferForm } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm"
@@ -41,6 +42,10 @@ export default async function EditOfferPage({
           expectedStartDate: offer.expectedStartDate,
           expectedEndDate: offer.expectedEndDate,
           skillTagIds: offer.skills.map((s) => s.id),
+          languageRequirements: (offer.languageRequirements ?? []).map((entry) => ({
+            languageCode: entry.languageCode as LanguageCode,
+            minimumProficiency: entry.minimumProficiency,
+          })),
         }}
       />
     </div>

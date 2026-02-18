@@ -29,6 +29,12 @@ export const env = createEnv({
     REDIS_URL: z.string().url().optional(),
     REDIS_RATE_LIMIT_ENABLED: z.enum(["true", "false"]).default("false"),
 
+    // Server feature flags
+    FEATURE_NOTIF_PREFERENCES: z.enum(["true", "false"]).default("false"),
+    FEATURE_SAVED_OFFERS: z.enum(["true", "false"]).default("false"),
+    FEATURE_INTERVIEWS: z.enum(["true", "false"]).default("false"),
+    FEATURE_LANGUAGE_REQUIREMENTS: z.enum(["true", "false"]).default("false"),
+
     // Logging
     LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
 
@@ -40,6 +46,9 @@ export const env = createEnv({
     NEXT_PUBLIC_S3_ENDPOINT: z.url().optional(),
     NEXT_PUBLIC_S3_URL: z.string().url().optional(),
     NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().min(1).optional(),
+    NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS: z
+      .enum(["true", "false"])
+      .default("false"),
   },
 
   experimental__runtimeEnv: {
@@ -47,5 +56,7 @@ export const env = createEnv({
     NEXT_PUBLIC_S3_ENDPOINT: process.env.NEXT_PUBLIC_S3_ENDPOINT,
     NEXT_PUBLIC_S3_URL: process.env.NEXT_PUBLIC_S3_URL,
     NEXT_PUBLIC_TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
+    NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS:
+      process.env.NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS,
   }
 });

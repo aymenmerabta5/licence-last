@@ -6,6 +6,7 @@ import { ArrowRight, Loader2 } from "lucide-react"
 
 import { useRouter } from "@/i18n/routing"
 import { reveal, ease } from "@/lib/animations"
+import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"
 import { Button } from "@/components/ui/button"
 import { ServerError } from "@/components/ServerError"
 
@@ -15,12 +16,14 @@ import { useSkillTags } from "@/app/[locale]/(authenticated)/dashboard/company/o
 import { CopilotPanel } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/CopilotPanel"
 import { BasicInfoSection } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/BasicInfoSection"
 import { DetailsSection } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/DetailsSection"
+import { LanguageRequirementsSection } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/LanguageRequirementsSection"
 import { SkillsSection } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/SkillsSection"
 import type { OfferFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
 
 export function OfferForm({ mode, initialData }: OfferFormProps) {
   const t = useTranslations("dashboard.company.offers.form")
   const router = useRouter()
+  const isLanguageRequirementsEnabled = isLanguageRequirementsEnabledOnClient()
 
   const skillTags = useSkillTags()
   const { form, serverError } = useOfferForm(mode, initialData)
@@ -60,6 +63,9 @@ export function OfferForm({ mode, initialData }: OfferFormProps) {
 
       <BasicInfoSection form={form} />
       <DetailsSection form={form} />
+      {isLanguageRequirementsEnabled ? (
+        <LanguageRequirementsSection form={form} />
+      ) : null}
       <SkillsSection form={form} skillTags={skillTags} />
 
       {/* Submit */}

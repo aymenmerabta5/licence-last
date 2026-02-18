@@ -6,6 +6,13 @@ const pingRedisMock = mock(async () => false)
 const isRateLimitingEnabledMock = mock(() => false)
 
 mock.module("@/server/db", () => ({
+  db: {
+    select: () => ({
+      from: () => ({
+        where: async () => [],
+      }),
+    }),
+  },
   pingDatabase: pingDatabaseMock,
 }))
 

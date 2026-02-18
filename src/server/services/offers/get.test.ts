@@ -28,6 +28,14 @@ const mockSkillsWhere = mock<() => Promise<any[]>>(() => {
 const mockSkillsJoin = mock(() => ({ where: mockSkillsWhere }))
 const mockFromSkills = mock(() => ({ innerJoin: mockSkillsJoin }))
 
+// Mock for language requirements query execution
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockLanguagesWhere = mock<() => Promise<any[]>>(() => {
+  const results = mockQueryResults[queryResultIdx++] ?? []
+  return Promise.resolve(results)
+})
+const mockFromLanguages = mock(() => ({ where: mockLanguagesWhere }))
+
 // Mock for subquery builder (application count subquery)
 // This needs to support: .select().from().where().groupBy().as()
 // Note: The subquery is only BUILT, not executed - it becomes part of the main query
@@ -52,7 +60,11 @@ mock.module("@/server/db", () => ({
         return { from: mockFromWithJoins }
       }
       // Third call is for skills
-      return { from: mockFromSkills }
+      if (selectCallCount === 3) {
+        return { from: mockFromSkills }
+      }
+      // Fourth call is for language requirements
+      return { from: mockFromLanguages }
     },
   },
 }))
@@ -75,6 +87,10 @@ describe("src/server/services/offers/get", () => {
     mockSkillsJoin.mockClear()
     mockFromSkills.mockClear()
 
+    // Reset language requirements query mocks
+    mockLanguagesWhere.mockClear()
+    mockFromLanguages.mockClear()
+
     // Reset subquery mocks
     mockAs.mockClear()
     mockGroupBy.mockClear()
@@ -95,6 +111,9 @@ describe("src/server/services/offers/get", () => {
     // Setup skills query chain
     mockFromSkills.mockReturnValue({ innerJoin: mockSkillsJoin })
     mockSkillsJoin.mockReturnValue({ where: mockSkillsWhere })
+
+    // Setup language requirements query chain
+    mockFromLanguages.mockReturnValue({ where: mockLanguagesWhere })
   })
 
   test("should return offer with skills and applicationCount", async () => {
@@ -131,6 +150,8 @@ describe("src/server/services/offers/get", () => {
     mockQueryResults.push([
       { id: "s1", name: "React", slug: "react", category: "frontend" },
     ])
+    // Language requirements query result (index 2)
+    mockQueryResults.push([])
 
     const { getOfferById } = await import("@/server/services/offers/get")
     const result = await getOfferById("offer-1")
@@ -173,6 +194,8 @@ describe("src/server/services/offers/get", () => {
     ])
     // Skills query result (index 1) - no skills
     mockQueryResults.push([])
+    // Language requirements query result (index 2)
+    mockQueryResults.push([])
 
     const { getOfferById } = await import("@/server/services/offers/get")
     const result = await getOfferById("offer-1")
@@ -213,6 +236,8 @@ describe("src/server/services/offers/get", () => {
       },
     ])
     // Skills query result (index 1) - no skills
+    mockQueryResults.push([])
+    // Language requirements query result (index 2)
     mockQueryResults.push([])
 
     const { getOfferById } = await import("@/server/services/offers/get")

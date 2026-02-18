@@ -18,6 +18,7 @@ mock.module("@/env", () => ({
 
 mock.module("@/server/caching/redis-ratelimiter", () => ({
   getRateLimiter: () => mockLimiter,
+  isRateLimitingEnabled: () => false,
 }))
 
 mock.module("next/headers", () => ({
@@ -28,12 +29,24 @@ mock.module("next/headers", () => ({
   },
 }))
 
-mock.module("@/server/logging", () => ({
-  createModuleLogger: () => ({
+mock.module("@/server/logging", () => {
+  const loggerMock = {
+    trace: () => {},
+    debug: () => {},
+    info: () => {},
     warn: () => {},
     error: () => {},
-  }),
-}))
+    fatal: () => {},
+    child: () => loggerMock,
+  }
+
+  return {
+    logger: loggerMock,
+    log: loggerMock,
+    createLogger: () => loggerMock,
+    createModuleLogger: () => loggerMock,
+  }
+})
 
 describe("ratelimit middleware fallback policy", () => {
   const setNodeEnv = (value: string) => {

@@ -62,7 +62,7 @@ mock.module("@/server/db", () => ({ db: dbMock }))
 
 // Mock the pipeline module (appendTimelineEvent is called after the transaction)
 mock.module("@/server/services/applications/pipeline", () => ({
-  appendTimelineEvent: mock(() => Promise.resolve()),
+  appendTimelineEvent: mock(() => Promise.resolve({ eventId: "evt-1" })),
 }))
 
 describe("src/server/services/applications/apply", () => {

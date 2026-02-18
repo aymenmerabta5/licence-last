@@ -32,6 +32,10 @@ import {
 import {
   getOfferByIdProcedure,
   listOffersByCompanyProcedure,
+  listSavedOffersProcedure,
+  checkOfferSavedProcedure,
+  saveOfferProcedure,
+  unsaveOfferProcedure,
   createOfferProcedure,
   updateOfferProcedure,
   deleteOfferProcedure,
@@ -85,6 +89,8 @@ import {
 } from "@/server/orpc/routes/documents"
 import {
   listNotificationsProcedure,
+  getNotificationPreferencesProcedure,
+  updateNotificationPreferencesProcedure,
   markAllNotificationsReadProcedure,
   markNotificationReadProcedure,
 } from "@/server/orpc/routes/notifications"
@@ -110,6 +116,12 @@ import {
   getSkillGapProcedure,
 } from "@/server/orpc/routes/matching"
 import {
+  confirmInterviewSlotProcedure,
+  listInterviewsForCompanyProcedure,
+  listInterviewsForStudentProcedure,
+  proposeInterviewSlotsProcedure,
+} from "@/server/orpc/routes/interviews"
+import {
   listUsersProcedure,
   createUserProcedure,
   setRoleProcedure,
@@ -129,6 +141,25 @@ import {
   approveUniversityProcedure,
   rejectUniversityProcedure,
 } from "@/server/orpc/routes/universities"
+import {
+  listMessageThreadsByCompanyProcedure,
+  listMessageThreadsByStudentProcedure,
+  listThreadMessagesProcedure,
+  markThreadReadProcedure,
+  sendOfferMessageByCompanyProcedure,
+  sendOfferMessageByStudentProcedure,
+} from "@/server/orpc/routes/messages"
+import {
+  createStudentExperienceProcedure,
+  createStudentProjectProcedure,
+  deleteStudentExperienceProcedure,
+  deleteStudentProjectProcedure,
+  deleteStudentResumeProcedure,
+  getStudentCvProcedure,
+  updateStudentExperienceProcedure,
+  updateStudentProjectProcedure,
+  uploadStudentResumeProcedure,
+} from "@/server/orpc/routes/student-cv"
 
 export const appRouter = {
   users: {
@@ -168,6 +199,10 @@ export const appRouter = {
   offers: {
     getById: getOfferByIdProcedure,
     listByCompany: listOffersByCompanyProcedure,
+    listSaved: listSavedOffersProcedure,
+    checkSaved: checkOfferSavedProcedure,
+    save: saveOfferProcedure,
+    unsave: unsaveOfferProcedure,
     create: createOfferProcedure,
     update: updateOfferProcedure,
     delete: deleteOfferProcedure,
@@ -229,8 +264,35 @@ export const appRouter = {
   },
   notifications: {
     list: listNotificationsProcedure,
+    getPreferences: getNotificationPreferencesProcedure,
+    updatePreferences: updateNotificationPreferencesProcedure,
     markRead: markNotificationReadProcedure,
     markAllRead: markAllNotificationsReadProcedure,
+  },
+  interviews: {
+    listForCompany: listInterviewsForCompanyProcedure,
+    listForStudent: listInterviewsForStudentProcedure,
+    proposeSlots: proposeInterviewSlotsProcedure,
+    confirmSlot: confirmInterviewSlotProcedure,
+  },
+  messages: {
+    listByCompany: listMessageThreadsByCompanyProcedure,
+    listByStudent: listMessageThreadsByStudentProcedure,
+    listThreadMessages: listThreadMessagesProcedure,
+    sendByCompany: sendOfferMessageByCompanyProcedure,
+    sendByStudent: sendOfferMessageByStudentProcedure,
+    markThreadRead: markThreadReadProcedure,
+  },
+  studentCv: {
+    get: getStudentCvProcedure,
+    createExperience: createStudentExperienceProcedure,
+    updateExperience: updateStudentExperienceProcedure,
+    deleteExperience: deleteStudentExperienceProcedure,
+    createProject: createStudentProjectProcedure,
+    updateProject: updateStudentProjectProcedure,
+    deleteProject: deleteStudentProjectProcedure,
+    uploadResume: uploadStudentResumeProcedure,
+    deleteResume: deleteStudentResumeProcedure,
   },
   stats: {
     getAdminStats: getAdminStatsProcedure,

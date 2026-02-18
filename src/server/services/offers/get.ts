@@ -7,6 +7,7 @@ import {
   internshipOffer,
   internshipOfferSkill,
 } from "@/server/db/schema/internships"
+import { internshipOfferLanguageRequirement } from "@/server/db/schema/languages"
 import { company } from "@/server/db/schema/companies"
 import { skillTag } from "@/server/db/schema/skills"
 import { application } from "@/server/db/schema/applications"
@@ -76,9 +77,21 @@ export async function getOfferById(offerId: string) {
     .innerJoin(skillTag, eq(internshipOfferSkill.skillTagId, skillTag.id))
     .where(eq(internshipOfferSkill.offerId, offerId))
 
+  const languageRequirements = await db
+    .select({
+      languageCode: internshipOfferLanguageRequirement.languageCode,
+      minimumProficiency:
+        internshipOfferLanguageRequirement.minimumProficiency,
+      isRequired: internshipOfferLanguageRequirement.isRequired,
+      weight: internshipOfferLanguageRequirement.weight,
+    })
+    .from(internshipOfferLanguageRequirement)
+    .where(eq(internshipOfferLanguageRequirement.offerId, offerId))
+
   return {
     ...row,
     skills,
+    languageRequirements,
     applicationCount: row.applicationCount ?? 0,
   }
 }
