@@ -16,6 +16,8 @@ const log = createModuleLogger("services/offers/update")
 interface OfferLanguageRequirementInput {
   languageCode: string
   minimumProficiency: ProficiencyLevel
+  isRequired?: boolean
+  weight?: number
 }
 
 export async function updateOffer(
@@ -101,8 +103,8 @@ export async function updateOffer(
             offerId,
             languageCode: entry.languageCode,
             minimumProficiency: entry.minimumProficiency,
-            isRequired: true,
-            weight: 1,
+            isRequired: entry.isRequired ?? true,
+            weight: entry.weight ?? 1,
           })),
         )
       }

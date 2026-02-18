@@ -65,7 +65,7 @@ describe("checkAdminApproval", () => {
     expect(result).toEqual({ ok: true })
   })
 
-  test("maps pending or suspended companies to pending denial", async () => {
+  test("maps suspended companies to suspended denial", async () => {
     mockGetCompanyStatusByUserId.mockResolvedValue({ status: "suspended" })
 
     const result = await checkAdminApproval(
@@ -80,7 +80,7 @@ describe("checkAdminApproval", () => {
       },
     )
 
-    expect(result).toEqual({ ok: false, reason: "company_pending" })
+    expect(result).toEqual({ ok: false, reason: "company_suspended" })
   })
 
   test("maps rejected companies to rejected denial", async () => {

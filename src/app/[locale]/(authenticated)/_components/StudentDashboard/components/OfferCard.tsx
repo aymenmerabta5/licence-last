@@ -52,9 +52,16 @@ export function OfferCard({ offer }: OfferCardProps) {
             )}
           </div>
           <div className="flex flex-col items-start sm:items-end justify-between gap-2 shrink-0">
-            <Badge className="bg-foreground text-background border-none text-[8px] font-bold uppercase tracking-[0.2em] px-2.5 py-1 rounded-none">
-              {offer.internshipType}
-            </Badge>
+            <div className="flex flex-wrap items-center gap-1.5">
+              <Badge className="bg-foreground text-background border-none text-[8px] font-bold uppercase tracking-[0.2em] px-2.5 py-1 rounded-none">
+                {offer.internshipType}
+              </Badge>
+              {offer.matchScore != null ? (
+                <Badge className="bg-primary/10 text-primary border border-primary/20 text-[8px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded-none">
+                  {offer.matchScore}%
+                </Badge>
+              ) : null}
+            </div>
             <span className="text-[9px] text-muted-foreground/40 flex items-center gap-1.5 uppercase tracking-wider font-medium">
               <Calendar className="h-3 w-3" />
               {relativeTime(offer.createdAt, locale)}

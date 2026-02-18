@@ -135,8 +135,13 @@ export async function getExplainableMatchScore(
 
   let languageScore: number = MATCH_WEIGHT.language
   let languageMet = 0
+  let requiredLanguageCount = 0
+  let requiredLanguageMet = 0
   if (languageReqs.length > 0) {
-    const totalWeight = languageReqs.reduce((sum, req) => sum + Math.max(1, req.weight), 0)
+    const totalWeight = languageReqs.reduce(
+      (sum, req) => sum + Math.max(1, req.weight),
+      0,
+    )
     const metWeight = languageReqs.reduce((sum, req) => {
       const level = languageByCode.get(req.languageCode.toLowerCase())
       if (!level) return sum
@@ -144,11 +149,31 @@ export async function getExplainableMatchScore(
       const requiredRank = PROFIENCY_RANK[req.minimumProficiency as ProficiencyLevel] ?? 0
       return studentRank >= requiredRank ? sum + Math.max(1, req.weight) : sum
     }, 0)
+
+    const requiredReqs = languageReqs.filter((req) => req.isRequired)
+    requiredLanguageCount = requiredReqs.length
+    requiredLanguageMet = requiredReqs.reduce((count, req) => {
+      const level = languageByCode.get(req.languageCode.toLowerCase())
+      if (!level) return count
+      const studentRank = PROFIENCY_RANK[level as ProficiencyLevel] ?? 0
+      const requiredRank = PROFIENCY_RANK[req.minimumProficiency as ProficiencyLevel] ?? 0
+      return studentRank >= requiredRank ? count + 1 : count
+    }, 0)
+
     languageMet = metWeight
-    languageScore =
+    const baseLanguageScore =
       totalWeight > 0
         ? Math.round((metWeight / totalWeight) * MATCH_WEIGHT.language)
         : MATCH_WEIGHT.language
+
+    if (requiredLanguageCount > 0) {
+      const requiredMissRatio =
+        (requiredLanguageCount - requiredLanguageMet) / requiredLanguageCount
+      const requiredPenalty = Math.round(requiredMissRatio * (MATCH_WEIGHT.language * 0.5))
+      languageScore = Math.max(0, baseLanguageScore - requiredPenalty)
+    } else {
+      languageScore = baseLanguageScore
+    }
   }
 
   let locationScore: number = MATCH_WEIGHT.location
@@ -202,7 +227,7 @@ export async function getExplainableMatchScore(
       detail:
         languageReqs.length === 0
           ? "No language requirement defined by the company."
-          : `${languageMet}/${languageReqs.reduce((sum, req) => sum + Math.max(1, req.weight), 0)} weighted requirements met.`,
+          : `${languageMet}/${languageReqs.reduce((sum, req) => sum + Math.max(1, req.weight), 0)} weighted requirements met${requiredLanguageCount > 0 ? ` (${requiredLanguageMet}/${requiredLanguageCount} required languages met)` : ""}.`,
       impact: languageScore,
     },
     {

@@ -513,6 +513,12 @@
         "contactSupport": "Contacter le Support",
         "reapply": "Modifier et Resoumettre"
       },
+      "suspended": {
+        "pageTitle": "Compte suspendu",
+        "title": "L'accÃ¨s Ã  votre entreprise est suspendu",
+        "subtitle": "Votre entreprise a Ã©tÃ© temporairement suspendue par la modÃ©ration de la plateforme. Veuillez contacter le support.",
+        "contactSupport": "Contacter le support"
+      },
       "profile": {
         "pageTitle": "Profil de l'Entreprise",
         "title": "Profil de l'Entreprise",
@@ -607,11 +613,15 @@
           "expectedStartDate": "Date de début prévue",
           "expectedEndDate": "Date de fin prévue",
           "languageRequirementsSection": "Exigences linguistiques",
-          "languageRequirementsHint": "Toutes les langues listées sont obligatoires dans cette version.",
+          "languageRequirementsHint": "Définissez le niveau minimum, le caractère obligatoire et la priorité pour chaque langue.",
           "language": "Langue",
           "languagePlaceholder": "Sélectionner une langue",
           "minimumProficiency": "Niveau minimum",
           "minimumProficiencyPlaceholder": "Sélectionner le niveau minimum",
+          "weight": "Priorité",
+          "weightPlaceholder": "Sélectionner la priorité",
+          "weightOption": "Priorité {weight}",
+          "requiredLabel": "Cette langue est obligatoire",
           "addLanguageRequirement": "Ajouter une exigence linguistique",
           "removeLanguageRequirementAria": "Retirer l'exigence {language}",
           "proficiencyLevels": {
@@ -1000,6 +1010,7 @@
       "application": "Candidature",
       "internshipOffer": "Offre de Stage",
       "trustIndex": "Indice de Confiance",
+      "viewCompanyProfile": "Voir le profil de l'entreprise",
       "report": {
         "trigger": "Signaler l'entreprise",
         "title": "Signaler l'entreprise",
@@ -1361,10 +1372,16 @@
         },
         "approve": "Approuver",
         "reject": "Rejeter",
+        "suspend": "Suspendre",
+        "reactivate": "Réactiver",
         "approveSuccess": "Entreprise approuvée avec succès.",
         "rejectSuccess": "Entreprise rejetée.",
+        "suspendSuccess": "Entreprise suspendue.",
+        "reactivateSuccess": "Entreprise réactivée.",
         "approveError": "Échec de l'approbation de l'entreprise.",
         "rejectError": "Échec du rejet de l'entreprise.",
+        "suspendError": "Échec de la suspension de l'entreprise.",
+        "reactivateError": "Échec de la réactivation de l'entreprise.",
         "rejectDialog": {
           "title": "Rejeter l'Entreprise",
           "description": "Indiquez le motif du rejet de cette candidature d'entreprise.",
@@ -1652,6 +1669,14 @@
         "saveError": "Impossible de mettre à jour les compétences."
       }
     }
+  },
+  "companyPublic": {
+    "kicker": "Profil d'entreprise",
+    "website": "Site web",
+    "trustIndex": "Indice de Confiance",
+    "openOffers": "Offres ouvertes",
+    "noOffers": "Aucune offre publiée active pour le moment.",
+    "positions": "postes"
   },
   "howItWorks": {
     "label": "Comment Ça Marche",

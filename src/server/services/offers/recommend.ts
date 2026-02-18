@@ -1,0 +1,118 @@
+import "server-only"
+
+import { eq } from "drizzle-orm"
+
+import { db } from "@/server/db"
+import { application } from "@/server/db/schema/applications"
+import { searchOffers } from "@/server/services/offers/search"
+import { getExplainableMatchScore } from "@/server/services/matching/score"
+
+interface RecommendOffersInput {
+  studentUserId: string
+  limit?: number
+  candidateLimit?: number
+}
+
+interface RankedOffer {
+  id: string
+  companyId: string
+  title: string
+  description: string
+  internshipType: "pfe" | "immersion" | "summer" | "practical"
+  workMode: "on_site" | "hybrid" | "remote" | null
+  wilayaCode: number | null
+  durationWeeks: number | null
+  maxPositions: number
+  status: "draft" | "published" | "closed"
+  applicationDeadlineAt: Date | null
+  expectedStartDate: Date | null
+  expectedEndDate: Date | null
+  closesAt: Date | null
+  createdAt: Date
+  companyName: string
+  companySlug: string
+  companyLogoUrl: string | null
+  companyWilayaCode: number | null
+  skills: {
+    id: string
+    name: string
+    slug: string
+    category: string | null
+  }[]
+  matchScore: number
+}
+
+async function mapWithConcurrency<TInput, TOutput>(
+  items: TInput[],
+  concurrency: number,
+  mapper: (item: TInput) => Promise<TOutput>,
+) {
+  const results: TOutput[] = []
+  let cursor = 0
+
+  async function worker() {
+    while (cursor < items.length) {
+      const currentIndex = cursor
+      cursor += 1
+      results[currentIndex] = await mapper(items[currentIndex] as TInput)
+    }
+  }
+
+  await Promise.all(
+    Array.from({ length: Math.max(1, Math.min(concurrency, items.length)) }, () =>
+      worker(),
+    ),
+  )
+
+  return results
+}
+
+/**
+ * Rank top recent offers by personalized matching score.
+ */
+export async function recommendOffersForStudent(
+  input: RecommendOffersInput,
+): Promise<{ offers: RankedOffer[] }> {
+  const limit = Math.max(1, Math.min(input.limit ?? 3, 12))
+  const candidateLimit = Math.max(20, Math.min(input.candidateLimit ?? 100, 200))
+
+  const [searchResult, appliedRows] = await Promise.all([
+    searchOffers({ limit: candidateLimit }),
+    db
+      .select({ offerId: application.offerId })
+      .from(application)
+      .where(eq(application.studentUserId, input.studentUserId)),
+  ])
+
+  const appliedOfferIds = new Set(appliedRows.map((row) => row.offerId))
+  const candidates = searchResult.offers.filter((offer) => !appliedOfferIds.has(offer.id))
+
+  const scored = await mapWithConcurrency(candidates, 10, async (offer) => {
+    let score = 0
+    try {
+      const match = await getExplainableMatchScore(input.studentUserId, offer.id)
+      score = match.score
+    } catch {
+      score = 0
+    }
+
+    return {
+      ...offer,
+      matchScore: score,
+    }
+  })
+
+  scored.sort((a, b) => {
+    if (b.matchScore !== a.matchScore) {
+      return b.matchScore - a.matchScore
+    }
+    if (b.createdAt.getTime() !== a.createdAt.getTime()) {
+      return b.createdAt.getTime() - a.createdAt.getTime()
+    }
+    return b.id.localeCompare(a.id)
+  })
+
+  return {
+    offers: scored.slice(0, limit),
+  }
+}

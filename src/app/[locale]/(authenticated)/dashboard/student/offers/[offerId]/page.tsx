@@ -26,7 +26,7 @@ export default async function StudentOfferDetailPage({
 
   const offer = await getOfferById(offerId)
 
-  if (!offer || offer.status !== "published") {
+  if (!offer || offer.status !== "published" || offer.companyStatus !== "approved") {
     notFound()
   }
 

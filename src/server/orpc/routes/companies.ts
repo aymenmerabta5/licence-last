@@ -19,6 +19,8 @@ import { createCompany } from "@/server/services/companies/create"
 import { updateCompany } from "@/server/services/companies/update"
 import { approveCompany } from "@/server/services/companies/approve"
 import { rejectCompany } from "@/server/services/companies/reject"
+import { suspendCompany } from "@/server/services/companies/suspend"
+import { reactivateCompany } from "@/server/services/companies/reactivate"
 import { getCompanyMembership } from "@/server/services/companies/membership"
 import {
   companyQualityFeedbackSchema,
@@ -315,6 +317,78 @@ export const rejectCompanyProcedure = superAdminProcedureStandard
     }
 
     return result
+  })
+
+export const suspendCompanyProcedure = superAdminProcedureStandard
+  .input(z.object({ companyId: z.string().min(1) }))
+  .handler(async ({ input, context }) => {
+    try {
+      const result = await suspendCompany(input.companyId, context.user.id)
+
+      // Invalidate company and public offer caches
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
+      revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
+      revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+
+      const members = await db
+        .select({ userId: companyMember.userId })
+        .from(companyMember)
+        .where(eq(companyMember.companyId, input.companyId))
+
+      for (const m of members) {
+        await createNotification({
+          userId: m.userId,
+          type: "company_suspended",
+          payload: { companyId: input.companyId, companyName: result.name },
+        })
+      }
+
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          COMPANY_NOT_FOUND: "NOT_FOUND",
+          COMPANY_INVALID_STATUS_TRANSITION: "BAD_REQUEST",
+        },
+        fallbackMessage: "Failed to suspend company",
+      })
+    }
+  })
+
+export const reactivateCompanyProcedure = superAdminProcedureStandard
+  .input(z.object({ companyId: z.string().min(1) }))
+  .handler(async ({ input, context }) => {
+    try {
+      const result = await reactivateCompany(input.companyId, context.user.id)
+
+      // Invalidate company and public offer caches
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
+      revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
+      revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+
+      const members = await db
+        .select({ userId: companyMember.userId })
+        .from(companyMember)
+        .where(eq(companyMember.companyId, input.companyId))
+
+      for (const m of members) {
+        await createNotification({
+          userId: m.userId,
+          type: "company_reactivated",
+          payload: { companyId: input.companyId, companyName: result.name },
+        })
+      }
+
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          COMPANY_NOT_FOUND: "NOT_FOUND",
+          COMPANY_INVALID_STATUS_TRANSITION: "BAD_REQUEST",
+        },
+        fallbackMessage: "Failed to reactivate company",
+      })
+    }
   })
 
 /* ── Uploads ── */

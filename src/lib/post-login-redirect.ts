@@ -22,6 +22,9 @@ export function getPostLoginRedirectPath(me: MeResult): string {
       if (company?.status === "rejected") {
         return "/status/company/rejected"
       }
+      if (company?.status === "suspended") {
+        return "/status/company/suspended"
+      }
       return "/status/company/pending"
 
     case "university_admin":

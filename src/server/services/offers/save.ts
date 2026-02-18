@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { internshipOffer, savedOffer } from "@/server/db/schema/internships"
+import { company } from "@/server/db/schema/companies"
 import { ServiceError } from "@/server/services/errors"
 
 export async function saveOffer(offerId: string, userId: string) {
@@ -11,8 +12,10 @@ export async function saveOffer(offerId: string, userId: string) {
     .select({
       id: internshipOffer.id,
       status: internshipOffer.status,
+      companyStatus: company.status,
     })
     .from(internshipOffer)
+    .innerJoin(company, eq(internshipOffer.companyId, company.id))
     .where(eq(internshipOffer.id, offerId))
     .limit(1)
 
@@ -20,7 +23,7 @@ export async function saveOffer(offerId: string, userId: string) {
     throw new ServiceError("OFFER_NOT_FOUND", "Offer not found")
   }
 
-  if (offer.status !== "published") {
+  if (offer.status !== "published" || offer.companyStatus !== "approved") {
     throw new ServiceError("OFFER_NOT_SAVABLE", "Only published offers can be saved")
   }
 

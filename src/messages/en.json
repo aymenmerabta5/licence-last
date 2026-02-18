@@ -513,6 +513,12 @@
         "contactSupport": "Contact Support",
         "reapply": "Update & Resubmit"
       },
+      "suspended": {
+        "pageTitle": "Account Suspended",
+        "title": "Your Company Access Is Suspended",
+        "subtitle": "Your company was temporarily suspended by platform moderation. Please contact support for assistance.",
+        "contactSupport": "Contact Support"
+      },
       "profile": {
         "pageTitle": "Company Profile",
         "title": "Company Profile",
@@ -607,11 +613,15 @@
           "expectedStartDate": "Expected Start Date",
           "expectedEndDate": "Expected End Date",
           "languageRequirementsSection": "Language Requirements",
-          "languageRequirementsHint": "All listed languages are mandatory in this version.",
+          "languageRequirementsHint": "Set minimum proficiency, required/optional flag, and priority for each language.",
           "language": "Language",
           "languagePlaceholder": "Select language",
           "minimumProficiency": "Minimum Proficiency",
           "minimumProficiencyPlaceholder": "Select minimum level",
+          "weight": "Priority Weight",
+          "weightPlaceholder": "Select priority",
+          "weightOption": "Priority {weight}",
+          "requiredLabel": "This language is mandatory",
           "addLanguageRequirement": "Add Language Requirement",
           "removeLanguageRequirementAria": "Remove {language} requirement",
           "proficiencyLevels": {
@@ -960,7 +970,7 @@
         "apply": "Apply"
       }
     },
-    "offerDetail": {
+      "offerDetail": {
       "back": "Back to search",
       "description": "Description",
       "requiredSkills": "Required Skills",
@@ -999,8 +1009,9 @@
       },
       "application": "Application",
       "internshipOffer": "Internship Offer",
-      "trustIndex": "Trust Index",
-      "report": {
+        "trustIndex": "Trust Index",
+        "viewCompanyProfile": "View Company Profile",
+        "report": {
         "trigger": "Report Company",
         "title": "Report Company",
         "description": "Share a trust or safety issue about {companyName}.",
@@ -1361,10 +1372,16 @@
         },
         "approve": "Approve",
         "reject": "Reject",
+        "suspend": "Suspend",
+        "reactivate": "Reactivate",
         "approveSuccess": "Company approved successfully.",
         "rejectSuccess": "Company rejected.",
+        "suspendSuccess": "Company suspended.",
+        "reactivateSuccess": "Company reactivated.",
         "approveError": "Failed to approve company.",
         "rejectError": "Failed to reject company.",
+        "suspendError": "Failed to suspend company.",
+        "reactivateError": "Failed to reactivate company.",
         "rejectDialog": {
           "title": "Reject Company",
           "description": "Provide a reason for rejecting this company application.",
@@ -1652,6 +1669,14 @@
         "saveError": "Could not update skills."
       }
     }
+  },
+  "companyPublic": {
+    "kicker": "Company Profile",
+    "website": "Website",
+    "trustIndex": "Trust Index",
+    "openOffers": "Open Offers",
+    "noOffers": "No active published offers at the moment.",
+    "positions": "positions"
   },
   "howItWorks": {
     "label": "How It Works",

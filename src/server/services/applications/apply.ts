@@ -8,7 +8,7 @@ import { db } from "@/server/db"
 const log = createModuleLogger("services/applications/apply")
 import { internshipOffer } from "@/server/db/schema/internships"
 import { application } from "@/server/db/schema/applications"
-import { companyMember } from "@/server/db/schema/companies"
+import { company, companyMember } from "@/server/db/schema/companies"
 import { notification } from "@/server/db/schema/notifications"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
@@ -49,6 +49,16 @@ export async function applyToOffer(
 
     if (offer.applicationDeadlineAt && offer.applicationDeadlineAt < new Date()) {
       throw new ApplicationServiceError("OFFER_DEADLINE_PASSED", "Offer application deadline has passed")
+    }
+
+    const [offerCompany] = await tx
+      .select({ status: company.status })
+      .from(company)
+      .where(eq(company.id, offer.companyId))
+      .limit(1)
+
+    if (!offerCompany || offerCompany.status !== "approved") {
+      throw new ApplicationServiceError("OFFER_NOT_OPEN", "Offer is not accepting applications")
     }
 
     // 2. Check positions not full (count admin_validated applications)

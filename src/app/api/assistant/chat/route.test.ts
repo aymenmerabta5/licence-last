@@ -37,7 +37,7 @@ mock.module("@/lib/auth", () => ({
 
 // Mock approval gate
 const mockCheckAdminApproval = mock<
-  () => Promise<{ ok: boolean; reason?: "company_pending" | "company_rejected" | "university_pending" | "university_rejected" }>
+  () => Promise<{ ok: boolean; reason?: "company_pending" | "company_rejected" | "company_suspended" | "university_pending" | "university_rejected" }>
 >()
 
 mock.module("@/server/auth/approval-gate", () => ({

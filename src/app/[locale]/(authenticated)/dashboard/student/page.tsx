@@ -6,7 +6,7 @@ import { StudentDashboard } from "@/app/[locale]/(authenticated)/_components/Stu
 import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
 import { getStudentProfile } from "@/server/services/students/get-profile"
 import { listApplicationsByStudent } from "@/server/services/applications/list-by-student"
-import { searchOffers } from "@/server/services/offers/search"
+import { recommendOffersForStudent } from "@/server/services/offers/recommend"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 
 export default async function StudentDashboardPage() {
@@ -23,7 +23,7 @@ export default async function StudentDashboardPage() {
     getStudentDashboardStats(user.id),
     listApplicationsByStudent(user.id, { limit: 5 }),
     getStudentProfile(user.id),
-    searchOffers({ limit: 3 }),
+    recommendOffersForStudent({ studentUserId: user.id, limit: 3 }),
   ])
 
   const profileCompleteness = calculateProfileCompleteness({
