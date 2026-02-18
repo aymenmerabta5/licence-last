@@ -16,8 +16,44 @@ interface ListUsersParams {
   filterOperator?: "eq" | "ne" | "lt" | "lte" | "gt" | "gte"
 }
 
-const getAuthApi = () => (globalThis as any).__authApi ?? auth.api
-type ListUsersDeps = { authApi?: typeof auth.api; getHeaders?: typeof headers }
+type RequestHeaders = Awaited<ReturnType<typeof headers>>
+
+interface ListUsersAuthApi {
+  listUsers(input: {
+    headers: RequestHeaders
+    query: {
+      limit: number
+      offset: number
+      searchValue?: string
+      searchField?: "email" | "name"
+      searchOperator?: "contains" | "starts_with" | "ends_with"
+      sortBy?: string
+      sortDirection?: "asc" | "desc"
+      filterField?: string
+      filterValue?: string | number | boolean
+      filterOperator?: "eq" | "ne" | "lt" | "lte" | "gt" | "gte"
+    }
+  }): Promise<{
+    users: Array<{
+      id: string
+      name: string | null
+      email: string
+      role?: string
+      banned?: boolean | null
+      banReason?: string | null
+      createdAt: string | Date
+      image?: string | null
+    }>
+    total: number
+    limit?: number
+    offset?: number
+  }>
+}
+
+type AuthApiGlobal = typeof globalThis & { __authApi?: ListUsersAuthApi }
+
+const getAuthApi = () => (globalThis as AuthApiGlobal).__authApi ?? auth.api
+type ListUsersDeps = { authApi?: ListUsersAuthApi; getHeaders?: typeof headers }
 
 export async function listUsers(params: ListUsersParams, deps: ListUsersDeps = {}) {
   const api = deps.authApi ?? getAuthApi()

@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach, afterAll } from "bun:test"
+import { describe, test, expect, mock, beforeEach } from "bun:test"
 
 const mockSetRole = mock(() => Promise.resolve({ success: true }))
 const mockHeaders = mock(() => Promise.resolve(new Headers()))
@@ -12,10 +12,11 @@ describe("setUserRole", () => {
 
   test("should call auth.api.setRole with userId and role", async () => {
     const { setUserRole } = await import("@/server/services/admin/set-role?fresh=1")
-    await setUserRole("user-1", "super_admin", { authApi: { setRole: mockSetRole } as any, getHeaders: mockHeaders })
+    await setUserRole("user-1", "super_admin", { authApi: { setRole: mockSetRole }, getHeaders: mockHeaders })
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const call = (mockSetRole.mock.calls as any)[0][0]
+    const call = (mockSetRole.mock.calls as unknown[][])[0][0] as {
+      body: { userId?: string; role?: string }
+    }
     expect(call.body.userId).toBe("user-1")
     expect(call.body.role).toBe("super_admin")
   })
@@ -25,15 +26,14 @@ describe("setUserRole", () => {
     const roles = ["student", "company_admin", "dept_head", "university_admin", "super_admin"] as const
     for (const role of roles) {
       mockSetRole.mockClear()
-      await setUserRole("user-1", role, { authApi: { setRole: mockSetRole } as any, getHeaders: mockHeaders })
+      await setUserRole("user-1", role, { authApi: { setRole: mockSetRole }, getHeaders: mockHeaders })
       expect(mockSetRole).toHaveBeenCalledTimes(1)
     }
   })
 
   test("should return result from auth API", async () => {
     const { setUserRole } = await import("@/server/services/admin/set-role?fresh=3")
-    const result = await setUserRole("user-1", "student", { authApi: { setRole: mockSetRole } as any, getHeaders: mockHeaders })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(result).toEqual({ success: true } as any)
+    const result = await setUserRole("user-1", "student", { authApi: { setRole: mockSetRole }, getHeaders: mockHeaders })
+    expect(result).toEqual({ success: true })
   })
 })

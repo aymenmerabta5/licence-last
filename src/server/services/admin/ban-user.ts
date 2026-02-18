@@ -9,8 +9,25 @@ interface BanUserData {
   banExpiresIn?: number
 }
 
+type RequestHeaders = Awaited<ReturnType<typeof headers>>
+
 interface BanUserDeps {
-  authApi?: typeof auth.api
+  authApi?: {
+    banUser(input: {
+      headers: RequestHeaders
+      body: {
+        userId: string
+        banReason?: string
+        banExpiresIn?: number
+      }
+    }): Promise<unknown>
+    unbanUser(input: {
+      headers: RequestHeaders
+      body: {
+        userId: string
+      }
+    }): Promise<unknown>
+  }
   getHeaders?: typeof headers
 }
 
