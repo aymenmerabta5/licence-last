@@ -67,10 +67,21 @@ export function useChatSession() {
   )
 
   const activeConversationId = selectedConversationId ?? conversations[0]?.id ?? null
-  const selectedConversation =
-    (activeConversationId
-      ? conversations.find((c) => c.id === activeConversationId)
-      : null) ?? null
+
+  const conversationQuery = useQuery({
+    ...orpc.assistant.getConversation.queryOptions({
+      input: { conversationId: activeConversationId ?? "__disabled__" },
+    }),
+    enabled: Boolean(activeConversationId),
+  })
+
+  const selectedConversation = useMemo(() => {
+    const fallback =
+      activeConversationId
+        ? conversations.find((c) => c.id === activeConversationId)
+        : null
+    return conversationQuery.data?.conversation ?? fallback ?? null
+  }, [activeConversationId, conversationQuery.data?.conversation, conversations])
 
   const createConversationMutation = useMutation(
     orpc.assistant.createConversation.mutationOptions({
@@ -97,6 +108,27 @@ export function useChatSession() {
     }),
   )
 
+  const updateTitleMutation = useMutation(
+    orpc.assistant.updateConversationTitle.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: listConversationsQuery.queryKey,
+        })
+        if (activeConversationId) {
+          await queryClient.invalidateQueries({
+            queryKey: orpc.assistant.getConversation.queryOptions({
+              input: { conversationId: activeConversationId },
+            }).queryKey,
+          })
+        }
+        toast.success(t("titleUpdateSuccess"))
+      },
+      onError: () => {
+        toast.error(t("titleUpdateError"))
+      },
+    }),
+  )
+
   const deleteConversationMutation = useMutation(
     orpc.assistant.deleteConversation.mutationOptions({
       onSuccess: async () => {
@@ -117,10 +149,29 @@ export function useChatSession() {
     }),
   )
 
-  const { data: messagesData, isLoading: messagesLoading } = useQuery({
-    ...orpc.assistant.listMessages.queryOptions({
-      input: { conversationId: activeConversationId ?? "__disabled__" },
+  const listMessagesQuery = useMemo(
+    () =>
+      orpc.assistant.listMessages.queryOptions({
+        input: { conversationId: activeConversationId ?? "__disabled__" },
+      }),
+    [activeConversationId],
+  )
+
+  const appendMessageMutation = useMutation(
+    orpc.assistant.appendMessage.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: listConversationsQuery.queryKey,
+        })
+        await queryClient.invalidateQueries({
+          queryKey: listMessagesQuery.queryKey,
+        })
+      },
     }),
+  )
+
+  const { data: messagesData, isLoading: messagesLoading } = useQuery({
+    ...listMessagesQuery,
     enabled: Boolean(activeConversationId),
   })
 
@@ -188,6 +239,30 @@ export function useChatSession() {
     })
   }
 
+  const handleUpdateTitle = (title: string | null) => {
+    if (!activeConversationId) return
+    updateTitleMutation.mutate({
+      conversationId: activeConversationId,
+      title,
+    })
+  }
+
+  const handleAppendNote = async (note: string) => {
+    if (!activeConversationId) return
+    const trimmed = note.trim()
+    if (!trimmed) return
+    try {
+      await appendMessageMutation.mutateAsync({
+        conversationId: activeConversationId,
+        role: "user",
+        parts: [{ type: "text", text: trimmed }],
+      })
+      toast.success(t("noteSavedSuccess"))
+    } catch {
+      toast.error(t("noteSavedError"))
+    }
+  }
+
   return {
     conversations,
     conversationsLoading,
@@ -202,5 +277,7 @@ export function useChatSession() {
     handleCreateConversation,
     handleDeleteConversation,
     handleUpdateModel,
+    handleUpdateTitle,
+    handleAppendNote,
   }
 }

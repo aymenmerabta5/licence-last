@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server"
 import { Link } from "@/i18n/routing"
 import { requireRole } from "@/lib/auth-guards"
 import { getWilayaName } from "@/lib/wilayas"
+import { orpcClient } from "@/server/orpc/client"
 import { getPublicCompanyBySlug } from "@/server/services/companies/get-public-by-slug"
 import { getCompanyTrustIndex } from "@/server/services/companies/trust-index"
 import { listPublicOffersByCompany } from "@/server/services/offers/list-public-by-company"
@@ -29,14 +30,16 @@ export default async function CompanyPublicProfilePage({
     notFound()
   }
 
-  const [t, trustData, offers] = await Promise.all([
+  const [t, companyFromRpc, trustData, offers] = await Promise.all([
     getTranslations("companyPublic"),
+    orpcClient.companies.getById({ companyId: company.id }).catch(() => null),
     getCompanyTrustIndex(company.id).catch(() => null),
     listPublicOffersByCompany(company.id),
   ])
+  const companyData = companyFromRpc ?? company
 
   const canOpenOffers = viewer.role === "student"
-  const location = getWilayaName(company.wilayaCode)
+  const location = getWilayaName(companyData.wilayaCode)
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -46,33 +49,33 @@ export default async function CompanyPublicProfilePage({
             {t("kicker")}
           </p>
           <div className="flex items-start gap-4">
-            {company.logoUrl ? (
+            {companyData.logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={company.logoUrl}
-                alt={company.name}
+                src={companyData.logoUrl}
+                alt={companyData.name}
                 className="h-16 w-16 object-cover border border-border/50"
               />
             ) : (
               <div className="h-16 w-16 border border-border/50 bg-primary/10 flex items-center justify-center font-serif text-xl text-primary">
-                {company.name.charAt(0).toUpperCase()}
+                {companyData.name.charAt(0).toUpperCase()}
               </div>
             )}
             <div className="space-y-1">
-              <h1 className="font-serif text-3xl leading-tight text-heading">{company.name}</h1>
+              <h1 className="font-serif text-3xl leading-tight text-heading">{companyData.name}</h1>
               {location ? (
                 <p className="text-sm text-muted-foreground">{location}</p>
               ) : null}
             </div>
           </div>
 
-          {company.description ? (
-            <p className="text-sm text-muted-foreground leading-relaxed">{company.description}</p>
+          {companyData.description ? (
+            <p className="text-sm text-muted-foreground leading-relaxed">{companyData.description}</p>
           ) : null}
 
           <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-            {company.websiteUrl ? (
-              <a href={company.websiteUrl} target="_blank" rel="noreferrer" className="underline">
+            {companyData.websiteUrl ? (
+              <a href={companyData.websiteUrl} target="_blank" rel="noreferrer" className="underline">
                 {t("website")}
               </a>
             ) : null}

@@ -1,24 +1,30 @@
 "use client"
 
 import Image from "next/image"
-import { Camera, ImagePlus, Loader2 } from "lucide-react"
+import { Camera, ImagePlus, Loader2, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface AvatarSectionProps {
   avatarInitial: string
   imageUrl: string | null
   isUploading: boolean
+  isDeleting: boolean
   inputRef: React.RefObject<HTMLInputElement | null>
   onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onDelete: () => Promise<void>
 }
 
 export function AvatarSection({
   avatarInitial,
   imageUrl,
   isUploading,
+  isDeleting,
   inputRef,
   onUpload,
+  onDelete,
 }: AvatarSectionProps) {
+  const isBusy = isUploading || isDeleting
+
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-6">
       <input
@@ -50,7 +56,7 @@ export function AvatarSection({
           {/* Hover overlay */}
           <button
             type="button"
-            disabled={isUploading}
+            disabled={isBusy}
             onClick={() => inputRef.current?.click()}
             className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/40 transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
             aria-label="Upload profile photo"
@@ -60,14 +66,14 @@ export function AvatarSection({
         </div>
 
         {/* Upload spinner indicator */}
-        {isUploading && (
+        {isBusy && (
           <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-background/80 backdrop-blur-sm">
             <Loader2 className="h-5 w-5 animate-spin text-primary" />
           </div>
         )}
       </div>
 
-      <div className="space-y-2.5">
+      <div className="space-y-2.5 flex flex-col items-start">
         <div>
           <h4 className="font-bold text-sm">Profile Picture</h4>
           <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -79,11 +85,24 @@ export function AvatarSection({
           variant="editorial-outline"
           size="editorial-sm"
           className="h-8 px-3 text-xs gap-1.5 rounded-lg"
-          disabled={isUploading}
+          disabled={isBusy}
           onClick={() => inputRef.current?.click()}
         >
           <ImagePlus className="h-3.5 w-3.5" />
           Upload Photo
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="editorial-sm"
+          className="h-8 px-3 text-xs gap-1.5 rounded-lg text-destructive hover:text-destructive"
+          disabled={isBusy || !imageUrl}
+          onClick={() => {
+            void onDelete()
+          }}
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+          Remove Photo
         </Button>
       </div>
     </div>

@@ -17,6 +17,16 @@ export interface StudentSkill {
   category: string | null
 }
 
+export interface StudentExperience {
+  id: string
+  title: string
+  organization: string
+  description: string | null
+  startDate: Date
+  endDate: Date | null
+  isCurrent: boolean
+}
+
 export interface StudentStats {
   totalApplications: number
   skillsCount: number
@@ -33,6 +43,7 @@ export interface StudentUniversity {
 export interface StudentData {
   profile: StudentProfile | null
   skills: StudentSkill[]
+  experiences: StudentExperience[]
   university: StudentUniversity | null
   stats: StudentStats | null
 }

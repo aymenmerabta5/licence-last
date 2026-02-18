@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl"
-import { Boxes, FolderTree, Trash2, UserCheck, UserMinus } from "lucide-react"
+import { Boxes, FolderTree, Pencil, Trash2, UserCheck, UserMinus } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -8,6 +8,7 @@ import type { DepartmentItem } from "@/app/[locale]/(authenticated)/dashboard/ad
 
 interface DepartmentCardProps {
   department: DepartmentItem
+  onEditDepartment: (department: DepartmentItem) => void
   onAssignHead: (department: DepartmentItem) => void
   onRemoveHead: (department: DepartmentItem) => void
   onDeleteDepartment: (department: DepartmentItem) => void
@@ -16,6 +17,7 @@ interface DepartmentCardProps {
 
 export function DepartmentCard({
   department,
+  onEditDepartment,
   onAssignHead,
   onRemoveHead,
   onDeleteDepartment,
@@ -52,6 +54,16 @@ export function DepartmentCard({
         </div>
 
         <div className="flex items-center gap-2 self-end sm:self-auto">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => onEditDepartment(department)}
+            className="rounded-lg px-3"
+          >
+            <Pencil className="h-3.5 w-3.5" />
+            {t("editDepartment")}
+          </Button>
           <Button
             type="button"
             variant="editorial-outline"

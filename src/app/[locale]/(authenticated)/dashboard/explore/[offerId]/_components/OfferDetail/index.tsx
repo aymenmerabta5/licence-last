@@ -6,6 +6,7 @@ import { reveal, ease } from "@/lib/animations"
 
 import { useOfferMatching } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useOfferMatching"
 import { useOfferApplication } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useOfferApplication"
+import { useOfferSave } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useOfferSave"
 import { useCompanyReport } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useCompanyReport"
 import { OfferHeader } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/OfferHeader"
 import { OfferBody } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/OfferBody"
@@ -24,12 +25,21 @@ export function OfferDetailClient({
 }: OfferDetailProps) {
   const matching = useOfferMatching(studentUserId, offer.id, offer.companyId)
   const app = useOfferApplication(offer, existingApplication)
+  const save = useOfferSave(offer.id)
   const companyReport = useCompanyReport(offer.companyId)
 
   return (
     <div className="space-y-10 pb-20">
       {/* Editorial Masthead */}
-      <OfferHeader offer={offer} />
+      <OfferHeader
+        offer={offer}
+        isSaved={save.isSaved}
+        isSaveBusy={save.isChecking || save.isMutating}
+        saveUnavailable={save.unavailable}
+        onToggleSaved={() => {
+          void save.toggleSaved()
+        }}
+      />
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">

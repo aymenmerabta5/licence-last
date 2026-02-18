@@ -30,7 +30,7 @@ function buildProfileText(
   if (user.email) lines.push(user.email)
   if (profile?.phone) lines.push(profile.phone)
   if (profile?.department) {
-    const dept = profile.level ? `${profile.department} — ${profile.level}` : profile.department
+    const dept = profile.level ? `${profile.department} - ${profile.level}` : profile.department
     lines.push(dept)
   }
   if (university) lines.push(university.name)
@@ -49,7 +49,7 @@ function buildProfileText(
 
 export function ProfileContent({ viewer, user, studentData }: ProfileContentProps) {
   const t = useTranslations("dashboard")
-  const { canEdit, profile, stats, university, skills } = useProfileData(
+  const { canEdit, profile, stats, university, skills, experiences } = useProfileData(
     viewer,
     user,
     (key, values) => t(key, values),
@@ -161,7 +161,11 @@ export function ProfileContent({ viewer, user, studentData }: ProfileContentProp
             labels={educationLabels}
             canEdit={canEdit}
           />
-          <ExperienceSection labels={experienceLabels} canEdit={canEdit} />
+          <ExperienceSection
+            labels={experienceLabels}
+            canEdit={canEdit}
+            experiences={experiences}
+          />
         </div>
       </div>
     </div>

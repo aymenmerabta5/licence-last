@@ -1,88 +1,88 @@
 {
   "metadata": {
-    "title": "إنترنكس — مستقبل اكتشاف التدريبات",
-    "description": "منصة موحدة تربط الجامعات بالشركات. التوافق المبني على المهارات، إنشاء المستندات تلقائياً، وتتبع التوظيفات."
+    "title": "إنترنكس — مستقبل اكتشاف التدريب الداخلي",
+    "description": "منصة مركزية لسد الفجوة بين الجامعات والمؤسسات. مطابقة قائمة على المهارات، توليد تلقائي للمستندات، وتتبع التنسيب."
   },
   "nav": {
-    "discover": "استكشاف",
+    "discover": "استكشف",
     "forStudents": "للطلاب",
-    "forRecruiters": "للشركات",
-    "about": "حول",
+    "forRecruiters": "للمجندين",
+    "about": "معلومات",
     "getStarted": "ابدأ الآن",
-    "dashboard": "لوحة التحكم",
+    "dashboard": "لوحة المعلومات",
     "logout": "تسجيل الخروج",
     "menu": "الأقسام والحساب",
     "aria": {
       "mainNav": "التنقل الرئيسي",
-      "getStarted": "البدء مع إنترنكس",
+      "getStarted": "ابدأ مع إنترنكس",
       "openMenu": "فتح القائمة",
-      "dashboard": "الانتقال إلى لوحة التحكم",
+      "dashboard": "انتقل إلى لوحة المعلومات",
       "accountMenu": "فتح قائمة الحساب"
     }
   },
   "hero": {
     "volume": "المجلد الأول — 2025",
-    "headline": "مستقبل اكتشاف فرص التدريب",
-    "headlineHighlight": "اكتشاف فرص التدريب",
-    "description1": "منصة موحدة تربط الجامعات بالشركات. التوافق المبني على المهارات، إنشاء المستندات تلقائياً، وتتبع التوظيفات—كل ذلك في نظام أنيق.",
-    "description2": "في إطار استراتيجية وزارة التعليم العالي والبحث العلمي لتعزيز رابط الجامعة-الشركة، تقوم إنترنكس برقمنة دورة حياة التدريب بأكملها من الاكتشاف إلى اتفاقية التدريب الرسمية.",
+    "headline": "مستقبل اكتشاف التدريب الداخلي",
+    "headlineHighlight": "من التدريب الداخلي",
+    "description1": "منصة مركزية تربط بين الجامعات والمؤسسات. مطابقة قائمة على المهارات، توليد تلقائي للمستندات، وتتبع التنسيب — كل ذلك في نظام واحد أنيق.",
+    "description2": "في إطار استراتيجية وزارة التعليم العالي والبحث العلمي لتعزيز الرابط بين الجامعة والمؤسسة، يقوم إنترنكس برقمنة دورة حياة التدريب بالكامل من الاكتشاف إلى اتفاقية التربص الرسمية.",
     "cta": "استكشف المنصة",
     "freeForStudents": "مجاني للطلاب",
     "aria": {
-      "explore": "استكشاف المنصة"
+      "explore": "استكشف المنصة"
     }
   },
   "features": {
     "studentSpace": {
-      "num": "٠١",
-      "title": "فضاء الطالب",
-      "desc": "أنشئ ملفك الشخصي، أضف مهاراتك، اربط GitHub. ابحث وقدم بطلبات باستخدام الفلاتر الذكية."
+      "num": "01",
+      "title": "مساحة الطالب",
+      "desc": "ابنِ ملفك الشخصي، حدد مهاراتك، واربط حسابك على جيت هاب. ابحث وقدم بمرشحات ذكية."
     },
     "companyPortal": {
-      "num": "٠٢",
+      "num": "02",
       "title": "بوابة الشركة",
-      "desc": "انشر العروض، تتبع المرشحين، اقبل المواهب. نقرة واحدة تبدأ سير العمل الكامل."
+      "desc": "انشر العروض، تتبع المرشحين، واقبل المواهب. نقرة واحدة تفعل سير العمل بالكامل."
     },
     "adminDashboard": {
-      "num": "٠٣",
-      "title": "لوحة تحكم المشرف",
-      "desc": "تحقق من التوظيفات، أنشئ ملفات PDF رسمية، استخدم تحليلات التوظيف العالمية."
+      "num": "03",
+      "title": "لوحة معلومات المسؤول",
+      "desc": "صادق على التنسيقات، استخرج ملفات PDF الرسمية، واطلع على تحليلات التنسيب العالمية."
     }
   },
   "marquee": {
     "items": [
-      "مطابقة التدريبات",
+      "مطابقة التدريب الداخلي",
       "السيرة الذاتية الرقمية",
-      "الفلاتر الذكية",
+      "مرشحات ذكية",
       "المستندات التلقائية",
-      "وسوم المهارات",
+      "علامات المهارات",
       "التتبع في الوقت الفعلي"
     ],
-    "aria": "أبرز المميزات"
+    "aria": "أهم الميزات"
   },
   "stats": {
     "students": {
-      "value": "+٢,٥٠٠",
-      "label": "طالب متصل"
+      "value": "2,500+",
+      "label": "الطلاب المتصلين"
     },
     "companies": {
-      "value": "+٣٥٠",
-      "label": "شركة شريكة"
+      "value": "350+",
+      "label": "شركات الشراكة"
     },
     "universities": {
-      "value": "٤٥",
-      "label": "جامعة"
+      "value": "45",
+      "label": "الجامعات"
     },
     "placementRate": {
-      "value": "٩٦٪",
-      "label": "معدل التوظيف"
+      "value": "96%",
+      "label": "معدل التنسيب"
     }
   },
   "language": {
     "switcher": {
-      "aria": "اختيار اللغة",
-      "en": "EN",
-      "fr": "FR",
+      "aria": "اختر اللغة",
+      "en": "الإنجليزية",
+      "fr": "الفرنسية",
       "ar": "العربية"
     }
   },
@@ -94,51 +94,51 @@
     }
   },
   "notFound": {
-    "edition": "إصدار مفقود",
+    "edition": "الإصدار المفقود",
     "headline": "الصفحة غير موجودة",
-    "description": "يبدو أن المقال الذي تبحث عنه قد تمت إزالته من منشورنا، أو أُعيدت تسميته، أو أنه غير متاح مؤقتاً.",
+    "description": "يبدو أن المقال الذي تبحث عنه قد تمت إزالته من منشوراتنا، أو تم تغيير اسمه، أو أنه غير متاح مؤقتاً.",
     "returnHome": "العودة إلى الرئيسية",
-    "suggestion": "ننصحك بالبدء من الإصدار الرئيسي"
+    "suggestion": "نقترح البدء من الإصدار الرئيسي"
   },
   "goodbye": {
     "headline": "تم حذف الحساب",
-    "description": "تم حذف حسابك وجميع البيانات المرتبطة به نهائيًا. نأسف لرحيلك. يمكنك دائمًا إنشاء حساب جديد في المستقبل.",
+    "description": "تم حذف حسابك وجميع البيانات المرتبطة به نهائياً. نحن آسفون لرحيلك. نرحب بك دائماً لإنشاء حساب جديد في المستقبل.",
     "returnHome": "العودة إلى الرئيسية"
   },
   "auth": {
     "login": {
       "pageTitle": "تسجيل الدخول",
-      "title": "مرحباً بعودتك",
-      "subtitle": "سجّل الدخول إلى حسابك في إنترنكس",
-      "email": "البريد الإلكتروني",
+      "title": "أهلاً وسهلاً",
+      "subtitle": "سجل الدخول إلى حساب إنترنكس الخاص بك",
+      "email": "عنوان البريد الإلكتروني",
       "emailPlaceholder": "you@university.edu",
       "password": "كلمة المرور",
-      "passwordPlaceholder": "أدخل كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور الخاصة بك",
       "rememberMe": "تذكرني",
-      "forgotPassword": "نسيت كلمة المرور؟",
+      "forgotPassword": "هل نسيت كلمة المرور؟",
       "submit": "تسجيل الدخول",
       "noAccount": "ليس لديك حساب؟",
-      "createOne": "أنشئ واحداً",
+      "createOne": "أنشئ حساباً",
       "or": "أو",
-      "error": "البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.",
+      "error": "البريد الإلكتروني أو كلمة المرور غير صالحة. يرجى المحاولة مرة أخرى.",
       "emailNotVerified": "يرجى التحقق من بريدك الإلكتروني للمتابعة.",
       "resendVerification": "إعادة إرسال بريد التحقق",
-      "verificationSent": "تم إرسال بريد التحقق. تحقق من صندوق الوارد.",
+      "verificationSent": "تم إرسال بريد التحقق. تفقد بريدك الوارد.",
       "twoFactor": {
         "title": "المصادقة الثنائية",
         "subtitle": "أدخل رمز التحقق للمتابعة",
         "codeLabel": "رمز التحقق",
-        "codePlaceholder": "أدخل الرمز المكون من 6 أرقام",
+        "codePlaceholder": "أدخل رمز 6 أرقام",
         "totp": "تطبيق المصادقة",
         "otp": "رمز البريد الإلكتروني",
-        "backup": "رمز الاحتياطي",
+        "backup": "رمز النسخة الاحتياطية",
         "verify": "تحقق",
-        "sendOtp": "إرسال الرمز",
+        "sendOtp": "إرسال رمز",
         "otpSent": "تم إرسال الرمز إلى بريدك الإلكتروني",
-        "trustDevice": "الوثوق بهذا الجهاز لمدة 30 يومًا",
+        "trustDevice": "الوثوق بهذا الجهاز لمدة 30 يوماً",
         "invalidCode": "رمز غير صالح. يرجى المحاولة مرة أخرى.",
         "error": "فشل التحقق. يرجى المحاولة مرة أخرى.",
-        "backToLogin": "العودة لتسجيل الدخول"
+        "backToLogin": "العودة إلى تسجيل الدخول"
       }
     },
     "signup": {
@@ -150,32 +150,32 @@
         "subtitle": "حدد كيف تريد استخدام إنترنكس",
         "student": {
           "title": "أنا طالب",
-          "description": "ابحث عن تدريبات، أنشئ ملفك الشخصي، وتواصل مع الشركات."
+          "description": "ابحث عن تدريب، ابنِ ملفك الشخصي، وتواصل مع الشركات."
         },
         "company": {
           "title": "أنا شركة",
-          "description": "انشر عروض التدريب، اكتشف المواهب، وأدر الطلبات."
+          "description": "انشر عروض التدريب، اكتشف المواهب، وادر الطلبات."
         },
         "university": {
-          "title": "أنا مسؤول جامعي",
-          "description": "إدارة جامعتك، الموافقة على نطاقات الطلاب، والإشراف على التدريب."
+          "title": "أنا مسؤول جامعة",
+          "description": "أدر جامعتك، صادق على مجالات الطلاب، وأشرف على التربصات."
         }
       },
       "companySignup": {
         "title": "تسجيل الشركة",
-        "subtitle": "أنشئ حساب مدير الشركة",
+        "subtitle": "أنشئ حساب مسؤول الشركة",
         "emailPlaceholder": "you@company.com",
-        "verifyDescription": "أرسلنا لك رابط تحقق. افتحه، ثم أكمل إعداد شركتك."
+        "verifyDescription": "لقد أرسلنا لك رابط تحقق. افتحه، ثم أكمل إعداد شركتك."
       },
       "universitySignup": {
         "title": "تسجيل الجامعة",
-        "subtitle": "أنشئ حساب مسؤول الجامعة الخاص بك",
+        "subtitle": "أنشئ حساب مسؤول الجامعة",
         "emailPlaceholder": "you@university.edu",
-        "verifyDescription": "تم إرسال رابط التحقق إليك. افتحه ثم قم بإعداد جامعتك."
+        "verifyDescription": "لقد أرسلنا لك رابط تحقق. افتحه، ثم قم بإعداد جامعتك."
       },
       "name": "الاسم الكامل",
-      "namePlaceholder": "أحمد محمد",
-      "email": "البريد الإلكتروني",
+      "namePlaceholder": "أحمد علي",
+      "email": "عنوان البريد الإلكتروني",
       "emailPlaceholder": "you@university.edu",
       "password": "كلمة المرور",
       "passwordPlaceholder": "أنشئ كلمة مرور قوية",
@@ -185,219 +185,223 @@
       "terms": "شروط الخدمة",
       "and": "و",
       "privacy": "سياسة الخصوصية",
-      "submit": "إنشاء الحساب",
-      "hasAccount": "لديك حساب بالفعل؟",
+      "submit": "إنشاء حساب",
+      "hasAccount": "هل لديك حساب بالفعل؟",
       "signIn": "تسجيل الدخول",
       "or": "أو",
-      "back": "رجوع",
-      "passwordHint": "٨ أحرف على الأقل",
+      "back": "عودة",
+      "passwordHint": "8 أحرف على الأقل",
       "passwordMismatch": "كلمات المرور غير متطابقة",
-      "termsRequired": "يجب الموافقة على الشروط",
-      "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+      "termsRequired": "يجب أن توافق على الشروط",
+      "error": "حدث شيء خاطئ. يرجى المحاولة مرة أخرى.",
       "verifyTitle": "تحقق من بريدك الإلكتروني",
-      "verifyDescription": "أرسلنا لك رابط تحقق. افتحه لتفعيل حسابك.",
-      "backToLogin": "العودة لتسجيل الدخول"
+      "verifyDescription": "أرسلنا لك رابط تحقق. افتحه لتنشيط حسابك.",
+      "backToLogin": "العودة إلى تسجيل الدخول"
     },
     "resetPassword": {
       "pageTitle": "إعادة تعيين كلمة المرور",
       "verifyPageTitle": "تعيين كلمة مرور جديدة",
       "title": "إعادة تعيين كلمة المرور",
-      "subtitle": "سنرسل لك رابط إعادة التعيين عبر البريد الإلكتروني",
+      "subtitle": "سنرسل رابط إعادة التعيين إلى بريدك الإلكتروني",
       "verifyTitle": "تعيين كلمة مرور جديدة",
-      "verifySubtitle": "اختر كلمة مرور قوية لحسابك.",
-      "email": "البريد الإلكتروني",
+      "verifySubtitle": "اختر كلمة مرور آمنة لحسابك.",
+      "email": "عنوان البريد الإلكتروني",
       "emailPlaceholder": "you@university.edu",
       "newPassword": "كلمة المرور الجديدة",
       "newPasswordPlaceholder": "8 أحرف على الأقل",
       "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
       "confirmNewPasswordPlaceholder": "أعد إدخال كلمة المرور الجديدة",
-      "submit": "إرسال رابط إعادة التعيين",
+      "submit": "إرسال رابط التعيين",
       "setPassword": "تعيين كلمة المرور",
-      "setPasswordSuccess": "تم تحديث كلمة المرور. يمكنك الآن تسجيل الدخول.",
-      "setPasswordError": "تعذر إعادة تعيين كلمة المرور. يرجى المحاولة مرة أخرى.",
-      "invalidOrExpired": "رابط إعادة التعيين غير صالح أو منتهي الصلاحية.",
-      "backToLogin": "العودة لتسجيل الدخول",
-      "success": "إذا كان هناك حساب مرتبط بهذا البريد الإلكتروني، ستتلقى رابط إعادة التعيين قريباً.",
-      "description": "أدخل عنوان البريد الإلكتروني المرتبط بحسابك وسنرسل لك رابطاً لإعادة تعيين كلمة المرور."
+      "setPasswordSuccess": "تم تحديث كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول.",
+      "setPasswordError": "تعذر إعادة تعيين كلمة المرور. حاول مرة أخرى.",
+      "invalidOrExpired": "رابط إعادة التعيين هذا غير صالح أو منتهي الصلاحية.",
+      "backToLogin": "العودة إلى تسجيل الدخول",
+      "success": "إذا كان هناك حساب مرتبط بهذا البريد، ستتلقى رابطاً قريباً.",
+      "description": "أدخل البريد الإلكتروني المرتبط بحسابك وسنرسل لك رابطاً لإعادة تعيين كلمة المرور."
     },
     "panel": {
-      "volume": "المجلد الأول — ٢٠٢٥",
-      "tagline": "حيث يلتقي الموهبة بالفرصة",
-      "description": "الجسر بين الجامعة والشركة",
-      "established": "تأسست ٢٠٢٥",
-      "backHomeAria": "العودة إلى الرئيسية"
+      "volume": "المجلد الأول — 2025",
+      "tagline": "حيث تلتقي الموهبة بالفرصة",
+      "description": "الجسر بين الجامعة والمؤسسة",
+      "established": "تأسس عام 2025",
+      "backHomeAria": "العودة للرئيسية"
     },
     "validation": {
       "emailInvalid": "يرجى إدخال بريد إلكتروني صالح",
       "passwordRequired": "كلمة المرور مطلوبة",
-      "passwordMin": "يجب أن تتكون كلمة المرور من ٨ أحرف على الأقل",
-      "nameMin": "يجب أن يتكون الاسم من حرفين على الأقل",
+      "passwordMin": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+      "nameMin": "يجب أن يكون الاسم حرفين على الأقل",
       "confirmRequired": "يرجى تأكيد كلمة المرور",
       "passwordMismatch": "كلمات المرور غير متطابقة",
-      "termsRequired": "يجب الموافقة على الشروط",
-      "companyNameMin": "يجب أن يتكون اسم الشركة من حرفين على الأقل",
+      "termsRequired": "يجب أن توافق على الشروط",
+      "companyNameMin": "يجب أن يكون اسم الشركة حرفين على الأقل",
       "websiteUrlInvalid": "يرجى إدخال رابط صالح",
-      "wilayaRequired": "يرجى اختيار ولاية",
+      "wilayaRequired": "يرجى اختيار الولاية",
       "wilayaInvalid": "رمز ولاية غير صالح",
       "githubUrlInvalid": "يرجى إدخال رابط GitHub صالح",
-      "portfolioUrlInvalid": "يرجى إدخال رابط محفظة صالح",
+      "portfolioUrlInvalid": "يرجى إدخال رابط محفظة أعمال صالح",
       "skillsMin": "يرجى اختيار مهارة واحدة على الأقل",
-      "skillsMax": "يمكنك اختيار حتى ١٠ مهارات",
-      "offerTitleMin": "يجب أن يتكون العنوان من ٣ أحرف على الأقل",
-      "offerDescriptionMin": "يجب أن يتكون الوصف من ١٠ أحرف على الأقل",
+      "skillsMax": "يمكنك اختيار ما يصل إلى 10 مهارات",
+      "studentLanguagesMin": "يرجى إضافة لغة واحدة على الأقل",
+      "offerTitleMin": "يجب أن يكون العنوان 3 أحرف على الأقل",
+      "offerDescriptionMin": "يجب أن يكون الوصف 10 أحرف على الأقل",
       "internshipTypeRequired": "يرجى اختيار نوع التدريب",
       "durationWeeksMin": "يجب أن تكون المدة أسبوعاً واحداً على الأقل",
-      "durationWeeksMax": "لا يمكن أن تتجاوز المدة ٥٢ أسبوعاً",
+      "durationWeeksMax": "لا يمكن أن تتجاوز المدة 52 أسبوعاً",
       "maxPositionsMin": "مطلوب منصب واحد على الأقل",
-      "maxPositionsMax": "لا يمكن أن يتجاوز ١٠٠ منصب",
-      "offerSkillsMax": "يمكنك اختيار حتى ٢٠ مهارة",
+      "maxPositionsMax": "لا يمكن تجاوز 100 منصب",
+      "offerSkillsMax": "يمكنك اختيار ما يصل إلى 20 مهارة",
+      "offerLanguageRequirementsMin": "يرجى إضافة لغة مطلوبة واحدة على الأقل",
+      "languageDuplicate": "لا يسمح بتكرار اللغات",
       "dateInvalid": "يرجى إدخال تاريخ صالح",
-      "expectedPeriodBothRequired": "يجب إدخال تاريخي البداية والنهاية المتوقعين معًا",
-      "expectedPeriodInvalid": "يجب أن يكون تاريخ البداية المتوقع قبل تاريخ النهاية المتوقع",
-      "deadlineAfterExpectedStart": "يجب أن يكون موعد انتهاء التقديم في أو قبل تاريخ البداية المتوقع",
-      "universityNameMin": "يجب أن يحتوي اسم الجامعة على حرفين على الأقل",
-      "domainsRequired": "مطلوب نطاق بريد إلكتروني واحد على الأقل",
-      "studentLanguagesMin": "Please add at least one language",
-      "offerLanguageRequirementsMin": "Please add at least one required language",
-      "languageDuplicate": "Duplicate languages are not allowed"
+      "expectedPeriodBothRequired": "يجب توفير تاريخي البدء والانتهاء المتوقعين",
+      "expectedPeriodInvalid": "يجب أن يكون تاريخ البدء قبل تاريخ الانتهاء",
+      "deadlineAfterExpectedStart": "يجب أن يكون الموعد النهائي للتقديم قبل أو في تاريخ البدء",
+      "universityNameMin": "يجب أن يكون اسم الجامعة حرفين على الأقل",
+      "domainsRequired": "مطلوب نطاق بريد إلكتروني واحد على الأقل"
     }
   },
   "onboarding": {
     "company": {
       "pageTitle": "إعداد الشركة",
-      "title": "أعدّ شركتك",
-      "subtitle": "أخبرنا عن مؤسستك للبدء",
+      "title": "قم بإعداد شركتك",
+      "subtitle": "أخبرنا عن منظمتك للبدء",
       "panelHeadline": "ابنِ فريق أحلامك",
-      "panelDescription": "تواصل مع أفضل المواهب الجامعية عبر الجزائر وسهّل عملية توظيف المتدربين.",
-      "panelFeature1": "الوصول إلى ملفات طلابية موثقة",
-      "panelFeature2": "خط توظيف مُبسّط وفعال",
+      "panelDescription": "تواصل مع أفضل المواهب الجامعية في الجزائر وقم بتبسيط عمليات توظيف المتدربين.",
+      "panelFeature1": "الوصول إلى ملفات الطلاب الموثقة",
+      "panelFeature2": "مسار توظيف مبسط",
       "panelFeature3": "شراكات جامعية مباشرة",
       "companySection": "تفاصيل الشركة",
       "locationSection": "الموقع",
       "name": "اسم الشركة",
       "namePlaceholder": "شركة أكمي",
       "description": "الوصف",
-      "descriptionPlaceholder": "وصف مختصر لشركتك...",
+      "descriptionPlaceholder": "وصف قصير لشركتك...",
       "websiteUrl": "الموقع الإلكتروني",
       "websiteUrlPlaceholder": "https://example.com",
       "wilaya": "الولاية",
       "wilayaPlaceholder": "اختر ولايتك",
       "address": "العنوان",
-      "addressPlaceholder": "١٢٣ الشارع الرئيسي",
+      "addressPlaceholder": "123 شارع الاستقلال",
       "submit": "إكمال الإعداد",
-      "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+      "error": "حدث شيء خاطئ. يرجى المحاولة مرة أخرى."
     },
     "university": {
       "pageTitle": "إعداد الجامعة",
       "title": "قم بإعداد جامعتك",
       "subtitle": "أخبرنا عن مؤسستك للبدء",
-      "panelHeadline": "اصنع قادة الغد",
-      "panelDescription": "تشارك مع الشركات لتوفير فرص تدريب هادفة لطلابك.",
-      "panelFeature1": "إدارة الأقسام والتوظيفات",
-      "panelFeature2": "تتبع تقدم الطلاب في الوقت الفعلي",
-      "panelFeature3": "التحقق من التدريبات والمصادقة عليها",
+      "panelHeadline": "شكل قادة الغد",
+      "panelDescription": "شارك الشركات لتوفير فرص تدريب هادفة لطلابك.",
+      "panelFeature1": "إدارة الأقسام والتنسيب",
+      "panelFeature2": "تتبع تقدم الطالب في الوقت الفعلي",
+      "panelFeature3": "توثيق والمصادقة على التربصات",
       "universitySection": "تفاصيل الجامعة",
       "locationSection": "الموقع",
-      "domainsSection": "نطاقات البريد الإلكتروني",
+      "domainsSection": "نطاقات البريد",
       "departmentsSection": "الأقسام",
       "name": "اسم الجامعة",
       "namePlaceholder": "جامعة العلوم والتكنولوجيا",
       "abbreviation": "الاختصار",
       "abbreviationPlaceholder": "USTHB",
       "departmentName": "اسم القسم",
-      "departmentNamePlaceholder": "قسم علوم الحاسوب",
+      "departmentNamePlaceholder": "قسم الإعلام الآلي",
+      "departments": "الأقسام",
+      "departmentsHint": "أضف الأقسام الموجودة في جامعتك (مثل الإعلام الآلي، الرياضيات)",
+      "departmentPlaceholder": "مثال: إعلام آلي",
+      "addDepartment": "إضافة قسم",
+      "removeDepartment": "إزالة",
       "phone": "رقم الهاتف",
-      "phonePlaceholder": "+213 21 XX XX XX",
+      "phonePlaceholder": "+213 21 × × × ×",
       "wilaya": "الولاية",
-      "wilayaPlaceholder": "اختر ولايتك",
+      "wilayaPlaceholder": "اختر الولاية",
       "city": "المدينة",
       "cityPlaceholder": "الجزائر",
       "address": "العنوان",
       "addressPlaceholder": "عنوان الحرم الجامعي",
-      "domains": "نطاقات البريد الإلكتروني",
-      "domainsHint": "أضف نطاقات البريد الإلكتروني المستخدمة من قبل الطلاب والموظفين (مثال: univ-alger.dz)",
+      "domains": "نطاقات البريد",
+      "domainsHint": "أضف النطاقات التي يستخدمها الطلاب والموظفون (مثال: univ-alger.dz)",
       "domainPlaceholder": "univ-example.dz",
       "addDomain": "إضافة نطاق",
-      "removeDomain": "حذف",
-      "departments": "الأقسام",
-      "departmentsHint": "أضف أقسام جامعتك (مثلاً: علوم الحاسوب، الرياضيات)",
-      "departmentPlaceholder": "مثال: علوم الحاسوب",
-      "addDepartment": "إضافة قسم",
-      "removeDepartment": "إزالة",
+      "removeDomain": "إزالة",
       "submit": "إكمال الإعداد",
-      "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+      "error": "حدث شيء خاطئ. يرجى المحاولة مرة أخرى."
     },
     "student": {
-      "pageTitle": "إعداد الملف الشخصي",
-      "title": "أنشئ سيرتك الذاتية الرقمية",
+      "pageTitle": "إعداد ملف الطالب",
+      "title": "ابنِ سيرتك الذاتية الرقمية",
       "subtitle": "أخبرنا عن نفسك ومهاراتك للبدء",
-      "panelHeadline": "مسيرتك المهنية تبدأ هنا",
-      "panelDescription": "أنشئ ملفك المهني وتواصل مع أفضل الشركات عبر الجزائر.",
-      "panelFeature1": "تواصل مع أفضل الشركات",
+      "panelHeadline": "مسيرتك المهنية تبدأ من هنا",
+      "panelDescription": "أنشئ ملفك المهني واحصل على مطابقة مع كبرى الشركات في الجزائر.",
+      "panelFeature1": "المطابقة مع كبرى الشركات",
       "panelFeature2": "اعرض مهاراتك ومشاريعك",
       "panelFeature3": "تتبع طلباتك في الوقت الفعلي",
       "personalSection": "المعلومات الشخصية",
-      "bio": "نبذة",
+      "bio": "السيرة الذاتية المختصرة",
       "bioPlaceholder": "أخبرنا قليلاً عن نفسك...",
       "phone": "رقم الهاتف",
-      "phonePlaceholder": "٠٥٥٥ ١٢٣ ٤٥٦",
+      "phonePlaceholder": "0555 123 456",
       "studentNumber": "رقم الطالب",
       "studentNumberPlaceholder": "مثال: STU2025001",
       "department": "القسم",
       "departmentPlaceholder": "اختر قسمك",
       "departmentFreetext": "أو اكتب اسم القسم",
       "level": "المستوى",
-      "levelPlaceholder": "مثال: ل٣، م١، م٢",
+      "levelPlaceholder": "مثل L3, M1, M2",
       "locationSection": "الموقع",
       "wilaya": "الولاية",
-      "wilayaPlaceholder": "اختر ولايتك",
+      "wilayaPlaceholder": "اختر الولاية",
       "address": "العنوان",
-      "addressPlaceholder": "١٢٣ الشارع الرئيسي",
+      "addressPlaceholder": "العنوان الشخصي",
       "linksSection": "الروابط",
-      "githubUrl": "GitHub",
+      "githubUrl": "جيثب",
       "githubUrlPlaceholder": "https://github.com/username",
-      "portfolioUrl": "المحفظة",
+      "portfolioUrl": "معرض الأعمال",
       "portfolioUrlPlaceholder": "https://your-portfolio.com",
+      "languagesSection": "اللغات",
+      "languagesHint": "أضف اللغات التي تتقنها ومستوى كفاءتك.",
+      "language": "اللغة",
+      "languagePlaceholder": "اختر اللغة",
+      "proficiency": "الكفاءة",
+      "proficiencyPlaceholder": "اختر مستوى الكفاءة",
+      "addLanguage": "إضافة لغة",
+      "removeLanguageAria": "إزالة {language}",
+      "proficiencyLevels": {
+        "a1": "A1 (مبتدئ)",
+        "a2": "A2 (أساسي)",
+        "b1": "B1 (متوسط)",
+        "b2": "B2 (فوق المتوسط)",
+        "c1": "C1 (متقدم)",
+        "c2": "C2 (متقن)",
+        "native": "اللغة الأم"
+      },
       "skillsSection": "المهارات التقنية",
-      "skillsHint": "اختر حتى ١٠ مهارات تصف خبرتك بشكل أفضل",
-      "skillsSelectDepartmentFirst": "يرجى اختيار القسم أولاً لعرض المهارات المتعلقة",
-      "skillsSelected": "مختارة",
+      "skillsHint": "اختر ما يصل إلى 10 مهارات تصف خبرتك بشكل أفضل",
+      "skillsSelectDepartmentFirst": "يرجى اختيار القسم أولاً لرؤية المهارات ذات الصلة",
+      "skillsSelected": "مختار",
       "recommendedSkills": "موصى بها لقسمك",
       "otherSkills": "مهارات أخرى",
       "submit": "إكمال الملف الشخصي",
-      "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
-      "languagesSection": "Languages",
-      "languagesHint": "Add the languages you can work in and your proficiency level.",
-      "language": "Language",
-      "languagePlaceholder": "Select language",
-      "proficiency": "Proficiency",
-      "proficiencyPlaceholder": "Select proficiency",
-      "addLanguage": "Add Language",
-      "removeLanguageAria": "Remove {language}",
-      "proficiencyLevels": {
-        "a1": "A1 (Beginner)",
-        "a2": "A2 (Elementary)",
-        "b1": "B1 (Intermediate)",
-        "b2": "B2 (Upper Intermediate)",
-        "c1": "C1 (Advanced)",
-        "c2": "C2 (Proficient)",
-        "native": "Native"
-      }
+      "error": "حدث شيء خاطئ. يرجى المحاولة مرة أخرى."
     }
   },
   "dashboard": {
     "nav": {
-      "dashboard": "لوحة التحكم",
-      "exploreInternships": "استكشاف التدريبات",
+      "dashboard": "لوحة المعلومات",
+      "exploreInternships": "استكشاف التربصات",
       "myApplications": "طلباتي",
-      "myDocuments": "مستنداتي",
+      "myDocuments": "وثائقي",
+      "studentCv": "سيرتي الذاتية",
+      "savedOffers": "العروض المحفوظة",
+      "messages": "الرسائل",
+      "interviews": "المقابلات",
       "companyProfile": "ملف الشركة",
       "manageOffers": "إدارة العروض",
       "candidatePipeline": "مسار المرشحين",
       "companyDocuments": "وثائق الشركة",
-      "assistant": "المساعد",
-      "validatePlacements": "اعتماد التوظيفات",
-      "deptValidations": "تصديقات القسم",
+      "assistant": "المساعد الذكي",
+      "validatePlacements": "المصادقة على التنسيب",
+      "deptValidations": "مصادقات القسم",
       "departments": "الأقسام",
       "statistics": "الإحصائيات",
       "userManagement": "إدارة المستخدمين",
@@ -409,7 +413,7 @@
     "navbar": {
       "accountSettings": "إعدادات الحساب",
       "viewProfile": "عرض الملف الشخصي",
-      "profileSettings": "إعدادات الملف الشخصي",
+      "profileSettings": "إعدادات الملف",
       "logout": "تسجيل الخروج"
     },
     "accountSwitcher": {
@@ -418,16 +422,16 @@
       "switchTo": "التبديل إلى {name}",
       "addAccount": "إضافة حساب آخر",
       "removeAccount": "إزالة الحساب",
-      "switching": "جارٍ تبديل الحساب...",
+      "switching": "جاري التبديل...",
       "switchSuccess": "تم التبديل إلى {name}",
       "switchError": "فشل تبديل الحساب",
-      "removeSuccess": "تم إزالة الحساب",
+      "removeSuccess": "تمت إزالة الحساب",
       "removeError": "فشل إزالة الحساب"
     },
     "assistant": {
       "kicker": "المساعد الذكي",
-      "title": "<accent>مساعدك الذكي</accent>",
-      "subtitle": "احصل على المساعدة في صياغة العروض وتحليل المرشحين والمزيد",
+      "title": "مساعدك <accent>الآلي</accent>",
+      "subtitle": "احصل على المساعدة في صياغة العروض، تحليل المرشحين، والمزيد",
       "badge": "مدعوم بالذكاء الاصطناعي",
       "conversation": "المحادثة",
       "model": "النموذج",
@@ -435,26 +439,26 @@
       "newConversation": "محادثة جديدة",
       "conversations": "المحادثات",
       "loadingConversations": "جاري تحميل المحادثات...",
-      "noConversations": "لا توجد محادثات. ابدأ محادثة جديدة!",
+      "noConversations": "لا توجد محادثات بعد. ابدأ واحدة جديدة!",
       "noSearchResults": "لم يتم العثور على محادثات",
       "searchConversations": "البحث في المحادثات...",
       "loadingMessages": "جاري تحميل الرسائل...",
       "empty": "ابدأ محادثة مع مساعدك الذكي",
-      "inputPlaceholder": "اكتب رسالتك...",
+      "inputPlaceholder": "اكتب رسالتك هنا...",
       "send": "إرسال",
       "stop": "إيقاف",
       "retry": "إعادة المحاولة",
       "relativeNow": "الآن",
-      "relativeMinutesShort": "{count} د",
-      "relativeHoursShort": "{count} س",
-      "relativeDaysShort": "{count} ي",
-      "relativeMinutesAgo": "منذ {count} د",
-      "relativeHoursAgo": "منذ {count} س",
-      "relativeDaysAgo": "منذ {count} ي",
-      "assistantActor": "ذكاء اصطناعي",
+      "relativeMinutesShort": "{count}د",
+      "relativeHoursShort": "{count}سا",
+      "relativeDaysShort": "{count}ي",
+      "relativeMinutesAgo": "منذ {count} دقيقة",
+      "relativeHoursAgo": "منذ {count} ساعة",
+      "relativeDaysAgo": "منذ {count} يوم",
+      "assistantActor": "الذكاء الاصطناعي",
       "userActor": "أنت",
       "enterToSend": "Enter للإرسال، Shift+Enter لسطر جديد",
-      "scrollToBottom": "التمرير للأسفل",
+      "scrollToBottom": "الانتقال لأسفل",
       "deleteConversation": "حذف المحادثة",
       "createConversationSuccess": "تم إنشاء المحادثة.",
       "createConversationError": "فشل إنشاء المحادثة.",
@@ -462,6 +466,14 @@
       "deleteConversationError": "فشل حذف المحادثة.",
       "modelUpdateSuccess": "تم تحديث النموذج.",
       "modelUpdateError": "فشل تحديث النموذج.",
+      "titleUpdateSuccess": "تم تحديث عنوان المحادثة.",
+      "titleUpdateError": "فشل تحديث عنوان المحادثة.",
+      "renameConversation": "إعادة تسمية",
+      "renamePrompt": "إعادة تسمية هذه المحادثة",
+      "saveNote": "حفظ ملاحظة",
+      "notePrompt": "اكتب ملاحظة سريعة لهذه المحادثة",
+      "noteSavedSuccess": "تم حفظ الملاحظة.",
+      "noteSavedError": "فشل حفظ الملاحظة.",
       "confirmDelete": "حذف",
       "openSidebar": "فتح قائمة المحادثات",
       "clearSearch": "مسح البحث",
@@ -472,104 +484,104 @@
       "toolPreparing": "جاري التحضير...",
       "toolInput": "المدخلات",
       "toolOutput": "المخرجات",
-      "authRequired": "مطلوب المصادقة لاستخدام هذه الأداة",
+      "authRequired": "المصادقة مطلوبة لاستخدام هذه الأداة",
       "openAuthLink": "فتح المصادقة",
-      "checkStatus": "التحقق من الحالة",
+      "checkStatus": "تحقق من الحالة",
       "retryTool": "إعادة المحاولة",
       "authStatus": "الحالة: {status}",
       "unknown": "غير معروف"
     },
     "notifications": {
       "title": "الإشعارات",
-      "unreadCount": "{count} غير مقروءة",
+      "unreadCount": "{count} غير مقروء",
       "summarize": "تلخيص",
-      "markAllRead": "وضع الكل كمقروء",
-      "markAllReadSuccess": "تم وضع كل الإشعارات كمقروءة.",
-      "markAllReadError": "فشل وضع الإشعارات كمقروءة.",
+      "markAllRead": "تحديد الكل كمقروء",
+      "markAllReadSuccess": "تم تحديد جميع الإشعارات كمقروءة.",
+      "markAllReadError": "فشل تحديد الإشعارات كمقروءة.",
       "empty": "لا توجد إشعارات بعد.",
       "prompts": {
-        "summarize": "تلخيص الإشعارات"
+        "summarize": "لخص الإشعارات"
       },
       "aiSummary": {
-        "title": "ملخص بالذكاء الاصطناعي",
-        "suggestedNextActions": "خطوات تالية مقترحة"
+        "title": "ملخص الذكاء الاصطناعي",
+        "suggestedNextActions": "الإجراءات التالية المقترحة"
       }
     },
     "company": {
       "pending": {
         "pageTitle": "قيد المراجعة",
         "title": "شركتك قيد المراجعة",
-        "subtitle": "نحن نراجع تسجيل شركتك. يستغرق هذا عادة ١-٢ أيام عمل.",
-        "submittedOn": "تاريخ التقديم",
+        "subtitle": "نحن نراجع تسجيل شركتك. يستغرق هذا عادةً من يوم إلى يومي عمل.",
+        "submittedOn": "تم التقديم في",
         "companyName": "الشركة",
-        "checkStatus": "التحقق من الحالة",
-        "contactSupport": "التواصل مع الدعم"
+        "checkStatus": "تحقق من الحالة",
+        "contactSupport": "اتصل بالدعم"
       },
       "rejected": {
         "pageTitle": "تم رفض التسجيل",
         "title": "لم تتم الموافقة على التسجيل",
         "subtitle": "للأسف، لم تتم الموافقة على تسجيل شركتك.",
         "reason": "السبب",
-        "contactSupport": "التواصل مع الدعم",
-        "reapply": "تعديل وإعادة التقديم"
+        "contactSupport": "اتصل بالدعم",
+        "reapply": "تحديث وإعادة تقديم"
       },
       "suspended": {
-        "pageTitle": "الحساب معلّق",
+        "pageTitle": "تم تعليق الحساب",
         "title": "تم تعليق وصول شركتك",
-        "subtitle": "تم تعليق شركتك مؤقتاً من طرف الإشراف على المنصة. يرجى التواصل مع الدعم للمساعدة.",
-        "contactSupport": "التواصل مع الدعم"
+        "subtitle": "تم تعليق حساب شركتك مؤقتاً من قبل إدارة المنصة. يرجى الاتصال بالدعم.",
+        "contactSupport": "اتصل بالدعم"
       },
       "profile": {
         "pageTitle": "ملف الشركة",
         "title": "ملف الشركة",
-        "subtitle": "إدارة الملف العام ومعلومات الاتصال لشركتك",
-        "descriptionLabel": "حول",
+        "subtitle": "إدارة الملف العام لشركتك ومعلومات الاتصال",
+        "descriptionLabel": "معلومات",
         "contactLabel": "الاتصال",
         "locationLabel": "الموقع",
         "description": "الوصف",
         "descriptionPlaceholder": "صف شركتك وما يجعلها مكاناً رائعاً للتدريب...",
         "logo": "شعار الشركة",
-        "logoHint": "ارفع شعاراً (JPEG، PNG، WebP، SVG، الحد الأقصى ٢ ميغابايت)",
+        "logoHint": "ارفع شعاراً (JPEG, PNG, WebP, SVG, أقصى حجم 2MB)",
         "logoUpload": "رفع الشعار",
         "logoUploading": "جاري الرفع...",
         "logoUploadSuccess": "تم رفع الشعار بنجاح.",
         "websiteUrl": "الموقع الإلكتروني",
         "websiteUrlPlaceholder": "https://example.com",
         "phone": "الهاتف",
-        "phonePlaceholder": "٠٥٥٥ ١٢٣ ٤٥٦",
-        "contactEmail": "البريد الإلكتروني للتواصل",
+        "phonePlaceholder": "0555 123 456",
+        "contactEmail": "بريد الاتصال",
         "contactEmailPlaceholder": "contact@company.com",
-        "representativeName": "اسم المُمثّل",
-        "representativeNamePlaceholder": "محمد أحمد",
+        "representativeName": "اسم الممثل",
+        "representativeNamePlaceholder": "أحمد علي",
         "wilaya": "الولاية",
         "wilayaPlaceholder": "اختر ولايتك",
         "address": "العنوان",
-        "addressPlaceholder": "١٢٣ الشارع الرئيسي",
+        "addressPlaceholder": "العنوان بالتفصيل",
         "submit": "حفظ التغييرات",
         "success": "تم تحديث ملف الشركة بنجاح",
-        "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+        "error": "حدث شيء خاطئ. يرجى المحاولة مرة أخرى."
       },
       "offers": {
         "pageTitle": "إدارة العروض",
-        "title": "عروض التدريب",
-        "subtitle": "إنشاء وإدارة مناصب التدريب الخاصة بك",
+        "title": "عروض التدريب الداخلي",
+        "subtitle": "أنشئ وادر مناصب التدريب الخاصة بك",
         "createOffer": "إنشاء عرض",
-        "empty": "لا توجد عروض حالياً. أنشئ أول عرض تدريب لبدء جذب المواهب.",
+        "empty": "لا توجد عروض بعد. أنشئ أول عرض لجذب المواهب.",
         "status": {
           "draft": "مسودة",
           "published": "منشور",
           "closed": "مغلق"
         },
         "type": {
-          "pfe": "مشروع نهاية الدراسة",
+          "pfe": "مشروع نهاية الدراسة (PFE)",
           "immersion": "تدريب انغماسي",
           "summer": "تدريب صيفي",
-          "practical": "تدريب عملي"
+          "practical": "تدريب تطبيقي"
         },
         "workMode": {
           "on_site": "حضوري",
           "hybrid": "هجين",
-          "remote": "عن بُعد"
+          "remote": "عن بعد"
         },
         "actions": {
           "edit": "تعديل",
@@ -577,7 +589,7 @@
           "close": "إغلاق",
           "delete": "حذف",
           "confirmDelete": "هل أنت متأكد؟ سيتم حذف المسودات نهائياً.",
-          "confirmClose": "هل أنت متأكد؟ سيتم إغلاق العرض أمام المتقدمين الجدد."
+          "confirmClose": "هل أنت متأكد؟ سيؤدي هذا لإغلاق العرض أمام المتقدمين الجدد."
         },
         "toasts": {
           "publishSuccess": "تم نشر العرض.",
@@ -587,17 +599,17 @@
         "positions": "مناصب",
         "weeks": "أسابيع",
         "skills": "المهارات",
-        "candidates": "{count, plural, zero {مرشح} one {مرشح} two {مرشحين} few {مرشحين} many {مرشحين} other {مرشحين}}",
+        "candidates": "{count, plural, one {مرشح} other {مرشحين}}",
         "form": {
           "createTitle": "إنشاء عرض جديد",
           "createSubtitle": "املأ تفاصيل منصب التدريب الجديد",
           "editTitle": "تعديل العرض",
           "editSubtitle": "تحديث تفاصيل منصب التدريب",
-          "basicInfo": "المعلومات الأساسية",
+          "basicInfo": "معلومات أساسية",
           "title": "العنوان",
           "titlePlaceholder": "مثال: متدرب مطور واجهات أمامية",
           "description": "الوصف",
-          "descriptionPlaceholder": "صف دور التدريب والمسؤوليات وما سيتعلمه المتدرب...",
+          "descriptionPlaceholder": "صف دور التدريب، المسؤوليات، وماذا سيتعلم المتدرب...",
           "details": "التفاصيل",
           "internshipType": "نوع التدريب",
           "internshipTypePlaceholder": "اختر النوع",
@@ -605,92 +617,92 @@
           "workModePlaceholder": "اختر نمط العمل",
           "wilaya": "الموقع (الولاية)",
           "wilayaPlaceholder": "اختر الولاية",
-          "durationWeeks": "المدة (أسابيع)",
-          "durationWeeksPlaceholder": "مثال: ١٢",
-          "maxPositions": "الحد الأقصى للمناصب",
-          "maxPositionsPlaceholder": "مثال: ٣",
+          "durationWeeks": "المدة (بالأسابيع)",
+          "durationWeeksPlaceholder": "مثال: 12",
+          "maxPositions": "أقصى عدد مناصب",
+          "maxPositionsPlaceholder": "مثال: 3",
           "applicationDeadline": "الموعد النهائي للتقديم",
-          "expectedStartDate": "تاريخ البداية المتوقع",
-          "expectedEndDate": "تاريخ النهاية المتوقع",
+          "expectedStartDate": "تاريخ البدء المتوقع",
+          "expectedEndDate": "تاريخ الانتهاء المتوقع",
+          "languageRequirementsSection": "متطلبات اللغة",
+          "languageRequirementsHint": "حدد الحد الأدنى للكفاءة، وهل اللغة إجبارية أم اختيارية.",
+          "language": "اللغة",
+          "languagePlaceholder": "اختر اللغة",
+          "minimumProficiency": "الحد الأدنى للكفاءة",
+          "minimumProficiencyPlaceholder": "اختر المستوى",
+          "weight": "وزن الأولوية",
+          "weightPlaceholder": "اختر الأولوية",
+          "weightOption": "أولوية {weight}",
+          "requiredLabel": "هذه اللغة إجبارية",
+          "addLanguageRequirement": "إضافة متطلب لغة",
+          "removeLanguageRequirementAria": "إزالة متطلب {language}",
+          "proficiencyLevels": {
+            "a1": "A1 (مبتدئ)",
+            "a2": "A2 (أساسي)",
+            "b1": "B1 (متوسط)",
+            "b2": "B2 (فوق المتوسط)",
+            "c1": "C1 (متقدم)",
+            "c2": "C2 (متقن)",
+            "native": "اللغة الأم"
+          },
           "skillsSection": "المهارات المطلوبة",
-          "skillsHint": "اختر حتى ٢٠ مهارة تتناسب مع هذا المنصب",
-          "skillsSelected": "مختارة",
-          "skillsSearchPlaceholder": "البحث عن مهارات…",
-          "skillsMaxReached": "تم الوصول إلى الحد الأقصى — أزل مهارة لإضافة أخرى.",
-          "submit": "إنشاء العرض",
+          "skillsHint": "اختر حتى 20 مهارة تناسب هذا المنصب",
+          "skillsSelected": "مختار",
+          "skillsSearchPlaceholder": "البحث عن مهارات...",
+          "skillsMaxReached": "وصلت للحد الأقصى — أزل مهارة لإضافة أخرى.",
+          "submit": "إنشاء عرض",
           "submitEdit": "حفظ التغييرات",
           "cancel": "إلغاء",
           "success": "تم إنشاء العرض بنجاح",
           "successEdit": "تم تحديث العرض بنجاح",
-          "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+          "error": "حدث شيء خاطئ. يرجى المحاولة مرة أخرى.",
           "skillCategory": {
-            "frontend": "الواجهة الأمامية",
-            "backend": "الواجهة الخلفية",
-            "languages": "اللغات",
-            "database": "قواعد البيانات",
-            "devops": "DevOps",
-            "mobile": "المحمول",
-            "data_ai": "البيانات والذكاء الاصطناعي",
+            "frontend": "واجهات أمامية",
+            "backend": "برمجة خلفية",
+            "languages": "لغات برمجة",
+            "database": "قواعد بيانات",
+            "devops": "ديف أوبس",
+            "mobile": "هواتف محمول",
+            "data_ai": "بيانات وذكاء اصطناعي",
             "other": "أخرى"
           },
           "copilot": {
             "title": "مساعد الذكاء الاصطناعي",
-            "description": "اقتراحات فقط. راجع أولاً ثم طبّق على النموذج.",
-            "promptPlaceholder": "الدور، التقنيات، القيود (مثل 12 أسبوعاً، عن بُعد، React + Node)",
-            "generateDraft": "إنشاء مسودة",
+            "description": "اقتراحات فقط. عاين أولاً، ثم طبق على النموذج.",
+            "promptPlaceholder": "الدور، التقنيات، القيود (مثال: 12 أسبوع، عن بعد، React + Node)",
+            "generateDraft": "توليد مسودة",
             "improveDescription": "تحسين الوصف",
             "suggestSkills": "اقتراح مهارات",
             "applyToForm": "تطبيق على النموذج",
-            "thinking": "جارٍ التفكير…",
+            "thinking": "جاري التفكير...",
             "ready": "جاهز",
-            "appliedToForm": "تم التطبيق على النموذج",
-            "generating": "جارٍ إنشاء المسودة…",
-            "improving": "جارٍ تحسين الوصف…",
-            "suggesting": "جارٍ اقتراح المهارات…",
+            "appliedToForm": "تم التطبيق",
+            "generating": "جاري توليد المسودة...",
+            "improving": "جاري تحسين الوصف...",
+            "suggesting": "جاري اقتراح المهارات...",
             "previewTitle": "العنوان",
             "previewDescription": "الوصف",
             "previewDetails": "التفاصيل",
             "previewSkills": "المهارات",
             "duration": "{weeks} أسبوع",
-            "positions": "{count} منصب"
-          },
-          "languageRequirementsSection": "Language Requirements",
-          "languageRequirementsHint": "Set minimum proficiency, required/optional flag, and priority for each language.",
-          "language": "Language",
-          "languagePlaceholder": "Select language",
-          "minimumProficiency": "Minimum Proficiency",
-          "minimumProficiencyPlaceholder": "Select minimum level",
-          "weight": "Priority Weight",
-          "weightPlaceholder": "Select priority",
-          "weightOption": "Priority {weight}",
-          "requiredLabel": "This language is mandatory",
-          "addLanguageRequirement": "Add Language Requirement",
-          "removeLanguageRequirementAria": "Remove {language} requirement",
-          "proficiencyLevels": {
-            "a1": "A1 (Beginner)",
-            "a2": "A2 (Elementary)",
-            "b1": "B1 (Intermediate)",
-            "b2": "B2 (Upper Intermediate)",
-            "c1": "C1 (Advanced)",
-            "c2": "C2 (Proficient)",
-            "native": "Native"
+            "positions": "{count} مناصب"
           }
         }
       },
       "candidates": {
         "title": "المرشحون",
-        "backToOffers": "العودة إلى العروض",
-        "empty": "لا توجد طلبات حتى الآن. عرضك مرئي للطلاب.",
-        "emptyFiltered": "لا توجد طلبات تطابق هذا الفلتر.",
+        "backToOffers": "العودة للعروض",
+        "empty": "لا توجد طلبات بعد. عرضك متاح للطلاب حالياً.",
+        "emptyFiltered": "لا توجد طلبات تطابق هذا المرشح.",
         "viewProfile": "عرض الملف الشخصي",
         "accept": "قبول",
         "refuse": "رفض",
         "acceptTitle": "قبول المرشح",
-        "acceptDescription": "قبول {name}؟ سيتم إخطار المشرفين للتحقق من صحة التعيين.",
+        "acceptDescription": "هل تقبل {name}؟ سيؤدي هذا لإخطار المسؤولين للمصادقة على التنسيب.",
         "confirmAcceptButton": "قبول",
-        "confirmRefuse": "رفض هذا المرشح؟ سيتم إخطاره.",
+        "confirmRefuse": "رفض هذا المرشح؟ سيتم إخطارهم.",
         "refuseTitle": "رفض المرشح",
-        "refuseDescription": "هل أنت متأكد أنك تريد رفض {name}؟",
+        "refuseDescription": "هل أنت متأكد من رفض {name}؟",
         "refuseNotePlaceholder": "اختياري: قدم ملاحظات للمرشح...",
         "cancel": "إلغاء",
         "confirmRefuseButton": "رفض",
@@ -699,8 +711,8 @@
         "noApplications": "لا توجد طلبات",
         "candidateCardAria": "بطاقة المرشح {name}",
         "kanbanColumnAria": "عمود {stage}",
-        "invalidStageTransition": "هذا الانتقال بين المراحل غير مسموح.",
-        "stageUpdateFailed": "فشل تحديث مرحلة المسار. تمت استعادة البطاقة.",
+        "invalidStageTransition": "هذا الانتقال بين المراحل غير مسموح به.",
+        "stageUpdateFailed": "فشل تحديث المرحلة. تمت استعادة البطاقة لمكانها.",
         "acceptSuccess": "تم قبول المرشح.",
         "acceptError": "فشل قبول المرشح.",
         "refuseSuccess": "تم رفض المرشح.",
@@ -716,257 +728,192 @@
           "company_accepted": "مقبول",
           "company_refused": "مرفوض"
         },
-        "appliedOn": "تقدم في",
+        "appliedOn": "تم التقديم في",
         "skillMatch": "تطابق",
-        "coverLetter": "رسالة التغطية",
+        "coverLetter": "رسالة التقديم",
         "portfolio": "معرض الأعمال",
         "ai": {
-          "summaryTitle": "ملخص بالذكاء الاصطناعي",
+          "summaryTitle": "ملخص الذكاء الاصطناعي",
           "strengths": "نقاط القوة",
-          "concerns": "ملاحظات",
-          "followUps": "أسئلة متابعة",
+          "concerns": "مخاوف محتملة",
+          "followUps": "متابعات مقترحة",
           "summarize": "تلخيص",
-          "draftingNote": "جارٍ صياغة الملاحظة...",
-          "draftRefusalWithAi": "صياغة ملاحظة بالذكاء الاصطناعي",
+          "draftingNote": "جاري صياغة الملاحظة...",
+          "draftRefusalWithAi": "صياغة ملاحظة الرفض بالذكاء الاصطناعي",
           "aiStatus": "الذكاء الاصطناعي: {status}",
           "prompts": {
-            "summarize": "تلخيص هذا المرشح",
+            "summarize": "لخص هذا المرشح",
             "refusalNote": "صياغة ملاحظة رفض قصيرة"
           }
         }
       }
     },
-    "candidates": {
-      "title": "مسار المرشحين",
-      "description": "إدارة {count} من المرشحين عبر جميع عروضك",
-      "stats": {
-        "totalOffers": "إجمالي العروض",
-        "activeOffers": "العروض النشطة",
-        "totalCandidates": "إجمالي المرشحين"
-      },
-      "offersWithCandidates": "العروض مع المرشحين",
-      "noCandidatesYet": "لا يوجد مرشحون بعد",
-      "noCandidatesDescription": "سيظهر المرشحون هنا عندما يتقدم الطلاب لعروضك",
-      "manageOffers": "إدارة عروضك",
-      "viewAllOffers": "عرض جميع العروض",
-      "candidate": "مرشح",
-      "candidates": "مرشحون",
-      "offers": {
-        "status": {
-          "draft": "مسودة",
-          "published": "منشور",
-          "closed": "مغلق"
-        }
-      }
-    },
-    "offers": {
-      "status": {
-        "draft": "مسودة",
-        "published": "منشور",
-        "closed": "مغلق"
-      },
-      "type": {
-        "pfe": "مشروع نهاية الدراسة",
-        "immersion": "تدريب انغماسي",
-        "summer": "تدريب صيفي",
-        "practical": "تدريب عملي"
-      }
-    },
-    "welcome": "مرحباً بعودتك،",
+    "welcome": "مرحباً بك مجدداً،",
     "roles": {
       "student": "طالب",
       "recruiter": "مسؤول توظيف",
-      "dept_head": "رئيس القسم",
-      "university_admin": "مشرف"
+      "dept_head": "رئيس قسم",
+      "university_admin": "مسؤول جامعة"
     },
     "student": {
-      "title": "لوحة تحكم الطالب",
-      "subtitle": "اكتشف وأدر رحلتك المهنية",
+      "title": "لوحة معلومات الطالب",
+      "subtitle": "اكتشف وادر مسيرتك المهنية",
       "stats": {
         "applications": "الطلبات",
         "savedOffers": "العروض المحفوظة",
         "interviews": "المقابلات",
         "pending": "{count} قيد الانتظار",
-        "accepted": "المقبولة",
-        "acceptedDescription": "طلبات مقبولة",
-        "profileBoosted": "تم تعزيز الملف الشخصي",
+        "accepted": "مقبول",
+        "acceptedDescription": "الطلبات المقبولة",
+        "profileBoosted": "الملف معزز",
         "addMoreSkills": "أضف المزيد من المهارات"
       },
       "actions": {
         "buildCV": "أكمل سيرتك الذاتية الرقمية",
-        "searchOffers": "البحث عن تدريبات",
+        "searchOffers": "البحث عن تربصات",
         "viewApplications": "تتبع الطلبات"
       },
       "skillsSection": "مجموعة مهاراتك",
-      "recentOffers": "موصى به لك",
+      "recentOffers": "موصى بها لك",
       "applications": {
         "title": "الطلبات الأخيرة",
         "viewAll": "عرض الكل",
-        "emptyMessage": "لم تتقدم بعد لأي فرصة تدريب. ابدأ باستكشاف الفرص الآن!",
-        "exploreButton": "استكشف فرص التدريب"
+        "emptyMessage": "لم تقدم على أي تربص بعد. ابدأ باستكشاف الفرص!",
+        "exploreButton": "استكشاف التربصات"
       },
       "offers": {
-        "exploreAll": "استكشف الكل"
+        "exploreAll": "استكشاف الكل"
       },
       "skills": {
         "manageSkills": "إدارة المهارات",
         "emptyMessage": "أضف مهاراتك التقنية لتبرز أمام مسؤولي التوظيف",
-        "addSkills": "أضف مهارات"
+        "addSkills": "إضافة مهارات"
       },
       "welcomeHero": {
-        "brief": "ملخص اليوم",
+        "brief": "موجز اليوم",
         "defaultName": "هناك",
-        "headlinePrefix": "هل أنت مستعد للحصول على",
-        "headlineAccent": "تدريب أحلامك",
-        "profileIncomplete": "أكمل ملفك الشخصي لتتميز أمام مسؤولي التوظيف وتفتح فرصًا أكثر.",
-        "profileComplete": "ملفك الشخصي مكتمل! واصل استكشاف الفرص والتقديم.",
-        "completeProfile": "أكمل الملف الشخصي",
-        "exploreInternships": "استكشف فرص التدريب",
+        "headlinePrefix": "هل أنت جاهز لتأمين",
+        "headlineAccent": "تربص أحلامك؟",
+        "profileIncomplete": "أكمل ملفك الشخصي لتبرز أمام مسؤولي التوظيف وتفتح المزيد من الفرص.",
+        "profileComplete": "ملفك الشخصي كامل! استمر في استكشاف الفرص والتقديم.",
+        "completeProfile": "إكمال الملف الشخصي",
+        "exploreInternships": "استكشاف التربصات",
         "profileStrength": "قوة الملف الشخصي",
-        "profileReady": "ملفك الشخصي جاهز",
-        "profileRemaining": "متبقٍ {remaining}% للاكتمال"
+        "profileReady": "ملفك جاهز",
+        "profileRemaining": "بقي {remaining}% للإكمال"
       },
       "status": {
         "applied": "قيد الانتظار",
-        "company_accepted": "مقبول",
-        "company_refused": "مرفوض",
-        "admin_validated": "تم التحقق",
-        "admin_rejected": "تم الرفض",
-        "withdrawn": "منسحب"
+        "company_accepted": "مقبول من الشركة",
+        "company_refused": "مرفوض من الشركة",
+        "admin_validated": "مصادق عليه",
+        "admin_rejected": "مرفوض من الإدارة",
+        "withdrawn": "مسحوب"
       },
       "profile": {
         "title": "سيرتك الذاتية الرقمية",
-        "subtitle": "ملفك المهني المرئي للمجندين",
+        "subtitle": "ملفك المهني مرئي لمسؤولي التوظيف",
         "edit": "تعديل الملف الشخصي",
         "kicker": "الملف الشخصي",
         "memberSince": "عضو منذ {date}",
         "since": "منذ {date}",
-        "profileImageAlt": "الملف الشخصي",
-        "copyProfile": "نسخ الملف الشخصي",
+        "profileImageAlt": "الصورة الشخصية",
+        "copyProfile": "نسخ الرابط",
         "copied": "تم النسخ!",
-        "copySuccess": "تم نسخ الملف الشخصي إلى الحافظة",
-        "copyError": "فشل نسخ الملف الشخصي",
+        "copySuccess": "تم نسخ رابط الملف إلى الحافظة",
+        "copyError": "فشل نسخ الرابط",
         "personalInfo": "المعلومات الشخصية",
         "name": "الاسم",
         "email": "البريد الإلكتروني",
         "phone": "الهاتف",
         "role": "الدور",
-        "notSetYet": "غير محدد بعد",
+        "notSetYet": "لم يحدد بعد",
         "studentNumber": "رقم الطالب",
         "department": "القسم",
         "level": "المستوى",
-        "bio": "نبذة",
+        "bio": "السيرة المختصرة",
         "location": "الموقع",
         "wilaya": "الولاية",
         "address": "العنوان",
         "university": "الجامعة",
         "links": "الروابط",
         "skills": "المهارات التقنية",
-        "skillCount": "{count, plural, one {{count} مهارة} other {{count} مهارات}}",
+        "skillCount": "{count, plural, one {مهارة واحدة} other {{count} مهارات}}",
         "addMoreSkills": "أضف المزيد",
         "noSkillsListed": "لا توجد مهارات مدرجة بعد.",
         "generalCategory": "عام",
-        "addSkills": "أضف مهارات",
-        "skillsEmptyMessage": "أضف مهاراتك التقنية لتبرز أمام مسؤولي التوظيف",
-        "bioEmptyMessage": "لم تتم إضافة نبذة بعد. حدّث الشركات ومسؤولي التوظيف عن نفسك واهتماماتك ونوع التدريب الذي تبحث عنه.",
-        "writeBio": "اكتب نبذتك",
+        "addSkills": "إضافة مهارات",
+        "skillsEmptyMessage": "أضف مهاراتك التقنية لتلفت انتباه الشركات",
+        "bioEmptyMessage": "لم تضف سيرة مختصرة بعد. أخبر الشركات عن نفسك وعن نوع التدريب الذي تبحث عنه.",
+        "writeBio": "اكتب سيرتك المختصرة",
         "educationTitle": "التعليم",
-        "educationEmptyMessage": "سيظهر تاريخك التعليمي هنا بعد إكمال ملفك الشخصي.",
-        "addEducation": "أضف تعليمًا",
+        "educationEmptyMessage": "سيظهر تاريخك الدراسي هنا بمجرد إكمال ملفك.",
+        "addEducation": "إضافة تعليم",
         "experienceTitle": "الخبرة",
-        "experienceEmptyMessage": "أضف خبراتك العملية أو مساهماتك في المصادر المفتوحة أو مشاريعك الشخصية لتعزيز ملفك الشخصي.",
-        "addExperience": "أضف خبرة",
+        "experienceEmptyMessage": "أضف خبراتك العملية، مساهماتك البرمجية، أو مشاريعك الشخصية لتعزيز ملفك.",
+        "addExperience": "إضافة خبرة",
         "anonymousUser": "مستخدم مجهول",
         "unknownRole": "مستخدم",
         "roles": {
           "student": "طالب",
           "company_admin": "مسؤول توظيف",
-          "dept_head": "رئيس القسم",
-          "university_admin": "مشرف جامعة",
-          "super_admin": "مشرف عام"
+          "dept_head": "رئيس قسم",
+          "university_admin": "مسؤول جامعة",
+          "super_admin": "مسؤول نظام"
         },
         "stats": {
           "applications": "الطلبات",
-          "totalSubmitted": "إجمالي المرسلة",
+          "totalSubmitted": "إجمالي المقدم",
           "skills": "المهارات",
-          "skillsAdded": "{count} مهارة مضافة",
-          "profile": "الملف الشخصي",
-          "complete": "مكتمل!",
-          "keepGoing": "واصل التقدم"
+          "skillsAdded": "{count, plural, one {مهارة واحدة مضافة} other {{count} مهارات مضافة}}",
+          "profile": "الملف",
+          "complete": "كامل!",
+          "keepGoing": "استمر"
         },
         "skillsLabel": "المهارات",
-        "githubLabel": "جيت هاب",
+        "githubLabel": "جيثب",
         "portfolioLabel": "معرض الأعمال"
       }
     },
-    "recruiter": {
-      "title": "بوابة التوظيف",
-      "subtitle": "أدر خط أنابيب المواهب الخاص بك",
-      "stats": {
-        "activeOffers": "العروض النشطة",
-        "totalApplicants": "إجمالي المتقدمين",
-        "hired": "تم توظيفهم بنجاح"
-      },
-      "actions": {
-        "postOffer": "نشر عرض جديد",
-        "manageOffers": "إدارة العروض",
-        "reviewCandidates": "مراجعة الطلبات"
-      },
-      "pipeline": "خط أنابيب المرشحين"
-    },
-    "deptHeadDashboard": {
-      "subtitle": "راجع طلبات التحقق الخاصة بقسمك",
-      "kicker": "عمليات القسم",
-      "title": "قائمة التحقق الخاصة بك جاهزة.",
-      "description": "تابع طلبات التربص المعلقة وانتقل مباشرة إلى تفاصيل التحقق.",
-      "openQueue": "فتح قائمة التحقق",
-      "pendingLabel": "التحققات المعلقة",
-      "queueStatusLabel": "حالة القائمة",
-      "queueBusy": "هناك طلبات إضافية تنتظر في القائمة.",
-      "queueClear": "لا توجد طلبات معلقة حالياً.",
-      "recentTitle": "أحدث الطلبات المعلقة",
-      "empty": "لا توجد تحققات معلقة في قسمك.",
-      "acceptedOn": "تم القبول في"
-    },
     "explore": {
-      "pageTitle": "استكشاف التدريبات",
-      "title": "استكشاف التدريبات",
-      "subtitle": "اكتشف فرصاً تتوافق مع مهاراتك وطموحاتك",
+      "pageTitle": "استكشاف التربصات",
+      "title": "استكشاف التربصات",
+      "subtitle": "اكتشف الفرص التي تطابق مهاراتك وطموحاتك",
       "searchPlaceholder": "البحث بالعنوان أو الكلمة المفتاحية...",
-      "filters": "الفلاتر",
+      "filters": "المرشحات",
       "clearFilters": "مسح الكل",
       "wilaya": "الولاية",
-      "wilayaPlaceholder": "جميع المواقع",
+      "wilayaPlaceholder": "أي موقع",
       "internshipType": "نوع التدريب",
       "workMode": "نمط العمل",
       "skills": "المهارات",
       "skillsPlaceholder": "تصفية حسب المهارات",
-      "noResults": "لم يتم العثور على تدريبات",
-      "noResultsHint": "حاول تعديل الفلاتر أو مصطلحات البحث لاكتشاف المزيد من الفرص.",
+      "noResults": "لم يتم العثور على تربصات",
+      "noResultsHint": "حاول تعديل مرشحاتك أو مصطلحات البحث لاكتشاف المزيد من الفرص.",
       "results": "النتائج",
       "viewDetails": "عرض التفاصيل",
       "loadMore": "تحميل المزيد",
       "loading": "جاري تحميل العروض...",
       "positions": "مناصب",
       "weeks": "أسابيع",
-      "closesOn": "يُغلق في",
+      "closesOn": "يغلق في",
       "type": {
-        "pfe": "مشروع نهاية الدراسة",
-        "immersion": "تدريب انغماسي",
-        "summer": "تدريب صيفي",
-        "practical": "تدريب عملي"
+        "pfe": "PFE",
+        "immersion": "انغماسي",
+        "summer": "صيفي",
+        "practical": "تطبيقي"
       },
       "workModeLabel": {
         "on_site": "حضوري",
         "hybrid": "هجين",
-        "remote": "عن بُعد"
+        "remote": "عن بعد"
       },
       "copilot": {
         "title": "مساعد البحث",
-        "description": "صف ما تريد. ستراجع الفلاتر قبل تطبيقها.",
+        "description": "صف ما تريده. ستراجع المرشحات قبل تطبيقها.",
         "aiStatus": "الذكاء الاصطناعي: {status}",
-        "placeholder": "مثال: تدريب صيفي عن بُعد في الجزائر، React + Node",
-        "parseFilters": "تحليل الفلاتر",
+        "placeholder": "مثال: تربص صيفي عن بعد في الجزائر، React + Node",
+        "parseFilters": "تحليل المرشحات",
         "apply": "تطبيق"
       }
     },
@@ -982,150 +929,215 @@
       "positions": "المناصب",
       "deadline": "الموعد النهائي",
       "expectedPeriod": "الفترة المتوقعة",
-      "noDeadline": "بدون موعد نهائي",
+      "noDeadline": "لا يوجد موعد نهائي",
       "notSpecified": "غير محدد",
       "weeks": "أسابيع",
       "aboutCompany": "عن الشركة",
-      "applyNow": "تقدّم الآن",
+      "applyNow": "قدم الآن",
       "alreadyApplied": "تم التقديم مسبقاً",
       "applicationStatus": "حالة الطلب",
-      "coverLetter": "خطاب التقديم",
+      "coverLetter": "رسالة التقديم",
       "coverLetterPlaceholder": "أخبر الشركة لماذا أنت مهتم بهذا المنصب... (اختياري)",
-      "submitApplication": "إرسال الطلب",
-      "submitting": "جاري الإرسال...",
-      "applicationSuccess": "تم إرسال الطلب بنجاح!",
-      "applicationError": "فشل إرسال الطلب. يرجى المحاولة مرة أخرى.",
-      "offerClosed": "هذا العرض لم يعد يقبل طلبات",
+      "submitApplication": "تقديم الطلب",
+      "submitting": "جاري التقديم...",
+      "applicationSuccess": "تم تقديم الطلب بنجاح!",
+      "applicationError": "فشل تقديم الطلب. يرجى المحاولة مرة أخرى.",
+      "offerClosed": "هذا العرض لم يعد يقبل طلبات جديدة",
       "type": {
-        "pfe": "مشروع نهاية الدراسة",
-        "immersion": "تدريب انغماسي",
-        "summer": "تدريب صيفي",
-        "practical": "تدريب عملي"
+        "pfe": "PFE",
+        "immersion": "انغماسي",
+        "summer": "صيفي",
+        "practical": "تطبيقي"
       },
       "workModeLabel": {
         "on_site": "حضوري",
         "hybrid": "هجين",
-        "remote": "عن بُعد"
+        "remote": "عن بعد"
       },
       "application": "الطلب",
-      "internshipOffer": "عرض تدريب",
+      "internshipOffer": "عرض تربص",
       "trustIndex": "مؤشر الثقة",
       "viewCompanyProfile": "عرض ملف الشركة",
       "report": {
-        "trigger": "الإبلاغ عن الشركة",
-        "title": "الإبلاغ عن الشركة",
-        "description": "شارك مشكلة ثقة أو سلامة تخص {companyName}.",
+        "trigger": "إبلاغ عن شركة",
+        "title": "إبلاغ عن شركة",
+        "description": "شارك مشكلة تتعلق بالثقة أو السلامة بخصوص {companyName}.",
         "categoryLabel": "الفئة",
         "categoryPlaceholder": "اختر فئة",
         "severityLabel": "الخطورة",
         "descriptionLabel": "ماذا حدث؟",
-        "descriptionPlaceholder": "اشرح المشكلة بالتفصيل (10 أحرف على الأقل).",
+        "descriptionPlaceholder": "صف المشكلة بالتفصيل (10 أحرف كحد أدنى).",
         "cancel": "إلغاء",
         "submit": "إرسال البلاغ",
-        "submitting": "جارٍ الإرسال...",
+        "submitting": "جاري الإرسال...",
         "submitSuccess": "تم إرسال البلاغ بنجاح.",
-        "submitError": "تعذر إرسال البلاغ.",
+        "submitError": "فشل إرسال البلاغ.",
         "categories": {
-          "professional_conduct": "السلوك المهني",
+          "professional_conduct": "سلوك مهني",
           "misleading_offer": "عرض مضلل",
-          "communication_issue": "مشكلة تواصل",
+          "communication_issue": "مشكلة في التواصل",
           "other": "أخرى"
         },
         "severity": {
           "low": "منخفضة",
           "medium": "متوسطة",
-          "high": "مرتفعة",
+          "high": "عالية",
           "critical": "حرجة"
         }
       },
       "copilot": {
-        "draftWithAi": "كتابة بالذكاء الاصطناعي",
-        "drafting": "جاري الكتابة...",
-        "previewTitle": "معاينة مسودة الذكاء الاصطناعي",
+        "draftWithAi": "صياغة بالذكاء الاصطناعي",
+        "drafting": "جاري الصياغة...",
+        "previewTitle": "معاينة المسودة الآلية",
         "applyDraft": "تطبيق المسودة"
       },
       "matching": {
         "title": "لماذا هذا التطابق؟",
-        "computing": "جاري حساب درجة التوافق...",
+        "computing": "جاري حساب درجة الملاءمة...",
         "unavailable": "الدرجة غير متاحة حالياً.",
-        "missingSkills": "المهارات المفقودة",
-        "estimatedImprovement": "تحسن مقدّر: +{delta}% من الجاهزية",
+        "missingSkills": "خارطة طريق المهارات الناقصة",
+        "estimatedImprovement": "التحسن المتوقع: +{delta}% جاهزية",
         "readinessTrend": "اتجاه الجاهزية"
       }
     },
+    "candidates": {
+      "title": "خط أنابيب المرشح",
+      "description": "قم بإدارة {count, plural, =0 {لا مرشحين} one {مرشح واحد} other {# مرشحين}} عبر جميع عروضك",
+      "stats": {
+        "totalOffers": "إجمالي العروض",
+        "activeOffers": "العروض النشطة",
+        "totalCandidates": "إجمالي المرشحين"
+      },
+      "offersWithCandidates": "العروض مع المرشحين",
+      "noCandidatesYet": "لا يوجد مرشحين بعد",
+      "noCandidatesDescription": "سيظهر المرشحون هنا عندما يتقدم الطلاب إلى عروضك",
+      "manageOffers": "إدارة العروض الخاصة بك",
+      "viewAllOffers": "عرض جميع العروض",
+      "candidate": "مُرَشَّح",
+      "candidates": "مرشحين",
+      "offers": {
+        "status": {
+          "draft": "مسودة",
+          "published": "تم النشر",
+          "closed": "مغلق"
+        }
+      }
+    },
+    "offers": {
+      "status": {
+        "draft": "مسودة",
+        "published": "تم النشر",
+        "closed": "مغلق"
+      },
+      "type": {
+        "pfe": "PFE",
+        "immersion": "غمر",
+        "summer": "صيف",
+        "practical": "عملي"
+      }
+    },
+    "recruiter": {
+      "title": "بوابة التوظيف",
+      "subtitle": "إدارة خط موهبتك",
+      "stats": {
+        "activeOffers": "العروض النشطة",
+        "totalApplicants": "إجمالي المتقدمين",
+        "hired": "تم وضعها بنجاح"
+      },
+      "actions": {
+        "postOffer": "نشر عرض جديد",
+        "manageOffers": "إدارة العروض",
+        "reviewCandidates": "مراجعة التطبيقات"
+      },
+      "pipeline": "خط أنابيب المرشح"
+    },
+    "deptHeadDashboard": {
+      "subtitle": "مراجعة طلبات التوظيف لقسمك",
+      "kicker": "عمليات القسم",
+      "title": "قائمة انتظار التحقق من الصحة جاهزة.",
+      "description": "تتبع طلبات التنسيب المعلقة وانتقل مباشرة إلى تفاصيل التحقق من الصحة.",
+      "openQueue": "فتح قائمة انتظار التحقق من الصحة",
+      "pendingLabel": "عمليات التحقق من الصحة في انتظار المراجعة",
+      "queueStatusLabel": "حالة قائمة الانتظار",
+      "queueBusy": "المزيد من الطلبات تنتظر في قائمة الانتظار الخاصة بك.",
+      "queueClear": "جميع المحاصرين في الوقت الراهن.",
+      "recentTitle": "الطلبات المعلقة الأخيرة",
+      "empty": "لا توجد عمليات التحقق من الصحة المعلقة في القسم الخاص بك.",
+      "acceptedOn": "مقبول على"
+    },
     "applications": {
-      "pageTitle": "طلباتي",
-      "title": "طلباتي",
+      "pageTitle": "تطبيقاتي",
+      "title": "تطبيقاتي",
       "subtitle": "تتبع حالة طلبات التدريب الخاصة بك",
       "statusFilter": {
-        "all": "الكل",
-        "applied": "مُقدّمة",
-        "company_accepted": "مقبولة",
-        "company_refused": "مرفوضة",
-        "admin_validated": "مُصادق عليها",
-        "admin_rejected": "مرفوضة إدارياً",
-        "withdrawn": "مسحوبة"
+        "all": "الجميع",
+        "applied": "مُطبَّق",
+        "company_accepted": "مقبول",
+        "company_refused": "رفض",
+        "admin_validated": "تم التحقق من صحتها",
+        "admin_rejected": "مرفوض",
+        "withdrawn": "انسحبت"
       },
       "status": {
-        "applied": "مُقدّمة",
-        "company_accepted": "مقبولة",
-        "company_refused": "مرفوضة",
-        "admin_validated": "مُصادق عليها",
-        "admin_rejected": "مرفوضة إدارياً",
-        "withdrawn": "مسحوبة"
+        "applied": "مُطبَّق",
+        "company_accepted": "مقبول",
+        "company_refused": "رفض",
+        "admin_validated": "تم التحقق من صحتها",
+        "admin_rejected": "مرفوض",
+        "withdrawn": "انسحبت"
       },
-      "empty": "لا توجد طلبات حالياً. ابدأ باستكشاف التدريبات للعثور على فرصتك المثالية!",
-      "emptyFiltered": "لا توجد طلبات بهذه الحالة.",
-      "appliedOn": "تاريخ التقديم",
-      "withdraw": "سحب",
-      "withdrawConfirm": "هل أنت متأكد من رغبتك في سحب هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.",
+      "empty": "لا توجد طلبات حتى الآن. ابدأ في استكشاف التدريب الداخلي للعثور على شريكك المثالي!",
+      "emptyFiltered": "لا توجد تطبيقات بهذه الحالة.",
+      "appliedOn": "تطبق على",
+      "withdraw": "ينسحب",
+      "withdrawConfirm": "هل أنت متأكد أنك تريد سحب هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.",
       "withdrawSuccess": "تم سحب الطلب بنجاح.",
-      "withdrawError": "فشل سحب الطلب.",
-      "loading": "جاري التحميل...",
+      "withdrawError": "فشل في سحب الطلب.",
+      "loading": "تحميل...",
       "loadMore": "تحميل المزيد",
-      "exploreOffers": "استكشاف التدريبات"
+      "exploreOffers": "استكشاف التدريب"
     },
     "documents": {
-      "pageTitle": "مستنداتي",
-      "title": "مستنداتي",
-      "subtitle": "عرض وتنزيل اتفاقيات التدريب والشهادات الخاصة بك",
-      "empty": "لا توجد مستندات تدريب متاحة بعد.",
-      "loadError": "تعذر تحميل مستنداتك.",
-      "retry": "إعادة المحاولة",
-      "download": "تنزيل",
+      "pageTitle": "المستندات الخاصة بي",
+      "title": "المستندات الخاصة بي",
+      "subtitle": "عرض وتنزيل اتفاقيات وشهادات التدريب الخاصة بك",
+      "empty": "لا توجد وثائق التنسيب المتاحة بعد.",
+      "loadError": "فشل في تحميل المستندات الخاصة بك.",
+      "retry": "أعد المحاولة",
+      "download": "تحميل",
       "downloading": "جارٍ التنزيل...",
-      "agreement": "اتفاقية التدريب",
-      "certificate": "شهادة التدريب",
+      "agreement": "اتفاق",
+      "certificate": "شهادة",
       "status": {
         "pending": "قيد الانتظار",
-        "generated": "مُنشأ",
+        "generated": "تم إنشاؤها",
         "failed": "فشل"
       },
       "placement": {
-        "company": "الشركة",
-        "offer": "العرض",
-        "type": "النوع",
+        "company": "شركة",
+        "offer": "يعرض",
+        "type": "يكتب",
         "startDate": "تاريخ البدء",
         "endDate": "تاريخ الانتهاء",
-        "validatedAt": "تاريخ الاعتماد",
+        "validatedAt": "تم التحقق من صحتها",
         "verificationCode": "رمز التحقق",
-        "notAvailable": "غير متاح"
+        "notAvailable": "غير متوفر"
       },
       "feedback": {
-        "ctaLabel": "إضافة تقييم",
-        "ctaDescription": "ساعد في تحسين مؤشر الثقة عبر مشاركة تجربتك.",
-        "title": "تقييم فترة التدريب",
-        "description": "شارك تجربتك مع {companyName} بخصوص \"{offerTitle}\".",
-        "descriptionFallback": "شارك تجربتك في فترة التدريب.",
+        "ctaLabel": "اترك تقييم للخدمة",
+        "ctaDescription": "ساعد في تحسين نقاط الثقة من خلال مشاركة تجربتك.",
+        "title": "تعليقات الموضع",
+        "description": "شارك تجربتك مع {companyName} لـ \"{offerTitle}\".",
+        "descriptionFallback": "شارك تجربتك في التنسيب.",
         "ratingLabel": "التقييم العام",
-        "wouldRecommendLabel": "أوصي بهذه الشركة للتدريب.",
+        "wouldRecommendLabel": "أود أن أوصي بهذه الشركة للتدريب.",
         "commentLabel": "تعليق (اختياري)",
-        "commentPlaceholder": "ما الذي كان جيداً وما الذي يمكن تحسينه؟",
-        "cancel": "إلغاء",
-        "submit": "إرسال التقييم",
-        "submitting": "جارٍ الإرسال...",
-        "submitSuccess": "تم إرسال التقييم بنجاح.",
-        "submitError": "تعذر إرسال التقييم."
+        "commentPlaceholder": "ما الذي نجح بشكل جيد وما الذي يمكن تحسينه؟",
+        "cancel": "يلغي",
+        "submit": "إرسال ردود الفعل",
+        "submitting": "تقديم...",
+        "submitSuccess": "تم إرسال التعليقات بنجاح.",
+        "submitError": "فشل في إرسال ردود الفعل."
       },
       "downloadSuccess": "تم تنزيل المستند.",
       "downloadError": "فشل تنزيل المستند."
@@ -1133,317 +1145,318 @@
     "companyDocuments": {
       "pageTitle": "وثائق الشركة",
       "title": "وثائق الشركة",
-      "subtitle": "إنشاء وتنزيل شهادات التربص للمواضع المعتمدة",
-      "empty": "لا توجد مواضع معتمدة لهذه الشركة.",
-      "loadError": "تعذر تحميل وثائق الشركة.",
-      "retry": "إعادة المحاولة",
+      "subtitle": "قم بإنشاء وتنزيل شهادات تحديد المستوى للمتدربين المعتمدين لديك",
+      "empty": "لم يتم العثور على مواضع تم التحقق منها لشركتك.",
+      "loadError": "فشل في تحميل مستندات الشركة.",
+      "retry": "أعد المحاولة",
       "generate": "إنشاء الشهادة",
       "generating": "جارٍ الإنشاء...",
-      "download": "تنزيل",
+      "download": "تحميل",
       "downloading": "جارٍ التنزيل...",
       "generatedSuccess": "تم إنشاء الشهادة بنجاح.",
-      "generateError": "فشل إنشاء الشهادة.",
+      "generateError": "فشل في إنشاء الشهادة.",
       "downloadError": "فشل تنزيل المستند.",
-      "agreement": "اتفاقية التدريب",
-      "certificate": "شهادة التدريب",
+      "agreement": "اتفاق",
+      "certificate": "شهادة",
       "status": {
-        "notGenerated": "غير منشأة",
+        "notGenerated": "لم يتم إنشاؤها",
         "pending": "قيد الانتظار",
-        "generated": "مُنشأ",
+        "generated": "تم إنشاؤها",
         "failed": "فشل"
       },
       "placement": {
-        "student": "الطالب",
-        "offer": "العرض",
-        "type": "النوع",
+        "student": "طالب",
+        "offer": "يعرض",
+        "type": "يكتب",
         "startDate": "تاريخ البدء",
         "endDate": "تاريخ الانتهاء",
-        "validatedAt": "تاريخ الاعتماد",
+        "validatedAt": "تم التحقق من صحتها",
         "verificationCode": "رمز التحقق",
-        "notAvailable": "غير متاح"
+        "notAvailable": "غير متوفر"
       }
     },
     "admin": {
       "title": "لوحة تحكم المشرف",
       "subtitle": "نظرة عامة على نشاط المنصة",
       "stats": {
-        "totalPlacements": "إجمالي التوظيفات",
-        "pendingValidation": "في انتظار التحقق",
-        "docsGenerated": "المستندات المنشأة"
+        "totalPlacements": "إجمالي المواضع",
+        "pendingValidation": "في انتظار التحقق من الصحة",
+        "docsGenerated": "تم إنشاء المستندات"
       },
       "actions": {
-        "validatePlacements": "التحقق من التوظيفات",
-        "systemHealth": "حالة النظام",
+        "validatePlacements": "التحقق من صحة المواضع",
+        "systemHealth": "صحة النظام",
         "exportReports": "تصدير التقارير"
       },
       "validations": {
-        "backToDashboard": "العودة إلى لوحة التحكم",
-        "title": "اعتماد التوظيفات",
-        "description": "راجع الطلبات المقبولة من الشركة واعتمد التوظيفات.",
-        "empty": "لا توجد توظيفات بانتظار الاعتماد.",
-        "companyAcceptedOn": "قُبل من الشركة في",
+        "backToDashboard": "العودة إلى لوحة القيادة",
+        "title": "التحقق من صحة المواضع",
+        "description": "مراجعة الطلبات المقبولة من قبل الشركة والتحقق من صحة المواضع.",
+        "empty": "لا توجد مواضع في انتظار التحقق من صحتها.",
+        "companyAcceptedOn": "قبلت الشركة على",
         "detail": {
-          "backToList": "العودة إلى قائمة الاعتماد",
-          "title": "تفاصيل الاعتماد",
-          "notFound": "لم يتم العثور على الطلب.",
+          "backToList": "العودة إلى عمليات التحقق من الصحة",
+          "title": "تفاصيل التحقق من الصحة",
+          "notFound": "لم يتم العثور على التطبيق.",
           "studentInfo": "معلومات الطالب",
-          "name": "الاسم",
-          "email": "البريد الإلكتروني",
-          "phone": "الهاتف",
+          "name": "اسم",
+          "email": "بريد إلكتروني",
+          "phone": "هاتف",
           "studentNumber": "رقم الطالب",
-          "department": "القسم",
-          "level": "المستوى",
-          "university": "الجامعة",
-          "address": "العنوان",
-          "skills": "المهارات",
+          "department": "قسم",
+          "level": "مستوى",
+          "university": "جامعة",
+          "address": "عنوان",
+          "skills": "مهارات",
           "companyInfo": "معلومات الشركة",
           "companyName": "اسم الشركة",
-          "representative": "الممثل",
+          "representative": "ممثل",
           "offerDetails": "تفاصيل العرض",
-          "type": "النوع",
+          "type": "يكتب",
           "internshipTypeLabel": {
-            "pfe": "مشروع تخرج (PFE)",
-            "immersion": "تدريب اندماج",
-            "summer": "تدريب صيفي",
-            "practical": "تدريب عملي"
+            "pfe": "مشروع السنة النهائية (PFE)",
+            "immersion": "التدريب الغمر",
+            "summer": "التدريب الصيفي",
+            "practical": "التدريب العملي"
           },
-          "workMode": "نمط العمل",
+          "workMode": "وضع العمل",
           "workModeLabel": {
-            "on_site": "حضوري",
+            "on_site": "في الموقع",
             "hybrid": "هجين",
-            "remote": "عن بُعد"
+            "remote": "بعيد"
           },
-          "duration": "المدة",
-          "durationWeeks": "{count} أسبوع",
-          "deadline": "الموعد النهائي للتقديم",
+          "duration": "مدة",
+          "durationWeeks": "{count} أسابيع",
+          "deadline": "الموعد النهائي لتقديم الطلبات",
           "expectedPeriod": "الفترة المتوقعة",
           "timeline": "الجدول الزمني",
-          "appliedOn": "تاريخ التقديم",
-          "companyAcceptedOn": "تاريخ قبول الشركة",
-          "coverLetter": "رسالة التغطية",
+          "appliedOn": "تطبق على",
+          "companyAcceptedOn": "قبلت الشركة على",
+          "coverLetter": "غطاء الرسالة",
           "setInternshipPeriod": "تحديد فترة التدريب",
           "startDate": "تاريخ البدء",
           "endDate": "تاريخ الانتهاء",
-          "selectDates": "يرجى اختيار تاريخي البدء والانتهاء.",
+          "selectDates": "الرجاء تحديد تاريخي البدء والانتهاء.",
           "invalidDates": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء.",
-          "selectedDatesOutsideExpectedRange": "التواريخ المحددة خارج الفترة المتوقعة المحددة في العرض.",
-          "confirmValidate": "هل تريد اعتماد هذا التوظيف؟",
-          "validateSuccess": "تم اعتماد التوظيف.",
-          "validateError": "فشل اعتماد التوظيف.",
-          "rejectSuccess": "تم رفض التوظيف.",
-          "rejectError": "فشل رفض التوظيف.",
-          "agreementGenerationError": "تم اعتماد التوظيف لكن فشل إنشاء الاتفاقية.",
-          "generatingPdf": "جارٍ إنشاء PDF...",
-          "validateAndGenerate": "اعتماد وإنشاء",
-          "reject": "رفض",
-          "rejectTitle": "رفض التوظيف",
-          "rejectDescription": "أضف سبباً قصيراً لرفض {name} (اختياري).",
+          "selectedDatesOutsideExpectedRange": "التواريخ المحددة تقع خارج الفترة المتوقعة المحددة في العرض.",
+          "confirmValidate": "التحقق من صحة هذا التنسيب؟",
+          "validateSuccess": "تم التحقق من صحة الموضع.",
+          "validateError": "فشل التحقق من صحة الموضع.",
+          "rejectSuccess": "تم رفض التنسيب.",
+          "rejectError": "فشل رفض التنسيب.",
+          "agreementGenerationError": "تم التحقق من صحة الموضع، ولكن فشل إنشاء الاتفاقية.",
+          "generatingPdf": "جارٍ إنشاء ملف PDF...",
+          "validateAndGenerate": "التحقق من صحة وتوليد",
+          "reject": "يرفض",
+          "rejectTitle": "رفض التنسيب",
+          "rejectDescription": "قم بتقديم سبب قصير لرفض {name} (اختياري).",
           "rejectReasonPlaceholder": "السبب (اختياري)...",
-          "cancel": "إلغاء",
+          "cancel": "يلغي",
           "confirmReject": "تأكيد الرفض",
-          "notAvailable": "غير متاح",
+          "notAvailable": "لا يوجد",
           "ai": {
-            "title": "ملخص بالذكاء الاصطناعي",
-            "description": "ملخص سريع وقائمة تحقق. بدون قرار اعتماد/رفض.",
-            "generate": "إنشاء",
+            "title": "ملخص الذكاء الاصطناعي",
+            "description": "ملخص سريع وقائمة مرجعية. لا يوجد قرارات تأكيد/رفض.",
+            "generate": "يولد",
             "summary": "ملخص",
-            "checklist": "قائمة تحقق",
-            "noMissingItems": "لم يتم العثور على عناصر ناقصة.",
-            "potentialInconsistencies": "تناقضات محتملة",
+            "checklist": "قائمة التحقق",
+            "noMissingItems": "لم يتم اكتشاف أي عناصر مفقودة.",
+            "potentialInconsistencies": "التناقضات المحتملة",
             "generating": "جارٍ إنشاء الملخص...",
-            "hint": "اضغط \"إنشاء\" لإنتاج ملخص."
+            "hint": "انقر فوق إنشاء لإنتاج ملخص."
           }
         }
       },
+      "globalStats": "تحليلات المواضع العالمية",
       "departments": {
         "title": "الأقسام",
-        "description": "إدارة أقسام الجامعة وتعيين رؤساء الأقسام.",
-        "backToDashboard": "العودة إلى لوحة التحكم",
-        "empty": "لم يتم إنشاء أي أقسام بعد.",
+        "description": "إدارة أقسام جامعتك وتعيين رؤساء الأقسام.",
+        "backToDashboard": "العودة إلى لوحة القيادة",
+        "empty": "لم يتم إنشاء أقسام بعد.",
         "addDepartment": "إضافة قسم",
         "name": "اسم القسم",
-        "namePlaceholder": "مثال: علوم الحاسوب",
-        "headName": "اسم الرئيس (اختياري)",
-        "headNamePlaceholder": "مثال: د. أحمد بن علي",
+        "namePlaceholder": "على سبيل المثال علوم الكمبيوتر",
+        "headName": "اسم الرأس (اختياري)",
+        "headNamePlaceholder": "على سبيل المثال دكتور أحمد بنعلي",
         "assignHead": "تعيين رئيس",
-        "manageSkills": "المهارات",
+        "manageSkills": "مهارات",
         "assignHeadTitle": "تعيين رئيس القسم",
-        "assignHeadDescription": "أدخل بيانات رئيس القسم القادم. إذا لم يكن المستخدم موجوداً، سيتم إنشاء حساب له تلقائياً.",
-        "selectUser": "اختر مستخدم",
-        "noUsersAvailable": "لا يوجد مستخدمون متاحون.",
-        "passwordResetHint": "سيتم إرسال رابط إعادة تعيين كلمة المرور لتفعيل حساب رئيس القسم.",
-        "save": "حفظ",
-        "cancel": "إلغاء",
+        "assignHeadDescription": "أدخل تفاصيل رئيس القسم المستقبلي. في حالة عدم وجود المستخدم، سيتم إنشاء حساب تلقائيًا.",
+        "selectUser": "حدد المستخدم",
+        "noUsersAvailable": "لا يوجد مستخدمون متاحون لتعيينهم.",
+        "passwordResetHint": "سيتم إرسال رابط إعادة تعيين كلمة المرور حتى يتمكن رئيس القسم من تفعيل الوصول.",
+        "save": "يحفظ",
+        "cancel": "يلغي",
         "createSuccess": "تم إنشاء القسم بنجاح.",
         "updateSuccess": "تم تحديث القسم بنجاح.",
         "assignSuccess": "تم تعيين رئيس القسم بنجاح.",
-        "removeHead": "إزالة الرئيس",
+        "removeHead": "إزالة الرأس",
         "removeHeadTitle": "إزالة رئيس القسم",
-        "removeHeadDescription": "سيتم إلغاء تعيين {headName} من قسم {name}. سيتم الاحتفاظ بحساب المستخدم.",
+        "removeHeadDescription": "سيؤدي هذا إلى إلغاء تعيين {headName} من {name}. سيتم الاحتفاظ بحساب المستخدم.",
         "removeHeadSuccess": "تمت إزالة رئيس القسم بنجاح.",
         "deleteDepartment": "حذف القسم",
         "deleteDepartmentTitle": "حذف القسم",
-        "deleteDepartmentDescription": "حذف {name}؟ لا يمكن التراجع عن هذا الإجراء.",
+        "deleteDepartmentDescription": "هل تريد حذف {name}؟ لا يمكن التراجع عن هذا الإجراء.",
         "deleteSuccess": "تم حذف القسم بنجاح.",
-        "error": "حدث خطأ. يرجى المحاولة مرة أخرى.",
+        "editDepartment": "يحرر",
+        "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
         "skills": {
-          "title": "المهارات الخاصة بـ {name}",
-          "description": "اختر المهارات المناسبة لهذا القسم. سيشاهدها الطلاب كمهارات موصى بها.",
+          "title": "مهارات {name}",
+          "description": "اختيار المهارات ذات الصلة بهذا القسم. سوف يرى الطلاب هذه على النحو الموصى به.",
           "save": "حفظ المهارات",
-          "cancel": "إلغاء",
-          "skillsSelected": "مهارة محددة",
-          "searchPlaceholder": "ابحث عن المهارات...",
+          "cancel": "يلغي",
+          "skillsSelected": "المهارات المختارة",
+          "searchPlaceholder": "مهارات البحث...",
           "saveSuccess": "تم تحديث مهارات القسم.",
-          "saveError": "تعذر تحديث مهارات القسم."
+          "saveError": "لا يمكن تحديث المهارات."
         },
         "bulkCreate": {
-          "title": "إنشاء أقسام بالجملة",
-          "description": "أنشئ عدة أقسام وعيّن رؤساءها دفعة واحدة. سيتلقى كل رئيس بريد ترحيب مع رابط لتعيين كلمة المرور.",
+          "title": "إنشاء أقسام مجمعة",
+          "description": "إنشاء أقسام متعددة وتعيين الرؤساء في وقت واحد. سيتلقى كل رئيس رسالة ترحيب بالبريد الإلكتروني تحتوي على رابط لإعادة تعيين كلمة المرور.",
           "departmentName": "اسم القسم",
-          "departmentNamePlaceholder": "مثال: علوم الحاسوب",
-          "headEmail": "بريد الرئيس",
-          "headEmailPlaceholder": "مثال: رئيس@جامعة.dz",
-          "headName": "اسم الرئيس",
-          "headNamePlaceholder": "مثال: د. أحمد بن علي",
-          "addRow": "إضافة صف",
-          "removeRow": "حذف الصف",
+          "departmentNamePlaceholder": "على سبيل المثال علوم الكمبيوتر",
+          "headEmail": "البريد الإلكتروني الرئيسي",
+          "headEmailPlaceholder": "على سبيل المثال head@university.dz",
+          "headName": "اسم الرأس",
+          "headNamePlaceholder": "على سبيل المثال دكتور أحمد بنعلي",
+          "addRow": "أضف صفًا",
+          "removeRow": "إزالة الصف",
           "submit": "إنشاء الكل",
           "submitting": "جارٍ الإنشاء...",
-          "successMessage": "تم إنشاء {count} قسم(أقسام) بنجاح.",
-          "partialSuccess": "تم إنشاء {created}، فشل {failed}.",
+          "successMessage": "تم إنشاء القسم (الأقسام) {count} بنجاح.",
+          "partialSuccess": "تم إنشاء {created}، وفشل {failed}.",
           "rowError": "{name}: {error}",
-          "error": "حدث خطأ. يرجى المحاولة مرة أخرى."
+          "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
         }
       },
       "deptValidations": {
         "title": "تصديقات القسم",
-        "description": "مراجعة وتصديق التربصات لطلاب قسمك.",
-        "empty": "لا توجد تربصات بانتظار التصديق في قسمك.",
-        "backToDashboard": "العودة إلى لوحة التحكم",
-        "companyAcceptedOn": "قبلتها الشركة في"
+        "description": "مراجعة والتحقق من صحة المواضع للطلاب في قسمك.",
+        "empty": "لا توجد مواضع في انتظار التحقق من صحتها في قسمك.",
+        "backToDashboard": "العودة إلى لوحة القيادة",
+        "companyAcceptedOn": "قبلت الشركة على"
       },
-      "globalStats": "تحليلات التوظيف العالمية",
       "universities": {
-        "kicker": "الإدارة",
-        "title": "التحقق من الجامعات",
-        "description": "مراجعة والموافقة على طلبات تسجيل الجامعات المعلقة.",
-        "noUniversities": "لم يتم العثور على جامعات.",
-        "statusFilter": "تصفية حسب الحالة",
+        "kicker": "إدارة",
+        "title": "التحقق من صحة الجامعة",
+        "description": "مراجعة واعتماد التسجيلات الجامعية المعلقة.",
+        "noUniversities": "لم يتم العثور على الجامعات.",
+        "statusFilter": "التصفية حسب الحالة",
         "allStatuses": "جميع الحالات",
         "status": {
           "pending": "قيد الانتظار",
-          "approved": "موافق عليها",
-          "rejected": "مرفوضة"
+          "approved": "موافقة",
+          "rejected": "مرفوض"
         },
-        "approve": "موافقة",
-        "reject": "رفض",
+        "approve": "يعتمد",
+        "reject": "يرفض",
         "approveSuccess": "تمت الموافقة على الجامعة بنجاح.",
-        "rejectSuccess": "تم رفض الجامعة.",
-        "approveError": "فشلت الموافقة على الجامعة.",
-        "rejectError": "فشل رفض الجامعة.",
+        "rejectSuccess": "الجامعة رفضت.",
+        "approveError": "فشل في الموافقة على الجامعة",
+        "rejectError": "فشل في رفض الجامعة.",
         "rejectDialog": {
           "title": "رفض الجامعة",
-          "description": "قدم سبب رفض طلب هذه الجامعة.",
+          "description": "قم بتقديم سبب لرفض هذا الطلب الجامعي.",
           "reasonLabel": "سبب الرفض",
           "reasonPlaceholder": "أدخل سبب الرفض...",
-          "cancel": "إلغاء",
+          "cancel": "يلغي",
           "confirm": "رفض الجامعة"
         },
         "card": {
-          "domains": "النطاقات",
-          "noDomains": "لا توجد نطاقات مسجلة",
-          "location": "الموقع",
-          "department": "القسم",
-          "registeredAt": "تاريخ التسجيل"
+          "domains": "المجالات",
+          "noDomains": "لم يتم تسجيل أي مجالات",
+          "location": "موقع",
+          "department": "قسم",
+          "registeredAt": "مسجل"
         }
       },
       "companies": {
-        "kicker": "الإدارة",
-        "title": "التحقق من الشركات",
-        "description": "مراجعة والموافقة على طلبات تسجيل الشركات المعلقة.",
+        "kicker": "إدارة",
+        "title": "التحقق من صحة الشركة",
+        "description": "مراجعة والموافقة على تسجيلات الشركة المعلقة.",
         "noCompanies": "لم يتم العثور على شركات.",
-        "statusFilter": "تصفية حسب الحالة",
+        "statusFilter": "التصفية حسب الحالة",
         "allStatuses": "جميع الحالات",
         "status": {
           "pending": "قيد الانتظار",
-          "approved": "موافق عليها",
-          "rejected": "مرفوضة",
-          "suspended": "معلّقة"
+          "approved": "موافقة",
+          "rejected": "مرفوض",
+          "suspended": "معلق"
         },
-        "approve": "موافقة",
-        "reject": "رفض",
+        "approve": "يعتمد",
+        "reject": "يرفض",
         "suspend": "تعليق",
-        "reactivate": "إعادة التفعيل",
+        "reactivate": "إعادة التنشيط",
         "approveSuccess": "تمت الموافقة على الشركة بنجاح.",
-        "rejectSuccess": "تم رفض الشركة.",
-        "suspendSuccess": "تم تعليق الشركة.",
-        "reactivateSuccess": "تمت إعادة تفعيل الشركة.",
+        "rejectSuccess": "رفضت الشركة.",
+        "suspendSuccess": "الشركة موقوفة.",
+        "reactivateSuccess": "تم إعادة تنشيط الشركة.",
         "approveError": "فشلت الموافقة على الشركة.",
-        "rejectError": "فشل رفض الشركة.",
-        "suspendError": "فشل تعليق الشركة.",
-        "reactivateError": "فشلت إعادة تفعيل الشركة.",
+        "rejectError": "فشل في رفض الشركة.",
+        "suspendError": "فشل في تعليق الشركة.",
+        "reactivateError": "فشل في إعادة تنشيط الشركة.",
         "rejectDialog": {
           "title": "رفض الشركة",
-          "description": "قدم سبب رفض طلب هذه الشركة.",
+          "description": "قم بتقديم سبب لرفض طلب هذه الشركة.",
           "reasonLabel": "سبب الرفض",
           "reasonPlaceholder": "أدخل سبب الرفض...",
-          "cancel": "إلغاء",
+          "cancel": "يلغي",
           "confirm": "رفض الشركة"
         },
         "card": {
-          "website": "الموقع الإلكتروني",
-          "location": "الموقع",
-          "representative": "الممثل",
-          "contact": "التواصل",
-          "registeredAt": "تاريخ التسجيل"
+          "website": "موقع إلكتروني",
+          "location": "موقع",
+          "representative": "ممثل",
+          "contact": "اتصال",
+          "registeredAt": "مسجل"
         }
       },
       "pending": {
-        "kicker": "حالة الجامعة",
-        "title": "الطلب قيد المراجعة",
-        "subtitle": "يتم مراجعة تسجيل جامعتك من قبل المسؤول الأعلى. سيتم إخطارك بمجرد اتخاذ القرار.",
-        "statusLabel": "الحالة",
-        "statusValue": "قيد المراجعة",
-        "whatNext": "ماذا يحدث بعد ذلك؟",
-        "step1": "يقوم المسؤول الأعلى بمراجعة طلبك",
-        "step2": "يتم التحقق من نطاقات بريدك الإلكتروني والموافقة عليها",
-        "step3": "تحصل على وصول كامل للوحة التحكم"
+        "kicker": "الوضع الجامعي",
+        "title": "التطبيق قيد المراجعة",
+        "subtitle": "تتم مراجعة تسجيلك الجامعي بواسطة مشرف متميز. سيتم إعلامك بمجرد اتخاذ القرار.",
+        "statusLabel": "حالة",
+        "statusValue": "في انتظار المراجعة",
+        "whatNext": "ماذا سيحدث بعد ذلك؟",
+        "step1": "يقوم أحد المشرفين المتميزين بمراجعة طلبك",
+        "step2": "تم التحقق من نطاقات البريد الإلكتروني الخاصة بك والموافقة عليها",
+        "step3": "يمكنك الحصول على حق الوصول الكامل إلى لوحة تحكم المشرف"
       },
       "rejected": {
-        "kicker": "حالة الجامعة",
+        "kicker": "الوضع الجامعي",
         "title": "تم رفض الطلب",
-        "subtitle": "للأسف، لم تتم الموافقة على تسجيل جامعتك.",
-        "reasonLabel": "السبب",
+        "subtitle": "للأسف، لم تتم الموافقة على تسجيلك الجامعي.",
+        "reasonLabel": "سبب",
         "contactSupport": "إذا كنت تعتقد أن هذا خطأ، يرجى الاتصال بالدعم.",
         "reapply": "إعادة التقديم"
       }
     },
     "superAdmin": {
       "users": {
-        "kicker": "الإدارة",
-        "title": "إدارة المستخدمين",
-        "description": "إدارة جميع مستخدمي المنصة والأدوار والصلاحيات.",
+        "kicker": "إدارة",
+        "title": "إدارة المستخدم",
+        "description": "إدارة جميع مستخدمي النظام الأساسي والأدوار والوصول.",
         "searchPlaceholder": "البحث بالبريد الإلكتروني...",
-        "filterByRole": "تصفية حسب الدور",
+        "filterByRole": "التصفية حسب الدور",
         "allRoles": "جميع الأدوار",
         "createUser": "إنشاء مستخدم",
         "noUsers": "لم يتم العثور على مستخدمين.",
         "roles": {
           "student": "طالب",
-          "company_admin": "مدير شركة",
+          "company_admin": "مدير الشركة",
           "dept_head": "رئيس القسم",
-          "university_admin": "مدير جامعة",
-          "super_admin": "المشرف العام"
+          "university_admin": "مدير الجامعة",
+          "super_admin": "المشرف الفائق"
         },
         "status": {
-          "active": "نشط",
+          "active": "نشيط",
           "banned": "محظور"
         },
         "table": {
-          "user": "المستخدم",
-          "role": "الدور",
-          "status": "الحالة",
-          "created": "تاريخ الإنشاء",
+          "user": "مستخدم",
+          "role": "دور",
+          "status": "حالة",
+          "created": "مخلوق",
           "actions": "الإجراءات"
         },
         "pagination": {
@@ -1453,53 +1466,53 @@
           "view": "عرض التفاصيل",
           "setRole": "تغيير الدور",
           "setPassword": "تعيين كلمة المرور",
-          "ban": "حظر",
-          "unban": "إلغاء الحظر",
-          "delete": "حذف"
+          "ban": "حظر المستخدم",
+          "unban": "إلغاء حظر المستخدم",
+          "delete": "حذف المستخدم"
         },
         "fields": {
-          "name": "الاسم",
-          "email": "البريد الإلكتروني",
+          "name": "اسم",
+          "email": "بريد إلكتروني",
           "password": "كلمة المرور",
-          "role": "الدور"
+          "role": "دور"
         },
         "dialogs": {
-          "cancel": "إلغاء",
+          "cancel": "يلغي",
           "create": {
             "title": "إنشاء مستخدم",
-            "description": "إنشاء مستخدم جديد بدور محدد.",
-            "submit": "إنشاء"
+            "description": "أنشئ مستخدمًا جديدًا للنظام الأساسي له دور محدد.",
+            "submit": "يخلق"
           },
           "ban": {
             "title": "حظر المستخدم",
             "description": "حظر {email} من المنصة.",
-            "reason": "السبب",
-            "reasonPlaceholder": "سبب اختياري للحظر...",
-            "duration": "المدة",
+            "reason": "سبب",
+            "reasonPlaceholder": "سبب اختياري للمنع...",
+            "duration": "مدة",
             "durations": {
               "permanent": "دائم",
-              "1h": "ساعة واحدة",
+              "1h": "1 ساعة",
               "24h": "24 ساعة",
               "7d": "7 أيام",
-              "30d": "30 يومًا"
+              "30d": "30 يوما"
             },
-            "submit": "حظر"
+            "submit": "حظر المستخدم"
           },
           "setRole": {
             "title": "تغيير الدور",
-            "description": "تغيير دور {email}.",
-            "submit": "تحديث"
+            "description": "قم بتغيير دور {email}.",
+            "submit": "تحديث الدور"
           },
           "setPassword": {
             "title": "تعيين كلمة المرور",
-            "description": "تعيين كلمة مرور جديدة لـ {email}.",
+            "description": "قم بتعيين كلمة مرور جديدة لـ {email}.",
             "newPassword": "كلمة المرور الجديدة",
-            "submit": "تحديث"
+            "submit": "تحديث كلمة المرور"
           },
           "delete": {
             "title": "حذف المستخدم",
-            "description": "هل أنت متأكد من حذف {email} نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",
-            "submit": "حذف"
+            "description": "هل أنت متأكد أنك تريد حذف {email} نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",
+            "submit": "يمسح"
           }
         }
       },
@@ -1507,618 +1520,291 @@
         "backToUsers": "العودة إلى المستخدمين",
         "kicker": "تفاصيل المستخدم",
         "notFound": "لم يتم العثور على المستخدم.",
-        "unnamed": "مستخدم بدون اسم",
+        "unnamed": "مستخدم لم يذكر اسمه",
         "roles": {
           "student": "طالب",
-          "company_admin": "مدير شركة",
+          "company_admin": "مدير الشركة",
           "dept_head": "رئيس القسم",
-          "university_admin": "مدير جامعة",
-          "super_admin": "المشرف العام"
+          "university_admin": "مدير الجامعة",
+          "super_admin": "المشرف الفائق"
         },
         "status": {
-          "active": "نشط",
+          "active": "نشيط",
           "banned": "محظور"
         },
         "sessions": {
           "title": "الجلسات النشطة",
           "ip": "عنوان IP",
           "userAgent": "وكيل المستخدم",
-          "created": "أُنشئت",
+          "created": "مخلوق",
           "expires": "تنتهي",
           "none": "لا توجد جلسات نشطة."
         },
         "actions": {
           "title": "الإجراءات",
-          "impersonate": "انتحال الهوية",
+          "impersonate": "انتحال شخصية",
           "ban": "حظر",
           "unban": "إلغاء الحظر",
-          "revokeAll": "إلغاء جميع الجلسات"
+          "revokeAll": "إبطال كافة الجلسات"
         }
       },
       "impersonation": {
-        "banner": "أنت تنتحل هوية {name}",
-        "stop": "إيقاف"
+        "banner": "أنت تنتحل شخصية {name}",
+        "stop": "قف"
       }
     },
     "settings": {
       "twoFactor": {
         "title": "المصادقة الثنائية",
-        "description": "أضف طبقة أمان إضافية لحسابك من خلال طلب رمز تحقق عند تسجيل الدخول.",
-        "active": "مفعّلة",
-        "inactive": "غير مفعّلة",
-        "enable": "تفعيل المصادقة الثنائية",
-        "disable": "تعطيل المصادقة الثنائية",
+        "description": "أضف طبقة إضافية من الأمان إلى حسابك من خلال طلب رمز التحقق عند تسجيل الدخول.",
+        "active": "نشيط",
+        "inactive": "غير نشط",
+        "enable": "تمكين 2FA",
+        "disable": "تعطيل المصادقة الثنائية (2FA).",
         "enableStep": {
-          "title": "إعداد تطبيق المصادقة",
-          "description": "امسح رمز QR بتطبيق المصادقة الخاص بك (Google Authenticator، Authy، إلخ)",
+          "title": "إعداد أداة المصادقة",
+          "description": "امسح رمز QR ضوئيًا باستخدام تطبيق المصادقة الخاص بك (Google Authenticator، Authy، وما إلى ذلك)",
           "passwordLabel": "كلمة المرور الحالية",
-          "passwordPlaceholder": "أدخل كلمة المرور للمتابعة",
-          "continue": "متابعة",
-          "scanQr": "امسح رمز QR هذا بتطبيق المصادقة",
+          "passwordPlaceholder": "أدخل كلمة المرور الخاصة بك للمتابعة",
+          "continue": "يكمل",
+          "scanQr": "قم بمسح رمز الاستجابة السريعة هذا باستخدام تطبيق المصادقة الخاص بك",
           "manualEntry": "أو أدخل هذا المفتاح يدويًا:",
-          "copySecret": "نسخ المفتاح"
+          "copySecret": "نسخ السر"
         },
         "verifyStep": {
           "title": "التحقق من الإعداد",
-          "description": "أدخل الرمز المكون من 6 أرقام من تطبيق المصادقة للتحقق من الإعداد.",
+          "description": "أدخل الرمز المكون من 6 أرقام من تطبيق المصادقة الخاص بك للتحقق من الإعداد.",
           "codeLabel": "رمز التحقق",
           "codePlaceholder": "أدخل الرمز المكون من 6 أرقام",
-          "verify": "تحقق وتفعيل"
+          "verify": "التحقق والتمكين"
         },
         "backupCodes": {
-          "title": "رموز الاحتياط",
-          "description": "احفظ رموز الاحتياط هذه في مكان آمن. يمكن استخدام كل رمز مرة واحدة فقط لتسجيل الدخول إذا فقدت الوصول إلى تطبيق المصادقة.",
-          "copy": "نسخ جميع الرموز",
+          "title": "رموز النسخ الاحتياطي",
+          "description": "احفظ هذه الرموز الاحتياطية في مكان آمن. لا يمكن استخدام كل رمز إلا مرة واحدة لتسجيل الدخول إذا فقدت الوصول إلى تطبيق المصادقة الخاص بك.",
+          "copy": "انسخ جميع الرموز",
           "download": "تنزيل الرموز",
           "copied": "تم نسخ الرموز إلى الحافظة",
-          "done": "لقد حفظت رموز الاحتياط",
-          "warning": "لن يتم عرض هذه الرموز مرة أخرى. تأكد من حفظها الآن."
+          "done": "لقد قمت بحفظ الرموز الاحتياطية الخاصة بي",
+          "warning": "لن يتم عرض هذه الرموز مرة أخرى. تأكد من حفظهم الآن."
         },
         "disableConfirm": {
           "title": "تعطيل المصادقة الثنائية",
           "description": "سيؤدي هذا إلى إزالة طبقة الأمان الإضافية من حسابك. هل أنت متأكد؟",
           "passwordLabel": "كلمة المرور الحالية",
-          "passwordPlaceholder": "أدخل كلمة المرور للتأكيد",
-          "cancel": "إلغاء",
-          "confirm": "تعطيل المصادقة الثنائية"
+          "passwordPlaceholder": "أدخل كلمة المرور الخاصة بك للتأكيد",
+          "cancel": "يلغي",
+          "confirm": "تعطيل المصادقة الثنائية (2FA)."
         },
         "success": {
-          "enabled": "تم تفعيل المصادقة الثنائية بنجاح.",
+          "enabled": "تم تمكين المصادقة الثنائية بنجاح.",
           "disabled": "تم تعطيل المصادقة الثنائية."
         },
         "error": {
-          "enableFailed": "فشل تفعيل المصادقة الثنائية. يرجى المحاولة مرة أخرى.",
-          "disableFailed": "فشل تعطيل المصادقة الثنائية. يرجى المحاولة مرة أخرى.",
-          "verifyFailed": "رمز تحقق غير صالح. يرجى المحاولة مرة أخرى.",
+          "enableFailed": "فشل في تمكين المصادقة الثنائية (2FA). يرجى المحاولة مرة أخرى.",
+          "disableFailed": "فشل في تعطيل 2FA. يرجى المحاولة مرة أخرى.",
+          "verifyFailed": "رمز التحقق غير صالح. يرجى المحاولة مرة أخرى.",
           "passwordRequired": "كلمة المرور مطلوبة."
         }
       },
       "sessions": {
         "title": "الجلسات النشطة",
-        "description": "إدارة الأجهزة التي تم تسجيل الدخول إليها حاليًا.",
-        "currentDevice": "الحالي",
+        "description": "إدارة الأجهزة التي تم تسجيل الدخول إلى حسابك عليها حاليًا.",
+        "currentDevice": "حاضِر",
         "lastActive": "آخر نشاط:",
         "revoke": "تسجيل الخروج",
-        "revokeOthers": "تسجيل الخروج من جميع الجلسات الأخرى",
+        "revokeOthers": "قم بتسجيل الخروج من جميع الجلسات الأخرى",
         "noSessions": "لم يتم العثور على جلسات نشطة.",
-        "loading": "جارِ تحميل الجلسات…",
+        "loading": "جارٍ تحميل الجلسات…",
         "revokeSuccess": "تم تسجيل الخروج من الجلسة بنجاح.",
         "revokeError": "فشل تسجيل الخروج من الجلسة. يرجى المحاولة مرة أخرى.",
         "revokeOthersSuccess": "تم تسجيل الخروج من {count, plural, one {جلسة واحدة} other {# جلسات}} بنجاح.",
-        "revokeOthersError": "فشل تسجيل الخروج من الجلسات الأخرى. يرجى المحاولة مرة أخرى.",
+        "revokeOthersError": "فشل في تسجيل الخروج من الجلسات الأخرى. يرجى المحاولة مرة أخرى.",
         "revokeDialog": {
-          "title": "تسجيل الخروج من الجلسة",
-          "description": "سيتم تسجيل الخروج من الجهاز المحدد. سيحتاج المستخدم على ذلك الجهاز إلى تسجيل الدخول مرة أخرى.",
-          "cancel": "إلغاء",
+          "title": "جلسة تسجيل الخروج",
+          "description": "سيؤدي هذا إلى تسجيل الخروج من الجهاز المحدد. سيحتاج المستخدم الموجود على هذا الجهاز إلى تسجيل الدخول مرة أخرى.",
+          "cancel": "يلغي",
           "confirm": "تسجيل الخروج"
         },
         "revokeAllDialog": {
-          "title": "تسجيل الخروج من جميع الجلسات الأخرى",
-          "description": "سيتم تسجيل الخروج من {count, plural, one {جلسة أخرى واحدة} other {# جلسات أخرى}}. ستحتاج تلك الأجهزة إلى تسجيل الدخول مرة أخرى.",
-          "cancel": "إلغاء",
+          "title": "قم بتسجيل الخروج من جميع الجلسات الأخرى",
+          "description": "سيؤدي هذا إلى تسجيل الخروج من {count, plural, one {جلسة أخرى واحدة} other {# جلسات أخرى}}. ستحتاج هذه الأجهزة إلى تسجيل الدخول مرة أخرى.",
+          "cancel": "يلغي",
           "confirm": "تسجيل الخروج من الكل"
         }
       },
       "deleteAccount": {
         "title": "حذف الحساب",
-        "description": "سيتم حذف حسابك وجميع البيانات المرتبطة به نهائيًا. لا يمكن التراجع عن هذا الإجراء.",
-        "warning": "سيتم حذف جميع بياناتك بما في ذلك ملفك الشخصي وطلباتك ومحادثاتك ومستنداتك نهائيًا. لا يمكن التراجع عن هذا.",
+        "description": "سيؤدي هذا إلى حذف حسابك وجميع البيانات المرتبطة به نهائيًا. لا يمكن التراجع عن هذا الإجراء.",
+        "warning": "سيتم حذف جميع بياناتك بما في ذلك ملفك الشخصي والتطبيقات والمحادثات والمستندات نهائيًا. لا يمكن عكس هذا.",
         "passwordLabel": "كلمة المرور الحالية",
-        "passwordPlaceholder": "أدخل كلمة المرور للتأكيد",
+        "passwordPlaceholder": "أدخل كلمة المرور الخاصة بك للتأكيد",
         "confirmLabel": "اكتب \"{phrase}\" للتأكيد",
         "confirmPhrase": "حذف حسابي",
-        "confirm": "حذف حسابي نهائيًا",
-        "deleting": "جارِ حذف الحساب…",
+        "confirm": "حذف حسابي نهائيا",
+        "deleting": "جارٍ حذف الحساب…",
         "error": {
           "passwordRequired": "كلمة المرور مطلوبة.",
-          "confirmRequired": "يرجى كتابة عبارة التأكيد.",
-          "deleteFailed": "فشل حذف الحساب. يرجى التحقق من كلمة المرور والمحاولة مرة أخرى."
+          "confirmRequired": "الرجاء كتابة عبارة التأكيد.",
+          "deleteFailed": "فشل في حذف الحساب. يرجى التحقق من كلمة المرور الخاصة بك والمحاولة مرة أخرى."
         }
       },
       "skillsManager": {
         "minRequired": "اختر مهارة واحدة على الأقل.",
         "saveSuccess": "تم تحديث المهارات.",
-        "saveError": "تعذر حفظ المهارات."
+        "saveError": "لا يمكن حفظ المهارات."
       }
     },
     "departments": {
       "pageTitle": "إدارة الأقسام",
       "title": "إدارة الأقسام",
-      "description": "إنشاء وإدارة الأقسام الجامعية وتعيين رؤساء الأقسام.",
-      "empty": "لم يتم العثور على أقسام. ابدأ بإنشاء واحد.",
+      "description": "إنشاء وإدارة أقسام الجامعة وتعيين رؤسائها.",
+      "empty": "لم يتم العثور على أقسام. ابدأ بإنشاء واحدة.",
       "addDepartment": "إضافة قسم",
       "assignHead": "تعيين رئيس",
-      "assignHeadDescription": "أدخل البريد الإلكتروني للمستخدم لتعيينه كرئيس للقسم:",
+      "assignHeadDescription": "أدخل البريد الإلكتروني للمستخدم المراد تعيينه كرئيس قسم:",
       "backToDashboard": "العودة إلى لوحة القيادة",
       "name": "اسم القسم",
-      "namePlaceholder": "مثال: علوم الحاسوب",
-      "headName": "اسم الرئيس (اختياري)",
-      "headNamePlaceholder": "مثال: د. محمد",
-      "save": "إنشاء القسم",
-      "success": "تم إنشاء القسم بنجاح",
-      "error": "فشل إنشاء القسم",
-      "manageSkills": "المهارات",
+      "namePlaceholder": "على سبيل المثال علوم الكمبيوتر",
+      "headName": "اسم الرأس (اختياري)",
+      "headNamePlaceholder": "على سبيل المثال دكتور سميث",
+      "save": "إنشاء قسم",
+      "success": "تم إنشاء القسم",
+      "error": "فشل في إنشاء القسم",
+      "manageSkills": "مهارات",
       "skills": {
         "title": "مهارات {name}",
-        "description": "حدد المهارات المتعلقة بهذا القسم. سيراها الطلاب كمهارات موصى بها.",
+        "description": "اختيار المهارات ذات الصلة بهذا القسم. سوف يرى الطلاب هذه على النحو الموصى به.",
         "save": "حفظ المهارات",
-        "cancel": "إلغاء",
-        "skillsSelected": "مهارات مختارة",
-        "searchPlaceholder": "البحث عن مهارات...",
+        "cancel": "يلغي",
+        "skillsSelected": "المهارات المختارة",
+        "searchPlaceholder": "مهارات البحث...",
         "saveSuccess": "تم تحديث مهارات القسم.",
-        "saveError": "تعذر تحديث المهارات."
+        "saveError": "لا يمكن تحديث المهارات."
       }
     }
   },
-  "companyPublic": {
-    "kicker": "ملف الشركة",
-    "website": "الموقع الإلكتروني",
-    "trustIndex": "مؤشر الثقة",
-    "openOffers": "العروض المفتوحة",
-    "noOffers": "لا توجد عروض منشورة نشطة حالياً.",
-    "positions": "مناصب"
-  },
   "howItWorks": {
     "label": "كيف يعمل",
-    "headline": "سير عمل مُبسّط للجميع",
-    "description": "سواء كنت طالبًا يبحث عن فرص، أو شركة تبحث عن مواهب، أو مديرًا يدير التوظيفات—إنترنكس توفر تجربة سلسة مُصممة لدورك.",
+    "headline": "سير عمل مبسط للجميع",
+    "description": "سواء كنت طالباً يبحث عن فرص، أو شركة تبحث عن مواهب، أو مسؤولاً يدير التنسيقات — يوفر إنترنكس تجربة سلسة مخصصة لدورك.",
     "student": {
       "title": "رحلة الطالب",
       "subtitle": "للطلاب",
       "steps": {
         "register": {
-          "step": "الخطوة ٠١",
-          "title": "إنشاء حسابك",
-          "description": "سجّل ببريدك الجامعي وتحقق من حالتك الطلابية بأمان."
+          "step": "الخطوة 01",
+          "title": "أنشئ حسابك",
+          "description": "سجل ببريدك الإلكتروني الجامعي ووثق وضعك كطالب بأمان."
         },
         "profile": {
-          "step": "الخطوة ٠٢",
-          "title": "بناء سيرتك الذاتية الرقمية",
-          "description": "أضف مهاراتك وخبراتك واربط روابط GitHub أو محفظتك."
+          "step": "الخطوة 02",
+          "title": "ابنِ سيرتك الذاتية الرقمية",
+          "description": "أضف مهاراتك، خبراتك، واربط حسابك على جيت هاب أو معرض أعمالك."
         },
         "search": {
-          "step": "الخطوة ٠٣",
-          "title": "اكتشاف الفرص",
-          "description": "استخدم الفلاتر الذكية للعثور على تدريبات حسب الموقع أو التقنيات أو نوع الشركة."
+          "step": "الخطوة 03",
+          "title": "اكتشف الفرص",
+          "description": "استخدم المرشحات الذكية للعثور على تربصات حسب الموقع أو المهارات التقنية."
         },
         "apply": {
-          "step": "الخطوة ٠٤",
-          "title": "التقديم بنقرة واحدة",
-          "description": "أرسل ملفك الشخصي مباشرة للشركات وتتبع طلباتك."
+          "step": "الخطوة 04",
+          "title": "قدم بنقرة واحدة",
+          "description": "أرسل ملفك مباشرة للشركات وتتبع حالة طلباتك."
         }
       }
     },
     "company": {
-      "title": "بوابة التوظيف",
+      "title": "بوابة مسؤول التوظيف",
       "subtitle": "للشركات",
       "steps": {
         "profile": {
-          "step": "الخطوة ٠١",
+          "step": "الخطوة 01",
           "title": "ملف الشركة",
-          "description": "أنشئ صفحة شركتك مع الشعار والوصف والمواقع."
+          "description": "أعدد صفحة شركتك بالشعار، الوصف، ومواقع المكاتب."
         },
         "offers": {
-          "step": "الخطوة ٠٢",
+          "step": "الخطوة 02",
           "title": "نشر العروض",
-          "description": "أنشئ وعدّل وأدر مواقع التدريب مع متطلبات تفصيلية."
+          "description": "أنشئ، عدل، وادر مناصب التدريب بمتطلبات مفصلة."
         },
         "candidates": {
-          "step": "الخطوة ٠٣",
+          "step": "الخطوة 03",
           "title": "مراجعة المرشحين",
-          "description": "استخدم لوحة تحكم المتقدمين وفلترهم حسب المهارات أو الخبرة."
+          "description": "ادخل إلى لوحة معلومات المتقدمين وقم بالتصفية حسب المهارات."
         },
         "accept": {
-          "step": "الخطوة ٠٤",
+          "step": "الخطوة 04",
           "title": "القبول والمتابعة",
-          "description": "اقبل المرشحين وابدأ سير العمل الإداري تلقائيًا."
+          "description": "اقبل المرشحين وفعل سير العمل الإداري تلقائياً."
         }
       }
     },
     "admin": {
-      "title": "تحكم المدير",
+      "title": "تحكم المسؤول",
       "subtitle": "للإدارة",
       "steps": {
         "validate": {
-          "step": "الخطوة ٠١",
-          "title": "التحقق من التوظيفات",
-          "description": "راجع واعتمد مطابقات التدريب المقدمة من الشركات."
+          "step": "الخطوة 01",
+          "title": "المصادقة على التنسيب",
+          "description": "راجع ووافق على تطابقات التدريب المقدمة من الشركات."
         },
         "documents": {
-          "step": "الخطوة ٠٢",
-          "title": "إنشاء المستندات",
-          "description": "أنشئ تلقائيًا ملفات PDF لاتفاقية التدريب مع جميع البيانات المعبأة مسبقًا."
+          "step": "الخطوة 02",
+          "title": "توليد المستندات",
+          "description": "توليد تلقائي لاتفاقية التربص (PDF) بجميع البيانات المطلوبة."
         },
         "statistics": {
-          "step": "الخطوة ٠٣",
+          "step": "الخطوة 03",
           "title": "تتبع الإحصائيات",
-          "description": "الوصول إلى التحليلات العالمية لمعدلات التوظيف ونتائج الطلاب."
+          "description": "الوصول إلى تحليلات عالمية حول معدلات التنسيب ونتائج الطلاب."
         }
       }
     },
     "cta": {
-      "text": "هل أنت مستعد لتحويل تجربة التدريب الخاصة بك؟",
-      "button": "ابدأ مجانًا",
-      "aria": "البدء مع إنترنكس مجانًا"
+      "text": "جاهز لتحويل تجربة التدريب الخاصة بك؟",
+      "button": "ابدأ الآن مجاناً",
+      "aria": "ابدأ مع إنترنكس مجاناً"
     }
   },
   "verify": {
-    "title": "التحقق من الوثيقة",
-    "description": "أدخل رمز التحقق المطبوع على وثيقة إنترنكس للتأكد من صحتها.",
-    "placeholder": "INTX-XXXX-XXXX",
+    "title": "التحقق من المستندات",
+    "description": "أدخل رمز التحقق المطبوع على وثيقة إنترنكس للتأكد من أصالتها.",
+    "placeholder": "إنتكس-XXXX-XXXX",
     "submit": "تحقق من الوثيقة",
-    "checking": "جارٍ التحقق...",
+    "checking": "جاري التحقق...",
     "valid": {
-      "title": "تم التحقق من الوثيقة",
-      "subtitle": "هذه الوثيقة أصلية وصادرة عن إنترنكس.",
+      "title": "تم توثيق الوثيقة",
+      "subtitle": "هذه الوثيقة أصلية وتم إصدارها بواسطة إنترنكس.",
       "type": "نوع الوثيقة",
-      "typeAgreement": "اتفاقية التدريب",
-      "typeCertificate": "شهادة التدريب",
+      "typeAgreement": "اتفاقية تربص",
+      "typeCertificate": "شهادة تربص",
       "student": "الطالب",
-      "company": "المؤسسة",
+      "company": "الشركة",
       "university": "الجامعة",
-      "offer": "عنوان التدريب",
+      "offer": "عنوان التربص",
       "period": "الفترة",
       "periodTo": "إلى",
       "generatedOn": "تاريخ الإصدار",
       "status": "الحالة",
-      "statusGenerated": "تم الإنشاء",
-      "statusSigned": "تم التوقيع",
+      "statusGenerated": "تم التوليد",
+      "statusSigned": "موقعة",
       "statusPending": "قيد الانتظار"
     },
     "invalid": {
-      "title": "الوثيقة غير موجودة",
-      "subtitle": "لم يتم العثور على وثيقة بهذا الرمز. يرجى التحقق من الرمز والمحاولة مرة أخرى.",
-      "tryAgain": "جرب رمزًا آخر"
-    }
-  },
-  "pages": {
-    "discover": {
-      "metadata": {
-        "title": "استكشاف — إنترنكس",
-        "description": "اكتشف كيف تربط إنترنكس الطلاب بفرص التدريب من خلال التوافق الذكي."
-      },
-      "hero": {
-        "kicker": "نظرة عامة على المنصة",
-        "headline": "اكتشف ما يمكن لإنترنكس فعله",
-        "headlineHighlight": "لإنترنكس فعله",
-        "description": "منصة شاملة ترقمن دورة حياة التدريب بالكامل—من الاكتشاف إلى اتفاقية التدريب الرسمية."
-      },
-      "features": {
-        "label": "الميزات الأساسية",
-        "headline": "كل ما تحتاجه",
-        "items": {
-          "matching": {
-            "num": "٠١",
-            "title": "التوافق بالمهارات",
-            "desc": "خوارزميتنا تقيّم المرشحين مقابل العروض باستخدام المهارات واللغة والموقع واكتمال الملف."
-          },
-          "search": {
-            "num": "٠٢",
-            "title": "بحث وفلاتر ذكية",
-            "desc": "اعثر على التدريب المثالي مع فلاتر للموقع والنوع ونمط العمل والمهارات والمزيد."
-          },
-          "assistant": {
-            "num": "٠٣",
-            "title": "مساعد ذكاء اصطناعي",
-            "desc": "احصل على مساعدة في كتابة رسائل التقديم وتحليل المرشحين والتنقل في المنصة."
-          },
-          "cv": {
-            "num": "٠٤",
-            "title": "منشئ السيرة الذاتية الرقمية",
-            "desc": "أنشئ ملفًا احترافيًا بالمهارات والخبرة وGitHub وروابط المحفظة."
-          },
-          "documents": {
-            "num": "٠٥",
-            "title": "مستندات تلقائية",
-            "desc": "اتفاقية التدريب والشهادات تُنشأ تلقائيًا مع رموز تحقق QR."
-          },
-          "tracking": {
-            "num": "٠٦",
-            "title": "تتبع فوري",
-            "desc": "تابع كل طلب من التقديم إلى التوظيف مع تحديثات مباشرة."
-          }
-        }
-      },
-      "matching": {
-        "label": "كيف يعمل التوافق",
-        "headline": "تقييم ذكي",
-        "description": "خوارزمية التوافق لدينا تقيّم المرشحين عبر أربعة أبعاد لإيجاد أفضل تطابق.",
-        "skills": {
-          "label": "المهارات",
-          "value": "٥٥٪",
-          "desc": "تطابق المهارات التقنية بين ملف الطالب ومتطلبات العرض."
-        },
-        "language": {
-          "label": "اللغة",
-          "value": "٢٠٪",
-          "desc": "التوافق اللغوي بين الطالب والشركة."
-        },
-        "location": {
-          "label": "الموقع",
-          "value": "١٥٪",
-          "desc": "القرب الجغرافي وتفضيلات نمط العمل."
-        },
-        "profile": {
-          "label": "الملف الشخصي",
-          "value": "١٠٪",
-          "desc": "اكتمال الملف الشخصي والمؤهلات الإضافية."
-        }
-      },
-      "types": {
-        "label": "أنواع التدريبات",
-        "headline": "أربعة مسارات",
-        "pfe": {
-          "title": "PFE",
-          "fullTitle": "مشروع نهاية الدراسة",
-          "desc": "مشروع نهاية الدراسة يجمع بين البحث الأكاديمي والممارسة الصناعية."
-        },
-        "immersion": {
-          "title": "انغماس",
-          "fullTitle": "تدريب انغماسي",
-          "desc": "اندماج كامل في بيئة الشركة للحصول على خبرة مهنية عملية."
-        },
-        "summer": {
-          "title": "صيفي",
-          "fullTitle": "تدريب صيفي",
-          "desc": "فرص موسمية خلال العطل الجامعية لاكتساب خبرة إضافية."
-        },
-        "practical": {
-          "title": "تطبيقي",
-          "fullTitle": "تدريب تطبيقي",
-          "desc": "عمل تطبيقي منظم يتوافق مع متطلبات المنهج الأكاديمي."
-        }
-      },
-      "cta": {
-        "headline": "مستعد للاستكشاف؟",
-        "description": "انضم إلى آلاف الطلاب والشركات الذين يستخدمون إنترنكس بالفعل.",
-        "button": "ابدأ مجانًا"
-      }
-    },
-    "forStudents": {
-      "metadata": {
-        "title": "للطلاب — إنترنكس",
-        "description": "أنشئ سيرتك الذاتية الرقمية، اعثر على تدريبات تتوافق مع مهاراتك، وتتبع طلباتك."
-      },
-      "hero": {
-        "kicker": "للطلاب",
-        "headline": "رحلتك المهنية تبدأ هنا",
-        "headlineHighlight": "تبدأ هنا",
-        "description": "أنشئ سيرتك الذاتية الرقمية، اكتشف تدريبات تتوافق مع مهاراتك، وتتبع كل طلب من التقديم إلى التوظيف."
-      },
-      "benefits": {
-        "label": "لماذا إنترنكس",
-        "headline": "صُمم لنجاحك",
-        "cv": {
-          "title": "سيرة ذاتية رقمية",
-          "desc": "أنشئ ملفًا احترافيًا بمهاراتك وخبراتك وGitHub ومحفظتك. المجندون يجدونك."
-        },
-        "matching": {
-          "title": "توافق ذكي",
-          "desc": "خوارزميتنا تجد التدريبات المطابقة لمهاراتك بالضبط. لا مزيد من التصفح العشوائي."
-        },
-        "apply": {
-          "title": "تقديم بنقرة واحدة",
-          "desc": "أرسل ملفك مباشرة للشركات. الذكاء الاصطناعي يساعدك في كتابة رسائل تقديم مميزة."
-        },
-        "tracking": {
-          "title": "تتبع مباشر",
-          "desc": "تابع كل طلب في الوقت الفعلي. اعرف بالضبط أين أنت في كل مرحلة."
-        },
-        "assistant": {
-          "title": "مساعد ذكي",
-          "desc": "احصل على إرشادات مخصصة حول الطلبات والتحضير للمقابلات واستراتيجية المسار المهني."
-        },
-        "documents": {
-          "title": "مستندات تلقائية",
-          "desc": "اتفاقية التدريب وشهادات الإنجاز تُنشأ تلقائيًا عند التصديق."
-        }
-      },
-      "journey": {
-        "label": "رحلتك",
-        "headline": "من التسجيل إلى التوظيف",
-        "step1": {
-          "num": "٠١",
-          "title": "أنشئ حسابك",
-          "desc": "سجّل بالبريد الجامعي وتحقق من صفتك كطالب."
-        },
-        "step2": {
-          "num": "٠٢",
-          "title": "ابنِ ملفك",
-          "desc": "أضف مهاراتك، اربط GitHub، ارفع محفظتك. اجعل نفسك قابلاً للاكتشاف."
-        },
-        "step3": {
-          "num": "٠٣",
-          "title": "اكتشف وقدّم",
-          "desc": "ابحث بفلاتر ذكية أو دع محرك التوافق يجد الفرص لك."
-        },
-        "step4": {
-          "num": "٠٤",
-          "title": "احصل على التوظيف",
-          "desc": "بعد القبول، تصادق جامعتك على التوظيف وتُنشأ المستندات."
-        }
-      },
-      "cta": {
-        "headline": "ابدأ رحلتك اليوم",
-        "description": "مجاني للطلاب. دائمًا.",
-        "button": "أنشئ حسابك",
-        "free": "مجاني للطلاب"
-      }
-    },
-    "forCompanies": {
-      "metadata": {
-        "title": "للشركات — إنترنكس",
-        "description": "اعثر على أفضل المواهب الطلابية مع فرز الذكاء الاصطناعي والامتثال التلقائي."
-      },
-      "hero": {
-        "kicker": "للشركات",
-        "headline": "اعثر على مواهب الغد اليوم",
-        "headlineHighlight": "مواهب الغد",
-        "description": "انشر عروض التدريب، افرز المرشحين بالذكاء الاصطناعي، ودع المنصة تتولى الامتثال والمستندات تلقائيًا."
-      },
-      "benefits": {
-        "label": "لماذا إنترنكس",
-        "headline": "وظّف بذكاء أكبر",
-        "pipeline": {
-          "title": "خط مواهب",
-          "desc": "أدر جميع المرشحين في مكان واحد. فرز حسب المهارات والخبرة ودرجة التوافق."
-        },
-        "ai": {
-          "title": "فرز بالذكاء الاصطناعي",
-          "desc": "دع الذكاء الاصطناعي يلخص المرشحين ويبرز نقاط القوة ويصيغ التواصل—موفرًا ساعات من المراجعة."
-        },
-        "trust": {
-          "title": "مؤشر الثقة",
-          "desc": "ابنِ سمعة شركتك عبر معدلات الاستجابة والإتمام ودرجات التقييم."
-        },
-        "compliance": {
-          "title": "امتثال تلقائي",
-          "desc": "بعد قبول المرشح، تصادق الجامعة وتُنشأ جميع المستندات الرسمية تلقائيًا."
-        }
-      },
-      "workflow": {
-        "label": "كيف يعمل",
-        "headline": "أربع خطوات بسيطة",
-        "step1": {
-          "num": "٠١",
-          "title": "أنشئ ملف شركتك",
-          "desc": "أنشئ ملف شركتك بالشعار والوصف وتفاصيل المكتب."
-        },
-        "step2": {
-          "num": "٠٢",
-          "title": "انشر العروض",
-          "desc": "أنشئ مناصب تدريب بالمهارات المطلوبة والمدة ونمط العمل."
-        },
-        "step3": {
-          "num": "٠٣",
-          "title": "راجع واقبل",
-          "desc": "افرز المتقدمين، استخدم ملخصات الذكاء الاصطناعي، واقبل أفضل المواهب."
-        },
-        "step4": {
-          "num": "٠٤",
-          "title": "سير عمل تلقائي",
-          "desc": "الباقي يحدث تلقائيًا—التصديق والمستندات والتتبع."
-        }
-      },
-      "stats": {
-        "label": "بالأرقام",
-        "students": {
-          "value": "+٢٬٥٠٠",
-          "label": "طلاب نشطون"
-        },
-        "placement": {
-          "value": "٩٦٪",
-          "label": "معدل التوظيف"
-        },
-        "universities": {
-          "value": "٤٥",
-          "label": "جامعات شريكة"
-        },
-        "avgTime": {
-          "value": "< ٤٨ س",
-          "label": "متوسط وقت الاستجابة"
-        }
-      },
-      "cta": {
-        "headline": "مستعد لإيجاد المواهب؟",
-        "description": "انضم لأكثر من 350 شركة توظف بالفعل على إنترنكس.",
-        "button": "سجّل شركتك"
-      }
-    },
-    "about": {
-      "metadata": {
-        "title": "حول — إنترنكس",
-        "description": "تعرف على مهمة إنترنكس في رقمنة دورة حياة التدريب وتعزيز رابط الجامعة-المؤسسة."
-      },
-      "hero": {
-        "kicker": "حول إنترنكس",
-        "headline": "ربط الجامعة بالمؤسسة",
-        "headlineHighlight": "الجامعة بالمؤسسة",
-        "description": "في إطار استراتيجية وزارة التعليم العالي لتعزيز رابط الجامعة-المؤسسة، تقوم إنترنكس برقمنة دورة حياة التدريب بأكملها من الاكتشاف إلى اتفاقية التدريب الرسمية."
-      },
-      "mission": {
-        "label": "مهمتنا",
-        "headline": "لماذا أنشأنا إنترنكس",
-        "paragraphs": {
-          "p1": "عملية التدريب في الجزائر كانت مجزأة لفترة طويلة—الطلاب يبحثون يدويًا، الشركات تدير طلبات ورقية، والجامعات تعالج أكوامًا من المستندات الإدارية.",
-          "p2": "إنترنكس صُممت لحل هذا. منصة واحدة حيث يكتشف الطلاب فرصًا تتوافق مع مهاراتهم، وتدير الشركات خطوط المواهب بكفاءة، وينشئ المسؤولون المستندات الرسمية بنقرة واحدة.",
-          "p3": "متوافقة مع استراتيجية وزارة التعليم العالي لتحديث التعليم العالي، ترقمن إنترنكس كل خطوة: من البحث الأولي إلى اتفاقية التدريب النهائية وشهادة الإنجاز."
-        }
-      },
-      "values": {
-        "label": "قيمنا",
-        "headline": "ما يوجهنا",
-        "innovation": {
-          "title": "الابتكار",
-          "desc": "توافق بالذكاء الاصطناعي ومستندات تلقائية ومساعدون أذكياء يجعلون العملية سهلة."
-        },
-        "accessibility": {
-          "title": "إمكانية الوصول",
-          "desc": "مجاني للطلاب، متاح بثلاث لغات، ومصمم لكل جهاز وسرعة اتصال."
-        },
-        "transparency": {
-          "title": "الشفافية",
-          "desc": "تتبع فوري ومؤشرات ثقة ورموز تحقق لتكون كل خطوة مرئية وقابلة للتحقق."
-        },
-        "reliability": {
-          "title": "الموثوقية",
-          "desc": "مبنية على بنية تحتية حديثة مع امتثال تلقائي، لضمان توافق كل مستند مع المعايير الرسمية."
-        }
-      },
-      "stats": {
-        "label": "تأثير المنصة",
-        "students": {
-          "value": "+٢٬٥٠٠",
-          "label": "طلاب متصلون"
-        },
-        "companies": {
-          "value": "+٣٥٠",
-          "label": "شركات شريكة"
-        },
-        "universities": {
-          "value": "٤٥",
-          "label": "جامعات"
-        },
-        "placement": {
-          "value": "٩٦٪",
-          "label": "معدل التوظيف"
-        }
-      },
-      "cta": {
-        "headline": "كن جزءًا من المستقبل",
-        "description": "سواء كنت طالبًا أو شركة أو جامعة—إنترنكس لك.",
-        "button": "ابدأ الآن"
-      }
+      "title": "لم يتم العثور على الوثيقة",
+      "subtitle": "لم يتم العثور على وثيقة بهذا الرمز. يرجى التحقق وإعادة المحاولة.",
+      "tryAgain": "جرب رمزاً آخر"
     }
   },
   "footer": {
-    "description": "ربط ألمع الطلاب بفرص عالمية المستوى. مستقبل التدريب يبدأ من هنا.",
+    "description": "ربط أذكى الطلاب مع فرص عالمية. مستقبل التربصات يبدأ من هنا.",
     "sections": {
       "platform": "المنصة",
       "company": "الشركة",
       "newsletter": "ابقَ على اطلاع"
     },
     "links": {
-      "discover": "اكتشف",
+      "discover": "استكشف",
       "forStudents": "للطلاب",
       "forCompanies": "للشركات",
       "aboutUs": "من نحن",
@@ -2126,21 +1812,348 @@
       "getStarted": "ابدأ الآن"
     },
     "newsletter": {
-      "description": "اشترك في نشرتنا الإخبارية للحصول على أحدث فرص التدريب ونصائح المسار المهني.",
+      "description": "اشترك في نشرتنا البريدية للحصول على أحدث الفرص ونصائح المسار المهني.",
       "emailPlaceholder": "أدخل بريدك الإلكتروني",
-      "subscribe": "اشترك"
+      "subscribe": "اشتراك"
     },
     "legal": {
       "copyright": "© {year} Internex.io. جميع الحقوق محفوظة.",
       "privacyPolicy": "سياسة الخصوصية",
       "termsOfService": "شروط الخدمة",
-      "cookiePolicy": "سياسة ملفات تعريف الارتباط"
+      "cookiePolicy": "سياسة ملفات الارتباط"
     },
     "social": {
       "twitter": "تويتر",
-      "github": "غيت هب",
+      "github": "جيت هاب",
       "linkedin": "لينكد إن",
       "instagram": "إنستغرام"
+    }
+  },
+  "companyPublic": {
+    "kicker": "ملف الشركة",
+    "noOffers": "لا توجد عروض منشورة نشطة حالياً.",
+    "openOffers": "العروض المفتوحة",
+    "positions": "مناصب",
+    "trustIndex": "مؤشر الثقة",
+    "website": "الموقع الإلكتروني"
+  },
+  "pages": {
+    "discover": {
+      "metadata": {
+        "title": "اكتشف - إنترنكس",
+        "description": "اكتشف كيف تقوم Internex بربط الطلاب بفرص التدريب من خلال المطابقة الذكية."
+      },
+      "hero": {
+        "kicker": "نظرة عامة على المنصة",
+        "headline": "اكتشف ما يمكن أن تفعله Internex",
+        "headlineHighlight": "يمكن أن تفعل",
+        "description": "منصة شاملة تعمل على رقمنة دورة حياة التدريب بالكامل - بدءًا من الاكتشاف وحتى اتفاقية المرحلة الرسمية."
+      },
+      "features": {
+        "label": "الميزات الأساسية",
+        "headline": "كل ما تحتاجه",
+        "items": {
+          "matching": {
+            "num": "01",
+            "title": "المطابقة القائمة على المهارات",
+            "desc": "تقوم الخوارزمية الخاصة بنا بتسجيل المرشحين مقابل العروض باستخدام المهارات واللغة والموقع واكتمال الملف الشخصي."
+          },
+          "search": {
+            "num": "02",
+            "title": "البحث الذكي والمرشحات",
+            "desc": "ابحث عن التدريب المثالي باستخدام مرشحات الموقع والنوع ووضع العمل والمهارات والمزيد."
+          },
+          "assistant": {
+            "num": "03",
+            "title": "مساعد مدعوم بالذكاء الاصطناعي",
+            "desc": "احصل على مساعدة في صياغة خطابات التقديم، وتحليل المرشحين، والتنقل في النظام الأساسي باستخدام الذكاء الاصطناعي."
+          },
+          "cv": {
+            "num": "04",
+            "title": "منشئ السيرة الذاتية الرقمية",
+            "desc": "أنشئ ملفًا شخصيًا احترافيًا يشتمل على المهارات والخبرة وGitHub وروابط المحفظة."
+          },
+          "documents": {
+            "num": "05",
+            "title": "المستندات الآلية",
+            "desc": "يتم إنشاء اتفاقية المرحلة والشهادات تلقائيًا باستخدام رموز التحقق QR."
+          },
+          "tracking": {
+            "num": "06",
+            "title": "تتبع في الوقت الحقيقي",
+            "desc": "اتبع كل طلب من التقديم إلى التنسيب مع تحديثات الحالة المباشرة."
+          }
+        }
+      },
+      "matching": {
+        "label": "كيف تعمل المطابقة",
+        "headline": "التهديف الذكي",
+        "description": "تقوم خوارزمية المطابقة الخاصة بنا بتقييم المرشحين عبر أربعة أبعاد للعثور على الأفضل.",
+        "skills": {
+          "label": "مهارات",
+          "value": "55%",
+          "desc": "تتداخل المهارات الفنية بين ملف تعريف الطالب ومتطلبات العرض."
+        },
+        "language": {
+          "label": "لغة",
+          "value": "20%",
+          "desc": "التوافق اللغوي بين الطالب والشركة."
+        },
+        "location": {
+          "label": "موقع",
+          "value": "15%",
+          "desc": "القرب الجغرافي وتفضيلات وضع العمل."
+        },
+        "profile": {
+          "label": "حساب تعريفي",
+          "value": "10%",
+          "desc": "اكتمال الملف الشخصي والمؤهلات الإضافية."
+        }
+      },
+      "types": {
+        "label": "أنواع التدريب",
+        "headline": "أربعة مسارات",
+        "pfe": {
+          "title": "PFE",
+          "fullTitle": "مشروع السنة النهائية",
+          "desc": "مشروع نهاية الدراسات يدمج البحث الأكاديمي مع ممارسة الصناعة."
+        },
+        "immersion": {
+          "title": "غمر",
+          "fullTitle": "التدريب الغمر",
+          "desc": "الاندماج الكامل في بيئة الشركة للحصول على خبرة مهنية عملية."
+        },
+        "summer": {
+          "title": "صيف",
+          "fullTitle": "التدريب الصيفي",
+          "desc": "فرص موسمية خلال فترات الراحة الجامعية للحصول على خبرة إضافية."
+        },
+        "practical": {
+          "title": "عملي",
+          "fullTitle": "التدريب العملي",
+          "desc": "العمل العملي المنظم المتوافق مع متطلبات المناهج الأكاديمية."
+        }
+      },
+      "cta": {
+        "headline": "هل أنت مستعد للاستكشاف؟",
+        "description": "انضم إلى آلاف الطلاب والشركات التي تستخدم Internex بالفعل.",
+        "button": "ابدأ مجانًا"
+      }
+    },
+    "forStudents": {
+      "metadata": {
+        "title": "للطلاب – إنترنكس",
+        "description": "أنشئ سيرتك الذاتية الرقمية، وابحث عن الدورات التدريبية المناسبة، وتتبع طلباتك - كل ذلك في مكان واحد."
+      },
+      "hero": {
+        "kicker": "للطلاب",
+        "headline": "رحلتك المهنية تبدأ هنا",
+        "headlineHighlight": "يبدأ هنا",
+        "description": "أنشئ سيرتك الذاتية الرقمية، واكتشف التدريب الداخلي الذي يتناسب مع مهاراتك، وتتبع كل طلب من التقديم إلى التنسيب."
+      },
+      "benefits": {
+        "label": "لماذا إنترنكس",
+        "headline": "صُممت لنجاحك",
+        "cv": {
+          "title": "السيرة الذاتية الرقمية",
+          "desc": "أنشئ ملفًا شخصيًا احترافيًا يتضمن مهاراتك وخبراتك وGitHub ومحفظتك. يجدك مسؤولو التوظيف."
+        },
+        "matching": {
+          "title": "المطابقة الذكية",
+          "desc": "تعثر الخوارزمية الخاصة بنا على فرص التدريب التي تتوافق مع مجموعة مهاراتك المحددة. لا مزيد من التمرير من خلال قوائم غير ذات صلة."
+        },
+        "apply": {
+          "title": "بنقرة واحدة تطبيق",
+          "desc": "أرسل ملفك الشخصي مباشرة إلى الشركات. يساعدك الذكاء الاصطناعي على صياغة خطابات تقديمية مميزة."
+        },
+        "tracking": {
+          "title": "تتبع مباشر",
+          "desc": "متابعة كل تطبيق في الوقت الحقيقي. تعرف بالضبط أين تقف في كل مرحلة."
+        },
+        "assistant": {
+          "title": "مساعد الطيار بالذكاء الاصطناعي",
+          "desc": "احصل على إرشادات مخصصة بشأن طلبات التقديم والتحضير للمقابلة والاستراتيجية المهنية من مساعد الذكاء الاصطناعي الخاص بك."
+        },
+        "documents": {
+          "title": "المستندات التلقائية",
+          "desc": "يتم إنشاء شهادات Convention de Stage وشهادات الإكمال الخاصة بك تلقائيًا عند التحقق من صحتها."
+        }
+      },
+      "journey": {
+        "label": "رحلتك",
+        "headline": "من الاشتراك إلى التنسيب",
+        "step1": {
+          "num": "01",
+          "title": "قم بإنشاء حسابك",
+          "desc": "سجل باستخدام بريدك الإلكتروني الجامعي وتحقق من حالة الطالب الخاصة بك."
+        },
+        "step2": {
+          "num": "02",
+          "title": "بناء ملف التعريف الخاص بك",
+          "desc": "قم بإضافة المهارات، وربط GitHub الخاص بك، وتحميل محفظتك. اجعل نفسك قابلاً للاكتشاف."
+        },
+        "step3": {
+          "num": "03",
+          "title": "اكتشاف وتطبيق",
+          "desc": "ابحث باستخدام المرشحات الذكية أو اسمح لمحركنا المطابق بالعثور على الفرص المناسبة لك."
+        },
+        "step4": {
+          "num": "04",
+          "title": "الحصول على مكان",
+          "desc": "بمجرد القبول، تقوم جامعتك بالتحقق من صحة التنسيب ويتم إنشاء المستندات."
+        }
+      },
+      "cta": {
+        "headline": "ابدأ رحلتك اليوم",
+        "description": "إنه مجاني للطلاب. دائماً.",
+        "button": "قم بإنشاء حسابك",
+        "free": "مجاني للطلاب"
+      }
+    },
+    "forCompanies": {
+      "metadata": {
+        "title": "للشركات – إنترنكس",
+        "description": "يمكنك العثور على أفضل المواهب الطلابية وتوظيفها من خلال الفحص المدعوم بالذكاء الاصطناعي والامتثال الآلي."
+      },
+      "hero": {
+        "kicker": "للشركات",
+        "headline": "ابحث عن مواهب الغد اليوم",
+        "headlineHighlight": "مواهب الغد",
+        "description": "انشر عروض التدريب الداخلي، وفحص المرشحين باستخدام الذكاء الاصطناعي، واترك النظام يتعامل مع الامتثال والمستندات تلقائيًا."
+      },
+      "benefits": {
+        "label": "لماذا إنترنكس",
+        "headline": "قم بتجنيد أكثر ذكاءً",
+        "pipeline": {
+          "title": "خط أنابيب المواهب",
+          "desc": "إدارة جميع المرشحين في مكان واحد. قم بالتصفية حسب المهارات والخبرة ونتائج المباراة للعثور على الأفضل."
+        },
+        "ai": {
+          "title": "فحص الذكاء الاصطناعي",
+          "desc": "اسمح للذكاء الاصطناعي بتلخيص المرشحين وتسليط الضوء على نقاط القوة وصياغة الاتصالات، مما يوفر ساعات من المراجعة اليدوية."
+        },
+        "trust": {
+          "title": "مؤشر الثقة",
+          "desc": "قم ببناء سمعة شركتك على المنصة من خلال معدلات الاستجابة ومعدلات الإكمال ونتائج التعليقات."
+        },
+        "compliance": {
+          "title": "الامتثال التلقائي",
+          "desc": "بمجرد قبول المرشح، تقوم الجامعة بالتحقق من صحة المرشح ويتم إنشاء جميع المستندات الرسمية تلقائيًا."
+        }
+      },
+      "workflow": {
+        "label": "كيف يعمل",
+        "headline": "أربع خطوات بسيطة",
+        "step1": {
+          "num": "01",
+          "title": "قم بإعداد شركتك",
+          "desc": "قم بإنشاء ملف تعريف شركتك باستخدام الشعار والوصف وتفاصيل المكتب."
+        },
+        "step2": {
+          "num": "02",
+          "title": "نشر العروض",
+          "desc": "قم بإنشاء مناصب تدريب مع متطلبات المهارة والمدة وطريقة العمل."
+        },
+        "step3": {
+          "num": "03",
+          "title": "المراجعة والقبول",
+          "desc": "فحص المتقدمين واستخدام ملخصات الذكاء الاصطناعي وقبول أفضل المرشحين."
+        },
+        "step4": {
+          "num": "04",
+          "title": "سير العمل الآلي",
+          "desc": "ويتم الباقي تلقائيًا — التحقق من الصحة والمستندات والتتبع."
+        }
+      },
+      "stats": {
+        "label": "بالأرقام",
+        "students": {
+          "value": "2,500+",
+          "label": "الطلاب النشطين"
+        },
+        "placement": {
+          "value": "96%",
+          "label": "معدل التنسيب"
+        },
+        "universities": {
+          "value": "45",
+          "label": "الجامعات الشريكة"
+        },
+        "avgTime": {
+          "value": "<48 ساعة",
+          "label": "متوسط وقت الاستجابة"
+        }
+      },
+      "cta": {
+        "headline": "على استعداد للعثور على المواهب؟",
+        "description": "انضم إلى أكثر من 350 شركة تقوم بالفعل بالتوظيف على Internex.",
+        "button": "سجل شركتك"
+      }
+    },
+    "about": {
+      "metadata": {
+        "title": "حول — إنترنكس",
+        "description": "تعرف على مهمة Internex المتمثلة في رقمنة دورة حياة التدريب وتعزيز الرابط بين الجامعة والمؤسسات."
+      },
+      "hero": {
+        "kicker": "حول إنترنكس",
+        "headline": "سد الجامعة والمؤسسات",
+        "headlineHighlight": "الجامعة والمؤسسات",
+        "description": "في إطار استراتيجية MESRS لتعزيز الارتباط بين الجامعة والمؤسسات، تقوم Internex برقمنة دورة حياة التدريب بالكامل بدءًا من الاكتشاف وحتى اتفاقية المرحلة الرسمية."
+      },
+      "mission": {
+        "label": "مهمتنا",
+        "headline": "لماذا بنينا Internex",
+        "paragraphs": {
+          "p1": "لقد كانت عملية التدريب في الجزائر مجزأة منذ فترة طويلة، حيث يبحث الطلاب يدويًا، وتدير الشركات الطلبات الورقية، وتتعامل الجامعات مع أكوام من المستندات الإدارية.",
+          "p2": "تم إنشاء Internex لحل هذه المشكلة. منصة واحدة يكتشف فيها الطلاب الفرص المطابقة لمهاراتهم، وتدير الشركات خطوط المواهب بكفاءة، ويقوم المسؤولون بإنشاء المستندات الرسمية بنقرة واحدة.",
+          "p3": "تماشيًا مع استراتيجية MESRS لتحديث التعليم العالي، تقوم Internex برقمنة كل خطوة: بدءًا من البحث الأولي وحتى اتفاقية المرحلة النهائية وشهادة الإنجاز."
+        }
+      },
+      "values": {
+        "label": "قيمنا",
+        "headline": "ما يرشدنا",
+        "innovation": {
+          "title": "ابتكار",
+          "desc": "المطابقة المدعومة بالذكاء الاصطناعي والمستندات الآلية والمساعدين الأذكياء تجعل العملية سهلة."
+        },
+        "accessibility": {
+          "title": "إمكانية الوصول",
+          "desc": "مجاني للطلاب، ومتوفر بثلاث لغات، ومصمم لكل جهاز وسرعة الاتصال."
+        },
+        "transparency": {
+          "title": "الشفافية",
+          "desc": "تتبع في الوقت الفعلي، ومؤشرات الثقة، ورموز التحقق بحيث تكون كل خطوة مرئية وقابلة للتحقق."
+        },
+        "reliability": {
+          "title": "مصداقية",
+          "desc": "مبني على بنية تحتية حديثة مع امتثال تلقائي، مما يضمن تلبية كل مستند للمعايير الرسمية."
+        }
+      },
+      "stats": {
+        "label": "تأثير المنصة",
+        "students": {
+          "value": "2,500+",
+          "label": "الطلاب متصلين"
+        },
+        "companies": {
+          "value": "350+",
+          "label": "الشركات الشريكة"
+        },
+        "universities": {
+          "value": "45",
+          "label": "الجامعات"
+        },
+        "placement": {
+          "value": "96%",
+          "label": "معدل التنسيب"
+        }
+      },
+      "cta": {
+        "headline": "كن جزءا من المستقبل",
+        "description": "سواء كنت طالبًا أو شركة أو جامعة، فإن Internex هو الخيار المناسب لك.",
+        "button": "ابدأ"
+      }
     }
   }
 }

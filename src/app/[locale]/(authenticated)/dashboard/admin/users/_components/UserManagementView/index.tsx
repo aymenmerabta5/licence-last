@@ -104,7 +104,15 @@ export function UserManagementView() {
           onOpenChange={(open) => !open && setRoleTarget(null)}
           user={roleTarget}
           onSubmit={(data) => {
-            actions.setRole.mutate(data, { onSuccess: () => setRoleTarget(null) })
+            actions.setRole.mutate(data, {
+              onSuccess: () => {
+                actions.updateUser.mutate({
+                  userId: data.userId,
+                  role: data.role,
+                })
+                setRoleTarget(null)
+              },
+            })
           }}
           isPending={actions.setRole.isPending}
         />
