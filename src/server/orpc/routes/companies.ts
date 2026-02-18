@@ -8,7 +8,9 @@ import { isAdminRole } from "@/server/orpc/middleware"
 import {
   authedProcedureGenerous,
   authedProcedureStandard,
+  companyAdminProcedureGenerous,
   companyAdminProcedureStandard,
+  companyOwnerProcedureStandard,
   superAdminProcedureGenerous,
   superAdminProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
@@ -22,6 +24,9 @@ import { rejectCompany } from "@/server/services/companies/reject"
 import { suspendCompany } from "@/server/services/companies/suspend"
 import { reactivateCompany } from "@/server/services/companies/reactivate"
 import { getCompanyMembership } from "@/server/services/companies/membership"
+import { listCompanyMembers } from "@/server/services/companies/list-members"
+import { inviteCompanyMember } from "@/server/services/companies/invite-member"
+import { removeCompanyMember } from "@/server/services/companies/remove-member"
 import {
   companyQualityFeedbackSchema,
   companyReportSchema,
@@ -183,6 +188,11 @@ export const resolveCompanyReportProcedure = superAdminProcedureStandard
     }),
   )
 
+export const listCompanyMembersProcedure = companyAdminProcedureGenerous
+  .handler(async ({ context }) =>
+    listCompanyMembers(context.companyMembership.companyId),
+  )
+
 /* ── Mutations ── */
 
 export const createCompanyProcedure = authedProcedureStandard
@@ -213,6 +223,66 @@ export const createCompanyProcedure = authedProcedureStandard
           COMPANY_MEMBERSHIP_ALREADY_EXISTS: "CONFLICT",
         },
         fallbackMessage: "Failed to create company",
+      })
+    }
+  })
+
+export const inviteCompanyMemberProcedure = companyOwnerProcedureStandard
+  .input(
+    z.object({
+      email: z.string().email(),
+      name: z.string().min(2).max(120).optional(),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    try {
+      const result = await inviteCompanyMember({
+        companyId: context.companyMembership.companyId,
+        invitedByUserId: context.user.id,
+        email: input.email,
+        name: input.name,
+      })
+
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${result.userId}`), "max")
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          COMPANY_NOT_FOUND: "NOT_FOUND",
+          COMPANY_MEMBER_EMAIL_REQUIRED: "BAD_REQUEST",
+          COMPANY_MEMBER_CANNOT_INVITE_SELF: "BAD_REQUEST",
+          COMPANY_MEMBER_ALREADY_ASSIGNED: "CONFLICT",
+          COMPANY_MEMBER_ROLE_NOT_ELIGIBLE: "BAD_REQUEST",
+        },
+        fallbackMessage: "Failed to invite company member",
+      })
+    }
+  })
+
+export const removeCompanyMemberProcedure = companyOwnerProcedureStandard
+  .input(
+    z.object({
+      userId: z.string().min(1),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    try {
+      const result = await removeCompanyMember({
+        companyId: context.companyMembership.companyId,
+        memberUserId: input.userId,
+        removedByUserId: context.user.id,
+      })
+
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${input.userId}`), "max")
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          COMPANY_MEMBER_NOT_FOUND: "NOT_FOUND",
+          COMPANY_MEMBER_CANNOT_REMOVE_SELF: "BAD_REQUEST",
+          COMPANY_MEMBER_OWNER_IMMUTABLE: "BAD_REQUEST",
+        },
+        fallbackMessage: "Failed to remove company member",
       })
     }
   })

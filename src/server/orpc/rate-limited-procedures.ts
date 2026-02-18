@@ -7,6 +7,7 @@ import {
   adminProcedure,
   superAdminProcedure,
   companyAdminProcedure,
+  companyOwnerProcedure,
   studentProcedure,
   deptHeadProcedure,
 } from "@/server/orpc/middleware"
@@ -157,6 +158,24 @@ export const companyAdminProcedureGenerous = companyAdminProcedure.use(
  */
 export const companyAdminProcedureAssistant = companyAdminProcedure.use(
   createAssistantRateLimitMiddleware("companyadmin-assistant")
+)
+
+/**
+ * Company owner procedure with standard rate limiting (100 req/min)
+ * Use for: Membership and ownership-restricted operations.
+ * Key: User-based
+ */
+export const companyOwnerProcedureStandard = companyOwnerProcedure.use(
+  createStandardRateLimitMiddleware("companyowner-standard")
+)
+
+/**
+ * Company owner procedure with generous rate limiting (300 req/min)
+ * Use for: Owner-only read-heavy operations.
+ * Key: User-based
+ */
+export const companyOwnerProcedureGenerous = companyOwnerProcedure.use(
+  createGenerousRateLimitMiddleware("companyowner-generous")
 )
 
 /**

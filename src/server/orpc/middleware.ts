@@ -136,6 +136,19 @@ export const companyAdminProcedure = authedProcedure.use(
   },
 )
 
+/** Company owner — requires owner membership role. */
+export const companyOwnerProcedure = companyAdminProcedure.use(
+  async ({ context, next }) => {
+    if (context.companyMembership.role !== "owner") {
+      throw new ORPCError("FORBIDDEN", {
+        message: "Company owner access required",
+      })
+    }
+
+    return next({ context })
+  },
+)
+
 /** Student — requires student role, injects student profile. */
 export const studentProcedure = authedProcedure.use(
   async ({ context, next }) => {

@@ -2,7 +2,7 @@
 
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Plus, Briefcase, Building2, Bot, ArrowRight } from "lucide-react"
+import { Plus, Briefcase, Building2, Bot, UsersRound, ArrowRight } from "lucide-react"
 import { Link } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 import { ease } from "@/lib/animations"
@@ -47,6 +47,14 @@ export function RecruiterQuickActions() {
       icon: Building2,
       accent: "text-amber-500 bg-amber-500/5",
       accentHover: "group-hover:bg-amber-500 group-hover:text-white",
+    },
+    {
+      title: "Team Members",
+      description: "Invite and manage recruiters",
+      href: "/dashboard/company/team",
+      icon: UsersRound,
+      accent: "text-rose-500 bg-rose-500/5",
+      accentHover: "group-hover:bg-rose-500 group-hover:text-white",
     },
     {
       title: "AI Assistant",

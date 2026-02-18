@@ -3,6 +3,7 @@
 import { useMemo } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
+import { isSavedOffersEnabledOnClient } from "@/lib/feature-flags-client"
 import { orpc } from "@/server/orpc/client"
 
 function isDisabledFeatureError(error: unknown) {
@@ -12,6 +13,7 @@ function isDisabledFeatureError(error: unknown) {
 
 export function useOfferSave(offerId: string) {
   const queryClient = useQueryClient()
+  const savedOffersEnabled = isSavedOffersEnabledOnClient()
   const checkQueryOptions = useMemo(
     () => orpc.offers.checkSaved.queryOptions({ input: { offerId } }),
     [offerId],
@@ -22,7 +24,10 @@ export function useOfferSave(offerId: string) {
     [],
   )
 
-  const checkQuery = useQuery(checkQueryOptions)
+  const checkQuery = useQuery({
+    ...checkQueryOptions,
+    enabled: savedOffersEnabled,
+  })
 
   const saveMutation = useMutation(
     orpc.offers.save.mutationOptions({
@@ -42,15 +47,17 @@ export function useOfferSave(offerId: string) {
     }),
   )
 
-  const unavailable = isDisabledFeatureError(checkQuery.error)
-  const isSaved = checkQuery.data?.saved ?? false
+  const unavailable = !savedOffersEnabled || isDisabledFeatureError(checkQuery.error)
+  const isSaved = savedOffersEnabled ? (checkQuery.data?.saved ?? false) : false
 
   return {
     isSaved,
     unavailable,
-    isChecking: checkQuery.isLoading,
+    isChecking: savedOffersEnabled ? checkQuery.isLoading : false,
     isMutating: saveMutation.isPending || unsaveMutation.isPending,
     toggleSaved: async () => {
+      if (unavailable) return
+
       if (isSaved) {
         await unsaveMutation.mutateAsync({ offerId })
       } else {
