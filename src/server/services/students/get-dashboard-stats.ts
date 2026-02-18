@@ -8,6 +8,8 @@ import { cacheTag, cacheLife } from "next/cache"
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { studentSkill } from "@/server/db/schema/students"
+import { savedOffer } from "@/server/db/schema/internships"
+import { interview } from "@/server/db/schema/interviews"
 import { CACHE_TAGS } from "@/lib/cache"
 
 /**
@@ -18,7 +20,14 @@ export async function getStudentDashboardStats(userId: string) {
   cacheLife("minutes")
   cacheTag(CACHE_TAGS.STUDENT_STATS(userId))
   cacheTag(CACHE_TAGS.STUDENT_APPLICATIONS(userId))
-  const [totalResult, pendingResult, acceptedResult, skillsResult] =
+  const [
+    totalResult,
+    pendingResult,
+    acceptedResult,
+    skillsResult,
+    savedOffersResult,
+    interviewsResult,
+  ] =
     await Promise.all([
       db
         .select({ count: count() })
@@ -52,6 +61,16 @@ export async function getStudentDashboardStats(userId: string) {
         .select({ count: count() })
         .from(studentSkill)
         .where(eq(studentSkill.userId, userId)),
+
+      db
+        .select({ count: count() })
+        .from(savedOffer)
+        .where(eq(savedOffer.userId, userId)),
+
+      db
+        .select({ count: count() })
+        .from(interview)
+        .where(eq(interview.studentUserId, userId)),
     ])
 
   return {
@@ -59,5 +78,7 @@ export async function getStudentDashboardStats(userId: string) {
     pendingApplications: pendingResult[0]?.count ?? 0,
     acceptedApplications: acceptedResult[0]?.count ?? 0,
     skillsCount: skillsResult[0]?.count ?? 0,
+    savedOffersCount: savedOffersResult[0]?.count ?? 0,
+    interviewsCount: interviewsResult[0]?.count ?? 0,
   }
 }

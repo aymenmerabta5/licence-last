@@ -27,11 +27,25 @@ const updatePipelineStageMock = mock(async () => ({ applicationId: "app-1" }))
 const revalidateTagMock = mock(() => {})
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
+  publicProcedureStrict: createProcedureMock(),
+  publicProcedureStandard: createProcedureMock(),
+  authedProcedureStandard: createProcedureMock(),
+  authedSessionProcedureStandard: createProcedureMock(),
+  authedSessionProcedureGenerous: createProcedureMock(),
+  authedProcedureStrict: createProcedureMock(),
   authedProcedureGenerous: createProcedureMock(),
+  adminProcedureGenerous: createProcedureMock(),
+  adminProcedureStandard: createProcedureMock(),
+  adminProcedureAssistant: createProcedureMock(),
+  superAdminProcedureGenerous: createProcedureMock(),
+  superAdminProcedureStandard: createProcedureMock(),
   companyAdminProcedureGenerous: createProcedureMock(),
   companyAdminProcedureStandard: createProcedureMock(),
+  companyAdminProcedureAssistant: createProcedureMock(),
   studentProcedureGenerous: createProcedureMock(),
   studentProcedureStandard: createProcedureMock(),
+  deptHeadProcedureStandard: createProcedureMock(),
+  deptHeadProcedureGenerous: createProcedureMock(),
   assistantProcedureLimited: createProcedureMock(),
 }))
 
@@ -49,6 +63,7 @@ mock.module("@/server/services/offers/search", () => ({
   searchOffers: mock(async () => ({ offers: [] })),
 }))
 mock.module("@/server/services/offers/get", () => ({
+  getOfferById: mock(async () => null),
   getStudentApplicationForOffer: mock(async () => null),
 }))
 mock.module("@/server/services/applications/apply", () => ({
@@ -70,6 +85,7 @@ mock.module("@/server/services/applications/company-refuse", () => ({
   companyRefuseApplication: mock(async () => ({ applicationId: "app-1" })),
 }))
 mock.module("@/server/services/applications/pipeline", () => ({
+  appendTimelineEvent: mock(async () => ({ eventId: "event-1" })),
   listApplicationTimeline: mock(async () => ({ events: [] })),
   updateApplicationPipelineStage: updatePipelineStageMock,
 }))

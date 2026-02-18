@@ -110,3 +110,9 @@ export const universityStatusEnum = pgEnum("university_status", [
   "approved",
   "rejected",
 ])
+
+export const interviewStatusEnum = pgEnum("interview_status", [
+  "pending_confirmation",
+  "confirmed",
+  "cancelled",
+])

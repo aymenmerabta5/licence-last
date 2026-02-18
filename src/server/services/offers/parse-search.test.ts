@@ -7,10 +7,31 @@ const mockGetPoeModel = mock(() => "poe-model")
 
 mock.module("ai", () => ({
   generateObject: mockGenerateObject,
+  convertToModelMessages: <T>(messages: T) => messages,
+  tool: <T>(definition: T) => definition,
+  createUIMessageStream: ({ execute }: { execute: (args: { writer: { write: (chunk: string) => void } }) => Promise<void> }) =>
+    new ReadableStream({
+      start(controller) {
+        const writer = {
+          write: (chunk: string) => controller.enqueue(new TextEncoder().encode(chunk)),
+        }
+        execute({ writer }).then(() => controller.close()).catch(() => controller.close())
+      },
+    }),
+  createUIMessageStreamResponse: ({ stream }: { stream: ReadableStream }) => new Response(stream),
+  stepCountIs: () => () => false,
+  streamText: () => ({
+    async *toUIMessageStream() {
+      yield { role: "assistant", content: "ok" }
+    },
+  }),
 }))
 
 mock.module("@/server/ai/model", () => ({
   getPoeModel: mockGetPoeModel,
+  getAllowedPoeModelIds: () => ["poe-model"],
+  getDefaultPoeModelId: () => "poe-model",
+  isAllowedPoeModelId: (value: string) => value === "poe-model",
 }))
 
 describe("src/server/services/offers/parse-search", () => {

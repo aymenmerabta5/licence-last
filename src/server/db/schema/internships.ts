@@ -10,6 +10,7 @@ import {
 import { internshipTypeEnum, offerStatusEnum, workModeEnum } from "@/server/db/schema/enums"
 import { company } from "@/server/db/schema/companies"
 import { skillTag } from "@/server/db/schema/skills"
+import { user } from "@/server/db/schema/auth"
 
 export const internshipOffer = pgTable(
   "internship_offer",
@@ -59,5 +60,23 @@ export const internshipOfferSkill = pgTable(
   (table) => [
     primaryKey({ columns: [table.offerId, table.skillTagId] }),
     index("internship_offer_skill_skillTagId_idx").on(table.skillTagId),
+  ],
+)
+
+export const savedOffer = pgTable(
+  "saved_offer",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    offerId: text("offer_id")
+      .notNull()
+      .references(() => internshipOffer.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.userId, table.offerId] }),
+    index("saved_offer_offerId_idx").on(table.offerId),
+    index("saved_offer_userId_createdAt_idx").on(table.userId, table.createdAt),
   ],
 )

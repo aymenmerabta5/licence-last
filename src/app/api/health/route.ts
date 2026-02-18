@@ -1,4 +1,4 @@
-import { pingDatabase } from "@/server/db"
+import * as dbModule from "@/server/db"
 import { isRedisAvailable, pingRedis } from "@/server/caching/redis"
 import { isRateLimitingEnabled } from "@/server/caching/redis-ratelimiter"
 
@@ -15,6 +15,11 @@ interface HealthPayload {
 }
 
 export async function GET() {
+  const pingDatabase =
+    typeof dbModule.pingDatabase === "function"
+      ? dbModule.pingDatabase
+      : async () => false
+
   const [databaseUp, redisUp] = await Promise.all([
     pingDatabase(),
     isRedisAvailable() ? pingRedis() : Promise.resolve(false),

@@ -40,7 +40,9 @@ describe("src/server/services/students/get-dashboard-stats", () => {
   })
 
   test("should return all zero stats for a new student", async () => {
-    // 4 queries: total, pending, accepted, skills
+    // 6 queries: total, pending, accepted, skills, saved offers, interviews
+    mockResults.push([{ count: 0 }])
+    mockResults.push([{ count: 0 }])
     mockResults.push([{ count: 0 }])
     mockResults.push([{ count: 0 }])
     mockResults.push([{ count: 0 }])
@@ -54,6 +56,8 @@ describe("src/server/services/students/get-dashboard-stats", () => {
       pendingApplications: 0,
       acceptedApplications: 0,
       skillsCount: 0,
+      savedOffersCount: 0,
+      interviewsCount: 0,
     })
   })
 
@@ -62,6 +66,8 @@ describe("src/server/services/students/get-dashboard-stats", () => {
     mockResults.push([{ count: 3 }]) // pending
     mockResults.push([{ count: 2 }]) // accepted
     mockResults.push([{ count: 5 }]) // skills
+    mockResults.push([{ count: 4 }]) // saved offers
+    mockResults.push([{ count: 1 }]) // interviews
 
     const { getStudentDashboardStats } = await import("@/server/services/students/get-dashboard-stats")
     const result = await getStudentDashboardStats("student-2")
@@ -71,6 +77,8 @@ describe("src/server/services/students/get-dashboard-stats", () => {
       pendingApplications: 3,
       acceptedApplications: 2,
       skillsCount: 5,
+      savedOffersCount: 4,
+      interviewsCount: 1,
     })
   })
 })

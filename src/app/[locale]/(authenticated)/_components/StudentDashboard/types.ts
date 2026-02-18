@@ -34,6 +34,8 @@ export interface StudentDashboardStats {
   pendingApplications: number
   acceptedApplications: number
   skillsCount: number
+  savedOffersCount: number
+  interviewsCount: number
 }
 
 export interface StudentDashboardData {

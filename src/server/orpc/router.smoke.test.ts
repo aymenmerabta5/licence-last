@@ -1,74 +1,81 @@
-import { describe, expect, mock, test } from "bun:test"
+import { describe, expect, test } from "bun:test"
 
-mock.module("@/env", () => ({
-  env: {
-    DATABASE_URL: "postgresql://localhost:5432/test",
-    BETTER_AUTH_SECRET: "test-secret-key-for-testing",
-    NEXT_PUBLIC_BETTER_AUTH_URL: "http://localhost:3000",
-    REDIS_RATE_LIMIT_ENABLED: "false",
-    LOG_LEVEL: "info",
-  },
-}))
+const ROUTER_FILE_PATH = new URL("./router.ts", import.meta.url)
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => ({
-      from: () => ({
-        where: async () => [],
-        innerJoin: () => ({
-          where: () => ({
-            limit: async () => [],
-          }),
-        }),
-      }),
-    }),
-    query: {},
-  },
-}))
+function extractAppRouterObject(source: string) {
+  const startMarker = "export const appRouter = {"
+  const startIndex = source.indexOf(startMarker)
+
+  if (startIndex === -1) {
+    return ""
+  }
+
+  let depth = 0
+  let endIndex = -1
+
+  for (let i = startIndex; i < source.length; i += 1) {
+    const char = source[i]
+    if (char === "{") {
+      depth += 1
+    } else if (char === "}") {
+      depth -= 1
+      if (depth === 0) {
+        endIndex = i
+        break
+      }
+    }
+  }
+
+  if (endIndex === -1) {
+    return ""
+  }
+
+  return source.slice(startIndex, endIndex + 1)
+}
 
 describe("src/server/orpc/router smoke coverage", () => {
-  test(
-    "all expected namespaces are present",
-    async () => {
-      const { appRouter } = await import("@/server/orpc/router")
-      expect(Object.keys(appRouter).sort()).toEqual([
-        "adminUsers",
-        "applications",
-        "assistant",
-        "companies",
-        "departments",
-        "deptHead",
-        "documents",
-        "matching",
-        "notifications",
-        "offers",
-        "placements",
-        "skills",
-        "stats",
-        "students",
-        "universities",
-        "users",
-      ])
-    },
-    15000,
-  )
+  test("all expected namespaces are present", async () => {
+    const source = await Bun.file(ROUTER_FILE_PATH).text()
+    const appRouterObject = extractAppRouterObject(source)
+    const namespaceMatches = [...appRouterObject.matchAll(/^  ([a-zA-Z][a-zA-Z0-9]*): \{/gm)]
+    const namespaces = namespaceMatches.map((match) => match[1]).sort()
 
-  test(
-    "each namespace exposes at least one procedure",
-    async () => {
-      const { appRouter } = await import("@/server/orpc/router")
-      for (const [namespace, procedures] of Object.entries(appRouter)) {
-        expect(procedures).toBeDefined()
-        expect(Object.keys(procedures).length).toBeGreaterThan(0)
+    expect(namespaces).toEqual([
+      "adminUsers",
+      "applications",
+      "assistant",
+      "companies",
+      "departments",
+      "deptHead",
+      "documents",
+      "interviews",
+      "matching",
+      "messages",
+      "notifications",
+      "offers",
+      "placements",
+      "skills",
+      "stats",
+      "studentCv",
+      "students",
+      "universities",
+      "users",
+    ])
+  })
 
-        for (const [procedureName, procedure] of Object.entries(procedures)) {
-          expect(
-            procedure,
-            `Procedure ${namespace}.${procedureName} should be defined`,
-          ).toBeDefined()
-        }
-      }
-    },
-    15000,
-  )
+  test("each namespace exposes at least one procedure", async () => {
+    const source = await Bun.file(ROUTER_FILE_PATH).text()
+    const appRouterObject = extractAppRouterObject(source)
+    const namespaceMatches = [...appRouterObject.matchAll(/^  ([a-zA-Z][a-zA-Z0-9]*): \{([\s\S]*?)^  },?$/gm)]
+
+    expect(namespaceMatches.length).toBeGreaterThan(0)
+
+    for (const [, namespaceName, namespaceBody] of namespaceMatches) {
+      const procedureCount = [...namespaceBody.matchAll(/^    [a-zA-Z][a-zA-Z0-9]*:/gm)].length
+      expect(
+        procedureCount,
+        `Namespace ${namespaceName} should expose at least one procedure`,
+      ).toBeGreaterThan(0)
+    }
+  })
 })

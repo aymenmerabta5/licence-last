@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, jsonb, index } from "drizzle-orm/pg-core"
+import { pgTable, text, timestamp, jsonb, boolean, index } from "drizzle-orm/pg-core"
 
 import { user } from "@/server/db/schema/auth"
 
@@ -22,4 +22,20 @@ export const notification = pgTable(
     index("notification_userId_idx").on(table.userId),
     index("notification_userId_readAt_idx").on(table.userId, table.readAt),
   ],
+)
+
+export const notificationPreference = pgTable(
+  "notification_preference",
+  {
+    userId: text("user_id")
+      .primaryKey()
+      .references(() => user.id, { onDelete: "cascade" }),
+    inAppEnabled: boolean("in_app_enabled").default(true).notNull(),
+    emailEnabled: boolean("email_enabled").default(true).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
 )
