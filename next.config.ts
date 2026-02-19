@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
   reactCompiler: true,
   output: "standalone",
+  outputFileTracingIncludes: {
+    "/*": ["./node_modules/dejavu-fonts-ttf/ttf/**/*"],
+  },
   cacheComponents: true,
   async headers() {
     return [

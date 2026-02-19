@@ -29,7 +29,9 @@ export const env = createEnv({
 
     // Redis (for rate limiting)
     REDIS_URL: z.string().url().optional(),
-    REDIS_RATE_LIMIT_ENABLED: z.enum(["true", "false"]).default("false"),
+    REDIS_RATE_LIMIT_ENABLED: z
+      .enum(["true", "false"])
+      .default(process.env.NODE_ENV === "production" ? "true" : "false"),
 
     // Server feature flags
     FEATURE_NOTIF_PREFERENCES: z.enum(["true", "false"]).default("false"),

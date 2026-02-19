@@ -44,6 +44,8 @@ next-env.d.ts
 # Drizzle migrations live in src/server/db/migrations (commit these)
 
 **/*/migrations
+!src/server/db/migrations/
+!src/server/db/migrations/**
 PROMPT.txt
 phases
 .ralph

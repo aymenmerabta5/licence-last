@@ -588,31 +588,67 @@ async function seedDepartmentSkills(db: ReturnType<typeof drizzle>) {
   }
 }
 
-const SEED_SUPER_ADMIN = {
-  email: "aymenmerabta12@gmail.com",
-  password: "Aymenlouaianes1",
-  name: "Aymen Merabta",
+const DEFAULT_SEED_ADMIN_NAME = "Seed Super Admin"
+
+interface SeedAdminCredentials {
+  email: string
+  password: string
+  name: string
+}
+
+function getSeedAdminCredentials(): SeedAdminCredentials | null {
+  const email = process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase()
+  const password = process.env.SEED_ADMIN_PASSWORD?.trim()
+
+  if (!email && !password) {
+    logger.info({
+      event: "admin_seed_skipped",
+      reason: "seed admin credentials not configured",
+    })
+    return null
+  }
+
+  if (!email || !password) {
+    logger.warn({
+      event: "admin_seed_skipped",
+      reason: "incomplete seed admin credentials",
+      hasEmail: Boolean(email),
+      hasPassword: Boolean(password),
+    })
+    return null
+  }
+
+  return {
+    email,
+    password,
+    name: DEFAULT_SEED_ADMIN_NAME,
+  }
 }
 
 async function seedSuperAdmin(db: ReturnType<typeof drizzle>) {
+  const credentials = getSeedAdminCredentials()
+  if (!credentials) {
+    return
+  }
+
   const [existing] = await db
     .select({ id: user.id })
     .from(user)
-    .where(eq(user.email, SEED_SUPER_ADMIN.email))
+    .where(eq(user.email, credentials.email))
     .limit(1)
 
   if (existing) {
-    logger.info({ event: "admin_exists", email: SEED_SUPER_ADMIN.email })
+    logger.info({ event: "admin_exists", email: credentials.email })
     return
   }
 
   const userId = randomUUID()
-  const hashedPassword = await hashPassword(SEED_SUPER_ADMIN.password)
+  const hashedPassword = await hashPassword(credentials.password)
 
   await db.insert(user).values({
     id: userId,
-    email: SEED_SUPER_ADMIN.email,
-    name: SEED_SUPER_ADMIN.name,
+    email: credentials.email,
+    name: credentials.name,
     role: "super_admin",
     emailVerified: true,
     onboardingCompleted: true,
@@ -628,7 +664,7 @@ async function seedSuperAdmin(db: ReturnType<typeof drizzle>) {
 
   logger.info({
     event: "admin_seeded",
-    email: SEED_SUPER_ADMIN.email,
+    email: credentials.email,
     role: "super_admin",
   })
 }

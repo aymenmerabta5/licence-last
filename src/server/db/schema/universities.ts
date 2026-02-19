@@ -1,5 +1,13 @@
-import { index, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import {
+  type AnyPgColumn,
+  index,
+  integer,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core"
 
+import { user } from "@/server/db/schema/auth"
 import {
   universityDomainStatusEnum,
   universityStatusEnum,
@@ -19,7 +27,12 @@ export const university = pgTable(
     departmentName: text("department_name"),
     status: universityStatusEnum("status").default("approved").notNull(),
     approvedAt: timestamp("approved_at"),
-    approvedByUserId: text("approved_by_user_id"),
+    approvedByUserId: text("approved_by_user_id").references(
+      (): AnyPgColumn => user.id,
+      {
+        onDelete: "set null",
+      },
+    ),
     rejectionReason: text("rejection_reason"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
