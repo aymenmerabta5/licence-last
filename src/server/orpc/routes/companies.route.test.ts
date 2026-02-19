@@ -50,6 +50,12 @@ const emitNotificationMock = mock(async () => ({
   emailSkipped: false,
   emailSuccess: null,
 }))
+const getCompanyMembershipMock = mock(
+  async (): Promise<{ companyId: string } | null> => null,
+)
+const submitCompanyReportMock = mock(
+  async (): Promise<{ reportId: string }> => ({ reportId: "report-0" }),
+)
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   authedProcedureGenerous: createProcedureMock(),
@@ -107,7 +113,7 @@ mock.module("@/server/services/companies/reject", () => ({
   rejectCompany: mock(async () => ({ name: "ACME" })),
 }))
 mock.module("@/server/services/companies/membership", () => ({
-  getCompanyMembership: mock(async () => null),
+  getCompanyMembership: getCompanyMembershipMock,
 }))
 mock.module("@/server/services/uploads/upload-image", () => ({
   uploadImageToS3: mock(async () => ({ url: "https://example.com/logo.png" })),
@@ -123,7 +129,7 @@ mock.module("@/server/services/companies/trust-actions", () => ({
   listCompanyReports: mock(async () => []),
   resolveCompanyReport: mock(async () => ({ success: true })),
   submitCompanyQualityFeedback: mock(async () => ({ success: true })),
-  submitCompanyReport: mock(async () => ({ success: true })),
+  submitCompanyReport: submitCompanyReportMock,
 }))
 mock.module("@/server/db", () => ({
   db: {
@@ -147,6 +153,8 @@ describe("src/server/orpc/routes/companies", () => {
     removeCompanyMemberMock.mockClear()
     revalidateTagMock.mockClear()
     emitNotificationMock.mockClear()
+    getCompanyMembershipMock.mockClear()
+    submitCompanyReportMock.mockClear()
   })
 
   afterAll(() => {
@@ -290,5 +298,58 @@ describe("src/server/orpc/routes/companies", () => {
       "company-user-member-1",
       "max",
     )
+  })
+
+  test("submitCompanyReportProcedure blocks company admin self-reports", async () => {
+    getCompanyMembershipMock.mockResolvedValueOnce({ companyId: "company-1" })
+
+    const { submitCompanyReportProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    await expect(
+      callProcedure(submitCompanyReportProcedure, {
+        input: {
+          companyId: "company-1",
+          category: "harassment",
+          severity: "high",
+          description: "This report should be blocked by self-report guard.",
+        },
+        context: { user: { id: "admin-1", role: "company_admin" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "Company admins cannot submit reports against their own company",
+    })
+
+    expect(submitCompanyReportMock).not.toHaveBeenCalled()
+  })
+
+  test("submitCompanyReportProcedure delegates for valid reporters", async () => {
+    submitCompanyReportMock.mockResolvedValueOnce({ reportId: "report-1" })
+
+    const { submitCompanyReportProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    const result = await callProcedure(submitCompanyReportProcedure, {
+      input: {
+        companyId: "company-9",
+        category: "unsafe_conditions",
+        severity: "medium",
+        description: "The workspace conditions were not safe during the visit.",
+      },
+      context: { user: { id: "student-1", role: "student" } },
+    })
+
+    expect(result).toEqual({ reportId: "report-1" })
+    expect(getCompanyMembershipMock).not.toHaveBeenCalled()
+    expect(submitCompanyReportMock).toHaveBeenCalledWith({
+      reporterUserId: "student-1",
+      companyId: "company-9",
+      category: "unsafe_conditions",
+      severity: "medium",
+      description: "The workspace conditions were not safe during the visit.",
+    })
   })
 })

@@ -1,0 +1,1 @@
+ALTER TABLE "university" DROP COLUMN "dean_name";

@@ -1,0 +1,2 @@
+ALTER TABLE "university" ADD CONSTRAINT "university_approved_by_user_id_user_id_fk" FOREIGN KEY ("approved_by_user_id") REFERENCES "public"."user"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "interview" ADD CONSTRAINT "interview_confirmed_slot_id_interview_slot_id_fk" FOREIGN KEY ("confirmed_slot_id") REFERENCES "public"."interview_slot"("id") ON DELETE set null ON UPDATE no action;

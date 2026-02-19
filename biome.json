@@ -62,7 +62,7 @@
         "useValidAriaRole": "off"
       },
       "security": {
-        "noDangerouslySetInnerHtml": "off"
+        "noDangerouslySetInnerHtml": "error"
       },
       "suspicious": {
         "noAssignInExpressions": "warn",

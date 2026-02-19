@@ -164,12 +164,21 @@ export const submitCompanyQualityFeedbackProcedure = authedProcedureStandard
 
 export const submitCompanyReportProcedure = authedProcedureStandard
   .input(companyReportSchema)
-  .handler(async ({ input, context }) =>
-    submitCompanyReport({
+  .handler(async ({ input, context }) => {
+    if (context.user.role === "company_admin") {
+      const membership = await getCompanyMembership(context.user.id)
+      if (membership?.companyId === input.companyId) {
+        throw new ORPCError("FORBIDDEN", {
+          message: "Company admins cannot submit reports against their own company",
+        })
+      }
+    }
+
+    return submitCompanyReport({
       reporterUserId: context.user.id,
       ...input,
-    }),
-  )
+    })
+  })
 
 export const listCompanyReportsProcedure = superAdminProcedureGenerous
   .input(

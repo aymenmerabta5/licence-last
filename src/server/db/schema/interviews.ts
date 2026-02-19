@@ -1,4 +1,5 @@
 import {
+  type AnyPgColumn,
   index,
   pgTable,
   text,
@@ -34,7 +35,10 @@ export const interview = pgTable(
     confirmedByUserId: text("confirmed_by_user_id").references(() => user.id, {
       onDelete: "set null",
     }),
-    confirmedSlotId: text("confirmed_slot_id"),
+    confirmedSlotId: text("confirmed_slot_id").references(
+      (): AnyPgColumn => interviewSlot.id,
+      { onDelete: "set null" },
+    ),
     status: interviewStatusEnum("status")
       .default("pending_confirmation")
       .notNull(),

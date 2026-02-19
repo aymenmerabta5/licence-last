@@ -40,7 +40,7 @@
     "db:studio:prod": "bun --env-file=.env.production x --bun drizzle-kit studio",
     "db:reset": "bun run db:reset:dev",
     "db:reset:dev": "bun --env-file=.env.development run src/server/db/reset.ts",
-    "db:reset:prod": "bun --env-file=.env.production run src/server/db/reset.ts",
+    "db:reset:prod": "bun --env-file=.env.production run src/server/db/reset.ts --require-production-confirmation",
     "db:seed": "bun run db:seed:dev",
     "db:seed:dev": "bun --env-file=.env.development run src/server/db/seed.ts",
     "mcp:dev": "bun --env-file=.env.development run src/server/mcp/index.ts --mcp-dev"
