@@ -17,6 +17,12 @@ import {
 import { useUniversityValidation } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/hooks/useUniversityValidation"
 import { UniversityCard } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/UniversityCard"
 import { RejectDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/RejectDialog"
+import { EditUniversityDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/EditUniversityDialog"
+import { DeleteUniversityDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/DeleteUniversityDialog"
+import type {
+  UniversityListItem,
+  UpdateUniversityPayload,
+} from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
 import type { UniversityStatus } from "@/lib/schemas/enums"
 
 export function UniversityValidationList() {
@@ -30,10 +36,18 @@ export function UniversityValidationList() {
     isApproving,
     rejectUniversity,
     isRejecting,
+    updateUniversity,
+    isUpdating,
+    deleteUniversity,
+    isDeleting,
   } = useUniversityValidation()
 
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
   const [rejectingId, setRejectingId] = useState<string | null>(null)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [editingUniversity, setEditingUniversity] = useState<UniversityListItem | null>(null)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [deletingUniversity, setDeletingUniversity] = useState<UniversityListItem | null>(null)
 
   function handleRejectClick(id: string) {
     setRejectingId(id)
@@ -46,6 +60,52 @@ export function UniversityValidationList() {
       { universityId: rejectingId, reason },
       { onSuccess: () => setRejectDialogOpen(false) },
     )
+  }
+
+  function handleEditClick(university: UniversityListItem) {
+    setEditingUniversity(university)
+    setEditDialogOpen(true)
+  }
+
+  function handleEditConfirm(payload: UpdateUniversityPayload) {
+    updateUniversity(payload, {
+      onSuccess: () => setEditDialogOpen(false),
+    })
+  }
+
+  function handleDeleteClick(university: UniversityListItem) {
+    setDeletingUniversity(university)
+    setDeleteDialogOpen(true)
+  }
+
+  function handleDeleteConfirm(universityId: string) {
+    deleteUniversity(
+      { universityId },
+      {
+        onSuccess: () => setDeleteDialogOpen(false),
+      },
+    )
+  }
+
+  function handleRejectDialogChange(open: boolean) {
+    setRejectDialogOpen(open)
+    if (!open) {
+      setRejectingId(null)
+    }
+  }
+
+  function handleEditDialogChange(open: boolean) {
+    setEditDialogOpen(open)
+    if (!open) {
+      setEditingUniversity(null)
+    }
+  }
+
+  function handleDeleteDialogChange(open: boolean) {
+    setDeleteDialogOpen(open)
+    if (!open) {
+      setDeletingUniversity(null)
+    }
   }
 
   return (
@@ -142,8 +202,12 @@ export function UniversityValidationList() {
                 university={uni}
                 onApprove={approveUniversity}
                 onReject={handleRejectClick}
+                onEdit={handleEditClick}
+                onDelete={handleDeleteClick}
                 isApproving={isApproving}
                 isRejecting={isRejecting}
+                isUpdating={isUpdating}
+                isDeleting={isDeleting}
               />
             </motion.div>
           ))}
@@ -152,9 +216,25 @@ export function UniversityValidationList() {
 
       <RejectDialog
         open={rejectDialogOpen}
-        onOpenChange={setRejectDialogOpen}
+        onOpenChange={handleRejectDialogChange}
         onConfirm={handleRejectConfirm}
         isRejecting={isRejecting}
+      />
+
+      <EditUniversityDialog
+        open={editDialogOpen}
+        onOpenChange={handleEditDialogChange}
+        university={editingUniversity}
+        onConfirm={handleEditConfirm}
+        isUpdating={isUpdating}
+      />
+
+      <DeleteUniversityDialog
+        open={deleteDialogOpen}
+        onOpenChange={handleDeleteDialogChange}
+        university={deletingUniversity}
+        onConfirm={handleDeleteConfirm}
+        isDeleting={isDeleting}
       />
     </div>
   )

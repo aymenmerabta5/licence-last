@@ -127,6 +127,7 @@ export async function generateCertificateByCompany(
 
   if (doc.verificationCode) {
     void sendCertificateEmail({
+      userId: placementRow.studentUserId,
       to: placementRow.studentEmail,
       studentName: placementRow.studentName ?? "Student",
       companyName: placementRow.companyName,

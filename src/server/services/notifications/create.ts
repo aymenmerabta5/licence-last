@@ -3,7 +3,10 @@ import "server-only"
 import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { notification } from "@/server/db/schema/notifications"
-import { getNotificationPreferences } from "@/server/services/notifications/get-preferences"
+import {
+  getNotificationPreferences,
+  type NotificationPreferences,
+} from "@/server/services/notifications/get-preferences"
 
 const log = createModuleLogger("services/notifications/create")
 
@@ -12,10 +15,12 @@ export interface CreateNotificationInput {
   type: string
   // jsonb payload (keep broadly typed at the service boundary)
   payload?: Record<string, unknown>
+  preferences?: NotificationPreferences
 }
 
 export async function createNotification(input: CreateNotificationInput) {
-  const preferences = await getNotificationPreferences(input.userId)
+  const preferences =
+    input.preferences ?? (await getNotificationPreferences(input.userId))
 
   if (!preferences.inAppEnabled) {
     log.info(

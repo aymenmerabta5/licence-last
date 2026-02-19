@@ -31,7 +31,10 @@ export function useInterviewsState() {
     [slots],
   )
 
-  const canSubmitProposal = applicationId.trim().length > 0 && hasValidSlot
+  const canSubmitProposal =
+    selectedOfferId.trim().length > 0 &&
+    applicationId.trim().length > 0 &&
+    hasValidSlot
 
   const updateSlot = (slotId: string, field: SlotField, value: string) => {
     setSlots((current) =>

@@ -8,12 +8,12 @@ import { db } from "@/server/db"
 const log = createModuleLogger("services/applications/company-accept")
 import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
-import { notification } from "@/server/db/schema/notifications"
 import { user } from "@/server/db/schema/auth"
 import { studentProfile } from "@/server/db/schema/students"
 import { company } from "@/server/db/schema/companies"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
+import { createNotification } from "@/server/services/notifications/create"
 
 export async function companyAcceptApplication(
   applicationId: string,
@@ -79,8 +79,7 @@ export async function companyAcceptApplication(
     payload: { reason: "company_accepted" },
   })
 
-  await db.insert(notification).values({
-    id: crypto.randomUUID(),
+  await createNotification({
     userId: app.studentUserId,
     type: "application_stage_changed",
     payload: {
@@ -135,13 +134,14 @@ export async function companyAcceptApplication(
   }
 
   if (validators.length > 0) {
-    await db.insert(notification).values(
-      validators.map((v) => ({
-        id: crypto.randomUUID(),
-        userId: v.id,
-        type: "placement_pending_validation",
-        payload: notificationPayload,
-      })),
+    await Promise.all(
+      validators.map((validator) =>
+        createNotification({
+          userId: validator.id,
+          type: "placement_pending_validation",
+          payload: notificationPayload,
+        }),
+      ),
     )
   }
 

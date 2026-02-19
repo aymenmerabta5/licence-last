@@ -29,7 +29,7 @@ import { updateUser } from "@/server/services/admin/update-user"
 
 const listUsersInputSchema = z.object({
   limit: z.number().min(1).max(100).optional().default(20),
-  offset: z.number().min(0).optional().default(0),
+  offset: z.number().min(0).max(10000).optional().default(0),
   searchValue: z.string().optional(),
   searchField: z.enum(["email", "name"]).optional(),
   searchOperator: z.enum(["contains", "starts_with", "ends_with"]).optional(),

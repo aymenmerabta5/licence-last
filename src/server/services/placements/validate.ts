@@ -8,13 +8,13 @@ import { db } from "@/server/db"
 const log = createModuleLogger("services/placements/validate")
 import { application } from "@/server/db/schema/applications"
 import { placement, placementDocument } from "@/server/db/schema/placements"
-import { notification } from "@/server/db/schema/notifications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { company, companyMember } from "@/server/db/schema/companies"
 import { user } from "@/server/db/schema/auth"
 import { studentProfile } from "@/server/db/schema/students"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { ServiceError } from "@/server/services/errors"
+import { createNotification } from "@/server/services/notifications/create"
 
 export interface ValidatePlacementInput {
   applicationId: string
@@ -164,8 +164,7 @@ export async function validatePlacement(
   })
 
   // Notify student
-  await db.insert(notification).values({
-    id: crypto.randomUUID(),
+  await createNotification({
     userId: app.studentUserId,
     type: "placement_validated",
     payload: {
@@ -203,22 +202,23 @@ export async function validatePlacement(
 
   // Notify company members
   if (companyMembers.length > 0) {
-    await db.insert(notification).values(
-      companyMembers.map((member) => ({
-        id: crypto.randomUUID(),
-        userId: member.userId,
-        type: "placement_validated",
-        payload: {
-          placementId,
-          applicationId,
-          offerId: app.offerId,
-          offerTitle: app.offerTitle,
-          studentUserId: app.studentUserId,
-          studentName: app.studentName,
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString(),
-        },
-      })),
+    await Promise.all(
+      companyMembers.map((member) =>
+        createNotification({
+          userId: member.userId,
+          type: "placement_validated",
+          payload: {
+            placementId,
+            applicationId,
+            offerId: app.offerId,
+            offerTitle: app.offerTitle,
+            studentUserId: app.studentUserId,
+            studentName: app.studentName,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+          },
+        }),
+      ),
     )
   }
 

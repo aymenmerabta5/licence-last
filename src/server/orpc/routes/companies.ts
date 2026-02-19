@@ -33,8 +33,7 @@ import {
   resolveCompanyReportSchema,
 } from "@/lib/schemas/company"
 import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
-import { createNotification } from "@/server/services/notifications/create"
-import { sendEmail } from "@/server/email/sendEmail"
+import { emitNotification } from "@/server/services/notifications/emit"
 import CompanyApprovedEmail from "@/server/email/templates/CompanyApprovedEmail"
 import CompanyRejectedEmail from "@/server/email/templates/CompanyRejectedEmail"
 import { db } from "@/server/db"
@@ -63,7 +62,7 @@ export const listCompaniesProcedure = authedProcedureGenerous
       .object({
         status: companyStatusSchema.optional(),
         limit: z.coerce.number().int().min(1).max(200).optional(),
-        offset: z.coerce.number().int().min(0).optional(),
+        offset: z.coerce.number().int().min(0).max(10000).optional(),
       })
       .optional(),
   )
@@ -335,19 +334,21 @@ export const approveCompanyProcedure = superAdminProcedureStandard
       .where(eq(companyMember.companyId, input.companyId))
 
     const dashboardUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/dashboard`
-    for (const m of members) {
-      await createNotification({
-        userId: m.userId,
-        type: "company_approved",
-        payload: { companyId: input.companyId, companyName: result.name },
-      })
-      sendEmail(
-        m.email,
-        `${result.name} has been approved — Internex`,
-        CompanyApprovedEmail,
-        { companyName: result.name, dashboardUrl },
-      )
-    }
+    await Promise.all(
+      members.map((member) =>
+        emitNotification({
+          userId: member.userId,
+          type: "company_approved",
+          payload: { companyId: input.companyId, companyName: result.name },
+          email: {
+            to: member.email,
+            subject: `${result.name} has been approved - Internex`,
+            component: CompanyApprovedEmail,
+            props: { companyName: result.name, dashboardUrl },
+          },
+        }),
+      ),
+    )
 
     return result
   })
@@ -372,19 +373,21 @@ export const rejectCompanyProcedure = superAdminProcedureStandard
       .innerJoin(user, eq(companyMember.userId, user.id))
       .where(eq(companyMember.companyId, input.companyId))
 
-    for (const m of members) {
-      await createNotification({
-        userId: m.userId,
-        type: "company_rejected",
-        payload: { companyId: input.companyId, companyName: result.name, reason: input.reason },
-      })
-      sendEmail(
-        m.email,
-        `Update on your ${result.name} application — Internex`,
-        CompanyRejectedEmail,
-        { companyName: result.name, reason: input.reason },
-      )
-    }
+    await Promise.all(
+      members.map((member) =>
+        emitNotification({
+          userId: member.userId,
+          type: "company_rejected",
+          payload: { companyId: input.companyId, companyName: result.name, reason: input.reason },
+          email: {
+            to: member.email,
+            subject: `Update on your ${result.name} application - Internex`,
+            component: CompanyRejectedEmail,
+            props: { companyName: result.name, reason: input.reason },
+          },
+        }),
+      ),
+    )
 
     return result
   })
@@ -405,13 +408,15 @@ export const suspendCompanyProcedure = superAdminProcedureStandard
         .from(companyMember)
         .where(eq(companyMember.companyId, input.companyId))
 
-      for (const m of members) {
-        await createNotification({
-          userId: m.userId,
-          type: "company_suspended",
-          payload: { companyId: input.companyId, companyName: result.name },
-        })
-      }
+      await Promise.all(
+        members.map((member) =>
+          emitNotification({
+            userId: member.userId,
+            type: "company_suspended",
+            payload: { companyId: input.companyId, companyName: result.name },
+          }),
+        ),
+      )
 
       return result
     } catch (error) {
@@ -441,13 +446,15 @@ export const reactivateCompanyProcedure = superAdminProcedureStandard
         .from(companyMember)
         .where(eq(companyMember.companyId, input.companyId))
 
-      for (const m of members) {
-        await createNotification({
-          userId: m.userId,
-          type: "company_reactivated",
-          payload: { companyId: input.companyId, companyName: result.name },
-        })
-      }
+      await Promise.all(
+        members.map((member) =>
+          emitNotification({
+            userId: member.userId,
+            type: "company_reactivated",
+            payload: { companyId: input.companyId, companyName: result.name },
+          }),
+        ),
+      )
 
       return result
     } catch (error) {
@@ -501,3 +508,4 @@ export const uploadCompanyLogoProcedure = companyAdminProcedureStandard
       })
     }
   })
+

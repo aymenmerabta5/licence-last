@@ -40,6 +40,13 @@ const inviteCompanyMemberMock = mock(async () => ({
 }))
 const removeCompanyMemberMock = mock(async () => ({ removed: true, userId: "member-1" }))
 const revalidateTagMock = mock(() => {})
+const emitNotificationMock = mock(async () => ({
+  notificationId: "notification-1",
+  inAppSkipped: false,
+  emailAttempted: false,
+  emailSkipped: false,
+  emailSuccess: null,
+}))
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   authedProcedureGenerous: createProcedureMock(),
@@ -102,11 +109,8 @@ mock.module("@/server/services/companies/membership", () => ({
 mock.module("@/server/services/uploads/upload-image", () => ({
   uploadImageToS3: mock(async () => ({ url: "https://example.com/logo.png" })),
 }))
-mock.module("@/server/services/notifications/create", () => ({
-  createNotification: mock(async () => ({ success: true })),
-}))
-mock.module("@/server/email/sendEmail", () => ({
-  sendEmail: mock(async () => ({ success: true })),
+mock.module("@/server/services/notifications/emit", () => ({
+  emitNotification: emitNotificationMock,
 }))
 mock.module("@/server/services/companies/trust-index", () => ({
   getCompanyTrustIndex: mock(async () => ({ score: 80 })),
@@ -139,6 +143,7 @@ describe("src/server/orpc/routes/companies", () => {
     inviteCompanyMemberMock.mockClear()
     removeCompanyMemberMock.mockClear()
     revalidateTagMock.mockClear()
+    emitNotificationMock.mockClear()
   })
 
   afterAll(() => {

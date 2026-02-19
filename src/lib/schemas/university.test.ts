@@ -1,6 +1,9 @@
 import { describe, test, expect } from "bun:test"
 
-import { createUniversityOnboardingSchema } from "@/lib/schemas/university"
+import {
+  createUniversityOnboardingSchema,
+  createUniversityUpdateSchema,
+} from "@/lib/schemas/university"
 
 function t(key: string) {
   return `t:${key}`
@@ -85,5 +88,42 @@ describe("createUniversityOnboardingSchema", () => {
     if (result.success) {
       expect(result.data.wilayaCode).toBe(16)
     }
+  })
+})
+
+describe("createUniversityUpdateSchema", () => {
+  const schema = createUniversityUpdateSchema(t)
+
+  test("should accept valid update payload", () => {
+    const result = schema.safeParse({
+      name: "University of Algiers",
+      abbreviation: "USTHB",
+      phone: "+213555123456",
+      wilayaCode: 16,
+      city: "Algiers",
+      address: "123 Avenue",
+    })
+
+    expect(result.success).toBe(true)
+  })
+
+  test("should reject short names", () => {
+    const result = schema.safeParse({
+      name: "A",
+    })
+
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      const nameIssue = result.error.issues.find((issue) => issue.path[0] === "name")
+      expect(nameIssue?.message).toBe("t:universityNameMin")
+    }
+  })
+
+  test("should reject invalid wilayaCode values", () => {
+    const tooLow = schema.safeParse({ name: "USTHB", wilayaCode: 0 })
+    const tooHigh = schema.safeParse({ name: "USTHB", wilayaCode: 59 })
+
+    expect(tooLow.success).toBe(false)
+    expect(tooHigh.success).toBe(false)
   })
 })

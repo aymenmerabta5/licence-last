@@ -157,7 +157,13 @@ export const listMySessionsProcedure = authedSessionProcedureGenerous.handler(
   async ({ context }) => {
     const sessions = await listMySessions()
     return sessions.map((s) => ({
-      ...s,
+      id: s.id,
+      userId: s.userId,
+      ipAddress: s.ipAddress,
+      userAgent: s.userAgent,
+      createdAt: s.createdAt,
+      updatedAt: s.updatedAt,
+      expiresAt: s.expiresAt,
       isCurrent: s.token === context.session.token,
     }))
   },

@@ -59,6 +59,14 @@ mock.module("@/server/services/applications/pipeline", () => ({
   appendTimelineEvent: mock(() => Promise.resolve({ eventId: "evt-1" })),
 }))
 
+const createNotificationMock = mock(() =>
+  Promise.resolve({ id: "notification-1", skipped: false }),
+)
+
+mock.module("@/server/services/notifications/create", () => ({
+  createNotification: createNotificationMock,
+}))
+
 describe("src/server/services/applications/apply", () => {
   beforeEach(() => {
     selectCallIdx = 0
@@ -75,6 +83,7 @@ describe("src/server/services/applications/apply", () => {
 
     mockInsert.mockClear()
     mockValues.mockClear()
+    createNotificationMock.mockClear()
 
     mockFromWithForAndLimit.mockReturnValue({ where: mockWhereWithForAndLimit })
     mockWhereWithForAndLimit.mockReturnValue({ for: mockFor })
@@ -87,6 +96,10 @@ describe("src/server/services/applications/apply", () => {
 
     mockInsert.mockReturnValue({ values: mockValues })
     mockValues.mockResolvedValue(undefined)
+    createNotificationMock.mockResolvedValue({
+      id: "notification-1",
+      skipped: false,
+    })
   })
 
   test("should throw when offer does not exist", async () => {
@@ -140,7 +153,8 @@ describe("src/server/services/applications/apply", () => {
     const result = await applyToOffer("offer-1", "student-1", "Short cover letter")
 
     expect(result.applicationId).toBeDefined()
-    expect(mockInsert).toHaveBeenCalledTimes(2)
+    expect(mockInsert).toHaveBeenCalledTimes(1)
+    expect(createNotificationMock).toHaveBeenCalledTimes(2)
   })
 
   test("should throw when application deadline has passed", async () => {

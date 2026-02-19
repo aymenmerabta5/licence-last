@@ -8,10 +8,10 @@ import { db } from "@/server/db"
 const log = createModuleLogger("services/applications/company-refuse")
 import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
-import { notification } from "@/server/db/schema/notifications"
 import { company } from "@/server/db/schema/companies"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
+import { createNotification } from "@/server/services/notifications/create"
 
 export async function companyRefuseApplication(
   applicationId: string,
@@ -75,8 +75,7 @@ export async function companyRefuseApplication(
     payload: { companyNote: note ?? null },
   })
 
-  await db.insert(notification).values({
-    id: crypto.randomUUID(),
+  await createNotification({
     userId: app.studentUserId,
     type: "application_refused",
     payload: {

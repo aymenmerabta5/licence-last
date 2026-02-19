@@ -19,6 +19,7 @@ const TITLE_BY_TYPE: Record<string, string> = {
   placement_pending_validation: "Placement pending validation",
   placement_validated: "Placement validated",
   placement_rejected: "Placement rejected",
+  agreement_generated: "Agreement generated",
   certificate_generated: "Certificate generated",
   company_approved: "Company approved",
   company_rejected: "Company rejected",
@@ -109,6 +110,14 @@ function formatByType(
         return `${offerTitle} was rejected.`
       }
       return reason ?? "A placement was rejected."
+    case "agreement_generated":
+      if (offerTitle && companyName) {
+        return `${offerTitle} agreement is ready from ${companyName}.`
+      }
+      if (offerTitle) {
+        return `${offerTitle} agreement is ready.`
+      }
+      return "An internship agreement is ready."
     case "certificate_generated":
       if (offerTitle && companyName) {
         return `${offerTitle} certificate is ready from ${companyName}.`
