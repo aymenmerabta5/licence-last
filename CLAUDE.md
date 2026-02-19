@@ -69,7 +69,7 @@ src/
 │   │   ├── ratelimit-middleware.ts
 │   │   ├── router.ts
 │   │   ├── client.ts
-│   │   └── routes/         (18 route modules, 19 namespaces, 131 procedures)
+│   │   └── routes/         (18 route modules, 19 namespaces, 136 procedures)
 │   ├── services/           (Model — 18 service domains)
 │   │   ├── admin/          (User management: ban, create, sessions, etc.)
 │   │   ├── applications/   (Application workflow + pipeline + timeline)
@@ -92,7 +92,7 @@ src/
 │   ├── ai/                 (AI integration: model, tools, context, prompts)
 │   ├── openapi/            (OpenAPI spec generation)
 │   ├── pdfs/               (PDF templates: agreement, certificate)
-│   ├── storage/            (Bun S3Client wrapper)
+│   ├── storage/            (@aws-sdk/client-s3 wrapper)
 │   ├── email/              (Resend + React Email)
 │   ├── caching/            (Redis client + rate limiter)
 │   ├── logging/            (Pino structured logging)
@@ -142,7 +142,7 @@ FeatureName/
 **Shared Infrastructure** (never define locally):
 - `src/lib/constants/pipeline.ts` — `STATUS_COLORS`, `STAGE_COLUMNS`, `STAGE_LABELS`
 - `src/lib/constants/internship.ts` — `INTERNSHIP_TYPE_LABELS`, `INTERNSHIP_TYPE_COLORS`
-- `src/lib/animations.ts` — `reveal`, `ease`, `fadeIn`, etc. (NEVER define `reveal`/`ease` locally)
+- `src/lib/animations.ts` — `reveal`, `ease`, `revealTransition`, `revealWithDelay`, `reducedMotionTransition`, `getRevealVariants`, `getTransition`, `fadeIn`, `slideUp` (NEVER define `reveal`/`ease` locally)
 - `src/hooks/useInfiniteScroll.ts` — IntersectionObserver + fetchNextPage
 - `src/hooks/useDebounce.ts` — Debounced value
 - `src/hooks/useLogout.ts` — Logout + redirect
@@ -453,11 +453,12 @@ Animation policy:
 bun run dev        # Development
 bun run build      # Production build
 bun run start      # Production start
-bun run lint       # ESLint
+bun run lint       # Biome + import alias + Next parity checks
 bun run lint:imports       # Strict import/layer checks
 bun run lint:architecture  # Feature-folder architecture guard
 bun run lint:rtl-logical   # RTL logical CSS guard
 bun run typecheck  # TypeScript check
+bun run mcp:dev    # MCP development server (.env.development)
 
 # Testing
 bun test           # Run all tests
@@ -468,7 +469,7 @@ bun test:orpc-routes # oRPC controller route + smoke tests
 bun test:api:app-routes # App Router API route tests only
 bun test:api       # API route tests + oRPC route suite
 bun test:pages     # App Router page/component tests (src/app/[locale])
-bun test:e2e       # Playwright E2E tests
+bun test:e2e       # Playwright E2E (sets PLAYWRIGHT_REUSE_SERVER=1, E2E_DISABLE_CAPTCHA=1, loads .env.development)
 bun test:ci        # CI pipeline (unit + api + pages)
 bun run check:all  # Full pre-release checks (lint, typecheck, tests, build)
 
@@ -481,6 +482,8 @@ bun run db:seed        # Seed database (dev)
 bun run db:reset       # Reset database (dev)
 # Append :prod for production variants (e.g., db:migrate:prod)
 ```
+
+`bun run lint` does not include `lint:architecture` or `lint:rtl-logical`; run them explicitly (or run `bun run check:all` for architecture + type/test/build coverage).
 
 ---
 
@@ -560,11 +563,13 @@ bun test:orpc-routes       # oRPC controller route + smoke tests
 bun test:api:app-routes    # App Router API route tests only
 bun test:api               # API endpoint tests + oRPC route suite
 bun test:pages             # App Router page/component tests (src/app/[locale])
-bun test:e2e               # Playwright end-to-end tests
+bun test:e2e               # Playwright E2E (sets PLAYWRIGHT_REUSE_SERVER=1, E2E_DISABLE_CAPTCHA=1, loads .env.development)
 bun test:ci                # CI pipeline (unit + api + pages)
 bun test src/lib/utils.test.ts  # Run specific test file
 bun test --test-name-pattern="should handle"  # Run matching tests
 ```
+
+`test:unit`, `test:api:app-routes`, and `test:pages` are powered by `scripts/run-tests-isolated.cjs`, which discovers `*.test.ts(x)` files in target directories and executes each file in isolation.
 
 ### Best Practices
 
@@ -667,13 +672,13 @@ Development-only MCP server for AI tool testing at `src/server/mcp/`:
 
 ### File Storage (S3)
 
-**`src/server/storage/s3.ts`** (uses Bun's native `Bun.S3Client`):
+**`src/server/storage/s3.ts`** (uses `@aws-sdk/client-s3`):
 ```typescript
 export async function uploadFile(key: string, data: Buffer, contentType: string): Promise<string>
 export async function deleteFile(key: string): Promise<void>
 export function isConfigured(): boolean
 ```
-Supports AWS S3, Cloudflare R2, or any S3-compatible endpoint.
+Supports AWS S3, Cloudflare R2, or any S3-compatible endpoint, with fallback env key names (`S3_*` or `S3_BUCKET_NAME`/`NEXT_PUBLIC_S3_*`/`AWS_*`).
 
 ### Structured Logging
 
@@ -790,7 +795,8 @@ When adding or modifying features (services, procedures, components, translation
 |------|---------|----------------|
 | `CLAUDE.md` | Project context for Claude | Service domains, procedure counts, directory tree, patterns |
 | `AGENTS.md` | Coding guidelines for AI agents | Service lists, route procedure tables, feature folder references |
-| `docs/ARCHITECTURE.md` | Full system architecture | Data model, service tables, procedure counts, file counts |
+| `ARCHITECTURE.md` | Root architecture snapshot | Data flow, service/procedure counts, key guardrails (sync with `docs/ARCHITECTURE.md`) |
+| `docs/ARCHITECTURE.md` | Detailed architecture handbook | Expanded data model, infra, testing, and deployment internals |
 | `README.md` | Project overview | High-level capabilities, architecture summary |
 
 **Checklist for new features:**
