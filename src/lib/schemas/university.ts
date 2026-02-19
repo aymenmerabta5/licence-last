@@ -26,3 +26,23 @@ export function createUniversityOnboardingSchema(t: TranslationFn) {
       .optional(),
   })
 }
+
+/**
+ * University profile update schema.
+ * Used by super admin edit dialog in universities dashboard.
+ */
+export function createUniversityUpdateSchema(t: TranslationFn) {
+  return z.object({
+    name: z.string().min(2, { error: t("universityNameMin") }),
+    abbreviation: z.string().optional(),
+    phone: z.string().optional(),
+    wilayaCode: z.coerce
+      .number()
+      .int()
+      .min(1, { error: t("wilayaRequired") })
+      .max(58, { error: t("wilayaInvalid") })
+      .optional(),
+    city: z.string().optional(),
+    address: z.string().optional(),
+  })
+}

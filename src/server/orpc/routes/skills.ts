@@ -13,7 +13,7 @@ export const listSkillTagsProcedure = publicProcedureStandard
         category: z.string().optional(),
         departmentId: z.string().optional(),
         limit: z.coerce.number().int().min(1).max(500).optional(),
-        offset: z.coerce.number().int().min(0).optional(),
+        offset: z.coerce.number().int().min(0).max(10000).optional(),
       })
       .optional(),
   )

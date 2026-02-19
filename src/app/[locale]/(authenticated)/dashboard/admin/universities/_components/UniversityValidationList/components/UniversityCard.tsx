@@ -1,10 +1,20 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { MapPin, Building2, Globe, Check, X, Calendar } from "lucide-react"
+import {
+  MapPin,
+  Building2,
+  Globe,
+  Check,
+  X,
+  Calendar,
+  Pencil,
+  Trash2,
+} from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import type { UniversityListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
 
 const STATUS_STYLES: Record<string, string> = {
   pending: "bg-amber-500/10 text-amber-600",
@@ -13,28 +23,27 @@ const STATUS_STYLES: Record<string, string> = {
 }
 
 interface UniversityCardProps {
-  university: {
-    id: string
-    name: string
-    abbreviation: string | null
-    city: string | null
-    wilayaCode: number | null
-    departmentName: string | null
-    status: string
-    createdAt: Date
-  }
+  university: UniversityListItem
   onApprove: (id: string) => void
   onReject: (id: string) => void
+  onEdit: (university: UniversityListItem) => void
+  onDelete: (university: UniversityListItem) => void
   isApproving: boolean
   isRejecting: boolean
+  isUpdating: boolean
+  isDeleting: boolean
 }
 
 export function UniversityCard({
   university,
   onApprove,
   onReject,
+  onEdit,
+  onDelete,
   isApproving,
   isRejecting,
+  isUpdating,
+  isDeleting,
 }: UniversityCardProps) {
   const t = useTranslations("dashboard.admin.universities")
 
@@ -91,9 +100,9 @@ export function UniversityCard({
           />
         </div>
 
-        {/* Actions */}
+        {/* Review actions */}
         {university.status === "pending" && (
-          <div className="flex gap-3 pt-2 border-t border-border/30">
+          <div className="flex flex-wrap gap-3 pt-2 border-t border-border/30">
             <Button
               type="button"
               variant="editorial"
@@ -118,6 +127,32 @@ export function UniversityCard({
             </Button>
           </div>
         )}
+
+        {/* Management actions */}
+        <div className="flex flex-wrap gap-3 pt-2 border-t border-border/30">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-9 px-5 rounded-lg"
+            disabled={isUpdating}
+            onClick={() => onEdit(university)}
+          >
+            <Pencil className="h-3.5 w-3.5 me-1.5" />
+            {t("edit")}
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            size="sm"
+            className="h-9 px-5 rounded-lg"
+            disabled={isDeleting}
+            onClick={() => onDelete(university)}
+          >
+            <Trash2 className="h-3.5 w-3.5 me-1.5" />
+            {t("delete")}
+          </Button>
+        </div>
       </div>
     </div>
   )

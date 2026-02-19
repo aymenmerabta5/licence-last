@@ -228,6 +228,20 @@ export const uploadStudentResumeProcedure = studentProcedureStandard
     }
 
     const buffer = Buffer.from(await file.arrayBuffer())
+
+    // Validate PDF magic bytes (%PDF = 0x25504446)
+    if (
+      buffer.length < 4 ||
+      buffer[0] !== 0x25 ||
+      buffer[1] !== 0x50 ||
+      buffer[2] !== 0x44 ||
+      buffer[3] !== 0x46
+    ) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "File content does not match PDF format",
+      })
+    }
+
     const key = `resumes/${context.user.id}/${randomUUID()}.pdf`
     const fileUrl = await uploadFile(key, buffer, file.type)
 

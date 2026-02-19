@@ -143,6 +143,8 @@ import {
   listUniversitiesProcedure,
   getUniversityByIdProcedure,
   createUniversityProcedure,
+  updateUniversityProcedure,
+  deleteUniversityProcedure,
   approveUniversityProcedure,
   rejectUniversityProcedure,
 } from "@/server/orpc/routes/universities"
@@ -325,6 +327,8 @@ export const appRouter = {
     list: listUniversitiesProcedure,
     getById: getUniversityByIdProcedure,
     create: createUniversityProcedure,
+    update: updateUniversityProcedure,
+    delete: deleteUniversityProcedure,
     approve: approveUniversityProcedure,
     reject: rejectUniversityProcedure,
   },

@@ -15,9 +15,12 @@ import { universityStatusSchema } from "@/lib/schemas/enums"
 import { listUniversities } from "@/server/services/universities/list"
 import { getUniversityById } from "@/server/services/universities/get"
 import { createUniversity } from "@/server/services/universities/create"
+import { updateUniversity } from "@/server/services/universities/update"
+import { deleteUniversity } from "@/server/services/universities/delete"
 import { approveUniversity } from "@/server/services/universities/approve"
 import { rejectUniversity } from "@/server/services/universities/reject"
 import { createNotification } from "@/server/services/notifications/create"
+import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import { sendEmail } from "@/server/email/sendEmail"
 import UniversityApprovedEmail from "@/server/email/templates/UniversityApprovedEmail"
 import { db } from "@/server/db"
@@ -33,7 +36,7 @@ export const listUniversitiesProcedure = authedProcedureGenerous
       .object({
         status: universityStatusSchema.optional(),
         limit: z.coerce.number().int().min(1).max(200).optional(),
-        offset: z.coerce.number().int().min(0).optional(),
+        offset: z.coerce.number().int().min(0).max(10000).optional(),
       })
       .optional(),
   )
@@ -85,6 +88,82 @@ export const createUniversityProcedure = authedProcedureStandard
   .handler(async ({ input, context }) =>
     createUniversity(input, context.user.id),
   )
+
+export const updateUniversityProcedure = superAdminProcedureStandard
+  .input(
+    z.object({
+      universityId: z.string().min(1),
+      name: z.string().min(2).optional(),
+      abbreviation: z.string().nullable().optional(),
+      phone: z.string().nullable().optional(),
+      wilayaCode: z
+        .union([z.coerce.number().int().min(1).max(58), z.null()])
+        .optional(),
+      city: z.string().nullable().optional(),
+      address: z.string().nullable().optional(),
+    }),
+  )
+  .handler(async ({ input }) => {
+    try {
+      const result = await updateUniversity(input.universityId, {
+        name: input.name,
+        abbreviation: input.abbreviation,
+        phone: input.phone,
+        wilayaCode: input.wilayaCode,
+        city: input.city,
+        address: input.address,
+      })
+
+      revalidateTag(CACHE_TAGS.UNIVERSITIES, "max")
+      revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-${input.universityId}`, "max")
+
+      const linkedUsers = await db
+        .select({ userId: user.id })
+        .from(user)
+        .where(eq(user.universityId, input.universityId))
+
+      for (const linkedUser of linkedUsers) {
+        revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-user-${linkedUser.userId}`, "max")
+      }
+
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          UNIVERSITY_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to update university",
+      })
+    }
+  })
+
+export const deleteUniversityProcedure = superAdminProcedureStandard
+  .input(z.object({ universityId: z.string().min(1) }))
+  .handler(async ({ input }) => {
+    try {
+      const result = await deleteUniversity(input.universityId)
+
+      revalidateTag(CACHE_TAGS.UNIVERSITIES, "max")
+      revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-${input.universityId}`, "max")
+
+      for (const affectedUserId of result.affectedUserIds) {
+        revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-user-${affectedUserId}`, "max")
+      }
+
+      return {
+        success: result.success,
+        universityId: result.universityId,
+        affectedUsers: result.affectedUserIds.length,
+      }
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          UNIVERSITY_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to delete university",
+      })
+    }
+  })
 
 export const approveUniversityProcedure = superAdminProcedureStandard
   .input(z.object({ universityId: z.string().min(1) }))

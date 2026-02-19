@@ -63,7 +63,7 @@ export const listCompaniesProcedure = authedProcedureGenerous
       .object({
         status: companyStatusSchema.optional(),
         limit: z.coerce.number().int().min(1).max(200).optional(),
-        offset: z.coerce.number().int().min(0).optional(),
+        offset: z.coerce.number().int().min(0).max(10000).optional(),
       })
       .optional(),
   )

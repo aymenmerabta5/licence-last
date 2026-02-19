@@ -30,9 +30,10 @@ function buildSearchPattern(
   value: string,
   operator: "contains" | "starts_with" | "ends_with",
 ) {
-  if (operator === "starts_with") return `${value}%`
-  if (operator === "ends_with") return `%${value}`
-  return `%${value}%`
+  const escaped = value.replace(/[%_\\]/g, "\\$&")
+  if (operator === "starts_with") return `${escaped}%`
+  if (operator === "ends_with") return `%${escaped}`
+  return `%${escaped}%`
 }
 
 export async function listUniversityUsers(params: ListUniversityUsersParams) {
