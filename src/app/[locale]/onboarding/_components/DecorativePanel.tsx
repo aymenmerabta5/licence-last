@@ -1,44 +1,16 @@
 "use client"
 
 import * as motion from "motion/react-client"
-import { ArrowLeft, Building2, GraduationCap, Landmark, Sparkles } from "lucide-react"
-import type { LucideIcon } from "lucide-react"
+import { ArrowLeft, Sparkles } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { Link, usePathname } from "@/i18n/routing"
-
+import {
+  GrainTextureOverlay,
+  GridPatternOverlay,
+  useOnboardingRoleConfig,
+} from "@/app/[locale]/onboarding/_components/decorativePanelShared"
+import { Link } from "@/i18n/routing"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
-
-interface RoleConfig {
-  namespace: "onboarding.company" | "onboarding.student" | "onboarding.university"
-  icon: LucideIcon
-  patternOpacity: string
-}
-
-const ROLE_MAP: Record<string, RoleConfig> = {
-  company: {
-    namespace: "onboarding.company",
-    icon: Building2,
-    patternOpacity: "opacity-[0.03]",
-  },
-  student: {
-    namespace: "onboarding.student",
-    icon: GraduationCap,
-    patternOpacity: "opacity-[0.04]",
-  },
-  university: {
-    namespace: "onboarding.university",
-    icon: Landmark,
-    patternOpacity: "opacity-[0.03]",
-  },
-}
-
-function detectRole(pathname: string): string {
-  if (pathname.includes("/onboarding/company")) return "company"
-  if (pathname.includes("/onboarding/student")) return "student"
-  if (pathname.includes("/onboarding/university")) return "university"
-  return "student"
-}
 
 function DotSeparator({
   lineWidth = 32,
@@ -62,9 +34,7 @@ function DotSeparator({
 }
 
 export function DecorativePanel() {
-  const pathname = usePathname()
-  const role = detectRole(pathname)
-  const config = ROLE_MAP[role]!
+  const { role, config } = useOnboardingRoleConfig()
   const tRole = useTranslations(config.namespace)
   const tAuthPanel = useTranslations("auth.panel")
   const Icon = config.icon
@@ -72,34 +42,14 @@ export function DecorativePanel() {
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-linear-to-br from-accent via-accent to-muted text-accent-foreground transition-colors duration-500 dark:from-accent dark:via-accent dark:to-card">
-      {/* Ambient print glow + vignette (dark mode only) */}
       <div className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100" aria-hidden="true">
         <div className="absolute -top-24 -start-24 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
         <div className="absolute -bottom-32 start-1/2 h-104 w-104 -translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
         <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-background/20" />
       </div>
 
-      {/* Grain texture overlay */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.1] mix-blend-overlay"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-          backgroundSize: "128px 128px",
-        }}
-        aria-hidden="true"
-      />
-
-      {/* Grid pattern */}
-      <div className={`pointer-events-none absolute inset-0 ${config.patternOpacity}`} aria-hidden="true">
-        <svg width="100%" height="100%" className="text-foreground">
-          <defs>
-            <pattern id={patternId} width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill={`url(#${patternId})`} />
-        </svg>
-      </div>
+      <GrainTextureOverlay />
+      <GridPatternOverlay patternId={patternId} opacityClass={config.patternOpacity} size={40} />
 
       <div
         className="pointer-events-none absolute inset-0 ring-1 ring-border/35 dark:ring-border/60"
@@ -188,13 +138,8 @@ export function DecorativePanel() {
   )
 }
 
-/**
- * Condensed mobile variant shown as a hero banner above the form.
- */
 export function MobileHeroBanner() {
-  const pathname = usePathname()
-  const role = detectRole(pathname)
-  const config = ROLE_MAP[role]!
+  const { role, config } = useOnboardingRoleConfig()
   const tRole = useTranslations(config.namespace)
   const Icon = config.icon
   const mobilePatternId = `onboarding-mobile-grid-${role}`
@@ -206,26 +151,8 @@ export function MobileHeroBanner() {
       transition={{ duration: 0.6, ease }}
       className="relative mb-8 overflow-hidden rounded-2xl border border-border/60 bg-linear-to-br from-accent via-accent to-muted p-6 text-accent-foreground shadow-sm transition-colors duration-500 dark:border-border/80 dark:from-accent dark:via-accent dark:to-card"
     >
-      {/* Grain overlay */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.1] mix-blend-overlay"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-          backgroundSize: "128px 128px",
-        }}
-        aria-hidden="true"
-      />
-
-      <div className={`pointer-events-none absolute inset-0 ${config.patternOpacity}`} aria-hidden="true">
-        <svg width="100%" height="100%" className="text-foreground">
-          <defs>
-            <pattern id={mobilePatternId} width="34" height="34" patternUnits="userSpaceOnUse">
-              <path d="M 34 0 L 0 0 0 34" fill="none" stroke="currentColor" strokeWidth="0.5" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill={`url(#${mobilePatternId})`} />
-        </svg>
-      </div>
+      <GrainTextureOverlay />
+      <GridPatternOverlay patternId={mobilePatternId} opacityClass={config.patternOpacity} size={34} />
 
       <div
         className="pointer-events-none absolute inset-0 bg-linear-to-b from-primary/8 via-transparent to-transparent dark:from-primary/12"

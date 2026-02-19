@@ -1,15 +1,15 @@
 "use client"
 
 import * as motion from "motion/react-client"
+import { ArrowLeft, Key, Loader2, Mail, ShieldCheck } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { ShieldCheck, Mail, Key, ArrowLeft, Loader2 } from "lucide-react"
 
+import { ServerError } from "@/components/ServerError"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ServerError } from "@/components/ServerError"
 import { reveal, ease } from "@/lib/animations"
 
-import type { TwoFactorMethod } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/useLoginForm"
+import type { TwoFactorMethod } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/twoFactorUtils"
 
 interface TwoFactorStepProps {
   method: TwoFactorMethod
@@ -48,7 +48,6 @@ export function TwoFactorStep({
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <motion.div {...reveal} transition={{ duration: 0.6, ease }}>
         <h1 className="font-serif text-3xl text-heading tracking-tight mb-2 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
           {t("title")}
@@ -60,7 +59,6 @@ export function TwoFactorStep({
 
       <ServerError message={serverError} />
 
-      {/* Method tabs — editorial underline style */}
       <motion.div
         {...reveal}
         transition={{ duration: 0.6, ease, delay: 0.05 }}
@@ -80,7 +78,6 @@ export function TwoFactorStep({
             >
               <Icon className="h-3.5 w-3.5" />
               <span>{t(key)}</span>
-              {/* Active indicator — editorial bottom border */}
               {method === key && (
                 <motion.span
                   layoutId="2fa-tab-indicator"
@@ -93,7 +90,6 @@ export function TwoFactorStep({
         </div>
       </motion.div>
 
-      {/* Code input */}
       <motion.div
         {...reveal}
         transition={{ duration: 0.6, ease, delay: 0.1 }}
@@ -137,7 +133,6 @@ export function TwoFactorStep({
           </Button>
         )}
 
-        {/* Trust device — editorial square checkbox */}
         <label className="flex items-center gap-2.5 cursor-pointer select-none">
           <div className="relative flex items-center justify-center">
             <input
@@ -160,13 +155,10 @@ export function TwoFactorStep({
               />
             </svg>
           </div>
-          <span className="text-sm text-muted-foreground">
-            {t("trustDevice")}
-          </span>
+          <span className="text-sm text-muted-foreground">{t("trustDevice")}</span>
         </label>
       </motion.div>
 
-      {/* Actions */}
       <motion.div
         {...reveal}
         transition={{ duration: 0.6, ease, delay: 0.15 }}
@@ -180,11 +172,7 @@ export function TwoFactorStep({
           disabled={isVerifying || !code.trim()}
           onClick={onVerify}
         >
-          {isVerifying ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            t("verify")
-          )}
+          {isVerifying ? <Loader2 className="h-4 w-4 animate-spin" /> : t("verify")}
         </Button>
 
         <button

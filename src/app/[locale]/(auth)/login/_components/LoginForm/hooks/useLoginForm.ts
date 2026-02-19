@@ -13,9 +13,12 @@ import { getErrorMessage } from "@/lib/error-message"
 import { getPostLoginRedirectPath } from "@/lib/post-login-redirect"
 import { orpcClient } from "@/server/orpc/client"
 import type { CaptchaHandle } from "@/components/TurnstileWidget"
+import {
+  type TwoFactorMethod,
+  verifyTwoFactorCode,
+} from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/twoFactorUtils"
 
 export type LoginFormApi = ReturnType<typeof useLoginForm>["form"]
-export type TwoFactorMethod = "totp" | "otp" | "backup"
 
 export function useLoginForm() {
   const t = useTranslations("auth.login")
@@ -29,7 +32,6 @@ export function useLoginForm() {
   const [needsVerification, setNeedsVerification] = useState(false)
   const [pendingEmail, setPendingEmail] = useState("")
 
-  // Turnstile CAPTCHA
   const [turnstileToken, setTurnstileToken] = useState("")
   const turnstileRef = useRef<CaptchaHandle>(null)
   const resetTurnstile = () => {
@@ -37,7 +39,6 @@ export function useLoginForm() {
     turnstileRef.current?.reset()
   }
 
-  // 2FA state
   const [twoFactorRequired, setTwoFactorRequired] = useState(false)
   const [twoFactorMethod, setTwoFactorMethod] = useState<TwoFactorMethod>("totp")
   const [twoFactorCode, setTwoFactorCode] = useState("")
@@ -82,7 +83,6 @@ export function useLoginForm() {
           return
         }
 
-        // Check if 2FA is required
         if (result.data && "twoFactorRedirect" in result.data) {
           setTwoFactorRequired(true)
           setServerError("")
@@ -105,28 +105,14 @@ export function useLoginForm() {
     setServerError("")
 
     try {
-      let result
-
-      if (twoFactorMethod === "totp") {
-        result = await authClient.twoFactor.verifyTotp({
-          code: twoFactorCode,
-          trustDevice,
-        })
-      } else if (twoFactorMethod === "otp") {
-        result = await authClient.twoFactor.verifyOtp({
-          code: twoFactorCode,
-          trustDevice,
-        })
-      } else {
-        result = await authClient.twoFactor.verifyBackupCode({
-          code: twoFactorCode,
-          trustDevice,
-        })
-      }
+      const result = await verifyTwoFactorCode({
+        method: twoFactorMethod,
+        code: twoFactorCode,
+        trustDevice,
+      })
 
       if (result.error) {
         setServerError(t2fa("invalidCode"))
-        setIsVerifying2FA(false)
         return
       }
 
@@ -135,6 +121,7 @@ export function useLoginForm() {
       router.push(redirectPath)
     } catch (err) {
       setServerError(getErrorMessage(err, t2fa("error")))
+    } finally {
       setIsVerifying2FA(false)
     }
   }
@@ -188,11 +175,9 @@ export function useLoginForm() {
     serverError,
     needsVerification,
     resendVerificationEmail,
-    // Turnstile
     turnstileToken,
     setTurnstileToken,
     turnstileRef,
-    // 2FA
     twoFactorRequired,
     twoFactorMethod,
     setTwoFactorMethod,

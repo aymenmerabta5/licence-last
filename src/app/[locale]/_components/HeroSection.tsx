@@ -1,67 +1,15 @@
 "use client"
 
-import * as motion from "motion/react-client"
+import { ArrowRight, Building2, GraduationCap, TrendingUp } from "lucide-react"
 import { useReducedMotion } from "motion/react"
-import { ArrowRight, GraduationCap, Building2, TrendingUp } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+
+import { HeroFeatureCard } from "@/app/[locale]/_components/HeroFeatureCard"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import {
-  Card,
-  CardHeader,
-  CardAction,
-  CardContent,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card"
-import type { LucideIcon } from "lucide-react"
 import { ease, getRevealVariants, getTransition } from "@/lib/animations"
 
-/* ── Individual Feature Card ── */
-function FeatureCard({
-  num,
-  title,
-  desc,
-  icon: Icon,
-  index,
-  prefersReducedMotion,
-}: {
-  num: string
-  title: string
-  desc: string
-  icon: LucideIcon
-  index: number
-  prefersReducedMotion: boolean
-}) {
-  const revealVariants = getRevealVariants(prefersReducedMotion)
-
-  return (
-    <motion.div
-      {...revealVariants}
-      transition={getTransition(
-        { duration: 0.6, ease, delay: 0.4 + index * 0.12 },
-        prefersReducedMotion,
-      )}
-    >
-      <Card variant="editorial">
-        <CardHeader>
-          <span className="font-serif text-4xl font-normal text-primary transition-colors duration-[400ms] dark:drop-shadow-[0_0_18px_var(--color-primary)] group-hover/card:text-secondary-foreground dark:group-hover/card:text-primary-foreground">
-            {num}
-          </span>
-          <CardAction>
-            <Icon className="h-5 w-5 opacity-30" />
-          </CardAction>
-        </CardHeader>
-        <CardContent>
-          <CardTitle className="mb-2">{title}</CardTitle>
-          <CardDescription>{desc}</CardDescription>
-        </CardContent>
-      </Card>
-    </motion.div>
-  )
-}
-
-/* ── Hero Section ── */
 export function HeroSection() {
   const t = useTranslations()
   const prefersReducedMotion = useReducedMotion() ?? false
@@ -70,13 +18,9 @@ export function HeroSection() {
   const headline = t("hero.headline")
   const headlineHighlight = t("hero.headlineHighlight")
   const highlightIndex =
-    headlineHighlight.trim().length > 0
-      ? headline.indexOf(headlineHighlight)
-      : -1
+    headlineHighlight.trim().length > 0 ? headline.indexOf(headlineHighlight) : -1
   const hasHighlight = highlightIndex !== -1
-  const headlineBefore = hasHighlight
-    ? headline.slice(0, highlightIndex)
-    : headline
+  const headlineBefore = hasHighlight ? headline.slice(0, highlightIndex) : headline
   const headlineAfter = hasHighlight
     ? headline.slice(highlightIndex + headlineHighlight.length)
     : ""
@@ -103,24 +47,24 @@ export function HeroSection() {
   ]
 
   return (
-    <section id="discover" className="relative px-8 lg:px-16 pt-16 pb-20">
-      {/* Subtle warm glow — only visible in dark mode */}
-      <div className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100" aria-hidden="true">
+    <section id="discover" className="relative px-8 pt-16 pb-20 lg:px-16">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100"
+        aria-hidden="true"
+      >
         <div className="absolute -top-24 -start-24 h-80 w-80 rounded-full bg-primary/8 blur-3xl" />
         <div className="absolute -bottom-32 start-1/2 h-[30rem] w-[30rem] -translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-6xl grid lg:grid-cols-12 gap-12 items-start">
-        {/* ── Left column — 7 cols ── */}
+      <div className="relative mx-auto grid max-w-6xl items-start gap-12 lg:grid-cols-12">
         <div className="lg:col-span-7">
-          {/* Issue marker */}
           <motion.div
             {...revealVariants}
             transition={getTransition(
               { duration: 0.7, ease: "easeOut" },
               prefersReducedMotion,
             )}
-            className="flex items-center gap-3 mb-8"
+            className="mb-8 flex items-center gap-3"
           >
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary [[dir=rtl]_&]:tracking-normal">
               {t("hero.volume")}
@@ -128,7 +72,6 @@ export function HeroSection() {
             <Separator className="flex-1 bg-border/50 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]" />
           </motion.div>
 
-          {/* Headline */}
           <motion.h1
             {...revealVariants}
             transition={getTransition(
@@ -155,7 +98,7 @@ export function HeroSection() {
                       { duration: 0.6, ease, delay: 0.55 },
                       prefersReducedMotion,
                     )}
-                    className="pointer-events-none absolute -bottom-1 start-0 end-0 h-[3px] bg-primary origin-left [[dir=rtl]_&]:origin-right"
+                    className="pointer-events-none absolute -bottom-1 start-0 end-0 h-[3px] origin-left bg-primary [[dir=rtl]_&]:origin-right"
                     aria-hidden="true"
                   />
                 </span>
@@ -166,7 +109,6 @@ export function HeroSection() {
             )}
           </motion.h1>
 
-          {/* Description columns */}
           <motion.div
             {...revealVariants}
             transition={getTransition(
@@ -183,7 +125,6 @@ export function HeroSection() {
             </p>
           </motion.div>
 
-          {/* CTA row */}
           <motion.div
             {...revealVariants}
             transition={getTransition(
@@ -203,20 +144,19 @@ export function HeroSection() {
             </Button>
             <Separator
               orientation="vertical"
-              className="h-5 bg-foreground/20 dark:bg-foreground/15 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+              className="h-5 bg-foreground/20 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] dark:bg-foreground/15"
             />
-            <span className="text-xs tracking-wide text-foreground/40 dark:text-foreground/35 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] [[dir=rtl]_&]:tracking-normal">
+            <span className="text-xs tracking-wide text-foreground/40 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] [[dir=rtl]_&]:tracking-normal dark:text-foreground/35">
               {t("hero.freeForStudents")}
             </span>
           </motion.div>
         </div>
 
-        {/* ── Right column — 5 cols, staggered editorial cards ── */}
-        <div className="lg:col-span-5 flex flex-col gap-5">
-          {features.map((item, i) => (
-            <FeatureCard
-              key={i}
-              index={i}
+        <div className="flex flex-col gap-5 lg:col-span-5">
+          {features.map((item, index) => (
+            <HeroFeatureCard
+              key={index}
+              index={index}
               prefersReducedMotion={prefersReducedMotion}
               {...item}
             />
