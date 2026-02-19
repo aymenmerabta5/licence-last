@@ -1,32 +1,16 @@
 "use client"
 
-import { useState } from "react"
-import { useTranslations } from "next-intl"
-import * as motion from "motion/react-client"
-import { Loader2, GraduationCap } from "lucide-react"
-
-import { ease } from "@/lib/animations"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
 import { useUniversityValidation } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/hooks/useUniversityValidation"
-import { UniversityCard } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/UniversityCard"
+import { useUniversityValidationState } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/hooks/useUniversityValidationState"
+import { UniversityValidationHeader } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/UniversityValidationHeader"
+import { UniversityStatusFilter } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/UniversityStatusFilter"
+import { UniversityValidationContent } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/UniversityValidationContent"
 import { RejectDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/RejectDialog"
 import { EditUniversityDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/EditUniversityDialog"
 import { DeleteUniversityDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/DeleteUniversityDialog"
-import type {
-  UniversityListItem,
-  UpdateUniversityPayload,
-} from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
-import type { UniversityStatus } from "@/lib/schemas/enums"
+import type { UpdateUniversityPayload } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
 
 export function UniversityValidationList() {
-  const t = useTranslations("dashboard.admin.universities")
   const {
     universities,
     isLoading,
@@ -41,198 +25,72 @@ export function UniversityValidationList() {
     deleteUniversity,
     isDeleting,
   } = useUniversityValidation()
-
-  const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
-  const [rejectingId, setRejectingId] = useState<string | null>(null)
-  const [editDialogOpen, setEditDialogOpen] = useState(false)
-  const [editingUniversity, setEditingUniversity] = useState<UniversityListItem | null>(null)
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [deletingUniversity, setDeletingUniversity] = useState<UniversityListItem | null>(null)
-
-  function handleRejectClick(id: string) {
-    setRejectingId(id)
-    setRejectDialogOpen(true)
-  }
+  const state = useUniversityValidationState()
 
   function handleRejectConfirm(reason: string) {
-    if (!rejectingId) return
+    if (!state.rejectingId) return
     rejectUniversity(
-      { universityId: rejectingId, reason },
-      { onSuccess: () => setRejectDialogOpen(false) },
+      { universityId: state.rejectingId, reason },
+      { onSuccess: () => state.handleRejectDialogChange(false) },
     )
-  }
-
-  function handleEditClick(university: UniversityListItem) {
-    setEditingUniversity(university)
-    setEditDialogOpen(true)
   }
 
   function handleEditConfirm(payload: UpdateUniversityPayload) {
     updateUniversity(payload, {
-      onSuccess: () => setEditDialogOpen(false),
+      onSuccess: () => state.handleEditDialogChange(false),
     })
-  }
-
-  function handleDeleteClick(university: UniversityListItem) {
-    setDeletingUniversity(university)
-    setDeleteDialogOpen(true)
   }
 
   function handleDeleteConfirm(universityId: string) {
     deleteUniversity(
       { universityId },
       {
-        onSuccess: () => setDeleteDialogOpen(false),
+        onSuccess: () => state.handleDeleteDialogChange(false),
       },
     )
   }
 
-  function handleRejectDialogChange(open: boolean) {
-    setRejectDialogOpen(open)
-    if (!open) {
-      setRejectingId(null)
-    }
-  }
-
-  function handleEditDialogChange(open: boolean) {
-    setEditDialogOpen(open)
-    if (!open) {
-      setEditingUniversity(null)
-    }
-  }
-
-  function handleDeleteDialogChange(open: boolean) {
-    setDeleteDialogOpen(open)
-    if (!open) {
-      setDeletingUniversity(null)
-    }
-  }
-
   return (
     <div className="max-w-4xl mx-auto space-y-10 pb-20">
-      {/* Editorial Header */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, ease }}
-        className="relative"
-      >
-        <div className="h-0.5 bg-primary" />
-        <div className="border border-t-0 border-border/50 p-8 md:p-10">
-          <div className="absolute -top-20 end-0 h-40 w-40 rounded-full bg-primary/5 blur-3xl dark:bg-primary/10" />
+      <UniversityValidationHeader total={universities.length} />
 
-          <div className="flex items-center justify-between mb-6">
-            <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary [[dir=rtl]_&]:tracking-normal">
-              {t("kicker")}
-            </span>
-            <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40">
-              {universities.length} {t("title").toLowerCase()}
-            </span>
-          </div>
+      <UniversityStatusFilter
+        statusFilter={statusFilter}
+        onStatusChange={setStatusFilter}
+      />
 
-          <h1 className="font-serif text-[clamp(1.75rem,3.5vw,2.5rem)] leading-[1.08] tracking-tight text-heading max-w-xl">
-            {t("title")}
-          </h1>
-          <p className="text-muted-foreground text-sm font-light leading-relaxed max-w-lg mt-3">
-            {t("description")}
-          </p>
-        </div>
-      </motion.div>
-
-      {/* Filter Bar */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.15, ease }}
-        className="flex items-center gap-4"
-      >
-        <div className="flex items-center gap-2">
-          <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 [[dir=rtl]_&]:tracking-normal">
-            Filter
-          </span>
-          <Select
-            value={statusFilter}
-            onValueChange={(v) => setStatusFilter(v as UniversityStatus | "all")}
-          >
-            <SelectTrigger className="w-48 h-10 border-border/40 bg-background">
-              <SelectValue placeholder={t("statusFilter")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("allStatuses")}</SelectItem>
-              <SelectItem value="pending">{t("status.pending")}</SelectItem>
-              <SelectItem value="approved">{t("status.approved")}</SelectItem>
-              <SelectItem value="rejected">{t("status.rejected")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </motion.div>
-
-      {/* University List */}
-      {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-16 gap-3">
-          <Loader2 className="h-5 w-5 animate-spin text-primary" />
-          <span className="text-sm text-muted-foreground font-medium">
-            Loading universities...
-          </span>
-        </div>
-      ) : universities.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, ease }}
-          className="py-16 text-center space-y-3"
-        >
-          <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-secondary/10">
-            <GraduationCap className="h-6 w-6 text-muted-foreground/30" />
-          </div>
-          <p className="text-sm text-muted-foreground font-medium">
-            {t("noUniversities")}
-          </p>
-        </motion.div>
-      ) : (
-        <div className="space-y-4">
-          {universities.map((uni, i) => (
-            <motion.div
-              key={uni.id}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 + i * 0.06, ease }}
-            >
-              <UniversityCard
-                university={uni}
-                onApprove={approveUniversity}
-                onReject={handleRejectClick}
-                onEdit={handleEditClick}
-                onDelete={handleDeleteClick}
-                isApproving={isApproving}
-                isRejecting={isRejecting}
-                isUpdating={isUpdating}
-                isDeleting={isDeleting}
-              />
-            </motion.div>
-          ))}
-        </div>
-      )}
+      <UniversityValidationContent
+        universities={universities}
+        isLoading={isLoading}
+        onApprove={approveUniversity}
+        onReject={state.handleRejectClick}
+        onEdit={state.handleEditClick}
+        onDelete={state.handleDeleteClick}
+        isApproving={isApproving}
+        isRejecting={isRejecting}
+        isUpdating={isUpdating}
+        isDeleting={isDeleting}
+      />
 
       <RejectDialog
-        open={rejectDialogOpen}
-        onOpenChange={handleRejectDialogChange}
+        open={state.rejectDialogOpen}
+        onOpenChange={state.handleRejectDialogChange}
         onConfirm={handleRejectConfirm}
         isRejecting={isRejecting}
       />
 
       <EditUniversityDialog
-        open={editDialogOpen}
-        onOpenChange={handleEditDialogChange}
-        university={editingUniversity}
+        open={state.editDialogOpen}
+        onOpenChange={state.handleEditDialogChange}
+        university={state.editingUniversity}
         onConfirm={handleEditConfirm}
         isUpdating={isUpdating}
       />
 
       <DeleteUniversityDialog
-        open={deleteDialogOpen}
-        onOpenChange={handleDeleteDialogChange}
-        university={deletingUniversity}
+        open={state.deleteDialogOpen}
+        onOpenChange={state.handleDeleteDialogChange}
+        university={state.deletingUniversity}
         onConfirm={handleDeleteConfirm}
         isDeleting={isDeleting}
       />

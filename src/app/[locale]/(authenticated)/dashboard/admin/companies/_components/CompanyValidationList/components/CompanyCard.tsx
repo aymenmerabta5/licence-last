@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge"
 import { CompanyCardActions } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyCardActions"
 import { getWilayaName } from "@/lib/wilayas"
 import { CompanyInfoField } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyInfoField"
+import type { CompanyListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/types"
 
 const STATUS_STYLES: Record<string, string> = {
   pending: "bg-amber-500/10 text-amber-600",
@@ -24,19 +25,7 @@ const STATUS_STYLES: Record<string, string> = {
 }
 
 interface CompanyCardProps {
-  company: {
-    id: string
-    name: string
-    slug: string
-    description: string | null
-    logoUrl: string | null
-    websiteUrl: string | null
-    representativeName: string | null
-    contactEmail: string | null
-    wilayaCode: number | null
-    status: string
-    createdAt: Date
-  }
+  company: CompanyListItem
   onApprove: (id: string) => void
   onReject: (id: string) => void
   onSuspend: (id: string) => void

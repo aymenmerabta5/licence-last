@@ -1,13 +1,10 @@
 "use client"
 
-import { Boxes, Loader2 } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-
-import { useSkillsManager } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager/hooks/useSkillsManager"
 import { SelectedSkillsBar } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager/components/SelectedSkillsBar"
 import { SkillSearch } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager/components/SkillSearch"
-import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
+import { SkillsGroupsPanel } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager/components/SkillsGroupsPanel"
+import { SkillsManagerHeader } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager/components/SkillsManagerHeader"
+import { useSkillsManager } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager/hooks/useSkillsManager"
 
 export function SkillsManager() {
   const {
@@ -32,53 +29,14 @@ export function SkillsManager() {
 
   return (
     <section className="space-y-5">
-      {/* Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div className="flex items-center gap-3">
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-            <Boxes className="h-4 w-4 text-primary" />
-          </span>
-          <div>
-            <h3 className="font-serif text-lg text-heading leading-tight">
-              Skill Stack
-            </h3>
-            <p className="text-[11px] text-muted-foreground mt-0.5">
-              Select up to {maxSkills} skills to improve your match score.
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 ps-11 sm:ps-0">
-          {/* Progress indicator */}
-          <div className="flex items-center gap-2">
-            <div className="h-1.5 w-16 rounded-full bg-secondary/30 overflow-hidden">
-              <div
-                className="h-full rounded-full bg-primary transition-all duration-500 ease-out"
-                style={{ width: `${(selectedIds.length / maxSkills) * 100}%` }}
-              />
-            </div>
-            <span className="text-[11px] font-medium text-muted-foreground tabular-nums">
-              {selectedIds.length}/{maxSkills}
-            </span>
-          </div>
-
-          <Button
-            type="button"
-            variant="editorial"
-            size="editorial-sm"
-            className="h-9"
-            onClick={save}
-            disabled={isBusy || !isDirty}
-            aria-label="Save skills"
-          >
-            {isSaving ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              "Save skills"
-            )}
-          </Button>
-        </div>
-      </div>
+      <SkillsManagerHeader
+        selectedCount={selectedIds.length}
+        maxSkills={maxSkills}
+        isBusy={isBusy}
+        isDirty={isDirty}
+        isSaving={isSaving}
+        onSave={save}
+      />
 
       <SelectedSkillsBar
         selectedIds={selectedIds}
@@ -96,40 +54,15 @@ export function SkillsManager() {
           saveTick={saveTick}
         />
 
-        <div className="space-y-4">
-          {/* Tier 1: Recommended department skills */}
-          {hasDeptSkills && (
-            <>
-              <p className="text-[11px] font-semibold text-primary">
-                Recommended for your department
-              </p>
-              <SkillCategoryGrid
-                groups={deptGrouping.groups}
-                categoryOrder={deptGrouping.categoryOrder}
-                categoryLabels={deptGrouping.categoryLabels}
-                selectedIds={selectedIds}
-                maxSkills={maxSkills}
-                isLoading={isLoadingSkills}
-                onToggle={toggleSkill}
-              />
-              <div className="border-t border-border/50" />
-              <p className="text-[11px] font-semibold text-muted-foreground">
-                Other skills
-              </p>
-            </>
-          )}
-
-          {/* Tier 2: Other skills (or all skills when no department) */}
-          <SkillCategoryGrid
-            groups={otherGrouping.groups}
-            categoryOrder={otherGrouping.categoryOrder}
-            categoryLabels={otherGrouping.categoryLabels}
-            selectedIds={selectedIds}
-            maxSkills={maxSkills}
-            isLoading={isLoadingSkills}
-            onToggle={toggleSkill}
-          />
-        </div>
+        <SkillsGroupsPanel
+          hasDeptSkills={hasDeptSkills}
+          deptGrouping={deptGrouping}
+          otherGrouping={otherGrouping}
+          selectedIds={selectedIds}
+          maxSkills={maxSkills}
+          isLoadingSkills={isLoadingSkills}
+          onToggleSkill={toggleSkill}
+        />
       </div>
     </section>
   )
