@@ -33,28 +33,28 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
       {/* Security Baseline */}
-      <Card className="border-border/40 pt-0 bg-background rounded-3xl overflow-hidden shadow-sm">
-        <CardHeader className="relative overflow-hidden px-8 pt-7 pb-5 border-b border-border/15 bg-gradient-to-b from-secondary/10 to-transparent">
+      <Card className="border-border/60 bg-background/60 backdrop-blur-xl rounded-[2.5rem] overflow-hidden shadow-sm shadow-black/5 ring-1 ring-border/10">
+        <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 border-b border-border/20 bg-gradient-to-b from-secondary/40 via-secondary/10 to-transparent">
           <div
-            className="absolute inset-y-0 end-8 flex items-center opacity-[0.03] pointer-events-none"
+            className="absolute -top-12 -right-8 flex items-center opacity-[0.02] dark:opacity-[0.05] pointer-events-none scale-[2] -rotate-12"
             aria-hidden="true"
           >
-            <Shield className="h-24 w-24" />
+            <Shield className="h-64 w-64 text-primary" />
           </div>
 
-          <div className="flex items-center gap-2.5 mb-1">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
-              <Shield className="h-3.5 w-3.5 text-primary" />
+          <div className="relative z-10 flex items-center gap-4 mb-3">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-[inset_0_2px_4px_rgba(255,255,255,0.3)]">
+              <Shield className="h-6 w-6" />
             </span>
-            <CardTitle className="font-serif text-2xl tracking-tight">
+            <CardTitle className="font-serif text-3xl sm:text-4xl text-heading tracking-tight">
               Security Baseline
             </CardTitle>
           </div>
-          <CardDescription className="font-medium ps-10">
-            Keep your account secure with strong credentials and two-factor
-            authentication.
+          <CardDescription className="relative z-10 text-base font-medium text-muted-foreground/80 sm:ps-16 max-w-xl">
+            Key authentication settings. Maintain robust credentials to protect
+            your digital perimeter.
           </CardDescription>
         </CardHeader>
 
@@ -117,26 +117,29 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
       <SessionManagement />
 
       {/* Danger Zone */}
-      <Card className="border-destructive/15 bg-destructive/[0.03] rounded-3xl overflow-hidden">
-        <div className="px-8 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-3.5">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-destructive/10 mt-0.5">
-              <AlertTriangle className="h-4 w-4 text-destructive/70" />
+      <Card className="border-destructive/20 bg-destructive/[0.02] rounded-[2rem] overflow-hidden shadow-sm relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-destructive)_0%,transparent_50%)] opacity-[0.03]" />
+
+        <div className="relative z-10 px-8 py-8 sm:px-12 sm:py-10 flex flex-col sm:flex-row sm:items-center justify-between gap-8">
+          <div className="flex items-start gap-5">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-destructive/10 text-destructive/80 shadow-inner ring-1 ring-destructive/20">
+              <AlertTriangle className="h-6 w-6" />
             </span>
-            <div className="space-y-0.5">
-              <h4 className="font-bold text-sm text-destructive/80">
-                Danger Zone
+            <div className="space-y-1.5 max-w-sm pt-0.5">
+              <h4 className="font-serif text-2xl sm:text-3xl tracking-tight text-destructive/90">
+                System Termination
               </h4>
-              <p className="text-[11px] text-muted-foreground">
-                Permanently delete your account. This action cannot be undone.
+              <p className="text-sm text-muted-foreground/80 leading-relaxed font-medium">
+                Irreversibly obliterate your account and all associated data
+                records. Proceed with extreme caution.
               </p>
             </div>
           </div>
           <Button
             type="button"
-            variant="editorial-outline"
+            variant="destructive"
             size="editorial-sm"
-            className="rounded-xl border-destructive/30 text-destructive/70 hover:bg-destructive/5 ms-13 sm:ms-0"
+            className="rounded-xl h-12 px-8 shadow-lg shadow-destructive/20 hover:shadow-destructive/40 transition-all sm:w-auto w-full font-bold uppercase tracking-widest text-[11px]"
             onClick={() => setDeleteDialogOpen(true)}
           >
             Delete Account

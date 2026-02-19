@@ -56,25 +56,26 @@ export function PreferencesTab() {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <Card className="border-border/40 bg-background rounded-3xl overflow-hidden shadow-sm pt-0">
-        <CardHeader className="relative overflow-hidden px-8 pt-0 pt-7 pb-5 border-b border-border/15 bg-gradient-to-b from-secondary/10 to-transparent">
+      <Card className="border-border/60 bg-background/60 backdrop-blur-xl rounded-[2.5rem] overflow-hidden shadow-sm shadow-black/5 ring-1 ring-border/10">
+        <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 border-b border-border/20 bg-gradient-to-b from-secondary/40 via-secondary/10 to-transparent">
           <div
-            className="absolute inset-y-0 end-8 flex items-center opacity-[0.03] pointer-events-none"
+            className="absolute -top-12 -right-8 flex items-center opacity-[0.02] dark:opacity-[0.05] pointer-events-none scale-[2] rotate-12"
             aria-hidden="true"
           >
-            <Palette className="h-24 w-24" />
+            <Palette className="h-64 w-64 text-primary" />
           </div>
 
-          <div className="flex items-center gap-2.5 mb-1">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
-              <Palette className="h-3.5 w-3.5 text-primary" />
+          <div className="relative z-10 flex items-center gap-4 mb-3">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-[inset_0_2px_4px_rgba(255,255,255,0.3)]">
+              <Palette className="h-6 w-6" />
             </span>
-            <CardTitle className="font-serif text-2xl tracking-tight">
+            <CardTitle className="font-serif text-3xl sm:text-4xl text-heading tracking-tight">
               Visual Identity
             </CardTitle>
           </div>
-          <CardDescription className="font-medium ps-10">
-            Choose how Internex looks on your device.
+          <CardDescription className="relative z-10 text-base font-medium text-muted-foreground/80 sm:ps-16 max-w-xl">
+            Configure the systemic appearance. Choose a light warmth or a darker
+            canvas for your environment.
           </CardDescription>
         </CardHeader>
 
@@ -87,6 +88,7 @@ export function PreferencesTab() {
               return (
                 <button
                   key={t.id}
+                  type="button"
                   onClick={() => setTheme(t.id)}
                   className={cn(
                     "group relative p-5 rounded-2xl border-2 text-start transition-all duration-300",
