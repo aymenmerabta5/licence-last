@@ -33,11 +33,7 @@ export const offerStatusEnum = pgEnum("offer_status", [
   "closed",
 ])
 
-export const workModeEnum = pgEnum("work_mode", [
-  "on_site",
-  "hybrid",
-  "remote",
-])
+export const workModeEnum = pgEnum("work_mode", ["on_site", "hybrid", "remote"])
 
 export const applicationStatusEnum = pgEnum("application_status", [
   "applied",
@@ -48,14 +44,10 @@ export const applicationStatusEnum = pgEnum("application_status", [
   "withdrawn",
 ])
 
-export const applicationPipelineStageEnum = pgEnum("application_pipeline_stage", [
-  "applied",
-  "screening",
-  "interview",
-  "offer",
-  "accepted",
-  "rejected",
-])
+export const applicationPipelineStageEnum = pgEnum(
+  "application_pipeline_stage",
+  ["applied", "screening", "interview", "offer", "accepted", "rejected"],
+)
 
 export const documentTypeEnum = pgEnum("document_type", [
   "agreement",

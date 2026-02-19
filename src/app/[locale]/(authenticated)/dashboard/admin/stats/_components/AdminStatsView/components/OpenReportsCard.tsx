@@ -1,22 +1,41 @@
 "use client"
 
-import { useState } from "react"
-import * as motion from "motion/react-client"
 import { AlertTriangle, Loader2, ShieldAlert } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { ease } from "@/lib/animations"
+import * as motion from "motion/react-client"
+import { useState } from "react"
 import { ResolveReportDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/components/ResolveReportDialog"
 import type {
   ReportResolutionStatus,
   ResolveReportInput,
 } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/hooks/useResolveReport"
+import { Button } from "@/components/ui/button"
+import { ease } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
-const SEVERITY_STYLES: Record<string, { bg: string; text: string; border: string }> = {
-  critical: { bg: "bg-rose-500/10", text: "text-rose-600", border: "border-s-rose-500" },
-  high: { bg: "bg-orange-500/10", text: "text-orange-600", border: "border-s-orange-500" },
-  medium: { bg: "bg-amber-500/10", text: "text-amber-600", border: "border-s-amber-500" },
-  low: { bg: "bg-blue-500/10", text: "text-blue-600", border: "border-s-blue-500" },
+const SEVERITY_STYLES: Record<
+  string,
+  { bg: string; text: string; border: string }
+> = {
+  critical: {
+    bg: "bg-rose-500/10",
+    text: "text-rose-600",
+    border: "border-s-rose-500",
+  },
+  high: {
+    bg: "bg-orange-500/10",
+    text: "text-orange-600",
+    border: "border-s-orange-500",
+  },
+  medium: {
+    bg: "bg-amber-500/10",
+    text: "text-amber-600",
+    border: "border-s-amber-500",
+  },
+  low: {
+    bg: "bg-blue-500/10",
+    text: "text-blue-600",
+    border: "border-s-blue-500",
+  },
 }
 
 interface Report {
@@ -40,7 +59,8 @@ export function OpenReportsCard({
   onResolve,
 }: OpenReportsCardProps) {
   const [selectedReport, setSelectedReport] = useState<Report | null>(null)
-  const [nextStatus, setNextStatus] = useState<ReportResolutionStatus>("resolved")
+  const [nextStatus, setNextStatus] =
+    useState<ReportResolutionStatus>("resolved")
   const [resolutionNote, setResolutionNote] = useState("")
 
   function openDialog(report: Report, status: ReportResolutionStatus) {

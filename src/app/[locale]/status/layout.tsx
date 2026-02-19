@@ -1,8 +1,7 @@
+import { StatusContent } from "@/app/[locale]/status/_components/StatusContent"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { Link } from "@/i18n/routing"
-
-import { StatusContent } from "@/app/[locale]/status/_components/StatusContent"
 
 export default async function StatusLayout({
   children,
@@ -13,7 +12,10 @@ export default async function StatusLayout({
     <div className="min-h-screen flex flex-col bg-background transition-colors duration-500 ease-in-out">
       {/* ── Top Bar ── */}
       <header className="flex items-center justify-between px-6 py-5 lg:px-10 lg:py-6">
-        <Link href="/" className="font-serif text-xl tracking-tight text-heading transition-colors duration-500 ease-in-out">
+        <Link
+          href="/"
+          className="font-serif text-xl tracking-tight text-heading transition-colors duration-500 ease-in-out"
+        >
           Internex<span className="text-primary">.</span>io
         </Link>
 

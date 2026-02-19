@@ -1,11 +1,11 @@
 "use client"
 
+import type { UseQueryResult } from "@tanstack/react-query"
+import { Loader2, Target, TrendingUp } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Loader2, Target, TrendingUp } from "lucide-react"
-import type { UseQueryResult } from "@tanstack/react-query"
 
-import { reveal, ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface MatchScoreData {
   score: number
@@ -101,16 +101,14 @@ export function MatchingPanel({
                   {t("missingSkills")}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  {skillGapQuery.data.missingSkills
-                    .slice(0, 5)
-                    .map((skill) => (
-                      <span
-                        key={skill.id}
-                        className="inline-flex items-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300"
-                      >
-                        {skill.name}
-                      </span>
-                    ))}
+                  {skillGapQuery.data.missingSkills.slice(0, 5).map((skill) => (
+                    <span
+                      key={skill.id}
+                      className="inline-flex items-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300"
+                    >
+                      {skill.name}
+                    </span>
+                  ))}
                 </div>
                 <p className="text-[11px] text-muted-foreground">
                   {t("estimatedImprovement", {

@@ -102,7 +102,9 @@ describe("src/server/orpc/routes/admin-users", () => {
   })
 
   test("listUsersProcedure delegates to global list for super_admin", async () => {
-    const { listUsersProcedure } = await import("@/server/orpc/routes/admin-users")
+    const { listUsersProcedure } = await import(
+      "@/server/orpc/routes/admin-users"
+    )
 
     const input = { limit: 20, offset: 0 }
     const result = await callProcedure(listUsersProcedure, {
@@ -115,7 +117,9 @@ describe("src/server/orpc/routes/admin-users", () => {
   })
 
   test("listUsersProcedure requires university_id for university admins", async () => {
-    const { listUsersProcedure } = await import("@/server/orpc/routes/admin-users")
+    const { listUsersProcedure } = await import(
+      "@/server/orpc/routes/admin-users"
+    )
 
     await expect(
       callProcedure(listUsersProcedure, {
@@ -129,7 +133,9 @@ describe("src/server/orpc/routes/admin-users", () => {
   })
 
   test("banUserProcedure delegates directly for super_admin", async () => {
-    const { banUserProcedure } = await import("@/server/orpc/routes/admin-users")
+    const { banUserProcedure } = await import(
+      "@/server/orpc/routes/admin-users"
+    )
 
     const result = await callProcedure(banUserProcedure, {
       input: { userId: "user-2" },

@@ -55,7 +55,10 @@ type AuthApiGlobal = typeof globalThis & { __authApi?: ListUsersAuthApi }
 const getAuthApi = () => (globalThis as AuthApiGlobal).__authApi ?? auth.api
 type ListUsersDeps = { authApi?: ListUsersAuthApi; getHeaders?: typeof headers }
 
-export async function listUsers(params: ListUsersParams, deps: ListUsersDeps = {}) {
+export async function listUsers(
+  params: ListUsersParams,
+  deps: ListUsersDeps = {},
+) {
   const api = deps.authApi ?? getAuthApi()
   const getHeaders = deps.getHeaders ?? headers
   const result = await api.listUsers({

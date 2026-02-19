@@ -1,5 +1,11 @@
-import { describe, test, expect, beforeEach, afterEach, mock } from "bun:test"
-import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react"
+import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react"
 import { LoginForm } from "@/app/[locale]/(auth)/login/_components/LoginForm"
 
 // Mock sonner
@@ -16,22 +22,22 @@ mock.module("sonner", () => ({
 mock.module("next-intl", () => ({
   useTranslations: () => (key: string) => {
     const translations: Record<string, string> = {
-      "title": "Welcome Back",
-      "subtitle": "Sign in to your account",
-      "email": "Email",
-      "emailPlaceholder": "you@university.edu",
-      "password": "Password",
-      "passwordPlaceholder": "Enter your password",
-      "rememberMe": "Remember me",
-      "forgotPassword": "Forgot password?",
-      "submit": "Sign In",
-      "or": "Or",
-      "noAccount": "Don't have an account?",
-      "createOne": "Create one",
-      "error": "An error occurred. Please try again.",
-      "emailNotVerified": "Please verify your email first",
-      "resendVerification": "Resend verification email",
-      "verificationSent": "Verification email sent",
+      title: "Welcome Back",
+      subtitle: "Sign in to your account",
+      email: "Email",
+      emailPlaceholder: "you@university.edu",
+      password: "Password",
+      passwordPlaceholder: "Enter your password",
+      rememberMe: "Remember me",
+      forgotPassword: "Forgot password?",
+      submit: "Sign In",
+      or: "Or",
+      noAccount: "Don't have an account?",
+      createOne: "Create one",
+      error: "An error occurred. Please try again.",
+      emailNotVerified: "Please verify your email first",
+      resendVerification: "Resend verification email",
+      verificationSent: "Verification email sent",
     }
     return translations[key] || key
   },
@@ -42,14 +48,14 @@ mock.module("@/lib/schemas/auth", () => ({
   createLoginSchema: () => ({
     safeParse: (data: { email: string; password: string }) => {
       const issues: Array<{ path: (string | number)[]; message: string }> = []
-      
+
       if (!data.email || !data.email.includes("@")) {
         issues.push({ path: ["email"], message: "Invalid email" })
       }
       if (!data.password) {
         issues.push({ path: ["password"], message: "Password required" })
       }
-      
+
       if (issues.length > 0) {
         return { success: false, error: { issues } }
       }
@@ -66,12 +72,16 @@ mock.module("@/lib/schemas/auth", () => ({
 }))
 
 // Mock auth client
-const mockSignIn = mock<(credentials: Record<string, unknown>) => Promise<{ error: Record<string, unknown> | null }>>(() =>
-  Promise.resolve({ error: null })
-)
-const mockSendVerificationEmail = mock<(data: Record<string, unknown>) => Promise<{ error: Record<string, unknown> | null }>>(() =>
-  Promise.resolve({ error: null })
-)
+const mockSignIn = mock<
+  (
+    credentials: Record<string, unknown>,
+  ) => Promise<{ error: Record<string, unknown> | null }>
+>(() => Promise.resolve({ error: null }))
+const mockSendVerificationEmail = mock<
+  (
+    data: Record<string, unknown>,
+  ) => Promise<{ error: Record<string, unknown> | null }>
+>(() => Promise.resolve({ error: null }))
 
 mock.module("@/lib/auth-client", () => ({
   authClient: {
@@ -163,22 +173,24 @@ describe("LoginForm", () => {
 
     test("should have password input as password type initially", () => {
       render(<LoginForm />)
-      
+
       const passwordInput = screen.getByLabelText("Password")
       expect(passwordInput.getAttribute("type")).toBe("password")
     })
 
     test("should render forgot password link", () => {
       render(<LoginForm />)
-      
+
       const forgotLink = screen.getByText("Forgot password?")
       expect(forgotLink).toBeDefined()
-      expect(forgotLink.closest("a")?.getAttribute("href")).toBe("/reset-password")
+      expect(forgotLink.closest("a")?.getAttribute("href")).toBe(
+        "/reset-password",
+      )
     })
 
     test("should render sign up link", () => {
       render(<LoginForm />)
-      
+
       const signupLink = screen.getByText("Create one")
       expect(signupLink).toBeDefined()
       expect(signupLink.closest("a")?.getAttribute("href")).toBe("/signup")
@@ -277,7 +289,11 @@ describe("LoginForm", () => {
         expect(mockSignIn.mock.calls.length).toBe(1)
       })
 
-      const callArg = mockSignIn.mock.calls[0][0] as { email: string; password: string; rememberMe: boolean }
+      const callArg = mockSignIn.mock.calls[0][0] as {
+        email: string
+        password: string
+        rememberMe: boolean
+      }
       expect(callArg.email).toBe("test@example.com")
       expect(callArg.password).toBe("password123")
       expect(callArg.rememberMe).toBe(false)
@@ -389,7 +405,10 @@ describe("LoginForm", () => {
         expect(mockToastSuccess).toHaveBeenCalledWith("Verification email sent")
       })
 
-      const callArg = mockSendVerificationEmail.mock.calls[0][0] as { email: string; callbackURL: string }
+      const callArg = mockSendVerificationEmail.mock.calls[0][0] as {
+        email: string
+        callbackURL: string
+      }
       expect(callArg.email).toBe("test@example.com")
       expect(callArg.callbackURL).toBe("/")
     })
@@ -447,7 +466,9 @@ describe("LoginForm", () => {
 
       await waitFor(() => {
         const buttons = screen.getAllByRole("button")
-        const submitButton = buttons.find(b => b.getAttribute("type") === "submit")
+        const submitButton = buttons.find(
+          (b) => b.getAttribute("type") === "submit",
+        )
         expect(submitButton).toBeDefined()
         expect(submitButton?.querySelector("svg")).toBeDefined()
       })

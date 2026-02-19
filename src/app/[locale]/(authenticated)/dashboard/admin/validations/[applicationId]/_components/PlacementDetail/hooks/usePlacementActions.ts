@@ -1,14 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
-
+import type { AdminValidationSummary } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/types"
 import { useRouter } from "@/i18n/routing"
 import { orpc, orpcClient } from "@/server/orpc/client"
-
-import type { AdminValidationSummary } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/types"
 
 function toDateInputValue(value: Date | string | null | undefined): string {
   if (!value) return ""
@@ -163,9 +161,7 @@ export function usePlacementActions(
     : false
 
   const showOutOfRangeWarning =
-    !!startDate &&
-    !!endDate &&
-    (isBeforeExpectedStart || isAfterExpectedEnd)
+    !!startDate && !!endDate && (isBeforeExpectedStart || isAfterExpectedEnd)
 
   return {
     startDate,

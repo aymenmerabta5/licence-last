@@ -1,7 +1,7 @@
 "use client"
 
+import { ArrowRight, Clock, ShieldAlert } from "lucide-react"
 import * as motion from "motion/react-client"
-import { ShieldAlert, ArrowRight, Clock } from "lucide-react"
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
 

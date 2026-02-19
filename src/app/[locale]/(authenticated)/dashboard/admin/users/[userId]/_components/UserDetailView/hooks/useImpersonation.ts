@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "@/i18n/routing"
 import { toast } from "sonner"
+import { useRouter } from "@/i18n/routing"
 
 import { authClient } from "@/lib/auth-client"
 

@@ -1,11 +1,10 @@
 "use client"
 
+import { ExternalLink, Github, Globe } from "lucide-react"
 import * as motion from "motion/react-client"
-import { Github, Globe, ExternalLink } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { ease } from "@/lib/animations"
-
 import type { StudentProfile } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
+import { ease } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
 interface SocialLinksProps {
   profile?: StudentProfile | null
@@ -18,8 +17,18 @@ interface SocialLinksProps {
 
 export function SocialLinks({ profile, labels }: SocialLinksProps) {
   const links = [
-    { key: "github", href: profile?.githubUrl, icon: Github, label: labels.github },
-    { key: "portfolio", href: profile?.portfolioUrl, icon: Globe, label: labels.portfolio },
+    {
+      key: "github",
+      href: profile?.githubUrl,
+      icon: Github,
+      label: labels.github,
+    },
+    {
+      key: "portfolio",
+      href: profile?.portfolioUrl,
+      icon: Globe,
+      label: labels.portfolio,
+    },
   ]
 
   return (

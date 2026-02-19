@@ -18,7 +18,10 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
   return (procedure as (input: unknown) => Promise<T>)(args)
 }
 
-const listNotificationsMock = mock(async () => ({ items: [], nextCursor: null }))
+const listNotificationsMock = mock(async () => ({
+  items: [],
+  nextCursor: null,
+}))
 const markNotificationReadMock = mock(async () => ({ success: true }))
 const markAllNotificationsReadMock = mock(async () => ({ success: true }))
 const getNotificationPreferencesMock = mock(async () => ({
@@ -89,7 +92,9 @@ describe("src/server/orpc/routes/notifications", () => {
   })
 
   test("listNotificationsProcedure delegates with user and pagination input", async () => {
-    const { listNotificationsProcedure } = await import("@/server/orpc/routes/notifications")
+    const { listNotificationsProcedure } = await import(
+      "@/server/orpc/routes/notifications"
+    )
 
     const input = { limit: 20 }
     const result = await callProcedure(listNotificationsProcedure, {
@@ -102,7 +107,9 @@ describe("src/server/orpc/routes/notifications", () => {
   })
 
   test("markAllNotificationsReadProcedure delegates with user id", async () => {
-    const { markAllNotificationsReadProcedure } = await import("@/server/orpc/routes/notifications")
+    const { markAllNotificationsReadProcedure } = await import(
+      "@/server/orpc/routes/notifications"
+    )
 
     const result = await callProcedure(markAllNotificationsReadProcedure, {
       context: { user: { id: "user-1" } },
@@ -113,7 +120,9 @@ describe("src/server/orpc/routes/notifications", () => {
   })
 
   test("getNotificationPreferencesProcedure delegates when feature is enabled", async () => {
-    const { getNotificationPreferencesProcedure } = await import("@/server/orpc/routes/notifications")
+    const { getNotificationPreferencesProcedure } = await import(
+      "@/server/orpc/routes/notifications"
+    )
 
     const result = await callProcedure(getNotificationPreferencesProcedure, {
       context: { user: { id: "user-1" } },
@@ -128,7 +137,9 @@ describe("src/server/orpc/routes/notifications", () => {
   })
 
   test("updateNotificationPreferencesProcedure delegates when feature is enabled", async () => {
-    const { updateNotificationPreferencesProcedure } = await import("@/server/orpc/routes/notifications")
+    const { updateNotificationPreferencesProcedure } = await import(
+      "@/server/orpc/routes/notifications"
+    )
 
     const result = await callProcedure(updateNotificationPreferencesProcedure, {
       context: { user: { id: "user-1" } },
@@ -146,7 +157,9 @@ describe("src/server/orpc/routes/notifications", () => {
 
   test("getNotificationPreferencesProcedure rejects when feature is disabled", async () => {
     isFeatureEnabledMock.mockImplementation(() => false)
-    const { getNotificationPreferencesProcedure } = await import("@/server/orpc/routes/notifications")
+    const { getNotificationPreferencesProcedure } = await import(
+      "@/server/orpc/routes/notifications"
+    )
 
     await expect(
       callProcedure(getNotificationPreferencesProcedure, {

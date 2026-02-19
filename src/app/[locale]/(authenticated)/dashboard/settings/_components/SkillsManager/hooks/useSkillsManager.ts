@@ -1,8 +1,8 @@
 "use client"
 
-import { useMemo, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { useMemo, useState } from "react"
 import { toast } from "sonner"
 
 import { useSkillGrouping } from "@/hooks"
@@ -18,19 +18,20 @@ export function useSkillsManager() {
     () => orpc.students.getProfile.queryOptions(),
     [],
   )
-  const { data: profileData, isLoading: isLoadingProfile } = useQuery(
-    profileQueryOptions,
-  )
+  const { data: profileData, isLoading: isLoadingProfile } =
+    useQuery(profileQueryOptions)
 
   // Fetch prioritized skills when student has a department
   const departmentId = profileData?.profile?.departmentId ?? undefined
 
-  const { data: prioritizedResult, isLoading: isLoadingPrioritized } = useQuery({
-    ...orpc.skills.listPrioritized.queryOptions({
-      input: { departmentId: departmentId ?? "" },
-    }),
-    enabled: !!departmentId,
-  })
+  const { data: prioritizedResult, isLoading: isLoadingPrioritized } = useQuery(
+    {
+      ...orpc.skills.listPrioritized.queryOptions({
+        input: { departmentId: departmentId ?? "" },
+      }),
+      enabled: !!departmentId,
+    },
+  )
 
   const { data: flatResult, isLoading: isLoadingFlat } = useQuery({
     ...orpc.skills.list.queryOptions({ input: { limit: 500 } }),
@@ -46,8 +47,8 @@ export function useSkillsManager() {
   const otherSkillsRaw = useMemo(
     () =>
       departmentId
-        ? prioritizedResult?.otherSkills ?? []
-        : flatResult?.skills ?? [],
+        ? (prioritizedResult?.otherSkills ?? [])
+        : (flatResult?.skills ?? []),
     [departmentId, prioritizedResult?.otherSkills, flatResult?.skills],
   )
   const allSkills = useMemo(
@@ -61,7 +62,9 @@ export function useSkillsManager() {
   }, [profileData?.skills])
 
   const [query, setQuery] = useState("")
-  const [draftSelectedIds, setDraftSelectedIds] = useState<string[] | null>(null)
+  const [draftSelectedIds, setDraftSelectedIds] = useState<string[] | null>(
+    null,
+  )
   const [saveError, setSaveError] = useState("")
   const [saveTick, setSaveTick] = useState(0)
 
@@ -86,12 +89,15 @@ export function useSkillsManager() {
 
   const deptGrouping = useSkillGrouping(filteredDeptSkills)
   const otherGrouping = useSkillGrouping(filteredOtherSkills)
-  const { groups, categoryOrder, categoryLabels } = useSkillGrouping(filteredSkills)
+  const { groups, categoryOrder, categoryLabels } =
+    useSkillGrouping(filteredSkills)
 
   const upsertMutation = useMutation(
     orpc.students.upsertProfile.mutationOptions({
       onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: profileQueryOptions.queryKey })
+        await queryClient.invalidateQueries({
+          queryKey: profileQueryOptions.queryKey,
+        })
         setDraftSelectedIds(null)
         setSaveTick((t) => t + 1)
         toast.success(t("saveSuccess"))

@@ -1,6 +1,8 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-const mockReturning = mock(() => Promise.resolve([{ id: "uni-1", name: "Test Uni" }]))
+const mockReturning = mock(() =>
+  Promise.resolve([{ id: "uni-1", name: "Test Uni" }]),
+)
 const mockWhere = mock(() => ({ returning: mockReturning }))
 const mockSet = mock(() => ({ where: mockWhere }))
 const mockUpdate = mock(() => ({ set: mockSet }))
@@ -27,23 +29,31 @@ describe("approveUniversity", () => {
     mockSet.mockReturnValue({ where: mockWhere })
     mockWhere.mockReturnValue({ returning: mockReturning })
     mockReturning.mockResolvedValue([{ id: "uni-1", name: "Test Uni" }])
-    mockTransaction.mockImplementation(async (fn) => { return await fn(mockTx) })
+    mockTransaction.mockImplementation(async (fn) => {
+      return await fn(mockTx)
+    })
   })
 
   test("should return universityId on success", async () => {
-    const { approveUniversity } = await import("@/server/services/universities/approve")
+    const { approveUniversity } = await import(
+      "@/server/services/universities/approve"
+    )
     const result = await approveUniversity("uni-1", "admin-1")
     expect(result).toEqual({ universityId: "uni-1", name: "Test Uni" })
   })
 
   test("should use transaction", async () => {
-    const { approveUniversity } = await import("@/server/services/universities/approve")
+    const { approveUniversity } = await import(
+      "@/server/services/universities/approve"
+    )
     await approveUniversity("uni-1", "admin-1")
     expect(mockTransaction).toHaveBeenCalledTimes(1)
   })
 
   test("should update both university and domains", async () => {
-    const { approveUniversity } = await import("@/server/services/universities/approve")
+    const { approveUniversity } = await import(
+      "@/server/services/universities/approve"
+    )
     await approveUniversity("uni-1", "admin-1")
     // 1 university update (with returning) + 1 domain update
     expect(mockUpdate).toHaveBeenCalledTimes(2)
@@ -52,7 +62,11 @@ describe("approveUniversity", () => {
   test("should throw when university not found", async () => {
     mockReturning.mockResolvedValue([])
 
-    const { approveUniversity } = await import("@/server/services/universities/approve")
-    expect(approveUniversity("nonexistent", "admin-1")).rejects.toThrow("University not found")
+    const { approveUniversity } = await import(
+      "@/server/services/universities/approve"
+    )
+    expect(approveUniversity("nonexistent", "admin-1")).rejects.toThrow(
+      "University not found",
+    )
   })
 })

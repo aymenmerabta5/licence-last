@@ -1,18 +1,19 @@
 import "server-only"
 
-import { tool, type ToolSet } from "ai"
+import { type ToolSet, tool } from "ai"
 import { z } from "zod"
-
+import { fuzzyMatchOffer, redactForAssistant } from "@/server/ai/tools/utils"
 import type { ToolAuthContext } from "@/server/ai/types"
-import { redactForAssistant, fuzzyMatchOffer } from "@/server/ai/tools/utils"
-
+import { listApplicationsByOffer } from "@/server/services/applications/list-by-offer"
+import {
+  getCompanyTrustIndex,
+  listCompanyTrustIndices,
+} from "@/server/services/companies/trust-index"
 // Service imports
 import { listOffersByCompany } from "@/server/services/offers/list-by-company"
-import { listApplicationsByOffer } from "@/server/services/applications/list-by-offer"
-import { getCompanyTrustIndex, listCompanyTrustIndices } from "@/server/services/companies/trust-index"
+import { listPendingApplications } from "@/server/services/placements/list-pending"
 import { getAdminStats } from "@/server/services/stats/get-admin-stats"
 import { getUniversityDashboardStats } from "@/server/services/stats/get-university-dashboard-stats"
-import { listPendingApplications } from "@/server/services/placements/list-pending"
 
 const MAX_OFFERS = 20
 const MAX_CANDIDATES = 20
@@ -69,7 +70,9 @@ export function createDataRetrievalTools(authCtx: ToolAuthContext): ToolSet {
       inputSchema: z.object({
         offerTitle: z
           .string()
-          .describe("The title (or partial title) of the offer to look up candidates for."),
+          .describe(
+            "The title (or partial title) of the offer to look up candidates for.",
+          ),
       }),
       execute: async ({ offerTitle }) => {
         try {
@@ -150,7 +153,9 @@ export function createDataRetrievalTools(authCtx: ToolAuthContext): ToolSet {
           }
 
           if (authCtx.universityId) {
-            const stats = await getUniversityDashboardStats(authCtx.universityId)
+            const stats = await getUniversityDashboardStats(
+              authCtx.universityId,
+            )
             return stats
           }
 
@@ -169,7 +174,10 @@ export function createDataRetrievalTools(authCtx: ToolAuthContext): ToolSet {
       execute: async () => {
         try {
           const viewer = {
-            role: authCtx.role as "university_admin" | "dept_head" | "super_admin",
+            role: authCtx.role as
+              | "university_admin"
+              | "dept_head"
+              | "super_admin",
             universityId: authCtx.universityId,
             departmentId: authCtx.departmentId,
           }
@@ -187,7 +195,9 @@ export function createDataRetrievalTools(authCtx: ToolAuthContext): ToolSet {
             applications: redacted,
           }
         } catch {
-          return { error: "Failed to retrieve pending placements. Please try again." }
+          return {
+            error: "Failed to retrieve pending placements. Please try again.",
+          }
         }
       },
     })
@@ -209,7 +219,9 @@ export function createDataRetrievalTools(authCtx: ToolAuthContext): ToolSet {
             rankings: redacted,
           }
         } catch {
-          return { error: "Failed to retrieve trust overview. Please try again." }
+          return {
+            error: "Failed to retrieve trust overview. Please try again.",
+          }
         }
       },
     })

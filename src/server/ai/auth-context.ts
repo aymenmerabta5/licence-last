@@ -1,11 +1,10 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-
+import type { AssistantRole, ToolAuthContext } from "@/server/ai/types"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { companyMember } from "@/server/db/schema/companies"
-import type { ToolAuthContext, AssistantRole } from "@/server/ai/types"
 
 const VALID_ROLES = new Set<AssistantRole>([
   "student",

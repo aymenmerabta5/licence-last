@@ -1,10 +1,10 @@
 import "server-only"
 
-import { eq, asc } from "drizzle-orm"
+import { asc, eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
-import { skillTag } from "@/server/db/schema/skills"
 import { departmentSkill } from "@/server/db/schema/departments"
+import { skillTag } from "@/server/db/schema/skills"
 
 interface Skill {
   id: string

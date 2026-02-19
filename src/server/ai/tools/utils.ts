@@ -40,7 +40,9 @@ function redactRecursive<T>(data: T, stripKeys: Set<string>): T {
   }
   if (typeof data === "object" && data !== null) {
     const result: Record<string, unknown> = {}
-    for (const [key, value] of Object.entries(data as Record<string, unknown>)) {
+    for (const [key, value] of Object.entries(
+      data as Record<string, unknown>,
+    )) {
       if (stripKeys.has(key)) continue
       result[key] = redactRecursive(value, stripKeys)
     }

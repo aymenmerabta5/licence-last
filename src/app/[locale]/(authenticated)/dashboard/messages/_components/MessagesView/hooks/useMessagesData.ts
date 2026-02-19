@@ -1,15 +1,13 @@
 "use client"
 
-import { useEffect, useMemo, useRef } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-
-import { orpcClient } from "@/server/orpc/client"
-
+import { useEffect, useMemo, useRef } from "react"
 import type {
-  MessageThread,
   MessagesRole,
+  MessageThread,
   ThreadMessagesResponse,
 } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
+import { orpcClient } from "@/server/orpc/client"
 
 interface UseMessagesDataParams {
   role: MessagesRole
@@ -38,19 +36,28 @@ function toErrorMessage(error: unknown, fallback: string): string {
 
 async function fetchThreads(role: MessagesRole): Promise<MessageThread[]> {
   if (role === "student") {
-    return (await orpcClient.messages.listByStudent({ limit: 50 })) as MessageThread[]
+    return (await orpcClient.messages.listByStudent({
+      limit: 50,
+    })) as MessageThread[]
   }
 
-  return (await orpcClient.messages.listByCompany({ limit: 50 })) as MessageThread[]
+  return (await orpcClient.messages.listByCompany({
+    limit: 50,
+  })) as MessageThread[]
 }
 
-async function fetchThreadMessages(threadId: string): Promise<ThreadMessagesResponse> {
+async function fetchThreadMessages(
+  threadId: string,
+): Promise<ThreadMessagesResponse> {
   return (await orpcClient.messages.listThreadMessages({
     threadId,
   })) as ThreadMessagesResponse
 }
 
-export function useMessagesData({ role, selectedThreadId }: UseMessagesDataParams) {
+export function useMessagesData({
+  role,
+  selectedThreadId,
+}: UseMessagesDataParams) {
   const queryClient = useQueryClient()
   const markedThreadIdRef = useRef<string | null>(null)
 
@@ -97,7 +104,9 @@ export function useMessagesData({ role, selectedThreadId }: UseMessagesDataParam
     },
     onSuccess: async (_, variables) => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["messages", "threads", role] }),
+        queryClient.invalidateQueries({
+          queryKey: ["messages", "threads", role],
+        }),
         queryClient.invalidateQueries({
           queryKey: ["messages", "thread", variables.thread.id],
         }),
@@ -109,14 +118,16 @@ export function useMessagesData({ role, selectedThreadId }: UseMessagesDataParam
     mutationFn: async (threadId: string) =>
       orpcClient.messages.markThreadRead({ threadId }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["messages", "threads", role] })
+      await queryClient.invalidateQueries({
+        queryKey: ["messages", "threads", role],
+      })
     },
   })
   const markThreadRead = markThreadReadMutation.mutate
 
   useEffect(() => {
     markedThreadIdRef.current = null
-  }, [selectedThreadId])
+  }, [])
 
   useEffect(() => {
     if (!selectedThreadId || !threadMessagesQuery.isSuccess) {
@@ -129,35 +140,28 @@ export function useMessagesData({ role, selectedThreadId }: UseMessagesDataParam
 
     markedThreadIdRef.current = selectedThreadId
     markThreadRead(selectedThreadId)
-  }, [
-    selectedThreadId,
-    threadMessagesQuery.isSuccess,
-    markThreadRead,
-  ])
+  }, [selectedThreadId, threadMessagesQuery.isSuccess, markThreadRead])
 
-  const threads = useMemo(
-    () => threadsQuery.data ?? [],
-    [threadsQuery.data],
-  )
+  const threads = useMemo(() => threadsQuery.data ?? [], [threadsQuery.data])
 
   return {
     threads,
     threadsLoading: threadsQuery.isLoading,
-    threadsErrorMessage:
-      threadsQuery.error
-        ? toErrorMessage(threadsQuery.error, "Failed to load message threads.")
-        : null,
+    threadsErrorMessage: threadsQuery.error
+      ? toErrorMessage(threadsQuery.error, "Failed to load message threads.")
+      : null,
     threadMessages: threadMessagesQuery.data?.messages ?? [],
     threadMessagesLoading: threadMessagesQuery.isLoading,
-    threadMessagesErrorMessage:
-      threadMessagesQuery.error
-        ? toErrorMessage(threadMessagesQuery.error, "Failed to load conversation.")
-        : null,
+    threadMessagesErrorMessage: threadMessagesQuery.error
+      ? toErrorMessage(
+          threadMessagesQuery.error,
+          "Failed to load conversation.",
+        )
+      : null,
     sendMessage: sendMessageMutation.mutateAsync,
     sendPending: sendMessageMutation.isPending,
-    sendErrorMessage:
-      sendMessageMutation.error
-        ? toErrorMessage(sendMessageMutation.error, "Failed to send message.")
-        : null,
+    sendErrorMessage: sendMessageMutation.error
+      ? toErrorMessage(sendMessageMutation.error, "Failed to send message.")
+      : null,
   }
 }

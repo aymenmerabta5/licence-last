@@ -1,14 +1,13 @@
 "use client"
 
 import { useEffect } from "react"
-
-import { useInterviewsData } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsData"
-import { useInterviewsState } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsState"
 import { CompanyInterviewsSection } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/CompanyInterviewsSection"
 import { CompanyProposeForm } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/CompanyProposeForm"
 import { FeatureDisabledCard } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/FeatureDisabledCard"
 import { InterviewsHeader } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewsHeader"
 import { StudentInterviewsSection } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/StudentInterviewsSection"
+import { useInterviewsData } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsData"
+import { useInterviewsState } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsState"
 import type { InterviewsRole } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 
 interface InterviewsViewProps {
@@ -37,7 +36,13 @@ export function InterviewsView({ role }: InterviewsViewProps) {
     if (!hasSelectedApplication) {
       setApplicationId("")
     }
-  }, [applicationId, companyApplications, isApplicationsLoading, role, setApplicationId])
+  }, [
+    applicationId,
+    companyApplications,
+    isApplicationsLoading,
+    role,
+    setApplicationId,
+  ])
 
   const submitProposal = async () => {
     const didSubmit = await data.proposeSlots({

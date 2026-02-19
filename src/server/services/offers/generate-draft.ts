@@ -91,10 +91,10 @@ export async function generateOfferDraft(
     "IMPORTANT — use these EXACT values for enum fields:",
     '- internshipType: one of "pfe", "immersion", "summer", "practical"',
     '- workMode: one of "on_site", "hybrid", "remote"',
-    "- wilayaCode: an integer (e.g. 16, not \"16\")",
-    '- applicationDeadlineAt: YYYY-MM-DD format when provided',
-    '- expectedStartDate: YYYY-MM-DD format when provided',
-    '- expectedEndDate: YYYY-MM-DD format when provided',
+    '- wilayaCode: an integer (e.g. 16, not "16")',
+    "- applicationDeadlineAt: YYYY-MM-DD format when provided",
+    "- expectedStartDate: YYYY-MM-DD format when provided",
+    "- expectedEndDate: YYYY-MM-DD format when provided",
     skillsList
       ? `Use skill tags from this list when suggesting: ${skillsList}`
       : "No skill tags available.",

@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useMemo } from "react"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { useMemo, useState } from "react"
 import { toast } from "sonner"
 
 import { orpc } from "@/server/orpc/client"
@@ -29,23 +29,20 @@ export function useCompanyOffers() {
     [],
   )
 
-  const statusMutation = useMutation(
-    orpc.offers.updateStatus.mutationOptions(),
-  )
+  const statusMutation = useMutation(orpc.offers.updateStatus.mutationOptions())
 
-  const deleteMutation = useMutation(
-    orpc.offers.delete.mutationOptions(),
-  )
+  const deleteMutation = useMutation(orpc.offers.delete.mutationOptions())
 
   const handlePublish = async (offerId: string) => {
     setActionLoading(offerId)
     try {
-      const result = await statusMutation.mutateAsync({ offerId, action: "publish" })
+      const result = await statusMutation.mutateAsync({
+        offerId,
+        action: "publish",
+      })
       queryClient.setQueryData<typeof offers>(queryKey, (current = []) =>
         current.map((offer) =>
-          offer.id === offerId
-            ? { ...offer, status: result.newStatus }
-            : offer,
+          offer.id === offerId ? { ...offer, status: result.newStatus } : offer,
         ),
       )
       await queryClient.invalidateQueries({ queryKey })
@@ -61,12 +58,13 @@ export function useCompanyOffers() {
     if (!window.confirm(confirmMessage)) return
     setActionLoading(offerId)
     try {
-      const result = await statusMutation.mutateAsync({ offerId, action: "close" })
+      const result = await statusMutation.mutateAsync({
+        offerId,
+        action: "close",
+      })
       queryClient.setQueryData<typeof offers>(queryKey, (current = []) =>
         current.map((offer) =>
-          offer.id === offerId
-            ? { ...offer, status: result.newStatus }
-            : offer,
+          offer.id === offerId ? { ...offer, status: result.newStatus } : offer,
         ),
       )
       await queryClient.invalidateQueries({ queryKey })

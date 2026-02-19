@@ -31,9 +31,13 @@ describe("src/server/services/companies/get-status", () => {
   })
 
   test("returns company status when membership exists", async () => {
-    mockLimitResult = [{ id: "company-1", status: "approved", rejectionReason: null }]
+    mockLimitResult = [
+      { id: "company-1", status: "approved", rejectionReason: null },
+    ]
 
-    const { getCompanyStatusByUserId } = await import("@/server/services/companies/get-status")
+    const { getCompanyStatusByUserId } = await import(
+      "@/server/services/companies/get-status"
+    )
     const result = await getCompanyStatusByUserId("user-1")
 
     expect(result).toEqual({
@@ -46,7 +50,9 @@ describe("src/server/services/companies/get-status", () => {
   test("returns null when user has no company membership", async () => {
     mockLimitResult = []
 
-    const { getCompanyStatusByUserId } = await import("@/server/services/companies/get-status")
+    const { getCompanyStatusByUserId } = await import(
+      "@/server/services/companies/get-status"
+    )
     const result = await getCompanyStatusByUserId("user-2")
 
     expect(result).toBeNull()
@@ -58,7 +64,9 @@ describe("src/server/services/companies/get-status", () => {
       { id: "company-2", status: "approved", rejectionReason: null },
     ]
 
-    const { getCompanyStatusByUserId } = await import("@/server/services/companies/get-status")
+    const { getCompanyStatusByUserId } = await import(
+      "@/server/services/companies/get-status"
+    )
 
     await expect(getCompanyStatusByUserId("user-3")).rejects.toMatchObject({
       code: "COMPANY_MEMBERSHIP_CONFLICT",

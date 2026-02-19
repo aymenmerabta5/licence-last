@@ -1,13 +1,21 @@
 "use client"
 
-import { useLocale, useTranslations } from "next-intl"
-import { Link } from "@/i18n/routing"
+import {
+  Building2,
+  Calendar,
+  FileText,
+  GraduationCap,
+  ShieldCheck,
+  ShieldX,
+  User,
+} from "lucide-react"
 import { motion } from "motion/react"
-import { ShieldCheck, ShieldX, FileText, Building2, GraduationCap, Calendar, User } from "lucide-react"
+import { useLocale, useTranslations } from "next-intl"
+import { Button } from "@/components/ui/button"
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { reveal, ease } from "@/lib/animations"
+import { Link } from "@/i18n/routing"
+import { ease, reveal } from "@/lib/animations"
 import type { VerifyDocumentResult } from "@/server/services/documents/verify"
 
 interface VerificationResultProps {
@@ -30,9 +38,15 @@ export function VerificationResult({ result, code }: VerificationResultProps) {
         <Card className="border-destructive/30 bg-destructive/5">
           <CardHeader className="text-center pb-4">
             <ShieldX className="size-16 mx-auto text-destructive mb-4" />
-            <h1 className="font-serif text-2xl font-bold">{t("invalid.title")}</h1>
-            <p className="text-muted-foreground mt-2">{t("invalid.subtitle")}</p>
-            <p className="font-mono text-sm text-muted-foreground mt-2">{code}</p>
+            <h1 className="font-serif text-2xl font-bold">
+              {t("invalid.title")}
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              {t("invalid.subtitle")}
+            </p>
+            <p className="font-mono text-sm text-muted-foreground mt-2">
+              {code}
+            </p>
           </CardHeader>
           <CardContent className="text-center">
             <Button variant="outline" render={<Link href="/verify" />}>
@@ -148,7 +162,9 @@ function InfoRow({
     <div className="flex items-start gap-3 py-2 border-b border-border/50 last:border-0">
       <span className="text-muted-foreground mt-0.5 shrink-0">{icon}</span>
       <div className="min-w-0">
-        <p className="text-xs text-muted-foreground uppercase tracking-wider">{label}</p>
+        <p className="text-xs text-muted-foreground uppercase tracking-wider">
+          {label}
+        </p>
         <p className="font-medium">{value}</p>
       </div>
     </div>

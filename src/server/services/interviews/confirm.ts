@@ -24,7 +24,10 @@ export async function confirmInterviewSlot(
       .limit(1)
 
     if (!interviewRow) {
-      throw new InterviewServiceError("INTERVIEW_NOT_FOUND", "Interview not found")
+      throw new InterviewServiceError(
+        "INTERVIEW_NOT_FOUND",
+        "Interview not found",
+      )
     }
 
     if (interviewRow.studentUserId !== studentUserId) {

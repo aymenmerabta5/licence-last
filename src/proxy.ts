@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
-import createMiddleware from "next-intl/middleware"
 import { getSessionCookie } from "better-auth/cookies"
+import type { NextRequest } from "next/server"
+import { NextResponse } from "next/server"
+import createMiddleware from "next-intl/middleware"
 
 import { routing } from "@/i18n/routing"
 
@@ -49,9 +49,7 @@ export function proxy(request: NextRequest) {
   if (isProtectedPath(pathname)) {
     const sessionCookie = getSessionCookie(request)
     if (!sessionCookie) {
-      return NextResponse.redirect(
-        new URL(`/${locale}/login`, request.url),
-      )
+      return NextResponse.redirect(new URL(`/${locale}/login`, request.url))
     }
   }
 

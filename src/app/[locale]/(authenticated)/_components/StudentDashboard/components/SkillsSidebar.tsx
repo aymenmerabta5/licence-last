@@ -1,13 +1,11 @@
 "use client"
 
-import { Wrench, ExternalLink } from "lucide-react"
-
+import { ExternalLink, Wrench } from "lucide-react"
+import { Route } from "next"
+import type { SkillTag } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
-
-import type { SkillTag } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
-import { Route } from "next"
 
 interface SkillsSidebarProps {
   skills: SkillTag[]

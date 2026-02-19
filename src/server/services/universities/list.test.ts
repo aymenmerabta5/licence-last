@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockChain: any = {
@@ -14,7 +14,8 @@ mock.module("@/server/db", () => ({ db: mockChain }))
 
 describe("listUniversities", () => {
   beforeEach(() => {
-    for (const fn of Object.values(mockChain)) (fn as ReturnType<typeof mock>).mockClear()
+    for (const fn of Object.values(mockChain))
+      (fn as ReturnType<typeof mock>).mockClear()
     mockChain.select.mockReturnValue(mockChain)
     mockChain.from.mockReturnValue(mockChain)
     mockChain.orderBy.mockReturnValue(mockChain)
@@ -30,7 +31,9 @@ describe("listUniversities", () => {
     // Let's mock the final call (offset returns a thenable)
     mockChain.offset.mockResolvedValue(unis)
 
-    const { listUniversities } = await import("@/server/services/universities/list")
+    const { listUniversities } = await import(
+      "@/server/services/universities/list"
+    )
     const result = await listUniversities()
 
     expect(result.universities).toHaveLength(1)
@@ -46,7 +49,9 @@ describe("listUniversities", () => {
     ]
     mockChain.offset.mockResolvedValue(unis)
 
-    const { listUniversities } = await import("@/server/services/universities/list")
+    const { listUniversities } = await import(
+      "@/server/services/universities/list"
+    )
     const result = await listUniversities({ limit: 2 })
 
     expect(result.universities).toHaveLength(2)
@@ -57,7 +62,9 @@ describe("listUniversities", () => {
     const unis = [{ id: "uni-1", name: "A", status: "approved" }]
     mockChain.where.mockResolvedValue(unis)
 
-    const { listUniversities } = await import("@/server/services/universities/list")
+    const { listUniversities } = await import(
+      "@/server/services/universities/list"
+    )
     const result = await listUniversities({ status: "approved" })
 
     expect(mockChain.where).toHaveBeenCalled()
@@ -67,7 +74,9 @@ describe("listUniversities", () => {
   test("should cap limit at 200", async () => {
     mockChain.offset.mockResolvedValue([])
 
-    const { listUniversities } = await import("@/server/services/universities/list")
+    const { listUniversities } = await import(
+      "@/server/services/universities/list"
+    )
     await listUniversities({ limit: 500 })
 
     // Should use min(500, 200) = 200, then +1 = 201 for hasMore detection

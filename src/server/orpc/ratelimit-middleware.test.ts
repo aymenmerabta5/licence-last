@@ -61,7 +61,9 @@ describe("ratelimit middleware fallback policy", () => {
     mockRedisRateLimitEnabled = "false"
     mockLimiter = null
     setNodeEnv("test")
-    const { __resetInMemoryRateLimiterForTests } = await import("@/server/orpc/ratelimit-middleware")
+    const { __resetInMemoryRateLimiterForTests } = await import(
+      "@/server/orpc/ratelimit-middleware"
+    )
     __resetInMemoryRateLimiterForTests()
   })
 
@@ -70,7 +72,9 @@ describe("ratelimit middleware fallback policy", () => {
     mockRedisRateLimitEnabled = "true"
     mockLimiter = null
 
-    const { createRateLimitMiddleware } = await import("@/server/orpc/ratelimit-middleware")
+    const { createRateLimitMiddleware } = await import(
+      "@/server/orpc/ratelimit-middleware"
+    )
     const middleware = createRateLimitMiddleware({
       maxRequests: 5,
       windowMs: 60_000,
@@ -85,14 +89,18 @@ describe("ratelimit middleware fallback policy", () => {
     }
 
     expect(thrown instanceof ORPCError).toBe(true)
-    expect((thrown as Error).message).toContain("Rate limiter backend unavailable")
+    expect((thrown as Error).message).toContain(
+      "Rate limiter backend unavailable",
+    )
   })
 
   test("uses in-memory fallback when Redis-backed rate limiting is disabled", async () => {
     mockRedisRateLimitEnabled = "false"
     mockLimiter = null
 
-    const { createRateLimitMiddleware } = await import("@/server/orpc/ratelimit-middleware")
+    const { createRateLimitMiddleware } = await import(
+      "@/server/orpc/ratelimit-middleware"
+    )
     const middleware = createRateLimitMiddleware({
       maxRequests: 2,
       windowMs: 60_000,
@@ -130,7 +138,9 @@ describe("ratelimit middleware fallback policy", () => {
       maxRequests: 10,
       windowMs: 60_000,
       keyPrefix: "test",
-    }) as unknown as { key: (args: { context: { user: { id: string } } }) => Promise<string> }
+    }) as unknown as {
+      key: (args: { context: { user: { id: string } } }) => Promise<string>
+    }
 
     await middleware.key({ context: { user: { id: "u1" } } })
     await middleware.key({ context: { user: { id: "u2" } } })
@@ -153,7 +163,9 @@ describe("ratelimit middleware fallback policy", () => {
       maxRequests: 5,
       windowMs: 5,
       keyPrefix: "test",
-    }) as unknown as { key: (args: { context: { user: { id: string } } }) => Promise<string> }
+    }) as unknown as {
+      key: (args: { context: { user: { id: string } } }) => Promise<string>
+    }
 
     await middleware.key({ context: { user: { id: "u1" } } })
     expect(__getInMemoryRateLimiterSizeForTests()).toBe(1)

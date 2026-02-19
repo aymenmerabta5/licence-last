@@ -1,17 +1,20 @@
 import "server-only"
 
 import { db } from "@/server/db"
-import { user } from "@/server/db/schema/auth"
 import { application } from "@/server/db/schema/applications"
+import { user } from "@/server/db/schema/auth"
 import { company, companyMember } from "@/server/db/schema/companies"
-import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
+import {
+  internshipOffer,
+  internshipOfferSkill,
+} from "@/server/db/schema/internships"
 import { notification } from "@/server/db/schema/notifications"
 import { placement, placementDocument } from "@/server/db/schema/placements"
 import { skillTag } from "@/server/db/schema/skills"
 import { studentProfile, studentSkill } from "@/server/db/schema/students"
 import { university, universityDomain } from "@/server/db/schema/universities"
-import { appendSeedBatch } from "@/server/mcp/mock/ledger"
 import { createBatchId, createEntityId } from "@/server/mcp/mock/id"
+import { appendSeedBatch } from "@/server/mcp/mock/ledger"
 import type {
   ScenarioName,
   SeedBatchEntities,
@@ -79,7 +82,9 @@ function addEntityId(list: string[], id: string) {
   }
 }
 
-function countEntities(entities: SeedBatchEntities): Record<keyof SeedBatchEntities, number> {
+function countEntities(
+  entities: SeedBatchEntities,
+): Record<keyof SeedBatchEntities, number> {
   return {
     universityIds: entities.universityIds.length,
     userIds: entities.userIds.length,
@@ -100,8 +105,14 @@ function slugify(input: string) {
     .replace(/^-+|-+$/g, "")
 }
 
-async function ensureSkillTags(requiredCount: number, ctx: SeederContext): Promise<string[]> {
-  const existing = await db.select({ id: skillTag.id }).from(skillTag).limit(requiredCount)
+async function ensureSkillTags(
+  requiredCount: number,
+  ctx: SeederContext,
+): Promise<string[]> {
+  const existing = await db
+    .select({ id: skillTag.id })
+    .from(skillTag)
+    .limit(requiredCount)
   const result = existing.map((row) => row.id)
 
   const missing = Math.max(0, requiredCount - result.length)
@@ -207,7 +218,8 @@ async function createCompanySeed(
     wilayaCode: 16,
     address: "mcpdev Address",
     status,
-    approvedByUserId: status === "approved" ? (input.approvedByUserId ?? null) : null,
+    approvedByUserId:
+      status === "approved" ? (input.approvedByUserId ?? null) : null,
     approvedAt: status === "approved" ? new Date() : null,
   })
 
@@ -262,7 +274,7 @@ async function createOfferSeed(
 }
 
 async function createStudentProfileSeed(
-  ctx: SeederContext,
+  _ctx: SeederContext,
   input: {
     userId: string
     skillTagIds: string[]
@@ -336,7 +348,9 @@ async function createApplicationSeed(
         ? (input.adminActionByUserId ?? null)
         : null,
     adminActionAt:
-      input.status === "admin_validated" || input.status === "admin_rejected" ? now : null,
+      input.status === "admin_validated" || input.status === "admin_rejected"
+        ? now
+        : null,
     adminNote: input.adminNote ?? null,
   })
 
@@ -399,7 +413,10 @@ async function createNotificationSeed(
   addEntityId(ctx.entities.notificationIds, id)
 }
 
-async function seedStudentDiscoverySegment(ctx: SeederContext, segment: number) {
+async function seedStudentDiscoverySegment(
+  ctx: SeederContext,
+  segment: number,
+) {
   const { universityId } = await createUniversitySeed(ctx, segment)
   const skills = await ensureSkillTags(4, ctx)
 
@@ -430,7 +447,10 @@ async function seedStudentDiscoverySegment(ctx: SeederContext, segment: number) 
       })
       await createStudentProfileSeed(ctx, {
         userId: student.id,
-        skillTagIds: [skills[index % skills.length], skills[(index + 1) % skills.length]],
+        skillTagIds: [
+          skills[index % skills.length],
+          skills[(index + 1) % skills.length],
+        ],
         index,
       })
       return student
@@ -468,7 +488,10 @@ async function seedStudentDiscoverySegment(ctx: SeederContext, segment: number) 
   })
 }
 
-async function seedCompanyHiringFunnelSegment(ctx: SeederContext, segment: number) {
+async function seedCompanyHiringFunnelSegment(
+  ctx: SeederContext,
+  segment: number,
+) {
   const { universityId } = await createUniversitySeed(ctx, segment)
   const skills = await ensureSkillTags(6, ctx)
 
@@ -567,11 +590,17 @@ async function seedCompanyHiringFunnelSegment(ctx: SeederContext, segment: numbe
       studentUserId: students[index].id,
       status,
       companyActionByUserId:
-        status === "applied" || status === "withdrawn" ? undefined : recruiter.id,
+        status === "applied" || status === "withdrawn"
+          ? undefined
+          : recruiter.id,
       adminActionByUserId:
-        status === "admin_validated" || status === "admin_rejected" ? admin.id : undefined,
-      companyNote: status === "company_refused" ? "Rejected for this cycle" : null,
-      adminNote: status === "admin_rejected" ? "University criteria mismatch" : null,
+        status === "admin_validated" || status === "admin_rejected"
+          ? admin.id
+          : undefined,
+      companyNote:
+        status === "company_refused" ? "Rejected for this cycle" : null,
+      adminNote:
+        status === "admin_rejected" ? "University criteria mismatch" : null,
     })
 
     if (status === "admin_validated") {
@@ -583,7 +612,10 @@ async function seedCompanyHiringFunnelSegment(ctx: SeederContext, segment: numbe
   }
 }
 
-async function seedAdminValidationQueueSegment(ctx: SeederContext, segment: number) {
+async function seedAdminValidationQueueSegment(
+  ctx: SeederContext,
+  segment: number,
+) {
   const { universityId } = await createUniversitySeed(ctx, segment)
   const skills = await ensureSkillTags(4, ctx)
 
@@ -661,7 +693,9 @@ async function seedAdminValidationQueueSegment(ctx: SeederContext, segment: numb
   for (let index = 0; index < students.length; index += 1) {
     const selectedOffer = offers[index % offers.length]
     const actionByUserId =
-      selectedOffer.companyId === companyA.id ? companyAOwner.id : companyBOwner.id
+      selectedOffer.companyId === companyA.id
+        ? companyAOwner.id
+        : companyBOwner.id
 
     const seededApplication = await createApplicationSeed(ctx, {
       offerId: selectedOffer.id,
@@ -689,7 +723,9 @@ export async function runSeedScenario(
   scenario: ScenarioName,
   scale: number,
 ): Promise<SeedRunResult> {
-  const definition = SCENARIO_DEFINITIONS.find((entry) => entry.name === scenario)
+  const definition = SCENARIO_DEFINITIONS.find(
+    (entry) => entry.name === scenario,
+  )
   if (!definition) {
     throw new Error(`Unknown scenario: ${scenario}`)
   }

@@ -1,7 +1,7 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { AlertCircle } from "lucide-react"
+import * as motion from "motion/react-client"
 
 interface ServerErrorProps {
   message: string

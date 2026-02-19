@@ -1,7 +1,6 @@
 import { Suspense } from "react"
-
-import { Skeleton } from "@/components/ui/skeleton"
 import { ProfileData } from "@/app/[locale]/profile/[userId]/_components/ProfileData"
+import { Skeleton } from "@/components/ui/skeleton"
 
 type Params = Promise<{ userId: string }>
 
@@ -99,7 +98,11 @@ function ProfileFallback() {
  * Public profile page with cacheComponents support.
  * Uses Suspense boundary to handle dynamic auth checks.
  */
-export default async function PublicProfilePage({ params }: { params: Params }) {
+export default async function PublicProfilePage({
+  params,
+}: {
+  params: Params
+}) {
   const { userId } = await params
 
   return (

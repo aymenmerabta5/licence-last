@@ -6,10 +6,11 @@ import { createModuleLogger } from "@/server/logging"
 import { uploadFile } from "@/server/storage/s3"
 
 const log = createModuleLogger("services/uploads/upload-image")
+
 import {
   ALLOWED_IMAGE_TYPES,
-  MAX_IMAGE_SIZE,
   IMAGE_EXT_MAP,
+  MAX_IMAGE_SIZE,
   validateMagicBytes,
 } from "@/lib/image-validation"
 

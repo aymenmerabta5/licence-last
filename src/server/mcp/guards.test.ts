@@ -1,6 +1,10 @@
 import { describe, expect, test } from "bun:test"
 
-import { assertDevMcpAllowed, assertMutatingConfirmed, getHealthReport } from "@/server/mcp/guards"
+import {
+  assertDevMcpAllowed,
+  assertMutatingConfirmed,
+  getHealthReport,
+} from "@/server/mcp/guards"
 
 describe("mcp guards", () => {
   test("marks safe for local dev mode", () => {

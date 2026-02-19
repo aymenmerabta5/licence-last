@@ -1,8 +1,8 @@
 "use client"
 
+import { Star } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useLocale, useTranslations } from "next-intl"
-import { Star } from "lucide-react"
 
 export function MarqueeRibbon() {
   const t = useTranslations("marquee")

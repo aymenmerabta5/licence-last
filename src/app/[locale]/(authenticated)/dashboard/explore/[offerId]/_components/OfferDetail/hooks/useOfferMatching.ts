@@ -1,11 +1,15 @@
 "use client"
 
-import { useEffect, useRef } from "react"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import { useEffect, useRef } from "react"
 
 import { orpc } from "@/server/orpc/client"
 
-export function useOfferMatching(studentUserId: string, offerId: string, companyId: string) {
+export function useOfferMatching(
+  studentUserId: string,
+  offerId: string,
+  companyId: string,
+) {
   const hasCapturedRef = useRef(false)
 
   const matchScoreQuery = useQuery(

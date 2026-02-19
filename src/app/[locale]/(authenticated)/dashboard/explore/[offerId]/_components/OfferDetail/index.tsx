@@ -1,20 +1,18 @@
 "use client"
 
 import * as motion from "motion/react-client"
-
-import { reveal, ease } from "@/lib/animations"
-
-import { useOfferMatching } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useOfferMatching"
-import { useOfferApplication } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useOfferApplication"
-import { useOfferSave } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useOfferSave"
-import { useCompanyReport } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useCompanyReport"
-import { OfferHeader } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/OfferHeader"
-import { OfferBody } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/OfferBody"
-import { DetailsSidebar } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/DetailsSidebar"
 import { ApplicationPanel } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/ApplicationPanel"
-import { MatchingPanel } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/MatchingPanel"
 import { CompanyCard } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/CompanyCard"
+import { DetailsSidebar } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/DetailsSidebar"
+import { MatchingPanel } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/MatchingPanel"
+import { OfferBody } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/OfferBody"
+import { OfferHeader } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/OfferHeader"
+import { useCompanyReport } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useCompanyReport"
+import { useOfferApplication } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useOfferApplication"
+import { useOfferMatching } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useOfferMatching"
+import { useOfferSave } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useOfferSave"
 import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
+import { ease, reveal } from "@/lib/animations"
 
 export type { OfferDetailProps }
 

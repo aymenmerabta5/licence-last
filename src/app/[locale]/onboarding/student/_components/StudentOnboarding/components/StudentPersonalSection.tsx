@@ -1,11 +1,15 @@
 ﻿import { FileText, GraduationCap, Hash, Phone, User } from "lucide-react"
 import { useTranslations } from "next-intl"
-
-import { FormSection, SelectField, TextAreaField, TextField } from "@/components/form-fields"
 import type {
   OnboardingFormApi,
   StudentDepartmentOption,
 } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/types"
+import {
+  FormSection,
+  SelectField,
+  TextAreaField,
+  TextField,
+} from "@/components/form-fields"
 
 interface StudentPersonalSectionProps {
   form: OnboardingFormApi

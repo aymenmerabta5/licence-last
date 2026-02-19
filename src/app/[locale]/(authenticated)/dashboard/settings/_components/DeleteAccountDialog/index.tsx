@@ -1,7 +1,9 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import { DeleteAccountForm } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/DeleteAccountDialog/components/DeleteAccountForm"
 
+import { useDeleteAccount } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/DeleteAccountDialog/hooks/useDeleteAccount"
 import {
   AlertDialog,
   AlertDialogContent,
@@ -9,9 +11,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-
-import { useDeleteAccount } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/DeleteAccountDialog/hooks/useDeleteAccount"
-import { DeleteAccountForm } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/DeleteAccountDialog/components/DeleteAccountForm"
 
 interface DeleteAccountDialogProps {
   open: boolean
@@ -37,9 +36,7 @@ export function DeleteAccountDialog({
           <AlertDialogTitle className="font-serif text-destructive">
             {t("title")}
           </AlertDialogTitle>
-          <AlertDialogDescription>
-            {t("description")}
-          </AlertDialogDescription>
+          <AlertDialogDescription>{t("description")}</AlertDialogDescription>
         </AlertDialogHeader>
 
         <DeleteAccountForm state={state} />

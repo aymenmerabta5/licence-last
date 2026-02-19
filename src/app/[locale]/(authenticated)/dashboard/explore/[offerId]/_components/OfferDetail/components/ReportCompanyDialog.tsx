@@ -2,7 +2,10 @@
 
 import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
-
+import type {
+  CompanyReportFormErrors,
+  CompanyReportFormValues,
+} from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useCompanyReport"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -21,11 +24,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-
-import type {
-  CompanyReportFormErrors,
-  CompanyReportFormValues,
-} from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useCompanyReport"
 import type { CompanyReportSeverity } from "@/lib/schemas/enums"
 
 interface ReportCompanyDialogProps {
@@ -72,9 +70,7 @@ export function ReportCompanyDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-serif text-xl">
-            {t("title")}
-          </DialogTitle>
+          <DialogTitle className="font-serif text-xl">{t("title")}</DialogTitle>
           <DialogDescription>
             {t("description", { companyName })}
           </DialogDescription>
@@ -82,7 +78,9 @@ export function ReportCompanyDialog({
 
         <div className="space-y-4 py-2">
           <div className="space-y-2">
-            <Label htmlFor="company-report-category">{t("categoryLabel")}</Label>
+            <Label htmlFor="company-report-category">
+              {t("categoryLabel")}
+            </Label>
             <Select
               value={values.category}
               onValueChange={(value) => {
@@ -112,7 +110,9 @@ export function ReportCompanyDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="company-report-severity">{t("severityLabel")}</Label>
+            <Label htmlFor="company-report-severity">
+              {t("severityLabel")}
+            </Label>
             <Select
               value={values.severity}
               onValueChange={(value) => {

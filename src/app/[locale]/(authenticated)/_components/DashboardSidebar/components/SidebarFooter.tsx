@@ -1,7 +1,7 @@
 "use client"
 
+import { ChevronLeft, ChevronRight, LogOut } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { LogOut, ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface SidebarFooterProps {

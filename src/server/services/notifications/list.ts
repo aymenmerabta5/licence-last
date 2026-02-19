@@ -1,15 +1,6 @@
 import "server-only"
 
-import {
-  and,
-  desc,
-  eq,
-  lt,
-  or,
-  sql,
-  count,
-  isNull,
-} from "drizzle-orm"
+import { and, count, desc, eq, isNull, lt, or, sql } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { notification } from "@/server/db/schema/notifications"

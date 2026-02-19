@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockListResult: any[] = []
@@ -68,7 +68,9 @@ describe("src/server/services/matching/readiness-history", () => {
       mockListResult = []
       mockLimitList.mockResolvedValue(mockListResult)
 
-      const { listReadinessHistory } = await import("@/server/services/matching/readiness-history")
+      const { listReadinessHistory } = await import(
+        "@/server/services/matching/readiness-history"
+      )
       const result = await listReadinessHistory("student-1", "offer-1")
 
       expect(result).toEqual([])
@@ -77,12 +79,26 @@ describe("src/server/services/matching/readiness-history", () => {
     test("should return history rows", async () => {
       const now = new Date()
       mockListResult = [
-        { id: "snap-1", readyPercent: 70, missingSkillsCount: 3, capturedAt: now, source: "manual" },
-        { id: "snap-2", readyPercent: 60, missingSkillsCount: 5, capturedAt: now, source: "auto" },
+        {
+          id: "snap-1",
+          readyPercent: 70,
+          missingSkillsCount: 3,
+          capturedAt: now,
+          source: "manual",
+        },
+        {
+          id: "snap-2",
+          readyPercent: 60,
+          missingSkillsCount: 5,
+          capturedAt: now,
+          source: "auto",
+        },
       ]
       mockLimitList.mockResolvedValue(mockListResult)
 
-      const { listReadinessHistory } = await import("@/server/services/matching/readiness-history")
+      const { listReadinessHistory } = await import(
+        "@/server/services/matching/readiness-history"
+      )
       const result = await listReadinessHistory("student-1", "offer-1")
 
       expect(result).toHaveLength(2)
@@ -95,8 +111,14 @@ describe("src/server/services/matching/readiness-history", () => {
       mockSnapshotCheckResult = [{ id: "existing-snap" }]
       mockLimitCheck.mockResolvedValue(mockSnapshotCheckResult)
 
-      const { captureReadinessSnapshot } = await import("@/server/services/matching/readiness-history")
-      const result = await captureReadinessSnapshot("student-1", "offer-1", "auto")
+      const { captureReadinessSnapshot } = await import(
+        "@/server/services/matching/readiness-history"
+      )
+      const result = await captureReadinessSnapshot(
+        "student-1",
+        "offer-1",
+        "auto",
+      )
 
       expect(result.skipped).toBe(true)
       expect(result.snapshotId).toBe("existing-snap")
@@ -106,8 +128,14 @@ describe("src/server/services/matching/readiness-history", () => {
       mockSnapshotCheckResult = []
       mockLimitCheck.mockResolvedValue(mockSnapshotCheckResult)
 
-      const { captureReadinessSnapshot } = await import("@/server/services/matching/readiness-history")
-      const result = await captureReadinessSnapshot("student-1", "offer-1", "manual")
+      const { captureReadinessSnapshot } = await import(
+        "@/server/services/matching/readiness-history"
+      )
+      const result = await captureReadinessSnapshot(
+        "student-1",
+        "offer-1",
+        "manual",
+      )
 
       expect(result.skipped).toBe(false)
       expect(result.snapshotId).toBeDefined()

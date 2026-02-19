@@ -1,15 +1,17 @@
 "use client"
 
-import { getErrorMessage } from "@/lib/error-message"
+import { StudentCvSections } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/StudentCvSections"
 
 import { useStudentCvData } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/hooks/useStudentCvData"
-import { StudentCvSections } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/StudentCvSections"
+import { getErrorMessage } from "@/lib/error-message"
 
 export function StudentCvView() {
   const studentCvData = useStudentCvData()
 
   if (studentCvData.isLoading) {
-    return <div className="text-sm text-muted-foreground">Loading CV data...</div>
+    return (
+      <div className="text-sm text-muted-foreground">Loading CV data...</div>
+    )
   }
 
   if (studentCvData.isError) {
@@ -23,9 +25,15 @@ export function StudentCvView() {
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-16">
       <header className="space-y-2">
-        <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary">Student Profile</p>
-        <h1 className="font-serif text-3xl text-heading tracking-tight">CV Manager</h1>
-        <p className="text-sm text-muted-foreground">Manage your resume, experiences, and projects from one place.</p>
+        <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary">
+          Student Profile
+        </p>
+        <h1 className="font-serif text-3xl text-heading tracking-tight">
+          CV Manager
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Manage your resume, experiences, and projects from one place.
+        </p>
       </header>
 
       <StudentCvSections

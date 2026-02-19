@@ -10,9 +10,7 @@ export function useDeptHeadPlacementData(applicationId: string) {
     enabled: !!applicationId,
   })
 
-  const application = data?.applications.find(
-    (app) => app.id === applicationId,
-  )
+  const application = data?.applications.find((app) => app.id === applicationId)
 
   return { application, isLoading: isLoading || !applicationId }
 }

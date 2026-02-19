@@ -1,6 +1,5 @@
 ﻿"use client"
 
-import { useState } from "react"
 import {
   CheckCircle2,
   ChevronDown,
@@ -9,15 +8,15 @@ import {
   XCircle,
 } from "lucide-react"
 import { useTranslations } from "next-intl"
-
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { useState } from "react"
 import { ToolInvocationBody } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ToolInvocationBody"
 import type {
   ToolAuthStatus,
   ToolState,
 } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/toolInvocationTypes"
 import { isRecord } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/utils"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 function getToolName(part: unknown): string | null {
   if (!isRecord(part)) return null
@@ -54,7 +53,9 @@ function getStatusIcon(state: ToolState) {
     case "input-available":
     case "approval-requested":
     case "approval-responded":
-      return <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+      return (
+        <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+      )
     case "output-available":
       return <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
     case "output-error":
@@ -110,7 +111,8 @@ export function ToolInvocationView({
 
   const input = isRecord(part) ? (part.input as unknown) : undefined
   const output = isRecord(part) ? (part.output as unknown) : undefined
-  const errorText = isRecord(part) && typeof part.errorText === "string" ? part.errorText : null
+  const errorText =
+    isRecord(part) && typeof part.errorText === "string" ? part.errorText : null
 
   return (
     <div className="mt-3 overflow-hidden rounded-none border border-border/60 bg-muted/10">
@@ -126,8 +128,12 @@ export function ToolInvocationView({
         <div className="flex min-w-0 items-center gap-2">
           {getStatusIcon(state)}
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium">{formatToolName(toolName)}</p>
-            <p className="text-[10px] text-muted-foreground">{getStatusBadge(state)}</p>
+            <p className="truncate text-sm font-medium">
+              {formatToolName(toolName)}
+            </p>
+            <p className="text-[10px] text-muted-foreground">
+              {getStatusBadge(state)}
+            </p>
           </div>
         </div>
 

@@ -1,10 +1,10 @@
+import { Calendar, ChevronRight, GraduationCap } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { GraduationCap, Calendar, ChevronRight } from "lucide-react"
 
 import { Link } from "@/i18n/routing"
 import {
-  INTERNSHIP_TYPE_LABELS,
   INTERNSHIP_TYPE_COLORS,
+  INTERNSHIP_TYPE_LABELS,
 } from "@/lib/constants/internship"
 
 function formatDate(date: Date | string | null): string {
@@ -51,9 +51,7 @@ export function ValidationCard({ app }: ValidationCardProps) {
                   {app.student.name || "Anonymous"}
                 </span>
                 <span className="text-muted-foreground">&rarr;</span>
-                <span className="font-medium text-sm">
-                  {app.company.name}
-                </span>
+                <span className="font-medium text-sm">{app.company.name}</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                 {app.university && (
@@ -62,9 +60,7 @@ export function ValidationCard({ app }: ValidationCardProps) {
                     <span>
                       {app.university.abbreviation || app.university.name}
                     </span>
-                    {app.profile?.level && (
-                      <span>• {app.profile.level}</span>
-                    )}
+                    {app.profile?.level && <span>• {app.profile.level}</span>}
                   </>
                 )}
               </div>
@@ -82,9 +78,7 @@ export function ValidationCard({ app }: ValidationCardProps) {
                 app.offer.internshipType}
             </span>
 
-            <span className="text-muted-foreground">
-              {app.offer.title}
-            </span>
+            <span className="text-muted-foreground">{app.offer.title}</span>
 
             <span className="flex items-center gap-1 text-muted-foreground">
               <Calendar className="h-3.5 w-3.5" />

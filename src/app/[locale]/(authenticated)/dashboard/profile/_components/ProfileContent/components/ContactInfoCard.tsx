@@ -1,17 +1,19 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import {
+  GraduationCap,
+  Hash,
   Mail,
+  MapPin,
   Phone,
   ShieldCheck,
-  MapPin,
-  Hash,
-  GraduationCap,
 } from "lucide-react"
+import * as motion from "motion/react-client"
+import type {
+  ProfileUser,
+  StudentProfile,
+} from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { ease } from "@/lib/animations"
-
-import type { StudentProfile, ProfileUser } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { getWilayaName } from "@/lib/wilayas"
 
 interface ContactInfoCardProps {
@@ -36,7 +38,9 @@ export function ContactInfoCard({
   roleLabel,
   labels,
 }: ContactInfoCardProps) {
-  const wilayaName = profile?.wilayaCode ? getWilayaName(profile.wilayaCode) : null
+  const wilayaName = profile?.wilayaCode
+    ? getWilayaName(profile.wilayaCode)
+    : null
 
   const rows = [
     { key: "email", icon: Mail, label: labels.email, value: user.email },
@@ -49,7 +53,12 @@ export function ContactInfoCard({
       value: wilayaName,
       placeholder: labels.notSetYet,
     },
-    { key: "studentNumber", icon: Hash, label: labels.studentNumber, value: profile?.studentNumber },
+    {
+      key: "studentNumber",
+      icon: Hash,
+      label: labels.studentNumber,
+      value: profile?.studentNumber,
+    },
     {
       key: "department",
       icon: GraduationCap,

@@ -1,10 +1,8 @@
 "use client"
 
 import { Pencil, Trash2 } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-
 import type { StudentCvExperience } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/types"
+import { Button } from "@/components/ui/button"
 
 interface ExperienceListItemProps {
   experience: StudentCvExperience
@@ -23,8 +21,12 @@ export function ExperienceListItem({
     <div className="border border-border/30 p-4 space-y-2">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h4 className="text-sm font-semibold text-heading">{experience.title}</h4>
-          <p className="text-xs text-muted-foreground">{experience.organization}</p>
+          <h4 className="text-sm font-semibold text-heading">
+            {experience.title}
+          </h4>
+          <p className="text-xs text-muted-foreground">
+            {experience.organization}
+          </p>
         </div>
         <div className="flex items-center gap-1">
           <Button

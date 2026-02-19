@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test"
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 
 import { loginAsStudent } from "./fixtures/auth"
 
@@ -46,7 +46,9 @@ test.describe("Student Application Flow", () => {
     }
 
     await offerLinks.first().click()
-    await expect(page).toHaveURL(/\/en\/dashboard\/explore\/.+/, { timeout: 10000 })
+    await expect(page).toHaveURL(/\/en\/dashboard\/explore\/.+/, {
+      timeout: 10000,
+    })
     await expect(page.locator("h1").first()).toBeVisible()
   })
 
@@ -61,7 +63,9 @@ test.describe("Student Application Flow", () => {
     }
 
     await offerLinks.first().click()
-    await expect(page).toHaveURL(/\/en\/dashboard\/explore\/.+/, { timeout: 10000 })
+    await expect(page).toHaveURL(/\/en\/dashboard\/explore\/.+/, {
+      timeout: 10000,
+    })
 
     const applyButton = page.getByRole("button", { name: /apply/i }).first()
     const canApply = await applyButton.isVisible().catch(() => false)
@@ -75,10 +79,15 @@ test.describe("Student Application Flow", () => {
     const coverLetter = page.locator("#coverLetter")
     if (await coverLetter.isVisible().catch(() => false)) {
       await coverLetter.fill("I am interested in this internship opportunity.")
-      await page.getByRole("button", { name: /submit/i }).first().click()
+      await page
+        .getByRole("button", { name: /submit/i })
+        .first()
+        .click()
     }
 
-    await expect(page.locator("text=/application|applied|success/i").first()).toBeVisible({
+    await expect(
+      page.locator("text=/application|applied|success/i").first(),
+    ).toBeVisible({
       timeout: 10000,
     })
   })
@@ -89,7 +98,9 @@ test.describe("Student Application Flow", () => {
     await expect(page.locator("h1").first()).toBeVisible()
   })
 
-  test("application status is visible in applications list", async ({ page }) => {
+  test("application status is visible in applications list", async ({
+    page,
+  }) => {
     await page.goto("/en/dashboard/student/applications")
     await expect(page.locator("h1").first()).toBeVisible()
 
@@ -97,18 +108,28 @@ test.describe("Student Application Flow", () => {
     const cardCount = await applicationCards.count()
 
     if (cardCount > 0) {
-      await expect(page.locator("text=/applied|accepted|rejected|withdrawn|screening|offer/i").first()).toBeVisible()
+      await expect(
+        page
+          .locator(
+            "text=/applied|accepted|rejected|withdrawn|screening|offer/i",
+          )
+          .first(),
+      ).toBeVisible()
       return
     }
 
     await expect(page.locator("text=/no applications/i").first()).toBeVisible()
   })
 
-  test("student can withdraw an application @requires-applications", async ({ page }) => {
+  test("student can withdraw an application @requires-applications", async ({
+    page,
+  }) => {
     await page.goto("/en/dashboard/student/applications")
     await expect(page.locator("h1").first()).toBeVisible()
 
-    const withdrawButton = page.getByRole("button", { name: /withdraw/i }).first()
+    const withdrawButton = page
+      .getByRole("button", { name: /withdraw/i })
+      .first()
     const isVisible = await withdrawButton.isVisible().catch(() => false)
     if (!isVisible) {
       test.skip()
@@ -118,7 +139,9 @@ test.describe("Student Application Flow", () => {
     page.once("dialog", (dialog) => dialog.accept())
     await withdrawButton.click()
 
-    await expect(page.locator("text=/withdrawn|success/i").first()).toBeVisible({ timeout: 10000 })
+    await expect(page.locator("text=/withdrawn|success/i").first()).toBeVisible(
+      { timeout: 10000 },
+    )
   })
 
   test("offer detail shows company information", async ({ page }) => {
@@ -132,7 +155,9 @@ test.describe("Student Application Flow", () => {
     }
 
     await offerLinks.first().click()
-    await expect(page).toHaveURL(/\/en\/dashboard\/explore\/.+/, { timeout: 10000 })
+    await expect(page).toHaveURL(/\/en\/dashboard\/explore\/.+/, {
+      timeout: 10000,
+    })
     await expect(page.locator("text=/company/i").first()).toBeVisible()
   })
 })

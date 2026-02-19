@@ -1,6 +1,8 @@
 import type { UIMessage } from "ai"
 
-function isMessageRole(value: unknown): value is "system" | "user" | "assistant" {
+function isMessageRole(
+  value: unknown,
+): value is "system" | "user" | "assistant" {
   return value === "system" || value === "user" || value === "assistant"
 }
 
@@ -24,8 +26,13 @@ export function toChatMessages(
 ): UIMessage[] {
   return rows
     .filter(
-      (row): row is { id: string; role: "system" | "user" | "assistant"; parts: unknown } =>
-        isMessageRole(row.role),
+      (
+        row,
+      ): row is {
+        id: string
+        role: "system" | "user" | "assistant"
+        parts: unknown
+      } => isMessageRole(row.role),
     )
     .map((row) => ({
       id: row.id,

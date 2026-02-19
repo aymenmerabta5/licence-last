@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
@@ -64,27 +64,33 @@ describe("src/server/services/applications/withdraw", () => {
 
   test("should throw when application is not found", async () => {
     mockSelectResults.push([])
-    const { withdrawApplication } = await import("@/server/services/applications/withdraw?fresh=1")
-    await expect(
-      withdrawApplication("app-1", "student-1"),
-    ).rejects.toThrow("Application not found")
+    const { withdrawApplication } = await import(
+      "@/server/services/applications/withdraw?fresh=1"
+    )
+    await expect(withdrawApplication("app-1", "student-1")).rejects.toThrow(
+      "Application not found",
+    )
   })
 
   test("should throw when application is not in applied status", async () => {
     mockSelectResults.push([
       { id: "app-1", studentUserId: "student-1", status: "company_accepted" },
     ])
-    const { withdrawApplication } = await import("@/server/services/applications/withdraw?fresh=2")
-    await expect(
-      withdrawApplication("app-1", "student-1"),
-    ).rejects.toThrow("Only pending applications can be withdrawn")
+    const { withdrawApplication } = await import(
+      "@/server/services/applications/withdraw?fresh=2"
+    )
+    await expect(withdrawApplication("app-1", "student-1")).rejects.toThrow(
+      "Only pending applications can be withdrawn",
+    )
   })
 
   test("should update status to withdrawn", async () => {
     mockSelectResults.push([
       { id: "app-1", studentUserId: "student-1", status: "applied" },
     ])
-    const { withdrawApplication } = await import("@/server/services/applications/withdraw?fresh=3")
+    const { withdrawApplication } = await import(
+      "@/server/services/applications/withdraw?fresh=3"
+    )
     const result = await withdrawApplication("app-1", "student-1")
     expect(result.newStatus).toBe("withdrawn")
     expect(mockUpdate).toHaveBeenCalledTimes(1)

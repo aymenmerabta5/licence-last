@@ -21,7 +21,10 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
 }
 
 const updateOfferMock = mock(async () => ({ offerId: "offer-1" }))
-const deleteOfferMock = mock(async () => ({ offerId: "offer-1", deleted: true }))
+const deleteOfferMock = mock(async () => ({
+  offerId: "offer-1",
+  deleted: true,
+}))
 const listSavedOffersMock = mock(async () => ({ offers: [], hasMore: false }))
 const checkOfferSavedMock = mock(async () => ({ saved: false }))
 const saveOfferMock = mock(async () => ({ saved: true }))
@@ -141,11 +144,9 @@ describe("src/server/orpc/routes/offers", () => {
     })
 
     expect(result).toEqual({ offerId: "offer-1" })
-    expect(updateOfferMock).toHaveBeenCalledWith(
-      "offer-1",
-      "company-1",
-      { title: "Updated title" },
-    )
+    expect(updateOfferMock).toHaveBeenCalledWith("offer-1", "company-1", {
+      title: "Updated title",
+    })
     expect(revalidateTagMock).toHaveBeenCalledTimes(4)
   })
 
@@ -184,7 +185,9 @@ describe("src/server/orpc/routes/offers", () => {
   })
 
   test("listSavedOffersProcedure delegates with user and input", async () => {
-    const { listSavedOffersProcedure } = await import("@/server/orpc/routes/offers")
+    const { listSavedOffersProcedure } = await import(
+      "@/server/orpc/routes/offers"
+    )
 
     const input = { limit: 10 }
     const result = await callProcedure(listSavedOffersProcedure, {
@@ -198,10 +201,12 @@ describe("src/server/orpc/routes/offers", () => {
   })
 
   test("saveOfferProcedure rejects when saved offers feature is disabled", async () => {
-    isFeatureEnabledMock.mockImplementation((flag: keyof typeof featureFlagsState) => {
-      if (flag === "SAVED_OFFERS") return false
-      return featureFlagsState[flag]
-    })
+    isFeatureEnabledMock.mockImplementation(
+      (flag: keyof typeof featureFlagsState) => {
+        if (flag === "SAVED_OFFERS") return false
+        return featureFlagsState[flag]
+      },
+    )
 
     const { saveOfferProcedure } = await import("@/server/orpc/routes/offers")
 

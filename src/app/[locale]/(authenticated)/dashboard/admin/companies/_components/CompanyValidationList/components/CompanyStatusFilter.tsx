@@ -2,8 +2,6 @@
 
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
-import { ease } from "@/lib/animations"
 import {
   Select,
   SelectContent,
@@ -11,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { ease } from "@/lib/animations"
 import type { CompanyStatus } from "@/lib/schemas/enums"
 
 interface CompanyStatusFilterProps {

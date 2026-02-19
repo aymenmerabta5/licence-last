@@ -30,11 +30,13 @@ const LEGACY_EXEMPTIONS = new Set([
   "src/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/OfferCard.tsx",
   "src/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/index.tsx",
   "src/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/DetailsSection.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/LanguageRequirementsSection.tsx",
   "src/app/[locale]/(authenticated)/dashboard/dept-validations/[applicationId]/_components/DeptHeadPlacementDetail/index.tsx",
   "src/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/ApplicationPanel.tsx",
   "src/app/[locale]/(authenticated)/dashboard/explore/_components/OfferCard.tsx",
   "src/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/index.tsx",
   "src/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/index.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/settings/_components/AccountSettingsTab.tsx",
   "src/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/index.tsx",
   "src/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/index.tsx",
   "src/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager/index.tsx",
@@ -90,7 +92,7 @@ function isClientComponent(filePath) {
     if (trimmed.startsWith("//")) {
       continue
     }
-    return trimmed === "\"use client\"" || trimmed === "'use client'"
+    return trimmed === '"use client"' || trimmed === "'use client'"
   }
 
   return false

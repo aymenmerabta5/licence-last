@@ -1,15 +1,13 @@
 "use client"
 
+import { Loader2, Send, Sparkles } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Loader2, Send, Sparkles } from "lucide-react"
-
-import { ease } from "@/lib/animations"
+import type { OfferApplyMutation } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-
-import type { OfferApplyMutation } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
+import { ease } from "@/lib/animations"
 
 interface ApplicationFormCardProps {
   coverLetter: string

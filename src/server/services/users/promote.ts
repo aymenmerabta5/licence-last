@@ -1,11 +1,11 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/users/promote")
+
 import { user } from "@/server/db/schema/auth"
 
 type UserRole = "student" | "company_admin" | "university_admin" | "super_admin"
@@ -26,6 +26,9 @@ export async function promoteUser(userId: string, newRole: UserRole) {
     throw new Error("User not found")
   }
 
-  log.info({ userId: updated.id, role: updated.role, event: "user_promoted" }, "User promoted")
+  log.info(
+    { userId: updated.id, role: updated.role, event: "user_promoted" },
+    "User promoted",
+  )
   return updated
 }

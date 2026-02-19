@@ -1,15 +1,15 @@
 import "server-only"
 
-import { eq, and, desc, lt, or, isNotNull, inArray } from "drizzle-orm"
+import { and, desc, eq, inArray, isNotNull, lt, or } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
-import { internshipOffer } from "@/server/db/schema/internships"
 import { user } from "@/server/db/schema/auth"
-import { studentProfile, studentSkill } from "@/server/db/schema/students"
-import { skillTag } from "@/server/db/schema/skills"
-import { university } from "@/server/db/schema/universities"
 import { company } from "@/server/db/schema/companies"
+import { internshipOffer } from "@/server/db/schema/internships"
+import { skillTag } from "@/server/db/schema/skills"
+import { studentProfile, studentSkill } from "@/server/db/schema/students"
+import { university } from "@/server/db/schema/universities"
 
 export interface PendingApplication {
   id: string
@@ -185,13 +185,16 @@ export async function listPendingApplications(
   const studentIds = [...new Set(applications.map((a) => a.studentId))]
 
   // Get skills for all students
-  const skillsByStudent = new Map<string, Array<{
-    userId: string
-    skillId: string
-    skillName: string
-    skillSlug: string
-    skillCategory: string | null
-  }>>()
+  const skillsByStudent = new Map<
+    string,
+    Array<{
+      userId: string
+      skillId: string
+      skillName: string
+      skillSlug: string
+      skillCategory: string | null
+    }>
+  >()
 
   if (studentIds.length > 0) {
     const allSkills = await db
@@ -286,7 +289,10 @@ export async function listPendingApplications(
   const lastApp = result[result.length - 1]
   const nextCursor =
     hasMore && lastApp
-      ? { companyActionAt: lastApp.companyActionAt.toISOString(), id: lastApp.id }
+      ? {
+          companyActionAt: lastApp.companyActionAt.toISOString(),
+          id: lastApp.id,
+        }
       : undefined
 
   return { applications: result, nextCursor, hasMore }

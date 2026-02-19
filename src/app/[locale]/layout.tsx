@@ -1,10 +1,13 @@
 import type { Metadata } from "next"
-import type { ReactNode } from "react"
-
 import { DM_Sans, DM_Serif_Display, Noto_Sans_Arabic } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
-import { getMessages, getTranslations, setRequestLocale } from "next-intl/server"
+import {
+  getMessages,
+  getTranslations,
+  setRequestLocale,
+} from "next-intl/server"
 import { ThemeProvider } from "next-themes"
+import type { ReactNode } from "react"
 
 import { MotionProvider } from "@/components/providers/MotionProvider"
 import { QueryProvider } from "@/components/providers/QueryProvider"
@@ -80,9 +83,7 @@ export async function generateMetadata({
       description: t("description"),
     },
     alternates: {
-      languages: Object.fromEntries(
-        routing.locales.map((l) => [l, `/${l}`])
-      ),
+      languages: Object.fromEntries(routing.locales.map((l) => [l, `/${l}`])),
     },
   }
 }
@@ -100,15 +101,15 @@ export default async function LocaleLayout({
     : ""
 
   return (
-    <html
-      lang={locale}
-      dir={isRTL ? "rtl" : "ltr"}
-      suppressHydrationWarning
-    >
+    <html lang={locale} dir={isRTL ? "rtl" : "ltr"} suppressHydrationWarning>
       <body
         className={`${dmSans.variable} ${dmSerif.variable} ${notoSansArabic.variable} ${rtlFontVars} font-sans antialiased`}
       >
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+        >
           <MotionProvider>
             <QueryProvider>
               <NextIntlClientProvider locale={locale} messages={messages}>

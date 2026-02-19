@@ -1,11 +1,11 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/students/upsert-profile-details")
+
 import { studentProfile } from "@/server/db/schema/students"
 
 type StudentProfileDetailsInput = {
@@ -20,12 +20,16 @@ type StudentProfileDetailsInput = {
   address?: string
 }
 
-function normaliseOptionalString(value: string | undefined): string | null | undefined {
+function normaliseOptionalString(
+  value: string | undefined,
+): string | null | undefined {
   if (value === undefined) return undefined
   return value.trim() ? value : null
 }
 
-function normaliseOptionalUrl(value: string | undefined): string | null | undefined {
+function normaliseOptionalUrl(
+  value: string | undefined,
+): string | null | undefined {
   if (value === undefined) return undefined
   return value.trim() ? value : null
 }
@@ -84,21 +88,27 @@ export async function upsertStudentProfileDetails(
       (input.address === undefined ? (existing?.address ?? null) : null),
   }
 
-  await db.insert(studentProfile).values(next).onConflictDoUpdate({
-    target: studentProfile.userId,
-    set: {
-      bio: next.bio,
-      phone: next.phone,
-      githubUrl: next.githubUrl,
-      portfolioUrl: next.portfolioUrl,
-      studentNumber: next.studentNumber,
-      department: next.department,
-      level: next.level,
-      wilayaCode: next.wilayaCode,
-      address: next.address,
-    },
-  })
+  await db
+    .insert(studentProfile)
+    .values(next)
+    .onConflictDoUpdate({
+      target: studentProfile.userId,
+      set: {
+        bio: next.bio,
+        phone: next.phone,
+        githubUrl: next.githubUrl,
+        portfolioUrl: next.portfolioUrl,
+        studentNumber: next.studentNumber,
+        department: next.department,
+        level: next.level,
+        wilayaCode: next.wilayaCode,
+        address: next.address,
+      },
+    })
 
-  log.info({ userId, event: "student_profile_details_upserted" }, "Student profile details upserted")
+  log.info(
+    { userId, event: "student_profile_details_upserted" },
+    "Student profile details upserted",
+  )
   return { userId }
 }

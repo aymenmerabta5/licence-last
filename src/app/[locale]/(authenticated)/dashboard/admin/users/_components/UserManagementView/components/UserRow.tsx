@@ -1,17 +1,16 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import {
+  Eye,
+  KeyRound,
   MoreHorizontal,
+  ShieldBan,
   ShieldCheck,
   ShieldOff,
-  ShieldBan,
-  KeyRound,
   Trash2,
-  Eye,
 } from "lucide-react"
-
-import { Link } from "@/i18n/routing"
+import { useTranslations } from "next-intl"
+import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -22,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { TableCell, TableRow } from "@/components/ui/table"
-import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
+import { Link } from "@/i18n/routing"
 
 interface UserRowProps {
   user: AdminUser
@@ -36,7 +35,10 @@ interface UserRowProps {
   canSetPassword: boolean
 }
 
-const roleBadgeVariant: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+const roleBadgeVariant: Record<
+  string,
+  "default" | "secondary" | "destructive" | "outline"
+> = {
   super_admin: "destructive",
   admin: "default",
   company_admin: "secondary",
@@ -68,12 +70,17 @@ export function UserRow({
             <p className="text-sm font-medium text-heading truncate">
               {user.name || "—"}
             </p>
-            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+            <p className="text-xs text-muted-foreground truncate">
+              {user.email}
+            </p>
           </div>
         </div>
       </TableCell>
       <TableCell>
-        <Badge variant={roleBadgeVariant[user.role ?? ""] ?? "outline"} className="text-[10px]">
+        <Badge
+          variant={roleBadgeVariant[user.role ?? ""] ?? "outline"}
+          className="text-[10px]"
+        >
           {t(`roles.${user.role ?? "student"}`)}
         </Badge>
       </TableCell>
@@ -83,7 +90,10 @@ export function UserRow({
             {t("status.banned")}
           </Badge>
         ) : (
-          <Badge variant="outline" className="text-[10px] text-emerald-600 border-emerald-200">
+          <Badge
+            variant="outline"
+            className="text-[10px] text-emerald-600 border-emerald-200"
+          >
             {t("status.active")}
           </Badge>
         )}
@@ -93,13 +103,19 @@ export function UserRow({
       </TableCell>
       <TableCell>
         <DropdownMenu>
-          <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8" />}>
+          <DropdownMenuTrigger
+            render={<Button variant="ghost" size="icon" className="h-8 w-8" />}
+          >
             <MoreHorizontal className="h-4 w-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {canViewDetails && (
               <DropdownMenuItem
-                render={<Link href={`/dashboard/admin/users/${user.id}` as "/dashboard"} />}
+                render={
+                  <Link
+                    href={`/dashboard/admin/users/${user.id}` as "/dashboard"}
+                  />
+                }
               >
                 <Eye className="h-4 w-4 me-2" />
                 {t("actions.view")}

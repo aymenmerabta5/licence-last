@@ -1,14 +1,12 @@
 "use client"
 
-import type { Dispatch, SetStateAction } from "react"
 import { Save, X } from "lucide-react"
-
+import type { Dispatch, SetStateAction } from "react"
+import type { ProjectDraft } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/projects/types"
+import type { StudentCvProject } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-
-import type { ProjectDraft } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/projects/types"
-import type { StudentCvProject } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/types"
 
 interface ProjectEditorProps {
   mode: "create" | "edit"
@@ -49,7 +47,9 @@ export function ProjectEditor({
         placeholder="Project name"
         value={isCreateMode ? draft.name : undefined}
         defaultValue={isCreateMode ? undefined : project?.name}
-        onChange={(event) => setDraft((current) => ({ ...current, name: event.target.value }))}
+        onChange={(event) =>
+          setDraft((current) => ({ ...current, name: event.target.value }))
+        }
       />
       <Textarea
         placeholder="Project summary"
@@ -65,15 +65,23 @@ export function ProjectEditor({
           value={isCreateMode ? draft.projectUrl : undefined}
           defaultValue={isCreateMode ? undefined : (project?.projectUrl ?? "")}
           onChange={(event) =>
-            setDraft((current) => ({ ...current, projectUrl: event.target.value }))
+            setDraft((current) => ({
+              ...current,
+              projectUrl: event.target.value,
+            }))
           }
         />
         <Input
           placeholder="Repository URL"
           value={isCreateMode ? draft.repositoryUrl : undefined}
-          defaultValue={isCreateMode ? undefined : (project?.repositoryUrl ?? "")}
+          defaultValue={
+            isCreateMode ? undefined : (project?.repositoryUrl ?? "")
+          }
           onChange={(event) =>
-            setDraft((current) => ({ ...current, repositoryUrl: event.target.value }))
+            setDraft((current) => ({
+              ...current,
+              repositoryUrl: event.target.value,
+            }))
           }
         />
       </div>
@@ -83,18 +91,29 @@ export function ProjectEditor({
           value={isCreateMode ? draft.startDate : undefined}
           defaultValue={isCreateMode ? undefined : draft.startDate}
           onChange={(event) =>
-            setDraft((current) => ({ ...current, startDate: event.target.value }))
+            setDraft((current) => ({
+              ...current,
+              startDate: event.target.value,
+            }))
           }
         />
         <Input
           type="date"
           value={isCreateMode ? draft.endDate : undefined}
           defaultValue={isCreateMode ? undefined : draft.endDate}
-          onChange={(event) => setDraft((current) => ({ ...current, endDate: event.target.value }))}
+          onChange={(event) =>
+            setDraft((current) => ({ ...current, endDate: event.target.value }))
+          }
         />
       </div>
       <div className="flex gap-2">
-        <Button type="button" size="sm" className="gap-1.5" disabled={saveDisabled} onClick={onSubmit}>
+        <Button
+          type="button"
+          size="sm"
+          className="gap-1.5"
+          disabled={saveDisabled}
+          onClick={onSubmit}
+        >
           <Save className="h-3.5 w-3.5" />
           {saveLabel}
         </Button>

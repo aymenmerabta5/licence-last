@@ -14,16 +14,10 @@ mock.module("next-intl", () => ({
 }))
 
 mock.module("motion/react-client", () => ({
-  button: ({
-    children,
-    ...props
-  }: ButtonHTMLAttributes<HTMLButtonElement>) => (
+  button: ({ children, ...props }: ButtonHTMLAttributes<HTMLButtonElement>) => (
     <button {...props}>{children}</button>
   ),
-  div: ({
-    children,
-    ...props
-  }: HTMLAttributes<HTMLDivElement>) => (
+  div: ({ children, ...props }: HTMLAttributes<HTMLDivElement>) => (
     <div {...props}>{children}</div>
   ),
 }))
@@ -56,7 +50,9 @@ describe("src/app/[locale]/(authenticated)/dashboard/notifications/_components/N
     expect(
       screen.getByText("A student applied for Platform Engineer Intern."),
     ).toBeDefined()
-    expect(screen.queryByText(/\{"offerTitle":"Platform Engineer Intern"\}/)).toBeNull()
+    expect(
+      screen.queryByText(/\{"offerTitle":"Platform Engineer Intern"\}/),
+    ).toBeNull()
   })
 
   test("calls onMarkRead only for unread notifications", () => {

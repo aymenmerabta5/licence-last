@@ -95,7 +95,9 @@ describe("src/server/orpc/routes/students", () => {
   })
 
   test("getStudentProfileProcedure forbids students from reading other profiles", async () => {
-    const { getStudentProfileProcedure } = await import("@/server/orpc/routes/students")
+    const { getStudentProfileProcedure } = await import(
+      "@/server/orpc/routes/students"
+    )
 
     await expect(
       callProcedure(getStudentProfileProcedure, {
@@ -109,7 +111,9 @@ describe("src/server/orpc/routes/students", () => {
   })
 
   test("upsertStudentProfileProcedure revalidates student profile tags", async () => {
-    const { upsertStudentProfileProcedure } = await import("@/server/orpc/routes/students")
+    const { upsertStudentProfileProcedure } = await import(
+      "@/server/orpc/routes/students"
+    )
 
     const result = await callProcedure(upsertStudentProfileProcedure, {
       input: {
@@ -130,7 +134,9 @@ describe("src/server/orpc/routes/students", () => {
   })
 
   test("getPublicStudentProfileProcedure allows company admins", async () => {
-    const { getPublicStudentProfileProcedure } = await import("@/server/orpc/routes/students")
+    const { getPublicStudentProfileProcedure } = await import(
+      "@/server/orpc/routes/students"
+    )
 
     const result = await callProcedure(getPublicStudentProfileProcedure, {
       input: { userId: "student-1" },
@@ -145,12 +151,16 @@ describe("src/server/orpc/routes/students", () => {
   })
 
   test("upsertStudentProfileProcedure forwards languages when language feature is enabled", async () => {
-    isFeatureEnabledMock.mockImplementation((flag: keyof typeof featureFlagsState) => {
-      if (flag === "LANGUAGE_REQUIREMENTS") return true
-      return featureFlagsState[flag]
-    })
+    isFeatureEnabledMock.mockImplementation(
+      (flag: keyof typeof featureFlagsState) => {
+        if (flag === "LANGUAGE_REQUIREMENTS") return true
+        return featureFlagsState[flag]
+      },
+    )
 
-    const { upsertStudentProfileProcedure } = await import("@/server/orpc/routes/students")
+    const { upsertStudentProfileProcedure } = await import(
+      "@/server/orpc/routes/students"
+    )
 
     await callProcedure(upsertStudentProfileProcedure, {
       input: {
@@ -170,12 +180,16 @@ describe("src/server/orpc/routes/students", () => {
   })
 
   test("upsertStudentProfileProcedure requires languages when language feature is enabled", async () => {
-    isFeatureEnabledMock.mockImplementation((flag: keyof typeof featureFlagsState) => {
-      if (flag === "LANGUAGE_REQUIREMENTS") return true
-      return featureFlagsState[flag]
-    })
+    isFeatureEnabledMock.mockImplementation(
+      (flag: keyof typeof featureFlagsState) => {
+        if (flag === "LANGUAGE_REQUIREMENTS") return true
+        return featureFlagsState[flag]
+      },
+    )
 
-    const { upsertStudentProfileProcedure } = await import("@/server/orpc/routes/students")
+    const { upsertStudentProfileProcedure } = await import(
+      "@/server/orpc/routes/students"
+    )
 
     await expect(
       callProcedure(upsertStudentProfileProcedure, {

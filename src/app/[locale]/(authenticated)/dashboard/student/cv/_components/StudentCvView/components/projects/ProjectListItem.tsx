@@ -1,10 +1,8 @@
 "use client"
 
 import { Link2, Pencil, Trash2 } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-
 import type { StudentCvProject } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/types"
+import { Button } from "@/components/ui/button"
 
 interface ProjectListItemProps {
   project: StudentCvProject
@@ -24,7 +22,9 @@ export function ProjectListItem({
       <div className="flex items-start justify-between gap-3">
         <div>
           <h4 className="text-sm font-semibold text-heading">{project.name}</h4>
-          <p className="text-xs text-muted-foreground line-clamp-2">{project.summary}</p>
+          <p className="text-xs text-muted-foreground line-clamp-2">
+            {project.summary}
+          </p>
         </div>
         <div className="flex items-center gap-1">
           <Button

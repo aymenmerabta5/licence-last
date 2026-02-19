@@ -6,7 +6,10 @@
  * @param fallback - Default message if extraction fails
  * @returns A displayable error message string
  */
-export function getErrorMessage(err: unknown, fallback = "An error occurred"): string {
+export function getErrorMessage(
+  err: unknown,
+  fallback = "An error occurred",
+): string {
   if (err instanceof Error) return err.message
 
   if (err && typeof err === "object") {

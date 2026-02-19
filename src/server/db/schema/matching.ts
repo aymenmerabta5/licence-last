@@ -1,7 +1,13 @@
-import { pgTable, text, timestamp, integer, jsonb, index } from "drizzle-orm/pg-core"
-
-import { internshipOffer } from "@/server/db/schema/internships"
+import {
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core"
 import { user } from "@/server/db/schema/auth"
+import { internshipOffer } from "@/server/db/schema/internships"
 
 export const studentOfferReadinessSnapshot = pgTable(
   "student_offer_readiness_snapshot",
@@ -24,7 +30,9 @@ export const studentOfferReadinessSnapshot = pgTable(
       table.studentUserId,
       table.offerId,
     ),
-    index("student_offer_readiness_snapshot_capturedAt_idx").on(table.capturedAt),
+    index("student_offer_readiness_snapshot_capturedAt_idx").on(
+      table.capturedAt,
+    ),
     index("student_offer_readiness_snapshot_offerId_idx").on(table.offerId),
   ],
 )

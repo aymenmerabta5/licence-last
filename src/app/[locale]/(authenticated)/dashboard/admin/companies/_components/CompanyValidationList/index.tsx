@@ -1,11 +1,11 @@
 "use client"
 
-import { useCompanyValidation } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/hooks/useCompanyValidation"
-import { useCompanyValidationState } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/hooks/useCompanyValidationState"
-import { CompanyValidationHeader } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyValidationHeader"
 import { CompanyStatusFilter } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyStatusFilter"
 import { CompanyValidationContent } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyValidationContent"
+import { CompanyValidationHeader } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyValidationHeader"
 import { RejectDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/RejectDialog"
+import { useCompanyValidation } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/hooks/useCompanyValidation"
+import { useCompanyValidationState } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/hooks/useCompanyValidationState"
 
 export function CompanyValidationList() {
   const {

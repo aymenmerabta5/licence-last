@@ -1,13 +1,11 @@
 "use client"
 
-import { useMemo, useState } from "react"
 import { Search, X } from "lucide-react"
-
-import { Input } from "@/components/ui/input"
-
-import type { SkillOption } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/types"
+import { useMemo, useState } from "react"
 import { FilterSection } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/FilterSection"
 import { SkillCheckbox } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/SkillCheckbox"
+import type { SkillOption } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/types"
+import { Input } from "@/components/ui/input"
 
 interface SkillsFilterProps {
   skills: SkillOption[]
@@ -121,4 +119,3 @@ export function SkillsFilter({
     </FilterSection>
   )
 }
-

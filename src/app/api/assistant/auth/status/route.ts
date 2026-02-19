@@ -1,7 +1,6 @@
-import { headers } from "next/headers"
-import { eq } from "drizzle-orm"
-
 import Arcade from "@arcadeai/arcadejs"
+import { eq } from "drizzle-orm"
+import { headers } from "next/headers"
 
 import { env } from "@/env"
 import { auth } from "@/lib/auth"

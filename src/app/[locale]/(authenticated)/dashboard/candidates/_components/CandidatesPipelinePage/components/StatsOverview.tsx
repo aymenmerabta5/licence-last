@@ -1,6 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
 import type { CandidatesDashboardTranslations } from "@/app/[locale]/(authenticated)/dashboard/candidates/_components/CandidatesPipelinePage/types"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface StatsOverviewProps {
   offersCount: number
@@ -35,7 +34,9 @@ export function StatsOverview({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="font-serif text-3xl text-heading">{activeOffersCount}</div>
+          <div className="font-serif text-3xl text-heading">
+            {activeOffersCount}
+          </div>
         </CardContent>
       </Card>
 
@@ -46,7 +47,9 @@ export function StatsOverview({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="font-serif text-3xl text-primary">{totalCandidates}</div>
+          <div className="font-serif text-3xl text-primary">
+            {totalCandidates}
+          </div>
         </CardContent>
       </Card>
     </div>

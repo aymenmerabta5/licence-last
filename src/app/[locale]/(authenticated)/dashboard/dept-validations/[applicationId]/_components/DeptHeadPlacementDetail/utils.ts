@@ -1,6 +1,8 @@
 import type { DeptHeadPlacementApplication } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/[applicationId]/_components/DeptHeadPlacementDetail/types"
 
-export function buildValidationSummaryInput(application: DeptHeadPlacementApplication) {
+export function buildValidationSummaryInput(
+  application: DeptHeadPlacementApplication,
+) {
   return {
     id: application.id,
     createdAt: application.createdAt,

@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 mock.module("@react-pdf/renderer", () => ({
   renderToBuffer: mock(async () => new Uint8Array()),
@@ -31,7 +31,9 @@ describe("src/server/services/documents/generate-certificate", () => {
   })
 
   test("should throw when placement does not exist", async () => {
-    const { generateCertificate } = await import("@/server/services/documents/generate-certificate")
+    const { generateCertificate } = await import(
+      "@/server/services/documents/generate-certificate"
+    )
     await expect(generateCertificate({ placementId: "p-1" })).rejects.toThrow(
       "Placement not found",
     )

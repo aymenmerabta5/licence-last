@@ -1,8 +1,8 @@
 import "server-only"
 
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { notification } from "@/server/db/schema/notifications"
+import { createModuleLogger } from "@/server/logging"
 import {
   getNotificationPreferences,
   type NotificationPreferences,
@@ -44,6 +44,14 @@ export async function createNotification(input: CreateNotificationInput) {
     payload: input.payload ?? {},
   })
 
-  log.info({ notificationId: id, userId: input.userId, type: input.type, event: "notification_created" }, "Notification created")
+  log.info(
+    {
+      notificationId: id,
+      userId: input.userId,
+      type: input.type,
+      event: "notification_created",
+    },
+    "Notification created",
+  )
   return { id, skipped: false }
 }

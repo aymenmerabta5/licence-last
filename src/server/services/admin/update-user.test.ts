@@ -1,11 +1,14 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const mockAdminUpdateUser = mock(() =>
   Promise.resolve({ user: { id: "u1", name: "Updated" } }),
 )
 const mockHeaders = mock(() => Promise.resolve(new Headers()))
 
-mock.module("@/lib/auth", () => ({ auth: { api: {} }, pendingWelcomeEmails: new Map() }))
+mock.module("@/lib/auth", () => ({
+  auth: { api: {} },
+  pendingWelcomeEmails: new Map(),
+}))
 
 describe("updateUser", () => {
   beforeEach(() => {
@@ -13,8 +16,17 @@ describe("updateUser", () => {
   })
 
   test("should call auth.api.adminUpdateUser with userId and data", async () => {
-    const { updateUser } = await import("@/server/services/admin/update-user?fresh=1")
-    await updateUser("user-1", { name: "New Name" }, { authApi: { adminUpdateUser: mockAdminUpdateUser }, getHeaders: mockHeaders })
+    const { updateUser } = await import(
+      "@/server/services/admin/update-user?fresh=1"
+    )
+    await updateUser(
+      "user-1",
+      { name: "New Name" },
+      {
+        authApi: { adminUpdateUser: mockAdminUpdateUser },
+        getHeaders: mockHeaders,
+      },
+    )
 
     const call = (mockAdminUpdateUser.mock.calls as unknown[][])[0][0] as {
       body: { userId?: string; data: { name?: string } }
@@ -24,8 +36,17 @@ describe("updateUser", () => {
   })
 
   test("should pass email in data when provided", async () => {
-    const { updateUser } = await import("@/server/services/admin/update-user?fresh=2")
-    await updateUser("user-1", { email: "new@example.com" }, { authApi: { adminUpdateUser: mockAdminUpdateUser }, getHeaders: mockHeaders })
+    const { updateUser } = await import(
+      "@/server/services/admin/update-user?fresh=2"
+    )
+    await updateUser(
+      "user-1",
+      { email: "new@example.com" },
+      {
+        authApi: { adminUpdateUser: mockAdminUpdateUser },
+        getHeaders: mockHeaders,
+      },
+    )
 
     const call = (mockAdminUpdateUser.mock.calls as unknown[][])[0][0] as {
       body: { data: { email?: string } }
@@ -34,8 +55,17 @@ describe("updateUser", () => {
   })
 
   test("should pass role in data when provided", async () => {
-    const { updateUser } = await import("@/server/services/admin/update-user?fresh=3")
-    await updateUser("user-1", { role: "company_admin" }, { authApi: { adminUpdateUser: mockAdminUpdateUser }, getHeaders: mockHeaders })
+    const { updateUser } = await import(
+      "@/server/services/admin/update-user?fresh=3"
+    )
+    await updateUser(
+      "user-1",
+      { role: "company_admin" },
+      {
+        authApi: { adminUpdateUser: mockAdminUpdateUser },
+        getHeaders: mockHeaders,
+      },
+    )
 
     const call = (mockAdminUpdateUser.mock.calls as unknown[][])[0][0] as {
       body: { data: { role?: string } }
@@ -44,8 +74,17 @@ describe("updateUser", () => {
   })
 
   test("should return result from auth API", async () => {
-    const { updateUser } = await import("@/server/services/admin/update-user?fresh=4")
-    const result = await updateUser("user-1", { name: "X" }, { authApi: { adminUpdateUser: mockAdminUpdateUser }, getHeaders: mockHeaders })
+    const { updateUser } = await import(
+      "@/server/services/admin/update-user?fresh=4"
+    )
+    const result = await updateUser(
+      "user-1",
+      { name: "X" },
+      {
+        authApi: { adminUpdateUser: mockAdminUpdateUser },
+        getHeaders: mockHeaders,
+      },
+    )
     expect(result).toEqual({ user: { id: "u1", name: "Updated" } })
   })
 })

@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockInsert = mock(() => ({}) as any)
@@ -9,9 +9,11 @@ const mockTx = {
   insert: mockInsert,
 }
 
-const mockTransaction = mock(async (fn: (tx: typeof mockTx) => Promise<void>) => {
-  await fn(mockTx)
-})
+const mockTransaction = mock(
+  async (fn: (tx: typeof mockTx) => Promise<void>) => {
+    await fn(mockTx)
+  },
+)
 
 mock.module("@/server/db", () => ({
   db: {

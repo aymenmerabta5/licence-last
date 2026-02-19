@@ -1,11 +1,10 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Briefcase, MapPin } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import { SelectField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYAS } from "@/lib/wilayas"
-import { SelectField } from "@/components/form-fields"
 
 interface DetailsTypeLocationFieldsProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useLocale, useTranslations } from "next-intl"
+import { useState } from "react"
 import { toast } from "sonner"
 
 import { orpc } from "@/server/orpc/client"
@@ -33,12 +33,14 @@ function downloadPdf(pdfBase64: string, fileName: string) {
 export function useDocuments() {
   const locale = useLocale()
   const t = useTranslations("dashboard.documents")
-  const [downloadingDocumentId, setDownloadingDocumentId] = useState<string | null>(
-    null,
-  )
+  const [downloadingDocumentId, setDownloadingDocumentId] = useState<
+    string | null
+  >(null)
 
   const documentsQuery = useQuery(orpc.documents.listByStudent.queryOptions())
-  const downloadMutation = useMutation(orpc.documents.download.mutationOptions())
+  const downloadMutation = useMutation(
+    orpc.documents.download.mutationOptions(),
+  )
 
   const handleDownload = async (documentId: string) => {
     setDownloadingDocumentId(documentId)

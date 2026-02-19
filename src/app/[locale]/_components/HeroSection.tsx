@@ -18,9 +18,13 @@ export function HeroSection() {
   const headline = t("hero.headline")
   const headlineHighlight = t("hero.headlineHighlight")
   const highlightIndex =
-    headlineHighlight.trim().length > 0 ? headline.indexOf(headlineHighlight) : -1
+    headlineHighlight.trim().length > 0
+      ? headline.indexOf(headlineHighlight)
+      : -1
   const hasHighlight = highlightIndex !== -1
-  const headlineBefore = hasHighlight ? headline.slice(0, highlightIndex) : headline
+  const headlineBefore = hasHighlight
+    ? headline.slice(0, highlightIndex)
+    : headline
   const headlineAfter = hasHighlight
     ? headline.slice(highlightIndex + headlineHighlight.length)
     : ""

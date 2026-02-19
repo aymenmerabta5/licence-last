@@ -1,8 +1,8 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Loader2, X } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
+
 interface SessionItem {
   id: string
   token: string
@@ -28,7 +28,12 @@ interface SessionsTableProps {
   isRevoking: boolean
 }
 
-export function SessionsTable({ sessions, isLoading, onRevoke, isRevoking }: SessionsTableProps) {
+export function SessionsTable({
+  sessions,
+  isLoading,
+  onRevoke,
+  isRevoking,
+}: SessionsTableProps) {
   const t = useTranslations("dashboard.superAdmin.userDetail")
 
   if (isLoading) {
@@ -59,7 +64,10 @@ export function SessionsTable({ sessions, isLoading, onRevoke, isRevoking }: Ses
         <TableBody>
           {sessions.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={5} className="text-center py-8 text-sm text-muted-foreground">
+              <TableCell
+                colSpan={5}
+                className="text-center py-8 text-sm text-muted-foreground"
+              >
                 {t("sessions.none")}
               </TableCell>
             </TableRow>

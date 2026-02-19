@@ -1,22 +1,19 @@
-"use client";
+"use client"
 
-import { ChevronDown } from "lucide-react";
-import { useTranslations } from "next-intl";
-import * as motion from "motion/react-client";
-
-import type { UIMessage } from "ai";
-
-import { Button } from "@/components/ui/button";
-import { reveal, ease } from "@/lib/animations";
-
-import { ConversationComposer } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ConversationComposer";
-import { MessageBubble } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/MessageBubble";
-import { useConversationThread } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/hooks/useConversationThread";
+import type { UIMessage } from "ai"
+import { ChevronDown } from "lucide-react"
+import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
+import { ConversationComposer } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ConversationComposer"
+import { MessageBubble } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/MessageBubble"
+import { useConversationThread } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/hooks/useConversationThread"
+import { Button } from "@/components/ui/button"
+import { ease, reveal } from "@/lib/animations"
 
 interface ConversationThreadProps {
-  conversationId: string;
-  initialMessages: UIMessage[];
-  messageCreatedAtById: Record<string, string | Date | undefined>;
+  conversationId: string
+  initialMessages: UIMessage[]
+  messageCreatedAtById: Record<string, string | Date | undefined>
 }
 
 function TypingIndicator() {
@@ -43,7 +40,7 @@ function TypingIndicator() {
         />
       </div>
     </div>
-  );
+  )
 }
 
 export function ConversationThread({
@@ -51,7 +48,7 @@ export function ConversationThread({
   initialMessages,
   messageCreatedAtById,
 }: ConversationThreadProps) {
-  const t = useTranslations("dashboard.assistant");
+  const t = useTranslations("dashboard.assistant")
 
   const {
     messages,
@@ -72,7 +69,7 @@ export function ConversationThread({
     handleSubmit,
     handleKeyDown,
     handleTextareaChange,
-  } = useConversationThread({ conversationId, initialMessages });
+  } = useConversationThread({ conversationId, initialMessages })
 
   return (
     <div className="flex flex-col h-full min-h-0">
@@ -153,5 +150,5 @@ export function ConversationThread({
         onStop={stop}
       />
     </div>
-  );
+  )
 }

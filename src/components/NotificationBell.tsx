@@ -1,11 +1,7 @@
 "use client"
 
-import { Bell, CheckCheck } from "lucide-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-
-import { Link } from "@/i18n/routing"
-import { formatNotification } from "@/lib/notifications"
-import { orpc } from "@/server/orpc/client"
+import { Bell, CheckCheck } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +11,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Link } from "@/i18n/routing"
+import { formatNotification } from "@/lib/notifications"
+import { orpc } from "@/server/orpc/client"
 
 function formatRelative(date: Date) {
   const diffMs = Date.now() - date.getTime()
@@ -43,7 +42,9 @@ export function NotificationBell() {
     orpc.notifications.markRead.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: orpc.notifications.list.queryOptions({ input: { limit: 6 } }).queryKey,
+          queryKey: orpc.notifications.list.queryOptions({
+            input: { limit: 6 },
+          }).queryKey,
         })
       },
     }),
@@ -53,7 +54,9 @@ export function NotificationBell() {
     orpc.notifications.markAllRead.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: orpc.notifications.list.queryOptions({ input: { limit: 6 } }).queryKey,
+          queryKey: orpc.notifications.list.queryOptions({
+            input: { limit: 6 },
+          }).queryKey,
         })
       },
     }),
@@ -116,7 +119,9 @@ export function NotificationBell() {
                 >
                   <div className="flex-1 min-w-0 py-0.5">
                     <div className="flex items-center justify-between gap-3">
-                      <p className="text-xs font-medium truncate">{formatted.title}</p>
+                      <p className="text-xs font-medium truncate">
+                        {formatted.title}
+                      </p>
                       <span className="text-[10px] text-muted-foreground shrink-0">
                         {formatRelative(new Date(n.createdAt))}
                       </span>
@@ -138,7 +143,10 @@ export function NotificationBell() {
 
         <DropdownMenuSeparator className="my-1 opacity-50" />
         <DropdownMenuItem className="rounded-lg cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">
-          <Link href={"/dashboard/notifications" as "/dashboard"} className="w-full text-xs">
+          <Link
+            href={"/dashboard/notifications" as "/dashboard"}
+            className="w-full text-xs"
+          >
             View all
           </Link>
         </DropdownMenuItem>

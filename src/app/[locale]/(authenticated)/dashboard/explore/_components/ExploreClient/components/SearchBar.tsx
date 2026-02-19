@@ -1,8 +1,6 @@
+import { Search, SlidersHorizontal, X } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Search, SlidersHorizontal, X } from "lucide-react"
-
-import { reveal, ease } from "@/lib/animations"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -12,6 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { ease, reveal } from "@/lib/animations"
 
 interface SearchBarProps {
   keyword: string

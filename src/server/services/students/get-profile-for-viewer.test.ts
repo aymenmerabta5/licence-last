@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
@@ -78,13 +78,17 @@ describe("src/server/services/students/get-profile-for-viewer", () => {
       address: "Addr",
     }
 
-    const skills = [{ id: "s1", name: "React", slug: "react", category: "frontend" }]
+    const skills = [
+      { id: "s1", name: "React", slug: "react", category: "frontend" },
+    ]
 
     mockSelectResults.push([mockUser], [profileRow])
     mockJoinWhere.mockResolvedValue(skills)
     mockLanguagesWhere.mockResolvedValue([])
 
-    const { getStudentProfileForViewer } = await import("@/server/services/students/get-profile-for-viewer")
+    const { getStudentProfileForViewer } = await import(
+      "@/server/services/students/get-profile-for-viewer"
+    )
     const result = await getStudentProfileForViewer({
       viewer: { id: "user-1", role: "student" },
       targetUserId: "user-1",
@@ -125,7 +129,9 @@ describe("src/server/services/students/get-profile-for-viewer", () => {
     mockJoinWhere.mockResolvedValue([])
     mockLanguagesWhere.mockResolvedValue([])
 
-    const { getStudentProfileForViewer } = await import("@/server/services/students/get-profile-for-viewer")
+    const { getStudentProfileForViewer } = await import(
+      "@/server/services/students/get-profile-for-viewer"
+    )
     const result = await getStudentProfileForViewer({
       viewer: { id: "viewer-2", role: "company_admin" },
       targetUserId: "user-1",
@@ -153,7 +159,9 @@ describe("src/server/services/students/get-profile-for-viewer", () => {
 
     mockSelectResults.push([mockUser], []) // no profile row
 
-    const { getStudentProfileForViewer } = await import("@/server/services/students/get-profile-for-viewer")
+    const { getStudentProfileForViewer } = await import(
+      "@/server/services/students/get-profile-for-viewer"
+    )
     const result = await getStudentProfileForViewer({
       viewer: { id: "viewer-2", role: "student" },
       targetUserId: "user-1",
@@ -164,4 +172,3 @@ describe("src/server/services/students/get-profile-for-viewer", () => {
     expect(result?.skills).toEqual([])
   })
 })
-

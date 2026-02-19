@@ -1,7 +1,8 @@
 import "server-only"
 
+import type { UIMessage } from "ai"
 import { eq } from "drizzle-orm"
-
+import type { PersistenceResult } from "@/server/ai/types"
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
 import { getAssistantConversationByIdForCompany } from "@/server/services/assistant/get"
@@ -10,9 +11,6 @@ import {
   getLatestAssistantMessage,
 } from "@/server/services/assistant/messages"
 import { extractTextFromParts } from "@/server/services/assistant/utils"
-
-import type { PersistenceResult } from "@/server/ai/types"
-import type { UIMessage } from "ai"
 
 interface ResolvePersistenceParams {
   role: string
@@ -29,7 +27,10 @@ export async function resolvePersistence({
 }: ResolvePersistenceParams): Promise<PersistenceResult | null> {
   // Persist only for the free-form Company Admin assistant chat
   const shouldPersist =
-    role === "company_admin" && intent === null && conversationId !== null && conversationId.length > 0
+    role === "company_admin" &&
+    intent === null &&
+    conversationId !== null &&
+    conversationId.length > 0
 
   if (!shouldPersist) {
     return null

@@ -59,7 +59,9 @@ export async function updateStudentExperience(
       organization: input.organization?.trim() ?? existing.organization,
       description:
         input.description !== undefined
-          ? (input.description?.trim() ? input.description.trim() : null)
+          ? input.description?.trim()
+            ? input.description.trim()
+            : null
           : existing.description,
       startDate: nextStartDate,
       endDate: nextIsCurrent ? null : nextEndDate,

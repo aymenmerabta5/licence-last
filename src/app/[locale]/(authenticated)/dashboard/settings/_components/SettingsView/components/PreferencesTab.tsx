@@ -1,14 +1,13 @@
-import { useTheme } from "next-themes"
 import { Check, Monitor, Moon, Palette, Sun } from "lucide-react"
-import { cn } from "@/lib/utils"
-
+import { useTheme } from "next-themes"
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 const THEMES = [
   {
@@ -111,12 +110,23 @@ export function PreferencesTab() {
                     )}
                   >
                     <div className="p-3 h-full flex flex-col gap-2">
-                      <div className={cn("h-1.5 w-8 rounded-full", t.preview.bar)} />
-                      <div className={cn("h-1 w-12 rounded-full", t.preview.text)} />
+                      <div
+                        className={cn("h-1.5 w-8 rounded-full", t.preview.bar)}
+                      />
+                      <div
+                        className={cn("h-1 w-12 rounded-full", t.preview.text)}
+                      />
                       <div className="flex-1" />
                       <div className="flex gap-1.5">
-                        <div className={cn("h-2 w-6 rounded-sm", t.preview.accent)} />
-                        <div className={cn("h-2 w-10 rounded-sm opacity-40", t.preview.text)} />
+                        <div
+                          className={cn("h-2 w-6 rounded-sm", t.preview.accent)}
+                        />
+                        <div
+                          className={cn(
+                            "h-2 w-10 rounded-sm opacity-40",
+                            t.preview.text,
+                          )}
+                        />
                       </div>
                     </div>
                   </div>

@@ -1,13 +1,13 @@
+import * as path from "node:path"
 import {
   Document,
+  Font,
+  Image,
   Page,
+  StyleSheet,
   Text,
   View,
-  Image,
-  StyleSheet,
-  Font,
 } from "@react-pdf/renderer"
-import * as path from "node:path"
 
 // Register fonts from local TTF files (CDN URLs are unreliable)
 const fontsDir = path.join(process.cwd(), "node_modules/dejavu-fonts-ttf/ttf")
@@ -139,7 +139,9 @@ export function InternshipCertificateTemplate({
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <Text style={styles.title}>{title}</Text>
-          <Text style={styles.subtitle}>{data.universityName || "University"}</Text>
+          <Text style={styles.subtitle}>
+            {data.universityName || "University"}
+          </Text>
         </View>
 
         <View style={styles.body}>
@@ -152,8 +154,7 @@ export function InternshipCertificateTemplate({
           </Text>
 
           <Text style={styles.block}>
-            <Text style={styles.strong}>{data.studentName}</Text>
-            {" "}
+            <Text style={styles.strong}>{data.studentName}</Text>{" "}
             {locale === "fr"
               ? "a effectue un stage au sein de"
               : locale === "ar"
@@ -177,8 +178,7 @@ export function InternshipCertificateTemplate({
               : locale === "ar"
                 ? "الفترة:"
                 : "Period:"}{" "}
-            <Text style={styles.strong}>{formatDate(data.startDate)}</Text>
-            {" "}
+            <Text style={styles.strong}>{formatDate(data.startDate)}</Text>{" "}
             {locale === "fr" ? "au" : locale === "ar" ? "إلى" : "to"}{" "}
             <Text style={styles.strong}>{formatDate(data.endDate)}</Text>
           </Text>

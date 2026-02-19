@@ -1,13 +1,12 @@
 "use client"
 
-import { useState } from "react"
 import type { InfiniteData } from "@tanstack/react-query"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { useState } from "react"
 import { toast } from "sonner"
-
-import { canTransitionStage } from "@/lib/constants/pipeline"
 import type { PipelineStage } from "@/lib/constants/pipeline"
+import { canTransitionStage } from "@/lib/constants/pipeline"
 import { orpcClient } from "@/server/orpc/client"
 import type { ListApplicationsByOfferResult } from "@/server/services/applications/list-by-offer"
 
@@ -27,7 +26,9 @@ export function useCandidateStageMutation({
 }: UseCandidateStageMutationParams) {
   const t = useTranslations("dashboard.company.candidates")
   const queryClient = useQueryClient()
-  const [pendingStageById, setPendingStageById] = useState<Record<string, true>>({})
+  const [pendingStageById, setPendingStageById] = useState<
+    Record<string, true>
+  >({})
 
   const stageMutation = useMutation({
     mutationFn: ({
@@ -36,7 +37,8 @@ export function useCandidateStageMutation({
     }: {
       applicationId: string
       toStage: PipelineStage
-    }) => orpcClient.applications.updatePipelineStage({ applicationId, toStage }),
+    }) =>
+      orpcClient.applications.updatePipelineStage({ applicationId, toStage }),
     onMutate: async ({ applicationId, toStage }) => {
       setPendingStageById((prev) => ({ ...prev, [applicationId]: true }))
       await queryClient.cancelQueries({ queryKey: applicationsQueryKey })
@@ -62,8 +64,11 @@ export function useCandidateStageMutation({
       toast.error(t("stageUpdateFailed"))
     },
     onSettled: (_data, _error, variables, context) => {
-      const settledApplicationId = context?.applicationId ?? variables.applicationId
-      setPendingStageById((prev) => removePendingStage(prev, settledApplicationId))
+      const settledApplicationId =
+        context?.applicationId ?? variables.applicationId
+      setPendingStageById((prev) =>
+        removePendingStage(prev, settledApplicationId),
+      )
       queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
     },
   })
@@ -71,7 +76,11 @@ export function useCandidateStageMutation({
   const handleStageChange = (applicationId: string, toStage: PipelineStage) => {
     const fromStage = applicationStageById.get(applicationId)
 
-    if (!fromStage || fromStage === toStage || pendingStageById[applicationId]) {
+    if (
+      !fromStage ||
+      fromStage === toStage ||
+      pendingStageById[applicationId]
+    ) {
       return
     }
     if (!canTransitionStage(fromStage, toStage)) {

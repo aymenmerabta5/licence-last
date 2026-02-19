@@ -25,9 +25,7 @@ export function StatsBar() {
             className="py-8 px-6 text-center transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
             style={{
               borderInlineEnd:
-                i < stats.length - 1
-                  ? "1px solid var(--border)"
-                  : "none",
+                i < stats.length - 1 ? "1px solid var(--border)" : "none",
             }}
           >
             <div className="font-serif text-4xl mb-1 text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">

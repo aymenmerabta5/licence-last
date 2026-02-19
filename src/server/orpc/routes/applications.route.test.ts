@@ -131,7 +131,9 @@ describe("src/server/orpc/routes/applications", () => {
   })
 
   test("applyToOfferProcedure revalidates student tags", async () => {
-    const { applyToOfferProcedure } = await import("@/server/orpc/routes/applications")
+    const { applyToOfferProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
 
     const result = await callProcedure(applyToOfferProcedure, {
       input: { offerId: "offer-1", coverLetter: "hello" },
@@ -145,10 +147,15 @@ describe("src/server/orpc/routes/applications", () => {
 
   test("applyToOfferProcedure maps typed application errors", async () => {
     applyToOfferMock.mockRejectedValueOnce(
-      new ApplicationServiceError("OFFER_FULL", "All positions have been filled"),
+      new ApplicationServiceError(
+        "OFFER_FULL",
+        "All positions have been filled",
+      ),
     )
 
-    const { applyToOfferProcedure } = await import("@/server/orpc/routes/applications")
+    const { applyToOfferProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
 
     await expect(
       callProcedure(applyToOfferProcedure, {
@@ -164,7 +171,9 @@ describe("src/server/orpc/routes/applications", () => {
   test("applyToOfferProcedure maps unknown errors to internal", async () => {
     applyToOfferMock.mockRejectedValueOnce(new Error("boom"))
 
-    const { applyToOfferProcedure } = await import("@/server/orpc/routes/applications")
+    const { applyToOfferProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
 
     await expect(
       callProcedure(applyToOfferProcedure, {
@@ -178,10 +187,15 @@ describe("src/server/orpc/routes/applications", () => {
 
   test("withdrawApplicationProcedure maps typed application errors", async () => {
     withdrawApplicationMock.mockRejectedValueOnce(
-      new ApplicationServiceError("APPLICATION_NOT_FOUND", "Application not found"),
+      new ApplicationServiceError(
+        "APPLICATION_NOT_FOUND",
+        "Application not found",
+      ),
     )
 
-    const { withdrawApplicationProcedure } = await import("@/server/orpc/routes/applications")
+    const { withdrawApplicationProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
 
     await expect(
       callProcedure(withdrawApplicationProcedure, {
@@ -196,10 +210,15 @@ describe("src/server/orpc/routes/applications", () => {
 
   test("listByOfferProcedure maps typed offer ownership errors", async () => {
     listApplicationsByOfferMock.mockRejectedValueOnce(
-      new ApplicationServiceError("OFFER_FORBIDDEN", "You do not have access to this offer"),
+      new ApplicationServiceError(
+        "OFFER_FORBIDDEN",
+        "You do not have access to this offer",
+      ),
     )
 
-    const { listByOfferProcedure } = await import("@/server/orpc/routes/applications")
+    const { listByOfferProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
 
     await expect(
       callProcedure(listByOfferProcedure, {
@@ -214,15 +233,23 @@ describe("src/server/orpc/routes/applications", () => {
 
   test("updatePipelineStageProcedure maps typed pipeline state errors", async () => {
     updatePipelineStageMock.mockRejectedValueOnce(
-      new ApplicationServiceError("APPLICATION_INVALID_STATE", "Invalid stage transition"),
+      new ApplicationServiceError(
+        "APPLICATION_INVALID_STATE",
+        "Invalid stage transition",
+      ),
     )
 
-    const { updatePipelineStageProcedure } = await import("@/server/orpc/routes/applications")
+    const { updatePipelineStageProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
 
     await expect(
       callProcedure(updatePipelineStageProcedure, {
         input: { applicationId: "app-1", toStage: "interview" },
-        context: { user: { id: "user-1" }, companyMembership: { companyId: "company-1" } },
+        context: {
+          user: { id: "user-1" },
+          companyMembership: { companyId: "company-1" },
+        },
       }),
     ).rejects.toMatchObject({
       code: "BAD_REQUEST",
@@ -231,12 +258,16 @@ describe("src/server/orpc/routes/applications", () => {
   })
 
   test("getTimelineProcedure returns timeline for the owning student", async () => {
-    dbLimitQueue.push([{ id: "app-1", studentUserId: "student-1", companyId: "company-1" }])
+    dbLimitQueue.push([
+      { id: "app-1", studentUserId: "student-1", companyId: "company-1" },
+    ])
     listApplicationTimelineMock.mockResolvedValueOnce([
       { id: "evt-1", eventType: "application_created" },
     ])
 
-    const { getTimelineProcedure } = await import("@/server/orpc/routes/applications")
+    const { getTimelineProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
 
     const result = await callProcedure(getTimelineProcedure, {
       input: { applicationId: "app-1" },
@@ -248,27 +279,35 @@ describe("src/server/orpc/routes/applications", () => {
   })
 
   test("getTimelineProcedure returns timeline for company owner membership", async () => {
-    dbLimitQueue.push([{ id: "app-1", studentUserId: "student-1", companyId: "company-1" }])
+    dbLimitQueue.push([
+      { id: "app-1", studentUserId: "student-1", companyId: "company-1" },
+    ])
     dbLimitQueue.push([{ companyId: "company-1" }])
     listApplicationTimelineMock.mockResolvedValueOnce([
       { id: "evt-1", eventType: "application_status_changed" },
     ])
 
-    const { getTimelineProcedure } = await import("@/server/orpc/routes/applications")
+    const { getTimelineProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
 
     const result = await callProcedure(getTimelineProcedure, {
       input: { applicationId: "app-1" },
       context: { user: { id: "company-user-1", role: "company_admin" } },
     })
 
-    expect(result).toEqual([{ id: "evt-1", eventType: "application_status_changed" }])
+    expect(result).toEqual([
+      { id: "evt-1", eventType: "application_status_changed" },
+    ])
     expect(listApplicationTimelineMock).toHaveBeenCalledWith("app-1")
   })
 
   test("getTimelineProcedure rejects when application is missing", async () => {
     dbLimitQueue.push([])
 
-    const { getTimelineProcedure } = await import("@/server/orpc/routes/applications")
+    const { getTimelineProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
 
     await expect(
       callProcedure(getTimelineProcedure, {
@@ -282,9 +321,13 @@ describe("src/server/orpc/routes/applications", () => {
   })
 
   test("getTimelineProcedure rejects unauthorized actor", async () => {
-    dbLimitQueue.push([{ id: "app-1", studentUserId: "student-1", companyId: "company-1" }])
+    dbLimitQueue.push([
+      { id: "app-1", studentUserId: "student-1", companyId: "company-1" },
+    ])
 
-    const { getTimelineProcedure } = await import("@/server/orpc/routes/applications")
+    const { getTimelineProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
 
     await expect(
       callProcedure(getTimelineProcedure, {
@@ -298,10 +341,14 @@ describe("src/server/orpc/routes/applications", () => {
   })
 
   test("getTimelineProcedure rejects company admin with mismatched membership", async () => {
-    dbLimitQueue.push([{ id: "app-1", studentUserId: "student-1", companyId: "company-1" }])
+    dbLimitQueue.push([
+      { id: "app-1", studentUserId: "student-1", companyId: "company-1" },
+    ])
     dbLimitQueue.push([{ companyId: "company-2" }])
 
-    const { getTimelineProcedure } = await import("@/server/orpc/routes/applications")
+    const { getTimelineProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
 
     await expect(
       callProcedure(getTimelineProcedure, {
@@ -315,10 +362,14 @@ describe("src/server/orpc/routes/applications", () => {
   })
 
   test("getTimelineProcedure rejects multiple company memberships", async () => {
-    dbLimitQueue.push([{ id: "app-1", studentUserId: "student-1", companyId: "company-1" }])
+    dbLimitQueue.push([
+      { id: "app-1", studentUserId: "student-1", companyId: "company-1" },
+    ])
     dbLimitQueue.push([{ companyId: "company-1" }, { companyId: "company-2" }])
 
-    const { getTimelineProcedure } = await import("@/server/orpc/routes/applications")
+    const { getTimelineProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
 
     await expect(
       callProcedure(getTimelineProcedure, {

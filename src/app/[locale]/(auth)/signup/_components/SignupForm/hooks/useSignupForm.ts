@@ -1,13 +1,14 @@
-import { useState, useMemo, useRef } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useTranslations } from "next-intl"
-
+import { useMemo, useRef, useState } from "react"
+import type {
+  SignupFormValues,
+  SignupRole,
+} from "@/app/[locale]/(auth)/signup/_components/SignupForm/types"
+import type { CaptchaHandle } from "@/components/TurnstileWidget"
 import { authClient } from "@/lib/auth-client"
 import { createSignupSchema } from "@/lib/schemas/auth"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
-import type { CaptchaHandle } from "@/components/TurnstileWidget"
-
-import type { SignupFormValues, SignupRole } from "@/app/[locale]/(auth)/signup/_components/SignupForm/types"
 
 export type SignupFormApi = ReturnType<typeof useSignupForm>["form"]
 
@@ -49,7 +50,9 @@ export function useSignupForm(role: SignupRole) {
           fieldErrors.agreeToTerms = t("termsRequired")
         }
 
-        return Object.keys(fieldErrors).length > 0 ? { fields: fieldErrors } : undefined
+        return Object.keys(fieldErrors).length > 0
+          ? { fields: fieldErrors }
+          : undefined
       },
     },
     onSubmit: async ({ value }) => {

@@ -1,12 +1,11 @@
 "use client"
 
+import { Building2, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Building2, Loader2 } from "lucide-react"
-
-import { ease } from "@/lib/animations"
 import { CompanyCard } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyCard"
 import type { CompanyListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/types"
+import { ease } from "@/lib/animations"
 
 interface CompanyValidationContentProps {
   companies: CompanyListItem[]

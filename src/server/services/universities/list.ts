@@ -1,10 +1,9 @@
 import "server-only"
 
-import { eq, desc } from "drizzle-orm"
-
+import { desc, eq } from "drizzle-orm"
+import type { UniversityStatus } from "@/lib/schemas/enums"
 import { db } from "@/server/db"
 import { university } from "@/server/db/schema/universities"
-import type { UniversityStatus } from "@/lib/schemas/enums"
 
 export interface ListUniversitiesInput {
   status?: UniversityStatus

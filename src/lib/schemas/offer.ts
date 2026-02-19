@@ -3,8 +3,8 @@ import { z } from "zod"
 import {
   DEFAULT_OFFER_LANGUAGE_REQUIRED,
   DEFAULT_OFFER_LANGUAGE_WEIGHT,
-  LANGUAGE_CODES,
   hasDuplicateLanguageCodes,
+  LANGUAGE_CODES,
 } from "@/lib/constants/languages"
 import type { TranslationFn } from "@/lib/schemas/auth"
 import {
@@ -25,7 +25,12 @@ const offerLanguageRequirementSchema = z.object({
   languageCode: z.enum(LANGUAGE_CODES),
   minimumProficiency: proficiencyLevelSchema,
   isRequired: z.boolean().default(DEFAULT_OFFER_LANGUAGE_REQUIRED),
-  weight: z.coerce.number().int().min(1).max(5).default(DEFAULT_OFFER_LANGUAGE_WEIGHT),
+  weight: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(5)
+    .default(DEFAULT_OFFER_LANGUAGE_WEIGHT),
 })
 
 interface OfferSchemaOptions {
@@ -40,7 +45,8 @@ export function createOfferSchema(
   t: TranslationFn,
   options: OfferSchemaOptions = {},
 ) {
-  const requireLanguageRequirements = options.requireLanguageRequirements ?? true
+  const requireLanguageRequirements =
+    options.requireLanguageRequirements ?? true
   const languageRequirementsSchema = requireLanguageRequirements
     ? z
         .array(offerLanguageRequirementSchema)
@@ -77,9 +83,7 @@ export function createOfferSchema(
       applicationDeadlineAt: z.string().optional().or(z.literal("")),
       expectedStartDate: z.string().optional().or(z.literal("")),
       expectedEndDate: z.string().optional().or(z.literal("")),
-      skillTagIds: z
-        .array(z.string())
-        .max(20, { error: t("offerSkillsMax") }),
+      skillTagIds: z.array(z.string()).max(20, { error: t("offerSkillsMax") }),
       languageRequirements: languageRequirementsSchema,
     })
     .superRefine((data, ctx) => {
@@ -119,7 +123,10 @@ export function createOfferSchema(
         })
       }
 
-      if ((expectedStartDate && !expectedEndDate) || (!expectedStartDate && expectedEndDate)) {
+      if (
+        (expectedStartDate && !expectedEndDate) ||
+        (!expectedStartDate && expectedEndDate)
+      ) {
         ctx.addIssue({
           code: "custom",
           message: t("expectedPeriodBothRequired"),

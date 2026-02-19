@@ -4,9 +4,9 @@ import { and, desc, eq, inArray } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
+import { user } from "@/server/db/schema/auth"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { placement, placementDocument } from "@/server/db/schema/placements"
-import { user } from "@/server/db/schema/auth"
 
 export interface CompanyDocumentItem {
   id: string

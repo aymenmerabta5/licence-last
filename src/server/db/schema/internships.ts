@@ -1,16 +1,19 @@
 import {
+  index,
+  integer,
   pgTable,
+  primaryKey,
   text,
   timestamp,
-  integer,
-  primaryKey,
-  index,
 } from "drizzle-orm/pg-core"
-
-import { internshipTypeEnum, offerStatusEnum, workModeEnum } from "@/server/db/schema/enums"
-import { company } from "@/server/db/schema/companies"
-import { skillTag } from "@/server/db/schema/skills"
 import { user } from "@/server/db/schema/auth"
+import { company } from "@/server/db/schema/companies"
+import {
+  internshipTypeEnum,
+  offerStatusEnum,
+  workModeEnum,
+} from "@/server/db/schema/enums"
+import { skillTag } from "@/server/db/schema/skills"
 
 export const internshipOffer = pgTable(
   "internship_offer",

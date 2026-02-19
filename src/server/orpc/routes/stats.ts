@@ -9,12 +9,12 @@ import {
 import { getAdminStats } from "@/server/services/stats/get-admin-stats"
 import { getUniversityDashboardStats } from "@/server/services/stats/get-university-dashboard-stats"
 
-export const getAdminStatsProcedure = superAdminProcedureGenerous.handler(async () =>
-  getAdminStats(),
+export const getAdminStatsProcedure = superAdminProcedureGenerous.handler(
+  async () => getAdminStats(),
 )
 
-export const getUniversityDashboardStatsProcedure = adminProcedureGenerous.handler(
-  async ({ context }) => {
+export const getUniversityDashboardStatsProcedure =
+  adminProcedureGenerous.handler(async ({ context }) => {
     if (context.user.role !== "university_admin") {
       throw new ORPCError("FORBIDDEN", {
         message: "University admin access required",
@@ -28,5 +28,4 @@ export const getUniversityDashboardStatsProcedure = adminProcedureGenerous.handl
     }
 
     return getUniversityDashboardStats(context.user.universityId)
-  },
-)
+  })

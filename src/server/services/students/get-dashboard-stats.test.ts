@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockResults: any[][] = []
@@ -48,7 +48,9 @@ describe("src/server/services/students/get-dashboard-stats", () => {
     mockResults.push([{ count: 0 }])
     mockResults.push([{ count: 0 }])
 
-    const { getStudentDashboardStats } = await import("@/server/services/students/get-dashboard-stats")
+    const { getStudentDashboardStats } = await import(
+      "@/server/services/students/get-dashboard-stats"
+    )
     const result = await getStudentDashboardStats("student-1")
 
     expect(result).toEqual({
@@ -69,7 +71,9 @@ describe("src/server/services/students/get-dashboard-stats", () => {
     mockResults.push([{ count: 4 }]) // saved offers
     mockResults.push([{ count: 1 }]) // interviews
 
-    const { getStudentDashboardStats } = await import("@/server/services/students/get-dashboard-stats")
+    const { getStudentDashboardStats } = await import(
+      "@/server/services/students/get-dashboard-stats"
+    )
     const result = await getStudentDashboardStats("student-2")
 
     expect(result).toEqual({

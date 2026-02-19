@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 import { cn } from "@/lib/utils"
 
 describe("cn utility function", () => {
@@ -40,7 +40,7 @@ describe("cn utility function", () => {
         "btn",
         isPrimary && "btn-primary",
         isLarge && "btn-large",
-        isDisabled && "btn-disabled"
+        isDisabled && "btn-disabled",
       )
       expect(result).toBe("btn btn-primary btn-disabled")
     })
@@ -115,7 +115,12 @@ describe("cn utility function", () => {
     })
 
     test("should filter out 0 and false", () => {
-      const result = cn("base", 0 as unknown as string, false as unknown as string, "class1")
+      const result = cn(
+        "base",
+        0 as unknown as string,
+        false as unknown as string,
+        "class1",
+      )
       expect(result).toBe("base class1")
     })
   })
@@ -135,11 +140,11 @@ describe("cn utility function", () => {
         size === "small" && "px-3 py-1 text-sm",
         size === "large" && "px-6 py-3 text-lg",
         isDisabled && "opacity-50 cursor-not-allowed",
-        isLoading && "cursor-wait"
+        isLoading && "cursor-wait",
       )
 
       expect(result).toBe(
-        "inline-flex items-center justify-center rounded-md font-medium bg-blue-500 text-white px-6 py-3 text-lg cursor-wait"
+        "inline-flex items-center justify-center rounded-md font-medium bg-blue-500 text-white px-6 py-3 text-lg cursor-wait",
       )
     })
 
@@ -149,9 +154,11 @@ describe("cn utility function", () => {
         "grid-cols-1",
         "md:grid-cols-2",
         "lg:grid-cols-3",
-        "gap-4"
+        "gap-4",
       )
-      expect(result).toBe("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4")
+      expect(result).toBe(
+        "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4",
+      )
     })
 
     test("should merge overlapping responsive classes", () => {

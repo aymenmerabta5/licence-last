@@ -1,33 +1,32 @@
 import "server-only"
 
-import { z } from "zod"
 import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
-
+import { z } from "zod"
+import { db } from "@/server/db"
+import { user } from "@/server/db/schema/auth"
+import { createModuleLogger } from "@/server/logging"
 import {
+  authedProcedureStandard,
   authedSessionProcedureGenerous,
   authedSessionProcedureStandard,
-  authedProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
-import { getMe } from "@/server/services/users/get-me"
-import { updateMe } from "@/server/services/users/update-me"
+import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+import { isServiceError } from "@/server/services/errors"
 import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
+import { getMe } from "@/server/services/users/get-me"
 import {
   listMySessions,
   revokeMySession,
   revokeOtherSessions,
 } from "@/server/services/users/session-management"
-import { db } from "@/server/db"
-import { user } from "@/server/db/schema/auth"
+import { updateMe } from "@/server/services/users/update-me"
 import { deleteFile } from "@/server/storage/s3"
-import { createModuleLogger } from "@/server/logging"
-import { createServiceORPCError } from "@/server/orpc/utils/service-error"
-import { isServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("orpc/routes/users")
 
-export const getMeProcedure = authedSessionProcedureGenerous.handler(async ({ context }) =>
-  getMe(context.user),
+export const getMeProcedure = authedSessionProcedureGenerous.handler(
+  async ({ context }) => getMe(context.user),
 )
 
 export const updateMeProcedure = authedProcedureStandard
@@ -64,7 +63,10 @@ export const uploadAvatarProcedure = authedProcedureStandard
   .input(z.object({ file: z.file() }))
   .handler(async ({ input, context }) => {
     try {
-      const { url } = await uploadImageToS3({ file: input.file, folder: "avatars" })
+      const { url } = await uploadImageToS3({
+        file: input.file,
+        folder: "avatars",
+      })
 
       // Delete old avatar from S3 if exists
       const [current] = await db
@@ -76,8 +78,11 @@ export const uploadAvatarProcedure = authedProcedureStandard
       if (current?.image) {
         const oldKey = extractKeyFromUrl(current.image)
         if (oldKey) {
-          try { await deleteFile(oldKey) }
-          catch (err) { log.warn({ err, oldKey }, "Failed to delete old avatar") }
+          try {
+            await deleteFile(oldKey)
+          } catch (err) {
+            log.warn({ err, oldKey }, "Failed to delete old avatar")
+          }
         }
       }
 
@@ -131,8 +136,11 @@ export const deleteAvatarProcedure = authedProcedureStandard.handler(
     if (current?.image) {
       const key = extractKeyFromUrl(current.image)
       if (key) {
-        try { await deleteFile(key) }
-        catch (err) { log.warn({ err, key }, "Failed to delete avatar from S3") }
+        try {
+          await deleteFile(key)
+        } catch (err) {
+          log.warn({ err, key }, "Failed to delete avatar from S3")
+        }
       }
     }
 
@@ -180,6 +188,7 @@ export const revokeMySessionProcedure = authedSessionProcedureStandard
     return revokeMySession(input.sessionToken)
   })
 
-export const revokeOtherSessionsProcedure = authedSessionProcedureStandard.handler(
-  async ({ context }) => revokeOtherSessions(context.session.token),
-)
+export const revokeOtherSessionsProcedure =
+  authedSessionProcedureStandard.handler(async ({ context }) =>
+    revokeOtherSessions(context.session.token),
+  )

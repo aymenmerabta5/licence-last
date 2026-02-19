@@ -1,16 +1,14 @@
-import * as motion from "motion/react-client"
 import { GripVertical, Loader2, Users } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 
 import { PipelineStageColumn } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/PipelineStageColumn"
+import { type CandidateApp } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
 import { ease } from "@/lib/animations"
-import { STAGE_COLUMNS } from "@/lib/constants/pipeline"
 import type { PipelineStage } from "@/lib/constants/pipeline"
-import {
-  type CandidateApp,
-} from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
+import { STAGE_COLUMNS } from "@/lib/constants/pipeline"
 
 interface PipelineGridProps {
   applications: CandidateApp[]

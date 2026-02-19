@@ -1,16 +1,17 @@
 "use client"
 
-import { useCallback, useMemo, useRef, useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useCallback, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
-
-import { mapZodErrors } from "@/lib/schemas/map-errors"
-import { getErrorMessage } from "@/lib/error-message"
-import { orpc, orpcClient } from "@/server/orpc/client"
 import { studentProfileDetailsSchema } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/hooks/profileSettingsSchema"
-
-import type { MeResult, StudentProfileResult } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/types"
+import type {
+  MeResult,
+  StudentProfileResult,
+} from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/types"
+import { getErrorMessage } from "@/lib/error-message"
+import { mapZodErrors } from "@/lib/schemas/map-errors"
+import { orpc, orpcClient } from "@/server/orpc/client"
 
 export function useProfileSettings(
   me: MeResult,
@@ -28,7 +29,9 @@ export function useProfileSettings(
   const [successTick, setSuccessTick] = useState(0)
 
   // Avatar state
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(me.user.image ?? null)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(
+    me.user.image ?? null,
+  )
   const [isAvatarUploading, setIsAvatarUploading] = useState(false)
   const [isAvatarDeleting, setIsAvatarDeleting] = useState(false)
   const avatarInputRef = useRef<HTMLInputElement>(null)
@@ -146,7 +149,9 @@ export function useProfileSettings(
       try {
         const { url } = await orpcClient.users.uploadAvatar({ file })
         setAvatarUrl(url)
-        await queryClient.invalidateQueries({ queryKey: meQueryOptions.queryKey })
+        await queryClient.invalidateQueries({
+          queryKey: meQueryOptions.queryKey,
+        })
         toast.success("Profile photo updated.")
       } catch (err) {
         toast.error(getErrorMessage(err, "Upload failed. Please try again."))

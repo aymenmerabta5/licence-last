@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
@@ -61,4 +61,3 @@ describe("src/server/services/users/get-by-id", () => {
     expect(result).toBeNull()
   })
 })
-

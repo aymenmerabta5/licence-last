@@ -1,16 +1,20 @@
 "use client"
 
-import { useState } from "react"
 import { AlertTriangle, KeyRound, Mail, Shield } from "lucide-react"
-
+import { useState } from "react"
+import { ChangePasswordDialog } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ChangePasswordDialog"
+import { DeleteAccountDialog } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/DeleteAccountDialog"
+import { SessionManagement } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement"
+import { TwoFactorSettings } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-
-import { ChangePasswordDialog } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ChangePasswordDialog"
-import { TwoFactorSettings } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings"
-import { SessionManagement } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement"
-import { DeleteAccountDialog } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/DeleteAccountDialog"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 interface AccountSettingsTabProps {
   me:
@@ -49,7 +53,8 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
             </CardTitle>
           </div>
           <CardDescription className="font-medium ps-10">
-            Keep your account secure with strong credentials and two-factor authentication.
+            Keep your account secure with strong credentials and two-factor
+            authentication.
           </CardDescription>
         </CardHeader>
 
@@ -104,7 +109,9 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
       </Card>
 
       {/* Two-Factor Auth */}
-      <TwoFactorSettings isTwoFactorEnabled={me?.user.twoFactorEnabled ?? false} />
+      <TwoFactorSettings
+        isTwoFactorEnabled={me?.user.twoFactorEnabled ?? false}
+      />
 
       {/* Active Sessions */}
       <SessionManagement />
@@ -117,7 +124,9 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
               <AlertTriangle className="h-4 w-4 text-destructive/70" />
             </span>
             <div className="space-y-0.5">
-              <h4 className="font-bold text-sm text-destructive/80">Danger Zone</h4>
+              <h4 className="font-bold text-sm text-destructive/80">
+                Danger Zone
+              </h4>
               <p className="text-[11px] text-muted-foreground">
                 Permanently delete your account. This action cannot be undone.
               </p>

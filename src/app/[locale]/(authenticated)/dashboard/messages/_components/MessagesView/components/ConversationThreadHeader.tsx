@@ -1,9 +1,8 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
 import type {
-  MessageThread,
   MessagesRole,
+  MessageThread,
 } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface ConversationThreadHeaderProps {
   role: MessagesRole
@@ -53,7 +52,8 @@ export function ConversationThreadHeader({
             {threadTitle}
           </p>
           <p className="truncate text-xs text-muted-foreground">
-            {selectedThread?.offerTitle ?? "Select a thread to start messaging."}
+            {selectedThread?.offerTitle ??
+              "Select a thread to start messaging."}
           </p>
         </div>
       </div>

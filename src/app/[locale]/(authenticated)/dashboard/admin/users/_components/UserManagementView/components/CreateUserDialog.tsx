@@ -1,19 +1,18 @@
 "use client"
 
-import { useState } from "react"
-import { useTranslations } from "next-intl"
 import { Loader2 } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -35,9 +34,19 @@ interface CreateUserDialogProps {
   isPending: boolean
 }
 
-const roles = ["student", "company_admin", "university_admin", "super_admin"] as const
+const roles = [
+  "student",
+  "company_admin",
+  "university_admin",
+  "super_admin",
+] as const
 
-export function CreateUserDialog({ open, onOpenChange, onSubmit, isPending }: CreateUserDialogProps) {
+export function CreateUserDialog({
+  open,
+  onOpenChange,
+  onSubmit,
+  isPending,
+}: CreateUserDialogProps) {
   const t = useTranslations("dashboard.superAdmin.users")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -57,8 +66,12 @@ export function CreateUserDialog({ open, onOpenChange, onSubmit, isPending }: Cr
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-serif">{t("dialogs.create.title")}</DialogTitle>
-          <DialogDescription>{t("dialogs.create.description")}</DialogDescription>
+          <DialogTitle className="font-serif">
+            {t("dialogs.create.title")}
+          </DialogTitle>
+          <DialogDescription>
+            {t("dialogs.create.description")}
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -94,7 +107,10 @@ export function CreateUserDialog({ open, onOpenChange, onSubmit, isPending }: Cr
           </div>
           <div className="space-y-2">
             <Label>{t("fields.role")}</Label>
-            <Select value={role} onValueChange={(v) => v && setRole(v as typeof role)}>
+            <Select
+              value={role}
+              onValueChange={(v) => v && setRole(v as typeof role)}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -108,7 +124,11 @@ export function CreateUserDialog({ open, onOpenChange, onSubmit, isPending }: Cr
             </Select>
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               {t("dialogs.cancel")}
             </Button>
             <Button type="submit" disabled={isPending}>

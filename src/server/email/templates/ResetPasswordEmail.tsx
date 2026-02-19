@@ -3,8 +3,8 @@
  *   All rights reserved.
  *   Strict Notice: Unauthorized copying, use, or distribution of this code is strictly prohibited. Violators may be prosecuted and reported to law enforcement.
  */
-import { Button, Section, Text, Heading } from "@react-email/components";
-import EmailLayout from "@/server/email/templates/EmailLayout";
+import { Button, Heading, Section, Text } from "@react-email/components"
+import EmailLayout from "@/server/email/templates/EmailLayout"
 
 export default function ResetPasswordEmail({ link }: { link: string }) {
   return (
@@ -33,5 +33,5 @@ export default function ResetPasswordEmail({ link }: { link: string }) {
         </Section>
       </Section>
     </EmailLayout>
-  );
+  )
 }

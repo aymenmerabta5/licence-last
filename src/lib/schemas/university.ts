@@ -18,12 +18,8 @@ export function createUniversityOnboardingSchema(t: TranslationFn) {
       .max(58, { error: t("wilayaInvalid") }),
     city: z.string().optional(),
     address: z.string().optional(),
-    domains: z
-      .array(z.string().min(3))
-      .min(1, { error: t("domainsRequired") }),
-    departments: z
-      .array(z.object({ name: z.string().min(2) }))
-      .optional(),
+    domains: z.array(z.string().min(3)).min(1, { error: t("domainsRequired") }),
+    departments: z.array(z.object({ name: z.string().min(2) })).optional(),
   })
 }
 

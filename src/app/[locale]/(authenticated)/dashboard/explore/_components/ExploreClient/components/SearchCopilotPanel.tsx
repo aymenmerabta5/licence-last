@@ -1,14 +1,12 @@
-import * as motion from "motion/react-client"
 import { Briefcase, Laptop, MapPin, Search, Sparkles, Tag } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
+import type { FilterState } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/hooks/useOfferSearch"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { ease, reveal } from "@/lib/animations"
 import { INTERNSHIP_TYPE_LABELS } from "@/lib/constants/internship"
-import { reveal, ease } from "@/lib/animations"
 import { getWilayaName } from "@/lib/wilayas"
-
-import type { FilterState } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/hooks/useOfferSearch"
 
 interface Skill {
   id: string
@@ -95,7 +93,11 @@ export function SearchCopilotPanel({
               }`}
             />
             <span className="text-[9px] text-muted-foreground/50 uppercase tracking-wider font-medium [[dir=rtl]_&]:tracking-normal">
-              {aiStatus === "ready" ? "Ready" : isThinking ? "Thinking..." : aiStatus}
+              {aiStatus === "ready"
+                ? "Ready"
+                : isThinking
+                  ? "Thinking..."
+                  : aiStatus}
             </span>
           </div>
         </div>
@@ -126,7 +128,9 @@ export function SearchCopilotPanel({
         </div>
 
         {aiError && (
-          <p className="text-[11px] text-destructive font-medium">{aiError.message}</p>
+          <p className="text-[11px] text-destructive font-medium">
+            {aiError.message}
+          </p>
         )}
 
         {aiSuggestion && (

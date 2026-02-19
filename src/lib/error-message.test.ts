@@ -1,10 +1,12 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 
 import { getErrorMessage } from "@/lib/error-message"
 
 describe("getErrorMessage", () => {
   test("should extract message from Error instance", () => {
-    expect(getErrorMessage(new Error("something broke"))).toBe("something broke")
+    expect(getErrorMessage(new Error("something broke"))).toBe(
+      "something broke",
+    )
   })
 
   test("should extract message from object with message property", () => {

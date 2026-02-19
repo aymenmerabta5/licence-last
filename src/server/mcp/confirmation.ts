@@ -19,8 +19,8 @@ function stableStringify(value: unknown): string {
     return `[${value.map((item) => stableStringify(item)).join(",")}]`
   }
 
-  const entries = Object.entries(value as Record<string, unknown>).sort(([a], [b]) =>
-    a.localeCompare(b),
+  const entries = Object.entries(value as Record<string, unknown>).sort(
+    ([a], [b]) => a.localeCompare(b),
   )
 
   return `{${entries
@@ -63,7 +63,10 @@ export function consumeConfirmationToken(
   }
 
   if (existing.action !== action) {
-    throw new DevMcpError("INVALID_CONFIRMATION", "Confirmation token action mismatch")
+    throw new DevMcpError(
+      "INVALID_CONFIRMATION",
+      "Confirmation token action mismatch",
+    )
   }
 
   if (Date.now() > existing.expiresAt) {

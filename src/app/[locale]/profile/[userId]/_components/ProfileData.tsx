@@ -1,11 +1,10 @@
 import { notFound } from "next/navigation"
-
+import { ProfileContent } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent"
 import { requireRole } from "@/lib/auth-guards"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 import { orpcClient } from "@/server/orpc/client"
-import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
 import { getStudentCv } from "@/server/services/students/get-cv"
-import { ProfileContent } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent"
+import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
 
 interface ProfileDataProps {
   userId: string
@@ -16,16 +15,25 @@ interface ProfileDataProps {
  * Separated to support Next.js 16 cacheComponents with Suspense boundary.
  */
 export async function ProfileData({ userId }: ProfileDataProps) {
-  const viewer = await requireRole(["student", "company_admin", "university_admin", "super_admin"])
+  const viewer = await requireRole([
+    "student",
+    "company_admin",
+    "university_admin",
+    "super_admin",
+  ])
   const isOwner = viewer.id === userId && viewer.role === "student"
 
-  const result = await orpcClient.students.getPublicProfile({ userId }).catch(() => null)
+  const result = await orpcClient.students
+    .getPublicProfile({ userId })
+    .catch(() => null)
 
   if (!result) notFound()
 
   const [university, ownerStats, cvData] = await Promise.all([
     result.user.universityId
-      ? orpcClient.universities.getById({ universityId: result.user.universityId }).catch(() => null)
+      ? orpcClient.universities
+          .getById({ universityId: result.user.universityId })
+          .catch(() => null)
       : null,
     isOwner ? getStudentDashboardStats(viewer.id) : null,
     result.user.role === "student" ? getStudentCv(userId) : null,

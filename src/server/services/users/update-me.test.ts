@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockReturningResult: any[] = []
@@ -28,17 +28,31 @@ describe("src/server/services/users/update-me", () => {
   })
 
   test("should update user name and return updated data", async () => {
-    mockReturningResult = [{ id: "user-1", name: "New Name", email: "test@example.com", image: null }]
+    mockReturningResult = [
+      {
+        id: "user-1",
+        name: "New Name",
+        email: "test@example.com",
+        image: null,
+      },
+    ]
 
     const { updateMe } = await import("@/server/services/users/update-me")
     const result = await updateMe("user-1", { name: "New Name" })
 
-    expect(result).toEqual({ id: "user-1", name: "New Name", email: "test@example.com", image: null })
+    expect(result).toEqual({
+      id: "user-1",
+      name: "New Name",
+      email: "test@example.com",
+      image: null,
+    })
     expect(mockUpdate).toHaveBeenCalledTimes(1)
   })
 
   test("should allow setting name to null", async () => {
-    mockReturningResult = [{ id: "user-1", name: null, email: "test@example.com", image: null }]
+    mockReturningResult = [
+      { id: "user-1", name: null, email: "test@example.com", image: null },
+    ]
 
     const { updateMe } = await import("@/server/services/users/update-me")
     const result = await updateMe("user-1", { name: null })
@@ -51,6 +65,8 @@ describe("src/server/services/users/update-me", () => {
 
     const { updateMe } = await import("@/server/services/users/update-me")
 
-    await expect(updateMe("missing", { name: "Test" })).rejects.toThrow("User not found")
+    await expect(updateMe("missing", { name: "Test" })).rejects.toThrow(
+      "User not found",
+    )
   })
 })

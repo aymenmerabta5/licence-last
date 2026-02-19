@@ -1,12 +1,10 @@
 ﻿"use client"
 
-import { useRef } from "react"
 import { FileText, Trash2, Upload } from "lucide-react"
-
+import { useRef } from "react"
+import type { StudentCvResume } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/types"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
-import type { StudentCvResume } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/types"
 
 interface ResumeSectionProps {
   resume: StudentCvResume | null
@@ -54,9 +52,12 @@ export function ResumeSection({
           <div className="border border-border/30 p-4 space-y-3">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-heading truncate">{resume.fileName}</p>
+                <p className="text-sm font-semibold text-heading truncate">
+                  {resume.fileName}
+                </p>
                 <p className="text-xs text-muted-foreground">
-                  {formatBytes(resume.fileSizeBytes)} - Uploaded {new Date(resume.uploadedAt).toLocaleDateString()}
+                  {formatBytes(resume.fileSizeBytes)} - Uploaded{" "}
+                  {new Date(resume.uploadedAt).toLocaleDateString()}
                 </p>
               </div>
               <FileText className="h-4 w-4 text-primary shrink-0" />
@@ -67,7 +68,9 @@ export function ResumeSection({
                 type="button"
                 size="sm"
                 variant="editorial-outline"
-                onClick={() => window.open(resume.fileUrl, "_blank", "noopener,noreferrer")}
+                onClick={() =>
+                  window.open(resume.fileUrl, "_blank", "noopener,noreferrer")
+                }
               >
                 Open
               </Button>
@@ -87,7 +90,9 @@ export function ResumeSection({
             </div>
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">No resume uploaded yet.</p>
+          <p className="text-sm text-muted-foreground">
+            No resume uploaded yet.
+          </p>
         )}
 
         <Button

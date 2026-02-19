@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 mock.module("@react-pdf/renderer", () => ({
   renderToBuffer: mock(async () => new Uint8Array()),
@@ -31,7 +31,9 @@ describe("src/server/services/documents/generate-agreement", () => {
   })
 
   test("should throw when placement does not exist", async () => {
-    const { generateAgreement } = await import("@/server/services/documents/generate-agreement")
+    const { generateAgreement } = await import(
+      "@/server/services/documents/generate-agreement"
+    )
     await expect(generateAgreement({ placementId: "p-1" })).rejects.toThrow(
       "Placement not found",
     )

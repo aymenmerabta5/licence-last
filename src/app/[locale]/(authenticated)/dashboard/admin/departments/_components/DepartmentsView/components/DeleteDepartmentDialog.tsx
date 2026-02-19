@@ -1,8 +1,8 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Loader2 } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import type { DepartmentItem } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/types"
 import {
   AlertDialog,
   AlertDialogContent,
@@ -12,8 +12,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-
-import type { DepartmentItem } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/types"
 
 interface DeleteDepartmentDialogProps {
   open: boolean

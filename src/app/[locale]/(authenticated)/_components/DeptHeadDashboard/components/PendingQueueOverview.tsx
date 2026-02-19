@@ -1,15 +1,13 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { ClipboardCheck, University, UserRound } from "lucide-react"
-
-import { Link } from "@/i18n/routing"
-import { ease, reveal } from "@/lib/animations"
-
+import * as motion from "motion/react-client"
 import type {
   DeptHeadDashboardLabels,
   PendingApplicationItem,
 } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/types"
+import { Link } from "@/i18n/routing"
+import { ease, reveal } from "@/lib/animations"
 
 interface PendingQueueOverviewProps {
   applications: PendingApplicationItem[]
@@ -49,7 +47,9 @@ export function PendingQueueOverview({
             {labels.pendingLabel}
           </p>
         </div>
-        <p className="font-serif text-4xl leading-none text-heading">{pendingCount}</p>
+        <p className="font-serif text-4xl leading-none text-heading">
+          {pendingCount}
+        </p>
 
         <div className="flex items-center gap-2 text-muted-foreground">
           <University className="h-4 w-4" />
@@ -67,7 +67,9 @@ export function PendingQueueOverview({
         transition={{ duration: 0.45, ease, delay: 0.08 }}
         className="space-y-4 border border-border/50 p-6 lg:col-span-8"
       >
-        <h3 className="font-serif text-xl text-heading">{labels.recentTitle}</h3>
+        <h3 className="font-serif text-xl text-heading">
+          {labels.recentTitle}
+        </h3>
 
         {applications.length === 0 ? (
           <p className="text-sm text-muted-foreground">{labels.empty}</p>
@@ -76,7 +78,9 @@ export function PendingQueueOverview({
             {applications.map((application) => (
               <Link
                 key={application.id}
-                href={`/dashboard/dept-validations/${application.id}` as "/dashboard"}
+                href={
+                  `/dashboard/dept-validations/${application.id}` as "/dashboard"
+                }
                 className="flex items-center justify-between gap-4 border border-border/50 p-3 transition-colors hover:border-primary/30"
               >
                 <div className="min-w-0">
@@ -89,7 +93,8 @@ export function PendingQueueOverview({
                 </div>
                 <div className="flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
                   <UserRound className="h-3.5 w-3.5" />
-                  {labels.acceptedOn} {formatAcceptedDate(application.companyActionAt)}
+                  {labels.acceptedOn}{" "}
+                  {formatAcceptedDate(application.companyActionAt)}
                 </div>
               </Link>
             ))}

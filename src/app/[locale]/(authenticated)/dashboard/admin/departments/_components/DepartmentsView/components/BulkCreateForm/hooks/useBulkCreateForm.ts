@@ -1,13 +1,12 @@
 "use client"
 
-import { useState, useCallback } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { useCallback, useState } from "react"
 import { toast } from "sonner"
-
-import { orpc } from "@/server/orpc/client"
-import { bulkCreateDepartmentsSchema } from "@/lib/schemas/department"
 import type { BulkDepartmentRow } from "@/lib/schemas/department"
+import { bulkCreateDepartmentsSchema } from "@/lib/schemas/department"
+import { orpc } from "@/server/orpc/client"
 
 const emptyRow = (): BulkDepartmentRow => ({
   departmentName: "",
@@ -67,13 +66,17 @@ export function useBulkCreateForm() {
           )
           // Show individual errors
           for (const err of data.errors) {
-            toast.error(t("rowError", { name: err.departmentName, error: err.message }))
+            toast.error(
+              t("rowError", { name: err.departmentName, error: err.message }),
+            )
           }
           setRows([emptyRow()])
           setFieldErrors([{}])
         } else {
           for (const err of data.errors) {
-            toast.error(t("rowError", { name: err.departmentName, error: err.message }))
+            toast.error(
+              t("rowError", { name: err.departmentName, error: err.message }),
+            )
           }
         }
       },
@@ -87,8 +90,9 @@ export function useBulkCreateForm() {
     const parsed = bulkCreateDepartmentsSchema.safeParse({ rows })
     if (!parsed.success) {
       // Map Zod errors to per-field errors
-      const newFieldErrors: Array<Partial<Record<keyof BulkDepartmentRow, string>>> =
-        rows.map(() => ({}))
+      const newFieldErrors: Array<
+        Partial<Record<keyof BulkDepartmentRow, string>>
+      > = rows.map(() => ({}))
 
       for (const issue of parsed.error.issues) {
         // Path like ["rows", 0, "headEmail"]

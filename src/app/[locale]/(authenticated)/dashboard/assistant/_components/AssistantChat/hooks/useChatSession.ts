@@ -1,41 +1,48 @@
 "use client"
 
-import { useCallback, useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
-
-import { orpc } from "@/server/orpc/client"
-
+import { useCallback, useMemo, useState } from "react"
 import {
   toChatMessages,
   toMessageCreatedAtById,
 } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/hooks/chatMessageAdapters"
 import { useConversationActions } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/hooks/useConversationActions"
 import { useEnsureConversation } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/hooks/useEnsureConversation"
+import { orpc } from "@/server/orpc/client"
 
 export function useChatSession() {
   const t = useTranslations("dashboard.assistant")
-  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null)
+  const [selectedConversationId, setSelectedConversationId] = useState<
+    string | null
+  >(null)
 
-  const listModelsQuery = useMemo(() => orpc.assistant.listModels.queryOptions(), [])
-  const { data: modelsData, isLoading: modelsLoading } = useQuery(listModelsQuery)
+  const listModelsQuery = useMemo(
+    () => orpc.assistant.listModels.queryOptions(),
+    [],
+  )
+  const { data: modelsData, isLoading: modelsLoading } =
+    useQuery(listModelsQuery)
 
   const models = useMemo(() => modelsData?.models ?? [], [modelsData])
   const defaultModelId = modelsData?.defaultModelId ?? null
 
   const listConversationsQuery = useMemo(
-    () => orpc.assistant.listConversations.queryOptions({ input: { limit: 100 } }),
+    () =>
+      orpc.assistant.listConversations.queryOptions({ input: { limit: 100 } }),
     [],
   )
-  const { data: conversationsData, isLoading: conversationsLoading } =
-    useQuery(listConversationsQuery)
+  const { data: conversationsData, isLoading: conversationsLoading } = useQuery(
+    listConversationsQuery,
+  )
 
   const conversations = useMemo(
     () => conversationsData?.conversations ?? [],
     [conversationsData],
   )
 
-  const activeConversationId = selectedConversationId ?? conversations[0]?.id ?? null
+  const activeConversationId =
+    selectedConversationId ?? conversations[0]?.id ?? null
 
   const conversationQuery = useQuery({
     ...orpc.assistant.getConversation.queryOptions({
@@ -46,10 +53,16 @@ export function useChatSession() {
 
   const selectedConversation = useMemo(() => {
     const fallback = activeConversationId
-      ? conversations.find((conversation) => conversation.id === activeConversationId)
+      ? conversations.find(
+          (conversation) => conversation.id === activeConversationId,
+        )
       : null
     return conversationQuery.data?.conversation ?? fallback ?? null
-  }, [activeConversationId, conversationQuery.data?.conversation, conversations])
+  }, [
+    activeConversationId,
+    conversationQuery.data?.conversation,
+    conversations,
+  ])
 
   const listMessagesQuery = useMemo(
     () =>

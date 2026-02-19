@@ -1,6 +1,6 @@
+import { describe, expect, test } from "bun:test"
 import { readdirSync, readFileSync, statSync } from "node:fs"
 import { join } from "node:path"
-import { describe, expect, test } from "bun:test"
 
 const ALLOWED_DIRECT_INSERT_FILES = new Set([
   "src/server/services/notifications/create.ts",
@@ -28,10 +28,7 @@ function collectTypeScriptFiles(dir: string): string[] {
 
 describe("src/server/services/notifications architecture", () => {
   test("disallows direct notification inserts outside notification service", () => {
-    const roots = [
-      "src/server/services",
-      "src/server/orpc/routes",
-    ]
+    const roots = ["src/server/services", "src/server/orpc/routes"]
 
     const files = roots.flatMap(collectTypeScriptFiles)
     const offenders: string[] = []

@@ -16,9 +16,9 @@ describe("src/lib/schemas/matching", () => {
       }).success,
     ).toBe(true)
 
-    expect(getMatchingScoreSchema.safeParse({ offerId: "offer-1" }).success).toBe(
-      false,
-    )
+    expect(
+      getMatchingScoreSchema.safeParse({ offerId: "offer-1" }).success,
+    ).toBe(false)
   })
 
   test("getSkillGapSchema should validate ids", () => {

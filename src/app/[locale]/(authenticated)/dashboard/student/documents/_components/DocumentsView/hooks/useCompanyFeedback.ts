@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { useState } from "react"
 import { toast } from "sonner"
 
 import { companyQualityFeedbackSchema } from "@/lib/schemas/company"
@@ -61,7 +61,9 @@ function extractErrorMessage(error: unknown, fallback: string) {
   return fallback
 }
 
-function mapValidationErrors(error: FeedbackValidationError): QualityFeedbackFormErrors {
+function mapValidationErrors(
+  error: FeedbackValidationError,
+): QualityFeedbackFormErrors {
   const fieldErrors: QualityFeedbackFormErrors = {}
 
   for (const issue of error.issues) {
@@ -83,10 +85,11 @@ export function useCompanyFeedback(): UseCompanyFeedbackResult {
   const queryClient = useQueryClient()
   const t = useTranslations("dashboard.documents.feedback")
 
-  const [activePlacement, setActivePlacement] = useState<FeedbackPlacementContext | null>(
-    null,
+  const [activePlacement, setActivePlacement] =
+    useState<FeedbackPlacementContext | null>(null)
+  const [values, setValues] = useState<QualityFeedbackFormValues>(
+    DEFAULT_FEEDBACK_VALUES,
   )
-  const [values, setValues] = useState<QualityFeedbackFormValues>(DEFAULT_FEEDBACK_VALUES)
   const [errors, setErrors] = useState<QualityFeedbackFormErrors>({})
 
   const feedbackMutation = useMutation(

@@ -1,7 +1,7 @@
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 
-import { reveal, ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface AiSummaryBoxProps {
   summaryBullets: string[]

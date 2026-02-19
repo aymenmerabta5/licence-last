@@ -1,26 +1,24 @@
 "use client"
 
-import { useDrag } from "react-dnd"
+import { Check, Clock, GraduationCap, Loader2, X } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
-import { Check, GraduationCap, Loader2, X, Clock } from "lucide-react"
-
-import { SelectField } from "@/components/form-fields"
-import { Button } from "@/components/ui/button"
-import {
-  STATUS_COLORS,
-  STAGE_COLUMNS,
-  STAGE_LABELS,
-  canTransitionStage,
-} from "@/lib/constants/pipeline"
-import type { PipelineStage } from "@/lib/constants/pipeline"
-import { cn } from "@/lib/utils"
+import { useDrag } from "react-dnd"
+import { MatchPreview } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/MatchPreview"
 import {
   CANDIDATE_CARD_DND_TYPE,
   type CandidateApp,
   type CandidateCardDragItem,
 } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
-
-import { MatchPreview } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/MatchPreview"
+import { SelectField } from "@/components/form-fields"
+import { Button } from "@/components/ui/button"
+import type { PipelineStage } from "@/lib/constants/pipeline"
+import {
+  canTransitionStage,
+  STAGE_COLUMNS,
+  STAGE_LABELS,
+  STATUS_COLORS,
+} from "@/lib/constants/pipeline"
+import { cn } from "@/lib/utils"
 
 interface CandidateCardProps {
   app: CandidateApp
@@ -76,8 +74,10 @@ export function CandidateCard({
       }}
       className={cn(
         "border border-border/50 bg-background p-3.5 space-y-3 transition-all rounded-sm",
-        canDrag && "cursor-grab active:cursor-grabbing hover:border-border hover:shadow-sm",
-        isDragging && "opacity-50 scale-[0.98] shadow-lg ring-2 ring-primary/20",
+        canDrag &&
+          "cursor-grab active:cursor-grabbing hover:border-border hover:shadow-sm",
+        isDragging &&
+          "opacity-50 scale-[0.98] shadow-lg ring-2 ring-primary/20",
         !canDrag && "cursor-default",
       )}
       aria-label={t("candidateCardAria", {
@@ -88,9 +88,7 @@ export function CandidateCard({
       <div className="flex items-start gap-3">
         {/* Avatar */}
         <div className="h-9 w-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-          <span className="text-[10px] font-bold text-primary">
-            {initials}
-          </span>
+          <span className="text-[10px] font-bold text-primary">{initials}</span>
         </div>
 
         <div className="flex-1 min-w-0">

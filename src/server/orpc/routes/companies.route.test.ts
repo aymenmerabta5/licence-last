@@ -38,7 +38,10 @@ const inviteCompanyMemberMock = mock(async () => ({
   createdUser: true,
   alreadyMember: false,
 }))
-const removeCompanyMemberMock = mock(async () => ({ removed: true, userId: "member-1" }))
+const removeCompanyMemberMock = mock(async () => ({
+  removed: true,
+  userId: "member-1",
+}))
 const revalidateTagMock = mock(() => {})
 const emitNotificationMock = mock(async () => ({
   notificationId: "notification-1",
@@ -158,7 +161,9 @@ describe("src/server/orpc/routes/companies", () => {
       ),
     )
 
-    const { createCompanyProcedure } = await import("@/server/orpc/routes/companies")
+    const { createCompanyProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
 
     await expect(
       callProcedure(createCompanyProcedure, {
@@ -172,7 +177,9 @@ describe("src/server/orpc/routes/companies", () => {
   })
 
   test("updateCompanyProcedure revalidates profile tags on success", async () => {
-    const { updateCompanyProcedure } = await import("@/server/orpc/routes/companies")
+    const { updateCompanyProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
 
     const result = await callProcedure(updateCompanyProcedure, {
       input: { description: "updated" },
@@ -183,7 +190,9 @@ describe("src/server/orpc/routes/companies", () => {
     })
 
     expect(result).toEqual({ companyId: "company-1" })
-    expect(updateCompanyMock).toHaveBeenCalledWith("company-1", { description: "updated" })
+    expect(updateCompanyMock).toHaveBeenCalledWith("company-1", {
+      description: "updated",
+    })
     expect(revalidateTagMock).toHaveBeenCalledTimes(2)
   })
 
@@ -191,7 +200,9 @@ describe("src/server/orpc/routes/companies", () => {
     updateCompanyMock.mockRejectedValueOnce(
       new ServiceError("COMPANY_NOT_FOUND", "Company not found"),
     )
-    const { updateCompanyProcedure } = await import("@/server/orpc/routes/companies")
+    const { updateCompanyProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
 
     await expect(
       callProcedure(updateCompanyProcedure, {
@@ -218,7 +229,9 @@ describe("src/server/orpc/routes/companies", () => {
       },
     ])
 
-    const { listCompanyMembersProcedure } = await import("@/server/orpc/routes/companies")
+    const { listCompanyMembersProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
 
     const result = await callProcedure(listCompanyMembersProcedure, {
       context: { companyMembership: { companyId: "company-1" } },
@@ -236,7 +249,9 @@ describe("src/server/orpc/routes/companies", () => {
       ),
     )
 
-    const { inviteCompanyMemberProcedure } = await import("@/server/orpc/routes/companies")
+    const { inviteCompanyMemberProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
 
     await expect(
       callProcedure(inviteCompanyMemberProcedure, {
@@ -253,7 +268,9 @@ describe("src/server/orpc/routes/companies", () => {
   })
 
   test("removeCompanyMemberProcedure revalidates removed user cache tag", async () => {
-    const { removeCompanyMemberProcedure } = await import("@/server/orpc/routes/companies")
+    const { removeCompanyMemberProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
 
     const result = await callProcedure(removeCompanyMemberProcedure, {
       input: { userId: "member-1" },
@@ -269,6 +286,9 @@ describe("src/server/orpc/routes/companies", () => {
       removedByUserId: "owner-1",
     })
     expect(result).toEqual({ removed: true, userId: "member-1" })
-    expect(revalidateTagMock).toHaveBeenCalledWith("company-user-member-1", "max")
+    expect(revalidateTagMock).toHaveBeenCalledWith(
+      "company-user-member-1",
+      "max",
+    )
   })
 })

@@ -1,6 +1,11 @@
 import "server-only"
 
-import { asRecord, getNumber, getString, getStringProp } from "@/lib/ai/tool-output"
+import {
+  asRecord,
+  getNumber,
+  getString,
+  getStringProp,
+} from "@/lib/ai/tool-output"
 
 const REDACT_KEYS = new Set([
   "email",
@@ -15,7 +20,12 @@ const REDACT_KEYS = new Set([
 function redactPII(value: unknown, depth = 0): unknown {
   if (depth > 6) return null
   if (value === null) return null
-  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") return value
+  if (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  )
+    return value
 
   if (Array.isArray(value)) {
     const capped = value.slice(0, 50)
@@ -36,7 +46,9 @@ function redactPII(value: unknown, depth = 0): unknown {
   return out
 }
 
-function pickSkillTags(value: unknown): Array<{ id: string; name: string; category: string | null }> {
+function pickSkillTags(
+  value: unknown,
+): Array<{ id: string; name: string; category: string | null }> {
   if (!Array.isArray(value)) return []
   const out: Array<{ id: string; name: string; category: string | null }> = []
   for (const item of value.slice(0, 200)) {
@@ -50,7 +62,9 @@ function pickSkillTags(value: unknown): Array<{ id: string; name: string; catego
   return out
 }
 
-function pickSkills(value: unknown): Array<{ id: string; name: string; category: string | null }> {
+function pickSkills(
+  value: unknown,
+): Array<{ id: string; name: string; category: string | null }> {
   if (!Array.isArray(value)) return []
   const out: Array<{ id: string; name: string; category: string | null }> = []
   for (const item of value.slice(0, 100)) {
@@ -195,24 +209,28 @@ export function minimizeAssistantContext(context: unknown): unknown {
   }
 
   if (intent === "notifications_summarize") {
-    const notifications = Array.isArray(record.notifications) ? record.notifications.slice(0, 50) : []
+    const notifications = Array.isArray(record.notifications)
+      ? record.notifications.slice(0, 50)
+      : []
     return {
       intent,
       role: getString(record.role),
       notifications: notifications
         .map((n) => {
-        const rec = asRecord(n)
-        if (!rec) return null
-        return {
-          id: getString(rec.id),
-          type: getString(rec.type),
-          createdAt: getString(rec.createdAt),
-          readAt: getString(rec.readAt),
-          payload: redactPII(rec.payload),
-        }
+          const rec = asRecord(n)
+          if (!rec) return null
+          return {
+            id: getString(rec.id),
+            type: getString(rec.type),
+            createdAt: getString(rec.createdAt),
+            readAt: getString(rec.readAt),
+            payload: redactPII(rec.payload),
+          }
         })
         .filter(
-          (v): v is {
+          (
+            v,
+          ): v is {
             id: string | null
             type: string | null
             createdAt: string | null

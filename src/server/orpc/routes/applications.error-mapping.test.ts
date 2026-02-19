@@ -1,18 +1,24 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 import { ORPCError } from "@orpc/server"
-import { ApplicationServiceError, isApplicationServiceError } from "@/server/services/applications/errors"
 import {
+  createApplicationORPCError,
   getApplyToOfferStatus,
+  getCompanyActionStatus,
   getListByOfferStatus,
   getWithdrawStatus,
-  getCompanyActionStatus,
-  createApplicationORPCError,
 } from "@/server/orpc/routes/applications.error-mapping"
+import {
+  ApplicationServiceError,
+  isApplicationServiceError,
+} from "@/server/services/applications/errors"
 
 describe("ApplicationServiceError to ORPCError mapping", () => {
   describe("applyToOffer status mapping", () => {
     test("OFFER_NOT_FOUND maps to NOT_FOUND", () => {
-      const error = new ApplicationServiceError("OFFER_NOT_FOUND", "Offer not found")
+      const error = new ApplicationServiceError(
+        "OFFER_NOT_FOUND",
+        "Offer not found",
+      )
       expect(isApplicationServiceError(error)).toBe(true)
       // Tests the ACTUAL route mapping logic from applications.ts
       expect(getApplyToOfferStatus(error.code)).toBe("NOT_FOUND")
@@ -24,7 +30,10 @@ describe("ApplicationServiceError to ORPCError mapping", () => {
     })
 
     test("OFFER_DEADLINE_PASSED maps to BAD_REQUEST", () => {
-      const error = new ApplicationServiceError("OFFER_DEADLINE_PASSED", "Deadline passed")
+      const error = new ApplicationServiceError(
+        "OFFER_DEADLINE_PASSED",
+        "Deadline passed",
+      )
       expect(getApplyToOfferStatus(error.code)).toBe("BAD_REQUEST")
     })
 
@@ -34,7 +43,10 @@ describe("ApplicationServiceError to ORPCError mapping", () => {
     })
 
     test("ALREADY_APPLIED maps to CONFLICT", () => {
-      const error = new ApplicationServiceError("ALREADY_APPLIED", "Already applied")
+      const error = new ApplicationServiceError(
+        "ALREADY_APPLIED",
+        "Already applied",
+      )
       expect(getApplyToOfferStatus(error.code)).toBe("CONFLICT")
     })
 
@@ -47,13 +59,19 @@ describe("ApplicationServiceError to ORPCError mapping", () => {
 
   describe("withdrawApplication status mapping", () => {
     test("APPLICATION_NOT_FOUND maps to NOT_FOUND", () => {
-      const error = new ApplicationServiceError("APPLICATION_NOT_FOUND", "Not found")
+      const error = new ApplicationServiceError(
+        "APPLICATION_NOT_FOUND",
+        "Not found",
+      )
       // Tests the ACTUAL route mapping logic from applications.ts
       expect(getWithdrawStatus(error.code)).toBe("NOT_FOUND")
     })
 
     test("APPLICATION_INVALID_STATE maps to BAD_REQUEST", () => {
-      const error = new ApplicationServiceError("APPLICATION_INVALID_STATE", "Invalid state")
+      const error = new ApplicationServiceError(
+        "APPLICATION_INVALID_STATE",
+        "Invalid state",
+      )
       expect(getWithdrawStatus(error.code)).toBe("BAD_REQUEST")
     })
 
@@ -66,7 +84,10 @@ describe("ApplicationServiceError to ORPCError mapping", () => {
 
   describe("listByOffer status mapping", () => {
     test("OFFER_NOT_FOUND maps to NOT_FOUND", () => {
-      const error = new ApplicationServiceError("OFFER_NOT_FOUND", "Offer not found")
+      const error = new ApplicationServiceError(
+        "OFFER_NOT_FOUND",
+        "Offer not found",
+      )
       expect(getListByOfferStatus(error.code)).toBe("NOT_FOUND")
     })
 
@@ -84,18 +105,27 @@ describe("ApplicationServiceError to ORPCError mapping", () => {
 
   describe("companyAccept/Refuse status mapping", () => {
     test("APPLICATION_NOT_FOUND maps to NOT_FOUND", () => {
-      const error = new ApplicationServiceError("APPLICATION_NOT_FOUND", "Not found")
+      const error = new ApplicationServiceError(
+        "APPLICATION_NOT_FOUND",
+        "Not found",
+      )
       // Tests the ACTUAL route mapping logic from applications.ts
       expect(getCompanyActionStatus(error.code)).toBe("NOT_FOUND")
     })
 
     test("APPLICATION_FORBIDDEN maps to FORBIDDEN", () => {
-      const error = new ApplicationServiceError("APPLICATION_FORBIDDEN", "No access")
+      const error = new ApplicationServiceError(
+        "APPLICATION_FORBIDDEN",
+        "No access",
+      )
       expect(getCompanyActionStatus(error.code)).toBe("FORBIDDEN")
     })
 
     test("APPLICATION_INVALID_STATE maps to BAD_REQUEST", () => {
-      const error = new ApplicationServiceError("APPLICATION_INVALID_STATE", "Invalid")
+      const error = new ApplicationServiceError(
+        "APPLICATION_INVALID_STATE",
+        "Invalid",
+      )
       expect(getCompanyActionStatus(error.code)).toBe("BAD_REQUEST")
     })
 
@@ -108,7 +138,10 @@ describe("ApplicationServiceError to ORPCError mapping", () => {
 
   describe("createApplicationORPCError", () => {
     test("creates ORPCError with correct status, message, and data.code", () => {
-      const serviceError = new ApplicationServiceError("OFFER_NOT_FOUND", "Offer not found")
+      const serviceError = new ApplicationServiceError(
+        "OFFER_NOT_FOUND",
+        "Offer not found",
+      )
       // Tests the ACTUAL error creation logic from applications.ts
       const orpcError = createApplicationORPCError(serviceError, "NOT_FOUND")
 
@@ -119,7 +152,10 @@ describe("ApplicationServiceError to ORPCError mapping", () => {
     })
 
     test("creates ORPCError with CONFLICT status for application conflicts", () => {
-      const serviceError = new ApplicationServiceError("ALREADY_APPLIED", "Already applied")
+      const serviceError = new ApplicationServiceError(
+        "ALREADY_APPLIED",
+        "Already applied",
+      )
       const orpcError = createApplicationORPCError(serviceError, "CONFLICT")
 
       expect(orpcError.status).toBe(409)
@@ -155,7 +191,10 @@ describe("ApplicationServiceError to ORPCError mapping", () => {
 
   describe("End-to-end error mapping flow", () => {
     test("full applyToOffer error flow - OFFER_NOT_FOUND", () => {
-      const serviceError = new ApplicationServiceError("OFFER_NOT_FOUND", "Offer not found")
+      const serviceError = new ApplicationServiceError(
+        "OFFER_NOT_FOUND",
+        "Offer not found",
+      )
       const statusCode = getApplyToOfferStatus(serviceError.code)
       const orpcError = createApplicationORPCError(serviceError, statusCode)
 
@@ -165,7 +204,10 @@ describe("ApplicationServiceError to ORPCError mapping", () => {
     })
 
     test("full withdrawApplication error flow - APPLICATION_INVALID_STATE", () => {
-      const serviceError = new ApplicationServiceError("APPLICATION_INVALID_STATE", "Invalid state")
+      const serviceError = new ApplicationServiceError(
+        "APPLICATION_INVALID_STATE",
+        "Invalid state",
+      )
       const statusCode = getWithdrawStatus(serviceError.code)
       const orpcError = createApplicationORPCError(serviceError, statusCode)
 
@@ -175,7 +217,10 @@ describe("ApplicationServiceError to ORPCError mapping", () => {
     })
 
     test("full company action error flow - APPLICATION_FORBIDDEN", () => {
-      const serviceError = new ApplicationServiceError("APPLICATION_FORBIDDEN", "Access denied")
+      const serviceError = new ApplicationServiceError(
+        "APPLICATION_FORBIDDEN",
+        "Access denied",
+      )
       const statusCode = getCompanyActionStatus(serviceError.code)
       const orpcError = createApplicationORPCError(serviceError, statusCode)
 

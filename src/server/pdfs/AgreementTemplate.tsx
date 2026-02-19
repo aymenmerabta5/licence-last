@@ -1,13 +1,13 @@
+import * as path from "node:path"
 import {
   Document,
+  Font,
+  Image,
   Page,
+  StyleSheet,
   Text,
   View,
-  Image,
-  StyleSheet,
-  Font,
 } from "@react-pdf/renderer"
-import * as path from "node:path"
 
 // Register fonts from local TTF files (CDN URLs are unreliable)
 const fontsDir = path.join(process.cwd(), "node_modules/dejavu-fonts-ttf/ttf")
@@ -250,7 +250,9 @@ export function ConventionDeStageTemplate({
               {locale === "fr" ? "STAGIAIRE" : "TRAINEE"}
             </Text>
             <View style={styles.row}>
-              <Text style={styles.label}>{locale === "fr" ? "Nom:" : "Name:"}</Text>
+              <Text style={styles.label}>
+                {locale === "fr" ? "Nom:" : "Name:"}
+              </Text>
               <Text style={styles.value}>{data.studentName}</Text>
             </View>
             <View style={styles.row}>
@@ -259,7 +261,9 @@ export function ConventionDeStageTemplate({
             </View>
             {data.studentPhone && (
               <View style={styles.row}>
-                <Text style={styles.label}>{locale === "fr" ? "Tél:" : "Phone:"}</Text>
+                <Text style={styles.label}>
+                  {locale === "fr" ? "Tél:" : "Phone:"}
+                </Text>
                 <Text style={styles.value}>{data.studentPhone}</Text>
               </View>
             )}
@@ -287,18 +291,24 @@ export function ConventionDeStageTemplate({
               {locale === "fr" ? "ENTREPRISE" : "COMPANY"}
             </Text>
             <View style={styles.row}>
-              <Text style={styles.label}>{locale === "fr" ? "Nom:" : "Name:"}</Text>
+              <Text style={styles.label}>
+                {locale === "fr" ? "Nom:" : "Name:"}
+              </Text>
               <Text style={styles.value}>{data.companyName}</Text>
             </View>
             {data.companyAddress && (
               <View style={styles.row}>
-                <Text style={styles.label}>{locale === "fr" ? "Adresse:" : "Address:"}</Text>
+                <Text style={styles.label}>
+                  {locale === "fr" ? "Adresse:" : "Address:"}
+                </Text>
                 <Text style={styles.value}>{data.companyAddress}</Text>
               </View>
             )}
             {data.companyPhone && (
               <View style={styles.row}>
-                <Text style={styles.label}>{locale === "fr" ? "Tél:" : "Phone:"}</Text>
+                <Text style={styles.label}>
+                  {locale === "fr" ? "Tél:" : "Phone:"}
+                </Text>
                 <Text style={styles.value}>{data.companyPhone}</Text>
               </View>
             )}
@@ -307,7 +317,9 @@ export function ConventionDeStageTemplate({
                 <Text style={styles.label}>
                   {locale === "fr" ? "Représentant:" : "Representative:"}
                 </Text>
-                <Text style={styles.value}>{data.companyRepresentativeName}</Text>
+                <Text style={styles.value}>
+                  {data.companyRepresentativeName}
+                </Text>
               </View>
             )}
           </View>
@@ -319,11 +331,15 @@ export function ConventionDeStageTemplate({
             {locale === "fr" ? "DÉTAILS DU STAGE" : "INTERNSHIP DETAILS"}
           </Text>
           <View style={styles.row}>
-            <Text style={styles.label}>{locale === "fr" ? "Sujet:" : "Subject:"}</Text>
+            <Text style={styles.label}>
+              {locale === "fr" ? "Sujet:" : "Subject:"}
+            </Text>
             <Text style={styles.value}>{data.offerTitle}</Text>
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>{locale === "fr" ? "Type:" : "Type:"}</Text>
+            <Text style={styles.label}>
+              {locale === "fr" ? "Type:" : "Type:"}
+            </Text>
             <Text style={styles.value}>
               {internshipTypeLabels[data.internshipType] || data.internshipType}
             </Text>
@@ -396,9 +412,7 @@ export function ConventionDeStageTemplate({
             <Text style={styles.signatureLabel}>
               {locale === "fr" ? "L'UNIVERSITÉ" : "THE UNIVERSITY"}
             </Text>
-            <Text style={styles.signatureLine}>
-              {data.universityName}
-            </Text>
+            <Text style={styles.signatureLine}>{data.universityName}</Text>
           </View>
         </View>
 

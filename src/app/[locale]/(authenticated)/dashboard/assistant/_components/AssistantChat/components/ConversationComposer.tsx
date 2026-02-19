@@ -1,8 +1,8 @@
 "use client"
 
 import { Send, Square } from "lucide-react"
-import { useTranslations } from "next-intl"
 import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"

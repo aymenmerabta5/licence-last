@@ -39,9 +39,16 @@ describe("src/server/orpc/routes/skills", () => {
   })
 
   test("listSkillTagsProcedure delegates with optional filters", async () => {
-    const { listSkillTagsProcedure } = await import("@/server/orpc/routes/skills")
+    const { listSkillTagsProcedure } = await import(
+      "@/server/orpc/routes/skills"
+    )
 
-    const input = { category: "frontend", departmentId: "dep-1", limit: 25, offset: 0 }
+    const input = {
+      category: "frontend",
+      departmentId: "dep-1",
+      limit: 25,
+      offset: 0,
+    }
     const result = await callProcedure(listSkillTagsProcedure, { input })
 
     expect(result).toEqual({ items: [] })
@@ -49,7 +56,9 @@ describe("src/server/orpc/routes/skills", () => {
   })
 
   test("listSkillTagsPrioritizedProcedure delegates with department id", async () => {
-    const { listSkillTagsPrioritizedProcedure } = await import("@/server/orpc/routes/skills")
+    const { listSkillTagsPrioritizedProcedure } = await import(
+      "@/server/orpc/routes/skills"
+    )
 
     const result = await callProcedure(listSkillTagsPrioritizedProcedure, {
       input: { departmentId: "dep-1" },

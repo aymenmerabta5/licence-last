@@ -1,19 +1,16 @@
 "use client"
 
-import { useTranslations } from "next-intl"
-import {
-  Sparkles,
-  Wand2,
-  Tag,
-} from "lucide-react"
+import { Sparkles, Tag, Wand2 } from "lucide-react"
 import * as motion from "motion/react-client"
-
-import { reveal, ease } from "@/lib/animations"
+import { useTranslations } from "next-intl"
+import { CopilotResultPreview } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/CopilotResultPreview"
+import type {
+  CopilotResult,
+  OfferCopilotIntent,
+} from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { CopilotResultPreview } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/CopilotResultPreview"
-
-import type { OfferCopilotIntent, CopilotResult } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
+import { ease, reveal } from "@/lib/animations"
 
 interface SkillTag {
   id: string
@@ -78,9 +75,7 @@ export function CopilotPanel({
           <div className="flex items-center gap-1.5 shrink-0">
             <span
               className={`h-1.5 w-1.5 rounded-full ${
-                isPending
-                  ? "bg-amber-500 animate-pulse"
-                  : "bg-emerald-500"
+                isPending ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
               }`}
             />
             <span className="text-[9px] text-muted-foreground/50 uppercase tracking-wider font-medium [[dir=rtl]_&]:tracking-normal">
@@ -154,9 +149,12 @@ export function CopilotPanel({
         {isPending && activeIntent && (
           <div className="border-t border-border/40 pt-4 space-y-3">
             <p className="text-[10px] font-semibold tracking-[0.15em] uppercase text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
-              {activeIntent === "offer_generate_draft" && t("copilot.generating")}
-              {activeIntent === "offer_improve_description" && t("copilot.improving")}
-              {activeIntent === "offer_suggest_skill_tags" && t("copilot.suggesting")}
+              {activeIntent === "offer_generate_draft" &&
+                t("copilot.generating")}
+              {activeIntent === "offer_improve_description" &&
+                t("copilot.improving")}
+              {activeIntent === "offer_suggest_skill_tags" &&
+                t("copilot.suggesting")}
             </p>
             <div className="space-y-2 animate-pulse">
               <div className="h-3 bg-muted/40 rounded w-3/4" />

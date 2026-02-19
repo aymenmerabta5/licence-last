@@ -1,6 +1,6 @@
+import { ArrowLeft, Kanban } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { ArrowLeft, Kanban } from "lucide-react"
 
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
@@ -10,7 +10,10 @@ interface CandidatesHeaderProps {
   totalCandidates?: number
 }
 
-export function CandidatesHeader({ offerTitle, totalCandidates }: CandidatesHeaderProps) {
+export function CandidatesHeader({
+  offerTitle,
+  totalCandidates,
+}: CandidatesHeaderProps) {
   const t = useTranslations("dashboard.company.candidates")
 
   return (

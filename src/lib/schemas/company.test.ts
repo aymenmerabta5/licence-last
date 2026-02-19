@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 
 import { createCompanyOnboardingSchema } from "@/lib/schemas/company"
 
@@ -42,7 +42,9 @@ describe("src/lib/schemas/company", () => {
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        const issue = result.error.issues.find((i) => i.path[0] === "websiteUrl")
+        const issue = result.error.issues.find(
+          (i) => i.path[0] === "websiteUrl",
+        )
         expect(issue?.message).toBe("t:websiteUrlInvalid")
       }
     })
@@ -56,7 +58,9 @@ describe("src/lib/schemas/company", () => {
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        const issue = result.error.issues.find((i) => i.path[0] === "wilayaCode")
+        const issue = result.error.issues.find(
+          (i) => i.path[0] === "wilayaCode",
+        )
         expect(issue?.message).toBe("t:wilayaRequired")
       }
     })
@@ -70,7 +74,9 @@ describe("src/lib/schemas/company", () => {
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        const issue = result.error.issues.find((i) => i.path[0] === "wilayaCode")
+        const issue = result.error.issues.find(
+          (i) => i.path[0] === "wilayaCode",
+        )
         expect(issue?.message).toBe("t:wilayaInvalid")
       }
     })
@@ -90,4 +96,3 @@ describe("src/lib/schemas/company", () => {
     })
   })
 })
-

@@ -1,8 +1,8 @@
 "use client"
 
+import { ArrowRight, Building2, GraduationCap, Landmark } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { GraduationCap, Building2, Landmark, ArrowRight } from "lucide-react"
 
 import { ease } from "@/lib/animations"
 

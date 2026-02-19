@@ -1,16 +1,14 @@
-import * as motion from "motion/react-client"
 import { Loader2, MessageCircleMore } from "lucide-react"
-
+import * as motion from "motion/react-client"
+import type {
+  MessagesRole,
+  MessageThread,
+} from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card } from "@/components/ui/card"
 import { reveal, revealWithDelay } from "@/lib/animations"
 import { formatRelativeTime } from "@/lib/date"
 import { cn } from "@/lib/utils"
-
-import type {
-  MessageThread,
-  MessagesRole,
-} from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
 
 interface ThreadListPaneProps {
   role: MessagesRole
@@ -28,12 +26,13 @@ function getInitials(value: string): string {
   }
 
   const parts = trimmed.split(/\s+/).slice(0, 2)
-  return parts
-    .map((part) => part.charAt(0).toUpperCase())
-    .join("")
+  return parts.map((part) => part.charAt(0).toUpperCase()).join("")
 }
 
-function getThreadDisplayName(thread: MessageThread, role: MessagesRole): string {
+function getThreadDisplayName(
+  thread: MessageThread,
+  role: MessagesRole,
+): string {
   if (role === "student") {
     return thread.companyName?.trim() || "Company"
   }
@@ -41,7 +40,10 @@ function getThreadDisplayName(thread: MessageThread, role: MessagesRole): string
   return thread.studentName?.trim() || "Student"
 }
 
-function getThreadImage(thread: MessageThread, role: MessagesRole): string | undefined {
+function getThreadImage(
+  thread: MessageThread,
+  role: MessagesRole,
+): string | undefined {
   if (role === "student") {
     return thread.companyLogoUrl ?? undefined
   }
@@ -108,7 +110,9 @@ export function ThreadListPane({
                   <div className="flex items-start gap-3">
                     <Avatar size="sm">
                       <AvatarImage src={getThreadImage(thread, role)} alt="" />
-                      <AvatarFallback>{getInitials(displayName)}</AvatarFallback>
+                      <AvatarFallback>
+                        {getInitials(displayName)}
+                      </AvatarFallback>
                     </Avatar>
 
                     <div className="min-w-0 flex-1">

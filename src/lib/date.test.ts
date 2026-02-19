@@ -1,23 +1,23 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 
 import {
+  addDaysToDateTimeLocalInputValue,
   formatDate,
-  formatDateLong,
   formatDateFull,
-  formatTime,
-  formatTime12h,
-  formatTimeString,
+  formatDateHeader,
+  formatDateLong,
   formatDateTime,
-  formatTimeRange,
-  formatTimeRange12h,
-  formatSchedule,
   formatRelativeTime,
   formatRelativeTimeLong,
-  formatDateHeader,
-  toDateTimeLocalInputValue,
-  toDateTimeLocalInput,
+  formatSchedule,
+  formatTime,
+  formatTime12h,
+  formatTimeRange,
+  formatTimeRange12h,
+  formatTimeString,
   getNowMinDateTime,
-  addDaysToDateTimeLocalInputValue,
+  toDateTimeLocalInput,
+  toDateTimeLocalInputValue,
 } from "@/lib/date"
 
 // Fixed date for deterministic tests
@@ -256,15 +256,21 @@ describe("getNowMinDateTime", () => {
 
 describe("addDaysToDateTimeLocalInputValue", () => {
   test("should add days to valid datetime-local value", () => {
-    expect(addDaysToDateTimeLocalInputValue("2024-01-15T14:30", 1)).toBe("2024-01-16T14:30")
+    expect(addDaysToDateTimeLocalInputValue("2024-01-15T14:30", 1)).toBe(
+      "2024-01-16T14:30",
+    )
   })
 
   test("should handle month rollover", () => {
-    expect(addDaysToDateTimeLocalInputValue("2024-01-31T10:00", 1)).toBe("2024-02-01T10:00")
+    expect(addDaysToDateTimeLocalInputValue("2024-01-31T10:00", 1)).toBe(
+      "2024-02-01T10:00",
+    )
   })
 
   test("should handle year rollover", () => {
-    expect(addDaysToDateTimeLocalInputValue("2024-12-31T23:59", 1)).toBe("2025-01-01T23:59")
+    expect(addDaysToDateTimeLocalInputValue("2024-12-31T23:59", 1)).toBe(
+      "2025-01-01T23:59",
+    )
   })
 
   test("should return empty string for invalid format", () => {

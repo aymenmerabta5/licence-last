@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockRows: any[] = []
@@ -13,7 +13,9 @@ const mockFrom = mock(() => ({ where: mockWhere }))
 
 // query 2 (unread count)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockUnreadWhere = mock<() => Promise<any[]>>(() => Promise.resolve([{ value: 2 }]))
+const mockUnreadWhere = mock<() => Promise<any[]>>(() =>
+  Promise.resolve([{ value: 2 }]),
+)
 const mockUnreadFrom = mock(() => ({ where: mockUnreadWhere }))
 
 mock.module("@/server/db", () => ({
@@ -56,7 +58,9 @@ describe("src/server/services/notifications/list", () => {
       },
     ]
 
-    const { listNotifications } = await import("@/server/services/notifications/list")
+    const { listNotifications } = await import(
+      "@/server/services/notifications/list"
+    )
     const result = await listNotifications("u-1", { limit: 10 })
 
     expect(result.notifications).toHaveLength(1)

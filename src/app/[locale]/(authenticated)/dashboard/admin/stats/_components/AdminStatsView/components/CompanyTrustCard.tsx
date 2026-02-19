@@ -1,9 +1,9 @@
 "use client"
 
+import { Loader2, Shield } from "lucide-react"
 import * as motion from "motion/react-client"
-import { Shield, Loader2 } from "lucide-react"
-import { cn } from "@/lib/utils"
 import { ease } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
 const TIER_STYLES: Record<string, { bg: string; text: string }> = {
   excellent: { bg: "bg-emerald-500/10", text: "text-emerald-600" },

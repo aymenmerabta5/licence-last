@@ -28,6 +28,4 @@ export const listSkillTagsProcedure = publicProcedureStandard
 
 export const listSkillTagsPrioritizedProcedure = publicProcedureStandard
   .input(z.object({ departmentId: z.string().min(1) }))
-  .handler(async ({ input }) =>
-    listSkillTagsPrioritized(input.departmentId),
-  )
+  .handler(async ({ input }) => listSkillTagsPrioritized(input.departmentId))

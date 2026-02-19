@@ -1,5 +1,5 @@
-import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
+import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -43,7 +43,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
       className={cn(
         "gap-1 rounded-t-xl px-4 group-data-[size=sm]/card:px-3 [.border-b]:pb-4 group-data-[size=sm]/card:[.border-b]:pb-3 group/card-header @container/card-header grid auto-rows-min items-start has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto]",
         "group-data-[variant=editorial]/card:rounded-none group-data-[variant=editorial]/card:px-0 group-data-[variant=editorial]/card:flex group-data-[variant=editorial]/card:items-start group-data-[variant=editorial]/card:justify-between group-data-[variant=editorial]/card:mb-4",
-        className
+        className,
       )}
       {...props}
     />
@@ -57,7 +57,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
       className={cn(
         "text-base leading-snug font-medium group-data-[size=sm]/card:text-sm",
         "group-data-[variant=editorial]/card:text-lg group-data-[variant=editorial]/card:font-bold group-data-[variant=editorial]/card:tracking-tight",
-        className
+        className,
       )}
       {...props}
     />
@@ -71,7 +71,7 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
       className={cn(
         "text-muted-foreground text-sm",
         "group-data-[variant=editorial]/card:text-xs group-data-[variant=editorial]/card:leading-relaxed group-data-[variant=editorial]/card:font-light group-data-[variant=editorial]/card:opacity-60 group-data-[variant=editorial]/card:text-current",
-        className
+        className,
       )}
       {...props}
     />
@@ -84,7 +84,7 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="card-action"
       className={cn(
         "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
-        className
+        className,
       )}
       {...props}
     />
@@ -98,7 +98,7 @@ function CardContent({ className, ...props }: React.ComponentProps<"div">) {
       className={cn(
         "px-4 group-data-[size=sm]/card:px-3",
         "group-data-[variant=editorial]/card:px-0",
-        className
+        className,
       )}
       {...props}
     />
@@ -112,7 +112,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
       className={cn(
         "bg-muted/50 rounded-b-xl border-t p-4 group-data-[size=sm]/card:p-3 flex items-center",
         "group-data-[variant=editorial]/card:rounded-none group-data-[variant=editorial]/card:bg-transparent group-data-[variant=editorial]/card:border-t-border",
-        className
+        className,
       )}
       {...props}
     />

@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 import { parseDomains } from "@/server/db/seed"
 
 describe("parseDomains", () => {
@@ -32,11 +32,9 @@ describe("parseDomains", () => {
     })
 
     test("should handle mixed whitespace", () => {
-      expect(parseDomains("  usthb.dz  ,  univ-alger.dz  ,  esi.dz  ")).toEqual([
-        "usthb.dz",
-        "univ-alger.dz",
-        "esi.dz",
-      ])
+      expect(parseDomains("  usthb.dz  ,  univ-alger.dz  ,  esi.dz  ")).toEqual(
+        ["usthb.dz", "univ-alger.dz", "esi.dz"],
+      )
     })
   })
 
@@ -138,15 +136,15 @@ describe("parseDomains", () => {
     })
 
     test("should handle domains with hyphens", () => {
-      expect(parseDomains("univ-alger.dz, univ-oran.dz, univ-constantine.dz")).toEqual([
-        "univ-alger.dz",
-        "univ-oran.dz",
-        "univ-constantine.dz",
-      ])
+      expect(
+        parseDomains("univ-alger.dz, univ-oran.dz, univ-constantine.dz"),
+      ).toEqual(["univ-alger.dz", "univ-oran.dz", "univ-constantine.dz"])
     })
 
     test("should handle long domain list", () => {
-      const domains = Array.from({ length: 20 }, (_, i) => `univ${i}.dz`).join(",")
+      const domains = Array.from({ length: 20 }, (_, i) => `univ${i}.dz`).join(
+        ",",
+      )
       const result = parseDomains(domains)
       expect(result).toHaveLength(20)
       expect(result[0]).toBe("univ0.dz")

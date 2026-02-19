@@ -5,7 +5,10 @@ const dbWhereMock = mock(() => ({ limit: dbLimitMock }))
 const dbFromMock = mock(() => ({ where: dbWhereMock }))
 const dbSelectMock = mock(() => ({ from: dbFromMock }))
 
-const txSelectWhereMock = mock(async () => [{ userId: "user-1" }, { userId: "user-2" }])
+const txSelectWhereMock = mock(async () => [
+  { userId: "user-1" },
+  { userId: "user-2" },
+])
 const txSelectFromMock = mock(() => ({ where: txSelectWhereMock }))
 const txSelectMock = mock(() => ({ from: txSelectFromMock }))
 
@@ -56,7 +59,10 @@ describe("deleteUniversity", () => {
 
     txSelectMock.mockReturnValue({ from: txSelectFromMock })
     txSelectFromMock.mockReturnValue({ where: txSelectWhereMock })
-    txSelectWhereMock.mockResolvedValue([{ userId: "user-1" }, { userId: "user-2" }])
+    txSelectWhereMock.mockResolvedValue([
+      { userId: "user-1" },
+      { userId: "user-2" },
+    ])
 
     txUpdateMock.mockReturnValue({ set: txUpdateSetMock })
     txUpdateSetMock.mockReturnValue({ where: txUpdateWhereMock })
@@ -69,7 +75,9 @@ describe("deleteUniversity", () => {
   })
 
   test("should delete university and return affected users", async () => {
-    const { deleteUniversity } = await import("@/server/services/universities/delete")
+    const { deleteUniversity } = await import(
+      "@/server/services/universities/delete"
+    )
 
     const result = await deleteUniversity("uni-1")
 
@@ -81,7 +89,9 @@ describe("deleteUniversity", () => {
   })
 
   test("should cleanup linked users in a transaction", async () => {
-    const { deleteUniversity } = await import("@/server/services/universities/delete")
+    const { deleteUniversity } = await import(
+      "@/server/services/universities/delete"
+    )
 
     await deleteUniversity("uni-1")
 
@@ -93,9 +103,13 @@ describe("deleteUniversity", () => {
   test("should throw when university is not found", async () => {
     dbLimitMock.mockResolvedValue([])
 
-    const { deleteUniversity } = await import("@/server/services/universities/delete")
+    const { deleteUniversity } = await import(
+      "@/server/services/universities/delete"
+    )
 
-    await expect(deleteUniversity("missing")).rejects.toThrow("University not found")
+    await expect(deleteUniversity("missing")).rejects.toThrow(
+      "University not found",
+    )
     expect(transactionMock).not.toHaveBeenCalled()
   })
 })

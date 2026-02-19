@@ -62,7 +62,9 @@ export default async function CompanyPublicProfilePage({
               </div>
             )}
             <div className="space-y-1">
-              <h1 className="font-serif text-3xl leading-tight text-heading">{companyData.name}</h1>
+              <h1 className="font-serif text-3xl leading-tight text-heading">
+                {companyData.name}
+              </h1>
               {location ? (
                 <p className="text-sm text-muted-foreground">{location}</p>
               ) : null}
@@ -70,12 +72,19 @@ export default async function CompanyPublicProfilePage({
           </div>
 
           {companyData.description ? (
-            <p className="text-sm text-muted-foreground leading-relaxed">{companyData.description}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {companyData.description}
+            </p>
           ) : null}
 
           <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
             {companyData.websiteUrl ? (
-              <a href={companyData.websiteUrl} target="_blank" rel="noreferrer" className="underline">
+              <a
+                href={companyData.websiteUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="underline"
+              >
                 {t("website")}
               </a>
             ) : null}
@@ -91,7 +100,9 @@ export default async function CompanyPublicProfilePage({
         </header>
 
         <section className="space-y-4">
-          <h2 className="font-serif text-2xl text-heading">{t("openOffers")}</h2>
+          <h2 className="font-serif text-2xl text-heading">
+            {t("openOffers")}
+          </h2>
           {offers.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("noOffers")}</p>
           ) : (
@@ -99,9 +110,12 @@ export default async function CompanyPublicProfilePage({
               {offers.map((offer) => {
                 const content = (
                   <article className="border border-border/50 p-4 hover:border-primary/30 transition-colors">
-                    <h3 className="font-serif text-lg text-heading">{offer.title}</h3>
+                    <h3 className="font-serif text-lg text-heading">
+                      {offer.title}
+                    </h3>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {offer.internshipType} · {offer.maxPositions} {t("positions")}
+                      {offer.internshipType} · {offer.maxPositions}{" "}
+                      {t("positions")}
                     </p>
                   </article>
                 )
@@ -109,7 +123,12 @@ export default async function CompanyPublicProfilePage({
                 if (!canOpenOffers) return <div key={offer.id}>{content}</div>
 
                 return (
-                  <Link key={offer.id} href={`/dashboard/student/offers/${offer.id}` as "/dashboard"}>
+                  <Link
+                    key={offer.id}
+                    href={
+                      `/dashboard/student/offers/${offer.id}` as "/dashboard"
+                    }
+                  >
                     {content}
                   </Link>
                 )

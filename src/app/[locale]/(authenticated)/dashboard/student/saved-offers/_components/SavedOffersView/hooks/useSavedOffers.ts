@@ -1,7 +1,11 @@
 "use client"
 
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query"
 import { useMemo } from "react"
-import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { orpc, orpcClient } from "@/server/orpc/client"
 
@@ -15,8 +19,13 @@ export function useSavedOffers() {
   const savedOffersQuery = useInfiniteQuery({
     queryKey: savedQueryKey,
     queryFn: async ({ pageParam }) =>
-      orpcClient.offers.listSaved({ cursor: pageParam ?? undefined, limit: 12 }),
-    initialPageParam: undefined as { savedAt: string; offerId: string } | undefined,
+      orpcClient.offers.listSaved({
+        cursor: pageParam ?? undefined,
+        limit: 12,
+      }),
+    initialPageParam: undefined as
+      | { savedAt: string; offerId: string }
+      | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   })
 
@@ -28,7 +37,8 @@ export function useSavedOffers() {
     }),
   })
 
-  const offers = savedOffersQuery.data?.pages.flatMap((page) => page.offers) ?? []
+  const offers =
+    savedOffersQuery.data?.pages.flatMap((page) => page.offers) ?? []
 
   return {
     offers,

@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, mock } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 import type { UIMessage } from "ai"
 
 // Mock next/headers
@@ -17,14 +17,17 @@ mock.module("@/lib/csrf", () => ({
 }))
 
 // Mock auth
-const mockGetSession = mock<() => Promise<{
-  user: {
-    id: string
-    role: string
-    onboardingCompleted?: boolean
-    universityId?: string | null
-  }
-} | null>>()
+const mockGetSession =
+  mock<
+    () => Promise<{
+      user: {
+        id: string
+        role: string
+        onboardingCompleted?: boolean
+        universityId?: string | null
+      }
+    } | null>
+  >()
 
 mock.module("@/lib/auth", () => ({
   auth: {
@@ -36,9 +39,18 @@ mock.module("@/lib/auth", () => ({
 }))
 
 // Mock approval gate
-const mockCheckAdminApproval = mock<
-  () => Promise<{ ok: boolean; reason?: "company_pending" | "company_rejected" | "company_suspended" | "university_pending" | "university_rejected" }>
->()
+const mockCheckAdminApproval =
+  mock<
+    () => Promise<{
+      ok: boolean
+      reason?:
+        | "company_pending"
+        | "company_rejected"
+        | "company_suspended"
+        | "university_pending"
+        | "university_rejected"
+    }>
+  >()
 
 mock.module("@/server/auth/approval-gate", () => ({
   checkAdminApproval: mockCheckAdminApproval,
@@ -59,7 +71,8 @@ mock.module("@/server/db", () => ({
 }))
 
 // Mock rate limit
-const mockCheckRateLimit = mock<() => Promise<{ ok: boolean; retryAfterMs: number }>>()
+const mockCheckRateLimit =
+  mock<() => Promise<{ ok: boolean; retryAfterMs: number }>>()
 
 mock.module("@/server/ai/rate-limit", () => ({
   checkRateLimit: mockCheckRateLimit,
@@ -70,7 +83,13 @@ mock.module("@/server/ai/rate-limit", () => ({
 mock.module("ai", () => ({
   convertToModelMessages: (msgs: UIMessage[]) => msgs,
   tool: <T>(definition: T) => definition,
-  createUIMessageStream: ({ execute }: { execute: (args: { writer: { write: (chunk: string) => void } }) => Promise<void> }) => {
+  createUIMessageStream: ({
+    execute,
+  }: {
+    execute: (args: {
+      writer: { write: (chunk: string) => void }
+    }) => Promise<void>
+  }) => {
     return new ReadableStream({
       start(controller) {
         const writer = {
@@ -78,7 +97,9 @@ mock.module("ai", () => ({
             controller.enqueue(new TextEncoder().encode(chunk))
           },
         }
-        execute({ writer }).then(() => controller.close()).catch(() => controller.close())
+        execute({ writer })
+          .then(() => controller.close())
+          .catch(() => controller.close())
       },
     })
   },
@@ -105,11 +126,21 @@ mock.module("@/server/ai/access", () => ({
 }))
 
 // Mock assistant services
-const mockResolvePersistence = mock<() => Promise<{ ok: boolean; status?: number; companyId?: string | null; modelId?: string | null }>>()
-const mockGetAssistantConversationByIdForCompany = mock<() => Promise<{ title: string | null } | null>>()
+const mockResolvePersistence =
+  mock<
+    () => Promise<{
+      ok: boolean
+      status?: number
+      companyId?: string | null
+      modelId?: string | null
+    }>
+  >()
+const mockGetAssistantConversationByIdForCompany =
+  mock<() => Promise<{ title: string | null } | null>>()
 
 mock.module("@/server/services/assistant/get", () => ({
-  getAssistantConversationByIdForCompany: mockGetAssistantConversationByIdForCompany,
+  getAssistantConversationByIdForCompany:
+    mockGetAssistantConversationByIdForCompany,
 }))
 
 mock.module("@/server/ai/persistence", () => ({
@@ -122,7 +153,8 @@ mock.module("@/server/services/assistant/messages", () => ({
 }))
 
 mock.module("@/server/services/assistant/utils", () => ({
-  extractTextFromParts: (parts: unknown[]) => parts.map((p: unknown) => (p as { text?: string }).text || "").join(""),
+  extractTextFromParts: (parts: unknown[]) =>
+    parts.map((p: unknown) => (p as { text?: string }).text || "").join(""),
 }))
 
 // Mock assistant types
@@ -133,7 +165,8 @@ mock.module("@/server/ai/types", () => ({
 // Mock AI utilities
 mock.module("@/lib/ai/tool-output", () => ({
   asRecord: (val: unknown) => val as Record<string, unknown>,
-  getStringProp: (rec: Record<string, unknown>, key: string) => (rec?.[key] as string) || undefined,
+  getStringProp: (rec: Record<string, unknown>, key: string) =>
+    (rec?.[key] as string) || undefined,
 }))
 
 // Mock sanitizer
@@ -201,8 +234,14 @@ describe("src/app/api/assistant/chat/route", () => {
     mockCheckAdminApproval.mockResolvedValue({ ok: true })
     mockCheckRateLimit.mockResolvedValue({ ok: true, retryAfterMs: 0 })
     mockIsRoleAllowedForIntent.mockReturnValue(true)
-    mockResolvePersistence.mockResolvedValue({ ok: true, companyId: "company-1", modelId: null })
-    mockGetAssistantConversationByIdForCompany.mockResolvedValue({ title: null })
+    mockResolvePersistence.mockResolvedValue({
+      ok: true,
+      companyId: "company-1",
+      modelId: null,
+    })
+    mockGetAssistantConversationByIdForCompany.mockResolvedValue({
+      title: null,
+    })
     mockDbLimitResult = [{ companyId: "company-1" }]
   })
 
@@ -248,12 +287,14 @@ describe("src/app/api/assistant/chat/route", () => {
       const { POST } = await import("@/app/api/assistant/chat/route")
 
       const longText = "a".repeat(500001)
-      const messages = [{
-        id: "msg-1",
-        role: "user",
-        content: longText,
-        parts: [{ type: "text" as const, text: longText }],
-      }]
+      const messages = [
+        {
+          id: "msg-1",
+          role: "user",
+          content: longText,
+          parts: [{ type: "text" as const, text: longText }],
+        },
+      ]
 
       const request = new Request("http://localhost:3000/api/assistant/chat", {
         method: "POST",
@@ -272,12 +313,14 @@ describe("src/app/api/assistant/chat/route", () => {
       const { POST } = await import("@/app/api/assistant/chat/route")
 
       const exactText = "a".repeat(500000)
-      const messages = [{
-        id: "msg-1",
-        role: "user",
-        content: exactText,
-        parts: [{ type: "text" as const, text: exactText }],
-      }]
+      const messages = [
+        {
+          id: "msg-1",
+          role: "user",
+          content: exactText,
+          parts: [{ type: "text" as const, text: exactText }],
+        },
+      ]
 
       const request = new Request("http://localhost:3000/api/assistant/chat", {
         method: "POST",
@@ -316,12 +359,14 @@ describe("src/app/api/assistant/chat/route", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [{
-            id: "msg-1",
-            role: "user",
-            content: "Hello",
-            parts: [{ type: "text", text: "Hello" }],
-          }],
+          messages: [
+            {
+              id: "msg-1",
+              role: "user",
+              content: "Hello",
+              parts: [{ type: "text", text: "Hello" }],
+            },
+          ],
         }),
       })
 
@@ -342,12 +387,14 @@ describe("src/app/api/assistant/chat/route", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [{
-            id: "msg-1",
-            role: "user",
-            content: "Hello",
-            parts: [{ type: "text", text: "Hello" }],
-          }],
+          messages: [
+            {
+              id: "msg-1",
+              role: "user",
+              content: "Hello",
+              parts: [{ type: "text", text: "Hello" }],
+            },
+          ],
           context: { intent: "search_offers" },
         }),
       })
@@ -360,9 +407,16 @@ describe("src/app/api/assistant/chat/route", () => {
 
     test("pending company_admin returns 403 before RBAC intent checks", async () => {
       mockGetSession.mockResolvedValue({
-        user: { id: "user-1", role: "company_admin", onboardingCompleted: true },
+        user: {
+          id: "user-1",
+          role: "company_admin",
+          onboardingCompleted: true,
+        },
       })
-      mockCheckAdminApproval.mockResolvedValue({ ok: false, reason: "company_pending" })
+      mockCheckAdminApproval.mockResolvedValue({
+        ok: false,
+        reason: "company_pending",
+      })
 
       const { POST } = await import("@/app/api/assistant/chat/route")
 
@@ -370,12 +424,14 @@ describe("src/app/api/assistant/chat/route", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [{
-            id: "msg-1",
-            role: "user",
-            content: "Hello",
-            parts: [{ type: "text", text: "Hello" }],
-          }],
+          messages: [
+            {
+              id: "msg-1",
+              role: "user",
+              content: "Hello",
+              parts: [{ type: "text", text: "Hello" }],
+            },
+          ],
         }),
       })
 
@@ -396,12 +452,14 @@ describe("src/app/api/assistant/chat/route", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [{
-            id: "msg-1",
-            role: "user",
-            content: "Hello",
-            parts: [{ type: "text", text: "Hello" }],
-          }],
+          messages: [
+            {
+              id: "msg-1",
+              role: "user",
+              content: "Hello",
+              parts: [{ type: "text", text: "Hello" }],
+            },
+          ],
           conversationId: "conv-123",
         }),
       })
@@ -421,12 +479,14 @@ describe("src/app/api/assistant/chat/route", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [{
-            id: "msg-1",
-            role: "user",
-            content: "Hello",
-            parts: [{ type: "text", text: "Hello" }],
-          }],
+          messages: [
+            {
+              id: "msg-1",
+              role: "user",
+              content: "Hello",
+              parts: [{ type: "text", text: "Hello" }],
+            },
+          ],
           conversationId: "conv-123",
         }),
       })
@@ -451,12 +511,14 @@ describe("src/app/api/assistant/chat/route", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [{
-            id: "msg-1",
-            role: "user",
-            content: "Hello",
-            parts: [{ type: "text", text: "Hello" }],
-          }],
+          messages: [
+            {
+              id: "msg-1",
+              role: "user",
+              content: "Hello",
+              parts: [{ type: "text", text: "Hello" }],
+            },
+          ],
         }),
       })
 
@@ -478,12 +540,14 @@ describe("src/app/api/assistant/chat/route", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [{
-            id: "msg-1",
-            role: "user",
-            content: "Hello",
-            parts: [{ type: "text", text: "Hello" }],
-          }],
+          messages: [
+            {
+              id: "msg-1",
+              role: "user",
+              content: "Hello",
+              parts: [{ type: "text", text: "Hello" }],
+            },
+          ],
         }),
       })
 
@@ -507,12 +571,14 @@ describe("src/app/api/assistant/chat/route", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [{
-            id: "msg-1",
-            role: "user",
-            content: "Hello",
-            parts: [{ type: "text", text: "Hello" }],
-          }],
+          messages: [
+            {
+              id: "msg-1",
+              role: "user",
+              content: "Hello",
+              parts: [{ type: "text", text: "Hello" }],
+            },
+          ],
         }),
       })
 
@@ -564,12 +630,14 @@ describe("src/app/api/assistant/chat/route", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [{
-            id: "msg-1",
-            role: "user",
-            content: "Hello",
-            parts: [{ type: "text", text: "Hello" }],
-          }],
+          messages: [
+            {
+              id: "msg-1",
+              role: "user",
+              content: "Hello",
+              parts: [{ type: "text", text: "Hello" }],
+            },
+          ],
           // No conversationId
         }),
       })

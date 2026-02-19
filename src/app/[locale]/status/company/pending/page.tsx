@@ -3,9 +3,9 @@ import { getTranslations } from "next-intl/server"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
 import { formatDateLong } from "@/lib/date"
+import { localeRedirect } from "@/lib/navigation"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 
 export default async function CompanyPendingPage() {

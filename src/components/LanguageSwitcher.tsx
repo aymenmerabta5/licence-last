@@ -1,11 +1,9 @@
 "use client"
 
-import { useEffect, useSyncExternalStore, useTransition } from "react"
-
-import { useLocale, useTranslations } from "next-intl"
 import { ChevronDownIcon, Globe } from "lucide-react"
 
-import { usePathname, useRouter } from "@/i18n/routing"
+import { useLocale, useTranslations } from "next-intl"
+import { useEffect, useSyncExternalStore, useTransition } from "react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +11,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { usePathname, useRouter } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 
 const LOCALES = ["en", "fr", "ar"] as const
@@ -30,7 +29,7 @@ const triggerClassName = cn(
   "text-xs font-medium tracking-wide text-foreground/55 transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
   "hover:border-primary hover:text-foreground/80",
   "aria-expanded:border-primary aria-expanded:text-foreground",
-  "disabled:pointer-events-none disabled:opacity-50"
+  "disabled:pointer-events-none disabled:opacity-50",
 )
 
 export function LanguageSwitcher() {
@@ -42,7 +41,7 @@ export function LanguageSwitcher() {
   const mounted = useSyncExternalStore(
     subscribeHydration,
     getHydratedSnapshot,
-    getServerHydratedSnapshot
+    getServerHydratedSnapshot,
   )
 
   // Sync <html> dir & lang with the active locale.
@@ -57,11 +56,11 @@ export function LanguageSwitcher() {
     if (dir === "rtl") {
       document.body.style.setProperty(
         "--font-sans",
-        "var(--font-arabic), var(--font-dm-sans)"
+        "var(--font-arabic), var(--font-dm-sans)",
       )
       document.body.style.setProperty(
         "--font-serif",
-        "var(--font-arabic), var(--font-dm-serif)"
+        "var(--font-arabic), var(--font-dm-serif)",
       )
     } else {
       document.body.style.removeProperty("--font-sans")
@@ -119,7 +118,10 @@ export function LanguageSwitcher() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" sideOffset={8}>
-        <DropdownMenuRadioGroup value={locale} onValueChange={handleLocaleChange}>
+        <DropdownMenuRadioGroup
+          value={locale}
+          onValueChange={handleLocaleChange}
+        >
           {LOCALES.map((code) => (
             <DropdownMenuRadioItem key={code} value={code} disabled={isPending}>
               {getLocaleLabel(code)}

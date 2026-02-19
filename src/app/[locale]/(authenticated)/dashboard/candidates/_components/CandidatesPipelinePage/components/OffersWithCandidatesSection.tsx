@@ -1,13 +1,11 @@
 import { ArrowRight, Briefcase, Users } from "lucide-react"
-
-import { Link } from "@/i18n/routing"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-
 import type {
   CandidatesDashboardOffer,
   CandidatesDashboardTranslations,
 } from "@/app/[locale]/(authenticated)/dashboard/candidates/_components/CandidatesPipelinePage/types"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
+import { Link } from "@/i18n/routing"
 
 interface OffersWithCandidatesSectionProps {
   offers: CandidatesDashboardOffer[]
@@ -48,7 +46,9 @@ export function OffersWithCandidatesSection({
           {offers.map((offer) => (
             <Link
               key={offer.id}
-              href={`/dashboard/company/offers/${offer.id}/candidates` as "/dashboard"}
+              href={
+                `/dashboard/company/offers/${offer.id}/candidates` as "/dashboard"
+              }
             >
               <Card className="group transition-colors hover:border-primary/50">
                 <CardContent className="p-5">
@@ -63,7 +63,11 @@ export function OffersWithCandidatesSection({
 
                       <div className="flex flex-wrap items-center gap-2">
                         <Badge
-                          variant={offer.status === "published" ? "default" : "secondary"}
+                          variant={
+                            offer.status === "published"
+                              ? "default"
+                              : "secondary"
+                          }
                           className="text-xs"
                         >
                           {t(`offers.status.${offer.status}`)}

@@ -1,12 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { Eye, Loader2, X } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useRouter } from "@/i18n/routing"
-import { Eye, X, Loader2 } from "lucide-react"
-
-import { authClient } from "@/lib/auth-client"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "@/i18n/routing"
+import { authClient } from "@/lib/auth-client"
 
 interface ImpersonationBannerProps {
   userName: string
@@ -41,7 +40,11 @@ export function ImpersonationBanner({ userName }: ImpersonationBannerProps) {
         disabled={isPending}
         className="h-7 gap-1.5 text-amber-950 hover:bg-amber-600 hover:text-amber-950"
       >
-        {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <X className="h-3.5 w-3.5" />}
+        {isPending ? (
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        ) : (
+          <X className="h-3.5 w-3.5" />
+        )}
         {t("stop")}
       </Button>
     </div>

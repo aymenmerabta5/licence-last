@@ -1,7 +1,7 @@
 "use client"
 
+import { Loader2, Plus } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Plus, Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -35,7 +35,9 @@ export function CreateDepartmentForm({
           <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary">
             <Plus className="h-3.5 w-3.5" />
           </span>
-          <h3 className="font-serif text-xl text-heading">{t("addDepartment")}</h3>
+          <h3 className="font-serif text-xl text-heading">
+            {t("addDepartment")}
+          </h3>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

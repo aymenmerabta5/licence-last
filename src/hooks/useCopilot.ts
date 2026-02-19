@@ -1,14 +1,11 @@
 "use client"
 
-import { useRef, useMemo } from "react"
-
-import { DefaultChatTransport } from "ai"
 import { useChat } from "@ai-sdk/react"
 
-import {
-  asRecord,
-  findLatestToolOutput,
-} from "@/lib/ai/tool-output"
+import { DefaultChatTransport } from "ai"
+import { useMemo, useRef } from "react"
+
+import { asRecord, findLatestToolOutput } from "@/lib/ai/tool-output"
 
 /**
  * Shared AI copilot hook. Wraps `useChat` with `DefaultChatTransport`,

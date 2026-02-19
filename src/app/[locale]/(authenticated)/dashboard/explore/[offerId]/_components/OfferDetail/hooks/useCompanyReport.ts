@@ -1,14 +1,13 @@
 "use client"
 
-import { useState } from "react"
 import { useMutation } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { useState } from "react"
 import { toast } from "sonner"
 
 import { companyReportSchema } from "@/lib/schemas/company"
-import { orpc } from "@/server/orpc/client"
-
 import type { CompanyReportSeverity } from "@/lib/schemas/enums"
+import { orpc } from "@/server/orpc/client"
 
 const DEFAULT_FORM_VALUES = {
   category: "professional_conduct",
@@ -80,7 +79,8 @@ export function useCompanyReport(companyId: string): UseCompanyReportResult {
   const t = useTranslations("dashboard.offerDetail.report")
 
   const [isOpen, setIsOpen] = useState(false)
-  const [values, setValues] = useState<CompanyReportFormValues>(DEFAULT_FORM_VALUES)
+  const [values, setValues] =
+    useState<CompanyReportFormValues>(DEFAULT_FORM_VALUES)
   const [errors, setErrors] = useState<CompanyReportFormErrors>({})
 
   const reportMutation = useMutation(

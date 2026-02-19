@@ -3,14 +3,14 @@ import "server-only"
 import { randomUUID } from "node:crypto"
 
 import { eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/universities/create")
-import { university, universityDomain } from "@/server/db/schema/universities"
-import { department } from "@/server/db/schema/departments"
+
 import { user } from "@/server/db/schema/auth"
+import { department } from "@/server/db/schema/departments"
+import { university, universityDomain } from "@/server/db/schema/universities"
 
 /**
  * Create a new university and assign the admin user.
@@ -74,6 +74,9 @@ export async function createUniversity(
       .where(eq(user.id, userId))
   })
 
-  log.info({ universityId, event: "university_created" }, "University created successfully")
+  log.info(
+    { universityId, event: "university_created" },
+    "University created successfully",
+  )
   return { universityId }
 }

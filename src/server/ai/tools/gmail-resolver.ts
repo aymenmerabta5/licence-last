@@ -37,7 +37,8 @@ export function resolveGmailToolName(
     const n = name.toLowerCase()
     const startsWithGmail = n.startsWith("gmail_")
     const hasEmail = n.includes("email")
-    const hasSendLike = n.includes("send") || n.includes("draft") || n.includes("compose")
+    const hasSendLike =
+      n.includes("send") || n.includes("draft") || n.includes("compose")
     return startsWithGmail && hasEmail && hasSendLike
   })
 
@@ -66,7 +67,12 @@ export function resolveGmailToolName(
 /**
  * Get the latest user text from messages
  */
-export function getLatestUserText(messages: Array<{ role: string; parts: Array<{ type: string; text?: string }> }>): string {
+export function getLatestUserText(
+  messages: Array<{
+    role: string
+    parts: Array<{ type: string; text?: string }>
+  }>,
+): string {
   const last = [...messages].reverse().find((m) => m.role === "user")
   if (!last) return ""
   return last.parts

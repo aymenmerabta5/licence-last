@@ -1,11 +1,11 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Building2, Plus, X } from "lucide-react"
+import { useTranslations } from "next-intl"
+import type { UniversityOnboardingFormApi } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/hooks/useUniversityOnboarding"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import type { UniversityOnboardingFormApi } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/hooks/useUniversityOnboarding"
 
 interface DepartmentFieldsProps {
   form: UniversityOnboardingFormApi
@@ -51,7 +51,9 @@ export function DepartmentFields({ form }: DepartmentFieldsProps) {
                       size="icon"
                       className="h-11 w-11 shrink-0 text-muted-foreground hover:text-destructive"
                       onClick={() => {
-                        const updated = departments.filter((_, i) => i !== index)
+                        const updated = departments.filter(
+                          (_, i) => i !== index,
+                        )
                         field.handleChange(updated)
                       }}
                     >

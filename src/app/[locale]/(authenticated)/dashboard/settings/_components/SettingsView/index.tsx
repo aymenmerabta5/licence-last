@@ -4,15 +4,20 @@ import { Settings } from "lucide-react"
 
 import { AccountSettingsTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/AccountSettingsTab"
 import { ProfileSettingsTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab"
-
-import { useSettingsData } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/hooks/useSettingsData"
-import { SettingsTabs } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/SettingsTabs"
-import { PreferencesTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/PreferencesTab"
 import { NotificationsTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/NotificationsTab"
+import { PreferencesTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/PreferencesTab"
+import { SettingsTabs } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/SettingsTabs"
+import { useSettingsData } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/hooks/useSettingsData"
 
 export function SettingsView() {
-  const { activeTab, setActiveTab, me, meLoading, studentProfile, profileLoading } =
-    useSettingsData()
+  const {
+    activeTab,
+    setActiveTab,
+    me,
+    meLoading,
+    studentProfile,
+    profileLoading,
+  } = useSettingsData()
 
   return (
     <div className="space-y-8 pb-20">

@@ -1,9 +1,8 @@
 "use client"
 
 import { ExternalLink } from "lucide-react"
-
-import { Link } from "@/i18n/routing"
 import { Button } from "@/components/ui/button"
+import { Link } from "@/i18n/routing"
 
 interface StudentProfileViewProps {
   studentUserId: string
@@ -15,7 +14,10 @@ export function StudentProfileView({
   label,
 }: StudentProfileViewProps) {
   return (
-    <Link href={`/profile/${studentUserId}` as "/profile"} className="inline-flex">
+    <Link
+      href={`/profile/${studentUserId}` as "/profile"}
+      className="inline-flex"
+    >
       <Button variant="outline" size="sm" className="gap-1.5 text-xs">
         <ExternalLink className="h-3.5 w-3.5" />
         {label}

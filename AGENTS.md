@@ -1,7 +1,7 @@
-# AGENTS.md — Coding Guidelines for AI Agents
+# AGENTS.md â€” Coding Guidelines for AI Agents
 
 > Last updated: 2026-02-18
-> Project: Internex — A Next.js 16 + React 19 application with editorial design aesthetic, for linking companies internship programs with university students
+> Project: Internex â€” A Next.js 16 + React 19 application with editorial design aesthetic, for linking companies internship programs with university students
 
 ---
 
@@ -22,7 +22,11 @@ bun run typecheck
 
 # Linting
 bun run lint
+bun run lint:biome
+bun run lint:fix
+bun run format
 bun run lint:imports       # Import/layer lint sweep
+bun run lint:next-parity   # Next parity guard (img/link)
 bun run lint:architecture  # Feature-folder architecture guard
 bun run lint:rtl-logical   # RTL logical CSS guard
 
@@ -135,9 +139,9 @@ bun run mcp:dev             # Start MCP development server
 
 This project uses **Postgres + Drizzle** (`src/server/db/*`) with an MVC architecture:
 
-- **Model** (`src/server/services/`) — Pure business logic, `import "server-only"`, no auth coupling
-- **Controller** (`src/server/orpc/`) — oRPC router for ALL client-server communication
-- **View** — React components (Server Components + Client Components)
+- **Model** (`src/server/services/`) â€” Pure business logic, `import "server-only"`, no auth coupling
+- **Controller** (`src/server/orpc/`) â€” oRPC router for ALL client-server communication
+- **View** â€” React components (Server Components + Client Components)
 
 ### Services (Model Layer)
 
@@ -145,7 +149,7 @@ Put all business logic in `src/server/services/<domain>/`:
 - Reads: `get.ts`, `list.ts`
 - Writes: `create.ts`, `update.ts`, `approve.ts`, `reject.ts`, `delete.ts`
 - Always add `import "server-only"` at the top
-- Functions take plain data + userId — never handle auth themselves
+- Functions take plain data + userId â€” never handle auth themselves
 - Import `db` from `@/server/db` and schema from `@/server/db/schema`
 - Throw typed `ServiceError` codes for domain failures (avoid generic `Error`)
 
@@ -163,24 +167,24 @@ export async function createCompany(data: CreateCompanyInput, userId: string) {
 ```
 
 **Service Domains (18 total):**
-- `admin/` — Admin user ops (ban, create, list, remove, sessions, setPassword, setRole, update)
-- `applications/` — Internship applications (apply, withdraw, pipeline, company actions, timeline)
-- `assistant/` — AI assistant conversations (CRUD, messages)
-- `companies/` — Company management (CRUD, approval, membership, trust index, trust actions, reports)
-- `departments/` — Department management (create, list, update, delete, assign/unassign head, assign by email, bulk create, skills sync)
-- `documents/` — Document generation + verification (agreements, certificates, QR codes, verification)
-- `interviews/` — Interview slot proposals, confirmations, and listing
-- `matching/` — Student-offer matching (scoring, skill gaps, readiness history)
-- `messages/` — Company-student thread messaging (send/list/read)
-- `notifications/` — User notifications (create, list, mark read)
-- `offers/` — Internship offers (CRUD, search, status management, delete)
-- `placements/` — Placement validation (list pending, validate, reject — admin + dept head)
-- `skills/` — Skills/tags management (list, validate)
-- `stats/` — Admin dashboard analytics
-- `students/` — Student profiles (get, upsert, public profiles, dashboard stats)
-- `universities/` — University management (CRUD, approve, reject)
-- `uploads/` — File upload handling (S3)
-- `users/` — User management (get-me, get-by-id, update, promote)
+- `admin/` â€” Admin user ops (ban, create, list, remove, sessions, setPassword, setRole, update)
+- `applications/` â€” Internship applications (apply, withdraw, pipeline, company actions, timeline)
+- `assistant/` â€” AI assistant conversations (CRUD, messages)
+- `companies/` â€” Company management (CRUD, approval, membership, trust index, trust actions, reports)
+- `departments/` â€” Department management (create, list, update, delete, assign/unassign head, assign by email, bulk create, skills sync)
+- `documents/` â€” Document generation + verification (agreements, certificates, QR codes, verification)
+- `interviews/` â€” Interview slot proposals, confirmations, and listing
+- `matching/` â€” Student-offer matching (scoring, skill gaps, readiness history)
+- `messages/` â€” Company-student thread messaging (send/list/read)
+- `notifications/` â€” User notifications (create, list, mark read)
+- `offers/` â€” Internship offers (CRUD, search, status management, delete)
+- `placements/` â€” Placement validation (list pending, validate, reject â€” admin + dept head)
+- `skills/` â€” Skills/tags management (list, validate)
+- `stats/` â€” Admin dashboard analytics
+- `students/` â€” Student profiles (get, upsert, public profiles, dashboard stats)
+- `universities/` â€” University management (CRUD, approve, reject)
+- `uploads/` â€” File upload handling (S3)
+- `users/` â€” User management (get-me, get-by-id, update, promote)
 
 ### oRPC Controller Layer
 
@@ -197,12 +201,12 @@ All client reads AND mutations go through oRPC at `src/server/orpc/`:
 **Auth Procedures (Middleware Chain):**
 ```typescript
 publicProcedure              // No auth required
-├── authedProcedure          // Valid session required
-│   ├── adminProcedure       // university_admin, dept_head, or super_admin
-│   ├── superAdminProcedure  // super_admin only
-│   ├── companyAdminProcedure // company_admin + injects companyMembership
-│   ├── studentProcedure     // student role + injects studentProfile
-│   └── deptHeadProcedure    // dept_head + injects departmentId + universityId
+â”œâ”€â”€ authedProcedure          // Valid session required
+â”‚   â”œâ”€â”€ adminProcedure       // university_admin, dept_head, or super_admin
+â”‚   â”œâ”€â”€ superAdminProcedure  // super_admin only
+â”‚   â”œâ”€â”€ companyAdminProcedure // company_admin + injects companyMembership
+â”‚   â”œâ”€â”€ studentProcedure     // student role + injects studentProfile
+â”‚   â””â”€â”€ deptHeadProcedure    // dept_head + injects departmentId + universityId
 ```
 
 **Rate-Limited Procedures (20 variants):**
@@ -231,24 +235,24 @@ assistantProcedureLimited           // 20 req/min (AI calls)
 ```
 
 **oRPC Routes (18 route modules, 131 procedures across 19 namespaces):**
-- `users.ts` — profile + avatar + session management (7)
-- `companies.ts` — CRUD, approval/suspension, trust index, reports, quality feedback, logo upload (15)
-- `students.ts` — getProfile, getPublicProfile, upsertProfile, upsertProfileDetails (4)
-- `offers.ts` — CRUD, saved offers, AI draft/description/skills helpers, search parsing (15)
-- `applications.ts` — search, apply, withdraw, timeline, pipeline actions, cover letter generation (10)
-- `skills.ts` — list + prioritized skill tags (2)
-- `placements.ts` — admin + deptHead validations plus AI summary generation (7 total: placements 4, deptHead 3)
-- `departments.ts` — list/create/update/delete, head assignment, bulk create, skills sync (9)
-- `documents.ts` — agreement/certificate generation, company/student listings, downloads, verify (7)
-- `notifications.ts` — list, preferences get/update, markRead, markAllRead (5)
-- `stats.ts` — admin + university dashboard statistics (2)
-- `admin-users.ts` — list, create, setRole, ban, unban, remove, setPassword, update, sessions, revokeSession, revokeAllSessions (11)
-- `universities.ts` — list, getById, create, approve, reject (5)
-- `assistant.ts` — listModels, conversations CRUD, messages, model/title updates (9)
-- `matching.ts` — getScore, getSkillGap, getReadinessHistory, captureReadinessSnapshot (4)
-- `interviews.ts` — list for company/student, propose slots, confirm slot (4)
-- `messages.ts` — company/student message threads, send, mark read, list thread messages (6)
-- `student-cv.ts` — CV retrieval plus experience/project/resume create/update/delete (9)
+- `users.ts` â€” profile + avatar + session management (7)
+- `companies.ts` â€” CRUD, approval/suspension, trust index, reports, quality feedback, logo upload (15)
+- `students.ts` â€” getProfile, getPublicProfile, upsertProfile, upsertProfileDetails (4)
+- `offers.ts` â€” CRUD, saved offers, AI draft/description/skills helpers, search parsing (15)
+- `applications.ts` â€” search, apply, withdraw, timeline, pipeline actions, cover letter generation (10)
+- `skills.ts` â€” list + prioritized skill tags (2)
+- `placements.ts` â€” admin + deptHead validations plus AI summary generation (7 total: placements 4, deptHead 3)
+- `departments.ts` â€” list/create/update/delete, head assignment, bulk create, skills sync (9)
+- `documents.ts` â€” agreement/certificate generation, company/student listings, downloads, verify (7)
+- `notifications.ts` â€” list, preferences get/update, markRead, markAllRead (5)
+- `stats.ts` â€” admin + university dashboard statistics (2)
+- `admin-users.ts` â€” list, create, setRole, ban, unban, remove, setPassword, update, sessions, revokeSession, revokeAllSessions (11)
+- `universities.ts` â€” list, getById, create, approve, reject (5)
+- `assistant.ts` â€” listModels, conversations CRUD, messages, model/title updates (9)
+- `matching.ts` â€” getScore, getSkillGap, getReadinessHistory, captureReadinessSnapshot (4)
+- `interviews.ts` â€” list for company/student, propose slots, confirm slot (4)
+- `messages.ts` â€” company/student message threads, send, mark read, list thread messages (6)
+- `student-cv.ts` â€” CV retrieval plus experience/project/resume create/update/delete (9)
 
 ### Client Usage Patterns
 
@@ -274,7 +278,7 @@ const { mutateAsync } = useMutation(
 
 ### Server Components (RSC)
 
-Server Components call services **directly** — no oRPC needed:
+Server Components call services **directly** â€” no oRPC needed:
 ```typescript
 import { getCompanyByUserId } from "@/server/services/companies/get"
 const company = await getCompanyByUserId(session.user.id)
@@ -283,16 +287,16 @@ const company = await getCompanyByUserId(session.user.id)
 ### Shared Schemas
 
 Client-safe Zod schemas in `src/lib/schemas/` (NO `server-only`):
-- `auth.ts` — login, signup, reset password schemas
-- `company.ts` — company onboarding and profile schemas
-- `student.ts` — student profile schemas (education, experience, skills)
-- `offer.ts` — internship offer creation schemas
-- `search.ts` — search and filter schemas
-- `matching.ts` — matching criteria schemas
-- `university.ts` — university CRUD schemas
-- `verify.ts` — document verification code schema
-- `enums.ts` — shared enum schemas
-- `map-errors.ts` — Zod error mapping utilities
+- `auth.ts` â€” login, signup, reset password schemas
+- `company.ts` â€” company onboarding and profile schemas
+- `student.ts` â€” student profile schemas (education, experience, skills)
+- `offer.ts` â€” internship offer creation schemas
+- `search.ts` â€” search and filter schemas
+- `matching.ts` â€” matching criteria schemas
+- `university.ts` â€” university CRUD schemas
+- `verify.ts` â€” document verification code schema
+- `enums.ts` â€” shared enum schemas
+- `map-errors.ts` â€” Zod error mapping utilities
 
 **Schema Factory Pattern (with i18n):**
 ```typescript
@@ -334,7 +338,7 @@ const form = useForm({
 
 ### Imports & Path Aliases
 
-- **Always use `@/` aliases** — never relative imports:
+- **Always use `@/` aliases** â€” never relative imports:
   - `@/components/ui/button`
   - `@/lib/utils`
   - `@/app/_components/HeroSection`
@@ -367,7 +371,7 @@ import "./globals.css"
   ```
 - Prefer `interface` over `type` for object shapes
 - Use `React.ReactNode` for children
-- Strict mode enabled — no implicit any
+- Strict mode enabled â€” no implicit any
 
 ### Naming Conventions
 
@@ -423,7 +427,7 @@ export { ComponentName, componentVariants }
 
 ### Tailwind CSS Conventions
 
-- **Use `@theme inline`** — all design tokens defined in `globals.css` as CSS variables
+- **Use `@theme inline`** â€” all design tokens defined in `globals.css` as CSS variables
 - **Color tokens** (use these, not hardcoded values):
   - `--color-background`, `--color-foreground`
   - `--color-primary`, `--color-secondary`
@@ -451,7 +455,7 @@ This project follows a "Morning Press / Night Edition" editorial aesthetic:
 
 ### Animation Patterns
 
-**NEVER define `reveal`/`ease` locally — always import from `src/lib/animations.ts`:**
+**NEVER define `reveal`/`ease` locally â€” always import from `src/lib/animations.ts`:**
 
 ```typescript
 import { reveal, ease, revealWithDelay } from "@/lib/animations"
@@ -464,12 +468,12 @@ import { reveal, ease, revealWithDelay } from "@/lib/animations"
 ```
 
 Available exports from `@/lib/animations`:
-- `reveal` — opacity 0→1 + y 20→0
-- `ease` — cubic bezier [0.4, 0, 0.2, 1]
-- `revealTransition` — `{ duration: 0.6, ease }`
-- `revealWithDelay(delay)` — `{ duration: 0.6, ease, delay }`
-- `fadeIn` — opacity only
-- `slideUp` — y translation only
+- `reveal` â€” opacity 0â†’1 + y 20â†’0
+- `ease` â€” cubic bezier [0.4, 0, 0.2, 1]
+- `revealTransition` â€” `{ duration: 0.6, ease }`
+- `revealWithDelay(delay)` â€” `{ duration: 0.6, ease, delay }`
+- `fadeIn` â€” opacity only
+- `slideUp` â€” y translation only
 
 ### File Organization
 
@@ -477,101 +481,101 @@ All source code lives under the `src/` directory. Configuration files stay at ro
 
 ```
 src/
-├── app/                        # Next.js App Router
-│   ├── page.tsx                # Root redirect → /en
-│   ├── layout.tsx              # Root layout (fonts, html)
-│   ├── globals.css             # Global styles + theme variables
-│   ├── api/                    # API routes
-│   │   ├── auth/[...all]/      # Better Auth
-│   │   ├── rpc/[...rest]/      # oRPC catch-all (CSRF protected)
-│   │   ├── assistant/chat/     # AI streaming endpoint
-│   │   ├── assistant/auth/status/ # Arcade auth check
-│   │   ├── openapi/            # OpenAPI spec + Swagger UI
-│   │   └── health/             # Dependency-aware readiness endpoint
-│   └── [locale]/               # i18n routes
-│       ├── layout.tsx          # Locale layout (providers)
-│       ├── page.tsx            # Home page
-│       ├── _components/        # Route-specific components
-│       ├── (auth)/             # Auth route group
-│       │   ├── layout.tsx
-│       │   ├── login/
-│       │   ├── signup/
-│       │   └── reset-password/
-│       ├── (authenticated)/    # Protected routes
-│       │   └── dashboard/      # Dashboard routes
-│       └── onboarding/         # Onboarding flows
-│
-├── components/                 # Shared components
-│   ├── ui/                     # shadcn/ui components (auto-generated)
-│   ├── form-fields/            # Shared form field components
-│   ├── providers/              # Context providers
-│   └── [ComponentName].tsx     # Shared components
-│
-├── lib/                        # Utilities & shared logic
-│   ├── utils.ts                # cn() utility
-│   ├── auth.ts                 # Better Auth server config
-│   ├── auth-client.ts          # Better Auth client
-│   ├── auth-guards.ts          # RSC layout guards (requireRole)
-│   ├── auth-utils.ts           # Auth helper functions
-│   ├── date.ts                 # Date formatting utilities
-│   ├── string.ts               # String utilities (slugify, etc.)
-│   ├── profile-completeness.ts # Student profile completion %
-│   ├── csrf.ts                 # CSRF token generation/validation
-│   ├── post-login-redirect.ts  # Role-based redirect after login
-│   ├── schemas/                # Client-safe Zod schemas (10 files)
-│   ├── constants/              # Pipeline + internship constants
-│   └── [utility].ts            # Other utilities
-│
-├── hooks/                      # Shared hooks
-│   ├── useCopilot.ts           # AI chat transport + tool output
-│   ├── useInfiniteScroll.ts    # IntersectionObserver pagination
-│   ├── useDebounce.ts          # Value debouncing
-│   ├── useLogout.ts            # Auth signout + redirect
-│   ├── useFormWithSchema.ts    # TanStack Form + Zod integration
-│   ├── use-mobile.ts           # Mobile breakpoint detection
-│   ├── use-skill-selection.ts  # Multi-select state
-│   ├── use-skill-grouping.ts   # Skill categorization
-│   └── index.ts                # Barrel export
-│
-├── server/                     # Server-only code
-│   ├── db/                     # Drizzle database
-│   │   ├── index.ts            # Drizzle client
-│   │   ├── schema/             # Database schemas (19 modules)
-│   │   └── migrations/         # Migration files
-│   ├── orpc/                   # oRPC controller layer
-│   │   ├── middleware.ts       # Auth procedures (7 types)
-│   │   ├── rate-limited-procedures.ts  # 20 variants
-│   │   ├── router.ts           # Combined router (131 procedures / 19 namespaces)
-│   │   ├── client.ts           # Client + TanStack Query
-│   │   └── routes/             # 18 route modules
-│   ├── services/               # Pure business logic (18 domains)
-│   ├── ai/                     # AI integration (model, tools, context, prompts)
-│   ├── openapi/                # OpenAPI spec generation
-│   ├── pdfs/                   # PDF templates (AgreementTemplate, CertificateTemplate)
-│   ├── storage/                # S3 file storage (Bun.S3Client)
-│   ├── email/                  # Email service (Resend + React Email)
-│   ├── caching/                # Redis client + rate limiter
-│   ├── logging/                # Pino structured logging
-│   └── mcp/                    # Model Context Protocol (dev only)
-│
-├── i18n/                       # next-intl configuration
-│   ├── routing.ts
-│   └── request.ts
-│
-├── messages/                   # Translation JSON files
-│   ├── en.json
-│   ├── fr.json
-│   └── ar.json
-│
-├── env.ts                      # T3 Env validation
-└── proxy.ts                    # Next.js middleware (i18n + auth)
+â”œâ”€â”€ app/                        # Next.js App Router
+â”‚   â”œâ”€â”€ page.tsx                # Root redirect â†’ /en
+â”‚   â”œâ”€â”€ layout.tsx              # Root layout (fonts, html)
+â”‚   â”œâ”€â”€ globals.css             # Global styles + theme variables
+â”‚   â”œâ”€â”€ api/                    # API routes
+â”‚   â”‚   â”œâ”€â”€ auth/[...all]/      # Better Auth
+â”‚   â”‚   â”œâ”€â”€ rpc/[...rest]/      # oRPC catch-all (CSRF protected)
+â”‚   â”‚   â”œâ”€â”€ assistant/chat/     # AI streaming endpoint
+â”‚   â”‚   â”œâ”€â”€ assistant/auth/status/ # Arcade auth check
+â”‚   â”‚   â”œâ”€â”€ openapi/            # OpenAPI spec + Swagger UI
+â”‚   â”‚   â””â”€â”€ health/             # Dependency-aware readiness endpoint
+â”‚   â””â”€â”€ [locale]/               # i18n routes
+â”‚       â”œâ”€â”€ layout.tsx          # Locale layout (providers)
+â”‚       â”œâ”€â”€ page.tsx            # Home page
+â”‚       â”œâ”€â”€ _components/        # Route-specific components
+â”‚       â”œâ”€â”€ (auth)/             # Auth route group
+â”‚       â”‚   â”œâ”€â”€ layout.tsx
+â”‚       â”‚   â”œâ”€â”€ login/
+â”‚       â”‚   â”œâ”€â”€ signup/
+â”‚       â”‚   â””â”€â”€ reset-password/
+â”‚       â”œâ”€â”€ (authenticated)/    # Protected routes
+â”‚       â”‚   â””â”€â”€ dashboard/      # Dashboard routes
+â”‚       â””â”€â”€ onboarding/         # Onboarding flows
+â”‚
+â”œâ”€â”€ components/                 # Shared components
+â”‚   â”œâ”€â”€ ui/                     # shadcn/ui components (auto-generated)
+â”‚   â”œâ”€â”€ form-fields/            # Shared form field components
+â”‚   â”œâ”€â”€ providers/              # Context providers
+â”‚   â””â”€â”€ [ComponentName].tsx     # Shared components
+â”‚
+â”œâ”€â”€ lib/                        # Utilities & shared logic
+â”‚   â”œâ”€â”€ utils.ts                # cn() utility
+â”‚   â”œâ”€â”€ auth.ts                 # Better Auth server config
+â”‚   â”œâ”€â”€ auth-client.ts          # Better Auth client
+â”‚   â”œâ”€â”€ auth-guards.ts          # RSC layout guards (requireRole)
+â”‚   â”œâ”€â”€ auth-utils.ts           # Auth helper functions
+â”‚   â”œâ”€â”€ date.ts                 # Date formatting utilities
+â”‚   â”œâ”€â”€ string.ts               # String utilities (slugify, etc.)
+â”‚   â”œâ”€â”€ profile-completeness.ts # Student profile completion %
+â”‚   â”œâ”€â”€ csrf.ts                 # CSRF token generation/validation
+â”‚   â”œâ”€â”€ post-login-redirect.ts  # Role-based redirect after login
+â”‚   â”œâ”€â”€ schemas/                # Client-safe Zod schemas (10 files)
+â”‚   â”œâ”€â”€ constants/              # Pipeline + internship constants
+â”‚   â””â”€â”€ [utility].ts            # Other utilities
+â”‚
+â”œâ”€â”€ hooks/                      # Shared hooks
+â”‚   â”œâ”€â”€ useCopilot.ts           # AI chat transport + tool output
+â”‚   â”œâ”€â”€ useInfiniteScroll.ts    # IntersectionObserver pagination
+â”‚   â”œâ”€â”€ useDebounce.ts          # Value debouncing
+â”‚   â”œâ”€â”€ useLogout.ts            # Auth signout + redirect
+â”‚   â”œâ”€â”€ useFormWithSchema.ts    # TanStack Form + Zod integration
+â”‚   â”œâ”€â”€ use-mobile.ts           # Mobile breakpoint detection
+â”‚   â”œâ”€â”€ use-skill-selection.ts  # Multi-select state
+â”‚   â”œâ”€â”€ use-skill-grouping.ts   # Skill categorization
+â”‚   â””â”€â”€ index.ts                # Barrel export
+â”‚
+â”œâ”€â”€ server/                     # Server-only code
+â”‚   â”œâ”€â”€ db/                     # Drizzle database
+â”‚   â”‚   â”œâ”€â”€ index.ts            # Drizzle client
+â”‚   â”‚   â”œâ”€â”€ schema/             # Database schemas (19 modules)
+â”‚   â”‚   â””â”€â”€ migrations/         # Migration files
+â”‚   â”œâ”€â”€ orpc/                   # oRPC controller layer
+â”‚   â”‚   â”œâ”€â”€ middleware.ts       # Auth procedures (7 types)
+â”‚   â”‚   â”œâ”€â”€ rate-limited-procedures.ts  # 20 variants
+â”‚   â”‚   â”œâ”€â”€ router.ts           # Combined router (131 procedures / 19 namespaces)
+â”‚   â”‚   â”œâ”€â”€ client.ts           # Client + TanStack Query
+â”‚   â”‚   â””â”€â”€ routes/             # 18 route modules
+â”‚   â”œâ”€â”€ services/               # Pure business logic (18 domains)
+â”‚   â”œâ”€â”€ ai/                     # AI integration (model, tools, context, prompts)
+â”‚   â”œâ”€â”€ openapi/                # OpenAPI spec generation
+â”‚   â”œâ”€â”€ pdfs/                   # PDF templates (AgreementTemplate, CertificateTemplate)
+â”‚   â”œâ”€â”€ storage/                # S3 file storage (Bun.S3Client)
+â”‚   â”œâ”€â”€ email/                  # Email service (Resend + React Email)
+â”‚   â”œâ”€â”€ caching/                # Redis client + rate limiter
+â”‚   â”œâ”€â”€ logging/                # Pino structured logging
+â”‚   â””â”€â”€ mcp/                    # Model Context Protocol (dev only)
+â”‚
+â”œâ”€â”€ i18n/                       # next-intl configuration
+â”‚   â”œâ”€â”€ routing.ts
+â”‚   â””â”€â”€ request.ts
+â”‚
+â”œâ”€â”€ messages/                   # Translation JSON files
+â”‚   â”œâ”€â”€ en.json
+â”‚   â”œâ”€â”€ fr.json
+â”‚   â””â”€â”€ ar.json
+â”‚
+â”œâ”€â”€ env.ts                      # T3 Env validation
+â””â”€â”€ proxy.ts                    # Next.js middleware (i18n + auth)
 ```
 
 ---
 
 ## Feature Folder Architecture
 
-Any `_components/` client component exceeding **150 lines** must become a **feature folder**. This is mandatory — no exceptions.
+Any `_components/` client component exceeding **150 lines** must become a **feature folder**. This is mandatory â€” no exceptions.
 
 ### The Feature Folder Shape
 
@@ -593,8 +597,8 @@ FeatureName/
 
 **index.tsx (Orchestrator)**
 - Only layout + wiring. Imports hooks and components, passes data as props.
-- **No** `useQuery`, `useMutation`, `useInfiniteQuery` — these belong in `hooks/`.
-- **No** complex JSX blocks (> 30 lines of JSX per section → extract to `components/`).
+- **No** `useQuery`, `useMutation`, `useInfiniteQuery` â€” these belong in `hooks/`.
+- **No** complex JSX blocks (> 30 lines of JSX per section â†’ extract to `components/`).
 - MAX 120 lines.
 
 **hooks/ (Data Layer)**
@@ -605,7 +609,7 @@ FeatureName/
 
 **components/ (UI Layer)**
 - Pure UI. Receives ALL data via props.
-- Can use `useTranslations` and `motion` — these are UI concerns.
+- Can use `useTranslations` and `motion` â€” these are UI concerns.
 - Max 200 lines each. If larger, split further.
 - No direct imports from `@/server/orpc/client`.
 
@@ -620,7 +624,7 @@ FeatureName/
 | `src/lib/animations.ts` | `reveal`, `ease`, `fadeIn`, `slideUp`, `revealTransition`, `revealWithDelay` | All animated components |
 | `src/hooks/useInfiniteScroll.ts` | `useInfiniteScroll(fetchNextPage, hasNextPage)` | Applications, Candidates, Explore |
 | `src/hooks/useDebounce.ts` | `useDebounce(value, delay)` | Explore, SkillsManager |
-| `src/hooks/useLogout.ts` | `useLogout()` → `{ logout, isLoggingOut }` | Navbar, DashboardSidebar, DashboardNavbar |
+| `src/hooks/useLogout.ts` | `useLogout()` â†’ `{ logout, isLoggingOut }` | Navbar, DashboardSidebar, DashboardNavbar |
 | `src/hooks/useCopilot.ts` | `useCopilot({ toolName, onResult })` | OfferDetail, OfferForm, PlacementDetail, Explore |
 
 ### Shared Components
@@ -629,20 +633,20 @@ Components reused across multiple features go in `src/components/`:
 
 ```
 src/components/
-├── ui/                        # Primitives (shadcn)
-├── form-fields/               # Shared form field components
-│   ├── TextField.tsx
-│   ├── TextAreaField.tsx
-│   ├── SelectField.tsx
-│   ├── PasswordField.tsx
-│   ├── CheckboxField.tsx
-│   ├── FormSection.tsx
-│   └── index.ts
-├── ServerError.tsx            # Shared error display
-├── SuccessMessage.tsx         # Shared success display
-├── FormHeader.tsx             # Shared header with back button
-├── SubmitButton.tsx           # Shared submit with loading
-└── ...
+â”œâ”€â”€ ui/                        # Primitives (shadcn)
+â”œâ”€â”€ form-fields/               # Shared form field components
+â”‚   â”œâ”€â”€ TextField.tsx
+â”‚   â”œâ”€â”€ TextAreaField.tsx
+â”‚   â”œâ”€â”€ SelectField.tsx
+â”‚   â”œâ”€â”€ PasswordField.tsx
+â”‚   â”œâ”€â”€ CheckboxField.tsx
+â”‚   â”œâ”€â”€ FormSection.tsx
+â”‚   â””â”€â”€ index.ts
+â”œâ”€â”€ ServerError.tsx            # Shared error display
+â”œâ”€â”€ SuccessMessage.tsx         # Shared success display
+â”œâ”€â”€ FormHeader.tsx             # Shared header with back button
+â”œâ”€â”€ SubmitButton.tsx           # Shared submit with loading
+â””â”€â”€ ...
 ```
 
 ### Shared Hooks
@@ -651,34 +655,34 @@ Hooks reused across multiple features go in `src/hooks/`:
 
 ```
 src/hooks/
-├── use-mobile.ts              # Mobile breakpoint detection
-├── use-skill-grouping.ts      # Groups skills by category
-├── use-skill-selection.ts     # Selection state + toggle logic
-├── useInfiniteScroll.ts       # IntersectionObserver + fetchNextPage
-├── useDebounce.ts             # Debounced value
-├── useLogout.ts               # Logout + redirect
-├── useCopilot.ts              # AI chat transport + useChat + tool output
-└── index.ts                   # Barrel export
+â”œâ”€â”€ use-mobile.ts              # Mobile breakpoint detection
+â”œâ”€â”€ use-skill-grouping.ts      # Groups skills by category
+â”œâ”€â”€ use-skill-selection.ts     # Selection state + toggle logic
+â”œâ”€â”€ useInfiniteScroll.ts       # IntersectionObserver + fetchNextPage
+â”œâ”€â”€ useDebounce.ts             # Debounced value
+â”œâ”€â”€ useLogout.ts               # Logout + redirect
+â”œâ”€â”€ useCopilot.ts              # AI chat transport + useChat + tool output
+â””â”€â”€ index.ts                   # Barrel export
 ```
 
 ### Reference Implementation: ProfileContent
 
 ```
 ProfileContent/
-├── index.tsx                  # 108 lines — layout + wiring
-├── types.ts                   # StudentData, ProfileUser, etc.
-├── utils.ts                   # roleLabels, getInitials, formatMemberSince
-├── components/
-│   ├── ProfileHeader.tsx      # Cover + Avatar + Name
-│   ├── ProfileStats.tsx       # Stats grid
-│   ├── ContactInfoCard.tsx    # Email, phone, location
-│   ├── SkillsCard.tsx         # Skills display
-│   ├── SocialLinks.tsx        # GitHub, Portfolio
-│   ├── BioSection.tsx         # Bio display
-│   ├── EducationSection.tsx   # University info
-│   └── ExperienceSection.tsx  # Experience placeholder
-└── hooks/
-    └── useProfileData.ts      # Computed values from props
+â”œâ”€â”€ index.tsx                  # 108 lines â€” layout + wiring
+â”œâ”€â”€ types.ts                   # StudentData, ProfileUser, etc.
+â”œâ”€â”€ utils.ts                   # roleLabels, getInitials, formatMemberSince
+â”œâ”€â”€ components/
+â”‚   â”œâ”€â”€ ProfileHeader.tsx      # Cover + Avatar + Name
+â”‚   â”œâ”€â”€ ProfileStats.tsx       # Stats grid
+â”‚   â”œâ”€â”€ ContactInfoCard.tsx    # Email, phone, location
+â”‚   â”œâ”€â”€ SkillsCard.tsx         # Skills display
+â”‚   â”œâ”€â”€ SocialLinks.tsx        # GitHub, Portfolio
+â”‚   â”œâ”€â”€ BioSection.tsx         # Bio display
+â”‚   â”œâ”€â”€ EducationSection.tsx   # University info
+â”‚   â””â”€â”€ ExperienceSection.tsx  # Experience placeholder
+â””â”€â”€ hooks/
+    â””â”€â”€ useProfileData.ts      # Computed values from props
 ```
 
 ### Naming Conventions
@@ -694,16 +698,16 @@ ProfileContent/
 
 ```
 Component > 150 lines?
-├── Yes → Feature folder (mandatory)
-│   ├── Has useQuery/useMutation? → hooks/useFeatureData.ts
-│   ├── Has 3+ useState? → hooks/useFeatureState.ts
-│   ├── Has STATUS_COLORS/STAGE_LABELS? → import from src/lib/constants/pipeline
-│   ├── Has INTERNSHIP_TYPE_*? → import from src/lib/constants/internship
-│   ├── Has reveal/ease? → import from src/lib/animations (NEVER local)
-│   ├── Has IntersectionObserver? → use src/hooks/useInfiniteScroll
-│   ├── Has useChat/DefaultChatTransport? → use src/hooks/useCopilot
-│   └── Has distinct UI sections? → components/
-└── No → Keep as single file
+â”œâ”€â”€ Yes â†’ Feature folder (mandatory)
+â”‚   â”œâ”€â”€ Has useQuery/useMutation? â†’ hooks/useFeatureData.ts
+â”‚   â”œâ”€â”€ Has 3+ useState? â†’ hooks/useFeatureState.ts
+â”‚   â”œâ”€â”€ Has STATUS_COLORS/STAGE_LABELS? â†’ import from src/lib/constants/pipeline
+â”‚   â”œâ”€â”€ Has INTERNSHIP_TYPE_*? â†’ import from src/lib/constants/internship
+â”‚   â”œâ”€â”€ Has reveal/ease? â†’ import from src/lib/animations (NEVER local)
+â”‚   â”œâ”€â”€ Has IntersectionObserver? â†’ use src/hooks/useInfiniteScroll
+â”‚   â”œâ”€â”€ Has useChat/DefaultChatTransport? â†’ use src/hooks/useCopilot
+â”‚   â””â”€â”€ Has distinct UI sections? â†’ components/
+â””â”€â”€ No â†’ Keep as single file
 ```
 
 ### Migration Mapping
@@ -746,19 +750,18 @@ You should use the existing design style and the color palette and you should us
 
 ## Linting
 
-This project uses ESLint with Next.js core-web-vitals and TypeScript configs:
+This project uses **Biome** for linting and formatting, with project-specific parity guards:
 
-```javascript
-// eslint.config.mjs
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
-```
+- `bun run lint` — Biome lint + alias import guard + Next parity guard
+- `bun run lint:biome` — Biome lint only
+- `bun run lint:fix` — Biome autofix (`check --write --unsafe`)
+- `bun run format` — Biome formatter only
+- `bun run lint:imports` — enforces `@/` aliases (except local style imports)
+- `bun run lint:next-parity` — guards against raw `<img>` and internal raw `<a href="/...">` in App Router code
 
-Run `bun run lint` before committing. No custom rules — follow Next.js defaults.
+Run `bun run lint` before committing.
 
 ---
-
 ## Testing (Unit Tests with Bun)
 
 This project uses **Bun's built-in test runner** (`bun:test`) - no Jest or Vitest needed.
@@ -791,10 +794,10 @@ describe("cn utility", () => {
 ### When to Write Tests
 
 **Always write tests for:**
-1. ✅ Utility functions in `src/lib/utils.ts`
-2. ✅ All schemas in `src/lib/schemas/`
-3. ✅ Service functions in `src/server/services/`
-4. ✅ Complex helper functions with branching logic
+1. âœ… Utility functions in `src/lib/utils.ts`
+2. âœ… All schemas in `src/lib/schemas/`
+3. âœ… Service functions in `src/server/services/`
+4. âœ… Complex helper functions with branching logic
 
 **Example scenarios requiring tests:**
 - Form validation schemas (test valid inputs, invalid inputs, edge cases)
@@ -864,11 +867,11 @@ This allows importing from `bun:test` without type errors.
 
 This codebase prioritizes **editorial elegance** over generic UI:
 
-- **Warm, human aesthetic** — not cold corporate design
-- **Intentional asymmetry** — magazine-style layouts
-- **Smooth, purposeful motion** — animations that enhance, not distract
-- **Typography-driven hierarchy** — serif headlines, clean body text
-- **Dark mode as first-class** — "Night Edition" theme is equally refined
+- **Warm, human aesthetic** â€” not cold corporate design
+- **Intentional asymmetry** â€” magazine-style layouts
+- **Smooth, purposeful motion** â€” animations that enhance, not distract
+- **Typography-driven hierarchy** â€” serif headlines, clean body text
+- **Dark mode as first-class** â€” "Night Edition" theme is equally refined
 
 When adding features, maintain this editorial voice. Avoid generic component libraries unless they fit the warm, refined aesthetic.
 
@@ -909,7 +912,7 @@ export function Component() {
 
 **CRITICAL**: When styling components that support RTL languages (Arabic), **always use logical CSS properties** instead of physical ones:
 
-| ❌ Physical (Avoid) | ✅ Logical (Use) | Description |
+| âŒ Physical (Avoid) | âœ… Logical (Use) | Description |
 |---------------------|------------------|-------------|
 | `ml-*` / `mr-*` | `ms-*` / `me-*` | Margin start/end |
 | `pl-*` / `pr-*` | `ps-*` / `pe-*` | Padding start/end |
@@ -961,27 +964,27 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 ### Translation Keys Organization
 ```
 src/messages/
-├── metadata         (page titles, descriptions)
-├── nav              (navigation labels)
-├── hero             (headlines, CTAs)
-├── features         (feature cards)
-├── marquee          (scrolling items)
-├── stats            (statistics display)
-├── language         (language switcher)
-├── theme            (theme toggle)
-├── notFound         (404 page)
-├── auth             (login, signup, reset-password, validation)
-├── onboarding       (company, student setup)
-└── dashboard        (extensive nested structure)
-    ├── nav          (sidebar navigation)
-    ├── assistant    (AI assistant interface)
-    ├── notifications (notification center)
-    ├── company      (offers, candidates, profile)
-    ├── student      (profile, applications, documents feedback)
-    ├── explore      (internship search)
-    ├── offerDetail  (application + company report flow)
-    ├── applications (tracking)
-    └── admin        (validations, stats)
+â”œâ”€â”€ metadata         (page titles, descriptions)
+â”œâ”€â”€ nav              (navigation labels)
+â”œâ”€â”€ hero             (headlines, CTAs)
+â”œâ”€â”€ features         (feature cards)
+â”œâ”€â”€ marquee          (scrolling items)
+â”œâ”€â”€ stats            (statistics display)
+â”œâ”€â”€ language         (language switcher)
+â”œâ”€â”€ theme            (theme toggle)
+â”œâ”€â”€ notFound         (404 page)
+â”œâ”€â”€ auth             (login, signup, reset-password, validation)
+â”œâ”€â”€ onboarding       (company, student setup)
+â””â”€â”€ dashboard        (extensive nested structure)
+    â”œâ”€â”€ nav          (sidebar navigation)
+    â”œâ”€â”€ assistant    (AI assistant interface)
+    â”œâ”€â”€ notifications (notification center)
+    â”œâ”€â”€ company      (offers, candidates, profile)
+    â”œâ”€â”€ student      (profile, applications, documents feedback)
+    â”œâ”€â”€ explore      (internship search)
+    â”œâ”€â”€ offerDetail  (application + company report flow)
+    â”œâ”€â”€ applications (tracking)
+    â””â”€â”€ admin        (validations, stats)
 ```
 
 ---
@@ -1150,9 +1153,9 @@ export function isRateLimitingEnabled(): boolean
 
 `GET /api/health` returns structured readiness details instead of a plain `"ok"`:
 
-- `checks.database` — required dependency (driven by `pingDatabase()` in `src/server/db/index.ts`)
-- `checks.redis` — optional dependency (`pingRedis()` / `isRedisAvailable()`)
-- `checks.rateLimiter` — reflects `isRateLimitingEnabled()` and Redis availability
+- `checks.database` â€” required dependency (driven by `pingDatabase()` in `src/server/db/index.ts`)
+- `checks.redis` â€” optional dependency (`pingRedis()` / `isRedisAvailable()`)
+- `checks.rateLimiter` â€” reflects `isRateLimitingEnabled()` and Redis availability
 
 Response status:
 - `200` for `ok`/`degraded`
@@ -1220,53 +1223,53 @@ Uses React Email components + Resend for delivery. Graceful fallback if `RESEND_
 ### Document Generation & Verification (PDF)
 
 **`src/server/services/documents/`:**
-- `generate-agreement.ts` — Generate internship agreements
-- `generate-certificate.ts` — Generate completion certificates
-- `qr-utils.ts` — QR code generation for documents
-- `verification-code.ts` — Unique verification code generation
-- `verify.ts` — Public document verification by code
+- `generate-agreement.ts` â€” Generate internship agreements
+- `generate-certificate.ts` â€” Generate completion certificates
+- `qr-utils.ts` â€” QR code generation for documents
+- `verification-code.ts` â€” Unique verification code generation
+- `verify.ts` â€” Public document verification by code
 
 **`src/server/pdfs/`:**
-- `AgreementTemplate.tsx` — React PDF agreement template
-- `CertificateTemplate.tsx` — React PDF certificate template
+- `AgreementTemplate.tsx` â€” React PDF agreement template
+- `CertificateTemplate.tsx` â€” React PDF certificate template
 
 Uses `@react-pdf/renderer`. Each document gets a verification code + QR code. Public verification at `/verify/[code]`.
 
 ### Department Management
 
 **`src/server/services/departments/` (10 files):**
-- `create.ts` — Create department under a university (duplicate name check)
-- `list.ts` — List departments by university (with skill counts)
-- `update.ts` — Update department details (partial update)
-- `delete.ts` — Delete department (transactional: demotes dept_heads to student, then deletes)
-- `assign-head.ts` — Assign dept_head role by user ID (bidirectional user + department update)
-- `assign-head-by-email.ts` — Assign head by email (auto-creates user if needed, triggers password reset)
-- `unassign-head.ts` — Remove head from department (transactional: demotes role, clears headName)
-- `bulk-create-with-heads.ts` — Bulk create departments with heads from CSV (per-row error handling, partial success)
-- `sync-skills.ts` — Sync department-specific skills (delete-then-insert, max 200)
-- `get-skills.ts` — Get department skill IDs
+- `create.ts` â€” Create department under a university (duplicate name check)
+- `list.ts` â€” List departments by university (with skill counts)
+- `update.ts` â€” Update department details (partial update)
+- `delete.ts` â€” Delete department (transactional: demotes dept_heads to student, then deletes)
+- `assign-head.ts` â€” Assign dept_head role by user ID (bidirectional user + department update)
+- `assign-head-by-email.ts` â€” Assign head by email (auto-creates user if needed, triggers password reset)
+- `unassign-head.ts` â€” Remove head from department (transactional: demotes role, clears headName)
+- `bulk-create-with-heads.ts` â€” Bulk create departments with heads from CSV (per-row error handling, partial success)
+- `sync-skills.ts` â€” Sync department-specific skills (delete-then-insert, max 200)
+- `get-skills.ts` â€” Get department skill IDs
 
 **oRPC**: `departments` namespace (9 procedures) + `deptHead` namespace (3 placement procedures)
 
 **UI Components** (`dashboard/admin/departments/_components/DepartmentsView/`):
 - Feature folder with orchestrator, hooks layer (useDepartmentsData, useDepartmentsActions, useAssignHeadDialog, useDepartmentSkills), and pure UI components
-- `DeleteDepartmentDialog.tsx` — Confirmation dialog for department deletion
-- `RemoveHeadDialog.tsx` — Confirmation dialog for head removal
-- `DepartmentSkillsModal/` — Skills management with search, toggle, and sync
-- `BulkCreateForm/` — Sub-feature folder for bulk department import
+- `DeleteDepartmentDialog.tsx` â€” Confirmation dialog for department deletion
+- `RemoveHeadDialog.tsx` â€” Confirmation dialog for head removal
+- `DepartmentSkillsModal/` â€” Skills management with search, toggle, and sync
+- `BulkCreateForm/` â€” Sub-feature folder for bulk department import
 
 ### OpenAPI
 
-**`src/server/openapi/generator.ts`** — Generates OpenAPI spec from oRPC router
-- `GET /api/openapi/spec` — JSON OpenAPI specification
-- `GET /api/openapi` — Swagger UI
+**`src/server/openapi/generator.ts`** â€” Generates OpenAPI spec from oRPC router
+- `GET /api/openapi/spec` â€” JSON OpenAPI specification
+- `GET /api/openapi` â€” Swagger UI
 
 ### AI/Assistant Feature
 
 **Services:** `src/server/services/assistant/`
-- `get.ts`, `list.ts` — Conversation CRUD
-- `create.ts`, `update.ts` — Mutations
-- `messages.ts` — Message handling
+- `get.ts`, `list.ts` â€” Conversation CRUD
+- `create.ts`, `update.ts` â€” Mutations
+- `messages.ts` â€” Message handling
 
 **Routes:** `src/server/orpc/routes/assistant.ts`
 
@@ -1279,9 +1282,9 @@ Uses `@react-pdf/renderer`. Each document gets a verification code + QR code. Pu
 ### Matching System
 
 **`src/server/services/matching/`:**
-- `score.ts` — Calculate student-offer match scores
-- `skill-gap.ts` — Identify missing skills
-- `readiness-history.ts` — Track readiness over time
+- `score.ts` â€” Calculate student-offer match scores
+- `skill-gap.ts` â€” Identify missing skills
+- `readiness-history.ts` â€” Track readiness over time
 
 ### Trust System
 
@@ -1346,3 +1349,4 @@ When adding or modifying features, **update all relevant documentation files** t
 3. Update file counts in service domain tables
 4. Add new UI components to feature folder references if applicable
 5. Add translation keys to the translation structure if new namespaces
+

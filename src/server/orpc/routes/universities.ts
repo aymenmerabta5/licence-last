@@ -1,31 +1,30 @@
 import "server-only"
 
-import { z } from "zod"
-import { eq } from "drizzle-orm"
 import { ORPCError } from "@orpc/server"
+import { eq } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
-
+import { z } from "zod"
+import { env } from "@/env"
+import { CACHE_TAGS } from "@/lib/cache"
+import { universityStatusSchema } from "@/lib/schemas/enums"
+import { db } from "@/server/db"
+import { user } from "@/server/db/schema/auth"
+import UniversityApprovedEmail from "@/server/email/templates/UniversityApprovedEmail"
 import { isAdminRole } from "@/server/orpc/middleware"
 import {
   authedProcedureGenerous,
   authedProcedureStandard,
   superAdminProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
-import { universityStatusSchema } from "@/lib/schemas/enums"
-import { listUniversities } from "@/server/services/universities/list"
-import { getUniversityById } from "@/server/services/universities/get"
-import { createUniversity } from "@/server/services/universities/create"
-import { updateUniversity } from "@/server/services/universities/update"
-import { deleteUniversity } from "@/server/services/universities/delete"
-import { approveUniversity } from "@/server/services/universities/approve"
-import { rejectUniversity } from "@/server/services/universities/reject"
-import { emitNotification } from "@/server/services/notifications/emit"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
-import UniversityApprovedEmail from "@/server/email/templates/UniversityApprovedEmail"
-import { db } from "@/server/db"
-import { user } from "@/server/db/schema/auth"
-import { env } from "@/env"
-import { CACHE_TAGS } from "@/lib/cache"
+import { emitNotification } from "@/server/services/notifications/emit"
+import { approveUniversity } from "@/server/services/universities/approve"
+import { createUniversity } from "@/server/services/universities/create"
+import { deleteUniversity } from "@/server/services/universities/delete"
+import { getUniversityById } from "@/server/services/universities/get"
+import { listUniversities } from "@/server/services/universities/list"
+import { rejectUniversity } from "@/server/services/universities/reject"
+import { updateUniversity } from "@/server/services/universities/update"
 
 /* ── Reads ── */
 
@@ -122,7 +121,10 @@ export const updateUniversityProcedure = superAdminProcedureStandard
         .where(eq(user.universityId, input.universityId))
 
       for (const linkedUser of linkedUsers) {
-        revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-user-${linkedUser.userId}`, "max")
+        revalidateTag(
+          `${CACHE_TAGS.UNIVERSITIES}-user-${linkedUser.userId}`,
+          "max",
+        )
       }
 
       return result
@@ -146,7 +148,10 @@ export const deleteUniversityProcedure = superAdminProcedureStandard
       revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-${input.universityId}`, "max")
 
       for (const affectedUserId of result.affectedUserIds) {
-        revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-user-${affectedUserId}`, "max")
+        revalidateTag(
+          `${CACHE_TAGS.UNIVERSITIES}-user-${affectedUserId}`,
+          "max",
+        )
       }
 
       return {
@@ -232,5 +237,3 @@ export const rejectUniversityProcedure = superAdminProcedureStandard
 
     return result
   })
-
-

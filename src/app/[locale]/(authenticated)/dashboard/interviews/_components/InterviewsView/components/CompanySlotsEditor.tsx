@@ -1,10 +1,9 @@
 ﻿import { Plus, Trash2 } from "lucide-react"
-
+import type { ProposedSlotDraft } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { formatDateTime } from "@/lib/date"
-import type { ProposedSlotDraft } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 
 type SlotField = Exclude<keyof ProposedSlotDraft, "id">
 
@@ -25,7 +24,13 @@ export function CompanySlotsEditor({
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <Label className="text-xs uppercase tracking-[0.08em]">Slots</Label>
-        <Button type="button" size="sm" variant="outline" className="gap-2" onClick={onAddSlot}>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          className="gap-2"
+          onClick={onAddSlot}
+        >
           <Plus className="h-3.5 w-3.5" />
           Add slot
         </Button>
@@ -58,7 +63,9 @@ export function CompanySlotsEditor({
                 id={`slot-start-${slot.id}`}
                 type="datetime-local"
                 value={slot.startsAt}
-                onChange={(event) => onSlotChange(slot.id, "startsAt", event.target.value)}
+                onChange={(event) =>
+                  onSlotChange(slot.id, "startsAt", event.target.value)
+                }
               />
             </div>
             <div className="space-y-1">
@@ -69,7 +76,9 @@ export function CompanySlotsEditor({
                 id={`slot-end-${slot.id}`}
                 type="datetime-local"
                 value={slot.endsAt}
-                onChange={(event) => onSlotChange(slot.id, "endsAt", event.target.value)}
+                onChange={(event) =>
+                  onSlotChange(slot.id, "endsAt", event.target.value)
+                }
               />
             </div>
           </div>
@@ -83,7 +92,9 @@ export function CompanySlotsEditor({
                 id={`slot-location-${slot.id}`}
                 value={slot.location}
                 placeholder="Office room, campus, etc."
-                onChange={(event) => onSlotChange(slot.id, "location", event.target.value)}
+                onChange={(event) =>
+                  onSlotChange(slot.id, "location", event.target.value)
+                }
               />
             </div>
             <div className="space-y-1">
@@ -95,14 +106,17 @@ export function CompanySlotsEditor({
                 type="url"
                 value={slot.meetingUrl}
                 placeholder="https://..."
-                onChange={(event) => onSlotChange(slot.id, "meetingUrl", event.target.value)}
+                onChange={(event) =>
+                  onSlotChange(slot.id, "meetingUrl", event.target.value)
+                }
               />
             </div>
           </div>
 
           {slot.startsAt && slot.endsAt ? (
             <p className="text-xs text-muted-foreground">
-              Preview: {formatDateTime(slot.startsAt)} to {formatDateTime(slot.endsAt)}
+              Preview: {formatDateTime(slot.startsAt)} to{" "}
+              {formatDateTime(slot.endsAt)}
             </p>
           ) : null}
         </div>

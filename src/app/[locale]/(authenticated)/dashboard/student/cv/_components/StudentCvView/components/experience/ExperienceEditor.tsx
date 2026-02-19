@@ -1,14 +1,12 @@
 "use client"
 
-import type { Dispatch, SetStateAction } from "react"
 import { Save, X } from "lucide-react"
-
+import type { Dispatch, SetStateAction } from "react"
+import type { ExperienceDraft } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/experience/types"
+import type { StudentCvExperience } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-
-import type { ExperienceDraft } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/experience/types"
-import type { StudentCvExperience } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/types"
 
 interface ExperienceEditorProps {
   mode: "create" | "edit"
@@ -40,7 +38,10 @@ export function ExperienceEditor({
       ? "Updating..."
       : "Update"
   const saveDisabled = isCreateMode
-    ? isPending || !draft.title.trim() || !draft.organization.trim() || !draft.startDate
+    ? isPending ||
+      !draft.title.trim() ||
+      !draft.organization.trim() ||
+      !draft.startDate
     : isPending
 
   return (
@@ -49,32 +50,53 @@ export function ExperienceEditor({
         placeholder="Role title"
         value={isCreateMode ? draft.title : undefined}
         defaultValue={isCreateMode ? undefined : experience?.title}
-        onChange={(event) => setDraft((current) => ({ ...current, title: event.target.value }))}
+        onChange={(event) =>
+          setDraft((current) => ({ ...current, title: event.target.value }))
+        }
       />
       <Input
         placeholder="Organization"
         value={isCreateMode ? draft.organization : undefined}
         defaultValue={isCreateMode ? undefined : experience?.organization}
-        onChange={(event) => setDraft((current) => ({ ...current, organization: event.target.value }))}
+        onChange={(event) =>
+          setDraft((current) => ({
+            ...current,
+            organization: event.target.value,
+          }))
+        }
       />
       <Textarea
         placeholder="Description"
         value={isCreateMode ? draft.description : undefined}
-        defaultValue={isCreateMode ? undefined : (experience?.description ?? "")}
-        onChange={(event) => setDraft((current) => ({ ...current, description: event.target.value }))}
+        defaultValue={
+          isCreateMode ? undefined : (experience?.description ?? "")
+        }
+        onChange={(event) =>
+          setDraft((current) => ({
+            ...current,
+            description: event.target.value,
+          }))
+        }
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Input
           type="date"
           value={isCreateMode ? draft.startDate : undefined}
           defaultValue={isCreateMode ? undefined : draft.startDate}
-          onChange={(event) => setDraft((current) => ({ ...current, startDate: event.target.value }))}
+          onChange={(event) =>
+            setDraft((current) => ({
+              ...current,
+              startDate: event.target.value,
+            }))
+          }
         />
         <Input
           type="date"
           value={isCreateMode ? draft.endDate : undefined}
           defaultValue={isCreateMode ? undefined : draft.endDate}
-          onChange={(event) => setDraft((current) => ({ ...current, endDate: event.target.value }))}
+          onChange={(event) =>
+            setDraft((current) => ({ ...current, endDate: event.target.value }))
+          }
           disabled={draft.isCurrent}
         />
       </div>
@@ -98,7 +120,13 @@ export function ExperienceEditor({
         Current position
       </label>
       <div className="flex gap-2">
-        <Button type="button" size="sm" className="gap-1.5" disabled={saveDisabled} onClick={onSubmit}>
+        <Button
+          type="button"
+          size="sm"
+          className="gap-1.5"
+          disabled={saveDisabled}
+          onClick={onSubmit}
+        >
           <Save className="h-3.5 w-3.5" />
           {saveLabel}
         </Button>

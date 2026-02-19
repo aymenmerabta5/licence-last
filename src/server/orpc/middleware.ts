@@ -1,8 +1,8 @@
 import "server-only"
 
-import { os, ORPCError } from "@orpc/server"
-import { headers } from "next/headers"
+import { ORPCError, os } from "@orpc/server"
 import { eq } from "drizzle-orm"
+import { headers } from "next/headers"
 
 import { auth } from "@/lib/auth"
 import { checkAdminApproval } from "@/server/auth/approval-gate"
@@ -15,7 +15,11 @@ import { isServiceError } from "@/server/services/errors"
  * Check if a user role has admin privileges (university_admin, dept_head, or super_admin).
  */
 export function isAdminRole(role: string | null | undefined): boolean {
-  return role === "university_admin" || role === "dept_head" || role === "super_admin"
+  return (
+    role === "university_admin" ||
+    role === "dept_head" ||
+    role === "super_admin"
+  )
 }
 
 /** Public — no auth required. */
@@ -80,16 +84,14 @@ export const authedProcedure = authedSessionProcedure.use(
 )
 
 /** Admin — requires admin or super_admin role. */
-export const adminProcedure = authedProcedure.use(
-  async ({ context, next }) => {
-    if (!isAdminRole(context.user.role)) {
-      throw new ORPCError("FORBIDDEN", {
-        message: "Admin access required",
-      })
-    }
-    return next({ context })
-  },
-)
+export const adminProcedure = authedProcedure.use(async ({ context, next }) => {
+  if (!isAdminRole(context.user.role)) {
+    throw new ORPCError("FORBIDDEN", {
+      message: "Admin access required",
+    })
+  }
+  return next({ context })
+})
 
 /** Super admin only. */
 export const superAdminProcedure = authedProcedure.use(

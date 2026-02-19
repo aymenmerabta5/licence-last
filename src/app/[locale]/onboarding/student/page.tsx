@@ -1,8 +1,7 @@
 import { headers } from "next/headers"
-
-import { localeRedirect } from "@/lib/navigation"
-import { auth } from "@/lib/auth"
 import { StudentOnboardingForm } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding"
+import { auth } from "@/lib/auth"
+import { localeRedirect } from "@/lib/navigation"
 
 export default async function StudentOnboardingPage() {
   const session = await auth.api.getSession({

@@ -1,27 +1,27 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSelect = mock(() => ({} as any))
+const mockSelect = mock(() => ({}) as any)
 
 // First query chain
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSavedFrom = mock(() => ({} as any))
+const mockSavedFrom = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSavedInnerJoinOffer = mock(() => ({} as any))
+const mockSavedInnerJoinOffer = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSavedInnerJoinCompany = mock(() => ({} as any))
+const mockSavedInnerJoinCompany = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSavedWhere = mock(() => ({} as any))
+const mockSavedWhere = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSavedOrderBy = mock(() => ({} as any))
+const mockSavedOrderBy = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSavedLimit = mock<() => Promise<any[]>>(() => Promise.resolve([]))
 
 // Second query chain
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSkillsFrom = mock(() => ({} as any))
+const mockSkillsFrom = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSkillsInnerJoin = mock(() => ({} as any))
+const mockSkillsInnerJoin = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSkillsWhere = mock<() => Promise<any[]>>(() => Promise.resolve([]))
 
@@ -54,7 +54,9 @@ describe("src/server/services/offers/list-saved", () => {
     })
 
     mockSavedFrom.mockReturnValue({ innerJoin: mockSavedInnerJoinOffer })
-    mockSavedInnerJoinOffer.mockReturnValue({ innerJoin: mockSavedInnerJoinCompany })
+    mockSavedInnerJoinOffer.mockReturnValue({
+      innerJoin: mockSavedInnerJoinCompany,
+    })
     mockSavedInnerJoinCompany.mockReturnValue({ where: mockSavedWhere })
     mockSavedWhere.mockReturnValue({ orderBy: mockSavedOrderBy })
     mockSavedOrderBy.mockReturnValue({ limit: mockSavedLimit })
@@ -66,7 +68,9 @@ describe("src/server/services/offers/list-saved", () => {
   test("returns empty result when no saved offers exist", async () => {
     mockSavedLimit.mockResolvedValue([])
 
-    const { listSavedOffers } = await import("@/server/services/offers/list-saved")
+    const { listSavedOffers } = await import(
+      "@/server/services/offers/list-saved"
+    )
     const result = await listSavedOffers("student-1")
 
     expect(result).toEqual({
@@ -135,7 +139,9 @@ describe("src/server/services/offers/list-saved", () => {
       },
     ])
 
-    const { listSavedOffers } = await import("@/server/services/offers/list-saved")
+    const { listSavedOffers } = await import(
+      "@/server/services/offers/list-saved"
+    )
     const result = await listSavedOffers("student-1", { limit: 1 })
 
     expect(result.offers).toHaveLength(1)

@@ -3,14 +3,14 @@ import "server-only"
 import { randomUUID } from "node:crypto"
 
 import { eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+import { createModuleLogger } from "@/server/logging"
 import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/companies/create")
-import { company, companyMember } from "@/server/db/schema/companies"
+
 import { user } from "@/server/db/schema/auth"
+import { company, companyMember } from "@/server/db/schema/companies"
 
 /**
  * Generate a URL-safe slug from a company name.
@@ -103,6 +103,9 @@ export async function createCompany(
     throw error
   }
 
-  log.info({ companyId, slug, event: "company_created" }, "Company created successfully")
+  log.info(
+    { companyId, slug, event: "company_created" },
+    "Company created successfully",
+  )
   return { companyId, slug }
 }

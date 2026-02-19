@@ -1,15 +1,21 @@
 "use client"
 
-import { useAdminStats } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/hooks/useAdminStats"
-import { useResolveReport } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/hooks/useResolveReport"
 import { AdminStatsHeader } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/components/AdminStatsHeader"
 import { AdminStatsOverview } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/components/AdminStatsOverview"
 import { CompanyTrustCard } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/components/CompanyTrustCard"
 import { OpenReportsCard } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/components/OpenReportsCard"
+import { useAdminStats } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/hooks/useAdminStats"
+import { useResolveReport } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/hooks/useResolveReport"
 
 export function AdminStatsView() {
-  const { stats, isLoading, trustIndices, isTrustLoading, reports, isReportsLoading } =
-    useAdminStats()
+  const {
+    stats,
+    isLoading,
+    trustIndices,
+    isTrustLoading,
+    reports,
+    isReportsLoading,
+  } = useAdminStats()
   const { resolveReport, isPending: isResolvingReport } = useResolveReport()
 
   return (
@@ -19,7 +25,10 @@ export function AdminStatsView() {
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
         <div className="lg:col-span-7">
-          <CompanyTrustCard trustIndices={trustIndices} isLoading={isTrustLoading} />
+          <CompanyTrustCard
+            trustIndices={trustIndices}
+            isLoading={isTrustLoading}
+          />
         </div>
         <div className="lg:col-span-5">
           <OpenReportsCard

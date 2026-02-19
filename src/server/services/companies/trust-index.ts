@@ -5,9 +5,9 @@ import { cacheLife, cacheTag } from "next/cache"
 
 import { CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
+import { application } from "@/server/db/schema/applications"
 import { company } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
-import { application } from "@/server/db/schema/applications"
 import { companyQualityFeedback, companyReport } from "@/server/db/schema/trust"
 
 export interface CompanyTrustIndex {
@@ -53,7 +53,9 @@ export interface TrustFactorInput {
 }
 
 /** Pure computation of trust factors — no DB access, fully testable. */
-export function computeTrustFactors(input: TrustFactorInput): CompanyTrustIndex {
+export function computeTrustFactors(
+  input: TrustFactorInput,
+): CompanyTrustIndex {
   const alerts: string[] = []
   let responseRate = 100
   let completionRate = 100
@@ -65,7 +67,9 @@ export function computeTrustFactors(input: TrustFactorInput): CompanyTrustIndex 
         : 100
     completionRate =
       input.acceptedApplications > 0
-        ? clamp((input.validatedApplications / input.acceptedApplications) * 100)
+        ? clamp(
+            (input.validatedApplications / input.acceptedApplications) * 100,
+          )
         : 100
   } else {
     alerts.push("No published pipeline data yet.")
@@ -73,11 +77,13 @@ export function computeTrustFactors(input: TrustFactorInput): CompanyTrustIndex 
 
   const avgRating =
     input.feedback.length > 0
-      ? input.feedback.reduce((sum, fb) => sum + fb.rating, 0) / input.feedback.length
+      ? input.feedback.reduce((sum, fb) => sum + fb.rating, 0) /
+        input.feedback.length
       : 0
   const recommendRate =
     input.feedback.length > 0
-      ? input.feedback.filter((fb) => fb.wouldRecommend).length / input.feedback.length
+      ? input.feedback.filter((fb) => fb.wouldRecommend).length /
+        input.feedback.length
       : 0
   const feedbackScore =
     input.feedback.length > 0
@@ -121,7 +127,9 @@ export function computeTrustFactors(input: TrustFactorInput): CompanyTrustIndex 
   }
 }
 
-export async function getCompanyTrustIndex(companyId: string): Promise<CompanyTrustIndex> {
+export async function getCompanyTrustIndex(
+  companyId: string,
+): Promise<CompanyTrustIndex> {
   "use cache"
   cacheLife({ expire: 60 })
   cacheTag(CACHE_TAGS.COMPANY_PROFILE(companyId))
@@ -150,49 +158,56 @@ export async function getCompanyTrustIndex(companyId: string): Promise<CompanyTr
   let validatedApplications = 0
 
   if (offerIds.length > 0) {
-    ;[totalApplications, respondedApplications, acceptedApplications, validatedApplications] =
-      await Promise.all([
-        db
-          .select({ value: count() })
-          .from(application)
-          .where(inArray(application.offerId, offerIds))
-          .then((rows) => rows[0]?.value ?? 0),
-        db
-          .select({ value: count() })
-          .from(application)
-          .where(
-            and(
-              inArray(application.offerId, offerIds),
-              inArray(application.status, [
-                "company_accepted",
-                "company_refused",
-                "admin_validated",
-                "admin_rejected",
-              ]),
-            ),
-          )
-          .then((rows) => rows[0]?.value ?? 0),
-        db
-          .select({ value: count() })
-          .from(application)
-          .where(
-            and(
-              inArray(application.offerId, offerIds),
-              inArray(application.status, ["company_accepted", "admin_validated"]),
-            ),
-          )
-          .then((rows) => rows[0]?.value ?? 0),
-        db
-          .select({ value: count() })
-          .from(application)
-          .where(
-            and(
-              inArray(application.offerId, offerIds),
-              eq(application.status, "admin_validated"),
-            ),
-          )
-          .then((rows) => rows[0]?.value ?? 0),
-      ])
+    ;[
+      totalApplications,
+      respondedApplications,
+      acceptedApplications,
+      validatedApplications,
+    ] = await Promise.all([
+      db
+        .select({ value: count() })
+        .from(application)
+        .where(inArray(application.offerId, offerIds))
+        .then((rows) => rows[0]?.value ?? 0),
+      db
+        .select({ value: count() })
+        .from(application)
+        .where(
+          and(
+            inArray(application.offerId, offerIds),
+            inArray(application.status, [
+              "company_accepted",
+              "company_refused",
+              "admin_validated",
+              "admin_rejected",
+            ]),
+          ),
+        )
+        .then((rows) => rows[0]?.value ?? 0),
+      db
+        .select({ value: count() })
+        .from(application)
+        .where(
+          and(
+            inArray(application.offerId, offerIds),
+            inArray(application.status, [
+              "company_accepted",
+              "admin_validated",
+            ]),
+          ),
+        )
+        .then((rows) => rows[0]?.value ?? 0),
+      db
+        .select({ value: count() })
+        .from(application)
+        .where(
+          and(
+            inArray(application.offerId, offerIds),
+            eq(application.status, "admin_validated"),
+          ),
+        )
+        .then((rows) => rows[0]?.value ?? 0),
+    ])
   }
 
   const [feedbackRows, reports] = await Promise.all([
@@ -292,17 +307,18 @@ export async function listCompanyTrustIndices(limit = 50) {
 
   const allOfferIds = offers.map((o) => o.offerId)
 
-  const applicationCounts = allOfferIds.length > 0
-    ? await db
-        .select({
-          offerId: application.offerId,
-          status: application.status,
-          count: count(),
-        })
-        .from(application)
-        .where(inArray(application.offerId, allOfferIds))
-        .groupBy(application.offerId, application.status)
-    : []
+  const applicationCounts =
+    allOfferIds.length > 0
+      ? await db
+          .select({
+            offerId: application.offerId,
+            status: application.status,
+            count: count(),
+          })
+          .from(application)
+          .where(inArray(application.offerId, allOfferIds))
+          .groupBy(application.offerId, application.status)
+      : []
 
   const appCountsByOffer = new Map<string, Map<string, number>>()
   for (const row of applicationCounts) {
@@ -326,7 +342,12 @@ export async function listCompanyTrustIndices(limit = 50) {
       for (const [status, cnt] of counts) {
         totalApplications += cnt
         if (
-          ["company_accepted", "company_refused", "admin_validated", "admin_rejected"].includes(status)
+          [
+            "company_accepted",
+            "company_refused",
+            "admin_validated",
+            "admin_rejected",
+          ].includes(status)
         ) {
           respondedApplications += cnt
         }

@@ -54,9 +54,11 @@ const searchOffersMock = mock(async () => ({
   nextCursor: undefined,
 }))
 
-const getExplainableMatchScoreMock = mock(async (_studentId: string, offerId: string) => ({
-  score: offerId === "offer-1" ? 65 : 88,
-}))
+const getExplainableMatchScoreMock = mock(
+  async (_studentId: string, offerId: string) => ({
+    score: offerId === "offer-1" ? 65 : 88,
+  }),
+)
 
 mock.module("@/server/services/matching/score", () => ({
   getExplainableMatchScore: getExplainableMatchScoreMock,
@@ -80,7 +82,9 @@ describe("src/server/services/offers/recommend", () => {
   })
 
   test("ranks recommended offers by match score descending", async () => {
-    const { recommendOffersForStudent } = await import("@/server/services/offers/recommend")
+    const { recommendOffersForStudent } = await import(
+      "@/server/services/offers/recommend"
+    )
     const result = await recommendOffersForStudent(
       { studentUserId: "student-1", limit: 2 },
       { searchOffers: searchOffersMock },
@@ -95,7 +99,9 @@ describe("src/server/services/offers/recommend", () => {
   test("excludes offers already applied by the student", async () => {
     mockAppliedRows = [{ offerId: "offer-2" }]
 
-    const { recommendOffersForStudent } = await import("@/server/services/offers/recommend")
+    const { recommendOffersForStudent } = await import(
+      "@/server/services/offers/recommend"
+    )
     const result = await recommendOffersForStudent(
       { studentUserId: "student-1", limit: 2 },
       { searchOffers: searchOffersMock },

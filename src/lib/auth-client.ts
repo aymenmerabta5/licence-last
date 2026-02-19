@@ -1,8 +1,17 @@
+import {
+  adminClient,
+  multiSessionClient,
+  twoFactorClient,
+} from "better-auth/client/plugins"
+import { haveIBeenPwned, openAPI } from "better-auth/plugins"
 import { createAuthClient } from "better-auth/react"
-import { adminClient, multiSessionClient, twoFactorClient } from "better-auth/client/plugins"
-import { ac, superAdmin, universityAdmin, student, companyAdmin } from "@/lib/permissions"
-import { openAPI, haveIBeenPwned  } from "better-auth/plugins"
-
+import {
+  ac,
+  companyAdmin,
+  student,
+  superAdmin,
+  universityAdmin,
+} from "@/lib/permissions"
 
 export const authClient = createAuthClient({
   plugins: [
@@ -23,7 +32,8 @@ export const authClient = createAuthClient({
     }),
     openAPI(),
     haveIBeenPwned({
-      customPasswordCompromisedMessage: "Your password in the dark web be careful! change it"
-  })
+      customPasswordCompromisedMessage:
+        "Your password in the dark web be careful! change it",
+    }),
   ],
 })

@@ -1,4 +1,11 @@
-import { index, integer, pgTable, primaryKey, text, timestamp } from "drizzle-orm/pg-core"
+import {
+  index,
+  integer,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core"
 
 export const rateLimitBucket = pgTable(
   "rate_limit_bucket",

@@ -1,9 +1,12 @@
+import { beforeEach, describe, expect, test } from "bun:test"
 import { unlink } from "node:fs/promises"
 import path from "node:path"
 
-import { beforeEach, describe, expect, test } from "bun:test"
-
-import { appendSeedBatch, readSeedLedger, removeSeedBatches } from "@/server/mcp/mock/ledger"
+import {
+  appendSeedBatch,
+  readSeedLedger,
+  removeSeedBatches,
+} from "@/server/mcp/mock/ledger"
 import type { SeedBatchRecord } from "@/server/mcp/types"
 
 function createRecord(batchId: string): SeedBatchRecord {
@@ -47,11 +50,16 @@ describe("seed ledger", () => {
     await appendSeedBatch(createRecord("batch-2"))
 
     const afterAppend = await readSeedLedger()
-    expect(afterAppend.batches.map((batch) => batch.batchId)).toEqual(["batch-2", "batch-1"])
+    expect(afterAppend.batches.map((batch) => batch.batchId)).toEqual([
+      "batch-2",
+      "batch-1",
+    ])
 
     await removeSeedBatches(["batch-2"])
 
     const afterRemove = await readSeedLedger()
-    expect(afterRemove.batches.map((batch) => batch.batchId)).toEqual(["batch-1"])
+    expect(afterRemove.batches.map((batch) => batch.batchId)).toEqual([
+      "batch-1",
+    ])
   })
 })

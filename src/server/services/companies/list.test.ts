@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let queryResult: any[] = []
@@ -41,7 +41,9 @@ describe("src/server/services/companies/list", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockOffset.mockResolvedValue(queryResult as any)
 
-    const { listCompanies } = await import("@/server/services/companies/list?fresh=1")
+    const { listCompanies } = await import(
+      "@/server/services/companies/list?fresh=1"
+    )
     const result = await listCompanies()
 
     expect(result.companies).toEqual([])
@@ -56,7 +58,9 @@ describe("src/server/services/companies/list", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockOffset.mockResolvedValue(companies as any)
 
-    const { listCompanies } = await import("@/server/services/companies/list?fresh=2")
+    const { listCompanies } = await import(
+      "@/server/services/companies/list?fresh=2"
+    )
     const result = await listCompanies()
 
     expect(result.companies.length).toBe(50)
@@ -71,7 +75,9 @@ describe("src/server/services/companies/list", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockOffset.mockResolvedValue(companies as any)
 
-    const { listCompanies } = await import("@/server/services/companies/list?fresh=3")
+    const { listCompanies } = await import(
+      "@/server/services/companies/list?fresh=3"
+    )
     const result = await listCompanies({ limit: 5 })
 
     expect(result.companies.length).toBe(5)
@@ -82,7 +88,9 @@ describe("src/server/services/companies/list", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockOffset.mockResolvedValue([] as any)
 
-    const { listCompanies } = await import("@/server/services/companies/list?fresh=4")
+    const { listCompanies } = await import(
+      "@/server/services/companies/list?fresh=4"
+    )
     await listCompanies({ limit: 500 })
 
     expect(mockLimit).toHaveBeenCalled()

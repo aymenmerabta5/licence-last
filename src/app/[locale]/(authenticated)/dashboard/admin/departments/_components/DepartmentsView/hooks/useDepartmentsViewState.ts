@@ -11,14 +11,17 @@ interface UseDepartmentsViewStateParams {
 export function useDepartmentsViewState({
   departments,
 }: UseDepartmentsViewStateParams) {
-  const [skillsModalDeptId, setSkillsModalDeptId] = useState<string | null>(null)
-  const [removeHeadTarget, setRemoveHeadTarget] = useState<DepartmentItem | null>(
+  const [skillsModalDeptId, setSkillsModalDeptId] = useState<string | null>(
     null,
   )
+  const [removeHeadTarget, setRemoveHeadTarget] =
+    useState<DepartmentItem | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<DepartmentItem | null>(null)
 
   const skillsModalDept = useMemo(
-    () => departments.find((department) => department.id === skillsModalDeptId) ?? null,
+    () =>
+      departments.find((department) => department.id === skillsModalDeptId) ??
+      null,
     [departments, skillsModalDeptId],
   )
 

@@ -7,8 +7,12 @@ export interface ApprovalGateUser {
 }
 
 export interface ApprovalGateDependencies {
-  getCompanyStatusByUserId: (userId: string) => Promise<{ status: string } | null>
-  getUniversityStatusByUserId: (userId: string) => Promise<{ status: string } | null>
+  getCompanyStatusByUserId: (
+    userId: string,
+  ) => Promise<{ status: string } | null>
+  getUniversityStatusByUserId: (
+    userId: string,
+  ) => Promise<{ status: string } | null>
 }
 
 export type ApprovalDeniedReason =
@@ -24,11 +28,15 @@ export type ApprovalCheckResult =
 
 const DEFAULT_APPROVAL_GATE_DEPENDENCIES: ApprovalGateDependencies = {
   getCompanyStatusByUserId: async (userId) => {
-    const { getCompanyStatusByUserId } = await import("@/server/services/companies/get-status")
+    const { getCompanyStatusByUserId } = await import(
+      "@/server/services/companies/get-status"
+    )
     return getCompanyStatusByUserId(userId)
   },
   getUniversityStatusByUserId: async (userId) => {
-    const { getUniversityStatusByUserId } = await import("@/server/services/universities/get-status")
+    const { getUniversityStatusByUserId } = await import(
+      "@/server/services/universities/get-status"
+    )
     return getUniversityStatusByUserId(userId)
   },
 }
@@ -73,7 +81,9 @@ export async function checkAdminApproval(
   }
 
   if (user.role === "university_admin") {
-    const university = await resolvedDependencies.getUniversityStatusByUserId(user.id)
+    const university = await resolvedDependencies.getUniversityStatusByUserId(
+      user.id,
+    )
 
     if (!university) {
       return { ok: false, reason: "university_pending" }
@@ -93,7 +103,9 @@ export async function checkAdminApproval(
   return { ok: true }
 }
 
-export function approvalDeniedReasonToRedirectPath(reason: ApprovalDeniedReason): string {
+export function approvalDeniedReasonToRedirectPath(
+  reason: ApprovalDeniedReason,
+): string {
   switch (reason) {
     case "company_rejected":
       return "/status/company/rejected"

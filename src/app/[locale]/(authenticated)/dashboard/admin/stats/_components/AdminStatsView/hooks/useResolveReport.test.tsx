@@ -2,9 +2,14 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { act, renderHook } from "@testing-library/react"
 
-const resolveReportMock = mock(async () => ({ reportId: "report-1", status: "resolved" }))
+const resolveReportMock = mock(async () => ({
+  reportId: "report-1",
+  status: "resolved",
+}))
 const submitReportMock = mock(async () => ({ reportId: "report-1" }))
-const submitQualityFeedbackMock = mock(async () => ({ feedbackId: "feedback-1" }))
+const submitQualityFeedbackMock = mock(async () => ({
+  feedbackId: "feedback-1",
+}))
 const toastSuccessMock = mock(() => {})
 const toastErrorMock = mock(() => {})
 
@@ -58,13 +63,12 @@ function createWrapper() {
     },
   })
   const invalidateQueriesMock = mock(async () => undefined)
-  queryClient.invalidateQueries = invalidateQueriesMock as typeof queryClient.invalidateQueries
+  queryClient.invalidateQueries =
+    invalidateQueriesMock as typeof queryClient.invalidateQueries
 
   function Wrapper({ children }: { children: React.ReactNode }) {
     return (
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     )
   }
 
@@ -83,7 +87,9 @@ describe("useResolveReport", () => {
       "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/hooks/useResolveReport"
     )
     const { Wrapper, invalidateQueriesMock } = createWrapper()
-    const { result } = renderHook(() => useResolveReport(), { wrapper: Wrapper })
+    const { result } = renderHook(() => useResolveReport(), {
+      wrapper: Wrapper,
+    })
 
     await act(async () => {
       await result.current.resolveReport({

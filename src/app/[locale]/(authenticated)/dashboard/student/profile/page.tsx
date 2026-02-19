@@ -1,5 +1,5 @@
-import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
+import { localeRedirect } from "@/lib/navigation"
 
 export default async function StudentProfilePage() {
   const user = await requireRole(["student"])

@@ -1,4 +1,4 @@
-import { Button, Section, Text, Heading } from "@react-email/components"
+import { Button, Heading, Section, Text } from "@react-email/components"
 import EmailLayout from "@/server/email/templates/EmailLayout"
 
 interface DeptHeadWelcomeEmailProps {
@@ -26,7 +26,8 @@ export default function DeptHeadWelcomeEmail({
           </Heading>
           <Text className="text-mutedForeground mb-2 text-base">
             You&apos;ve been added as <strong>Department Head</strong> for{" "}
-            <strong>{departmentName}</strong> at <strong>{universityName}</strong>.
+            <strong>{departmentName}</strong> at{" "}
+            <strong>{universityName}</strong>.
           </Text>
           <Text className="text-mutedForeground mb-6 text-base">
             Click the button below to set your password and get started.

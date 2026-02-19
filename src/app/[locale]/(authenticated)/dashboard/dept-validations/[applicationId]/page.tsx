@@ -1,9 +1,7 @@
 import { Suspense } from "react"
-
+import { DeptHeadPlacementDetail } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/[applicationId]/_components/DeptHeadPlacementDetail"
 import { Skeleton } from "@/components/ui/skeleton"
 import { requireRole } from "@/lib/auth-guards"
-
-import { DeptHeadPlacementDetail } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/[applicationId]/_components/DeptHeadPlacementDetail"
 
 interface DeptHeadPlacementDetailPageProps {
   params: Promise<{ applicationId: string }>
@@ -11,7 +9,11 @@ interface DeptHeadPlacementDetailPageProps {
 
 function PlacementDetailFallback() {
   return (
-    <div className="max-w-4xl mx-auto space-y-8" aria-busy="true" aria-live="polite">
+    <div
+      className="max-w-4xl mx-auto space-y-8"
+      aria-busy="true"
+      aria-live="polite"
+    >
       <div className="space-y-3">
         <Skeleton className="h-4 w-44" />
         <Skeleton className="h-10 w-72" />

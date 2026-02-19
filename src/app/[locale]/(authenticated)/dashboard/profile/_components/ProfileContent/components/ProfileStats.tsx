@@ -1,9 +1,9 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import type { LucideIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
+import * as motion from "motion/react-client"
 import { ease } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
 interface StatItem {
   title: string

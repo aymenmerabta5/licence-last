@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockWhereResult: any[] = []
@@ -24,9 +24,7 @@ mock.module("@/server/services/skills/validate", () => ({
     if (ids.length === 0) return
     // Calls the mocked chain: select().from().where()
     const existing = await mockSelect({}).from({}).where({})
-    const existingIds = new Set(
-      existing.map((s: { id: string }) => s.id),
-    )
+    const existingIds = new Set(existing.map((s: { id: string }) => s.id))
     const missingIds = ids.filter((id: string) => !existingIds.has(id))
     if (missingIds.length > 0) {
       throw new Error(`Invalid skill tag IDs: ${missingIds.join(", ")}`)
@@ -49,7 +47,9 @@ describe("src/server/services/skills/validate", () => {
   test("should pass when all skill tag IDs exist", async () => {
     mockWhereResult = [{ id: "skill-1" }, { id: "skill-2" }]
 
-    const { validateSkillTagIds } = await import("@/server/services/skills/validate")
+    const { validateSkillTagIds } = await import(
+      "@/server/services/skills/validate"
+    )
 
     // Should not throw
     await validateSkillTagIds(["skill-1", "skill-2"])
@@ -58,7 +58,9 @@ describe("src/server/services/skills/validate", () => {
   test("should throw when some skill tag IDs are missing", async () => {
     mockWhereResult = [{ id: "skill-1" }] // Only skill-1 found, skill-2 missing
 
-    const { validateSkillTagIds } = await import("@/server/services/skills/validate")
+    const { validateSkillTagIds } = await import(
+      "@/server/services/skills/validate"
+    )
 
     await expect(validateSkillTagIds(["skill-1", "skill-2"])).rejects.toThrow(
       "Invalid skill tag IDs: skill-2",
@@ -68,7 +70,9 @@ describe("src/server/services/skills/validate", () => {
   test("should throw listing all missing IDs", async () => {
     mockWhereResult = [] // None found
 
-    const { validateSkillTagIds } = await import("@/server/services/skills/validate")
+    const { validateSkillTagIds } = await import(
+      "@/server/services/skills/validate"
+    )
 
     await expect(validateSkillTagIds(["a", "b", "c"])).rejects.toThrow(
       "Invalid skill tag IDs: a, b, c",
@@ -78,7 +82,9 @@ describe("src/server/services/skills/validate", () => {
   test("should not query when given empty array", async () => {
     mockSelect.mockClear()
 
-    const { validateSkillTagIds } = await import("@/server/services/skills/validate")
+    const { validateSkillTagIds } = await import(
+      "@/server/services/skills/validate"
+    )
 
     await validateSkillTagIds([])
     expect(mockSelect).not.toHaveBeenCalled()

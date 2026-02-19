@@ -1,11 +1,11 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { MapPin } from "lucide-react"
+import { useTranslations } from "next-intl"
+import type { CompanyOnboardingFormApi } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm/hooks/useCompanyOnboarding"
 import { SelectField, TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYA_OPTIONS } from "@/lib/wilayas"
-import type { CompanyOnboardingFormApi } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm/hooks/useCompanyOnboarding"
 
 interface LocationFieldsProps {
   form: CompanyOnboardingFormApi

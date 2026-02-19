@@ -1,13 +1,12 @@
 "use client"
 
-import { useState } from "react"
-import { useTranslations } from "next-intl"
-import { useRouter } from "@/i18n/routing"
 import { ShieldCheck } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { useRouter } from "@/i18n/routing"
 
 export function VerifyForm() {
   const t = useTranslations("verify")
@@ -37,7 +36,11 @@ export function VerifyForm() {
               maxLength={20}
               autoFocus
             />
-            <Button type="submit" disabled={!code.trim() || isSubmitting} className="shrink-0">
+            <Button
+              type="submit"
+              disabled={!code.trim() || isSubmitting}
+              className="shrink-0"
+            >
               <ShieldCheck className="size-4 me-2" />
               {isSubmitting ? t("checking") : t("submit")}
             </Button>

@@ -15,5 +15,7 @@ export function ProfileSettingsTab({
     return <ProfileSettingsTabSkeleton />
   }
 
-  return <ProfileSettingsTabForm me={me} studentProfile={studentProfile ?? null} />
+  return (
+    <ProfileSettingsTabForm me={me} studentProfile={studentProfile ?? null} />
+  )
 }

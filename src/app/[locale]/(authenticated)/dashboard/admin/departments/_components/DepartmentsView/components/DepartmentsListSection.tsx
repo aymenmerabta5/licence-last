@@ -1,11 +1,10 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { FolderTree, Loader2 } from "lucide-react"
-
-import { reveal, revealWithDelay } from "@/lib/animations"
+import * as motion from "motion/react-client"
 import { DepartmentCard } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentCard"
 import type { DepartmentItem } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/types"
+import { reveal, revealWithDelay } from "@/lib/animations"
 
 interface DepartmentsListSectionProps {
   departments: DepartmentItem[]

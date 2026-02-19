@@ -1,20 +1,19 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import {
-  MapPin,
   Building2,
-  Globe,
-  Check,
-  X,
   Calendar,
+  Check,
+  Globe,
+  MapPin,
   Pencil,
   Trash2,
+  X,
 } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import type { UniversityListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import type { UniversityListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
 
 const STATUS_STYLES: Record<string, string> = {
   pending: "bg-amber-500/10 text-amber-600",
@@ -84,10 +83,18 @@ export function UniversityCard({
         {/* Info grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {university.city && (
-            <InfoField icon={MapPin} label={t("card.location")} value={university.city} />
+            <InfoField
+              icon={MapPin}
+              label={t("card.location")}
+              value={university.city}
+            />
           )}
           {university.departmentName && (
-            <InfoField icon={Globe} label={t("card.department")} value={university.departmentName} />
+            <InfoField
+              icon={Globe}
+              label={t("card.department")}
+              value={university.departmentName}
+            />
           )}
           <InfoField
             icon={Calendar}
@@ -174,9 +181,7 @@ function InfoField({
         <p className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground/40 font-bold mb-0.5 [[dir=rtl]_&]:tracking-normal">
           {label}
         </p>
-        <p className="text-xs font-medium text-heading truncate">
-          {value}
-        </p>
+        <p className="text-xs font-medium text-heading truncate">{value}</p>
       </div>
     </div>
   )

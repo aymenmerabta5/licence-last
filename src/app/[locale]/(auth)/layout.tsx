@@ -1,7 +1,6 @@
+import { AuthPanel } from "@/app/[locale]/(auth)/_components/AuthPanel"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
-
-import { AuthPanel } from "@/app/[locale]/(auth)/_components/AuthPanel"
 
 export default async function AuthLayout({
   children,
@@ -37,9 +36,7 @@ export default async function AuthLayout({
 
         {/* Centered form content */}
         <div className="flex-1 flex items-center justify-center px-6 pb-12 lg:px-10">
-          <div className="w-full max-w-[420px]">
-            {children}
-          </div>
+          <div className="w-full max-w-[420px]">{children}</div>
         </div>
       </main>
     </div>

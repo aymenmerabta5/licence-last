@@ -8,7 +8,12 @@ import {
   checkAdminApproval,
 } from "@/server/auth/approval-gate"
 
-type UserRole = "student" | "company_admin" | "dept_head" | "university_admin" | "super_admin"
+type UserRole =
+  | "student"
+  | "company_admin"
+  | "dept_head"
+  | "university_admin"
+  | "super_admin"
 interface RequireRoleOptions {
   allowUnapproved?: boolean
 }
@@ -26,25 +31,37 @@ type SessionResult = { user: SessionUser } | null
 
 interface RequireRoleDependencies {
   getHeaders: typeof headers
-  getSession: (input: { headers: Awaited<ReturnType<typeof headers>> }) => Promise<SessionResult | null>
+  getSession: (input: {
+    headers: Awaited<ReturnType<typeof headers>>
+  }) => Promise<SessionResult | null>
   localeRedirect: (path: string) => Promise<never>
-  getCompanyStatusByUserId: (userId: string) => Promise<{ status: string } | null>
-  getUniversityStatusByUserId: (userId: string) => Promise<{ status: string } | null>
+  getCompanyStatusByUserId: (
+    userId: string,
+  ) => Promise<{ status: string } | null>
+  getUniversityStatusByUserId: (
+    userId: string,
+  ) => Promise<{ status: string } | null>
 }
 
 const DEFAULT_REQUIRE_ROLE_DEPENDENCIES: RequireRoleDependencies = {
   getHeaders: headers,
   getSession: async ({ headers: requestHeaders }) => {
     const { auth } = await import("@/lib/auth")
-    return auth.api.getSession({ headers: requestHeaders }) as Promise<SessionResult | null>
+    return auth.api.getSession({
+      headers: requestHeaders,
+    }) as Promise<SessionResult | null>
   },
   localeRedirect,
   getCompanyStatusByUserId: async (userId) => {
-    const { getCompanyStatusByUserId } = await import("@/server/services/companies/get-status")
+    const { getCompanyStatusByUserId } = await import(
+      "@/server/services/companies/get-status"
+    )
     return getCompanyStatusByUserId(userId)
   },
   getUniversityStatusByUserId: async (userId) => {
-    const { getUniversityStatusByUserId } = await import("@/server/services/universities/get-status")
+    const { getUniversityStatusByUserId } = await import(
+      "@/server/services/universities/get-status"
+    )
     return getUniversityStatusByUserId(userId)
   },
 }
@@ -59,7 +76,10 @@ export async function requireRole(
   options: RequireRoleOptions = {},
   dependencies: Partial<RequireRoleDependencies> = {},
 ) {
-  const resolvedDependencies = { ...DEFAULT_REQUIRE_ROLE_DEPENDENCIES, ...dependencies }
+  const resolvedDependencies = {
+    ...DEFAULT_REQUIRE_ROLE_DEPENDENCIES,
+    ...dependencies,
+  }
 
   const session = await resolvedDependencies.getSession({
     headers: await resolvedDependencies.getHeaders(),
@@ -80,7 +100,8 @@ export async function requireRole(
   if (!options.allowUnapproved) {
     const approval = await checkAdminApproval(user, {
       getCompanyStatusByUserId: resolvedDependencies.getCompanyStatusByUserId,
-      getUniversityStatusByUserId: resolvedDependencies.getUniversityStatusByUserId,
+      getUniversityStatusByUserId:
+        resolvedDependencies.getUniversityStatusByUserId,
     })
 
     if (!approval.ok) {

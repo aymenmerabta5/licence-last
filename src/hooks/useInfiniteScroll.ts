@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useEffect, useCallback } from "react"
+import { useCallback, useEffect, useRef } from "react"
 
 /**
  * Attaches an IntersectionObserver to a sentinel element to trigger

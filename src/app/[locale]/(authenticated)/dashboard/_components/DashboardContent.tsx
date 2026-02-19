@@ -1,51 +1,51 @@
-import { getTranslations } from "next-intl/server";
-import { localeRedirect } from "@/lib/navigation";
-import { Suspense } from "react";
+import { getTranslations } from "next-intl/server"
+import { Suspense } from "react"
+import type { StudentDashboardData } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 
-import { requireRole } from "@/lib/auth-guards";
-import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats";
-import { getStudentProfile } from "@/server/services/students/get-profile";
-import { listApplicationsByStudent } from "@/server/services/applications/list-by-student";
-import { searchOffers } from "@/server/services/offers/search";
-import { calculateProfileCompleteness } from "@/lib/profile-completeness";
-import type { StudentDashboardData } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types";
+import { requireRole } from "@/lib/auth-guards"
+import { localeRedirect } from "@/lib/navigation"
+import { calculateProfileCompleteness } from "@/lib/profile-completeness"
+import { listApplicationsByStudent } from "@/server/services/applications/list-by-student"
+import { searchOffers } from "@/server/services/offers/search"
+import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
+import { getStudentProfile } from "@/server/services/students/get-profile"
 
 interface DashboardContentProps {
-  studentFallback: React.ReactNode;
+  studentFallback: React.ReactNode
   studentComponent: React.ComponentType<{
     user: {
-      id: string;
-      name: string | null;
-      email: string;
-      role: string | null | undefined;
-    };
-    data: StudentDashboardData;
-  }>;
+      id: string
+      name: string | null
+      email: string
+      role: string | null | undefined
+    }
+    data: StudentDashboardData
+  }>
   recruiterComponent: React.ComponentType<{
-    user: { id: string; name: string | null; email: string; role: string };
-  }>;
+    user: { id: string; name: string | null; email: string; role: string }
+  }>
   adminComponent: React.ComponentType<{
-    user: { id: string; name: string | null; email: string; role: string };
-  }>;
+    user: { id: string; name: string | null; email: string; role: string }
+  }>
   deptHeadComponent: React.ComponentType<{
-    user: { id: string; name: string | null; email: string; role: string };
-  }>;
+    user: { id: string; name: string | null; email: string; role: string }
+  }>
 }
 
 async function StudentDashboardContent({
   user,
   component: Component,
 }: {
-  user: { id: string; name: string | null; email: string; role: string };
+  user: { id: string; name: string | null; email: string; role: string }
   component: React.ComponentType<{
     user: {
-      id: string;
-      name: string | null;
-      email: string;
-      role: string | null | undefined;
-    };
-    data: StudentDashboardData;
-  }>;
+      id: string
+      name: string | null
+      email: string
+      role: string | null | undefined
+    }
+    data: StudentDashboardData
+  }>
 }) {
   const [stats, recentAppsResult, profile, recommendedResult] =
     await Promise.all([
@@ -53,7 +53,7 @@ async function StudentDashboardContent({
       listApplicationsByStudent(user.id, { limit: 5 }),
       getStudentProfile(user.id),
       searchOffers({ limit: 3 }),
-    ]);
+    ])
 
   const profileCompleteness = calculateProfileCompleteness({
     bio: profile?.profile.bio,
@@ -64,7 +64,7 @@ async function StudentDashboardContent({
     studentNumber: profile?.profile.studentNumber,
     department: profile?.profile.department,
     skillsCount: profile?.skills.length ?? 0,
-  });
+  })
 
   const studentData: StudentDashboardData = {
     stats: {
@@ -99,9 +99,9 @@ async function StudentDashboardContent({
     })),
     skills: profile?.skills ?? [],
     profileCompleteness,
-  };
+  }
 
-  return <Component user={user} data={studentData} />;
+  return <Component user={user} data={studentData} />
 }
 
 /**
@@ -124,14 +124,14 @@ export async function DashboardContent({
       "super_admin",
     ]),
     getTranslations("dashboard"),
-  ]);
+  ])
 
   // Redirects for incomplete onboarding
   if (user.role === "student" && !user.onboardingCompleted) {
-    return localeRedirect("/onboarding/student");
+    return localeRedirect("/onboarding/student")
   }
 
-  const greeting = t("welcome");
+  const greeting = t("welcome")
 
   const roleSubtitleKey = {
     student: "student.subtitle",
@@ -139,12 +139,12 @@ export async function DashboardContent({
     dept_head: "deptHeadDashboard.subtitle",
     university_admin: "admin.subtitle",
     super_admin: "admin.subtitle",
-  } as const;
+  } as const
 
   const subtitle = t(
     roleSubtitleKey[user.role as keyof typeof roleSubtitleKey] ||
       "student.subtitle",
-  );
+  )
 
   return (
     <div className="max-w-7xl mx-auto space-y-10">
@@ -193,5 +193,5 @@ export async function DashboardContent({
         <AdminDashboard user={{ ...user, role: user.role as string }} />
       )}
     </div>
-  );
+  )
 }

@@ -1,8 +1,10 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import { UserRow } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/UserRow"
+import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
+import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -10,9 +12,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
-import { UserRow } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/UserRow"
 
 interface UsersTableProps {
   users: AdminUser[]
@@ -73,7 +72,10 @@ export function UsersTable({
           <TableBody>
             {users.length === 0 ? (
               <TableRow>
-                <td colSpan={5} className="text-center py-12 text-sm text-muted-foreground">
+                <td
+                  colSpan={5}
+                  className="text-center py-12 text-sm text-muted-foreground"
+                >
                   {t("noUsers")}
                 </td>
               </TableRow>

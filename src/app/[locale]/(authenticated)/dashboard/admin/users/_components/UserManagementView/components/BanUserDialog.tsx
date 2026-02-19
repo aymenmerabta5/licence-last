@@ -1,19 +1,19 @@
 "use client"
 
-import { useState } from "react"
-import { useTranslations } from "next-intl"
 import { Loader2 } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import { useState } from "react"
+import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -22,13 +22,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
 
 interface BanUserDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   user: AdminUser | null
-  onSubmit: (data: { userId: string; banReason?: string; banExpiresIn?: number }) => void
+  onSubmit: (data: {
+    userId: string
+    banReason?: string
+    banExpiresIn?: number
+  }) => void
   isPending: boolean
 }
 
@@ -40,7 +43,13 @@ const durations = [
   { value: "30d", seconds: 2592000 },
 ] as const
 
-export function BanUserDialog({ open, onOpenChange, user, onSubmit, isPending }: BanUserDialogProps) {
+export function BanUserDialog({
+  open,
+  onOpenChange,
+  user,
+  onSubmit,
+  isPending,
+}: BanUserDialogProps) {
   const t = useTranslations("dashboard.superAdmin.users")
   const [reason, setReason] = useState("")
   const [duration, setDuration] = useState("permanent")
@@ -62,7 +71,9 @@ export function BanUserDialog({ open, onOpenChange, user, onSubmit, isPending }:
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-serif">{t("dialogs.ban.title")}</DialogTitle>
+          <DialogTitle className="font-serif">
+            {t("dialogs.ban.title")}
+          </DialogTitle>
           <DialogDescription>
             {t("dialogs.ban.description", { email: user?.email ?? "" })}
           </DialogDescription>
@@ -93,7 +104,11 @@ export function BanUserDialog({ open, onOpenChange, user, onSubmit, isPending }:
             </Select>
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               {t("dialogs.cancel")}
             </Button>
             <Button type="submit" variant="destructive" disabled={isPending}>

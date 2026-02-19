@@ -1,16 +1,16 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/applications/company-refuse")
+
 import { application } from "@/server/db/schema/applications"
-import { internshipOffer } from "@/server/db/schema/internships"
 import { company } from "@/server/db/schema/companies"
-import { appendTimelineEvent } from "@/server/services/applications/pipeline"
+import { internshipOffer } from "@/server/db/schema/internships"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
+import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { createNotification } from "@/server/services/notifications/create"
 
 export async function companyRefuseApplication(
@@ -37,15 +37,24 @@ export async function companyRefuseApplication(
     .limit(1)
 
   if (!app) {
-    throw new ApplicationServiceError("APPLICATION_NOT_FOUND", "Application not found")
+    throw new ApplicationServiceError(
+      "APPLICATION_NOT_FOUND",
+      "Application not found",
+    )
   }
 
   if (app.offerCompanyId !== companyId) {
-    throw new ApplicationServiceError("APPLICATION_FORBIDDEN", "You do not have access to this application")
+    throw new ApplicationServiceError(
+      "APPLICATION_FORBIDDEN",
+      "You do not have access to this application",
+    )
   }
 
   if (app.status !== "applied") {
-    throw new ApplicationServiceError("APPLICATION_INVALID_STATE", "Only pending applications can be refused")
+    throw new ApplicationServiceError(
+      "APPLICATION_INVALID_STATE",
+      "Only pending applications can be refused",
+    )
   }
 
   log.info({ applicationId, companyId, actionByUserId }, "Refusing application")
@@ -89,6 +98,9 @@ export async function companyRefuseApplication(
     },
   })
 
-  log.info({ applicationId, event: "application_refused" }, "Application refused by company")
+  log.info(
+    { applicationId, event: "application_refused" },
+    "Application refused by company",
+  )
   return { success: true, applicationId }
 }

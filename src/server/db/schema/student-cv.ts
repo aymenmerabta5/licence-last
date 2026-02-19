@@ -1,10 +1,10 @@
 import {
+  boolean,
+  index,
+  integer,
   pgTable,
   text,
   timestamp,
-  boolean,
-  integer,
-  index,
 } from "drizzle-orm/pg-core"
 
 import { user } from "@/server/db/schema/auth"
@@ -30,7 +30,10 @@ export const studentExperience = pgTable(
   },
   (table) => [
     index("student_experience_userId_idx").on(table.userId),
-    index("student_experience_userId_startDate_idx").on(table.userId, table.startDate),
+    index("student_experience_userId_startDate_idx").on(
+      table.userId,
+      table.startDate,
+    ),
   ],
 )
 
@@ -55,7 +58,10 @@ export const studentProject = pgTable(
   },
   (table) => [
     index("student_project_userId_idx").on(table.userId),
-    index("student_project_userId_createdAt_idx").on(table.userId, table.createdAt),
+    index("student_project_userId_createdAt_idx").on(
+      table.userId,
+      table.createdAt,
+    ),
   ],
 )
 

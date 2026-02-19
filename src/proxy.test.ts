@@ -1,5 +1,10 @@
-import { describe, test, expect } from "bun:test"
-import { isProtectedPath, isAuthPath, PROTECTED_PATHS, AUTH_PATHS } from "@/proxy"
+import { describe, expect, test } from "bun:test"
+import {
+  AUTH_PATHS,
+  isAuthPath,
+  isProtectedPath,
+  PROTECTED_PATHS,
+} from "@/proxy"
 
 describe("isProtectedPath", () => {
   describe("protected paths without locale", () => {
@@ -28,7 +33,9 @@ describe("isProtectedPath", () => {
     })
 
     test("should identify deeply nested dashboard paths as protected", () => {
-      expect(isProtectedPath("/dashboard/settings/account/notifications")).toBe(true)
+      expect(isProtectedPath("/dashboard/settings/account/notifications")).toBe(
+        true,
+      )
     })
   })
 

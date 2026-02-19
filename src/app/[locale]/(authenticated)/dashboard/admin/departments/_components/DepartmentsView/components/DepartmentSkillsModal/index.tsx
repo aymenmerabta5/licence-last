@@ -1,9 +1,11 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Loader2, Search } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { toast } from "sonner"
-
+import { useDepartmentSkills } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/hooks/useDepartmentSkills"
+import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -12,10 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
-
-import { useDepartmentSkills } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/hooks/useDepartmentSkills"
 
 interface DepartmentSkillsModalProps {
   departmentId: string

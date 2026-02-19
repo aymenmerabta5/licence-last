@@ -1,11 +1,7 @@
 "use client"
 
-import { useState } from "react"
 import { Plus } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
+import { useState } from "react"
 import { ExperienceEditor } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/experience/ExperienceEditor"
 import { ExperienceListItem } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/experience/ExperienceListItem"
 import type {
@@ -17,6 +13,8 @@ import {
   toInputDate,
 } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/experience/utils"
 import type { StudentCvExperience } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/types"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export function ExperienceSection({
   experiences,
@@ -96,7 +94,9 @@ export function ExperienceSection({
         )}
 
         {experiences.length === 0 && !adding && (
-          <p className="text-sm text-muted-foreground">No experience entries yet.</p>
+          <p className="text-sm text-muted-foreground">
+            No experience entries yet.
+          </p>
         )}
 
         {experiences.map((item) => {

@@ -1,13 +1,13 @@
 "use client"
 
+import { Check, Copy } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { useTheme } from "next-themes"
 import { useState } from "react"
 import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
-import { vscDarkPlus, vs } from "react-syntax-highlighter/dist/cjs/styles/prism"
-import { Check, Copy } from "lucide-react"
-import { useTheme } from "next-themes"
-import { useTranslations } from "next-intl"
+import { vs, vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism"
+import remarkGfm from "remark-gfm"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -93,7 +93,7 @@ export function MarkdownMessage({ content, className }: MarkdownMessageProps) {
         "prose-tr:nth-child(even):bg-muted/20",
         "prose-a:text-primary prose-a:underline prose-a:underline-offset-2 hover:prose-a:text-primary/80",
         "prose-hr:border-border/60",
-        className
+        className,
       )}
     >
       <ReactMarkdown
@@ -107,7 +107,10 @@ export function MarkdownMessage({ content, className }: MarkdownMessageProps) {
             // Inline code
             if (!className) {
               return (
-                <code className="bg-muted px-1.5 py-0.5 text-sm rounded-sm font-mono" {...props}>
+                <code
+                  className="bg-muted px-1.5 py-0.5 text-sm rounded-sm font-mono"
+                  {...props}
+                >
                   {children}
                 </code>
               )

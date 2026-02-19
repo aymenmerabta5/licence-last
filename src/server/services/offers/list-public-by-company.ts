@@ -9,10 +9,7 @@ import { CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
 import { internshipOffer } from "@/server/db/schema/internships"
 
-export async function listPublicOffersByCompany(
-  companyId: string,
-  limit = 6,
-) {
+export async function listPublicOffersByCompany(companyId: string, limit = 6) {
   cacheLife({ expire: 60 })
   cacheTag(CACHE_TAGS.COMPANY_OFFERS(companyId))
   cacheTag(CACHE_TAGS.OFFERS_PUBLIC)

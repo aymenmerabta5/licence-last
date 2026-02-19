@@ -1,14 +1,18 @@
 "use client"
 
+import {
+  ArrowLeft,
+  Bookmark,
+  BookmarkCheck,
+  Briefcase,
+  Building2,
+} from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { ArrowLeft, Bookmark, BookmarkCheck, Building2, Briefcase } from "lucide-react"
-
+import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
-import { reveal, ease } from "@/lib/animations"
-
-import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
+import { ease, reveal } from "@/lib/animations"
 
 interface OfferHeaderProps {
   offer: OfferDetailProps["offer"]
@@ -56,7 +60,11 @@ export function OfferHeader({
             disabled={isSaveBusy}
             onClick={onToggleSaved}
           >
-            {isSaved ? <BookmarkCheck className="h-3.5 w-3.5" /> : <Bookmark className="h-3.5 w-3.5" />}
+            {isSaved ? (
+              <BookmarkCheck className="h-3.5 w-3.5" />
+            ) : (
+              <Bookmark className="h-3.5 w-3.5" />
+            )}
             {isSaved ? "Saved" : "Save"}
           </Button>
         )}

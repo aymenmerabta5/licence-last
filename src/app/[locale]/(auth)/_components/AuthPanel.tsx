@@ -1,11 +1,11 @@
 "use client"
 
-import * as motion from "motion/react-client"
-import { useTranslations } from "next-intl"
-import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import * as motion from "motion/react-client"
+import Link from "next/link"
+import { useTranslations } from "next-intl"
 
-import { reveal, ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 /* ── Decorative Dot Separator ── */
 function DotSeparator({
@@ -42,7 +42,10 @@ export function AuthPanel() {
   return (
     <div className="relative flex h-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-accent via-accent to-muted text-accent-foreground transition-colors duration-500 dark:from-accent dark:via-accent dark:to-card">
       {/* Ambient print-glow + vignette (dark mode only) */}
-      <div className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100" aria-hidden="true">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100"
+        aria-hidden="true"
+      >
         <div className="absolute -top-24 -start-24 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
         <div className="absolute -bottom-32 start-1/2 h-[26rem] w-[26rem] -translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/20" />
@@ -65,11 +68,11 @@ export function AuthPanel() {
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center text-center px-8 sm:px-12">
         {/* Volume marker */}
-          <motion.span
-            {...reveal}
-            transition={{ duration: 0.7, ease, delay: 0.1 }}
-            className="mb-14 inline-flex items-center gap-2 rounded-full border border-border/40 bg-background/30 px-4 py-2 text-[10px] font-light uppercase tracking-[0.35em] text-muted-foreground backdrop-blur-sm [[dir=rtl]_&]:tracking-normal"
-          >
+        <motion.span
+          {...reveal}
+          transition={{ duration: 0.7, ease, delay: 0.1 }}
+          className="mb-14 inline-flex items-center gap-2 rounded-full border border-border/40 bg-background/30 px-4 py-2 text-[10px] font-light uppercase tracking-[0.35em] text-muted-foreground backdrop-blur-sm [[dir=rtl]_&]:tracking-normal"
+        >
           {t("volume")}
         </motion.span>
 

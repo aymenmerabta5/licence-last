@@ -49,7 +49,9 @@ export function SkillsGroupsPanel({
             onToggle={onToggleSkill}
           />
           <div className="border-t border-border/50" />
-          <p className="text-[11px] font-semibold text-muted-foreground">Other skills</p>
+          <p className="text-[11px] font-semibold text-muted-foreground">
+            Other skills
+          </p>
         </>
       )}
 

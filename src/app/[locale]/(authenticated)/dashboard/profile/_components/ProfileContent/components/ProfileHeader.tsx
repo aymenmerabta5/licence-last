@@ -1,18 +1,16 @@
 "use client"
 
+import { Calendar, Check as CheckIcon, Copy } from "lucide-react"
 import * as motion from "motion/react-client"
-import { Calendar, Copy, Check as CheckIcon } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
 import { toast } from "sonner"
-
+import type { ProfileUser } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
+import { getInitials } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
-
-import type { ProfileUser } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
-import { getInitials } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/utils"
 
 interface ProfileHeaderProps {
   user: ProfileUser
@@ -148,11 +146,7 @@ export function ProfileHeader({
 
                 {canEdit && (
                   <Link href="/dashboard/settings">
-                    <Button
-                      variant="editorial"
-                      size="sm"
-                      className="h-9 px-5"
-                    >
+                    <Button variant="editorial" size="sm" className="h-9 px-5">
                       {t("edit")}
                     </Button>
                   </Link>

@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const mockGetStudentProfileForViewer = mock(async () => ({
   user: {
@@ -24,7 +24,9 @@ describe("src/server/services/students/get-public-profile", () => {
   })
 
   test("should delegate to getStudentProfileForViewer", async () => {
-    const { getPublicStudentProfile } = await import("@/server/services/students/get-public-profile")
+    const { getPublicStudentProfile } = await import(
+      "@/server/services/students/get-public-profile"
+    )
     const result = await getPublicStudentProfile(
       { id: "viewer-1", role: "company_admin" },
       "student-1",

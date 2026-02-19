@@ -1,10 +1,9 @@
 "use client"
 
+import { Briefcase, FileText } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { FileText, Briefcase } from "lucide-react"
-
+import { FormSection, TextAreaField, TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
-import { TextField, TextAreaField, FormSection } from "@/components/form-fields"
 
 interface BasicInfoSectionProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,6 +1,9 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 
-import { createOfferSchema, createCompanyProfileSchema } from "@/lib/schemas/offer"
+import {
+  createCompanyProfileSchema,
+  createOfferSchema,
+} from "@/lib/schemas/offer"
 
 function t(key: string) {
   return `t:${key}`
@@ -83,7 +86,9 @@ describe("src/lib/schemas/offer", () => {
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        const issue = result.error.issues.find((i) => i.path[0] === "description")
+        const issue = result.error.issues.find(
+          (i) => i.path[0] === "description",
+        )
         expect(issue?.message).toBe("t:offerDescriptionMin")
       }
     })
@@ -137,7 +142,9 @@ describe("src/lib/schemas/offer", () => {
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        const issue = result.error.issues.find((i) => i.path[0] === "skillTagIds")
+        const issue = result.error.issues.find(
+          (i) => i.path[0] === "skillTagIds",
+        )
         expect(issue?.message).toBe("t:offerSkillsMax")
       }
     })
@@ -153,7 +160,9 @@ describe("src/lib/schemas/offer", () => {
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        const issue = result.error.issues.find((i) => i.path[0] === "languageRequirements")
+        const issue = result.error.issues.find(
+          (i) => i.path[0] === "languageRequirements",
+        )
         expect(issue?.message).toBe("t:offerLanguageRequirementsMin")
       }
     })
@@ -239,7 +248,9 @@ describe("src/lib/schemas/offer", () => {
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        const issue = result.error.issues.find((i) => i.path[0] === "expectedEndDate")
+        const issue = result.error.issues.find(
+          (i) => i.path[0] === "expectedEndDate",
+        )
         expect(issue?.message).toBe("t:expectedPeriodBothRequired")
       }
     })
@@ -257,7 +268,9 @@ describe("src/lib/schemas/offer", () => {
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        const issue = result.error.issues.find((i) => i.path[0] === "expectedEndDate")
+        const issue = result.error.issues.find(
+          (i) => i.path[0] === "expectedEndDate",
+        )
         expect(issue?.message).toBe("t:expectedPeriodInvalid")
       }
     })
@@ -276,7 +289,9 @@ describe("src/lib/schemas/offer", () => {
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        const issue = result.error.issues.find((i) => i.path[0] === "applicationDeadlineAt")
+        const issue = result.error.issues.find(
+          (i) => i.path[0] === "applicationDeadlineAt",
+        )
         expect(issue?.message).toBe("t:deadlineAfterExpectedStart")
       }
     })
@@ -313,7 +328,9 @@ describe("src/lib/schemas/offer", () => {
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        const issue = result.error.issues.find((i) => i.path[0] === "contactEmail")
+        const issue = result.error.issues.find(
+          (i) => i.path[0] === "contactEmail",
+        )
         expect(issue?.message).toBe("t:emailInvalid")
       }
     })

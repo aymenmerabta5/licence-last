@@ -44,8 +44,10 @@ describe("src/server/services/companies/remove-member", () => {
   test("removes recruiter membership", async () => {
     selectResponses = [[{ userId: "member-1", role: "recruiter" }]]
 
-    // @ts-expect-error - Bun's ?fresh suffix is test-runtime only.
-    const { removeCompanyMember } = await import("@/server/services/companies/remove-member?fresh=1")
+    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
+    const { removeCompanyMember } = await import(
+      "@/server/services/companies/remove-member?fresh=1"
+    )
     const result = await removeCompanyMember({
       companyId: "company-1",
       memberUserId: "member-1",
@@ -64,8 +66,10 @@ describe("src/server/services/companies/remove-member", () => {
   test("rejects owner removal", async () => {
     selectResponses = [[{ userId: "owner-1", role: "owner" }]]
 
-    // @ts-expect-error - Bun's ?fresh suffix is test-runtime only.
-    const { removeCompanyMember } = await import("@/server/services/companies/remove-member?fresh=2")
+    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
+    const { removeCompanyMember } = await import(
+      "@/server/services/companies/remove-member?fresh=2"
+    )
 
     await expect(
       removeCompanyMember({
@@ -79,8 +83,10 @@ describe("src/server/services/companies/remove-member", () => {
   })
 
   test("rejects self removal", async () => {
-    // @ts-expect-error - Bun's ?fresh suffix is test-runtime only.
-    const { removeCompanyMember } = await import("@/server/services/companies/remove-member?fresh=3")
+    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
+    const { removeCompanyMember } = await import(
+      "@/server/services/companies/remove-member?fresh=3"
+    )
 
     await expect(
       removeCompanyMember({
@@ -97,3 +103,4 @@ describe("src/server/services/companies/remove-member", () => {
     mock.restore()
   })
 })
+

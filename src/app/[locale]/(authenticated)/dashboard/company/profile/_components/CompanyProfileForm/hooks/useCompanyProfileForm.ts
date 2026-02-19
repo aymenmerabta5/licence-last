@@ -1,17 +1,17 @@
 "use client"
 
-import { useMemo, useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useTranslations } from "next-intl"
+import { useMemo, useState } from "react"
 import { toast } from "sonner"
-
+import type { CompanyProfileFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/types"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { createCompanyProfileSchema } from "@/lib/schemas/offer"
 import { orpcClient } from "@/server/orpc/client"
 
-import type { CompanyProfileFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/types"
-
-export function useCompanyProfileForm(initialData: CompanyProfileFormProps["initialData"]) {
+export function useCompanyProfileForm(
+  initialData: CompanyProfileFormProps["initialData"],
+) {
   const t = useTranslations("dashboard.company.profile")
   const tv = useTranslations("auth.validation")
 

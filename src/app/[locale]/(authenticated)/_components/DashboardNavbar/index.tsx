@@ -1,16 +1,15 @@
 "use client"
 
-import { Search, Menu } from "lucide-react"
-import { usePathname } from "@/i18n/routing"
+import { Menu, Search } from "lucide-react"
 import { useSyncExternalStore } from "react"
-
-import { ThemeToggle } from "@/components/ThemeToggle"
-import { LanguageSwitcher } from "@/components/LanguageSwitcher"
-import { NotificationBell } from "@/components/NotificationBell"
-import { useLogout } from "@/hooks/useLogout"
 import { useDashboard } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import { UserDropdown } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/components/UserDropdown"
 import type { NavbarUser } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
+import { LanguageSwitcher } from "@/components/LanguageSwitcher"
+import { NotificationBell } from "@/components/NotificationBell"
+import { ThemeToggle } from "@/components/ThemeToggle"
+import { useLogout } from "@/hooks/useLogout"
+import { usePathname } from "@/i18n/routing"
 
 const emptySubscribe = () => () => {}
 

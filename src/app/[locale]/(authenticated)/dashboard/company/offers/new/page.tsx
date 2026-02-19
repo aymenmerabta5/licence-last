@@ -1,5 +1,5 @@
-import { requireRole } from "@/lib/auth-guards"
 import { OfferForm } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm"
+import { requireRole } from "@/lib/auth-guards"
 
 export default async function CreateOfferPage() {
   await requireRole(["company_admin"])

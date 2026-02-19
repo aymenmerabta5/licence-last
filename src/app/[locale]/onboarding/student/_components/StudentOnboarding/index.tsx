@@ -5,4 +5,3 @@ import { StudentOnboardingFormContent } from "@/app/[locale]/onboarding/student/
 export function StudentOnboardingForm() {
   return <StudentOnboardingFormContent />
 }
-

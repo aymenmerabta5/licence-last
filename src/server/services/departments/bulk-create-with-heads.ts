@@ -3,14 +3,13 @@ import "server-only"
 import { randomBytes } from "node:crypto"
 
 import { eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
+import { auth, pendingWelcomeEmails } from "@/lib/auth"
+import type { BulkDepartmentRow } from "@/lib/schemas/department"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
-import { auth, pendingWelcomeEmails } from "@/lib/auth"
-import { createDepartment } from "@/server/services/departments/create"
+import { createModuleLogger } from "@/server/logging"
 import { assignDepartmentHead } from "@/server/services/departments/assign-head"
-import type { BulkDepartmentRow } from "@/lib/schemas/department"
+import { createDepartment } from "@/server/services/departments/create"
 
 const log = createModuleLogger("services/departments/bulk-create-with-heads")
 

@@ -2,13 +2,12 @@
 
 import "server-only"
 
-import { eq, asc, and, inArray } from "drizzle-orm"
+import { and, asc, eq, inArray } from "drizzle-orm"
 import { cacheTag } from "next/cache"
-
+import { CACHE_PROFILES, CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
-import { skillTag } from "@/server/db/schema/skills"
 import { departmentSkill } from "@/server/db/schema/departments"
-import { CACHE_TAGS, CACHE_PROFILES } from "@/lib/cache"
+import { skillTag } from "@/server/db/schema/skills"
 
 export interface ListSkillTagsInput {
   category?: string
@@ -27,7 +26,9 @@ export interface ListSkillTagsResult {
   hasMore: boolean
 }
 
-export async function listSkillTags(input?: ListSkillTagsInput): Promise<ListSkillTagsResult> {
+export async function listSkillTags(
+  input?: ListSkillTagsInput,
+): Promise<ListSkillTagsResult> {
   CACHE_PROFILES.REFERENCE()
   cacheTag(CACHE_TAGS.SKILLS)
   if (input?.category) {

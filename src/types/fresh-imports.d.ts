@@ -227,3 +227,34 @@ declare module "@/server/services/companies/list?fresh=4" {
   export * from "@/server/services/companies/list"
 }
 
+declare module "@/server/services/companies/list-members?fresh=1" {
+  export * from "@/server/services/companies/list-members"
+}
+
+declare module "@/server/services/companies/invite-member?fresh=1" {
+  export * from "@/server/services/companies/invite-member"
+}
+
+declare module "@/server/services/companies/invite-member?fresh=2" {
+  export * from "@/server/services/companies/invite-member"
+}
+
+declare module "@/server/services/companies/invite-member?fresh=3" {
+  export * from "@/server/services/companies/invite-member"
+}
+
+declare module "@/server/services/companies/invite-member?fresh=4" {
+  export * from "@/server/services/companies/invite-member"
+}
+
+declare module "@/server/services/companies/remove-member?fresh=1" {
+  export * from "@/server/services/companies/remove-member"
+}
+
+declare module "@/server/services/companies/remove-member?fresh=2" {
+  export * from "@/server/services/companies/remove-member"
+}
+
+declare module "@/server/services/companies/remove-member?fresh=3" {
+  export * from "@/server/services/companies/remove-member"
+}

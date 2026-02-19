@@ -3,11 +3,10 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-import { cacheTag, cacheLife } from "next/cache"
-
+import { cacheLife, cacheTag } from "next/cache"
+import { CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
 import { company, companyMember } from "@/server/db/schema/companies"
-import { CACHE_TAGS } from "@/lib/cache"
 import { ServiceError } from "@/server/services/errors"
 
 /** Get a company by its ID. Cached for 15 minutes. */

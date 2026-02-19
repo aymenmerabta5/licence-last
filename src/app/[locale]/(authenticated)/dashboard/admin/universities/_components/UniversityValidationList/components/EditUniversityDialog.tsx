@@ -1,10 +1,14 @@
 "use client"
 
-import { useEffect, useMemo } from "react"
 import { useForm } from "@tanstack/react-form"
-import { useTranslations } from "next-intl"
 import { Loader2 } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import { useEffect, useMemo } from "react"
+import { EditUniversityFields } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/EditUniversityFields"
+import type {
+  UniversityListItem,
+  UpdateUniversityPayload,
+} from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -15,11 +19,6 @@ import {
 } from "@/components/ui/dialog"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { createUniversityUpdateSchema } from "@/lib/schemas/university"
-import { EditUniversityFields } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/EditUniversityFields"
-import type {
-  UniversityListItem,
-  UpdateUniversityPayload,
-} from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
 
 interface EditUniversityDialogProps {
   open: boolean
@@ -57,7 +56,9 @@ export function EditUniversityDialog({
             abbreviation: value.abbreviation || undefined,
             phone: value.phone || undefined,
             wilayaCode:
-              value.wilayaCode.trim().length > 0 ? Number(value.wilayaCode) : undefined,
+              value.wilayaCode.trim().length > 0
+                ? Number(value.wilayaCode)
+                : undefined,
             city: value.city || undefined,
             address: value.address || undefined,
           }),
@@ -124,7 +125,11 @@ export function EditUniversityDialog({
               className="rounded-xl h-10"
               disabled={isUpdating}
             >
-              {isUpdating ? <Loader2 className="h-4 w-4 animate-spin" /> : t("save")}
+              {isUpdating ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                t("save")
+              )}
             </Button>
           </div>
         </form>

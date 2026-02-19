@@ -1,16 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { LogOut, MonitorSmartphone } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { MonitorSmartphone, LogOut } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-
-import { useSessionManagement } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/hooks/useSessionManagement"
-import { SessionCard } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/components/SessionCard"
+import { useState } from "react"
 import { RevokeConfirmDialog } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/components/RevokeConfirmDialog"
+import { SessionCard } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/components/SessionCard"
+import { useSessionManagement } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/hooks/useSessionManagement"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function SessionManagement() {
   const t = useTranslations("dashboard.settings.sessions")
@@ -65,7 +69,9 @@ export function SessionManagement() {
               ))}
             </div>
           ) : sessions.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-4">{t("noSessions")}</p>
+            <p className="text-sm text-muted-foreground py-4">
+              {t("noSessions")}
+            </p>
           ) : (
             sessions.map((session) => (
               <SessionCard
@@ -98,7 +104,9 @@ export function SessionManagement() {
       {/* Single session revoke dialog */}
       <RevokeConfirmDialog
         open={revokeToken !== null}
-        onOpenChange={(open) => { if (!open) setRevokeToken(null) }}
+        onOpenChange={(open) => {
+          if (!open) setRevokeToken(null)
+        }}
         mode="single"
         onConfirm={async () => {
           if (revokeToken) {

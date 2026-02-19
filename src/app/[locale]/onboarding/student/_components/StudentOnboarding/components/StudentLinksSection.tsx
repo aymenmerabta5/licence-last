@@ -1,9 +1,8 @@
 ﻿import { Github, Globe } from "lucide-react"
 import { useTranslations } from "next-intl"
-
+import type { OnboardingFormApi } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/types"
 import { FormSection, TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
-import type { OnboardingFormApi } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/types"
 
 interface StudentLinksSectionProps {
   form: OnboardingFormApi

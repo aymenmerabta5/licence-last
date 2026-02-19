@@ -1,6 +1,5 @@
 "use client"
 
-import { useMemo, useState } from "react"
 import {
   useInfiniteQuery,
   useMutation,
@@ -8,16 +7,18 @@ import {
   useQueryClient,
 } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { useMemo, useState } from "react"
 import { toast } from "sonner"
-
+import { useCandidateStageMutation } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/hooks/useCandidateStageMutation"
+import type {
+  AcceptModalState,
+  RefuseModalState,
+} from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll"
-import { STAGE_COLUMNS } from "@/lib/constants/pipeline"
 import type { PipelineStage } from "@/lib/constants/pipeline"
+import { STAGE_COLUMNS } from "@/lib/constants/pipeline"
 import { orpc, orpcClient } from "@/server/orpc/client"
 import type { ListApplicationsByOfferResult } from "@/server/services/applications/list-by-offer"
-
-import type { AcceptModalState, RefuseModalState } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
-import { useCandidateStageMutation } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/hooks/useCandidateStageMutation"
 
 export function useCandidates(offerId: string) {
   const t = useTranslations("dashboard.company.candidates")
@@ -52,8 +53,9 @@ export function useCandidates(offerId: string) {
         limit: 24,
       }),
     enabled: !!offerId,
-    initialPageParam:
-      undefined as { createdAt: string; id: string } | undefined,
+    initialPageParam: undefined as
+      | { createdAt: string; id: string }
+      | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   })
 
@@ -92,7 +94,9 @@ export function useCandidates(offerId: string) {
     if (!acceptModal) return
     setActionLoading(acceptModal.applicationId)
     try {
-      await acceptMutation.mutateAsync({ applicationId: acceptModal.applicationId })
+      await acceptMutation.mutateAsync({
+        applicationId: acceptModal.applicationId,
+      })
       await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
       queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
       setAcceptModal(null)

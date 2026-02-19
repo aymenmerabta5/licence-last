@@ -1,5 +1,5 @@
-import { describe, test, expect } from "bun:test"
-import { renderHook, act } from "@testing-library/react"
+import { describe, expect, test } from "bun:test"
+import { act, renderHook } from "@testing-library/react"
 
 import { useSkillSelection } from "@/hooks/use-skill-selection"
 
@@ -14,7 +14,9 @@ describe("useSkillSelection", () => {
   test("should add a skill when toggled", () => {
     const { result } = renderHook(() => useSkillSelection())
 
-    act(() => { result.current.toggle("skill-1") })
+    act(() => {
+      result.current.toggle("skill-1")
+    })
 
     expect(result.current.selectedIds).toEqual(["skill-1"])
     expect(result.current.count).toBe(1)
@@ -24,8 +26,12 @@ describe("useSkillSelection", () => {
   test("should remove a skill when toggled twice", () => {
     const { result } = renderHook(() => useSkillSelection())
 
-    act(() => { result.current.toggle("skill-1") })
-    act(() => { result.current.toggle("skill-1") })
+    act(() => {
+      result.current.toggle("skill-1")
+    })
+    act(() => {
+      result.current.toggle("skill-1")
+    })
 
     expect(result.current.selectedIds).toEqual([])
     expect(result.current.isSelected("skill-1")).toBe(false)
@@ -34,13 +40,19 @@ describe("useSkillSelection", () => {
   test("should enforce maxSelections limit", () => {
     const { result } = renderHook(() => useSkillSelection(2))
 
-    act(() => { result.current.toggle("skill-1") })
-    act(() => { result.current.toggle("skill-2") })
+    act(() => {
+      result.current.toggle("skill-1")
+    })
+    act(() => {
+      result.current.toggle("skill-2")
+    })
 
     expect(result.current.isAtMax).toBe(true)
 
     // Trying to add a third should be ignored
-    act(() => { result.current.toggle("skill-3") })
+    act(() => {
+      result.current.toggle("skill-3")
+    })
 
     expect(result.current.count).toBe(2)
     expect(result.current.isSelected("skill-3")).toBe(false)
@@ -49,10 +61,18 @@ describe("useSkillSelection", () => {
   test("should allow adding after removing when at max", () => {
     const { result } = renderHook(() => useSkillSelection(2))
 
-    act(() => { result.current.toggle("skill-1") })
-    act(() => { result.current.toggle("skill-2") })
-    act(() => { result.current.toggle("skill-1") }) // remove
-    act(() => { result.current.toggle("skill-3") }) // add new
+    act(() => {
+      result.current.toggle("skill-1")
+    })
+    act(() => {
+      result.current.toggle("skill-2")
+    })
+    act(() => {
+      result.current.toggle("skill-1")
+    }) // remove
+    act(() => {
+      result.current.toggle("skill-3")
+    }) // add new
 
     expect(result.current.selectedIds).toEqual(["skill-2", "skill-3"])
   })
@@ -60,9 +80,15 @@ describe("useSkillSelection", () => {
   test("should reset all selections", () => {
     const { result } = renderHook(() => useSkillSelection())
 
-    act(() => { result.current.toggle("skill-1") })
-    act(() => { result.current.toggle("skill-2") })
-    act(() => { result.current.reset() })
+    act(() => {
+      result.current.toggle("skill-1")
+    })
+    act(() => {
+      result.current.toggle("skill-2")
+    })
+    act(() => {
+      result.current.reset()
+    })
 
     expect(result.current.selectedIds).toEqual([])
     expect(result.current.count).toBe(0)
@@ -71,7 +97,9 @@ describe("useSkillSelection", () => {
   test("should set selections directly", () => {
     const { result } = renderHook(() => useSkillSelection())
 
-    act(() => { result.current.setSelectedIds(["a", "b", "c"]) })
+    act(() => {
+      result.current.setSelectedIds(["a", "b", "c"])
+    })
 
     expect(result.current.selectedIds).toEqual(["a", "b", "c"])
     expect(result.current.count).toBe(3)

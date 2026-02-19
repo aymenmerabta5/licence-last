@@ -1,3 +1,5 @@
+import type { FilterState } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient"
+import { FilterSection } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/FilterSection"
 import {
   Select,
   SelectContent,
@@ -7,16 +9,17 @@ import {
 } from "@/components/ui/select"
 import { getWilayaName, WILAYA_OPTIONS } from "@/lib/wilayas"
 
-import type { FilterState } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient"
-import { FilterSection } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/FilterSection"
-
 interface WilayaFilterProps {
   filters: FilterState
   onFiltersChange: (filters: FilterState) => void
   t: (key: string) => string
 }
 
-export function WilayaFilter({ filters, onFiltersChange, t }: WilayaFilterProps) {
+export function WilayaFilter({
+  filters,
+  onFiltersChange,
+  t,
+}: WilayaFilterProps) {
   return (
     <FilterSection label={t("wilaya")}>
       <Select

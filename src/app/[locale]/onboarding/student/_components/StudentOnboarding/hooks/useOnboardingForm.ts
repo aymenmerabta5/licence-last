@@ -1,21 +1,19 @@
-import { useState, useMemo, useRef } from "react"
-import { useTranslations } from "next-intl"
 import { useForm } from "@tanstack/react-form"
 import { useQuery } from "@tanstack/react-query"
-
+import { useTranslations } from "next-intl"
+import { useMemo, useRef, useState } from "react"
+import type { StudentOnboardingFormValues } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/types"
 import { useRouter } from "@/i18n/routing"
+import { authClient } from "@/lib/auth-client"
 import {
   DEFAULT_STUDENT_LANGUAGE_CODE,
   DEFAULT_STUDENT_LANGUAGE_PROFICIENCY,
 } from "@/lib/constants/languages"
-import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"
-import { createStudentProfileSchema } from "@/lib/schemas/student"
-import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { getErrorMessage } from "@/lib/error-message"
-import { orpcClient, orpc } from "@/server/orpc/client"
-import { authClient } from "@/lib/auth-client"
-
-import type { StudentOnboardingFormValues } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/types"
+import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"
+import { mapZodErrors } from "@/lib/schemas/map-errors"
+import { createStudentProfileSchema } from "@/lib/schemas/student"
+import { orpc, orpcClient } from "@/server/orpc/client"
 
 export function useOnboardingForm() {
   const t = useTranslations("onboarding.student")
@@ -50,9 +48,13 @@ export function useOnboardingForm() {
   const otherSkills = useMemo(
     () =>
       selectedDepartmentId
-        ? prioritizedResult?.otherSkills ?? []
-        : allSkillsResult?.skills ?? [],
-    [selectedDepartmentId, prioritizedResult?.otherSkills, allSkillsResult?.skills],
+        ? (prioritizedResult?.otherSkills ?? [])
+        : (allSkillsResult?.skills ?? []),
+    [
+      selectedDepartmentId,
+      prioritizedResult?.otherSkills,
+      allSkillsResult?.skills,
+    ],
   )
 
   const { data: departmentsResult } = useQuery(

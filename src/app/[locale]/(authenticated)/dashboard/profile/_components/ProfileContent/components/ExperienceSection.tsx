@@ -1,13 +1,11 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { Briefcase } from "lucide-react"
-
+import * as motion from "motion/react-client"
+import type { StudentExperience } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
-
-import type { StudentExperience } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 
 interface ExperienceSectionProps {
   labels: {
@@ -19,7 +17,11 @@ interface ExperienceSectionProps {
   experiences: StudentExperience[]
 }
 
-function formatPeriod(startDate: Date, endDate: Date | null, isCurrent: boolean) {
+function formatPeriod(
+  startDate: Date,
+  endDate: Date | null,
+  isCurrent: boolean,
+) {
   const start = new Date(startDate).toLocaleDateString(undefined, {
     month: "short",
     year: "numeric",
@@ -37,7 +39,11 @@ function formatPeriod(startDate: Date, endDate: Date | null, isCurrent: boolean)
   return `${start} - ${end}`
 }
 
-export function ExperienceSection({ labels, canEdit, experiences }: ExperienceSectionProps) {
+export function ExperienceSection({
+  labels,
+  canEdit,
+  experiences,
+}: ExperienceSectionProps) {
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
@@ -78,18 +84,31 @@ export function ExperienceSection({ labels, canEdit, experiences }: ExperienceSe
       ) : (
         <div className="space-y-4">
           {experiences.map((experience) => (
-            <article key={experience.id} className="border border-border/40 p-5 space-y-2">
+            <article
+              key={experience.id}
+              className="border border-border/40 p-5 space-y-2"
+            >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h3 className="font-semibold text-heading">{experience.title}</h3>
-                  <p className="text-sm text-muted-foreground">{experience.organization}</p>
+                  <h3 className="font-semibold text-heading">
+                    {experience.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {experience.organization}
+                  </p>
                 </div>
                 <span className="text-xs text-muted-foreground/70">
-                  {formatPeriod(experience.startDate, experience.endDate, experience.isCurrent)}
+                  {formatPeriod(
+                    experience.startDate,
+                    experience.endDate,
+                    experience.isCurrent,
+                  )}
                 </span>
               </div>
               {experience.description && (
-                <p className="text-sm text-foreground/80 leading-relaxed">{experience.description}</p>
+                <p className="text-sm text-foreground/80 leading-relaxed">
+                  {experience.description}
+                </p>
               )}
             </article>
           ))}
@@ -97,7 +116,11 @@ export function ExperienceSection({ labels, canEdit, experiences }: ExperienceSe
           {canEdit && (
             <div className="pt-2">
               <Link href="/dashboard/student/cv">
-                <Button variant="editorial-outline" size="sm" className="h-9 px-5">
+                <Button
+                  variant="editorial-outline"
+                  size="sm"
+                  className="h-9 px-5"
+                >
                   Manage CV
                 </Button>
               </Link>

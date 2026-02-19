@@ -5,8 +5,8 @@ import { CreateUserDialog } from "@/app/[locale]/(authenticated)/dashboard/admin
 import { DeleteUserDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/DeleteUserDialog"
 import { SetPasswordDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/SetPasswordDialog"
 import { SetRoleDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/SetRoleDialog"
-import type { UserDialogState } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/hooks/useUserDialogState"
 import type { UserActions } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/hooks/useUserActions"
+import type { UserDialogState } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/hooks/useUserDialogState"
 
 interface UserManagementDialogsProps {
   isSuperAdmin: boolean

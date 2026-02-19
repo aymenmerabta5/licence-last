@@ -100,7 +100,9 @@ describe("src/server/orpc/routes/interviews", () => {
   })
 
   test("listInterviewsForCompanyProcedure delegates with company id and input", async () => {
-    const { listInterviewsForCompanyProcedure } = await import("@/server/orpc/routes/interviews")
+    const { listInterviewsForCompanyProcedure } = await import(
+      "@/server/orpc/routes/interviews"
+    )
 
     const input = { status: "confirmed", limit: 20 as const }
     const result = await callProcedure(listInterviewsForCompanyProcedure, {
@@ -109,16 +111,26 @@ describe("src/server/orpc/routes/interviews", () => {
     })
 
     expect(result).toEqual({ items: [] })
-    expect(listInterviewsForCompanyMock).toHaveBeenCalledWith("company-1", input)
+    expect(listInterviewsForCompanyMock).toHaveBeenCalledWith(
+      "company-1",
+      input,
+    )
   })
 
   test("proposeInterviewSlotsProcedure parses dates and delegates", async () => {
-    const { proposeInterviewSlotsProcedure } = await import("@/server/orpc/routes/interviews")
+    const { proposeInterviewSlotsProcedure } = await import(
+      "@/server/orpc/routes/interviews"
+    )
 
     const input = {
       applicationId: "app-1",
       note: "Please confirm",
-      slots: [{ startsAt: "2026-02-20T10:00:00.000Z", endsAt: "2026-02-20T11:00:00.000Z" }],
+      slots: [
+        {
+          startsAt: "2026-02-20T10:00:00.000Z",
+          endsAt: "2026-02-20T11:00:00.000Z",
+        },
+      ],
     }
 
     const result = await callProcedure(proposeInterviewSlotsProcedure, {
@@ -150,11 +162,15 @@ describe("src/server/orpc/routes/interviews", () => {
   })
 
   test("listInterviewsForStudentProcedure rejects when feature is disabled", async () => {
-    isFeatureEnabledMock.mockImplementation((flag: keyof typeof featureFlagsState) => {
-      if (flag === "INTERVIEWS") return false
-      return featureFlagsState[flag]
-    })
-    const { listInterviewsForStudentProcedure } = await import("@/server/orpc/routes/interviews")
+    isFeatureEnabledMock.mockImplementation(
+      (flag: keyof typeof featureFlagsState) => {
+        if (flag === "INTERVIEWS") return false
+        return featureFlagsState[flag]
+      },
+    )
+    const { listInterviewsForStudentProcedure } = await import(
+      "@/server/orpc/routes/interviews"
+    )
 
     await expect(
       callProcedure(listInterviewsForStudentProcedure, {

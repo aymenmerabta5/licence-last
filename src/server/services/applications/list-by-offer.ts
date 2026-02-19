@@ -1,15 +1,17 @@
 import "server-only"
 
-import { eq, and, desc, inArray, lt, or } from "drizzle-orm"
-
+import { and, desc, eq, inArray, lt, or } from "drizzle-orm"
+import type { ApplicationStatus, PipelineStage } from "@/lib/schemas/enums"
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
-import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
 import { user } from "@/server/db/schema/auth"
-import { studentProfile, studentSkill } from "@/server/db/schema/students"
+import {
+  internshipOffer,
+  internshipOfferSkill,
+} from "@/server/db/schema/internships"
 import { skillTag } from "@/server/db/schema/skills"
+import { studentProfile, studentSkill } from "@/server/db/schema/students"
 import { university } from "@/server/db/schema/universities"
-import type { ApplicationStatus, PipelineStage } from "@/lib/schemas/enums"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
 
 interface ListParams {

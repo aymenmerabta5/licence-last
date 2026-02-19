@@ -1,4 +1,4 @@
-import { Section, Text, Heading } from "@react-email/components"
+import { Heading, Section, Text } from "@react-email/components"
 import EmailLayout from "@/server/email/templates/EmailLayout"
 
 interface CompanyRejectedEmailProps {
@@ -34,10 +34,7 @@ export default function CompanyRejectedEmail({
         <Text className="text-mutedForeground mt-6 text-sm">
           If you believe this is an error or would like to provide additional
           information, please contact us at{" "}
-          <a
-            href={`mailto:${supportEmail}`}
-            className="text-primary underline"
-          >
+          <a href={`mailto:${supportEmail}`} className="text-primary underline">
             {supportEmail}
           </a>
           .

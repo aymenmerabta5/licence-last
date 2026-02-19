@@ -1,16 +1,15 @@
 "use client"
 
 import * as motion from "motion/react-client"
+import { FormActions } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/FormActions"
+import { LogoUploadSection } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/LogoUploadSection"
+import { ProfileFieldsSection } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/ProfileFieldsSection"
 
+import { useCompanyProfileForm } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/hooks/useCompanyProfileForm"
+import type { CompanyProfileFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/types"
 import { ServerError } from "@/components/ServerError"
 import { SuccessMessage } from "@/components/SuccessMessage"
 import { ease } from "@/lib/animations"
-
-import { useCompanyProfileForm } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/hooks/useCompanyProfileForm"
-import { LogoUploadSection } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/LogoUploadSection"
-import { ProfileFieldsSection } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/ProfileFieldsSection"
-import { FormActions } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/FormActions"
-import type { CompanyProfileFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/types"
 
 export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
   const {

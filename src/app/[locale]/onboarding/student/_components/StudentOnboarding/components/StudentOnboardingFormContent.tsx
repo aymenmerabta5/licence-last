@@ -1,11 +1,6 @@
 ﻿"use client"
 
 import { useTranslations } from "next-intl"
-
-import { FormHeader } from "@/components/FormHeader"
-import { ServerError } from "@/components/ServerError"
-import { useSkillGrouping } from "@/hooks"
-import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"
 import { StudentLanguagesSection } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/StudentLanguagesSection"
 import { StudentLinksSection } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/StudentLinksSection"
 import { StudentLocationSection } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/StudentLocationSection"
@@ -13,6 +8,10 @@ import { StudentPersonalSection } from "@/app/[locale]/onboarding/student/_compo
 import { StudentSkillsSection } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/StudentSkillsSection"
 import { StudentSubmitSection } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/StudentSubmitSection"
 import { useOnboardingForm } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/hooks/useOnboardingForm"
+import { FormHeader } from "@/components/FormHeader"
+import { ServerError } from "@/components/ServerError"
+import { useSkillGrouping } from "@/hooks"
+import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"
 
 export function StudentOnboardingFormContent() {
   const t = useTranslations("onboarding.student")
@@ -49,7 +48,9 @@ export function StudentOnboardingFormContent() {
       <StudentLocationSection form={form} />
       <StudentLinksSection form={form} />
 
-      {isLanguageRequirementsEnabled ? <StudentLanguagesSection form={form} /> : null}
+      {isLanguageRequirementsEnabled ? (
+        <StudentLanguagesSection form={form} />
+      ) : null}
 
       <StudentSkillsSection
         form={form}

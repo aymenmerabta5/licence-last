@@ -1,19 +1,19 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 
 import {
-  internshipTypeSchema,
-  workModeSchema,
   applicationStatusSchema,
-  pipelineStageSchema,
-  userRoleSchema,
-  companyStatusSchema,
-  companyReportStatusSchema,
   companyReportSeveritySchema,
-  offerStatusSchema,
-  proficiencyLevelSchema,
-  universityStatusSchema,
+  companyReportStatusSchema,
+  companyStatusSchema,
+  internshipTypeSchema,
   isInternshipType,
   isWorkMode,
+  offerStatusSchema,
+  pipelineStageSchema,
+  proficiencyLevelSchema,
+  universityStatusSchema,
+  userRoleSchema,
+  workModeSchema,
 } from "@/lib/schemas/enums"
 
 describe("internshipTypeSchema", () => {
@@ -42,7 +42,14 @@ describe("workModeSchema", () => {
 
 describe("applicationStatusSchema", () => {
   test("should accept all valid statuses", () => {
-    const valid = ["applied", "company_accepted", "company_refused", "admin_validated", "admin_rejected", "withdrawn"]
+    const valid = [
+      "applied",
+      "company_accepted",
+      "company_refused",
+      "admin_validated",
+      "admin_rejected",
+      "withdrawn",
+    ]
     for (const v of valid) {
       expect(applicationStatusSchema.safeParse(v).success).toBe(true)
     }
@@ -55,7 +62,14 @@ describe("applicationStatusSchema", () => {
 
 describe("pipelineStageSchema", () => {
   test("should accept all valid stages", () => {
-    const valid = ["applied", "screening", "interview", "offer", "accepted", "rejected"]
+    const valid = [
+      "applied",
+      "screening",
+      "interview",
+      "offer",
+      "accepted",
+      "rejected",
+    ]
     for (const v of valid) {
       expect(pipelineStageSchema.safeParse(v).success).toBe(true)
     }
@@ -64,7 +78,13 @@ describe("pipelineStageSchema", () => {
 
 describe("userRoleSchema", () => {
   test("should accept all valid roles", () => {
-    const valid = ["student", "company_admin", "dept_head", "university_admin", "super_admin"]
+    const valid = [
+      "student",
+      "company_admin",
+      "dept_head",
+      "university_admin",
+      "super_admin",
+    ]
     for (const v of valid) {
       expect(userRoleSchema.safeParse(v).success).toBe(true)
     }

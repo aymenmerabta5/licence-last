@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useLocale, useTranslations } from "next-intl"
+import { useState } from "react"
 import { toast } from "sonner"
 
 import { orpc } from "@/server/orpc/client"
@@ -34,12 +34,12 @@ export function useCompanyDocuments() {
   const t = useTranslations("dashboard.companyDocuments")
   const locale = useLocale()
   const queryClient = useQueryClient()
-  const [generatingPlacementId, setGeneratingPlacementId] = useState<string | null>(
-    null,
-  )
-  const [downloadingDocumentId, setDownloadingDocumentId] = useState<string | null>(
-    null,
-  )
+  const [generatingPlacementId, setGeneratingPlacementId] = useState<
+    string | null
+  >(null)
+  const [downloadingDocumentId, setDownloadingDocumentId] = useState<
+    string | null
+  >(null)
 
   const listQueryOptions = orpc.documents.listByCompany.queryOptions()
   const documentsQuery = useQuery(listQueryOptions)

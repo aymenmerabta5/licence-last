@@ -1,16 +1,16 @@
 import "server-only"
 
-import { eq, and, count } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
+import { and, count, eq } from "drizzle-orm"
 import { db } from "@/server/db"
+import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/applications/apply")
-import { internshipOffer } from "@/server/db/schema/internships"
+
 import { application } from "@/server/db/schema/applications"
 import { company, companyMember } from "@/server/db/schema/companies"
-import { appendTimelineEvent } from "@/server/services/applications/pipeline"
+import { internshipOffer } from "@/server/db/schema/internships"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
+import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { createNotification } from "@/server/services/notifications/create"
 
 /**
@@ -44,11 +44,20 @@ export async function applyToOffer(
     }
 
     if (offer.status !== "published") {
-      throw new ApplicationServiceError("OFFER_NOT_OPEN", "Offer is not accepting applications")
+      throw new ApplicationServiceError(
+        "OFFER_NOT_OPEN",
+        "Offer is not accepting applications",
+      )
     }
 
-    if (offer.applicationDeadlineAt && offer.applicationDeadlineAt < new Date()) {
-      throw new ApplicationServiceError("OFFER_DEADLINE_PASSED", "Offer application deadline has passed")
+    if (
+      offer.applicationDeadlineAt &&
+      offer.applicationDeadlineAt < new Date()
+    ) {
+      throw new ApplicationServiceError(
+        "OFFER_DEADLINE_PASSED",
+        "Offer application deadline has passed",
+      )
     }
 
     const [offerCompany] = await tx
@@ -58,7 +67,10 @@ export async function applyToOffer(
       .limit(1)
 
     if (!offerCompany || offerCompany.status !== "approved") {
-      throw new ApplicationServiceError("OFFER_NOT_OPEN", "Offer is not accepting applications")
+      throw new ApplicationServiceError(
+        "OFFER_NOT_OPEN",
+        "Offer is not accepting applications",
+      )
     }
 
     // 2. Check positions not full (count admin_validated applications)
@@ -73,7 +85,10 @@ export async function applyToOffer(
       )
 
     if ((validatedCount?.value ?? 0) >= offer.maxPositions) {
-      throw new ApplicationServiceError("OFFER_FULL", "All positions have been filled")
+      throw new ApplicationServiceError(
+        "OFFER_FULL",
+        "All positions have been filled",
+      )
     }
 
     // 3. Check student hasn't already applied
@@ -89,7 +104,10 @@ export async function applyToOffer(
       .limit(1)
 
     if (existing) {
-      throw new ApplicationServiceError("ALREADY_APPLIED", "You have already applied to this offer")
+      throw new ApplicationServiceError(
+        "ALREADY_APPLIED",
+        "You have already applied to this offer",
+      )
     }
 
     // 4. Insert application (inside transaction)
@@ -116,7 +134,10 @@ export async function applyToOffer(
 
   // Fetch offer for notification context
   const [offer] = await db
-    .select({ companyId: internshipOffer.companyId, title: internshipOffer.title })
+    .select({
+      companyId: internshipOffer.companyId,
+      title: internshipOffer.title,
+    })
     .from(internshipOffer)
     .where(eq(internshipOffer.id, offerId))
     .limit(1)
@@ -145,6 +166,9 @@ export async function applyToOffer(
     }
   }
 
-  log.info({ applicationId, offerId, event: "application_created" }, "Application created successfully")
+  log.info(
+    { applicationId, offerId, event: "application_created" },
+    "Application created successfully",
+  )
   return { applicationId }
 }

@@ -18,7 +18,10 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
   return (procedure as (input: unknown) => Promise<T>)(args)
 }
 
-const getOfferAccessContextMock = mock(async () => ({ companyId: "company-1", status: "published" }))
+const getOfferAccessContextMock = mock(async () => ({
+  companyId: "company-1",
+  status: "published",
+}))
 const canAccessMatchScoreMock = mock(async () => true)
 const getExplainableMatchScoreMock = mock(async () => ({ score: 82 }))
 const captureReadinessSnapshotMock = mock(async () => ({ success: true }))
@@ -75,7 +78,10 @@ describe("src/server/orpc/routes/matching", () => {
     })
 
     expect(result).toEqual({ score: 82 })
-    expect(getExplainableMatchScoreMock).toHaveBeenCalledWith("student-1", "offer-1")
+    expect(getExplainableMatchScoreMock).toHaveBeenCalledWith(
+      "student-1",
+      "offer-1",
+    )
   })
 
   test("getScoreProcedure throws FORBIDDEN when access check fails", async () => {
@@ -94,7 +100,9 @@ describe("src/server/orpc/routes/matching", () => {
   })
 
   test("captureReadinessSnapshotProcedure delegates to readiness service", async () => {
-    const { captureReadinessSnapshotProcedure } = await import("@/server/orpc/routes/matching")
+    const { captureReadinessSnapshotProcedure } = await import(
+      "@/server/orpc/routes/matching"
+    )
 
     const result = await callProcedure(captureReadinessSnapshotProcedure, {
       input: { offerId: "offer-1", source: "manual" },

@@ -1,11 +1,14 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const mockListUserSessions = mock(() => Promise.resolve({ sessions: [] }))
 const mockRevokeUserSession = mock(() => Promise.resolve({ success: true }))
 const mockRevokeUserSessions = mock(() => Promise.resolve({ success: true }))
 const mockHeaders = mock(() => Promise.resolve(new Headers()))
 
-mock.module("@/lib/auth", () => ({ auth: { api: {} }, pendingWelcomeEmails: new Map() }))
+mock.module("@/lib/auth", () => ({
+  auth: { api: {} },
+  pendingWelcomeEmails: new Map(),
+}))
 
 describe("listUserSessions", () => {
   beforeEach(() => {
@@ -13,7 +16,9 @@ describe("listUserSessions", () => {
   })
 
   test("should call auth.api.listUserSessions with userId", async () => {
-    const { listUserSessions } = await import("@/server/services/admin/session-management?fresh=1")
+    const { listUserSessions } = await import(
+      "@/server/services/admin/session-management?fresh=1"
+    )
     await listUserSessions("user-1", {
       authApi: {
         listUserSessions: mockListUserSessions,
@@ -35,7 +40,9 @@ describe("revokeSession", () => {
   })
 
   test("should call auth.api.revokeUserSession with token", async () => {
-    const { revokeSession } = await import("@/server/services/admin/session-management?fresh=2")
+    const { revokeSession } = await import(
+      "@/server/services/admin/session-management?fresh=2"
+    )
     await revokeSession("session-token-abc", {
       authApi: {
         listUserSessions: mockListUserSessions,
@@ -57,7 +64,9 @@ describe("revokeAllSessions", () => {
   })
 
   test("should call auth.api.revokeUserSessions with userId", async () => {
-    const { revokeAllSessions } = await import("@/server/services/admin/session-management?fresh=3")
+    const { revokeAllSessions } = await import(
+      "@/server/services/admin/session-management?fresh=3"
+    )
     await revokeAllSessions("user-1", {
       authApi: {
         listUserSessions: mockListUserSessions,
@@ -73,7 +82,9 @@ describe("revokeAllSessions", () => {
   })
 
   test("should return success result", async () => {
-    const { revokeAllSessions } = await import("@/server/services/admin/session-management?fresh=4")
+    const { revokeAllSessions } = await import(
+      "@/server/services/admin/session-management?fresh=4"
+    )
     const result = await revokeAllSessions("user-1", {
       authApi: {
         listUserSessions: mockListUserSessions,

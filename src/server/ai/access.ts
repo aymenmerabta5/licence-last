@@ -15,7 +15,11 @@ export function isRoleAllowedForIntent({
   const isStudent = role === "student"
 
   if (intent === "admin_validation_summary") return isAdmin || isDeptHead
-  if (intent === "student_search_parse" || intent === "student_cover_letter_draft") return isStudent
+  if (
+    intent === "student_search_parse" ||
+    intent === "student_cover_letter_draft"
+  )
+    return isStudent
   if (intent === "notifications_summarize") return true
 
   // Free-form chat (no intent): company admins + all admin roles

@@ -77,7 +77,10 @@ function main() {
     `Generated at: ${runAt}`,
     "",
   ]
-  fs.writeFileSync(path.join(COVERAGE_DIR, "README.md"), `${headerLines.join("\n")}\n`)
+  fs.writeFileSync(
+    path.join(COVERAGE_DIR, "README.md"),
+    `${headerLines.join("\n")}\n`,
+  )
 
   for (const [index, segment] of segments.entries()) {
     const sectionHeader = [`## ${index + 1}. ${segment.name}`, ""].join("\n")

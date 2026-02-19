@@ -45,14 +45,20 @@ describe("src/server/services/companies/list-members", () => {
       },
     ]
 
-    // @ts-expect-error - Bun's ?fresh suffix is test-runtime only.
-    const { listCompanyMembers } = await import("@/server/services/companies/list-members?fresh=1")
+    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
+    const { listCompanyMembers } = await import(
+      "@/server/services/companies/list-members?fresh=1"
+    )
     const result = await listCompanyMembers("company-1")
 
-    expect(result.map((member: { userId: string }) => member.userId)).toEqual(["u-1", "u-2"])
+    expect(result.map((member: { userId: string }) => member.userId)).toEqual([
+      "u-1",
+      "u-2",
+    ])
   })
 
   afterAll(() => {
     mock.restore()
   })
 })
+

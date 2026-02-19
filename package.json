@@ -6,8 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "lint:imports": "eslint src --max-warnings 0",
+    "lint": "bun run lint:biome && bun run lint:imports && bun run lint:next-parity",
+    "lint:biome": "biome lint .",
+    "lint:fix": "biome check --write --unsafe .",
+    "format": "biome format --write .",
+    "lint:imports": "node scripts/check-import-aliases.cjs",
+    "lint:next-parity": "node scripts/check-next-parity.cjs",
     "lint:architecture": "node scripts/check-feature-folder.cjs",
     "lint:rtl-logical": "node scripts/check-rtl-logical.cjs",
     "typecheck": "tsc --noEmit",
@@ -97,6 +101,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.2",
     "@modelcontextprotocol/sdk": "^1.26.0",
     "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4",
@@ -109,8 +114,6 @@
     "babel-plugin-react-compiler": "^1.0.0",
     "bun-types": "^1.3.8",
     "drizzle-kit": "^0.31.9",
-    "eslint": "^9",
-    "eslint-config-next": "16.1.6",
     "happy-dom": "^20.5.0",
     "tailwindcss": "^4",
     "typescript": "^5"

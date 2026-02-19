@@ -3,8 +3,8 @@ import "server-only"
 import { eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
-import { internshipOffer, savedOffer } from "@/server/db/schema/internships"
 import { company } from "@/server/db/schema/companies"
+import { internshipOffer, savedOffer } from "@/server/db/schema/internships"
 import { ServiceError } from "@/server/services/errors"
 
 export async function saveOffer(offerId: string, userId: string) {
@@ -24,7 +24,10 @@ export async function saveOffer(offerId: string, userId: string) {
   }
 
   if (offer.status !== "published" || offer.companyStatus !== "approved") {
-    throw new ServiceError("OFFER_NOT_SAVABLE", "Only published offers can be saved")
+    throw new ServiceError(
+      "OFFER_NOT_SAVABLE",
+      "Only published offers can be saved",
+    )
   }
 
   const inserted = await db

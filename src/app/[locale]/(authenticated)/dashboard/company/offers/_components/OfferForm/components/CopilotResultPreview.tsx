@@ -9,12 +9,11 @@ import {
 import * as motion from "motion/react-client"
 
 import { CopilotSkillChips } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/CopilotSkillChips"
+import type { CopilotResult } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
 import { Button } from "@/components/ui/button"
 import { ease } from "@/lib/animations"
 import { INTERNSHIP_TYPE_LABELS } from "@/lib/constants/internship"
 import { getWilayaName } from "@/lib/wilayas"
-
-import type { CopilotResult } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
 
 const WORK_MODE_LABELS: Record<string, string> = {
   on_site: "On-site",

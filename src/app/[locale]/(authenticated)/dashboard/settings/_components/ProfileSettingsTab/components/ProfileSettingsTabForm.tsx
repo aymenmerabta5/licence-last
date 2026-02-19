@@ -1,17 +1,24 @@
 "use client"
 
 import { Fingerprint } from "lucide-react"
-
-import { ServerError } from "@/components/ServerError"
-import { SuccessMessage } from "@/components/SuccessMessage"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-
 import { AvatarSection } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/components/AvatarSection"
 import { FormActions } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/components/FormActions"
 import { PersonalInfoSection } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/components/PersonalInfoSection"
 import { StudentDetailsSection } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/components/StudentDetailsSection"
 import { useProfileSettings } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/hooks/useProfileSettings"
-import type { MeResult, StudentProfileResult } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/types"
+import type {
+  MeResult,
+  StudentProfileResult,
+} from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/types"
+import { ServerError } from "@/components/ServerError"
+import { SuccessMessage } from "@/components/SuccessMessage"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 interface ProfileSettingsTabFormProps {
   me: MeResult
@@ -74,7 +81,9 @@ export function ProfileSettingsTabForm({
           >
             <form.Subscribe selector={(state) => [state.values.name] as const}>
               {([name]) => {
-                const avatarInitial = (name.trim().charAt(0) || "A").toUpperCase()
+                const avatarInitial = (
+                  name.trim().charAt(0) || "A"
+                ).toUpperCase()
                 return (
                   <AvatarSection
                     avatarInitial={avatarInitial}

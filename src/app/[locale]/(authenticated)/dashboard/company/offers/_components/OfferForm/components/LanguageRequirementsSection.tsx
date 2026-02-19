@@ -1,12 +1,11 @@
 "use client"
 
-import { useMemo } from "react"
-import { useLocale, useTranslations } from "next-intl"
 import { Plus } from "lucide-react"
-
+import { useLocale, useTranslations } from "next-intl"
+import { useMemo } from "react"
+import { LanguageRequirementRow } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/LanguageRequirementRow"
 import { FormSection } from "@/components/form-fields"
 import { Button } from "@/components/ui/button"
-import { LanguageRequirementRow } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/LanguageRequirementRow"
 import {
   DEFAULT_OFFER_LANGUAGE_CODE,
   DEFAULT_OFFER_LANGUAGE_REQUIRED,
@@ -37,7 +36,15 @@ interface LanguageRequirementsField {
   handleChange: (value: LanguageRequirementValue[]) => void
 }
 
-const PROFICIENCY_LEVELS = ["a1", "a2", "b1", "b2", "c1", "c2", "native"] as const
+const PROFICIENCY_LEVELS = [
+  "a1",
+  "a2",
+  "b1",
+  "b2",
+  "c1",
+  "c2",
+  "native",
+] as const
 const WEIGHT_VALUES = [1, 2, 3, 4, 5] as const
 
 function resolveLanguageLocale(locale: string): SupportedLocale {
@@ -86,14 +93,17 @@ export function LanguageRequirementsSection({
 
   return (
     <FormSection title={t("languageRequirementsSection")} delay={0.22}>
-      <p className="text-xs text-muted-foreground">{t("languageRequirementsHint")}</p>
+      <p className="text-xs text-muted-foreground">
+        {t("languageRequirementsHint")}
+      </p>
 
       <form.Field name="languageRequirements">
         {(field: LanguageRequirementsField) => {
           const selectedLanguageCodes = field.state.value.map(
             (requirement) => requirement.languageCode,
           )
-          const canAddLanguage = field.state.value.length < LANGUAGE_CATALOG.length
+          const canAddLanguage =
+            field.state.value.length < LANGUAGE_CATALOG.length
 
           const addLanguageRequirement = () => {
             if (!canAddLanguage) return
@@ -116,7 +126,9 @@ export function LanguageRequirementsSection({
 
           const removeLanguageRequirement = (index: number) => {
             field.handleChange(
-              field.state.value.filter((_, currentIndex) => currentIndex !== index),
+              field.state.value.filter(
+                (_, currentIndex) => currentIndex !== index,
+              ),
             )
           }
 
@@ -138,7 +150,10 @@ export function LanguageRequirementsSection({
                       }),
                     )
                   }}
-                  onMinimumProficiencyChange={(currentIndex, minimumProficiency) => {
+                  onMinimumProficiencyChange={(
+                    currentIndex,
+                    minimumProficiency,
+                  ) => {
                     field.handleChange(
                       updateRequirement(field.state.value, currentIndex, {
                         minimumProficiency,

@@ -15,4 +15,3 @@ export interface UserTypeData {
   accentClass: string
   steps: WorkflowStepData[]
 }
-

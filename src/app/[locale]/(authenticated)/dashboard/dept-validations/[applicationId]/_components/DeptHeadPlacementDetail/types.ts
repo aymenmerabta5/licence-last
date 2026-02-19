@@ -5,4 +5,6 @@ export type DeptHeadPlacementApplication = NonNullable<
   ReturnType<typeof useDeptHeadPlacementData>["application"]
 >
 
-export type DeptHeadPlacementActions = ReturnType<typeof useDeptHeadPlacementActions>
+export type DeptHeadPlacementActions = ReturnType<
+  typeof useDeptHeadPlacementActions
+>

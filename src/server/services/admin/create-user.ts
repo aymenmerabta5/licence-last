@@ -7,7 +7,12 @@ interface CreateUserData {
   email: string
   password: string
   name: string
-  role: "student" | "company_admin" | "dept_head" | "university_admin" | "super_admin"
+  role:
+    | "student"
+    | "company_admin"
+    | "dept_head"
+    | "university_admin"
+    | "super_admin"
 }
 
 type RequestHeaders = Awaited<ReturnType<typeof headers>>
@@ -30,9 +35,15 @@ interface CreateUserAuthApi {
 type AuthApiGlobal = typeof globalThis & { __authApi?: CreateUserAuthApi }
 
 const getAuthApi = () => (globalThis as AuthApiGlobal).__authApi ?? auth.api
-type CreateUserDeps = { authApi?: CreateUserAuthApi; getHeaders?: typeof headers }
+type CreateUserDeps = {
+  authApi?: CreateUserAuthApi
+  getHeaders?: typeof headers
+}
 
-export async function createUser(data: CreateUserData, deps: CreateUserDeps = {}) {
+export async function createUser(
+  data: CreateUserData,
+  deps: CreateUserDeps = {},
+) {
   const api = deps.authApi ?? getAuthApi()
   const getHeaders = deps.getHeaders ?? headers
   const result = await api.createUser({

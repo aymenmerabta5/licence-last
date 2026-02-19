@@ -1,9 +1,9 @@
 "use client"
 
-import type { ReactNode } from "react"
+import { ArrowRight, Github, Instagram, Linkedin, Twitter } from "lucide-react"
 
 import { useTranslations } from "next-intl"
-import { ArrowRight, Github, Instagram, Linkedin, Twitter } from "lucide-react"
+import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -16,7 +16,10 @@ export function Footer() {
   const copyrightText = t("legal.copyright", { year })
 
   return (
-    <footer id="about" className="bg-background text-foreground border-t border-border py-14 lg:py-14 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
+    <footer
+      id="about"
+      className="bg-background text-foreground border-t border-border py-14 lg:py-14 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+    >
       <div className="mx-auto max-w-7xl px-8 lg:px-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
           {/* Brand Column */}
@@ -30,10 +33,26 @@ export function Footer() {
               {t("description")}
             </p>
             <div className="flex items-center gap-4 mt-2">
-              <SocialLink href="#" icon={<Twitter className="size-5" />} label={t("social.twitter")} />
-              <SocialLink href="#" icon={<Github className="size-5" />} label={t("social.github")} />
-              <SocialLink href="#" icon={<Linkedin className="size-5" />} label={t("social.linkedin")} />
-              <SocialLink href="#" icon={<Instagram className="size-5" />} label={t("social.instagram")} />
+              <SocialLink
+                href="#"
+                icon={<Twitter className="size-5" />}
+                label={t("social.twitter")}
+              />
+              <SocialLink
+                href="#"
+                icon={<Github className="size-5" />}
+                label={t("social.github")}
+              />
+              <SocialLink
+                href="#"
+                icon={<Linkedin className="size-5" />}
+                label={t("social.linkedin")}
+              />
+              <SocialLink
+                href="#"
+                icon={<Instagram className="size-5" />}
+                label={t("social.instagram")}
+              />
             </div>
           </div>
 
@@ -42,16 +61,24 @@ export function Footer() {
 
           {/* Links Columns */}
           <div className="lg:col-span-2 flex flex-col gap-4">
-            <h4 className="font-bold uppercase tracking-[0.15em] text-sm text-foreground">{t("sections.platform")}</h4>
+            <h4 className="font-bold uppercase tracking-[0.15em] text-sm text-foreground">
+              {t("sections.platform")}
+            </h4>
             <div className="flex flex-col gap-3">
               <FooterLink href="/discover">{t("links.discover")}</FooterLink>
-              <FooterLink href="/for-students">{t("links.forStudents")}</FooterLink>
-              <FooterLink href="/for-companies">{t("links.forCompanies")}</FooterLink>
+              <FooterLink href="/for-students">
+                {t("links.forStudents")}
+              </FooterLink>
+              <FooterLink href="/for-companies">
+                {t("links.forCompanies")}
+              </FooterLink>
             </div>
           </div>
 
           <div className="lg:col-span-2 flex flex-col gap-4">
-            <h4 className="font-bold uppercase tracking-[0.15em] text-sm text-foreground">{t("sections.company")}</h4>
+            <h4 className="font-bold uppercase tracking-[0.15em] text-sm text-foreground">
+              {t("sections.company")}
+            </h4>
             <div className="flex flex-col gap-3">
               <FooterLink href="/about">{t("links.aboutUs")}</FooterLink>
               <FooterLink href="/login">{t("links.signIn")}</FooterLink>
@@ -61,9 +88,16 @@ export function Footer() {
 
           {/* Newsletter Column */}
           <div className="lg:col-span-3 flex flex-col gap-4">
-            <h4 className="font-bold uppercase tracking-[0.15em] text-sm text-foreground">{t("sections.newsletter")}</h4>
-            <p className="text-muted-foreground text-sm">{t("newsletter.description")}</p>
-            <form className="flex flex-col gap-2 mt-2" onSubmit={(e) => e.preventDefault()}>
+            <h4 className="font-bold uppercase tracking-[0.15em] text-sm text-foreground">
+              {t("sections.newsletter")}
+            </h4>
+            <p className="text-muted-foreground text-sm">
+              {t("newsletter.description")}
+            </p>
+            <form
+              className="flex flex-col gap-2 mt-2"
+              onSubmit={(e) => e.preventDefault()}
+            >
               <div className="flex gap-2">
                 <Input
                   placeholder={t("newsletter.emailPlaceholder")}
@@ -85,9 +119,15 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-muted-foreground">
           <p>{copyrightText}</p>
           <div className="flex items-center gap-8">
-            <Link href="/" className="hover:text-foreground transition-colors">{t("legal.privacyPolicy")}</Link>
-            <Link href="/" className="hover:text-foreground transition-colors">{t("legal.termsOfService")}</Link>
-            <Link href="/" className="hover:text-foreground transition-colors">{t("legal.cookiePolicy")}</Link>
+            <Link href="/" className="hover:text-foreground transition-colors">
+              {t("legal.privacyPolicy")}
+            </Link>
+            <Link href="/" className="hover:text-foreground transition-colors">
+              {t("legal.termsOfService")}
+            </Link>
+            <Link href="/" className="hover:text-foreground transition-colors">
+              {t("legal.cookiePolicy")}
+            </Link>
           </div>
         </div>
       </div>
@@ -109,7 +149,15 @@ function FooterLink({ href, children }: { href: string; children: ReactNode }) {
   )
 }
 
-function SocialLink({ href, icon, label }: { href: string; icon: ReactNode; label: string }) {
+function SocialLink({
+  href,
+  icon,
+  label,
+}: {
+  href: string
+  icon: ReactNode
+  label: string
+}) {
   return (
     <a
       href={href}

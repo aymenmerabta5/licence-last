@@ -1,14 +1,11 @@
-import type { RefObject } from "react"
-
 import { Loader2 } from "lucide-react"
-
-import { formatDateTime } from "@/lib/date"
-import { cn } from "@/lib/utils"
-
+import type { RefObject } from "react"
 import type {
   MessageThread,
   ThreadMessage,
 } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
+import { formatDateTime } from "@/lib/date"
+import { cn } from "@/lib/utils"
 
 interface ConversationMessagesProps {
   selectedThread: MessageThread | null
@@ -47,11 +44,14 @@ export function ConversationMessages({
         </div>
       )}
 
-      {selectedThread && !isLoading && !errorMessage && messages.length === 0 && (
-        <div className="py-10 text-center text-sm text-muted-foreground">
-          No messages yet. Start the conversation.
-        </div>
-      )}
+      {selectedThread &&
+        !isLoading &&
+        !errorMessage &&
+        messages.length === 0 && (
+          <div className="py-10 text-center text-sm text-muted-foreground">
+            No messages yet. Start the conversation.
+          </div>
+        )}
 
       {selectedThread && !isLoading && !errorMessage && messages.length > 0 && (
         <div className="space-y-3">
@@ -61,7 +61,10 @@ export function ConversationMessages({
             return (
               <div
                 key={message.id}
-                className={cn("flex", isOwnMessage ? "justify-end" : "justify-start")}
+                className={cn(
+                  "flex",
+                  isOwnMessage ? "justify-end" : "justify-start",
+                )}
               >
                 <div
                   className={cn(

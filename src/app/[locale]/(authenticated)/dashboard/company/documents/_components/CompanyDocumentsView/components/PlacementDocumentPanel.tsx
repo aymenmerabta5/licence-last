@@ -1,5 +1,5 @@
-import type { ComponentProps } from "react"
 import { Download, Loader2 } from "lucide-react"
+import type { ComponentProps } from "react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"

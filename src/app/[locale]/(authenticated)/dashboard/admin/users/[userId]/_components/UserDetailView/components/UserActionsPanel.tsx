@@ -1,7 +1,7 @@
 "use client"
 
+import { Loader2, LogIn, ShieldBan, ShieldOff, XCircle } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { ShieldBan, ShieldOff, LogIn, XCircle, Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -43,7 +43,11 @@ export function UserActionsPanel({
           disabled={isImpersonatePending || isBanned}
           className="gap-2"
         >
-          {isImpersonatePending ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
+          {isImpersonatePending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <LogIn className="h-4 w-4" />
+          )}
           {t("actions.impersonate")}
         </Button>
 
@@ -55,7 +59,11 @@ export function UserActionsPanel({
             disabled={isUnbanPending}
             className="gap-2"
           >
-            {isUnbanPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldOff className="h-4 w-4" />}
+            {isUnbanPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <ShieldOff className="h-4 w-4" />
+            )}
             {t("actions.unban")}
           </Button>
         ) : (
@@ -66,7 +74,11 @@ export function UserActionsPanel({
             disabled={isBanPending}
             className="gap-2 text-destructive hover:text-destructive"
           >
-            {isBanPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldBan className="h-4 w-4" />}
+            {isBanPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <ShieldBan className="h-4 w-4" />
+            )}
             {t("actions.ban")}
           </Button>
         )}
@@ -78,7 +90,11 @@ export function UserActionsPanel({
           disabled={isRevokeAllPending}
           className="gap-2"
         >
-          {isRevokeAllPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <XCircle className="h-4 w-4" />}
+          {isRevokeAllPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <XCircle className="h-4 w-4" />
+          )}
           {t("actions.revokeAll")}
         </Button>
       </div>

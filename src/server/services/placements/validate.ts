@@ -1,16 +1,16 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/placements/validate")
+
 import { application } from "@/server/db/schema/applications"
-import { placement, placementDocument } from "@/server/db/schema/placements"
-import { internshipOffer } from "@/server/db/schema/internships"
-import { company, companyMember } from "@/server/db/schema/companies"
 import { user } from "@/server/db/schema/auth"
+import { company, companyMember } from "@/server/db/schema/companies"
+import { internshipOffer } from "@/server/db/schema/internships"
+import { placement, placementDocument } from "@/server/db/schema/placements"
 import { studentProfile } from "@/server/db/schema/students"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { ServiceError } from "@/server/services/errors"
@@ -94,7 +94,10 @@ export async function validatePlacement(
         "Department head department not set",
       )
     }
-    if (!app.studentDepartmentId || app.studentDepartmentId !== adminDepartmentId) {
+    if (
+      !app.studentDepartmentId ||
+      app.studentDepartmentId !== adminDepartmentId
+    ) {
       throw new ServiceError(
         "PLACEMENT_SCOPE_FORBIDDEN_DEPARTMENT",
         "You can only validate placements for students in your department",
@@ -102,7 +105,10 @@ export async function validatePlacement(
     }
   } else if (adminRole !== "super_admin") {
     if (!adminUniversityId) {
-      throw new ServiceError("ADMIN_UNIVERSITY_NOT_SET", "Admin university not set")
+      throw new ServiceError(
+        "ADMIN_UNIVERSITY_NOT_SET",
+        "Admin university not set",
+      )
     }
     if (!app.universityId || app.universityId !== adminUniversityId) {
       throw new ServiceError(
@@ -222,7 +228,10 @@ export async function validatePlacement(
     )
   }
 
-  log.info({ placementId, applicationId, event: "placement_validated" }, "Placement validated successfully")
+  log.info(
+    { placementId, applicationId, event: "placement_validated" },
+    "Placement validated successfully",
+  )
   return {
     success: true,
     placementId,

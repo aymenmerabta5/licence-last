@@ -3,7 +3,14 @@
 import type { LucideIcon } from "lucide-react"
 import * as motion from "motion/react-client"
 
-import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { ease, getRevealVariants, getTransition } from "@/lib/animations"
 
 interface HeroFeatureCardProps {

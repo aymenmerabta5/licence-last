@@ -1,9 +1,9 @@
 "use client"
 
+import { Briefcase, CheckCircle2, FileText, Users } from "lucide-react"
 import * as motion from "motion/react-client"
-import { Briefcase, Users, FileText, CheckCircle2 } from "lucide-react"
-import { cn } from "@/lib/utils"
 import { ease } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
 interface OffersPulseProps {
   activeOffers: number

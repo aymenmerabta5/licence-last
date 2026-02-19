@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
@@ -21,7 +21,7 @@ const mockLanguagesFrom = mock(() => ({ where: mockLanguagesWhere }))
 
 mock.module("@/server/db", () => ({
   db: {
-      select: () => {
+    select: () => {
       selectCallIdx++
       // Calls 1 & 2 = profile & user queries (with limit)
       // Call 3 = skills join query (no limit, returns from innerJoin.where)
@@ -91,7 +91,9 @@ describe("src/server/services/students/get-profile", () => {
     mockJoinWhere.mockResolvedValue(mockSkills)
     mockLanguagesWhere.mockResolvedValue([])
 
-    const { getStudentProfile } = await import("@/server/services/students/get-profile")
+    const { getStudentProfile } = await import(
+      "@/server/services/students/get-profile"
+    )
     const result = await getStudentProfile("user-1")
 
     expect(result).not.toBeNull()
@@ -108,7 +110,9 @@ describe("src/server/services/students/get-profile", () => {
       return Promise.resolve(results)
     })
 
-    const { getStudentProfile } = await import("@/server/services/students/get-profile")
+    const { getStudentProfile } = await import(
+      "@/server/services/students/get-profile"
+    )
     const result = await getStudentProfile("user-nonexistent")
 
     expect(result).toBeNull()

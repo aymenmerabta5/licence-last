@@ -68,7 +68,10 @@ function buildCards(stats: AdminStatsData) {
   ]
 }
 
-export function AdminStatsOverview({ stats, isLoading }: AdminStatsOverviewProps) {
+export function AdminStatsOverview({
+  stats,
+  isLoading,
+}: AdminStatsOverviewProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center gap-3 py-16">
@@ -102,7 +105,9 @@ export function AdminStatsOverview({ stats, isLoading }: AdminStatsOverviewProps
         ))}
       </div>
 
-      <ApplicationsBreakdownCard applicationsByStatus={stats.applicationsByStatus} />
+      <ApplicationsBreakdownCard
+        applicationsByStatus={stats.applicationsByStatus}
+      />
     </>
   )
 }

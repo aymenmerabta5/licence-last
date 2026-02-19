@@ -1,18 +1,19 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { useMemo, useState } from "react"
 import { toast } from "sonner"
-
-import { orpc, orpcClient } from "@/server/orpc/client"
-import type { CompanyStatus } from "@/lib/schemas/enums"
 import type { CompanyListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/types"
+import type { CompanyStatus } from "@/lib/schemas/enums"
+import { orpc, orpcClient } from "@/server/orpc/client"
 
 export function useCompanyValidation() {
   const t = useTranslations("dashboard.admin.companies")
   const queryClient = useQueryClient()
-  const [statusFilter, setStatusFilter] = useState<CompanyStatus | "all">("pending")
+  const [statusFilter, setStatusFilter] = useState<CompanyStatus | "all">(
+    "pending",
+  )
 
   const queryOptions = useMemo(
     () =>
@@ -37,8 +38,13 @@ export function useCompanyValidation() {
   })
 
   const rejectMutation = useMutation({
-    mutationFn: ({ companyId, reason }: { companyId: string; reason: string }) =>
-      orpcClient.companies.reject({ companyId, reason }),
+    mutationFn: ({
+      companyId,
+      reason,
+    }: {
+      companyId: string
+      reason: string
+    }) => orpcClient.companies.reject({ companyId, reason }),
     onSuccess: () => {
       toast.success(t("rejectSuccess"))
       queryClient.invalidateQueries({ queryKey: queryOptions.queryKey })

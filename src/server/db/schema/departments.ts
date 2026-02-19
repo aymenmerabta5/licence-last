@@ -1,14 +1,13 @@
 import {
+  index,
   pgTable,
+  primaryKey,
   text,
   timestamp,
-  index,
   uniqueIndex,
-  primaryKey,
 } from "drizzle-orm/pg-core"
-
-import { university } from "@/server/db/schema/universities"
 import { skillTag } from "@/server/db/schema/skills"
+import { university } from "@/server/db/schema/universities"
 
 export const department = pgTable(
   "department",

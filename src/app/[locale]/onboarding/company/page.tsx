@@ -1,8 +1,7 @@
 import { headers } from "next/headers"
-
+import { CompanyOnboardingForm } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm"
 import { auth } from "@/lib/auth"
 import { localeRedirect } from "@/lib/navigation"
-import { CompanyOnboardingForm } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm"
 
 export default async function CompanyOnboardingPage() {
   const session = await auth.api.getSession({

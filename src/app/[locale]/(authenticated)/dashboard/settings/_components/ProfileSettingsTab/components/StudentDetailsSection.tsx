@@ -1,14 +1,18 @@
 "use client"
 
-import { GraduationCap, Globe, MapPin, PenLine } from "lucide-react"
-
+import { Globe, GraduationCap, MapPin, PenLine } from "lucide-react"
+import { SkillsManager } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager"
 import { SelectField, TextAreaField, TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYA_OPTIONS_WITH_PLACEHOLDER } from "@/lib/wilayas"
 
-import { SkillsManager } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager"
-
-function SectionDivider({ icon: Icon, label }: { icon: React.ComponentType<{ className?: string }>; label: string }) {
+function SectionDivider({
+  icon: Icon,
+  label,
+}: {
+  icon: React.ComponentType<{ className?: string }>
+  label: string
+}) {
   return (
     <div className="flex items-center gap-3">
       <div className="h-px flex-1 bg-border/20" />

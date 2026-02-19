@@ -3,26 +3,25 @@
 import "server-only"
 
 import {
-  eq,
-  desc,
   and,
-  or,
+  desc,
+  eq,
+  gt,
   ilike,
   inArray,
-  lt,
-  sql,
   isNull,
-  gt,
+  lt,
+  or,
+  sql,
 } from "drizzle-orm"
-import { cacheTag, cacheLife } from "next/cache"
-
+import { cacheLife, cacheTag } from "next/cache"
+import { CACHE_TAGS } from "@/lib/cache"
+import { company } from "@/server/db/schema/companies"
 import {
   internshipOffer,
   internshipOfferSkill,
 } from "@/server/db/schema/internships"
-import { company } from "@/server/db/schema/companies"
 import { skillTag } from "@/server/db/schema/skills"
-import { CACHE_TAGS } from "@/lib/cache"
 
 interface SearchParams {
   keyword?: string
@@ -195,9 +194,10 @@ export async function searchOffers(params: SearchParams) {
   }
 
   const lastOffer = offers[offers.length - 1]
-  const nextCursor = hasMore && lastOffer
-    ? { createdAt: lastOffer.createdAt.toISOString(), id: lastOffer.id }
-    : undefined
+  const nextCursor =
+    hasMore && lastOffer
+      ? { createdAt: lastOffer.createdAt.toISOString(), id: lastOffer.id }
+      : undefined
 
   return {
     offers: offers.map((offer) => ({

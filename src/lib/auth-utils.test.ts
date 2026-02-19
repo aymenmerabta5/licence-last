@@ -1,5 +1,5 @@
-import { describe, test, expect } from "bun:test"
-import { getEmailDomain, domainCandidates } from "@/lib/auth-utils"
+import { describe, expect, test } from "bun:test"
+import { domainCandidates, getEmailDomain } from "@/lib/auth-utils"
 
 describe("getEmailDomain", () => {
   describe("valid emails", () => {
@@ -153,11 +153,17 @@ describe("domainCandidates", () => {
 
   describe("whitespace handling", () => {
     test("should trim whitespace from parts", () => {
-      expect(domainCandidates(" univ . edu . dz ")).toEqual(["univ.edu.dz", "edu.dz"])
+      expect(domainCandidates(" univ . edu . dz ")).toEqual([
+        "univ.edu.dz",
+        "edu.dz",
+      ])
     })
 
     test("should handle internal whitespace", () => {
-      expect(domainCandidates("univ. edu.dz")).toEqual(["univ.edu.dz", "edu.dz"])
+      expect(domainCandidates("univ. edu.dz")).toEqual([
+        "univ.edu.dz",
+        "edu.dz",
+      ])
     })
   })
 
@@ -172,7 +178,10 @@ describe("domainCandidates", () => {
     })
 
     test("should filter out empty parts from consecutive dots", () => {
-      expect(domainCandidates("univ..edu.dz")).toEqual(["univ.edu.dz", "edu.dz"])
+      expect(domainCandidates("univ..edu.dz")).toEqual([
+        "univ.edu.dz",
+        "edu.dz",
+      ])
     })
   })
 
@@ -208,7 +217,9 @@ describe("domainCandidates", () => {
 
   describe("edge cases", () => {
     test("should handle domain with hyphens", () => {
-      expect(domainCandidates("my-university.edu")).toEqual(["my-university.edu"])
+      expect(domainCandidates("my-university.edu")).toEqual([
+        "my-university.edu",
+      ])
     })
 
     test("should handle domain with numbers", () => {
@@ -255,4 +266,3 @@ describe("integration: email to domain candidates", () => {
     expect(candidates).toEqual(["cs.univ.edu.dz", "univ.edu.dz", "edu.dz"])
   })
 })
-

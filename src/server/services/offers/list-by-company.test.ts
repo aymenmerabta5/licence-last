@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelect = mock(() => ({}) as any)
@@ -82,7 +82,9 @@ describe("src/server/services/offers/list-by-company", () => {
   test("should return empty array for no offers", async () => {
     mockOrderBy.mockResolvedValue([])
 
-    const { listOffersByCompany } = await import("@/server/services/offers/list-by-company")
+    const { listOffersByCompany } = await import(
+      "@/server/services/offers/list-by-company"
+    )
 
     const result = await listOffersByCompany("company-1")
 
@@ -96,9 +98,27 @@ describe("src/server/services/offers/list-by-company", () => {
       { id: "offer-2", title: "Backend Intern", companyId: "company-1" },
     ])
     mockSkillWhere.mockResolvedValue([
-      { offerId: "offer-1", skillId: "s1", skillName: "React", skillSlug: "react", skillCategory: "frontend" },
-      { offerId: "offer-1", skillId: "s2", skillName: "TypeScript", skillSlug: "typescript", skillCategory: "languages" },
-      { offerId: "offer-2", skillId: "s3", skillName: "Node.js", skillSlug: "nodejs", skillCategory: "backend" },
+      {
+        offerId: "offer-1",
+        skillId: "s1",
+        skillName: "React",
+        skillSlug: "react",
+        skillCategory: "frontend",
+      },
+      {
+        offerId: "offer-1",
+        skillId: "s2",
+        skillName: "TypeScript",
+        skillSlug: "typescript",
+        skillCategory: "languages",
+      },
+      {
+        offerId: "offer-2",
+        skillId: "s3",
+        skillName: "Node.js",
+        skillSlug: "nodejs",
+        skillCategory: "backend",
+      },
     ])
     mockLanguageWhere.mockResolvedValue([])
     mockGroupBy.mockResolvedValue([
@@ -106,7 +126,9 @@ describe("src/server/services/offers/list-by-company", () => {
       { offerId: "offer-2", count: 1 },
     ])
 
-    const { listOffersByCompany } = await import("@/server/services/offers/list-by-company")
+    const { listOffersByCompany } = await import(
+      "@/server/services/offers/list-by-company"
+    )
 
     const result = await listOffersByCompany("company-1")
 

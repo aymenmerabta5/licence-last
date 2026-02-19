@@ -11,7 +11,12 @@ interface FormSectionProps {
   className?: string
 }
 
-export function FormSection({ title, children, delay = 0, className }: FormSectionProps) {
+export function FormSection({
+  title,
+  children,
+  delay = 0,
+  className,
+}: FormSectionProps) {
   return (
     <motion.div
       {...reveal}

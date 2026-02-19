@@ -50,7 +50,8 @@ export function MembersList({
     <div className="space-y-3">
       {members.map((member) => {
         const isCurrentUser = member.userId === currentUserId
-        const canRemove = canManageMembers && member.role !== "owner" && !isCurrentUser
+        const canRemove =
+          canManageMembers && member.role !== "owner" && !isCurrentUser
 
         return (
           <div

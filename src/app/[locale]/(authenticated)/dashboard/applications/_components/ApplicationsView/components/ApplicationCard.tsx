@@ -1,10 +1,9 @@
 "use client"
 
-import { useLocale, useTranslations } from "next-intl"
 import { Building2, Loader2, MapPin, X } from "lucide-react"
-
-import { Link } from "@/i18n/routing"
+import { useLocale, useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
+import { Link } from "@/i18n/routing"
 import { STATUS_COLORS } from "@/lib/constants/pipeline"
 
 interface ApplicationCardProps {

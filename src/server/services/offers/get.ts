@@ -1,18 +1,18 @@
 import "server-only"
 
-import { eq, and, ne, count, sql } from "drizzle-orm"
+import { and, count, eq, ne, sql } from "drizzle-orm"
 import { cacheLife, cacheTag } from "next/cache"
 
 import { CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
+import { application } from "@/server/db/schema/applications"
+import { company } from "@/server/db/schema/companies"
 import {
   internshipOffer,
   internshipOfferSkill,
 } from "@/server/db/schema/internships"
 import { internshipOfferLanguageRequirement } from "@/server/db/schema/languages"
-import { company } from "@/server/db/schema/companies"
 import { skillTag } from "@/server/db/schema/skills"
-import { application } from "@/server/db/schema/applications"
 
 /**
  * Get an internship offer by ID, with its skills, company info, and application count.
@@ -60,7 +60,9 @@ export async function getOfferById(offerId: string) {
       companyDescription: company.description,
       companyWilayaCode: company.wilayaCode,
       companyAddress: company.address,
-      applicationCount: sql<number | null>`COALESCE(${applicationCountSubquery.count}, 0)`,
+      applicationCount: sql<
+        number | null
+      >`COALESCE(${applicationCountSubquery.count}, 0)`,
     })
     .from(internshipOffer)
     .innerJoin(company, eq(internshipOffer.companyId, company.id))
@@ -87,8 +89,7 @@ export async function getOfferById(offerId: string) {
   const languageRequirements = await db
     .select({
       languageCode: internshipOfferLanguageRequirement.languageCode,
-      minimumProficiency:
-        internshipOfferLanguageRequirement.minimumProficiency,
+      minimumProficiency: internshipOfferLanguageRequirement.minimumProficiency,
       isRequired: internshipOfferLanguageRequirement.isRequired,
       weight: internshipOfferLanguageRequirement.weight,
     })

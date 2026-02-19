@@ -1,11 +1,10 @@
 import { Suspense } from "react"
-
-import { StudentDashboard } from "@/app/[locale]/(authenticated)/_components/StudentDashboard"
-import { RecruiterDashboard } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard"
 import { AdminDashboard } from "@/app/[locale]/(authenticated)/_components/AdminDashboard"
 import { DeptHeadDashboard } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard"
-import { Skeleton } from "@/components/ui/skeleton"
+import { RecruiterDashboard } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard"
+import { StudentDashboard } from "@/app/[locale]/(authenticated)/_components/StudentDashboard"
 import { DashboardContent } from "@/app/[locale]/(authenticated)/dashboard/_components/DashboardContent"
+import { Skeleton } from "@/components/ui/skeleton"
 
 // ============================================================================
 // FALLBACK UI COMPONENTS

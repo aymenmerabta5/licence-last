@@ -32,7 +32,9 @@ export function OfferCardActions({
       ) : (
         <>
           {showEdit && (
-            <Link href={`/dashboard/company/offers/${offerId}/edit` as "/dashboard"}>
+            <Link
+              href={`/dashboard/company/offers/${offerId}/edit` as "/dashboard"}
+            >
               <button
                 type="button"
                 title={t("actions.edit")}

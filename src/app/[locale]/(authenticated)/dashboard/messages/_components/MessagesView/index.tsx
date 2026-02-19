@@ -1,16 +1,14 @@
 "use client"
 
-import { useEffect, useMemo } from "react"
 import * as motion from "motion/react-client"
-
-import { revealWithDelay } from "@/lib/animations"
-
+import { useEffect, useMemo } from "react"
 import { ConversationPane } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/ConversationPane"
 import { MessagesHeader } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/MessagesHeader"
 import { ThreadListPane } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/ThreadListPane"
 import { useMessagesData } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/hooks/useMessagesData"
 import { useMessagesState } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/hooks/useMessagesState"
 import type { MessagesRole } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
+import { revealWithDelay } from "@/lib/animations"
 
 interface MessagesViewProps {
   role: MessagesRole
@@ -44,7 +42,10 @@ export function MessagesView({ role, currentUserId }: MessagesViewProps) {
       return
     }
 
-    if (!selectedThreadId || !threads.some((thread) => thread.id === selectedThreadId)) {
+    if (
+      !selectedThreadId ||
+      !threads.some((thread) => thread.id === selectedThreadId)
+    ) {
       selectThread(threads[0]?.id ?? null)
     }
   }, [selectedThreadId, selectThread, threads])

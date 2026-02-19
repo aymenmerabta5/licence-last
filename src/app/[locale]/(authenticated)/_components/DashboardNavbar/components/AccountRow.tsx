@@ -2,9 +2,8 @@
 
 import { Check, Loader2, X } from "lucide-react"
 import { useTranslations } from "next-intl"
-
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import type { DeviceSession } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 
 interface AccountRowProps {
   session: DeviceSession
@@ -35,8 +34,12 @@ export function AccountRow({
           {initial}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-heading truncate">{displayName}</p>
-          <p className="text-[10px] text-muted-foreground truncate">{user.role || "student"}</p>
+          <p className="text-xs font-semibold text-heading truncate">
+            {displayName}
+          </p>
+          <p className="text-[10px] text-muted-foreground truncate">
+            {user.role || "student"}
+          </p>
         </div>
         <span className="flex items-center gap-1 text-[10px] font-semibold text-primary uppercase tracking-wider shrink-0">
           <Check className="h-3 w-3" />
@@ -53,11 +56,19 @@ export function AccountRow({
       onClick={() => onSwitch(sess.token, displayName)}
     >
       <div className="h-8 w-8 rounded-full bg-secondary/60 flex items-center justify-center text-muted-foreground font-bold text-xs shrink-0">
-        {isSwitching ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : initial}
+        {isSwitching ? (
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        ) : (
+          initial
+        )}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-medium text-heading truncate">{displayName}</p>
-        <p className="text-[10px] text-muted-foreground truncate">{user.role || "student"}</p>
+        <p className="text-xs font-medium text-heading truncate">
+          {displayName}
+        </p>
+        <p className="text-[10px] text-muted-foreground truncate">
+          {user.role || "student"}
+        </p>
       </div>
       <button
         className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 p-1 rounded-md hover:bg-destructive/10 hover:text-destructive transition-all shrink-0"

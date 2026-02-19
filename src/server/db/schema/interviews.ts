@@ -1,4 +1,10 @@
-import { pgTable, text, timestamp, index, uniqueIndex } from "drizzle-orm/pg-core"
+import {
+  index,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core"
 
 import { application } from "@/server/db/schema/applications"
 import { user } from "@/server/db/schema/auth"
@@ -29,7 +35,9 @@ export const interview = pgTable(
       onDelete: "set null",
     }),
     confirmedSlotId: text("confirmed_slot_id"),
-    status: interviewStatusEnum("status").default("pending_confirmation").notNull(),
+    status: interviewStatusEnum("status")
+      .default("pending_confirmation")
+      .notNull(),
     note: text("note"),
     confirmedAt: timestamp("confirmed_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),

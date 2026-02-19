@@ -1,13 +1,13 @@
 "use client"
 
-import { User, Mail } from "lucide-react"
-
-import { TextField } from "@/components/form-fields"
-import { PasswordField } from "@/components/form-fields"
-import { CheckboxField } from "@/components/form-fields"
-import { errorMessage } from "@/lib/schemas/auth"
-
+import { Mail, User } from "lucide-react"
 import type { SignupFormApi } from "@/app/[locale]/(auth)/signup/_components/SignupForm/hooks/useSignupForm"
+import {
+  CheckboxField,
+  PasswordField,
+  TextField,
+} from "@/components/form-fields"
+import { errorMessage } from "@/lib/schemas/auth"
 
 interface SignupFieldsProps {
   form: SignupFormApi

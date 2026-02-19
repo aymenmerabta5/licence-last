@@ -1,10 +1,9 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { company } from "@/server/db/schema/companies"
+import { createModuleLogger } from "@/server/logging"
 import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/companies/suspend")
@@ -48,6 +47,9 @@ export async function suspendCompany(
     throw new ServiceError("COMPANY_NOT_FOUND", "Company not found")
   }
 
-  log.info({ companyId: updated.id, event: "company_suspended" }, "Company suspended")
+  log.info(
+    { companyId: updated.id, event: "company_suspended" },
+    "Company suspended",
+  )
   return { companyId: updated.id, name: updated.name }
 }

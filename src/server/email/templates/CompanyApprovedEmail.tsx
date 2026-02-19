@@ -1,4 +1,4 @@
-import { Button, Section, Text, Heading } from "@react-email/components"
+import { Button, Heading, Section, Text } from "@react-email/components"
 import EmailLayout from "@/server/email/templates/EmailLayout"
 
 interface CompanyApprovedEmailProps {

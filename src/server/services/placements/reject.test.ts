@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
@@ -121,7 +121,9 @@ describe("src/server/services/placements/reject", () => {
     ])
     mockSelectResults.push([{ userId: "member-1" }])
 
-    const { rejectPlacement } = await import("@/server/services/placements/reject")
+    const { rejectPlacement } = await import(
+      "@/server/services/placements/reject"
+    )
     const result = await rejectPlacement({
       applicationId: "app-1",
       adminUserId: "admin-1",

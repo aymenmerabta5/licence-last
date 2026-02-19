@@ -1,6 +1,9 @@
-import { pgTable, text, timestamp, integer, index } from "drizzle-orm/pg-core"
+import { index, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
-import { universityDomainStatusEnum, universityStatusEnum } from "@/server/db/schema/enums"
+import {
+  universityDomainStatusEnum,
+  universityStatusEnum,
+} from "@/server/db/schema/enums"
 
 export const university = pgTable(
   "university",

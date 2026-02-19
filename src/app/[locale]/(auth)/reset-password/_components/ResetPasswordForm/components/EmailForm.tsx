@@ -1,21 +1,24 @@
 "use client"
 
+import { AlertCircle, ArrowLeft, ArrowRight, Loader2, Mail } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Mail, AlertCircle, ArrowLeft, ArrowRight, Loader2 } from "lucide-react"
 import { type RefObject } from "react"
-import { Link } from "@/i18n/routing"
-import { errorMessage } from "@/lib/schemas/auth"
-import { reveal, ease } from "@/lib/animations"
-import { TurnstileWidget, type CaptchaHandle } from "@/components/TurnstileWidget"
+import type { ResetPasswordFormApi } from "@/app/[locale]/(auth)/reset-password/_components/ResetPasswordForm/hooks/useResetPassword"
+import {
+  type CaptchaHandle,
+  TurnstileWidget,
+} from "@/components/TurnstileWidget"
 import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group"
-import type { ResetPasswordFormApi } from "@/app/[locale]/(auth)/reset-password/_components/ResetPasswordForm/hooks/useResetPassword"
+import { Label } from "@/components/ui/label"
+import { Link } from "@/i18n/routing"
+import { ease, reveal } from "@/lib/animations"
+import { errorMessage } from "@/lib/schemas/auth"
 
 interface EmailFormProps {
   form: ResetPasswordFormApi
@@ -24,7 +27,12 @@ interface EmailFormProps {
   turnstileRef: RefObject<CaptchaHandle | null>
 }
 
-export function EmailForm({ form, serverError, setTurnstileToken, turnstileRef }: EmailFormProps) {
+export function EmailForm({
+  form,
+  serverError,
+  setTurnstileToken,
+  turnstileRef,
+}: EmailFormProps) {
   const t = useTranslations("auth.resetPassword")
 
   return (
@@ -57,10 +65,7 @@ export function EmailForm({ form, serverError, setTurnstileToken, turnstileRef }
       )}
 
       {/* Email Field */}
-      <motion.div
-        {...reveal}
-        transition={{ duration: 0.6, ease, delay: 0.1 }}
-      >
+      <motion.div {...reveal} transition={{ duration: 0.6, ease, delay: 0.1 }}>
         <form.Field name="email">
           {(field) => (
             <div className="space-y-2">
@@ -104,13 +109,8 @@ export function EmailForm({ form, serverError, setTurnstileToken, turnstileRef }
       />
 
       {/* Submit Button */}
-      <motion.div
-        {...reveal}
-        transition={{ duration: 0.6, ease, delay: 0.15 }}
-      >
-        <form.Subscribe
-          selector={(state) => [state.isSubmitting] as const}
-        >
+      <motion.div {...reveal} transition={{ duration: 0.6, ease, delay: 0.15 }}>
+        <form.Subscribe selector={(state) => [state.isSubmitting] as const}>
           {([isSubmitting]) => (
             <Button
               type="submit"
@@ -133,10 +133,7 @@ export function EmailForm({ form, serverError, setTurnstileToken, turnstileRef }
       </motion.div>
 
       {/* Back to Login */}
-      <motion.div
-        {...reveal}
-        transition={{ duration: 0.6, ease, delay: 0.2 }}
-      >
+      <motion.div {...reveal} transition={{ duration: 0.6, ease, delay: 0.2 }}>
         <Link
           href="/login"
           className="inline-flex items-center gap-2 text-sm font-bold text-heading hover:text-primary transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] uppercase tracking-wide group [[dir=rtl]_&]:tracking-normal"

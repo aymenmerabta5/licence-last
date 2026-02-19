@@ -1,4 +1,4 @@
-import type { Variants, Transition } from "motion"
+import type { Transition, Variants } from "motion"
 
 /**
  * Standard reveal animation for form elements and content blocks.

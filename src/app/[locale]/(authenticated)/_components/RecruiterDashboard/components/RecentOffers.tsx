@@ -1,12 +1,12 @@
 "use client"
 
+import { ArrowRight, Briefcase, Users } from "lucide-react"
 import * as motion from "motion/react-client"
-import { Users, ArrowRight, Briefcase } from "lucide-react"
-import { Link } from "@/i18n/routing"
-import { cn } from "@/lib/utils"
-import { ease } from "@/lib/animations"
-import { Badge } from "@/components/ui/badge"
 import type { Route } from "next"
+import { Badge } from "@/components/ui/badge"
+import { Link } from "@/i18n/routing"
+import { ease } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
 interface Offer {
   id: string
@@ -17,16 +17,21 @@ interface Offer {
   createdAt: Date
 }
 
-const STATUS_STYLES: Record<string, { label: string; accent: string; badge: string }> = {
+const STATUS_STYLES: Record<
+  string,
+  { label: string; accent: string; badge: string }
+> = {
   published: {
     label: "Live",
     accent: "border-s-emerald-500",
-    badge: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    badge:
+      "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
   },
   draft: {
     label: "Draft",
     accent: "border-s-amber-500",
-    badge: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+    badge:
+      "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
   },
   closed: {
     label: "Closed",
@@ -96,9 +101,7 @@ export function RecentOffers({ offers }: RecentOffersProps) {
           return (
             <Link
               key={offer.id}
-              href={
-                `/dashboard/company/offers/${offer.id}/candidates` as Route
-              }
+              href={`/dashboard/company/offers/${offer.id}/candidates` as Route}
             >
               <motion.div
                 initial={{ opacity: 0, x: -8 }}

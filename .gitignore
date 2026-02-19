@@ -50,3 +50,5 @@ phases
 .agent/mcp/
 playwright-report
 test-results
+tmp-biome-schema.json
+.tmp-biome-schema.json

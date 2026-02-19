@@ -1,4 +1,9 @@
-export const INTERNSHIP_TYPES = ["pfe", "immersion", "summer", "practical"] as const
+export const INTERNSHIP_TYPES = [
+  "pfe",
+  "immersion",
+  "summer",
+  "practical",
+] as const
 export const WORK_MODES = ["on_site", "hybrid", "remote"] as const
 
 export const TYPE_DOT: Record<string, string> = {
@@ -7,4 +12,3 @@ export const TYPE_DOT: Record<string, string> = {
   summer: "bg-amber-500",
   practical: "bg-emerald-500",
 }
-

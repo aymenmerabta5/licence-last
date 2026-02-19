@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockLimit = mock<() => Promise<any[]>>(() => Promise.resolve([]))
@@ -69,7 +69,9 @@ describe("src/server/services/applications/list-by-student", () => {
       },
     ])
 
-    const { listApplicationsByStudent } = await import("@/server/services/applications/list-by-student")
+    const { listApplicationsByStudent } = await import(
+      "@/server/services/applications/list-by-student"
+    )
     const result = await listApplicationsByStudent("student-1", { limit: 1 })
 
     expect(result.applications).toHaveLength(1)

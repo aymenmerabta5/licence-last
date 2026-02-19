@@ -1,15 +1,16 @@
 "use client"
 
+import { CheckCircle2, Shield, TrendingUp } from "lucide-react"
 import * as motion from "motion/react-client"
-import { Shield, TrendingUp, CheckCircle2 } from "lucide-react"
-
-import { cn } from "@/lib/utils"
-import { ease } from "@/lib/animations"
-
 import type { TrustData } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/types"
+import { ease } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
 const TIER_COLORS: Record<string, { text: string; bar: string }> = {
-  excellent: { text: "text-emerald-600 dark:text-emerald-400", bar: "bg-emerald-500" },
+  excellent: {
+    text: "text-emerald-600 dark:text-emerald-400",
+    bar: "bg-emerald-500",
+  },
   good: { text: "text-blue-600 dark:text-blue-400", bar: "bg-blue-500" },
   watch: { text: "text-amber-600 dark:text-amber-400", bar: "bg-amber-500" },
   low: { text: "text-rose-600 dark:text-rose-400", bar: "bg-rose-500" },
@@ -43,7 +44,9 @@ export function TrustBanner({ data }: TrustBannerProps) {
               <span className="font-serif text-2xl font-bold text-heading leading-none tabular-nums">
                 {data.trustScore}
               </span>
-              <span className="text-[10px] font-bold text-primary/60">/100</span>
+              <span className="text-[10px] font-bold text-primary/60">
+                /100
+              </span>
             </div>
           </div>
         </div>
@@ -51,7 +54,12 @@ export function TrustBanner({ data }: TrustBannerProps) {
         {/* Animated bar */}
         <div className="flex-1 min-w-[120px] space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className={cn("text-[10px] font-bold uppercase tracking-wider", colors.text)}>
+            <span
+              className={cn(
+                "text-[10px] font-bold uppercase tracking-wider",
+                colors.text,
+              )}
+            >
               {data.tier}
             </span>
           </div>
@@ -70,14 +78,18 @@ export function TrustBanner({ data }: TrustBannerProps) {
           <div className="flex items-center gap-1.5 text-muted-foreground/60">
             <TrendingUp className="h-3 w-3" />
             <span className="text-[11px]">
-              <span className="font-bold text-heading tabular-nums">{data.factors.responseRate}%</span>{" "}
+              <span className="font-bold text-heading tabular-nums">
+                {data.factors.responseRate}%
+              </span>{" "}
               response
             </span>
           </div>
           <div className="flex items-center gap-1.5 text-muted-foreground/60">
             <CheckCircle2 className="h-3 w-3" />
             <span className="text-[11px]">
-              <span className="font-bold text-heading tabular-nums">{data.factors.completionRate}%</span>{" "}
+              <span className="font-bold text-heading tabular-nums">
+                {data.factors.completionRate}%
+              </span>{" "}
               completion
             </span>
           </div>

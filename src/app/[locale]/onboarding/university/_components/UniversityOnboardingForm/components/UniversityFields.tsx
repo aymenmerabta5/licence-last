@@ -1,10 +1,10 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Landmark, Phone } from "lucide-react"
+import { useTranslations } from "next-intl"
+import type { UniversityOnboardingFormApi } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/hooks/useUniversityOnboarding"
 import { TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
-import type { UniversityOnboardingFormApi } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/hooks/useUniversityOnboarding"
 
 interface UniversityFieldsProps {
   form: UniversityOnboardingFormApi

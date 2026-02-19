@@ -1,41 +1,40 @@
+import type { LucideIcon } from "lucide-react"
+import {
+  ArrowRight,
+  Bot,
+  Building2,
+  FileCheck,
+  Megaphone,
+  ShieldCheck,
+  UserCheck,
+  Users,
+  Zap,
+} from "lucide-react"
 import * as motion from "motion/react-client"
+import { Metadata } from "next"
 import { useTranslations } from "next-intl"
 import { getTranslations, setRequestLocale } from "next-intl/server"
-import {
-  Users,
-  Bot,
-  ShieldCheck,
-  FileCheck,
-  Building2,
-  Megaphone,
-  UserCheck,
-  Zap,
-  ArrowRight,
-} from "lucide-react"
-import type { LucideIcon } from "lucide-react"
-
-import { Navbar } from "@/components/Navbar"
+import { MarqueeRibbon } from "@/app/[locale]/_components/MarqueeRibbon"
 import { Footer } from "@/components/Footer"
+import { Navbar } from "@/components/Navbar"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Link } from "@/i18n/routing"
-import { reveal, ease } from "@/lib/animations"
-import { MarqueeRibbon } from "@/app/[locale]/_components/MarqueeRibbon"
-import { Metadata } from "next"
+import { ease, reveal } from "@/lib/animations"
 
 type Params = Promise<{ locale: string }>
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Params
+}): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: "pages.forCompanies" })
   return { title: t("metadata.title"), description: t("metadata.description") }
 }
 
-export default async function ForCompaniesPage({
-  params,
-}: {
-  params: Params
-}) {
+export default async function ForCompaniesPage({ params }: { params: Params }) {
   const { locale } = await params
   setRequestLocale(locale)
   return (
@@ -288,9 +287,7 @@ function ForCompaniesContent() {
                 className="py-8 px-6 text-center"
                 style={{
                   borderInlineEnd:
-                    i < stats.length - 1
-                      ? "1px solid var(--border)"
-                      : "none",
+                    i < stats.length - 1 ? "1px solid var(--border)" : "none",
                 }}
               >
                 <div className="font-serif text-4xl mb-1 text-heading">

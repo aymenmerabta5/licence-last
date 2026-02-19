@@ -14,13 +14,13 @@
  * getInitials(null) // "?"
  */
 export function getInitials(name: string | null | undefined): string {
-  if (!name) return "?";
+  if (!name) return "?"
   return name
     .split(" ")
     .map((part) => part[0])
     .join("")
     .toUpperCase()
-    .slice(0, 2);
+    .slice(0, 2)
 }
 
 /**
@@ -30,5 +30,5 @@ export function getInitials(name: string | null | undefined): string {
  * formatPrice(1000, "DZD") // "1,000 DZD"
  */
 export function formatPrice(amount: number, currency: string): string {
-  return `${amount.toLocaleString()} ${currency}`;
+  return `${amount.toLocaleString()} ${currency}`
 }

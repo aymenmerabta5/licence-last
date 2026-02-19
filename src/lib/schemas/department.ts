@@ -11,4 +11,6 @@ export const bulkCreateDepartmentsSchema = z.object({
 })
 
 export type BulkDepartmentRow = z.infer<typeof bulkDepartmentRowSchema>
-export type BulkCreateDepartmentsInput = z.infer<typeof bulkCreateDepartmentsSchema>
+export type BulkCreateDepartmentsInput = z.infer<
+  typeof bulkCreateDepartmentsSchema
+>

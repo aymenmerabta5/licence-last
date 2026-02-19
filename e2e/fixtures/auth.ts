@@ -18,7 +18,10 @@ async function loginWithCredentials(
   password: string,
 ): Promise<void> {
   await page.goto("/en/login")
-  await page.waitForSelector("#login-email", { state: "visible", timeout: 15000 })
+  await page.waitForSelector("#login-email", {
+    state: "visible",
+    timeout: 15000,
+  })
 
   await page.fill("#login-email", email)
   await page.fill("#login-password", password)
@@ -35,7 +38,7 @@ async function loginWithCredentials(
  */
 export async function createAuthenticatedSession(
   page: Page,
-  role: UserRole
+  role: UserRole,
 ): Promise<void> {
   switch (role) {
     case "student":
@@ -81,11 +84,7 @@ export async function loginAsCompany(page: Page): Promise<void> {
  * Uses test credentials from seeded data
  */
 export async function loginAsAdmin(page: Page): Promise<void> {
-  await loginWithCredentials(
-    page,
-    "test.admin@example.com",
-    "TestPassword123!",
-  )
+  await loginWithCredentials(page, "test.admin@example.com", "TestPassword123!")
 }
 
 /**

@@ -1,13 +1,11 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Loader2 } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import type { useTwoFactorSetup } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings/hooks/useTwoFactorSetup"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
-import type { useTwoFactorSetup } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings/hooks/useTwoFactorSetup"
 
 type SetupState = ReturnType<typeof useTwoFactorSetup>
 
@@ -49,9 +47,7 @@ export function DisableConfirm({ state }: DisableConfirmProps) {
         />
       </div>
 
-      {state.error && (
-        <p className="text-xs text-destructive">{state.error}</p>
-      )}
+      {state.error && <p className="text-xs text-destructive">{state.error}</p>}
 
       <div className="flex gap-2">
         <Button

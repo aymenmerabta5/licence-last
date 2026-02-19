@@ -69,4 +69,3 @@ describe("src/server/services/assistant/utils extractTextFromParts", () => {
     expect(extractTextFromParts(parts)).toBe("Hello world")
   })
 })
-

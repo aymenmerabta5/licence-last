@@ -23,4 +23,3 @@ export function FilterSection({ label, count, children }: FilterSectionProps) {
     </div>
   )
 }
-

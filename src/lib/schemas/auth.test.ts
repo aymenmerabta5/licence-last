@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 
 import {
   createLoginSchema,
@@ -35,7 +35,10 @@ describe("src/lib/schemas/auth", () => {
   describe("createLoginSchema", () => {
     test("should accept valid email + non-empty password", () => {
       const schema = createLoginSchema(t)
-      const result = schema.safeParse({ email: "user@example.com", password: "pw" })
+      const result = schema.safeParse({
+        email: "user@example.com",
+        password: "pw",
+      })
       expect(result.success).toBe(true)
     })
 
@@ -45,8 +48,12 @@ describe("src/lib/schemas/auth", () => {
       expect(result.success).toBe(false)
 
       if (!result.success) {
-        const emailIssue = result.error.issues.find((i) => i.path[0] === "email")
-        const passwordIssue = result.error.issues.find((i) => i.path[0] === "password")
+        const emailIssue = result.error.issues.find(
+          (i) => i.path[0] === "email",
+        )
+        const passwordIssue = result.error.issues.find(
+          (i) => i.path[0] === "password",
+        )
 
         expect(emailIssue?.message).toBe("t:emailInvalid")
         expect(passwordIssue?.message).toBe("t:passwordRequired")
@@ -92,8 +99,12 @@ describe("src/lib/schemas/auth", () => {
 
       if (!result.success) {
         const nameIssue = result.error.issues.find((i) => i.path[0] === "name")
-        const emailIssue = result.error.issues.find((i) => i.path[0] === "email")
-        const passwordIssue = result.error.issues.find((i) => i.path[0] === "password")
+        const emailIssue = result.error.issues.find(
+          (i) => i.path[0] === "email",
+        )
+        const passwordIssue = result.error.issues.find(
+          (i) => i.path[0] === "password",
+        )
         const confirmIssue = result.error.issues.find(
           (i) => i.path[0] === "confirmPassword",
         )
@@ -119,10 +130,11 @@ describe("src/lib/schemas/auth", () => {
       expect(result.success).toBe(false)
 
       if (!result.success) {
-        const emailIssue = result.error.issues.find((i) => i.path[0] === "email")
+        const emailIssue = result.error.issues.find(
+          (i) => i.path[0] === "email",
+        )
         expect(emailIssue?.message).toBe("t:emailInvalid")
       }
     })
   })
 })
-

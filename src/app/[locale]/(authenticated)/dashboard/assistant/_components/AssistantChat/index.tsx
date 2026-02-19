@@ -1,17 +1,15 @@
-"use client";
+"use client"
 
-import { useTranslations } from "next-intl";
-
-import { Card } from "@/components/ui/card";
-
-import { ConversationSidebar } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ConversationSidebar";
-import { ConversationThread } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ConversationThread";
-import { AssistantHeader } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/AssistantHeader";
-import { ChatHeader } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ChatHeader";
-import { useChatSession } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/hooks/useChatSession";
+import { useTranslations } from "next-intl"
+import { AssistantHeader } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/AssistantHeader"
+import { ChatHeader } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ChatHeader"
+import { ConversationSidebar } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ConversationSidebar"
+import { ConversationThread } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ConversationThread"
+import { useChatSession } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/hooks/useChatSession"
+import { Card } from "@/components/ui/card"
 
 export function AssistantChat() {
-  const t = useTranslations("dashboard.assistant");
+  const t = useTranslations("dashboard.assistant")
 
   const {
     conversations,
@@ -29,7 +27,7 @@ export function AssistantChat() {
     handleUpdateModel,
     handleUpdateTitle,
     handleAppendNote,
-  } = useChatSession();
+  } = useChatSession()
 
   return (
     <div
@@ -82,5 +80,5 @@ export function AssistantChat() {
         </Card>
       </div>
     </div>
-  );
+  )
 }

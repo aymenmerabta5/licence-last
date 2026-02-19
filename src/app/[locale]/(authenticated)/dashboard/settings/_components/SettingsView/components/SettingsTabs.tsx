@@ -1,5 +1,5 @@
-import { Bell, Globe, Lock, User } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
+import { Bell, Globe, Lock, User } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface Tab {
@@ -12,8 +12,18 @@ interface Tab {
 const TABS: Tab[] = [
   { id: "profile", label: "Profile", hint: "Identity & details", icon: User },
   { id: "account", label: "Security", hint: "Password & 2FA", icon: Lock },
-  { id: "notifications", label: "Notifications", hint: "Email & alerts", icon: Bell },
-  { id: "preferences", label: "Preferences", hint: "Theme & display", icon: Globe },
+  {
+    id: "notifications",
+    label: "Notifications",
+    hint: "Email & alerts",
+    icon: Bell,
+  },
+  {
+    id: "preferences",
+    label: "Preferences",
+    hint: "Theme & display",
+    icon: Globe,
+  },
 ]
 
 interface SettingsTabsProps {
@@ -53,7 +63,9 @@ export function SettingsTabs({ activeTab, onTabChange }: SettingsTabsProps) {
                 <span
                   className={cn(
                     "block text-sm font-bold leading-tight transition-colors",
-                    isActive ? "text-heading" : "text-muted-foreground group-hover:text-foreground",
+                    isActive
+                      ? "text-heading"
+                      : "text-muted-foreground group-hover:text-foreground",
                   )}
                 >
                   {tab.label}

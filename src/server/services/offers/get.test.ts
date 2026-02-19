@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // Mock results for executed queries (not subquery builders)
 // Index 0: Main query results (offer + company + count)

@@ -1,7 +1,7 @@
 "use client"
 
-import { useMemo, useState, useCallback } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useCallback, useMemo, useState } from "react"
 
 import { useSkillGrouping } from "@/hooks"
 import { orpc } from "@/server/orpc/client"
@@ -47,7 +47,8 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
     return allSkills.filter((s) => s.name.toLowerCase().includes(q))
   }, [allSkills, query])
 
-  const { groups, categoryOrder, categoryLabels } = useSkillGrouping(filteredSkills)
+  const { groups, categoryOrder, categoryLabels } =
+    useSkillGrouping(filteredSkills)
 
   const syncMutation = useMutation(
     orpc.departments.syncSkills.mutationOptions({
@@ -56,8 +57,8 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
           predicate: (query) =>
             query.queryKey.some(
               (segment) =>
-                typeof segment === "string"
-                && segment.toLowerCase().includes("departments"),
+                typeof segment === "string" &&
+                segment.toLowerCase().includes("departments"),
             ),
         })
         setDraftOverride(null)

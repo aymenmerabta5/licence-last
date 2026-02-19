@@ -10,7 +10,11 @@ interface PlacementDetailPageProps {
 
 function PlacementDetailFallback() {
   return (
-    <div className="max-w-4xl mx-auto space-y-8" aria-busy="true" aria-live="polite">
+    <div
+      className="max-w-4xl mx-auto space-y-8"
+      aria-busy="true"
+      aria-live="polite"
+    >
       <div className="space-y-3">
         <Skeleton className="h-4 w-44" />
         <Skeleton className="h-10 w-72" />

@@ -12,13 +12,20 @@ interface CandidatesPipelinePageProps {
   t: CandidatesDashboardTranslations
 }
 
-export function CandidatesPipelinePage({ offers, t }: CandidatesPipelinePageProps) {
-  const offersWithCandidates = offers.filter((offer) => offer.candidatesCount > 0)
+export function CandidatesPipelinePage({
+  offers,
+  t,
+}: CandidatesPipelinePageProps) {
+  const offersWithCandidates = offers.filter(
+    (offer) => offer.candidatesCount > 0,
+  )
   const totalCandidates = offersWithCandidates.reduce(
     (sum, offer) => sum + offer.candidatesCount,
     0,
   )
-  const activeOffersCount = offers.filter((offer) => offer.status === "published").length
+  const activeOffersCount = offers.filter(
+    (offer) => offer.status === "published",
+  ).length
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">

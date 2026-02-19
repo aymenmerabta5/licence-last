@@ -31,7 +31,9 @@ export async function getUniversityDashboardStats(
     db
       .select({ value: count() })
       .from(user)
-      .where(and(eq(user.role, "student"), eq(user.universityId, universityId))),
+      .where(
+        and(eq(user.role, "student"), eq(user.universityId, universityId)),
+      ),
     db
       .select({ value: count() })
       .from(department)
@@ -39,7 +41,9 @@ export async function getUniversityDashboardStats(
     db
       .select({ value: count() })
       .from(user)
-      .where(and(eq(user.role, "dept_head"), eq(user.universityId, universityId))),
+      .where(
+        and(eq(user.role, "dept_head"), eq(user.universityId, universityId)),
+      ),
     db
       .select({ value: count() })
       .from(application)

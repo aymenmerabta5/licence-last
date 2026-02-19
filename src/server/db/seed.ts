@@ -1,16 +1,14 @@
 import { randomUUID } from "node:crypto"
-
-import { eq } from "drizzle-orm"
-import postgres from "postgres"
-import { drizzle } from "drizzle-orm/postgres-js"
 import { hashPassword } from "better-auth/crypto"
-
-import { logger } from "@/server/logging/logger"
+import { eq } from "drizzle-orm"
+import { drizzle } from "drizzle-orm/postgres-js"
+import postgres from "postgres"
 import * as schema from "@/server/db/schema"
-import { university, universityDomain } from "@/server/db/schema/universities"
-import { user, account } from "@/server/db/schema/auth"
-import { skillTag } from "@/server/db/schema/skills"
+import { account, user } from "@/server/db/schema/auth"
 import { department, departmentSkill } from "@/server/db/schema/departments"
+import { skillTag } from "@/server/db/schema/skills"
+import { university, universityDomain } from "@/server/db/schema/universities"
+import { logger } from "@/server/logging/logger"
 
 /**
  * Parse a comma-separated string of domains into an array of normalized domains.
@@ -249,108 +247,260 @@ async function seedSkillTags(db: ReturnType<typeof drizzle>) {
 const SEED_DEPARTMENTS: Record<string, string[]> = {
   "Computer Science": [
     // Frontend
-    "React", "Angular", "Vue.js", "HTML/CSS", "TypeScript", "JavaScript", "Tailwind CSS",
+    "React",
+    "Angular",
+    "Vue.js",
+    "HTML/CSS",
+    "TypeScript",
+    "JavaScript",
+    "Tailwind CSS",
     // Backend
-    "Node.js", "Express", "Django", "Flask", "Spring Boot", "Laravel", "FastAPI",
+    "Node.js",
+    "Express",
+    "Django",
+    "Flask",
+    "Spring Boot",
+    "Laravel",
+    "FastAPI",
     // Languages
-    "Python", "Java", "C/C++", "PHP", "Go", "Rust", "C#",
+    "Python",
+    "Java",
+    "C/C++",
+    "PHP",
+    "Go",
+    "Rust",
+    "C#",
     // Database
-    "PostgreSQL", "MySQL", "MongoDB", "Redis", "SQLite",
+    "PostgreSQL",
+    "MySQL",
+    "MongoDB",
+    "Redis",
+    "SQLite",
     // DevOps
-    "Docker", "Kubernetes", "Git", "CI/CD", "Linux", "AWS",
+    "Docker",
+    "Kubernetes",
+    "Git",
+    "CI/CD",
+    "Linux",
+    "AWS",
     // Mobile
-    "React Native", "Flutter", "Swift", "Kotlin",
+    "React Native",
+    "Flutter",
+    "Swift",
+    "Kotlin",
     // Data & AI
-    "Machine Learning", "Data Science", "TensorFlow", "PyTorch",
+    "Machine Learning",
+    "Data Science",
+    "TensorFlow",
+    "PyTorch",
     // Software Engineering
-    "REST API", "GraphQL", "Microservices", "Agile/Scrum",
+    "REST API",
+    "GraphQL",
+    "Microservices",
+    "Agile/Scrum",
     // General
-    "Project Management", "Technical Writing", "Git",
+    "Project Management",
+    "Technical Writing",
+    "Git",
   ],
-  "Mathematics": [
-    "Python", "R", "MATLAB", "Statistical Analysis", "LaTeX", "Numerical Methods",
-    "Machine Learning", "Data Science", "TensorFlow", "PyTorch",
-    "PostgreSQL", "SQLite", "Data Visualization",
-    "Research Methods", "Scientific Writing", "Technical Writing",
+  Mathematics: [
+    "Python",
+    "R",
+    "MATLAB",
+    "Statistical Analysis",
+    "LaTeX",
+    "Numerical Methods",
+    "Machine Learning",
+    "Data Science",
+    "TensorFlow",
+    "PyTorch",
+    "PostgreSQL",
+    "SQLite",
+    "Data Visualization",
+    "Research Methods",
+    "Scientific Writing",
+    "Technical Writing",
   ],
-  "Physics": [
-    "Python", "C/C++", "MATLAB", "LaTeX", "Numerical Methods",
-    "Data Science", "Data Visualization", "Statistical Analysis",
-    "Lab Techniques", "Research Methods", "Scientific Writing",
-    "Signal Processing", "Linux",
+  Physics: [
+    "Python",
+    "C/C++",
+    "MATLAB",
+    "LaTeX",
+    "Numerical Methods",
+    "Data Science",
+    "Data Visualization",
+    "Statistical Analysis",
+    "Lab Techniques",
+    "Research Methods",
+    "Scientific Writing",
+    "Signal Processing",
+    "Linux",
   ],
-  "Chemistry": [
-    "Python", "R", "MATLAB", "LaTeX",
-    "Lab Techniques", "Research Methods", "Scientific Writing",
-    "Data Visualization", "Statistical Analysis",
-    "Microsoft Office", "Technical Writing",
+  Chemistry: [
+    "Python",
+    "R",
+    "MATLAB",
+    "LaTeX",
+    "Lab Techniques",
+    "Research Methods",
+    "Scientific Writing",
+    "Data Visualization",
+    "Statistical Analysis",
+    "Microsoft Office",
+    "Technical Writing",
   ],
-  "Biology": [
-    "Python", "R", "MATLAB", "LaTeX",
-    "Lab Techniques", "Research Methods", "Scientific Writing",
-    "Data Science", "Data Visualization", "Statistical Analysis",
-    "Microsoft Office", "Technical Writing",
+  Biology: [
+    "Python",
+    "R",
+    "MATLAB",
+    "LaTeX",
+    "Lab Techniques",
+    "Research Methods",
+    "Scientific Writing",
+    "Data Science",
+    "Data Visualization",
+    "Statistical Analysis",
+    "Microsoft Office",
+    "Technical Writing",
   ],
-  "Electronics": [
-    "C/C++", "Python", "MATLAB",
-    "Arduino", "Embedded Systems", "VHDL/Verilog", "PCB Design", "Signal Processing", "IoT",
-    "Linux", "Git",
-    "Lab Techniques", "Research Methods", "Technical Writing",
-    "AutoCAD", "3D Modeling",
+  Electronics: [
+    "C/C++",
+    "Python",
+    "MATLAB",
+    "Arduino",
+    "Embedded Systems",
+    "VHDL/Verilog",
+    "PCB Design",
+    "Signal Processing",
+    "IoT",
+    "Linux",
+    "Git",
+    "Lab Techniques",
+    "Research Methods",
+    "Technical Writing",
+    "AutoCAD",
+    "3D Modeling",
   ],
-  "Law": [
-    "Legal Research", "Contract Drafting", "Compliance", "Legal Writing",
-    "Research Methods", "Critical Thinking",
-    "Microsoft Office", "Communication", "Project Management",
-    "Content Writing", "Editing",
+  Law: [
+    "Legal Research",
+    "Contract Drafting",
+    "Compliance",
+    "Legal Writing",
+    "Research Methods",
+    "Critical Thinking",
+    "Microsoft Office",
+    "Communication",
+    "Project Management",
+    "Content Writing",
+    "Editing",
   ],
-  "Economics": [
-    "Python", "R", "Excel/VBA",
-    "Financial Analysis", "Econometrics", "Accounting", "Business Intelligence", "Tableau",
-    "Statistical Analysis", "Data Visualization", "Data Science",
-    "Microsoft Office", "Project Management", "Communication",
+  Economics: [
+    "Python",
+    "R",
+    "Excel/VBA",
+    "Financial Analysis",
+    "Econometrics",
+    "Accounting",
+    "Business Intelligence",
+    "Tableau",
+    "Statistical Analysis",
+    "Data Visualization",
+    "Data Science",
+    "Microsoft Office",
+    "Project Management",
+    "Communication",
   ],
-  "Literature": [
-    "Content Writing", "Editing", "Publishing", "Translation",
-    "Digital Humanities", "Research Methods",
-    "Microsoft Office", "Communication", "Critical Thinking",
+  Literature: [
+    "Content Writing",
+    "Editing",
+    "Publishing",
+    "Translation",
+    "Digital Humanities",
+    "Research Methods",
+    "Microsoft Office",
+    "Communication",
+    "Critical Thinking",
     "LaTeX",
   ],
   "Foreign Languages": [
-    "Translation", "Localization", "Content Writing", "Editing",
-    "Communication", "Digital Humanities",
-    "Microsoft Office", "Publishing",
-    "Critical Thinking", "Research Methods",
+    "Translation",
+    "Localization",
+    "Content Writing",
+    "Editing",
+    "Communication",
+    "Digital Humanities",
+    "Microsoft Office",
+    "Publishing",
+    "Critical Thinking",
+    "Research Methods",
   ],
-  "History": [
-    "Research Methods", "Digital Humanities", "Scientific Writing",
-    "Data Visualization", "Content Writing", "Editing",
-    "Microsoft Office", "Communication", "Critical Thinking",
+  History: [
+    "Research Methods",
+    "Digital Humanities",
+    "Scientific Writing",
+    "Data Visualization",
+    "Content Writing",
+    "Editing",
+    "Microsoft Office",
+    "Communication",
+    "Critical Thinking",
     "LaTeX",
   ],
   "Political Science": [
-    "Research Methods", "Data Visualization", "Statistical Analysis",
-    "Content Writing", "Critical Thinking", "Communication",
-    "Microsoft Office", "Project Management",
-    "Python", "R", "Excel/VBA",
+    "Research Methods",
+    "Data Visualization",
+    "Statistical Analysis",
+    "Content Writing",
+    "Critical Thinking",
+    "Communication",
+    "Microsoft Office",
+    "Project Management",
+    "Python",
+    "R",
+    "Excel/VBA",
   ],
   "Civil Engineering": [
-    "AutoCAD", "BIM/Revit", "Structural Analysis", "GIS", "3D Modeling",
-    "MATLAB", "Python", "C/C++",
-    "FEA/CFD Simulation", "Project Management",
-    "Microsoft Office", "Technical Writing", "LaTeX",
+    "AutoCAD",
+    "BIM/Revit",
+    "Structural Analysis",
+    "GIS",
+    "3D Modeling",
+    "MATLAB",
+    "Python",
+    "C/C++",
+    "FEA/CFD Simulation",
+    "Project Management",
+    "Microsoft Office",
+    "Technical Writing",
+    "LaTeX",
   ],
   "Mechanical Engineering": [
-    "SolidWorks", "AutoCAD", "3D Modeling", "FEA/CFD Simulation", "Thermodynamics",
-    "MATLAB", "Python", "C/C++",
-    "Embedded Systems", "Arduino",
-    "Project Management", "Technical Writing", "LaTeX",
+    "SolidWorks",
+    "AutoCAD",
+    "3D Modeling",
+    "FEA/CFD Simulation",
+    "Thermodynamics",
+    "MATLAB",
+    "Python",
+    "C/C++",
+    "Embedded Systems",
+    "Arduino",
+    "Project Management",
+    "Technical Writing",
+    "LaTeX",
   ],
-  "Architecture": [
-    "AutoCAD", "SketchUp", "BIM/Revit", "3D Modeling",
-    "Adobe Creative Suite", "Architectural Design", "Urban Planning",
-    "GIS", "Project Management",
-    "Microsoft Office", "Communication",
+  Architecture: [
+    "AutoCAD",
+    "SketchUp",
+    "BIM/Revit",
+    "3D Modeling",
+    "Adobe Creative Suite",
+    "Architectural Design",
+    "Urban Planning",
+    "GIS",
+    "Project Management",
+    "Microsoft Office",
+    "Communication",
   ],
 }
 
@@ -362,7 +512,10 @@ async function seedDepartments(db: ReturnType<typeof drizzle>) {
     .limit(1)
 
   if (!uni) {
-    logger.warn({ event: "department_seed_skipped", reason: "university not found" })
+    logger.warn({
+      event: "department_seed_skipped",
+      reason: "university not found",
+    })
     return
   }
 
@@ -407,7 +560,12 @@ async function seedDepartmentSkills(db: ReturnType<typeof drizzle>) {
     for (const skillName of uniqueSkillNames) {
       const skillId = skillByName.get(skillName)
       if (!skillId) {
-        logger.warn({ event: "department_skill_skip", deptName, skillName, reason: "skill not found" })
+        logger.warn({
+          event: "department_skill_skip",
+          deptName,
+          skillName,
+          reason: "skill not found",
+        })
         continue
       }
 
@@ -468,7 +626,11 @@ async function seedSuperAdmin(db: ReturnType<typeof drizzle>) {
     password: hashedPassword,
   })
 
-  logger.info({ event: "admin_seeded", email: SEED_SUPER_ADMIN.email, role: "super_admin" })
+  logger.info({
+    event: "admin_seeded",
+    email: SEED_SUPER_ADMIN.email,
+    role: "super_admin",
+  })
 }
 
 async function main() {

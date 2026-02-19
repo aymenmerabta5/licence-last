@@ -1,8 +1,7 @@
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
-
 import type { InterviewStatus } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 import { getInterviewStatusLabel } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/utils"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 
 interface InterviewStatusBadgeProps {
   status: InterviewStatus
@@ -18,7 +17,10 @@ export function InterviewStatusBadge({ status }: InterviewStatusBadgeProps) {
   return (
     <Badge
       variant="outline"
-      className={cn("text-[10px] uppercase tracking-[0.08em]", STATUS_STYLES[status])}
+      className={cn(
+        "text-[10px] uppercase tracking-[0.08em]",
+        STATUS_STYLES[status],
+      )}
     >
       {getInterviewStatusLabel(status)}
     </Badge>

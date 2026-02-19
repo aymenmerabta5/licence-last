@@ -21,7 +21,10 @@ export function getStringArray(value: unknown): string[] {
   return value.map(getString).filter((v): v is string => Boolean(v))
 }
 
-export function getStringProp(obj: Record<string, unknown> | null, key: string): string | null {
+export function getStringProp(
+  obj: Record<string, unknown> | null,
+  key: string,
+): string | null {
   if (!obj) return null
   return getString(obj[key])
 }

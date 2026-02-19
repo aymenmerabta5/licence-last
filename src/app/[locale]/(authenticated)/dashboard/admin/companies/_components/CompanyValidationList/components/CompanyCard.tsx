@@ -1,21 +1,13 @@
 "use client"
 
-import { useTranslations } from "next-intl"
+import { Building2, Calendar, Globe, Mail, MapPin, User } from "lucide-react"
 import Image from "next/image"
-import {
-  MapPin,
-  Building2,
-  Globe,
-  User,
-  Calendar,
-  Mail,
-} from "lucide-react"
-
-import { Badge } from "@/components/ui/badge"
+import { useTranslations } from "next-intl"
 import { CompanyCardActions } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyCardActions"
-import { getWilayaName } from "@/lib/wilayas"
 import { CompanyInfoField } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyInfoField"
 import type { CompanyListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/types"
+import { Badge } from "@/components/ui/badge"
+import { getWilayaName } from "@/lib/wilayas"
 
 const STATUS_STYLES: Record<string, string> = {
   pending: "bg-amber-500/10 text-amber-600",
@@ -95,7 +87,10 @@ export function CompanyCard({
             <CompanyInfoField
               icon={MapPin}
               label={t("card.location")}
-              value={getWilayaName(company.wilayaCode) ?? `Wilaya ${company.wilayaCode}`}
+              value={
+                getWilayaName(company.wilayaCode) ??
+                `Wilaya ${company.wilayaCode}`
+              }
             />
           )}
           {company.websiteUrl && (

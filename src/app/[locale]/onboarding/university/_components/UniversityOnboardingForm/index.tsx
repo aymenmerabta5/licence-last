@@ -1,20 +1,18 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { ArrowRight, Loader2 } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
-import { Button } from "@/components/ui/button"
-import { ServerError } from "@/components/ServerError"
+import { DepartmentFields } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/components/DepartmentFields"
+import { DomainFields } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/components/DomainFields"
+import { LocationFields } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/components/LocationFields"
+import { UniversityFields } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/components/UniversityFields"
+import { useUniversityOnboarding } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/hooks/useUniversityOnboarding"
 import { FormHeader } from "@/components/FormHeader"
 import { FormSection } from "@/components/form-fields"
-import { reveal, ease } from "@/lib/animations"
-
-import { useUniversityOnboarding } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/hooks/useUniversityOnboarding"
-import { UniversityFields } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/components/UniversityFields"
-import { LocationFields } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/components/LocationFields"
-import { DomainFields } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/components/DomainFields"
-import { DepartmentFields } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/components/DepartmentFields"
+import { ServerError } from "@/components/ServerError"
+import { Button } from "@/components/ui/button"
+import { ease, reveal } from "@/lib/animations"
 
 export function UniversityOnboardingForm() {
   const t = useTranslations("onboarding.university")

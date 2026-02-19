@@ -73,13 +73,12 @@ describe("src/server/services/companies/invite-member", () => {
   })
 
   test("creates a new account and sends reset link when email does not exist", async () => {
-    selectResponses = [
-      [{ id: "company-1", name: "Acme" }],
-      [],
-    ]
+    selectResponses = [[{ id: "company-1", name: "Acme" }], []]
 
-    // @ts-expect-error - Bun's ?fresh suffix is test-runtime only.
-    const { inviteCompanyMember } = await import("@/server/services/companies/invite-member?fresh=1")
+    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
+    const { inviteCompanyMember } = await import(
+      "@/server/services/companies/invite-member?fresh=1"
+    )
     const result = await inviteCompanyMember({
       companyId: "company-1",
       invitedByUserId: "owner-1",
@@ -117,8 +116,10 @@ describe("src/server/services/companies/invite-member", () => {
       [{ companyId: "company-1", role: "recruiter" }],
     ]
 
-    // @ts-expect-error - Bun's ?fresh suffix is test-runtime only.
-    const { inviteCompanyMember } = await import("@/server/services/companies/invite-member?fresh=2")
+    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
+    const { inviteCompanyMember } = await import(
+      "@/server/services/companies/invite-member?fresh=2"
+    )
     const result = await inviteCompanyMember({
       companyId: "company-1",
       invitedByUserId: "owner-1",
@@ -149,8 +150,10 @@ describe("src/server/services/companies/invite-member", () => {
       [{ companyId: "company-2", role: "owner" }],
     ]
 
-    // @ts-expect-error - Bun's ?fresh suffix is test-runtime only.
-    const { inviteCompanyMember } = await import("@/server/services/companies/invite-member?fresh=3")
+    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
+    const { inviteCompanyMember } = await import(
+      "@/server/services/companies/invite-member?fresh=3"
+    )
 
     await expect(
       inviteCompanyMember({
@@ -177,8 +180,10 @@ describe("src/server/services/companies/invite-member", () => {
       ],
     ]
 
-    // @ts-expect-error - Bun's ?fresh suffix is test-runtime only.
-    const { inviteCompanyMember } = await import("@/server/services/companies/invite-member?fresh=4")
+    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
+    const { inviteCompanyMember } = await import(
+      "@/server/services/companies/invite-member?fresh=4"
+    )
 
     await expect(
       inviteCompanyMember({
@@ -195,3 +200,4 @@ describe("src/server/services/companies/invite-member", () => {
     mock.restore()
   })
 })
+

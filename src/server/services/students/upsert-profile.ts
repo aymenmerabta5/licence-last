@@ -1,16 +1,16 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/students/upsert-profile")
-import { studentProfile, studentSkill } from "@/server/db/schema/students"
-import { studentLanguage } from "@/server/db/schema/languages"
-import type { ProficiencyLevel } from "@/lib/schemas/enums"
+
 import { normalizeLanguageEntries } from "@/lib/constants/languages"
+import type { ProficiencyLevel } from "@/lib/schemas/enums"
 import { user } from "@/server/db/schema/auth"
+import { studentLanguage } from "@/server/db/schema/languages"
+import { studentProfile, studentSkill } from "@/server/db/schema/students"
 import { validateSkillTagIds } from "@/server/services/skills/validate"
 
 interface StudentLanguageInput {
@@ -35,7 +35,10 @@ export async function upsertStudentProfile(
   userId: string,
   languages?: StudentLanguageInput[],
 ) {
-  log.info({ userId, skillCount: skillTagIds.length }, "Upserting student profile")
+  log.info(
+    { userId, skillCount: skillTagIds.length },
+    "Upserting student profile",
+  )
 
   if (skillTagIds.length > 10) {
     throw new Error("A maximum of 10 skills is allowed")
@@ -59,7 +62,9 @@ export async function upsertStudentProfile(
       userId,
       bio: data.bio !== undefined ? data.bio || null : (existing?.bio ?? null),
       phone:
-        data.phone !== undefined ? data.phone || null : (existing?.phone ?? null),
+        data.phone !== undefined
+          ? data.phone || null
+          : (existing?.phone ?? null),
       githubUrl:
         data.githubUrl !== undefined
           ? data.githubUrl || null
@@ -80,13 +85,18 @@ export async function upsertStudentProfile(
         data.departmentId !== undefined
           ? data.departmentId || null
           : (existing?.departmentId ?? null),
-      level: data.level !== undefined ? data.level || null : (existing?.level ?? null),
+      level:
+        data.level !== undefined
+          ? data.level || null
+          : (existing?.level ?? null),
       wilayaCode:
         data.wilayaCode !== undefined
           ? data.wilayaCode || null
           : (existing?.wilayaCode ?? null),
       address:
-        data.address !== undefined ? data.address || null : (existing?.address ?? null),
+        data.address !== undefined
+          ? data.address || null
+          : (existing?.address ?? null),
     }
 
     await tx
@@ -120,9 +130,7 @@ export async function upsertStudentProfile(
         },
       })
 
-    await tx
-      .delete(studentSkill)
-      .where(eq(studentSkill.userId, userId))
+    await tx.delete(studentSkill).where(eq(studentSkill.userId, userId))
 
     if (skillTagIds.length > 0) {
       await tx.insert(studentSkill).values(
@@ -134,9 +142,7 @@ export async function upsertStudentProfile(
     }
 
     if (normalizedLanguages !== undefined) {
-      await tx
-        .delete(studentLanguage)
-        .where(eq(studentLanguage.userId, userId))
+      await tx.delete(studentLanguage).where(eq(studentLanguage.userId, userId))
 
       if (normalizedLanguages.length > 0) {
         await tx.insert(studentLanguage).values(
@@ -155,6 +161,9 @@ export async function upsertStudentProfile(
       .where(eq(user.id, userId))
   })
 
-  log.info({ userId, event: "student_profile_upserted" }, "Student profile upserted")
+  log.info(
+    { userId, event: "student_profile_upserted" },
+    "Student profile upserted",
+  )
   return { userId }
 }

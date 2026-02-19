@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const mockValues = mock(() => Promise.resolve())
 const mockInsert = mock(() => ({ values: mockValues }))
@@ -27,7 +27,9 @@ describe("createDepartment", () => {
   })
 
   test("should return departmentId", async () => {
-    const { createDepartment } = await import("@/server/services/departments/create")
+    const { createDepartment } = await import(
+      "@/server/services/departments/create"
+    )
     const result = await createDepartment({
       universityId: "uni-1",
       name: "Computer Science",
@@ -37,7 +39,9 @@ describe("createDepartment", () => {
   })
 
   test("should call insert with trimmed name", async () => {
-    const { createDepartment } = await import("@/server/services/departments/create")
+    const { createDepartment } = await import(
+      "@/server/services/departments/create"
+    )
     await createDepartment({
       universityId: "uni-1",
       name: "  Computer Science  ",
@@ -46,7 +50,9 @@ describe("createDepartment", () => {
   })
 
   test("should handle optional headName", async () => {
-    const { createDepartment } = await import("@/server/services/departments/create")
+    const { createDepartment } = await import(
+      "@/server/services/departments/create"
+    )
     const result = await createDepartment({
       universityId: "uni-1",
       name: "CS",
@@ -56,7 +62,9 @@ describe("createDepartment", () => {
   })
 
   test("should call insert exactly once", async () => {
-    const { createDepartment } = await import("@/server/services/departments/create")
+    const { createDepartment } = await import(
+      "@/server/services/departments/create"
+    )
     await createDepartment({ universityId: "uni-1", name: "Math" })
     expect(mockInsert).toHaveBeenCalledTimes(1)
     expect(mockValues).toHaveBeenCalledTimes(1)
@@ -64,7 +72,9 @@ describe("createDepartment", () => {
 
   test("should throw if department already exists", async () => {
     mockFindFirst.mockResolvedValue({ id: "existing-id", name: "CS" })
-    const { createDepartment } = await import("@/server/services/departments/create")
+    const { createDepartment } = await import(
+      "@/server/services/departments/create"
+    )
     expect(
       createDepartment({ universityId: "uni-1", name: "CS" }),
     ).rejects.toThrow("Department with this name already exists")

@@ -1,15 +1,14 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { Loader2, RefreshCw } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
-import { Button } from "@/components/ui/button"
-import { ease, reveal, revealWithDelay } from "@/lib/animations"
 import { PlacementDocumentCard } from "@/app/[locale]/(authenticated)/dashboard/student/documents/_components/DocumentsView/components/PlacementDocumentCard"
 import { QualityFeedbackDialog } from "@/app/[locale]/(authenticated)/dashboard/student/documents/_components/DocumentsView/components/QualityFeedbackDialog"
-import { useDocuments } from "@/app/[locale]/(authenticated)/dashboard/student/documents/_components/DocumentsView/hooks/useDocuments"
 import { useCompanyFeedback } from "@/app/[locale]/(authenticated)/dashboard/student/documents/_components/DocumentsView/hooks/useCompanyFeedback"
+import { useDocuments } from "@/app/[locale]/(authenticated)/dashboard/student/documents/_components/DocumentsView/hooks/useDocuments"
+import { Button } from "@/components/ui/button"
+import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
 export function DocumentsView() {
   const t = useTranslations("dashboard.documents")

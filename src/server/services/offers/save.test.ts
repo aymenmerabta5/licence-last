@@ -79,7 +79,9 @@ describe("src/server/services/offers/save", () => {
 
     const { saveOffer } = await import("@/server/services/offers/save")
 
-    await expect(saveOffer("missing", "student-1")).rejects.toThrow("Offer not found")
+    await expect(saveOffer("missing", "student-1")).rejects.toThrow(
+      "Offer not found",
+    )
   })
 
   test("throws when offer is not published", async () => {

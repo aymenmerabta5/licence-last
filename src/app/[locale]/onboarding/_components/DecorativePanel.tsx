@@ -1,7 +1,7 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { ArrowLeft, Sparkles } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 
 import {
@@ -26,9 +26,15 @@ function DotSeparator({
       className="flex items-center gap-4"
       aria-hidden="true"
     >
-      <span className="h-px bg-current opacity-20" style={{ width: lineWidth }} />
+      <span
+        className="h-px bg-current opacity-20"
+        style={{ width: lineWidth }}
+      />
       <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-      <span className="h-px bg-current opacity-20" style={{ width: lineWidth }} />
+      <span
+        className="h-px bg-current opacity-20"
+        style={{ width: lineWidth }}
+      />
     </motion.div>
   )
 }
@@ -42,21 +48,34 @@ export function DecorativePanel() {
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-linear-to-br from-accent via-accent to-muted text-accent-foreground transition-colors duration-500 dark:from-accent dark:via-accent dark:to-card">
-      <div className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100" aria-hidden="true">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100"
+        aria-hidden="true"
+      >
         <div className="absolute -top-24 -start-24 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
         <div className="absolute -bottom-32 start-1/2 h-104 w-104 -translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
         <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-background/20" />
       </div>
 
       <GrainTextureOverlay />
-      <GridPatternOverlay patternId={patternId} opacityClass={config.patternOpacity} size={40} />
+      <GridPatternOverlay
+        patternId={patternId}
+        opacityClass={config.patternOpacity}
+        size={40}
+      />
 
       <div
         className="pointer-events-none absolute inset-0 ring-1 ring-border/35 dark:ring-border/60"
         aria-hidden="true"
       />
-      <div className="pointer-events-none absolute -top-20 -end-20 h-80 w-80 rounded-full border border-border/35" aria-hidden="true" />
-      <div className="pointer-events-none absolute -bottom-32 -start-32 h-96 w-96 rounded-full border border-border/25" aria-hidden="true" />
+      <div
+        className="pointer-events-none absolute -top-20 -end-20 h-80 w-80 rounded-full border border-border/35"
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute -bottom-32 -start-32 h-96 w-96 rounded-full border border-border/25"
+        aria-hidden="true"
+      />
 
       <Link
         href="/"
@@ -110,20 +129,22 @@ export function DecorativePanel() {
           transition={{ duration: 0.7, ease, delay: 0.65 }}
           className="mt-10 w-full max-w-[300px] space-y-4 text-start"
         >
-          {(["panelFeature1", "panelFeature2", "panelFeature3"] as const).map((key, i) => (
-            <motion.div
-              key={key}
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, ease, delay: 0.7 + i * 0.08 }}
-              className="flex items-start gap-3"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
-              <span className="text-xs leading-relaxed tracking-wide text-muted-foreground/85">
-                {tRole(key)}
-              </span>
-            </motion.div>
-          ))}
+          {(["panelFeature1", "panelFeature2", "panelFeature3"] as const).map(
+            (key, i) => (
+              <motion.div
+                key={key}
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, ease, delay: 0.7 + i * 0.08 }}
+                className="flex items-start gap-3"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
+                <span className="text-xs leading-relaxed tracking-wide text-muted-foreground/85">
+                  {tRole(key)}
+                </span>
+              </motion.div>
+            ),
+          )}
         </motion.div>
 
         <motion.span
@@ -152,7 +173,11 @@ export function MobileHeroBanner() {
       className="relative mb-8 overflow-hidden rounded-2xl border border-border/60 bg-linear-to-br from-accent via-accent to-muted p-6 text-accent-foreground shadow-sm transition-colors duration-500 dark:border-border/80 dark:from-accent dark:via-accent dark:to-card"
     >
       <GrainTextureOverlay />
-      <GridPatternOverlay patternId={mobilePatternId} opacityClass={config.patternOpacity} size={34} />
+      <GridPatternOverlay
+        patternId={mobilePatternId}
+        opacityClass={config.patternOpacity}
+        size={34}
+      />
 
       <div
         className="pointer-events-none absolute inset-0 bg-linear-to-b from-primary/8 via-transparent to-transparent dark:from-primary/12"

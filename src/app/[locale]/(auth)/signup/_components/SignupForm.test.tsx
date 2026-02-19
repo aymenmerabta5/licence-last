@@ -1,35 +1,41 @@
-import { describe, test, expect, beforeEach, afterEach, mock } from "bun:test"
-import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react"
+import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react"
 import { StudentSignupForm } from "@/app/[locale]/(auth)/signup/_components/SignupForm/StudentSignupForm"
 
 // Mock next-intl
 mock.module("next-intl", () => ({
   useTranslations: () => (key: string) => {
     const translations: Record<string, string> = {
-      "title": "Create Account",
-      "subtitle": "Sign up for a new account",
-      "name": "Full Name",
-      "namePlaceholder": "John Doe",
-      "email": "Email",
-      "emailPlaceholder": "you@university.edu",
-      "password": "Password",
-      "passwordPlaceholder": "Create a password",
-      "passwordHint": "Must be at least 8 characters",
-      "confirmPassword": "Confirm Password",
-      "confirmPasswordPlaceholder": "Confirm your password",
-      "agreeToTerms": "I agree to the",
-      "terms": "Terms of Service",
-      "and": "and",
-      "privacy": "Privacy Policy",
-      "submit": "Create Account",
-      "or": "Or",
-      "hasAccount": "Already have an account?",
-      "signIn": "Sign In",
-      "error": "An error occurred. Please try again.",
-      "verifyTitle": "Verify your email",
-      "verifyDescription": "Check your email to complete registration",
-      "backToLogin": "Back to login",
-      "back": "Back",
+      title: "Create Account",
+      subtitle: "Sign up for a new account",
+      name: "Full Name",
+      namePlaceholder: "John Doe",
+      email: "Email",
+      emailPlaceholder: "you@university.edu",
+      password: "Password",
+      passwordPlaceholder: "Create a password",
+      passwordHint: "Must be at least 8 characters",
+      confirmPassword: "Confirm Password",
+      confirmPasswordPlaceholder: "Confirm your password",
+      agreeToTerms: "I agree to the",
+      terms: "Terms of Service",
+      and: "and",
+      privacy: "Privacy Policy",
+      submit: "Create Account",
+      or: "Or",
+      hasAccount: "Already have an account?",
+      signIn: "Sign In",
+      error: "An error occurred. Please try again.",
+      verifyTitle: "Verify your email",
+      verifyDescription: "Check your email to complete registration",
+      backToLogin: "Back to login",
+      back: "Back",
     }
     return translations[key] || key
   },
@@ -38,22 +44,37 @@ mock.module("next-intl", () => ({
 // Mock auth validation
 mock.module("@/lib/schemas/auth", () => ({
   createSignupSchema: () => ({
-    safeParse: (data: { name: string; email: string; password: string; confirmPassword: string; agreeToTerms: boolean }) => {
+    safeParse: (data: {
+      name: string
+      email: string
+      password: string
+      confirmPassword: string
+      agreeToTerms: boolean
+    }) => {
       const issues: Array<{ path: (string | number)[]; message: string }> = []
-      
+
       if (!data.name || data.name.length < 2) {
-        issues.push({ path: ["name"], message: "Name must be at least 2 characters" })
+        issues.push({
+          path: ["name"],
+          message: "Name must be at least 2 characters",
+        })
       }
       if (!data.email || !data.email.includes("@")) {
         issues.push({ path: ["email"], message: "Invalid email" })
       }
       if (!data.password || data.password.length < 8) {
-        issues.push({ path: ["password"], message: "Password must be at least 8 characters" })
+        issues.push({
+          path: ["password"],
+          message: "Password must be at least 8 characters",
+        })
       }
       if (!data.confirmPassword) {
-        issues.push({ path: ["confirmPassword"], message: "Please confirm your password" })
+        issues.push({
+          path: ["confirmPassword"],
+          message: "Please confirm your password",
+        })
       }
-      
+
       if (issues.length > 0) {
         return { success: false, error: { issues } }
       }
@@ -70,9 +91,11 @@ mock.module("@/lib/schemas/auth", () => ({
 }))
 
 // Mock auth client
-const mockSignUp = mock<(data: Record<string, unknown>) => Promise<{ error: Record<string, unknown> | null }>>(() =>
-  Promise.resolve({ error: null })
-)
+const mockSignUp = mock<
+  (
+    data: Record<string, unknown>,
+  ) => Promise<{ error: Record<string, unknown> | null }>
+>(() => Promise.resolve({ error: null }))
 
 mock.module("@/lib/auth-client", () => ({
   authClient: {
@@ -114,13 +137,17 @@ describe("StudentSignupForm", () => {
     test("should render form elements", () => {
       render(<StudentSignupForm onBack={() => {}} />)
 
-      expect(screen.getByRole("heading", { name: "Create Account" })).toBeDefined()
+      expect(
+        screen.getByRole("heading", { name: "Create Account" }),
+      ).toBeDefined()
       expect(screen.getByText("Sign up for a new account")).toBeDefined()
       expect(screen.getByLabelText("Full Name")).toBeDefined()
       expect(screen.getByLabelText("Email")).toBeDefined()
       expect(screen.getByLabelText("Password")).toBeDefined()
       expect(screen.getByLabelText("Confirm Password")).toBeDefined()
-      expect(screen.getByRole("button", { name: /Create Account/i })).toBeDefined()
+      expect(
+        screen.getByRole("button", { name: /Create Account/i }),
+      ).toBeDefined()
     })
 
     test("should render password hint", () => {
@@ -141,7 +168,9 @@ describe("StudentSignupForm", () => {
       render(<StudentSignupForm onBack={() => {}} />)
       const loginLinks = screen.getAllByText("Sign In")
       expect(loginLinks.length).toBeGreaterThan(0)
-      const loginLink = loginLinks.find(el => el.closest("a")?.getAttribute("href") === "/login")
+      const loginLink = loginLinks.find(
+        (el) => el.closest("a")?.getAttribute("href") === "/login",
+      )
       expect(loginLink).toBeDefined()
     })
   })
@@ -169,7 +198,7 @@ describe("StudentSignupForm", () => {
 
       const nameInput = screen.getByLabelText("Full Name")
       const emailInput = screen.getByLabelText("Email")
-      
+
       fireEvent.change(nameInput, { target: { value: "John Doe" } })
       fireEvent.change(emailInput, { target: { value: "invalid-email" } })
 
@@ -190,7 +219,7 @@ describe("StudentSignupForm", () => {
       const nameInput = screen.getByLabelText("Full Name")
       const emailInput = screen.getByLabelText("Email")
       const passwordInput = screen.getByLabelText("Password")
-      
+
       fireEvent.change(nameInput, { target: { value: "John Doe" } })
       fireEvent.change(emailInput, { target: { value: "test@example.com" } })
       fireEvent.change(passwordInput, { target: { value: "123" } })
@@ -212,7 +241,7 @@ describe("StudentSignupForm", () => {
       const nameInput = screen.getByLabelText("Full Name")
       const emailInput = screen.getByLabelText("Email")
       const passwordInput = screen.getByLabelText("Password")
-      
+
       fireEvent.change(nameInput, { target: { value: "John Doe" } })
       fireEvent.change(emailInput, { target: { value: "test@example.com" } })
       fireEvent.change(passwordInput, { target: { value: "password123" } })
@@ -235,7 +264,7 @@ describe("StudentSignupForm", () => {
       const emailInput = screen.getByLabelText("Email")
       const passwordInput = screen.getByLabelText("Password")
       const confirmInput = screen.getByLabelText("Confirm Password")
-      
+
       fireEvent.change(nameInput, { target: { value: "John Doe" } })
       fireEvent.change(emailInput, { target: { value: "test@example.com" } })
       fireEvent.change(passwordInput, { target: { value: "password123" } })
@@ -332,7 +361,13 @@ describe("StudentSignupForm", () => {
         expect(mockSignUp.mock.calls.length).toBe(1)
       })
 
-      const callArg = mockSignUp.mock.calls[0][0] as { name: string; email: string; password: string; callbackURL: string; fetchOptions: { body: { accountType: string } } }
+      const callArg = mockSignUp.mock.calls[0][0] as {
+        name: string
+        email: string
+        password: string
+        callbackURL: string
+        fetchOptions: { body: { accountType: string } }
+      }
       expect(callArg.name).toBe("John Doe")
       expect(callArg.email).toBe("test@example.com")
       expect(callArg.password).toBe("password123")
@@ -364,7 +399,9 @@ describe("StudentSignupForm", () => {
 
       await waitFor(() => {
         expect(screen.getByText("Verify your email")).toBeDefined()
-        expect(screen.getByText("Check your email to complete registration")).toBeDefined()
+        expect(
+          screen.getByText("Check your email to complete registration"),
+        ).toBeDefined()
         expect(screen.getByText("Back to login")).toBeDefined()
       })
     })
@@ -383,7 +420,9 @@ describe("StudentSignupForm", () => {
       const termsCheckbox = screen.getAllByRole("checkbox")[0]
 
       fireEvent.change(nameInput, { target: { value: "John Doe" } })
-      fireEvent.change(emailInput, { target: { value: "existing@example.com" } })
+      fireEvent.change(emailInput, {
+        target: { value: "existing@example.com" },
+      })
       fireEvent.change(passwordInput, { target: { value: "password123" } })
       fireEvent.change(confirmInput, { target: { value: "password123" } })
       fireEvent.click(termsCheckbox)
@@ -424,7 +463,9 @@ describe("StudentSignupForm", () => {
 
       await waitFor(() => {
         const buttons = screen.getAllByRole("button")
-        const submitButton = buttons.find(b => b.getAttribute("type") === "submit")
+        const submitButton = buttons.find(
+          (b) => b.getAttribute("type") === "submit",
+        )
         expect(submitButton).toBeDefined()
         expect(submitButton?.querySelector("svg")).toBeDefined()
       })
@@ -453,7 +494,9 @@ describe("StudentSignupForm", () => {
     test("should update password field on change", () => {
       render(<StudentSignupForm onBack={() => {}} />)
 
-      const passwordInput = screen.getByLabelText("Password") as HTMLInputElement
+      const passwordInput = screen.getByLabelText(
+        "Password",
+      ) as HTMLInputElement
       fireEvent.change(passwordInput, { target: { value: "mypassword123" } })
 
       expect(passwordInput.value).toBe("mypassword123")
@@ -462,7 +505,9 @@ describe("StudentSignupForm", () => {
     test("should update confirm password field on change", () => {
       render(<StudentSignupForm onBack={() => {}} />)
 
-      const confirmInput = screen.getByLabelText("Confirm Password") as HTMLInputElement
+      const confirmInput = screen.getByLabelText(
+        "Confirm Password",
+      ) as HTMLInputElement
       fireEvent.change(confirmInput, { target: { value: "mypassword123" } })
 
       expect(confirmInput.value).toBe("mypassword123")

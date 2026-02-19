@@ -1,18 +1,16 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { ArrowRight, Loader2 } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
-import { Button } from "@/components/ui/button"
-import { ServerError } from "@/components/ServerError"
-import { FormHeader } from "@/components/FormHeader"
-import { FormSection } from "@/components/form-fields"
-import { reveal, ease } from "@/lib/animations"
-
-import { useCompanyOnboarding } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm/hooks/useCompanyOnboarding"
 import { CompanyFields } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm/components/CompanyFields"
 import { LocationFields } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm/components/LocationFields"
+import { useCompanyOnboarding } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm/hooks/useCompanyOnboarding"
+import { FormHeader } from "@/components/FormHeader"
+import { FormSection } from "@/components/form-fields"
+import { ServerError } from "@/components/ServerError"
+import { Button } from "@/components/ui/button"
+import { ease, reveal } from "@/lib/animations"
 
 export function CompanyOnboardingForm() {
   const t = useTranslations("onboarding.company")

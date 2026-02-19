@@ -32,7 +32,10 @@ interface LanguageRequirementRowProps {
   proficiencyOptions: SelectOption[]
   weightOptions: SelectOption[]
   onLanguageCodeChange: (index: number, languageCode: string) => void
-  onMinimumProficiencyChange: (index: number, minimumProficiency: string) => void
+  onMinimumProficiencyChange: (
+    index: number,
+    minimumProficiency: string,
+  ) => void
   onWeightChange: (index: number, weight: number) => void
   onRequiredChange: (index: number, isRequired: boolean) => void
   onRemove: (index: number) => void

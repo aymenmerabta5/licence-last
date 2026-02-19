@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const mockSelect = mock(() => ({}))
 const mockFrom = mock(() => ({}))
@@ -21,9 +21,11 @@ const mockTx = {
   update: mockUpdate,
 }
 
-const mockTransaction = mock(async (fn: (tx: typeof mockTx) => Promise<void>) => {
-  await fn(mockTx)
-})
+const mockTransaction = mock(
+  async (fn: (tx: typeof mockTx) => Promise<void>) => {
+    await fn(mockTx)
+  },
+)
 
 mock.module("@/server/db", () => ({
   db: {
@@ -72,7 +74,9 @@ describe("src/server/services/students/upsert-profile", () => {
   })
 
   test("should create profile, skills, and set onboardingCompleted", async () => {
-    const { upsertStudentProfile } = await import("@/server/services/students/upsert-profile")
+    const { upsertStudentProfile } = await import(
+      "@/server/services/students/upsert-profile"
+    )
 
     const result = await upsertStudentProfile(
       { bio: "Hello", phone: "0555" },
@@ -91,7 +95,9 @@ describe("src/server/services/students/upsert-profile", () => {
   })
 
   test("should throw if skillTagIds.length > 10", async () => {
-    const { upsertStudentProfile } = await import("@/server/services/students/upsert-profile")
+    const { upsertStudentProfile } = await import(
+      "@/server/services/students/upsert-profile"
+    )
 
     const tooManySkills = Array.from({ length: 11 }, (_, i) => `skill-${i}`)
 
@@ -101,13 +107,11 @@ describe("src/server/services/students/upsert-profile", () => {
   })
 
   test("should replace existing skills on update (delete + insert)", async () => {
-    const { upsertStudentProfile } = await import("@/server/services/students/upsert-profile")
-
-    await upsertStudentProfile(
-      { bio: "Updated" },
-      ["skill-3"],
-      "user-1",
+    const { upsertStudentProfile } = await import(
+      "@/server/services/students/upsert-profile"
     )
+
+    await upsertStudentProfile({ bio: "Updated" }, ["skill-3"], "user-1")
 
     // Delete existing skills should be called
     expect(mockDelete).toHaveBeenCalled()

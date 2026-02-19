@@ -70,7 +70,9 @@ describe("src/server/orpc/routes/placements", () => {
   })
 
   test("validateProcedure delegates to service and returns success payload", async () => {
-    const { validateProcedure } = await import("@/server/orpc/routes/placements")
+    const { validateProcedure } = await import(
+      "@/server/orpc/routes/placements"
+    )
 
     const result = await callProcedure(validateProcedure, {
       input: {
@@ -78,7 +80,13 @@ describe("src/server/orpc/routes/placements", () => {
         startDate: "2026-02-01",
         endDate: "2026-05-01",
       },
-      context: { user: { id: "admin-1", role: "university_admin", universityId: "uni-1" } },
+      context: {
+        user: {
+          id: "admin-1",
+          role: "university_admin",
+          universityId: "uni-1",
+        },
+      },
     })
 
     expect(result).toEqual({
@@ -96,7 +104,9 @@ describe("src/server/orpc/routes/placements", () => {
         "Placement already exists for this application",
       ),
     )
-    const { validateProcedure } = await import("@/server/orpc/routes/placements")
+    const { validateProcedure } = await import(
+      "@/server/orpc/routes/placements"
+    )
 
     await expect(
       callProcedure(validateProcedure, {
@@ -105,7 +115,13 @@ describe("src/server/orpc/routes/placements", () => {
           startDate: "2026-02-01",
           endDate: "2026-05-01",
         },
-        context: { user: { id: "admin-1", role: "university_admin", universityId: "uni-1" } },
+        context: {
+          user: {
+            id: "admin-1",
+            role: "university_admin",
+            universityId: "uni-1",
+          },
+        },
       }),
     ).rejects.toMatchObject({
       code: "CONFLICT",
@@ -125,7 +141,13 @@ describe("src/server/orpc/routes/placements", () => {
     await expect(
       callProcedure(rejectProcedure, {
         input: { applicationId: "app-1", reason: "missing docs" },
-        context: { user: { id: "admin-1", role: "university_admin", universityId: "uni-1" } },
+        context: {
+          user: {
+            id: "admin-1",
+            role: "university_admin",
+            universityId: "uni-1",
+          },
+        },
       }),
     ).rejects.toMatchObject({
       code: "FORBIDDEN",

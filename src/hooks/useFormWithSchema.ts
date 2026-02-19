@@ -1,11 +1,11 @@
 "use client"
 
-import { useMemo, useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useTranslations } from "next-intl"
-import { mapZodErrors } from "@/lib/schemas/map-errors"
-import { getErrorMessage } from "@/lib/error-message"
+import { useMemo, useState } from "react"
 import type { ZodType } from "zod"
+import { getErrorMessage } from "@/lib/error-message"
+import { mapZodErrors } from "@/lib/schemas/map-errors"
 
 interface UseFormWithSchemaOptions<TValues extends Record<string, unknown>> {
   schemaFactory: (t: (key: string) => string) => ZodType
@@ -33,7 +33,8 @@ export function useFormWithSchema<TValues extends Record<string, unknown>>({
   const form = useForm({
     defaultValues,
     validators: {
-      onSubmit: ({ value }: { value: TValues }) => mapZodErrors(schema.safeParse(value)),
+      onSubmit: ({ value }: { value: TValues }) =>
+        mapZodErrors(schema.safeParse(value)),
     },
     onSubmit: async ({ value }: { value: TValues }) => {
       setServerError("")

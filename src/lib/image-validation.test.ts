@@ -1,9 +1,9 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 
 import {
   ALLOWED_IMAGE_TYPES,
-  MAX_IMAGE_SIZE,
   IMAGE_EXT_MAP,
+  MAX_IMAGE_SIZE,
   validateMagicBytes,
 } from "@/lib/image-validation"
 
@@ -48,31 +48,53 @@ describe("src/lib/image-validation", () => {
     })
 
     test("validates PNG full 8-byte header", () => {
-      const validPng = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+      const validPng = Buffer.from([
+        0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+      ])
       expect(validateMagicBytes(validPng, "image/png")).toBe(true)
     })
 
     test("rejects PNG with only 4-byte header (partial)", () => {
       // Only first 4 bytes of PNG header — should fail since we check all 8
-      const partialPng = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x00, 0x00, 0x00, 0x00])
+      const partialPng = Buffer.from([
+        0x89, 0x50, 0x4e, 0x47, 0x00, 0x00, 0x00, 0x00,
+      ])
       expect(validateMagicBytes(partialPng, "image/png")).toBe(false)
     })
 
     test("validates WebP magic bytes (RIFF + WEBP)", () => {
       // RIFF header + 4 bytes file size + WEBP marker
       const validWebp = Buffer.from([
-        0x52, 0x49, 0x46, 0x46, // RIFF
-        0x00, 0x00, 0x00, 0x00, // file size (don't care)
-        0x57, 0x45, 0x42, 0x50, // WEBP
+        0x52,
+        0x49,
+        0x46,
+        0x46, // RIFF
+        0x00,
+        0x00,
+        0x00,
+        0x00, // file size (don't care)
+        0x57,
+        0x45,
+        0x42,
+        0x50, // WEBP
       ])
       expect(validateMagicBytes(validWebp, "image/webp")).toBe(true)
     })
 
     test("rejects WebP with RIFF but without WEBP marker", () => {
       const invalidWebp = Buffer.from([
-        0x52, 0x49, 0x46, 0x46, // RIFF
-        0x00, 0x00, 0x00, 0x00,
-        0x41, 0x56, 0x49, 0x20, // AVI (not WEBP)
+        0x52,
+        0x49,
+        0x46,
+        0x46, // RIFF
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x41,
+        0x56,
+        0x49,
+        0x20, // AVI (not WEBP)
       ])
       expect(validateMagicBytes(invalidWebp, "image/webp")).toBe(false)
     })
@@ -89,11 +111,15 @@ describe("src/lib/image-validation", () => {
 
     test("rejects mismatched type and bytes", () => {
       // PNG bytes but claiming JPEG
-      const pngBytes = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+      const pngBytes = Buffer.from([
+        0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+      ])
       expect(validateMagicBytes(pngBytes, "image/jpeg")).toBe(false)
 
       // JPEG bytes but claiming PNG
-      const jpegBytes = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x00, 0x00])
+      const jpegBytes = Buffer.from([
+        0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x00, 0x00,
+      ])
       expect(validateMagicBytes(jpegBytes, "image/png")).toBe(false)
     })
   })

@@ -1,13 +1,11 @@
 "use client"
 
 import { toast } from "sonner"
-
-import { getErrorMessage } from "@/lib/error-message"
-
 import { ExperienceSection } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/ExperienceSection"
 import { ProjectsSection } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/ProjectsSection"
 import { ResumeSection } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/ResumeSection"
 import type { useStudentCvData } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/hooks/useStudentCvData"
+import { getErrorMessage } from "@/lib/error-message"
 
 interface MutationRunner<TInput> {
   (input: TInput): Promise<unknown>

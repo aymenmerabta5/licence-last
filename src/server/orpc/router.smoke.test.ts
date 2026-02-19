@@ -37,7 +37,9 @@ describe("src/server/orpc/router smoke coverage", () => {
   test("all expected namespaces are present", async () => {
     const source = await Bun.file(ROUTER_FILE_PATH).text()
     const appRouterObject = extractAppRouterObject(source)
-    const namespaceMatches = [...appRouterObject.matchAll(/^  ([a-zA-Z][a-zA-Z0-9]*): \{/gm)]
+    const namespaceMatches = [
+      ...appRouterObject.matchAll(/^ {2}([a-zA-Z][a-zA-Z0-9]*): \{/gm),
+    ]
     const namespaces = namespaceMatches.map((match) => match[1]).sort()
 
     expect(namespaces).toEqual([
@@ -66,12 +68,18 @@ describe("src/server/orpc/router smoke coverage", () => {
   test("each namespace exposes at least one procedure", async () => {
     const source = await Bun.file(ROUTER_FILE_PATH).text()
     const appRouterObject = extractAppRouterObject(source)
-    const namespaceMatches = [...appRouterObject.matchAll(/^  ([a-zA-Z][a-zA-Z0-9]*): \{([\s\S]*?)^  },?$/gm)]
+    const namespaceMatches = [
+      ...appRouterObject.matchAll(
+        /^ {2}([a-zA-Z][a-zA-Z0-9]*): \{([\s\S]*?)^ {2}},?$/gm,
+      ),
+    ]
 
     expect(namespaceMatches.length).toBeGreaterThan(0)
 
     for (const [, namespaceName, namespaceBody] of namespaceMatches) {
-      const procedureCount = [...namespaceBody.matchAll(/^    [a-zA-Z][a-zA-Z0-9]*:/gm)].length
+      const procedureCount = [
+        ...namespaceBody.matchAll(/^ {4}[a-zA-Z][a-zA-Z0-9]*:/gm),
+      ].length
       expect(
         procedureCount,
         `Namespace ${namespaceName} should expose at least one procedure`,

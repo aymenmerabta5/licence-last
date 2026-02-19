@@ -40,7 +40,9 @@ mock.module("@/server/services/users/update-me", () => ({
   updateMe: updateMeMock,
 }))
 mock.module("@/server/services/uploads/upload-image", () => ({
-  uploadImageToS3: mock(async () => ({ url: "https://example.com/avatar.png" })),
+  uploadImageToS3: mock(async () => ({
+    url: "https://example.com/avatar.png",
+  })),
 }))
 mock.module("@/server/services/users/session-management", () => ({
   listMySessions: mock(async () => []),
@@ -81,7 +83,9 @@ describe("src/server/orpc/routes/users", () => {
       email: "user@example.com",
       image: null,
     })
-    expect(updateMeMock).toHaveBeenCalledWith("user-1", { name: "Updated Name" })
+    expect(updateMeMock).toHaveBeenCalledWith("user-1", {
+      name: "Updated Name",
+    })
   })
 
   test("updateMeProcedure maps typed user errors", async () => {

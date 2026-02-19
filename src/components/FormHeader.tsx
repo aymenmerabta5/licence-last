@@ -1,9 +1,9 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { ArrowLeft } from "lucide-react"
+import * as motion from "motion/react-client"
 
-import { reveal, ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface FormHeaderProps {
   title: string
@@ -12,7 +12,12 @@ interface FormHeaderProps {
   backLabel?: string
 }
 
-export function FormHeader({ title, subtitle, onBack, backLabel }: FormHeaderProps) {
+export function FormHeader({
+  title,
+  subtitle,
+  onBack,
+  backLabel,
+}: FormHeaderProps) {
   return (
     <motion.div {...reveal} transition={{ duration: 0.6, ease }}>
       {onBack && (

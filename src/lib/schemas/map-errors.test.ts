@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 import { z } from "zod"
 
 import { mapZodErrors } from "@/lib/schemas/map-errors"
@@ -11,24 +11,32 @@ describe("mapZodErrors", () => {
   })
 
   test("should return undefined for successful parse", () => {
-    const result = schema.safeParse({ email: "a@b.com", name: "Alice", age: 25 })
+    const result = schema.safeParse({
+      email: "a@b.com",
+      name: "Alice",
+      age: 25,
+    })
     expect(mapZodErrors(result)).toBeUndefined()
   })
 
   test("should return field errors for single invalid field", () => {
-    const result = schema.safeParse({ email: "not-email", name: "Alice", age: 25 })
+    const result = schema.safeParse({
+      email: "not-email",
+      name: "Alice",
+      age: 25,
+    })
     const errors = mapZodErrors(result)
     expect(errors).toBeDefined()
-    expect(errors!.fields.email).toBe("Invalid email")
+    expect(errors?.fields.email).toBe("Invalid email")
   })
 
   test("should return errors for multiple invalid fields", () => {
     const result = schema.safeParse({ email: "not-email", name: "A", age: 10 })
     const errors = mapZodErrors(result)
     expect(errors).toBeDefined()
-    expect(errors!.fields.email).toBe("Invalid email")
-    expect(errors!.fields.name).toBe("Name too short")
-    expect(errors!.fields.age).toBe("Must be 18+")
+    expect(errors?.fields.email).toBe("Invalid email")
+    expect(errors?.fields.name).toBe("Name too short")
+    expect(errors?.fields.age).toBe("Must be 18+")
   })
 
   test("should keep only the first error per field", () => {
@@ -40,7 +48,7 @@ describe("mapZodErrors", () => {
     const errors = mapZodErrors(result)
     expect(errors).toBeDefined()
     // Only first error for "value" field should appear
-    expect(Object.keys(errors!.fields)).toHaveLength(1)
+    expect(Object.keys(errors?.fields ?? {})).toHaveLength(1)
   })
 
   test("should return undefined when all issues lack a path", () => {
@@ -61,6 +69,6 @@ describe("mapZodErrors", () => {
     const result = arraySchema.safeParse([""])
     const errors = mapZodErrors(result)
     expect(errors).toBeDefined()
-    expect(errors!.fields["0"]).toBe("Required")
+    expect(errors?.fields["0"]).toBe("Required")
   })
 })

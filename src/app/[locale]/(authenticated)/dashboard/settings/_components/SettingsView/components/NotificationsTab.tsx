@@ -1,16 +1,15 @@
 "use client"
 
-import { Bell, Mail } from "lucide-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-
+import { Bell, Mail } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { orpc } from "@/server/orpc/client"
@@ -127,8 +126,8 @@ export function NotificationsTab({ email }: NotificationsTabProps) {
                 <div className="space-y-1">
                   <p className="text-sm font-medium">In-app notifications</p>
                   <p className="text-[12px] text-muted-foreground leading-relaxed">
-                    Show notification cards inside the dashboard for application,
-                    interview, and message updates.
+                    Show notification cards inside the dashboard for
+                    application, interview, and message updates.
                   </p>
                 </div>
               </label>
@@ -151,7 +150,8 @@ export function NotificationsTab({ email }: NotificationsTabProps) {
                   <p className="text-sm font-medium">Email notifications</p>
                   <p className="text-[12px] text-muted-foreground leading-relaxed">
                     Send updates and reminders to{" "}
-                    <span className="font-medium text-foreground">{email}</span>.
+                    <span className="font-medium text-foreground">{email}</span>
+                    .
                   </p>
                 </div>
               </label>

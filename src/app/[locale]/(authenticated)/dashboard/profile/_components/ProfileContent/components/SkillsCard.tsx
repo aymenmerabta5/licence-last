@@ -1,15 +1,13 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { Award } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
+import type { StudentSkill } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
-
-import type { StudentSkill } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 
 interface SkillsCardProps {
   skills: StudentSkill[]
@@ -127,7 +125,11 @@ interface EmptyStateProps {
   buttonText: string
 }
 
-export function EmptyState({ icon: Icon, message, buttonText }: EmptyStateProps) {
+export function EmptyState({
+  icon: Icon,
+  message,
+  buttonText,
+}: EmptyStateProps) {
   return (
     <div className="text-center space-y-3">
       <div className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/5">

@@ -3,14 +3,13 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-import { cacheTag, cacheLife } from "next/cache"
-
+import { cacheLife, cacheTag } from "next/cache"
+import { CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
-import { studentProfile, studentSkill } from "@/server/db/schema/students"
+import { user } from "@/server/db/schema/auth"
 import { studentLanguage } from "@/server/db/schema/languages"
 import { skillTag } from "@/server/db/schema/skills"
-import { user } from "@/server/db/schema/auth"
-import { CACHE_TAGS } from "@/lib/cache"
+import { studentProfile, studentSkill } from "@/server/db/schema/students"
 
 /**
  * Get a student's profile with their skills. Returns null if no profile exists.

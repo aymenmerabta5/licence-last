@@ -1,14 +1,13 @@
-import { Checkbox } from "@/components/ui/checkbox"
-import { INTERNSHIP_TYPE_COLORS } from "@/lib/constants/internship"
-import { cn } from "@/lib/utils"
-
 import type { FilterState } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient"
+import { FilterSection } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/FilterSection"
 import {
   INTERNSHIP_TYPES,
   TYPE_DOT,
 } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/constants"
-import { FilterSection } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/FilterSection"
 import { toggleMultiValueFilter } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/utils"
+import { Checkbox } from "@/components/ui/checkbox"
+import { INTERNSHIP_TYPE_COLORS } from "@/lib/constants/internship"
+import { cn } from "@/lib/utils"
 
 interface InternshipTypeFilterProps {
   filters: FilterState
@@ -46,7 +45,12 @@ export function InternshipTypeFilter({
                   )
                 }
               />
-              <span className={cn("h-2 w-2 rounded-full shrink-0", TYPE_DOT[internshipType])} />
+              <span
+                className={cn(
+                  "h-2 w-2 rounded-full shrink-0",
+                  TYPE_DOT[internshipType],
+                )}
+              />
               <span className="text-sm">
                 {t(`type.${internshipType}` as "type.pfe")}
               </span>

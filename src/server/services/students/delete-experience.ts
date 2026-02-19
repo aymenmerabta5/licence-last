@@ -6,7 +6,10 @@ import { db } from "@/server/db"
 import { studentExperience } from "@/server/db/schema/student-cv"
 import { StudentCvServiceError } from "@/server/services/students/cv-errors"
 
-export async function deleteStudentExperience(experienceId: string, userId: string) {
+export async function deleteStudentExperience(
+  experienceId: string,
+  userId: string,
+) {
   const [existing] = await db
     .select({
       id: studentExperience.id,
@@ -30,7 +33,9 @@ export async function deleteStudentExperience(experienceId: string, userId: stri
     )
   }
 
-  await db.delete(studentExperience).where(eq(studentExperience.id, experienceId))
+  await db
+    .delete(studentExperience)
+    .where(eq(studentExperience.id, experienceId))
 
   return { experienceId, deleted: true }
 }

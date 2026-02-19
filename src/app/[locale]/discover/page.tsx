@@ -1,41 +1,44 @@
-import * as motion from "motion/react-client"
-import { useTranslations } from "next-intl"
-import { getTranslations, setRequestLocale } from "next-intl/server"
+import type { LucideIcon } from "lucide-react"
 import {
-  Sparkles,
-  Search,
-  Bot,
-  FileText,
-  ScrollText,
   Activity,
   ArrowRight,
-  GraduationCap,
+  Bot,
   Briefcase,
+  FileText,
+  GraduationCap,
+  ScrollText,
+  Search,
+  Sparkles,
   Sun,
   Wrench,
 } from "lucide-react"
-import type { LucideIcon } from "lucide-react"
-
-import { Navbar } from "@/components/Navbar"
+import * as motion from "motion/react-client"
+import { Metadata } from "next"
+import { useTranslations } from "next-intl"
+import { getTranslations, setRequestLocale } from "next-intl/server"
+import { MarqueeRibbon } from "@/app/[locale]/_components/MarqueeRibbon"
 import { Footer } from "@/components/Footer"
+import { Navbar } from "@/components/Navbar"
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
 import {
   Card,
-  CardHeader,
   CardAction,
   CardContent,
-  CardTitle,
   CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 import { Link } from "@/i18n/routing"
-import { reveal, ease } from "@/lib/animations"
-import { MarqueeRibbon } from "@/app/[locale]/_components/MarqueeRibbon"
-import { Metadata } from "next"
+import { ease, reveal } from "@/lib/animations"
 
 type Params = Promise<{ locale: string }>
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Params
+}): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: "pages.discover" })
   return { title: t("metadata.title"), description: t("metadata.description") }

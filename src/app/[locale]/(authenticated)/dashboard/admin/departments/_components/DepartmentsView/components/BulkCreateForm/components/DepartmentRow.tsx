@@ -1,7 +1,7 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Trash2 } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,7 +12,11 @@ interface DepartmentRowProps {
   row: BulkDepartmentRow
   errors: Partial<Record<keyof BulkDepartmentRow, string>>
   canRemove: boolean
-  onUpdate: (index: number, field: keyof BulkDepartmentRow, value: string) => void
+  onUpdate: (
+    index: number,
+    field: keyof BulkDepartmentRow,
+    value: string,
+  ) => void
   onRemove: (index: number) => void
 }
 

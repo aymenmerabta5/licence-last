@@ -1,19 +1,18 @@
 import "server-only"
 
-import { z } from "zod"
 import { ORPCError } from "@orpc/server"
-
+import { z } from "zod"
+import { isFeatureEnabled } from "@/lib/feature-flags"
 import {
   authedProcedureGenerous,
   authedProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
-import { isFeatureEnabled } from "@/lib/feature-flags"
+import { getNotificationPreferences } from "@/server/services/notifications/get-preferences"
 import { listNotifications } from "@/server/services/notifications/list"
 import {
   markAllNotificationsRead,
   markNotificationRead,
 } from "@/server/services/notifications/mark-read"
-import { getNotificationPreferences } from "@/server/services/notifications/get-preferences"
 import { updateNotificationPreferences } from "@/server/services/notifications/update-preferences"
 
 function assertNotificationPreferencesEnabled() {
@@ -43,16 +42,16 @@ export const markNotificationReadProcedure = authedProcedureStandard
     markNotificationRead(context.user.id, input.notificationId),
   )
 
-export const markAllNotificationsReadProcedure = authedProcedureStandard.handler(
-  async ({ context }) => markAllNotificationsRead(context.user.id),
-)
+export const markAllNotificationsReadProcedure =
+  authedProcedureStandard.handler(async ({ context }) =>
+    markAllNotificationsRead(context.user.id),
+  )
 
-export const getNotificationPreferencesProcedure = authedProcedureGenerous.handler(
-  async ({ context }) => {
+export const getNotificationPreferencesProcedure =
+  authedProcedureGenerous.handler(async ({ context }) => {
     assertNotificationPreferencesEnabled()
     return getNotificationPreferences(context.user.id)
-  },
-)
+  })
 
 export const updateNotificationPreferencesProcedure = authedProcedureStandard
   .input(
