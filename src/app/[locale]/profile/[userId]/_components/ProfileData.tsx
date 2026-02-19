@@ -22,6 +22,7 @@ export async function ProfileData({ userId }: ProfileDataProps) {
     "super_admin",
   ])
   const isOwner = viewer.id === userId && viewer.role === "student"
+  if (viewer.role === "student" && !isOwner) notFound()
 
   const result = await orpcClient.students
     .getPublicProfile({ userId })

@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
+import { isNotificationPreferencesEnabledOnClient } from "@/lib/feature-flags-client"
 import { cn } from "@/lib/utils"
 import { orpc } from "@/server/orpc/client"
 
@@ -30,11 +31,14 @@ function isFeatureDisabledError(error: unknown) {
 
 export function NotificationsTab({ email }: NotificationsTabProps) {
   const queryClient = useQueryClient()
+  const notificationPreferencesEnabled =
+    isNotificationPreferencesEnabledOnClient()
   const queryOptions = orpc.notifications.getPreferences.queryOptions()
 
   const preferencesQuery = useQuery({
     ...queryOptions,
     retry: false,
+    enabled: notificationPreferencesEnabled,
   })
 
   const updatePreferencesMutation = useMutation(
@@ -46,7 +50,8 @@ export function NotificationsTab({ email }: NotificationsTabProps) {
   )
 
   const showSoonState =
-    preferencesQuery.isError && isFeatureDisabledError(preferencesQuery.error)
+    !notificationPreferencesEnabled ||
+    (preferencesQuery.isError && isFeatureDisabledError(preferencesQuery.error))
 
   const preferences = preferencesQuery.data ?? {
     inAppEnabled: true,
@@ -57,6 +62,7 @@ export function NotificationsTab({ email }: NotificationsTabProps) {
     key: "inAppEnabled" | "emailEnabled",
     value: boolean,
   ) => {
+    if (!notificationPreferencesEnabled) return
     await updatePreferencesMutation.mutateAsync({ [key]: value })
   }
 
