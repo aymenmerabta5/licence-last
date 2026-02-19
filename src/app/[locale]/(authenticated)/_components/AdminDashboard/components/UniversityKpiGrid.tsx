@@ -86,22 +86,27 @@ export function UniversityKpiGrid({ stats }: UniversityKpiGridProps) {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.15, ease }}
-      className="space-y-5"
+      className="space-y-8"
     >
-      <div className="space-y-1">
-        <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
-          University Snapshot
-        </p>
-        <h3 className="font-serif text-2xl text-heading tracking-tight">
-          Your Institution At A Glance
-        </h3>
-        <p className="text-sm text-muted-foreground font-light">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b-4 border-foreground pb-4">
+        <div>
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/70 mb-2 block">
+            University Snapshot
+          </span>
+          <h2 className="font-serif text-3xl md:text-5xl font-normal tracking-tighter text-foreground">
+            Your Institution At A Glance
+            <span className="text-primary/40 leading-none">.</span>
+          </h2>
+        </div>
+        <p className="text-xs font-bold uppercase tracking-[0.1em] text-foreground/50 max-w-xs sm:text-right mt-4 sm:mt-0">
           Key indicators for student activity, structure, and validation
-          progress.
+          progress
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative">
+        <div className="absolute inset-x-0 -inset-y-6 -z-10 bg-[url('data:image/svg+xml;base64,...')] opacity-[0.02] mix-blend-overlay pointer-events-none" />
+
         {cards.map((card, index) => (
           <StatsCard
             key={card.title}

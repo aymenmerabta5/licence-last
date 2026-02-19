@@ -31,7 +31,7 @@ export function StudentOnboardingFormContent() {
 
   return (
     <form
-      className="space-y-8"
+      className="space-y-12 lg:space-y-16"
       onSubmit={(event) => {
         event.preventDefault()
         form.handleSubmit()

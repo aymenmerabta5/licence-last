@@ -21,8 +21,6 @@ interface ActionItem {
   description: string
   href: string
   icon: LucideIcon
-  accent: string
-  accentHover: string
   primary?: boolean
 }
 
@@ -32,44 +30,34 @@ export function RecruiterQuickActions() {
   const actions: ActionItem[] = [
     {
       title: t("actions.postOffer"),
-      description: "Publish a new internship position",
+      description: "Publish a new position",
       href: "/dashboard/company/offers/new",
       icon: Plus,
-      accent: "text-white bg-primary",
-      accentHover: "group-hover:bg-primary/90",
       primary: true,
     },
     {
       title: t("actions.manageOffers"),
-      description: "Edit or close existing offers",
+      description: "Edit or close listings",
       href: "/dashboard/company/offers",
       icon: Briefcase,
-      accent: "text-violet-500 bg-violet-500/5",
-      accentHover: "group-hover:bg-violet-500 group-hover:text-white",
     },
     {
       title: "Company Profile",
-      description: "Update your company information",
+      description: "Update company info",
       href: "/dashboard/company/profile",
       icon: Building2,
-      accent: "text-amber-500 bg-amber-500/5",
-      accentHover: "group-hover:bg-amber-500 group-hover:text-white",
     },
     {
       title: "Team Members",
-      description: "Invite and manage recruiters",
+      description: "Manage recruiters",
       href: "/dashboard/company/team",
       icon: UsersRound,
-      accent: "text-rose-500 bg-rose-500/5",
-      accentHover: "group-hover:bg-rose-500 group-hover:text-white",
     },
     {
       title: "AI Assistant",
-      description: "Get help with recruiting",
+      description: "Recruiting help",
       href: "/dashboard/assistant",
       icon: Bot,
-      accent: "text-teal-500 bg-teal-500/5",
-      accentHover: "group-hover:bg-teal-500 group-hover:text-white",
     },
   ]
 
@@ -78,61 +66,69 @@ export function RecruiterQuickActions() {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.4, ease }}
-      className="space-y-5"
+      className="space-y-8 relative"
     >
-      <h2 className="font-serif text-xl font-bold text-heading tracking-tight">
-        Quick Actions
-      </h2>
+      <div className="flex items-end justify-between border-b-4 border-foreground pb-4">
+        <div>
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/70 mb-2 block">
+            Shortcuts
+          </span>
+          <h2 className="font-serif text-3xl font-normal text-foreground tracking-tighter">
+            Quick Actions<span className="text-primary/40 leading-none">.</span>
+          </h2>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 gap-2.5">
+      <div className="flex flex-col border border-border/80 bg-background divide-y divide-border/60 shadow-[4px_4px_0_0_oklch(var(--border)_/_0.3)]">
         {actions.map((action, i) => {
           const Icon = action.icon
           return (
             <Link key={i} href={action.href as Route}>
               <div
                 className={cn(
-                  "group flex items-center gap-4 p-4 sm:p-5 transition-all duration-300 cursor-pointer",
+                  "group relative overflow-hidden flex items-center justify-between p-5 md:p-6 transition-colors duration-300",
                   action.primary
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
-                    : "border border-border/40 bg-background hover:border-border/60 hover:shadow-sm",
+                    ? "bg-primary text-primary-foreground hover:bg-foreground hover:text-background"
+                    : "bg-background text-foreground hover:bg-foreground hover:text-background",
                 )}
               >
-                <div
-                  className={cn(
-                    "p-2.5 shrink-0 transition-all duration-300",
-                    action.primary
-                      ? "bg-white/20"
-                      : `${action.accent} ${action.accentHover}`,
-                  )}
-                >
-                  <Icon className="h-4 w-4" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3
+                {action.primary && (
+                  <div className="absolute inset-x-0 bottom-0 h-1 bg-background/20 scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 ease-in-out" />
+                )}
+
+                <div className="flex items-center gap-6 relative z-10 w-full">
+                  <div
                     className={cn(
-                      "font-bold text-sm tracking-tight",
-                      !action.primary && "text-heading",
+                      "p-3 flex items-center justify-center shrink-0 transition-colors border-2",
+                      action.primary
+                        ? "bg-background text-foreground border-background group-hover:border-background group-hover:text-background"
+                        : "bg-foreground text-background border-foreground group-hover:bg-background group-hover:text-foreground group-hover:border-background",
                     )}
                   >
-                    {action.title}
-                  </h3>
-                  <p
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-serif text-xl md:text-2xl font-normal tracking-tight mb-1">
+                      {action.title}
+                    </h3>
+                    <p
+                      className={cn(
+                        "text-[10px] font-bold uppercase tracking-[0.15em]",
+                        action.primary
+                          ? "text-primary-foreground/70 group-hover:text-background/50"
+                          : "text-foreground/50 group-hover:text-background/50",
+                      )}
+                    >
+                      {action.description}
+                    </p>
+                  </div>
+                  <ArrowRight
                     className={cn(
-                      "text-[11px] mt-0.5 truncate",
-                      action.primary ? "opacity-70" : "text-muted-foreground",
+                      "h-5 w-5 shrink-0 opacity-0 -translate-x-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 [[dir=rtl]_&]:rotate-180",
+                      action.primary ? "text-background" : "text-background",
                     )}
-                  >
-                    {action.description}
-                  </p>
+                  />
                 </div>
-                <ArrowRight
-                  className={cn(
-                    "h-3.5 w-3.5 shrink-0 transition-all [[dir=rtl]_&]:rotate-180",
-                    action.primary
-                      ? "opacity-50 group-hover:opacity-100 group-hover:translate-x-1 [[dir=rtl]_&]:group-hover:-translate-x-1"
-                      : "text-muted-foreground/30 group-hover:text-primary group-hover:translate-x-1 [[dir=rtl]_&]:group-hover:-translate-x-1",
-                  )}
-                />
               </div>
             </Link>
           )

@@ -30,11 +30,6 @@ export default function OnboardingLayout({
 
       {/* Main form panel */}
       <main className="relative flex-1 min-h-screen flex flex-col">
-        <div
-          className="pointer-events-none absolute inset-0 bg-linear-to-b from-primary/5 via-transparent to-transparent dark:from-primary/8"
-          aria-hidden="true"
-        />
-
         <header className="flex items-center justify-between px-6 py-5 lg:px-10 lg:py-6">
           {/* Mobile logo (desktop logo lives in panel) */}
           <span className="lg:hidden font-serif text-xl tracking-tight text-heading transition-colors duration-500 ease-in-out">
@@ -50,7 +45,7 @@ export default function OnboardingLayout({
         </header>
 
         <div className="flex-1 flex items-start lg:items-center justify-center px-6 pb-12 pt-2 lg:px-10 lg:pt-0">
-          <div className="w-full max-w-[620px] space-y-6">
+          <div className="w-full max-w-[680px] space-y-10">
             {/* Mobile hero banner */}
             <div className="lg:hidden">
               <Suspense fallback={null}>
@@ -58,15 +53,20 @@ export default function OnboardingLayout({
               </Suspense>
             </div>
 
-            <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-card/80 p-6 shadow-sm backdrop-blur-sm transition-colors duration-500 dark:border-border/80 dark:bg-card/70 sm:p-8 lg:p-10">
+            <div className="relative">
+              {/* Editorial flourish */}
               <div
-                className="pointer-events-none absolute inset-0 bg-linear-to-b from-primary/6 via-transparent to-transparent dark:from-primary/10"
+                className="hidden lg:block absolute -top-16 -left-16 text-muted-foreground/10 font-serif text-[180px] leading-none select-none pointer-events-none"
                 aria-hidden="true"
-              />
-              <div className="relative">
+              >
+                &ldquo;
+              </div>
+
+              {/* The form area */}
+              <div className="relative bg-transparent z-10">
                 <Suspense
                   fallback={
-                    <div className="h-96 rounded-2xl bg-muted/30 animate-pulse" />
+                    <div className="h-[600px] w-full animate-pulse border-t-2 border-primary/20 bg-muted/5 mt-8" />
                   }
                 >
                   <OnboardingContent>{children}</OnboardingContent>
