@@ -1,43 +1,44 @@
-"use client"
+﻿"use client"
 
 import { useState } from "react"
-import { ChevronDown, ExternalLink, RefreshCw, Lock, CheckCircle2, XCircle, Loader2 } from "lucide-react"
+import {
+  CheckCircle2,
+  ChevronDown,
+  Loader2,
+  RefreshCw,
+  XCircle,
+} from "lucide-react"
 import { useTranslations } from "next-intl"
-import * as motion from "motion/react-client"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-
-import { getStringProp, isAuthorizationRequiredOutput, isRecord } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/utils"
-
-type ToolState =
-  | "input-streaming"
-  | "input-available"
-  | "approval-requested"
-  | "approval-responded"
-  | "output-available"
-  | "output-error"
-  | "output-denied"
+import { ToolInvocationBody } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ToolInvocationBody"
+import type {
+  ToolAuthStatus,
+  ToolState,
+} from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/toolInvocationTypes"
+import { isRecord } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/utils"
 
 function getToolName(part: unknown): string | null {
   if (!isRecord(part)) return null
+
   if (part.type === "dynamic-tool") {
     return typeof part.toolName === "string" ? part.toolName : null
   }
+
   if (typeof part.type === "string" && part.type.startsWith("tool-")) {
     return part.type.slice("tool-".length)
   }
+
   return null
 }
 
 function getToolState(part: unknown): ToolState | null {
   if (!isRecord(part)) return null
-  const state = part.state
-  return typeof state === "string" ? (state as ToolState) : null
+  return typeof part.state === "string" ? (part.state as ToolState) : null
 }
 
 function formatToolName(name: string): string {
-  // Convert snake_case or camelCase to readable text
   return name
     .replace(/[_-]/g, " ")
     .replace(/([A-Z])/g, " $1")
@@ -87,7 +88,7 @@ function getStatusBadge(state: ToolState): string {
 
 interface ToolInvocationViewProps {
   part: unknown
-  authStatus: { status: string | null; url: string | null } | null
+  authStatus: ToolAuthStatus | null
   onCheckAuth: (toolName: string) => void
   onRetry: () => void
 }
@@ -111,177 +112,64 @@ export function ToolInvocationView({
   const output = isRecord(part) ? (part.output as unknown) : undefined
   const errorText = isRecord(part) && typeof part.errorText === "string" ? part.errorText : null
 
-  const formattedName = formatToolName(toolName)
-  const isAuthRequired = isAuthorizationRequiredOutput(output)
-
   return (
-    <div className="mt-3 border border-border/60 bg-muted/10 rounded-none overflow-hidden">
-      {/* Header */}
+    <div className="mt-3 overflow-hidden rounded-none border border-border/60 bg-muted/10">
       <button
         type="button"
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={() => setIsExpanded((current) => !current)}
         className={cn(
-          "w-full flex items-center justify-between gap-3 px-3 py-2.5",
-          "hover:bg-muted/30 transition-colors",
-          "text-start"
+          "w-full text-start",
+          "flex items-center justify-between gap-3 px-3 py-2.5",
+          "transition-colors hover:bg-muted/30",
         )}
       >
-        <div className="flex items-center gap-2 min-w-0">
+        <div className="flex min-w-0 items-center gap-2">
           {getStatusIcon(state)}
           <div className="min-w-0">
-            <p className="text-sm font-medium truncate">
-              {formattedName}
-            </p>
-            <p className="text-[10px] text-muted-foreground">
-              {getStatusBadge(state)}
-            </p>
+            <p className="truncate text-sm font-medium">{formatToolName(toolName)}</p>
+            <p className="text-[10px] text-muted-foreground">{getStatusBadge(state)}</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          {(state === "output-available" || state === "output-error") && (
+          {state === "output-available" || state === "output-error" ? (
             <Button
               type="button"
               variant="ghost"
               size="icon-sm"
               className="h-7 w-7 shrink-0"
-              onClick={(e) => {
-                e.stopPropagation()
+              onClick={(event) => {
+                event.stopPropagation()
                 onRetry()
               }}
               aria-label={t("retry")}
             >
               <RefreshCw className="h-3.5 w-3.5" />
             </Button>
-          )}
+          ) : null}
           <ChevronDown
             className={cn(
               "h-4 w-4 text-muted-foreground transition-transform",
-              isExpanded && "rotate-180"
+              isExpanded ? "rotate-180" : null,
             )}
           />
         </div>
       </button>
 
-      {/* Expanded content */}
-      {isExpanded && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          className="border-t border-border/60"
-        >
-          <div className="px-3 pb-3 pt-2 space-y-3">
-            {/* Authentication required state */}
-            {isAuthRequired && (
-              <div className="rounded-none border border-border/60 bg-background/60 p-3 space-y-3">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Lock className="h-4 w-4" />
-                  <p className="text-sm">{t("authRequired")}</p>
-                </div>
-
-                {(() => {
-                  const url = getStringProp(output, "url")
-                  if (!url) return null
-
-                  return (
-                    <a
-                      className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-                      href={url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {t("openAuthLink")}
-                      <ExternalLink className="h-3.5 w-3.5" />
-                    </a>
-                  )
-                })()}
-
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onCheckAuth(toolName)}
-                  >
-                    {t("checkStatus")}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={onRetry}
-                  >
-                    {t("retryTool")}
-                  </Button>
-                </div>
-
-                {authStatus && (
-                  <p className="text-[11px] text-muted-foreground">
-                    {t("authStatus", { status: authStatus.status ?? t("unknown") })}
-                  </p>
-                )}
-              </div>
-            )}
-
-            {/* Error state */}
-            {state === "output-error" && errorText && (
-              <p className="text-sm text-destructive">{errorText}</p>
-            )}
-
-            {/* Show raw data toggle */}
-            <div className="flex items-center justify-between">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                {showRaw ? "Raw Data" : "Summary"}
-              </p>
-              <Button
-                type="button"
-                variant="ghost"
-                size="editorial-sm"
-                onClick={() => setShowRaw(!showRaw)}
-                className="h-6 text-[10px]"
-              >
-                {showRaw ? "Show Summary" : "Show Raw"}
-              </Button>
-            </div>
-
-            {/* Input section */}
-            {showRaw && (
-              <div>
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">
-                  {t("toolInput")}
-                </p>
-                <pre className="text-xs border border-border/60 bg-background/60 p-2.5 overflow-x-auto rounded-none">
-                  {JSON.stringify(input ?? null, null, 2)}
-                </pre>
-              </div>
-            )}
-
-            {/* Output section */}
-            {showRaw && state === "output-available" && !isAuthRequired && (
-              <div>
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">
-                  {t("toolOutput")}
-                </p>
-                <pre className="text-xs border border-border/60 bg-background/60 p-2.5 overflow-x-auto rounded-none">
-                  {JSON.stringify(output ?? null, null, 2)}
-                </pre>
-              </div>
-            )}
-
-            {/* Summary view (when not showing raw) */}
-            {!showRaw && state === "output-available" && !isAuthRequired && output ? (
-              <div className="text-sm text-muted-foreground">
-                {isRecord(output) && typeof output.result === "string" ? (
-                  <p>{output.result}</p>
-                ) : (
-                  <p>Tool executed successfully</p>
-                )}
-              </div>
-            ) : null}
-          </div>
-        </motion.div>
-      )}
+      {isExpanded ? (
+        <ToolInvocationBody
+          toolName={toolName}
+          state={state}
+          input={input}
+          output={output}
+          errorText={errorText}
+          authStatus={authStatus}
+          showRaw={showRaw}
+          onToggleRaw={() => setShowRaw((current) => !current)}
+          onCheckAuth={onCheckAuth}
+          onRetry={onRetry}
+        />
+      ) : null}
     </div>
   )
 }

@@ -7,6 +7,7 @@ import { toast } from "sonner"
 
 import { orpc, orpcClient } from "@/server/orpc/client"
 import type { CompanyStatus } from "@/lib/schemas/enums"
+import type { CompanyListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/types"
 
 export function useCompanyValidation() {
   const t = useTranslations("dashboard.admin.companies")
@@ -72,7 +73,7 @@ export function useCompanyValidation() {
   })
 
   return {
-    companies: data?.companies ?? [],
+    companies: (data?.companies ?? []) as CompanyListItem[],
     hasMore: data?.hasMore ?? false,
     isLoading,
     statusFilter,

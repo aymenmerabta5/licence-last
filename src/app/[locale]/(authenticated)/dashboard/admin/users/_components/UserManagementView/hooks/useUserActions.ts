@@ -87,3 +87,5 @@ export function useUserActions() {
 
   return { createUser, setRole, updateUser, banUser, unbanUser, removeUser, setPassword }
 }
+
+export type UserActions = ReturnType<typeof useUserActions>

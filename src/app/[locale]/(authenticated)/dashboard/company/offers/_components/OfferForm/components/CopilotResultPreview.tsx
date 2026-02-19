@@ -4,14 +4,14 @@ import {
   Clock,
   Laptop,
   MapPin,
-  Tag,
   Users,
 } from "lucide-react"
 import * as motion from "motion/react-client"
 
+import { CopilotSkillChips } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/CopilotSkillChips"
 import { Button } from "@/components/ui/button"
-import { INTERNSHIP_TYPE_LABELS } from "@/lib/constants/internship"
 import { ease } from "@/lib/animations"
+import { INTERNSHIP_TYPE_LABELS } from "@/lib/constants/internship"
 import { getWilayaName } from "@/lib/wilayas"
 
 import type { CopilotResult } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
@@ -40,7 +40,7 @@ export function CopilotResultPreview({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease }}
-      className="border-t border-border/40 pt-4 space-y-3"
+      className="space-y-3 border-t border-border/40 pt-4"
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
@@ -64,18 +64,19 @@ export function CopilotResultPreview({
         <div className="space-y-3">
           {result.title && (
             <div>
-              <p className="text-[9px] font-bold tracking-[0.15em] uppercase text-muted-foreground/40 mb-1 [[dir=rtl]_&]:tracking-normal">
+              <p className="mb-1 text-[9px] font-bold tracking-[0.15em] uppercase text-muted-foreground/40 [[dir=rtl]_&]:tracking-normal">
                 {t("copilot.previewTitle")}
               </p>
               <p className="font-serif text-lg text-heading">{result.title}</p>
             </div>
           )}
+
           {result.description && (
             <div>
-              <p className="text-[9px] font-bold tracking-[0.15em] uppercase text-muted-foreground/40 mb-1 [[dir=rtl]_&]:tracking-normal">
+              <p className="mb-1 text-[9px] font-bold tracking-[0.15em] uppercase text-muted-foreground/40 [[dir=rtl]_&]:tracking-normal">
                 {t("copilot.previewDescription")}
               </p>
-              <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">
+              <p className="line-clamp-4 text-sm leading-relaxed text-muted-foreground">
                 {result.description}
               </p>
             </div>
@@ -87,38 +88,42 @@ export function CopilotResultPreview({
             result.durationWeeks ||
             result.maxPositions) && (
             <div>
-              <p className="text-[9px] font-bold tracking-[0.15em] uppercase text-muted-foreground/40 mb-2 [[dir=rtl]_&]:tracking-normal">
+              <p className="mb-2 text-[9px] font-bold tracking-[0.15em] uppercase text-muted-foreground/40 [[dir=rtl]_&]:tracking-normal">
                 {t("copilot.previewDetails")}
               </p>
               <div className="flex flex-wrap gap-2">
                 {result.internshipType && (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider bg-purple-500/5 border border-purple-500/20 text-purple-700 dark:text-purple-400 [[dir=rtl]_&]:tracking-normal">
+                  <span className="inline-flex items-center gap-1.5 border border-purple-500/20 bg-purple-500/5 px-2.5 py-1 text-[10px] font-semibold tracking-wider text-purple-700 uppercase [[dir=rtl]_&]:tracking-normal dark:text-purple-400">
                     <Briefcase className="h-3 w-3" />
                     {INTERNSHIP_TYPE_LABELS[result.internshipType] ??
                       result.internshipType}
                   </span>
                 )}
+
                 {result.workMode && (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider bg-emerald-500/5 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 [[dir=rtl]_&]:tracking-normal">
+                  <span className="inline-flex items-center gap-1.5 border border-emerald-500/20 bg-emerald-500/5 px-2.5 py-1 text-[10px] font-semibold tracking-wider text-emerald-700 uppercase [[dir=rtl]_&]:tracking-normal dark:text-emerald-400">
                     <Laptop className="h-3 w-3" />
                     {WORK_MODE_LABELS[result.workMode] ?? result.workMode}
                   </span>
                 )}
+
                 {result.wilayaCode && (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider bg-blue-500/5 border border-blue-500/20 text-blue-700 dark:text-blue-400 [[dir=rtl]_&]:tracking-normal">
+                  <span className="inline-flex items-center gap-1.5 border border-blue-500/20 bg-blue-500/5 px-2.5 py-1 text-[10px] font-semibold tracking-wider text-blue-700 uppercase [[dir=rtl]_&]:tracking-normal dark:text-blue-400">
                     <MapPin className="h-3 w-3" />
                     {getWilayaName(result.wilayaCode) ??
                       String(result.wilayaCode).padStart(2, "0")}
                   </span>
                 )}
+
                 {result.durationWeeks && (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider bg-foreground/5 border border-foreground/10 text-heading [[dir=rtl]_&]:tracking-normal">
+                  <span className="inline-flex items-center gap-1.5 border border-foreground/10 bg-foreground/5 px-2.5 py-1 text-[10px] font-semibold tracking-wider text-heading uppercase [[dir=rtl]_&]:tracking-normal">
                     <Clock className="h-3 w-3 text-muted-foreground/50" />
                     {t("copilot.duration", { weeks: result.durationWeeks })}
                   </span>
                 )}
+
                 {result.maxPositions && (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider bg-foreground/5 border border-foreground/10 text-heading [[dir=rtl]_&]:tracking-normal">
+                  <span className="inline-flex items-center gap-1.5 border border-foreground/10 bg-foreground/5 px-2.5 py-1 text-[10px] font-semibold tracking-wider text-heading uppercase [[dir=rtl]_&]:tracking-normal">
                     <Users className="h-3 w-3 text-muted-foreground/50" />
                     {t("copilot.positions", { count: result.maxPositions })}
                   </span>
@@ -127,7 +132,7 @@ export function CopilotResultPreview({
             </div>
           )}
 
-          <SkillChips
+          <CopilotSkillChips
             skillTagIds={result.skillTagIds}
             skillTagNames={result.skillTagNames}
             skillMap={skillMap}
@@ -138,17 +143,17 @@ export function CopilotResultPreview({
 
       {result.intent === "offer_improve_description" && result.description && (
         <div>
-          <p className="text-[9px] font-bold tracking-[0.15em] uppercase text-muted-foreground/40 mb-1 [[dir=rtl]_&]:tracking-normal">
+          <p className="mb-1 text-[9px] font-bold tracking-[0.15em] uppercase text-muted-foreground/40 [[dir=rtl]_&]:tracking-normal">
             {t("copilot.previewDescription")}
           </p>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <p className="text-sm leading-relaxed text-muted-foreground">
             {result.description}
           </p>
         </div>
       )}
 
       {result.intent === "offer_suggest_skill_tags" && (
-        <SkillChips
+        <CopilotSkillChips
           skillTagIds={result.skillTagIds}
           skillTagNames={result.skillTagNames}
           skillMap={skillMap}
@@ -158,61 +163,3 @@ export function CopilotResultPreview({
     </motion.div>
   )
 }
-
-interface SkillChipsProps {
-  skillTagIds?: string[]
-  skillTagNames?: string[]
-  skillMap: Map<string, string>
-  label: string
-}
-
-function SkillChips({
-  skillTagIds,
-  skillTagNames,
-  skillMap,
-  label,
-}: SkillChipsProps) {
-  const hasSkills =
-    (skillTagIds && skillTagIds.length > 0) ||
-    (skillTagNames && skillTagNames.length > 0)
-
-  if (!hasSkills) {
-    return null
-  }
-
-  return (
-    <div>
-      <p className="text-[9px] font-bold tracking-[0.15em] uppercase text-muted-foreground/40 mb-2 [[dir=rtl]_&]:tracking-normal">
-        {label}
-      </p>
-      <div className="flex flex-wrap gap-2">
-        {skillTagIds?.map((skillTagId) => (
-          <span
-            key={skillTagId}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider bg-amber-500/5 border border-amber-500/20 text-amber-700 dark:text-amber-400 [[dir=rtl]_&]:tracking-normal"
-          >
-            <Tag className="h-3 w-3" />
-            {skillMap.get(skillTagId) ?? skillTagId}
-          </span>
-        ))}
-        {skillTagNames
-          ?.filter((skillTagName) => {
-            const normalized = skillTagName.toLowerCase()
-            return !skillTagIds?.some(
-              (skillTagId) => skillMap.get(skillTagId)?.toLowerCase() === normalized,
-            )
-          })
-          .map((skillTagName) => (
-            <span
-              key={skillTagName}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider bg-amber-500/5 border border-amber-500/20 text-amber-700 dark:text-amber-400 [[dir=rtl]_&]:tracking-normal"
-            >
-              <Tag className="h-3 w-3" />
-              {skillTagName}
-            </span>
-          ))}
-      </div>
-    </div>
-  )
-}
-

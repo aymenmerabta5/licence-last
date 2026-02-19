@@ -3,45 +3,14 @@
 import { useCallback, useMemo, useRef, useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { z } from "zod"
 import { toast } from "sonner"
 
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { getErrorMessage } from "@/lib/error-message"
 import { orpc, orpcClient } from "@/server/orpc/client"
+import { studentProfileDetailsSchema } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/hooks/profileSettingsSchema"
 
 import type { MeResult, StudentProfileResult } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/types"
-
-const studentProfileDetailsSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(2, { error: "Name must be at least 2 characters." })
-    .max(120),
-  bio: z.string().optional(),
-  phone: z.string().optional(),
-  githubUrl: z
-    .string()
-    .url({ error: "Invalid GitHub URL." })
-    .optional()
-    .or(z.literal("")),
-  portfolioUrl: z
-    .string()
-    .url({ error: "Invalid website URL." })
-    .optional()
-    .or(z.literal("")),
-  studentNumber: z.string().optional(),
-  department: z.string().optional(),
-  level: z.string().optional(),
-  wilayaCode: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .max(58)
-    .optional()
-    .or(z.literal(0)),
-  address: z.string().optional(),
-})
 
 export function useProfileSettings(
   me: MeResult,

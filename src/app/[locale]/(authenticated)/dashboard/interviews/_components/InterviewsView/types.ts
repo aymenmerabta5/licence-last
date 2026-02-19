@@ -60,6 +60,29 @@ export interface CompanyApplicationOption {
   createdAt: Date | string
 }
 
+export interface UseInterviewsDataParams {
+  role: InterviewsRole
+  selectedOfferId: string
+}
+
+export interface UseInterviewsDataResult {
+  studentInterviews: StudentInterviewView[]
+  companyInterviews: CompanyInterviewView[]
+  companyOffers: CompanyOfferOption[]
+  companyApplications: CompanyApplicationOption[]
+  studentErrorMessage: string | null
+  companyErrorMessage: string | null
+  isStudentLoading: boolean
+  isCompanyLoading: boolean
+  isOffersLoading: boolean
+  isApplicationsLoading: boolean
+  confirmingSlotId: string | null
+  isSubmittingProposal: boolean
+  isFeatureDisabled: boolean
+  confirmSlot: (input: ConfirmSlotInput) => Promise<void>
+  proposeSlots: (input: ProposeSlotsInput) => Promise<boolean>
+}
+
 export interface ProposedSlotDraft {
   id: string
   startsAt: string

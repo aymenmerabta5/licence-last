@@ -57,6 +57,10 @@ mock.module("@/server/services/notifications/create", () => ({
   createNotification: createNotificationMock,
 }))
 
+mock.module("@/server/services/applications/pipeline", () => ({
+  appendTimelineEvent: mock(() => Promise.resolve({ eventId: "evt-1" })),
+}))
+
 describe("src/server/services/placements/reject", () => {
   beforeEach(() => {
     selectCallIdx = 0

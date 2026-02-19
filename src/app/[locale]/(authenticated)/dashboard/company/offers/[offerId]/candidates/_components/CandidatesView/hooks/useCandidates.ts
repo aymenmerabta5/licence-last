@@ -1,7 +1,6 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import type { InfiniteData } from "@tanstack/react-query"
 import {
   useInfiniteQuery,
   useMutation,
@@ -11,22 +10,20 @@ import {
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 
-import { useInfiniteScroll } from "@/hooks"
-import { STAGE_COLUMNS, canTransitionStage } from "@/lib/constants/pipeline"
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll"
+import { STAGE_COLUMNS } from "@/lib/constants/pipeline"
 import type { PipelineStage } from "@/lib/constants/pipeline"
 import { orpc, orpcClient } from "@/server/orpc/client"
 import type { ListApplicationsByOfferResult } from "@/server/services/applications/list-by-offer"
 
 import type { AcceptModalState, RefuseModalState } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
+import { useCandidateStageMutation } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/hooks/useCandidateStageMutation"
 
 export function useCandidates(offerId: string) {
   const t = useTranslations("dashboard.company.candidates")
   const queryClient = useQueryClient()
 
   const [actionLoading, setActionLoading] = useState<string | null>(null)
-  const [pendingStageById, setPendingStageById] = useState<
-    Record<string, true>
-  >({})
   const [acceptModal, setAcceptModal] = useState<AcceptModalState | null>(null)
   const [refuseModal, setRefuseModal] = useState<RefuseModalState | null>(null)
   const [refuseNote, setRefuseNote] = useState("")
@@ -71,68 +68,16 @@ export function useCandidates(offerId: string) {
       ),
     [applications],
   )
+  const { pendingStageById, handleStageChange } = useCandidateStageMutation({
+    applicationsQueryKey,
+    applicationStageById,
+  })
 
   const timelineQuery = useQuery({
     ...orpc.applications.getTimeline.queryOptions({
       input: { applicationId: openedTimelineFor ?? "" },
     }),
     enabled: !!openedTimelineFor,
-  })
-
-  const stageMutation = useMutation({
-    mutationFn: ({
-      applicationId,
-      toStage,
-    }: {
-      applicationId: string
-      toStage: PipelineStage
-    }) => orpcClient.applications.updatePipelineStage({ applicationId, toStage }),
-    onMutate: async ({ applicationId, toStage }) => {
-      setPendingStageById((prev) => ({ ...prev, [applicationId]: true }))
-      await queryClient.cancelQueries({ queryKey: applicationsQueryKey })
-
-      const previousData =
-        queryClient.getQueryData<InfiniteData<ListApplicationsByOfferResult>>(
-          applicationsQueryKey,
-        )
-
-      if (previousData) {
-        queryClient.setQueryData<InfiniteData<ListApplicationsByOfferResult>>(
-          applicationsQueryKey,
-          {
-            ...previousData,
-            pages: previousData.pages.map((page) => ({
-              ...page,
-              applications: page.applications.map((app) =>
-                app.id === applicationId
-                  ? { ...app, pipelineStage: toStage }
-                  : app,
-              ),
-            })),
-          },
-        )
-      }
-
-      return { previousData, applicationId }
-    },
-    onError: (_error, _variables, context) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(applicationsQueryKey, context.previousData)
-      }
-      toast.error(t("stageUpdateFailed"))
-    },
-    onSettled: (_data, _error, variables, context) => {
-      const settledApplicationId = context?.applicationId ?? variables.applicationId
-
-      setPendingStageById((prev) => {
-        if (!prev[settledApplicationId]) return prev
-        const next = { ...prev }
-        delete next[settledApplicationId]
-        return next
-      })
-
-      queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
-    },
   })
 
   const acceptMutation = useMutation(
@@ -177,20 +122,6 @@ export function useCandidates(offerId: string) {
     } finally {
       setActionLoading(null)
     }
-  }
-
-  const handleStageChange = (applicationId: string, toStage: PipelineStage) => {
-    const fromStage = applicationStageById.get(applicationId)
-
-    if (!fromStage || fromStage === toStage) return
-    if (pendingStageById[applicationId]) return
-
-    if (!canTransitionStage(fromStage, toStage)) {
-      toast.error(t("invalidStageTransition"))
-      return
-    }
-
-    stageMutation.mutate({ applicationId, toStage })
   }
 
   const grouped = useMemo(() => {

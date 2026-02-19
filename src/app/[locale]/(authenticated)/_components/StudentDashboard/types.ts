@@ -1,3 +1,5 @@
+import type { LucideIcon } from "lucide-react"
+
 export interface ApplicationRow {
   id: string
   status: string
@@ -45,6 +47,32 @@ export interface StudentDashboardData {
   recommendedOffers: OfferRow[]
   skills: SkillTag[]
   profileCompleteness: number
+}
+
+export interface StudentDashboardStat {
+  title: string
+  value: string
+  description: string
+  icon: LucideIcon
+}
+
+export interface StudentDashboardApplicationsLabels {
+  title: string
+  viewAll: string
+  emptyMessage: string
+  exploreButton: string
+}
+
+export interface StudentDashboardOffersLabels {
+  title: string
+  exploreAll: string
+}
+
+export interface StudentDashboardSkillsLabels {
+  title: string
+  manageSkills: string
+  emptyMessage: string
+  addSkills: string
 }
 
 export interface StudentDashboardProps {

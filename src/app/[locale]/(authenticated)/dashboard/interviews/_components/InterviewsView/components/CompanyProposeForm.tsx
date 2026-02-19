@@ -1,4 +1,4 @@
-import { CalendarPlus, Loader2, Plus, Trash2 } from "lucide-react"
+﻿import { CalendarPlus, Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -18,8 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { formatDateTime } from "@/lib/date"
-
+import { CompanySlotsEditor } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/CompanySlotsEditor"
 import type {
   CompanyApplicationOption,
   CompanyOfferOption,
@@ -104,11 +102,9 @@ export function CompanyProposeForm({
                 ))}
               </SelectContent>
             </Select>
-            {!isOffersLoading && offers.length === 0 && (
-              <p className="text-xs text-muted-foreground">
-                No offers found for this company.
-              </p>
-            )}
+            {!isOffersLoading && offers.length === 0 ? (
+              <p className="text-xs text-muted-foreground">No offers found for this company.</p>
+            ) : null}
           </div>
 
           <div className="space-y-2">
@@ -139,11 +135,9 @@ export function CompanyProposeForm({
                 ))}
               </SelectContent>
             </Select>
-            {selectedOfferId && !isApplicationsLoading && applications.length === 0 && (
-              <p className="text-xs text-muted-foreground">
-                No applications available for this offer.
-              </p>
-            )}
+            {selectedOfferId && !isApplicationsLoading && applications.length === 0 ? (
+              <p className="text-xs text-muted-foreground">No applications available for this offer.</p>
+            ) : null}
           </div>
 
           <div className="space-y-2">
@@ -159,106 +153,12 @@ export function CompanyProposeForm({
             />
           </div>
 
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label className="text-xs uppercase tracking-[0.08em]">Slots</Label>
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                className="gap-2"
-                onClick={onAddSlot}
-              >
-                <Plus className="h-3.5 w-3.5" />
-                Add slot
-              </Button>
-            </div>
-
-            {slots.map((slot, index) => (
-              <div key={slot.id} className="border border-border/50 p-3 space-y-3">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
-                    Slot {index + 1}
-                  </p>
-                  <Button
-                    type="button"
-                    size="icon-xs"
-                    variant="ghost"
-                    aria-label={`Remove slot ${index + 1}`}
-                    disabled={slots.length === 1}
-                    onClick={() => onRemoveSlot(slot.id)}
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="space-y-1">
-                    <Label htmlFor={`slot-start-${slot.id}`} className="text-xs">
-                      Starts at
-                    </Label>
-                    <Input
-                      id={`slot-start-${slot.id}`}
-                      type="datetime-local"
-                      value={slot.startsAt}
-                      onChange={(event) =>
-                        onSlotChange(slot.id, "startsAt", event.target.value)
-                      }
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor={`slot-end-${slot.id}`} className="text-xs">
-                      Ends at
-                    </Label>
-                    <Input
-                      id={`slot-end-${slot.id}`}
-                      type="datetime-local"
-                      value={slot.endsAt}
-                      onChange={(event) =>
-                        onSlotChange(slot.id, "endsAt", event.target.value)
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="space-y-1">
-                    <Label htmlFor={`slot-location-${slot.id}`} className="text-xs">
-                      Location (optional)
-                    </Label>
-                    <Input
-                      id={`slot-location-${slot.id}`}
-                      value={slot.location}
-                      placeholder="Office room, campus, etc."
-                      onChange={(event) =>
-                        onSlotChange(slot.id, "location", event.target.value)
-                      }
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor={`slot-link-${slot.id}`} className="text-xs">
-                      Meeting URL (optional)
-                    </Label>
-                    <Input
-                      id={`slot-link-${slot.id}`}
-                      type="url"
-                      value={slot.meetingUrl}
-                      placeholder="https://..."
-                      onChange={(event) =>
-                        onSlotChange(slot.id, "meetingUrl", event.target.value)
-                      }
-                    />
-                  </div>
-                </div>
-
-                {slot.startsAt && slot.endsAt && (
-                  <p className="text-xs text-muted-foreground">
-                    Preview: {formatDateTime(slot.startsAt)} to {formatDateTime(slot.endsAt)}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
+          <CompanySlotsEditor
+            slots={slots}
+            onSlotChange={onSlotChange}
+            onAddSlot={onAddSlot}
+            onRemoveSlot={onRemoveSlot}
+          />
 
           <Button
             type="submit"
@@ -267,7 +167,7 @@ export function CompanyProposeForm({
             disabled={!canSubmit || isSubmitting}
             className="gap-2"
           >
-            {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+            {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             Send proposal
           </Button>
         </form>

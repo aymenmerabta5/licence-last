@@ -36,3 +36,15 @@ export interface OfferDetailProps {
   } | null
   studentUserId: string
 }
+
+export interface OfferApplicationSummary {
+  id: string
+  status: string
+  createdAt: Date
+}
+
+export interface OfferApplyMutation {
+  mutate: (input: { offerId: string; coverLetter?: string }) => void
+  isPending: boolean
+  error: Error | null
+}

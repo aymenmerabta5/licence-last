@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
@@ -8,38 +8,19 @@ import { getErrorMessage } from "@/lib/error-message"
 import { orpc } from "@/server/orpc/client"
 
 import type {
-  CompanyApplicationOption,
   CompanyInterviewView,
-  CompanyOfferOption,
   ConfirmSlotInput,
-  InterviewsRole,
   ProposeSlotsInput,
   StudentInterviewView,
+  UseInterviewsDataParams,
+  UseInterviewsDataResult,
 } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 import { isInterviewsFeatureDisabledError } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/utils"
-
-interface UseInterviewsDataParams {
-  role: InterviewsRole
-  selectedOfferId: string
-}
-
-interface UseInterviewsDataResult {
-  studentInterviews: StudentInterviewView[]
-  companyInterviews: CompanyInterviewView[]
-  companyOffers: CompanyOfferOption[]
-  companyApplications: CompanyApplicationOption[]
-  studentErrorMessage: string | null
-  companyErrorMessage: string | null
-  isStudentLoading: boolean
-  isCompanyLoading: boolean
-  isOffersLoading: boolean
-  isApplicationsLoading: boolean
-  confirmingSlotId: string | null
-  isSubmittingProposal: boolean
-  isFeatureDisabled: boolean
-  confirmSlot: (input: ConfirmSlotInput) => Promise<void>
-  proposeSlots: (input: ProposeSlotsInput) => Promise<boolean>
-}
+import {
+  getInterviewsErrorMessage,
+  mapCompanyApplications,
+  mapCompanyOffers,
+} from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsData.helpers"
 
 export function useInterviewsData({
   role,
@@ -48,14 +29,8 @@ export function useInterviewsData({
   const queryClient = useQueryClient()
   const [confirmingSlotId, setConfirmingSlotId] = useState<string | null>(null)
 
-  const studentListQueryOptions = useMemo(
-    () => orpc.interviews.listForStudent.queryOptions(),
-    [],
-  )
-  const companyListQueryOptions = useMemo(
-    () => orpc.interviews.listForCompany.queryOptions(),
-    [],
-  )
+  const studentListQueryOptions = orpc.interviews.listForStudent.queryOptions()
+  const companyListQueryOptions = orpc.interviews.listForCompany.queryOptions()
 
   const studentInterviewsQuery = useQuery({
     ...studentListQueryOptions,
@@ -82,23 +57,9 @@ export function useInterviewsData({
     enabled: role === "company_admin" && selectedOfferId.trim().length > 0,
   })
 
-  const companyOffers = useMemo<CompanyOfferOption[]>(
-    () =>
-      (companyOffersQuery.data ?? []).map((offer) => ({
-        id: offer.id,
-        title: offer.title,
-      })),
-    [companyOffersQuery.data],
-  )
-  const companyApplications = useMemo<CompanyApplicationOption[]>(
-    () =>
-      (applicationsByOfferQuery.data?.applications ?? []).map((application) => ({
-        id: application.id,
-        studentName: application.student.name ?? "Unnamed student",
-        pipelineStage: application.pipelineStage,
-        createdAt: application.createdAt,
-      })),
-    [applicationsByOfferQuery.data],
+  const companyOffers = mapCompanyOffers(companyOffersQuery.data)
+  const companyApplications = mapCompanyApplications(
+    applicationsByOfferQuery.data?.applications,
   )
 
   const confirmSlotMutation = useMutation(
@@ -184,26 +145,10 @@ export function useInterviewsData({
     }
   }
 
-  const studentInterviews = useMemo(
-    () => (studentInterviewsQuery.data ?? []) as StudentInterviewView[],
-    [studentInterviewsQuery.data],
-  )
-  const companyInterviews = useMemo(
-    () => (companyInterviewsQuery.data ?? []) as CompanyInterviewView[],
-    [companyInterviewsQuery.data],
-  )
-
-  const studentErrorMessage =
-    studentInterviewsQuery.error &&
-    !isInterviewsFeatureDisabledError(studentInterviewsQuery.error)
-      ? getErrorMessage(studentInterviewsQuery.error, "Could not load interviews.")
-      : null
-
-  const companyErrorMessage =
-    companyInterviewsQuery.error &&
-    !isInterviewsFeatureDisabledError(companyInterviewsQuery.error)
-      ? getErrorMessage(companyInterviewsQuery.error, "Could not load interviews.")
-      : null
+  const studentInterviews = (studentInterviewsQuery.data ?? []) as StudentInterviewView[]
+  const companyInterviews = (companyInterviewsQuery.data ?? []) as CompanyInterviewView[]
+  const studentErrorMessage = getInterviewsErrorMessage(studentInterviewsQuery.error)
+  const companyErrorMessage = getInterviewsErrorMessage(companyInterviewsQuery.error)
 
   const isFeatureDisabled = [
     studentInterviewsQuery.error,
