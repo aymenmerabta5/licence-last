@@ -20,8 +20,8 @@ export function DashboardSidebar({ role = "student" }: { role?: string }) {
         "z-30",
       )}
     >
-      {/* Subtle border instead of full border-e class */}
-      <div className="absolute top-0 end-0 bottom-0 w-px bg-border/10" />
+      {/* Editorial column rule — sidebar separator */}
+      <div className="absolute top-0 end-0 bottom-0 w-px bg-border" />
 
       <SidebarHeader isCollapsed={isCollapsed} />
 

@@ -27,8 +27,7 @@ export function DashboardNavbar({ user }: { user: NavbarUser }) {
   const currentSection = segments[segments.length - 1] || "overview"
 
   return (
-    <header className="sticky top-0 z-20 h-24 flex items-center justify-between px-6 sm:px-12 bg-background transition-colors duration-500 relative">
-      <div className="absolute bottom-0 left-6 right-6 sm:left-12 sm:right-12 h-px bg-border/10" />
+    <header className="sticky top-0 z-20 h-24 flex items-center justify-between px-6 sm:px-12 bg-background transition-colors duration-500 border-b border-border">
 
       <div className="flex items-center gap-6">
         {/* Mobile menu toggle */}
@@ -82,7 +81,7 @@ export function DashboardNavbar({ user }: { user: NavbarUser }) {
         </button>
 
         {mounted && (
-          <div className="flex items-center gap-4 border-l border-border/10 pl-4 sm:pl-6 [[dir=rtl]_&]:border-l-0 [[dir=rtl]_&]:border-r [[dir=rtl]_&]:pl-0 [[dir=rtl]_&]:pr-4 sm:[[dir=rtl]_&]:pr-6">
+          <div className="flex items-center gap-4 border-s border-border/30 ps-4 sm:ps-6">
             <div className="hidden xs:flex items-center gap-3 text-muted-foreground">
               <LanguageSwitcher />
               <ThemeToggle />

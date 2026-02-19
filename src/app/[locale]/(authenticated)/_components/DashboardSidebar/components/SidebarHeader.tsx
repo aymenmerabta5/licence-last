@@ -4,7 +4,7 @@ import * as motion from "motion/react-client"
 
 export function SidebarHeader({ isCollapsed }: { isCollapsed: boolean }) {
   return (
-    <div className="px-6 py-8 flex items-center justify-between">
+    <div className="px-6 h-24 flex items-center justify-between border-b border-border">
       {!isCollapsed && (
         <motion.span
           initial={{ opacity: 0 }}
