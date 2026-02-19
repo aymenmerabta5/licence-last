@@ -24,7 +24,7 @@ Internex manages the complete internship lifecycle:
    (RSC + CC)     /     |     \
                 Auth   oRPC   Assistant
                 |       |        |
-         Better Auth 131 procs  Poe AI
+         Better Auth 136 procs  Poe AI
                 \       |      /
              +-----------------------+
              |    Services Layer     |
@@ -102,10 +102,13 @@ Open [http://localhost:3000](http://localhost:3000).
 | `ARCADE_API_KEY` | External AI tools (GitHub, Gmail) |
 | `RESEND_API_KEY`, `EMAIL_FROM` | Email service |
 | `S3_BUCKET`, `S3_ENDPOINT`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` | File storage |
+| `S3_BUCKET_NAME`, `NEXT_PUBLIC_S3_ENDPOINT`, `NEXT_PUBLIC_S3_URL`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | Alternate S3-compatible naming |
 | `REDIS_URL`, `REDIS_RATE_LIMIT_ENABLED` | Redis for rate limiting |
+| `FEATURE_*`, `NEXT_PUBLIC_FEATURE_*` | Server/client feature flags |
+| `TURNSTILE_SECRET_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Optional bot protection |
 | `LOG_LEVEL` | Pino log level (default: `info`) |
 
-See [`.env.example`](.env.example) for the full list including production Docker variables.
+See [`.env.example`](.env.example) for the full list, including production Docker variables (`POSTGRES_*`, `GITHUB_REPO`, `DOMAIN_NAME`, `RUN_SEED`, `SEED_ADMIN_*`).
 
 ## Scripts
 
@@ -114,7 +117,7 @@ See [`.env.example`](.env.example) for the full list including production Docker
 bun run dev            # Start dev server
 bun run build          # Production build
 bun run start          # Start production server
-bun run lint           # Biome lint + parity checks
+bun run lint           # Biome lint + import alias + Next parity checks
 bun run lint:biome     # Biome lint only
 bun run lint:fix       # Biome autofix (lint + format)
 bun run format         # Biome format only
@@ -123,6 +126,7 @@ bun run lint:next-parity # Next parity guard (img/link)
 bun run lint:architecture # Feature-folder architecture guard
 bun run lint:rtl-logical  # RTL logical CSS guard
 bun run typecheck      # TypeScript check
+bun run mcp:dev        # MCP development server (uses .env.development)
 
 # Testing
 bun test               # All tests
@@ -133,7 +137,7 @@ bun test:api:app-routes # App Router API route tests only
 bun test:api           # API route tests + oRPC route suite
 bun test:pages         # App Router page/component tests (src/app/[locale])
 bun test:coverage      # Segmented coverage run; writes reports to coverage/*.txt
-bun test:e2e           # Playwright E2E
+bun test:e2e           # Playwright E2E (sets PLAYWRIGHT_REUSE_SERVER=1, E2E_DISABLE_CAPTCHA=1, and loads .env.development)
 bun test:ci            # CI pipeline (unit + api + pages)
 bun run check:all      # Full pre-release checks (lint, typecheck, tests, build)
 
@@ -159,7 +163,7 @@ src/
 │   │   └── onboarding/        # Setup wizards per role
 │   └── api/
 │       ├── auth/[...all]/     # Better Auth endpoints
-│       ├── rpc/[...rest]/     # oRPC (131 procedures, CSRF protected)
+│       ├── rpc/[...rest]/     # oRPC (136 procedures, CSRF protected)
 │       ├── assistant/         # AI chat streaming + auth status
 │       ├── openapi/           # OpenAPI spec + Swagger UI
 │       └── health/            # Dependency-aware readiness check
@@ -174,7 +178,7 @@ src/
 │   ├── openapi/               # OpenAPI spec generation
 │   ├── pdfs/                  # PDF templates (agreements, certificates)
 │   ├── email/                 # Resend + React Email templates
-│   ├── storage/               # Bun S3Client wrapper
+│   ├── storage/               # AWS SDK S3-compatible client wrapper
 │   ├── caching/               # Redis client + rate limiter
 │   └── logging/               # Pino structured logging (auto-redacts PII)
 ├── i18n/                      # next-intl config
@@ -186,7 +190,7 @@ src/
 The project follows an **MVC pattern**:
 
 - **Model** (`server/services/`) — 18 domains of pure business logic with `import "server-only"`
-- **Controller** (`server/orpc/`) — 131 oRPC procedures across 19 namespaces with auth middleware and rate limiting
+- **Controller** (`server/orpc/`) — 136 oRPC procedures across 19 namespaces with auth middleware and rate limiting
 - **View** — React Server Components + Client Components with feature folder pattern
 
 Operational contracts:
@@ -276,12 +280,12 @@ See [docs/DEPLOYMENT_INCHALLAH.md](docs/DEPLOYMENT_INCHALLAH.md) for the full gu
 
 | Document | Description |
 |----------|-------------|
-| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | Full system architecture: data model, API surface, auth, AI, matching, infra |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Full system architecture snapshot (kept in sync with `docs/ARCHITECTURE.md`) |
 | [DEPLOYMENT_INCHALLAH.md](docs/DEPLOYMENT_INCHALLAH.md) | Server setup, Docker Compose, Caddy, Watchtower guide |
 | [CLAUDE.md](CLAUDE.md) | Project conventions and patterns for Claude Code |
 | [AGENTS.md](AGENTS.md) | Agent instructions and codebase reference |
 
-> **Note:** When adding features, update all 4 docs to keep them in sync. See the "Documentation Sync Policy" section in CLAUDE.md/AGENTS.md for the checklist.
+> **Note:** When adding features, sync `README.md`, `AGENTS.md`, `CLAUDE.md`, `ARCHITECTURE.md`, and `docs/ARCHITECTURE.md`. See the "Documentation Sync Policy" sections for the checklist.
 
 ## License
 

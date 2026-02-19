@@ -234,9 +234,9 @@ studentProcedureGenerous            // 300 req/min (student reads)
 assistantProcedureLimited           // 20 req/min (AI calls)
 ```
 
-**oRPC Routes (18 route modules, 131 procedures across 19 namespaces):**
+**oRPC Routes (18 route modules, 136 procedures across 19 namespaces):**
 - `users.ts` â€” profile + avatar + session management (7)
-- `companies.ts` â€” CRUD, approval/suspension, trust index, reports, quality feedback, logo upload (15)
+- `companies.ts` â€” CRUD, member management, approval/suspension, trust index, reports, quality feedback, logo upload (18)
 - `students.ts` â€” getProfile, getPublicProfile, upsertProfile, upsertProfileDetails (4)
 - `offers.ts` â€” CRUD, saved offers, AI draft/description/skills helpers, search parsing (15)
 - `applications.ts` â€” search, apply, withdraw, timeline, pipeline actions, cover letter generation (10)
@@ -247,7 +247,7 @@ assistantProcedureLimited           // 20 req/min (AI calls)
 - `notifications.ts` â€” list, preferences get/update, markRead, markAllRead (5)
 - `stats.ts` â€” admin + university dashboard statistics (2)
 - `admin-users.ts` â€” list, create, setRole, ban, unban, remove, setPassword, update, sessions, revokeSession, revokeAllSessions (11)
-- `universities.ts` â€” list, getById, create, approve, reject (5)
+- `universities.ts` â€” list, getById, create, update, delete, approve, reject (7)
 - `assistant.ts` â€” listModels, conversations CRUD, messages, model/title updates (9)
 - `matching.ts` â€” getScore, getSkillGap, getReadinessHistory, captureReadinessSnapshot (4)
 - `interviews.ts` â€” list for company/student, propose slots, confirm slot (4)
@@ -545,14 +545,14 @@ src/
 â”‚   â”œâ”€â”€ orpc/                   # oRPC controller layer
 â”‚   â”‚   â”œâ”€â”€ middleware.ts       # Auth procedures (7 types)
 â”‚   â”‚   â”œâ”€â”€ rate-limited-procedures.ts  # 20 variants
-â”‚   â”‚   â”œâ”€â”€ router.ts           # Combined router (131 procedures / 19 namespaces)
+â”‚   â”‚   â”œâ”€â”€ router.ts           # Combined router (136 procedures / 19 namespaces)
 â”‚   â”‚   â”œâ”€â”€ client.ts           # Client + TanStack Query
 â”‚   â”‚   â””â”€â”€ routes/             # 18 route modules
 â”‚   â”œâ”€â”€ services/               # Pure business logic (18 domains)
 â”‚   â”œâ”€â”€ ai/                     # AI integration (model, tools, context, prompts)
 â”‚   â”œâ”€â”€ openapi/                # OpenAPI spec generation
 â”‚   â”œâ”€â”€ pdfs/                   # PDF templates (AgreementTemplate, CertificateTemplate)
-â”‚   â”œâ”€â”€ storage/                # S3 file storage (Bun.S3Client)
+â”‚   â”œâ”€â”€ storage/                # S3 file storage (@aws-sdk/client-s3)
 â”‚   â”œâ”€â”€ email/                  # Email service (Resend + React Email)
 â”‚   â”œâ”€â”€ caching/                # Redis client + rate limiter
 â”‚   â”œâ”€â”€ logging/                # Pino structured logging
@@ -854,12 +854,12 @@ describe("functionName", () => {
 
 ### TypeScript Configuration
 
-Tests use Bun's types. The `tsconfig.json` includes:
+Tests use Bun's types and Jest DOM matchers. The `tsconfig.json` includes:
 ```json
-"types": ["bun-types"]
+"types": ["bun-types", "@testing-library/jest-dom"]
 ```
 
-This allows importing from `bun:test` without type errors.
+This allows importing from `bun:test` and using custom DOM assertions without type errors.
 
 ---
 
@@ -1176,7 +1176,7 @@ Development-only MCP server for AI tool testing:
 
 ### S3 File Storage
 
-**`src/server/storage/s3.ts`** (uses Bun's native `Bun.S3Client`):
+**`src/server/storage/s3.ts`** (uses `@aws-sdk/client-s3` with S3-compatible endpoints):
 ```typescript
 import "server-only"
 
@@ -1340,7 +1340,8 @@ When adding or modifying features, **update all relevant documentation files** t
 |------|---------|----------------|
 | `CLAUDE.md` | Project context for Claude | Service domains, procedure counts, directory tree, patterns |
 | `AGENTS.md` | Coding guidelines for AI agents | Service lists, route procedure tables, feature folder references |
-| `docs/ARCHITECTURE.md` | Full system architecture | Data model, service tables, procedure counts, file counts |
+| `ARCHITECTURE.md` | Root architecture snapshot | Data flow, service/procedure counts, key guardrails (sync with `docs/ARCHITECTURE.md`) |
+| `docs/ARCHITECTURE.md` | Detailed architecture handbook | Expanded data model, infra, testing, and deployment internals |
 | `README.md` | Project overview | High-level capabilities, architecture summary |
 
 **Checklist for new features:**
