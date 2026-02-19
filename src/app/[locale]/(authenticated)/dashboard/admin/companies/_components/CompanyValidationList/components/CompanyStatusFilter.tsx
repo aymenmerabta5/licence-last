@@ -28,10 +28,10 @@ export function CompanyStatusFilter({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.15, ease }}
-      className="flex items-center gap-4"
+      className="flex items-center justify-end mb-6"
     >
-      <div className="flex items-center gap-2">
-        <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 [[dir=rtl]_&]:tracking-normal">
+      <div className="flex items-center gap-3">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
           Filter
         </span>
         <Select
@@ -42,10 +42,10 @@ export function CompanyStatusFilter({
             }
           }}
         >
-          <SelectTrigger className="h-10 w-48 border-border/40 bg-background">
+          <SelectTrigger className="h-9 w-44 rounded-sm border-border bg-background hover:bg-muted/10 font-medium text-sm transition-colors">
             <SelectValue placeholder={t("statusFilter")} />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="rounded-sm border-border">
             <SelectItem value="all">{t("allStatuses")}</SelectItem>
             <SelectItem value="pending">{t("status.pending")}</SelectItem>
             <SelectItem value="approved">{t("status.approved")}</SelectItem>

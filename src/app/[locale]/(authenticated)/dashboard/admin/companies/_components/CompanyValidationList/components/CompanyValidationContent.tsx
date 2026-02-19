@@ -36,11 +36,8 @@ export function CompanyValidationContent({
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 py-16">
-        <Loader2 className="h-5 w-5 animate-spin text-primary" />
-        <span className="text-sm font-medium text-muted-foreground">
-          Loading companies...
-        </span>
+      <div className="flex flex-col items-center justify-center py-20">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground/40" />
       </div>
     )
   }
@@ -51,12 +48,10 @@ export function CompanyValidationContent({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, ease }}
-        className="space-y-3 py-16 text-center"
+        className="flex flex-col items-center justify-center border border-dashed border-border py-20 px-6 text-center"
       >
-        <div className="inline-flex items-center justify-center rounded-2xl bg-secondary/10 p-4">
-          <Building2 className="h-6 w-6 text-muted-foreground/30" />
-        </div>
-        <p className="text-sm font-medium text-muted-foreground">
+        <Building2 className="mb-4 h-8 w-8 text-muted-foreground/30 font-light" />
+        <p className="font-serif text-lg tracking-tight text-heading">
           {t("noCompanies")}
         </p>
       </motion.div>
@@ -64,13 +59,13 @@ export function CompanyValidationContent({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="border-t border-border">
       {companies.map((company, index) => (
         <motion.div
           key={company.id}
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 + index * 0.06, ease }}
+          transition={{ duration: 0.4, delay: index * 0.05, ease }}
         >
           <CompanyCard
             company={company}

@@ -74,12 +74,17 @@ export function DeleteUniversityDialog({
           />
         </div>
 
-        <AlertDialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+        <AlertDialogFooter className="mt-4">
+          <Button
+            variant="editorial-outline"
+            className="rounded-sm h-10"
+            onClick={() => onOpenChange(false)}
+          >
             {t("cancel")}
           </Button>
           <Button
-            variant="destructive"
+            variant="editorial"
+            className="bg-red-600 hover:bg-red-700 text-white border-transparent rounded-sm h-10"
             disabled={isDeleting || !isNameMatch || !university}
             onClick={() => university && onConfirm(university.id)}
           >

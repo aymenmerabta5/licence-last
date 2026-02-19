@@ -51,7 +51,7 @@ export function UniversityValidationList() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-10 pb-20">
+    <div className="max-w-4xl mx-auto pb-20 px-4 md:px-0">
       <UniversityValidationHeader total={universities.length} />
 
       <UniversityStatusFilter
