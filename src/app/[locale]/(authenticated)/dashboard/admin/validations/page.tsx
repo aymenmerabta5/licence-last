@@ -7,7 +7,7 @@ import { requireRole } from "@/lib/auth-guards"
 function AdminValidationsFallback() {
   return (
     <div
-      className="max-w-5xl mx-auto space-y-8"
+      className="max-w-7xl mx-auto space-y-10"
       aria-busy="true"
       aria-live="polite"
     >

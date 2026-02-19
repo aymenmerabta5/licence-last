@@ -3,6 +3,7 @@
 import { Building2, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+import type { RefObject } from "react"
 import { CompanyCard } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyCard"
 import type { CompanyListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/types"
 import { ease } from "@/lib/animations"
@@ -10,6 +11,9 @@ import { ease } from "@/lib/animations"
 interface CompanyValidationContentProps {
   companies: CompanyListItem[]
   isLoading: boolean
+  isFetchingNextPage: boolean
+  hasMore: boolean
+  sentinelRef: RefObject<HTMLDivElement | null>
   onApprove: (id: string) => void
   onReject: (id: string) => void
   onSuspend: (id: string) => void
@@ -23,6 +27,9 @@ interface CompanyValidationContentProps {
 export function CompanyValidationContent({
   companies,
   isLoading,
+  isFetchingNextPage,
+  hasMore,
+  sentinelRef,
   onApprove,
   onReject,
   onSuspend,
@@ -80,6 +87,14 @@ export function CompanyValidationContent({
           />
         </motion.div>
       ))}
+
+      {hasMore ? <div ref={sentinelRef} className="h-4" /> : null}
+
+      {isFetchingNextPage ? (
+        <div className="flex items-center justify-center py-6">
+          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground/40" />
+        </div>
+      ) : null}
     </div>
   )
 }

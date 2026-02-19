@@ -23,19 +23,19 @@ export function UserManagementView() {
   const isSuperAdmin = meResult?.user.role === "super_admin"
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-10">
       <motion.div {...reveal} transition={{ duration: 0.6, ease }}>
-        <div className="space-y-1">
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
+        <header className="space-y-3">
+          <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50">
             {t("kicker")}
           </p>
-          <h1 className="font-serif text-3xl text-heading tracking-tight">
+          <h1 className="font-serif text-[clamp(2.25rem,5vw,3.25rem)] leading-none tracking-tight text-heading">
             {t("title")}
           </h1>
-          <p className="text-sm text-muted-foreground font-light">
+          <p className="text-muted-foreground text-sm font-light tracking-wide max-w-2xl">
             {t("description")}
           </p>
-        </div>
+        </header>
       </motion.div>
 
       <motion.div {...reveal} transition={{ duration: 0.5, ease, delay: 0.1 }}>

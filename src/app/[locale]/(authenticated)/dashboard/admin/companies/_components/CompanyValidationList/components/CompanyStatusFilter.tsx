@@ -1,7 +1,9 @@
 "use client"
 
+import { Search } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -15,11 +17,15 @@ import type { CompanyStatus } from "@/lib/schemas/enums"
 interface CompanyStatusFilterProps {
   statusFilter: CompanyStatus | "all"
   onStatusChange: (status: CompanyStatus | "all") => void
+  search: string
+  onSearchChange: (value: string) => void
 }
 
 export function CompanyStatusFilter({
   statusFilter,
   onStatusChange,
+  search,
+  onSearchChange,
 }: CompanyStatusFilterProps) {
   const t = useTranslations("dashboard.admin.companies")
 
@@ -28,11 +34,21 @@ export function CompanyStatusFilter({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.15, ease }}
-      className="flex items-center justify-end mb-6"
+      className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
     >
-      <div className="flex items-center gap-3">
+      <div className="relative w-full sm:max-w-xs">
+        <Search className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
+        <Input
+          value={search}
+          onChange={(event) => onSearchChange(event.target.value)}
+          placeholder={t("searchPlaceholder")}
+          className="h-9 rounded-sm border-border bg-background ps-9 text-sm"
+        />
+      </div>
+
+      <div className="flex items-center gap-3 self-end sm:self-auto">
         <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
-          Filter
+          {t("statusFilter")}
         </span>
         <Select
           value={statusFilter}
@@ -42,7 +58,7 @@ export function CompanyStatusFilter({
             }
           }}
         >
-          <SelectTrigger className="h-9 w-44 rounded-sm border-border bg-background hover:bg-muted/10 font-medium text-sm transition-colors">
+          <SelectTrigger className="h-9 w-44 rounded-sm border-border bg-background text-sm font-medium transition-colors hover:bg-muted/10">
             <SelectValue placeholder={t("statusFilter")} />
           </SelectTrigger>
           <SelectContent className="rounded-sm border-border">

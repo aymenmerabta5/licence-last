@@ -6,7 +6,7 @@ let queryResult: any[] = []
 const mockWhere = mock(() => Promise.resolve(queryResult))
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockOffset = mock((): any => {
-  // When no status filter, result resolves directly
+  // When filtering is applied, `.where(...)` resolves the result.
   return { where: mockWhere }
 })
 const mockLimit = mock(() => ({ offset: mockOffset }))
@@ -30,6 +30,8 @@ describe("src/server/services/companies/list", () => {
     mockOffset.mockClear()
     mockWhere.mockClear()
 
+    mockWhere.mockImplementation(() => Promise.resolve(queryResult))
+    mockOffset.mockImplementation(() => ({ where: mockWhere }))
     mockSelect.mockReturnValue({ from: mockFrom })
     mockFrom.mockReturnValue({ orderBy: mockOrderBy })
     mockOrderBy.mockReturnValue({ limit: mockLimit })
@@ -93,6 +95,35 @@ describe("src/server/services/companies/list", () => {
     )
     await listCompanies({ limit: 500 })
 
-    expect(mockLimit).toHaveBeenCalled()
+    expect(mockLimit).toHaveBeenCalledWith(201)
+  })
+
+  test("should apply search filtering when search is provided", async () => {
+    queryResult = [
+      { id: "company-1", name: "Acme Labs", slug: "acme-labs" },
+      { id: "company-2", name: "Tech Forge", slug: "tech-forge" },
+    ]
+
+    const { listCompanies } = await import(
+      "@/server/services/companies/list?fresh=5" as string
+    )
+    const result = await listCompanies({ search: "acme" })
+
+    expect(mockWhere).toHaveBeenCalledTimes(1)
+    expect(result.companies).toEqual(queryResult)
+    expect(result.hasMore).toBe(false)
+  })
+
+  test("should ignore empty search values", async () => {
+    queryResult = [{ id: "company-1", name: "Acme Labs", slug: "acme-labs" }]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockOffset.mockResolvedValue(queryResult as any)
+
+    const { listCompanies } = await import(
+      "@/server/services/companies/list?fresh=6" as string
+    )
+    await listCompanies({ search: "   " })
+
+    expect(mockWhere).not.toHaveBeenCalled()
   })
 })

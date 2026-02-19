@@ -3,6 +3,7 @@
 import { Building2, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+import type { RefObject } from "react"
 import { UniversityCard } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/UniversityCard"
 import type { UniversityListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
 import { ease } from "@/lib/animations"
@@ -10,6 +11,8 @@ import { ease } from "@/lib/animations"
 interface UniversityValidationContentProps {
   universities: UniversityListItem[]
   isLoading: boolean
+  isFetchingNextPage: boolean
+  sentinelRef: RefObject<HTMLDivElement | null>
   onApprove: (id: string) => void
   onReject: (id: string) => void
   onEdit: (university: UniversityListItem) => void
@@ -23,6 +26,8 @@ interface UniversityValidationContentProps {
 export function UniversityValidationContent({
   universities,
   isLoading,
+  isFetchingNextPage,
+  sentinelRef,
   onApprove,
   onReject,
   onEdit,
@@ -59,27 +64,40 @@ export function UniversityValidationContent({
   }
 
   return (
-    <div className="border-t border-border">
-      {universities.map((university, index) => (
-        <motion.div
-          key={university.id}
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: index * 0.05, ease }}
-        >
-          <UniversityCard
-            university={university}
-            onApprove={onApprove}
-            onReject={onReject}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            isApproving={isApproving}
-            isRejecting={isRejecting}
-            isUpdating={isUpdating}
-            isDeleting={isDeleting}
-          />
-        </motion.div>
-      ))}
-    </div>
+    <>
+      <div className="border-t border-border">
+        {universities.map((university, index) => (
+          <motion.div
+            key={university.id}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: index * 0.05, ease }}
+          >
+            <UniversityCard
+              university={university}
+              onApprove={onApprove}
+              onReject={onReject}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              isApproving={isApproving}
+              isRejecting={isRejecting}
+              isUpdating={isUpdating}
+              isDeleting={isDeleting}
+            />
+          </motion.div>
+        ))}
+      </div>
+
+      <div ref={sentinelRef} className="h-4" />
+
+      {isFetchingNextPage && (
+        <div className="flex items-center justify-center gap-2 py-6">
+          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground/60" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
+            {t("loadingMore")}
+          </span>
+        </div>
+      )}
+    </>
   )
 }

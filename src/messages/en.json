@@ -1343,6 +1343,9 @@
         "description": "Review and approve pending university registrations.",
         "noUniversities": "No universities found.",
         "statusFilter": "Filter by status",
+        "searchLabel": "Search universities",
+        "searchPlaceholder": "Search by name or abbreviation...",
+        "loadingMore": "Loading more universities...",
         "allStatuses": "All statuses",
         "status": {
           "pending": "Pending",
@@ -1409,6 +1412,9 @@
         "description": "Review and approve pending company registrations.",
         "noCompanies": "No companies found.",
         "statusFilter": "Filter by status",
+        "searchLabel": "Search companies",
+        "searchPlaceholder": "Search by name or abbreviation...",
+        "loadingMore": "Loading more companies...",
         "allStatuses": "All statuses",
         "status": {
           "pending": "Pending",

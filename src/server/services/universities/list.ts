@@ -1,12 +1,13 @@
 import "server-only"
 
-import { desc, eq } from "drizzle-orm"
+import { and, desc, eq, ilike, or } from "drizzle-orm"
 import type { UniversityStatus } from "@/lib/schemas/enums"
 import { db } from "@/server/db"
 import { university } from "@/server/db/schema/universities"
 
 export interface ListUniversitiesInput {
   status?: UniversityStatus
+  search?: string
   limit?: number
   offset?: number
 }
@@ -21,6 +22,7 @@ export async function listUniversities(
 ): Promise<ListUniversitiesResult> {
   const limit = Math.min(input?.limit ?? 50, 200)
   const offset = input?.offset ?? 0
+  const normalizedSearch = input?.search?.trim()
 
   const query = db
     .select()
@@ -29,9 +31,22 @@ export async function listUniversities(
     .limit(limit + 1)
     .offset(offset)
 
-  const rows = input?.status
-    ? await query.where(eq(university.status, input.status))
-    : await query
+  const statusFilter = input?.status
+    ? eq(university.status, input.status)
+    : undefined
+  const searchFilter = normalizedSearch
+    ? or(
+        ilike(university.name, `%${normalizedSearch}%`),
+        ilike(university.abbreviation, `%${normalizedSearch}%`),
+      )
+    : undefined
+
+  const whereClause =
+    statusFilter && searchFilter
+      ? and(statusFilter, searchFilter)
+      : (statusFilter ?? searchFilter)
+
+  const rows = whereClause ? await query.where(whereClause) : await query
 
   return {
     universities: rows.slice(0, limit),

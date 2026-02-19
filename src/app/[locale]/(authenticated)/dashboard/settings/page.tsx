@@ -5,9 +5,13 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 function SettingsPageFallback() {
   return (
-    <div className="space-y-12 pb-24" aria-busy="true" aria-live="polite">
+    <div
+      className="max-w-7xl mx-auto space-y-10 pb-24"
+      aria-busy="true"
+      aria-live="polite"
+    >
       {/* Header skeleton */}
-      <div className="space-y-5 pt-6 pb-2">
+      <div className="space-y-3 pt-6 pb-2">
         <Skeleton className="h-6 w-32 rounded-full" />
         <Skeleton className="h-14 w-64 lg:w-96" />
         <Skeleton className="h-5 w-full max-w-xl" />
