@@ -27,25 +27,30 @@ export function DashboardNavbar({ user }: { user: NavbarUser }) {
   const currentSection = segments[segments.length - 1] || "overview"
 
   return (
-    <header className="sticky top-0 z-20 h-20 flex items-center justify-between ps-4 pe-6 sm:ps-8 sm:pe-10 bg-background/80 backdrop-blur-xl border-b border-border/50 transition-colors duration-500">
-      <div className="flex items-center gap-4">
+    <header className="sticky top-0 z-20 h-24 flex items-center justify-between px-6 sm:px-12 bg-background transition-colors duration-500 relative">
+      <div className="absolute bottom-0 left-6 right-6 sm:left-12 sm:right-12 h-px bg-border/10" />
+
+      <div className="flex items-center gap-6">
         {/* Mobile menu toggle */}
         <button
+          type="button"
           onClick={() => setIsSidebarOpen(true)}
-          className="lg:hidden p-2 hover:bg-primary/5 transition-all active:scale-95"
+          className="lg:hidden p-2 -ms-2 text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Toggle menu"
         >
-          <Menu className="h-5 w-5 text-foreground/80" />
+          <Menu className="h-5 w-5" />
         </button>
 
-        {/* Breadcrumb */}
-        <div className="hidden sm:flex flex-col">
-          <span className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50 font-bold mb-0.5 [[dir=rtl]_&]:tracking-normal">
-            Platform / {segments[0] || "Dashboard"}
-          </span>
-          <h2 className="text-sm font-serif font-bold capitalize text-heading">
+        {/* Clean minimalist breadcrumb */}
+        <div className="hidden sm:flex items-baseline gap-3">
+          <h2 className="text-2xl font-serif text-heading tracking-tight capitalize">
             {currentSection.replace(/-/g, " ")}
           </h2>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono tracking-wider opacity-60">
+            <span>[</span>
+            <span className="uppercase">{segments[0] || "dashboard"}</span>
+            <span>]</span>
+          </div>
         </div>
       </div>
 
@@ -57,41 +62,39 @@ export function DashboardNavbar({ user }: { user: NavbarUser }) {
       </div>
 
       {/* Right section */}
-      <div className="flex items-center gap-2 sm:gap-4">
-        {/* Search — editorial squared style */}
-        <div className="hidden md:flex items-center w-56 lg:w-72 relative group focus-within:w-64 lg:focus-within:w-80 transition-all duration-500">
-          <Search className="absolute start-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
+      <div className="flex items-center gap-4 sm:gap-6">
+        {/* Search — Minimalist underline style */}
+        <div className="hidden md:flex items-center w-48 lg:w-64 relative group transition-all duration-300">
           <input
             type="text"
             placeholder="Search..."
-            className="w-full bg-transparent border border-border/40 focus:border-primary/30 py-2 ps-10 pe-4 text-[12px] focus:outline-none focus:ring-2 focus:ring-primary/5 transition-all placeholder:text-muted-foreground/30 text-foreground"
+            className="w-full bg-transparent border-b border-border/20 focus:border-primary py-1.5 px-0 text-sm focus:outline-none transition-all placeholder:text-muted-foreground/40 text-foreground font-serif italic"
           />
+          <Search className="absolute end-0 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 group-focus-within:text-primary transition-colors pointer-events-none" />
         </div>
 
         {/* Mobile search icon */}
-        <button className="md:hidden p-2 hover:bg-primary/5 transition-all text-muted-foreground/60">
+        <button
+          type="button"
+          className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-all"
+        >
           <Search className="h-5 w-5" />
         </button>
 
         {mounted && (
-          <>
-            {/* Language + divider */}
-            <div className="hidden xs:flex items-center gap-2">
+          <div className="flex items-center gap-4 border-l border-border/10 pl-4 sm:pl-6 [[dir=rtl]_&]:border-l-0 [[dir=rtl]_&]:border-r [[dir=rtl]_&]:pl-0 [[dir=rtl]_&]:pr-4 sm:[[dir=rtl]_&]:pr-6">
+            <div className="hidden xs:flex items-center gap-3 text-muted-foreground">
               <LanguageSwitcher />
-              <div className="h-5 w-px bg-border/30" />
+              <ThemeToggle />
+              <NotificationBell />
             </div>
-
-            <ThemeToggle />
-            <NotificationBell />
-
-            <div className="h-5 w-px bg-border/30 hidden sm:block" />
 
             <UserDropdown
               user={user}
               onLogout={logout}
               isLoggingOut={isLoggingOut}
             />
-          </>
+          </div>
         )}
       </div>
     </header>
