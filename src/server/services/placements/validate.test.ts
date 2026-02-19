@@ -74,6 +74,14 @@ mock.module("@/server/db", () => ({
   },
 }))
 
+const createNotificationMock = mock(() =>
+  Promise.resolve({ id: "notification-1", skipped: false }),
+)
+
+mock.module("@/server/services/notifications/create", () => ({
+  createNotification: createNotificationMock,
+}))
+
 describe("src/server/services/placements/validate", () => {
   beforeEach(() => {
     selectCallIdx = 0
@@ -103,6 +111,7 @@ describe("src/server/services/placements/validate", () => {
 
     mockInsert.mockClear()
     mockValues.mockClear()
+    createNotificationMock.mockClear()
 
     mockFromJoin.mockReturnValue({ innerJoin: mockJoin1 })
     mockJoin1.mockReturnValue({ innerJoin: mockJoin2 })
@@ -124,6 +133,10 @@ describe("src/server/services/placements/validate", () => {
 
     mockInsert.mockReturnValue({ values: mockValues })
     mockValues.mockResolvedValue(undefined)
+    createNotificationMock.mockResolvedValue({
+      id: "notification-1",
+      skipped: false,
+    })
   })
 
   test("should throw when application status is not company_accepted", async () => {
@@ -196,7 +209,7 @@ describe("src/server/services/placements/validate", () => {
 
     expect(result.success).toBe(true)
     expect(mockTransaction).toHaveBeenCalledTimes(1)
-    // at least one notification insert for student
-    expect(mockInsert).toHaveBeenCalled()
+    expect(mockInsert).not.toHaveBeenCalled()
+    expect(createNotificationMock).toHaveBeenCalledTimes(2)
   })
 })

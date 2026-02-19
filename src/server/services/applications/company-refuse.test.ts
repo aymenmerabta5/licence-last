@@ -40,6 +40,14 @@ mock.module("@/server/services/applications/pipeline", () => ({
   appendTimelineEvent: mock(() => Promise.resolve({ eventId: "evt-1" })),
 }))
 
+const createNotificationMock = mock(() =>
+  Promise.resolve({ id: "notification-1", skipped: false }),
+)
+
+mock.module("@/server/services/notifications/create", () => ({
+  createNotification: createNotificationMock,
+}))
+
 describe("src/server/services/applications/company-refuse", () => {
   beforeEach(() => {
     selectCallIdx = 0
@@ -57,6 +65,7 @@ describe("src/server/services/applications/company-refuse", () => {
 
     mockInsert.mockClear()
     mockValues.mockClear()
+    createNotificationMock.mockClear()
 
     mockFromWithTwoJoins.mockReturnValue({ innerJoin: mockJoin1 })
     mockJoin1.mockReturnValue({ innerJoin: mockJoin2 })
@@ -69,6 +78,10 @@ describe("src/server/services/applications/company-refuse", () => {
 
     mockInsert.mockReturnValue({ values: mockValues })
     mockValues.mockResolvedValue(undefined)
+    createNotificationMock.mockResolvedValue({
+      id: "notification-1",
+      skipped: false,
+    })
   })
 
   test("should refuse an application and notify student", async () => {
@@ -94,7 +107,7 @@ describe("src/server/services/applications/company-refuse", () => {
 
     expect(result.success).toBe(true)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    // 1 insert: student notification (timeline event is via appendTimelineEvent, mocked)
-    expect(mockInsert).toHaveBeenCalledTimes(1)
+    expect(mockInsert).not.toHaveBeenCalled()
+    expect(createNotificationMock).toHaveBeenCalledTimes(1)
   })
 })

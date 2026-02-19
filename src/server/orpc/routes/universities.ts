@@ -19,9 +19,8 @@ import { updateUniversity } from "@/server/services/universities/update"
 import { deleteUniversity } from "@/server/services/universities/delete"
 import { approveUniversity } from "@/server/services/universities/approve"
 import { rejectUniversity } from "@/server/services/universities/reject"
-import { createNotification } from "@/server/services/notifications/create"
+import { emitNotification } from "@/server/services/notifications/emit"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
-import { sendEmail } from "@/server/email/sendEmail"
 import UniversityApprovedEmail from "@/server/email/templates/UniversityApprovedEmail"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
@@ -182,20 +181,20 @@ export const approveUniversityProcedure = superAdminProcedureStandard
 
     const dashboardUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/dashboard`
     for (const admin of admins) {
-      await createNotification({
+      await emitNotification({
         userId: admin.userId,
         type: "university_approved",
         payload: {
           universityId: input.universityId,
           universityName: result.name,
         },
+        email: {
+          to: admin.email,
+          subject: `${result.name} has been approved - Internex`,
+          component: UniversityApprovedEmail,
+          props: { universityName: result.name, dashboardUrl },
+        },
       })
-      sendEmail(
-        admin.email,
-        `${result.name} has been approved — Internex`,
-        UniversityApprovedEmail,
-        { universityName: result.name, dashboardUrl },
-      )
       // Invalidate user-specific university cache
       revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-user-${admin.userId}`, "max")
     }
@@ -233,3 +232,5 @@ export const rejectUniversityProcedure = superAdminProcedureStandard
 
     return result
   })
+
+

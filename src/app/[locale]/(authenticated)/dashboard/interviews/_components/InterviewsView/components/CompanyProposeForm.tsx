@@ -147,18 +147,6 @@ export function CompanyProposeForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="interview-application-id" className="text-xs uppercase tracking-[0.08em]">
-              Application ID (manual)
-            </Label>
-            <Input
-              id="interview-application-id"
-              value={applicationId}
-              placeholder="app_..."
-              onChange={(event) => onApplicationIdChange(event.target.value)}
-            />
-          </div>
-
-          <div className="space-y-2">
             <Label htmlFor="interview-note" className="text-xs uppercase tracking-[0.08em]">
               Note (optional)
             </Label>

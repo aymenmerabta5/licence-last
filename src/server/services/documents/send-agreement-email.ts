@@ -3,9 +3,12 @@ import "server-only"
 import { env } from "@/env"
 import { INTERNSHIP_TYPE_LABELS } from "@/lib/constants/internship"
 import { sendEmail } from "@/server/email/sendEmail"
+import { createModuleLogger } from "@/server/logging"
+import { getNotificationPreferences } from "@/server/services/notifications/get-preferences"
 import AgreementGeneratedEmail from "@/server/email/templates/AgreementGeneratedEmail"
 
 interface SendAgreementEmailInput {
+  userId: string
   to: string
   studentName: string
   companyName: string
@@ -16,6 +19,8 @@ interface SendAgreementEmailInput {
   verificationCode: string
   locale?: string
 }
+
+const log = createModuleLogger("services/documents/send-agreement-email")
 
 function toLocaleTag(locale?: string): string {
   if (locale === "fr") return "fr-FR"
@@ -34,6 +39,23 @@ function formatDate(date: Date, locale?: string): string {
 }
 
 export async function sendAgreementEmail(input: SendAgreementEmailInput) {
+  const preferences = await getNotificationPreferences(input.userId)
+  if (!preferences.emailEnabled) {
+    log.info(
+      {
+        userId: input.userId,
+        event: "agreement_email_skipped_email_disabled",
+      },
+      "Skipping agreement email because user disabled email notifications",
+    )
+
+    return {
+      success: true,
+      code: "EMAIL_SKIPPED",
+      message: "Email skipped due to user preferences.",
+    }
+  }
+
   const documentsUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/${input.locale ?? "en"}/dashboard/student/documents`
   const internshipTypeLabel =
     INTERNSHIP_TYPE_LABELS[input.internshipType] ?? input.internshipType

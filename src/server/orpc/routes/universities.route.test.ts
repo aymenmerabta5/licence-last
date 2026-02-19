@@ -29,8 +29,13 @@ const deleteUniversityMock = mock(async () => ({
   affectedUserIds: ["admin-1", "student-1"],
 }))
 const revalidateTagMock = mock(() => {})
-const createNotificationMock = mock(async () => ({ success: true }))
-const sendEmailMock = mock(async () => ({ success: true }))
+const emitNotificationMock = mock(async () => ({
+  notificationId: "notification-1",
+  inAppSkipped: false,
+  emailAttempted: true,
+  emailSkipped: false,
+  emailSuccess: true,
+}))
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   authedProcedureGenerous: createProcedureMock(),
@@ -77,11 +82,8 @@ mock.module("@/server/services/universities/approve", () => ({
 mock.module("@/server/services/universities/reject", () => ({
   rejectUniversity: mock(async () => ({ success: true })),
 }))
-mock.module("@/server/services/notifications/create", () => ({
-  createNotification: createNotificationMock,
-}))
-mock.module("@/server/email/sendEmail", () => ({
-  sendEmail: sendEmailMock,
+mock.module("@/server/services/notifications/emit", () => ({
+  emitNotification: emitNotificationMock,
 }))
 mock.module("@/server/db", () => ({
   db: {
@@ -95,13 +97,25 @@ mock.module("@/server/db", () => ({
 
 describe("src/server/orpc/routes/universities", () => {
   beforeEach(() => {
+    mock.module("@/server/services/notifications/emit", () => ({
+      emitNotification: emitNotificationMock,
+    }))
+    mock.module("@/server/db", () => ({
+      db: {
+        select: () => ({
+          from: () => ({
+            where: async () => [{ userId: "admin-1", email: "admin@uni.dz" }],
+          }),
+        }),
+      },
+    }))
+
     listUniversitiesMock.mockClear()
     approveUniversityMock.mockClear()
     updateUniversityMock.mockClear()
     deleteUniversityMock.mockClear()
     revalidateTagMock.mockClear()
-    createNotificationMock.mockClear()
-    sendEmailMock.mockClear()
+    emitNotificationMock.mockClear()
   })
 
   test("listUniversitiesProcedure enforces approved status for non-admin users", async () => {
@@ -129,8 +143,7 @@ describe("src/server/orpc/routes/universities", () => {
 
     expect(result).toEqual({ name: "USTHB" })
     expect(approveUniversityMock).toHaveBeenCalledWith("uni-1", "super-admin-1")
-    expect(createNotificationMock).toHaveBeenCalledTimes(1)
-    expect(sendEmailMock).toHaveBeenCalledTimes(1)
+    expect(emitNotificationMock).toHaveBeenCalledTimes(1)
     expect(revalidateTagMock).toHaveBeenCalledTimes(3)
   })
 

@@ -41,7 +41,9 @@ describe("src/server/services/notifications/create", () => {
   })
 
   test("should insert a notification", async () => {
-    const { createNotification } = await import("@/server/services/notifications/create")
+    const { createNotification } = await import(
+      "@/server/services/notifications/create?fresh=1" as string
+    )
     const result = await createNotification({
       userId: "u-1",
       type: "test",
@@ -59,7 +61,9 @@ describe("src/server/services/notifications/create", () => {
       emailEnabled: true,
     }])
 
-    const { createNotification } = await import("@/server/services/notifications/create")
+    const { createNotification } = await import(
+      "@/server/services/notifications/create?fresh=2" as string
+    )
     const result = await createNotification({
       userId: "u-1",
       type: "test",

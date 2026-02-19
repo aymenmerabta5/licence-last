@@ -9,9 +9,9 @@ const log = createModuleLogger("services/applications/apply")
 import { internshipOffer } from "@/server/db/schema/internships"
 import { application } from "@/server/db/schema/applications"
 import { company, companyMember } from "@/server/db/schema/companies"
-import { notification } from "@/server/db/schema/notifications"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
+import { createNotification } from "@/server/services/notifications/create"
 
 /**
  * Apply to an internship offer.
@@ -128,18 +128,19 @@ export async function applyToOffer(
       .where(eq(companyMember.companyId, offer.companyId))
 
     if (members.length > 0) {
-      await db.insert(notification).values(
-        members.map((m) => ({
-          id: crypto.randomUUID(),
-          userId: m.userId,
-          type: "new_application",
-          payload: {
-            offerId,
-            offerTitle: offer.title,
-            studentUserId,
-            applicationId,
-          },
-        })),
+      await Promise.all(
+        members.map((member) =>
+          createNotification({
+            userId: member.userId,
+            type: "new_application",
+            payload: {
+              offerId,
+              offerTitle: offer.title,
+              studentUserId,
+              applicationId,
+            },
+          }),
+        ),
       )
     }
   }

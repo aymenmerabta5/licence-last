@@ -19,6 +19,7 @@ import {
 import { generateVerificationCode } from "@/server/services/documents/verification-code"
 import { generateQRCodeDataUrl } from "@/server/services/documents/qr-utils"
 import { sendAgreementEmail } from "@/server/services/documents/send-agreement-email"
+import { createNotification } from "@/server/services/notifications/create"
 import { env } from "@/env"
 import { logger } from "@/server/logging"
 
@@ -65,6 +66,7 @@ export async function generateAgreement(
 
       studentName: user.name,
       studentEmail: user.email,
+      studentUserId: user.id,
       studentUniversityId: user.universityId,
 
       studentPhone: studentProfile.phone,
@@ -186,7 +188,19 @@ export async function generateAgreement(
   }
 
   if (shouldSendAgreementEmail) {
+    await createNotification({
+      userId: row.studentUserId,
+      type: "agreement_generated",
+      payload: {
+        placementId,
+        documentId: documentRecord.id,
+        companyName: row.companyName,
+        offerTitle: row.offerTitle,
+      },
+    })
+
     void sendAgreementEmail({
+      userId: row.studentUserId,
       to: row.studentEmail,
       studentName: row.studentName ?? "Student",
       companyName: row.companyName,

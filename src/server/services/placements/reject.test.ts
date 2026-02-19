@@ -49,6 +49,14 @@ mock.module("@/server/db", () => ({
   },
 }))
 
+const createNotificationMock = mock(() =>
+  Promise.resolve({ id: "notification-1", skipped: false }),
+)
+
+mock.module("@/server/services/notifications/create", () => ({
+  createNotification: createNotificationMock,
+}))
+
 describe("src/server/services/placements/reject", () => {
   beforeEach(() => {
     selectCallIdx = 0
@@ -68,6 +76,7 @@ describe("src/server/services/placements/reject", () => {
 
     mockInsert.mockClear()
     mockValues.mockClear()
+    createNotificationMock.mockClear()
 
     mockMembersWhere.mockClear()
     mockFromMembers.mockClear()
@@ -85,6 +94,10 @@ describe("src/server/services/placements/reject", () => {
 
     mockInsert.mockReturnValue({ values: mockValues })
     mockValues.mockResolvedValue(undefined)
+    createNotificationMock.mockResolvedValue({
+      id: "notification-1",
+      skipped: false,
+    })
 
     mockFromMembers.mockReturnValue({ where: mockMembersWhere })
   })
@@ -115,7 +128,7 @@ describe("src/server/services/placements/reject", () => {
 
     expect(result.success).toBe(true)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
-    // student notification + company notifications
-    expect(mockInsert).toHaveBeenCalled()
+    expect(mockInsert).not.toHaveBeenCalled()
+    expect(createNotificationMock).toHaveBeenCalledTimes(2)
   })
 })

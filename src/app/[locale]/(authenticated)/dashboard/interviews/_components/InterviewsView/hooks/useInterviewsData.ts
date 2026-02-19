@@ -82,6 +82,25 @@ export function useInterviewsData({
     enabled: role === "company_admin" && selectedOfferId.trim().length > 0,
   })
 
+  const companyOffers = useMemo<CompanyOfferOption[]>(
+    () =>
+      (companyOffersQuery.data ?? []).map((offer) => ({
+        id: offer.id,
+        title: offer.title,
+      })),
+    [companyOffersQuery.data],
+  )
+  const companyApplications = useMemo<CompanyApplicationOption[]>(
+    () =>
+      (applicationsByOfferQuery.data?.applications ?? []).map((application) => ({
+        id: application.id,
+        studentName: application.student.name ?? "Unnamed student",
+        pipelineStage: application.pipelineStage,
+        createdAt: application.createdAt,
+      })),
+    [applicationsByOfferQuery.data],
+  )
+
   const confirmSlotMutation = useMutation(
     orpc.interviews.confirmSlot.mutationOptions({
       onSuccess: async () => {
@@ -120,8 +139,17 @@ export function useInterviewsData({
   }
 
   const proposeSlots = async (input: ProposeSlotsInput) => {
-    if (input.applicationId.trim().length === 0) {
-      toast.error("Please provide an application ID.")
+    const selectedApplicationId = input.applicationId.trim()
+    if (selectedApplicationId.length === 0) {
+      toast.error("Please select an application.")
+      return false
+    }
+
+    const hasSelectedApplication = companyApplications.some(
+      (application) => application.id === selectedApplicationId,
+    )
+    if (!hasSelectedApplication) {
+      toast.error("Please select a valid application for this offer.")
       return false
     }
 
@@ -141,7 +169,7 @@ export function useInterviewsData({
 
     try {
       await proposeSlotsMutation.mutateAsync({
-        applicationId: input.applicationId.trim(),
+        applicationId: selectedApplicationId,
         note: input.note.trim() || undefined,
         slots: cleanedSlots.map((slot) => ({
           startsAt: slot.startsAt,
@@ -163,24 +191,6 @@ export function useInterviewsData({
   const companyInterviews = useMemo(
     () => (companyInterviewsQuery.data ?? []) as CompanyInterviewView[],
     [companyInterviewsQuery.data],
-  )
-  const companyOffers = useMemo<CompanyOfferOption[]>(
-    () =>
-      (companyOffersQuery.data ?? []).map((offer) => ({
-        id: offer.id,
-        title: offer.title,
-      })),
-    [companyOffersQuery.data],
-  )
-  const companyApplications = useMemo<CompanyApplicationOption[]>(
-    () =>
-      (applicationsByOfferQuery.data?.applications ?? []).map((application) => ({
-        id: application.id,
-        studentName: application.student.name ?? "Unnamed student",
-        pipelineStage: application.pipelineStage,
-        createdAt: application.createdAt,
-      })),
-    [applicationsByOfferQuery.data],
   )
 
   const studentErrorMessage =

@@ -1,5 +1,7 @@
 "use client"
 
+import { useEffect } from "react"
+
 import { useInterviewsData } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsData"
 import { useInterviewsState } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsState"
 import { CompanyInterviewsSection } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/CompanyInterviewsSection"
@@ -19,6 +21,23 @@ export function InterviewsView({ role }: InterviewsViewProps) {
     role,
     selectedOfferId: state.selectedOfferId,
   })
+  const applicationId = state.applicationId
+  const setApplicationId = state.setApplicationId
+  const companyApplications = data.companyApplications
+  const isApplicationsLoading = data.isApplicationsLoading
+
+  useEffect(() => {
+    if (role !== "company_admin" || !applicationId || isApplicationsLoading) {
+      return
+    }
+
+    const hasSelectedApplication = companyApplications.some(
+      (application) => application.id === applicationId,
+    )
+    if (!hasSelectedApplication) {
+      setApplicationId("")
+    }
+  }, [applicationId, companyApplications, isApplicationsLoading, role, setApplicationId])
 
   const submitProposal = async () => {
     const didSubmit = await data.proposeSlots({

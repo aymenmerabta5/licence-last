@@ -5,8 +5,8 @@ import { desc, eq } from "drizzle-orm"
 import { db } from "@/server/db"
 import { application, applicationTimelineEvent } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
-import { notification } from "@/server/db/schema/notifications"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
+import { createNotification } from "@/server/services/notifications/create"
 
 export type PipelineStage =
   | "applied"
@@ -146,8 +146,7 @@ export async function updateApplicationPipelineStage(input: {
   })
 
   if (row.studentUserId !== input.actorUserId) {
-    await db.insert(notification).values({
-      id: crypto.randomUUID(),
+    await createNotification({
       userId: row.studentUserId,
       type: "application_stage_changed",
       payload: {
