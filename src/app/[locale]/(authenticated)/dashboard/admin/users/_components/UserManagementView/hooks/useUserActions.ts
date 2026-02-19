@@ -13,8 +13,12 @@ export function useUserActions() {
   }
 
   const createUser = useMutation({
-    mutationFn: (data: { email: string; password: string; name: string; role: "student" | "company_admin" | "university_admin" | "super_admin" }) =>
-      orpcClient.adminUsers.create(data),
+    mutationFn: (data: {
+      email: string
+      password: string
+      name: string
+      role: "student" | "company_admin" | "university_admin" | "super_admin"
+    }) => orpcClient.adminUsers.create(data),
     onSuccess: () => {
       toast.success("User created")
       invalidate()
@@ -23,8 +27,10 @@ export function useUserActions() {
   })
 
   const setRole = useMutation({
-    mutationFn: (data: { userId: string; role: "student" | "company_admin" | "university_admin" | "super_admin" }) =>
-      orpcClient.adminUsers.setRole(data),
+    mutationFn: (data: {
+      userId: string
+      role: "student" | "company_admin" | "university_admin" | "super_admin"
+    }) => orpcClient.adminUsers.setRole(data),
     onSuccess: () => {
       toast.success("Role updated")
       invalidate()
@@ -46,8 +52,11 @@ export function useUserActions() {
   })
 
   const banUser = useMutation({
-    mutationFn: (data: { userId: string; banReason?: string; banExpiresIn?: number }) =>
-      orpcClient.adminUsers.ban(data),
+    mutationFn: (data: {
+      userId: string
+      banReason?: string
+      banExpiresIn?: number
+    }) => orpcClient.adminUsers.ban(data),
     onSuccess: () => {
       toast.success("User banned")
       invalidate()
@@ -56,8 +65,7 @@ export function useUserActions() {
   })
 
   const unbanUser = useMutation({
-    mutationFn: (data: { userId: string }) =>
-      orpcClient.adminUsers.unban(data),
+    mutationFn: (data: { userId: string }) => orpcClient.adminUsers.unban(data),
     onSuccess: () => {
       toast.success("User unbanned")
       invalidate()
@@ -85,7 +93,15 @@ export function useUserActions() {
     onError: (err) => toast.error(err.message),
   })
 
-  return { createUser, setRole, updateUser, banUser, unbanUser, removeUser, setPassword }
+  return {
+    createUser,
+    setRole,
+    updateUser,
+    banUser,
+    unbanUser,
+    removeUser,
+    setPassword,
+  }
 }
 
 export type UserActions = ReturnType<typeof useUserActions>

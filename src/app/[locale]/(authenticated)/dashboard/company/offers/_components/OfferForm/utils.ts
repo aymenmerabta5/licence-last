@@ -9,9 +9,9 @@ export const CATEGORY_ORDER = [
   "other",
 ] as const
 
-export function groupSkillsByCategory<TSkill extends { category?: string | null }>(
-  skillTags: TSkill[],
-): Record<string, TSkill[]> {
+export function groupSkillsByCategory<
+  TSkill extends { category?: string | null },
+>(skillTags: TSkill[]): Record<string, TSkill[]> {
   const groups: Record<string, TSkill[]> = {}
   for (const skill of skillTags) {
     const cat = skill.category || "other"

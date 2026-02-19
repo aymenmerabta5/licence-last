@@ -1,33 +1,44 @@
 "use client"
 
+import { ArrowRight } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { ArrowRight } from "lucide-react"
-
-import { ServerError } from "@/components/ServerError"
-import { FormHeader } from "@/components/FormHeader"
-import { SubmitButton } from "@/components/SubmitButton"
-
-import { ease } from "@/lib/animations"
-import { TurnstileWidget } from "@/components/TurnstileWidget"
-import type { SignupFormProps } from "@/app/[locale]/(auth)/signup/_components/SignupForm/types"
-import { useSignupForm } from "@/app/[locale]/(auth)/signup/_components/SignupForm/hooks/useSignupForm"
 import { SignupFields } from "@/app/[locale]/(auth)/signup/_components/SignupForm/components/SignupFields"
 import { SignupFooter } from "@/app/[locale]/(auth)/signup/_components/SignupForm/components/SignupFooter"
 import { SignupSuccess } from "@/app/[locale]/(auth)/signup/_components/SignupForm/components/SignupSuccess"
+import { useSignupForm } from "@/app/[locale]/(auth)/signup/_components/SignupForm/hooks/useSignupForm"
+import type { SignupFormProps } from "@/app/[locale]/(auth)/signup/_components/SignupForm/types"
+import { FormHeader } from "@/components/FormHeader"
+import { ServerError } from "@/components/ServerError"
+import { SubmitButton } from "@/components/SubmitButton"
+import { TurnstileWidget } from "@/components/TurnstileWidget"
+import { ease } from "@/lib/animations"
 
 export function SignupForm({ role, onBack }: SignupFormProps) {
   const t = useTranslations("auth.signup")
   const tc = useTranslations("auth.signup.companySignup")
-  const { form, serverError, success, setTurnstileToken, turnstileRef } = useSignupForm(role)
+  const { form, serverError, success, setTurnstileToken, turnstileRef } =
+    useSignupForm(role)
 
   const tu = useTranslations("auth.signup.universitySignup")
 
   const isCompany = role === "company_admin"
   const isUniversity = role === "university_admin"
-  const title = isUniversity ? tu("title") : isCompany ? tc("title") : t("title")
-  const subtitle = isUniversity ? tu("subtitle") : isCompany ? tc("subtitle") : t("subtitle")
-  const emailPlaceholder = isUniversity ? tu("emailPlaceholder") : isCompany ? tc("emailPlaceholder") : t("emailPlaceholder")
+  const title = isUniversity
+    ? tu("title")
+    : isCompany
+      ? tc("title")
+      : t("title")
+  const subtitle = isUniversity
+    ? tu("subtitle")
+    : isCompany
+      ? tc("subtitle")
+      : t("subtitle")
+  const emailPlaceholder = isUniversity
+    ? tu("emailPlaceholder")
+    : isCompany
+      ? tc("emailPlaceholder")
+      : t("emailPlaceholder")
 
   const labels = {
     name: t("name"),
@@ -57,7 +68,13 @@ export function SignupForm({ role, onBack }: SignupFormProps) {
     return (
       <SignupSuccess
         title={t("verifyTitle")}
-        description={isUniversity ? tu("verifyDescription") : isCompany ? tc("verifyDescription") : t("verifyDescription")}
+        description={
+          isUniversity
+            ? tu("verifyDescription")
+            : isCompany
+              ? tc("verifyDescription")
+              : t("verifyDescription")
+        }
         backToLogin={t("backToLogin")}
       />
     )
@@ -94,9 +111,7 @@ export function SignupForm({ role, onBack }: SignupFormProps) {
         onExpire={() => setTurnstileToken("")}
       />
 
-      <form.Subscribe
-        selector={(state) => [state.isSubmitting] as const}
-      >
+      <form.Subscribe selector={(state) => [state.isSubmitting] as const}>
         {([isSubmitting]) => (
           <SubmitButton isSubmitting={isSubmitting} delay={0.2}>
             {t("submit")}

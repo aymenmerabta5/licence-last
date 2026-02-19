@@ -1,33 +1,36 @@
+import type { LucideIcon } from "lucide-react"
+import {
+  Activity,
+  ArrowRight,
+  Bot,
+  CheckCircle2,
+  FileText,
+  MousePointerClick,
+  Palette,
+  ScrollText,
+  Search,
+  Sparkles,
+  UserPlus,
+} from "lucide-react"
 import * as motion from "motion/react-client"
+import { Metadata } from "next"
 import { useTranslations } from "next-intl"
 import { getTranslations, setRequestLocale } from "next-intl/server"
-import {
-  FileText,
-  Sparkles,
-  MousePointerClick,
-  Activity,
-  Bot,
-  ScrollText,
-  UserPlus,
-  Palette,
-  Search,
-  CheckCircle2,
-  ArrowRight,
-} from "lucide-react"
-import type { LucideIcon } from "lucide-react"
-
-import { Navbar } from "@/components/Navbar"
+import { MarqueeRibbon } from "@/app/[locale]/_components/MarqueeRibbon"
 import { Footer } from "@/components/Footer"
+import { Navbar } from "@/components/Navbar"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Link } from "@/i18n/routing"
-import { reveal, ease } from "@/lib/animations"
-import { MarqueeRibbon } from "@/app/[locale]/_components/MarqueeRibbon"
-import { Metadata } from "next"
+import { ease, reveal } from "@/lib/animations"
 
 type Params = Promise<{ locale: string }>
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Params
+}): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: "pages.forStudents" })
   return { title: t("metadata.title"), description: t("metadata.description") }
@@ -276,7 +279,10 @@ function ForStudentsContent() {
           transition={{ duration: 0.7, ease: "easeOut" }}
           className="mx-auto max-w-6xl text-center"
         >
-          <h2 className="font-serif text-heading mb-3" style={{ fontSize: "clamp(1.8rem, 3vw, 2.5rem)" }}>
+          <h2
+            className="font-serif text-heading mb-3"
+            style={{ fontSize: "clamp(1.8rem, 3vw, 2.5rem)" }}
+          >
             {t("cta.headline")}
           </h2>
           <p className="text-muted-foreground mb-8">{t("cta.description")}</p>

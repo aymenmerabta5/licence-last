@@ -2,17 +2,14 @@
 
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
-import { ServerError } from "@/components/ServerError"
-import { reveal, ease } from "@/lib/animations"
-
-import { TurnstileWidget } from "@/components/TurnstileWidget"
-
-import { useLoginForm } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/useLoginForm"
-import { VerificationAlert } from "@/app/[locale]/(auth)/login/_components/LoginForm/components/VerificationAlert"
-import { LoginFields } from "@/app/[locale]/(auth)/login/_components/LoginForm/components/LoginFields"
 import { FormFooter } from "@/app/[locale]/(auth)/login/_components/LoginForm/components/FormFooter"
+import { LoginFields } from "@/app/[locale]/(auth)/login/_components/LoginForm/components/LoginFields"
 import { TwoFactorStep } from "@/app/[locale]/(auth)/login/_components/LoginForm/components/TwoFactorStep"
+import { VerificationAlert } from "@/app/[locale]/(auth)/login/_components/LoginForm/components/VerificationAlert"
+import { useLoginForm } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/useLoginForm"
+import { ServerError } from "@/components/ServerError"
+import { TurnstileWidget } from "@/components/TurnstileWidget"
+import { ease, reveal } from "@/lib/animations"
 
 export function LoginForm() {
   const t = useTranslations("auth.login")

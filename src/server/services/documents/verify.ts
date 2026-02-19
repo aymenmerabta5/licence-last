@@ -3,11 +3,11 @@ import "server-only"
 import { eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
-import { placementDocument, placement } from "@/server/db/schema/placements"
 import { application } from "@/server/db/schema/applications"
-import { internshipOffer } from "@/server/db/schema/internships"
-import { company } from "@/server/db/schema/companies"
 import { user } from "@/server/db/schema/auth"
+import { company } from "@/server/db/schema/companies"
+import { internshipOffer } from "@/server/db/schema/internships"
+import { placement, placementDocument } from "@/server/db/schema/placements"
 import { university } from "@/server/db/schema/universities"
 
 export interface VerificationResult {
@@ -33,7 +33,9 @@ export type VerifyDocumentResult = VerificationResult | VerificationNotFound
  * Looks up a document by its verification code and returns public-safe data.
  * No emails, phones, addresses, or internal IDs are exposed.
  */
-export async function verifyDocument(code: string): Promise<VerifyDocumentResult> {
+export async function verifyDocument(
+  code: string,
+): Promise<VerifyDocumentResult> {
   const normalizedCode = code.trim().toUpperCase()
 
   const [doc] = await db

@@ -1,13 +1,20 @@
 "use client"
 
-import * as motion from "motion/react-client"
-import { useTranslations } from "next-intl"
-import { Plus, Briefcase, Building2, Bot, UsersRound, ArrowRight } from "lucide-react"
-import { Link } from "@/i18n/routing"
-import { cn } from "@/lib/utils"
-import { ease } from "@/lib/animations"
-import type { Route } from "next"
 import type { LucideIcon } from "lucide-react"
+import {
+  ArrowRight,
+  Bot,
+  Briefcase,
+  Building2,
+  Plus,
+  UsersRound,
+} from "lucide-react"
+import * as motion from "motion/react-client"
+import type { Route } from "next"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/routing"
+import { ease } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
 interface ActionItem {
   title: string
@@ -112,9 +119,7 @@ export function RecruiterQuickActions() {
                   <p
                     className={cn(
                       "text-[11px] mt-0.5 truncate",
-                      action.primary
-                        ? "opacity-70"
-                        : "text-muted-foreground",
+                      action.primary ? "opacity-70" : "text-muted-foreground",
                     )}
                   >
                     {action.description}

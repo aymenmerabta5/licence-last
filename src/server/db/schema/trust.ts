@@ -1,9 +1,20 @@
-import { pgTable, text, timestamp, integer, boolean, jsonb, index, uniqueIndex } from "drizzle-orm/pg-core"
-
-import { placement } from "@/server/db/schema/placements"
-import { company } from "@/server/db/schema/companies"
+import {
+  boolean,
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core"
 import { user } from "@/server/db/schema/auth"
-import { companyReportSeverityEnum, companyReportStatusEnum } from "@/server/db/schema/enums"
+import { company } from "@/server/db/schema/companies"
+import {
+  companyReportSeverityEnum,
+  companyReportStatusEnum,
+} from "@/server/db/schema/enums"
+import { placement } from "@/server/db/schema/placements"
 
 export const companyQualityFeedback = pgTable(
   "company_quality_feedback",
@@ -24,7 +35,9 @@ export const companyQualityFeedback = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
-    uniqueIndex("company_quality_feedback_placement_uidx").on(table.placementId),
+    uniqueIndex("company_quality_feedback_placement_uidx").on(
+      table.placementId,
+    ),
     index("company_quality_feedback_company_idx").on(table.companyId),
     index("company_quality_feedback_student_idx").on(table.studentUserId),
   ],

@@ -43,7 +43,8 @@ const listUsersInputSchema = z.object({
 function assertUserManagementRole(role: string | null | undefined) {
   if (role !== "super_admin" && role !== "university_admin") {
     throw new ORPCError("FORBIDDEN", {
-      message: "User management access requires super admin or university admin role",
+      message:
+        "User management access requires super admin or university admin role",
     })
   }
 }
@@ -54,7 +55,12 @@ async function assertUniversityScopedTarget(args: {
   actingUniversityId: string
   forbidSelf?: boolean
 }) {
-  const { targetUserId, actingUserId, actingUniversityId, forbidSelf = false } = args
+  const {
+    targetUserId,
+    actingUserId,
+    actingUniversityId,
+    forbidSelf = false,
+  } = args
   const [targetUser] = await db
     .select({
       id: user.id,
@@ -218,7 +224,9 @@ export const setPasswordProcedure = superAdminProcedureStandard
       newPassword: z.string().min(8).max(128),
     }),
   )
-  .handler(async ({ input }) => setUserPassword(input.userId, input.newPassword))
+  .handler(async ({ input }) =>
+    setUserPassword(input.userId, input.newPassword),
+  )
 
 export const updateUserProcedure = superAdminProcedureStandard
   .input(

@@ -1,17 +1,16 @@
 import "server-only"
 
 import { and, eq } from "drizzle-orm"
-
-import { createNotification } from "@/server/services/notifications/create"
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
+import { user } from "@/server/db/schema/auth"
 import { company } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { placement, placementDocument } from "@/server/db/schema/placements"
-import { user } from "@/server/db/schema/auth"
+import { logger } from "@/server/logging"
 import { generateCertificate } from "@/server/services/documents/generate-certificate"
 import { sendCertificateEmail } from "@/server/services/documents/send-certificate-email"
-import { logger } from "@/server/logging"
+import { createNotification } from "@/server/services/notifications/create"
 
 interface GenerateCertificateByCompanyInput {
   placementId: string

@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, test } from "bun:test"
 
 import { _resetRateLimitForTests, checkRateLimit } from "@/server/ai/rate-limit"
 
@@ -42,8 +42,16 @@ describe("rate-limit", () => {
       await checkRateLimit({ key: "key-b", limit, windowMs: 60000 })
 
       // Both should be at their limit now
-      const resultA = await checkRateLimit({ key: "key-a", limit, windowMs: 60000 })
-      const resultB = await checkRateLimit({ key: "key-b", limit, windowMs: 60000 })
+      const resultA = await checkRateLimit({
+        key: "key-a",
+        limit,
+        windowMs: 60000,
+      })
+      const resultB = await checkRateLimit({
+        key: "key-b",
+        limit,
+        windowMs: 60000,
+      })
 
       expect(resultA.ok).toBe(false)
       expect(resultB.ok).toBe(false)

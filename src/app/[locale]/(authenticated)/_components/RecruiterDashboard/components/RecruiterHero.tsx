@@ -76,7 +76,9 @@ export function RecruiterHero({ activeOffers, trustData }: RecruiterHeroProps) {
                     <motion.div
                       className="h-full bg-primary"
                       initial={{ width: 0 }}
-                      animate={{ width: `${Math.min(trustData.trustScore, 100)}%` }}
+                      animate={{
+                        width: `${Math.min(trustData.trustScore, 100)}%`,
+                      }}
                       transition={{ duration: 1, delay: 0.5, ease }}
                     />
                   </div>

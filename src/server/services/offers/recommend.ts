@@ -4,8 +4,8 @@ import { eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
-import { searchOffers } from "@/server/services/offers/search"
 import { getExplainableMatchScore } from "@/server/services/matching/score"
+import { searchOffers } from "@/server/services/offers/search"
 
 interface RecommendOffersInput {
   studentUserId: string
@@ -59,8 +59,9 @@ async function mapWithConcurrency<TInput, TOutput>(
   }
 
   await Promise.all(
-    Array.from({ length: Math.max(1, Math.min(concurrency, items.length)) }, () =>
-      worker(),
+    Array.from(
+      { length: Math.max(1, Math.min(concurrency, items.length)) },
+      () => worker(),
     ),
   )
 
@@ -71,7 +72,9 @@ async function mapWithConcurrency<TInput, TOutput>(
  * Rank top recent offers by personalized matching score.
  */
 interface RecommendOffersDependencies {
-  searchOffers?: (params: { limit: number }) => Promise<Awaited<ReturnType<typeof searchOffers>>>
+  searchOffers?: (params: {
+    limit: number
+  }) => Promise<Awaited<ReturnType<typeof searchOffers>>>
 }
 
 export async function recommendOffersForStudent(
@@ -79,7 +82,10 @@ export async function recommendOffersForStudent(
   dependencies: RecommendOffersDependencies = {},
 ): Promise<{ offers: RankedOffer[] }> {
   const limit = Math.max(1, Math.min(input.limit ?? 3, 12))
-  const candidateLimit = Math.max(20, Math.min(input.candidateLimit ?? 100, 200))
+  const candidateLimit = Math.max(
+    20,
+    Math.min(input.candidateLimit ?? 100, 200),
+  )
   const searchFn = dependencies.searchOffers ?? searchOffers
 
   const [searchResult, appliedRows] = await Promise.all([
@@ -91,12 +97,17 @@ export async function recommendOffersForStudent(
   ])
 
   const appliedOfferIds = new Set(appliedRows.map((row) => row.offerId))
-  const candidates = searchResult.offers.filter((offer) => !appliedOfferIds.has(offer.id))
+  const candidates = searchResult.offers.filter(
+    (offer) => !appliedOfferIds.has(offer.id),
+  )
 
   const scored = await mapWithConcurrency(candidates, 10, async (offer) => {
     let score = 0
     try {
-      const match = await getExplainableMatchScore(input.studentUserId, offer.id)
+      const match = await getExplainableMatchScore(
+        input.studentUserId,
+        offer.id,
+      )
       score = match.score
     } catch {
       score = 0

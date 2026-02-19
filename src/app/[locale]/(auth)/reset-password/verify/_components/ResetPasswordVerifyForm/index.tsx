@@ -1,9 +1,9 @@
 "use client"
 
+import { ArrowLeft, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { ArrowLeft, Loader2 } from "lucide-react"
-
+import { useResetPasswordVerify } from "@/app/[locale]/(auth)/reset-password/verify/_components/ResetPasswordVerifyForm/hooks/useResetPasswordVerify"
 import { PasswordField } from "@/components/form-fields/PasswordField"
 import { ServerError } from "@/components/ServerError"
 import { SuccessMessage } from "@/components/SuccessMessage"
@@ -11,8 +11,6 @@ import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease, reveal } from "@/lib/animations"
 import { errorMessage } from "@/lib/schemas/auth"
-
-import { useResetPasswordVerify } from "@/app/[locale]/(auth)/reset-password/verify/_components/ResetPasswordVerifyForm/hooks/useResetPasswordVerify"
 
 export function ResetPasswordVerifyForm() {
   const t = useTranslations("auth.resetPassword")
@@ -109,10 +107,7 @@ export function ResetPasswordVerifyForm() {
         </>
       )}
 
-      <motion.div
-        {...reveal}
-        transition={{ duration: 0.6, ease, delay: 0.2 }}
-      >
+      <motion.div {...reveal} transition={{ duration: 0.6, ease, delay: 0.2 }}>
         <Link
           href="/login"
           className="group inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-heading transition-colors duration-300 hover:text-primary [[dir=rtl]_&]:tracking-normal"

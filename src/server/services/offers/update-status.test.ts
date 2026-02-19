@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelect = mock(() => ({}) as any)
@@ -54,7 +54,9 @@ describe("src/server/services/offers/update-status", () => {
       },
     ])
 
-    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
+    const { updateOfferStatus } = await import(
+      "@/server/services/offers/update-status"
+    )
 
     const result = await updateOfferStatus("offer-1", "company-1", "publish")
 
@@ -74,7 +76,9 @@ describe("src/server/services/offers/update-status", () => {
       },
     ])
 
-    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
+    const { updateOfferStatus } = await import(
+      "@/server/services/offers/update-status"
+    )
 
     const result = await updateOfferStatus("offer-1", "company-1", "close")
 
@@ -94,7 +98,9 @@ describe("src/server/services/offers/update-status", () => {
       },
     ])
 
-    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
+    const { updateOfferStatus } = await import(
+      "@/server/services/offers/update-status"
+    )
 
     await expect(
       updateOfferStatus("offer-1", "company-1", "publish"),
@@ -113,7 +119,9 @@ describe("src/server/services/offers/update-status", () => {
       },
     ])
 
-    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
+    const { updateOfferStatus } = await import(
+      "@/server/services/offers/update-status"
+    )
 
     await expect(
       updateOfferStatus("offer-1", "company-1", "close"),
@@ -123,7 +131,9 @@ describe("src/server/services/offers/update-status", () => {
   test("should throw when offer not found", async () => {
     mockLimit.mockResolvedValue([])
 
-    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
+    const { updateOfferStatus } = await import(
+      "@/server/services/offers/update-status"
+    )
 
     await expect(
       updateOfferStatus("nonexistent", "company-1", "publish"),
@@ -142,7 +152,9 @@ describe("src/server/services/offers/update-status", () => {
       },
     ])
 
-    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
+    const { updateOfferStatus } = await import(
+      "@/server/services/offers/update-status"
+    )
 
     await expect(
       updateOfferStatus("offer-1", "company-1", "publish"),
@@ -161,7 +173,9 @@ describe("src/server/services/offers/update-status", () => {
       },
     ])
 
-    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
+    const { updateOfferStatus } = await import(
+      "@/server/services/offers/update-status"
+    )
 
     await expect(
       updateOfferStatus("offer-1", "company-1", "publish"),
@@ -180,7 +194,9 @@ describe("src/server/services/offers/update-status", () => {
       },
     ])
 
-    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
+    const { updateOfferStatus } = await import(
+      "@/server/services/offers/update-status"
+    )
 
     await expect(
       updateOfferStatus("offer-1", "company-1", "publish"),
@@ -199,10 +215,14 @@ describe("src/server/services/offers/update-status", () => {
       },
     ])
 
-    const { updateOfferStatus } = await import("@/server/services/offers/update-status")
+    const { updateOfferStatus } = await import(
+      "@/server/services/offers/update-status"
+    )
 
     await expect(
       updateOfferStatus("offer-1", "company-1", "publish"),
-    ).rejects.toThrow("Application deadline cannot be in the past when publishing")
+    ).rejects.toThrow(
+      "Application deadline cannot be in the past when publishing",
+    )
   })
 })

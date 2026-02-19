@@ -1,8 +1,8 @@
 "use client"
 
-import { useLocale } from "next-intl"
-import * as motion from "motion/react-client"
 import { Loader2 } from "lucide-react"
+import * as motion from "motion/react-client"
+import { useLocale } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 
@@ -20,7 +20,11 @@ interface TimelineModalProps {
   onClose: () => void
 }
 
-export function TimelineModal({ events, isLoading, onClose }: TimelineModalProps) {
+export function TimelineModal({
+  events,
+  isLoading,
+  onClose,
+}: TimelineModalProps) {
   const locale = useLocale()
 
   return (
@@ -31,7 +35,9 @@ export function TimelineModal({ events, isLoading, onClose }: TimelineModalProps
         className="bg-background border border-border p-6 max-w-lg w-full space-y-4"
       >
         <div className="flex items-center justify-between gap-2">
-          <h3 className="font-serif text-lg text-heading">Application Timeline</h3>
+          <h3 className="font-serif text-lg text-heading">
+            Application Timeline
+          </h3>
           <Button variant="ghost" size="sm" onClick={onClose}>
             Close
           </Button>
@@ -45,7 +51,9 @@ export function TimelineModal({ events, isLoading, onClose }: TimelineModalProps
         )}
 
         {!isLoading && events.length === 0 && (
-          <p className="text-sm text-muted-foreground">No timeline events yet.</p>
+          <p className="text-sm text-muted-foreground">
+            No timeline events yet.
+          </p>
         )}
 
         {events.map((event) => (

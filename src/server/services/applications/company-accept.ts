@@ -1,18 +1,18 @@
 import "server-only"
 
-import { eq, and } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
+import { and, eq } from "drizzle-orm"
 import { db } from "@/server/db"
+import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/applications/company-accept")
+
 import { application } from "@/server/db/schema/applications"
-import { internshipOffer } from "@/server/db/schema/internships"
 import { user } from "@/server/db/schema/auth"
-import { studentProfile } from "@/server/db/schema/students"
 import { company } from "@/server/db/schema/companies"
-import { appendTimelineEvent } from "@/server/services/applications/pipeline"
+import { internshipOffer } from "@/server/db/schema/internships"
+import { studentProfile } from "@/server/db/schema/students"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
+import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { createNotification } from "@/server/services/notifications/create"
 
 export async function companyAcceptApplication(
@@ -42,18 +42,30 @@ export async function companyAcceptApplication(
     .limit(1)
 
   if (!app) {
-    throw new ApplicationServiceError("APPLICATION_NOT_FOUND", "Application not found")
+    throw new ApplicationServiceError(
+      "APPLICATION_NOT_FOUND",
+      "Application not found",
+    )
   }
 
   if (app.offerCompanyId !== companyId) {
-    throw new ApplicationServiceError("APPLICATION_FORBIDDEN", "You do not have access to this application")
+    throw new ApplicationServiceError(
+      "APPLICATION_FORBIDDEN",
+      "You do not have access to this application",
+    )
   }
 
   if (app.status !== "applied") {
-    throw new ApplicationServiceError("APPLICATION_INVALID_STATE", "Only pending applications can be accepted")
+    throw new ApplicationServiceError(
+      "APPLICATION_INVALID_STATE",
+      "Only pending applications can be accepted",
+    )
   }
 
-  log.info({ applicationId, companyId, actionByUserId }, "Accepting application")
+  log.info(
+    { applicationId, companyId, actionByUserId },
+    "Accepting application",
+  )
 
   const now = new Date()
 
@@ -145,6 +157,9 @@ export async function companyAcceptApplication(
     )
   }
 
-  log.info({ applicationId, event: "application_accepted" }, "Application accepted by company")
+  log.info(
+    { applicationId, event: "application_accepted" },
+    "Application accepted by company",
+  )
   return { success: true, applicationId }
 }

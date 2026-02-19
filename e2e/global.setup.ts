@@ -1,17 +1,20 @@
-import { test as setup } from "@playwright/test"
-import { randomUUID } from "crypto"
-import { execSync } from "child_process"
+import { execSync } from "node:child_process"
+import { randomUUID } from "node:crypto"
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
-import postgres from "postgres"
-import { drizzle } from "drizzle-orm/postgres-js"
+import { test as setup } from "@playwright/test"
 import { hashPassword } from "better-auth/crypto"
+import { drizzle } from "drizzle-orm/postgres-js"
+import postgres from "postgres"
 
 import * as schema from "../src/server/db/schema"
-import { user, account } from "../src/server/db/schema/auth"
+import { account, user } from "../src/server/db/schema/auth"
 import { company, companyMember } from "../src/server/db/schema/companies"
 import { studentProfile } from "../src/server/db/schema/students"
-import { university, universityDomain } from "../src/server/db/schema/universities"
+import {
+  university,
+  universityDomain,
+} from "../src/server/db/schema/universities"
 
 // Test credentials for E2E tests - these match the auth fixtures
 const TEST_USERS = {
@@ -70,7 +73,7 @@ setup("setup test database", async () => {
     // STEP 1: Reset Database
     // ─────────────────────────────────────────────────────────
     console.info("📦 Resetting database...")
-    
+
     // Drop all enum types using raw SQL through postgres client
     const typesResult = await client<{ typname: string }[]>`
       SELECT typname
@@ -78,7 +81,7 @@ setup("setup test database", async () => {
       WHERE typtype = 'e'
       AND typnamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'public');
     `
-    
+
     for (const type of typesResult) {
       await client.unsafe(`DROP TYPE IF EXISTS "${type.typname}" CASCADE;`)
     }
@@ -97,14 +100,14 @@ setup("setup test database", async () => {
 
     // Reset Drizzle migration state so migrations are fully reapplied.
     await client`DROP SCHEMA IF EXISTS "drizzle" CASCADE;`
-    
+
     console.info("✅ Database reset complete\n")
 
     // ─────────────────────────────────────────────────────────
     // STEP 2: Sync Database Schema
     // ─────────────────────────────────────────────────────────
     console.info("📊 Syncing database schema...")
-    
+
     // Use schema push for E2E resets because migration history may not be present
     // on ephemeral databases.
     try {
@@ -164,7 +167,7 @@ setup("setup test database", async () => {
     // Create test student
     const studentId = randomUUID()
     const studentPasswordHash = await hashPassword(TEST_USERS.student.password)
-    
+
     await db.insert(user).values({
       id: studentId,
       email: TEST_USERS.student.email,
@@ -174,7 +177,7 @@ setup("setup test database", async () => {
       onboardingCompleted: true,
       universityId,
     })
-    
+
     await db.insert(account).values({
       id: randomUUID(),
       accountId: studentId,
@@ -196,13 +199,13 @@ setup("setup test database", async () => {
       level: "Master 1",
       address: "123 Test Street, Algiers",
     })
-    
+
     console.info("  ✓ Created test student")
 
     // Create test company admin
     const companyAdminId = randomUUID()
     const companyPasswordHash = await hashPassword(TEST_USERS.company.password)
-    
+
     await db.insert(user).values({
       id: companyAdminId,
       email: TEST_USERS.company.email,
@@ -211,7 +214,7 @@ setup("setup test database", async () => {
       emailVerified: true,
       onboardingCompleted: true,
     })
-    
+
     await db.insert(account).values({
       id: randomUUID(),
       accountId: companyAdminId,
@@ -243,13 +246,13 @@ setup("setup test database", async () => {
       userId: companyAdminId,
       role: "owner",
     })
-    
+
     console.info("  ✓ Created test company admin")
 
     // Create test admin
     const adminId = randomUUID()
     const adminPasswordHash = await hashPassword(TEST_USERS.admin.password)
-    
+
     await db.insert(user).values({
       id: adminId,
       email: TEST_USERS.admin.email,
@@ -258,7 +261,7 @@ setup("setup test database", async () => {
       emailVerified: true,
       onboardingCompleted: true,
     })
-    
+
     await db.insert(account).values({
       id: randomUUID(),
       accountId: adminId,
@@ -266,16 +269,21 @@ setup("setup test database", async () => {
       userId: adminId,
       password: adminPasswordHash,
     })
-    
+
     console.info("  ✓ Created test admin")
 
     console.info("\n✅ E2E test environment setup complete!\n")
     console.info("Test Users:")
-    console.info(`  Student: ${TEST_USERS.student.email} / ${TEST_USERS.student.password}`)
-    console.info(`  Company: ${TEST_USERS.company.email} / ${TEST_USERS.company.password}`)
-    console.info(`  Admin:   ${TEST_USERS.admin.email} / ${TEST_USERS.admin.password}`)
+    console.info(
+      `  Student: ${TEST_USERS.student.email} / ${TEST_USERS.student.password}`,
+    )
+    console.info(
+      `  Company: ${TEST_USERS.company.email} / ${TEST_USERS.company.password}`,
+    )
+    console.info(
+      `  Admin:   ${TEST_USERS.admin.email} / ${TEST_USERS.admin.password}`,
+    )
     console.info("")
-
   } catch (error) {
     console.error("\n❌ Failed to setup E2E test environment:", error)
     throw error
@@ -283,4 +291,3 @@ setup("setup test database", async () => {
     await client.end({ timeout: 5 })
   }
 })
-

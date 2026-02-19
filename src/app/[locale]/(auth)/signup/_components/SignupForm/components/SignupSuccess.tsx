@@ -1,7 +1,7 @@
 "use client"
 
+import { ArrowLeft, CheckCircle2 } from "lucide-react"
 import * as motion from "motion/react-client"
-import { CheckCircle2, ArrowLeft } from "lucide-react"
 
 import { Link } from "@/i18n/routing"
 
@@ -11,7 +11,11 @@ interface SignupSuccessProps {
   backToLogin: string
 }
 
-export function SignupSuccess({ title, description, backToLogin }: SignupSuccessProps) {
+export function SignupSuccess({
+  title,
+  description,
+  backToLogin,
+}: SignupSuccessProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -25,9 +29,7 @@ export function SignupSuccess({ title, description, backToLogin }: SignupSuccess
           <p className="font-medium text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
             {title}
           </p>
-          <p className="text-muted-foreground font-light">
-            {description}
-          </p>
+          <p className="text-muted-foreground font-light">{description}</p>
         </div>
       </div>
 

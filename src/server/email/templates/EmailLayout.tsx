@@ -3,14 +3,14 @@
  *   All rights reserved.
  *   Strict Notice: Unauthorized copying, use, or distribution of this code is strictly prohibited. Violators may be prosecuted and reported to law enforcement.
  */
-import { Html, Head, Body, Container } from "@react-email/components";
-import { Tailwind, pixelBasedPreset } from "@react-email/tailwind";
-import type { TailwindConfig } from "@react-email/tailwind";
-import type { ReactNode } from "react";
+import { Body, Container, Head, Html } from "@react-email/components"
+import type { TailwindConfig } from "@react-email/tailwind"
+import { pixelBasedPreset, Tailwind } from "@react-email/tailwind"
+import type { ReactNode } from "react"
 
 interface EmailLayoutProps {
-  children: ReactNode;
-  title?: string;
+  children: ReactNode
+  title?: string
 }
 
 const tailwindConfig: TailwindConfig = {
@@ -36,7 +36,7 @@ const tailwindConfig: TailwindConfig = {
       },
     },
   },
-};
+}
 
 export default function EmailLayout({
   children,
@@ -55,7 +55,7 @@ export default function EmailLayout({
         </Body>
       </Tailwind>
     </Html>
-  );
+  )
 }
 
-export { tailwindConfig };
+export { tailwindConfig }

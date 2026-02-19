@@ -1,13 +1,15 @@
 import { Suspense } from "react"
-
+import { DepartmentsView } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView"
 import { Skeleton } from "@/components/ui/skeleton"
 import { requireRole } from "@/lib/auth-guards"
 
-import { DepartmentsView } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView"
-
 function DepartmentsFallback() {
   return (
-    <div className="max-w-4xl mx-auto space-y-8" aria-busy="true" aria-live="polite">
+    <div
+      className="max-w-4xl mx-auto space-y-8"
+      aria-busy="true"
+      aria-live="polite"
+    >
       <div className="space-y-3">
         <Skeleton className="h-4 w-32" />
         <Skeleton className="h-10 w-64" />

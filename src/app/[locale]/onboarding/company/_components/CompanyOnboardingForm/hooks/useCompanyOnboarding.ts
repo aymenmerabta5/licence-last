@@ -1,17 +1,19 @@
 "use client"
 
-import { useMemo, useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useTranslations } from "next-intl"
+import { useMemo, useState } from "react"
 
 import { useRouter } from "@/i18n/routing"
-import { mapZodErrors } from "@/lib/schemas/map-errors"
+import { authClient } from "@/lib/auth-client"
 import { getErrorMessage } from "@/lib/error-message"
 import { createCompanyOnboardingSchema } from "@/lib/schemas/company"
+import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { orpcClient } from "@/server/orpc/client"
-import { authClient } from "@/lib/auth-client"
 
-export type CompanyOnboardingFormApi = ReturnType<typeof useCompanyOnboarding>["form"]
+export type CompanyOnboardingFormApi = ReturnType<
+  typeof useCompanyOnboarding
+>["form"]
 
 export function useCompanyOnboarding() {
   const t = useTranslations("onboarding.company")

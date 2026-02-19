@@ -1,10 +1,10 @@
 import {
+  index,
+  integer,
   pgTable,
+  primaryKey,
   text,
   timestamp,
-  integer,
-  primaryKey,
-  index,
 } from "drizzle-orm/pg-core"
 
 import { user } from "@/server/db/schema/auth"

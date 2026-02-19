@@ -1,11 +1,10 @@
 import { headers } from "next/headers"
-
+import { DashboardClientProvider } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
+import { auth } from "@/lib/auth"
 import { requireRole } from "@/lib/auth-guards"
 import { localeRedirect } from "@/lib/navigation"
-import { auth } from "@/lib/auth"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 import { getUniversityStatusByUserId } from "@/server/services/universities/get-status"
-import { DashboardClientProvider } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 
 interface AuthenticatedContentProps {
   children: React.ReactNode
@@ -18,8 +17,16 @@ interface AuthenticatedContentProps {
  * Also blocks unapproved company_admin / university_admin from the dashboard,
  * redirecting them to the standalone status pages under /(status)/.
  */
-export async function AuthenticatedContent({ children }: AuthenticatedContentProps) {
-  const user = await requireRole(["student", "company_admin", "dept_head", "university_admin", "super_admin"])
+export async function AuthenticatedContent({
+  children,
+}: AuthenticatedContentProps) {
+  const user = await requireRole([
+    "student",
+    "company_admin",
+    "dept_head",
+    "university_admin",
+    "super_admin",
+  ])
 
   // ── Block unapproved company_admin ──
   if (user.role === "company_admin") {
@@ -54,7 +61,9 @@ export async function AuthenticatedContent({ children }: AuthenticatedContentPro
 
   // Check if current session is impersonated
   const session = await auth.api.getSession({ headers: await headers() })
-  const impersonatedBy = (session?.session as { impersonatedBy?: string } | null)?.impersonatedBy ?? null
+  const impersonatedBy =
+    (session?.session as { impersonatedBy?: string } | null)?.impersonatedBy ??
+    null
 
   return (
     <DashboardClientProvider user={user} impersonatedBy={impersonatedBy}>

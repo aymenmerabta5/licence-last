@@ -1,13 +1,12 @@
 "use client"
 
+import { Building2, Clock, Mail, MapPin, Phone } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useLocale, useTranslations } from "next-intl"
-import { Building2, Clock, MapPin, Phone, Mail } from "lucide-react"
-
-import { reveal, ease } from "@/lib/animations"
+import { InfoRow } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/InfoRow"
 
 import { formatDate } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/utils"
-import { InfoRow } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/InfoRow"
+import { ease, reveal } from "@/lib/animations"
 
 interface CompanyOfferCardProps {
   application: {
@@ -148,11 +147,7 @@ export function CompanyOfferCard({ application }: CompanyOfferCardProps) {
           </p>
           <p>
             {t("companyAcceptedOn")}:{" "}
-            {formatDate(
-              application.companyActionAt,
-              locale,
-              t("notAvailable"),
-            )}
+            {formatDate(application.companyActionAt, locale, t("notAvailable"))}
           </p>
         </div>
       </div>

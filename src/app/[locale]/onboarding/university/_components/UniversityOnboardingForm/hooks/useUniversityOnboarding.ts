@@ -1,17 +1,19 @@
 "use client"
 
-import { useMemo, useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useTranslations } from "next-intl"
+import { useMemo, useState } from "react"
 
 import { useRouter } from "@/i18n/routing"
-import { mapZodErrors } from "@/lib/schemas/map-errors"
+import { authClient } from "@/lib/auth-client"
 import { getErrorMessage } from "@/lib/error-message"
+import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { createUniversityOnboardingSchema } from "@/lib/schemas/university"
 import { orpcClient } from "@/server/orpc/client"
-import { authClient } from "@/lib/auth-client"
 
-export type UniversityOnboardingFormApi = ReturnType<typeof useUniversityOnboarding>["form"]
+export type UniversityOnboardingFormApi = ReturnType<
+  typeof useUniversityOnboarding
+>["form"]
 
 export function useUniversityOnboarding() {
   const t = useTranslations("onboarding.university")
@@ -42,7 +44,9 @@ export function useUniversityOnboarding() {
         // Filter out empty domain strings
         const domains = value.domains.filter((d) => d.trim().length > 0)
         // Filter out empty department names
-        const departments = value.departments.filter((d) => d.name.trim().length > 0)
+        const departments = value.departments.filter(
+          (d) => d.name.trim().length > 0,
+        )
 
         await orpcClient.universities.create({
           name: value.name,

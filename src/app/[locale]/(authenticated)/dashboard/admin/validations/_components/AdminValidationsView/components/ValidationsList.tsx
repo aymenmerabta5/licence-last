@@ -1,10 +1,8 @@
-import type { RefObject } from "react"
-import * as motion from "motion/react-client"
 import { Loader2 } from "lucide-react"
-
-import { reveal, ease } from "@/lib/animations"
-
+import * as motion from "motion/react-client"
+import type { RefObject } from "react"
 import { ValidationCard } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/_components/AdminValidationsView/components/ValidationCard"
+import { ease, reveal } from "@/lib/animations"
 
 interface Application {
   id: string

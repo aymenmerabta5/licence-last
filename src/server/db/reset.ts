@@ -1,6 +1,6 @@
-import postgres from "postgres"
-import { drizzle } from "drizzle-orm/postgres-js"
 import { sql } from "drizzle-orm"
+import { drizzle } from "drizzle-orm/postgres-js"
+import postgres from "postgres"
 
 import { logger } from "@/server/logging/logger"
 
@@ -43,7 +43,10 @@ async function resetDatabase() {
 
     logger.info({ event: "reset_complete" }, "Database reset successfully")
   } catch (error) {
-    logger.error({ err: error, event: "reset_error" }, "Error resetting database")
+    logger.error(
+      { err: error, event: "reset_error" },
+      "Error resetting database",
+    )
     throw error
   } finally {
     await client.end({ timeout: 5 })

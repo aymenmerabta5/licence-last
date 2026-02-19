@@ -1,7 +1,7 @@
 import "server-only"
 
-import { getExplainableMatchScore } from "@/server/services/matching/score"
 import { MATCH_WEIGHT } from "@/server/services/matching/constants"
+import { getExplainableMatchScore } from "@/server/services/matching/score"
 
 export interface SkillGapRoadmap {
   readyPercent: number
@@ -41,15 +41,24 @@ export async function getSkillGapRoadmap(
     match.missingSkills.length === 0
       ? 0
       : Math.round(MATCH_WEIGHT.skills / match.missingSkills.length)
-  const estimatedDelta = Math.max(0, Math.min(100 - match.score, skillsUnit * 3))
+  const estimatedDelta = Math.max(
+    0,
+    Math.min(100 - match.score, skillsUnit * 3),
+  )
 
   const roadmapSteps: string[] = []
   if (match.missingSkills.length === 0) {
     roadmapSteps.push("You already match all required skills for this offer.")
   } else {
-    roadmapSteps.push("Close the first 1-2 missing skills from the largest category.")
-    roadmapSteps.push("Recalculate readiness after adding portfolio proof or project links.")
-    roadmapSteps.push("Focus interview preparation on skills marked as required.")
+    roadmapSteps.push(
+      "Close the first 1-2 missing skills from the largest category.",
+    )
+    roadmapSteps.push(
+      "Recalculate readiness after adding portfolio proof or project links.",
+    )
+    roadmapSteps.push(
+      "Focus interview preparation on skills marked as required.",
+    )
   }
 
   return {

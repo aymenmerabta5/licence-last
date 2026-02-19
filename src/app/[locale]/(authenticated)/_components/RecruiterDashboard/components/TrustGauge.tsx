@@ -1,9 +1,9 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { Shield } from "lucide-react"
-import { cn } from "@/lib/utils"
+import * as motion from "motion/react-client"
 import { ease } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
 interface TrustData {
   trustScore: number
@@ -118,7 +118,8 @@ export function TrustGauge({ trustData, isLoading }: TrustGaugeProps) {
 
       {trustData.factors.reportPenalty > 0 && (
         <p className="text-[10px] text-rose-500 font-medium border-t border-border/30 pt-3">
-          -{Math.round(trustData.factors.reportPenalty)} penalty from open reports
+          -{Math.round(trustData.factors.reportPenalty)} penalty from open
+          reports
         </p>
       )}
     </motion.div>

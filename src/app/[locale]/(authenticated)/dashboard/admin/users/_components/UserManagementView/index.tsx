@@ -3,17 +3,15 @@
 import { useQuery } from "@tanstack/react-query"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
-import { orpc } from "@/server/orpc/client"
-import { ease, reveal } from "@/lib/animations"
-
-import { useUserManagement } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/hooks/useUserManagement"
-import { useUserActions } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/hooks/useUserActions"
-import { useUserDialogState } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/hooks/useUserDialogState"
 import { UserFilters } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/UserFilters"
 import { UserManagementDialogs } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/UserManagementDialogs"
 import { UsersTable } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/UsersTable"
+import { useUserActions } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/hooks/useUserActions"
+import { useUserDialogState } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/hooks/useUserDialogState"
+import { useUserManagement } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/hooks/useUserManagement"
 import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
+import { ease, reveal } from "@/lib/animations"
+import { orpc } from "@/server/orpc/client"
 
 export function UserManagementView() {
   const t = useTranslations("dashboard.superAdmin.users")

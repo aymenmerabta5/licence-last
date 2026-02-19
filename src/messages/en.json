@@ -983,7 +983,7 @@
         "apply": "Apply"
       }
     },
-      "offerDetail": {
+    "offerDetail": {
       "back": "Back to search",
       "description": "Description",
       "requiredSkills": "Required Skills",
@@ -1022,9 +1022,9 @@
       },
       "application": "Application",
       "internshipOffer": "Internship Offer",
-        "trustIndex": "Trust Index",
-        "viewCompanyProfile": "View Company Profile",
-        "report": {
+      "trustIndex": "Trust Index",
+      "viewCompanyProfile": "View Company Profile",
+      "report": {
         "trigger": "Report Company",
         "title": "Report Company",
         "description": "Share a trust or safety issue about {companyName}.",

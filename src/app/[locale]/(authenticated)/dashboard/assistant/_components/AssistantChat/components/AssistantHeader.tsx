@@ -1,11 +1,11 @@
-import * as motion from "motion/react-client";
-import { useTranslations } from "next-intl";
-import { Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react"
+import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
 
-import { reveal, ease } from "@/lib/animations";
+import { ease, reveal } from "@/lib/animations"
 
 export function AssistantHeader() {
-  const t = useTranslations("dashboard.assistant");
+  const t = useTranslations("dashboard.assistant")
 
   return (
     <motion.header
@@ -37,5 +37,5 @@ export function AssistantHeader() {
         </div>
       </div>
     </motion.header>
-  );
+  )
 }

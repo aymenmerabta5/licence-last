@@ -1,9 +1,8 @@
 "use client"
 
 import { useCallback, useState } from "react"
-
-import { authClient } from "@/lib/auth-client"
 import { useRouter } from "@/i18n/routing"
+import { authClient } from "@/lib/auth-client"
 
 /**
  * Shared logout handler. Calls `authClient.signOut()` and redirects to "/".

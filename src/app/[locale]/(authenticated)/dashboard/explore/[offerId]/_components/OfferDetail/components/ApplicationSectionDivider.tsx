@@ -1,7 +1,7 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { PenLine } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 export function ApplicationSectionDivider() {
   const t = useTranslations("dashboard.offerDetail")

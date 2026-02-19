@@ -5,7 +5,10 @@ import { and, eq, isNull } from "drizzle-orm"
 import { db } from "@/server/db"
 import { notification } from "@/server/db/schema/notifications"
 
-export async function markNotificationRead(userId: string, notificationId: string) {
+export async function markNotificationRead(
+  userId: string,
+  notificationId: string,
+) {
   const now = new Date()
 
   const updated = await db

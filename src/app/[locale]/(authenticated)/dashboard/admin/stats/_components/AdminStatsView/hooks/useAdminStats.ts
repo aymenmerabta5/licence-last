@@ -10,7 +10,9 @@ export function useAdminStats() {
     orpc.companies.listTrustIndices.queryOptions({ input: { limit: 12 } }),
   )
   const reportsQuery = useQuery(
-    orpc.companies.listReports.queryOptions({ input: { status: "open", limit: 12 } }),
+    orpc.companies.listReports.queryOptions({
+      input: { status: "open", limit: 12 },
+    }),
   )
 
   return {

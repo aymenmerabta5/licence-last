@@ -1,11 +1,11 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/universities/approve")
+
 import { university, universityDomain } from "@/server/db/schema/universities"
 
 /**
@@ -40,7 +40,10 @@ export async function approveUniversity(
       .set({ status: "approved" })
       .where(eq(universityDomain.universityId, universityId))
 
-    log.info({ universityId: updated.id, event: "university_approved" }, "University approved")
+    log.info(
+      { universityId: updated.id, event: "university_approved" },
+      "University approved",
+    )
     return updated
   })
 

@@ -1,38 +1,41 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { useMemo, useState } from "react"
 import { toast } from "sonner"
-
-import { orpc, orpcClient } from "@/server/orpc/client"
 import { useInfiniteScroll } from "@/hooks"
-import { STAGE_COLUMNS } from "@/lib/constants/pipeline"
 import type { PipelineStage } from "@/lib/constants/pipeline"
+import { STAGE_COLUMNS } from "@/lib/constants/pipeline"
+import { orpc, orpcClient } from "@/server/orpc/client"
 
 export function useApplications() {
   const t = useTranslations("dashboard.applications")
   const queryClient = useQueryClient()
 
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null)
-  const [openedTimelineFor, setOpenedTimelineFor] = useState<string | null>(null)
+  const [openedTimelineFor, setOpenedTimelineFor] = useState<string | null>(
+    null,
+  )
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useInfiniteQuery({
-    queryKey: ["applications", "listByStudent"],
-    queryFn: async ({ pageParam }) =>
-      orpcClient.applications.listByStudent({
-        cursor: pageParam as { createdAt: string; id: string } | undefined,
-        limit: 30,
-      }),
-    initialPageParam: undefined as { createdAt: string; id: string } | undefined,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-  })
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ["applications", "listByStudent"],
+      queryFn: async ({ pageParam }) =>
+        orpcClient.applications.listByStudent({
+          cursor: pageParam as { createdAt: string; id: string } | undefined,
+          limit: 30,
+        }),
+      initialPageParam: undefined as
+        | { createdAt: string; id: string }
+        | undefined,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    })
 
   const timelineQuery = useQuery({
     ...orpc.applications.getTimeline.queryOptions({
@@ -49,7 +52,9 @@ export function useApplications() {
   const withdrawMutation = useMutation(
     orpc.applications.withdraw.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["applications", "listByStudent"] })
+        queryClient.invalidateQueries({
+          queryKey: ["applications", "listByStudent"],
+        })
         toast.success(t("withdrawSuccess"))
         setWithdrawingId(null)
       },
@@ -76,7 +81,11 @@ export function useApplications() {
     return groups
   }, [applications])
 
-  const sentinelRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage)
+  const sentinelRef = useInfiniteScroll(
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  )
 
   return {
     applications,

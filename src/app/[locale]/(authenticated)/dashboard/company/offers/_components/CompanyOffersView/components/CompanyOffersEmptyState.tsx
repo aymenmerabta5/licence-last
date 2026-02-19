@@ -1,11 +1,10 @@
 "use client"
 
+import { Briefcase, Plus } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Briefcase, Plus } from "lucide-react"
-
-import { Link } from "@/i18n/routing"
 import { Button } from "@/components/ui/button"
+import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
 
 export function CompanyOffersEmptyState() {
@@ -21,9 +20,15 @@ export function CompanyOffersEmptyState() {
       <div className="inline-flex items-center justify-center rounded-2xl bg-primary/5 p-4">
         <Briefcase className="h-8 w-8 text-primary/30" />
       </div>
-      <p className="mx-auto max-w-xs text-sm text-muted-foreground/60">{t("empty")}</p>
+      <p className="mx-auto max-w-xs text-sm text-muted-foreground/60">
+        {t("empty")}
+      </p>
       <Link href={"/dashboard/company/offers/new" as "/dashboard"}>
-        <Button variant="editorial-outline" size="editorial-sm" className="mt-2 gap-2">
+        <Button
+          variant="editorial-outline"
+          size="editorial-sm"
+          className="mt-2 gap-2"
+        >
           <Plus className="h-3.5 w-3.5" />
           {t("createOffer")}
         </Button>

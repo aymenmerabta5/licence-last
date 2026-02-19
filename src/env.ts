@@ -1,10 +1,12 @@
-import { createEnv } from "@t3-oss/env-nextjs";
-import { z } from "zod";
- 
+import { createEnv } from "@t3-oss/env-nextjs"
+import { z } from "zod"
+
 export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
-    BETTER_AUTH_SECRET: z.string().min(32, "Auth secret must be at least 32 characters"),
+    BETTER_AUTH_SECRET: z
+      .string()
+      .min(32, "Auth secret must be at least 32 characters"),
 
     // AI (Phase 1)
     POE_API_KEY: z.string().min(1).optional(),
@@ -36,7 +38,9 @@ export const env = createEnv({
     FEATURE_LANGUAGE_REQUIREMENTS: z.enum(["true", "false"]).default("false"),
 
     // Logging
-    LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
+    LOG_LEVEL: z
+      .enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"])
+      .default("info"),
 
     // Cloudflare Turnstile (CAPTCHA)
     TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
@@ -61,5 +65,5 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_FEATURE_SAVED_OFFERS,
     NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS:
       process.env.NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS,
-  }
-});
+  },
+})

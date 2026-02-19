@@ -1,7 +1,7 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { LucideIcon } from "lucide-react"
+import * as motion from "motion/react-client"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
@@ -41,13 +41,13 @@ export function StatsCard({
                   {title}
                 </span>
               </div>
-              
+
               <div className="space-y-1">
                 <h3 className="text-3xl font-serif font-bold text-heading tracking-tight leading-none">
                   {value}
                 </h3>
                 <p className="text-[11px] text-muted-foreground font-medium flex items-center gap-1.5">
-                   {description}
+                  {description}
                 </p>
               </div>
 
@@ -59,10 +59,10 @@ export function StatsCard({
               )}
             </div>
           </div>
-          
+
           {/* Subtle decoration */}
           <div className="absolute top-0 end-0 p-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
-             <Icon className="h-16 w-16" />
+            <Icon className="h-16 w-16" />
           </div>
         </CardContent>
 

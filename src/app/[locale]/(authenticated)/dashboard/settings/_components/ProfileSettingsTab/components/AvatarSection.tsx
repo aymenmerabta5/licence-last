@@ -1,7 +1,7 @@
 "use client"
 
-import Image from "next/image"
 import { Camera, ImagePlus, Loader2, Trash2 } from "lucide-react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 
 interface AvatarSectionProps {

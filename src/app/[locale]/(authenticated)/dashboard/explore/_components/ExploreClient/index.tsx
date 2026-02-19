@@ -1,16 +1,14 @@
 "use client"
 
-import { useEffect, useRef } from "react"
 import { useTranslations } from "next-intl"
-
-import { SearchFilters } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters"
-
-import { useOfferSearch } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/hooks/useOfferSearch"
-import { useSearchCopilot } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/hooks/useSearchCopilot"
+import { useEffect, useRef } from "react"
 import { ExploreHeader } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/components/ExploreHeader"
+import { OffersGrid } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/components/OffersGrid"
 import { SearchBar } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/components/SearchBar"
 import { SearchCopilotPanel } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/components/SearchCopilotPanel"
-import { OffersGrid } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/components/OffersGrid"
+import { useOfferSearch } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/hooks/useOfferSearch"
+import { useSearchCopilot } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/hooks/useSearchCopilot"
+import { SearchFilters } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters"
 
 export type { FilterState } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/hooks/useOfferSearch"
 
@@ -32,14 +30,8 @@ export function ExploreClient() {
     clearFilters,
   } = useOfferSearch()
 
-  const {
-    aiQuery,
-    setAiQuery,
-    aiSuggestion,
-    aiStatus,
-    aiError,
-    parseFilters,
-  } = useSearchCopilot()
+  const { aiQuery, setAiQuery, aiSuggestion, aiStatus, aiError, parseFilters } =
+    useSearchCopilot()
 
   // Auto-apply AI suggestion when it arrives
   const prevSuggestionRef = useRef(aiSuggestion)

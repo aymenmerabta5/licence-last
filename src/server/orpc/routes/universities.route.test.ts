@@ -119,7 +119,9 @@ describe("src/server/orpc/routes/universities", () => {
   })
 
   test("listUniversitiesProcedure enforces approved status for non-admin users", async () => {
-    const { listUniversitiesProcedure } = await import("@/server/orpc/routes/universities")
+    const { listUniversitiesProcedure } = await import(
+      "@/server/orpc/routes/universities"
+    )
 
     await callProcedure(listUniversitiesProcedure, {
       input: { status: "pending", limit: 10, offset: 0 },
@@ -134,7 +136,9 @@ describe("src/server/orpc/routes/universities", () => {
   })
 
   test("approveUniversityProcedure triggers cache invalidation and notifications", async () => {
-    const { approveUniversityProcedure } = await import("@/server/orpc/routes/universities")
+    const { approveUniversityProcedure } = await import(
+      "@/server/orpc/routes/universities"
+    )
 
     const result = await callProcedure(approveUniversityProcedure, {
       input: { universityId: "uni-1" },
@@ -148,7 +152,9 @@ describe("src/server/orpc/routes/universities", () => {
   })
 
   test("updateUniversityProcedure updates university and invalidates cache tags", async () => {
-    const { updateUniversityProcedure } = await import("@/server/orpc/routes/universities")
+    const { updateUniversityProcedure } = await import(
+      "@/server/orpc/routes/universities"
+    )
 
     const result = await callProcedure(updateUniversityProcedure, {
       input: {
@@ -172,7 +178,9 @@ describe("src/server/orpc/routes/universities", () => {
   })
 
   test("deleteUniversityProcedure returns affected user count and invalidates caches", async () => {
-    const { deleteUniversityProcedure } = await import("@/server/orpc/routes/universities")
+    const { deleteUniversityProcedure } = await import(
+      "@/server/orpc/routes/universities"
+    )
 
     const result = await callProcedure(deleteUniversityProcedure, {
       input: { universityId: "uni-1" },
@@ -193,7 +201,9 @@ describe("src/server/orpc/routes/universities", () => {
       new ServiceError("UNIVERSITY_NOT_FOUND", "University not found"),
     )
 
-    const { deleteUniversityProcedure } = await import("@/server/orpc/routes/universities")
+    const { deleteUniversityProcedure } = await import(
+      "@/server/orpc/routes/universities"
+    )
 
     await expect(
       callProcedure(deleteUniversityProcedure, {

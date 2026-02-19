@@ -9,16 +9,26 @@ mock.module("ai", () => ({
   generateObject: mockGenerateObject,
   convertToModelMessages: <T>(messages: T) => messages,
   tool: <T>(definition: T) => definition,
-  createUIMessageStream: ({ execute }: { execute: (args: { writer: { write: (chunk: string) => void } }) => Promise<void> }) =>
+  createUIMessageStream: ({
+    execute,
+  }: {
+    execute: (args: {
+      writer: { write: (chunk: string) => void }
+    }) => Promise<void>
+  }) =>
     new ReadableStream({
       start(controller) {
         const writer = {
-          write: (chunk: string) => controller.enqueue(new TextEncoder().encode(chunk)),
+          write: (chunk: string) =>
+            controller.enqueue(new TextEncoder().encode(chunk)),
         }
-        execute({ writer }).then(() => controller.close()).catch(() => controller.close())
+        execute({ writer })
+          .then(() => controller.close())
+          .catch(() => controller.close())
       },
     }),
-  createUIMessageStreamResponse: ({ stream }: { stream: ReadableStream }) => new Response(stream),
+  createUIMessageStreamResponse: ({ stream }: { stream: ReadableStream }) =>
+    new Response(stream),
   stepCountIs: () => () => false,
   streamText: () => ({
     async *toUIMessageStream() {
@@ -51,7 +61,9 @@ describe("src/server/services/offers/parse-search", () => {
     }
     mockGenerateObject.mockResolvedValueOnce({ object: expected })
 
-    const { parseSearchQuery } = await import("@/server/services/offers/parse-search")
+    const { parseSearchQuery } = await import(
+      "@/server/services/offers/parse-search"
+    )
     const result = await parseSearchQuery({
       query: "remote summer react internship in Alger",
       availableSkillTags: [{ id: "skill-1", name: "React" }],
@@ -71,7 +83,9 @@ describe("src/server/services/offers/parse-search", () => {
       },
     })
 
-    const { parseSearchQuery } = await import("@/server/services/offers/parse-search")
+    const { parseSearchQuery } = await import(
+      "@/server/services/offers/parse-search"
+    )
     await parseSearchQuery({
       query: "anything",
       availableSkillTags: [],
@@ -83,6 +97,6 @@ describe("src/server/services/offers/parse-search", () => {
 
     expect(firstCallArg.prompt).toContain("No skill tags available.")
     expect(firstCallArg.prompt).toContain("Context JSON:")
-    expect(firstCallArg.prompt).toContain("\"query\":\"anything\"")
+    expect(firstCallArg.prompt).toContain('"query":"anything"')
   })
 })

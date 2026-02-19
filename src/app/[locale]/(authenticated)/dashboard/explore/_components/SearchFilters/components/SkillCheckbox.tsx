@@ -7,7 +7,11 @@ interface SkillCheckboxProps {
   onToggle: (id: string) => void
 }
 
-export function SkillCheckbox({ skill, checked, onToggle }: SkillCheckboxProps) {
+export function SkillCheckbox({
+  skill,
+  checked,
+  onToggle,
+}: SkillCheckboxProps) {
   return (
     <label
       className={cn(
@@ -16,8 +20,9 @@ export function SkillCheckbox({ skill, checked, onToggle }: SkillCheckboxProps) 
       )}
     >
       <Checkbox checked={checked} onCheckedChange={() => onToggle(skill.id)} />
-      <span className={cn("text-sm", checked && "font-medium")}>{skill.name}</span>
+      <span className={cn("text-sm", checked && "font-medium")}>
+        {skill.name}
+      </span>
     </label>
   )
 }
-

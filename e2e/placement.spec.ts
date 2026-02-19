@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 
 import { loginAsAdmin, loginAsCompany, loginAsStudent } from "./fixtures/auth"
 
@@ -30,7 +30,9 @@ test.describe("Placement Validation Flow", () => {
       }
 
       await offerLink.click()
-      await expect(page).toHaveURL(/\/en\/dashboard\/company\/offers\/.+\/candidates/)
+      await expect(page).toHaveURL(
+        /\/en\/dashboard\/company\/offers\/.+\/candidates/,
+      )
 
       const acceptButton = page.getByRole("button", { name: /accept/i }).first()
       const canAccept = await acceptButton.isVisible().catch(() => false)
@@ -41,7 +43,9 @@ test.describe("Placement Validation Flow", () => {
 
       await acceptButton.click()
 
-      const confirmButton = page.getByRole("button", { name: /confirm/i }).first()
+      const confirmButton = page
+        .getByRole("button", { name: /confirm/i })
+        .first()
       if (await confirmButton.isVisible().catch(() => false)) {
         await confirmButton.click()
       }
@@ -61,9 +65,13 @@ test.describe("Placement Validation Flow", () => {
       }
 
       await offerLink.click()
-      await expect(page).toHaveURL(/\/en\/dashboard\/company\/offers\/.+\/candidates/)
+      await expect(page).toHaveURL(
+        /\/en\/dashboard\/company\/offers\/.+\/candidates/,
+      )
 
-      const rejectButton = page.getByRole("button", { name: /reject|refuse/i }).first()
+      const rejectButton = page
+        .getByRole("button", { name: /reject|refuse/i })
+        .first()
       const canReject = await rejectButton.isVisible().catch(() => false)
       if (!canReject) {
         test.skip()
@@ -87,7 +95,9 @@ test.describe("Placement Validation Flow", () => {
       }
 
       await offerLink.click()
-      await expect(page).toHaveURL(/\/en\/dashboard\/company\/offers\/.+\/candidates/)
+      await expect(page).toHaveURL(
+        /\/en\/dashboard\/company\/offers\/.+\/candidates/,
+      )
       await expect(page.locator("h1").first()).toBeVisible()
     })
   })
@@ -109,7 +119,9 @@ test.describe("Placement Validation Flow", () => {
       await page.goto("/en/dashboard/admin/validations")
       await expect(page.locator("h1").first()).toBeVisible()
 
-      const validateButton = page.getByRole("button", { name: /validate|approve/i }).first()
+      const validateButton = page
+        .getByRole("button", { name: /validate|approve/i })
+        .first()
       const canValidate = await validateButton.isVisible().catch(() => false)
       if (!canValidate) {
         test.skip()
@@ -118,7 +130,9 @@ test.describe("Placement Validation Flow", () => {
 
       await validateButton.click()
 
-      const confirmButton = page.getByRole("button", { name: /confirm/i }).first()
+      const confirmButton = page
+        .getByRole("button", { name: /confirm/i })
+        .first()
       if (await confirmButton.isVisible().catch(() => false)) {
         await confirmButton.click()
       }
@@ -171,14 +185,18 @@ test.describe("Placement Validation Flow", () => {
       await expect(page.locator("h1").first()).toBeVisible()
     })
 
-    test("student sees pending status for in-progress applications", async ({ page }) => {
+    test("student sees pending status for in-progress applications", async ({
+      page,
+    }) => {
       await page.goto("/en/dashboard/student/applications")
       await expect(page.locator("h1").first()).toBeVisible()
     })
   })
 
   test.describe("End-to-end placement workflow", () => {
-    test("complete placement flow from application to validation", async ({ browser }) => {
+    test("complete placement flow from application to validation", async ({
+      browser,
+    }) => {
       const studentContext = await browser.newContext()
       const studentPage = await studentContext.newPage()
       await loginAsStudent(studentPage)

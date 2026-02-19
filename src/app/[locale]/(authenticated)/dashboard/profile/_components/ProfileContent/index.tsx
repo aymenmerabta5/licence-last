@@ -1,17 +1,19 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-
-import type { ProfileContentProps } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
-import { useProfileData } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/hooks/useProfileData"
-import { ProfileHeader } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/ProfileHeader"
-import { ProfileStats } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/ProfileStats"
-import { ContactInfoCard } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/ContactInfoCard"
-import { SkillsCard, EmptyState } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/SkillsCard"
-import { SocialLinks } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/SocialLinks"
 import { BioSection } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/BioSection"
+import { ContactInfoCard } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/ContactInfoCard"
 import { EducationSection } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/EducationSection"
 import { ExperienceSection } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/ExperienceSection"
+import { ProfileHeader } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/ProfileHeader"
+import { ProfileStats } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/ProfileStats"
+import {
+  EmptyState,
+  SkillsCard,
+} from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/SkillsCard"
+import { SocialLinks } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/SocialLinks"
+import { useProfileData } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/hooks/useProfileData"
+import type { ProfileContentProps } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 
 function buildProfileText(
   user: ProfileContentProps["user"],
@@ -30,7 +32,9 @@ function buildProfileText(
   if (user.email) lines.push(user.email)
   if (profile?.phone) lines.push(profile.phone)
   if (profile?.department) {
-    const dept = profile.level ? `${profile.department} - ${profile.level}` : profile.department
+    const dept = profile.level
+      ? `${profile.department} - ${profile.level}`
+      : profile.department
     lines.push(dept)
   }
   if (university) lines.push(university.name)
@@ -42,19 +46,21 @@ function buildProfileText(
     lines.push("")
     lines.push(`${labels.skillsLabel}: ${skills.map((s) => s.name).join(", ")}`)
   }
-  if (profile?.githubUrl) lines.push(`${labels.githubLabel}: ${profile.githubUrl}`)
-  if (profile?.portfolioUrl) lines.push(`${labels.portfolioLabel}: ${profile.portfolioUrl}`)
+  if (profile?.githubUrl)
+    lines.push(`${labels.githubLabel}: ${profile.githubUrl}`)
+  if (profile?.portfolioUrl)
+    lines.push(`${labels.portfolioLabel}: ${profile.portfolioUrl}`)
   return lines.join("\n")
 }
 
-export function ProfileContent({ viewer, user, studentData }: ProfileContentProps) {
+export function ProfileContent({
+  viewer,
+  user,
+  studentData,
+}: ProfileContentProps) {
   const t = useTranslations("dashboard")
-  const { canEdit, profile, stats, university, skills, experiences } = useProfileData(
-    viewer,
-    user,
-    (key, values) => t(key, values),
-    studentData,
-  )
+  const { canEdit, profile, stats, university, skills, experiences } =
+    useProfileData(viewer, user, (key, values) => t(key, values), studentData)
 
   const roleLabels: Record<string, string> = {
     student: t("student.profile.roles.student"),
@@ -63,7 +69,10 @@ export function ProfileContent({ viewer, user, studentData }: ProfileContentProp
     university_admin: t("student.profile.roles.university_admin"),
     super_admin: t("student.profile.roles.super_admin"),
   }
-  const roleLabel = roleLabels[user.role || "student"] || user.role || t("student.profile.unknownRole")
+  const roleLabel =
+    roleLabels[user.role || "student"] ||
+    user.role ||
+    t("student.profile.unknownRole")
 
   const profileText = buildProfileText(user, profile, skills, university, {
     anonymousUser: t("student.profile.anonymousUser"),
@@ -137,24 +146,13 @@ export function ProfileContent({ viewer, user, studentData }: ProfileContentProp
             roleLabel={roleLabel}
             labels={sidebarLabels}
           />
-          <SkillsCard
-            skills={skills}
-            labels={skillsLabels}
-            canEdit={canEdit}
-          />
-          <SocialLinks
-            profile={profile}
-            labels={socialLabels}
-          />
+          <SkillsCard skills={skills} labels={skillsLabels} canEdit={canEdit} />
+          <SocialLinks profile={profile} labels={socialLabels} />
         </div>
 
         {/* Main Column */}
         <div className="lg:col-span-8 space-y-12">
-          <BioSection
-            profile={profile}
-            labels={bioLabels}
-            canEdit={canEdit}
-          />
+          <BioSection profile={profile} labels={bioLabels} canEdit={canEdit} />
           <EducationSection
             profile={profile}
             university={university}

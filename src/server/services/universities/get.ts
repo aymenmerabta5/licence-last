@@ -4,11 +4,10 @@ import "server-only"
 
 import { eq } from "drizzle-orm"
 import { cacheTag } from "next/cache"
-
+import { CACHE_PROFILES, CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
-import { university } from "@/server/db/schema/universities"
 import { user } from "@/server/db/schema/auth"
-import { CACHE_TAGS, CACHE_PROFILES } from "@/lib/cache"
+import { university } from "@/server/db/schema/universities"
 
 /**
  * Get university by ID.

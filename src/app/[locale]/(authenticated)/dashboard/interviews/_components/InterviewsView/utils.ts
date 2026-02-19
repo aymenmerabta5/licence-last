@@ -1,7 +1,9 @@
+import type {
+  InterviewSlotView,
+  InterviewStatus,
+} from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 import { formatDateTime } from "@/lib/date"
 import { getErrorMessage } from "@/lib/error-message"
-
-import type { InterviewSlotView, InterviewStatus } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 
 const INTERVIEW_STATUS_LABELS: Record<InterviewStatus, string> = {
   pending_confirmation: "Pending confirmation",

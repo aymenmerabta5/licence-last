@@ -53,7 +53,10 @@ export async function listUniversityUsers(params: ListUniversityUsersParams) {
   if (params.filterField && params.filterValue !== undefined) {
     const filterOperator = params.filterOperator ?? "eq"
 
-    if (params.filterField === "banned" && typeof params.filterValue === "boolean") {
+    if (
+      params.filterField === "banned" &&
+      typeof params.filterValue === "boolean"
+    ) {
       conditions.push(
         filterOperator === "ne"
           ? ne(user.banned, params.filterValue)
@@ -69,7 +72,10 @@ export async function listUniversityUsers(params: ListUniversityUsersParams) {
       )
     }
 
-    if (params.filterField === "role" && typeof params.filterValue === "string") {
+    if (
+      params.filterField === "role" &&
+      typeof params.filterValue === "string"
+    ) {
       conditions.push(
         filterOperator === "ne"
           ? ne(user.role, params.filterValue as UserRole)
@@ -77,7 +83,10 @@ export async function listUniversityUsers(params: ListUniversityUsersParams) {
       )
     }
 
-    if (params.filterField === "email" && typeof params.filterValue === "string") {
+    if (
+      params.filterField === "email" &&
+      typeof params.filterValue === "string"
+    ) {
       conditions.push(
         filterOperator === "ne"
           ? ne(user.email, params.filterValue)
@@ -85,7 +94,10 @@ export async function listUniversityUsers(params: ListUniversityUsersParams) {
       )
     }
 
-    if (params.filterField === "name" && typeof params.filterValue === "string") {
+    if (
+      params.filterField === "name" &&
+      typeof params.filterValue === "string"
+    ) {
       conditions.push(
         filterOperator === "ne"
           ? ne(user.name, params.filterValue)

@@ -14,7 +14,9 @@ export interface CompanyMemberListItem {
   joinedAt: Date
 }
 
-export async function listCompanyMembers(companyId: string): Promise<CompanyMemberListItem[]> {
+export async function listCompanyMembers(
+  companyId: string,
+): Promise<CompanyMemberListItem[]> {
   const rows = await db
     .select({
       userId: companyMember.userId,

@@ -8,11 +8,14 @@ import {
   type CandidateApp,
   type CandidateCardDragItem,
 } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
-import { STAGE_LABELS, canTransitionStage } from "@/lib/constants/pipeline"
 import type { PipelineStage } from "@/lib/constants/pipeline"
+import { canTransitionStage, STAGE_LABELS } from "@/lib/constants/pipeline"
 import { cn } from "@/lib/utils"
 
-const STAGE_THEME: Record<PipelineStage, { dot: string; headerBg: string; dropBg: string }> = {
+const STAGE_THEME: Record<
+  PipelineStage,
+  { dot: string; headerBg: string; dropBg: string }
+> = {
   applied: {
     dot: "bg-blue-500",
     headerBg: "bg-blue-500/5",
@@ -122,7 +125,9 @@ export function PipelineStageColumn({
             <div className="h-8 w-8 rounded-lg border border-dashed border-border/30 flex items-center justify-center">
               <Users className="h-3.5 w-3.5 text-muted-foreground/20" />
             </div>
-            <p className="text-[10px] text-muted-foreground/30 font-medium">{t("noApplications")}</p>
+            <p className="text-[10px] text-muted-foreground/30 font-medium">
+              {t("noApplications")}
+            </p>
           </div>
         )}
 

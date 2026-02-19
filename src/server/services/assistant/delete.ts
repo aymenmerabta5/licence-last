@@ -3,7 +3,10 @@ import "server-only"
 import { and, eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
-import { assistantConversation, assistantMessage } from "@/server/db/schema/assistant"
+import {
+  assistantConversation,
+  assistantMessage,
+} from "@/server/db/schema/assistant"
 
 export async function deleteAssistantConversation({
   conversationId,

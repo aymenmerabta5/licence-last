@@ -1,14 +1,12 @@
 "use client"
 
+import { ArrowLeft, Clock, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { ArrowLeft, Clock, Loader2 } from "lucide-react"
-
-import { Link } from "@/i18n/routing"
-import { reveal, ease } from "@/lib/animations"
-
-import { useAdminValidations } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/_components/AdminValidationsView/hooks/useAdminValidations"
 import { ValidationsList } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/_components/AdminValidationsView/components/ValidationsList"
+import { useAdminValidations } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/_components/AdminValidationsView/hooks/useAdminValidations"
+import { Link } from "@/i18n/routing"
+import { ease, reveal } from "@/lib/animations"
 
 export function AdminValidationsView() {
   const t = useTranslations("dashboard.admin.validations")

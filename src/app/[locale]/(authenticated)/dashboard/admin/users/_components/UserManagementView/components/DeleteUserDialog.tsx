@@ -1,8 +1,8 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Loader2 } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
 import {
   AlertDialog,
   AlertDialogContent,
@@ -12,7 +12,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
 
 interface DeleteUserDialogProps {
   open: boolean
@@ -22,14 +21,22 @@ interface DeleteUserDialogProps {
   isPending: boolean
 }
 
-export function DeleteUserDialog({ open, onOpenChange, user, onConfirm, isPending }: DeleteUserDialogProps) {
+export function DeleteUserDialog({
+  open,
+  onOpenChange,
+  user,
+  onConfirm,
+  isPending,
+}: DeleteUserDialogProps) {
   const t = useTranslations("dashboard.superAdmin.users")
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle className="font-serif">{t("dialogs.delete.title")}</AlertDialogTitle>
+          <AlertDialogTitle className="font-serif">
+            {t("dialogs.delete.title")}
+          </AlertDialogTitle>
           <AlertDialogDescription>
             {t("dialogs.delete.description", { email: user?.email ?? "" })}
           </AlertDialogDescription>

@@ -5,7 +5,10 @@ interface CandidatesHeaderProps {
   t: CandidatesDashboardTranslations
 }
 
-export function CandidatesHeader({ totalCandidates, t }: CandidatesHeaderProps) {
+export function CandidatesHeader({
+  totalCandidates,
+  t,
+}: CandidatesHeaderProps) {
   return (
     <div className="space-y-2">
       <h1 className="font-serif text-[clamp(2rem,4vw,3rem)] leading-none tracking-tight text-heading">

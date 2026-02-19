@@ -1,5 +1,5 @@
-import { describe, test, expect, beforeEach, afterEach, mock } from "bun:test"
-import { render, screen, cleanup } from "@testing-library/react"
+import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
+import { cleanup, render, screen } from "@testing-library/react"
 
 // Mock child components BEFORE importing page
 mock.module("@/components/Navbar", () => ({
@@ -19,7 +19,9 @@ mock.module("./_components/StatsBar", () => ({
 }))
 
 mock.module("./_components/HowItWorksSection", () => ({
-  HowItWorksSection: () => <section data-testid="how-it-works">How It Works</section>,
+  HowItWorksSection: () => (
+    <section data-testid="how-it-works">How It Works</section>
+  ),
 }))
 
 mock.module("@/components/Footer", () => ({

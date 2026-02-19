@@ -2,15 +2,14 @@
 
 import "server-only"
 
-import { eq, and, count, inArray } from "drizzle-orm"
-import { cacheTag, cacheLife } from "next/cache"
-
+import { and, count, eq, inArray } from "drizzle-orm"
+import { cacheLife, cacheTag } from "next/cache"
+import { CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
-import { studentSkill } from "@/server/db/schema/students"
 import { savedOffer } from "@/server/db/schema/internships"
 import { interview } from "@/server/db/schema/interviews"
-import { CACHE_TAGS } from "@/lib/cache"
+import { studentSkill } from "@/server/db/schema/students"
 
 /**
  * Get student dashboard statistics.
@@ -27,51 +26,47 @@ export async function getStudentDashboardStats(userId: string) {
     skillsResult,
     savedOffersResult,
     interviewsResult,
-  ] =
-    await Promise.all([
-      db
-        .select({ count: count() })
-        .from(application)
-        .where(eq(application.studentUserId, userId)),
+  ] = await Promise.all([
+    db
+      .select({ count: count() })
+      .from(application)
+      .where(eq(application.studentUserId, userId)),
 
-      db
-        .select({ count: count() })
-        .from(application)
-        .where(
-          and(
-            eq(application.studentUserId, userId),
-            eq(application.status, "applied"),
-          ),
+    db
+      .select({ count: count() })
+      .from(application)
+      .where(
+        and(
+          eq(application.studentUserId, userId),
+          eq(application.status, "applied"),
         ),
+      ),
 
-      db
-        .select({ count: count() })
-        .from(application)
-        .where(
-          and(
-            eq(application.studentUserId, userId),
-            inArray(application.status, [
-              "company_accepted",
-              "admin_validated",
-            ]),
-          ),
+    db
+      .select({ count: count() })
+      .from(application)
+      .where(
+        and(
+          eq(application.studentUserId, userId),
+          inArray(application.status, ["company_accepted", "admin_validated"]),
         ),
+      ),
 
-      db
-        .select({ count: count() })
-        .from(studentSkill)
-        .where(eq(studentSkill.userId, userId)),
+    db
+      .select({ count: count() })
+      .from(studentSkill)
+      .where(eq(studentSkill.userId, userId)),
 
-      db
-        .select({ count: count() })
-        .from(savedOffer)
-        .where(eq(savedOffer.userId, userId)),
+    db
+      .select({ count: count() })
+      .from(savedOffer)
+      .where(eq(savedOffer.userId, userId)),
 
-      db
-        .select({ count: count() })
-        .from(interview)
-        .where(eq(interview.studentUserId, userId)),
-    ])
+    db
+      .select({ count: count() })
+      .from(interview)
+      .where(eq(interview.studentUserId, userId)),
+  ])
 
   return {
     totalApplications: totalResult[0]?.count ?? 0,

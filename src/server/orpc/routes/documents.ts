@@ -12,10 +12,10 @@ import {
   studentProcedureGenerous,
   studentProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
-import { downloadDocumentByCompany } from "@/server/services/documents/download-by-company"
 import { downloadDocument } from "@/server/services/documents/download"
-import { generateCertificateByCompany } from "@/server/services/documents/generate-certificate-by-company"
+import { downloadDocumentByCompany } from "@/server/services/documents/download-by-company"
 import { generateAgreement } from "@/server/services/documents/generate-agreement"
+import { generateCertificateByCompany } from "@/server/services/documents/generate-certificate-by-company"
 import { listDocumentsByCompany } from "@/server/services/documents/list-by-company"
 import { listDocumentsByStudent } from "@/server/services/documents/list-by-student"
 import { verifyDocument } from "@/server/services/documents/verify"
@@ -45,7 +45,9 @@ export const generateAgreementProcedure = adminProcedureStandard
       if (error instanceof ORPCError) throw error
       throw new ORPCError("BAD_REQUEST", {
         message:
-          error instanceof Error ? error.message : "Failed to generate agreement",
+          error instanceof Error
+            ? error.message
+            : "Failed to generate agreement",
       })
     }
   })
@@ -58,9 +60,10 @@ export const listStudentDocumentsProcedure = studentProcedureGenerous.handler(
 
 /* -- Company Documents List -- */
 
-export const listCompanyDocumentsProcedure = companyAdminProcedureGenerous.handler(
-  async ({ context }) => listDocumentsByCompany(context.companyMembership.companyId),
-)
+export const listCompanyDocumentsProcedure =
+  companyAdminProcedureGenerous.handler(async ({ context }) =>
+    listDocumentsByCompany(context.companyMembership.companyId),
+  )
 
 /* -- Student Document Download -- */
 
@@ -97,7 +100,10 @@ export const downloadDocumentProcedure = studentProcedureStandard
       }
 
       throw new ORPCError("BAD_REQUEST", {
-        message: error instanceof Error ? error.message : "Failed to download document",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to download document",
       })
     }
   })
@@ -140,7 +146,9 @@ export const generateCompanyCertificateProcedure = companyAdminProcedureStandard
 
       throw new ORPCError("BAD_REQUEST", {
         message:
-          error instanceof Error ? error.message : "Failed to generate certificate",
+          error instanceof Error
+            ? error.message
+            : "Failed to generate certificate",
       })
     }
   })
@@ -181,7 +189,9 @@ export const downloadCompanyDocumentProcedure = companyAdminProcedureStandard
 
       throw new ORPCError("BAD_REQUEST", {
         message:
-          error instanceof Error ? error.message : "Failed to download document",
+          error instanceof Error
+            ? error.message
+            : "Failed to download document",
       })
     }
   })

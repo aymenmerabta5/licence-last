@@ -31,5 +31,7 @@ export function mapZodErrors<T>(
     }
   }
 
-  return Object.keys(fieldErrors).length > 0 ? { fields: fieldErrors } : undefined
+  return Object.keys(fieldErrors).length > 0
+    ? { fields: fieldErrors }
+    : undefined
 }

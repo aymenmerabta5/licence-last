@@ -1,5 +1,11 @@
-import { Loader2, CheckCircle2, LinkIcon, MapPin } from "lucide-react"
-
+import { CheckCircle2, LinkIcon, Loader2, MapPin } from "lucide-react"
+import { InterviewStatusBadge } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewStatusBadge"
+import type {
+  ConfirmSlotInput,
+  StudentInterviewView,
+} from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
+import { formatInterviewSlot } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/utils"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -8,15 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-
-import { InterviewStatusBadge } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewStatusBadge"
-import type {
-  ConfirmSlotInput,
-  StudentInterviewView,
-} from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
-import { formatInterviewSlot } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/utils"
 
 interface StudentInterviewsSectionProps {
   interviews: StudentInterviewView[]
@@ -68,10 +66,16 @@ export function StudentInterviewsSection({
   return (
     <section className="space-y-4">
       {interviews.map((interview) => (
-        <Card key={interview.id} variant="editorial" className="cursor-default hover:bg-transparent">
+        <Card
+          key={interview.id}
+          variant="editorial"
+          className="cursor-default hover:bg-transparent"
+        >
           <CardHeader>
             <div className="space-y-1">
-              <CardTitle className="font-serif text-xl">{interview.offerTitle}</CardTitle>
+              <CardTitle className="font-serif text-xl">
+                {interview.offerTitle}
+              </CardTitle>
               <CardDescription>{interview.companyName}</CardDescription>
             </div>
             <InterviewStatusBadge status={interview.status} />
@@ -97,7 +101,9 @@ export function StudentInterviewsSection({
                       isConfirmedSlot && "border-primary bg-primary/5",
                     )}
                   >
-                    <p className="text-sm font-medium">{formatInterviewSlot(slot)}</p>
+                    <p className="text-sm font-medium">
+                      {formatInterviewSlot(slot)}
+                    </p>
 
                     {slot.location && (
                       <p className="text-xs text-muted-foreground inline-flex items-center gap-2">

@@ -1,8 +1,7 @@
 "use client"
 
-import { STAGE_COLUMNS, STAGE_LABELS } from "@/lib/constants/pipeline"
-
 import { ApplicationCard } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsView/components/ApplicationCard"
+import { STAGE_COLUMNS, STAGE_LABELS } from "@/lib/constants/pipeline"
 
 interface PipelineApplication {
   id: string
@@ -42,12 +41,16 @@ export function PipelineBoard({
                 <h2 className="text-xs font-semibold uppercase tracking-wider text-heading">
                   {STAGE_LABELS[stage]}
                 </h2>
-                <span className="text-[10px] text-muted-foreground">{stageApps.length}</span>
+                <span className="text-[10px] text-muted-foreground">
+                  {stageApps.length}
+                </span>
               </header>
 
               <div className="space-y-2">
                 {stageApps.length === 0 && (
-                  <p className="text-[11px] text-muted-foreground">No applications</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    No applications
+                  </p>
                 )}
                 {stageApps.map((app) => (
                   <ApplicationCard

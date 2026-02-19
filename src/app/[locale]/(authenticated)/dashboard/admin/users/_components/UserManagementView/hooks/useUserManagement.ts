@@ -1,10 +1,9 @@
 "use client"
 
-import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-
-import { orpc } from "@/server/orpc/client"
+import { useState } from "react"
 import { useDebounce } from "@/hooks"
+import { orpc } from "@/server/orpc/client"
 
 export function useUserManagement() {
   const [search, setSearch] = useState("")

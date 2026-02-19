@@ -1,13 +1,11 @@
 "use client"
 
+import { Loader2, Sparkles } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Sparkles, Loader2 } from "lucide-react"
-
-import { reveal, ease } from "@/lib/animations"
-import { Button } from "@/components/ui/button"
-
 import type { AdminValidationSummary } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/types"
+import { Button } from "@/components/ui/button"
+import { ease, reveal } from "@/lib/animations"
 
 interface AISummaryPanelProps {
   aiSummary: AdminValidationSummary | null

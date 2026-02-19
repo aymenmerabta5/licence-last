@@ -1,10 +1,9 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { departmentSkill } from "@/server/db/schema/departments"
+import { createModuleLogger } from "@/server/logging"
 import { validateSkillTagIds } from "@/server/services/skills/validate"
 
 const log = createModuleLogger("services/departments/sync-skills")

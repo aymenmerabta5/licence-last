@@ -28,7 +28,9 @@ export function SkillsManagerHeader({
           <Boxes className="h-4 w-4 text-primary" />
         </span>
         <div>
-          <h3 className="font-serif text-lg leading-tight text-heading">Skill Stack</h3>
+          <h3 className="font-serif text-lg leading-tight text-heading">
+            Skill Stack
+          </h3>
           <p className="mt-0.5 text-[11px] text-muted-foreground">
             Select up to {maxSkills} skills to improve your match score.
           </p>
@@ -57,7 +59,11 @@ export function SkillsManagerHeader({
           disabled={isBusy || !isDirty}
           aria-label="Save skills"
         >
-          {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save skills"}
+          {isSaving ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            "Save skills"
+          )}
         </Button>
       </div>
     </div>

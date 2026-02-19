@@ -5,9 +5,16 @@ import { randomUUID } from "node:crypto"
 import { and, asc, desc, eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
-import { assistantConversation, assistantMessage } from "@/server/db/schema/assistant"
+import {
+  assistantConversation,
+  assistantMessage,
+} from "@/server/db/schema/assistant"
 
-import { extractTextFromParts, redactSecrets, stripProviderMetadata } from "@/server/services/assistant/utils"
+import {
+  extractTextFromParts,
+  redactSecrets,
+  stripProviderMetadata,
+} from "@/server/services/assistant/utils"
 
 type AssistantMessageRole = "system" | "user" | "assistant"
 

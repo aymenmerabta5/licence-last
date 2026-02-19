@@ -42,7 +42,9 @@ export function useResolveReport() {
         )
       },
       onError: (error) => {
-        toast.error(extractErrorMessage(error, "Failed to update report status."))
+        toast.error(
+          extractErrorMessage(error, "Failed to update report status."),
+        )
       },
     }),
   )

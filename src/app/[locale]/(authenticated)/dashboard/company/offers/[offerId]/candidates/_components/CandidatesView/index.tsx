@@ -1,14 +1,12 @@
 "use client"
 
 import { Loader2 } from "lucide-react"
-
-import { TimelineModal } from "@/components/TimelineModal"
-
-import { useCandidates } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/hooks/useCandidates"
+import { AcceptModal } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/AcceptModal"
 import { CandidatesHeader } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidatesHeader"
 import { PipelineGrid } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/PipelineGrid"
-import { AcceptModal } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/AcceptModal"
 import { RefuseModal } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/RefuseModal"
+import { useCandidates } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/hooks/useCandidates"
+import { TimelineModal } from "@/components/TimelineModal"
 
 interface CandidatesViewProps {
   offerId: string
@@ -41,7 +39,10 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
 
   return (
     <div className="w-full space-y-8">
-      <CandidatesHeader offerTitle={offer?.title} totalCandidates={applications.length} />
+      <CandidatesHeader
+        offerTitle={offer?.title}
+        totalCandidates={applications.length}
+      />
 
       <PipelineGrid
         applications={applications}

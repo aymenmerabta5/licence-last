@@ -1,13 +1,12 @@
 import { getTranslations } from "next-intl/server"
-
-import { localeRedirect } from "@/lib/navigation"
-import { requireRole } from "@/lib/auth-guards"
 import { StudentDashboard } from "@/app/[locale]/(authenticated)/_components/StudentDashboard"
-import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
-import { getStudentProfile } from "@/server/services/students/get-profile"
+import { requireRole } from "@/lib/auth-guards"
+import { localeRedirect } from "@/lib/navigation"
+import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 import { listApplicationsByStudent } from "@/server/services/applications/list-by-student"
 import { recommendOffersForStudent } from "@/server/services/offers/recommend"
-import { calculateProfileCompleteness } from "@/lib/profile-completeness"
+import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
+import { getStudentProfile } from "@/server/services/students/get-profile"
 
 export default async function StudentDashboardPage() {
   const user = await requireRole(["student"])
@@ -19,12 +18,13 @@ export default async function StudentDashboardPage() {
   const t = await getTranslations("dashboard")
   const greeting = t("welcome")
 
-  const [stats, recentAppsResult, profile, recommendedResult] = await Promise.all([
-    getStudentDashboardStats(user.id),
-    listApplicationsByStudent(user.id, { limit: 5 }),
-    getStudentProfile(user.id),
-    recommendOffersForStudent({ studentUserId: user.id, limit: 3 }),
-  ])
+  const [stats, recentAppsResult, profile, recommendedResult] =
+    await Promise.all([
+      getStudentDashboardStats(user.id),
+      listApplicationsByStudent(user.id, { limit: 5 }),
+      getStudentProfile(user.id),
+      recommendOffersForStudent({ studentUserId: user.id, limit: 3 }),
+    ])
 
   const profileCompleteness = calculateProfileCompleteness({
     bio: profile?.profile.bio,

@@ -23,7 +23,9 @@ export function OfferCardCandidatesLink({
     >
       <UserCheck className="h-3.5 w-3.5" />
       <span>
-        <span className="font-serif text-sm font-bold text-heading">{candidatesCount}</span>{" "}
+        <span className="font-serif text-sm font-bold text-heading">
+          {candidatesCount}
+        </span>{" "}
         {t("candidates", { count: candidatesCount })}
       </span>
       <ArrowRight className="h-3 w-3 -translate-x-1 opacity-0 transition-all group-hover/link:translate-x-0 group-hover/link:opacity-100 [[dir=rtl]_&]:rotate-180" />

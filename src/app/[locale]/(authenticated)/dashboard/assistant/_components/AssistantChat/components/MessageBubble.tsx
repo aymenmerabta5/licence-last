@@ -1,33 +1,30 @@
-"use client";
+"use client"
 
-import { useMemo } from "react";
-import { RefreshCw, Sparkles, User } from "lucide-react";
-import { useTranslations } from "next-intl";
-
-import type { UIMessage } from "ai";
-
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-
-import { ToolInvocationView } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ToolInvocationView";
-import { MarkdownMessage } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/MarkdownMessage";
+import type { UIMessage } from "ai"
+import { RefreshCw, Sparkles, User } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { useMemo } from "react"
+import { MarkdownMessage } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/MarkdownMessage"
+import { ToolInvocationView } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ToolInvocationView"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 type AuthStatus = {
-  status: string | null;
-  url: string | null;
-};
+  status: string | null
+  url: string | null
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+  return typeof value === "object" && value !== null && !Array.isArray(value)
 }
 
 interface MessageBubbleProps {
-  message: UIMessage;
-  createdAt?: string | Date;
-  authByTool: Record<string, AuthStatus>;
-  onCheckAuth: (toolName: string) => void;
-  onRegenerateFrom: (messageId: string) => void;
-  showRegenerate: boolean;
+  message: UIMessage
+  createdAt?: string | Date
+  authByTool: Record<string, AuthStatus>
+  onCheckAuth: (toolName: string) => void
+  onRegenerateFrom: (messageId: string) => void
+  showRegenerate: boolean
 }
 
 export function MessageBubble({
@@ -38,35 +35,34 @@ export function MessageBubble({
   onRegenerateFrom,
   showRegenerate,
 }: MessageBubbleProps) {
-  const t = useTranslations("dashboard.assistant");
-  const isUser = message.role === "user";
-  const isAssistant = message.role === "assistant";
+  const t = useTranslations("dashboard.assistant")
+  const isUser = message.role === "user"
+  const isAssistant = message.role === "assistant"
   const relativeTimestamp = useMemo(() => {
-    if (!createdAt) return null;
+    if (!createdAt) return null
 
-    const date =
-      typeof createdAt === "string" ? new Date(createdAt) : createdAt;
-    if (Number.isNaN(date.getTime())) return null;
+    const date = typeof createdAt === "string" ? new Date(createdAt) : createdAt
+    if (Number.isNaN(date.getTime())) return null
 
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffMins = Math.floor(diffMs / 60000)
+    const diffHours = Math.floor(diffMs / 3600000)
+    const diffDays = Math.floor(diffMs / 86400000)
 
-    if (diffMins < 1) return t("relativeNow");
-    if (diffMins < 60) return t("relativeMinutesAgo", { count: diffMins });
-    if (diffHours < 24) return t("relativeHoursAgo", { count: diffHours });
-    if (diffDays < 7) return t("relativeDaysAgo", { count: diffDays });
-    return date.toLocaleDateString();
-  }, [createdAt, t]);
+    if (diffMins < 1) return t("relativeNow")
+    if (diffMins < 60) return t("relativeMinutesAgo", { count: diffMins })
+    if (diffHours < 24) return t("relativeHoursAgo", { count: diffHours })
+    if (diffDays < 7) return t("relativeDaysAgo", { count: diffDays })
+    return date.toLocaleDateString()
+  }, [createdAt, t])
 
   // Get text content from message parts
   const textContent = message.parts
     .map((part) =>
       isRecord(part) && part.type === "text" ? (part.text as string) : "",
     )
-    .join("");
+    .join("")
 
   return (
     <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
@@ -136,15 +132,16 @@ export function MessageBubble({
                     : null
                   : typeof part.type === "string"
                     ? part.type.slice("tool-".length)
-                    : null;
+                    : null
 
               const authStatus = toolName
                 ? (authByTool[toolName] ?? null)
-                : null;
+                : null
               const toolCallId =
-                isRecord(part) && typeof (part as Record<string, unknown>).toolCallId === "string"
+                isRecord(part) &&
+                typeof (part as Record<string, unknown>).toolCallId === "string"
                   ? ((part as Record<string, unknown>).toolCallId as string)
-                  : `tool-${idx}`;
+                  : `tool-${idx}`
 
               return (
                 <ToolInvocationView
@@ -154,9 +151,9 @@ export function MessageBubble({
                   onCheckAuth={onCheckAuth}
                   onRetry={() => onRegenerateFrom(message.id)}
                 />
-              );
+              )
             }
-            return null;
+            return null
           })}
 
           {/* Regenerate button */}
@@ -190,5 +187,5 @@ export function MessageBubble({
         )}
       </div>
     </div>
-  );
+  )
 }

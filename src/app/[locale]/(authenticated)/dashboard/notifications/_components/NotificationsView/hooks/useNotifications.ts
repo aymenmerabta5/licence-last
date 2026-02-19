@@ -1,33 +1,33 @@
 "use client"
 
-import { useMemo } from "react"
-import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { useMemo } from "react"
 import { toast } from "sonner"
-
-import { orpcClient } from "@/server/orpc/client"
 import { useInfiniteScroll } from "@/hooks"
+import { orpcClient } from "@/server/orpc/client"
 
 export function useNotifications() {
   const t = useTranslations("dashboard.notifications")
   const queryClient = useQueryClient()
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useInfiniteQuery({
-    queryKey: ["notifications", "list"],
-    queryFn: async ({ pageParam }) =>
-      orpcClient.notifications.list({
-        cursor: pageParam as { createdAt: string; id: string } | undefined,
-        limit: 20,
-      }),
-    initialPageParam: undefined as { createdAt: string; id: string } | undefined,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-  })
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ["notifications", "list"],
+      queryFn: async ({ pageParam }) =>
+        orpcClient.notifications.list({
+          cursor: pageParam as { createdAt: string; id: string } | undefined,
+          limit: 20,
+        }),
+      initialPageParam: undefined as
+        | { createdAt: string; id: string }
+        | undefined,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    })
 
   const notifications = useMemo(
     () => data?.pages.flatMap((p) => p.notifications) ?? [],
@@ -38,7 +38,9 @@ export function useNotifications() {
   const markAllReadMutation = useMutation({
     mutationFn: async () => orpcClient.notifications.markAllRead(),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
+      await queryClient.invalidateQueries({
+        queryKey: ["notifications", "list"],
+      })
       toast.success(t("markAllReadSuccess"))
     },
     onError: () => {
@@ -50,11 +52,17 @@ export function useNotifications() {
     mutationFn: async (notificationId: string) =>
       orpcClient.notifications.markRead({ notificationId }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
+      await queryClient.invalidateQueries({
+        queryKey: ["notifications", "list"],
+      })
     },
   })
 
-  const sentinelRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage)
+  const sentinelRef = useInfiniteScroll(
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  )
 
   return {
     notifications,

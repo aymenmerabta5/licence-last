@@ -1,14 +1,13 @@
 "use client"
 
-import { useMemo } from "react"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { useMemo } from "react"
 import { toast } from "sonner"
-
-import { orpc } from "@/server/orpc/client"
-import { parseUserAgent } from "@/lib/user-agent"
-import { getErrorMessage } from "@/lib/error-message"
 import type { EnrichedSession } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/types"
+import { getErrorMessage } from "@/lib/error-message"
+import { parseUserAgent } from "@/lib/user-agent"
+import { orpc } from "@/server/orpc/client"
 
 export function useSessionManagement() {
   const t = useTranslations("dashboard.settings.sessions")
@@ -31,7 +30,9 @@ export function useSessionManagement() {
     ...orpc.users.revokeMySession.mutationOptions(),
     onSuccess: () => {
       toast.success(t("revokeSuccess"))
-      queryClient.invalidateQueries({ queryKey: orpc.users.listMySessions.queryOptions().queryKey })
+      queryClient.invalidateQueries({
+        queryKey: orpc.users.listMySessions.queryOptions().queryKey,
+      })
     },
     onError: (err) => {
       toast.error(getErrorMessage(err, t("revokeError")))
@@ -42,7 +43,9 @@ export function useSessionManagement() {
     ...orpc.users.revokeOtherSessions.mutationOptions(),
     onSuccess: (data) => {
       toast.success(t("revokeOthersSuccess", { count: data.revoked }))
-      queryClient.invalidateQueries({ queryKey: orpc.users.listMySessions.queryOptions().queryKey })
+      queryClient.invalidateQueries({
+        queryKey: orpc.users.listMySessions.queryOptions().queryKey,
+      })
     },
     onError: (err) => {
       toast.error(getErrorMessage(err, t("revokeOthersError")))
@@ -54,7 +57,8 @@ export function useSessionManagement() {
     currentSession,
     otherSessions,
     isLoading: sessionsQuery.isLoading,
-    revokeSession: (token: string) => revokeMutation.mutateAsync({ sessionToken: token }),
+    revokeSession: (token: string) =>
+      revokeMutation.mutateAsync({ sessionToken: token }),
     revokeOthers: () => revokeOthersMutation.mutateAsync(undefined),
     isRevoking: revokeMutation.isPending,
     isRevokingOthers: revokeOthersMutation.isPending,

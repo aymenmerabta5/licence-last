@@ -20,8 +20,5 @@ export async function listStudentProjects(userId: string) {
     })
     .from(studentProject)
     .where(eq(studentProject.userId, userId))
-    .orderBy(
-      desc(studentProject.startDate),
-      desc(studentProject.createdAt),
-    )
+    .orderBy(desc(studentProject.startDate), desc(studentProject.createdAt))
 }

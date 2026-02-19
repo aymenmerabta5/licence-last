@@ -1,9 +1,8 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-
-import { STATUS_COLORS } from "@/lib/constants/pipeline"
 import type { OfferApplicationSummary } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
+import { STATUS_COLORS } from "@/lib/constants/pipeline"
 
 interface ApplicationStatusCardProps {
   application: OfferApplicationSummary
@@ -17,7 +16,9 @@ export function ApplicationStatusCard({
 
   return (
     <div className="border border-border bg-card p-5 space-y-3">
-      <p className="text-sm font-medium text-foreground">{t("alreadyApplied")}</p>
+      <p className="text-sm font-medium text-foreground">
+        {t("alreadyApplied")}
+      </p>
       <div className="flex items-center gap-2">
         <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
           {t("applicationStatus")}

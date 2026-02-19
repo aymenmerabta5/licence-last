@@ -1,11 +1,7 @@
 "use client"
 
-import { useState } from "react"
 import { Plus } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
+import { useState } from "react"
 import { ProjectEditor } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/projects/ProjectEditor"
 import { ProjectListItem } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/projects/ProjectListItem"
 import type {
@@ -17,6 +13,8 @@ import {
   toInputDate,
 } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/projects/utils"
 import type { StudentCvProject } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/types"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export function ProjectsSection({
   projects,
@@ -95,7 +93,9 @@ export function ProjectsSection({
         )}
 
         {projects.length === 0 && !adding && (
-          <p className="text-sm text-muted-foreground">No projects added yet.</p>
+          <p className="text-sm text-muted-foreground">
+            No projects added yet.
+          </p>
         )}
 
         {projects.map((project) => {

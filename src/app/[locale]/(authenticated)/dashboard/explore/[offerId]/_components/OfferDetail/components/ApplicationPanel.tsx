@@ -1,11 +1,8 @@
 "use client"
 
+import { Send } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Send } from "lucide-react"
-
-import { reveal, ease } from "@/lib/animations"
-import { Button } from "@/components/ui/button"
 import { ApplicationFormCard } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/ApplicationFormCard"
 import { ApplicationSectionDivider } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/ApplicationSectionDivider"
 import { ApplicationStatusCard } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/ApplicationStatusCard"
@@ -14,6 +11,8 @@ import type {
   OfferApplicationSummary,
   OfferApplyMutation,
 } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
+import { Button } from "@/components/ui/button"
+import { ease, reveal } from "@/lib/animations"
 
 interface ApplicationPanelProps {
   application: OfferApplicationSummary | null

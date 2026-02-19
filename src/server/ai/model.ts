@@ -113,7 +113,9 @@ export function isAllowedPoeModelId(modelId: string): boolean {
 
 export function getPoeModel(modelId?: string) {
   const requested = modelId ?? getDefaultPoeModelId()
-  const model = isAllowedPoeModelId(requested) ? requested : getDefaultPoeModelId()
+  const model = isAllowedPoeModelId(requested)
+    ? requested
+    : getDefaultPoeModelId()
   // Poe's OpenAI-compatible API does not reliably support the Responses API
   // for all models. Use Chat Completions for maximum compatibility.
   return poe.chat(model)

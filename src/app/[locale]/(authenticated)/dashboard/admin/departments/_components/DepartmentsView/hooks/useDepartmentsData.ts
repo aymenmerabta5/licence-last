@@ -1,10 +1,8 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-
-import { orpc } from "@/server/orpc/client"
-
 import type { DepartmentItem } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/types"
+import { orpc } from "@/server/orpc/client"
 
 export function useDepartmentsData() {
   const { data: me, isLoading: isMeLoading } = useQuery(
@@ -12,7 +10,11 @@ export function useDepartmentsData() {
   )
   const universityId = me?.university?.id ?? null
 
-  const { data, isLoading: isDepartmentsLoading, refetch } = useQuery({
+  const {
+    data,
+    isLoading: isDepartmentsLoading,
+    refetch,
+  } = useQuery({
     ...orpc.departments.list.queryOptions({
       input: { universityId: universityId ?? "" },
       enabled: !!universityId,

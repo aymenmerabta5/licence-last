@@ -1,21 +1,20 @@
 "use client"
 
-import { useState } from "react"
-import { useTranslations } from "next-intl"
 import { Loader2 } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import { useState } from "react"
+import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
 
 interface SetPasswordDialogProps {
   open: boolean
@@ -25,7 +24,13 @@ interface SetPasswordDialogProps {
   isPending: boolean
 }
 
-export function SetPasswordDialog({ open, onOpenChange, user, onSubmit, isPending }: SetPasswordDialogProps) {
+export function SetPasswordDialog({
+  open,
+  onOpenChange,
+  user,
+  onSubmit,
+  isPending,
+}: SetPasswordDialogProps) {
   const t = useTranslations("dashboard.superAdmin.users")
   const [password, setPassword] = useState("")
 
@@ -40,14 +45,18 @@ export function SetPasswordDialog({ open, onOpenChange, user, onSubmit, isPendin
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-serif">{t("dialogs.setPassword.title")}</DialogTitle>
+          <DialogTitle className="font-serif">
+            {t("dialogs.setPassword.title")}
+          </DialogTitle>
           <DialogDescription>
             {t("dialogs.setPassword.description", { email: user?.email ?? "" })}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="new-password">{t("dialogs.setPassword.newPassword")}</Label>
+            <Label htmlFor="new-password">
+              {t("dialogs.setPassword.newPassword")}
+            </Label>
             <Input
               id="new-password"
               type="password"
@@ -58,7 +67,11 @@ export function SetPasswordDialog({ open, onOpenChange, user, onSubmit, isPendin
             />
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               {t("dialogs.cancel")}
             </Button>
             <Button type="submit" disabled={isPending}>

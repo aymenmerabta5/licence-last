@@ -1,14 +1,14 @@
 import "server-only"
 
-import { eq, and } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
+import { and, eq } from "drizzle-orm"
 import { db } from "@/server/db"
+import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/applications/withdraw")
+
 import { application } from "@/server/db/schema/applications"
-import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
+import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 
 /**
  * Withdraw an application.
@@ -30,13 +30,19 @@ export async function withdrawApplication(
     .limit(1)
 
   if (!app) {
-    throw new ApplicationServiceError("APPLICATION_NOT_FOUND", "Application not found")
+    throw new ApplicationServiceError(
+      "APPLICATION_NOT_FOUND",
+      "Application not found",
+    )
   }
 
   log.info({ applicationId, studentUserId }, "Withdrawing application")
 
   if (app.status !== "applied") {
-    throw new ApplicationServiceError("APPLICATION_INVALID_STATE", "Only pending applications can be withdrawn")
+    throw new ApplicationServiceError(
+      "APPLICATION_INVALID_STATE",
+      "Only pending applications can be withdrawn",
+    )
   }
 
   await db
@@ -59,6 +65,9 @@ export async function withdrawApplication(
     payload: { reason: "withdrawn_by_student" },
   })
 
-  log.info({ applicationId, event: "application_withdrawn" }, "Application withdrawn")
+  log.info(
+    { applicationId, event: "application_withdrawn" },
+    "Application withdrawn",
+  )
   return { applicationId, newStatus: "withdrawn" as const }
 }

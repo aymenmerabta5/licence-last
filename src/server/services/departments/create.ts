@@ -2,11 +2,10 @@ import "server-only"
 
 import { randomUUID } from "node:crypto"
 
-import { eq, and } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
+import { and, eq } from "drizzle-orm"
 import { db } from "@/server/db"
 import { department } from "@/server/db/schema/departments"
+import { createModuleLogger } from "@/server/logging"
 import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/departments/create")
@@ -32,7 +31,10 @@ export async function createDepartment(data: {
 
   const id = randomUUID()
 
-  log.info({ universityId: data.universityId, name: data.name }, "Creating department")
+  log.info(
+    { universityId: data.universityId, name: data.name },
+    "Creating department",
+  )
 
   await db.insert(department).values({
     id,

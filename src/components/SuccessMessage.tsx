@@ -1,7 +1,7 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { CheckCircle2 } from "lucide-react"
+import * as motion from "motion/react-client"
 
 interface SuccessMessageProps {
   message: string

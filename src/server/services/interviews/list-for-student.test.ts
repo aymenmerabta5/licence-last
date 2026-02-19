@@ -11,7 +11,9 @@ const interviewsLimit = mock(() => Promise.resolve(getCurrentSelectResults()))
 const interviewsOrderBy = mock(() => ({ limit: interviewsLimit }))
 const interviewsWhere = mock(() => ({ orderBy: interviewsOrderBy }))
 const interviewsJoinOffers = mock(() => ({ where: interviewsWhere }))
-const interviewsJoinCompanies = mock(() => ({ innerJoin: interviewsJoinOffers }))
+const interviewsJoinCompanies = mock(() => ({
+  innerJoin: interviewsJoinOffers,
+}))
 const interviewsFrom = mock(() => ({ innerJoin: interviewsJoinCompanies }))
 
 const slotsOrderBy = mock(() => Promise.resolve(getCurrentSelectResults()))

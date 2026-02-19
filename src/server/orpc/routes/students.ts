@@ -1,9 +1,15 @@
 import "server-only"
 
-import { z } from "zod"
 import { ORPCError } from "@orpc/server"
 import { revalidateTag } from "next/cache"
-
+import { z } from "zod"
+import { CACHE_TAGS } from "@/lib/cache"
+import {
+  hasDuplicateLanguageCodes,
+  LANGUAGE_CODES,
+} from "@/lib/constants/languages"
+import { isFeatureEnabled } from "@/lib/feature-flags"
+import { proficiencyLevelSchema } from "@/lib/schemas/enums"
 import {
   authedProcedureGenerous,
   studentProcedureStandard,
@@ -12,13 +18,6 @@ import { getStudentProfile } from "@/server/services/students/get-profile"
 import { getPublicStudentProfile } from "@/server/services/students/get-public-profile"
 import { upsertStudentProfile } from "@/server/services/students/upsert-profile"
 import { upsertStudentProfileDetails } from "@/server/services/students/upsert-profile-details"
-import { CACHE_TAGS } from "@/lib/cache"
-import {
-  LANGUAGE_CODES,
-  hasDuplicateLanguageCodes,
-} from "@/lib/constants/languages"
-import { proficiencyLevelSchema } from "@/lib/schemas/enums"
-import { isFeatureEnabled } from "@/lib/feature-flags"
 
 /* ── Reads ── */
 
@@ -36,7 +35,8 @@ export const getStudentProfileProcedure = authedProcedureGenerous
     // Students can only view their own profile.
     // Admins/super_admins can view any profile.
     const isAdmin =
-      context.user.role === "university_admin" || context.user.role === "super_admin"
+      context.user.role === "university_admin" ||
+      context.user.role === "super_admin"
     if (targetUserId !== context.user.id && !isAdmin) {
       throw new ORPCError("FORBIDDEN", {
         message: "You can only view your own profile",
@@ -54,7 +54,8 @@ export const getPublicStudentProfileProcedure = authedProcedureGenerous
   )
   .handler(async ({ input, context }) => {
     const isAdmin =
-      context.user.role === "university_admin" || context.user.role === "super_admin"
+      context.user.role === "university_admin" ||
+      context.user.role === "super_admin"
     const isCompanyAdmin = context.user.role === "company_admin"
     const isStudentOwner =
       context.user.role === "student" && input.userId === context.user.id
@@ -84,7 +85,13 @@ export const upsertStudentProfileProcedure = studentProcedureStandard
       department: z.string().optional(),
       departmentId: z.string().optional(),
       level: z.string().optional(),
-      wilayaCode: z.coerce.number().int().min(1).max(58).optional().or(z.literal(0)),
+      wilayaCode: z.coerce
+        .number()
+        .int()
+        .min(1)
+        .max(58)
+        .optional()
+        .or(z.literal(0)),
       address: z.string().optional(),
       skillTagIds: z.array(z.string()).min(1).max(10),
       languages: z
@@ -99,7 +106,9 @@ export const upsertStudentProfileProcedure = studentProcedureStandard
   )
   .handler(async ({ input, context }) => {
     const { skillTagIds, languages, ...data } = input
-    const isLanguageRequirementsEnabled = isFeatureEnabled("LANGUAGE_REQUIREMENTS")
+    const isLanguageRequirementsEnabled = isFeatureEnabled(
+      "LANGUAGE_REQUIREMENTS",
+    )
 
     if (isLanguageRequirementsEnabled) {
       if (!languages || languages.length === 0) {
@@ -140,7 +149,13 @@ export const upsertStudentProfileDetailsProcedure = studentProcedureStandard
       studentNumber: z.string().optional(),
       department: z.string().optional(),
       level: z.string().optional(),
-      wilayaCode: z.coerce.number().int().min(1).max(58).optional().or(z.literal(0)),
+      wilayaCode: z.coerce
+        .number()
+        .int()
+        .min(1)
+        .max(58)
+        .optional()
+        .or(z.literal(0)),
       address: z.string().optional(),
     }),
   )

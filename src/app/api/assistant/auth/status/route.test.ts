@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, mock } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // Mock headers
 let mockHeadersData: Record<string, string> = {}
@@ -16,13 +16,16 @@ mock.module("@/lib/csrf", () => ({
 }))
 
 // Mock auth
-const mockGetSession = mock<() => Promise<{
-  user: {
-    id: string
-    role: string
-    onboardingCompleted?: boolean
-  }
-} | null>>()
+const mockGetSession =
+  mock<
+    () => Promise<{
+      user: {
+        id: string
+        role: string
+        onboardingCompleted?: boolean
+      }
+    } | null>
+  >()
 
 mock.module("@/lib/auth", () => ({
   auth: {
@@ -34,7 +37,8 @@ mock.module("@/lib/auth", () => ({
 }))
 
 // Mock rate limit
-const mockCheckRateLimit = mock<() => Promise<{ ok: boolean; retryAfterMs: number }>>()
+const mockCheckRateLimit =
+  mock<() => Promise<{ ok: boolean; retryAfterMs: number }>>()
 
 mock.module("@/server/ai/rate-limit", () => ({
   checkRateLimit: mockCheckRateLimit,
@@ -62,7 +66,10 @@ mock.module("@/env", () => ({
 const mockDbLimit = mock<() => Promise<Array<{ status: string }>>>()
 const mockDbWhere = mock(() => ({ limit: mockDbLimit }))
 const mockDbInnerJoin = mock(() => ({ where: mockDbWhere }))
-const mockDbFrom = mock(() => ({ innerJoin: mockDbInnerJoin, where: mockDbWhere }))
+const mockDbFrom = mock(() => ({
+  innerJoin: mockDbInnerJoin,
+  where: mockDbWhere,
+}))
 const mockDbSelect = mock(() => ({ from: mockDbFrom }))
 
 mock.module("@/server/db", () => ({
@@ -88,7 +95,10 @@ describe("src/app/api/assistant/auth/status/route", () => {
       user: { id: "user-1", role: "company_admin" },
     })
     mockCheckRateLimit.mockResolvedValue({ ok: true, retryAfterMs: 0 })
-    mockAuthorize.mockResolvedValue({ status: "completed", url: "http://auth.url" })
+    mockAuthorize.mockResolvedValue({
+      status: "completed",
+      url: "http://auth.url",
+    })
     mockDbLimit.mockResolvedValue([{ status: "approved" }])
   })
 
@@ -96,10 +106,13 @@ describe("src/app/api/assistant/auth/status/route", () => {
     test("invalid JSON returns 400", async () => {
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
-      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
-        method: "POST",
-        body: "not valid json",
-      })
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          body: "not valid json",
+        },
+      )
 
       const response = await POST(request)
       expect(response.status).toBe(400)
@@ -110,11 +123,14 @@ describe("src/app/api/assistant/auth/status/route", () => {
     test("missing toolName returns 400", async () => {
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
-      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
-      })
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({}),
+        },
+      )
 
       const response = await POST(request)
       expect(response.status).toBe(400)
@@ -125,11 +141,14 @@ describe("src/app/api/assistant/auth/status/route", () => {
     test("empty string toolName returns 400", async () => {
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
-      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toolName: "" }),
-      })
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "" }),
+        },
+      )
 
       const response = await POST(request)
       expect(response.status).toBe(400)
@@ -140,11 +159,14 @@ describe("src/app/api/assistant/auth/status/route", () => {
     test("whitespace-only toolName returns 400", async () => {
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
-      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toolName: "   " }),
-      })
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "   " }),
+        },
+      )
 
       const response = await POST(request)
       expect(response.status).toBe(400)
@@ -155,11 +177,14 @@ describe("src/app/api/assistant/auth/status/route", () => {
     test("non-string toolName returns 400", async () => {
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
-      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toolName: 123 }),
-      })
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: 123 }),
+        },
+      )
 
       const response = await POST(request)
       expect(response.status).toBe(400)
@@ -174,11 +199,14 @@ describe("src/app/api/assistant/auth/status/route", () => {
 
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
-      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toolName: "gmail.send" }),
-      })
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "gmail.send" }),
+        },
+      )
 
       const response = await POST(request)
       expect(response.status).toBe(401)
@@ -195,11 +223,14 @@ describe("src/app/api/assistant/auth/status/route", () => {
 
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
-      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toolName: "gmail.send" }),
-      })
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "gmail.send" }),
+        },
+      )
 
       const response = await POST(request)
       expect(response.status).toBe(403)
@@ -214,11 +245,14 @@ describe("src/app/api/assistant/auth/status/route", () => {
 
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
-      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toolName: "gmail.send" }),
-      })
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "gmail.send" }),
+        },
+      )
 
       const response = await POST(request)
       expect(response.status).toBe(403)
@@ -233,11 +267,14 @@ describe("src/app/api/assistant/auth/status/route", () => {
 
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
-      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toolName: "gmail.send" }),
-      })
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "gmail.send" }),
+        },
+      )
 
       const response = await POST(request)
       expect(response.status).toBe(403)
@@ -247,17 +284,24 @@ describe("src/app/api/assistant/auth/status/route", () => {
 
     test("pending company_admin returns 403", async () => {
       mockGetSession.mockResolvedValue({
-        user: { id: "user-1", role: "company_admin", onboardingCompleted: true },
+        user: {
+          id: "user-1",
+          role: "company_admin",
+          onboardingCompleted: true,
+        },
       })
       mockDbLimit.mockResolvedValue([{ status: "pending" }])
 
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
-      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toolName: "gmail.send" }),
-      })
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "gmail.send" }),
+        },
+      )
 
       const response = await POST(request)
       expect(response.status).toBe(403)
@@ -275,11 +319,14 @@ describe("src/app/api/assistant/auth/status/route", () => {
 
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
-      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toolName: "gmail.send" }),
-      })
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "gmail.send" }),
+        },
+      )
 
       const response = await POST(request)
       expect(response.status).toBe(429)
@@ -295,11 +342,14 @@ describe("src/app/api/assistant/auth/status/route", () => {
 
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
-      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toolName: "gmail.send" }),
-      })
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "gmail.send" }),
+        },
+      )
 
       await POST(request)
 
@@ -322,11 +372,14 @@ describe("src/app/api/assistant/auth/status/route", () => {
 
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
-      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toolName: "gmail.send" }),
-      })
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "gmail.send" }),
+        },
+      )
 
       const response = await POST(request)
       expect(response.status).toBe(200)
@@ -340,11 +393,14 @@ describe("src/app/api/assistant/auth/status/route", () => {
     test("success passes correct parameters to Arcade", async () => {
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
-      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toolName: "github.create_issue" }),
-      })
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "github.create_issue" }),
+        },
+      )
 
       await POST(request)
 
@@ -362,11 +418,14 @@ describe("src/app/api/assistant/auth/status/route", () => {
 
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
-      const request = new Request("http://localhost:3000/api/assistant/auth/status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toolName: "gmail.send" }),
-      })
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "gmail.send" }),
+        },
+      )
 
       const response = await POST(request)
       expect(response.status).toBe(200)

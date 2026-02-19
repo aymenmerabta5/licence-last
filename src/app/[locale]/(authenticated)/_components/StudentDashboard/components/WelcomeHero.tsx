@@ -1,12 +1,11 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { useReducedMotion } from "motion/react"
+import * as motion from "motion/react-client"
+import { Route } from "next"
 import { useLocale, useTranslations } from "next-intl"
-
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
-import { Route } from "next"
 import { getTransition } from "@/lib/animations"
 
 interface WelcomeHeroProps {
@@ -69,8 +68,10 @@ export function WelcomeHero({
             <div className="lg:col-span-8 space-y-5">
               <h2 className="font-serif text-[clamp(1.75rem,3.5vw,2.75rem)] leading-[1.08] tracking-tight text-heading">
                 {t("headlinePrefix")}{" "}
-                <span className="text-primary italic">{t("headlineAccent")}</span>,{" "}
-                {displayName}?
+                <span className="text-primary italic">
+                  {t("headlineAccent")}
+                </span>
+                , {displayName}?
               </h2>
               <p className="text-muted-foreground text-sm font-light leading-relaxed max-w-xl">
                 {profileCompleteness < 100
@@ -130,7 +131,9 @@ export function WelcomeHero({
                 <p className="text-[10px] text-muted-foreground/50 font-medium">
                   {profileCompleteness >= 100
                     ? t("profileReady")
-                    : t("profileRemaining", { remaining: 100 - profileCompleteness })}
+                    : t("profileRemaining", {
+                        remaining: 100 - profileCompleteness,
+                      })}
                 </p>
               </div>
             </div>

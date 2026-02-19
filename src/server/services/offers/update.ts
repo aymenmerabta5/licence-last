@@ -1,15 +1,17 @@
 import "server-only"
 
 import { and, eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
+import { normalizeLanguageEntries } from "@/lib/constants/languages"
+import type { ProficiencyLevel } from "@/lib/schemas/enums"
 import { db } from "@/server/db"
-import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
+import {
+  internshipOffer,
+  internshipOfferSkill,
+} from "@/server/db/schema/internships"
 import { internshipOfferLanguageRequirement } from "@/server/db/schema/languages"
+import { createModuleLogger } from "@/server/logging"
 import { ServiceError } from "@/server/services/errors"
 import { validateSkillTagIds } from "@/server/services/skills/validate"
-import type { ProficiencyLevel } from "@/lib/schemas/enums"
-import { normalizeLanguageEntries } from "@/lib/constants/languages"
 
 const log = createModuleLogger("services/offers/update")
 
@@ -39,13 +41,25 @@ export async function updateOffer(
   },
 ) {
   const [existing] = await db
-    .select({ id: internshipOffer.id, companyId: internshipOffer.companyId, status: internshipOffer.status })
+    .select({
+      id: internshipOffer.id,
+      companyId: internshipOffer.companyId,
+      status: internshipOffer.status,
+    })
     .from(internshipOffer)
-    .where(and(eq(internshipOffer.id, offerId), eq(internshipOffer.companyId, companyId)))
+    .where(
+      and(
+        eq(internshipOffer.id, offerId),
+        eq(internshipOffer.companyId, companyId),
+      ),
+    )
     .limit(1)
 
   if (!existing) {
-    throw new ServiceError("OFFER_NOT_FOUND", "Offer not found or access denied")
+    throw new ServiceError(
+      "OFFER_NOT_FOUND",
+      "Offer not found or access denied",
+    )
   }
 
   log.info({ offerId, companyId }, "Updating offer")

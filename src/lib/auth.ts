@@ -3,23 +3,34 @@ import "server-only"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { APIError } from "better-auth/api"
-import { admin as adminPlugin, captcha, multiSession, twoFactor } from "better-auth/plugins"
 import { nextCookies } from "better-auth/next-js"
+import {
+  admin as adminPlugin,
+  captcha,
+  multiSession,
+  twoFactor,
+} from "better-auth/plugins"
 import { and, eq, inArray } from "drizzle-orm"
-
+import { env } from "@/env"
+import { domainCandidates, getEmailDomain } from "@/lib/auth-utils"
+import {
+  ac,
+  companyAdmin,
+  deptHead,
+  student,
+  superAdmin,
+  universityAdmin,
+} from "@/lib/permissions"
 import { db } from "@/server/db"
 import { universityDomain } from "@/server/db/schema/universities"
 import { sendEmail } from "@/server/email/sendEmail"
-import ResetPasswordEmail from "@/server/email/templates/ResetPasswordEmail"
 import DeptHeadWelcomeEmail from "@/server/email/templates/DeptHeadWelcomeEmail"
-import VerifyEmailEmail from "@/server/email/templates/VerifyEmailEmail"
+import ResetPasswordEmail from "@/server/email/templates/ResetPasswordEmail"
 import TwoFactorOtpEmail from "@/server/email/templates/TwoFactorOtpEmail"
-import { env } from "@/env"
-import { getEmailDomain, domainCandidates } from "@/lib/auth-utils"
-import { ac, superAdmin, universityAdmin, deptHead, student, companyAdmin } from "@/lib/permissions"
+import VerifyEmailEmail from "@/server/email/templates/VerifyEmailEmail"
 
 // Re-export for backward compatibility
-export { getEmailDomain, domainCandidates } from "@/lib/auth-utils"
+export { domainCandidates, getEmailDomain } from "@/lib/auth-utils"
 
 /**
  * Short-lived signal map for bulk dept-head creation.
@@ -116,8 +127,18 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (data, ctx) => {
-          const VALID_ROLES = new Set<string>(["student", "company_admin", "dept_head", "university_admin", "super_admin"])
-          const ALLOWED_SIGNUP_ROLES = new Set<string>(["student", "company_admin", "university_admin"])
+          const VALID_ROLES = new Set<string>([
+            "student",
+            "company_admin",
+            "dept_head",
+            "university_admin",
+            "super_admin",
+          ])
+          const ALLOWED_SIGNUP_ROLES = new Set<string>([
+            "student",
+            "company_admin",
+            "university_admin",
+          ])
           const isAdminCreated = data.emailVerified === true
 
           if (isAdminCreated) {
@@ -133,14 +154,18 @@ export const auth = betterAuth({
 
           // Self-registration — read accountType from raw request body
           // (role field has input:false via admin plugin, so we use a separate body field)
-          const requestedRole = (ctx?.body?.accountType as string | undefined) ?? "student"
+          const requestedRole =
+            (ctx?.body?.accountType as string | undefined) ?? "student"
           if (!ALLOWED_SIGNUP_ROLES.has(requestedRole)) {
             throw new APIError("BAD_REQUEST", {
               code: "ROLE_IS_NOT_ALLOWED_TO_BE_SET",
               message: "role is not allowed to be set",
             })
           }
-          const role = requestedRole as "student" | "company_admin" | "university_admin"
+          const role = requestedRole as
+            | "student"
+            | "company_admin"
+            | "university_admin"
 
           // company_admin and university_admin skip university domain validation
           if (role !== "student") {
@@ -189,7 +214,12 @@ export const auth = betterAuth({
     sendOnSignIn: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
-      await sendEmail(user.email, "Verify your email address", VerifyEmailEmail, { link: url })
+      await sendEmail(
+        user.email,
+        "Verify your email address",
+        VerifyEmailEmail,
+        { link: url },
+      )
     },
   },
   emailAndPassword: {
@@ -208,7 +238,9 @@ export const auth = betterAuth({
           { ...welcomeData, link: url },
         )
       } else {
-        await sendEmail(user.email, "Reset your password", ResetPasswordEmail, { link: url })
+        await sendEmail(user.email, "Reset your password", ResetPasswordEmail, {
+          link: url,
+        })
       }
     },
   },
@@ -257,10 +289,12 @@ export const auth = betterAuth({
       maximumSessions: 5,
     }),
     ...(CAPTCHA_ENABLED
-      ? [captcha({
-          provider: "cloudflare-turnstile",
-          secretKey: TURNSTILE_SECRET_KEY!,
-        })]
+      ? [
+          captcha({
+            provider: "cloudflare-turnstile",
+            secretKey: TURNSTILE_SECRET_KEY!,
+          }),
+        ]
       : []),
     nextCookies(), // must be last — handles Set-Cookie in server actions
   ],

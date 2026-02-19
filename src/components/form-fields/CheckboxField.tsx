@@ -21,7 +21,9 @@ export function CheckboxField({
 }: CheckboxFieldProps) {
   return (
     <div className="space-y-2">
-      <label className={`flex items-start gap-2.5 cursor-pointer select-none ${className ?? ""}`}>
+      <label
+        className={`flex items-start gap-2.5 cursor-pointer select-none ${className ?? ""}`}
+      >
         <div className="relative flex items-center justify-center mt-0.5">
           <input
             type="checkbox"

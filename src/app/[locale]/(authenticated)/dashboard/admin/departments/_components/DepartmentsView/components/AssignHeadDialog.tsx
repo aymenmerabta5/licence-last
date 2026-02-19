@@ -1,7 +1,7 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Loader2, Mail, UserRound } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -90,7 +90,9 @@ export function AssignHeadDialog({
         </div>
 
         <DialogFooter className="sm:items-center sm:justify-between">
-          <p className="text-xs text-muted-foreground">{t("passwordResetHint")}</p>
+          <p className="text-xs text-muted-foreground">
+            {t("passwordResetHint")}
+          </p>
           <div className="flex items-center gap-2">
             <Button
               type="button"

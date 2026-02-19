@@ -4,8 +4,8 @@ import { eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
-import { interview, interviewSlot } from "@/server/db/schema/interviews"
 import { internshipOffer } from "@/server/db/schema/internships"
+import { interview, interviewSlot } from "@/server/db/schema/interviews"
 import { InterviewServiceError } from "@/server/services/interviews/errors"
 
 interface ProposedInterviewSlotInput {

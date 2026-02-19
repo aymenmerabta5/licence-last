@@ -1,16 +1,16 @@
 import { z } from "zod"
 import {
-  internshipTypeEnum,
-  workModeEnum,
-  applicationStatusEnum,
   applicationPipelineStageEnum,
-  userRoleEnum,
-  companyStatusEnum,
-  companyReportStatusEnum,
+  applicationStatusEnum,
   companyReportSeverityEnum,
+  companyReportStatusEnum,
+  companyStatusEnum,
+  internshipTypeEnum,
   offerStatusEnum,
   proficiencyLevelEnum,
   universityStatusEnum,
+  userRoleEnum,
+  workModeEnum,
 } from "@/server/db/schema/enums"
 
 export const internshipTypeSchema = z.enum(internshipTypeEnum.enumValues)
@@ -22,7 +22,9 @@ export type WorkMode = z.infer<typeof workModeSchema>
 export const applicationStatusSchema = z.enum(applicationStatusEnum.enumValues)
 export type ApplicationStatus = z.infer<typeof applicationStatusSchema>
 
-export const pipelineStageSchema = z.enum(applicationPipelineStageEnum.enumValues)
+export const pipelineStageSchema = z.enum(
+  applicationPipelineStageEnum.enumValues,
+)
 export type PipelineStage = z.infer<typeof pipelineStageSchema>
 
 export const userRoleSchema = z.enum(userRoleEnum.enumValues)
@@ -31,10 +33,14 @@ export type UserRole = z.infer<typeof userRoleSchema>
 export const companyStatusSchema = z.enum(companyStatusEnum.enumValues)
 export type CompanyStatus = z.infer<typeof companyStatusSchema>
 
-export const companyReportStatusSchema = z.enum(companyReportStatusEnum.enumValues)
+export const companyReportStatusSchema = z.enum(
+  companyReportStatusEnum.enumValues,
+)
 export type CompanyReportStatus = z.infer<typeof companyReportStatusSchema>
 
-export const companyReportSeveritySchema = z.enum(companyReportSeverityEnum.enumValues)
+export const companyReportSeveritySchema = z.enum(
+  companyReportSeverityEnum.enumValues,
+)
 export type CompanyReportSeverity = z.infer<typeof companyReportSeveritySchema>
 
 export const offerStatusSchema = z.enum(offerStatusEnum.enumValues)

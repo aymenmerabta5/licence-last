@@ -1,18 +1,17 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
-
-import { useRouter } from "@/i18n/routing"
-import { orpc, orpcClient } from "@/server/orpc/client"
 import {
   isAfterDate,
   isBeforeDate,
   toDateInputValue,
   type ValidationSummary,
 } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/[applicationId]/_components/DeptHeadPlacementDetail/hooks/placementActionUtils"
+import { useRouter } from "@/i18n/routing"
+import { orpc, orpcClient } from "@/server/orpc/client"
 
 export function useDeptHeadPlacementActions(
   applicationId: string,
@@ -164,9 +163,7 @@ export function useDeptHeadPlacementActions(
     : false
 
   const showOutOfRangeWarning =
-    !!startDate &&
-    !!endDate &&
-    (isBeforeExpectedStart || isAfterExpectedEnd)
+    !!startDate && !!endDate && (isBeforeExpectedStart || isAfterExpectedEnd)
 
   return {
     startDate,

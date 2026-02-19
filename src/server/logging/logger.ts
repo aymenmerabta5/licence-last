@@ -1,4 +1,4 @@
-import pino from "pino";
+import pino from "pino"
 
 /**
  * Base configuration for the pino logger
@@ -29,18 +29,18 @@ const loggerConfig: pino.LoggerOptions = {
     remove: true,
   },
   timestamp: () => `,"time":"${new Date().toISOString()}"`,
-};
+}
 
 /**
  * Root logger instance
  */
-export const logger = pino(loggerConfig);
+export const logger = pino(loggerConfig)
 
 /**
  * Create a child logger with additional context bindings
  */
 export function createLogger(bindings: Record<string, unknown>): pino.Logger {
-  return logger.child(bindings);
+  return logger.child(bindings)
 }
 
 /**
@@ -48,5 +48,5 @@ export function createLogger(bindings: Record<string, unknown>): pino.Logger {
  * Usage: const log = createModuleLogger("email/sendEmail")
  */
 export function createModuleLogger(module: string): pino.Logger {
-  return createLogger({ module });
+  return createLogger({ module })
 }

@@ -35,13 +35,13 @@ export async function listThreadMessages(
     .limit(1)
 
   if (!thread) {
-    throw new MessageServiceError("THREAD_NOT_FOUND", "Message thread not found")
+    throw new MessageServiceError(
+      "THREAD_NOT_FOUND",
+      "Message thread not found",
+    )
   }
 
-  if (
-    viewer.role === "student" &&
-    thread.studentUserId !== viewer.userId
-  ) {
+  if (viewer.role === "student" && thread.studentUserId !== viewer.userId) {
     throw new MessageServiceError(
       "THREAD_FORBIDDEN",
       "You do not have access to this thread",

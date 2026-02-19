@@ -1,12 +1,12 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 
 import {
   asRecord,
-  getString,
+  findLatestToolOutput,
   getNumber,
+  getString,
   getStringArray,
   getStringProp,
-  findLatestToolOutput,
 } from "@/lib/ai/tool-output"
 
 describe("asRecord", () => {
@@ -114,18 +114,30 @@ describe("findLatestToolOutput", () => {
       {
         role: "assistant",
         parts: [
-          { type: "dynamic-tool", toolName: "get-offers", state: "output-available", output: { data: "old" } },
+          {
+            type: "dynamic-tool",
+            toolName: "get-offers",
+            state: "output-available",
+            output: { data: "old" },
+          },
         ],
       },
       {
         role: "assistant",
         parts: [
-          { type: "dynamic-tool", toolName: "get-offers", state: "output-available", output: { data: "latest" } },
+          {
+            type: "dynamic-tool",
+            toolName: "get-offers",
+            state: "output-available",
+            output: { data: "latest" },
+          },
         ],
       },
     ]
 
-    expect(findLatestToolOutput(messages, "get-offers")).toEqual({ data: "latest" })
+    expect(findLatestToolOutput(messages, "get-offers")).toEqual({
+      data: "latest",
+    })
   })
 
   test("should return null when no matching tool found", () => {
@@ -133,7 +145,12 @@ describe("findLatestToolOutput", () => {
       {
         role: "assistant",
         parts: [
-          { type: "dynamic-tool", toolName: "get-stats", state: "output-available", output: {} },
+          {
+            type: "dynamic-tool",
+            toolName: "get-stats",
+            state: "output-available",
+            output: {},
+          },
         ],
       },
     ]
@@ -146,7 +163,12 @@ describe("findLatestToolOutput", () => {
       {
         role: "user",
         parts: [
-          { type: "dynamic-tool", toolName: "get-offers", state: "output-available", output: { data: "user" } },
+          {
+            type: "dynamic-tool",
+            toolName: "get-offers",
+            state: "output-available",
+            output: { data: "user" },
+          },
         ],
       },
     ]
@@ -159,7 +181,12 @@ describe("findLatestToolOutput", () => {
       {
         role: "assistant",
         parts: [
-          { type: "dynamic-tool", toolName: "get-offers", state: "loading", output: {} },
+          {
+            type: "dynamic-tool",
+            toolName: "get-offers",
+            state: "loading",
+            output: {},
+          },
         ],
       },
     ]
@@ -176,7 +203,11 @@ describe("findLatestToolOutput", () => {
       {
         role: "assistant",
         parts: [
-          { type: "dynamic-tool", toolName: "get-offers", state: "output-available" },
+          {
+            type: "dynamic-tool",
+            toolName: "get-offers",
+            state: "output-available",
+          },
         ],
       },
     ]

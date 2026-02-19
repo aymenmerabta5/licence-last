@@ -15,7 +15,10 @@ export function generateVerificationCode(): string {
   const bytes = new Uint8Array(8)
   crypto.getRandomValues(bytes)
 
-  const chars = Array.from(bytes, (b) => SAFE_ALPHABET[b % SAFE_ALPHABET.length])
+  const chars = Array.from(
+    bytes,
+    (b) => SAFE_ALPHABET[b % SAFE_ALPHABET.length],
+  )
 
   return `INTX-${chars.slice(0, 4).join("")}-${chars.slice(4, 8).join("")}`
 }

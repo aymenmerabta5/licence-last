@@ -1,11 +1,10 @@
 "use client"
 
-import { Monitor, Smartphone, Tablet, Globe, Clock } from "lucide-react"
+import { Clock, Globe, Monitor, Smartphone, Tablet } from "lucide-react"
 import { useTranslations } from "next-intl"
-
+import type { EnrichedSession } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import type { EnrichedSession } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/types"
 
 interface SessionCardProps {
   session: EnrichedSession
@@ -36,7 +35,11 @@ function formatRelativeTime(date: Date): string {
   return new Date(date).toLocaleDateString()
 }
 
-export function SessionCard({ session, onRevoke, isRevoking }: SessionCardProps) {
+export function SessionCard({
+  session,
+  onRevoke,
+  isRevoking,
+}: SessionCardProps) {
   const t = useTranslations("dashboard.settings.sessions")
   const DeviceIcon = DEVICE_ICONS[session.parsed.device]
 

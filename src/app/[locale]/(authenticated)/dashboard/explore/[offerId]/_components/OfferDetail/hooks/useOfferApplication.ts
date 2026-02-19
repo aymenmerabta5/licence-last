@@ -1,12 +1,10 @@
 "use client"
 
-import { useState } from "react"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
-
-import { orpc } from "@/server/orpc/client"
-
+import { useState } from "react"
 import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
+import { orpc } from "@/server/orpc/client"
 
 export function useOfferApplication(
   offer: OfferDetailProps["offer"],
@@ -17,7 +15,8 @@ export function useOfferApplication(
   const [showApplyForm, setShowApplyForm] = useState(false)
   const [coverLetter, setCoverLetter] = useState("")
   const [coverLetterDraft, setCoverLetterDraft] = useState<string | null>(null)
-  const [localApplication, setLocalApplication] = useState<OfferDetailProps["existingApplication"]>(null)
+  const [localApplication, setLocalApplication] =
+    useState<OfferDetailProps["existingApplication"]>(null)
   const [successMsg, setSuccessMsg] = useState("")
 
   const checkApplicationQuery = useQuery({
@@ -27,7 +26,8 @@ export function useOfferApplication(
     enabled: existingApp === null,
   })
 
-  const application = localApplication ?? existingApp ?? checkApplicationQuery.data ?? null
+  const application =
+    localApplication ?? existingApp ?? checkApplicationQuery.data ?? null
 
   const applyMutation = useMutation(
     orpc.applications.apply.mutationOptions({
@@ -53,7 +53,8 @@ export function useOfferApplication(
 
   const isOfferClosed =
     offer.status !== "published" ||
-    (offer.applicationDeadlineAt && new Date(offer.applicationDeadlineAt) < new Date())
+    (offer.applicationDeadlineAt &&
+      new Date(offer.applicationDeadlineAt) < new Date())
 
   function draftCoverLetter() {
     setCoverLetterDraft(null)

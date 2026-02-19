@@ -1,19 +1,17 @@
 "use client"
 
-import { useMemo, useState } from "react"
 import { MessageSquare, Search, X } from "lucide-react"
 import { useTranslations } from "next-intl"
-
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-
+import { useMemo, useState } from "react"
 import { ConversationSidebarItem } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ConversationSidebarItem"
 import type { ConversationListItem } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/types"
 import {
   formatConversationTitle,
   formatRelativeUpdatedAt,
 } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/utils"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 
 interface ConversationSidebarProps {
   conversations: ConversationListItem[]
@@ -60,7 +58,8 @@ export function ConversationSidebar({
     }, 3000)
   }
 
-  const formatUpdatedAt = (value: string | Date) => formatRelativeUpdatedAt(value, t)
+  const formatUpdatedAt = (value: string | Date) =>
+    formatRelativeUpdatedAt(value, t)
 
   return (
     <Card className="rounded-none border-border/60 bg-card/60 backdrop-blur supports-[backdrop-filter]:bg-card/40 flex h-full flex-col">
@@ -69,7 +68,12 @@ export function ConversationSidebar({
           <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-muted-foreground">
             {t("conversations")}
           </p>
-          <Button type="button" variant="editorial-outline" size="editorial-sm" onClick={onCreate}>
+          <Button
+            type="button"
+            variant="editorial-outline"
+            size="editorial-sm"
+            onClick={onCreate}
+          >
             {t("newConversation")}
           </Button>
         </div>
@@ -99,16 +103,22 @@ export function ConversationSidebar({
 
       <div className="flex-1 overflow-y-auto p-2">
         {isLoading ? (
-          <div className="p-3 text-xs text-muted-foreground">{t("loadingConversations")}</div>
+          <div className="p-3 text-xs text-muted-foreground">
+            {t("loadingConversations")}
+          </div>
         ) : conversations.length === 0 ? (
           <div className="p-8 text-center">
             <MessageSquare className="mx-auto mb-3 h-8 w-8 text-muted-foreground/30" />
-            <p className="text-sm text-muted-foreground">{t("noConversations")}</p>
+            <p className="text-sm text-muted-foreground">
+              {t("noConversations")}
+            </p>
           </div>
         ) : filteredConversations.length === 0 ? (
           <div className="p-8 text-center">
             <Search className="mx-auto mb-3 h-8 w-8 text-muted-foreground/30" />
-            <p className="text-sm text-muted-foreground">{t("noSearchResults")}</p>
+            <p className="text-sm text-muted-foreground">
+              {t("noSearchResults")}
+            </p>
           </div>
         ) : (
           <div className="space-y-1">
@@ -135,7 +145,8 @@ export function ConversationSidebar({
       {!isLoading && conversations.length > 0 && (
         <div className="border-t border-border/60 p-3 text-center">
           <p className="text-[10px] text-muted-foreground">
-            {filteredConversations.length} / {conversations.length} {t("conversations")}
+            {filteredConversations.length} / {conversations.length}{" "}
+            {t("conversations")}
           </p>
         </div>
       )}

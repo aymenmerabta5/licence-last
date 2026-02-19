@@ -1,11 +1,9 @@
-import { MapPin, Calendar } from "lucide-react"
+import { Calendar, MapPin } from "lucide-react"
 import { useLocale } from "next-intl"
-
-import { Badge } from "@/components/ui/badge"
-import { Link } from "@/i18n/routing"
-
 import type { OfferRow } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 import { relativeTime } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/utils"
+import { Badge } from "@/components/ui/badge"
+import { Link } from "@/i18n/routing"
 import { getWilayaName } from "@/lib/wilayas"
 
 interface OfferCardProps {

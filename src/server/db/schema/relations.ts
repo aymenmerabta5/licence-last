@@ -1,37 +1,45 @@
 import { relations } from "drizzle-orm"
-
+import {
+  application,
+  applicationTimelineEvent,
+} from "@/server/db/schema/applications"
+import {
+  assistantConversation,
+  assistantMessage,
+} from "@/server/db/schema/assistant"
 import { user } from "@/server/db/schema/auth"
-import { department, departmentSkill } from "@/server/db/schema/departments"
-import { university, universityDomain } from "@/server/db/schema/universities"
 import { company, companyMember } from "@/server/db/schema/companies"
-import { assistantConversation, assistantMessage } from "@/server/db/schema/assistant"
-import { studentProfile, studentSkill } from "@/server/db/schema/students"
-import { skillTag } from "@/server/db/schema/skills"
+import { department, departmentSkill } from "@/server/db/schema/departments"
 import {
   internshipOffer,
   internshipOfferSkill,
   savedOffer,
 } from "@/server/db/schema/internships"
-import { application, applicationTimelineEvent } from "@/server/db/schema/applications"
-import { placement, placementDocument } from "@/server/db/schema/placements"
-import { notification, notificationPreference } from "@/server/db/schema/notifications"
+import { interview, interviewSlot } from "@/server/db/schema/interviews"
 import {
   internshipOfferLanguageRequirement,
   studentLanguage,
 } from "@/server/db/schema/languages"
 import { studentOfferReadinessSnapshot } from "@/server/db/schema/matching"
-import { companyQualityFeedback, companyReport } from "@/server/db/schema/trust"
-import { interview, interviewSlot } from "@/server/db/schema/interviews"
 import {
   offerMessage,
   offerMessageReadState,
   offerMessageThread,
 } from "@/server/db/schema/messages"
 import {
+  notification,
+  notificationPreference,
+} from "@/server/db/schema/notifications"
+import { placement, placementDocument } from "@/server/db/schema/placements"
+import { skillTag } from "@/server/db/schema/skills"
+import {
   studentExperience,
   studentProject,
   studentResume,
 } from "@/server/db/schema/student-cv"
+import { studentProfile, studentSkill } from "@/server/db/schema/students"
+import { companyQualityFeedback, companyReport } from "@/server/db/schema/trust"
+import { university, universityDomain } from "@/server/db/schema/universities"
 
 // ── Auth ──────────────────────────────────────────────
 
@@ -69,7 +77,9 @@ export const userRelations = relations(user, ({ one, many }) => ({
   }),
   interviews: many(interview, { relationName: "interviewStudent" }),
   proposedInterviews: many(interview, { relationName: "interviewProposedBy" }),
-  confirmedInterviews: many(interview, { relationName: "interviewConfirmedBy" }),
+  confirmedInterviews: many(interview, {
+    relationName: "interviewConfirmedBy",
+  }),
   messageThreads: many(offerMessageThread, {
     relationName: "offerMessageThreadStudent",
   }),
@@ -112,32 +122,32 @@ export const departmentRelations = relations(department, ({ one, many }) => ({
   skills: many(departmentSkill),
 }))
 
-export const departmentSkillRelations = relations(departmentSkill, ({ one }) => ({
-  department: one(department, {
-    fields: [departmentSkill.departmentId],
-    references: [department.id],
-  }),
-  skill: one(skillTag, {
-    fields: [departmentSkill.skillTagId],
-    references: [skillTag.id],
-  }),
-}))
-
-// ── Students ──────────────────────────────────────────
-
-export const studentProfileRelations = relations(
-  studentProfile,
+export const departmentSkillRelations = relations(
+  departmentSkill,
   ({ one }) => ({
-    user: one(user, {
-      fields: [studentProfile.userId],
-      references: [user.id],
-    }),
     department: one(department, {
-      fields: [studentProfile.departmentId],
+      fields: [departmentSkill.departmentId],
       references: [department.id],
+    }),
+    skill: one(skillTag, {
+      fields: [departmentSkill.skillTagId],
+      references: [skillTag.id],
     }),
   }),
 )
+
+// ── Students ──────────────────────────────────────────
+
+export const studentProfileRelations = relations(studentProfile, ({ one }) => ({
+  user: one(user, {
+    fields: [studentProfile.userId],
+    references: [user.id],
+  }),
+  department: one(department, {
+    fields: [studentProfile.departmentId],
+    references: [department.id],
+  }),
+}))
 
 export const studentSkillRelations = relations(studentSkill, ({ one }) => ({
   user: one(user, {
@@ -150,12 +160,15 @@ export const studentSkillRelations = relations(studentSkill, ({ one }) => ({
   }),
 }))
 
-export const studentLanguageRelations = relations(studentLanguage, ({ one }) => ({
-  user: one(user, {
-    fields: [studentLanguage.userId],
-    references: [user.id],
+export const studentLanguageRelations = relations(
+  studentLanguage,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [studentLanguage.userId],
+      references: [user.id],
+    }),
   }),
-}))
+)
 
 export const studentExperienceRelations = relations(
   studentExperience,
@@ -229,12 +242,15 @@ export const assistantConversationRelations = relations(
   }),
 )
 
-export const assistantMessageRelations = relations(assistantMessage, ({ one }) => ({
-  conversation: one(assistantConversation, {
-    fields: [assistantMessage.conversationId],
-    references: [assistantConversation.id],
+export const assistantMessageRelations = relations(
+  assistantMessage,
+  ({ one }) => ({
+    conversation: one(assistantConversation, {
+      fields: [assistantMessage.conversationId],
+      references: [assistantConversation.id],
+    }),
   }),
-}))
+)
 
 // ── Internships ───────────────────────────────────────
 

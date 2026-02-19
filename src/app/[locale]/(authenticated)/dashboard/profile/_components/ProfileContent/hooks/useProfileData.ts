@@ -1,8 +1,11 @@
+import { Award, Briefcase, ShieldCheck } from "lucide-react"
 import { useMemo } from "react"
 
-import { Briefcase, Award, ShieldCheck } from "lucide-react"
-
-import type { ProfileUser, StudentData, ViewerIdentity } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
+import type {
+  ProfileUser,
+  StudentData,
+  ViewerIdentity,
+} from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 
 interface TranslationValues {
   [key: string]: string | number | Date

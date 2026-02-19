@@ -1,11 +1,10 @@
+import { ArrowRight } from "lucide-react"
 import * as motion from "motion/react-client"
 import { getTranslations } from "next-intl/server"
-import { ArrowRight } from "lucide-react"
-
-import { Link } from "@/i18n/routing"
 import { Navbar } from "@/components/Navbar"
 import { Separator } from "@/components/ui/separator"
-import { reveal, ease } from "@/lib/animations"
+import { Link } from "@/i18n/routing"
+import { ease, reveal } from "@/lib/animations"
 
 /* ── Decorative Dot Separator ── */
 function DotSeparator({
@@ -45,7 +44,10 @@ export default async function NotFoundPage() {
       {/* ── 404 Content ── */}
       <div className="flex-1 relative flex items-center justify-center px-6 py-16 lg:py-24">
         {/* Ambient glow — dark mode only */}
-        <div className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100" aria-hidden="true">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100"
+          aria-hidden="true"
+        >
           <div className="absolute -top-20 -start-20 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
           <div className="absolute -bottom-28 start-1/2 h-[26rem] w-[26rem] -translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/15" />
@@ -83,14 +85,14 @@ export default async function NotFoundPage() {
               <span className="relative inline-block">
                 <span className="text-primary">0</span>
                 {/* Decorative underline beneath the zero */}
-                  <motion.span
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ duration: 0.6, ease, delay: 0.8 }}
-                    className="absolute -bottom-1 start-0 end-0 h-[3px] bg-primary origin-left [[dir=rtl]_&]:origin-right"
-                    aria-hidden="true"
-                  />
-                </span>
+                <motion.span
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.6, ease, delay: 0.8 }}
+                  className="absolute -bottom-1 start-0 end-0 h-[3px] bg-primary origin-left [[dir=rtl]_&]:origin-right"
+                  aria-hidden="true"
+                />
+              </span>
               4
             </span>
           </motion.div>

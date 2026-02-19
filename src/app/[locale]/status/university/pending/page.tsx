@@ -1,13 +1,14 @@
 import { getTranslations } from "next-intl/server"
-
-import { Separator } from "@/components/ui/separator"
 import { Card } from "@/components/ui/card"
-import { localeRedirect } from "@/lib/navigation"
+import { Separator } from "@/components/ui/separator"
 import { requireRole } from "@/lib/auth-guards"
+import { localeRedirect } from "@/lib/navigation"
 import { getUniversityStatusByUserId } from "@/server/services/universities/get-status"
 
 export default async function UniversityPendingPage() {
-  const user = await requireRole(["university_admin"], { allowUnapproved: true })
+  const user = await requireRole(["university_admin"], {
+    allowUnapproved: true,
+  })
 
   if (!user.onboardingCompleted) {
     return localeRedirect("/onboarding/university")

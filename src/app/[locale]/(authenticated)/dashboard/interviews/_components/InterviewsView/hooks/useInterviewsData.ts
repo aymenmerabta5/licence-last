@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
 import { toast } from "sonner"
-
-import { getErrorMessage } from "@/lib/error-message"
-import { orpc } from "@/server/orpc/client"
-
+import {
+  getInterviewsErrorMessage,
+  mapCompanyApplications,
+  mapCompanyOffers,
+} from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsData.helpers"
 import type {
   CompanyInterviewView,
   ConfirmSlotInput,
@@ -16,11 +17,8 @@ import type {
   UseInterviewsDataResult,
 } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 import { isInterviewsFeatureDisabledError } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/utils"
-import {
-  getInterviewsErrorMessage,
-  mapCompanyApplications,
-  mapCompanyOffers,
-} from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsData.helpers"
+import { getErrorMessage } from "@/lib/error-message"
+import { orpc } from "@/server/orpc/client"
 
 export function useInterviewsData({
   role,
@@ -85,7 +83,9 @@ export function useInterviewsData({
         toast.success("Interview proposal sent.")
       },
       onError: (error) => {
-        toast.error(getErrorMessage(error, "Could not send interview proposal."))
+        toast.error(
+          getErrorMessage(error, "Could not send interview proposal."),
+        )
       },
     }),
   )
@@ -145,10 +145,16 @@ export function useInterviewsData({
     }
   }
 
-  const studentInterviews = (studentInterviewsQuery.data ?? []) as StudentInterviewView[]
-  const companyInterviews = (companyInterviewsQuery.data ?? []) as CompanyInterviewView[]
-  const studentErrorMessage = getInterviewsErrorMessage(studentInterviewsQuery.error)
-  const companyErrorMessage = getInterviewsErrorMessage(companyInterviewsQuery.error)
+  const studentInterviews = (studentInterviewsQuery.data ??
+    []) as StudentInterviewView[]
+  const companyInterviews = (companyInterviewsQuery.data ??
+    []) as CompanyInterviewView[]
+  const studentErrorMessage = getInterviewsErrorMessage(
+    studentInterviewsQuery.error,
+  )
+  const companyErrorMessage = getInterviewsErrorMessage(
+    companyInterviewsQuery.error,
+  )
 
   const isFeatureDisabled = [
     studentInterviewsQuery.error,

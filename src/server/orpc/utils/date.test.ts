@@ -1,6 +1,9 @@
 import { describe, expect, test } from "bun:test"
 
-import { parseInputDate, validatePlacementDateRange } from "@/server/orpc/utils/date"
+import {
+  parseInputDate,
+  validatePlacementDateRange,
+} from "@/server/orpc/utils/date"
 
 describe("src/server/orpc/utils/date", () => {
   test("parseInputDate should reject invalid input", () => {

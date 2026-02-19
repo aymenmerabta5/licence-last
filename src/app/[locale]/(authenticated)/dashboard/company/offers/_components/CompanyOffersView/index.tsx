@@ -1,7 +1,7 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Loader2 } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { CompanyOffersEmptyState } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/CompanyOffersEmptyState"
 import { CompanyOffersHeader } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/CompanyOffersHeader"
@@ -51,7 +51,9 @@ export function CompanyOffersView() {
                 isActionLoading={actionLoading === offer.id}
                 onPublish={() => handlePublish(offer.id)}
                 onClose={() => handleClose(offer.id, t("actions.confirmClose"))}
-                onDelete={() => handleDelete(offer.id, t("actions.confirmDelete"))}
+                onDelete={() =>
+                  handleDelete(offer.id, t("actions.confirmDelete"))
+                }
               />
             ))}
           </div>

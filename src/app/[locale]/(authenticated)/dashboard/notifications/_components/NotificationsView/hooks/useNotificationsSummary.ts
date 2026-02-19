@@ -1,11 +1,15 @@
 "use client"
 
-import { useRef, useState } from "react"
-import { DefaultChatTransport } from "ai"
 import { useChat } from "@ai-sdk/react"
+import { DefaultChatTransport } from "ai"
 import { useTranslations } from "next-intl"
+import { useRef, useState } from "react"
 
-import { asRecord, findLatestToolOutput, getStringArray } from "@/lib/ai/tool-output"
+import {
+  asRecord,
+  findLatestToolOutput,
+  getStringArray,
+} from "@/lib/ai/tool-output"
 
 type NotificationsSummary = {
   summaryBullets: string[]
@@ -44,7 +48,9 @@ export function useNotificationsSummary() {
       if (!aiActiveRef.current) return
       aiActiveRef.current = false
 
-      const out = asRecord(findLatestToolOutput(messages, "notifications_summarize"))
+      const out = asRecord(
+        findLatestToolOutput(messages, "notifications_summarize"),
+      )
       if (!out) return
 
       setAiSummary({
@@ -71,10 +77,7 @@ export function useNotificationsSummary() {
       })),
     }
 
-    void sendAiMessage(
-      { text: t("prompts.summarize") },
-      { body: { context } },
-    )
+    void sendAiMessage({ text: t("prompts.summarize") }, { body: { context } })
   }
 
   return {

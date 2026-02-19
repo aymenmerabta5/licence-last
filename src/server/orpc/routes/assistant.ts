@@ -1,24 +1,24 @@
 import "server-only"
 
 import { z } from "zod"
-
-import {
-  companyAdminProcedureGenerous,
-  companyAdminProcedureStandard,
-  companyAdminProcedureAssistant,
-} from "@/server/orpc/rate-limited-procedures"
 import {
   getAllowedPoeModelIds,
   getDefaultPoeModelId,
   isAllowedPoeModelId,
 } from "@/server/ai/model"
 import {
-  createAssistantConversation,
-} from "@/server/services/assistant/create"
+  companyAdminProcedureAssistant,
+  companyAdminProcedureGenerous,
+  companyAdminProcedureStandard,
+} from "@/server/orpc/rate-limited-procedures"
+import { createAssistantConversation } from "@/server/services/assistant/create"
 import { deleteAssistantConversation } from "@/server/services/assistant/delete"
 import { getAssistantConversationByIdForCompany } from "@/server/services/assistant/get"
 import { listAssistantConversationsByCompanyId } from "@/server/services/assistant/list"
-import { appendAssistantMessage, listAssistantMessages } from "@/server/services/assistant/messages"
+import {
+  appendAssistantMessage,
+  listAssistantMessages,
+} from "@/server/services/assistant/messages"
 import {
   updateAssistantConversationModel,
   updateAssistantConversationTitle,
@@ -39,7 +39,9 @@ export const listAssistantModelsProcedure = companyAdminProcedureGenerous
   })
 
 export const listAssistantConversationsProcedure = companyAdminProcedureGenerous
-  .input(z.object({ limit: z.number().int().min(1).max(200).optional() }).optional())
+  .input(
+    z.object({ limit: z.number().int().min(1).max(200).optional() }).optional(),
+  )
   .handler(async ({ input, context }) => {
     return listAssistantConversationsByCompanyId({
       companyId: context.companyMembership.companyId,
@@ -47,21 +49,22 @@ export const listAssistantConversationsProcedure = companyAdminProcedureGenerous
     })
   })
 
-export const createAssistantConversationProcedure = companyAdminProcedureStandard
-  .input(
-    z.object({
-      title: z.string().min(1).max(120).optional(),
-      model: ASSISTANT_MODEL_SCHEMA,
-    }),
-  )
-  .handler(async ({ input, context }) => {
-    return createAssistantConversation({
-      companyId: context.companyMembership.companyId,
-      createdByUserId: context.user.id,
-      title: input.title,
-      model: input.model,
+export const createAssistantConversationProcedure =
+  companyAdminProcedureStandard
+    .input(
+      z.object({
+        title: z.string().min(1).max(120).optional(),
+        model: ASSISTANT_MODEL_SCHEMA,
+      }),
+    )
+    .handler(async ({ input, context }) => {
+      return createAssistantConversation({
+        companyId: context.companyMembership.companyId,
+        createdByUserId: context.user.id,
+        title: input.title,
+        model: input.model,
+      })
     })
-  })
 
 export const getAssistantConversationProcedure = companyAdminProcedureGenerous
   .input(z.object({ conversationId: z.string().min(1) }))
@@ -83,35 +86,37 @@ export const listAssistantMessagesProcedure = companyAdminProcedureGenerous
     })
   })
 
-export const updateAssistantConversationModelProcedure = companyAdminProcedureStandard
-  .input(
-    z.object({
-      conversationId: z.string().min(1),
-      model: ASSISTANT_MODEL_SCHEMA,
-    }),
-  )
-  .handler(async ({ input, context }) => {
-    return updateAssistantConversationModel({
-      conversationId: input.conversationId,
-      companyId: context.companyMembership.companyId,
-      model: input.model,
+export const updateAssistantConversationModelProcedure =
+  companyAdminProcedureStandard
+    .input(
+      z.object({
+        conversationId: z.string().min(1),
+        model: ASSISTANT_MODEL_SCHEMA,
+      }),
+    )
+    .handler(async ({ input, context }) => {
+      return updateAssistantConversationModel({
+        conversationId: input.conversationId,
+        companyId: context.companyMembership.companyId,
+        model: input.model,
+      })
     })
-  })
 
-export const updateAssistantConversationTitleProcedure = companyAdminProcedureStandard
-  .input(
-    z.object({
-      conversationId: z.string().min(1),
-      title: z.string().min(1).max(120).nullable(),
-    }),
-  )
-  .handler(async ({ input, context }) => {
-    return updateAssistantConversationTitle({
-      conversationId: input.conversationId,
-      companyId: context.companyMembership.companyId,
-      title: input.title,
+export const updateAssistantConversationTitleProcedure =
+  companyAdminProcedureStandard
+    .input(
+      z.object({
+        conversationId: z.string().min(1),
+        title: z.string().min(1).max(120).nullable(),
+      }),
+    )
+    .handler(async ({ input, context }) => {
+      return updateAssistantConversationTitle({
+        conversationId: input.conversationId,
+        companyId: context.companyMembership.companyId,
+        title: input.title,
+      })
     })
-  })
 
 // AI message operation - uses strict rate limiting (20 req/min)
 export const appendAssistantMessageProcedure = companyAdminProcedureAssistant
@@ -131,15 +136,16 @@ export const appendAssistantMessageProcedure = companyAdminProcedureAssistant
     })
   })
 
-export const deleteAssistantConversationProcedure = companyAdminProcedureStandard
-  .input(
-    z.object({
-      conversationId: z.string().min(1),
-    }),
-  )
-  .handler(async ({ input, context }) => {
-    return deleteAssistantConversation({
-      conversationId: input.conversationId,
-      companyId: context.companyMembership.companyId,
+export const deleteAssistantConversationProcedure =
+  companyAdminProcedureStandard
+    .input(
+      z.object({
+        conversationId: z.string().min(1),
+      }),
+    )
+    .handler(async ({ input, context }) => {
+      return deleteAssistantConversation({
+        conversationId: input.conversationId,
+        companyId: context.companyMembership.companyId,
+      })
     })
-  })

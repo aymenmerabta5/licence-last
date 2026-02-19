@@ -1,22 +1,21 @@
 "use client"
 
-import { useState, useMemo, useRef } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useTranslations } from "next-intl"
+import { useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
-
-import { useRouter } from "@/i18n/routing"
-import { authClient } from "@/lib/auth-client"
-import { createLoginSchema } from "@/lib/schemas/auth"
-import { mapZodErrors } from "@/lib/schemas/map-errors"
-import { getErrorMessage } from "@/lib/error-message"
-import { getPostLoginRedirectPath } from "@/lib/post-login-redirect"
-import { orpcClient } from "@/server/orpc/client"
-import type { CaptchaHandle } from "@/components/TurnstileWidget"
 import {
   type TwoFactorMethod,
   verifyTwoFactorCode,
 } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/twoFactorUtils"
+import type { CaptchaHandle } from "@/components/TurnstileWidget"
+import { useRouter } from "@/i18n/routing"
+import { authClient } from "@/lib/auth-client"
+import { getErrorMessage } from "@/lib/error-message"
+import { getPostLoginRedirectPath } from "@/lib/post-login-redirect"
+import { createLoginSchema } from "@/lib/schemas/auth"
+import { mapZodErrors } from "@/lib/schemas/map-errors"
+import { orpcClient } from "@/server/orpc/client"
 
 export type LoginFormApi = ReturnType<typeof useLoginForm>["form"]
 
@@ -40,7 +39,8 @@ export function useLoginForm() {
   }
 
   const [twoFactorRequired, setTwoFactorRequired] = useState(false)
-  const [twoFactorMethod, setTwoFactorMethod] = useState<TwoFactorMethod>("totp")
+  const [twoFactorMethod, setTwoFactorMethod] =
+    useState<TwoFactorMethod>("totp")
   const [twoFactorCode, setTwoFactorCode] = useState("")
   const [trustDevice, setTrustDevice] = useState(false)
   const [isVerifying2FA, setIsVerifying2FA] = useState(false)

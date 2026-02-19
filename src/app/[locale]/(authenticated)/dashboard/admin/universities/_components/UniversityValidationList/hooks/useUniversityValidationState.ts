@@ -8,9 +8,11 @@ export function useUniversityValidationState() {
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
   const [rejectingId, setRejectingId] = useState<string | null>(null)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
-  const [editingUniversity, setEditingUniversity] = useState<UniversityListItem | null>(null)
+  const [editingUniversity, setEditingUniversity] =
+    useState<UniversityListItem | null>(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [deletingUniversity, setDeletingUniversity] = useState<UniversityListItem | null>(null)
+  const [deletingUniversity, setDeletingUniversity] =
+    useState<UniversityListItem | null>(null)
 
   function handleRejectClick(id: string) {
     setRejectingId(id)

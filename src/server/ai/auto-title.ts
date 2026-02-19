@@ -9,10 +9,15 @@ import { getPoeModel } from "@/server/ai/model"
  * Generate a conversation title based on the first user message
  * This is called fire-and-forget after persisting the first user message
  */
-export async function generateConversationTitle(firstUserMessage: string): Promise<string> {
+export async function generateConversationTitle(
+  firstUserMessage: string,
+): Promise<string> {
   try {
     const schema = z.object({
-      title: z.string().max(60).describe("A concise title summarizing the conversation"),
+      title: z
+        .string()
+        .max(60)
+        .describe("A concise title summarizing the conversation"),
     })
 
     const prompt = `Generate a short, concise title (max 60 chars) for a conversation that started with this message:

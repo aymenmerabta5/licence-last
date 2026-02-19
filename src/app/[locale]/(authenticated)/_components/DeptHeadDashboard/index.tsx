@@ -1,19 +1,17 @@
 "use client"
 
+import { ArrowRight, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { ArrowRight, Loader2 } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { Link } from "@/i18n/routing"
-import { ease, reveal } from "@/lib/animations"
-
 import { PendingQueueOverview } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/components/PendingQueueOverview"
 import { useDeptHeadDashboardData } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/hooks/useDeptHeadDashboardData"
 import type {
   DeptHeadDashboardLabels,
   DeptHeadDashboardProps,
 } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/types"
+import { Button } from "@/components/ui/button"
+import { Link } from "@/i18n/routing"
+import { ease, reveal } from "@/lib/animations"
 
 export function DeptHeadDashboard({ user }: DeptHeadDashboardProps) {
   void user
@@ -44,12 +42,18 @@ export function DeptHeadDashboard({ user }: DeptHeadDashboardProps) {
         <h2 className="font-serif text-[clamp(1.6rem,3vw,2.2rem)] leading-tight text-heading">
           {t("title")}
         </h2>
-        <p className="max-w-2xl text-sm text-muted-foreground">{t("description")}</p>
+        <p className="max-w-2xl text-sm text-muted-foreground">
+          {t("description")}
+        </p>
         <Link
           href={"/dashboard/dept-validations" as "/dashboard"}
           className="inline-flex"
         >
-          <Button variant="editorial" size="editorial-sm" className="rounded-lg">
+          <Button
+            variant="editorial"
+            size="editorial-sm"
+            className="rounded-lg"
+          >
             {t("openQueue")}
             <ArrowRight className="h-4 w-4" />
           </Button>

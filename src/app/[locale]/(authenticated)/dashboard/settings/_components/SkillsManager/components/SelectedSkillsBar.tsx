@@ -14,6 +14,10 @@ interface SelectedSkillsBarProps {
   onToggle: (skillId: string) => void
 }
 
+function isSkill(skill: Skill | undefined): skill is Skill {
+  return Boolean(skill)
+}
+
 export function SelectedSkillsBar({
   selectedIds,
   allSkills,
@@ -35,16 +39,16 @@ export function SelectedSkillsBar({
         <div className="flex flex-wrap gap-1.5">
           {selectedIds
             .map((id) => allSkills.find((s) => s.id === id))
-            .filter(Boolean)
+            .filter(isSkill)
             .map((skill) => (
               <button
-                key={skill!.id}
+                key={skill.id}
                 type="button"
-                onClick={() => onToggle(skill!.id)}
+                onClick={() => onToggle(skill.id)}
                 className="group inline-flex items-center gap-1 rounded-lg border border-primary/20 bg-primary/5 px-2.5 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 hover:border-primary/30 transition-all duration-200"
-                aria-label={`Remove ${skill!.name}`}
+                aria-label={`Remove ${skill.name}`}
               >
-                {skill!.name}
+                {skill.name}
                 <X className="h-3 w-3 opacity-50 group-hover:opacity-100 transition-opacity" />
               </button>
             ))}

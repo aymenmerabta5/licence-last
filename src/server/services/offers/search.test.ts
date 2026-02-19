@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockOffersRows: any[] = []
@@ -19,7 +19,9 @@ const mockFromOffers = mock(() => ({}) as any)
 
 // Query 2 (skills)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSkillWhere = mock<() => Promise<any[]>>(() => Promise.resolve(mockOfferSkillsRows))
+const mockSkillWhere = mock<() => Promise<any[]>>(() =>
+  Promise.resolve(mockOfferSkillsRows),
+)
 const mockJoinSkill = mock(() => ({ where: mockSkillWhere }))
 const mockFromSkills = mock(() => ({ innerJoin: mockJoinSkill }))
 

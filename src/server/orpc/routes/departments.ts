@@ -1,7 +1,7 @@
 import "server-only"
 
-import { eq } from "drizzle-orm"
 import { ORPCError } from "@orpc/server"
+import { eq } from "drizzle-orm"
 import { z } from "zod"
 
 import { bulkCreateDepartmentsSchema } from "@/lib/schemas/department"
@@ -9,9 +9,10 @@ import { db } from "@/server/db"
 import { department } from "@/server/db/schema/departments"
 import { university } from "@/server/db/schema/universities"
 import {
-  authedProcedureGenerous,
   adminProcedureStandard,
+  authedProcedureGenerous,
 } from "@/server/orpc/rate-limited-procedures"
+import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import { assignDepartmentHead } from "@/server/services/departments/assign-head"
 import { assignDepartmentHeadByEmail } from "@/server/services/departments/assign-head-by-email"
 import { bulkCreateDepartmentsWithHeads } from "@/server/services/departments/bulk-create-with-heads"
@@ -22,7 +23,6 @@ import { listDepartments } from "@/server/services/departments/list"
 import { syncDepartmentSkills } from "@/server/services/departments/sync-skills"
 import { unassignDepartmentHead } from "@/server/services/departments/unassign-head"
 import { updateDepartment } from "@/server/services/departments/update"
-import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 
 interface DepartmentAdminContext {
   user: {
@@ -35,7 +35,10 @@ async function assertCanManageDepartment(
   departmentId: string,
   context: DepartmentAdminContext,
 ) {
-  if (context.user.role !== "university_admin" && context.user.role !== "super_admin") {
+  if (
+    context.user.role !== "university_admin" &&
+    context.user.role !== "super_admin"
+  ) {
     throw new ORPCError("FORBIDDEN", {
       message: "Only university admins can manage departments",
     })
@@ -205,7 +208,10 @@ export const deleteDepartmentProcedure = adminProcedureStandard
 export const bulkCreateDepartmentsProcedure = adminProcedureStandard
   .input(bulkCreateDepartmentsSchema)
   .handler(async ({ input, context }) => {
-    if (context.user.role !== "university_admin" && context.user.role !== "super_admin") {
+    if (
+      context.user.role !== "university_admin" &&
+      context.user.role !== "super_admin"
+    ) {
       throw new ORPCError("FORBIDDEN", {
         message: "Only university admins can bulk-create departments",
       })

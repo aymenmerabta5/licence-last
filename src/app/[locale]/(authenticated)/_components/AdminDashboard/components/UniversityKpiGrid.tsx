@@ -1,6 +1,6 @@
 "use client"
 
-import * as motion from "motion/react-client"
+import type { LucideIcon } from "lucide-react"
 import {
   CheckCircle2,
   Clock,
@@ -10,7 +10,7 @@ import {
   TrendingUp,
   UsersRound,
 } from "lucide-react"
-import type { LucideIcon } from "lucide-react"
+import * as motion from "motion/react-client"
 
 import { StatsCard } from "@/app/[locale]/(authenticated)/_components/StatsCard"
 import { ease } from "@/lib/animations"
@@ -96,7 +96,8 @@ export function UniversityKpiGrid({ stats }: UniversityKpiGridProps) {
           Your Institution At A Glance
         </h3>
         <p className="text-sm text-muted-foreground font-light">
-          Key indicators for student activity, structure, and validation progress.
+          Key indicators for student activity, structure, and validation
+          progress.
         </p>
       </div>
 

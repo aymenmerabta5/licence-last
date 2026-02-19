@@ -1,15 +1,13 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { ArrowLeft, Key, Loader2, Mail, ShieldCheck } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
+import type { TwoFactorMethod } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/twoFactorUtils"
 import { ServerError } from "@/components/ServerError"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { reveal, ease } from "@/lib/animations"
-
-import type { TwoFactorMethod } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/twoFactorUtils"
+import { ease, reveal } from "@/lib/animations"
 
 interface TwoFactorStepProps {
   method: TwoFactorMethod
@@ -155,7 +153,9 @@ export function TwoFactorStep({
               />
             </svg>
           </div>
-          <span className="text-sm text-muted-foreground">{t("trustDevice")}</span>
+          <span className="text-sm text-muted-foreground">
+            {t("trustDevice")}
+          </span>
         </label>
       </motion.div>
 
@@ -172,7 +172,11 @@ export function TwoFactorStep({
           disabled={isVerifying || !code.trim()}
           onClick={onVerify}
         >
-          {isVerifying ? <Loader2 className="h-4 w-4 animate-spin" /> : t("verify")}
+          {isVerifying ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            t("verify")
+          )}
         </Button>
 
         <button

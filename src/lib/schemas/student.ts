@@ -1,11 +1,11 @@
 import { z } from "zod"
 
 import {
-  LANGUAGE_CODES,
   hasDuplicateLanguageCodes,
+  LANGUAGE_CODES,
 } from "@/lib/constants/languages"
-import { proficiencyLevelSchema } from "@/lib/schemas/enums"
 import type { TranslationFn } from "@/lib/schemas/auth"
+import { proficiencyLevelSchema } from "@/lib/schemas/enums"
 
 const studentLanguageSchema = z.object({
   languageCode: z.enum(LANGUAGE_CODES),
@@ -26,9 +26,7 @@ export function createStudentProfileSchema(
 ) {
   const requireLanguages = options.requireLanguages ?? true
   const languagesSchema = requireLanguages
-    ? z
-        .array(studentLanguageSchema)
-        .min(1, { error: t("studentLanguagesMin") })
+    ? z.array(studentLanguageSchema).min(1, { error: t("studentLanguagesMin") })
     : z.array(studentLanguageSchema)
 
   return z

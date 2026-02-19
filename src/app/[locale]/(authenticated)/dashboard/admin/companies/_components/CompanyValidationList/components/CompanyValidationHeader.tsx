@@ -9,7 +9,9 @@ interface CompanyValidationHeaderProps {
   total: number
 }
 
-export function CompanyValidationHeader({ total }: CompanyValidationHeaderProps) {
+export function CompanyValidationHeader({
+  total,
+}: CompanyValidationHeaderProps) {
   const t = useTranslations("dashboard.admin.companies")
 
   return (

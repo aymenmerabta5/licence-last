@@ -1,16 +1,16 @@
 import "server-only"
 
 import { and, desc, eq, type SQL } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/companies/trust-actions")
-import { companyQualityFeedback, companyReport } from "@/server/db/schema/trust"
-import { placement } from "@/server/db/schema/placements"
+
 import { application } from "@/server/db/schema/applications"
-import { internshipOffer } from "@/server/db/schema/internships"
 import { companyMember } from "@/server/db/schema/companies"
+import { internshipOffer } from "@/server/db/schema/internships"
+import { placement } from "@/server/db/schema/placements"
+import { companyQualityFeedback, companyReport } from "@/server/db/schema/trust"
 
 async function hasRelationshipWithCompany(
   userId: string,
@@ -49,7 +49,10 @@ async function hasRelationshipWithCompany(
     .select({ companyId: companyMember.companyId })
     .from(companyMember)
     .where(
-      and(eq(companyMember.userId, userId), eq(companyMember.companyId, companyId)),
+      and(
+        eq(companyMember.userId, userId),
+        eq(companyMember.companyId, companyId),
+      ),
     )
     .limit(1)
 
@@ -89,7 +92,10 @@ export async function submitCompanyQualityFeedback(input: {
     throw new Error("Feedback can only be submitted for validated placements")
   }
 
-  log.info({ studentUserId: input.studentUserId, placementId: input.placementId }, "Submitting quality feedback")
+  log.info(
+    { studentUserId: input.studentUserId, placementId: input.placementId },
+    "Submitting quality feedback",
+  )
 
   const nextFeedbackId = crypto.randomUUID()
   const [feedback] = await db
@@ -113,8 +119,18 @@ export async function submitCompanyQualityFeedback(input: {
     })
     .returning({ id: companyQualityFeedback.id })
 
-  log.info({ feedbackId: feedback?.id ?? nextFeedbackId, companyId: placementRow.companyId, event: "feedback_submitted" }, "Quality feedback submitted")
-  return { feedbackId: feedback?.id ?? nextFeedbackId, companyId: placementRow.companyId }
+  log.info(
+    {
+      feedbackId: feedback?.id ?? nextFeedbackId,
+      companyId: placementRow.companyId,
+      event: "feedback_submitted",
+    },
+    "Quality feedback submitted",
+  )
+  return {
+    feedbackId: feedback?.id ?? nextFeedbackId,
+    companyId: placementRow.companyId,
+  }
 }
 
 export async function submitCompanyReport(input: {
@@ -135,7 +151,14 @@ export async function submitCompanyReport(input: {
     )
   }
 
-  log.info({ reporterUserId: input.reporterUserId, companyId: input.companyId, severity: input.severity }, "Submitting company report")
+  log.info(
+    {
+      reporterUserId: input.reporterUserId,
+      companyId: input.companyId,
+      severity: input.severity,
+    },
+    "Submitting company report",
+  )
 
   const reportId = crypto.randomUUID()
   await db.insert(companyReport).values({
@@ -171,7 +194,14 @@ export async function resolveCompanyReport(input: {
     throw new Error("Report is already closed")
   }
 
-  log.info({ reportId: input.reportId, adminUserId: input.adminUserId, newStatus: input.status }, "Resolving company report")
+  log.info(
+    {
+      reportId: input.reportId,
+      adminUserId: input.adminUserId,
+      newStatus: input.status,
+    },
+    "Resolving company report",
+  )
 
   await db
     .update(companyReport)
@@ -179,11 +209,16 @@ export async function resolveCompanyReport(input: {
       status: input.status,
       resolvedAt: new Date(),
       resolvedByUserId: input.adminUserId,
-      resolutionNote: input.resolutionNote?.trim() ? input.resolutionNote.trim() : null,
+      resolutionNote: input.resolutionNote?.trim()
+        ? input.resolutionNote.trim()
+        : null,
     })
     .where(eq(companyReport.id, input.reportId))
 
-  log.info({ reportId: input.reportId, event: "report_resolved" }, "Company report resolved")
+  log.info(
+    { reportId: input.reportId, event: "report_resolved" },
+    "Company report resolved",
+  )
   return { reportId: input.reportId, status: input.status }
 }
 
@@ -194,7 +229,8 @@ export async function listCompanyReports(input?: {
 }) {
   const limit = input?.limit ?? 50
   const conditions: SQL[] = []
-  if (input?.companyId) conditions.push(eq(companyReport.companyId, input.companyId))
+  if (input?.companyId)
+    conditions.push(eq(companyReport.companyId, input.companyId))
   if (input?.status) conditions.push(eq(companyReport.status, input.status))
 
   const baseQuery = db

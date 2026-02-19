@@ -1,7 +1,7 @@
 "use client"
 
 import type { LucideIcon } from "lucide-react"
-
+import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -9,10 +9,6 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select"
-import {
-  InputGroup,
-  InputGroupAddon,
-} from "@/components/ui/input-group"
 
 interface SelectOption {
   value: string | number
@@ -48,7 +44,9 @@ export function SelectField({
   className,
 }: SelectFieldProps) {
   const stringValue = String(value ?? "")
-  const selectedLabel = options.find((o) => String(o.value) === stringValue)?.label
+  const selectedLabel = options.find(
+    (o) => String(o.value) === stringValue,
+  )?.label
 
   return (
     <div className="space-y-2">

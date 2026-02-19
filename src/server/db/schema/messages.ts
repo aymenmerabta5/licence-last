@@ -1,4 +1,10 @@
-import { pgTable, text, timestamp, index, uniqueIndex } from "drizzle-orm/pg-core"
+import {
+  index,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core"
 
 import { user } from "@/server/db/schema/auth"
 import { company } from "@/server/db/schema/companies"
@@ -55,7 +61,10 @@ export const offerMessage = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
-    index("offer_message_threadId_createdAt_idx").on(table.threadId, table.createdAt),
+    index("offer_message_threadId_createdAt_idx").on(
+      table.threadId,
+      table.createdAt,
+    ),
     index("offer_message_offerId_idx").on(table.offerId),
     index("offer_message_senderUserId_idx").on(table.senderUserId),
   ],
@@ -70,9 +79,12 @@ export const offerMessageReadState = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    lastReadMessageId: text("last_read_message_id").references(() => offerMessage.id, {
-      onDelete: "set null",
-    }),
+    lastReadMessageId: text("last_read_message_id").references(
+      () => offerMessage.id,
+      {
+        onDelete: "set null",
+      },
+    ),
     lastReadAt: timestamp("last_read_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")

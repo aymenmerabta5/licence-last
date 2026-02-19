@@ -62,4 +62,3 @@ describe("src/server/services/universities/get-status", () => {
     expect(result).toBeNull()
   })
 })
-

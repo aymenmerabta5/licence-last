@@ -14,7 +14,12 @@ const mockTxDeleteWhere = mock(() => Promise.resolve())
 const mockTxDelete = mock(() => ({ where: mockTxDeleteWhere }))
 
 const mockTransaction = mock(
-  async (callback: (tx: { update: typeof mockTxUpdate; delete: typeof mockTxDelete }) => Promise<unknown>) =>
+  async (
+    callback: (tx: {
+      update: typeof mockTxUpdate
+      delete: typeof mockTxDelete
+    }) => Promise<unknown>,
+  ) =>
     callback({
       update: mockTxUpdate,
       delete: mockTxDelete,
@@ -54,14 +59,20 @@ describe("deleteDepartment", () => {
   test("should throw when department is not found", async () => {
     mockLimit.mockResolvedValueOnce([])
 
-    const { deleteDepartment } = await import("@/server/services/departments/delete")
-    expect(deleteDepartment("missing-department")).rejects.toThrow("Department not found")
+    const { deleteDepartment } = await import(
+      "@/server/services/departments/delete"
+    )
+    expect(deleteDepartment("missing-department")).rejects.toThrow(
+      "Department not found",
+    )
   })
 
   test("should demote dept heads and delete the department", async () => {
     mockLimit.mockResolvedValueOnce([{ id: "dept-1" }])
 
-    const { deleteDepartment } = await import("@/server/services/departments/delete")
+    const { deleteDepartment } = await import(
+      "@/server/services/departments/delete"
+    )
     const result = await deleteDepartment("dept-1")
 
     expect(result).toEqual({ success: true, departmentId: "dept-1" })

@@ -31,8 +31,8 @@ const tx = {
   update: txUpdate,
 }
 
-const mockTransaction = mock(async (callback: (trx: typeof tx) => Promise<unknown>) =>
-  callback(tx),
+const mockTransaction = mock(
+  async (callback: (trx: typeof tx) => Promise<unknown>) => callback(tx),
 )
 
 mock.module("@/server/db", () => ({

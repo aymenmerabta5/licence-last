@@ -3,13 +3,16 @@ import "server-only"
 import { eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
-import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
-import { skillTag } from "@/server/db/schema/skills"
-import { studentProfile, studentSkill } from "@/server/db/schema/students"
+import {
+  internshipOffer,
+  internshipOfferSkill,
+} from "@/server/db/schema/internships"
 import {
   internshipOfferLanguageRequirement,
   studentLanguage,
 } from "@/server/db/schema/languages"
+import { skillTag } from "@/server/db/schema/skills"
+import { studentProfile, studentSkill } from "@/server/db/schema/students"
 
 import {
   MATCH_FAIRNESS_NOTES,
@@ -101,7 +104,8 @@ export async function getExplainableMatchScore(
       db
         .select({
           languageCode: internshipOfferLanguageRequirement.languageCode,
-          minimumProficiency: internshipOfferLanguageRequirement.minimumProficiency,
+          minimumProficiency:
+            internshipOfferLanguageRequirement.minimumProficiency,
           isRequired: internshipOfferLanguageRequirement.isRequired,
           weight: internshipOfferLanguageRequirement.weight,
         })
@@ -121,16 +125,25 @@ export async function getExplainableMatchScore(
   }
 
   const studentSkillIds = new Set(studentSkills.map((skill) => skill.id))
-  const matchedSkills = offerSkills.filter((skill) => studentSkillIds.has(skill.id))
-  const missingSkills = offerSkills.filter((skill) => !studentSkillIds.has(skill.id))
+  const matchedSkills = offerSkills.filter((skill) =>
+    studentSkillIds.has(skill.id),
+  )
+  const missingSkills = offerSkills.filter(
+    (skill) => !studentSkillIds.has(skill.id),
+  )
 
   const skillsScore =
     offerSkills.length === 0
       ? MATCH_WEIGHT.skills
-      : Math.round((matchedSkills.length / offerSkills.length) * MATCH_WEIGHT.skills)
+      : Math.round(
+          (matchedSkills.length / offerSkills.length) * MATCH_WEIGHT.skills,
+        )
 
   const languageByCode = new Map(
-    languages.map((entry) => [entry.languageCode.toLowerCase(), entry.proficiency]),
+    languages.map((entry) => [
+      entry.languageCode.toLowerCase(),
+      entry.proficiency,
+    ]),
   )
 
   let languageScore: number = MATCH_WEIGHT.language
@@ -146,7 +159,8 @@ export async function getExplainableMatchScore(
       const level = languageByCode.get(req.languageCode.toLowerCase())
       if (!level) return sum
       const studentRank = PROFIENCY_RANK[level as ProficiencyLevel] ?? 0
-      const requiredRank = PROFIENCY_RANK[req.minimumProficiency as ProficiencyLevel] ?? 0
+      const requiredRank =
+        PROFIENCY_RANK[req.minimumProficiency as ProficiencyLevel] ?? 0
       return studentRank >= requiredRank ? sum + Math.max(1, req.weight) : sum
     }, 0)
 
@@ -156,7 +170,8 @@ export async function getExplainableMatchScore(
       const level = languageByCode.get(req.languageCode.toLowerCase())
       if (!level) return count
       const studentRank = PROFIENCY_RANK[level as ProficiencyLevel] ?? 0
-      const requiredRank = PROFIENCY_RANK[req.minimumProficiency as ProficiencyLevel] ?? 0
+      const requiredRank =
+        PROFIENCY_RANK[req.minimumProficiency as ProficiencyLevel] ?? 0
       return studentRank >= requiredRank ? count + 1 : count
     }, 0)
 
@@ -169,7 +184,9 @@ export async function getExplainableMatchScore(
     if (requiredLanguageCount > 0) {
       const requiredMissRatio =
         (requiredLanguageCount - requiredLanguageMet) / requiredLanguageCount
-      const requiredPenalty = Math.round(requiredMissRatio * (MATCH_WEIGHT.language * 0.5))
+      const requiredPenalty = Math.round(
+        requiredMissRatio * (MATCH_WEIGHT.language * 0.5),
+      )
       languageScore = Math.max(0, baseLanguageScore - requiredPenalty)
     } else {
       languageScore = baseLanguageScore
@@ -201,7 +218,9 @@ export async function getExplainableMatchScore(
     profileSignals.filter(Boolean).length / Math.max(1, profileSignals.length)
   const profileScore = Math.round(profileRatio * MATCH_WEIGHT.profile)
 
-  const total = clampScore(skillsScore + languageScore + locationScore + profileScore)
+  const total = clampScore(
+    skillsScore + languageScore + locationScore + profileScore,
+  )
   const reasons: MatchReason[] = [
     {
       key: "skills_match",
@@ -272,7 +291,8 @@ export function canAccessMatchScore(
     viewerCompanyId?: string
   },
 ) {
-  if (viewer.role === "university_admin" || viewer.role === "super_admin") return true
+  if (viewer.role === "university_admin" || viewer.role === "super_admin")
+    return true
   if (viewer.role === "student") {
     return viewer.id === params.studentUserId && params.isOfferVisibleToStudent
   }
@@ -287,7 +307,10 @@ export async function getOfferAccessContext(offerId: string): Promise<{
   status: "draft" | "published" | "closed"
 } | null> {
   const [offer] = await db
-    .select({ companyId: internshipOffer.companyId, status: internshipOffer.status })
+    .select({
+      companyId: internshipOffer.companyId,
+      status: internshipOffer.status,
+    })
     .from(internshipOffer)
     .where(eq(internshipOffer.id, offerId))
     .limit(1)

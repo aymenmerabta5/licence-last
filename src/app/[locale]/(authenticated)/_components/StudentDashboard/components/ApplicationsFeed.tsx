@@ -1,12 +1,10 @@
 "use client"
 
-import { Briefcase, ArrowRight, Search } from "lucide-react"
-
+import { ArrowRight, Briefcase, Search } from "lucide-react"
+import { ApplicationCard } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/ApplicationCard"
+import type { ApplicationRow } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
-
-import type { ApplicationRow } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
-import { ApplicationCard } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/ApplicationCard"
 
 interface ApplicationsFeedProps {
   applications: ApplicationRow[]

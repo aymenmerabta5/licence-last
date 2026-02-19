@@ -8,7 +8,11 @@ import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { company } from "@/server/db/schema/companies"
 import { toToolError } from "@/server/mcp/errors"
-import { assertDevMcpAllowed, assertMutatingConfirmed, getHealthReport } from "@/server/mcp/guards"
+import {
+  assertDevMcpAllowed,
+  assertMutatingConfirmed,
+  getHealthReport,
+} from "@/server/mcp/guards"
 import { createCleanupPlan, executeCleanup } from "@/server/mcp/mock/cleanup"
 import { listSeedScenarios, runSeedScenario } from "@/server/mcp/mock/scenarios"
 import { toolError, toolOk } from "@/server/mcp/response"
@@ -87,7 +91,8 @@ export function createInternexDevMcpServer() {
   server.registerTool(
     "internex.dev.health",
     {
-      description: "Report MCP guard status and sanitized database fingerprint.",
+      description:
+        "Report MCP guard status and sanitized database fingerprint.",
       inputSchema: {},
     },
     withToolHandler(async () => {
@@ -112,7 +117,8 @@ export function createInternexDevMcpServer() {
   server.registerTool(
     "internex.dev.seed.run",
     {
-      description: "Create linked mock data for one scenario in the development database.",
+      description:
+        "Create linked mock data for one scenario in the development database.",
       inputSchema: {
         scenario: z.enum([
           "student_discovery",
@@ -136,7 +142,12 @@ export function createInternexDevMcpServer() {
       description: "Set a user's role by id or email.",
       inputSchema: {
         userIdOrEmail: z.string().min(1),
-        newRole: z.enum(["student", "company_admin", "university_admin", "super_admin"]),
+        newRole: z.enum([
+          "student",
+          "company_admin",
+          "university_admin",
+          "super_admin",
+        ]),
         confirmWrite: z.boolean().optional(),
       },
     },
@@ -266,14 +277,22 @@ export function createInternexDevMcpServer() {
 
       if (input.action === "company_accept") {
         if (!input.companyId || !input.actionByUserId) {
-          throw new Error("companyId and actionByUserId are required for company_accept")
+          throw new Error(
+            "companyId and actionByUserId are required for company_accept",
+          )
         }
-        return companyAcceptApplication(input.applicationId, input.companyId, input.actionByUserId)
+        return companyAcceptApplication(
+          input.applicationId,
+          input.companyId,
+          input.actionByUserId,
+        )
       }
 
       if (input.action === "company_refuse") {
         if (!input.companyId || !input.actionByUserId) {
-          throw new Error("companyId and actionByUserId are required for company_refuse")
+          throw new Error(
+            "companyId and actionByUserId are required for company_refuse",
+          )
         }
         return companyRefuseApplication(
           input.applicationId,
@@ -291,7 +310,12 @@ export function createInternexDevMcpServer() {
       }
 
       if (input.action === "admin_validate") {
-        if (!input.actionByUserId || !input.adminRole || !input.startDate || !input.endDate) {
+        if (
+          !input.actionByUserId ||
+          !input.adminRole ||
+          !input.startDate ||
+          !input.endDate
+        ) {
           throw new Error(
             "actionByUserId, adminRole, startDate and endDate are required for admin_validate",
           )
@@ -308,7 +332,9 @@ export function createInternexDevMcpServer() {
       }
 
       if (!input.actionByUserId || !input.adminRole) {
-        throw new Error("actionByUserId and adminRole are required for admin_reject")
+        throw new Error(
+          "actionByUserId and adminRole are required for admin_reject",
+        )
       }
 
       return rejectPlacement({

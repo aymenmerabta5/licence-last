@@ -18,7 +18,9 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
   return (procedure as (input: unknown) => Promise<T>)(args)
 }
 
-const createAssistantConversationMock = mock(async () => ({ conversationId: "conv-1" }))
+const createAssistantConversationMock = mock(async () => ({
+  conversationId: "conv-1",
+}))
 const appendAssistantMessageMock = mock(async () => ({ messageId: "msg-1" }))
 const listAssistantConversationsByCompanyIdMock = mock(async () => ({
   conversations: [],
@@ -47,7 +49,8 @@ mock.module("@/server/services/assistant/get", () => ({
   getAssistantConversationByIdForCompany: mock(async () => null),
 }))
 mock.module("@/server/services/assistant/list", () => ({
-  listAssistantConversationsByCompanyId: listAssistantConversationsByCompanyIdMock,
+  listAssistantConversationsByCompanyId:
+    listAssistantConversationsByCompanyIdMock,
 }))
 mock.module("@/server/services/assistant/messages", () => ({
   appendAssistantMessage: appendAssistantMessageMock,
@@ -66,9 +69,13 @@ describe("src/server/orpc/routes/assistant", () => {
   })
 
   test("listAssistantModelsProcedure returns allowed models", async () => {
-    const { listAssistantModelsProcedure } = await import("@/server/orpc/routes/assistant")
+    const { listAssistantModelsProcedure } = await import(
+      "@/server/orpc/routes/assistant"
+    )
 
-    const result = await callProcedure(listAssistantModelsProcedure, { input: undefined })
+    const result = await callProcedure(listAssistantModelsProcedure, {
+      input: undefined,
+    })
 
     expect(result).toEqual({
       models: [
@@ -80,7 +87,9 @@ describe("src/server/orpc/routes/assistant", () => {
   })
 
   test("createAssistantConversationProcedure delegates with company and user context", async () => {
-    const { createAssistantConversationProcedure } = await import("@/server/orpc/routes/assistant")
+    const { createAssistantConversationProcedure } = await import(
+      "@/server/orpc/routes/assistant"
+    )
 
     const result = await callProcedure(createAssistantConversationProcedure, {
       input: { title: "New chat", model: "model-a" },
@@ -100,10 +109,16 @@ describe("src/server/orpc/routes/assistant", () => {
   })
 
   test("appendAssistantMessageProcedure delegates to message service", async () => {
-    const { appendAssistantMessageProcedure } = await import("@/server/orpc/routes/assistant")
+    const { appendAssistantMessageProcedure } = await import(
+      "@/server/orpc/routes/assistant"
+    )
 
     const result = await callProcedure(appendAssistantMessageProcedure, {
-      input: { conversationId: "conv-1", role: "user", parts: [{ type: "text", text: "Hi" }] },
+      input: {
+        conversationId: "conv-1",
+        role: "user",
+        parts: [{ type: "text", text: "Hi" }],
+      },
       context: { companyMembership: { companyId: "company-1" } },
     })
 

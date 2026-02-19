@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 
@@ -23,30 +23,44 @@ describe("calculateProfileCompleteness", () => {
   })
 
   test("should add 15 for bio", () => {
-    expect(calculateProfileCompleteness({ bio: "Hello", skillsCount: 0 })).toBe(15)
+    expect(calculateProfileCompleteness({ bio: "Hello", skillsCount: 0 })).toBe(
+      15,
+    )
   })
 
   test("should add 10 for phone", () => {
-    expect(calculateProfileCompleteness({ phone: "123", skillsCount: 0 })).toBe(10)
+    expect(calculateProfileCompleteness({ phone: "123", skillsCount: 0 })).toBe(
+      10,
+    )
   })
 
   test("should add 15 for wilayaCode > 0", () => {
-    expect(calculateProfileCompleteness({ wilayaCode: 1, skillsCount: 0 })).toBe(15)
+    expect(
+      calculateProfileCompleteness({ wilayaCode: 1, skillsCount: 0 }),
+    ).toBe(15)
   })
 
   test("should not count wilayaCode of 0", () => {
-    expect(calculateProfileCompleteness({ wilayaCode: 0, skillsCount: 0 })).toBe(0)
+    expect(
+      calculateProfileCompleteness({ wilayaCode: 0, skillsCount: 0 }),
+    ).toBe(0)
   })
 
   test("should add 20 for githubUrl alone", () => {
     expect(
-      calculateProfileCompleteness({ githubUrl: "https://github.com/dev", skillsCount: 0 }),
+      calculateProfileCompleteness({
+        githubUrl: "https://github.com/dev",
+        skillsCount: 0,
+      }),
     ).toBe(20)
   })
 
   test("should add 20 for portfolioUrl alone", () => {
     expect(
-      calculateProfileCompleteness({ portfolioUrl: "https://dev.com", skillsCount: 0 }),
+      calculateProfileCompleteness({
+        portfolioUrl: "https://dev.com",
+        skillsCount: 0,
+      }),
     ).toBe(20)
   })
 
@@ -69,11 +83,15 @@ describe("calculateProfileCompleteness", () => {
   })
 
   test("should add 10 for studentNumber", () => {
-    expect(calculateProfileCompleteness({ studentNumber: "STU-1", skillsCount: 0 })).toBe(10)
+    expect(
+      calculateProfileCompleteness({ studentNumber: "STU-1", skillsCount: 0 }),
+    ).toBe(10)
   })
 
   test("should add 10 for department", () => {
-    expect(calculateProfileCompleteness({ department: "CS", skillsCount: 0 })).toBe(10)
+    expect(
+      calculateProfileCompleteness({ department: "CS", skillsCount: 0 }),
+    ).toBe(10)
   })
 
   test("should not count whitespace-only strings", () => {

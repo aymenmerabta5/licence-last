@@ -1,10 +1,9 @@
 import "server-only"
 
 import { and, eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { internshipOffer } from "@/server/db/schema/internships"
+import { createModuleLogger } from "@/server/logging"
 import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/offers/delete")
@@ -22,11 +21,19 @@ export async function deleteOffer(offerId: string, companyId: string) {
       status: internshipOffer.status,
     })
     .from(internshipOffer)
-    .where(and(eq(internshipOffer.id, offerId), eq(internshipOffer.companyId, companyId)))
+    .where(
+      and(
+        eq(internshipOffer.id, offerId),
+        eq(internshipOffer.companyId, companyId),
+      ),
+    )
     .limit(1)
 
   if (!existing) {
-    throw new ServiceError("OFFER_NOT_FOUND", "Offer not found or access denied")
+    throw new ServiceError(
+      "OFFER_NOT_FOUND",
+      "Offer not found or access denied",
+    )
   }
 
   log.info({ offerId, companyId, status: existing.status }, "Deleting offer")
@@ -43,6 +50,9 @@ export async function deleteOffer(offerId: string, companyId: string) {
     .set({ status: "closed", closesAt: new Date() })
     .where(eq(internshipOffer.id, offerId))
 
-  log.info({ offerId, event: "offer_soft_closed" }, "Published offer soft-closed")
+  log.info(
+    { offerId, event: "offer_soft_closed" },
+    "Published offer soft-closed",
+  )
   return { offerId, deleted: false }
 }

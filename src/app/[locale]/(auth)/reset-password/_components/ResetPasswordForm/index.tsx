@@ -2,16 +2,15 @@
 
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
-import { reveal, ease } from "@/lib/animations"
-
-import { useResetPassword } from "@/app/[locale]/(auth)/reset-password/_components/ResetPasswordForm/hooks/useResetPassword"
-import { SuccessMessage } from "@/app/[locale]/(auth)/reset-password/_components/ResetPasswordForm/components/SuccessMessage"
 import { EmailForm } from "@/app/[locale]/(auth)/reset-password/_components/ResetPasswordForm/components/EmailForm"
+import { SuccessMessage } from "@/app/[locale]/(auth)/reset-password/_components/ResetPasswordForm/components/SuccessMessage"
+import { useResetPassword } from "@/app/[locale]/(auth)/reset-password/_components/ResetPasswordForm/hooks/useResetPassword"
+import { ease, reveal } from "@/lib/animations"
 
 export function ResetPasswordForm() {
   const t = useTranslations("auth.resetPassword")
-  const { form, serverError, success, setTurnstileToken, turnstileRef } = useResetPassword()
+  const { form, serverError, success, setTurnstileToken, turnstileRef } =
+    useResetPassword()
 
   return (
     <div className="space-y-8">

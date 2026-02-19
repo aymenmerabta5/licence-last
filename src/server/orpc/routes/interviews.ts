@@ -14,8 +14,8 @@ import { parseInputDate } from "@/server/orpc/utils/date"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import { confirmInterviewSlot } from "@/server/services/interviews/confirm"
 import {
-  isInterviewServiceError,
   InterviewServiceError,
+  isInterviewServiceError,
 } from "@/server/services/interviews/errors"
 import { listInterviewsForCompany } from "@/server/services/interviews/list-for-company"
 import { listInterviewsForStudent } from "@/server/services/interviews/list-for-student"
@@ -60,7 +60,10 @@ export const listInterviewsForCompanyProcedure = companyAdminProcedureGenerous
   .input(listInterviewsInputSchema)
   .handler(async ({ input, context }) => {
     assertInterviewsEnabled()
-    return listInterviewsForCompany(context.companyMembership.companyId, input ?? {})
+    return listInterviewsForCompany(
+      context.companyMembership.companyId,
+      input ?? {},
+    )
   })
 
 export const listInterviewsForStudentProcedure = studentProcedureGenerous
@@ -106,8 +109,14 @@ export const proposeInterviewSlotsProcedure = companyAdminProcedureStandard
           applicationId: input.applicationId,
           note: input.note,
           slots: input.slots.map((slot, index) => ({
-            startsAt: parseInputDate(slot.startsAt, `Interview slot ${index + 1} start`),
-            endsAt: parseInputDate(slot.endsAt, `Interview slot ${index + 1} end`),
+            startsAt: parseInputDate(
+              slot.startsAt,
+              `Interview slot ${index + 1} start`,
+            ),
+            endsAt: parseInputDate(
+              slot.endsAt,
+              `Interview slot ${index + 1} end`,
+            ),
             location: slot.location || null,
             meetingUrl: slot.meetingUrl || null,
           })),

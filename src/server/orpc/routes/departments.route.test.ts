@@ -84,7 +84,9 @@ describe("src/server/orpc/routes/departments", () => {
   })
 
   test("createDepartmentProcedure passes university context to service", async () => {
-    const { createDepartmentProcedure } = await import("@/server/orpc/routes/departments")
+    const { createDepartmentProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
 
     const result = await callProcedure(createDepartmentProcedure, {
       input: { name: "Computer Science", headName: "Head" },
@@ -106,7 +108,9 @@ describe("src/server/orpc/routes/departments", () => {
         "Department with this name already exists",
       ),
     )
-    const { createDepartmentProcedure } = await import("@/server/orpc/routes/departments")
+    const { createDepartmentProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
 
     await expect(
       callProcedure(createDepartmentProcedure, {
@@ -120,7 +124,9 @@ describe("src/server/orpc/routes/departments", () => {
   })
 
   test("assignDepartmentHeadProcedure delegates when department is manageable", async () => {
-    const { assignDepartmentHeadProcedure } = await import("@/server/orpc/routes/departments")
+    const { assignDepartmentHeadProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
 
     const result = await callProcedure(assignDepartmentHeadProcedure, {
       input: { departmentId: "dept-1", userId: "user-1" },
@@ -132,7 +138,9 @@ describe("src/server/orpc/routes/departments", () => {
   })
 
   test("updateDepartmentProcedure enforces department scope", async () => {
-    const { updateDepartmentProcedure } = await import("@/server/orpc/routes/departments")
+    const { updateDepartmentProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
 
     await expect(
       callProcedure(updateDepartmentProcedure, {

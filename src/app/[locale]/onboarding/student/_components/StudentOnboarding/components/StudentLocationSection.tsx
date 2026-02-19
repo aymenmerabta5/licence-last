@@ -1,10 +1,9 @@
 ﻿import { MapPin } from "lucide-react"
 import { useTranslations } from "next-intl"
-
+import type { OnboardingFormApi } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/types"
 import { FormSection, SelectField, TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYAS } from "@/lib/wilayas"
-import type { OnboardingFormApi } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/types"
 
 interface StudentLocationSectionProps {
   form: OnboardingFormApi

@@ -15,7 +15,9 @@ describe("confirmation token flow", () => {
     const payload = { mode: "batch_only", batchId: "batch-1" }
     const { token } = issueConfirmationToken("seed_cleanup", payload)
 
-    expect(() => consumeConfirmationToken(token, "seed_cleanup", payload)).not.toThrow()
+    expect(() =>
+      consumeConfirmationToken(token, "seed_cleanup", payload),
+    ).not.toThrow()
   })
 
   test("rejects payload mismatch", () => {
@@ -36,7 +38,9 @@ describe("confirmation token flow", () => {
 
     await new Promise((resolve) => setTimeout(resolve, 10))
 
-    expect(() => consumeConfirmationToken(token, "seed_cleanup", payload)).toThrow()
+    expect(() =>
+      consumeConfirmationToken(token, "seed_cleanup", payload),
+    ).toThrow()
   })
 
   test("allows retry after payload mismatch", () => {
@@ -50,7 +54,9 @@ describe("confirmation token flow", () => {
       }),
     ).toThrow("payload mismatch")
 
-    expect(() => consumeConfirmationToken(token, "seed_cleanup", payload)).not.toThrow()
+    expect(() =>
+      consumeConfirmationToken(token, "seed_cleanup", payload),
+    ).not.toThrow()
   })
 
   test("expired token is consumed even though it throws", async () => {
@@ -59,7 +65,11 @@ describe("confirmation token flow", () => {
 
     await new Promise((resolve) => setTimeout(resolve, 10))
 
-    expect(() => consumeConfirmationToken(token, "seed_cleanup", payload)).toThrow("expired")
-    expect(() => consumeConfirmationToken(token, "seed_cleanup", payload)).toThrow("Unknown")
+    expect(() =>
+      consumeConfirmationToken(token, "seed_cleanup", payload),
+    ).toThrow("expired")
+    expect(() =>
+      consumeConfirmationToken(token, "seed_cleanup", payload),
+    ).toThrow("Unknown")
   })
 })

@@ -1,9 +1,9 @@
 "use client"
 
 import { User } from "lucide-react"
-import { useTranslations } from "next-intl"
-import { Link } from "@/i18n/routing"
 import { Route } from "next"
+import { useTranslations } from "next-intl"
+import type { NavbarUser } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
 
 import {
   DropdownMenu,
@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import type { NavbarUser } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
+import { Link } from "@/i18n/routing"
 
 interface UserDropdownProps {
   user: NavbarUser
@@ -22,7 +22,11 @@ interface UserDropdownProps {
   isLoggingOut: boolean
 }
 
-export function UserDropdown({ user, onLogout, isLoggingOut }: UserDropdownProps) {
+export function UserDropdown({
+  user,
+  onLogout,
+  isLoggingOut,
+}: UserDropdownProps) {
   const t = useTranslations("dashboard.navbar")
 
   return (
@@ -32,12 +36,19 @@ export function UserDropdown({ user, onLogout, isLoggingOut }: UserDropdownProps
           {user.name?.charAt(0) || "U"}
         </div>
         <div className="hidden sm:block text-start pe-1">
-          <p className="text-xs font-bold leading-none text-heading">{user.name || "User Name"}</p>
-          <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider font-medium">{user.role || "Student"}</p>
+          <p className="text-xs font-bold leading-none text-heading">
+            {user.name || "User Name"}
+          </p>
+          <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider font-medium">
+            {user.role || "Student"}
+          </p>
         </div>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-72 mt-2 p-1.5 rounded-xl border-border/40 shadow-xl backdrop-blur-xl bg-background/95">
+      <DropdownMenuContent
+        align="end"
+        className="w-72 mt-2 p-1.5 rounded-xl border-border/40 shadow-xl backdrop-blur-xl bg-background/95"
+      >
         {/* Profile Links */}
         <DropdownMenuGroup>
           <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-1">

@@ -1,16 +1,16 @@
 "use client"
 
-import * as motion from "motion/react-client"
-import { useTranslations } from "next-intl"
 import {
+  Briefcase,
+  Building2,
+  FileStack,
   GraduationCap,
   TrendingUp,
-  Building2,
-  Briefcase,
-  FileStack,
 } from "lucide-react"
-import { cn } from "@/lib/utils"
+import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
 import { ease } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
 interface PlatformBulletinProps {
   stats: {
@@ -76,8 +76,7 @@ export function PlatformBulletin({ stats }: PlatformBulletinProps) {
               className={cn(
                 "py-7 px-5 text-center relative group/metric transition-colors",
                 "hover:bg-primary/[0.02]",
-                i < metrics.length - 1 &&
-                  "border-e border-border/40",
+                i < metrics.length - 1 && "border-e border-border/40",
                 // Hide last item on mobile, show 3rd on sm
                 i === 4 && "hidden lg:block",
                 i === 2 && "hidden sm:block",

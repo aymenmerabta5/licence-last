@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockLimitResult: any[] = []
@@ -33,7 +33,9 @@ describe("src/server/services/companies/get", () => {
   test("getCompanyById should return company when found", async () => {
     mockLimitResult = [{ id: "company-1", name: "Acme Corp" }]
 
-    const { getCompanyById } = await import("@/server/services/companies/get?fresh=1")
+    const { getCompanyById } = await import(
+      "@/server/services/companies/get?fresh=1"
+    )
     const result = await getCompanyById("company-1")
 
     expect(result).not.toBeNull()
@@ -44,16 +46,27 @@ describe("src/server/services/companies/get", () => {
   test("getCompanyById should return null when not found", async () => {
     mockLimitResult = []
 
-    const { getCompanyById } = await import("@/server/services/companies/get?fresh=2")
+    const { getCompanyById } = await import(
+      "@/server/services/companies/get?fresh=2"
+    )
     const result = await getCompanyById("missing")
 
     expect(result).toBeNull()
   })
 
   test("getCompanyByUserId should return company when membership exists", async () => {
-    mockLimitResult = [{ id: "company-1", name: "Acme Corp", slug: "acme-corp", status: "approved" }]
+    mockLimitResult = [
+      {
+        id: "company-1",
+        name: "Acme Corp",
+        slug: "acme-corp",
+        status: "approved",
+      },
+    ]
 
-    const { getCompanyByUserId } = await import("@/server/services/companies/get?fresh=3")
+    const { getCompanyByUserId } = await import(
+      "@/server/services/companies/get?fresh=3"
+    )
     const result = await getCompanyByUserId("user-1")
 
     expect(result).not.toBeNull()
@@ -63,7 +76,9 @@ describe("src/server/services/companies/get", () => {
   test("getCompanyByUserId should return null when no membership", async () => {
     mockLimitResult = []
 
-    const { getCompanyByUserId } = await import("@/server/services/companies/get?fresh=4")
+    const { getCompanyByUserId } = await import(
+      "@/server/services/companies/get?fresh=4"
+    )
     const result = await getCompanyByUserId("user-orphan")
 
     expect(result).toBeNull()
@@ -71,11 +86,23 @@ describe("src/server/services/companies/get", () => {
 
   test("getCompanyByUserId should throw when user has multiple memberships", async () => {
     mockLimitResult = [
-      { id: "company-1", name: "Acme Corp", slug: "acme-corp", status: "approved" },
-      { id: "company-2", name: "Beta Corp", slug: "beta-corp", status: "approved" },
+      {
+        id: "company-1",
+        name: "Acme Corp",
+        slug: "acme-corp",
+        status: "approved",
+      },
+      {
+        id: "company-2",
+        name: "Beta Corp",
+        slug: "beta-corp",
+        status: "approved",
+      },
     ]
 
-    const { getCompanyByUserId } = await import("@/server/services/companies/get?fresh=5")
+    const { getCompanyByUserId } = await import(
+      "@/server/services/companies/get?fresh=5"
+    )
 
     await expect(getCompanyByUserId("user-1")).rejects.toMatchObject({
       code: "COMPANY_MEMBERSHIP_CONFLICT",

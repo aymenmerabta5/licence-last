@@ -4,8 +4,8 @@ import { and, eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
-import { createNotification } from "@/server/services/notifications/create"
 import { ServiceError } from "@/server/services/errors"
+import { createNotification } from "@/server/services/notifications/create"
 
 interface RemoveCompanyMemberInput {
   companyId: string
@@ -36,7 +36,10 @@ export async function removeCompanyMember(input: RemoveCompanyMemberInput) {
     .limit(1)
 
   if (!targetMembership) {
-    throw new ServiceError("COMPANY_MEMBER_NOT_FOUND", "Company member not found")
+    throw new ServiceError(
+      "COMPANY_MEMBER_NOT_FOUND",
+      "Company member not found",
+    )
   }
 
   if (targetMembership.role === "owner") {

@@ -3,19 +3,30 @@ import "server-only"
 import { inArray, like, or } from "drizzle-orm"
 
 import { db } from "@/server/db"
-import { user } from "@/server/db/schema/auth"
 import { application } from "@/server/db/schema/applications"
+import { user } from "@/server/db/schema/auth"
 import { company, companyMember } from "@/server/db/schema/companies"
-import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
+import {
+  internshipOffer,
+  internshipOfferSkill,
+} from "@/server/db/schema/internships"
 import { notification } from "@/server/db/schema/notifications"
 import { placement, placementDocument } from "@/server/db/schema/placements"
 import { skillTag } from "@/server/db/schema/skills"
 import { studentProfile, studentSkill } from "@/server/db/schema/students"
 import { university, universityDomain } from "@/server/db/schema/universities"
-import { consumeConfirmationToken, issueConfirmationToken } from "@/server/mcp/confirmation"
+import {
+  consumeConfirmationToken,
+  issueConfirmationToken,
+} from "@/server/mcp/confirmation"
 import { DevMcpError } from "@/server/mcp/errors"
 import { readSeedLedger, removeSeedBatches } from "@/server/mcp/mock/ledger"
-import type { CleanupMode, CleanupPlan, SeedBatchEntities, SeedBatchRecord } from "@/server/mcp/types"
+import type {
+  CleanupMode,
+  CleanupPlan,
+  SeedBatchEntities,
+  SeedBatchRecord,
+} from "@/server/mcp/types"
 
 interface CleanupPlanInput {
   mode: CleanupMode
@@ -47,7 +58,9 @@ function createEntitySets() {
   }
 }
 
-function toEntities(sets: ReturnType<typeof createEntitySets>): SeedBatchEntities {
+function toEntities(
+  sets: ReturnType<typeof createEntitySets>,
+): SeedBatchEntities {
   return {
     universityIds: [...sets.universityIds],
     userIds: [...sets.userIds],
@@ -77,7 +90,9 @@ function mergeBatchEntities(batches: SeedBatchRecord[]) {
   return sets
 }
 
-function countEntities(entities: SeedBatchEntities): Record<keyof SeedBatchEntities, number> {
+function countEntities(
+  entities: SeedBatchEntities,
+): Record<keyof SeedBatchEntities, number> {
   return {
     universityIds: entities.universityIds.length,
     userIds: entities.userIds.length,
@@ -91,7 +106,11 @@ function countEntities(entities: SeedBatchEntities): Record<keyof SeedBatchEntit
   }
 }
 
-function extractBatchSelection(ledgerBatches: SeedBatchRecord[], mode: CleanupMode, batchId?: string) {
+function extractBatchSelection(
+  ledgerBatches: SeedBatchRecord[],
+  mode: CleanupMode,
+  batchId?: string,
+) {
   if (mode === "batch_only") {
     if (ledgerBatches.length === 0) {
       throw new DevMcpError("NOTHING_TO_CLEAN", "Seed ledger is empty")
@@ -122,7 +141,9 @@ function extractBatchSelection(ledgerBatches: SeedBatchRecord[], mode: CleanupMo
   }
 }
 
-async function augmentWithPrefixDiscovery(sets: ReturnType<typeof createEntitySets>) {
+async function augmentWithPrefixDiscovery(
+  sets: ReturnType<typeof createEntitySets>,
+) {
   const strayUsers = await db
     .select({ id: user.id })
     .from(user)
@@ -144,7 +165,12 @@ async function augmentWithPrefixDiscovery(sets: ReturnType<typeof createEntitySe
   const strayOffers = await db
     .select({ id: internshipOffer.id })
     .from(internshipOffer)
-    .where(or(like(internshipOffer.id, "mcpdev_%"), like(internshipOffer.title, "[mcpdev]%")))
+    .where(
+      or(
+        like(internshipOffer.id, "mcpdev_%"),
+        like(internshipOffer.title, "[mcpdev]%"),
+      ),
+    )
   strayOffers.forEach((row) => sets.offerIds.add(row.id))
 
   const strayApplications = await db
@@ -178,7 +204,9 @@ async function augmentWithPrefixDiscovery(sets: ReturnType<typeof createEntitySe
   straySkills.forEach((row) => sets.skillTagIds.add(row.id))
 }
 
-async function expandRelatedEntities(sets: ReturnType<typeof createEntitySets>) {
+async function expandRelatedEntities(
+  sets: ReturnType<typeof createEntitySets>,
+) {
   if (sets.companyIds.size > 0) {
     const companyOfferRows = await db
       .select({ id: internshipOffer.id })
@@ -188,16 +216,19 @@ async function expandRelatedEntities(sets: ReturnType<typeof createEntitySets>) 
   }
 
   if (sets.offerIds.size > 0 || sets.userIds.size > 0) {
-    const appRows = await db.select({ id: application.id }).from(application).where(
-      sets.offerIds.size > 0 && sets.userIds.size > 0
-        ? or(
-            inArray(application.offerId, [...sets.offerIds]),
-            inArray(application.studentUserId, [...sets.userIds]),
-          )
-        : sets.offerIds.size > 0
-          ? inArray(application.offerId, [...sets.offerIds])
-          : inArray(application.studentUserId, [...sets.userIds]),
-    )
+    const appRows = await db
+      .select({ id: application.id })
+      .from(application)
+      .where(
+        sets.offerIds.size > 0 && sets.userIds.size > 0
+          ? or(
+              inArray(application.offerId, [...sets.offerIds]),
+              inArray(application.studentUserId, [...sets.userIds]),
+            )
+          : sets.offerIds.size > 0
+            ? inArray(application.offerId, [...sets.offerIds])
+            : inArray(application.studentUserId, [...sets.userIds]),
+      )
     appRows.forEach((row) => sets.applicationIds.add(row.id))
   }
 
@@ -226,9 +257,15 @@ async function expandRelatedEntities(sets: ReturnType<typeof createEntitySets>) 
   }
 }
 
-async function resolveCleanupSelection(input: CleanupPlanInput): Promise<CleanupResolvedSelection> {
+async function resolveCleanupSelection(
+  input: CleanupPlanInput,
+): Promise<CleanupResolvedSelection> {
   const ledger = await readSeedLedger()
-  const extracted = extractBatchSelection(ledger.batches, input.mode, input.batchId)
+  const extracted = extractBatchSelection(
+    ledger.batches,
+    input.mode,
+    input.batchId,
+  )
   const sets = mergeBatchEntities(extracted.selectedBatches)
 
   if (input.mode === "all_mcpdev_data") {
@@ -245,7 +282,9 @@ async function resolveCleanupSelection(input: CleanupPlanInput): Promise<Cleanup
   }
 }
 
-export async function createCleanupPlan(input: CleanupPlanInput): Promise<CleanupPlan> {
+export async function createCleanupPlan(
+  input: CleanupPlanInput,
+): Promise<CleanupPlan> {
   const resolved = await resolveCleanupSelection(input)
   const counts = countEntities(resolved.entities)
 
@@ -301,7 +340,10 @@ export async function executeCleanup(input: CleanupExecuteInput) {
     deleted.notificationIds += await deleteByIds(
       resolved.entities.notificationIds,
       async (ids) =>
-        tx.delete(notification).where(inArray(notification.id, ids)).returning({ id: notification.id }),
+        tx
+          .delete(notification)
+          .where(inArray(notification.id, ids))
+          .returning({ id: notification.id }),
     )
 
     deleted.documentIds += await deleteByIds(
@@ -315,25 +357,37 @@ export async function executeCleanup(input: CleanupExecuteInput) {
 
     deleted.placementIds += await deleteByIds(
       resolved.entities.placementIds,
-      async (ids) => tx.delete(placement).where(inArray(placement.id, ids)).returning({ id: placement.id }),
+      async (ids) =>
+        tx
+          .delete(placement)
+          .where(inArray(placement.id, ids))
+          .returning({ id: placement.id }),
     )
 
     deleted.applicationIds += await deleteByIds(
       resolved.entities.applicationIds,
       async (ids) =>
-        tx.delete(application).where(inArray(application.id, ids)).returning({ id: application.id }),
+        tx
+          .delete(application)
+          .where(inArray(application.id, ids))
+          .returning({ id: application.id }),
     )
 
     if (resolved.entities.offerIds.length > 0) {
       await tx
         .delete(internshipOfferSkill)
-        .where(inArray(internshipOfferSkill.offerId, resolved.entities.offerIds))
+        .where(
+          inArray(internshipOfferSkill.offerId, resolved.entities.offerIds),
+        )
     }
 
     deleted.offerIds += await deleteByIds(
       resolved.entities.offerIds,
       async (ids) =>
-        tx.delete(internshipOffer).where(inArray(internshipOffer.id, ids)).returning({ id: internshipOffer.id }),
+        tx
+          .delete(internshipOffer)
+          .where(inArray(internshipOffer.id, ids))
+          .returning({ id: internshipOffer.id }),
     )
 
     if (resolved.entities.companyIds.length > 0) {
@@ -348,35 +402,56 @@ export async function executeCleanup(input: CleanupExecuteInput) {
     }
 
     if (resolved.entities.userIds.length > 0) {
-      await tx.delete(studentSkill).where(inArray(studentSkill.userId, resolved.entities.userIds))
-      await tx.delete(studentProfile).where(inArray(studentProfile.userId, resolved.entities.userIds))
+      await tx
+        .delete(studentSkill)
+        .where(inArray(studentSkill.userId, resolved.entities.userIds))
+      await tx
+        .delete(studentProfile)
+        .where(inArray(studentProfile.userId, resolved.entities.userIds))
     }
 
     deleted.companyIds += await deleteByIds(
       resolved.entities.companyIds,
-      async (ids) => tx.delete(company).where(inArray(company.id, ids)).returning({ id: company.id }),
+      async (ids) =>
+        tx
+          .delete(company)
+          .where(inArray(company.id, ids))
+          .returning({ id: company.id }),
     )
 
     deleted.userIds += await deleteByIds(
       resolved.entities.userIds,
-      async (ids) => tx.delete(user).where(inArray(user.id, ids)).returning({ id: user.id }),
+      async (ids) =>
+        tx.delete(user).where(inArray(user.id, ids)).returning({ id: user.id }),
     )
 
     if (resolved.entities.universityIds.length > 0) {
       await tx
         .delete(universityDomain)
-        .where(inArray(universityDomain.universityId, resolved.entities.universityIds))
+        .where(
+          inArray(
+            universityDomain.universityId,
+            resolved.entities.universityIds,
+          ),
+        )
     }
 
     deleted.universityIds += await deleteByIds(
       resolved.entities.universityIds,
       async (ids) =>
-        tx.delete(university).where(inArray(university.id, ids)).returning({ id: university.id }),
+        tx
+          .delete(university)
+          .where(inArray(university.id, ids))
+          .returning({ id: university.id }),
     )
 
     deleted.skillTagIds += await deleteByIds(
       resolved.entities.skillTagIds,
-      async (ids) => tx.delete(skillTag).where(inArray(skillTag.id, ids)).returning({ id: skillTag.id }),
+      async (ids) =>
+        tx
+          .delete(skillTag)
+          .where(inArray(skillTag.id, ids))
+          .returning({ id: skillTag.id }),
     )
   })
 

@@ -1,9 +1,9 @@
 /**
  * E2E Test Fixtures
- * 
+ *
  * This module exports all test fixtures for E2E testing.
  * Import from this file to access auth helpers and data factories.
- * 
+ *
  * @example
  * ```typescript
  * import { createTestUser, loginAsStudent } from "../fixtures"
@@ -12,31 +12,31 @@
 
 // Auth fixtures
 export {
-  createAuthenticatedSession,
-  loginAsStudent,
-  loginAsCompany,
-  loginAsAdmin,
-  logout,
-  isAuthenticated,
-  type UserRole,
   type AuthSession,
+  createAuthenticatedSession,
+  isAuthenticated,
+  loginAsAdmin,
+  loginAsCompany,
+  loginAsStudent,
+  logout,
+  type UserRole,
 } from "./auth"
 
 // Data fixtures
 export {
-  generateId,
-  createTestUser,
-  createTestStudentProfile,
+  createTestApplication,
   createTestCompany,
   createTestOffer,
-  createTestApplication,
   createTestScenario,
+  createTestStudentProfile,
+  createTestUser,
+  generateId,
   TEST_CREDENTIALS,
-  WILAYA_CODES,
   TEST_SKILLS,
-  type TestUserData,
-  type TestStudentProfileData,
+  type TestApplicationData,
   type TestCompanyData,
   type TestOfferData,
-  type TestApplicationData,
+  type TestStudentProfileData,
+  type TestUserData,
+  WILAYA_CODES,
 } from "./data"

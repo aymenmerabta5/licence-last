@@ -65,7 +65,8 @@ export function SkillCategoryGrid({
                       isSelected
                         ? "bg-primary/10 border-primary/25 text-primary font-semibold shadow-sm shadow-primary/5"
                         : "border-border/40 text-muted-foreground hover:border-primary/20 hover:text-foreground hover:bg-secondary/20",
-                      disabled && "opacity-30 cursor-not-allowed hover:bg-transparent hover:border-border/40 hover:text-muted-foreground",
+                      disabled &&
+                        "opacity-30 cursor-not-allowed hover:bg-transparent hover:border-border/40 hover:text-muted-foreground",
                     )}
                   >
                     {isSelected && <Check className="h-3 w-3 shrink-0" />}

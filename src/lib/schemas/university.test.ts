@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 
 import {
   createUniversityOnboardingSchema,
@@ -64,8 +64,12 @@ describe("createUniversityOnboardingSchema", () => {
   })
 
   test("should accept boundary wilayaCodes 1 and 58", () => {
-    expect(schema.safeParse({ ...validInput, wilayaCode: 1 }).success).toBe(true)
-    expect(schema.safeParse({ ...validInput, wilayaCode: 58 }).success).toBe(true)
+    expect(schema.safeParse({ ...validInput, wilayaCode: 1 }).success).toBe(
+      true,
+    )
+    expect(schema.safeParse({ ...validInput, wilayaCode: 58 }).success).toBe(
+      true,
+    )
   })
 
   test("should reject empty domains array", () => {
@@ -114,7 +118,9 @@ describe("createUniversityUpdateSchema", () => {
 
     expect(result.success).toBe(false)
     if (!result.success) {
-      const nameIssue = result.error.issues.find((issue) => issue.path[0] === "name")
+      const nameIssue = result.error.issues.find(
+        (issue) => issue.path[0] === "name",
+      )
       expect(nameIssue?.message).toBe("t:universityNameMin")
     }
   })

@@ -1,15 +1,13 @@
 "use client"
 
+import { Copy, Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { QRCodeSVG } from "qrcode.react"
-import { Copy, Loader2 } from "lucide-react"
 import { toast } from "sonner"
-
+import type { useTwoFactorSetup } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings/hooks/useTwoFactorSetup"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
-import type { useTwoFactorSetup } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings/hooks/useTwoFactorSetup"
 
 type SetupState = ReturnType<typeof useTwoFactorSetup>
 

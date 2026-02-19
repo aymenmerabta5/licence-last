@@ -26,7 +26,9 @@ export function FormActions({ form, isBusy, onReset }: FormActionsProps) {
           Discard
         </Button>
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        <form.Subscribe selector={(state: any) => [state.isSubmitting] as const}>
+        <form.Subscribe
+          selector={(state: any) => [state.isSubmitting] as const}
+        >
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {([isSubmitting]: any) => (
             <Button

@@ -1,15 +1,18 @@
 import "server-only"
 
 import { randomUUID } from "node:crypto"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/offers/create")
-import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
-import { internshipOfferLanguageRequirement } from "@/server/db/schema/languages"
-import type { ProficiencyLevel } from "@/lib/schemas/enums"
+
 import { normalizeLanguageEntries } from "@/lib/constants/languages"
+import type { ProficiencyLevel } from "@/lib/schemas/enums"
+import {
+  internshipOffer,
+  internshipOfferSkill,
+} from "@/server/db/schema/internships"
+import { internshipOfferLanguageRequirement } from "@/server/db/schema/languages"
 import { validateSkillTagIds } from "@/server/services/skills/validate"
 
 interface OfferLanguageRequirementInput {
@@ -35,7 +38,10 @@ export async function createOffer(data: {
   languageRequirements?: OfferLanguageRequirementInput[]
 }) {
   const offerId = randomUUID()
-  log.info({ companyId: data.companyId, offerId, title: data.title }, "Creating offer")
+  log.info(
+    { companyId: data.companyId, offerId, title: data.title },
+    "Creating offer",
+  )
 
   const normalizedLanguageRequirements = normalizeLanguageEntries(
     data.languageRequirements ?? [],
@@ -73,10 +79,10 @@ export async function createOffer(data: {
         normalizedLanguageRequirements.map((entry) => ({
           offerId,
           languageCode: entry.languageCode,
-            minimumProficiency: entry.minimumProficiency,
-            isRequired: entry.isRequired ?? true,
-            weight: entry.weight ?? 1,
-          })),
+          minimumProficiency: entry.minimumProficiency,
+          isRequired: entry.isRequired ?? true,
+          weight: entry.weight ?? 1,
+        })),
       )
     }
   })

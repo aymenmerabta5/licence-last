@@ -1,12 +1,11 @@
 import { notFound } from "next/navigation"
-
-import { localeRedirect } from "@/lib/navigation"
+import { OfferDetailClient } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail"
 import { requireRole } from "@/lib/auth-guards"
+import { localeRedirect } from "@/lib/navigation"
 import {
   getOfferById,
   getStudentApplicationForOffer,
 } from "@/server/services/offers/get"
-import { OfferDetailClient } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail"
 
 type Params = Promise<{ offerId: string }>
 
@@ -26,11 +25,18 @@ export default async function StudentOfferDetailPage({
 
   const offer = await getOfferById(offerId)
 
-  if (!offer || offer.status !== "published" || offer.companyStatus !== "approved") {
+  if (
+    !offer ||
+    offer.status !== "published" ||
+    offer.companyStatus !== "approved"
+  ) {
     notFound()
   }
 
-  const existingApplication = await getStudentApplicationForOffer(offerId, user.id)
+  const existingApplication = await getStudentApplicationForOffer(
+    offerId,
+    user.id,
+  )
 
   return (
     <OfferDetailClient

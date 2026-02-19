@@ -1,13 +1,16 @@
-import { getTranslations, setRequestLocale } from "next-intl/server"
-
-import { Navbar } from "@/components/Navbar"
-import { Footer } from "@/components/Footer"
-import { VerifyForm } from "@/app/[locale]/verify/_components/VerifyForm"
 import { type Metadata } from "next"
+import { getTranslations, setRequestLocale } from "next-intl/server"
+import { VerifyForm } from "@/app/[locale]/verify/_components/VerifyForm"
+import { Footer } from "@/components/Footer"
+import { Navbar } from "@/components/Navbar"
 
 type Params = Promise<{ locale: string }>
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Params
+}): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: "verify" })
 
@@ -31,9 +34,7 @@ export default async function VerifyPage({ params }: { params: Params }) {
           <h1 className="font-serif text-3xl sm:text-4xl font-bold mb-4">
             {t("title")}
           </h1>
-          <p className="text-muted-foreground text-lg">
-            {t("description")}
-          </p>
+          <p className="text-muted-foreground text-lg">{t("description")}</p>
         </div>
         <VerifyForm />
       </div>

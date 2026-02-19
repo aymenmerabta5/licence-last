@@ -12,9 +12,7 @@ const parseResultSchema = z.object({
   internshipTypes: z
     .array(z.enum(["pfe", "immersion", "summer", "practical"]))
     .default([]),
-  workModes: z
-    .array(z.enum(["on_site", "hybrid", "remote"]))
-    .default([]),
+  workModes: z.array(z.enum(["on_site", "hybrid", "remote"])).default([]),
   skillTagIds: z.array(z.string()).default([]),
   explanation: z.string().optional(),
 })

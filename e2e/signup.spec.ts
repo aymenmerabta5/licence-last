@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test"
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 
-import { TEST_CREDENTIALS, createTestUser } from "./fixtures/data"
+import { createTestUser, TEST_CREDENTIALS } from "./fixtures/data"
 
 async function openStudentSignupForm(page: Page) {
   await page.goto("/en/signup")
@@ -15,7 +15,12 @@ async function openStudentSignupForm(page: Page) {
 
 async function fillRequiredSignupFields(
   page: Page,
-  input: { name: string; email: string; password: string; confirmPassword: string },
+  input: {
+    name: string
+    email: string
+    password: string
+    confirmPassword: string
+  },
 ) {
   await page.fill("#signup-name", input.name)
   await page.fill("#signup-email", input.email)
@@ -39,7 +44,9 @@ test.describe("Student Signup Flow", () => {
     await page.click('button[type="submit"]')
 
     await expect(
-      page.locator("text=/verify your email|check your email|verification/i").first(),
+      page
+        .locator("text=/verify your email|check your email|verification/i")
+        .first(),
     ).toBeVisible({ timeout: 10000 })
   })
 
@@ -54,7 +61,9 @@ test.describe("Student Signup Flow", () => {
 
     await page.click('button[type="submit"]')
     await expect(page).toHaveURL(/\/en\/signup/)
-    await expect(page.locator("#signup-email")).toHaveValue("invalid-email-format")
+    await expect(page.locator("#signup-email")).toHaveValue(
+      "invalid-email-format",
+    )
   })
 
   test("validation error for password too short", async ({ page }) => {
@@ -67,7 +76,9 @@ test.describe("Student Signup Flow", () => {
     })
 
     await page.click('button[type="submit"]')
-    await expect(page.locator("text=/password|at least|minimum/i").first()).toBeVisible()
+    await expect(
+      page.locator("text=/password|at least|minimum/i").first(),
+    ).toBeVisible()
   })
 
   test("validation error for mismatched passwords", async ({ page }) => {
@@ -80,7 +91,9 @@ test.describe("Student Signup Flow", () => {
     })
 
     await page.click('button[type="submit"]')
-    await expect(page.locator("text=/passwords do not match|must match/i").first()).toBeVisible()
+    await expect(
+      page.locator("text=/passwords do not match|must match/i").first(),
+    ).toBeVisible()
   })
 
   test("validation error for existing email", async ({ page }) => {
@@ -93,7 +106,9 @@ test.describe("Student Signup Flow", () => {
     })
 
     await page.click('button[type="submit"]')
-    await expect(page.locator("text=/already exists|email taken|account exists/i").first()).toBeVisible({
+    await expect(
+      page.locator("text=/already exists|email taken|account exists/i").first(),
+    ).toBeVisible({
       timeout: 5000,
     })
   })
@@ -103,7 +118,9 @@ test.describe("Student Signup Flow", () => {
 
     const studentButton = page.getByRole("button", { name: /student/i }).first()
     const companyButton = page.getByRole("button", { name: /company/i }).first()
-    const universityButton = page.getByRole("button", { name: /university/i }).first()
+    const universityButton = page
+      .getByRole("button", { name: /university/i })
+      .first()
 
     await expect(studentButton).toBeVisible()
     await expect(companyButton).toBeVisible()

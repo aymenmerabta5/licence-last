@@ -1,15 +1,13 @@
 "use client"
 
-import { Loader2, AlertTriangle } from "lucide-react"
+import { AlertTriangle, Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
-
+import type { useDeleteAccount } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/DeleteAccountDialog/hooks/useDeleteAccount"
+import { PasswordField } from "@/components/form-fields/PasswordField"
+import { ServerError } from "@/components/ServerError"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { PasswordField } from "@/components/form-fields/PasswordField"
-import { ServerError } from "@/components/ServerError"
-
-import type { useDeleteAccount } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/DeleteAccountDialog/hooks/useDeleteAccount"
 
 interface DeleteAccountFormProps {
   state: ReturnType<typeof useDeleteAccount>
@@ -58,7 +56,9 @@ export function DeleteAccountForm({ state }: DeleteAccountFormProps) {
 
       <Button
         type="submit"
-        disabled={state.isLoading || !state.isConfirmed || !state.password.trim()}
+        disabled={
+          state.isLoading || !state.isConfirmed || !state.password.trim()
+        }
         variant="editorial"
         className="w-full rounded-xl h-11 bg-destructive text-destructive-foreground hover:bg-destructive/90"
       >

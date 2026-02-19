@@ -12,4 +12,3 @@ export interface SearchFiltersProps {
   skills: SkillOption[]
   t: (key: string) => string
 }
-

@@ -1,21 +1,21 @@
 import "server-only"
 
 import {
-  publicProcedure,
-  authedSessionProcedure,
-  authedProcedure,
   adminProcedure,
-  superAdminProcedure,
+  authedProcedure,
+  authedSessionProcedure,
   companyAdminProcedure,
   companyOwnerProcedure,
-  studentProcedure,
   deptHeadProcedure,
+  publicProcedure,
+  studentProcedure,
+  superAdminProcedure,
 } from "@/server/orpc/middleware"
 import {
-  createStrictRateLimitMiddleware,
-  createStandardRateLimitMiddleware,
-  createGenerousRateLimitMiddleware,
   createAssistantRateLimitMiddleware,
+  createGenerousRateLimitMiddleware,
+  createStandardRateLimitMiddleware,
+  createStrictRateLimitMiddleware,
 } from "@/server/orpc/ratelimit-middleware"
 
 /**
@@ -24,7 +24,7 @@ import {
  * Key: IP-based
  */
 export const publicProcedureStrict = publicProcedure.use(
-  createStrictRateLimitMiddleware("public-strict")
+  createStrictRateLimitMiddleware("public-strict"),
 )
 
 /**
@@ -33,7 +33,7 @@ export const publicProcedureStrict = publicProcedure.use(
  * Key: IP-based
  */
 export const publicProcedureStandard = publicProcedure.use(
-  createStandardRateLimitMiddleware("public-standard")
+  createStandardRateLimitMiddleware("public-standard"),
 )
 
 /**
@@ -42,7 +42,7 @@ export const publicProcedureStandard = publicProcedure.use(
  * Key: User-based
  */
 export const authedProcedureStandard = authedProcedure.use(
-  createStandardRateLimitMiddleware("authed-standard")
+  createStandardRateLimitMiddleware("authed-standard"),
 )
 
 /**
@@ -50,7 +50,7 @@ export const authedProcedureStandard = authedProcedure.use(
  * Bypasses approval gate; use only for bootstrap/session endpoints.
  */
 export const authedSessionProcedureStandard = authedSessionProcedure.use(
-  createStandardRateLimitMiddleware("authed-session-standard")
+  createStandardRateLimitMiddleware("authed-session-standard"),
 )
 
 /**
@@ -59,7 +59,7 @@ export const authedSessionProcedureStandard = authedSessionProcedure.use(
  * Key: User-based
  */
 export const authedProcedureGenerous = authedProcedure.use(
-  createGenerousRateLimitMiddleware("authed-generous")
+  createGenerousRateLimitMiddleware("authed-generous"),
 )
 
 /**
@@ -67,7 +67,7 @@ export const authedProcedureGenerous = authedProcedure.use(
  * Bypasses approval gate; use only for bootstrap/session endpoints.
  */
 export const authedSessionProcedureGenerous = authedSessionProcedure.use(
-  createGenerousRateLimitMiddleware("authed-session-generous")
+  createGenerousRateLimitMiddleware("authed-session-generous"),
 )
 
 /**
@@ -76,7 +76,7 @@ export const authedSessionProcedureGenerous = authedSessionProcedure.use(
  * Key: User-based
  */
 export const authedProcedureStrict = authedProcedure.use(
-  createStrictRateLimitMiddleware("authed-strict")
+  createStrictRateLimitMiddleware("authed-strict"),
 )
 
 /**
@@ -85,7 +85,7 @@ export const authedProcedureStrict = authedProcedure.use(
  * Key: Admin user-based
  */
 export const adminProcedureGenerous = adminProcedure.use(
-  createGenerousRateLimitMiddleware("admin-generous")
+  createGenerousRateLimitMiddleware("admin-generous"),
 )
 
 /**
@@ -94,7 +94,7 @@ export const adminProcedureGenerous = adminProcedure.use(
  * Key: Admin user-based
  */
 export const adminProcedureStandard = adminProcedure.use(
-  createStandardRateLimitMiddleware("admin-standard")
+  createStandardRateLimitMiddleware("admin-standard"),
 )
 
 /**
@@ -103,7 +103,7 @@ export const adminProcedureStandard = adminProcedure.use(
  * Key: User-based
  */
 export const adminProcedureAssistant = adminProcedure.use(
-  createAssistantRateLimitMiddleware("admin-assistant")
+  createAssistantRateLimitMiddleware("admin-assistant"),
 )
 
 /**
@@ -112,7 +112,7 @@ export const adminProcedureAssistant = adminProcedure.use(
  * Key: Super admin user-based
  */
 export const superAdminProcedureGenerous = superAdminProcedure.use(
-  createGenerousRateLimitMiddleware("superadmin-generous")
+  createGenerousRateLimitMiddleware("superadmin-generous"),
 )
 
 /**
@@ -121,7 +121,7 @@ export const superAdminProcedureGenerous = superAdminProcedure.use(
  * Key: Super admin user-based
  */
 export const superAdminProcedureStandard = superAdminProcedure.use(
-  createStandardRateLimitMiddleware("superadmin-standard")
+  createStandardRateLimitMiddleware("superadmin-standard"),
 )
 
 /**
@@ -130,7 +130,7 @@ export const superAdminProcedureStandard = superAdminProcedure.use(
  * Key: User-based
  */
 export const assistantProcedureLimited = authedProcedure.use(
-  createAssistantRateLimitMiddleware("assistant")
+  createAssistantRateLimitMiddleware("assistant"),
 )
 
 /**
@@ -139,7 +139,7 @@ export const assistantProcedureLimited = authedProcedure.use(
  * Key: User-based
  */
 export const companyAdminProcedureStandard = companyAdminProcedure.use(
-  createStandardRateLimitMiddleware("companyadmin-standard")
+  createStandardRateLimitMiddleware("companyadmin-standard"),
 )
 
 /**
@@ -148,7 +148,7 @@ export const companyAdminProcedureStandard = companyAdminProcedure.use(
  * Key: User-based
  */
 export const companyAdminProcedureGenerous = companyAdminProcedure.use(
-  createGenerousRateLimitMiddleware("companyadmin-generous")
+  createGenerousRateLimitMiddleware("companyadmin-generous"),
 )
 
 /**
@@ -157,7 +157,7 @@ export const companyAdminProcedureGenerous = companyAdminProcedure.use(
  * Key: User-based
  */
 export const companyAdminProcedureAssistant = companyAdminProcedure.use(
-  createAssistantRateLimitMiddleware("companyadmin-assistant")
+  createAssistantRateLimitMiddleware("companyadmin-assistant"),
 )
 
 /**
@@ -166,7 +166,7 @@ export const companyAdminProcedureAssistant = companyAdminProcedure.use(
  * Key: User-based
  */
 export const companyOwnerProcedureStandard = companyOwnerProcedure.use(
-  createStandardRateLimitMiddleware("companyowner-standard")
+  createStandardRateLimitMiddleware("companyowner-standard"),
 )
 
 /**
@@ -175,7 +175,7 @@ export const companyOwnerProcedureStandard = companyOwnerProcedure.use(
  * Key: User-based
  */
 export const companyOwnerProcedureGenerous = companyOwnerProcedure.use(
-  createGenerousRateLimitMiddleware("companyowner-generous")
+  createGenerousRateLimitMiddleware("companyowner-generous"),
 )
 
 /**
@@ -184,7 +184,7 @@ export const companyOwnerProcedureGenerous = companyOwnerProcedure.use(
  * Key: User-based
  */
 export const studentProcedureStandard = studentProcedure.use(
-  createStandardRateLimitMiddleware("student-standard")
+  createStandardRateLimitMiddleware("student-standard"),
 )
 
 /**
@@ -193,7 +193,7 @@ export const studentProcedureStandard = studentProcedure.use(
  * Key: User-based
  */
 export const studentProcedureGenerous = studentProcedure.use(
-  createGenerousRateLimitMiddleware("student-generous")
+  createGenerousRateLimitMiddleware("student-generous"),
 )
 
 /**
@@ -202,7 +202,7 @@ export const studentProcedureGenerous = studentProcedure.use(
  * Key: User-based
  */
 export const deptHeadProcedureStandard = deptHeadProcedure.use(
-  createStandardRateLimitMiddleware("depthead-standard")
+  createStandardRateLimitMiddleware("depthead-standard"),
 )
 
 /**
@@ -211,5 +211,5 @@ export const deptHeadProcedureStandard = deptHeadProcedure.use(
  * Key: User-based
  */
 export const deptHeadProcedureGenerous = deptHeadProcedure.use(
-  createGenerousRateLimitMiddleware("depthead-generous")
+  createGenerousRateLimitMiddleware("depthead-generous"),
 )

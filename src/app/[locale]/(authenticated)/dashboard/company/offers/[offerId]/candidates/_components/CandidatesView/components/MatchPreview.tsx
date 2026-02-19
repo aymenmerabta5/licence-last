@@ -2,9 +2,8 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { Loader2, Zap } from "lucide-react"
-
-import { orpc } from "@/server/orpc/client"
 import { cn } from "@/lib/utils"
+import { orpc } from "@/server/orpc/client"
 
 interface MatchPreviewProps {
   offerId: string
@@ -54,23 +53,37 @@ export function MatchPreview({ offerId, studentUserId }: MatchPreviewProps) {
             Fit Score
           </span>
         </div>
-        <span className={cn("font-serif text-sm font-bold tabular-nums", getScoreColor(score))}>
-          {score}<span className="text-[9px] text-muted-foreground/40">/100</span>
+        <span
+          className={cn(
+            "font-serif text-sm font-bold tabular-nums",
+            getScoreColor(score),
+          )}
+        >
+          {score}
+          <span className="text-[9px] text-muted-foreground/40">/100</span>
         </span>
       </div>
 
       {/* Mini progress bar */}
       <div className="h-1 rounded-full bg-secondary/30 overflow-hidden">
         <div
-          className={cn("h-full rounded-full transition-all", getBarColor(score))}
+          className={cn(
+            "h-full rounded-full transition-all",
+            getBarColor(score),
+          )}
           style={{ width: `${Math.min(score, 100)}%` }}
         />
       </div>
 
       {/* Top reasons */}
       {query.data.reasons.slice(0, 2).map((reason) => (
-        <p key={reason.key} className="text-[10px] text-muted-foreground/50 leading-relaxed">
-          <span className="font-medium text-muted-foreground">{reason.title}:</span>{" "}
+        <p
+          key={reason.key}
+          className="text-[10px] text-muted-foreground/50 leading-relaxed"
+        >
+          <span className="font-medium text-muted-foreground">
+            {reason.title}:
+          </span>{" "}
           {reason.detail}
         </p>
       ))}

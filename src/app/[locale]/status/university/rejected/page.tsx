@@ -3,12 +3,14 @@ import { getTranslations } from "next-intl/server"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
+import { localeRedirect } from "@/lib/navigation"
 import { getUniversityStatusByUserId } from "@/server/services/universities/get-status"
 
 export default async function UniversityRejectedPage() {
-  const user = await requireRole(["university_admin"], { allowUnapproved: true })
+  const user = await requireRole(["university_admin"], {
+    allowUnapproved: true,
+  })
 
   if (!user.onboardingCompleted) {
     return localeRedirect("/onboarding/university")

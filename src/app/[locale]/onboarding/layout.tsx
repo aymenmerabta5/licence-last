@@ -1,9 +1,11 @@
 import { Suspense } from "react"
-
+import {
+  DecorativePanel,
+  MobileHeroBanner,
+} from "@/app/[locale]/onboarding/_components/DecorativePanel"
+import { OnboardingContent } from "@/app/[locale]/onboarding/_components/OnboardingContent"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
-import { OnboardingContent } from "@/app/[locale]/onboarding/_components/OnboardingContent"
-import { DecorativePanel, MobileHeroBanner } from "@/app/[locale]/onboarding/_components/DecorativePanel"
 
 /**
  * Onboarding layout — split-panel editorial design.
@@ -62,7 +64,11 @@ export default function OnboardingLayout({
                 aria-hidden="true"
               />
               <div className="relative">
-                <Suspense fallback={<div className="h-96 rounded-2xl bg-muted/30 animate-pulse" />}>
+                <Suspense
+                  fallback={
+                    <div className="h-96 rounded-2xl bg-muted/30 animate-pulse" />
+                  }
+                >
                   <OnboardingContent>{children}</OnboardingContent>
                 </Suspense>
               </div>

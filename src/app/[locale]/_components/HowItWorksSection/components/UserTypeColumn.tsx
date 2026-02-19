@@ -1,9 +1,8 @@
-import * as motion from "motion/react-client"
 import type { LucideIcon } from "lucide-react"
-
-import { reveal, ease } from "@/lib/animations"
-import type { WorkflowStepData } from "@/app/[locale]/_components/HowItWorksSection/types"
+import * as motion from "motion/react-client"
 import { WorkflowStep } from "@/app/[locale]/_components/HowItWorksSection/components/WorkflowStep"
+import type { WorkflowStepData } from "@/app/[locale]/_components/HowItWorksSection/types"
+import { ease, reveal } from "@/lib/animations"
 
 interface UserTypeColumnProps {
   id?: string
@@ -57,4 +56,3 @@ export function UserTypeColumn({
     </motion.div>
   )
 }
-

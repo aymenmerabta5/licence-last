@@ -17,7 +17,10 @@ interface RemoveUserAuthApi {
 type AuthApiGlobal = typeof globalThis & { __authApi?: RemoveUserAuthApi }
 
 const getAuthApi = () => (globalThis as AuthApiGlobal).__authApi ?? auth.api
-type RemoveUserDeps = { authApi?: RemoveUserAuthApi; getHeaders?: typeof headers }
+type RemoveUserDeps = {
+  authApi?: RemoveUserAuthApi
+  getHeaders?: typeof headers
+}
 
 export async function removeUser(userId: string, deps: RemoveUserDeps = {}) {
   const api = deps.authApi ?? getAuthApi()

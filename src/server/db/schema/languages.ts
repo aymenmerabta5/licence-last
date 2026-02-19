@@ -1,7 +1,14 @@
-import { pgTable, text, timestamp, boolean, integer, primaryKey, index } from "drizzle-orm/pg-core"
-
-import { proficiencyLevelEnum } from "@/server/db/schema/enums"
+import {
+  boolean,
+  index,
+  integer,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core"
 import { user } from "@/server/db/schema/auth"
+import { proficiencyLevelEnum } from "@/server/db/schema/enums"
 import { internshipOffer } from "@/server/db/schema/internships"
 
 export const studentLanguage = pgTable(

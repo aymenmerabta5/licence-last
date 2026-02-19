@@ -9,7 +9,7 @@
  * - "seconds": Very short-lived data (rarely cached)
  */
 
-import { cacheLife } from "next/cache";
+import { cacheLife } from "next/cache"
 
 /**
  * Cache tags for cache invalidation via revalidateTag
@@ -37,7 +37,7 @@ export const CACHE_TAGS = {
 
   // Public profiles
   PUBLIC_PROFILE: (userId: string) => `public-profile-${userId}`,
-} as const;
+} as const
 
 /**
  * Cache profile configurations
@@ -61,4 +61,4 @@ export const CACHE_PROFILES = {
 
   /** Public listings - 1 minute */
   LISTINGS: () => cacheLife("minutes"),
-} as const;
+} as const

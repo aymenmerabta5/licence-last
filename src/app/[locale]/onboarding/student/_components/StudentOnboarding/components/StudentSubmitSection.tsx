@@ -1,10 +1,9 @@
 ﻿import { ArrowRight, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
+import type { OnboardingFormApi } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/types"
 import { Button } from "@/components/ui/button"
 import { ease } from "@/lib/animations"
-import type { OnboardingFormApi } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/types"
 
 interface StudentSubmitSectionProps {
   form: OnboardingFormApi

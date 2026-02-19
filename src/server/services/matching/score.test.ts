@@ -1,4 +1,4 @@
-import { describe, expect, mock, test, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // ─── Mock setup ────────────────────────────────────────────────────────────
 
@@ -26,28 +26,39 @@ describe("canAccessMatchScore", () => {
   }
 
   test("should allow super_admin regardless of params", async () => {
-    const { canAccessMatchScore } = await import("@/server/services/matching/score")
+    const { canAccessMatchScore } = await import(
+      "@/server/services/matching/score"
+    )
     expect(
       canAccessMatchScore({ id: "admin-1", role: "super_admin" }, baseParams),
     ).toBe(true)
   })
 
   test("should allow university_admin regardless of params", async () => {
-    const { canAccessMatchScore } = await import("@/server/services/matching/score")
+    const { canAccessMatchScore } = await import(
+      "@/server/services/matching/score"
+    )
     expect(
-      canAccessMatchScore({ id: "uadmin-1", role: "university_admin" }, baseParams),
+      canAccessMatchScore(
+        { id: "uadmin-1", role: "university_admin" },
+        baseParams,
+      ),
     ).toBe(true)
   })
 
   test("should allow student viewing own score for visible offer", async () => {
-    const { canAccessMatchScore } = await import("@/server/services/matching/score")
+    const { canAccessMatchScore } = await import(
+      "@/server/services/matching/score"
+    )
     expect(
       canAccessMatchScore({ id: "student-1", role: "student" }, baseParams),
     ).toBe(true)
   })
 
   test("should deny student viewing own score for non-visible offer", async () => {
-    const { canAccessMatchScore } = await import("@/server/services/matching/score")
+    const { canAccessMatchScore } = await import(
+      "@/server/services/matching/score"
+    )
     expect(
       canAccessMatchScore(
         { id: "student-1", role: "student" },
@@ -57,21 +68,30 @@ describe("canAccessMatchScore", () => {
   })
 
   test("should deny student viewing another student's score", async () => {
-    const { canAccessMatchScore } = await import("@/server/services/matching/score")
+    const { canAccessMatchScore } = await import(
+      "@/server/services/matching/score"
+    )
     expect(
       canAccessMatchScore({ id: "student-2", role: "student" }, baseParams),
     ).toBe(false)
   })
 
   test("should allow company_admin for their own company's offer", async () => {
-    const { canAccessMatchScore } = await import("@/server/services/matching/score")
+    const { canAccessMatchScore } = await import(
+      "@/server/services/matching/score"
+    )
     expect(
-      canAccessMatchScore({ id: "cadmin-1", role: "company_admin" }, baseParams),
+      canAccessMatchScore(
+        { id: "cadmin-1", role: "company_admin" },
+        baseParams,
+      ),
     ).toBe(true)
   })
 
   test("should deny company_admin for another company's offer", async () => {
-    const { canAccessMatchScore } = await import("@/server/services/matching/score")
+    const { canAccessMatchScore } = await import(
+      "@/server/services/matching/score"
+    )
     expect(
       canAccessMatchScore(
         { id: "cadmin-1", role: "company_admin" },
@@ -81,7 +101,9 @@ describe("canAccessMatchScore", () => {
   })
 
   test("should deny company_admin with undefined viewerCompanyId", async () => {
-    const { canAccessMatchScore } = await import("@/server/services/matching/score")
+    const { canAccessMatchScore } = await import(
+      "@/server/services/matching/score"
+    )
     expect(
       canAccessMatchScore(
         { id: "cadmin-1", role: "company_admin" },
@@ -91,7 +113,9 @@ describe("canAccessMatchScore", () => {
   })
 
   test("should deny dept_head role", async () => {
-    const { canAccessMatchScore } = await import("@/server/services/matching/score")
+    const { canAccessMatchScore } = await import(
+      "@/server/services/matching/score"
+    )
     expect(
       canAccessMatchScore({ id: "dh-1", role: "dept_head" }, baseParams),
     ).toBe(false)
@@ -102,7 +126,8 @@ describe("canAccessMatchScore", () => {
 
 describe("getOfferAccessContext", () => {
   beforeEach(() => {
-    for (const fn of Object.values(mockDbChain)) (fn as ReturnType<typeof mock>).mockClear()
+    for (const fn of Object.values(mockDbChain))
+      (fn as ReturnType<typeof mock>).mockClear()
     mockDbChain.select.mockReturnValue(mockDbChain)
     mockDbChain.from.mockReturnValue(mockDbChain)
     mockDbChain.where.mockReturnValue(mockDbChain)
@@ -113,7 +138,9 @@ describe("getOfferAccessContext", () => {
     const offer = { companyId: "company-1", status: "published" as const }
     mockDbChain.limit.mockResolvedValue([offer])
 
-    const { getOfferAccessContext } = await import("@/server/services/matching/score")
+    const { getOfferAccessContext } = await import(
+      "@/server/services/matching/score"
+    )
     const result = await getOfferAccessContext("offer-1")
     expect(result).toEqual(offer)
   })
@@ -121,7 +148,9 @@ describe("getOfferAccessContext", () => {
   test("should return null when offer not found", async () => {
     mockDbChain.limit.mockResolvedValue([])
 
-    const { getOfferAccessContext } = await import("@/server/services/matching/score")
+    const { getOfferAccessContext } = await import(
+      "@/server/services/matching/score"
+    )
     const result = await getOfferAccessContext("nonexistent")
     expect(result).toBeNull()
   })

@@ -1,16 +1,14 @@
 "use client"
 
+import { Building, MapPin, ShieldAlert } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { MapPin, Building, ShieldAlert } from "lucide-react"
-
-import { reveal, ease } from "@/lib/animations"
-import { Button } from "@/components/ui/button"
-import { Link } from "@/i18n/routing"
 import { ReportCompanyDialog } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/ReportCompanyDialog"
 import type { UseCompanyReportResult } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useCompanyReport"
-
 import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
+import { Button } from "@/components/ui/button"
+import { Link } from "@/i18n/routing"
+import { ease, reveal } from "@/lib/animations"
 
 interface CompanyCardProps {
   offer: OfferDetailProps["offer"]

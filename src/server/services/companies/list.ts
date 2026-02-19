@@ -1,10 +1,9 @@
 import "server-only"
 
-import { eq, desc } from "drizzle-orm"
-
+import { desc, eq } from "drizzle-orm"
+import type { CompanyStatus } from "@/lib/schemas/enums"
 import { db } from "@/server/db"
 import { company } from "@/server/db/schema/companies"
-import type { CompanyStatus } from "@/lib/schemas/enums"
 
 export interface ListCompaniesInput {
   status?: CompanyStatus
@@ -30,7 +29,9 @@ export async function listCompanies(
     .limit(limit + 1)
     .offset(offset)
 
-  const rows = input?.status ? await query.where(eq(company.status, input.status)) : await query
+  const rows = input?.status
+    ? await query.where(eq(company.status, input.status))
+    : await query
 
   return {
     companies: rows.slice(0, limit),

@@ -1,15 +1,14 @@
 "use client"
 
+import { Eye, EyeOff, Lock } from "lucide-react"
 import { useState } from "react"
-import { Lock, Eye, EyeOff } from "lucide-react"
-
-import { Label } from "@/components/ui/label"
 import {
   InputGroup,
   InputGroupAddon,
-  InputGroupInput,
   InputGroupButton,
+  InputGroupInput,
 } from "@/components/ui/input-group"
+import { Label } from "@/components/ui/label"
 
 interface PasswordFieldProps {
   id: string

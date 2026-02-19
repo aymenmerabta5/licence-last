@@ -3,14 +3,13 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-import { cacheTag, cacheLife } from "next/cache"
-
+import { cacheLife, cacheTag } from "next/cache"
+import { CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
-import { studentProfile, studentSkill } from "@/server/db/schema/students"
 import { studentLanguage } from "@/server/db/schema/languages"
 import { skillTag } from "@/server/db/schema/skills"
+import { studentProfile, studentSkill } from "@/server/db/schema/students"
 import { getUserById } from "@/server/services/users/get-by-id"
-import { CACHE_TAGS } from "@/lib/cache"
 
 export interface ViewerIdentity {
   id: string
@@ -60,7 +59,8 @@ export interface StudentProfileForViewerResult {
 
 function canViewPrivateFields(viewer: ViewerIdentity, targetUserId: string) {
   const isOwner = viewer.id === targetUserId
-  const isAdmin = viewer.role === "university_admin" || viewer.role === "super_admin"
+  const isAdmin =
+    viewer.role === "university_admin" || viewer.role === "super_admin"
   return isOwner || isAdmin
 }
 
@@ -160,4 +160,3 @@ export async function getStudentProfileForViewer({
     languages,
   }
 }
-

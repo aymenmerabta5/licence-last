@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // Separate mocks for select chain vs transaction update chain
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -11,10 +11,11 @@ const mockTxUpdateWhere = mock(() => Promise.resolve())
 const mockTxUpdateSet = mock(() => ({ where: mockTxUpdateWhere }))
 const mockTxUpdate = mock(() => ({ set: mockTxUpdateSet }))
 
-const mockTransaction = mock(async (callback: (tx: { update: typeof mockTxUpdate }) => Promise<unknown>) =>
-  callback({
-    update: mockTxUpdate,
-  }),
+const mockTransaction = mock(
+  async (callback: (tx: { update: typeof mockTxUpdate }) => Promise<unknown>) =>
+    callback({
+      update: mockTxUpdate,
+    }),
 )
 
 mock.module("@/server/db", () => ({
@@ -43,35 +44,57 @@ describe("assignDepartmentHead", () => {
   test("should throw when department not found", async () => {
     mockLimit.mockResolvedValueOnce([])
 
-    const { assignDepartmentHead } = await import("@/server/services/departments/assign-head")
-    expect(assignDepartmentHead("dept-1", "user-1")).rejects.toThrow("Department not found")
+    const { assignDepartmentHead } = await import(
+      "@/server/services/departments/assign-head"
+    )
+    expect(assignDepartmentHead("dept-1", "user-1")).rejects.toThrow(
+      "Department not found",
+    )
   })
 
   test("should throw when user not found", async () => {
     mockLimit
-      .mockResolvedValueOnce([{ id: "dept-1", universityId: "uni-1", name: "CS" }])
+      .mockResolvedValueOnce([
+        { id: "dept-1", universityId: "uni-1", name: "CS" },
+      ])
       .mockResolvedValueOnce([])
 
-    const { assignDepartmentHead } = await import("@/server/services/departments/assign-head")
-    expect(assignDepartmentHead("dept-1", "user-1")).rejects.toThrow("User not found")
+    const { assignDepartmentHead } = await import(
+      "@/server/services/departments/assign-head"
+    )
+    expect(assignDepartmentHead("dept-1", "user-1")).rejects.toThrow(
+      "User not found",
+    )
   })
 
   test("should return success when both exist", async () => {
     mockLimit
-      .mockResolvedValueOnce([{ id: "dept-1", universityId: "uni-1", name: "CS" }])
+      .mockResolvedValueOnce([
+        { id: "dept-1", universityId: "uni-1", name: "CS" },
+      ])
       .mockResolvedValueOnce([{ id: "user-1", role: "student" }])
 
-    const { assignDepartmentHead } = await import("@/server/services/departments/assign-head")
+    const { assignDepartmentHead } = await import(
+      "@/server/services/departments/assign-head"
+    )
     const result = await assignDepartmentHead("dept-1", "user-1")
-    expect(result).toEqual({ success: true, departmentId: "dept-1", userId: "user-1" })
+    expect(result).toEqual({
+      success: true,
+      departmentId: "dept-1",
+      userId: "user-1",
+    })
   })
 
   test("should update both user role and department headName in a transaction", async () => {
     mockLimit
-      .mockResolvedValueOnce([{ id: "dept-1", universityId: "uni-1", name: "CS" }])
+      .mockResolvedValueOnce([
+        { id: "dept-1", universityId: "uni-1", name: "CS" },
+      ])
       .mockResolvedValueOnce([{ id: "user-1", role: "student" }])
 
-    const { assignDepartmentHead } = await import("@/server/services/departments/assign-head")
+    const { assignDepartmentHead } = await import(
+      "@/server/services/departments/assign-head"
+    )
     await assignDepartmentHead("dept-1", "user-1")
 
     expect(mockTransaction).toHaveBeenCalledTimes(1)
@@ -82,10 +105,14 @@ describe("assignDepartmentHead", () => {
 
   test("should make two select queries (dept + user)", async () => {
     mockLimit
-      .mockResolvedValueOnce([{ id: "dept-1", universityId: "uni-1", name: "CS" }])
+      .mockResolvedValueOnce([
+        { id: "dept-1", universityId: "uni-1", name: "CS" },
+      ])
       .mockResolvedValueOnce([{ id: "user-1", role: "student" }])
 
-    const { assignDepartmentHead } = await import("@/server/services/departments/assign-head")
+    const { assignDepartmentHead } = await import(
+      "@/server/services/departments/assign-head"
+    )
     await assignDepartmentHead("dept-1", "user-1")
 
     expect(mockSelect).toHaveBeenCalledTimes(2)

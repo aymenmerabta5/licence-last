@@ -1,12 +1,12 @@
 import "server-only"
 
-import { z } from "zod"
 import { ORPCError } from "@orpc/server"
+import { z } from "zod"
 
 import {
+  adminProcedureAssistant,
   adminProcedureGenerous,
   adminProcedureStandard,
-  adminProcedureAssistant,
   deptHeadProcedureGenerous,
   deptHeadProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
@@ -14,10 +14,10 @@ import {
   parseInputDate,
   validatePlacementDateRange,
 } from "@/server/orpc/utils/date"
-import { listPendingApplications } from "@/server/services/placements/list-pending"
-import { validatePlacement } from "@/server/services/placements/validate"
-import { rejectPlacement } from "@/server/services/placements/reject"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+import { listPendingApplications } from "@/server/services/placements/list-pending"
+import { rejectPlacement } from "@/server/services/placements/reject"
+import { validatePlacement } from "@/server/services/placements/validate"
 
 const PLACEMENT_ERROR_MAP = {
   APPLICATION_NOT_FOUND: "NOT_FOUND",
@@ -43,13 +43,13 @@ export const listPendingProcedure = adminProcedureGenerous
       .optional(),
   )
   .handler(async ({ input, context }) =>
-    listPendingApplications(
-      input ?? {},
-      {
-        role: context.user.role === "super_admin" ? "super_admin" : "university_admin",
-        universityId: context.user.universityId ?? null,
-      },
-    ),
+    listPendingApplications(input ?? {}, {
+      role:
+        context.user.role === "super_admin"
+          ? "super_admin"
+          : "university_admin",
+      universityId: context.user.universityId ?? null,
+    }),
   )
 
 /* ── Validate Placement (admin only) ── */
@@ -80,7 +80,10 @@ export const validateProcedure = adminProcedureStandard
       return await validatePlacement({
         applicationId: input.applicationId,
         adminUserId: context.user.id,
-        adminRole: context.user.role === "super_admin" ? "super_admin" : "university_admin",
+        adminRole:
+          context.user.role === "super_admin"
+            ? "super_admin"
+            : "university_admin",
         adminUniversityId: context.user.universityId ?? null,
         startDate,
         endDate,
@@ -105,16 +108,16 @@ export const rejectProcedure = adminProcedureStandard
   )
   .handler(async ({ input, context }) => {
     try {
-      return await rejectPlacement(
-        {
-          applicationId: input.applicationId,
-          adminUserId: context.user.id,
-          adminRole:
-            context.user.role === "super_admin" ? "super_admin" : "university_admin",
-          adminUniversityId: context.user.universityId ?? null,
-          reason: input.reason,
-        },
-      )
+      return await rejectPlacement({
+        applicationId: input.applicationId,
+        adminUserId: context.user.id,
+        adminRole:
+          context.user.role === "super_admin"
+            ? "super_admin"
+            : "university_admin",
+        adminUniversityId: context.user.universityId ?? null,
+        reason: input.reason,
+      })
     } catch (error) {
       createServiceORPCError(error, {
         codeMap: PLACEMENT_ERROR_MAP,
@@ -138,14 +141,11 @@ export const deptHeadListPendingProcedure = deptHeadProcedureGenerous
       .optional(),
   )
   .handler(async ({ input, context }) =>
-    listPendingApplications(
-      input ?? {},
-      {
-        role: "dept_head",
-        universityId: context.universityId,
-        departmentId: context.departmentId,
-      },
-    ),
+    listPendingApplications(input ?? {}, {
+      role: "dept_head",
+      universityId: context.universityId,
+      departmentId: context.departmentId,
+    }),
   )
 
 /* ── Dept Head: Validate Placement ── */

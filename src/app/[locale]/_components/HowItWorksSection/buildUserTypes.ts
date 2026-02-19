@@ -114,4 +114,3 @@ export function buildUserTypes(t: TranslationFn): UserTypeData[] {
     },
   ]
 }
-

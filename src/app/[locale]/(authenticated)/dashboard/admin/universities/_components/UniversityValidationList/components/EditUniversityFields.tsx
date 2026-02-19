@@ -1,7 +1,7 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Building2, MapPin, Phone } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"

@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const mockValues = mock(() => Promise.resolve())
 const mockInsert = mock(() => ({ values: mockValues }))
@@ -46,7 +46,9 @@ describe("src/server/services/companies/create", () => {
   })
 
   test("should create a company and return companyId and slug", async () => {
-    const { createCompany } = await import("@/server/services/companies/create?fresh=1")
+    const { createCompany } = await import(
+      "@/server/services/companies/create?fresh=1"
+    )
 
     const result = await createCompany(
       {
@@ -62,7 +64,9 @@ describe("src/server/services/companies/create", () => {
   })
 
   test("should call insert for company and companyMember in transaction", async () => {
-    const { createCompany } = await import("@/server/services/companies/create?fresh=2")
+    const { createCompany } = await import(
+      "@/server/services/companies/create?fresh=2"
+    )
 
     await createCompany(
       {
@@ -78,7 +82,9 @@ describe("src/server/services/companies/create", () => {
   })
 
   test("should generate a URL-safe slug from company name", async () => {
-    const { createCompany } = await import("@/server/services/companies/create?fresh=3")
+    const { createCompany } = await import(
+      "@/server/services/companies/create?fresh=3"
+    )
 
     const result = await createCompany(
       {
@@ -98,7 +104,9 @@ describe("src/server/services/companies/create", () => {
       constraint: "company_member_userId_uidx",
     })
 
-    const { createCompany } = await import("@/server/services/companies/create?fresh=4")
+    const { createCompany } = await import(
+      "@/server/services/companies/create?fresh=4"
+    )
 
     await expect(
       createCompany(

@@ -1,6 +1,9 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 
-import { minimizeAssistantContext, assistantContextToJson } from "@/server/ai/context"
+import {
+  assistantContextToJson,
+  minimizeAssistantContext,
+} from "@/server/ai/context"
 
 describe("context", () => {
   describe("minimizeAssistantContext", () => {
@@ -83,9 +86,7 @@ describe("context", () => {
       const context = {
         intent: "student_search_parse",
         query: "remote React internship",
-        availableSkillTags: [
-          { id: "1", name: "React", category: "frontend" },
-        ],
+        availableSkillTags: [{ id: "1", name: "React", category: "frontend" }],
       }
 
       const result = minimizeAssistantContext(context)
@@ -113,7 +114,8 @@ describe("context", () => {
 
       const result = minimizeAssistantContext(context)
       expect(result).toBeDefined()
-      const notifications = (result as Record<string, unknown>).notifications as Array<Record<string, unknown>>
+      const notifications = (result as Record<string, unknown>)
+        .notifications as Array<Record<string, unknown>>
       expect(notifications[0].id).toBe("1")
       expect(notifications[0].type).toBe("application")
       expect(notifications[0].payload).toEqual({ name: "John" })
@@ -130,7 +132,8 @@ describe("context", () => {
       }
 
       const result = minimizeAssistantContext(context)
-      const tags = (result as Record<string, unknown>).availableSkillTags as unknown[]
+      const tags = (result as Record<string, unknown>)
+        .availableSkillTags as unknown[]
       expect(tags.length).toBe(200)
     })
   })

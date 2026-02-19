@@ -1,9 +1,6 @@
 export type InterviewsRole = "student" | "company_admin"
 
-export type InterviewStatus =
-  | "pending_confirmation"
-  | "confirmed"
-  | "cancelled"
+export type InterviewStatus = "pending_confirmation" | "confirmed" | "cancelled"
 
 export interface InterviewSlotView {
   id: string

@@ -1,12 +1,12 @@
 "use client"
 
-import type { StudentDashboardProps } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 import { ApplicationsFeed } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/ApplicationsFeed"
 import { EditorialStatsBar } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/EditorialStatsBar"
 import { RecommendedOffers } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/RecommendedOffers"
 import { SkillsSidebar } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/SkillsSidebar"
 import { WelcomeHero } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/WelcomeHero"
 import { useStudentDashboardContent } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/hooks/useStudentDashboardContent"
+import type { StudentDashboardProps } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 
 export function StudentDashboard({ user, data }: StudentDashboardProps) {
   const { stats, applicationsLabels, offersLabels, skillsLabels } =

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react"
+import { useCallback, useState } from "react"
 
 export function useSkillSelection(maxSelections: number = 10) {
   const [selectedIds, setSelectedIds] = useState<string[]>([])
@@ -15,12 +15,12 @@ export function useSkillSelection(maxSelections: number = 10) {
         return [...prev, skillId]
       })
     },
-    [maxSelections]
+    [maxSelections],
   )
 
   const isSelected = useCallback(
     (skillId: string) => selectedIds.includes(skillId),
-    [selectedIds]
+    [selectedIds],
   )
 
   const isAtMax = selectedIds.length >= maxSelections

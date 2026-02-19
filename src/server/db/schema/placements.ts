@@ -1,15 +1,14 @@
 import {
+  index,
+  jsonb,
   pgTable,
   text,
   timestamp,
-  jsonb,
-  index,
   uniqueIndex,
 } from "drizzle-orm/pg-core"
-
-import { documentStatusEnum, documentTypeEnum } from "@/server/db/schema/enums"
 import { application } from "@/server/db/schema/applications"
 import { user } from "@/server/db/schema/auth"
+import { documentStatusEnum, documentTypeEnum } from "@/server/db/schema/enums"
 
 export const placement = pgTable(
   "placement",
@@ -52,7 +51,10 @@ export const placementDocument = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
-    uniqueIndex("document_placement_type_uidx").on(table.placementId, table.type),
+    uniqueIndex("document_placement_type_uidx").on(
+      table.placementId,
+      table.type,
+    ),
     uniqueIndex("document_verification_code_uidx").on(table.verificationCode),
     index("document_placementId_idx").on(table.placementId),
     index("document_type_idx").on(table.type),

@@ -1,7 +1,6 @@
 import { getTranslations } from "next-intl/server"
-
-import { requireRole } from "@/lib/auth-guards"
 import { AdminDashboard } from "@/app/[locale]/(authenticated)/_components/AdminDashboard"
+import { requireRole } from "@/lib/auth-guards"
 
 export default async function AdminDashboardPage() {
   const user = await requireRole(["university_admin", "super_admin"])
@@ -27,4 +26,3 @@ export default async function AdminDashboardPage() {
     </div>
   )
 }
-

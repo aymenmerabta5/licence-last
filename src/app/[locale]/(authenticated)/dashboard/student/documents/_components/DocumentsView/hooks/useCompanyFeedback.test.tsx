@@ -4,7 +4,10 @@ import { act, renderHook } from "@testing-library/react"
 
 const submitFeedbackMock = mock(async () => ({ feedbackId: "feedback-1" }))
 const submitReportMock = mock(async () => ({ reportId: "report-1" }))
-const resolveReportMock = mock(async () => ({ reportId: "report-1", status: "resolved" }))
+const resolveReportMock = mock(async () => ({
+  reportId: "report-1",
+  status: "resolved",
+}))
 const toastSuccessMock = mock(() => {})
 const toastErrorMock = mock(() => {})
 
@@ -62,13 +65,12 @@ function createWrapper() {
     },
   })
   const invalidateQueriesMock = mock(async () => undefined)
-  queryClient.invalidateQueries = invalidateQueriesMock as typeof queryClient.invalidateQueries
+  queryClient.invalidateQueries =
+    invalidateQueriesMock as typeof queryClient.invalidateQueries
 
   function Wrapper({ children }: { children: React.ReactNode }) {
     return (
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     )
   }
 
@@ -87,7 +89,9 @@ describe("useCompanyFeedback", () => {
       "@/app/[locale]/(authenticated)/dashboard/student/documents/_components/DocumentsView/hooks/useCompanyFeedback"
     )
     const { Wrapper } = createWrapper()
-    const { result } = renderHook(() => useCompanyFeedback(), { wrapper: Wrapper })
+    const { result } = renderHook(() => useCompanyFeedback(), {
+      wrapper: Wrapper,
+    })
 
     act(() => {
       result.current.openForPlacement({
@@ -111,7 +115,9 @@ describe("useCompanyFeedback", () => {
       "@/app/[locale]/(authenticated)/dashboard/student/documents/_components/DocumentsView/hooks/useCompanyFeedback"
     )
     const { Wrapper, invalidateQueriesMock } = createWrapper()
-    const { result } = renderHook(() => useCompanyFeedback(), { wrapper: Wrapper })
+    const { result } = renderHook(() => useCompanyFeedback(), {
+      wrapper: Wrapper,
+    })
 
     act(() => {
       result.current.openForPlacement({
@@ -120,7 +126,10 @@ describe("useCompanyFeedback", () => {
         offerTitle: "Frontend Intern",
       })
       result.current.setFieldValue("rating", 5)
-      result.current.setFieldValue("comment", "Great mentoring and project scope.")
+      result.current.setFieldValue(
+        "comment",
+        "Great mentoring and project scope.",
+      )
     })
 
     await act(async () => {

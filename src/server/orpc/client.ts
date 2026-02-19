@@ -1,9 +1,9 @@
 import { createORPCClient } from "@orpc/client"
 import { RPCLink } from "@orpc/client/fetch"
-import { createTanstackQueryUtils } from "@orpc/tanstack-query"
-import type { AppRouter } from "@/server/orpc/router"
 import type { RouterClient } from "@orpc/server"
+import { createTanstackQueryUtils } from "@orpc/tanstack-query"
 import { env } from "@/env"
+import type { AppRouter } from "@/server/orpc/router"
 
 const link = new RPCLink({
   url:
@@ -20,8 +20,7 @@ const link = new RPCLink({
   },
 })
 
-export const orpcClient: RouterClient<AppRouter> =
-  createORPCClient(link)
+export const orpcClient: RouterClient<AppRouter> = createORPCClient(link)
 
 /** TanStack Query utilities — use with useQuery/useMutation. */
 export const orpc = createTanstackQueryUtils(orpcClient)

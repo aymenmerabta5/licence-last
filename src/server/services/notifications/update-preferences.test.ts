@@ -38,7 +38,9 @@ describe("src/server/services/notifications/update-preferences", () => {
     mockInsert.mockReturnValue({ values: mockValues })
     mockValues.mockReturnValue({ onConflictDoUpdate: mockOnConflictDoUpdate })
     mockOnConflictDoUpdate.mockReturnValue({ returning: mockReturning })
-    mockReturning.mockResolvedValue([{ inAppEnabled: false, emailEnabled: true }])
+    mockReturning.mockResolvedValue([
+      { inAppEnabled: false, emailEnabled: true },
+    ])
     mockSelect.mockReturnValue({ from: mockFrom })
     mockFrom.mockReturnValue({ where: mockWhere })
     mockWhere.mockReturnValue({ limit: mockLimit })

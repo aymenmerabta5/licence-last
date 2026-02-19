@@ -90,7 +90,9 @@ describe("src/server/orpc/routes/messages", () => {
   })
 
   test("listMessageThreadsByCompanyProcedure delegates with membership company id", async () => {
-    const { listMessageThreadsByCompanyProcedure } = await import("@/server/orpc/routes/messages")
+    const { listMessageThreadsByCompanyProcedure } = await import(
+      "@/server/orpc/routes/messages"
+    )
 
     const input = { limit: 10 }
     const result = await callProcedure(listMessageThreadsByCompanyProcedure, {
@@ -99,11 +101,16 @@ describe("src/server/orpc/routes/messages", () => {
     })
 
     expect(result).toEqual({ threads: [] })
-    expect(listMessageThreadsByCompanyMock).toHaveBeenCalledWith("company-1", input)
+    expect(listMessageThreadsByCompanyMock).toHaveBeenCalledWith(
+      "company-1",
+      input,
+    )
   })
 
   test("listThreadMessagesProcedure delegates for student context", async () => {
-    const { listThreadMessagesProcedure } = await import("@/server/orpc/routes/messages")
+    const { listThreadMessagesProcedure } = await import(
+      "@/server/orpc/routes/messages"
+    )
 
     const result = await callProcedure(listThreadMessagesProcedure, {
       input: { threadId: "thread-1" },
@@ -118,7 +125,9 @@ describe("src/server/orpc/routes/messages", () => {
   })
 
   test("markThreadReadProcedure rejects company admin without membership", async () => {
-    const { markThreadReadProcedure } = await import("@/server/orpc/routes/messages")
+    const { markThreadReadProcedure } = await import(
+      "@/server/orpc/routes/messages"
+    )
 
     await expect(
       callProcedure(markThreadReadProcedure, {

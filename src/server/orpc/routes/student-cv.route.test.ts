@@ -18,12 +18,18 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
   return (procedure as (input: unknown) => Promise<T>)(args)
 }
 
-const getStudentCvMock = mock(async () => ({ experiences: [], projects: [], resume: null }))
+const getStudentCvMock = mock(async () => ({
+  experiences: [],
+  projects: [],
+  resume: null,
+}))
 const createStudentExperienceMock = mock(async () => ({ id: "exp-1" }))
 const createStudentProjectMock = mock(async () => ({ id: "proj-1" }))
 const deleteStudentExperienceMock = mock(async () => ({ deleted: true }))
 const deleteStudentProjectMock = mock(async () => ({ deleted: true }))
-const deleteStudentResumeMock = mock(async () => ({ fileKey: "resumes/student-1/old.pdf" }))
+const deleteStudentResumeMock = mock(async () => ({
+  fileKey: "resumes/student-1/old.pdf",
+}))
 const updateStudentExperienceMock = mock(async () => ({ id: "exp-1" }))
 const updateStudentProjectMock = mock(async () => ({ id: "proj-1" }))
 const upsertStudentResumeMock = mock(async () => ({ id: "resume-1" }))
@@ -116,7 +122,9 @@ describe("src/server/orpc/routes/student-cv", () => {
   })
 
   test("getStudentCvProcedure delegates with student user id", async () => {
-    const { getStudentCvProcedure } = await import("@/server/orpc/routes/student-cv")
+    const { getStudentCvProcedure } = await import(
+      "@/server/orpc/routes/student-cv"
+    )
 
     const result = await callProcedure(getStudentCvProcedure, {
       context: { user: { id: "student-1" } },
@@ -127,7 +135,9 @@ describe("src/server/orpc/routes/student-cv", () => {
   })
 
   test("createStudentExperienceProcedure parses dates and delegates", async () => {
-    const { createStudentExperienceProcedure } = await import("@/server/orpc/routes/student-cv")
+    const { createStudentExperienceProcedure } = await import(
+      "@/server/orpc/routes/student-cv"
+    )
 
     const result = await callProcedure(createStudentExperienceProcedure, {
       input: {
@@ -155,7 +165,9 @@ describe("src/server/orpc/routes/student-cv", () => {
   })
 
   test("uploadStudentResumeProcedure rejects non-PDF files", async () => {
-    const { uploadStudentResumeProcedure } = await import("@/server/orpc/routes/student-cv")
+    const { uploadStudentResumeProcedure } = await import(
+      "@/server/orpc/routes/student-cv"
+    )
 
     const file = new File(["hello"], "resume.txt", { type: "text/plain" })
     await expect(
@@ -170,7 +182,9 @@ describe("src/server/orpc/routes/student-cv", () => {
   })
 
   test("uploadStudentResumeProcedure uploads PDF and persists resume metadata", async () => {
-    const { uploadStudentResumeProcedure } = await import("@/server/orpc/routes/student-cv")
+    const { uploadStudentResumeProcedure } = await import(
+      "@/server/orpc/routes/student-cv"
+    )
 
     const file = new File([new Uint8Array([37, 80, 68, 70])], "resume.pdf", {
       type: "application/pdf",
@@ -186,7 +200,9 @@ describe("src/server/orpc/routes/student-cv", () => {
   })
 
   test("deleteStudentResumeProcedure deletes metadata and storage file", async () => {
-    const { deleteStudentResumeProcedure } = await import("@/server/orpc/routes/student-cv")
+    const { deleteStudentResumeProcedure } = await import(
+      "@/server/orpc/routes/student-cv"
+    )
 
     const result = await callProcedure(deleteStudentResumeProcedure, {
       context: { user: { id: "student-1" } },

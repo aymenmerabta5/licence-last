@@ -1,12 +1,11 @@
 import { Suspense } from "react"
-
-import { Navbar } from "@/components/Navbar"
-import { MarqueeRibbon } from "@/app/[locale]/_components/MarqueeRibbon"
-import { HeroSection } from "@/app/[locale]/_components/HeroSection"
-import { StatsBar } from "@/app/[locale]/_components/StatsBar"
-import { HowItWorksSection } from "@/app/[locale]/_components/HowItWorksSection"
-import { Footer } from "@/components/Footer"
 import { AuthRedirect } from "@/app/[locale]/_components/AuthRedirect"
+import { HeroSection } from "@/app/[locale]/_components/HeroSection"
+import { HowItWorksSection } from "@/app/[locale]/_components/HowItWorksSection"
+import { MarqueeRibbon } from "@/app/[locale]/_components/MarqueeRibbon"
+import { StatsBar } from "@/app/[locale]/_components/StatsBar"
+import { Footer } from "@/components/Footer"
+import { Navbar } from "@/components/Navbar"
 
 type Params = Promise<{ locale: string }>
 
@@ -31,4 +30,3 @@ export default async function Home({ params }: { params: Params }) {
     </>
   )
 }
-

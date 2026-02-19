@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
-import { reveal, ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 import { isSavedOffersEnabledOnClient } from "@/lib/feature-flags-client"
 
 export function ExploreHeader() {
@@ -49,8 +49,15 @@ export function ExploreHeader() {
 
           {savedOffersEnabled && (
             <div className="mt-4 flex items-center justify-between gap-3">
-              <p className="text-xs text-muted-foreground">Track your favorite opportunities in saved offers.</p>
-              <Button variant="editorial-outline" size="sm" nativeButton={false} render={<Link href="/dashboard/student/saved-offers" />}>
+              <p className="text-xs text-muted-foreground">
+                Track your favorite opportunities in saved offers.
+              </p>
+              <Button
+                variant="editorial-outline"
+                size="sm"
+                nativeButton={false}
+                render={<Link href="/dashboard/student/saved-offers" />}
+              >
                 Saved offers
               </Button>
             </div>

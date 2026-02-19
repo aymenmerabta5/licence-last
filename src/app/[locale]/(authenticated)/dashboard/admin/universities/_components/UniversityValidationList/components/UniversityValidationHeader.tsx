@@ -9,7 +9,9 @@ interface UniversityValidationHeaderProps {
   total: number
 }
 
-export function UniversityValidationHeader({ total }: UniversityValidationHeaderProps) {
+export function UniversityValidationHeader({
+  total,
+}: UniversityValidationHeaderProps) {
   const t = useTranslations("dashboard.admin.universities")
 
   return (

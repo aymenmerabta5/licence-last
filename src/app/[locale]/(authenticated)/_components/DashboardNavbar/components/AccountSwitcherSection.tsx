@@ -1,27 +1,26 @@
-"use client";
+"use client"
 
-import { UserPlus } from "lucide-react";
-import { useTranslations } from "next-intl";
-
+import { UserPlus } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { AccountRow } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/components/AccountRow"
+import type { DeviceSession } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
 import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
-import { AccountRow } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/components/AccountRow";
-import type { DeviceSession } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types";
+} from "@/components/ui/dropdown-menu"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface AccountSwitcherSectionProps {
-  sessions: DeviceSession[];
-  isLoading: boolean;
-  currentUserId: string;
-  switchingToken: string | null;
-  removingToken: string | null;
-  onSwitch: (token: string, name: string) => void;
-  onRemove: (token: string) => void;
-  onAdd: () => void;
+  sessions: DeviceSession[]
+  isLoading: boolean
+  currentUserId: string
+  switchingToken: string | null
+  removingToken: string | null
+  onSwitch: (token: string, name: string) => void
+  onRemove: (token: string) => void
+  onAdd: () => void
 }
 
 export function AccountSwitcherSection({
@@ -34,7 +33,7 @@ export function AccountSwitcherSection({
   onRemove,
   onAdd,
 }: AccountSwitcherSectionProps) {
-  const t = useTranslations("dashboard.accountSwitcher");
+  const t = useTranslations("dashboard.accountSwitcher")
 
   return (
     <>
@@ -86,5 +85,5 @@ export function AccountSwitcherSection({
         </DropdownMenuItem>
       </DropdownMenuGroup>
     </>
-  );
+  )
 }

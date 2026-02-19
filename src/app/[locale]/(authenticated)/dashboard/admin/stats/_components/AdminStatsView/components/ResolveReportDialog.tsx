@@ -1,7 +1,7 @@
 "use client"
 
 import { Loader2 } from "lucide-react"
-
+import type { ReportResolutionStatus } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/hooks/useResolveReport"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -13,10 +13,6 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-
-import type {
-  ReportResolutionStatus,
-} from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/hooks/useResolveReport"
 
 interface ReportDialogItem {
   id: string
@@ -52,9 +48,12 @@ export function ResolveReportDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-serif text-xl">Update Report Status</DialogTitle>
+          <DialogTitle className="font-serif text-xl">
+            Update Report Status
+          </DialogTitle>
           <DialogDescription>
-            Resolve or dismiss this report. An optional note can document the decision.
+            Resolve or dismiss this report. An optional note can document the
+            decision.
           </DialogDescription>
         </DialogHeader>
 
@@ -74,7 +73,9 @@ export function ResolveReportDialog({
               <div className="flex gap-2">
                 <Button
                   type="button"
-                  variant={status === "resolved" ? "editorial" : "editorial-outline"}
+                  variant={
+                    status === "resolved" ? "editorial" : "editorial-outline"
+                  }
                   size="sm"
                   onClick={() => onStatusChange("resolved")}
                   disabled={isPending}
@@ -83,7 +84,9 @@ export function ResolveReportDialog({
                 </Button>
                 <Button
                   type="button"
-                  variant={status === "dismissed" ? "editorial" : "editorial-outline"}
+                  variant={
+                    status === "dismissed" ? "editorial" : "editorial-outline"
+                  }
                   size="sm"
                   onClick={() => onStatusChange("dismissed")}
                   disabled={isPending}
@@ -94,7 +97,9 @@ export function ResolveReportDialog({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="report-resolution-note">Resolution Note (optional)</Label>
+              <Label htmlFor="report-resolution-note">
+                Resolution Note (optional)
+              </Label>
               <Textarea
                 id="report-resolution-note"
                 value={resolutionNote}

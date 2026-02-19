@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, mock } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // Mock CSRF — must be explicit since mock.module is process-global
 const mockIsValidOrigin = mock<(req: Request) => boolean>()
@@ -17,7 +17,13 @@ mock.module("@/env", () => ({
 }))
 
 // Mock RPCHandler
-const mockHandle = mock<(request: Request, options: { prefix: string }) => Promise<{ response: Response }>>()
+const mockHandle =
+  mock<
+    (
+      request: Request,
+      options: { prefix: string },
+    ) => Promise<{ response: Response }>
+  >()
 
 mock.module("@orpc/server/fetch", () => ({
   RPCHandler: mock(() => ({

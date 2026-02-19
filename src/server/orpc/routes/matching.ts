@@ -2,11 +2,6 @@ import "server-only"
 
 import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
-
-import {
-  authedProcedureGenerous,
-  studentProcedureStandard,
-} from "@/server/orpc/rate-limited-procedures"
 import {
   captureReadinessSnapshotSchema,
   getMatchingScoreSchema,
@@ -16,19 +11,26 @@ import {
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
 import {
+  authedProcedureGenerous,
+  studentProcedureStandard,
+} from "@/server/orpc/rate-limited-procedures"
+import {
+  captureReadinessSnapshot,
+  listReadinessHistory,
+} from "@/server/services/matching/readiness-history"
+import {
   canAccessMatchScore,
   getExplainableMatchScore,
   getOfferAccessContext,
 } from "@/server/services/matching/score"
 import { getSkillGapRoadmap } from "@/server/services/matching/skill-gap"
-import {
-  captureReadinessSnapshot,
-  listReadinessHistory,
-} from "@/server/services/matching/readiness-history"
 
-async function assertMatchAccess(context: {
-  user: { id: string; role: string | null | undefined }
-}, input: { studentUserId: string; offerId: string }) {
+async function assertMatchAccess(
+  context: {
+    user: { id: string; role: string | null | undefined }
+  },
+  input: { studentUserId: string; offerId: string },
+) {
   const offerAccessContext = await getOfferAccessContext(input.offerId)
   if (!offerAccessContext) {
     throw new ORPCError("NOT_FOUND", { message: "Offer not found" })
@@ -96,12 +98,7 @@ export const getReadinessHistoryProcedure = authedProcedureGenerous
 export const captureReadinessSnapshotProcedure = studentProcedureStandard
   .input(captureReadinessSnapshotSchema)
   .handler(async ({ input, context }) =>
-    captureReadinessSnapshot(
-      context.user.id,
-      input.offerId,
-      input.source,
-      {
-        actor: "student",
-      },
-    ),
+    captureReadinessSnapshot(context.user.id, input.offerId, input.source, {
+      actor: "student",
+    }),
   )

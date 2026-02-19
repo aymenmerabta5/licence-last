@@ -1,11 +1,11 @@
 "use client"
 
+import { ArrowLeft, FileText, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { ArrowLeft, FileText, Loader2 } from "lucide-react"
 
 import { Link } from "@/i18n/routing"
-import { reveal, ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface DeptHeadPlacementHeaderProps {
   isLoading: boolean

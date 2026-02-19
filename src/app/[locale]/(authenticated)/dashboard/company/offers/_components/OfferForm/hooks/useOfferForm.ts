@@ -1,11 +1,11 @@
 "use client"
 
-import { useMemo, useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { useMemo, useState } from "react"
 import { toast } from "sonner"
-
+import type { OfferFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
 import { useRouter } from "@/i18n/routing"
 import {
   DEFAULT_OFFER_LANGUAGE_CODE,
@@ -14,11 +14,9 @@ import {
   DEFAULT_OFFER_MINIMUM_PROFICIENCY,
 } from "@/lib/constants/languages"
 import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"
-import { createOfferSchema } from "@/lib/schemas/offer"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
+import { createOfferSchema } from "@/lib/schemas/offer"
 import { orpc, orpcClient } from "@/server/orpc/client"
-
-import type { OfferFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
 
 function formatDateInputValue(value: Date | string | null | undefined): string {
   if (!value) return ""
@@ -74,7 +72,9 @@ export function useOfferForm(
       wilayaCode: initialData?.wilayaCode ?? 0,
       durationWeeks: initialData?.durationWeeks ?? 0,
       maxPositions: initialData?.maxPositions ?? 1,
-      applicationDeadlineAt: formatDateInputValue(initialData?.applicationDeadlineAt),
+      applicationDeadlineAt: formatDateInputValue(
+        initialData?.applicationDeadlineAt,
+      ),
       expectedStartDate: formatDateInputValue(initialData?.expectedStartDate),
       expectedEndDate: formatDateInputValue(initialData?.expectedEndDate),
       skillTagIds: initialData?.skillTagIds ?? ([] as string[]),

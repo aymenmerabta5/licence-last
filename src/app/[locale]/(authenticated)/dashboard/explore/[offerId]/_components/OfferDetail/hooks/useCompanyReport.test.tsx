@@ -3,8 +3,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { act, renderHook } from "@testing-library/react"
 
 const submitReportMock = mock(async () => ({ reportId: "report-1" }))
-const submitQualityFeedbackMock = mock(async () => ({ feedbackId: "feedback-1" }))
-const resolveReportMock = mock(async () => ({ reportId: "report-1", status: "resolved" }))
+const submitQualityFeedbackMock = mock(async () => ({
+  feedbackId: "feedback-1",
+}))
+const resolveReportMock = mock(async () => ({
+  reportId: "report-1",
+  status: "resolved",
+}))
 const toastSuccessMock = mock(() => {})
 const toastErrorMock = mock(() => {})
 
@@ -64,9 +69,7 @@ function createWrapper() {
 
   return function Wrapper({ children }: { children: React.ReactNode }) {
     return (
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     )
   }
 }

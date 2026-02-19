@@ -1,9 +1,9 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 
 import {
-  searchOffersSchema,
   applyToOfferSchema,
   listStudentApplicationsSchema,
+  searchOffersSchema,
 } from "@/lib/schemas/search"
 
 describe("src/lib/schemas/search", () => {
@@ -40,21 +40,19 @@ describe("src/lib/schemas/search", () => {
     })
 
     test("should reject invalid wilayaCode", () => {
-      expect(
-        searchOffersSchema.safeParse({ wilayaCode: 0 }).success,
-      ).toBe(false)
-      expect(
-        searchOffersSchema.safeParse({ wilayaCode: 59 }).success,
-      ).toBe(false)
+      expect(searchOffersSchema.safeParse({ wilayaCode: 0 }).success).toBe(
+        false,
+      )
+      expect(searchOffersSchema.safeParse({ wilayaCode: 59 }).success).toBe(
+        false,
+      )
     })
 
     test("should accept wilayaCode boundaries (1 and 58)", () => {
-      expect(
-        searchOffersSchema.safeParse({ wilayaCode: 1 }).success,
-      ).toBe(true)
-      expect(
-        searchOffersSchema.safeParse({ wilayaCode: 58 }).success,
-      ).toBe(true)
+      expect(searchOffersSchema.safeParse({ wilayaCode: 1 }).success).toBe(true)
+      expect(searchOffersSchema.safeParse({ wilayaCode: 58 }).success).toBe(
+        true,
+      )
     })
 
     test("should reject invalid internship types", () => {

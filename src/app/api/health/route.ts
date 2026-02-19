@@ -1,6 +1,6 @@
-import * as dbModule from "@/server/db"
 import { isRedisAvailable, pingRedis } from "@/server/caching/redis"
 import { isRateLimitingEnabled } from "@/server/caching/redis-ratelimiter"
+import * as dbModule from "@/server/db"
 
 type CheckStatus = "up" | "down" | "not_configured" | "disabled"
 

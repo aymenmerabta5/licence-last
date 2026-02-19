@@ -25,7 +25,7 @@ export function useEnsureConversation({
     if (conversationsLoading || modelsLoading) return
     if (activeConversationId || isCreating) return
 
-    const modelId = defaultModelId ?? (models[0]?.id ?? null)
+    const modelId = defaultModelId ?? models[0]?.id ?? null
     if (!modelId) return
 
     onCreate(modelId)

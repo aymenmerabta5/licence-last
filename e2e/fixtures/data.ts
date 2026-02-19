@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto"
+import { randomUUID } from "node:crypto"
 
 // Generate a unique timestamp-based suffix for test data uniqueness
 function generateUniqueSuffix(): string {
@@ -64,8 +64,20 @@ export interface TestApplicationData {
   id: string
   offerId: string
   studentUserId: string
-  status: "applied" | "shortlisted" | "interview" | "accepted" | "rejected" | "withdrawn"
-  pipelineStage: "applied" | "screening" | "interview" | "offer" | "hired" | "rejected"
+  status:
+    | "applied"
+    | "shortlisted"
+    | "interview"
+    | "accepted"
+    | "rejected"
+    | "withdrawn"
+  pipelineStage:
+    | "applied"
+    | "screening"
+    | "interview"
+    | "offer"
+    | "hired"
+    | "rejected"
   coverLetter: string
 }
 
@@ -75,10 +87,10 @@ export interface TestApplicationData {
  * @returns Test user data object
  */
 export function createTestUser(
-  role: "student" | "company_admin" | "admin" = "student"
+  role: "student" | "company_admin" | "admin" = "student",
 ): TestUserData {
   const suffix = generateUniqueSuffix()
-  
+
   return {
     id: generateId(),
     email: `test.${role}.${suffix}@example.com`,
@@ -95,9 +107,11 @@ export function createTestUser(
  * @param userId - The user ID to associate with the profile
  * @returns Test student profile data
  */
-export function createTestStudentProfile(userId: string): TestStudentProfileData {
+export function createTestStudentProfile(
+  userId: string,
+): TestStudentProfileData {
   const suffix = generateUniqueSuffix()
-  
+
   return {
     userId,
     wilayaCode: 16, // Algiers
@@ -118,7 +132,7 @@ export function createTestStudentProfile(userId: string): TestStudentProfileData
  */
 export function createTestCompany(): TestCompanyData {
   const suffix = generateUniqueSuffix()
-  
+
   return {
     id: generateId(),
     name: `Test Company ${suffix.slice(-6)}`,
@@ -141,7 +155,7 @@ export function createTestCompany(): TestCompanyData {
  */
 export function createTestOffer(companyId: string): TestOfferData {
   const suffix = generateUniqueSuffix()
-  
+
   return {
     id: generateId(),
     companyId,
@@ -171,10 +185,10 @@ This is a test internship offer created at ${suffix}.`,
  */
 export function createTestApplication(
   offerId: string,
-  studentUserId: string
+  studentUserId: string,
 ): TestApplicationData {
   const suffix = generateUniqueSuffix()
-  
+
   return {
     id: generateId(),
     offerId,
@@ -203,7 +217,7 @@ export function createTestScenario() {
   const company = createTestCompany()
   const offer = createTestOffer(company.id)
   const application = createTestApplication(offer.id, student.id)
-  
+
   return {
     student,
     studentProfile,

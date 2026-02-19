@@ -1,14 +1,12 @@
 "use client"
 
+import { ArrowLeft, Clock, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { ArrowLeft, Clock, Loader2 } from "lucide-react"
-
-import { Link } from "@/i18n/routing"
-import { reveal, ease } from "@/lib/animations"
-
-import { useDeptHeadData } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/_components/DeptHeadValidationsView/hooks/useDeptHeadData"
 import { ValidationsList } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/_components/DeptHeadValidationsView/components/ValidationsList"
+import { useDeptHeadData } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/_components/DeptHeadValidationsView/hooks/useDeptHeadData"
+import { Link } from "@/i18n/routing"
+import { ease, reveal } from "@/lib/animations"
 
 export function DeptHeadValidationsView() {
   const t = useTranslations("dashboard.admin.deptValidations")

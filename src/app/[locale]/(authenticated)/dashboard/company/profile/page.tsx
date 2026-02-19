@@ -1,9 +1,8 @@
 import { getTranslations } from "next-intl/server"
-
-import { localeRedirect } from "@/lib/navigation"
-import { requireRole } from "@/lib/auth-guards"
-import { getCompanyByUserId } from "@/server/services/companies/get"
 import { CompanyProfileForm } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm"
+import { requireRole } from "@/lib/auth-guards"
+import { localeRedirect } from "@/lib/navigation"
+import { getCompanyByUserId } from "@/server/services/companies/get"
 
 export default async function CompanyProfilePage() {
   const [sessionUser, t] = await Promise.all([
@@ -29,7 +28,6 @@ export default async function CompanyProfilePage() {
           </div>
 
           <div className="relative flex items-start gap-6">
-
             <div className="space-y-2 min-w-0">
               <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary in-[[dir=rtl]]:tracking-normal">
                 {t("title")}

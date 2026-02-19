@@ -1,9 +1,9 @@
-import type { RefObject } from "react"
+import { Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Loader2 } from "lucide-react"
+import type { RefObject } from "react"
 
-import { reveal, ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 import { formatNotification } from "@/lib/notifications"
 import { cn } from "@/lib/utils"
 
@@ -64,7 +64,8 @@ export function NotificationsList({
                 onClick={() => onMarkRead(n.id)}
                 className={cn(
                   "block w-full text-start border border-border p-4",
-                  n.readAt === null && "cursor-pointer transition-colors hover:bg-secondary/25",
+                  n.readAt === null &&
+                    "cursor-pointer transition-colors hover:bg-secondary/25",
                 )}
               >
                 <div className="flex items-start justify-between gap-4">

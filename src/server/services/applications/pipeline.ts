@@ -3,7 +3,10 @@ import "server-only"
 import { desc, eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
-import { application, applicationTimelineEvent } from "@/server/db/schema/applications"
+import {
+  application,
+  applicationTimelineEvent,
+} from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
 import { createNotification } from "@/server/services/notifications/create"
@@ -108,7 +111,10 @@ export async function updateApplicationPipelineStage(input: {
     .limit(1)
 
   if (!row) {
-    throw new ApplicationServiceError("APPLICATION_NOT_FOUND", "Application not found")
+    throw new ApplicationServiceError(
+      "APPLICATION_NOT_FOUND",
+      "Application not found",
+    )
   }
 
   if (row.offerCompanyId !== input.companyId) {

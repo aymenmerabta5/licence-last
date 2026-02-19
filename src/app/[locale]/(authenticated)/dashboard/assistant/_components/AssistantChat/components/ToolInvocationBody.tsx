@@ -1,17 +1,16 @@
 ﻿import { ExternalLink, Lock } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
-import { Button } from "@/components/ui/button"
+import type {
+  ToolAuthStatus,
+  ToolState,
+} from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/toolInvocationTypes"
 import {
   getStringProp,
   isAuthorizationRequiredOutput,
   isRecord,
 } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/utils"
-import type {
-  ToolAuthStatus,
-  ToolState,
-} from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/toolInvocationTypes"
+import { Button } from "@/components/ui/button"
 
 interface ToolInvocationBodyProps {
   toolName: string
@@ -74,10 +73,20 @@ export function ToolInvocationBody({
             })()}
 
             <div className="flex flex-wrap gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => onCheckAuth(toolName)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => onCheckAuth(toolName)}
+              >
                 {t("checkStatus")}
               </Button>
-              <Button type="button" variant="outline" size="sm" onClick={onRetry}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={onRetry}
+              >
                 {t("retryTool")}
               </Button>
             </div>
@@ -131,7 +140,10 @@ export function ToolInvocationBody({
           </div>
         ) : null}
 
-        {!showRaw && state === "output-available" && !isAuthRequired && output ? (
+        {!showRaw &&
+        state === "output-available" &&
+        !isAuthRequired &&
+        output ? (
           <div className="text-sm text-muted-foreground">
             {isRecord(output) && typeof output.result === "string" ? (
               <p>{output.result}</p>

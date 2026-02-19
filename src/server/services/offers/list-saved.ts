@@ -3,12 +3,12 @@ import "server-only"
 import { and, desc, eq, inArray, lt, or } from "drizzle-orm"
 
 import { db } from "@/server/db"
+import { company } from "@/server/db/schema/companies"
 import {
   internshipOffer,
   internshipOfferSkill,
   savedOffer,
 } from "@/server/db/schema/internships"
-import { company } from "@/server/db/schema/companies"
 import { skillTag } from "@/server/db/schema/skills"
 
 export interface ListSavedOffersInput {
@@ -63,7 +63,10 @@ export async function listSavedOffers(
 ): Promise<ListSavedOffersResult> {
   const { cursor, limit = 12 } = input
 
-  const conditions = [eq(savedOffer.userId, userId), eq(company.status, "approved")]
+  const conditions = [
+    eq(savedOffer.userId, userId),
+    eq(company.status, "approved"),
+  ]
   if (cursor) {
     const cursorDate = new Date(cursor.savedAt)
     conditions.push(

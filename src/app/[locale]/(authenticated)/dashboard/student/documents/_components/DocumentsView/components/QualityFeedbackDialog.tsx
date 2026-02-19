@@ -2,7 +2,11 @@
 
 import { Loader2, Star } from "lucide-react"
 import { useTranslations } from "next-intl"
-
+import type {
+  FeedbackPlacementContext,
+  QualityFeedbackFormErrors,
+  QualityFeedbackFormValues,
+} from "@/app/[locale]/(authenticated)/dashboard/student/documents/_components/DocumentsView/hooks/useCompanyFeedback"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -16,12 +20,6 @@ import {
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
-
-import type {
-  FeedbackPlacementContext,
-  QualityFeedbackFormErrors,
-  QualityFeedbackFormValues,
-} from "@/app/[locale]/(authenticated)/dashboard/student/documents/_components/DocumentsView/hooks/useCompanyFeedback"
 
 interface QualityFeedbackDialogProps {
   placement: FeedbackPlacementContext | null

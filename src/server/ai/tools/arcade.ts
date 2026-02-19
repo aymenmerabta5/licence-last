@@ -1,17 +1,17 @@
 import "server-only"
 
 import Arcade from "@arcadeai/arcadejs"
+import {
+  executeOrAuthorizeZodTool,
+  type ToolAuthorizationResponse,
+  toZodToolSet,
+} from "@arcadeai/arcadejs/lib/index"
 import type {
   ExecuteToolResponse,
   ToolDefinition,
 } from "@arcadeai/arcadejs/resources/tools/tools"
-import {
-  executeOrAuthorizeZodTool,
-  toZodToolSet,
-  type ToolAuthorizationResponse,
-} from "@arcadeai/arcadejs/lib/index"
-import { tool } from "ai"
 import type { ToolSet } from "ai"
+import { tool } from "ai"
 
 import { env } from "@/env"
 
@@ -22,7 +22,10 @@ interface GetArcadeToolsConfig {
 }
 
 // Simple TTL cache for tool definitions per user
-const toolCache = new Map<string, { tools: ToolDefinition[]; expiresAt: number }>()
+const toolCache = new Map<
+  string,
+  { tools: ToolDefinition[]; expiresAt: number }
+>()
 const CACHE_TTL_MS = 5 * 60 * 1000 // 5 minutes
 const MAX_CACHE_SIZE = 100
 
@@ -150,7 +153,9 @@ async function fetchArcadeToolsWithRetry({
       lastError = e instanceof Error ? e : new Error(String(e))
       if (attempt < maxRetries - 1) {
         // Wait before retry (exponential backoff)
-        await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)))
+        await new Promise((resolve) =>
+          setTimeout(resolve, 1000 * (attempt + 1)),
+        )
       }
     }
   }
@@ -197,7 +202,11 @@ export async function getArcadeTools({
     apiKey: env.ARCADE_API_KEY,
   })
 
-  const toolsToConvert = await fetchArcadeToolsWithRetry({ arcade, userId, config })
+  const toolsToConvert = await fetchArcadeToolsWithRetry({
+    arcade,
+    userId,
+    config,
+  })
 
   // Cache the tool definitions
   setCachedTools(userId, toolsToConvert)

@@ -1,6 +1,6 @@
 import "server-only"
 
-import { generateObject, tool, type ToolSet } from "ai"
+import { generateObject, type ToolSet, tool } from "ai"
 import { z } from "zod"
 
 import { WILAYAS } from "@/lib/wilayas"
@@ -35,17 +35,25 @@ async function safeGenerateObject<T>({
   }
 }
 
-export function createInternalTools({ contextJson }: CreateInternalToolsParams): ToolSet {
+export function createInternalTools({
+  contextJson,
+}: CreateInternalToolsParams): ToolSet {
   return {
     offer_generate_draft: tool({
-      description: "Generate a structured internship offer draft from the current form context.",
+      description:
+        "Generate a structured internship offer draft from the current form context.",
       inputSchema: z.object({}),
       execute: async () => {
         const schema = z.object({
           title: z.string().min(1),
           description: z.string().min(1),
-          internshipType: z.enum(["pfe", "immersion", "summer", "practical"]).optional(),
-          workMode: z.enum(["on_site", "hybrid", "remote"]).nullable().optional(),
+          internshipType: z
+            .enum(["pfe", "immersion", "summer", "practical"])
+            .optional(),
+          workMode: z
+            .enum(["on_site", "hybrid", "remote"])
+            .nullable()
+            .optional(),
           wilayaCode: z.number().int().nullable().optional(),
           durationWeeks: z.number().int().nullable().optional(),
           maxPositions: z.number().int().min(1).optional(),
@@ -65,7 +73,8 @@ export function createInternalTools({ contextJson }: CreateInternalToolsParams):
     }),
 
     offer_improve_description: tool({
-      description: "Rewrite the current offer description to be clearer, more concise, and inclusive.",
+      description:
+        "Rewrite the current offer description to be clearer, more concise, and inclusive.",
       inputSchema: z.object({}),
       execute: async () => {
         const schema = z.object({
@@ -84,7 +93,8 @@ export function createInternalTools({ contextJson }: CreateInternalToolsParams):
     }),
 
     offer_suggest_skill_tags: tool({
-      description: "Suggest relevant skill tags based on the offer description and available tags.",
+      description:
+        "Suggest relevant skill tags based on the offer description and available tags.",
       inputSchema: z.object({}),
       execute: async () => {
         const schema = z.object({
@@ -182,8 +192,12 @@ export function createInternalTools({ contextJson }: CreateInternalToolsParams):
         const schema = z.object({
           keyword: z.string().optional(),
           wilayaCode: z.number().int().min(1).max(58).nullable().optional(),
-          internshipTypes: z.array(z.enum(["pfe", "immersion", "summer", "practical"])).default([]),
-          workModes: z.array(z.enum(["on_site", "hybrid", "remote"])).default([]),
+          internshipTypes: z
+            .array(z.enum(["pfe", "immersion", "summer", "practical"]))
+            .default([]),
+          workModes: z
+            .array(z.enum(["on_site", "hybrid", "remote"]))
+            .default([]),
           skillTagIds: z.array(z.string()).default([]),
           explanation: z.string().optional(),
         })
@@ -202,7 +216,8 @@ export function createInternalTools({ contextJson }: CreateInternalToolsParams):
         )
         enrichedContext.internshipTypeMapping = {
           pfe: "Projet de Fin d'Études / graduation project / مشروع نهاية الدراسة",
-          immersion: "stage d'immersion / exploratory internship / تدريب استكشافي",
+          immersion:
+            "stage d'immersion / exploratory internship / تدريب استكشافي",
           summer: "stage d'été / summer internship / تدريب صيفي",
           practical: "stage pratique / hands-on training / تدريب تطبيقي",
         }

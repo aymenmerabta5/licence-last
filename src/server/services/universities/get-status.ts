@@ -3,8 +3,8 @@ import "server-only"
 import { eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
-import { university } from "@/server/db/schema/universities"
 import { user } from "@/server/db/schema/auth"
+import { university } from "@/server/db/schema/universities"
 
 /**
  * Get university status for a user — UNCACHED.

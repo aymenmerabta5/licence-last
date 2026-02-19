@@ -1,12 +1,15 @@
-import { Building2, GraduationCap, Landmark } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
+import { Building2, GraduationCap, Landmark } from "lucide-react"
 
 import { usePathname } from "@/i18n/routing"
 
 export type OnboardingRole = "company" | "student" | "university"
 
 interface RoleConfig {
-  namespace: "onboarding.company" | "onboarding.student" | "onboarding.university"
+  namespace:
+    | "onboarding.company"
+    | "onboarding.student"
+    | "onboarding.university"
   icon: LucideIcon
   patternOpacity: string
 }
@@ -48,7 +51,10 @@ export function GrainTextureOverlay() {
   return (
     <div
       className="pointer-events-none absolute inset-0 opacity-[0.1] mix-blend-overlay"
-      style={{ backgroundImage: GRAIN_TEXTURE_DATA_URL, backgroundSize: "128px 128px" }}
+      style={{
+        backgroundImage: GRAIN_TEXTURE_DATA_URL,
+        backgroundSize: "128px 128px",
+      }}
       aria-hidden="true"
     />
   )
@@ -60,13 +66,30 @@ interface GridPatternOverlayProps {
   size: number
 }
 
-export function GridPatternOverlay({ patternId, opacityClass, size }: GridPatternOverlayProps) {
+export function GridPatternOverlay({
+  patternId,
+  opacityClass,
+  size,
+}: GridPatternOverlayProps) {
   return (
-    <div className={`pointer-events-none absolute inset-0 ${opacityClass}`} aria-hidden="true">
+    <div
+      className={`pointer-events-none absolute inset-0 ${opacityClass}`}
+      aria-hidden="true"
+    >
       <svg width="100%" height="100%" className="text-foreground">
         <defs>
-          <pattern id={patternId} width={size} height={size} patternUnits="userSpaceOnUse">
-            <path d={`M ${size} 0 L 0 0 0 ${size}`} fill="none" stroke="currentColor" strokeWidth="0.5" />
+          <pattern
+            id={patternId}
+            width={size}
+            height={size}
+            patternUnits="userSpaceOnUse"
+          >
+            <path
+              d={`M ${size} 0 L 0 0 0 ${size}`}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="0.5"
+            />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill={`url(#${patternId})`} />

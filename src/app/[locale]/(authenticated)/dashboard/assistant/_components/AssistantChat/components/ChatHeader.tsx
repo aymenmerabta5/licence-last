@@ -1,6 +1,6 @@
-import { useTranslations } from "next-intl"
 import { NotebookPen, Pencil, Plus } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import { formatConversationTitle } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/utils"
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -9,8 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
-import { formatConversationTitle } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/utils"
 
 interface Model {
   id: string
@@ -56,7 +54,9 @@ export function ChatHeader({
           </p>
           <Select
             value={activeModel ?? ""}
-            onValueChange={(val) => { if (val) onUpdateModel(val) }}
+            onValueChange={(val) => {
+              if (val) onUpdateModel(val)
+            }}
           >
             <SelectTrigger size="sm" className="rounded-none">
               <SelectValue placeholder={t("selectModel")} />

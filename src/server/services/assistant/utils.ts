@@ -18,13 +18,21 @@ function shouldRedactKey(key: string): boolean {
   )
 }
 
-export function redactSecrets(value: unknown, options?: { maxDepth?: number }): unknown {
+export function redactSecrets(
+  value: unknown,
+  options?: { maxDepth?: number },
+): unknown {
   const maxDepth = options?.maxDepth ?? 6
 
   const visit = (v: unknown, depth: number): unknown => {
     if (depth > maxDepth) return "[TRUNCATED]"
     if (v == null) return v
-    if (typeof v === "string" || typeof v === "number" || typeof v === "boolean") return v
+    if (
+      typeof v === "string" ||
+      typeof v === "number" ||
+      typeof v === "boolean"
+    )
+      return v
 
     if (Array.isArray(v)) {
       return v.map((item) => visit(item, depth + 1))
@@ -53,13 +61,21 @@ export function redactSecrets(value: unknown, options?: { maxDepth?: number }): 
   return visit(value, 0)
 }
 
-export function stripProviderMetadata(value: unknown, options?: { maxDepth?: number }): unknown {
+export function stripProviderMetadata(
+  value: unknown,
+  options?: { maxDepth?: number },
+): unknown {
   const maxDepth = options?.maxDepth ?? 6
 
   const visit = (v: unknown, depth: number): unknown => {
     if (depth > maxDepth) return "[TRUNCATED]"
     if (v == null) return v
-    if (typeof v === "string" || typeof v === "number" || typeof v === "boolean") return v
+    if (
+      typeof v === "string" ||
+      typeof v === "number" ||
+      typeof v === "boolean"
+    )
+      return v
 
     if (Array.isArray(v)) {
       return v.map((item) => visit(item, depth + 1))
@@ -68,7 +84,8 @@ export function stripProviderMetadata(value: unknown, options?: { maxDepth?: num
     if (isPlainObject(v)) {
       const out: Record<string, unknown> = {}
       for (const [key, child] of Object.entries(v)) {
-        if (key === "providerMetadata" || key === "callProviderMetadata") continue
+        if (key === "providerMetadata" || key === "callProviderMetadata")
+          continue
         out[key] = visit(child, depth + 1)
       }
       return out

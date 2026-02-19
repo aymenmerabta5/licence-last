@@ -59,13 +59,21 @@ function trimInMemoryStoreToMaxKeys(): void {
   }
 }
 
-function checkInMemoryLimit(key: string, max: number, windowMs: number): boolean {
+function checkInMemoryLimit(
+  key: string,
+  max: number,
+  windowMs: number,
+): boolean {
   const now = Date.now()
   sweepInMemoryStore(now)
 
   const entry = inMemoryStore.get(key)
   if (!entry || now > entry.resetAt) {
-    inMemoryStore.set(key, { count: 1, resetAt: now + windowMs, touchedAt: now })
+    inMemoryStore.set(key, {
+      count: 1,
+      resetAt: now + windowMs,
+      touchedAt: now,
+    })
     trimInMemoryStoreToMaxKeys()
     return true
   }
@@ -105,7 +113,9 @@ export function __getInMemoryRateLimiterSizeForTests(): number {
   return inMemoryStore.size
 }
 
-export function __forceSweepInMemoryRateLimiterForTests(now = Date.now()): void {
+export function __forceSweepInMemoryRateLimiterForTests(
+  now = Date.now(),
+): void {
   sweepInMemoryStore(now)
 }
 
@@ -119,7 +129,7 @@ function extractClientIp(headersList: Headers): string {
   // Prefer platform-specific headers that cannot be spoofed
   const vercelIp = headersList.get("x-vercel-forwarded-for")
   if (vercelIp) {
-    return vercelIp.split(",")[0]!.trim()
+    return vercelIp.split(",")[0]?.trim()
   }
 
   const realIp = headersList.get("x-real-ip")
@@ -130,7 +140,7 @@ function extractClientIp(headersList: Headers): string {
   const forwarded = headersList.get("x-forwarded-for")
   if (forwarded) {
     // First entry is the original client when behind a trusted proxy
-    return forwarded.split(",")[0]!.trim()
+    return forwarded.split(",")[0]?.trim()
   }
 
   return "unknown"
@@ -166,7 +176,9 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
   // rate limiting is explicitly enabled.
   if (!limiter) {
     if (process.env.NODE_ENV === "production" && isRedisRateLimitingEnabled) {
-      log.error("Redis unavailable while rate limiting is enabled - failing closed")
+      log.error(
+        "Redis unavailable while rate limiting is enabled - failing closed",
+      )
       return createRatelimitMiddleware({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         limiter: () => null as unknown as any,
@@ -246,7 +258,7 @@ export function createStandardRateLimitMiddleware(keyPrefix?: string) {
     maxRequests: 100,
     windowMs: 60000,
     keyPrefix: keyPrefix || "standard",
-    keyGenerator: ({ userId, ip }) => userId ? `user:${userId}` : `ip:${ip}`,
+    keyGenerator: ({ userId, ip }) => (userId ? `user:${userId}` : `ip:${ip}`),
   })
 }
 
@@ -259,7 +271,7 @@ export function createGenerousRateLimitMiddleware(keyPrefix?: string) {
     maxRequests: 300,
     windowMs: 60000,
     keyPrefix: keyPrefix || "generous",
-    keyGenerator: ({ userId, ip }) => userId ? `user:${userId}` : `ip:${ip}`,
+    keyGenerator: ({ userId, ip }) => (userId ? `user:${userId}` : `ip:${ip}`),
   })
 }
 

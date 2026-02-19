@@ -45,7 +45,9 @@ describe("src/server/services/stats/get-university-dashboard-stats", () => {
     mockSelectResults.push([{ value: 18 }]) // pending validations
     mockSelectResults.push([{ value: 90 }]) // validated placements
 
-    const { getUniversityDashboardStats } = await import("@/server/services/stats/get-university-dashboard-stats")
+    const { getUniversityDashboardStats } = await import(
+      "@/server/services/stats/get-university-dashboard-stats"
+    )
     const stats = await getUniversityDashboardStats("uni-1")
 
     expect(stats.totalStudents).toBe(120)
@@ -65,7 +67,9 @@ describe("src/server/services/stats/get-university-dashboard-stats", () => {
     mockSelectResults.push([])
     mockSelectResults.push([])
 
-    const { getUniversityDashboardStats } = await import("@/server/services/stats/get-university-dashboard-stats")
+    const { getUniversityDashboardStats } = await import(
+      "@/server/services/stats/get-university-dashboard-stats"
+    )
     const stats = await getUniversityDashboardStats("uni-empty")
 
     expect(stats).toEqual({

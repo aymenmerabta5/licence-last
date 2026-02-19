@@ -1,10 +1,9 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Clock, Users } from "lucide-react"
-
-import { errorMessage } from "@/lib/schemas/auth"
+import { useTranslations } from "next-intl"
 import { TextField } from "@/components/form-fields"
+import { errorMessage } from "@/lib/schemas/auth"
 
 interface DetailsCapacityFieldsProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

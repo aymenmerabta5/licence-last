@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useMemo } from "react"
-import { usePathname } from "@/i18n/routing"
-import { useLogout } from "@/hooks/useLogout"
-import { isSavedOffersEnabledOnClient } from "@/lib/feature-flags-client"
+import { useMemo, useState } from "react"
 import { navItems } from "@/app/[locale]/(authenticated)/_components/DashboardSidebar/constants"
+import { useLogout } from "@/hooks/useLogout"
+import { usePathname } from "@/i18n/routing"
+import { isSavedOffersEnabledOnClient } from "@/lib/feature-flags-client"
 
 export function useSidebar(role: string) {
   const pathname = usePathname()
@@ -20,7 +20,7 @@ export function useSidebar(role: string) {
         }
         return item.roles.includes(role)
       }),
-    [role, savedOffersEnabled]
+    [role, savedOffersEnabled],
   )
 
   return { isCollapsed, setIsCollapsed, filteredItems, pathname, logout }

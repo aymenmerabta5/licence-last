@@ -1,10 +1,9 @@
+import type { FilterState } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient"
+import { FilterSection } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/FilterSection"
+import { WORK_MODES } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/constants"
+import { toggleMultiValueFilter } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/utils"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
-
-import type { FilterState } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient"
-import { WORK_MODES } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/constants"
-import { FilterSection } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/FilterSection"
-import { toggleMultiValueFilter } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/utils"
 
 interface WorkModeFilterProps {
   filters: FilterState
@@ -12,7 +11,11 @@ interface WorkModeFilterProps {
   t: (key: string) => string
 }
 
-export function WorkModeFilter({ filters, onFiltersChange, t }: WorkModeFilterProps) {
+export function WorkModeFilter({
+  filters,
+  onFiltersChange,
+  t,
+}: WorkModeFilterProps) {
   return (
     <FilterSection label={t("workMode")}>
       <div className="space-y-2.5">

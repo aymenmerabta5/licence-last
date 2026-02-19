@@ -1,13 +1,12 @@
 "use client"
 
-import { useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { useTranslations } from "next-intl"
-
+import { useState } from "react"
+import { authClient } from "@/lib/auth-client"
+import { getErrorMessage } from "@/lib/error-message"
 import { createChangePasswordSchema } from "@/lib/schemas/auth"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
-import { getErrorMessage } from "@/lib/error-message"
-import { authClient } from "@/lib/auth-client"
 
 export function useChangePassword(onSuccess?: () => void) {
   const tv = useTranslations("auth.validation")

@@ -1,11 +1,10 @@
 "use client"
 
+import { Plus } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Plus } from "lucide-react"
-
-import { Link } from "@/i18n/routing"
 import { Button } from "@/components/ui/button"
+import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
 
 export function CompanyOffersHeader() {
@@ -35,7 +34,11 @@ export function CompanyOffersHeader() {
             </p>
           </div>
           <Link href={"/dashboard/company/offers/new" as "/dashboard"}>
-            <Button variant="editorial" size="editorial" className="shrink-0 gap-2">
+            <Button
+              variant="editorial"
+              size="editorial"
+              className="shrink-0 gap-2"
+            >
               <Plus className="h-4 w-4" />
               {t("createOffer")}
             </Button>

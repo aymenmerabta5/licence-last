@@ -1,7 +1,7 @@
 "use client"
 
+import { AlertTriangle, Copy, Download } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Copy, Download, AlertTriangle } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -39,7 +39,10 @@ export function BackupCodesDisplay({ codes, onDone }: BackupCodesDisplayProps) {
 
       <div className="grid grid-cols-2 gap-2 p-4 border border-border/40 bg-muted/20 font-mono text-sm">
         {codes.map((code, i) => (
-          <div key={i} className="p-2 text-center bg-background border border-border/20">
+          <div
+            key={i}
+            className="p-2 text-center bg-background border border-border/20"
+          >
             {code}
           </div>
         ))}

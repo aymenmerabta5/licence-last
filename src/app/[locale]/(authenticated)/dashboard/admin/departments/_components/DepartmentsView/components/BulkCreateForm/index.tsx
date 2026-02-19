@@ -1,13 +1,11 @@
 "use client"
 
+import { Loader2, Plus, Users } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Plus, Loader2, Users } from "lucide-react"
-
+import { DepartmentRow } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/BulkCreateForm/components/DepartmentRow"
+import { useBulkCreateForm } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/BulkCreateForm/hooks/useBulkCreateForm"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-
-import { useBulkCreateForm } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/BulkCreateForm/hooks/useBulkCreateForm"
-import { DepartmentRow } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/BulkCreateForm/components/DepartmentRow"
 
 export function BulkCreateForm() {
   const t = useTranslations("dashboard.admin.departments.bulkCreate")

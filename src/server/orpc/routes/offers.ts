@@ -1,9 +1,22 @@
 import "server-only"
 
-import { z } from "zod"
 import { ORPCError } from "@orpc/server"
+import { eq } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
-
+import { z } from "zod"
+import { CACHE_TAGS } from "@/lib/cache"
+import {
+  hasDuplicateLanguageCodes,
+  LANGUAGE_CODES,
+} from "@/lib/constants/languages"
+import { isFeatureEnabled } from "@/lib/feature-flags"
+import {
+  internshipTypeSchema,
+  proficiencyLevelSchema,
+  workModeSchema,
+} from "@/lib/schemas/enums"
+import { db } from "@/server/db"
+import { companyMember } from "@/server/db/schema/companies"
 import { isAdminRole } from "@/server/orpc/middleware"
 import {
   authedProcedureGenerous,
@@ -14,32 +27,18 @@ import {
   studentProcedureGenerous,
   studentProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
-import {
-  internshipTypeSchema,
-  proficiencyLevelSchema,
-  workModeSchema,
-} from "@/lib/schemas/enums"
 import { parseInputDate } from "@/server/orpc/utils/date"
+import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+import { checkOfferSaved } from "@/server/services/offers/check-saved"
+import { createOffer } from "@/server/services/offers/create"
+import { deleteOffer } from "@/server/services/offers/delete"
 import { getOfferById } from "@/server/services/offers/get"
 import { listOffersByCompany } from "@/server/services/offers/list-by-company"
-import { createOffer } from "@/server/services/offers/create"
-import { updateOffer } from "@/server/services/offers/update"
-import { deleteOffer } from "@/server/services/offers/delete"
-import { updateOfferStatus } from "@/server/services/offers/update-status"
-import { checkOfferSaved } from "@/server/services/offers/check-saved"
 import { listSavedOffers } from "@/server/services/offers/list-saved"
 import { saveOffer } from "@/server/services/offers/save"
 import { unsaveOffer } from "@/server/services/offers/unsave"
-import { db } from "@/server/db"
-import { companyMember } from "@/server/db/schema/companies"
-import { eq } from "drizzle-orm"
-import { CACHE_TAGS } from "@/lib/cache"
-import { createServiceORPCError } from "@/server/orpc/utils/service-error"
-import {
-  LANGUAGE_CODES,
-  hasDuplicateLanguageCodes,
-} from "@/lib/constants/languages"
-import { isFeatureEnabled } from "@/lib/feature-flags"
+import { updateOffer } from "@/server/services/offers/update"
+import { updateOfferStatus } from "@/server/services/offers/update-status"
 
 function parseOptionalDate(
   value: string | null | undefined,
@@ -58,22 +57,23 @@ function validateOfferTiming(
   },
   requireExpectedPair: boolean,
 ) {
-  const {
-    applicationDeadlineAt,
-    expectedStartDate,
-    expectedEndDate,
-  } = fields
+  const { applicationDeadlineAt, expectedStartDate, expectedEndDate } = fields
 
   if (
     requireExpectedPair &&
-    ((expectedStartDate && !expectedEndDate) || (!expectedStartDate && expectedEndDate))
+    ((expectedStartDate && !expectedEndDate) ||
+      (!expectedStartDate && expectedEndDate))
   ) {
     throw new ORPCError("BAD_REQUEST", {
       message: "Expected start and end dates must both be provided",
     })
   }
 
-  if (expectedStartDate && expectedEndDate && expectedStartDate >= expectedEndDate) {
+  if (
+    expectedStartDate &&
+    expectedEndDate &&
+    expectedStartDate >= expectedEndDate
+  ) {
     throw new ORPCError("BAD_REQUEST", {
       message: "Expected start date must be before expected end date",
     })
@@ -155,8 +155,8 @@ export const getOfferByIdProcedure = authedProcedureGenerous
     return offer
   })
 
-export const listOffersByCompanyProcedure = companyAdminProcedureGenerous
-  .handler(async ({ context }) =>
+export const listOffersByCompanyProcedure =
+  companyAdminProcedureGenerous.handler(async ({ context }) =>
     listOffersByCompany(context.companyMembership.companyId),
   )
 
@@ -282,7 +282,9 @@ export const createOfferProcedure = companyAdminProcedureStandard
       true,
     )
 
-    const isLanguageRequirementsEnabled = isFeatureEnabled("LANGUAGE_REQUIREMENTS")
+    const isLanguageRequirementsEnabled = isFeatureEnabled(
+      "LANGUAGE_REQUIREMENTS",
+    )
 
     if (isLanguageRequirementsEnabled) {
       if (!languageRequirements || languageRequirements.length === 0) {
@@ -301,9 +303,7 @@ export const createOfferProcedure = companyAdminProcedureStandard
     const result = await createOffer({
       companyId: context.companyMembership.companyId,
       ...restInput,
-      ...(applicationDeadlineAt !== undefined
-        ? { applicationDeadlineAt }
-        : {}),
+      ...(applicationDeadlineAt !== undefined ? { applicationDeadlineAt } : {}),
       ...(expectedStartDate !== undefined ? { expectedStartDate } : {}),
       ...(expectedEndDate !== undefined ? { expectedEndDate } : {}),
       ...(isLanguageRequirementsEnabled
@@ -312,7 +312,10 @@ export const createOfferProcedure = companyAdminProcedureStandard
     })
 
     // Invalidate company offers cache and public offer search
-    revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), { expire: 0 })
+    revalidateTag(
+      CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId),
+      { expire: 0 },
+    )
     revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
     revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
 
@@ -328,7 +331,13 @@ export const updateOfferProcedure = companyAdminProcedureStandard
       internshipType: internshipTypeSchema.optional(),
       workMode: workModeSchema.nullable().optional(),
       wilayaCode: z.coerce.number().int().min(1).max(58).nullable().optional(),
-      durationWeeks: z.coerce.number().int().min(1).max(52).nullable().optional(),
+      durationWeeks: z.coerce
+        .number()
+        .int()
+        .min(1)
+        .max(52)
+        .nullable()
+        .optional(),
       maxPositions: z.coerce.number().int().min(1).max(100).optional(),
       applicationDeadlineAt: z.string().min(1).nullable().optional(),
       expectedStartDate: z.string().min(1).nullable().optional(),
@@ -348,8 +357,10 @@ export const updateOfferProcedure = companyAdminProcedureStandard
     } = input
 
     if (
-      (expectedStartDateInput !== undefined || expectedEndDateInput !== undefined) &&
-      (expectedStartDateInput === undefined || expectedEndDateInput === undefined)
+      (expectedStartDateInput !== undefined ||
+        expectedEndDateInput !== undefined) &&
+      (expectedStartDateInput === undefined ||
+        expectedEndDateInput === undefined)
     ) {
       throw new ORPCError("BAD_REQUEST", {
         message: "Expected start and end dates must both be provided",
@@ -388,7 +399,9 @@ export const updateOfferProcedure = companyAdminProcedureStandard
       true,
     )
 
-    const isLanguageRequirementsEnabled = isFeatureEnabled("LANGUAGE_REQUIREMENTS")
+    const isLanguageRequirementsEnabled = isFeatureEnabled(
+      "LANGUAGE_REQUIREMENTS",
+    )
 
     if (isLanguageRequirementsEnabled && languageRequirements !== undefined) {
       if (languageRequirements.length === 0) {
@@ -405,21 +418,26 @@ export const updateOfferProcedure = companyAdminProcedureStandard
     }
 
     try {
-      const result = await updateOffer(offerId, context.companyMembership.companyId, {
-        ...restInput,
-        ...(applicationDeadlineAt !== undefined
-          ? { applicationDeadlineAt }
-          : {}),
-        ...(expectedStartDate !== undefined ? { expectedStartDate } : {}),
-        ...(expectedEndDate !== undefined ? { expectedEndDate } : {}),
-        ...(isLanguageRequirementsEnabled
-          ? { languageRequirements }
-          : {}),
-      })
+      const result = await updateOffer(
+        offerId,
+        context.companyMembership.companyId,
+        {
+          ...restInput,
+          ...(applicationDeadlineAt !== undefined
+            ? { applicationDeadlineAt }
+            : {}),
+          ...(expectedStartDate !== undefined ? { expectedStartDate } : {}),
+          ...(expectedEndDate !== undefined ? { expectedEndDate } : {}),
+          ...(isLanguageRequirementsEnabled ? { languageRequirements } : {}),
+        },
+      )
 
       // Invalidate offer caches
       revalidateTag(CACHE_TAGS.OFFER_DETAIL(offerId), { expire: 0 })
-      revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), { expire: 0 })
+      revalidateTag(
+        CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId),
+        { expire: 0 },
+      )
       revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
       revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
 
@@ -439,11 +457,17 @@ export const deleteOfferProcedure = companyAdminProcedureStandard
   .input(z.object({ offerId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     try {
-      const result = await deleteOffer(input.offerId, context.companyMembership.companyId)
+      const result = await deleteOffer(
+        input.offerId,
+        context.companyMembership.companyId,
+      )
 
       // Invalidate offer caches
       revalidateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId), { expire: 0 })
-      revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), { expire: 0 })
+      revalidateTag(
+        CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId),
+        { expire: 0 },
+      )
       revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
       revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
 
@@ -475,7 +499,10 @@ export const updateOfferStatusProcedure = companyAdminProcedureStandard
 
       // Invalidate offer caches when status changes
       revalidateTag(CACHE_TAGS.OFFER_DETAIL(input.offerId), { expire: 0 })
-      revalidateTag(CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId), { expire: 0 })
+      revalidateTag(
+        CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId),
+        { expire: 0 },
+      )
       revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
       revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
 
@@ -543,7 +570,12 @@ export const improveOfferDescriptionProcedure = companyAdminProcedureAssistant
 export const suggestOfferSkillsProcedure = companyAdminProcedureAssistant
   .input(
     offerFormContextSchema
-      .pick({ title: true, description: true, internshipType: true, workMode: true })
+      .pick({
+        title: true,
+        description: true,
+        internshipType: true,
+        workMode: true,
+      })
       .extend({ availableSkillTags: availableSkillTagsSchema }),
   )
   .handler(async ({ input }) => {
@@ -571,4 +603,3 @@ export const parseSearchQueryProcedure = authedProcedureStrict
     )
     return parseSearchQuery(input)
   })
-

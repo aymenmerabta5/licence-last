@@ -1,9 +1,9 @@
 "use client"
 
-import { useRef, useImperativeHandle, type Ref } from "react"
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile"
 import { useLocale } from "next-intl"
 import { useTheme } from "next-themes"
+import { type Ref, useImperativeHandle, useRef } from "react"
 
 import { env } from "@/env"
 
@@ -18,7 +18,12 @@ interface TurnstileWidgetProps {
   onError?: () => void
 }
 
-export function TurnstileWidget({ ref, onVerify, onExpire, onError }: TurnstileWidgetProps) {
+export function TurnstileWidget({
+  ref,
+  onVerify,
+  onExpire,
+  onError,
+}: TurnstileWidgetProps) {
   const siteKey = env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
   const locale = useLocale()
   const { resolvedTheme } = useTheme()

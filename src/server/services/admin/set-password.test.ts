@@ -1,9 +1,12 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const mockSetUserPassword = mock(() => Promise.resolve({ success: true }))
 const mockHeaders = mock(() => Promise.resolve(new Headers()))
 
-mock.module("@/lib/auth", () => ({ auth: { api: {} }, pendingWelcomeEmails: new Map() }))
+mock.module("@/lib/auth", () => ({
+  auth: { api: {} },
+  pendingWelcomeEmails: new Map(),
+}))
 
 describe("setUserPassword", () => {
   beforeEach(() => {
@@ -11,8 +14,13 @@ describe("setUserPassword", () => {
   })
 
   test("should call auth.api.setUserPassword with userId and newPassword", async () => {
-    const { setUserPassword } = await import("@/server/services/admin/set-password?fresh=1")
-    await setUserPassword("user-1", "newpass123", { authApi: { setUserPassword: mockSetUserPassword }, getHeaders: mockHeaders })
+    const { setUserPassword } = await import(
+      "@/server/services/admin/set-password?fresh=1"
+    )
+    await setUserPassword("user-1", "newpass123", {
+      authApi: { setUserPassword: mockSetUserPassword },
+      getHeaders: mockHeaders,
+    })
 
     const call = (mockSetUserPassword.mock.calls as unknown[][])[0][0] as {
       body: { userId?: string; newPassword?: string }
@@ -22,8 +30,13 @@ describe("setUserPassword", () => {
   })
 
   test("should return result from auth API", async () => {
-    const { setUserPassword } = await import("@/server/services/admin/set-password?fresh=2")
-    const result = await setUserPassword("user-1", "pw", { authApi: { setUserPassword: mockSetUserPassword }, getHeaders: mockHeaders })
+    const { setUserPassword } = await import(
+      "@/server/services/admin/set-password?fresh=2"
+    )
+    const result = await setUserPassword("user-1", "pw", {
+      authApi: { setUserPassword: mockSetUserPassword },
+      getHeaders: mockHeaders,
+    })
     expect(result).toEqual({ success: true })
   })
 })

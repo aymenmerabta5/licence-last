@@ -1,7 +1,7 @@
-import * as motion from "motion/react-client"
 import type { LucideIcon } from "lucide-react"
+import * as motion from "motion/react-client"
 
-import { reveal, ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface WorkflowStepProps {
   icon: LucideIcon
@@ -47,4 +47,3 @@ export function WorkflowStep({
     </motion.div>
   )
 }
-

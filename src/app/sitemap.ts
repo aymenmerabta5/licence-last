@@ -28,9 +28,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
           routing.locales.map((l) => [
             l,
             `${baseUrl}/${l}${route.path === "/" ? "" : route.path}`,
-          ])
+          ]),
         ),
       },
-    }))
+    })),
   )
 }

@@ -1,16 +1,15 @@
 "use client"
 
-import { useMemo } from "react"
 import { useLocale, useTranslations } from "next-intl"
-
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { INTERNSHIP_TYPE_LABELS } from "@/lib/constants/internship"
+import { useMemo } from "react"
 import { PlacementDocumentPanel } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/PlacementDocumentPanel"
 import type {
   CompanyPlacementDocumentSummary,
   PlacementDocumentStatus,
 } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/types"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { INTERNSHIP_TYPE_LABELS } from "@/lib/constants/internship"
 
 interface PlacementCertificateCardProps {
   placement: CompanyPlacementDocumentSummary
@@ -74,7 +73,9 @@ export function PlacementCertificateCard({
             <CardTitle className="font-serif text-xl text-heading">
               {placement.studentName ?? placement.studentEmail}
             </CardTitle>
-            <p className="text-xs text-muted-foreground">{placement.studentEmail}</p>
+            <p className="text-xs text-muted-foreground">
+              {placement.studentEmail}
+            </p>
           </div>
           <Badge variant="editorial-outline">{internshipTypeLabel}</Badge>
         </div>
@@ -124,7 +125,9 @@ export function PlacementCertificateCard({
           {agreementDoc ? (
             <PlacementDocumentPanel
               title={t("agreement")}
-              statusLabel={t(`status.${agreementDoc.status}` as "status.pending")}
+              statusLabel={t(
+                `status.${agreementDoc.status}` as "status.pending",
+              )}
               statusClassName={STATUS_STYLES[agreementDoc.status]}
               verificationCodeLabel={t("placement.verificationCode")}
               verificationCode={agreementDoc.verificationCode}
@@ -148,15 +151,21 @@ export function PlacementCertificateCard({
                 ? t(`status.${certificateDoc.status}` as "status.pending")
                 : t("status.notGenerated")
             }
-            statusClassName={STATUS_STYLES[certificateDoc?.status ?? "notGenerated"]}
+            statusClassName={
+              STATUS_STYLES[certificateDoc?.status ?? "notGenerated"]
+            }
             verificationCodeLabel={t("placement.verificationCode")}
             verificationCode={certificateDoc?.verificationCode ?? null}
             notAvailableLabel={t("placement.notAvailable")}
             actionVariant={
-              certificateDoc?.status === "generated" ? "editorial-outline" : "editorial"
+              certificateDoc?.status === "generated"
+                ? "editorial-outline"
+                : "editorial"
             }
             actionLabel={
-              certificateDoc?.status === "generated" ? t("download") : t("generate")
+              certificateDoc?.status === "generated"
+                ? t("download")
+                : t("generate")
             }
             actionLoadingLabel={
               certificateDoc?.status === "generated"

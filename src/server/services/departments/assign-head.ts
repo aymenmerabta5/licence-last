@@ -1,11 +1,10 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
-import { department } from "@/server/db/schema/departments"
 import { user } from "@/server/db/schema/auth"
+import { department } from "@/server/db/schema/departments"
+import { createModuleLogger } from "@/server/logging"
 import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/departments/assign-head")

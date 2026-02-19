@@ -1,9 +1,9 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { useSearchParams } from "next/navigation"
 import { useForm } from "@tanstack/react-form"
+import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
+import { useMemo, useState } from "react"
 
 import { authClient } from "@/lib/auth-client"
 import { getErrorMessage } from "@/lib/error-message"

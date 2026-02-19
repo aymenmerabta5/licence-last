@@ -21,7 +21,10 @@ export async function sendOfferMessageByCompany(
 ) {
   const body = input.body.trim()
   if (!body) {
-    throw new MessageServiceError("MESSAGE_EMPTY", "Message body cannot be empty")
+    throw new MessageServiceError(
+      "MESSAGE_EMPTY",
+      "Message body cannot be empty",
+    )
   }
 
   const [offer] = await db

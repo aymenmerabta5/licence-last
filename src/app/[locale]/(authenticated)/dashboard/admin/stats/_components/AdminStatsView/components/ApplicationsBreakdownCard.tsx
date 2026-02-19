@@ -1,9 +1,9 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { BarChart3 } from "lucide-react"
-import { cn } from "@/lib/utils"
+import * as motion from "motion/react-client"
 import { ease } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
 const STATUS_COLORS: Record<string, string> = {
   applied: "bg-blue-500",

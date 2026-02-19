@@ -51,14 +51,17 @@ mock.module("@/server/services/documents/list-by-company", () => ({
 mock.module("@/server/services/documents/download", () => ({
   downloadDocument: downloadDocumentMock,
 }))
-mock.module("@/server/services/documents/generate-certificate-by-company", () => ({
-  generateCertificateByCompany: mock(async () => ({
-    success: true,
-    documentId: "doc-2",
-    fileName: "certificate.pdf",
-    buffer: Buffer.from("certificate-pdf"),
-  })),
-}))
+mock.module(
+  "@/server/services/documents/generate-certificate-by-company",
+  () => ({
+    generateCertificateByCompany: mock(async () => ({
+      success: true,
+      documentId: "doc-2",
+      fileName: "certificate.pdf",
+      buffer: Buffer.from("certificate-pdf"),
+    })),
+  }),
+)
 mock.module("@/server/services/documents/download-by-company", () => ({
   downloadDocumentByCompany: mock(async () => ({
     documentType: "certificate",
@@ -78,7 +81,9 @@ describe("src/server/orpc/routes/documents", () => {
   })
 
   test("generateAgreementProcedure returns base64 payload", async () => {
-    const { generateAgreementProcedure } = await import("@/server/orpc/routes/documents")
+    const { generateAgreementProcedure } = await import(
+      "@/server/orpc/routes/documents"
+    )
 
     const result = await callProcedure(generateAgreementProcedure, {
       input: { placementId: "placement-1", locale: "en" },
@@ -94,7 +99,9 @@ describe("src/server/orpc/routes/documents", () => {
 
   test("downloadDocumentProcedure maps not found errors", async () => {
     downloadDocumentMock.mockRejectedValueOnce(new Error("Document not found"))
-    const { downloadDocumentProcedure } = await import("@/server/orpc/routes/documents")
+    const { downloadDocumentProcedure } = await import(
+      "@/server/orpc/routes/documents"
+    )
 
     await expect(
       callProcedure(downloadDocumentProcedure, {
@@ -108,7 +115,9 @@ describe("src/server/orpc/routes/documents", () => {
   })
 
   test("verifyDocumentProcedure delegates to verification service", async () => {
-    const { verifyDocumentProcedure } = await import("@/server/orpc/routes/documents")
+    const { verifyDocumentProcedure } = await import(
+      "@/server/orpc/routes/documents"
+    )
 
     const result = await callProcedure(verifyDocumentProcedure, {
       input: { code: "INTX-ABCD-EF12" },

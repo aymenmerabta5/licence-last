@@ -13,7 +13,9 @@ export type CandidateCopilotIntent =
 
 export type AdminCopilotIntent = "admin_validation_summary"
 
-export type StudentCopilotIntent = "student_search_parse" | "student_cover_letter_draft"
+export type StudentCopilotIntent =
+  | "student_search_parse"
+  | "student_cover_letter_draft"
 
 export type NotificationsCopilotIntent = "notifications_summarize"
 
@@ -48,7 +50,12 @@ export interface ChatRequest {
 }
 
 // Role type for RBAC
-export type AssistantRole = "student" | "company_admin" | "university_admin" | "dept_head" | "super_admin"
+export type AssistantRole =
+  | "student"
+  | "company_admin"
+  | "university_admin"
+  | "dept_head"
+  | "super_admin"
 
 // Auth context resolved for data-retrieval tools
 export interface ToolAuthContext {

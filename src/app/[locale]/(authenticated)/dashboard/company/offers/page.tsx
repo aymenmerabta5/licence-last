@@ -6,7 +6,11 @@ import { requireRole } from "@/lib/auth-guards"
 
 function CompanyOffersFallback() {
   return (
-    <div className="max-w-4xl mx-auto space-y-8" aria-busy="true" aria-live="polite">
+    <div
+      className="max-w-4xl mx-auto space-y-8"
+      aria-busy="true"
+      aria-live="polite"
+    >
       <div className="flex items-start justify-between gap-6">
         <div className="space-y-2">
           <Skeleton className="h-10 w-48" />

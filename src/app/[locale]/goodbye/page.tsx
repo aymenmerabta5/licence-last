@@ -1,10 +1,9 @@
+import { ArrowRight } from "lucide-react"
 import * as motion from "motion/react-client"
 import { getTranslations, setRequestLocale } from "next-intl/server"
-import { ArrowRight } from "lucide-react"
-
-import { Link } from "@/i18n/routing"
 import { Separator } from "@/components/ui/separator"
-import { reveal, ease } from "@/lib/animations"
+import { Link } from "@/i18n/routing"
+import { ease, reveal } from "@/lib/animations"
 
 interface GoodbyePageProps {
   params: Promise<{ locale: string }>

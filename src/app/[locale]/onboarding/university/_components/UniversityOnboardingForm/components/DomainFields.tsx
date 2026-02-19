@@ -1,12 +1,12 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Globe, Plus, X } from "lucide-react"
+import { useTranslations } from "next-intl"
+import type { UniversityOnboardingFormApi } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/hooks/useUniversityOnboarding"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { errorMessage } from "@/lib/schemas/auth"
-import type { UniversityOnboardingFormApi } from "@/app/[locale]/onboarding/university/_components/UniversityOnboardingForm/hooks/useUniversityOnboarding"
 
 interface DomainFieldsProps {
   form: UniversityOnboardingFormApi

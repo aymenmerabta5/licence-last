@@ -1,20 +1,17 @@
 "use client"
 
-import { useEffect, useMemo, useRef } from "react"
 import { Loader2, Send } from "lucide-react"
-
+import { useEffect, useMemo, useRef } from "react"
+import { ConversationMessages } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/ConversationMessages"
+import { ConversationThreadHeader } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/ConversationThreadHeader"
+import type {
+  MessagesRole,
+  MessageThread,
+  ThreadMessage,
+} from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
-
-import { ConversationMessages } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/ConversationMessages"
-import { ConversationThreadHeader } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/ConversationThreadHeader"
-
-import type {
-  MessageThread,
-  MessagesRole,
-  ThreadMessage,
-} from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
 
 interface ConversationPaneProps {
   role: MessagesRole
@@ -30,7 +27,10 @@ interface ConversationPaneProps {
   sendErrorMessage: string | null
 }
 
-function getThreadTitle(thread: MessageThread | null, role: MessagesRole): string {
+function getThreadTitle(
+  thread: MessageThread | null,
+  role: MessagesRole,
+): string {
   if (!thread) {
     return "Conversation"
   }
@@ -59,7 +59,7 @@ export function ConversationPane({
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [selectedThread?.id, messages.length])
+  }, [])
 
   const threadTitle = useMemo(
     () => getThreadTitle(selectedThread, role),
@@ -98,7 +98,10 @@ export function ConversationPane({
           messagesEndRef={messagesEndRef}
         />
 
-        <form onSubmit={handleSubmit} className="mt-3 border-t border-border/60 pt-3">
+        <form
+          onSubmit={handleSubmit}
+          className="mt-3 border-t border-border/60 pt-3"
+        >
           <Textarea
             value={draft}
             onChange={(event) => onDraftChange(event.target.value)}
@@ -133,9 +136,7 @@ export function ConversationPane({
           </div>
 
           {sendErrorMessage && (
-            <p className="mt-2 text-xs text-destructive">
-              {sendErrorMessage}
-            </p>
+            <p className="mt-2 text-xs text-destructive">{sendErrorMessage}</p>
           )}
         </form>
       </div>

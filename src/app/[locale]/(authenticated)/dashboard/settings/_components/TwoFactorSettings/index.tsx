@@ -1,22 +1,29 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { ShieldCheck } from "lucide-react"
-
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-
-import { useTwoFactorSetup } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings/hooks/useTwoFactorSetup"
-import { EnableFlow } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings/components/EnableFlow"
+import { useTranslations } from "next-intl"
 import { BackupCodesDisplay } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings/components/BackupCodesDisplay"
 import { DisableConfirm } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings/components/DisableConfirm"
+import { EnableFlow } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings/components/EnableFlow"
+
+import { useTwoFactorSetup } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings/hooks/useTwoFactorSetup"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 interface TwoFactorSettingsProps {
   isTwoFactorEnabled: boolean
 }
 
-export function TwoFactorSettings({ isTwoFactorEnabled }: TwoFactorSettingsProps) {
+export function TwoFactorSettings({
+  isTwoFactorEnabled,
+}: TwoFactorSettingsProps) {
   const t = useTranslations("dashboard.settings.twoFactor")
   const state = useTwoFactorSetup(isTwoFactorEnabled)
 
@@ -55,7 +62,9 @@ export function TwoFactorSettings({ isTwoFactorEnabled }: TwoFactorSettingsProps
             variant={isTwoFactorEnabled ? "editorial-outline" : "editorial"}
             size="editorial-sm"
             className="rounded-xl border-border/40 hover:border-heading ms-13"
-            onClick={isTwoFactorEnabled ? state.startDisable : state.startEnable}
+            onClick={
+              isTwoFactorEnabled ? state.startDisable : state.startEnable
+            }
           >
             {isTwoFactorEnabled ? t("disable") : t("enable")}
           </Button>
@@ -66,7 +75,10 @@ export function TwoFactorSettings({ isTwoFactorEnabled }: TwoFactorSettingsProps
         )}
 
         {state.phase === "showBackupCodes" && (
-          <BackupCodesDisplay codes={state.backupCodes} onDone={state.finishSetup} />
+          <BackupCodesDisplay
+            codes={state.backupCodes}
+            onDone={state.finishSetup}
+          />
         )}
 
         {state.phase === "disabling" && <DisableConfirm state={state} />}

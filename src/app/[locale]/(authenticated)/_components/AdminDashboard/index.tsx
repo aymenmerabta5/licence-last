@@ -1,15 +1,13 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { Loader2 } from "lucide-react"
-
-import { ease } from "@/lib/animations"
-
+import * as motion from "motion/react-client"
 import { PlatformBulletin } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/PlatformBulletin"
 import { StatusBreakdown } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/StatusBreakdown"
 import { TrustLeaderboard } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/TrustLeaderboard"
 import { UniversityKpiGrid } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/UniversityKpiGrid"
 import { useAdminDashboardData } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/hooks/useAdminDashboardData"
+import { ease } from "@/lib/animations"
 
 interface AdminDashboardProps {
   user: {
@@ -21,13 +19,8 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ user }: AdminDashboardProps) {
-  const {
-    isSuperAdmin,
-    stats,
-    universityStats,
-    isLoading,
-    trustIndices,
-  } = useAdminDashboardData(user.role)
+  const { isSuperAdmin, stats, universityStats, isLoading, trustIndices } =
+    useAdminDashboardData(user.role)
 
   if (isLoading) {
     return (
@@ -56,7 +49,9 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
           <div className="relative">
             <div className="flex items-center justify-between mb-6">
               <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary [[dir=rtl]_&]:tracking-normal">
-                {isSuperAdmin ? "Platform Intelligence" : "University Operations"}
+                {isSuperAdmin
+                  ? "Platform Intelligence"
+                  : "University Operations"}
               </span>
               <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hidden sm:block [[dir=rtl]_&]:tracking-normal">
                 {new Date()

@@ -1,12 +1,11 @@
 ﻿import { useTranslations } from "next-intl"
-
-import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
-import { FormSection } from "@/components/form-fields"
 import type {
   OnboardingFormApi,
   SkillGroupingResult,
   StudentSkillTag,
 } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/types"
+import { FormSection } from "@/components/form-fields"
+import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
 
 interface StudentSkillsSectionProps {
   form: OnboardingFormApi
@@ -30,16 +29,23 @@ export function StudentSkillsSection({
   const t = useTranslations("onboarding.student")
 
   return (
-    <FormSection title={`${skillsSectionIndex} - ${t("skillsSection")}`} delay={0.18}>
+    <FormSection
+      title={`${skillsSectionIndex} - ${t("skillsSection")}`}
+      delay={0.18}
+    >
       <p className="text-xs text-muted-foreground">
-        {selectedDepartmentId ? t("skillsHint") : t("skillsSelectDepartmentFirst")}
+        {selectedDepartmentId
+          ? t("skillsHint")
+          : t("skillsSelectDepartmentFirst")}
       </p>
 
       <form.Field name="skillTagIds">
         {(field) => {
           const toggleSkill = (skillId: string) => {
             if (field.state.value.includes(skillId)) {
-              field.handleChange(field.state.value.filter((id) => id !== skillId))
+              field.handleChange(
+                field.state.value.filter((id) => id !== skillId),
+              )
               return
             }
 
@@ -52,7 +58,9 @@ export function StudentSkillsSection({
             <div className="space-y-5">
               {selectedDepartmentId && departmentSkills.length > 0 ? (
                 <div className="space-y-3">
-                  <p className="text-[11px] font-semibold text-primary">{t("recommendedSkills")}</p>
+                  <p className="text-[11px] font-semibold text-primary">
+                    {t("recommendedSkills")}
+                  </p>
                   <SkillCategoryGrid
                     groups={departmentGrouping.groups}
                     categoryOrder={departmentGrouping.categoryOrder}
@@ -65,7 +73,9 @@ export function StudentSkillsSection({
                 </div>
               ) : null}
 
-              {selectedDepartmentId && departmentSkills.length > 0 && otherSkills.length > 0 ? (
+              {selectedDepartmentId &&
+              departmentSkills.length > 0 &&
+              otherSkills.length > 0 ? (
                 <div className="border-t border-border/50" />
               ) : null}
 
@@ -94,7 +104,9 @@ export function StudentSkillsSection({
                     <div
                       key={index}
                       className={`h-1.5 w-1.5 rounded-full transition-colors duration-200 ${
-                        index < field.state.value.length ? "bg-primary" : "bg-border"
+                        index < field.state.value.length
+                          ? "bg-primary"
+                          : "bg-border"
                       }`}
                     />
                   ))}

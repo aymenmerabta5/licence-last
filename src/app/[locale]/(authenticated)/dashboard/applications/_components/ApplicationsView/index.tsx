@@ -1,16 +1,14 @@
 "use client"
 
+import { Loader2, Search } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Loader2, Search } from "lucide-react"
-
-import { Link } from "@/i18n/routing"
-import { Button } from "@/components/ui/button"
-import { TimelineModal } from "@/components/TimelineModal"
-import { ease, reveal } from "@/lib/animations"
-
 import { PipelineBoard } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsView/components/PipelineBoard"
 import { useApplications } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsView/hooks/useApplications"
+import { TimelineModal } from "@/components/TimelineModal"
+import { Button } from "@/components/ui/button"
+import { Link } from "@/i18n/routing"
+import { ease, reveal } from "@/lib/animations"
 
 export function ApplicationsView() {
   const t = useTranslations("dashboard.applications")
@@ -35,7 +33,9 @@ export function ApplicationsView() {
         <h1 className="font-serif text-3xl tracking-tight text-heading">
           {t("title")} - Pipeline
         </h1>
-        <p className="mt-1 text-sm font-light text-muted-foreground">{t("subtitle")}</p>
+        <p className="mt-1 text-sm font-light text-muted-foreground">
+          {t("subtitle")}
+        </p>
       </motion.div>
 
       {isLoading && (

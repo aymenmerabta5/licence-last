@@ -64,10 +64,10 @@ global.URL = window.URL
 // @ts-expect-error happy-dom type mismatch
 global.location = window.location
 
-
 // @ts-expect-error happy-dom type mismatch - getComputedStyle signature differs
 global.getComputedStyle = window.getComputedStyle.bind(window)
-global.requestAnimationFrame = (callback: FrameRequestCallback) => setTimeout(callback, 16)
+global.requestAnimationFrame = (callback: FrameRequestCallback) =>
+  setTimeout(callback, 16)
 global.cancelAnimationFrame = (id: number) => clearTimeout(id)
 
 // Mock matchMedia if not present

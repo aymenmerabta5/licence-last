@@ -1,4 +1,4 @@
-import { Section, Text, Heading } from "@react-email/components"
+import { Heading, Section, Text } from "@react-email/components"
 import EmailLayout from "@/server/email/templates/EmailLayout"
 
 export default function TwoFactorOtpEmail({

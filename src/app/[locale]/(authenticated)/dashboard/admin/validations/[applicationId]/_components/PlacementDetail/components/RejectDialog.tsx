@@ -1,8 +1,8 @@
 "use client"
 
+import { Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -32,9 +32,7 @@ export function RejectDialog({
         animate={{ opacity: 1, scale: 1 }}
         className="bg-background border border-border p-6 max-w-md w-full space-y-4"
       >
-        <h3 className="font-serif text-lg text-heading">
-          {t("rejectTitle")}
-        </h3>
+        <h3 className="font-serif text-lg text-heading">{t("rejectTitle")}</h3>
         <p className="text-sm text-muted-foreground">
           {t("rejectDescription", { name: studentName })}
         </p>

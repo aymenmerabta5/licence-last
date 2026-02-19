@@ -1,8 +1,8 @@
 "use client"
 
+import { AlertTriangle, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Loader2, AlertTriangle } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { ease } from "@/lib/animations"

@@ -1,10 +1,9 @@
 import { getTranslations } from "next-intl/server"
-
-import { localeRedirect } from "@/lib/navigation"
+import { RecruiterDashboard } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard"
 import { requireRole } from "@/lib/auth-guards"
 import { formatDateLong } from "@/lib/date"
+import { localeRedirect } from "@/lib/navigation"
 import { getCompanyByUserId } from "@/server/services/companies/get"
-import { RecruiterDashboard } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard"
 
 export default async function CompanyDashboardPage() {
   const user = await requireRole(["company_admin"])
@@ -29,7 +28,9 @@ export default async function CompanyDashboardPage() {
         </h1>
         <p className="text-muted-foreground text-sm font-light tracking-wide max-w-2xl">
           Company portal is live. Submitted{" "}
-          <span className="text-foreground/70">{formatDateLong(company.createdAt)}</span>
+          <span className="text-foreground/70">
+            {formatDateLong(company.createdAt)}
+          </span>
           , currently{" "}
           <span className="text-foreground/70">{company.status}</span>.
         </p>
@@ -39,4 +40,3 @@ export default async function CompanyDashboardPage() {
     </div>
   )
 }
-

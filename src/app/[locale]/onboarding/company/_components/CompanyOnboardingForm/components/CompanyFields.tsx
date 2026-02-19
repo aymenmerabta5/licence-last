@@ -1,10 +1,10 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Building2, FileText, Globe } from "lucide-react"
-import { TextField, TextAreaField } from "@/components/form-fields"
-import { errorMessage } from "@/lib/schemas/auth"
+import { useTranslations } from "next-intl"
 import type { CompanyOnboardingFormApi } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm/hooks/useCompanyOnboarding"
+import { TextAreaField, TextField } from "@/components/form-fields"
+import { errorMessage } from "@/lib/schemas/auth"
 
 interface CompanyFieldsProps {
   form: CompanyOnboardingFormApi

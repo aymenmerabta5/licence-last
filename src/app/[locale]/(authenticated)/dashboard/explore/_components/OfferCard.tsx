@@ -1,12 +1,12 @@
 "use client"
 
+import { ArrowRight, Building2, Clock, MapPin, Users } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { MapPin, Clock, Users, Building2, ArrowRight } from "lucide-react"
 
 import { Link } from "@/i18n/routing"
+import { INTERNSHIP_TYPE_COLORS } from "@/lib/constants/internship"
 import { cn } from "@/lib/utils"
 import { getWilayaName } from "@/lib/wilayas"
-import { INTERNSHIP_TYPE_COLORS } from "@/lib/constants/internship"
 
 interface OfferCardProps {
   offer: {
@@ -98,7 +98,9 @@ export function OfferCard({ offer }: OfferCardProps) {
             </span>
             {offer.workMode && (
               <span className="inline-flex items-center px-2 py-0.5 text-[9px] tracking-wider uppercase border border-border/60 text-muted-foreground/60 font-medium [[dir=rtl]_&]:tracking-normal">
-                {t(`workModeLabel.${offer.workMode}` as "workModeLabel.on_site")}
+                {t(
+                  `workModeLabel.${offer.workMode}` as "workModeLabel.on_site",
+                )}
               </span>
             )}
           </div>

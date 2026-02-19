@@ -2,22 +2,20 @@
 
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
-import { reveal, revealWithDelay } from "@/lib/animations"
-
-import { useDepartmentsActions } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/hooks/useDepartmentsActions"
-import { useAssignHeadDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/hooks/useAssignHeadDialog"
-import { useDepartmentsData } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/hooks/useDepartmentsData"
-import { useDepartmentsViewState } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/hooks/useDepartmentsViewState"
 import { AssignHeadDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/AssignHeadDialog"
 import { BulkCreateForm } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/BulkCreateForm"
 import { CreateDepartmentForm } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/CreateDepartmentForm"
 import { DeleteDepartmentDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DeleteDepartmentDialog"
+import { DepartmentSkillsModal } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal"
 import { DepartmentsHeader } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentsHeader"
 import { DepartmentsListSection } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentsListSection"
-import { DepartmentSkillsModal } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal"
 import { RemoveHeadDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/RemoveHeadDialog"
+import { useAssignHeadDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/hooks/useAssignHeadDialog"
+import { useDepartmentsActions } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/hooks/useDepartmentsActions"
+import { useDepartmentsData } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/hooks/useDepartmentsData"
+import { useDepartmentsViewState } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/hooks/useDepartmentsViewState"
 import type { DepartmentItem } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/types"
+import { reveal, revealWithDelay } from "@/lib/animations"
 
 export function DepartmentsView() {
   const t = useTranslations("dashboard.admin.departments")

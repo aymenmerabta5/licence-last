@@ -218,7 +218,8 @@ describe("src/server/services/messages/mark-thread-read", () => {
     expect(dbOnConflictDoUpdate).toHaveBeenCalledTimes(1)
 
     const dbValuesCalls = dbValues.mock.calls as unknown as unknown[][]
-    const dbOnConflictCalls = dbOnConflictDoUpdate.mock.calls as unknown as unknown[][]
+    const dbOnConflictCalls = dbOnConflictDoUpdate.mock
+      .calls as unknown as unknown[][]
 
     const valuesPayload = dbValuesCalls[0]?.[0] as {
       threadId: string

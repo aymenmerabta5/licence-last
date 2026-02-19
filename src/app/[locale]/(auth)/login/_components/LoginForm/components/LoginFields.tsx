@@ -1,16 +1,16 @@
 "use client"
 
+import { Eye, EyeOff, Lock, Mail } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Mail, Lock, Eye, EyeOff } from "lucide-react"
-import { errorMessage } from "@/lib/schemas/auth"
-import { Label } from "@/components/ui/label"
+import type { LoginFormApi } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/useLoginForm"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group"
-import type { LoginFormApi } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/useLoginForm"
+import { Label } from "@/components/ui/label"
+import { errorMessage } from "@/lib/schemas/auth"
 
 interface LoginFieldsProps {
   form: LoginFormApi
@@ -18,7 +18,11 @@ interface LoginFieldsProps {
   onTogglePassword: () => void
 }
 
-export function LoginFields({ form, showPassword, onTogglePassword }: LoginFieldsProps) {
+export function LoginFields({
+  form,
+  showPassword,
+  onTogglePassword,
+}: LoginFieldsProps) {
   const t = useTranslations("auth.login")
 
   return (
@@ -83,9 +87,7 @@ export function LoginFields({ form, showPassword, onTogglePassword }: LoginField
               <InputGroupAddon align="inline-end">
                 <InputGroupButton
                   onClick={onTogglePassword}
-                  aria-label={
-                    showPassword ? "Hide password" : "Show password"
-                  }
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
                     <EyeOff className="h-4 w-4" />

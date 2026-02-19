@@ -15,7 +15,9 @@ export interface UserPublicRecord {
   createdAt: Date
 }
 
-export async function getUserById(userId: string): Promise<UserPublicRecord | null> {
+export async function getUserById(
+  userId: string,
+): Promise<UserPublicRecord | null> {
   const [row] = await db
     .select({
       id: user.id,
@@ -32,4 +34,3 @@ export async function getUserById(userId: string): Promise<UserPublicRecord | nu
 
   return row ?? null
 }
-

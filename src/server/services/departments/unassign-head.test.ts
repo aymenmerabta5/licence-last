@@ -10,10 +10,11 @@ const mockTxUpdateWhere = mock(() => Promise.resolve())
 const mockTxUpdateSet = mock(() => ({ where: mockTxUpdateWhere }))
 const mockTxUpdate = mock(() => ({ set: mockTxUpdateSet }))
 
-const mockTransaction = mock(async (callback: (tx: { update: typeof mockTxUpdate }) => Promise<unknown>) =>
-  callback({
-    update: mockTxUpdate,
-  }),
+const mockTransaction = mock(
+  async (callback: (tx: { update: typeof mockTxUpdate }) => Promise<unknown>) =>
+    callback({
+      update: mockTxUpdate,
+    }),
 )
 
 mock.module("@/server/db", () => ({
@@ -45,14 +46,20 @@ describe("unassignDepartmentHead", () => {
   test("should throw when department is not found", async () => {
     mockLimit.mockResolvedValueOnce([])
 
-    const { unassignDepartmentHead } = await import("@/server/services/departments/unassign-head")
-    expect(unassignDepartmentHead("missing-department")).rejects.toThrow("Department not found")
+    const { unassignDepartmentHead } = await import(
+      "@/server/services/departments/unassign-head"
+    )
+    expect(unassignDepartmentHead("missing-department")).rejects.toThrow(
+      "Department not found",
+    )
   })
 
   test("should clear department head and demote dept head users", async () => {
     mockLimit.mockResolvedValueOnce([{ id: "dept-1" }])
 
-    const { unassignDepartmentHead } = await import("@/server/services/departments/unassign-head")
+    const { unassignDepartmentHead } = await import(
+      "@/server/services/departments/unassign-head"
+    )
     const result = await unassignDepartmentHead("dept-1")
 
     expect(result).toEqual({ success: true, departmentId: "dept-1" })

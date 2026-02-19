@@ -25,7 +25,11 @@ interface SavedOffersListProps {
   onUnsave: (offerId: string) => Promise<void>
 }
 
-export function SavedOffersList({ offers, unsaving, onUnsave }: SavedOffersListProps) {
+export function SavedOffersList({
+  offers,
+  unsaving,
+  onUnsave,
+}: SavedOffersListProps) {
   if (offers.length === 0) {
     return (
       <div className="border border-dashed border-border/40 p-12 text-center text-sm text-muted-foreground">
@@ -41,7 +45,10 @@ export function SavedOffersList({ offers, unsaving, onUnsave }: SavedOffersListP
         const initial = offer.companyName.charAt(0).toUpperCase()
 
         return (
-          <article key={offer.offerId} className="border border-border/50 p-5 space-y-4">
+          <article
+            key={offer.offerId}
+            className="border border-border/50 p-5 space-y-4"
+          >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-start gap-3 min-w-0">
                 {offer.companyLogoUrl ? (
@@ -57,7 +64,9 @@ export function SavedOffersList({ offers, unsaving, onUnsave }: SavedOffersListP
                   </div>
                 )}
                 <div className="min-w-0">
-                  <h3 className="font-serif text-lg text-heading leading-tight line-clamp-2">{offer.title}</h3>
+                  <h3 className="font-serif text-lg text-heading leading-tight line-clamp-2">
+                    {offer.title}
+                  </h3>
                   <p className="text-xs text-muted-foreground mt-1 inline-flex items-center gap-1">
                     <Building2 className="h-3.5 w-3.5" />
                     {offer.companyName}
@@ -79,7 +88,9 @@ export function SavedOffersList({ offers, unsaving, onUnsave }: SavedOffersListP
               </Button>
             </div>
 
-            <p className="text-sm text-muted-foreground line-clamp-2">{offer.description}</p>
+            <p className="text-sm text-muted-foreground line-clamp-2">
+              {offer.description}
+            </p>
 
             <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
               {wilaya && (
@@ -98,14 +109,19 @@ export function SavedOffersList({ offers, unsaving, onUnsave }: SavedOffersListP
 
             <div className="flex flex-wrap gap-1.5">
               {offer.skills.slice(0, 5).map((skill) => (
-                <span key={skill.id} className="px-2 py-0.5 text-[10px] border border-primary/20 text-primary bg-primary/5">
+                <span
+                  key={skill.id}
+                  className="px-2 py-0.5 text-[10px] border border-primary/20 text-primary bg-primary/5"
+                >
                   {skill.name}
                 </span>
               ))}
             </div>
 
             <Link
-              href={`/dashboard/student/offers/${offer.offerId}` as "/dashboard"}
+              href={
+                `/dashboard/student/offers/${offer.offerId}` as "/dashboard"
+              }
               className="inline-flex items-center text-xs font-semibold text-primary hover:underline"
             >
               View details

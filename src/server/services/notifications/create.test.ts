@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockInsert = mock(() => ({}) as any)
@@ -34,10 +34,12 @@ describe("src/server/services/notifications/create", () => {
     mockSelect.mockReturnValue({ from: mockFrom })
     mockFrom.mockReturnValue({ where: mockWhere })
     mockWhere.mockReturnValue({ limit: mockLimit })
-    mockLimit.mockResolvedValue([{
-      inAppEnabled: true,
-      emailEnabled: true,
-    }])
+    mockLimit.mockResolvedValue([
+      {
+        inAppEnabled: true,
+        emailEnabled: true,
+      },
+    ])
   })
 
   test("should insert a notification", async () => {
@@ -56,10 +58,12 @@ describe("src/server/services/notifications/create", () => {
   })
 
   test("should skip insert when in-app notifications are disabled", async () => {
-    mockLimit.mockResolvedValueOnce([{
-      inAppEnabled: false,
-      emailEnabled: true,
-    }])
+    mockLimit.mockResolvedValueOnce([
+      {
+        inAppEnabled: false,
+        emailEnabled: true,
+      },
+    ])
 
     const { createNotification } = await import(
       "@/server/services/notifications/create?fresh=2" as string

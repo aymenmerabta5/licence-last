@@ -1,10 +1,10 @@
 "use client"
 
+import { ArrowRight, Shield } from "lucide-react"
 import * as motion from "motion/react-client"
-import { Shield, ArrowRight } from "lucide-react"
 import { Link } from "@/i18n/routing"
-import { cn } from "@/lib/utils"
 import { ease } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
 interface TrustEntry {
   companyId: string

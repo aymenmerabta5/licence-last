@@ -15,10 +15,11 @@ const mockTxUpdateWhere = mock(() => Promise.resolve())
 const mockTxUpdateSet = mock(() => ({ where: mockTxUpdateWhere }))
 const mockTxUpdate = mock(() => ({ set: mockTxUpdateSet }))
 
-const mockTransaction = mock(async (callback: (tx: { update: typeof mockTxUpdate }) => Promise<unknown>) =>
-  callback({
-    update: mockTxUpdate,
-  }),
+const mockTransaction = mock(
+  async (callback: (tx: { update: typeof mockTxUpdate }) => Promise<unknown>) =>
+    callback({
+      update: mockTxUpdate,
+    }),
 )
 
 const mockCreateUser = mock(() =>
@@ -87,9 +88,13 @@ describe("assignDepartmentHeadByEmail", () => {
       .mockResolvedValueOnce([
         { id: "dept-1", name: "Computer Science", universityId: "uni-1" },
       ])
-      .mockResolvedValueOnce([{ id: "user-1", role: "student", name: "Existing Head" }])
+      .mockResolvedValueOnce([
+        { id: "user-1", role: "student", name: "Existing Head" },
+      ])
 
-    const { assignDepartmentHeadByEmail } = await import("@/server/services/departments/assign-head-by-email")
+    const { assignDepartmentHeadByEmail } = await import(
+      "@/server/services/departments/assign-head-by-email"
+    )
     const result = await assignDepartmentHeadByEmail({
       departmentId: "dept-1",
       headEmail: "head@university.dz",
@@ -123,7 +128,9 @@ describe("assignDepartmentHeadByEmail", () => {
         { id: "new-user-id", role: "dept_head", name: "Dr. New Head" },
       ])
 
-    const { assignDepartmentHeadByEmail } = await import("@/server/services/departments/assign-head-by-email")
+    const { assignDepartmentHeadByEmail } = await import(
+      "@/server/services/departments/assign-head-by-email"
+    )
     const result = await assignDepartmentHeadByEmail({
       departmentId: "dept-1",
       headEmail: "new-head@university.dz",
@@ -142,7 +149,9 @@ describe("assignDepartmentHeadByEmail", () => {
   test("should throw when department is not found", async () => {
     mockLimit.mockResolvedValueOnce([])
 
-    const { assignDepartmentHeadByEmail } = await import("@/server/services/departments/assign-head-by-email")
+    const { assignDepartmentHeadByEmail } = await import(
+      "@/server/services/departments/assign-head-by-email"
+    )
     expect(
       assignDepartmentHeadByEmail({
         departmentId: "missing-dept",

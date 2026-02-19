@@ -42,7 +42,10 @@ export async function listUserSessions(userId: string, deps: SessionDeps = {}) {
   return result
 }
 
-export async function revokeSession(sessionToken: string, deps: SessionDeps = {}) {
+export async function revokeSession(
+  sessionToken: string,
+  deps: SessionDeps = {},
+) {
   const api = deps.authApi ?? getAuthApi()
   const getHeaders = deps.getHeaders ?? headers
   const result = await api.revokeUserSession({
@@ -53,7 +56,10 @@ export async function revokeSession(sessionToken: string, deps: SessionDeps = {}
   return result
 }
 
-export async function revokeAllSessions(userId: string, deps: SessionDeps = {}) {
+export async function revokeAllSessions(
+  userId: string,
+  deps: SessionDeps = {},
+) {
   const api = deps.authApi ?? getAuthApi()
   const getHeaders = deps.getHeaders ?? headers
   const result = await api.revokeUserSessions({

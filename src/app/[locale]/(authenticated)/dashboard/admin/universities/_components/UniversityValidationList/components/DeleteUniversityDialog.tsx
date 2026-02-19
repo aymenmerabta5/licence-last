@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from "react"
-import { useTranslations } from "next-intl"
 import { Loader2 } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import { useState } from "react"
+import type { UniversityListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
 import {
   AlertDialog,
   AlertDialogContent,
@@ -15,7 +15,6 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import type { UniversityListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
 
 interface DeleteUniversityDialogProps {
   open: boolean
@@ -48,7 +47,9 @@ export function DeleteUniversityDialog({
     <AlertDialog open={open} onOpenChange={handleOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle className="font-serif text-xl">{t("title")}</AlertDialogTitle>
+          <AlertDialogTitle className="font-serif text-xl">
+            {t("title")}
+          </AlertDialogTitle>
           <AlertDialogDescription>
             {t("description", { name: university?.name ?? "" })}
           </AlertDialogDescription>
@@ -65,7 +66,9 @@ export function DeleteUniversityDialog({
             id="delete-university-confirmation"
             value={confirmation}
             onChange={(event) => setConfirmation(event.target.value)}
-            placeholder={t("confirmationPlaceholder", { name: university?.name ?? "" })}
+            placeholder={t("confirmationPlaceholder", {
+              name: university?.name ?? "",
+            })}
             className="h-11 border-border/40"
             autoFocus
           />

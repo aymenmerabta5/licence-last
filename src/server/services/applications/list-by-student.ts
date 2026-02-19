@@ -2,15 +2,14 @@
 
 import "server-only"
 
-import { eq, and, desc, lt, or } from "drizzle-orm"
-import { cacheTag, cacheLife } from "next/cache"
-
-import { db } from "@/server/db"
-import { application } from "@/server/db/schema/applications"
-import { internshipOffer } from "@/server/db/schema/internships"
-import { company } from "@/server/db/schema/companies"
+import { and, desc, eq, lt, or } from "drizzle-orm"
+import { cacheLife, cacheTag } from "next/cache"
 import { CACHE_TAGS } from "@/lib/cache"
 import type { ApplicationStatus, PipelineStage } from "@/lib/schemas/enums"
+import { db } from "@/server/db"
+import { application } from "@/server/db/schema/applications"
+import { company } from "@/server/db/schema/companies"
+import { internshipOffer } from "@/server/db/schema/internships"
 
 interface ListParams {
   status?: ApplicationStatus

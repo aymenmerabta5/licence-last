@@ -1,4 +1,6 @@
-export function formatConversationTitle(title: string | null | undefined): string {
+export function formatConversationTitle(
+  title: string | null | undefined,
+): string {
   const t = title?.trim()
   return t && t.length > 0 ? t : "Untitled"
 }

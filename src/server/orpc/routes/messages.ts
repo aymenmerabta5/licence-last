@@ -7,11 +7,11 @@ import { z } from "zod"
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
 import {
+  authedProcedureGenerous,
   companyAdminProcedureGenerous,
   companyAdminProcedureStandard,
   studentProcedureGenerous,
   studentProcedureStandard,
-  authedProcedureGenerous,
 } from "@/server/orpc/rate-limited-procedures"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import {
@@ -55,18 +55,22 @@ function createMessageORPCError(error: MessageServiceError) {
   })
 }
 
-export const listMessageThreadsByCompanyProcedure = companyAdminProcedureGenerous
-  .input(
-    z
-      .object({
-        offerId: z.string().min(1).optional(),
-        limit: z.coerce.number().int().min(1).max(100).optional(),
-      })
-      .optional(),
-  )
-  .handler(async ({ input, context }) =>
-    listMessageThreadsByCompany(context.companyMembership.companyId, input ?? {}),
-  )
+export const listMessageThreadsByCompanyProcedure =
+  companyAdminProcedureGenerous
+    .input(
+      z
+        .object({
+          offerId: z.string().min(1).optional(),
+          limit: z.coerce.number().int().min(1).max(100).optional(),
+        })
+        .optional(),
+    )
+    .handler(async ({ input, context }) =>
+      listMessageThreadsByCompany(
+        context.companyMembership.companyId,
+        input ?? {},
+      ),
+    )
 
 export const listMessageThreadsByStudentProcedure = studentProcedureGenerous
   .input(

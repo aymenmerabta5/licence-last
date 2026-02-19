@@ -3,10 +3,10 @@ import "server-only"
 import { count, eq, sql } from "drizzle-orm"
 
 import { db } from "@/server/db"
+import { application } from "@/server/db/schema/applications"
 import { user } from "@/server/db/schema/auth"
 import { company } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
-import { application } from "@/server/db/schema/applications"
 import { placement } from "@/server/db/schema/placements"
 
 export interface AdminStats {
@@ -61,9 +61,7 @@ export async function getAdminStats(): Promise<AdminStats> {
   const placedStudents = placedRow?.value ?? 0
   const unplacedStudents = Math.max(0, totalStudents - placedStudents)
   const placementRate =
-    totalStudents > 0
-      ? Math.round((placedStudents / totalStudents) * 100)
-      : 0
+    totalStudents > 0 ? Math.round((placedStudents / totalStudents) * 100) : 0
 
   return {
     totalStudents,

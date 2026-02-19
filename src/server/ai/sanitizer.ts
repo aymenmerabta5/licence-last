@@ -2,7 +2,11 @@ import "server-only"
 
 import type { UIMessage } from "ai"
 
-export { redactSecrets, stripProviderMetadata, extractTextFromParts } from "@/server/services/assistant/utils"
+export {
+  extractTextFromParts,
+  redactSecrets,
+  stripProviderMetadata,
+} from "@/server/services/assistant/utils"
 
 export function errorToText(error: unknown) {
   if (error == null) return "Unknown error"
@@ -11,7 +15,9 @@ export function errorToText(error: unknown) {
   return JSON.stringify(error)
 }
 
-export function sanitizeUIMessagesForModel(messages: UIMessage[]): Array<Omit<UIMessage, "id">> {
+export function sanitizeUIMessagesForModel(
+  messages: UIMessage[],
+): Array<Omit<UIMessage, "id">> {
   return messages.map((message) => {
     const rest = { ...message }
     delete (rest as { id?: string }).id

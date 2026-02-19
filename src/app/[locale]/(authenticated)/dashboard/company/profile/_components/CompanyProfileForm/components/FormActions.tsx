@@ -1,6 +1,6 @@
+import { Loader2, Save } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Loader2, Save } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { ease } from "@/lib/animations"
@@ -21,7 +21,11 @@ export function FormActions({ form }: FormActionsProps) {
       className="pt-4"
     >
       <div className="h-px bg-border/30 mb-8" />
-      <form.Subscribe selector={(state: { isSubmitting: boolean }) => [state.isSubmitting] as const}>
+      <form.Subscribe
+        selector={(state: { isSubmitting: boolean }) =>
+          [state.isSubmitting] as const
+        }
+      >
         {([isSubmitting]: [boolean]) => (
           <Button
             type="submit"

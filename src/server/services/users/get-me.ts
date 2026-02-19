@@ -22,11 +22,15 @@ interface GetMeDependencies {
 
 const DEFAULT_GET_ME_DEPENDENCIES: GetMeDependencies = {
   getCompanyByUserId: async (userId) => {
-    const { getCompanyByUserId } = await import("@/server/services/companies/get")
+    const { getCompanyByUserId } = await import(
+      "@/server/services/companies/get"
+    )
     return getCompanyByUserId(userId)
   },
   getUniversityByUserId: async (userId) => {
-    const { getUniversityByUserId } = await import("@/server/services/universities/get")
+    const { getUniversityByUserId } = await import(
+      "@/server/services/universities/get"
+    )
     return getUniversityByUserId(userId)
   },
 }
@@ -35,16 +39,22 @@ const DEFAULT_GET_ME_DEPENDENCIES: GetMeDependencies = {
  * Get the current user's profile + company/university data.
  * Pure business logic — caller must provide an authenticated user.
  */
-export async function getMe(user: {
-  id: string
-  email: string
-  role?: string | null
-  name?: string | null
-  image?: string | null
-  onboardingCompleted?: boolean | null
-  twoFactorEnabled?: boolean | null
-}, dependencies: Partial<GetMeDependencies> = {}) {
-  const resolvedDependencies = { ...DEFAULT_GET_ME_DEPENDENCIES, ...dependencies }
+export async function getMe(
+  user: {
+    id: string
+    email: string
+    role?: string | null
+    name?: string | null
+    image?: string | null
+    onboardingCompleted?: boolean | null
+    twoFactorEnabled?: boolean | null
+  },
+  dependencies: Partial<GetMeDependencies> = {},
+) {
+  const resolvedDependencies = {
+    ...DEFAULT_GET_ME_DEPENDENCIES,
+    ...dependencies,
+  }
 
   let companyData = null
   if (user.role === "company_admin") {
@@ -60,7 +70,11 @@ export async function getMe(user: {
   }
 
   let universityData = null
-  if (user.role === "student" || user.role === "university_admin" || user.role === "dept_head") {
+  if (
+    user.role === "student" ||
+    user.role === "university_admin" ||
+    user.role === "dept_head"
+  ) {
     const uni = await resolvedDependencies.getUniversityByUserId(user.id)
     if (uni) {
       universityData = {

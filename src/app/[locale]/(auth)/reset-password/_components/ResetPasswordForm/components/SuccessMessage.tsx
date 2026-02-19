@@ -1,8 +1,8 @@
 "use client"
 
+import { ArrowLeft, CheckCircle2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { CheckCircle2, ArrowLeft } from "lucide-react"
 
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"

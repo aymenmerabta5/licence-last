@@ -1,43 +1,41 @@
 import "server-only"
 
-import { headers } from "next/headers"
 import {
   convertToModelMessages,
   createUIMessageStream,
   createUIMessageStreamResponse,
   stepCountIs,
   streamText,
-  type UIMessage,
   type ToolSet,
+  type UIMessage,
 } from "ai"
-
+import { headers } from "next/headers"
+import { asRecord, getStringProp } from "@/lib/ai/tool-output"
 import { auth } from "@/lib/auth"
 import { ASSISTANT_RATE_LIMIT } from "@/lib/constants/rate-limits"
-import { asRecord, getStringProp } from "@/lib/ai/tool-output"
+import { isRoleAllowedForIntent } from "@/server/ai/access"
+import { resolveToolAuthContext } from "@/server/ai/auth-context"
+import { generateConversationTitle } from "@/server/ai/auto-title"
+import { assistantContextToJson } from "@/server/ai/context"
+import { getPoeModel } from "@/server/ai/model"
+import { persistUserMessage, resolvePersistence } from "@/server/ai/persistence"
+import { buildSystemPrompt, resolvePersona } from "@/server/ai/prompts"
+import { checkRateLimit } from "@/server/ai/rate-limit"
+import { errorToText, sanitizeUIMessagesForModel } from "@/server/ai/sanitizer"
+import { getArcadeTools } from "@/server/ai/tools/arcade"
+import { createDataRetrievalTools } from "@/server/ai/tools/data-retrieval"
+import {
+  getLatestUserText,
+  resolveGmailToolName,
+  shouldForceGmailTool,
+} from "@/server/ai/tools/gmail-resolver"
+import { createInternalTools } from "@/server/ai/tools/internal"
+import { ASSISTANT_INTENTS, type AssistantIntent } from "@/server/ai/types"
 import { checkAdminApproval } from "@/server/auth/approval-gate"
-import { isServiceError } from "@/server/services/errors"
 import { getAssistantConversationByIdForCompany } from "@/server/services/assistant/get"
 import { appendAssistantMessage } from "@/server/services/assistant/messages"
 import { extractTextFromParts } from "@/server/services/assistant/utils"
-
-import { ASSISTANT_INTENTS, type AssistantIntent } from "@/server/ai/types"
-import { isRoleAllowedForIntent } from "@/server/ai/access"
-import { assistantContextToJson } from "@/server/ai/context"
-import { checkRateLimit } from "@/server/ai/rate-limit"
-import { getPoeModel } from "@/server/ai/model"
-import { sanitizeUIMessagesForModel, errorToText } from "@/server/ai/sanitizer"
-import { resolvePersona, buildSystemPrompt } from "@/server/ai/prompts"
-import { createInternalTools } from "@/server/ai/tools/internal"
-import { getArcadeTools } from "@/server/ai/tools/arcade"
-import {
-  shouldForceGmailTool,
-  resolveGmailToolName,
-  getLatestUserText,
-} from "@/server/ai/tools/gmail-resolver"
-import { resolvePersistence, persistUserMessage } from "@/server/ai/persistence"
-import { generateConversationTitle } from "@/server/ai/auto-title"
-import { resolveToolAuthContext } from "@/server/ai/auth-context"
-import { createDataRetrievalTools } from "@/server/ai/tools/data-retrieval"
+import { isServiceError } from "@/server/services/errors"
 
 // Constants
 const MAX_MESSAGES = 100
@@ -64,18 +62,21 @@ export async function handleChatRequest(req: Request): Promise<Response> {
   }
 
   if (body.messages.length > MAX_MESSAGES) {
-    return new Response(`Too many messages. Maximum is ${MAX_MESSAGES}.`, { status: 400 })
+    return new Response(`Too many messages. Maximum is ${MAX_MESSAGES}.`, {
+      status: 400,
+    })
   }
 
   const totalChars = body.messages.reduce((acc, m) => {
-    const text = m.parts
-      .map((p) => (p.type === "text" ? p.text : ""))
-      .join("")
+    const text = m.parts.map((p) => (p.type === "text" ? p.text : "")).join("")
     return acc + text.length
   }, 0)
 
   if (totalChars > MAX_CHARS) {
-    return new Response(`Request too large. Maximum is ${MAX_CHARS} characters.`, { status: 400 })
+    return new Response(
+      `Request too large. Maximum is ${MAX_CHARS} characters.`,
+      { status: 400 },
+    )
   }
 
   // Authenticate
@@ -159,23 +160,27 @@ export async function handleChatRequest(req: Request): Promise<Response> {
 
         // Only auto-title if no title exists yet
         if (conversation && !conversation.title) {
-          const userText = extractTextFromParts(lastUiMessage.parts as unknown[])
+          const userText = extractTextFromParts(
+            lastUiMessage.parts as unknown[],
+          )
           if (userText) {
             // Fire and forget - don't await
-            generateConversationTitle(userText).then(async (title) => {
-              if (title) {
-                const { updateAssistantConversationTitle } = await import(
-                  "@/server/services/assistant/update"
-                )
-                await updateAssistantConversationTitle({
-                  conversationId,
-                  companyId: companyIdForTitle,
-                  title,
-                })
-              }
-            }).catch(() => {
-              // Silently fail - auto-title is non-critical
-            })
+            generateConversationTitle(userText)
+              .then(async (title) => {
+                if (title) {
+                  const { updateAssistantConversationTitle } = await import(
+                    "@/server/services/assistant/update"
+                  )
+                  await updateAssistantConversationTitle({
+                    conversationId,
+                    companyId: companyIdForTitle,
+                    title,
+                  })
+                }
+              })
+              .catch(() => {
+                // Silently fail - auto-title is non-critical
+              })
           }
         }
       }
@@ -208,13 +213,14 @@ export async function handleChatRequest(req: Request): Promise<Response> {
   const internalTools = createInternalTools({ contextJson })
   const dataTools = toolAuthCtx ? createDataRetrievalTools(toolAuthCtx) : {}
   const hasDataTools = Object.keys(dataTools).length > 0
-  const shouldForceTool = intent ? Object.prototype.hasOwnProperty.call(internalTools, intent) : false
+  const shouldForceTool = intent ? Object.hasOwn(internalTools, intent) : false
 
   // Arcade tools
   const latestUserText = getLatestUserText(body.messages)
   const wantsEmailAction = shouldForceGmailTool(latestUserText)
 
-  const arcadeEnabled = role === "company_admin" && !shouldForceTool && intent === null
+  const arcadeEnabled =
+    role === "company_admin" && !shouldForceTool && intent === null
   const arcadeTools = arcadeEnabled
     ? await getArcadeTools({
         userId: session.user.id,
@@ -275,7 +281,11 @@ export async function handleChatRequest(req: Request): Promise<Response> {
     },
     execute: async ({ writer }) => {
       const result = streamText({
-        model: getPoeModel(persistence?.ok && persistence.modelId ? persistence.modelId : undefined),
+        model: getPoeModel(
+          persistence?.ok && persistence.modelId
+            ? persistence.modelId
+            : undefined,
+        ),
         system,
         messages: modelMessages,
         tools,

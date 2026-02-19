@@ -53,6 +53,9 @@ export async function updateUniversity(
     throw new ServiceError("UNIVERSITY_NOT_FOUND", "University not found")
   }
 
-  log.info({ universityId, event: "university_updated" }, "University profile updated")
+  log.info(
+    { universityId, event: "university_updated" },
+    "University profile updated",
+  )
   return { universityId: updated.universityId }
 }

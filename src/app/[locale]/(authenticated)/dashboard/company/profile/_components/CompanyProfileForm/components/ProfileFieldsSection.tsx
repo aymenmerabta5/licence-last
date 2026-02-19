@@ -1,10 +1,18 @@
+import {
+  Building2,
+  FileText,
+  Globe,
+  Mail,
+  MapPin,
+  Phone,
+  User,
+} from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { FileText, Globe, Mail, MapPin, Phone, User, Building2 } from "lucide-react"
 
 import { SelectField, TextAreaField, TextField } from "@/components/form-fields"
-import { errorMessage } from "@/lib/schemas/auth"
 import { ease } from "@/lib/animations"
+import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYA_OPTIONS } from "@/lib/wilayas"
 
 interface ProfileFieldsSectionProps {
@@ -45,9 +53,16 @@ export function ProfileFieldsSection({ form }: ProfileFieldsSectionProps) {
         transition={{ duration: 0.5, ease, delay: 0.15 }}
         className="space-y-5"
       >
-        <SectionDivider icon={FileText} label={t("descriptionLabel") ?? "About"} />
+        <SectionDivider
+          icon={FileText}
+          label={t("descriptionLabel") ?? "About"}
+        />
         <form.Field name="description">
-          {(field: { state: { value: string; meta: { errors: unknown[] } }; handleChange: (v: string) => void; handleBlur: () => void }) => (
+          {(field: {
+            state: { value: string; meta: { errors: unknown[] } }
+            handleChange: (v: string) => void
+            handleBlur: () => void
+          }) => (
             <TextAreaField
               id="company-description"
               label={t("description")}
@@ -62,7 +77,11 @@ export function ProfileFieldsSection({ form }: ProfileFieldsSectionProps) {
         </form.Field>
 
         <form.Field name="websiteUrl">
-          {(field: { state: { value: string; meta: { errors: unknown[] } }; handleChange: (v: string) => void; handleBlur: () => void }) => (
+          {(field: {
+            state: { value: string; meta: { errors: unknown[] } }
+            handleChange: (v: string) => void
+            handleBlur: () => void
+          }) => (
             <TextField
               id="company-website"
               type="url"
@@ -92,7 +111,11 @@ export function ProfileFieldsSection({ form }: ProfileFieldsSectionProps) {
         <SectionDivider icon={User} label={t("contactLabel") ?? "Contact"} />
 
         <form.Field name="representativeName">
-          {(field: { state: { value: string; meta: { errors: unknown[] } }; handleChange: (v: string) => void; handleBlur: () => void }) => (
+          {(field: {
+            state: { value: string; meta: { errors: unknown[] } }
+            handleChange: (v: string) => void
+            handleBlur: () => void
+          }) => (
             <TextField
               id="company-rep-name"
               label={t("representativeName")}
@@ -107,7 +130,11 @@ export function ProfileFieldsSection({ form }: ProfileFieldsSectionProps) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <form.Field name="phone">
-            {(field: { state: { value: string; meta: { errors: unknown[] } }; handleChange: (v: string) => void; handleBlur: () => void }) => (
+            {(field: {
+              state: { value: string; meta: { errors: unknown[] } }
+              handleChange: (v: string) => void
+              handleBlur: () => void
+            }) => (
               <TextField
                 id="company-phone"
                 type="tel"
@@ -122,7 +149,11 @@ export function ProfileFieldsSection({ form }: ProfileFieldsSectionProps) {
           </form.Field>
 
           <form.Field name="contactEmail">
-            {(field: { state: { value: string; meta: { errors: unknown[] } }; handleChange: (v: string) => void; handleBlur: () => void }) => (
+            {(field: {
+              state: { value: string; meta: { errors: unknown[] } }
+              handleChange: (v: string) => void
+              handleBlur: () => void
+            }) => (
               <TextField
                 id="company-contact-email"
                 type="email"
@@ -150,11 +181,18 @@ export function ProfileFieldsSection({ form }: ProfileFieldsSectionProps) {
         transition={{ duration: 0.5, ease, delay: 0.35 }}
         className="space-y-5"
       >
-        <SectionDivider icon={Building2} label={t("locationLabel") ?? "Location"} />
+        <SectionDivider
+          icon={Building2}
+          label={t("locationLabel") ?? "Location"}
+        />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <form.Field name="wilayaCode">
-            {(field: { state: { value: number; meta: { errors: unknown[] } }; handleChange: (v: number) => void; handleBlur: () => void }) => (
+            {(field: {
+              state: { value: number; meta: { errors: unknown[] } }
+              handleChange: (v: number) => void
+              handleBlur: () => void
+            }) => (
               <SelectField
                 id="company-wilaya"
                 label={t("wilaya")}
@@ -174,7 +212,11 @@ export function ProfileFieldsSection({ form }: ProfileFieldsSectionProps) {
           </form.Field>
 
           <form.Field name="address">
-            {(field: { state: { value: string; meta: { errors: unknown[] } }; handleChange: (v: string) => void; handleBlur: () => void }) => (
+            {(field: {
+              state: { value: string; meta: { errors: unknown[] } }
+              handleChange: (v: string) => void
+              handleBlur: () => void
+            }) => (
               <TextField
                 id="company-address"
                 label={t("address")}

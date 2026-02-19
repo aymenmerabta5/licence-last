@@ -39,7 +39,8 @@ export async function updateStudentProject(
 
   const nextStartDate =
     input.startDate !== undefined ? input.startDate : existing.startDate
-  const nextEndDate = input.endDate !== undefined ? input.endDate : existing.endDate
+  const nextEndDate =
+    input.endDate !== undefined ? input.endDate : existing.endDate
 
   if (nextStartDate && nextEndDate && nextStartDate > nextEndDate) {
     throw new StudentCvServiceError(
@@ -55,11 +56,15 @@ export async function updateStudentProject(
       summary: input.summary?.trim() ?? existing.summary,
       projectUrl:
         input.projectUrl !== undefined
-          ? (input.projectUrl?.trim() ? input.projectUrl.trim() : null)
+          ? input.projectUrl?.trim()
+            ? input.projectUrl.trim()
+            : null
           : existing.projectUrl,
       repositoryUrl:
         input.repositoryUrl !== undefined
-          ? (input.repositoryUrl?.trim() ? input.repositoryUrl.trim() : null)
+          ? input.repositoryUrl?.trim()
+            ? input.repositoryUrl.trim()
+            : null
           : existing.repositoryUrl,
       startDate: nextStartDate,
       endDate: nextEndDate,

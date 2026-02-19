@@ -1,12 +1,11 @@
 "use client"
 
+import { GraduationCap, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { GraduationCap, Loader2 } from "lucide-react"
-
-import { ease } from "@/lib/animations"
 import { UniversityCard } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/UniversityCard"
 import type { UniversityListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
+import { ease } from "@/lib/animations"
 
 interface UniversityValidationContentProps {
   universities: UniversityListItem[]

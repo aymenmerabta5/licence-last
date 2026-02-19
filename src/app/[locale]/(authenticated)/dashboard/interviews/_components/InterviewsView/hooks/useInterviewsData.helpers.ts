@@ -1,10 +1,9 @@
-import { getErrorMessage } from "@/lib/error-message"
-
 import type {
   CompanyApplicationOption,
   CompanyOfferOption,
 } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 import { isInterviewsFeatureDisabledError } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/utils"
+import { getErrorMessage } from "@/lib/error-message"
 
 interface CompanyOfferSource {
   id: string

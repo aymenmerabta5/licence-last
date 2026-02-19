@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
@@ -108,7 +108,9 @@ describe("src/server/services/applications/company-accept", () => {
   test("should throw when application is not found", async () => {
     mockSelectResults.push([])
 
-    const { companyAcceptApplication } = await import("@/server/services/applications/company-accept?fresh=1")
+    const { companyAcceptApplication } = await import(
+      "@/server/services/applications/company-accept?fresh=1"
+    )
     await expect(
       companyAcceptApplication("app-1", "company-1", "actor-1"),
     ).rejects.toThrow("Application not found")
@@ -130,7 +132,9 @@ describe("src/server/services/applications/company-accept", () => {
     ])
     mockSelectResults.push([{ id: "admin-1" }, { id: "admin-2" }])
 
-    const { companyAcceptApplication } = await import("@/server/services/applications/company-accept?fresh=2")
+    const { companyAcceptApplication } = await import(
+      "@/server/services/applications/company-accept?fresh=2"
+    )
     const result = await companyAcceptApplication(
       "app-1",
       "company-1",

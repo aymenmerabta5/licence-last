@@ -1,24 +1,22 @@
 "use client"
 
+import { ArrowRight, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { ArrowRight, Loader2 } from "lucide-react"
-
-import { useRouter } from "@/i18n/routing"
-import { reveal, ease } from "@/lib/animations"
-import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"
-import { Button } from "@/components/ui/button"
-import { ServerError } from "@/components/ServerError"
-
-import { useOfferForm } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferForm"
-import { useOfferCopilot } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferCopilot"
-import { useSkillTags } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useSkillTags"
-import { CopilotPanel } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/CopilotPanel"
 import { BasicInfoSection } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/BasicInfoSection"
+import { CopilotPanel } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/CopilotPanel"
 import { DetailsSection } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/DetailsSection"
 import { LanguageRequirementsSection } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/LanguageRequirementsSection"
 import { SkillsSection } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/SkillsSection"
+import { useOfferCopilot } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferCopilot"
+import { useOfferForm } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferForm"
+import { useSkillTags } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useSkillTags"
 import type { OfferFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
+import { ServerError } from "@/components/ServerError"
+import { Button } from "@/components/ui/button"
+import { useRouter } from "@/i18n/routing"
+import { ease, reveal } from "@/lib/animations"
+import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"
 
 export function OfferForm({ mode, initialData }: OfferFormProps) {
   const t = useTranslations("dashboard.company.offers.form")
@@ -74,9 +72,7 @@ export function OfferForm({ mode, initialData }: OfferFormProps) {
         transition={{ duration: 0.6, ease, delay: 0.25 }}
         className="flex items-center gap-3"
       >
-        <form.Subscribe
-          selector={(state) => [state.isSubmitting] as const}
-        >
+        <form.Subscribe selector={(state) => [state.isSubmitting] as const}>
           {([isSubmitting]) => (
             <Button
               type="submit"

@@ -1,8 +1,6 @@
 import { CalendarDays } from "lucide-react"
-
-import { Badge } from "@/components/ui/badge"
-
 import type { InterviewsRole } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
+import { Badge } from "@/components/ui/badge"
 
 interface InterviewsHeaderProps {
   role: InterviewsRole

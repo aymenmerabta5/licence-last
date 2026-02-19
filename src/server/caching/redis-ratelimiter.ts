@@ -1,8 +1,8 @@
 import "server-only"
 
 import { RedisRatelimiter } from "@orpc/experimental-ratelimit/redis"
-import { getRedisClient, isRedisAvailable } from "@/server/caching/redis"
 import { env } from "@/env"
+import { getRedisClient, isRedisAvailable } from "@/server/caching/redis"
 
 let rateLimiter: RedisRatelimiter | null = null
 

@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
@@ -66,7 +66,9 @@ describe("src/server/services/stats/get-admin-stats", () => {
       { status: "admin_validated", value: 1 },
     ])
 
-    const { getAdminStats } = await import("@/server/services/stats/get-admin-stats")
+    const { getAdminStats } = await import(
+      "@/server/services/stats/get-admin-stats"
+    )
     const stats = await getAdminStats()
 
     expect(stats.totalStudents).toBe(10)

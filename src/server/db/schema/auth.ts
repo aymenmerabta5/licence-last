@@ -1,8 +1,7 @@
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core"
-
+import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import { department } from "@/server/db/schema/departments"
 import { userRoleEnum } from "@/server/db/schema/enums"
 import { university } from "@/server/db/schema/universities"
-import { department } from "@/server/db/schema/departments"
 
 export const user = pgTable(
   "user",
@@ -17,7 +16,9 @@ export const user = pgTable(
     departmentId: text("department_id").references(() => department.id, {
       onDelete: "set null",
     }),
-    onboardingCompleted: boolean("onboarding_completed").default(false).notNull(),
+    onboardingCompleted: boolean("onboarding_completed")
+      .default(false)
+      .notNull(),
     name: text("name"),
     image: text("image"),
     twoFactorEnabled: boolean("two_factor_enabled").default(false),

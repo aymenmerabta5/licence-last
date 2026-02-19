@@ -1,13 +1,13 @@
 "use client"
 
-import { useUniversityValidation } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/hooks/useUniversityValidation"
-import { useUniversityValidationState } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/hooks/useUniversityValidationState"
-import { UniversityValidationHeader } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/UniversityValidationHeader"
+import { DeleteUniversityDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/DeleteUniversityDialog"
+import { EditUniversityDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/EditUniversityDialog"
+import { RejectDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/RejectDialog"
 import { UniversityStatusFilter } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/UniversityStatusFilter"
 import { UniversityValidationContent } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/UniversityValidationContent"
-import { RejectDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/RejectDialog"
-import { EditUniversityDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/EditUniversityDialog"
-import { DeleteUniversityDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/DeleteUniversityDialog"
+import { UniversityValidationHeader } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/UniversityValidationHeader"
+import { useUniversityValidation } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/hooks/useUniversityValidation"
+import { useUniversityValidationState } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/hooks/useUniversityValidationState"
 import type { UpdateUniversityPayload } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
 
 export function UniversityValidationList() {

@@ -1,17 +1,21 @@
 "use client"
 
-import { useSyncExternalStore } from "react"
+import { Moon, Sun } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { useTheme } from "next-themes"
-import { Sun, Moon } from "lucide-react"
-import * as motion from "motion/react-client"
+import { useSyncExternalStore } from "react"
 
 const emptySubscribe = () => () => {}
 
 export function ThemeToggle() {
   const t = useTranslations("theme.toggle")
   const { theme, setTheme } = useTheme()
-  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false)
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  )
 
   if (!mounted) {
     return (

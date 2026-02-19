@@ -40,7 +40,9 @@ describe("src/server/orpc/routes/stats", () => {
   })
 
   test("getAdminStatsProcedure delegates to service", async () => {
-    const { getAdminStatsProcedure } = await import("@/server/orpc/routes/stats")
+    const { getAdminStatsProcedure } = await import(
+      "@/server/orpc/routes/stats"
+    )
 
     const result = await callProcedure(getAdminStatsProcedure, { context: {} })
 
@@ -49,7 +51,9 @@ describe("src/server/orpc/routes/stats", () => {
   })
 
   test("getUniversityDashboardStatsProcedure rejects non-university admins", async () => {
-    const { getUniversityDashboardStatsProcedure } = await import("@/server/orpc/routes/stats")
+    const { getUniversityDashboardStatsProcedure } = await import(
+      "@/server/orpc/routes/stats"
+    )
 
     await expect(
       callProcedure(getUniversityDashboardStatsProcedure, {
@@ -64,7 +68,9 @@ describe("src/server/orpc/routes/stats", () => {
   })
 
   test("getUniversityDashboardStatsProcedure delegates with university id", async () => {
-    const { getUniversityDashboardStatsProcedure } = await import("@/server/orpc/routes/stats")
+    const { getUniversityDashboardStatsProcedure } = await import(
+      "@/server/orpc/routes/stats"
+    )
 
     const result = await callProcedure(getUniversityDashboardStatsProcedure, {
       context: {

@@ -1,10 +1,15 @@
+import {
+  Boxes,
+  FolderTree,
+  Pencil,
+  Trash2,
+  UserCheck,
+  UserMinus,
+} from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Boxes, FolderTree, Pencil, Trash2, UserCheck, UserMinus } from "lucide-react"
-
+import type { DepartmentItem } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-
-import type { DepartmentItem } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/types"
 
 interface DepartmentCardProps {
   department: DepartmentItem

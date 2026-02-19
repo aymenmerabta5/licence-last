@@ -34,8 +34,8 @@ const tx = {
   insert: txInsert,
 }
 
-const mockTransaction = mock(async (callback: (trx: typeof tx) => Promise<unknown>) =>
-  callback(tx),
+const mockTransaction = mock(
+  async (callback: (trx: typeof tx) => Promise<unknown>) => callback(tx),
 )
 
 mock.module("@/server/db", () => ({
@@ -203,7 +203,9 @@ describe("src/server/services/interviews/propose", () => {
         "company-1",
         "actor-1",
       ),
-    ).rejects.toThrow("Interview cannot be proposed for this application status")
+    ).rejects.toThrow(
+      "Interview cannot be proposed for this application status",
+    )
   })
 
   test("should throw when interview already exists for the application", async () => {
@@ -291,7 +293,8 @@ describe("src/server/services/interviews/propose", () => {
     expect(txSelect).toHaveBeenCalledTimes(2)
     expect(txInsert).toHaveBeenCalledTimes(2)
 
-    const txInsertValueCalls = txInsertValues.mock.calls as unknown as unknown[][]
+    const txInsertValueCalls = txInsertValues.mock
+      .calls as unknown as unknown[][]
 
     const interviewInsertPayload = txInsertValueCalls[0]?.[0] as {
       id: string

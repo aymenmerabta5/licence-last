@@ -1,11 +1,11 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/universities/reject")
+
 import { university } from "@/server/db/schema/universities"
 
 /**
@@ -31,6 +31,9 @@ export async function rejectUniversity(
     throw new Error("University not found")
   }
 
-  log.info({ universityId: updated.id, event: "university_rejected" }, "University rejected")
+  log.info(
+    { universityId: updated.id, event: "university_rejected" },
+    "University rejected",
+  )
   return { universityId: updated.id, name: updated.name }
 }

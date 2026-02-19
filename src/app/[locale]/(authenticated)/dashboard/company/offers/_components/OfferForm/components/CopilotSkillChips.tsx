@@ -40,7 +40,8 @@ export function CopilotSkillChips({
           ?.filter((skillTagName) => {
             const normalized = skillTagName.toLowerCase()
             return !skillTagIds?.some(
-              (skillTagId) => skillMap.get(skillTagId)?.toLowerCase() === normalized,
+              (skillTagId) =>
+                skillMap.get(skillTagId)?.toLowerCase() === normalized,
             )
           })
           .map((skillTagName) => (

@@ -1,9 +1,13 @@
 export const STATUS_STYLES: Record<string, string> = {
   applied: "bg-muted text-muted-foreground",
-  company_accepted: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-  company_refused: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
-  admin_validated: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-  admin_rejected: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
+  company_accepted:
+    "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+  company_refused:
+    "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
+  admin_validated:
+    "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+  admin_rejected:
+    "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
   withdrawn: "bg-muted text-muted-foreground/60",
 }
 

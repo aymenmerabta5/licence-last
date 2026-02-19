@@ -1,125 +1,80 @@
 import {
-  getMeProcedure,
-  updateMeProcedure,
-  uploadAvatarProcedure,
-  deleteAvatarProcedure,
-  listMySessionsProcedure,
-  revokeMySessionProcedure,
-  revokeOtherSessionsProcedure,
-} from "@/server/orpc/routes/users"
+  banUserProcedure,
+  createUserProcedure,
+  listUserSessionsProcedure,
+  listUsersProcedure,
+  removeUserProcedure,
+  revokeAllSessionsProcedure,
+  revokeSessionProcedure,
+  setPasswordProcedure,
+  setRoleProcedure,
+  unbanUserProcedure,
+  updateUserProcedure,
+} from "@/server/orpc/routes/admin-users"
 import {
-  listCompaniesProcedure,
-  getCompanyByIdProcedure,
-  createCompanyProcedure,
-  listCompanyMembersProcedure,
-  inviteCompanyMemberProcedure,
-  removeCompanyMemberProcedure,
-  updateCompanyProcedure,
-  approveCompanyProcedure,
-  rejectCompanyProcedure,
-  suspendCompanyProcedure,
-  reactivateCompanyProcedure,
-  uploadCompanyLogoProcedure,
-  getCompanyTrustIndexProcedure,
-  listCompanyTrustIndicesProcedure,
-  submitCompanyQualityFeedbackProcedure,
-  submitCompanyReportProcedure,
-  listCompanyReportsProcedure,
-  resolveCompanyReportProcedure,
-} from "@/server/orpc/routes/companies"
-import { listSkillTagsProcedure, listSkillTagsPrioritizedProcedure } from "@/server/orpc/routes/skills"
-import {
-  getStudentProfileProcedure,
-  getPublicStudentProfileProcedure,
-  upsertStudentProfileProcedure,
-  upsertStudentProfileDetailsProcedure,
-} from "@/server/orpc/routes/students"
-import {
-  getOfferByIdProcedure,
-  listOffersByCompanyProcedure,
-  listSavedOffersProcedure,
-  checkOfferSavedProcedure,
-  saveOfferProcedure,
-  unsaveOfferProcedure,
-  createOfferProcedure,
-  updateOfferProcedure,
-  deleteOfferProcedure,
-  updateOfferStatusProcedure,
-  parseSearchQueryProcedure,
-  generateOfferDraftProcedure,
-  improveOfferDescriptionProcedure,
-  suggestOfferSkillsProcedure,
-} from "@/server/orpc/routes/offers"
-import {
-  searchOffersProcedure,
-  checkApplicationProcedure,
   applyToOfferProcedure,
-  listStudentApplicationsProcedure,
-  withdrawApplicationProcedure,
-  listByOfferProcedure,
+  checkApplicationProcedure,
   companyAcceptProcedure,
   companyRefuseProcedure,
-  updatePipelineStageProcedure,
-  getTimelineProcedure,
   generateCoverLetterProcedure,
+  getTimelineProcedure,
+  listByOfferProcedure,
+  listStudentApplicationsProcedure,
+  searchOffersProcedure,
+  updatePipelineStageProcedure,
+  withdrawApplicationProcedure,
 } from "@/server/orpc/routes/applications"
-import {
-  listPendingProcedure,
-  validateProcedure,
-  rejectProcedure,
-  deptHeadListPendingProcedure,
-  deptHeadValidateProcedure,
-  deptHeadRejectProcedure,
-  generateValidationSummaryProcedure,
-} from "@/server/orpc/routes/placements"
-import {
-  listDepartmentsProcedure,
-  createDepartmentProcedure,
-  updateDepartmentProcedure,
-  assignDepartmentHeadProcedure,
-  unassignDepartmentHeadProcedure,
-  deleteDepartmentProcedure,
-  bulkCreateDepartmentsProcedure,
-  syncDepartmentSkillsProcedure,
-  getDepartmentSkillsProcedure,
-} from "@/server/orpc/routes/departments"
-import {
-  downloadCompanyDocumentProcedure,
-  generateAgreementProcedure,
-  generateCompanyCertificateProcedure,
-  listCompanyDocumentsProcedure,
-  listStudentDocumentsProcedure,
-  downloadDocumentProcedure,
-  verifyDocumentProcedure,
-} from "@/server/orpc/routes/documents"
-import {
-  listNotificationsProcedure,
-  getNotificationPreferencesProcedure,
-  updateNotificationPreferencesProcedure,
-  markAllNotificationsReadProcedure,
-  markNotificationReadProcedure,
-} from "@/server/orpc/routes/notifications"
-import {
-  getAdminStatsProcedure,
-  getUniversityDashboardStatsProcedure,
-} from "@/server/orpc/routes/stats"
 import {
   appendAssistantMessageProcedure,
   createAssistantConversationProcedure,
   deleteAssistantConversationProcedure,
   getAssistantConversationProcedure,
-  listAssistantModelsProcedure,
   listAssistantConversationsProcedure,
   listAssistantMessagesProcedure,
+  listAssistantModelsProcedure,
   updateAssistantConversationModelProcedure,
   updateAssistantConversationTitleProcedure,
 } from "@/server/orpc/routes/assistant"
 import {
-  captureReadinessSnapshotProcedure,
-  getReadinessHistoryProcedure,
-  getScoreProcedure,
-  getSkillGapProcedure,
-} from "@/server/orpc/routes/matching"
+  approveCompanyProcedure,
+  createCompanyProcedure,
+  getCompanyByIdProcedure,
+  getCompanyTrustIndexProcedure,
+  inviteCompanyMemberProcedure,
+  listCompaniesProcedure,
+  listCompanyMembersProcedure,
+  listCompanyReportsProcedure,
+  listCompanyTrustIndicesProcedure,
+  reactivateCompanyProcedure,
+  rejectCompanyProcedure,
+  removeCompanyMemberProcedure,
+  resolveCompanyReportProcedure,
+  submitCompanyQualityFeedbackProcedure,
+  submitCompanyReportProcedure,
+  suspendCompanyProcedure,
+  updateCompanyProcedure,
+  uploadCompanyLogoProcedure,
+} from "@/server/orpc/routes/companies"
+import {
+  assignDepartmentHeadProcedure,
+  bulkCreateDepartmentsProcedure,
+  createDepartmentProcedure,
+  deleteDepartmentProcedure,
+  getDepartmentSkillsProcedure,
+  listDepartmentsProcedure,
+  syncDepartmentSkillsProcedure,
+  unassignDepartmentHeadProcedure,
+  updateDepartmentProcedure,
+} from "@/server/orpc/routes/departments"
+import {
+  downloadCompanyDocumentProcedure,
+  downloadDocumentProcedure,
+  generateAgreementProcedure,
+  generateCompanyCertificateProcedure,
+  listCompanyDocumentsProcedure,
+  listStudentDocumentsProcedure,
+  verifyDocumentProcedure,
+} from "@/server/orpc/routes/documents"
 import {
   confirmInterviewSlotProcedure,
   listInterviewsForCompanyProcedure,
@@ -127,27 +82,11 @@ import {
   proposeInterviewSlotsProcedure,
 } from "@/server/orpc/routes/interviews"
 import {
-  listUsersProcedure,
-  createUserProcedure,
-  setRoleProcedure,
-  banUserProcedure,
-  unbanUserProcedure,
-  removeUserProcedure,
-  setPasswordProcedure,
-  updateUserProcedure,
-  listUserSessionsProcedure,
-  revokeSessionProcedure,
-  revokeAllSessionsProcedure,
-} from "@/server/orpc/routes/admin-users"
-import {
-  listUniversitiesProcedure,
-  getUniversityByIdProcedure,
-  createUniversityProcedure,
-  updateUniversityProcedure,
-  deleteUniversityProcedure,
-  approveUniversityProcedure,
-  rejectUniversityProcedure,
-} from "@/server/orpc/routes/universities"
+  captureReadinessSnapshotProcedure,
+  getReadinessHistoryProcedure,
+  getScoreProcedure,
+  getSkillGapProcedure,
+} from "@/server/orpc/routes/matching"
 import {
   listMessageThreadsByCompanyProcedure,
   listMessageThreadsByStudentProcedure,
@@ -156,6 +95,46 @@ import {
   sendOfferMessageByCompanyProcedure,
   sendOfferMessageByStudentProcedure,
 } from "@/server/orpc/routes/messages"
+import {
+  getNotificationPreferencesProcedure,
+  listNotificationsProcedure,
+  markAllNotificationsReadProcedure,
+  markNotificationReadProcedure,
+  updateNotificationPreferencesProcedure,
+} from "@/server/orpc/routes/notifications"
+import {
+  checkOfferSavedProcedure,
+  createOfferProcedure,
+  deleteOfferProcedure,
+  generateOfferDraftProcedure,
+  getOfferByIdProcedure,
+  improveOfferDescriptionProcedure,
+  listOffersByCompanyProcedure,
+  listSavedOffersProcedure,
+  parseSearchQueryProcedure,
+  saveOfferProcedure,
+  suggestOfferSkillsProcedure,
+  unsaveOfferProcedure,
+  updateOfferProcedure,
+  updateOfferStatusProcedure,
+} from "@/server/orpc/routes/offers"
+import {
+  deptHeadListPendingProcedure,
+  deptHeadRejectProcedure,
+  deptHeadValidateProcedure,
+  generateValidationSummaryProcedure,
+  listPendingProcedure,
+  rejectProcedure,
+  validateProcedure,
+} from "@/server/orpc/routes/placements"
+import {
+  listSkillTagsPrioritizedProcedure,
+  listSkillTagsProcedure,
+} from "@/server/orpc/routes/skills"
+import {
+  getAdminStatsProcedure,
+  getUniversityDashboardStatsProcedure,
+} from "@/server/orpc/routes/stats"
 import {
   createStudentExperienceProcedure,
   createStudentProjectProcedure,
@@ -167,6 +146,30 @@ import {
   updateStudentProjectProcedure,
   uploadStudentResumeProcedure,
 } from "@/server/orpc/routes/student-cv"
+import {
+  getPublicStudentProfileProcedure,
+  getStudentProfileProcedure,
+  upsertStudentProfileDetailsProcedure,
+  upsertStudentProfileProcedure,
+} from "@/server/orpc/routes/students"
+import {
+  approveUniversityProcedure,
+  createUniversityProcedure,
+  deleteUniversityProcedure,
+  getUniversityByIdProcedure,
+  listUniversitiesProcedure,
+  rejectUniversityProcedure,
+  updateUniversityProcedure,
+} from "@/server/orpc/routes/universities"
+import {
+  deleteAvatarProcedure,
+  getMeProcedure,
+  listMySessionsProcedure,
+  revokeMySessionProcedure,
+  revokeOtherSessionsProcedure,
+  updateMeProcedure,
+  uploadAvatarProcedure,
+} from "@/server/orpc/routes/users"
 
 export const appRouter = {
   users: {

@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 
 import { createStudentProfileSchema } from "@/lib/schemas/student"
 
@@ -6,9 +6,7 @@ function t(key: string) {
   return `t:${key}`
 }
 
-const DEFAULT_LANGUAGES = [
-  { languageCode: "en", proficiency: "b2" as const },
-]
+const DEFAULT_LANGUAGES = [{ languageCode: "en", proficiency: "b2" as const }]
 
 describe("src/lib/schemas/student", () => {
   describe("createStudentProfileSchema", () => {
@@ -50,7 +48,9 @@ describe("src/lib/schemas/student", () => {
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        const issue = result.error.issues.find((i) => i.path[0] === "skillTagIds")
+        const issue = result.error.issues.find(
+          (i) => i.path[0] === "skillTagIds",
+        )
         expect(issue?.message).toBe("t:skillsMin")
       }
     })
@@ -88,7 +88,9 @@ describe("src/lib/schemas/student", () => {
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        const issue = result.error.issues.find((i) => i.path[0] === "skillTagIds")
+        const issue = result.error.issues.find(
+          (i) => i.path[0] === "skillTagIds",
+        )
         expect(issue?.message).toBe("t:skillsMax")
       }
     })
@@ -118,7 +120,9 @@ describe("src/lib/schemas/student", () => {
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        const issue = result.error.issues.find((i) => i.path[0] === "portfolioUrl")
+        const issue = result.error.issues.find(
+          (i) => i.path[0] === "portfolioUrl",
+        )
         expect(issue?.message).toBe("t:portfolioUrlInvalid")
       }
     })

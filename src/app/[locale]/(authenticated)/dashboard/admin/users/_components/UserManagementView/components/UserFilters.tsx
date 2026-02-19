@@ -1,10 +1,9 @@
 "use client"
 
+import { Plus, Search } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Search, Plus } from "lucide-react"
-
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -22,7 +21,13 @@ interface UserFiltersProps {
   canCreate: boolean
 }
 
-const roles = ["all", "student", "company_admin", "university_admin", "super_admin"] as const
+const roles = [
+  "all",
+  "student",
+  "company_admin",
+  "university_admin",
+  "super_admin",
+] as const
 
 export function UserFilters({
   search,
@@ -46,7 +51,10 @@ export function UserFilters({
         />
       </div>
 
-      <Select value={roleFilter} onValueChange={(v) => v && onRoleFilterChange(v)}>
+      <Select
+        value={roleFilter}
+        onValueChange={(v) => v && onRoleFilterChange(v)}
+      >
         <SelectTrigger className="w-full sm:w-[180px]">
           <SelectValue placeholder={t("filterByRole")} />
         </SelectTrigger>

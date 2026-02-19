@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
 import { useMutation } from "@tanstack/react-query"
-
-import { orpcClient } from "@/server/orpc/client"
+import { useState } from "react"
+import type {
+  CopilotResult,
+  OfferCopilotIntent,
+} from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
 import { isInternshipType, isWorkMode } from "@/lib/schemas/enums"
-
-import type { OfferCopilotIntent, CopilotResult } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
+import { orpcClient } from "@/server/orpc/client"
 
 interface SkillTag {
   id: string
@@ -42,7 +43,9 @@ export function useOfferCopilot(
   skillTags: SkillTag[],
 ) {
   const [aiPrompt, setAiPrompt] = useState("")
-  const [activeIntent, setActiveIntent] = useState<OfferCopilotIntent | null>(null)
+  const [activeIntent, setActiveIntent] = useState<OfferCopilotIntent | null>(
+    null,
+  )
   const [result, setResult] = useState<CopilotResult | null>(null)
 
   function getFormContext() {
@@ -74,9 +77,12 @@ export function useOfferCopilot(
     if (data.workMode && isWorkMode(data.workMode)) {
       form.setFieldValue("workMode", data.workMode)
     }
-    if (data.wilayaCode != null) form.setFieldValue("wilayaCode", data.wilayaCode)
-    if (data.durationWeeks != null) form.setFieldValue("durationWeeks", data.durationWeeks)
-    if (data.maxPositions != null) form.setFieldValue("maxPositions", data.maxPositions)
+    if (data.wilayaCode != null)
+      form.setFieldValue("wilayaCode", data.wilayaCode)
+    if (data.durationWeeks != null)
+      form.setFieldValue("durationWeeks", data.durationWeeks)
+    if (data.maxPositions != null)
+      form.setFieldValue("maxPositions", data.maxPositions)
     if (data.applicationDeadlineAt != null) {
       form.setFieldValue("applicationDeadlineAt", data.applicationDeadlineAt)
     }
@@ -87,8 +93,15 @@ export function useOfferCopilot(
       form.setFieldValue("expectedEndDate", data.expectedEndDate)
     }
 
-    if (intent === "offer_generate_draft" || intent === "offer_suggest_skill_tags") {
-      const resolved = resolveSkillIds(data.skillTagIds, data.skillTagNames, skillTags)
+    if (
+      intent === "offer_generate_draft" ||
+      intent === "offer_suggest_skill_tags"
+    ) {
+      const resolved = resolveSkillIds(
+        data.skillTagIds,
+        data.skillTagNames,
+        skillTags,
+      )
       if (resolved.length > 0) form.setFieldValue("skillTagIds", resolved)
     }
   }
@@ -183,7 +196,10 @@ export function useOfferCopilot(
     suggestSkills.isPending
 
   const error =
-    generateDraft.error ?? improveDescription.error ?? suggestSkills.error ?? undefined
+    generateDraft.error ??
+    improveDescription.error ??
+    suggestSkills.error ??
+    undefined
 
   return {
     aiPrompt,

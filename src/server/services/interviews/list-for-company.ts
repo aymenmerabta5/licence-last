@@ -4,8 +4,8 @@ import { and, asc, desc, eq, inArray } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
-import { interview, interviewSlot } from "@/server/db/schema/interviews"
 import { internshipOffer } from "@/server/db/schema/internships"
+import { interview, interviewSlot } from "@/server/db/schema/interviews"
 
 interface ListCompanyInterviewsParams {
   offerId?: string
@@ -66,7 +66,12 @@ export async function listInterviewsForCompany(
       meetingUrl: interviewSlot.meetingUrl,
     })
     .from(interviewSlot)
-    .where(inArray(interviewSlot.interviewId, interviews.map((row) => row.id)))
+    .where(
+      inArray(
+        interviewSlot.interviewId,
+        interviews.map((row) => row.id),
+      ),
+    )
     .orderBy(asc(interviewSlot.startsAt))
 
   const slotsByInterview = new Map<string, typeof slots>()

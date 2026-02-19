@@ -1,9 +1,9 @@
 "use client"
 
-import { useCallback, useMemo, useState } from "react"
+import { ArrowRight, LayoutDashboard, LogOut, Menu } from "lucide-react"
 
 import { useLocale, useTranslations } from "next-intl"
-import { ArrowRight, LayoutDashboard, LogOut, Menu } from "lucide-react"
+import { useCallback, useMemo, useState } from "react"
 
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
@@ -17,8 +17,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
+import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { Link, useRouter } from "@/i18n/routing"
 import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
@@ -38,7 +38,7 @@ export function Navbar() {
       { href: "/for-companies" as const, label: t("forRecruiters") },
       { href: "/about" as const, label: t("about") },
     ],
-    [t]
+    [t],
   )
 
   const user = session?.user
@@ -70,7 +70,7 @@ export function Navbar() {
             onClick={() => setMobileOpen(true)}
             className={cn(
               "md:hidden p-2.5 rounded-full hover:bg-secondary/80 transition-colors",
-              "focus-visible:border-ring focus-visible:ring-ring/50 outline-none focus-visible:ring-3"
+              "focus-visible:border-ring focus-visible:ring-ring/50 outline-none focus-visible:ring-3",
             )}
             aria-label={t("aria.openMenu")}
           >
@@ -126,7 +126,7 @@ export function Navbar() {
                 <DropdownMenuTrigger
                   className={cn(
                     "flex items-center gap-2.5 p-1 rounded-full hover:bg-secondary/80 transition-all outline-none group",
-                    "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3"
+                    "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3",
                   )}
                   aria-label={t("aria.accountMenu")}
                 >
@@ -205,7 +205,7 @@ export function Navbar() {
                   onClick={() => setMobileOpen(false)}
                   className={cn(
                     "flex items-center justify-between px-3 py-2.5 rounded-lg",
-                    "text-sm font-medium tracking-wide text-foreground/70 hover:text-primary hover:bg-secondary/30 transition-colors"
+                    "text-sm font-medium tracking-wide text-foreground/70 hover:text-primary hover:bg-secondary/30 transition-colors",
                   )}
                 >
                   <span>{item.label}</span>
@@ -270,7 +270,9 @@ export function Navbar() {
                   size="editorial"
                   className="w-full"
                   nativeButton={false}
-                  render={<Link href="/login" onClick={() => setMobileOpen(false)} />}
+                  render={
+                    <Link href="/login" onClick={() => setMobileOpen(false)} />
+                  }
                 >
                   {t("getStarted")}
                 </Button>
@@ -289,4 +291,3 @@ export function Navbar() {
     </>
   )
 }
-

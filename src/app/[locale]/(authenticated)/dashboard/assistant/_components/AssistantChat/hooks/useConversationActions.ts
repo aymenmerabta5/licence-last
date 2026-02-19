@@ -1,6 +1,10 @@
 "use client"
 
-import { type QueryKey, useMutation, useQueryClient } from "@tanstack/react-query"
+import {
+  type QueryKey,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query"
 import { toast } from "sonner"
 
 import { orpc } from "@/server/orpc/client"
@@ -117,7 +121,7 @@ export function useConversationActions({
   )
 
   const handleCreateConversation = async () => {
-    const modelId = defaultModelId ?? (models[0]?.id ?? null)
+    const modelId = defaultModelId ?? models[0]?.id ?? null
     if (!modelId) return
 
     try {

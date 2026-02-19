@@ -1,5 +1,7 @@
-import { Loader2, LinkIcon, MapPin, UserRound } from "lucide-react"
-
+import { LinkIcon, Loader2, MapPin, UserRound } from "lucide-react"
+import { InterviewStatusBadge } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewStatusBadge"
+import type { CompanyInterviewView } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
+import { formatInterviewSlot } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/utils"
 import {
   Card,
   CardContent,
@@ -8,10 +10,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-
-import { InterviewStatusBadge } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewStatusBadge"
-import type { CompanyInterviewView } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
-import { formatInterviewSlot } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/utils"
 
 interface CompanyInterviewsSectionProps {
   interviews: CompanyInterviewView[]
@@ -59,10 +57,16 @@ export function CompanyInterviewsSection({
   return (
     <section className="space-y-4">
       {interviews.map((interview) => (
-        <Card key={interview.id} variant="editorial" className="cursor-default hover:bg-transparent">
+        <Card
+          key={interview.id}
+          variant="editorial"
+          className="cursor-default hover:bg-transparent"
+        >
           <CardHeader>
             <div className="space-y-1">
-              <CardTitle className="font-serif text-xl">{interview.offerTitle}</CardTitle>
+              <CardTitle className="font-serif text-xl">
+                {interview.offerTitle}
+              </CardTitle>
               <CardDescription className="inline-flex items-center gap-2">
                 <UserRound className="h-3.5 w-3.5" />
                 {interview.studentName ?? "Unnamed student"}
@@ -87,7 +91,9 @@ export function CompanyInterviewsSection({
                       isConfirmedSlot && "border-primary bg-primary/5",
                     )}
                   >
-                    <p className="text-sm font-medium">{formatInterviewSlot(slot)}</p>
+                    <p className="text-sm font-medium">
+                      {formatInterviewSlot(slot)}
+                    </p>
 
                     {slot.location && (
                       <p className="text-xs text-muted-foreground inline-flex items-center gap-2">

@@ -114,8 +114,12 @@ See [`.env.example`](.env.example) for the full list including production Docker
 bun run dev            # Start dev server
 bun run build          # Production build
 bun run start          # Start production server
-bun run lint           # ESLint
+bun run lint           # Biome lint + parity checks
+bun run lint:biome     # Biome lint only
+bun run lint:fix       # Biome autofix (lint + format)
+bun run format         # Biome format only
 bun run lint:imports   # Import/layer lint sweep
+bun run lint:next-parity # Next parity guard (img/link)
 bun run lint:architecture # Feature-folder architecture guard
 bun run lint:rtl-logical  # RTL logical CSS guard
 bun run typecheck      # TypeScript check

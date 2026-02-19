@@ -1,6 +1,6 @@
 ﻿import { GraduationCap, Languages, Plus, Trash2 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
-
+import type { OnboardingFormApi } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/types"
 import { FormSection, SelectField } from "@/components/form-fields"
 import { Button } from "@/components/ui/button"
 import {
@@ -9,13 +9,14 @@ import {
   LANGUAGE_CATALOG,
 } from "@/lib/constants/languages"
 import { errorMessage } from "@/lib/schemas/auth"
-import type { OnboardingFormApi } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/types"
 
 interface StudentLanguagesSectionProps {
   form: OnboardingFormApi
 }
 
-export function StudentLanguagesSection({ form }: StudentLanguagesSectionProps) {
+export function StudentLanguagesSection({
+  form,
+}: StudentLanguagesSectionProps) {
   const locale = useLocale()
   const t = useTranslations("onboarding.student")
   const languageLocale = locale === "fr" || locale === "ar" ? locale : "en"
@@ -33,15 +34,19 @@ export function StudentLanguagesSection({ form }: StudentLanguagesSectionProps) 
     <FormSection title={`04 - ${t("languagesSection")}`} delay={0.15}>
       <form.Field name="languages">
         {(field) => {
-          const selectedLanguageCodes = field.state.value.map((language) => language.languageCode)
-          const canAddLanguage = field.state.value.length < LANGUAGE_CATALOG.length
+          const selectedLanguageCodes = field.state.value.map(
+            (language) => language.languageCode,
+          )
+          const canAddLanguage =
+            field.state.value.length < LANGUAGE_CATALOG.length
 
           const addLanguage = () => {
             if (!canAddLanguage) return
 
             const nextLanguageCode =
-              LANGUAGE_CATALOG.find((entry) => !selectedLanguageCodes.includes(entry.code))
-                ?.code ?? DEFAULT_STUDENT_LANGUAGE_CODE
+              LANGUAGE_CATALOG.find(
+                (entry) => !selectedLanguageCodes.includes(entry.code),
+              )?.code ?? DEFAULT_STUDENT_LANGUAGE_CODE
 
             field.handleChange([
               ...field.state.value,
@@ -54,7 +59,9 @@ export function StudentLanguagesSection({ form }: StudentLanguagesSectionProps) 
 
           const removeLanguage = (index: number) => {
             field.handleChange(
-              field.state.value.filter((_, currentIndex) => currentIndex !== index),
+              field.state.value.filter(
+                (_, currentIndex) => currentIndex !== index,
+              ),
             )
           }
 
@@ -88,13 +95,15 @@ export function StudentLanguagesSection({ form }: StudentLanguagesSectionProps) 
 
           return (
             <div className="space-y-4">
-              <p className="text-xs text-muted-foreground">{t("languagesHint")}</p>
+              <p className="text-xs text-muted-foreground">
+                {t("languagesHint")}
+              </p>
 
               {field.state.value.map((language, index) => {
                 const languageLabel =
-                  LANGUAGE_CATALOG.find((entry) => entry.code === language.languageCode)?.labels[
-                    languageLocale
-                  ] ?? language.languageCode
+                  LANGUAGE_CATALOG.find(
+                    (entry) => entry.code === language.languageCode,
+                  )?.labels[languageLocale] ?? language.languageCode
 
                 return (
                   <div
@@ -133,7 +142,9 @@ export function StudentLanguagesSection({ form }: StudentLanguagesSectionProps) 
                       size="icon"
                       className="h-11 w-11 rounded-none"
                       onClick={() => removeLanguage(index)}
-                      aria-label={t("removeLanguageAria", { language: languageLabel })}
+                      aria-label={t("removeLanguageAria", {
+                        language: languageLabel,
+                      })}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -153,7 +164,10 @@ export function StudentLanguagesSection({ form }: StudentLanguagesSectionProps) 
               </Button>
 
               {field.state.meta.errors.length > 0 ? (
-                <p className="text-destructive text-[11px] tracking-wide" role="alert">
+                <p
+                  className="text-destructive text-[11px] tracking-wide"
+                  role="alert"
+                >
                   {errorMessage(field.state.meta.errors[0])}
                 </p>
               ) : null}

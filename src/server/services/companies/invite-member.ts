@@ -8,8 +8,8 @@ import { auth } from "@/lib/auth"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { company, companyMember } from "@/server/db/schema/companies"
-import { createNotification } from "@/server/services/notifications/create"
 import { ServiceError } from "@/server/services/errors"
+import { createNotification } from "@/server/services/notifications/create"
 
 interface InviteCompanyMemberInput {
   companyId: string
@@ -26,7 +26,11 @@ interface InviteCompanyMemberResult {
   alreadyMember: boolean
 }
 
-const FORBIDDEN_EXISTING_ROLES = new Set(["super_admin", "university_admin", "dept_head"])
+const FORBIDDEN_EXISTING_ROLES = new Set([
+  "super_admin",
+  "university_admin",
+  "dept_head",
+])
 
 function isUniqueViolation(error: unknown): boolean {
   return (
@@ -47,7 +51,10 @@ function isCompanyMembershipUniqueViolation(error: unknown): boolean {
       ? (error as { constraint?: string }).constraint
       : undefined
 
-  return constraint === "company_member_userId_uidx" || constraint === "company_member_pkey"
+  return (
+    constraint === "company_member_userId_uidx" ||
+    constraint === "company_member_pkey"
+  )
 }
 
 function normalizeDisplayName(name: string | undefined, email: string) {
@@ -142,7 +149,8 @@ export async function inviteCompanyMember(
           role: "recruiter",
         })
 
-        const nextName = existingUser.name ?? normalizeDisplayName(input.name, normalizedEmail)
+        const nextName =
+          existingUser.name ?? normalizeDisplayName(input.name, normalizedEmail)
         await tx
           .update(user)
           .set({

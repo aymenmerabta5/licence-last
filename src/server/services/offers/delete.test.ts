@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelect = mock(() => ({}) as any)
@@ -84,8 +84,8 @@ describe("src/server/services/offers/delete", () => {
 
     const { deleteOffer } = await import("@/server/services/offers/delete")
 
-    expect(
-      deleteOffer("nonexistent", "company-1"),
-    ).rejects.toThrow("Offer not found or access denied")
+    expect(deleteOffer("nonexistent", "company-1")).rejects.toThrow(
+      "Offer not found or access denied",
+    )
   })
 })

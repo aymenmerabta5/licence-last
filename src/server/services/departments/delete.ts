@@ -31,15 +31,10 @@ export async function deleteDepartment(departmentId: string) {
         departmentId: null,
       })
       .where(
-        and(
-          eq(user.role, "dept_head"),
-          eq(user.departmentId, departmentId),
-        ),
+        and(eq(user.role, "dept_head"), eq(user.departmentId, departmentId)),
       )
 
-    await tx
-      .delete(department)
-      .where(eq(department.id, departmentId))
+    await tx.delete(department).where(eq(department.id, departmentId))
   })
 
   log.info({ departmentId, event: "department_deleted" }, "Department deleted")

@@ -1,14 +1,12 @@
 "use client"
 
 import { Loader2 } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
+import type { useChangePassword } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ChangePasswordDialog/hooks/useChangePassword"
 import { PasswordField } from "@/components/form-fields/PasswordField"
 import { ServerError } from "@/components/ServerError"
 import { SuccessMessage } from "@/components/SuccessMessage"
+import { Button } from "@/components/ui/button"
 import { errorMessage } from "@/lib/schemas/auth"
-
-import type { useChangePassword } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ChangePasswordDialog/hooks/useChangePassword"
 
 interface ChangePasswordFormProps {
   form: ReturnType<typeof useChangePassword>["form"]

@@ -1,6 +1,10 @@
 import "server-only"
 
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3"
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3"
 import { env } from "@/env"
 import { createModuleLogger } from "@/server/logging"
 
@@ -60,12 +64,14 @@ export async function uploadFile(
   const { bucket, publicUrl } = getConfig()
 
   try {
-    await s3.send(new PutObjectCommand({
-      Bucket: bucket,
-      Key: key,
-      Body: data,
-      ContentType: contentType,
-    }))
+    await s3.send(
+      new PutObjectCommand({
+        Bucket: bucket,
+        Key: key,
+        Body: data,
+        ContentType: contentType,
+      }),
+    )
   } catch (err) {
     log.error({ err, key, contentType, size: data.length }, "S3 write failed")
     throw err
@@ -78,8 +84,10 @@ export async function deleteFile(key: string): Promise<void> {
   const s3 = getClient()
   const { bucket } = getConfig()
 
-  await s3.send(new DeleteObjectCommand({
-    Bucket: bucket,
-    Key: key,
-  }))
+  await s3.send(
+    new DeleteObjectCommand({
+      Bucket: bucket,
+      Key: key,
+    }),
+  )
 }

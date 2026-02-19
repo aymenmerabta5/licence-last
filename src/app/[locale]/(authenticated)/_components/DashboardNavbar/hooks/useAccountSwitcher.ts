@@ -1,12 +1,11 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
-import { useRouter } from "@/i18n/routing"
 import { useTranslations } from "next-intl"
+import { useCallback, useEffect, useState } from "react"
 import { toast } from "sonner"
-
-import { authClient } from "@/lib/auth-client"
 import type { DeviceSession } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
+import { useRouter } from "@/i18n/routing"
+import { authClient } from "@/lib/auth-client"
 
 export function useAccountSwitcher(currentUserId: string) {
   const router = useRouter()
@@ -32,34 +31,42 @@ export function useAccountSwitcher(currentUserId: string) {
       }
     }
     fetchSessions()
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [])
 
-  const switchAccount = useCallback(async (token: string, name: string) => {
-    setSwitchingToken(token)
-    try {
-      await authClient.multiSession.setActive({ sessionToken: token })
-      toast.success(t("switchSuccess", { name }))
-      // Full reload needed so server components re-read the new session cookie
-      window.location.reload()
-    } catch {
-      toast.error(t("switchError"))
-      setSwitchingToken(null)
-    }
-  }, [t])
+  const switchAccount = useCallback(
+    async (token: string, name: string) => {
+      setSwitchingToken(token)
+      try {
+        await authClient.multiSession.setActive({ sessionToken: token })
+        toast.success(t("switchSuccess", { name }))
+        // Full reload needed so server components re-read the new session cookie
+        window.location.reload()
+      } catch {
+        toast.error(t("switchError"))
+        setSwitchingToken(null)
+      }
+    },
+    [t],
+  )
 
-  const removeAccount = useCallback(async (token: string) => {
-    setRemovingToken(token)
-    try {
-      await authClient.multiSession.revoke({ sessionToken: token })
-      setSessions((prev) => prev.filter((s) => s.session.token !== token))
-      toast.success(t("removeSuccess"))
-    } catch {
-      toast.error(t("removeError"))
-    } finally {
-      setRemovingToken(null)
-    }
-  }, [t])
+  const removeAccount = useCallback(
+    async (token: string) => {
+      setRemovingToken(token)
+      try {
+        await authClient.multiSession.revoke({ sessionToken: token })
+        setSessions((prev) => prev.filter((s) => s.session.token !== token))
+        toast.success(t("removeSuccess"))
+      } catch {
+        toast.error(t("removeError"))
+      } finally {
+        setRemovingToken(null)
+      }
+    },
+    [t],
+  )
 
   const addAccount = useCallback(() => {
     router.push("/login")

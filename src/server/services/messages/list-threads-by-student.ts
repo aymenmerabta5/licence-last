@@ -29,9 +29,15 @@ export async function listMessageThreadsByStudent(
       createdAt: offerMessageThread.createdAt,
     })
     .from(offerMessageThread)
-    .innerJoin(internshipOffer, eq(offerMessageThread.offerId, internshipOffer.id))
+    .innerJoin(
+      internshipOffer,
+      eq(offerMessageThread.offerId, internshipOffer.id),
+    )
     .innerJoin(company, eq(offerMessageThread.companyId, company.id))
     .where(eq(offerMessageThread.studentUserId, studentUserId))
-    .orderBy(desc(offerMessageThread.lastMessageAt), desc(offerMessageThread.id))
+    .orderBy(
+      desc(offerMessageThread.lastMessageAt),
+      desc(offerMessageThread.id),
+    )
     .limit(limit)
 }

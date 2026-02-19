@@ -3,9 +3,9 @@ import "server-only"
 import { env } from "@/env"
 import { INTERNSHIP_TYPE_LABELS } from "@/lib/constants/internship"
 import { sendEmail } from "@/server/email/sendEmail"
+import AgreementGeneratedEmail from "@/server/email/templates/AgreementGeneratedEmail"
 import { createModuleLogger } from "@/server/logging"
 import { getNotificationPreferences } from "@/server/services/notifications/get-preferences"
-import AgreementGeneratedEmail from "@/server/email/templates/AgreementGeneratedEmail"
 
 interface SendAgreementEmailInput {
   userId: string

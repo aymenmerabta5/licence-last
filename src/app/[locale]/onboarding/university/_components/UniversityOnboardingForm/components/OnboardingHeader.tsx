@@ -3,7 +3,7 @@
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 
-import { reveal, ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 export function OnboardingHeader() {
   const t = useTranslations("onboarding.university")

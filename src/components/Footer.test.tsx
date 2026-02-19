@@ -14,7 +14,14 @@ mock.module("next-intl", () => ({
 }))
 
 mock.module("@/i18n/routing", () => ({
-  Link: ({ children, href, ...props }: { children: ReactNode; href: string }) => (
+  Link: ({
+    children,
+    href,
+    ...props
+  }: {
+    children: ReactNode
+    href: string
+  }) => (
     <a href={href} {...props}>
       {children}
     </a>

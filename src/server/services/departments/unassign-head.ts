@@ -31,10 +31,7 @@ export async function unassignDepartmentHead(departmentId: string) {
         departmentId: null,
       })
       .where(
-        and(
-          eq(user.role, "dept_head"),
-          eq(user.departmentId, departmentId),
-        ),
+        and(eq(user.role, "dept_head"), eq(user.departmentId, departmentId)),
       )
 
     await tx
@@ -43,7 +40,10 @@ export async function unassignDepartmentHead(departmentId: string) {
       .where(eq(department.id, departmentId))
   })
 
-  log.info({ departmentId, event: "dept_head_unassigned" }, "Department head unassigned")
+  log.info(
+    { departmentId, event: "dept_head_unassigned" },
+    "Department head unassigned",
+  )
 
   return { success: true, departmentId }
 }

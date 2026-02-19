@@ -1,10 +1,9 @@
-import type { RefObject } from "react"
+import { Loader2, Newspaper } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Loader2, Newspaper } from "lucide-react"
-
-import { reveal, ease } from "@/lib/animations"
+import type { RefObject } from "react"
 import { OfferCard } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/OfferCard"
+import { ease, reveal } from "@/lib/animations"
 
 type Offer = React.ComponentProps<typeof OfferCard>["offer"]
 
@@ -77,9 +76,12 @@ export function OffersGrid({
               <Newspaper className="h-8 w-8 text-muted-foreground/20" />
             </div>
             <div className="space-y-2">
-              <h3 className="font-serif text-lg text-heading">{t("noResults")}</h3>
+              <h3 className="font-serif text-lg text-heading">
+                {t("noResults")}
+              </h3>
               <p className="text-xs text-muted-foreground/40 font-light max-w-xs mx-auto leading-relaxed">
-                {t("noResultsHint") ?? "Try adjusting your filters or search terms to discover more opportunities."}
+                {t("noResultsHint") ??
+                  "Try adjusting your filters or search terms to discover more opportunities."}
               </p>
             </div>
           </motion.div>

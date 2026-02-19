@@ -45,8 +45,14 @@ describe("src/app/api/health/route", () => {
     expect(response.status).toBe(200)
     expect(body.status).toBe("ok")
     expect(body.checks.database).toMatchObject({ status: "up", required: true })
-    expect(body.checks.redis).toMatchObject({ status: "not_configured", required: false })
-    expect(body.checks.rateLimiter).toMatchObject({ status: "disabled", enabled: false })
+    expect(body.checks.redis).toMatchObject({
+      status: "not_configured",
+      required: false,
+    })
+    expect(body.checks.rateLimiter).toMatchObject({
+      status: "disabled",
+      enabled: false,
+    })
   })
 
   test("returns 200 and degraded when redis is configured but unhealthy", async () => {

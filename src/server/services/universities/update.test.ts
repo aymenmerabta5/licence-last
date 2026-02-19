@@ -23,7 +23,9 @@ describe("updateUniversity", () => {
   })
 
   test("should update fields and return universityId", async () => {
-    const { updateUniversity } = await import("@/server/services/universities/update")
+    const { updateUniversity } = await import(
+      "@/server/services/universities/update"
+    )
 
     const result = await updateUniversity("uni-1", {
       name: "  Updated University  ",
@@ -40,7 +42,9 @@ describe("updateUniversity", () => {
   })
 
   test("should return input universityId when no fields are provided", async () => {
-    const { updateUniversity } = await import("@/server/services/universities/update")
+    const { updateUniversity } = await import(
+      "@/server/services/universities/update"
+    )
 
     const result = await updateUniversity("uni-1", {})
 
@@ -51,10 +55,12 @@ describe("updateUniversity", () => {
   test("should throw when university is not found", async () => {
     mockReturning.mockResolvedValue([])
 
-    const { updateUniversity } = await import("@/server/services/universities/update")
-
-    await expect(updateUniversity("missing", { name: "Updated" })).rejects.toThrow(
-      "University not found",
+    const { updateUniversity } = await import(
+      "@/server/services/universities/update"
     )
+
+    await expect(
+      updateUniversity("missing", { name: "Updated" }),
+    ).rejects.toThrow("University not found")
   })
 })

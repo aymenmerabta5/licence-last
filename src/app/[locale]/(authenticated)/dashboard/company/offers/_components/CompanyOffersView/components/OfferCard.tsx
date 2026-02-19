@@ -1,22 +1,24 @@
 "use client"
 
+import { Clock, MapPin, Users } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Clock, MapPin, Users } from "lucide-react"
-
+import { OfferCardActions } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/OfferCardActions"
+import { OfferCardCandidatesLink } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/OfferCardCandidatesLink"
+import type { OfferItem } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/types"
 import { Badge } from "@/components/ui/badge"
 import { ease } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
-import { OfferCardActions } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/OfferCardActions"
-import { OfferCardCandidatesLink } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/OfferCardCandidatesLink"
-import type { OfferItem } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/types"
-
-const STATUS_CONFIG: Record<string, { accent: string; bg: string; badge: string }> = {
+const STATUS_CONFIG: Record<
+  string,
+  { accent: string; bg: string; badge: string }
+> = {
   draft: {
     accent: "border-s-amber-500",
     bg: "hover:bg-amber-500/[0.02]",
-    badge: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+    badge:
+      "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
   },
   published: {
     accent: "border-s-emerald-500",

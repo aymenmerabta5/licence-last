@@ -1,51 +1,53 @@
 import "server-only"
 
-import { z } from "zod"
 import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
-
+import { z } from "zod"
+import { CACHE_TAGS } from "@/lib/cache"
+import {
+  applicationStatusSchema,
+  pipelineStageSchema,
+} from "@/lib/schemas/enums"
+import {
+  applyToOfferSchema,
+  listStudentApplicationsSchema,
+  searchOffersSchema,
+} from "@/lib/schemas/search"
+import { db } from "@/server/db"
+import { application } from "@/server/db/schema/applications"
+import { companyMember } from "@/server/db/schema/companies"
+import { internshipOffer } from "@/server/db/schema/internships"
 import { isAdminRole } from "@/server/orpc/middleware"
 import {
+  assistantProcedureLimited,
   authedProcedureGenerous,
   companyAdminProcedureGenerous,
   companyAdminProcedureStandard,
   studentProcedureGenerous,
   studentProcedureStandard,
-  assistantProcedureLimited,
 } from "@/server/orpc/rate-limited-procedures"
-import { applicationStatusSchema, pipelineStageSchema } from "@/lib/schemas/enums"
 import {
-  searchOffersSchema,
-  applyToOfferSchema,
-  listStudentApplicationsSchema,
-} from "@/lib/schemas/search"
-import { searchOffers } from "@/server/services/offers/search"
-import { getStudentApplicationForOffer } from "@/server/services/offers/get"
+  createApplicationORPCError,
+  getApplyToOfferStatus,
+  getCompanyActionStatus,
+  getListByOfferStatus,
+  getWithdrawStatus,
+} from "@/server/orpc/routes/applications.error-mapping"
+import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import { applyToOffer } from "@/server/services/applications/apply"
-import { listApplicationsByStudent } from "@/server/services/applications/list-by-student"
-import { withdrawApplication } from "@/server/services/applications/withdraw"
-import { listApplicationsByOffer } from "@/server/services/applications/list-by-offer"
 import { companyAcceptApplication } from "@/server/services/applications/company-accept"
 import { companyRefuseApplication } from "@/server/services/applications/company-refuse"
+import { isApplicationServiceError } from "@/server/services/applications/errors"
+import { listApplicationsByOffer } from "@/server/services/applications/list-by-offer"
+import { listApplicationsByStudent } from "@/server/services/applications/list-by-student"
 import {
   listApplicationTimeline,
   updateApplicationPipelineStage,
 } from "@/server/services/applications/pipeline"
-import { isApplicationServiceError } from "@/server/services/applications/errors"
-import { db } from "@/server/db"
-import {
-  getApplyToOfferStatus,
-  getListByOfferStatus,
-  getWithdrawStatus,
-  getCompanyActionStatus,
-  createApplicationORPCError,
-} from "@/server/orpc/routes/applications.error-mapping"
-import { application } from "@/server/db/schema/applications"
-import { internshipOffer } from "@/server/db/schema/internships"
-import { companyMember } from "@/server/db/schema/companies"
-import { CACHE_TAGS } from "@/lib/cache"
-import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+import { withdrawApplication } from "@/server/services/applications/withdraw"
+import { getStudentApplicationForOffer } from "@/server/services/offers/get"
+import { searchOffers } from "@/server/services/offers/search"
 
 /* ── Offer Search (any authenticated user) ── */
 
@@ -78,7 +80,10 @@ export const applyToOfferProcedure = studentProcedureStandard
       return result
     } catch (error) {
       if (isApplicationServiceError(error)) {
-        throw createApplicationORPCError(error, getApplyToOfferStatus(error.code))
+        throw createApplicationORPCError(
+          error,
+          getApplyToOfferStatus(error.code),
+        )
       }
       createServiceORPCError(error, {
         codeMap: {},
@@ -97,7 +102,10 @@ export const withdrawApplicationProcedure = studentProcedureStandard
   .input(z.object({ applicationId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     try {
-      const result = await withdrawApplication(input.applicationId, context.user.id)
+      const result = await withdrawApplication(
+        input.applicationId,
+        context.user.id,
+      )
 
       // Invalidate student applications cache
       revalidateTag(CACHE_TAGS.STUDENT_APPLICATIONS(context.user.id), "max")
@@ -141,7 +149,10 @@ export const listByOfferProcedure = companyAdminProcedureGenerous
       )
     } catch (error) {
       if (isApplicationServiceError(error)) {
-        throw createApplicationORPCError(error, getListByOfferStatus(error.code))
+        throw createApplicationORPCError(
+          error,
+          getListByOfferStatus(error.code),
+        )
       }
       createServiceORPCError(error, {
         codeMap: {},
@@ -161,12 +172,18 @@ export const companyAcceptProcedure = companyAdminProcedureStandard
       )
 
       // Invalidate company candidates cache
-      revalidateTag(CACHE_TAGS.COMPANY_CANDIDATES(context.companyMembership.companyId), "max")
+      revalidateTag(
+        CACHE_TAGS.COMPANY_CANDIDATES(context.companyMembership.companyId),
+        "max",
+      )
 
       return result
     } catch (error) {
       if (isApplicationServiceError(error)) {
-        throw createApplicationORPCError(error, getCompanyActionStatus(error.code))
+        throw createApplicationORPCError(
+          error,
+          getCompanyActionStatus(error.code),
+        )
       }
       createServiceORPCError(error, {
         codeMap: {},
@@ -192,12 +209,18 @@ export const companyRefuseProcedure = companyAdminProcedureStandard
       )
 
       // Invalidate company candidates cache
-      revalidateTag(CACHE_TAGS.COMPANY_CANDIDATES(context.companyMembership.companyId), "max")
+      revalidateTag(
+        CACHE_TAGS.COMPANY_CANDIDATES(context.companyMembership.companyId),
+        "max",
+      )
 
       return result
     } catch (error) {
       if (isApplicationServiceError(error)) {
-        throw createApplicationORPCError(error, getCompanyActionStatus(error.code))
+        throw createApplicationORPCError(
+          error,
+          getCompanyActionStatus(error.code),
+        )
       }
       createServiceORPCError(error, {
         codeMap: {},
@@ -225,7 +248,10 @@ export const updatePipelineStageProcedure = companyAdminProcedureStandard
       })
     } catch (error) {
       if (isApplicationServiceError(error)) {
-        throw createApplicationORPCError(error, getCompanyActionStatus(error.code))
+        throw createApplicationORPCError(
+          error,
+          getCompanyActionStatus(error.code),
+        )
       }
       createServiceORPCError(error, {
         codeMap: {},

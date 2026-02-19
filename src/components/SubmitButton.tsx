@@ -1,10 +1,9 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { Loader2 } from "lucide-react"
-
-import { reveal, revealWithDelay } from "@/lib/animations"
+import * as motion from "motion/react-client"
 import { Button } from "@/components/ui/button"
+import { reveal, revealWithDelay } from "@/lib/animations"
 
 interface SubmitButtonProps {
   isSubmitting: boolean

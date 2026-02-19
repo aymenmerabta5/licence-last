@@ -127,13 +127,17 @@ function formatByType(
       }
       return "A certificate is ready."
     case "company_approved":
-      return companyName ? `${companyName} has been approved.` : "Company approved."
+      return companyName
+        ? `${companyName} has been approved.`
+        : "Company approved."
     case "company_rejected":
       return companyName
         ? `${companyName} was not approved.`
         : "Company was not approved."
     case "company_suspended":
-      return companyName ? `${companyName} has been suspended.` : "Company suspended."
+      return companyName
+        ? `${companyName} has been suspended.`
+        : "Company suspended."
     case "company_reactivated":
       return companyName
         ? `${companyName} has been reactivated.`
@@ -143,17 +147,13 @@ function formatByType(
         ? `${universityName} has been approved.`
         : "University approved."
     default:
-      return (
-        offerTitle ??
-        companyName ??
-        universityName ??
-        reason ??
-        null
-      )
+      return offerTitle ?? companyName ?? universityName ?? reason ?? null
   }
 }
 
-export function formatNotification(input: NotificationInput): FormattedNotification {
+export function formatNotification(
+  input: NotificationInput,
+): FormattedNotification {
   const payload = asPayloadRecord(input.payload)
   const title = TITLE_BY_TYPE[input.type] ?? humanizeToken(input.type)
 

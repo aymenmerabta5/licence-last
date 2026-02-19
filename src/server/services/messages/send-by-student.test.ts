@@ -21,7 +21,9 @@ const dbSelect = mock(() => {
 
 const txReturning = mock(() => Promise.resolve([{ id: "thread-1" }]))
 const txOnConflictDoUpdate = mock(() => ({ returning: txReturning }))
-const txValuesForThread = mock(() => ({ onConflictDoUpdate: txOnConflictDoUpdate }))
+const txValuesForThread = mock(() => ({
+  onConflictDoUpdate: txOnConflictDoUpdate,
+}))
 const txValuesForMessage = mock(() => Promise.resolve())
 
 let txInsertCallIdx = 0
@@ -38,8 +40,8 @@ const tx = {
   insert: txInsert,
 }
 
-const mockTransaction = mock(async (callback: (trx: typeof tx) => Promise<unknown>) =>
-  callback(tx),
+const mockTransaction = mock(
+  async (callback: (trx: typeof tx) => Promise<unknown>) => callback(tx),
 )
 
 mock.module("@/server/db", () => ({
@@ -110,7 +112,10 @@ describe("src/server/services/messages/send-by-student", () => {
     )
 
     await expectMessageError(
-      sendOfferMessageByStudent({ offerId: "offer-1", body: "   " }, "student-1"),
+      sendOfferMessageByStudent(
+        { offerId: "offer-1", body: "   " },
+        "student-1",
+      ),
       "MESSAGE_EMPTY",
       "Message body cannot be empty",
     )
@@ -127,7 +132,10 @@ describe("src/server/services/messages/send-by-student", () => {
     )
 
     await expectMessageError(
-      sendOfferMessageByStudent({ offerId: "offer-1", body: "Hello" }, "student-1"),
+      sendOfferMessageByStudent(
+        { offerId: "offer-1", body: "Hello" },
+        "student-1",
+      ),
       "OFFER_NOT_FOUND",
       "Offer not found",
     )
@@ -144,7 +152,10 @@ describe("src/server/services/messages/send-by-student", () => {
     )
 
     await expectMessageError(
-      sendOfferMessageByStudent({ offerId: "offer-1", body: "Hello" }, "student-1"),
+      sendOfferMessageByStudent(
+        { offerId: "offer-1", body: "Hello" },
+        "student-1",
+      ),
       "APPLICATION_NOT_FOUND",
       "You cannot message this company for the selected offer",
     )
@@ -173,8 +184,10 @@ describe("src/server/services/messages/send-by-student", () => {
     expect(mockTransaction).toHaveBeenCalledTimes(1)
     expect(txInsert).toHaveBeenCalledTimes(2)
 
-    const threadValueCalls = txValuesForThread.mock.calls as unknown as unknown[][]
-    const messageValueCalls = txValuesForMessage.mock.calls as unknown as unknown[][]
+    const threadValueCalls = txValuesForThread.mock
+      .calls as unknown as unknown[][]
+    const messageValueCalls = txValuesForMessage.mock
+      .calls as unknown as unknown[][]
 
     const threadValues = threadValueCalls[0]?.[0] as {
       offerId: string

@@ -8,8 +8,8 @@ import {
   offerMessageReadState,
   offerMessageThread,
 } from "@/server/db/schema/messages"
-import type { MessageThreadViewer } from "@/server/services/messages/list-thread-messages"
 import { MessageServiceError } from "@/server/services/messages/errors"
+import type { MessageThreadViewer } from "@/server/services/messages/list-thread-messages"
 
 function assertThreadAccess(
   thread: {
@@ -52,7 +52,10 @@ export async function markThreadRead(
     .limit(1)
 
   if (!thread) {
-    throw new MessageServiceError("THREAD_NOT_FOUND", "Message thread not found")
+    throw new MessageServiceError(
+      "THREAD_NOT_FOUND",
+      "Message thread not found",
+    )
   }
 
   assertThreadAccess(thread, viewer)
@@ -82,10 +85,7 @@ export async function markThreadRead(
       lastReadAt: now,
     })
     .onConflictDoUpdate({
-      target: [
-        offerMessageReadState.threadId,
-        offerMessageReadState.userId,
-      ],
+      target: [offerMessageReadState.threadId, offerMessageReadState.userId],
       set: {
         lastReadMessageId: lastMessage.id,
         lastReadAt: now,

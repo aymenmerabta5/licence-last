@@ -1,13 +1,14 @@
 "use client"
 
+import { BookOpen, GraduationCap, MapPin } from "lucide-react"
 import * as motion from "motion/react-client"
-import { BookOpen, MapPin, GraduationCap } from "lucide-react"
-
+import type {
+  StudentProfile,
+  StudentUniversity,
+} from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
-
-import type { StudentProfile, StudentUniversity } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 
 interface EducationSectionProps {
   profile?: StudentProfile | null
@@ -21,7 +22,12 @@ interface EducationSectionProps {
   }
 }
 
-export function EducationSection({ profile, university, canEdit, labels }: EducationSectionProps) {
+export function EducationSection({
+  profile,
+  university,
+  canEdit,
+  labels,
+}: EducationSectionProps) {
   const hasEducation = !!university
 
   return (
@@ -74,7 +80,9 @@ export function EducationSection({ profile, university, canEdit, labels }: Educa
                   <div className="flex items-center gap-1.5">
                     <GraduationCap className="h-3.5 w-3.5 text-muted-foreground/40" />
                     <p className="text-sm text-muted-foreground font-medium">
-                      {[profile.department, profile.level].filter(Boolean).join(" — ")}
+                      {[profile.department, profile.level]
+                        .filter(Boolean)
+                        .join(" — ")}
                     </p>
                   </div>
                 )}

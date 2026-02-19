@@ -1,21 +1,22 @@
-import { describe, test, expect, mock } from "bun:test"
+import { describe, expect, mock, test } from "bun:test"
 
 const MATCH_WEIGHT_SKILLS = 55 // From ./constants.ts MATCH_WEIGHT.skills
 
 // Mock the score module before importing skill-gap
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const mockGetExplainableMatchScore = mock((_studentUserId: string, _offerId: string) =>
-  Promise.resolve({
-    score: 65,
-    readinessPercent: 65,
-    missingSkills: [
-      { id: "s1", name: "React", slug: "react", category: "frontend" },
-      { id: "s2", name: "Vue", slug: "vue", category: "frontend" },
-      { id: "s3", name: "Docker", slug: "docker", category: "devops" },
-    ],
-    matchedSkills: [],
-    breakdown: {},
-  }),
+const mockGetExplainableMatchScore = mock(
+  (_studentUserId: string, _offerId: string) =>
+    Promise.resolve({
+      score: 65,
+      readinessPercent: 65,
+      missingSkills: [
+        { id: "s1", name: "React", slug: "react", category: "frontend" },
+        { id: "s2", name: "Vue", slug: "vue", category: "frontend" },
+        { id: "s3", name: "Docker", slug: "docker", category: "devops" },
+      ],
+      matchedSkills: [],
+      breakdown: {},
+    }),
 )
 
 // Override the skill-gap mock registered by readiness-history.test.ts.
@@ -40,15 +41,24 @@ mock.module("@/server/services/matching/skill-gap", () => ({
       match.missingSkills.length === 0
         ? 0
         : Math.round(MATCH_WEIGHT_SKILLS / match.missingSkills.length)
-    const estimatedDelta = Math.max(0, Math.min(100 - match.score, skillsUnit * 3))
+    const estimatedDelta = Math.max(
+      0,
+      Math.min(100 - match.score, skillsUnit * 3),
+    )
 
     const roadmapSteps: string[] = []
     if (match.missingSkills.length === 0) {
       roadmapSteps.push("You already match all required skills for this offer.")
     } else {
-      roadmapSteps.push("Close the first 1-2 missing skills from the largest category.")
-      roadmapSteps.push("Recalculate readiness after adding portfolio proof or project links.")
-      roadmapSteps.push("Focus interview preparation on skills marked as required.")
+      roadmapSteps.push(
+        "Close the first 1-2 missing skills from the largest category.",
+      )
+      roadmapSteps.push(
+        "Recalculate readiness after adding portfolio proof or project links.",
+      )
+      roadmapSteps.push(
+        "Focus interview preparation on skills marked as required.",
+      )
     }
 
     return {
@@ -63,7 +73,9 @@ mock.module("@/server/services/matching/skill-gap", () => ({
 
 describe("src/server/services/matching/skill-gap", () => {
   test("should return roadmap with missing skills grouped by category", async () => {
-    const { getSkillGapRoadmap } = await import("@/server/services/matching/skill-gap")
+    const { getSkillGapRoadmap } = await import(
+      "@/server/services/matching/skill-gap"
+    )
     const result = await getSkillGapRoadmap("student-1", "offer-1")
 
     expect(result.readyPercent).toBe(65)
@@ -77,7 +89,9 @@ describe("src/server/services/matching/skill-gap", () => {
   })
 
   test("should provide roadmap steps when skills are missing", async () => {
-    const { getSkillGapRoadmap } = await import("@/server/services/matching/skill-gap")
+    const { getSkillGapRoadmap } = await import(
+      "@/server/services/matching/skill-gap"
+    )
     const result = await getSkillGapRoadmap("student-1", "offer-1")
 
     expect(result.roadmapSteps.length).toBeGreaterThan(0)
@@ -85,7 +99,9 @@ describe("src/server/services/matching/skill-gap", () => {
   })
 
   test("should return positive estimated delta", async () => {
-    const { getSkillGapRoadmap } = await import("@/server/services/matching/skill-gap")
+    const { getSkillGapRoadmap } = await import(
+      "@/server/services/matching/skill-gap"
+    )
     const result = await getSkillGapRoadmap("student-1", "offer-1")
 
     expect(result.estimatedDelta).toBeGreaterThanOrEqual(0)
@@ -101,7 +117,9 @@ describe("src/server/services/matching/skill-gap", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
 
-    const { getSkillGapRoadmap } = await import("@/server/services/matching/skill-gap")
+    const { getSkillGapRoadmap } = await import(
+      "@/server/services/matching/skill-gap"
+    )
     const result = await getSkillGapRoadmap("student-perfect", "offer-1")
 
     expect(result.missingSkills).toHaveLength(0)

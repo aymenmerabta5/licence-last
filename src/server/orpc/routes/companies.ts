@@ -1,9 +1,25 @@
 import "server-only"
 
-import { z } from "zod"
 import { ORPCError } from "@orpc/server"
+import { eq } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
-
+import { z } from "zod"
+import { env } from "@/env"
+import { CACHE_TAGS } from "@/lib/cache"
+import {
+  companyQualityFeedbackSchema,
+  companyReportSchema,
+  resolveCompanyReportSchema,
+} from "@/lib/schemas/company"
+import {
+  companyReportStatusSchema,
+  companyStatusSchema,
+} from "@/lib/schemas/enums"
+import { db } from "@/server/db"
+import { user } from "@/server/db/schema/auth"
+import { companyMember } from "@/server/db/schema/companies"
+import CompanyApprovedEmail from "@/server/email/templates/CompanyApprovedEmail"
+import CompanyRejectedEmail from "@/server/email/templates/CompanyRejectedEmail"
 import { isAdminRole } from "@/server/orpc/middleware"
 import {
   authedProcedureGenerous,
@@ -14,45 +30,31 @@ import {
   superAdminProcedureGenerous,
   superAdminProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
-import { companyStatusSchema, companyReportStatusSchema } from "@/lib/schemas/enums"
-import { listCompanies } from "@/server/services/companies/list"
-import { getCompanyById } from "@/server/services/companies/get"
-import { createCompany } from "@/server/services/companies/create"
-import { updateCompany } from "@/server/services/companies/update"
+import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import { approveCompany } from "@/server/services/companies/approve"
-import { rejectCompany } from "@/server/services/companies/reject"
-import { suspendCompany } from "@/server/services/companies/suspend"
-import { reactivateCompany } from "@/server/services/companies/reactivate"
-import { getCompanyMembership } from "@/server/services/companies/membership"
-import { listCompanyMembers } from "@/server/services/companies/list-members"
+import { createCompany } from "@/server/services/companies/create"
+import { getCompanyById } from "@/server/services/companies/get"
 import { inviteCompanyMember } from "@/server/services/companies/invite-member"
+import { listCompanies } from "@/server/services/companies/list"
+import { listCompanyMembers } from "@/server/services/companies/list-members"
+import { getCompanyMembership } from "@/server/services/companies/membership"
+import { reactivateCompany } from "@/server/services/companies/reactivate"
+import { rejectCompany } from "@/server/services/companies/reject"
 import { removeCompanyMember } from "@/server/services/companies/remove-member"
-import {
-  companyQualityFeedbackSchema,
-  companyReportSchema,
-  resolveCompanyReportSchema,
-} from "@/lib/schemas/company"
-import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
-import { emitNotification } from "@/server/services/notifications/emit"
-import CompanyApprovedEmail from "@/server/email/templates/CompanyApprovedEmail"
-import CompanyRejectedEmail from "@/server/email/templates/CompanyRejectedEmail"
-import { db } from "@/server/db"
-import { companyMember } from "@/server/db/schema/companies"
-import { user } from "@/server/db/schema/auth"
-import { eq } from "drizzle-orm"
-import { env } from "@/env"
-import {
-  getCompanyTrustIndex,
-  listCompanyTrustIndices,
-} from "@/server/services/companies/trust-index"
+import { suspendCompany } from "@/server/services/companies/suspend"
 import {
   listCompanyReports,
   resolveCompanyReport,
   submitCompanyQualityFeedback,
   submitCompanyReport,
 } from "@/server/services/companies/trust-actions"
-import { CACHE_TAGS } from "@/lib/cache"
-import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+import {
+  getCompanyTrustIndex,
+  listCompanyTrustIndices,
+} from "@/server/services/companies/trust-index"
+import { updateCompany } from "@/server/services/companies/update"
+import { emitNotification } from "@/server/services/notifications/emit"
+import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
 
 /* ── Reads ── */
 
@@ -131,7 +133,11 @@ export const getCompanyTrustIndexProcedure = authedProcedureGenerous
   })
 
 export const listCompanyTrustIndicesProcedure = superAdminProcedureGenerous
-  .input(z.object({ limit: z.coerce.number().int().min(1).max(200).optional() }).optional())
+  .input(
+    z
+      .object({ limit: z.coerce.number().int().min(1).max(200).optional() })
+      .optional(),
+  )
   .handler(async ({ input }) => listCompanyTrustIndices(input?.limit ?? 50))
 
 export const submitCompanyQualityFeedbackProcedure = authedProcedureStandard
@@ -150,7 +156,8 @@ export const submitCompanyQualityFeedbackProcedure = authedProcedureStandard
       })
     } catch (error) {
       throw new ORPCError("BAD_REQUEST", {
-        message: error instanceof Error ? error.message : "Failed to submit feedback",
+        message:
+          error instanceof Error ? error.message : "Failed to submit feedback",
       })
     }
   })
@@ -187,8 +194,8 @@ export const resolveCompanyReportProcedure = superAdminProcedureStandard
     }),
   )
 
-export const listCompanyMembersProcedure = companyAdminProcedureGenerous
-  .handler(async ({ context }) =>
+export const listCompanyMembersProcedure =
+  companyAdminProcedureGenerous.handler(async ({ context }) =>
     listCompanyMembers(context.companyMembership.companyId),
   )
 
@@ -301,11 +308,20 @@ export const updateCompanyProcedure = companyAdminProcedureStandard
   )
   .handler(async ({ input, context }) => {
     try {
-      const result = await updateCompany(context.companyMembership.companyId, input)
+      const result = await updateCompany(
+        context.companyMembership.companyId,
+        input,
+      )
 
       // Invalidate company cache
-      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(context.companyMembership.companyId), "max")
-      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`), "max")
+      revalidateTag(
+        CACHE_TAGS.COMPANY_PROFILE(context.companyMembership.companyId),
+        "max",
+      )
+      revalidateTag(
+        CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`),
+        "max",
+      )
 
       return result
     } catch (error) {
@@ -361,7 +377,11 @@ export const rejectCompanyProcedure = superAdminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    const result = await rejectCompany(input.companyId, input.reason, context.user.id)
+    const result = await rejectCompany(
+      input.companyId,
+      input.reason,
+      context.user.id,
+    )
 
     // Invalidate company cache when rejected
     revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
@@ -378,7 +398,11 @@ export const rejectCompanyProcedure = superAdminProcedureStandard
         emitNotification({
           userId: member.userId,
           type: "company_rejected",
-          payload: { companyId: input.companyId, companyName: result.name, reason: input.reason },
+          payload: {
+            companyId: input.companyId,
+            companyName: result.name,
+            reason: input.reason,
+          },
           email: {
             to: member.email,
             subject: `Update on your ${result.name} application - Internex`,
@@ -478,14 +502,23 @@ export const uploadCompanyLogoProcedure = companyAdminProcedureStandard
   )
   .handler(async ({ input, context }) => {
     try {
-      const result = await uploadImageToS3({ file: input.file, folder: "logos" })
+      const result = await uploadImageToS3({
+        file: input.file,
+        folder: "logos",
+      })
 
       // Persist the logo URL to the company record immediately
       await updateCompany(context.companyMembership.companyId, {
         logoUrl: result.url,
       })
-      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(context.companyMembership.companyId), "max")
-      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`), "max")
+      revalidateTag(
+        CACHE_TAGS.COMPANY_PROFILE(context.companyMembership.companyId),
+        "max",
+      )
+      revalidateTag(
+        CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`),
+        "max",
+      )
 
       return result
     } catch (error) {
@@ -508,4 +541,3 @@ export const uploadCompanyLogoProcedure = companyAdminProcedureStandard
       })
     }
   })
-

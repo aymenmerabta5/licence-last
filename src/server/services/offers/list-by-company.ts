@@ -2,15 +2,17 @@
 
 import "server-only"
 
-import { eq, desc, inArray, count } from "drizzle-orm"
-import { cacheTag, cacheLife } from "next/cache"
-
+import { count, desc, eq, inArray } from "drizzle-orm"
+import { cacheLife, cacheTag } from "next/cache"
+import { CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
-import { internshipOffer, internshipOfferSkill } from "@/server/db/schema/internships"
+import { application } from "@/server/db/schema/applications"
+import {
+  internshipOffer,
+  internshipOfferSkill,
+} from "@/server/db/schema/internships"
 import { internshipOfferLanguageRequirement } from "@/server/db/schema/languages"
 import { skillTag } from "@/server/db/schema/skills"
-import { application } from "@/server/db/schema/applications"
-import { CACHE_TAGS } from "@/lib/cache"
 
 interface OfferWithSkills {
   id: string
@@ -49,7 +51,9 @@ interface OfferWithSkills {
  * List all offers for a company with skills and candidate counts.
  * Cached for 5 minutes per company.
  */
-export async function listOffersByCompany(companyId: string): Promise<OfferWithSkills[]> {
+export async function listOffersByCompany(
+  companyId: string,
+): Promise<OfferWithSkills[]> {
   cacheLife("minutes")
   cacheTag(CACHE_TAGS.COMPANY_OFFERS(companyId))
   const offers = await db
@@ -87,8 +91,7 @@ export async function listOffersByCompany(companyId: string): Promise<OfferWithS
     .select({
       offerId: internshipOfferLanguageRequirement.offerId,
       languageCode: internshipOfferLanguageRequirement.languageCode,
-      minimumProficiency:
-        internshipOfferLanguageRequirement.minimumProficiency,
+      minimumProficiency: internshipOfferLanguageRequirement.minimumProficiency,
       isRequired: internshipOfferLanguageRequirement.isRequired,
       weight: internshipOfferLanguageRequirement.weight,
     })
@@ -125,14 +128,14 @@ export async function listOffersByCompany(companyId: string): Promise<OfferWithS
       slug: s.skillSlug,
       category: s.skillCategory,
     })),
-    languageRequirements: (
-      languageRequirementsByOffer.get(offer.id) ?? []
-    ).map((entry) => ({
-      languageCode: entry.languageCode,
-      minimumProficiency: entry.minimumProficiency,
-      isRequired: entry.isRequired,
-      weight: entry.weight,
-    })),
+    languageRequirements: (languageRequirementsByOffer.get(offer.id) ?? []).map(
+      (entry) => ({
+        languageCode: entry.languageCode,
+        minimumProficiency: entry.minimumProficiency,
+        isRequired: entry.isRequired,
+        weight: entry.weight,
+      }),
+    ),
     candidatesCount: countsByOffer.get(offer.id) ?? 0,
   }))
 }

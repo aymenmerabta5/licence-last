@@ -33,8 +33,11 @@ export function useUserDetailActions() {
   })
 
   const banUser = useMutation({
-    mutationFn: (data: { userId: string; banReason?: string; banExpiresIn?: number }) =>
-      orpcClient.adminUsers.ban(data),
+    mutationFn: (data: {
+      userId: string
+      banReason?: string
+      banExpiresIn?: number
+    }) => orpcClient.adminUsers.ban(data),
     onSuccess: () => {
       toast.success("User banned")
       invalidate()
@@ -43,8 +46,7 @@ export function useUserDetailActions() {
   })
 
   const unbanUser = useMutation({
-    mutationFn: (userId: string) =>
-      orpcClient.adminUsers.unban({ userId }),
+    mutationFn: (userId: string) => orpcClient.adminUsers.unban({ userId }),
     onSuccess: () => {
       toast.success("User unbanned")
       invalidate()

@@ -1,11 +1,9 @@
 "use client"
 
-import { useState } from "react"
 import { useMutation } from "@tanstack/react-query"
-
-import { orpcClient } from "@/server/orpc/client"
-
+import { useState } from "react"
 import type { FilterState } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/hooks/useOfferSearch"
+import { orpcClient } from "@/server/orpc/client"
 
 type AiSuggestion = FilterState & {
   keyword?: string

@@ -6,7 +6,10 @@ export function parseInputDate(value: string, fieldLabel: string): Date {
   return parsed
 }
 
-export function validatePlacementDateRange(startDate: Date, endDate: Date): void {
+export function validatePlacementDateRange(
+  startDate: Date,
+  endDate: Date,
+): void {
   if (startDate >= endDate) {
     throw new Error("Start date must be before end date")
   }

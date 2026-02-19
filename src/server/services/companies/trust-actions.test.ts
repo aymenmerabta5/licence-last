@@ -8,12 +8,16 @@ let mockUpsertRows: any[] = []
 const mockSelectLimit = mock(() => Promise.resolve(mockPlacementRows))
 const mockSelectWhere = mock(() => ({ limit: mockSelectLimit }))
 const mockSelectJoinOffer = mock(() => ({ where: mockSelectWhere }))
-const mockSelectJoinApplication = mock(() => ({ innerJoin: mockSelectJoinOffer }))
+const mockSelectJoinApplication = mock(() => ({
+  innerJoin: mockSelectJoinOffer,
+}))
 const mockSelectFrom = mock(() => ({ innerJoin: mockSelectJoinApplication }))
 
 const mockInsertReturning = mock(() => Promise.resolve(mockUpsertRows))
 const mockInsertConflict = mock(() => ({ returning: mockInsertReturning }))
-const mockInsertValues = mock(() => ({ onConflictDoUpdate: mockInsertConflict }))
+const mockInsertValues = mock(() => ({
+  onConflictDoUpdate: mockInsertConflict,
+}))
 const mockInsert = mock(() => ({ values: mockInsertValues }))
 
 mock.module("@/server/db", () => ({
@@ -52,7 +56,9 @@ describe("src/server/services/companies/trust-actions submitCompanyQualityFeedba
     ]
     mockUpsertRows = [{ id: "feedback-existing-id" }]
 
-    const { submitCompanyQualityFeedback } = await import("@/server/services/companies/trust-actions")
+    const { submitCompanyQualityFeedback } = await import(
+      "@/server/services/companies/trust-actions"
+    )
     const result = await submitCompanyQualityFeedback({
       studentUserId: "student-1",
       placementId: "placement-1",

@@ -1,8 +1,6 @@
 import * as motion from "motion/react-client"
-
-import { ease, reveal } from "@/lib/animations"
-
 import type { MessagesRole } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
+import { ease, reveal } from "@/lib/animations"
 
 interface MessagesHeaderProps {
   role: MessagesRole
@@ -35,9 +33,7 @@ export function MessagesHeader({ role, threadCount }: MessagesHeaderProps) {
           <h1 className="font-serif text-[clamp(1.75rem,3.5vw,2.5rem)] leading-[1.08] tracking-tight text-heading">
             Messages
           </h1>
-          <p className="text-sm font-light text-muted-foreground">
-            {subtitle}
-          </p>
+          <p className="text-sm font-light text-muted-foreground">{subtitle}</p>
           <p className="pt-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/70">
             {pluralizeThread(threadCount)}
           </p>

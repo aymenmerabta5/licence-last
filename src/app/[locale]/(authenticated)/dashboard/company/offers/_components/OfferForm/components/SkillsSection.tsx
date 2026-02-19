@@ -1,18 +1,17 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { useTranslations } from "next-intl"
 import { Check, Search, X } from "lucide-react"
-import { cn } from "@/lib/utils"
-
-import { errorMessage } from "@/lib/schemas/auth"
-import { useSkillGrouping } from "@/hooks"
+import { useTranslations } from "next-intl"
+import { useMemo, useState } from "react"
 import { FormSection } from "@/components/form-fields"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group"
+import { useSkillGrouping } from "@/hooks"
+import { errorMessage } from "@/lib/schemas/auth"
+import { cn } from "@/lib/utils"
 
 interface SkillTag {
   id: string
@@ -28,6 +27,10 @@ interface SkillsSectionProps {
 }
 
 const MAX_SKILLS = 20
+
+function isSkillTag(skill: SkillTag | undefined): skill is SkillTag {
+  return Boolean(skill)
+}
 
 export function SkillsSection({ form, skillTags }: SkillsSectionProps) {
   const t = useTranslations("dashboard.company.offers.form")
@@ -55,7 +58,9 @@ export function SkillsSection({ form, skillTags }: SkillsSectionProps) {
           function toggle(skillId: string) {
             const isSelected = selectedIds.includes(skillId)
             if (isSelected) {
-              field.handleChange(selectedIds.filter((id: string) => id !== skillId))
+              field.handleChange(
+                selectedIds.filter((id: string) => id !== skillId),
+              )
             } else if (!isAtMax) {
               field.handleChange([...selectedIds, skillId])
             }
@@ -81,16 +86,16 @@ export function SkillsSection({ form, skillTags }: SkillsSectionProps) {
                 <div className="flex flex-wrap gap-1.5">
                   {selectedIds
                     .map((id) => skillTags.find((s) => s.id === id))
-                    .filter(Boolean)
+                    .filter(isSkillTag)
                     .map((skill) => (
                       <button
-                        key={skill!.id}
+                        key={skill.id}
                         type="button"
-                        onClick={() => toggle(skill!.id)}
+                        onClick={() => toggle(skill.id)}
                         className="group inline-flex items-center gap-1 border border-primary/20 bg-primary/5 px-2.5 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 hover:border-primary/30 transition-all duration-200"
-                        aria-label={`Remove ${skill!.name}`}
+                        aria-label={`Remove ${skill.name}`}
                       >
-                        {skill!.name}
+                        {skill.name}
                         <X className="h-3 w-3 opacity-50 group-hover:opacity-100 transition-opacity" />
                       </button>
                     ))}

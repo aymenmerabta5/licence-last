@@ -1,11 +1,10 @@
 "use client"
 
+import { Calendar, Check, Loader2, X } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Calendar, Check, X, Loader2 } from "lucide-react"
-
-import { reveal, ease } from "@/lib/animations"
 import { Button } from "@/components/ui/button"
+import { ease, reveal } from "@/lib/animations"
 
 interface ValidationFormProps {
   startDate: string
@@ -76,8 +75,8 @@ export function ValidationForm({
 
       {(expectedStartDate || expectedEndDate) && (
         <p className="text-xs text-muted-foreground">
-          {t("expectedPeriod")}:{" "}
-          {expectedStartDate || t("notAvailable")} - {expectedEndDate || t("notAvailable")}
+          {t("expectedPeriod")}: {expectedStartDate || t("notAvailable")} -{" "}
+          {expectedEndDate || t("notAvailable")}
         </p>
       )}
 

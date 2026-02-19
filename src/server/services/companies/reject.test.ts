@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockReturningResult: any[] = []
@@ -31,7 +31,11 @@ describe("src/server/services/companies/reject", () => {
     mockReturningResult = [{ id: "company-1", name: "Bad Corp" }]
 
     const { rejectCompany } = await import("@/server/services/companies/reject")
-    const result = await rejectCompany("company-1", "Incomplete documentation", "admin-1")
+    const result = await rejectCompany(
+      "company-1",
+      "Incomplete documentation",
+      "admin-1",
+    )
 
     expect(result).toEqual({ companyId: "company-1", name: "Bad Corp" })
     expect(mockUpdate).toHaveBeenCalledTimes(1)
@@ -42,6 +46,8 @@ describe("src/server/services/companies/reject", () => {
 
     const { rejectCompany } = await import("@/server/services/companies/reject")
 
-    await expect(rejectCompany("missing", "reason", "admin-1")).rejects.toThrow("Company not found")
+    await expect(rejectCompany("missing", "reason", "admin-1")).rejects.toThrow(
+      "Company not found",
+    )
   })
 })

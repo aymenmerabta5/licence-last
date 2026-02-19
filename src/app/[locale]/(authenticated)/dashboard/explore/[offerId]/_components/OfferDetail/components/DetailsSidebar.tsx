@@ -1,20 +1,18 @@
 "use client"
 
-import * as motion from "motion/react-client"
-import { useLocale, useTranslations } from "next-intl"
 import {
   Briefcase,
-  Monitor,
-  MapPin,
-  Clock,
-  Users,
   Calendar,
+  Clock,
   Info,
+  MapPin,
+  Monitor,
+  Users,
 } from "lucide-react"
-
-import { reveal, ease } from "@/lib/animations"
-
+import * as motion from "motion/react-client"
+import { useLocale, useTranslations } from "next-intl"
 import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
+import { ease, reveal } from "@/lib/animations"
 
 interface DetailsSidebarProps {
   offer: OfferDetailProps["offer"]

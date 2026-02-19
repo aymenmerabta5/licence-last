@@ -1,11 +1,9 @@
 "use client"
 
 import * as motion from "motion/react-client"
-
+import type { StudentDashboardStat } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 import { reveal, revealWithDelay } from "@/lib/animations"
 import { cn } from "@/lib/utils"
-
-import type { StudentDashboardStat } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 
 interface EditorialStatsBarProps {
   stats: StudentDashboardStat[]
@@ -26,7 +24,8 @@ export function EditorialStatsBar({ stats }: EditorialStatsBarProps) {
             key={stat.title}
             className={cn(
               "px-6 py-7 text-center",
-              index < stats.length - 1 && "border-b border-border sm:border-e sm:border-b-0",
+              index < stats.length - 1 &&
+                "border-b border-border sm:border-e sm:border-b-0",
             )}
           >
             <div className="mb-3 flex items-center justify-center gap-2">

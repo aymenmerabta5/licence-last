@@ -1,10 +1,10 @@
 "use client"
 
+import { AiSummaryBox } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/components/AiSummaryBox"
+import { NotificationsHeader } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/components/NotificationsHeader"
+import { NotificationsList } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/components/NotificationsList"
 import { useNotifications } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/hooks/useNotifications"
 import { useNotificationsSummary } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/hooks/useNotificationsSummary"
-import { NotificationsHeader } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/components/NotificationsHeader"
-import { AiSummaryBox } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/components/AiSummaryBox"
-import { NotificationsList } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/components/NotificationsList"
 
 interface NotificationsViewProps {
   role: string
@@ -22,8 +22,7 @@ export function NotificationsView({ role }: NotificationsViewProps) {
     isMarkingRead,
   } = useNotifications()
 
-  const { aiSummary, aiStatus, aiError, summarize } =
-    useNotificationsSummary()
+  const { aiSummary, aiStatus, aiError, summarize } = useNotificationsSummary()
 
   return (
     <div className="space-y-6">
@@ -35,9 +34,7 @@ export function NotificationsView({ role }: NotificationsViewProps) {
         onMarkAllRead={markAllRead}
       />
 
-      {aiError && (
-        <p className="text-xs text-destructive">{aiError.message}</p>
-      )}
+      {aiError && <p className="text-xs text-destructive">{aiError.message}</p>}
 
       {aiSummary && (
         <AiSummaryBox

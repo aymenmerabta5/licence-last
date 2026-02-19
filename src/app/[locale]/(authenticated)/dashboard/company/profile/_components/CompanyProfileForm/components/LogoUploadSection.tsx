@@ -1,8 +1,8 @@
+import { Camera, ImagePlus, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { ImagePlus, Loader2, Camera } from "lucide-react"
 
-import { reveal, ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface LogoUploadSectionProps {
   logoUrl: string

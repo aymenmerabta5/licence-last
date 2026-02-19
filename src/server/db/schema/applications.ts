@@ -1,18 +1,17 @@
 import {
+  index,
+  jsonb,
   pgTable,
   text,
   timestamp,
-  jsonb,
-  index,
   uniqueIndex,
 } from "drizzle-orm/pg-core"
-
+import { user } from "@/server/db/schema/auth"
 import {
-  applicationStatusEnum,
   applicationPipelineStageEnum,
+  applicationStatusEnum,
 } from "@/server/db/schema/enums"
 import { internshipOffer } from "@/server/db/schema/internships"
-import { user } from "@/server/db/schema/auth"
 
 export interface TimelineEventPayload {
   note?: string
@@ -43,9 +42,12 @@ export const application = pgTable(
     companyActionAt: timestamp("company_action_at"),
     companyNote: text("company_note"),
 
-    adminActionByUserId: text("admin_action_by_user_id").references(() => user.id, {
-      onDelete: "set null",
-    }),
+    adminActionByUserId: text("admin_action_by_user_id").references(
+      () => user.id,
+      {
+        onDelete: "set null",
+      },
+    ),
     adminActionAt: timestamp("admin_action_at"),
     adminNote: text("admin_note"),
 
@@ -91,11 +93,16 @@ export const applicationTimelineEvent = pgTable(
     toStage: applicationPipelineStageEnum("to_stage"),
     fromStatus: applicationStatusEnum("from_status"),
     toStatus: applicationStatusEnum("to_status"),
-    payload: jsonb("payload").$type<TimelineEventPayload>().default({}).notNull(),
+    payload: jsonb("payload")
+      .$type<TimelineEventPayload>()
+      .default({})
+      .notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
-    index("application_timeline_event_applicationId_idx").on(table.applicationId),
+    index("application_timeline_event_applicationId_idx").on(
+      table.applicationId,
+    ),
     index("application_timeline_event_actorUserId_idx").on(table.actorUserId),
     index("application_timeline_event_eventType_idx").on(table.eventType),
     index("application_timeline_event_createdAt_idx").on(table.createdAt),

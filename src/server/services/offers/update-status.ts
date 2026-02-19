@@ -1,10 +1,9 @@
 import "server-only"
 
 import { and, eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
 import { internshipOffer } from "@/server/db/schema/internships"
+import { createModuleLogger } from "@/server/logging"
 import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/offers/update-status")
@@ -14,20 +13,23 @@ function validatePublishTiming(existing: {
   expectedStartDate: Date | null
   expectedEndDate: Date | null
 }) {
-  const {
-    applicationDeadlineAt,
-    expectedStartDate,
-    expectedEndDate,
-  } = existing
+  const { applicationDeadlineAt, expectedStartDate, expectedEndDate } = existing
 
-  if ((expectedStartDate && !expectedEndDate) || (!expectedStartDate && expectedEndDate)) {
+  if (
+    (expectedStartDate && !expectedEndDate) ||
+    (!expectedStartDate && expectedEndDate)
+  ) {
     throw new ServiceError(
       "OFFER_EXPECTED_PERIOD_INCOMPLETE",
       "Expected start and end dates must both be provided",
     )
   }
 
-  if (expectedStartDate && expectedEndDate && expectedStartDate >= expectedEndDate) {
+  if (
+    expectedStartDate &&
+    expectedEndDate &&
+    expectedStartDate >= expectedEndDate
+  ) {
     throw new ServiceError(
       "OFFER_EXPECTED_PERIOD_INVALID",
       "Expected start date must be before expected end date",
@@ -72,14 +74,25 @@ export async function updateOfferStatus(
       expectedEndDate: internshipOffer.expectedEndDate,
     })
     .from(internshipOffer)
-    .where(and(eq(internshipOffer.id, offerId), eq(internshipOffer.companyId, companyId)))
+    .where(
+      and(
+        eq(internshipOffer.id, offerId),
+        eq(internshipOffer.companyId, companyId),
+      ),
+    )
     .limit(1)
 
   if (!existing) {
-    throw new ServiceError("OFFER_NOT_FOUND", "Offer not found or access denied")
+    throw new ServiceError(
+      "OFFER_NOT_FOUND",
+      "Offer not found or access denied",
+    )
   }
 
-  log.info({ offerId, companyId, action, currentStatus: existing.status }, "Updating offer status")
+  log.info(
+    { offerId, companyId, action, currentStatus: existing.status },
+    "Updating offer status",
+  )
 
   if (action === "publish") {
     if (existing.status !== "draft") {

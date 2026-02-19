@@ -1,12 +1,12 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 import type { UIMessage } from "ai"
 
 import {
-  sanitizeUIMessagesForModel,
   errorToText,
-  redactSecrets,
-  stripProviderMetadata,
   extractTextFromParts,
+  redactSecrets,
+  sanitizeUIMessagesForModel,
+  stripProviderMetadata,
 } from "@/server/ai/sanitizer"
 
 describe("sanitizer", () => {
@@ -72,9 +72,7 @@ describe("sanitizer", () => {
         {
           id: "msg-1",
           role: "user",
-          parts: [
-            { type: "text", text: "Hello" },
-          ],
+          parts: [{ type: "text", text: "Hello" }],
         },
       ]
 
@@ -92,7 +90,11 @@ describe("sanitizer", () => {
     test("preserves multiple messages", () => {
       const messages: UIMessage[] = [
         { id: "1", role: "user", parts: [{ type: "text", text: "Hello" }] },
-        { id: "2", role: "assistant", parts: [{ type: "text", text: "Hi there" }] },
+        {
+          id: "2",
+          role: "assistant",
+          parts: [{ type: "text", text: "Hi there" }],
+        },
       ]
 
       const sanitized = sanitizeUIMessagesForModel(messages)
@@ -108,7 +110,9 @@ describe("sanitizer", () => {
     })
 
     test("returns Error message", () => {
-      expect(errorToText(new Error("Something went wrong"))).toBe("Something went wrong")
+      expect(errorToText(new Error("Something went wrong"))).toBe(
+        "Something went wrong",
+      )
     })
 
     test("returns stringified object for other types", () => {
@@ -173,7 +177,10 @@ describe("sanitizer", () => {
         },
       }
 
-      const result = redactSecrets(data) as Record<string, { name: string; password: string }>
+      const result = redactSecrets(data) as Record<
+        string,
+        { name: string; password: string }
+      >
       expect(result.user.name).toBe("John")
       expect(result.user.password).toBe("[REDACTED]")
     })
@@ -185,25 +192,33 @@ describe("sanitizer", () => {
         { type: "text", text: "Hello", providerMetadata: { id: "123" } },
       ]
 
-      const result = stripProviderMetadata(parts as UIMessage["parts"]) as Array<Record<string, unknown>>
+      const result = stripProviderMetadata(
+        parts as UIMessage["parts"],
+      ) as Array<Record<string, unknown>>
       expect(result[0]).not.toHaveProperty("providerMetadata")
     })
 
     test("removes callProviderMetadata from parts", () => {
       const parts = [
-        { type: "text", text: "Hello", callProviderMetadata: { callId: "abc" } },
+        {
+          type: "text",
+          text: "Hello",
+          callProviderMetadata: { callId: "abc" },
+        },
       ]
 
-      const result = stripProviderMetadata(parts as UIMessage["parts"]) as Array<Record<string, unknown>>
+      const result = stripProviderMetadata(
+        parts as UIMessage["parts"],
+      ) as Array<Record<string, unknown>>
       expect(result[0]).not.toHaveProperty("callProviderMetadata")
     })
 
     test("preserves other properties", () => {
-      const parts = [
-        { type: "text", text: "Hello", someOtherProp: "value" },
-      ]
+      const parts = [{ type: "text", text: "Hello", someOtherProp: "value" }]
 
-      const result = stripProviderMetadata(parts as UIMessage["parts"]) as Array<Record<string, unknown>>
+      const result = stripProviderMetadata(
+        parts as UIMessage["parts"],
+      ) as Array<Record<string, unknown>>
       expect(result[0]).toHaveProperty("someOtherProp")
     })
   })

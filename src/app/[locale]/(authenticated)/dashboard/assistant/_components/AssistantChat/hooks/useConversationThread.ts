@@ -1,9 +1,9 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { DefaultChatTransport, type UIMessage } from "ai"
 import { useChat } from "@ai-sdk/react"
 import { useQueryClient } from "@tanstack/react-query"
+import { DefaultChatTransport, type UIMessage } from "ai"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { orpc } from "@/server/orpc/client"
 
@@ -70,7 +70,7 @@ export function useConversationThread({
 
   useEffect(() => {
     scrollToBottom()
-  }, [messages, scrollToBottom])
+  }, [scrollToBottom])
 
   const handleScroll = useCallback(() => {
     const container = messagesContainerRef.current

@@ -1,11 +1,9 @@
 import { Trash2, X } from "lucide-react"
 import * as motion from "motion/react-client"
-
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-
 import type { ConversationListItem } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/types"
 import { formatConversationTitle } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/utils"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 interface ConversationSidebarItemProps {
   conversation: ConversationListItem
@@ -61,7 +59,9 @@ export function ConversationSidebarItem({
             {formatUpdatedAt(conversation.updatedAt)}
           </p>
         </div>
-        <p className="mt-0.5 text-[11px] text-muted-foreground truncate">{conversation.model}</p>
+        <p className="mt-0.5 text-[11px] text-muted-foreground truncate">
+          {conversation.model}
+        </p>
       </button>
 
       <div className="opacity-0 group-hover:opacity-100 transition-opacity">

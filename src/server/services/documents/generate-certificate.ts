@@ -1,23 +1,22 @@
 import "server-only"
 
-import { createElement } from "react"
 import { renderToBuffer } from "@react-pdf/renderer"
-import { eq, and } from "drizzle-orm"
-
+import { and, eq } from "drizzle-orm"
+import { createElement } from "react"
+import { env } from "@/env"
 import { db } from "@/server/db"
-import { placement, placementDocument } from "@/server/db/schema/placements"
 import { application } from "@/server/db/schema/applications"
-import { internshipOffer } from "@/server/db/schema/internships"
-import { company } from "@/server/db/schema/companies"
 import { user } from "@/server/db/schema/auth"
+import { company } from "@/server/db/schema/companies"
+import { internshipOffer } from "@/server/db/schema/internships"
+import { placement, placementDocument } from "@/server/db/schema/placements"
 import { university } from "@/server/db/schema/universities"
 import {
-  InternshipCertificateTemplate,
   type CertificateData,
+  InternshipCertificateTemplate,
 } from "@/server/pdfs/CertificateTemplate"
-import { generateVerificationCode } from "@/server/services/documents/verification-code"
 import { generateQRCodeDataUrl } from "@/server/services/documents/qr-utils"
-import { env } from "@/env"
+import { generateVerificationCode } from "@/server/services/documents/verification-code"
 
 export interface GenerateCertificateInput {
   placementId: string
@@ -88,7 +87,8 @@ export async function generateCertificate(
     )
     .limit(1)
 
-  const verificationCode = existingDoc?.verificationCode ?? generateVerificationCode()
+  const verificationCode =
+    existingDoc?.verificationCode ?? generateVerificationCode()
   const verificationUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/${locale}/verify/${verificationCode}`
   const qrCodeDataUrl = await generateQRCodeDataUrl(verificationUrl)
 

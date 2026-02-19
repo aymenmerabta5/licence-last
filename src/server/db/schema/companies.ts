@@ -1,15 +1,17 @@
 import {
+  index,
+  integer,
   pgTable,
+  primaryKey,
   text,
   timestamp,
-  integer,
-  primaryKey,
-  index,
   uniqueIndex,
 } from "drizzle-orm/pg-core"
-
-import { companyMemberRoleEnum, companyStatusEnum } from "@/server/db/schema/enums"
 import { user } from "@/server/db/schema/auth"
+import {
+  companyMemberRoleEnum,
+  companyStatusEnum,
+} from "@/server/db/schema/enums"
 
 export const company = pgTable(
   "company",

@@ -18,9 +18,16 @@ interface SetPasswordAuthApi {
 type AuthApiGlobal = typeof globalThis & { __authApi?: SetPasswordAuthApi }
 
 const getAuthApi = () => (globalThis as AuthApiGlobal).__authApi ?? auth.api
-type SetPasswordDeps = { authApi?: SetPasswordAuthApi; getHeaders?: typeof headers }
+type SetPasswordDeps = {
+  authApi?: SetPasswordAuthApi
+  getHeaders?: typeof headers
+}
 
-export async function setUserPassword(userId: string, newPassword: string, deps: SetPasswordDeps = {}) {
+export async function setUserPassword(
+  userId: string,
+  newPassword: string,
+  deps: SetPasswordDeps = {},
+) {
   const api = deps.authApi ?? getAuthApi()
   const getHeaders = deps.getHeaders ?? headers
   const result = await api.setUserPassword({

@@ -1,8 +1,6 @@
 import { ArrowRight } from "lucide-react"
-
-import { Link } from "@/i18n/routing"
-
 import type { CandidatesDashboardTranslations } from "@/app/[locale]/(authenticated)/dashboard/candidates/_components/CandidatesPipelinePage/types"
+import { Link } from "@/i18n/routing"
 
 interface OffersFooterLinkProps {
   t: CandidatesDashboardTranslations

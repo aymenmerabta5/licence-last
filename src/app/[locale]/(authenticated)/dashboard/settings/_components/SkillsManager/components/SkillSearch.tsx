@@ -1,12 +1,12 @@
 "use client"
 
 import { CheckCircle2, Search } from "lucide-react"
-import { Label } from "@/components/ui/label"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group"
+import { Label } from "@/components/ui/label"
 
 interface SkillSearchProps {
   query: string

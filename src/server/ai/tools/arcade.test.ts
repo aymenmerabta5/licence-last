@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, afterEach, mock } from "bun:test"
+import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
 
 mock.module("server-only", () => ({}))
 
@@ -25,8 +25,8 @@ describe("Arcade tool cache", () => {
       const expiredEntry = toolCache.get("user-expired")
       const validEntry = toolCache.get("user-valid")
 
-      expect(expiredEntry!.expiresAt).toBeLessThan(now)
-      expect(validEntry!.expiresAt).toBeGreaterThan(now)
+      expect(expiredEntry?.expiresAt).toBeLessThan(now)
+      expect(validEntry?.expiresAt).toBeGreaterThan(now)
     })
 
     test("should delete expired entries from cache", () => {

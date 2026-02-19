@@ -1,9 +1,8 @@
 import { setRequestLocale } from "next-intl/server"
-
-import { Navbar } from "@/components/Navbar"
-import { Footer } from "@/components/Footer"
-import { orpcClient } from "@/server/orpc/client"
 import { VerificationResult } from "@/app/[locale]/verify/[code]/_components/VerificationResult"
+import { Footer } from "@/components/Footer"
+import { Navbar } from "@/components/Navbar"
+import { orpcClient } from "@/server/orpc/client"
 
 type Params = Promise<{ locale: string; code: string }>
 

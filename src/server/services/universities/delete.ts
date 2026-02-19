@@ -56,15 +56,17 @@ export async function deleteUniversity(universityId: string) {
       })
       .where(eq(user.universityId, universityId))
 
-    await tx
-      .delete(university)
-      .where(eq(university.id, universityId))
+    await tx.delete(university).where(eq(university.id, universityId))
 
     return linkedUsers.map((linkedUser) => linkedUser.userId)
   })
 
   log.info(
-    { universityId, affectedUsers: affectedUserIds.length, event: "university_deleted" },
+    {
+      universityId,
+      affectedUsers: affectedUserIds.length,
+      event: "university_deleted",
+    },
     "University deleted",
   )
 

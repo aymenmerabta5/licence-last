@@ -2,12 +2,10 @@
 
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
-
-import { getErrorMessage } from "@/lib/error-message"
-
 import { InviteMemberForm } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/components/InviteMemberForm"
 import { MembersList } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/components/MembersList"
 import { useCompanyTeamData } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/hooks/useCompanyTeamData"
+import { getErrorMessage } from "@/lib/error-message"
 
 interface CompanyTeamViewProps {
   currentUserId: string
@@ -16,7 +14,8 @@ interface CompanyTeamViewProps {
 export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
-  const { members, isLoading, isError, error, inviteMutation, removeMutation } = useCompanyTeamData()
+  const { members, isLoading, isError, error, inviteMutation, removeMutation } =
+    useCompanyTeamData()
 
   const currentMember = useMemo(
     () => members.find((member) => member.userId === currentUserId),
@@ -27,10 +26,15 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-16">
       <header className="space-y-2">
-        <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary">Company Workspace</p>
-        <h1 className="font-serif text-3xl tracking-tight text-heading">Team Members</h1>
+        <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary">
+          Company Workspace
+        </p>
+        <h1 className="font-serif text-3xl tracking-tight text-heading">
+          Team Members
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Owners manage team access. Recruiters can work on offers and candidates.
+          Owners manage team access. Recruiters can work on offers and
+          candidates.
         </p>
       </header>
 
@@ -43,7 +47,8 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
           onNameChange={setName}
           onSubmit={(event) => {
             event.preventDefault()
-            void inviteMutation.mutateAsync({ email, name: name.trim() || undefined })
+            void inviteMutation
+              .mutateAsync({ email, name: name.trim() || undefined })
               .then((result) => {
                 setEmail("")
                 setName("")
@@ -54,7 +59,9 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
                 )
               })
               .catch((inviteError) => {
-                toast.error(getErrorMessage(inviteError, "Failed to invite member."))
+                toast.error(
+                  getErrorMessage(inviteError, "Failed to invite member."),
+                )
               })
           }}
         />
@@ -67,7 +74,9 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
       )}
 
       {isLoading && (
-        <p className="text-sm text-muted-foreground">Loading company members...</p>
+        <p className="text-sm text-muted-foreground">
+          Loading company members...
+        </p>
       )}
 
       {isError && (
@@ -83,12 +92,15 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
           canManageMembers={canManageMembers}
           isRemoving={removeMutation.isPending}
           onRemove={(member) => {
-            void removeMutation.mutateAsync({ userId: member.userId })
+            void removeMutation
+              .mutateAsync({ userId: member.userId })
               .then(() => {
                 toast.success("Member removed successfully.")
               })
               .catch((removeError) => {
-                toast.error(getErrorMessage(removeError, "Failed to remove member."))
+                toast.error(
+                  getErrorMessage(removeError, "Failed to remove member."),
+                )
               })
           }}
         />

@@ -28,9 +28,7 @@ export async function AuthRedirect({ locale }: AuthRedirectProps) {
     })
 
     const redirectPath = getPostLoginRedirectPath(me)
-    redirect(
-      `/${locale}${redirectPath === "/" ? "/dashboard" : redirectPath}`,
-    )
+    redirect(`/${locale}${redirectPath === "/" ? "/dashboard" : redirectPath}`)
   }
 
   return null

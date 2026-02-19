@@ -28,7 +28,8 @@ export function calculateProfileCompleteness(profile: {
   )
     score += 20
   if (profile.skillsCount >= 3) score += 20
-  if (profile.studentNumber && profile.studentNumber.trim().length > 0) score += 10
+  if (profile.studentNumber && profile.studentNumber.trim().length > 0)
+    score += 10
   if (profile.department && profile.department.trim().length > 0) score += 10
 
   return score

@@ -1,9 +1,8 @@
-import { pgTable, text, timestamp, index, jsonb } from "drizzle-orm/pg-core"
 import type { UIMessage } from "ai"
-
-import { assistantMessageRoleEnum } from "@/server/db/schema/enums"
+import { index, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 import { user } from "@/server/db/schema/auth"
 import { company } from "@/server/db/schema/companies"
+import { assistantMessageRoleEnum } from "@/server/db/schema/enums"
 
 export type AssistantMessageParts = UIMessage["parts"]
 
@@ -27,7 +26,9 @@ export const assistantConversation = pgTable(
   },
   (table) => [
     index("assistant_conversation_companyId_idx").on(table.companyId),
-    index("assistant_conversation_createdByUserId_idx").on(table.createdByUserId),
+    index("assistant_conversation_createdByUserId_idx").on(
+      table.createdByUserId,
+    ),
     index("assistant_conversation_updatedAt_idx").on(table.updatedAt),
   ],
 )

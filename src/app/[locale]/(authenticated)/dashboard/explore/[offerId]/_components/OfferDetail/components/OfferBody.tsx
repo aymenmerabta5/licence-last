@@ -1,12 +1,10 @@
 "use client"
 
+import { FileText, Wrench } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { FileText, Wrench } from "lucide-react"
-
-import { reveal, ease } from "@/lib/animations"
-
 import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
+import { ease, reveal } from "@/lib/animations"
 
 interface OfferBodyProps {
   offer: OfferDetailProps["offer"]

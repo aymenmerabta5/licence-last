@@ -1,15 +1,15 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-
-import { createModuleLogger } from "@/server/logging"
 import { db } from "@/server/db"
+import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/placements/reject")
+
 import { application } from "@/server/db/schema/applications"
-import { internshipOffer } from "@/server/db/schema/internships"
-import { company, companyMember } from "@/server/db/schema/companies"
 import { user } from "@/server/db/schema/auth"
+import { company, companyMember } from "@/server/db/schema/companies"
+import { internshipOffer } from "@/server/db/schema/internships"
 import { studentProfile } from "@/server/db/schema/students"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { ServiceError } from "@/server/services/errors"
@@ -25,10 +25,15 @@ export interface RejectPlacementInput {
   reason?: string
 }
 
-export async function rejectPlacement(
-  input: RejectPlacementInput,
-) {
-  const { applicationId, adminUserId, adminRole, adminUniversityId, adminDepartmentId, reason } = input
+export async function rejectPlacement(input: RejectPlacementInput) {
+  const {
+    applicationId,
+    adminUserId,
+    adminRole,
+    adminUniversityId,
+    adminDepartmentId,
+    reason,
+  } = input
 
   const [app] = await db
     .select({
@@ -70,7 +75,10 @@ export async function rejectPlacement(
         "Department head department not set",
       )
     }
-    if (!app.studentDepartmentId || app.studentDepartmentId !== adminDepartmentId) {
+    if (
+      !app.studentDepartmentId ||
+      app.studentDepartmentId !== adminDepartmentId
+    ) {
       throw new ServiceError(
         "PLACEMENT_SCOPE_FORBIDDEN_DEPARTMENT",
         "You can only reject placements for students in your department",
@@ -78,9 +86,15 @@ export async function rejectPlacement(
     }
   } else if (adminRole !== "super_admin") {
     if (!adminUniversityId) {
-      throw new ServiceError("ADMIN_UNIVERSITY_NOT_SET", "Admin university not set")
+      throw new ServiceError(
+        "ADMIN_UNIVERSITY_NOT_SET",
+        "Admin university not set",
+      )
     }
-    if (!app.studentUniversityId || app.studentUniversityId !== adminUniversityId) {
+    if (
+      !app.studentUniversityId ||
+      app.studentUniversityId !== adminUniversityId
+    ) {
       throw new ServiceError(
         "PLACEMENT_SCOPE_FORBIDDEN_UNIVERSITY",
         "You do not have access to reject this application",

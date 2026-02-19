@@ -1,12 +1,11 @@
-import * as motion from "motion/react-client"
 import { ArrowRight } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
+import { buildUserTypes } from "@/app/[locale]/_components/HowItWorksSection/buildUserTypes"
+import { UserTypeColumn } from "@/app/[locale]/_components/HowItWorksSection/components/UserTypeColumn"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { reveal } from "@/lib/animations"
-import { buildUserTypes } from "@/app/[locale]/_components/HowItWorksSection/buildUserTypes"
-import { UserTypeColumn } from "@/app/[locale]/_components/HowItWorksSection/components/UserTypeColumn"
 
 export function HowItWorksSection() {
   const t = useTranslations("howItWorks")
@@ -84,4 +83,3 @@ export function HowItWorksSection() {
     </section>
   )
 }
-

@@ -21,6 +21,12 @@ export const studentProfileDetailsSchema = z.object({
   studentNumber: z.string().optional(),
   department: z.string().optional(),
   level: z.string().optional(),
-  wilayaCode: z.coerce.number().int().min(1).max(58).optional().or(z.literal(0)),
+  wilayaCode: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(58)
+    .optional()
+    .or(z.literal(0)),
   address: z.string().optional(),
 })

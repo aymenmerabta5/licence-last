@@ -1,13 +1,13 @@
 "use client"
 
+import { ArrowRight, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { ArrowRight, Loader2 } from "lucide-react"
-import { Link } from "@/i18n/routing"
-import { reveal, ease } from "@/lib/animations"
+import type { LoginFormApi } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/useLoginForm"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import type { LoginFormApi } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/useLoginForm"
+import { Link } from "@/i18n/routing"
+import { ease, reveal } from "@/lib/animations"
 
 interface FormFooterProps {
   form: LoginFormApi
@@ -15,7 +15,11 @@ interface FormFooterProps {
   onRememberChange: (checked: boolean) => void
 }
 
-export function FormFooter({ form, rememberMe, onRememberChange }: FormFooterProps) {
+export function FormFooter({
+  form,
+  rememberMe,
+  onRememberChange,
+}: FormFooterProps) {
   const t = useTranslations("auth.login")
 
   return (
@@ -62,13 +66,8 @@ export function FormFooter({ form, rememberMe, onRememberChange }: FormFooterPro
       </motion.div>
 
       {/* Submit Button */}
-      <motion.div
-        {...reveal}
-        transition={{ duration: 0.6, ease, delay: 0.2 }}
-      >
-        <form.Subscribe
-          selector={(state) => [state.isSubmitting] as const}
-        >
+      <motion.div {...reveal} transition={{ duration: 0.6, ease, delay: 0.2 }}>
+        <form.Subscribe selector={(state) => [state.isSubmitting] as const}>
           {([isSubmitting]) => (
             <Button
               type="submit"
