@@ -122,48 +122,73 @@ export async function applyToOffer(
     })
   })
 
-  // 5. Post-transaction: timeline event + notifications (non-critical, outside tx)
-  await appendTimelineEvent({
-    applicationId,
-    actorUserId: studentUserId,
-    eventType: "application_created",
-    toStage: "applied",
-    toStatus: "applied",
-    payload: { offerId },
-  })
-
-  // Fetch offer for notification context
-  const [offer] = await db
-    .select({
-      companyId: internshipOffer.companyId,
-      title: internshipOffer.title,
+  // 5. Post-transaction hooks are best-effort; application creation must remain successful.
+  try {
+    await appendTimelineEvent({
+      applicationId,
+      actorUserId: studentUserId,
+      eventType: "application_created",
+      toStage: "applied",
+      toStatus: "applied",
+      payload: { offerId },
     })
-    .from(internshipOffer)
-    .where(eq(internshipOffer.id, offerId))
-    .limit(1)
+  } catch (err) {
+    log.warn(
+      { err, applicationId, offerId, event: "application_created" },
+      "Failed to append application timeline event after commit",
+    )
+  }
 
-  if (offer) {
-    const members = await db
-      .select({ userId: companyMember.userId })
-      .from(companyMember)
-      .where(eq(companyMember.companyId, offer.companyId))
+  try {
+    // Fetch offer for notification context
+    const [offer] = await db
+      .select({
+        companyId: internshipOffer.companyId,
+        title: internshipOffer.title,
+      })
+      .from(internshipOffer)
+      .where(eq(internshipOffer.id, offerId))
+      .limit(1)
 
-    if (members.length > 0) {
-      await Promise.all(
-        members.map((member) =>
-          createNotification({
-            userId: member.userId,
-            type: "new_application",
-            payload: {
-              offerId,
-              offerTitle: offer.title,
-              studentUserId,
-              applicationId,
-            },
-          }),
-        ),
-      )
+    if (offer) {
+      const members = await db
+        .select({ userId: companyMember.userId })
+        .from(companyMember)
+        .where(eq(companyMember.companyId, offer.companyId))
+
+      if (members.length > 0) {
+        const notificationResults = await Promise.allSettled(
+          members.map((member) =>
+            createNotification({
+              userId: member.userId,
+              type: "new_application",
+              payload: {
+                offerId,
+                offerTitle: offer.title,
+                studentUserId,
+                applicationId,
+              },
+            }),
+          ),
+        )
+
+        const failedCount = notificationResults.filter(
+          (result) => result.status === "rejected",
+        ).length
+
+        if (failedCount > 0) {
+          log.warn(
+            { offerId, applicationId, failedCount, memberCount: members.length },
+            "Failed to notify some company members about new application",
+          )
+        }
+      }
     }
+  } catch (err) {
+    log.warn(
+      { err, offerId, applicationId },
+      "Failed to dispatch application notifications after commit",
+    )
   }
 
   log.info(

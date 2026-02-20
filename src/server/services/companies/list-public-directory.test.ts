@@ -81,7 +81,7 @@ describe("src/server/services/companies/list-public-directory", () => {
     ]
 
     const { listPublicDirectoryCompanies } = await import(
-      "@/server/services/companies/list-public-directory"
+      "@/server/services/companies/list-public-directory?fresh=1" as string
     )
 
     const result = await listPublicDirectoryCompanies({ limit: 1 })
@@ -100,7 +100,7 @@ describe("src/server/services/companies/list-public-directory", () => {
     mockRows = []
 
     const { listPublicDirectoryCompanies } = await import(
-      "@/server/services/companies/list-public-directory"
+      "@/server/services/companies/list-public-directory?fresh=2" as string
     )
 
     const result = await listPublicDirectoryCompanies({ limit: 12 })

@@ -86,7 +86,9 @@ mock.module("better-auth/next-js", () => ({
 mock.module("better-auth/plugins", () => ({
   admin: () => ({}),
   captcha: () => ({}),
+  haveIBeenPwned: () => ({}),
   multiSession: () => ({}),
+  openAPI: () => ({}),
   twoFactor: () => ({}),
 }))
 
@@ -162,19 +164,49 @@ describe("src/lib/auth self-signup role hardening", () => {
     ;(db as { select: unknown }).select = originalDbSelect
   })
 
-  test("rejects privileged self-signup roles", async () => {
+  test("rejects non-allowed self-signup roles", async () => {
     await expect(
       beforeCreateUserHook(
         {
           email: "admin@company.com",
           emailVerified: false,
         },
-        { body: { accountType: "company_admin" } },
+        { body: { accountType: "super_admin" } },
       ),
     ).rejects.toMatchObject({
       code: "ROLE_IS_NOT_ALLOWED_TO_BE_SET",
       message: "role is not allowed to be set",
     })
+  })
+
+  test("allows company self-signup without university auto-linking", async () => {
+    const result = await beforeCreateUserHook(
+      {
+        email: "recruiter@company.com",
+        emailVerified: false,
+      },
+      { body: { accountType: "company_admin" } },
+    )
+
+    expect(result.data.role).toBe("company_admin")
+    expect(result.data.universityId).toBeUndefined()
+    expect(getEmailDomainMock).not.toHaveBeenCalled()
+    expect(selectMock).not.toHaveBeenCalled()
+  })
+
+  test("allows university-admin self-signup without domain pre-linking", async () => {
+    const result = await beforeCreateUserHook(
+      {
+        email: "admin@new-university.dz",
+        emailVerified: false,
+      },
+      { body: { accountType: "university_admin" } },
+    )
+
+    expect(result.data.role).toBe("university_admin")
+    expect(result.data.universityId).toBeUndefined()
+    expect(getEmailDomainMock).not.toHaveBeenCalled()
+    expect(selectMock).not.toHaveBeenCalled()
   })
 
   test("keeps student self-signup flow with approved university domain", async () => {

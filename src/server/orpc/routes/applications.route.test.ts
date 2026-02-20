@@ -50,6 +50,8 @@ mock.module("@/server/orpc/rate-limited-procedures", () => ({
   companyAdminProcedureGenerous: createProcedureMock(),
   companyAdminProcedureStandard: createProcedureMock(),
   companyAdminProcedureAssistant: createProcedureMock(),
+  companyOwnerProcedureStandard: createProcedureMock(),
+  companyOwnerProcedureGenerous: createProcedureMock(),
   studentProcedureGenerous: createProcedureMock(),
   studentProcedureStandard: createProcedureMock(),
   deptHeadProcedureStandard: createProcedureMock(),
