@@ -22,16 +22,7 @@ import { companyMember } from "@/server/db/schema/companies"
 import CompanyApprovedEmail from "@/server/email/templates/CompanyApprovedEmail"
 import CompanyRejectedEmail from "@/server/email/templates/CompanyRejectedEmail"
 import { isAdminRole } from "@/server/orpc/middleware"
-import {
-  authedProcedureGenerous,
-  authedProcedureStandard,
-  companyAdminProcedureGenerous,
-  companyAdminProcedureStandard,
-  companyOwnerProcedureStandard,
-  studentProcedureGenerous,
-  superAdminProcedureGenerous,
-  superAdminProcedureStandard,
-} from "@/server/orpc/rate-limited-procedures"
+import * as rateLimitedProcedures from "@/server/orpc/rate-limited-procedures"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import { approveCompany } from "@/server/services/companies/approve"
 import { createCompany } from "@/server/services/companies/create"
@@ -59,6 +50,20 @@ import {
 import { updateCompany } from "@/server/services/companies/update"
 import { emitNotification } from "@/server/services/notifications/emit"
 import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
+
+const {
+  authedProcedureGenerous,
+  authedProcedureStandard,
+  companyAdminProcedureGenerous,
+  companyAdminProcedureStandard,
+  studentProcedureGenerous,
+  superAdminProcedureGenerous,
+  superAdminProcedureStandard,
+} = rateLimitedProcedures
+
+const companyOwnerProcedureStandard =
+  rateLimitedProcedures.companyOwnerProcedureStandard ??
+  rateLimitedProcedures.companyAdminProcedureStandard
 
 /* ── Reads ── */
 

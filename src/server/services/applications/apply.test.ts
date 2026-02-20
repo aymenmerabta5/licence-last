@@ -57,8 +57,12 @@ const dbMock = {
 
 mock.module("@/server/db", () => ({ db: dbMock }))
 
+const appendTimelineEventMock = mock(() =>
+  Promise.resolve({ eventId: "evt-1" }),
+)
+
 mock.module("@/server/services/applications/pipeline", () => ({
-  appendTimelineEvent: mock(() => Promise.resolve({ eventId: "evt-1" })),
+  appendTimelineEvent: appendTimelineEventMock,
 }))
 
 const createNotificationMock = mock(() =>
@@ -85,6 +89,7 @@ describe("src/server/services/applications/apply", () => {
 
     mockInsert.mockClear()
     mockValues.mockClear()
+    appendTimelineEventMock.mockClear()
     createNotificationMock.mockClear()
 
     mockFromWithForAndLimit.mockReturnValue({ where: mockWhereWithForAndLimit })
@@ -98,6 +103,9 @@ describe("src/server/services/applications/apply", () => {
 
     mockInsert.mockReturnValue({ values: mockValues })
     mockValues.mockResolvedValue(undefined)
+    appendTimelineEventMock.mockResolvedValue({
+      eventId: "evt-1",
+    })
     createNotificationMock.mockResolvedValue({
       id: "notification-1",
       skipped: false,
@@ -167,6 +175,75 @@ describe("src/server/services/applications/apply", () => {
       "student-1",
       "Short cover letter",
     )
+
+    expect(result.applicationId).toBeDefined()
+    expect(mockInsert).toHaveBeenCalledTimes(1)
+    expect(createNotificationMock).toHaveBeenCalledTimes(2)
+  })
+
+  test("should not fail apply when timeline append fails post-commit", async () => {
+    mockSelectResults.push([
+      {
+        id: "offer-1",
+        companyId: "company-1",
+        title: "Frontend Intern",
+        status: "published",
+        applicationDeadlineAt: null,
+        maxPositions: 2,
+      },
+    ])
+    mockSelectResults.push([{ status: "approved" }])
+    mockSelectResults.push([{ value: 0 }])
+    mockSelectResults.push([])
+    mockSelectResults.push([
+      { companyId: "company-1", title: "Frontend Intern" },
+    ])
+    mockSelectResults.push([{ userId: "member-1" }, { userId: "member-2" }])
+    appendTimelineEventMock.mockRejectedValueOnce(
+      new Error("timeline unavailable"),
+    )
+
+    const { applyToOffer } = await import(
+      "@/server/services/applications/apply?fresh=5" as string
+    )
+
+    const result = await applyToOffer("offer-1", "student-1")
+
+    expect(result.applicationId).toBeDefined()
+    expect(mockInsert).toHaveBeenCalledTimes(1)
+    expect(createNotificationMock).toHaveBeenCalledTimes(2)
+  })
+
+  test("should not fail apply when some notifications fail post-commit", async () => {
+    mockSelectResults.push([
+      {
+        id: "offer-1",
+        companyId: "company-1",
+        title: "Frontend Intern",
+        status: "published",
+        applicationDeadlineAt: null,
+        maxPositions: 2,
+      },
+    ])
+    mockSelectResults.push([{ status: "approved" }])
+    mockSelectResults.push([{ value: 0 }])
+    mockSelectResults.push([])
+    mockSelectResults.push([
+      { companyId: "company-1", title: "Frontend Intern" },
+    ])
+    mockSelectResults.push([{ userId: "member-1" }, { userId: "member-2" }])
+    createNotificationMock
+      .mockRejectedValueOnce(new Error("notification unavailable"))
+      .mockResolvedValueOnce({
+        id: "notification-2",
+        skipped: false,
+      })
+
+    const { applyToOffer } = await import(
+      "@/server/services/applications/apply?fresh=6" as string
+    )
+
+    const result = await applyToOffer("offer-1", "student-1")
 
     expect(result.applicationId).toBeDefined()
     expect(mockInsert).toHaveBeenCalledTimes(1)
