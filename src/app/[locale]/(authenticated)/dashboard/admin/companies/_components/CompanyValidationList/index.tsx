@@ -3,6 +3,7 @@
 import { CompanyStatusFilter } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyStatusFilter"
 import { CompanyValidationContent } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyValidationContent"
 import { CompanyValidationHeader } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyValidationHeader"
+import { DeleteCompanyDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/DeleteCompanyDialog"
 import { RejectDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/RejectDialog"
 import { useCompanyValidation } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/hooks/useCompanyValidation"
 import { useCompanyValidationState } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/hooks/useCompanyValidationState"
@@ -26,6 +27,8 @@ export function CompanyValidationList() {
     isSuspending,
     reactivateCompany,
     isReactivating,
+    deleteCompany,
+    isDeleting,
   } = useCompanyValidation()
   const state = useCompanyValidationState()
 
@@ -34,6 +37,13 @@ export function CompanyValidationList() {
     rejectCompany(
       { companyId: state.rejectingId, reason },
       { onSuccess: () => state.handleRejectDialogChange(false) },
+    )
+  }
+
+  function handleDeleteConfirm(companyId: string) {
+    deleteCompany(
+      { companyId },
+      { onSuccess: () => state.handleDeleteDialogChange(false) },
     )
   }
 
@@ -58,10 +68,12 @@ export function CompanyValidationList() {
         onReject={state.handleRejectClick}
         onSuspend={suspendCompany}
         onReactivate={reactivateCompany}
+        onDelete={state.handleDeleteClick}
         isApproving={isApproving}
         isRejecting={isRejecting}
         isSuspending={isSuspending}
         isReactivating={isReactivating}
+        isDeleting={isDeleting}
       />
 
       <RejectDialog
@@ -69,6 +81,14 @@ export function CompanyValidationList() {
         onOpenChange={state.handleRejectDialogChange}
         onConfirm={handleRejectConfirm}
         isRejecting={isRejecting}
+      />
+
+      <DeleteCompanyDialog
+        open={state.deleteDialogOpen}
+        onOpenChange={state.handleDeleteDialogChange}
+        company={state.deletingCompany}
+        onConfirm={handleDeleteConfirm}
+        isDeleting={isDeleting}
       />
     </div>
   )

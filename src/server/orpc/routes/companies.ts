@@ -15,6 +15,7 @@ import {
   companyReportStatusSchema,
   companyStatusSchema,
 } from "@/lib/schemas/enums"
+import { searchCompaniesForStudentsSchema } from "@/lib/schemas/search"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { companyMember } from "@/server/db/schema/companies"
@@ -27,16 +28,19 @@ import {
   companyAdminProcedureGenerous,
   companyAdminProcedureStandard,
   companyOwnerProcedureStandard,
+  studentProcedureGenerous,
   superAdminProcedureGenerous,
   superAdminProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import { approveCompany } from "@/server/services/companies/approve"
 import { createCompany } from "@/server/services/companies/create"
+import { deleteCompany } from "@/server/services/companies/delete"
 import { getCompanyById } from "@/server/services/companies/get"
 import { inviteCompanyMember } from "@/server/services/companies/invite-member"
 import { listCompanies } from "@/server/services/companies/list"
 import { listCompanyMembers } from "@/server/services/companies/list-members"
+import { listPublicDirectoryCompanies } from "@/server/services/companies/list-public-directory"
 import { getCompanyMembership } from "@/server/services/companies/membership"
 import { reactivateCompany } from "@/server/services/companies/reactivate"
 import { rejectCompany } from "@/server/services/companies/reject"
@@ -82,6 +86,10 @@ export const listCompaniesProcedure = authedProcedureGenerous
       offset: input?.offset,
     })
   })
+
+export const listPublicDirectoryProcedure = studentProcedureGenerous
+  .input(searchCompaniesForStudentsSchema)
+  .handler(async ({ input }) => listPublicDirectoryCompanies(input))
 
 export const getCompanyByIdProcedure = authedProcedureGenerous
   .input(z.object({ companyId: z.string().min(1) }))
@@ -215,6 +223,22 @@ export const listCompanyMembersProcedure =
 
 /* ── Mutations ── */
 
+function revalidateAfterCompanyDeletion(
+  companyId: string,
+  affectedUserIds: string[],
+) {
+  revalidateTag(CACHE_TAGS.COMPANY_PROFILE(companyId), "max")
+  revalidateTag(CACHE_TAGS.COMPANY_OFFERS(companyId), { expire: 0 })
+  revalidateTag(CACHE_TAGS.COMPANY_CANDIDATES(companyId), { expire: 0 })
+  revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
+  revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+  revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
+
+  for (const affectedUserId of affectedUserIds) {
+    revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${affectedUserId}`), "max")
+  }
+}
+
 export const createCompanyProcedure = authedProcedureStandard
   .use(async ({ context, next }) => {
     // Only company_admin role can create companies
@@ -336,6 +360,7 @@ export const updateCompanyProcedure = companyAdminProcedureStandard
         CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`),
         "max",
       )
+      revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
       return result
     } catch (error) {
@@ -355,6 +380,7 @@ export const approveCompanyProcedure = superAdminProcedureStandard
 
     // Invalidate company cache when approved
     revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
+    revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
     // Notify company members (in-app + email)
     const members = await db
@@ -399,6 +425,7 @@ export const rejectCompanyProcedure = superAdminProcedureStandard
 
     // Invalidate company cache when rejected
     revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
+    revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
     // Notify company members (in-app + email)
     const members = await db
@@ -440,6 +467,7 @@ export const suspendCompanyProcedure = superAdminProcedureStandard
       revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
       revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
       revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+      revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
       const members = await db
         .select({ userId: companyMember.userId })
@@ -478,6 +506,7 @@ export const reactivateCompanyProcedure = superAdminProcedureStandard
       revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
       revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
       revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+      revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
       const members = await db
         .select({ userId: companyMember.userId })
@@ -508,6 +537,57 @@ export const reactivateCompanyProcedure = superAdminProcedureStandard
 
 /* ── Uploads ── */
 
+export const deleteCompanyProcedure = superAdminProcedureStandard
+  .input(z.object({ companyId: z.string().min(1) }))
+  .handler(async ({ input, context }) => {
+    try {
+      const result = await deleteCompany(input.companyId, context.user.id)
+
+      revalidateAfterCompanyDeletion(result.companyId, result.affectedUserIds)
+
+      return {
+        success: result.success,
+        companyId: result.companyId,
+        companyName: result.companyName,
+        affectedUsers: result.affectedUserIds.length,
+      }
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          COMPANY_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to delete company",
+      })
+    }
+  })
+
+export const deleteOwnCompanyProcedure = companyOwnerProcedureStandard
+  .input(z.object({}))
+  .handler(async ({ context }) => {
+    try {
+      const result = await deleteCompany(
+        context.companyMembership.companyId,
+        context.user.id,
+      )
+
+      revalidateAfterCompanyDeletion(result.companyId, result.affectedUserIds)
+
+      return {
+        success: result.success,
+        companyId: result.companyId,
+        companyName: result.companyName,
+        affectedUsers: result.affectedUserIds.length,
+      }
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          COMPANY_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to delete company",
+      })
+    }
+  })
+
 export const uploadCompanyLogoProcedure = companyAdminProcedureStandard
   .input(
     z.object({
@@ -533,6 +613,7 @@ export const uploadCompanyLogoProcedure = companyAdminProcedureStandard
         CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`),
         "max",
       )
+      revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
       return result
     } catch (error) {

@@ -5,6 +5,9 @@ import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
 import type { CompanyProfileFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/types"
+import { useRouter } from "@/i18n/routing"
+import { authClient } from "@/lib/auth-client"
+import { getErrorMessage } from "@/lib/error-message"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { createCompanyProfileSchema } from "@/lib/schemas/offer"
 import { orpcClient } from "@/server/orpc/client"
@@ -14,11 +17,14 @@ export function useCompanyProfileForm(
 ) {
   const t = useTranslations("dashboard.company.profile")
   const tv = useTranslations("auth.validation")
+  const router = useRouter()
 
   const [serverError, setServerError] = useState("")
   const [successMessage, setSuccessMessage] = useState("")
   const [logoUrl, setLogoUrl] = useState(initialData.logoUrl)
   const [isUploading, setIsUploading] = useState(false)
+  const [deleteCompanyError, setDeleteCompanyError] = useState("")
+  const [isDeletingCompany, setIsDeletingCompany] = useState(false)
 
   const schema = useMemo(() => createCompanyProfileSchema(tv), [tv])
 
@@ -83,6 +89,25 @@ export function useCompanyProfileForm(
     }
   }
 
+  const handleDeleteCompany = async () => {
+    setDeleteCompanyError("")
+
+    try {
+      setIsDeletingCompany(true)
+      await orpcClient.companies.deleteOwn({})
+
+      await authClient.getSession({ query: { disableCookieCache: true } })
+      toast.success(t("deleteCompany.success"))
+      router.push("/onboarding/company")
+    } catch (error) {
+      const message = getErrorMessage(error, t("deleteCompany.error"))
+      setDeleteCompanyError(message)
+      toast.error(message)
+    } finally {
+      setIsDeletingCompany(false)
+    }
+  }
+
   return {
     form,
     serverError,
@@ -90,5 +115,8 @@ export function useCompanyProfileForm(
     logoUrl,
     isUploading,
     handleLogoUpload,
+    deleteCompanyError,
+    isDeletingCompany,
+    handleDeleteCompany,
   }
 }

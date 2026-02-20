@@ -389,6 +389,7 @@
     "nav": {
       "dashboard": "Dashboard",
       "exploreInternships": "Explore Internships",
+      "discoverCompanies": "Discover Companies",
       "myApplications": "My Applications",
       "myDocuments": "My Documents",
       "studentCv": "My CV",
@@ -560,7 +561,20 @@
         "addressPlaceholder": "123 Main Street",
         "submit": "Save Changes",
         "success": "Company profile updated successfully",
-        "error": "Something went wrong. Please try again."
+        "error": "Something went wrong. Please try again.",
+        "deleteCompany": {
+          "title": "Delete Company",
+          "description": "Permanently delete this company and all related company data. This action cannot be undone.",
+          "openDialog": "Delete Company",
+          "dialogTitle": "Delete Company",
+          "dialogDescription": "This will permanently delete {name}. Type the company name to confirm.",
+          "confirmationLabel": "Type company name to confirm",
+          "confirmationPlaceholder": "Type {name}",
+          "cancel": "Cancel",
+          "confirm": "Delete Company",
+          "success": "Company deleted successfully.",
+          "error": "Failed to delete company. Please try again."
+        }
       },
       "offers": {
         "pageTitle": "Manage Offers",
@@ -982,6 +996,20 @@
         "parseFilters": "Parse Filters",
         "apply": "Apply"
       }
+    },
+    "studentCompanies": {
+      "kicker": "Company Directory",
+      "title": "Discover Companies",
+      "subtitle": "Browse approved companies currently recruiting for internships.",
+      "searchPlaceholder": "Search companies by name or slug...",
+      "wilayaPlaceholder": "Any location",
+      "clearFilters": "Clear filters",
+      "loading": "Loading companies...",
+      "loadingMore": "Loading more companies...",
+      "empty": "No companies matched your filters.",
+      "viewProfile": "View Company Profile",
+      "websiteAvailable": "Website available",
+      "openOffersCount": "{count, plural, one {# open offer} other {# open offers}}"
     },
     "offerDetail": {
       "back": "Back to search",
@@ -1426,14 +1454,17 @@
         "reject": "Reject",
         "suspend": "Suspend",
         "reactivate": "Reactivate",
+        "delete": "Delete",
         "approveSuccess": "Company approved successfully.",
         "rejectSuccess": "Company rejected.",
         "suspendSuccess": "Company suspended.",
         "reactivateSuccess": "Company reactivated.",
+        "deleteSuccess": "Company deleted successfully.",
         "approveError": "Failed to approve company.",
         "rejectError": "Failed to reject company.",
         "suspendError": "Failed to suspend company.",
         "reactivateError": "Failed to reactivate company.",
+        "deleteError": "Failed to delete company.",
         "rejectDialog": {
           "title": "Reject Company",
           "description": "Provide a reason for rejecting this company application.",
@@ -1441,6 +1472,14 @@
           "reasonPlaceholder": "Enter the reason for rejection...",
           "cancel": "Cancel",
           "confirm": "Reject Company"
+        },
+        "deleteDialog": {
+          "title": "Delete Company",
+          "description": "This will permanently delete {name} and unlink all related company admins.",
+          "confirmationLabel": "Type company name to confirm",
+          "confirmationPlaceholder": "Type {name}",
+          "cancel": "Cancel",
+          "confirm": "Delete Company"
         },
         "card": {
           "website": "Website",

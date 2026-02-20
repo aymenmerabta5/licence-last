@@ -39,6 +39,17 @@ const listCompaniesMock = mock(
     hasMore: false,
   }),
 )
+const listPublicDirectoryCompaniesMock = mock(
+  async (): Promise<{
+    companies: Array<Record<string, unknown>>
+    hasMore: boolean
+    nextCursor?: { createdAt: string; id: string }
+  }> => ({
+    companies: [],
+    hasMore: false,
+    nextCursor: undefined,
+  }),
+)
 const listCompanyMembersMock = mock(async (): Promise<CompanyMemberRow[]> => [])
 const inviteCompanyMemberMock = mock(async () => ({
   userId: "member-1",
@@ -50,6 +61,12 @@ const inviteCompanyMemberMock = mock(async () => ({
 const removeCompanyMemberMock = mock(async () => ({
   removed: true,
   userId: "member-1",
+}))
+const deleteCompanyMock = mock(async () => ({
+  success: true as const,
+  companyId: "company-1",
+  companyName: "ACME",
+  affectedUserIds: ["owner-1", "member-1"],
 }))
 const revalidateTagMock = mock(() => {})
 const emitNotificationMock = mock(async () => ({
@@ -73,11 +90,25 @@ const isAdminRoleMock = mock(
 )
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
+  publicProcedureStrict: createProcedureMock(),
+  publicProcedureStandard: createProcedureMock(),
+  authedSessionProcedureStandard: createProcedureMock(),
+  authedSessionProcedureGenerous: createProcedureMock(),
   authedProcedureGenerous: createProcedureMock(),
   authedProcedureStandard: createProcedureMock(),
+  authedProcedureStrict: createProcedureMock(),
+  adminProcedureGenerous: createProcedureMock(),
+  adminProcedureStandard: createProcedureMock(),
+  adminProcedureAssistant: createProcedureMock(),
+  assistantProcedureLimited: createProcedureMock(),
+  companyAdminProcedureAssistant: createProcedureMock(),
   companyAdminProcedureGenerous: createProcedureMock(),
   companyAdminProcedureStandard: createProcedureMock(),
   companyOwnerProcedureStandard: createProcedureMock(),
+  studentProcedureGenerous: createProcedureMock(),
+  studentProcedureStandard: createProcedureMock(),
+  deptHeadProcedureStandard: createProcedureMock(),
+  deptHeadProcedureGenerous: createProcedureMock(),
   superAdminProcedureGenerous: createProcedureMock(),
   superAdminProcedureStandard: createProcedureMock(),
 }))
@@ -103,6 +134,9 @@ mock.module("@/env", () => ({
 mock.module("@/server/services/companies/list", () => ({
   listCompanies: listCompaniesMock,
 }))
+mock.module("@/server/services/companies/list-public-directory", () => ({
+  listPublicDirectoryCompanies: listPublicDirectoryCompaniesMock,
+}))
 mock.module("@/server/services/companies/get", () => ({
   getCompanyById: mock(async () => null),
 }))
@@ -120,6 +154,9 @@ mock.module("@/server/services/companies/invite-member", () => ({
 }))
 mock.module("@/server/services/companies/remove-member", () => ({
   removeCompanyMember: removeCompanyMemberMock,
+}))
+mock.module("@/server/services/companies/delete", () => ({
+  deleteCompany: deleteCompanyMock,
 }))
 mock.module("@/server/services/companies/approve", () => ({
   approveCompany: mock(async () => ({ name: "ACME" })),
@@ -162,11 +199,13 @@ mock.module("@/server/db", () => ({
 describe("src/server/orpc/routes/companies", () => {
   beforeEach(() => {
     listCompaniesMock.mockClear()
+    listPublicDirectoryCompaniesMock.mockClear()
     createCompanyMock.mockClear()
     updateCompanyMock.mockClear()
     listCompanyMembersMock.mockClear()
     inviteCompanyMemberMock.mockClear()
     removeCompanyMemberMock.mockClear()
+    deleteCompanyMock.mockClear()
     revalidateTagMock.mockClear()
     emitNotificationMock.mockClear()
     getCompanyMembershipMock.mockClear()
@@ -218,7 +257,7 @@ describe("src/server/orpc/routes/companies", () => {
     expect(updateCompanyMock).toHaveBeenCalledWith("company-1", {
       description: "updated",
     })
-    expect(revalidateTagMock).toHaveBeenCalledTimes(2)
+    expect(revalidateTagMock).toHaveBeenCalledTimes(3)
   })
 
   test("updateCompanyProcedure maps typed company errors", async () => {
@@ -306,6 +345,33 @@ describe("src/server/orpc/routes/companies", () => {
     })
   })
 
+  test("listPublicDirectoryProcedure delegates for students", async () => {
+    listPublicDirectoryCompaniesMock.mockResolvedValueOnce({
+      companies: [{ id: "company-1", name: "Acme" }],
+      hasMore: false,
+      nextCursor: undefined,
+    })
+
+    const { listPublicDirectoryProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    const result = await callProcedure(listPublicDirectoryProcedure, {
+      input: { keyword: "acme", limit: 12 },
+      context: { user: { id: "student-1", role: "student" } },
+    })
+
+    expect(listPublicDirectoryCompaniesMock).toHaveBeenCalledWith({
+      keyword: "acme",
+      limit: 12,
+    })
+    expect(result).toEqual({
+      companies: [{ id: "company-1", name: "Acme" }],
+      hasMore: false,
+      nextCursor: undefined,
+    })
+  })
+
   test("listCompanyMembersProcedure delegates with company id", async () => {
     listCompanyMembersMock.mockResolvedValueOnce([
       {
@@ -378,6 +444,97 @@ describe("src/server/orpc/routes/companies", () => {
       "company-user-member-1",
       "max",
     )
+  })
+
+  test("deleteCompanyProcedure hard-deletes company and revalidates caches", async () => {
+    const { deleteCompanyProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    const result = await callProcedure(deleteCompanyProcedure, {
+      input: { companyId: "company-1" },
+      context: { user: { id: "super-admin-1", role: "super_admin" } },
+    })
+
+    expect(deleteCompanyMock).toHaveBeenCalledWith("company-1", "super-admin-1")
+    expect(result).toEqual({
+      success: true,
+      companyId: "company-1",
+      companyName: "ACME",
+      affectedUsers: 2,
+    })
+    expect(revalidateTagMock).toHaveBeenCalledWith("company-company-1", "max")
+    expect(revalidateTagMock).toHaveBeenCalledWith(
+      "company-offers-company-1",
+      { expire: 0 },
+    )
+    expect(revalidateTagMock).toHaveBeenCalledWith(
+      "company-candidates-company-1",
+      { expire: 0 },
+    )
+    expect(revalidateTagMock).toHaveBeenCalledWith("offer-search", {
+      expire: 0,
+    })
+    expect(revalidateTagMock).toHaveBeenCalledWith("offers-public", {
+      expire: 0,
+    })
+    expect(revalidateTagMock).toHaveBeenCalledWith("companies-directory", {
+      expire: 0,
+    })
+    expect(revalidateTagMock).toHaveBeenCalledWith("company-user-owner-1", "max")
+    expect(revalidateTagMock).toHaveBeenCalledWith(
+      "company-user-member-1",
+      "max",
+    )
+  })
+
+  test("deleteOwnCompanyProcedure deletes using owner membership company id", async () => {
+    deleteCompanyMock.mockResolvedValueOnce({
+      success: true,
+      companyId: "company-owned",
+      companyName: "Owned Co",
+      affectedUserIds: ["owner-1"],
+    })
+
+    const { deleteOwnCompanyProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    const result = await callProcedure(deleteOwnCompanyProcedure, {
+      input: {},
+      context: {
+        user: { id: "owner-1", role: "company_admin" },
+        companyMembership: { companyId: "company-owned", role: "owner" },
+      },
+    })
+
+    expect(deleteCompanyMock).toHaveBeenCalledWith("company-owned", "owner-1")
+    expect(result).toEqual({
+      success: true,
+      companyId: "company-owned",
+      companyName: "Owned Co",
+      affectedUsers: 1,
+    })
+  })
+
+  test("deleteCompanyProcedure maps company not found", async () => {
+    deleteCompanyMock.mockRejectedValueOnce(
+      new ServiceError("COMPANY_NOT_FOUND", "Company not found"),
+    )
+
+    const { deleteCompanyProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    await expect(
+      callProcedure(deleteCompanyProcedure, {
+        input: { companyId: "missing" },
+        context: { user: { id: "super-admin-1", role: "super_admin" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "NOT_FOUND",
+      message: "Company not found",
+    })
   })
 
   test("submitCompanyReportProcedure blocks company admin self-reports", async () => {

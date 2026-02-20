@@ -389,6 +389,7 @@
     "nav": {
       "dashboard": "لوحة المعلومات",
       "exploreInternships": "استكشاف التربصات",
+      "discoverCompanies": "Discover Companies",
       "myApplications": "طلباتي",
       "myDocuments": "وثائقي",
       "studentCv": "سيرتي الذاتية",
@@ -560,7 +561,20 @@
         "addressPlaceholder": "العنوان بالتفصيل",
         "submit": "حفظ التغييرات",
         "success": "تم تحديث ملف الشركة بنجاح",
-        "error": "حدث شيء خاطئ. يرجى المحاولة مرة أخرى."
+        "error": "حدث شيء خاطئ. يرجى المحاولة مرة أخرى.",
+        "deleteCompany": {
+          "title": "Delete Company",
+          "description": "Permanently delete this company and all related company data. This action cannot be undone.",
+          "openDialog": "Delete Company",
+          "dialogTitle": "Delete Company",
+          "dialogDescription": "This will permanently delete {name}. Type the company name to confirm.",
+          "confirmationLabel": "Type company name to confirm",
+          "confirmationPlaceholder": "Type {name}",
+          "cancel": "Cancel",
+          "confirm": "Delete Company",
+          "success": "Company deleted successfully.",
+          "error": "Failed to delete company. Please try again."
+        }
       },
       "offers": {
         "pageTitle": "إدارة العروض",
@@ -917,6 +931,20 @@
         "parseFilters": "تحليل المرشحات",
         "apply": "تطبيق"
       }
+    },
+    "studentCompanies": {
+      "kicker": "Company Directory",
+      "title": "Discover Companies",
+      "subtitle": "Browse approved companies currently recruiting for internships.",
+      "searchPlaceholder": "Search companies by name or slug...",
+      "wilayaPlaceholder": "Any location",
+      "clearFilters": "Clear filters",
+      "loading": "Loading companies...",
+      "loadingMore": "Loading more companies...",
+      "empty": "No companies matched your filters.",
+      "viewProfile": "View Company Profile",
+      "websiteAvailable": "Website available",
+      "openOffersCount": "{count, plural, one {# open offer} other {# open offers}}"
     },
     "offerDetail": {
       "back": "العودة للبحث",
@@ -1448,6 +1476,17 @@
           "representative": "ممثل",
           "contact": "اتصال",
           "registeredAt": "مسجل"
+        },
+        "delete": "Delete",
+        "deleteSuccess": "Company deleted successfully.",
+        "deleteError": "Failed to delete company.",
+        "deleteDialog": {
+          "title": "Delete Company",
+          "description": "This will permanently delete {name} and unlink all related company admins.",
+          "confirmationLabel": "Type company name to confirm",
+          "confirmationPlaceholder": "Type {name}",
+          "cancel": "Cancel",
+          "confirm": "Delete Company"
         }
       },
       "pending": {

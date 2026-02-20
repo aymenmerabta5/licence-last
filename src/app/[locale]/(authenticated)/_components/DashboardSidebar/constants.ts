@@ -47,6 +47,12 @@ export const navItems: NavItem[] = [
     roles: ["student"],
   },
   {
+    labelKey: "discoverCompanies",
+    href: "/dashboard/student/companies",
+    icon: Building2,
+    roles: ["student"],
+  },
+  {
     labelKey: "myApplications",
     href: "/dashboard/applications",
     icon: FileText,
