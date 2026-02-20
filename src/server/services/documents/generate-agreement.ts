@@ -17,6 +17,7 @@ import {
   type AgreementData,
   ConventionDeStageTemplate,
 } from "@/server/pdfs/AgreementTemplate"
+import { DocumentServiceError } from "@/server/services/documents/errors"
 import { generateQRCodeDataUrl } from "@/server/services/documents/qr-utils"
 import { sendAgreementEmail } from "@/server/services/documents/send-agreement-email"
 import { generateVerificationCode } from "@/server/services/documents/verification-code"
@@ -45,7 +46,7 @@ export async function generateAgreement(
     .limit(1)
 
   if (!placementRecord) {
-    throw new Error("Placement not found")
+    throw new DocumentServiceError("PLACEMENT_NOT_FOUND", "Placement not found")
   }
 
   const [row] = await db
@@ -88,7 +89,10 @@ export async function generateAgreement(
     .limit(1)
 
   if (!row) {
-    throw new Error("Application not found")
+    throw new DocumentServiceError(
+      "APPLICATION_NOT_FOUND",
+      "Application not found",
+    )
   }
 
   // Check for existing document to preserve verification code on regeneration
@@ -103,11 +107,7 @@ export async function generateAgreement(
     )
     .limit(1)
 
-  const verificationCode =
-    existingDoc?.verificationCode ?? generateVerificationCode()
-  const shouldSendAgreementEmail = !existingDoc
-  const verificationUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/${locale}/verify/${verificationCode}`
-  const qrCodeDataUrl = await generateQRCodeDataUrl(verificationUrl)
+  let verificationCode = existingDoc?.verificationCode ?? generateVerificationCode()
 
   const data: AgreementData = {
     // Student info
@@ -140,19 +140,44 @@ export async function generateAgreement(
     durationWeeks: row.durationWeeks ?? null,
   }
 
-  const pdfBuffer = await renderToBuffer(
-    createElement(ConventionDeStageTemplate, {
-      data,
-      locale,
-      verificationCode,
-      qrCodeDataUrl,
-    }) as unknown as Parameters<typeof renderToBuffer>[0],
-  )
+  const renderAgreementPdf = async (code: string) => {
+    const verificationUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/${locale}/verify/${code}`
+    const qrCodeDataUrl = await generateQRCodeDataUrl(verificationUrl)
+
+    return renderToBuffer(
+      createElement(ConventionDeStageTemplate, {
+        data,
+        locale,
+        verificationCode: code,
+        qrCodeDataUrl,
+      }) as unknown as Parameters<typeof renderToBuffer>[0],
+    )
+  }
+
+  let pdfBuffer = await renderAgreementPdf(verificationCode)
+
+  const nextMeta = {
+    generatedAt: new Date().toISOString(),
+    locale,
+    fileName: `agreement_${placementId}.pdf`,
+    applicationId: row.applicationId,
+    studentUniversityId: row.studentUniversityId,
+  }
 
   let documentRecord = existingDoc
+  let shouldSendAgreementEmail = false
 
-  if (!documentRecord) {
-    const [newDoc] = await db
+  if (documentRecord) {
+    await db
+      .update(placementDocument)
+      .set({
+        status: "generated",
+        verificationCode,
+        meta: nextMeta,
+      })
+      .where(eq(placementDocument.id, documentRecord.id))
+  } else {
+    const [insertedDoc] = await db
       .insert(placementDocument)
       .values({
         id: crypto.randomUUID(),
@@ -160,31 +185,60 @@ export async function generateAgreement(
         type: "agreement",
         status: "generated",
         verificationCode,
-        meta: {
-          generatedAt: new Date().toISOString(),
-          locale,
-          fileName: `agreement_${placementId}.pdf`,
-          applicationId: row.applicationId,
-          studentUniversityId: row.studentUniversityId,
-        },
+        meta: nextMeta,
+      })
+      .onConflictDoNothing({
+        target: [placementDocument.placementId, placementDocument.type],
       })
       .returning()
-    documentRecord = newDoc
-  } else {
-    await db
-      .update(placementDocument)
-      .set({
-        status: "generated",
-        verificationCode,
-        meta: {
-          generatedAt: new Date().toISOString(),
-          locale,
-          fileName: `agreement_${placementId}.pdf`,
-          applicationId: row.applicationId,
-          studentUniversityId: row.studentUniversityId,
-        },
-      })
-      .where(eq(placementDocument.id, documentRecord.id))
+
+    if (insertedDoc) {
+      documentRecord = insertedDoc
+      shouldSendAgreementEmail = true
+    } else {
+      const [resolvedDoc] = await db
+        .select()
+        .from(placementDocument)
+        .where(
+          and(
+            eq(placementDocument.placementId, placementId),
+            eq(placementDocument.type, "agreement"),
+          ),
+        )
+        .limit(1)
+
+      if (!resolvedDoc) {
+        throw new DocumentServiceError(
+          "DOCUMENT_CONFLICT_RESOLUTION_FAILED",
+          "Failed to resolve generated agreement document",
+        )
+      }
+
+      documentRecord = resolvedDoc
+      const resolvedVerificationCode =
+        resolvedDoc.verificationCode ?? verificationCode
+
+      if (resolvedVerificationCode !== verificationCode) {
+        verificationCode = resolvedVerificationCode
+        pdfBuffer = await renderAgreementPdf(verificationCode)
+      }
+
+      await db
+        .update(placementDocument)
+        .set({
+          status: "generated",
+          verificationCode,
+          meta: nextMeta,
+        })
+        .where(eq(placementDocument.id, documentRecord.id))
+    }
+  }
+
+  if (!documentRecord) {
+    throw new DocumentServiceError(
+      "DOCUMENT_CONFLICT_RESOLUTION_FAILED",
+      "Failed to resolve generated agreement document",
+    )
   }
 
   if (shouldSendAgreementEmail) {

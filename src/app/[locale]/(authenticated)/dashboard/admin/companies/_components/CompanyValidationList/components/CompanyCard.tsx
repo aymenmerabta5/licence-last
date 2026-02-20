@@ -3,20 +3,16 @@
 import {
   Building2,
   Calendar,
-  Check,
   Globe,
   Mail,
   MapPin,
   User,
-  X,
-  PauseCircle,
-  PlayCircle,
 } from "lucide-react"
 import Image from "next/image"
 import { useTranslations } from "next-intl"
 import type { CompanyListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/types"
+import { CompanyCardActionPanel } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyCardActionPanel"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { getWilayaName } from "@/lib/wilayas"
 
 const STATUS_STYLES: Record<string, string> = {
@@ -141,63 +137,19 @@ export function CompanyCard({
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="shrink-0 flex flex-col items-stretch gap-2 min-w-[140px]">
-            {company.status === "pending" && (
-              <>
-                <Button
-                  type="button"
-                  variant="editorial"
-                  size="sm"
-                  className="w-full justify-start h-9 rounded-sm font-medium"
-                  disabled={isApproving}
-                  onClick={() => onApprove(company.id)}
-                >
-                  <Check className="h-3.5 w-3.5 me-2" />
-                  {t("approve")}
-                </Button>
-                <Button
-                  type="button"
-                  variant="editorial-outline"
-                  size="sm"
-                  className="w-full justify-start h-9 rounded-sm font-medium border-border/60 hover:border-black dark:hover:border-white"
-                  disabled={isRejecting}
-                  onClick={() => onReject(company.id)}
-                >
-                  <X className="h-3.5 w-3.5 me-2 text-red-500" />
-                  {t("reject")}
-                </Button>
-              </>
-            )}
-
-            {company.status === "approved" && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start h-8 text-xs text-orange-600/70 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-950/30 rounded-sm"
-                disabled={isSuspending}
-                onClick={() => onSuspend(company.id)}
-              >
-                <PauseCircle className="h-3.5 w-3.5 me-2" />
-                {t("suspend")}
-              </Button>
-            )}
-
-            {company.status === "suspended" && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start h-8 text-xs text-emerald-600/70 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-sm"
-                disabled={isReactivating}
-                onClick={() => onReactivate(company.id)}
-              >
-                <PlayCircle className="h-3.5 w-3.5 me-2" />
-                {t("reactivate")}
-              </Button>
-            )}
-          </div>
+          <CompanyCardActionPanel
+            companyId={company.id}
+            companyStatus={company.status}
+            isApproving={isApproving}
+            isRejecting={isRejecting}
+            isSuspending={isSuspending}
+            isReactivating={isReactivating}
+            onApprove={onApprove}
+            onReject={onReject}
+            onSuspend={onSuspend}
+            onReactivate={onReactivate}
+            t={t}
+          />
         </div>
       </div>
     </div>

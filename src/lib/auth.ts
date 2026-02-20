@@ -136,8 +136,6 @@ export const auth = betterAuth({
           ])
           const ALLOWED_SIGNUP_ROLES = new Set<string>([
             "student",
-            "company_admin",
-            "university_admin",
           ])
           const isAdminCreated = data.emailVerified === true
 
@@ -162,15 +160,7 @@ export const auth = betterAuth({
               message: "role is not allowed to be set",
             })
           }
-          const role = requestedRole as
-            | "student"
-            | "company_admin"
-            | "university_admin"
-
-          // company_admin and university_admin skip university domain validation
-          if (role !== "student") {
-            return { data: { ...data, role } }
-          }
+          const role = requestedRole as "student"
 
           const domain = getEmailDomain(data.email)
           if (!domain) {

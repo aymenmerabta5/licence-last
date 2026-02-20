@@ -3,10 +3,14 @@ import { isRateLimitingEnabled } from "@/server/caching/redis-ratelimiter"
 import * as dbModule from "@/server/db"
 
 type CheckStatus = "up" | "down" | "not_configured" | "disabled"
+type HealthStatus = "ok" | "degraded" | "error"
 
-interface HealthPayload {
-  status: "ok" | "degraded" | "error"
+interface PublicHealthPayload {
+  status: HealthStatus
   timestamp: number
+}
+
+interface HealthPayload extends PublicHealthPayload {
   checks: {
     database: { status: CheckStatus; required: true }
     redis: { status: CheckStatus; required: false }
@@ -40,15 +44,26 @@ export async function GET() {
       ? "up"
       : "down"
 
-  const status: HealthPayload["status"] = !databaseUp
+  const status: HealthStatus = !databaseUp
     ? "error"
     : redisConfigured && !redisUp
       ? "degraded"
       : "ok"
+  const timestamp = Date.now()
+  const responseStatus = status === "error" ? 503 : 200
+
+  if (process.env.NODE_ENV === "production") {
+    const payload: PublicHealthPayload = {
+      status,
+      timestamp,
+    }
+
+    return Response.json(payload, { status: responseStatus })
+  }
 
   const payload: HealthPayload = {
     status,
-    timestamp: Date.now(),
+    timestamp,
     checks: {
       database: { status: databaseStatus, required: true },
       redis: { status: redisStatus, required: false },
@@ -56,5 +71,5 @@ export async function GET() {
     },
   }
 
-  return Response.json(payload, { status: status === "error" ? 503 : 200 })
+  return Response.json(payload, { status: responseStatus })
 }

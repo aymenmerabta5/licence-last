@@ -6,19 +6,19 @@ mock.module("@/components/Navbar", () => ({
   Navbar: () => <nav data-testid="navbar">Navbar</nav>,
 }))
 
-mock.module("./_components/MarqueeRibbon", () => ({
+mock.module("@/app/[locale]/_components/MarqueeRibbon", () => ({
   MarqueeRibbon: () => <div data-testid="marquee-ribbon">Marquee Ribbon</div>,
 }))
 
-mock.module("./_components/HeroSection", () => ({
+mock.module("@/app/[locale]/_components/HeroSection", () => ({
   HeroSection: () => <section data-testid="hero-section">Hero Section</section>,
 }))
 
-mock.module("./_components/StatsBar", () => ({
+mock.module("@/app/[locale]/_components/StatsBar", () => ({
   StatsBar: () => <div data-testid="stats-bar">Stats Bar</div>,
 }))
 
-mock.module("./_components/HowItWorksSection", () => ({
+mock.module("@/app/[locale]/_components/HowItWorksSection", () => ({
   HowItWorksSection: () => (
     <section data-testid="how-it-works">How It Works</section>
   ),
@@ -28,7 +28,7 @@ mock.module("@/components/Footer", () => ({
   Footer: () => <footer data-testid="footer">Footer</footer>,
 }))
 
-mock.module("./_components/AuthRedirect", () => ({
+mock.module("@/app/[locale]/_components/AuthRedirect", () => ({
   AuthRedirect: ({ locale }: { locale: string }) => (
     <div data-testid="auth-redirect">Auth Redirect (locale: {locale})</div>
   ),
