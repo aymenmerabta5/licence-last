@@ -18,10 +18,12 @@ interface CompanyValidationContentProps {
   onReject: (id: string) => void
   onSuspend: (id: string) => void
   onReactivate: (id: string) => void
+  onDelete: (company: CompanyListItem) => void
   isApproving: boolean
   isRejecting: boolean
   isSuspending: boolean
   isReactivating: boolean
+  isDeleting: boolean
 }
 
 export function CompanyValidationContent({
@@ -34,10 +36,12 @@ export function CompanyValidationContent({
   onReject,
   onSuspend,
   onReactivate,
+  onDelete,
   isApproving,
   isRejecting,
   isSuspending,
   isReactivating,
+  isDeleting,
 }: CompanyValidationContentProps) {
   const t = useTranslations("dashboard.admin.companies")
 
@@ -80,10 +84,12 @@ export function CompanyValidationContent({
             onReject={onReject}
             onSuspend={onSuspend}
             onReactivate={onReactivate}
+            onDelete={onDelete}
             isApproving={isApproving}
             isRejecting={isRejecting}
             isSuspending={isSuspending}
             isReactivating={isReactivating}
+            isDeleting={isDeleting}
           />
         </motion.div>
       ))}

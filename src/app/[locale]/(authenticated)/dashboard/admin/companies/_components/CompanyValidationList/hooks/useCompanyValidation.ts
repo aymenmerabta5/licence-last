@@ -125,6 +125,18 @@ export function useCompanyValidation() {
     },
   })
 
+  const deleteMutation = useMutation({
+    mutationFn: ({ companyId }: { companyId: string }) =>
+      orpcClient.companies.delete({ companyId }),
+    onSuccess: () => {
+      toast.success(t("deleteSuccess"))
+      queryClient.invalidateQueries({ queryKey })
+    },
+    onError: () => {
+      toast.error(t("deleteError"))
+    },
+  })
+
   return {
     companies,
     hasMore: hasNextPage ?? false,
@@ -143,5 +155,7 @@ export function useCompanyValidation() {
     isSuspending: suspendMutation.isPending,
     reactivateCompany: reactivateMutation.mutate,
     isReactivating: reactivateMutation.isPending,
+    deleteCompany: deleteMutation.mutate,
+    isDeleting: deleteMutation.isPending,
   }
 }

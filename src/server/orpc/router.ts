@@ -38,6 +38,8 @@ import {
 import {
   approveCompanyProcedure,
   createCompanyProcedure,
+  deleteCompanyProcedure,
+  deleteOwnCompanyProcedure,
   getCompanyByIdProcedure,
   getCompanyTrustIndexProcedure,
   inviteCompanyMemberProcedure,
@@ -186,6 +188,8 @@ export const appRouter = {
     list: listCompaniesProcedure,
     getById: getCompanyByIdProcedure,
     create: createCompanyProcedure,
+    delete: deleteCompanyProcedure,
+    deleteOwn: deleteOwnCompanyProcedure,
     listMembers: listCompanyMembersProcedure,
     listPublicDirectory: listPublicDirectoryProcedure,
     inviteMember: inviteCompanyMemberProcedure,

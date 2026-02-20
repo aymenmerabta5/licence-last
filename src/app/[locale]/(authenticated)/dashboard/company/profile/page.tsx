@@ -3,6 +3,7 @@ import { CompanyProfileForm } from "@/app/[locale]/(authenticated)/dashboard/com
 import { requireRole } from "@/lib/auth-guards"
 import { localeRedirect } from "@/lib/navigation"
 import { getCompanyByUserId } from "@/server/services/companies/get"
+import { getCompanyMembership } from "@/server/services/companies/membership"
 
 export default async function CompanyProfilePage() {
   const [sessionUser, t] = await Promise.all([
@@ -11,6 +12,7 @@ export default async function CompanyProfilePage() {
   ])
 
   const company = await getCompanyByUserId(sessionUser.id)
+  const membership = await getCompanyMembership(sessionUser.id)
 
   if (!company) {
     return localeRedirect("/onboarding/company")
@@ -45,6 +47,8 @@ export default async function CompanyProfilePage() {
 
       <CompanyProfileForm
         initialData={{
+          companyName: company.name,
+          canDeleteCompany: membership?.role === "owner",
           description: company.description ?? "",
           logoUrl: company.logoUrl ?? "",
           websiteUrl: company.websiteUrl ?? "",

@@ -31,10 +31,12 @@ interface CompanyCardProps {
   onReject: (id: string) => void
   onSuspend: (id: string) => void
   onReactivate: (id: string) => void
+  onDelete: (company: CompanyListItem) => void
   isApproving: boolean
   isRejecting: boolean
   isSuspending: boolean
   isReactivating: boolean
+  isDeleting: boolean
 }
 
 export function CompanyCard({
@@ -43,10 +45,12 @@ export function CompanyCard({
   onReject,
   onSuspend,
   onReactivate,
+  onDelete,
   isApproving,
   isRejecting,
   isSuspending,
   isReactivating,
+  isDeleting,
 }: CompanyCardProps) {
   const t = useTranslations("dashboard.admin.companies")
 
@@ -144,10 +148,12 @@ export function CompanyCard({
             isRejecting={isRejecting}
             isSuspending={isSuspending}
             isReactivating={isReactivating}
+            isDeleting={isDeleting}
             onApprove={onApprove}
             onReject={onReject}
             onSuspend={onSuspend}
             onReactivate={onReactivate}
+            onDelete={() => onDelete(company)}
             t={t}
           />
         </div>

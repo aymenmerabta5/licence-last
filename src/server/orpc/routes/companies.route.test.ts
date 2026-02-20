@@ -62,6 +62,12 @@ const removeCompanyMemberMock = mock(async () => ({
   removed: true,
   userId: "member-1",
 }))
+const deleteCompanyMock = mock(async () => ({
+  success: true as const,
+  companyId: "company-1",
+  companyName: "ACME",
+  affectedUserIds: ["owner-1", "member-1"],
+}))
 const revalidateTagMock = mock(() => {})
 const emitNotificationMock = mock(async () => ({
   notificationId: "notification-1",
@@ -149,6 +155,9 @@ mock.module("@/server/services/companies/invite-member", () => ({
 mock.module("@/server/services/companies/remove-member", () => ({
   removeCompanyMember: removeCompanyMemberMock,
 }))
+mock.module("@/server/services/companies/delete", () => ({
+  deleteCompany: deleteCompanyMock,
+}))
 mock.module("@/server/services/companies/approve", () => ({
   approveCompany: mock(async () => ({ name: "ACME" })),
 }))
@@ -196,6 +205,7 @@ describe("src/server/orpc/routes/companies", () => {
     listCompanyMembersMock.mockClear()
     inviteCompanyMemberMock.mockClear()
     removeCompanyMemberMock.mockClear()
+    deleteCompanyMock.mockClear()
     revalidateTagMock.mockClear()
     emitNotificationMock.mockClear()
     getCompanyMembershipMock.mockClear()
@@ -434,6 +444,97 @@ describe("src/server/orpc/routes/companies", () => {
       "company-user-member-1",
       "max",
     )
+  })
+
+  test("deleteCompanyProcedure hard-deletes company and revalidates caches", async () => {
+    const { deleteCompanyProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    const result = await callProcedure(deleteCompanyProcedure, {
+      input: { companyId: "company-1" },
+      context: { user: { id: "super-admin-1", role: "super_admin" } },
+    })
+
+    expect(deleteCompanyMock).toHaveBeenCalledWith("company-1", "super-admin-1")
+    expect(result).toEqual({
+      success: true,
+      companyId: "company-1",
+      companyName: "ACME",
+      affectedUsers: 2,
+    })
+    expect(revalidateTagMock).toHaveBeenCalledWith("company-company-1", "max")
+    expect(revalidateTagMock).toHaveBeenCalledWith(
+      "company-offers-company-1",
+      { expire: 0 },
+    )
+    expect(revalidateTagMock).toHaveBeenCalledWith(
+      "company-candidates-company-1",
+      { expire: 0 },
+    )
+    expect(revalidateTagMock).toHaveBeenCalledWith("offer-search", {
+      expire: 0,
+    })
+    expect(revalidateTagMock).toHaveBeenCalledWith("offers-public", {
+      expire: 0,
+    })
+    expect(revalidateTagMock).toHaveBeenCalledWith("companies-directory", {
+      expire: 0,
+    })
+    expect(revalidateTagMock).toHaveBeenCalledWith("company-user-owner-1", "max")
+    expect(revalidateTagMock).toHaveBeenCalledWith(
+      "company-user-member-1",
+      "max",
+    )
+  })
+
+  test("deleteOwnCompanyProcedure deletes using owner membership company id", async () => {
+    deleteCompanyMock.mockResolvedValueOnce({
+      success: true,
+      companyId: "company-owned",
+      companyName: "Owned Co",
+      affectedUserIds: ["owner-1"],
+    })
+
+    const { deleteOwnCompanyProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    const result = await callProcedure(deleteOwnCompanyProcedure, {
+      input: {},
+      context: {
+        user: { id: "owner-1", role: "company_admin" },
+        companyMembership: { companyId: "company-owned", role: "owner" },
+      },
+    })
+
+    expect(deleteCompanyMock).toHaveBeenCalledWith("company-owned", "owner-1")
+    expect(result).toEqual({
+      success: true,
+      companyId: "company-owned",
+      companyName: "Owned Co",
+      affectedUsers: 1,
+    })
+  })
+
+  test("deleteCompanyProcedure maps company not found", async () => {
+    deleteCompanyMock.mockRejectedValueOnce(
+      new ServiceError("COMPANY_NOT_FOUND", "Company not found"),
+    )
+
+    const { deleteCompanyProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    await expect(
+      callProcedure(deleteCompanyProcedure, {
+        input: { companyId: "missing" },
+        context: { user: { id: "super-admin-1", role: "super_admin" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "NOT_FOUND",
+      message: "Company not found",
+    })
   })
 
   test("submitCompanyReportProcedure blocks company admin self-reports", async () => {

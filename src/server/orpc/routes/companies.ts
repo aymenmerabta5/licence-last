@@ -35,6 +35,7 @@ import {
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import { approveCompany } from "@/server/services/companies/approve"
 import { createCompany } from "@/server/services/companies/create"
+import { deleteCompany } from "@/server/services/companies/delete"
 import { getCompanyById } from "@/server/services/companies/get"
 import { inviteCompanyMember } from "@/server/services/companies/invite-member"
 import { listCompanies } from "@/server/services/companies/list"
@@ -221,6 +222,22 @@ export const listCompanyMembersProcedure =
   )
 
 /* ── Mutations ── */
+
+function revalidateAfterCompanyDeletion(
+  companyId: string,
+  affectedUserIds: string[],
+) {
+  revalidateTag(CACHE_TAGS.COMPANY_PROFILE(companyId), "max")
+  revalidateTag(CACHE_TAGS.COMPANY_OFFERS(companyId), { expire: 0 })
+  revalidateTag(CACHE_TAGS.COMPANY_CANDIDATES(companyId), { expire: 0 })
+  revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
+  revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+  revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
+
+  for (const affectedUserId of affectedUserIds) {
+    revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${affectedUserId}`), "max")
+  }
+}
 
 export const createCompanyProcedure = authedProcedureStandard
   .use(async ({ context, next }) => {
@@ -519,6 +536,57 @@ export const reactivateCompanyProcedure = superAdminProcedureStandard
   })
 
 /* ── Uploads ── */
+
+export const deleteCompanyProcedure = superAdminProcedureStandard
+  .input(z.object({ companyId: z.string().min(1) }))
+  .handler(async ({ input, context }) => {
+    try {
+      const result = await deleteCompany(input.companyId, context.user.id)
+
+      revalidateAfterCompanyDeletion(result.companyId, result.affectedUserIds)
+
+      return {
+        success: result.success,
+        companyId: result.companyId,
+        companyName: result.companyName,
+        affectedUsers: result.affectedUserIds.length,
+      }
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          COMPANY_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to delete company",
+      })
+    }
+  })
+
+export const deleteOwnCompanyProcedure = companyOwnerProcedureStandard
+  .input(z.object({}))
+  .handler(async ({ context }) => {
+    try {
+      const result = await deleteCompany(
+        context.companyMembership.companyId,
+        context.user.id,
+      )
+
+      revalidateAfterCompanyDeletion(result.companyId, result.affectedUserIds)
+
+      return {
+        success: result.success,
+        companyId: result.companyId,
+        companyName: result.companyName,
+        affectedUsers: result.affectedUserIds.length,
+      }
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          COMPANY_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to delete company",
+      })
+    }
+  })
 
 export const uploadCompanyLogoProcedure = companyAdminProcedureStandard
   .input(

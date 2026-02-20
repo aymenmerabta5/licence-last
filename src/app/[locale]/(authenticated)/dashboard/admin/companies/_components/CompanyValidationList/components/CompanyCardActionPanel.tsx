@@ -1,4 +1,4 @@
-import { Check, PauseCircle, PlayCircle, X } from "lucide-react"
+import { Check, PauseCircle, PlayCircle, Trash2, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -13,10 +13,12 @@ interface CompanyCardActionPanelProps {
   onReject: (id: string) => void
   onSuspend: (id: string) => void
   onReactivate: (id: string) => void
+  onDelete: () => void
   isApproving: boolean
   isRejecting: boolean
   isSuspending: boolean
   isReactivating: boolean
+  isDeleting: boolean
   t: TranslationFn
 }
 
@@ -27,10 +29,12 @@ export function CompanyCardActionPanel({
   onReject,
   onSuspend,
   onReactivate,
+  onDelete,
   isApproving,
   isRejecting,
   isSuspending,
   isReactivating,
+  isDeleting,
   t,
 }: CompanyCardActionPanelProps) {
   return (
@@ -89,6 +93,18 @@ export function CompanyCardActionPanel({
           {t("reactivate")}
         </Button>
       )}
+
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        className="w-full justify-start h-8 text-xs text-red-600/70 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-sm"
+        disabled={isDeleting}
+        onClick={onDelete}
+      >
+        <Trash2 className="h-3.5 w-3.5 me-2" />
+        {t("delete")}
+      </Button>
     </div>
   )
 }

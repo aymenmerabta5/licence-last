@@ -1,6 +1,7 @@
 "use client"
 
 import * as motion from "motion/react-client"
+import { DeleteCompanySection } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/DeleteCompanySection"
 import { FormActions } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/FormActions"
 import { LogoUploadSection } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/LogoUploadSection"
 import { ProfileFieldsSection } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/ProfileFieldsSection"
@@ -19,6 +20,9 @@ export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
     logoUrl,
     isUploading,
     handleLogoUpload,
+    deleteCompanyError,
+    isDeletingCompany,
+    handleDeleteCompany,
   } = useCompanyProfileForm(initialData)
 
   return (
@@ -44,6 +48,15 @@ export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
       <ProfileFieldsSection form={form} />
 
       <FormActions form={form} />
+
+      {initialData.canDeleteCompany ? (
+        <DeleteCompanySection
+          companyName={initialData.companyName}
+          onConfirmDelete={handleDeleteCompany}
+          isDeleting={isDeletingCompany}
+          errorMessage={deleteCompanyError}
+        />
+      ) : null}
     </motion.form>
   )
 }
