@@ -8,6 +8,10 @@ import type { BulkDepartmentRow } from "@/lib/schemas/department"
 import { bulkCreateDepartmentsSchema } from "@/lib/schemas/department"
 import { orpc } from "@/server/orpc/client"
 
+const DEPARTMENTS_LIST_QUERY_PATH = orpc.departments.list.queryOptions({
+  input: { universityId: "__all__" },
+}).queryKey[0]
+
 const emptyRow = (): BulkDepartmentRow => ({
   departmentName: "",
   headEmail: "",
@@ -51,7 +55,9 @@ export function useBulkCreateForm() {
   const mutation = useMutation(
     orpc.departments.bulkCreateWithHeads.mutationOptions({
       onSuccess: (data) => {
-        queryClient.invalidateQueries({ queryKey: ["departments"] })
+        queryClient.invalidateQueries({
+          queryKey: [DEPARTMENTS_LIST_QUERY_PATH],
+        })
 
         if (data.errors.length === 0) {
           toast.success(t("successMessage", { count: data.created.length }))

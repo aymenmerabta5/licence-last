@@ -1,6 +1,6 @@
 "use client"
 
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useRef } from "react"
 
 import { orpc } from "@/server/orpc/client"
@@ -11,34 +11,45 @@ export function useOfferMatching(
   companyId: string,
 ) {
   const hasCapturedRef = useRef(false)
+  const queryClient = useQueryClient()
 
-  const matchScoreQuery = useQuery(
-    orpc.matching.getScore.queryOptions({
-      input: { studentUserId, offerId },
-    }),
-  )
+  const matchScoreQueryOptions = orpc.matching.getScore.queryOptions({
+    input: { studentUserId, offerId },
+  })
 
-  const skillGapQuery = useQuery(
-    orpc.matching.getSkillGap.queryOptions({
-      input: { studentUserId, offerId },
-    }),
-  )
+  const skillGapQueryOptions = orpc.matching.getSkillGap.queryOptions({
+    input: { studentUserId, offerId },
+  })
 
-  const readinessHistoryQuery = useQuery(
+  const readinessHistoryQueryOptions =
     orpc.matching.getReadinessHistory.queryOptions({
       input: { studentUserId, offerId, limit: 6 },
-    }),
-  )
+    })
 
-  const trustIndexQuery = useQuery(
-    orpc.companies.getTrustIndex.queryOptions({
-      input: { companyId },
-    }),
-  )
+  const trustIndexQueryOptions = orpc.companies.getTrustIndex.queryOptions({
+    input: { companyId },
+  })
 
-  const captureSnapshotMutation = useMutation(
-    orpc.matching.captureReadinessSnapshot.mutationOptions(),
-  )
+  const matchScoreQuery = useQuery(matchScoreQueryOptions)
+
+  const skillGapQuery = useQuery(skillGapQueryOptions)
+
+  const readinessHistoryQuery = useQuery(readinessHistoryQueryOptions)
+
+  const trustIndexQuery = useQuery(trustIndexQueryOptions)
+
+  const captureSnapshotMutation = useMutation({
+    ...orpc.matching.captureReadinessSnapshot.mutationOptions(),
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: readinessHistoryQueryOptions.queryKey,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: matchScoreQueryOptions.queryKey,
+        }),
+      ]),
+  })
 
   useEffect(() => {
     if (!hasCapturedRef.current && !captureSnapshotMutation.isPending) {

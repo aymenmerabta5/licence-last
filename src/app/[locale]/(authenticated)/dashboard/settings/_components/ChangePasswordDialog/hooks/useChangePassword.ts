@@ -1,15 +1,18 @@
 "use client"
 
 import { useForm } from "@tanstack/react-form"
+import { useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { authClient } from "@/lib/auth-client"
 import { getErrorMessage } from "@/lib/error-message"
 import { createChangePasswordSchema } from "@/lib/schemas/auth"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
+import { orpc } from "@/server/orpc/client"
 
 export function useChangePassword(onSuccess?: () => void) {
   const tv = useTranslations("auth.validation")
+  const queryClient = useQueryClient()
 
   const [serverError, setServerError] = useState("")
   const [isSuccess, setIsSuccess] = useState(false)
@@ -50,6 +53,10 @@ export function useChangePassword(onSuccess?: () => void) {
           setServerError(result.error.message ?? "Could not change password.")
           return
         }
+
+        await queryClient.invalidateQueries({
+          queryKey: orpc.users.listMySessions.queryOptions().queryKey,
+        })
 
         setIsSuccess(true)
         onSuccess?.()

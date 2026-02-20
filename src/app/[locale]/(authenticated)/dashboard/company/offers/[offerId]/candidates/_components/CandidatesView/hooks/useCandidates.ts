@@ -33,6 +33,19 @@ export function useCandidates(offerId: string) {
   )
   const applicationsQueryKey = ["applications", "listByOffer", offerId] as const
 
+  const refreshTimelineForApplication = async (applicationId: string) => {
+    if (openedTimelineFor !== applicationId) return
+
+    const timelineQueryKey = orpc.applications.getTimeline.queryOptions({
+      input: { applicationId },
+    }).queryKey
+
+    await queryClient.invalidateQueries({
+      queryKey: timelineQueryKey,
+      refetchType: "active",
+    })
+  }
+
   const { data: offer, isLoading: offerLoading } = useQuery({
     ...orpc.offers.getById.queryOptions({ input: { offerId } }),
     enabled: !!offerId,
@@ -73,6 +86,7 @@ export function useCandidates(offerId: string) {
   const { pendingStageById, handleStageChange } = useCandidateStageMutation({
     applicationsQueryKey,
     applicationStageById,
+    onStageSettled: refreshTimelineForApplication,
   })
 
   const timelineQuery = useQuery({
@@ -98,6 +112,7 @@ export function useCandidates(offerId: string) {
         applicationId: acceptModal.applicationId,
       })
       await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+      await refreshTimelineForApplication(acceptModal.applicationId)
       queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
       setAcceptModal(null)
       toast.success(t("acceptSuccess"))
@@ -117,6 +132,7 @@ export function useCandidates(offerId: string) {
         note: refuseNote || undefined,
       })
       await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+      await refreshTimelineForApplication(refuseModal.applicationId)
       queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
       setRefuseModal(null)
       setRefuseNote("")

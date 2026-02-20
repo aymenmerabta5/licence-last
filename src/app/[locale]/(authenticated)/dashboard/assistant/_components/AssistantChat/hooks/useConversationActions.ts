@@ -48,6 +48,15 @@ export function useConversationActions({
     })
   }
 
+  const invalidateConversationDetail = async (conversationId: string) => {
+    await queryClient.invalidateQueries({
+      queryKey: orpc.assistant.getConversation.queryOptions({
+        input: { conversationId },
+      }).queryKey,
+      refetchType: "active",
+    })
+  }
+
   const createConversationMutation = useMutation(
     orpc.assistant.createConversation.mutationOptions({
       onSuccess: async (conversation) => {
@@ -59,8 +68,9 @@ export function useConversationActions({
 
   const updateModelMutation = useMutation(
     orpc.assistant.updateConversationModel.mutationOptions({
-      onSuccess: async () => {
+      onSuccess: async (_data, variables) => {
         await invalidateConversationList()
+        await invalidateConversationDetail(variables.conversationId)
         toast.success(t("modelUpdateSuccess"))
       },
       onError: () => {
@@ -71,16 +81,9 @@ export function useConversationActions({
 
   const updateTitleMutation = useMutation(
     orpc.assistant.updateConversationTitle.mutationOptions({
-      onSuccess: async () => {
+      onSuccess: async (_data, variables) => {
         await invalidateConversationList()
-
-        if (activeConversationId) {
-          await queryClient.invalidateQueries({
-            queryKey: orpc.assistant.getConversation.queryOptions({
-              input: { conversationId: activeConversationId },
-            }).queryKey,
-          })
-        }
+        await invalidateConversationDetail(variables.conversationId)
 
         toast.success(t("titleUpdateSuccess"))
       },

@@ -7,6 +7,10 @@ import { toast } from "sonner"
 
 import { orpc } from "@/server/orpc/client"
 
+const DEPARTMENTS_LIST_QUERY_PATH = orpc.departments.list.queryOptions({
+  input: { universityId: "__all__" },
+}).queryKey[0]
+
 export function useDepartmentsActions() {
   const t = useTranslations("dashboard.admin.departments")
   const queryClient = useQueryClient()
@@ -15,7 +19,7 @@ export function useDepartmentsActions() {
   const [newHeadName, setNewHeadName] = useState("")
 
   const invalidate = () => {
-    queryClient.invalidateQueries({ queryKey: ["departments"] })
+    queryClient.invalidateQueries({ queryKey: [DEPARTMENTS_LIST_QUERY_PATH] })
   }
 
   const createMutation = useMutation(

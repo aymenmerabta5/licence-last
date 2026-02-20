@@ -6,8 +6,15 @@ import { useCallback, useMemo, useState } from "react"
 import { useSkillGrouping } from "@/hooks"
 import { orpc } from "@/server/orpc/client"
 
+const DEPARTMENTS_LIST_QUERY_PATH = orpc.departments.list.queryOptions({
+  input: { universityId: "__all__" },
+}).queryKey[0]
+
 export function useDepartmentSkills(departmentId: string, open: boolean) {
   const queryClient = useQueryClient()
+  const departmentSkillsQueryKey = orpc.departments.getSkills.queryOptions({
+    input: { departmentId },
+  }).queryKey
 
   // Fetch all skills (admin picks from the full pool)
   const { data: allSkillsResult, isLoading: isLoadingSkills } = useQuery(
@@ -52,15 +59,15 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
 
   const syncMutation = useMutation(
     orpc.departments.syncSkills.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          predicate: (query) =>
-            query.queryKey.some(
-              (segment) =>
-                typeof segment === "string" &&
-                segment.toLowerCase().includes("departments"),
-            ),
-        })
+      onSuccess: async () => {
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: [DEPARTMENTS_LIST_QUERY_PATH],
+          }),
+          queryClient.invalidateQueries({
+            queryKey: departmentSkillsQueryKey,
+          }),
+        ])
         setDraftOverride(null)
       },
     }),

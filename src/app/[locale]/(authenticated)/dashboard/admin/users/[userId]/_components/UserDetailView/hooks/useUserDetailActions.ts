@@ -3,21 +3,37 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
-import { orpcClient } from "@/server/orpc/client"
+import { orpc, orpcClient } from "@/server/orpc/client"
+
+const ADMIN_USERS_LIST_QUERY_PATH = orpc.adminUsers.list.queryOptions({
+  input: { limit: 20, offset: 0 },
+}).queryKey[0]
+
+const ADMIN_USERS_LIST_SESSIONS_QUERY_PATH =
+  orpc.adminUsers.listSessions.queryOptions({
+    input: { userId: "__all__" },
+  }).queryKey[0]
 
 export function useUserDetailActions() {
   const queryClient = useQueryClient()
 
-  const invalidate = () => {
-    queryClient.invalidateQueries({ queryKey: ["adminUsers"] })
+  const invalidate = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: [ADMIN_USERS_LIST_QUERY_PATH],
+      }),
+      queryClient.invalidateQueries({
+        queryKey: [ADMIN_USERS_LIST_SESSIONS_QUERY_PATH],
+      }),
+    ])
   }
 
   const revokeSession = useMutation({
     mutationFn: (sessionToken: string) =>
       orpcClient.adminUsers.revokeSession({ sessionToken }),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Session revoked")
-      invalidate()
+      await invalidate()
     },
     onError: (err) => toast.error(err.message),
   })
@@ -25,9 +41,9 @@ export function useUserDetailActions() {
   const revokeAllSessions = useMutation({
     mutationFn: (userId: string) =>
       orpcClient.adminUsers.revokeAllSessions({ userId }),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("All sessions revoked")
-      invalidate()
+      await invalidate()
     },
     onError: (err) => toast.error(err.message),
   })
@@ -38,18 +54,18 @@ export function useUserDetailActions() {
       banReason?: string
       banExpiresIn?: number
     }) => orpcClient.adminUsers.ban(data),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("User banned")
-      invalidate()
+      await invalidate()
     },
     onError: (err) => toast.error(err.message),
   })
 
   const unbanUser = useMutation({
     mutationFn: (userId: string) => orpcClient.adminUsers.unban({ userId }),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("User unbanned")
-      invalidate()
+      await invalidate()
     },
     onError: (err) => toast.error(err.message),
   })

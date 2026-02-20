@@ -5,11 +5,27 @@ import { toast } from "sonner"
 
 import { orpcClient } from "@/server/orpc/client"
 
-export function useUserActions() {
+type RefreshUsersCallback = () => Promise<unknown>
+
+export function useUserActions(refreshUsers?: RefreshUsersCallback) {
   const queryClient = useQueryClient()
 
-  const invalidate = () => {
-    queryClient.invalidateQueries({ queryKey: ["adminUsers"] })
+  const invalidate = async () => {
+    await queryClient.invalidateQueries({
+      predicate: (query) => {
+        const queryKey = JSON.stringify(query.queryKey)
+        return queryKey.includes("adminUsers") && queryKey.includes("list")
+      },
+    })
+  }
+
+  const refresh = async () => {
+    if (refreshUsers) {
+      await refreshUsers()
+      return
+    }
+
+    await invalidate()
   }
 
   const createUser = useMutation({
@@ -19,9 +35,9 @@ export function useUserActions() {
       name: string
       role: "student" | "company_admin" | "university_admin" | "super_admin"
     }) => orpcClient.adminUsers.create(data),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("User created")
-      invalidate()
+      await refresh()
     },
     onError: (err) => toast.error(err.message),
   })
@@ -31,9 +47,9 @@ export function useUserActions() {
       userId: string
       role: "student" | "company_admin" | "university_admin" | "super_admin"
     }) => orpcClient.adminUsers.setRole(data),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Role updated")
-      invalidate()
+      await refresh()
     },
     onError: (err) => toast.error(err.message),
   })
@@ -45,8 +61,8 @@ export function useUserActions() {
       email?: string
       role?: "student" | "company_admin" | "university_admin" | "super_admin"
     }) => orpcClient.adminUsers.update(data),
-    onSuccess: () => {
-      invalidate()
+    onSuccess: async () => {
+      await invalidate()
     },
     onError: (err) => toast.error(err.message),
   })
@@ -57,18 +73,18 @@ export function useUserActions() {
       banReason?: string
       banExpiresIn?: number
     }) => orpcClient.adminUsers.ban(data),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("User banned")
-      invalidate()
+      await refresh()
     },
     onError: (err) => toast.error(err.message),
   })
 
   const unbanUser = useMutation({
     mutationFn: (data: { userId: string }) => orpcClient.adminUsers.unban(data),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("User unbanned")
-      invalidate()
+      await refresh()
     },
     onError: (err) => toast.error(err.message),
   })
@@ -76,9 +92,9 @@ export function useUserActions() {
   const removeUser = useMutation({
     mutationFn: (data: { userId: string }) =>
       orpcClient.adminUsers.remove(data),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("User removed")
-      invalidate()
+      await refresh()
     },
     onError: (err) => toast.error(err.message),
   })
@@ -86,9 +102,9 @@ export function useUserActions() {
   const setPassword = useMutation({
     mutationFn: (data: { userId: string; newPassword: string }) =>
       orpcClient.adminUsers.setPassword(data),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Password updated")
-      invalidate()
+      await refresh()
     },
     onError: (err) => toast.error(err.message),
   })
