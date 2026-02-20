@@ -318,6 +318,7 @@ export const createOfferProcedure = companyAdminProcedureStandard
     )
     revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
     revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+    revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
     return result
   })
@@ -440,6 +441,7 @@ export const updateOfferProcedure = companyAdminProcedureStandard
       )
       revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
       revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+      revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
       return result
     } catch (error) {
@@ -470,6 +472,7 @@ export const deleteOfferProcedure = companyAdminProcedureStandard
       )
       revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
       revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+      revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
       return result
     } catch (error) {
@@ -505,6 +508,7 @@ export const updateOfferStatusProcedure = companyAdminProcedureStandard
       )
       revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
       revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+      revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
       return result
     } catch (error) {

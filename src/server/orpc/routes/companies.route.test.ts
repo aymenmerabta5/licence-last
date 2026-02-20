@@ -39,6 +39,17 @@ const listCompaniesMock = mock(
     hasMore: false,
   }),
 )
+const listPublicDirectoryCompaniesMock = mock(
+  async (): Promise<{
+    companies: Array<Record<string, unknown>>
+    hasMore: boolean
+    nextCursor?: { createdAt: string; id: string }
+  }> => ({
+    companies: [],
+    hasMore: false,
+    nextCursor: undefined,
+  }),
+)
 const listCompanyMembersMock = mock(async (): Promise<CompanyMemberRow[]> => [])
 const inviteCompanyMemberMock = mock(async () => ({
   userId: "member-1",
@@ -73,11 +84,25 @@ const isAdminRoleMock = mock(
 )
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
+  publicProcedureStrict: createProcedureMock(),
+  publicProcedureStandard: createProcedureMock(),
+  authedSessionProcedureStandard: createProcedureMock(),
+  authedSessionProcedureGenerous: createProcedureMock(),
   authedProcedureGenerous: createProcedureMock(),
   authedProcedureStandard: createProcedureMock(),
+  authedProcedureStrict: createProcedureMock(),
+  adminProcedureGenerous: createProcedureMock(),
+  adminProcedureStandard: createProcedureMock(),
+  adminProcedureAssistant: createProcedureMock(),
+  assistantProcedureLimited: createProcedureMock(),
+  companyAdminProcedureAssistant: createProcedureMock(),
   companyAdminProcedureGenerous: createProcedureMock(),
   companyAdminProcedureStandard: createProcedureMock(),
   companyOwnerProcedureStandard: createProcedureMock(),
+  studentProcedureGenerous: createProcedureMock(),
+  studentProcedureStandard: createProcedureMock(),
+  deptHeadProcedureStandard: createProcedureMock(),
+  deptHeadProcedureGenerous: createProcedureMock(),
   superAdminProcedureGenerous: createProcedureMock(),
   superAdminProcedureStandard: createProcedureMock(),
 }))
@@ -102,6 +127,9 @@ mock.module("@/env", () => ({
 
 mock.module("@/server/services/companies/list", () => ({
   listCompanies: listCompaniesMock,
+}))
+mock.module("@/server/services/companies/list-public-directory", () => ({
+  listPublicDirectoryCompanies: listPublicDirectoryCompaniesMock,
 }))
 mock.module("@/server/services/companies/get", () => ({
   getCompanyById: mock(async () => null),
@@ -162,6 +190,7 @@ mock.module("@/server/db", () => ({
 describe("src/server/orpc/routes/companies", () => {
   beforeEach(() => {
     listCompaniesMock.mockClear()
+    listPublicDirectoryCompaniesMock.mockClear()
     createCompanyMock.mockClear()
     updateCompanyMock.mockClear()
     listCompanyMembersMock.mockClear()
@@ -218,7 +247,7 @@ describe("src/server/orpc/routes/companies", () => {
     expect(updateCompanyMock).toHaveBeenCalledWith("company-1", {
       description: "updated",
     })
-    expect(revalidateTagMock).toHaveBeenCalledTimes(2)
+    expect(revalidateTagMock).toHaveBeenCalledTimes(3)
   })
 
   test("updateCompanyProcedure maps typed company errors", async () => {
@@ -303,6 +332,33 @@ describe("src/server/orpc/routes/companies", () => {
       search: undefined,
       limit: 20,
       offset: 0,
+    })
+  })
+
+  test("listPublicDirectoryProcedure delegates for students", async () => {
+    listPublicDirectoryCompaniesMock.mockResolvedValueOnce({
+      companies: [{ id: "company-1", name: "Acme" }],
+      hasMore: false,
+      nextCursor: undefined,
+    })
+
+    const { listPublicDirectoryProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    const result = await callProcedure(listPublicDirectoryProcedure, {
+      input: { keyword: "acme", limit: 12 },
+      context: { user: { id: "student-1", role: "student" } },
+    })
+
+    expect(listPublicDirectoryCompaniesMock).toHaveBeenCalledWith({
+      keyword: "acme",
+      limit: 12,
+    })
+    expect(result).toEqual({
+      companies: [{ id: "company-1", name: "Acme" }],
+      hasMore: false,
+      nextCursor: undefined,
     })
   })
 

@@ -29,6 +29,7 @@ export const CACHE_TAGS = {
   COMPANY_PROFILE: (companyId: string) => `company-${companyId}`,
   COMPANY_OFFERS: (companyId: string) => `company-offers-${companyId}`,
   COMPANY_CANDIDATES: (companyId: string) => `company-candidates-${companyId}`,
+  COMPANIES_DIRECTORY: "companies-directory",
 
   // Offers
   OFFER_SEARCH: "offer-search",

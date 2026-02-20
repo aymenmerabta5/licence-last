@@ -29,6 +29,16 @@ export const searchOffersSchema = z.object({
 })
 
 /**
+ * Search approved companies that currently have active published offers.
+ */
+export const searchCompaniesForStudentsSchema = z.object({
+  keyword: z.string().max(200).optional(),
+  wilayaCode: z.coerce.number().int().min(1).max(58).optional(),
+  cursor: cursorSchema,
+  limit: z.coerce.number().int().min(1).max(50).default(12),
+})
+
+/**
  * Apply to an internship offer.
  */
 export const applyToOfferSchema = z.object({

@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test"
 import {
   applyToOfferSchema,
   listStudentApplicationsSchema,
+  searchCompaniesForStudentsSchema,
   searchOffersSchema,
 } from "@/lib/schemas/search"
 
@@ -123,6 +124,50 @@ describe("src/lib/schemas/search", () => {
 
     test("should reject missing offerId", () => {
       const result = applyToOfferSchema.safeParse({})
+      expect(result.success).toBe(false)
+    })
+  })
+
+  describe("searchCompaniesForStudentsSchema", () => {
+    test("should accept empty params (all optional)", () => {
+      const result = searchCompaniesForStudentsSchema.safeParse({})
+      expect(result.success).toBe(true)
+      if (result.success) {
+        expect(result.data.limit).toBe(12)
+      }
+    })
+
+    test("should accept full params", () => {
+      const result = searchCompaniesForStudentsSchema.safeParse({
+        keyword: "acme",
+        wilayaCode: 16,
+        cursor: {
+          createdAt: "2025-01-01T00:00:00.000Z",
+          id: "company-1",
+        },
+        limit: 20,
+      })
+      expect(result.success).toBe(true)
+    })
+
+    test("should reject keyword longer than 200 chars", () => {
+      const result = searchCompaniesForStudentsSchema.safeParse({
+        keyword: "a".repeat(201),
+      })
+      expect(result.success).toBe(false)
+    })
+
+    test("should reject invalid wilayaCode", () => {
+      expect(
+        searchCompaniesForStudentsSchema.safeParse({ wilayaCode: 0 }).success,
+      ).toBe(false)
+      expect(
+        searchCompaniesForStudentsSchema.safeParse({ wilayaCode: 59 }).success,
+      ).toBe(false)
+    })
+
+    test("should reject limit above 50", () => {
+      const result = searchCompaniesForStudentsSchema.safeParse({ limit: 51 })
       expect(result.success).toBe(false)
     })
   })

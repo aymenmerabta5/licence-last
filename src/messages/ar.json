@@ -389,6 +389,7 @@
     "nav": {
       "dashboard": "لوحة المعلومات",
       "exploreInternships": "استكشاف التربصات",
+      "discoverCompanies": "Discover Companies",
       "myApplications": "طلباتي",
       "myDocuments": "وثائقي",
       "studentCv": "سيرتي الذاتية",
@@ -917,6 +918,20 @@
         "parseFilters": "تحليل المرشحات",
         "apply": "تطبيق"
       }
+    },
+    "studentCompanies": {
+      "kicker": "Company Directory",
+      "title": "Discover Companies",
+      "subtitle": "Browse approved companies currently recruiting for internships.",
+      "searchPlaceholder": "Search companies by name or slug...",
+      "wilayaPlaceholder": "Any location",
+      "clearFilters": "Clear filters",
+      "loading": "Loading companies...",
+      "loadingMore": "Loading more companies...",
+      "empty": "No companies matched your filters.",
+      "viewProfile": "View Company Profile",
+      "websiteAvailable": "Website available",
+      "openOffersCount": "{count, plural, one {# open offer} other {# open offers}}"
     },
     "offerDetail": {
       "back": "العودة للبحث",

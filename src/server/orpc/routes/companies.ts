@@ -15,6 +15,7 @@ import {
   companyReportStatusSchema,
   companyStatusSchema,
 } from "@/lib/schemas/enums"
+import { searchCompaniesForStudentsSchema } from "@/lib/schemas/search"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { companyMember } from "@/server/db/schema/companies"
@@ -27,6 +28,7 @@ import {
   companyAdminProcedureGenerous,
   companyAdminProcedureStandard,
   companyOwnerProcedureStandard,
+  studentProcedureGenerous,
   superAdminProcedureGenerous,
   superAdminProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
@@ -37,6 +39,7 @@ import { getCompanyById } from "@/server/services/companies/get"
 import { inviteCompanyMember } from "@/server/services/companies/invite-member"
 import { listCompanies } from "@/server/services/companies/list"
 import { listCompanyMembers } from "@/server/services/companies/list-members"
+import { listPublicDirectoryCompanies } from "@/server/services/companies/list-public-directory"
 import { getCompanyMembership } from "@/server/services/companies/membership"
 import { reactivateCompany } from "@/server/services/companies/reactivate"
 import { rejectCompany } from "@/server/services/companies/reject"
@@ -82,6 +85,10 @@ export const listCompaniesProcedure = authedProcedureGenerous
       offset: input?.offset,
     })
   })
+
+export const listPublicDirectoryProcedure = studentProcedureGenerous
+  .input(searchCompaniesForStudentsSchema)
+  .handler(async ({ input }) => listPublicDirectoryCompanies(input))
 
 export const getCompanyByIdProcedure = authedProcedureGenerous
   .input(z.object({ companyId: z.string().min(1) }))
@@ -336,6 +343,7 @@ export const updateCompanyProcedure = companyAdminProcedureStandard
         CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`),
         "max",
       )
+      revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
       return result
     } catch (error) {
@@ -355,6 +363,7 @@ export const approveCompanyProcedure = superAdminProcedureStandard
 
     // Invalidate company cache when approved
     revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
+    revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
     // Notify company members (in-app + email)
     const members = await db
@@ -399,6 +408,7 @@ export const rejectCompanyProcedure = superAdminProcedureStandard
 
     // Invalidate company cache when rejected
     revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
+    revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
     // Notify company members (in-app + email)
     const members = await db
@@ -440,6 +450,7 @@ export const suspendCompanyProcedure = superAdminProcedureStandard
       revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
       revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
       revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+      revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
       const members = await db
         .select({ userId: companyMember.userId })
@@ -478,6 +489,7 @@ export const reactivateCompanyProcedure = superAdminProcedureStandard
       revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
       revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
       revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+      revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
       const members = await db
         .select({ userId: companyMember.userId })
@@ -533,6 +545,7 @@ export const uploadCompanyLogoProcedure = companyAdminProcedureStandard
         CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`),
         "max",
       )
+      revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
       return result
     } catch (error) {

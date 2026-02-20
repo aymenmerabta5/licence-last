@@ -147,7 +147,7 @@ describe("src/server/orpc/routes/offers", () => {
     expect(updateOfferMock).toHaveBeenCalledWith("offer-1", "company-1", {
       title: "Updated title",
     })
-    expect(revalidateTagMock).toHaveBeenCalledTimes(4)
+    expect(revalidateTagMock).toHaveBeenCalledTimes(5)
   })
 
   test("updateOfferProcedure maps typed service errors", async () => {

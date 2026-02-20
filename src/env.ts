@@ -56,6 +56,7 @@ export const env = createEnv({
       .enum(["true", "false"])
       .default("false"),
     NEXT_PUBLIC_FEATURE_SAVED_OFFERS: z.enum(["true", "false"]).default("true"),
+    NEXT_PUBLIC_FEATURE_INTERVIEWS: z.enum(["true", "false"]).default("false"),
     NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS: z
       .enum(["true", "false"])
       .default("false"),
@@ -70,6 +71,8 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES,
     NEXT_PUBLIC_FEATURE_SAVED_OFFERS:
       process.env.NEXT_PUBLIC_FEATURE_SAVED_OFFERS,
+    NEXT_PUBLIC_FEATURE_INTERVIEWS:
+      process.env.NEXT_PUBLIC_FEATURE_INTERVIEWS,
     NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS:
       process.env.NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS,
   },

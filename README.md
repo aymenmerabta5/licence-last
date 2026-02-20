@@ -108,6 +108,12 @@ Open [http://localhost:3000](http://localhost:3000).
 | `TURNSTILE_SECRET_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Optional bot protection |
 | `LOG_LEVEL` | Pino log level (default: `info`) |
 
+Feature flag defaults:
+- `FEATURE_SAVED_OFFERS=true` + `NEXT_PUBLIC_FEATURE_SAVED_OFFERS=true`
+- `FEATURE_INTERVIEWS=false` + `NEXT_PUBLIC_FEATURE_INTERVIEWS=false`
+- `FEATURE_LANGUAGE_REQUIREMENTS=false` + `NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS=false`
+- `FEATURE_NOTIF_PREFERENCES=false` + `NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES=false`
+
 See [`.env.example`](.env.example) for the full list, including production Docker variables (`POSTGRES_*`, `GITHUB_REPO`, `DOMAIN_NAME`, `RUN_SEED`, `SEED_ADMIN_*`).
 
 ## Scripts
