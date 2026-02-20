@@ -15,6 +15,7 @@ import {
   type CertificateData,
   InternshipCertificateTemplate,
 } from "@/server/pdfs/CertificateTemplate"
+import { DocumentServiceError } from "@/server/services/documents/errors"
 import { generateQRCodeDataUrl } from "@/server/services/documents/qr-utils"
 import { generateVerificationCode } from "@/server/services/documents/verification-code"
 
@@ -41,7 +42,7 @@ export async function generateCertificate(
     .limit(1)
 
   if (!placementRecord) {
-    throw new Error("Placement not found")
+    throw new DocumentServiceError("PLACEMENT_NOT_FOUND", "Placement not found")
   }
 
   const [app] = await db
@@ -62,7 +63,10 @@ export async function generateCertificate(
     .limit(1)
 
   if (!app) {
-    throw new Error("Application not found")
+    throw new DocumentServiceError(
+      "APPLICATION_NOT_FOUND",
+      "Application not found",
+    )
   }
 
   let uniName: string | null = null
@@ -87,10 +91,7 @@ export async function generateCertificate(
     )
     .limit(1)
 
-  const verificationCode =
-    existingDoc?.verificationCode ?? generateVerificationCode()
-  const verificationUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/${locale}/verify/${verificationCode}`
-  const qrCodeDataUrl = await generateQRCodeDataUrl(verificationUrl)
+  let verificationCode = existingDoc?.verificationCode ?? generateVerificationCode()
 
   const data: CertificateData = {
     studentName: app.studentName ?? "Unknown",
@@ -103,19 +104,41 @@ export async function generateCertificate(
     endDate: placementRecord.endDate,
   }
 
-  const pdfBuffer = await renderToBuffer(
-    createElement(InternshipCertificateTemplate, {
-      data,
-      locale,
-      verificationCode,
-      qrCodeDataUrl,
-    }) as unknown as Parameters<typeof renderToBuffer>[0],
-  )
+  const renderCertificatePdf = async (code: string) => {
+    const verificationUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/${locale}/verify/${code}`
+    const qrCodeDataUrl = await generateQRCodeDataUrl(verificationUrl)
+
+    return renderToBuffer(
+      createElement(InternshipCertificateTemplate, {
+        data,
+        locale,
+        verificationCode: code,
+        qrCodeDataUrl,
+      }) as unknown as Parameters<typeof renderToBuffer>[0],
+    )
+  }
+
+  let pdfBuffer = await renderCertificatePdf(verificationCode)
+
+  const nextMeta = {
+    generatedAt: new Date().toISOString(),
+    locale,
+    fileName: `certificate_${placementId}.pdf`,
+  }
 
   let documentRecord = existingDoc
 
-  if (!documentRecord) {
-    const [newDoc] = await db
+  if (documentRecord) {
+    await db
+      .update(placementDocument)
+      .set({
+        status: "generated",
+        verificationCode,
+        meta: nextMeta,
+      })
+      .where(eq(placementDocument.id, documentRecord.id))
+  } else {
+    const [insertedDoc] = await db
       .insert(placementDocument)
       .values({
         id: crypto.randomUUID(),
@@ -123,27 +146,59 @@ export async function generateCertificate(
         type: "certificate",
         status: "generated",
         verificationCode,
-        meta: {
-          generatedAt: new Date().toISOString(),
-          locale,
-          fileName: `certificate_${placementId}.pdf`,
-        },
+        meta: nextMeta,
+      })
+      .onConflictDoNothing({
+        target: [placementDocument.placementId, placementDocument.type],
       })
       .returning()
-    documentRecord = newDoc
-  } else {
-    await db
-      .update(placementDocument)
-      .set({
-        status: "generated",
-        verificationCode,
-        meta: {
-          generatedAt: new Date().toISOString(),
-          locale,
-          fileName: `certificate_${placementId}.pdf`,
-        },
-      })
-      .where(eq(placementDocument.id, documentRecord.id))
+
+    if (insertedDoc) {
+      documentRecord = insertedDoc
+    } else {
+      const [resolvedDoc] = await db
+        .select()
+        .from(placementDocument)
+        .where(
+          and(
+            eq(placementDocument.placementId, placementId),
+            eq(placementDocument.type, "certificate"),
+          ),
+        )
+        .limit(1)
+
+      if (!resolvedDoc) {
+        throw new DocumentServiceError(
+          "DOCUMENT_CONFLICT_RESOLUTION_FAILED",
+          "Failed to resolve generated certificate document",
+        )
+      }
+
+      documentRecord = resolvedDoc
+      const resolvedVerificationCode =
+        resolvedDoc.verificationCode ?? verificationCode
+
+      if (resolvedVerificationCode !== verificationCode) {
+        verificationCode = resolvedVerificationCode
+        pdfBuffer = await renderCertificatePdf(verificationCode)
+      }
+
+      await db
+        .update(placementDocument)
+        .set({
+          status: "generated",
+          verificationCode,
+          meta: nextMeta,
+        })
+        .where(eq(placementDocument.id, documentRecord.id))
+    }
+  }
+
+  if (!documentRecord) {
+    throw new DocumentServiceError(
+      "DOCUMENT_CONFLICT_RESOLUTION_FAILED",
+      "Failed to resolve generated certificate document",
+    )
   }
 
   return {

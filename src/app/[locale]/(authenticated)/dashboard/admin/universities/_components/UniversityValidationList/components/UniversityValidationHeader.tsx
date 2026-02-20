@@ -2,7 +2,6 @@
 
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
 import { ease } from "@/lib/animations"
 
 interface UniversityValidationHeaderProps {
@@ -16,31 +15,36 @@ export function UniversityValidationHeader({
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease }}
-      className="relative"
+      className="border-b border-border pb-6"
     >
-      <div className="h-0.5 bg-primary" />
-      <div className="border border-t-0 border-border/50 p-8 md:p-10">
-        <div className="absolute -top-20 end-0 h-40 w-40 rounded-full bg-primary/5 blur-3xl dark:bg-primary/10" />
-
-        <div className="mb-6 flex items-center justify-between">
-          <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary [[dir=rtl]_&]:tracking-normal">
-            {t("kicker")}
-          </span>
-          <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40">
-            {total} {t("title").toLowerCase()}
-          </span>
-        </div>
-
-        <h1 className="max-w-xl font-serif text-[clamp(1.75rem,3.5vw,2.5rem)] leading-[1.08] tracking-tight text-heading">
-          {t("title")}
-        </h1>
-        <p className="mt-3 max-w-lg text-sm font-light leading-relaxed text-muted-foreground">
-          {t("description")}
+      <header className="space-y-3">
+        <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50">
+          {t("kicker")}
         </p>
-      </div>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-3">
+            <h1 className="font-serif text-[clamp(2.25rem,5vw,3.25rem)] leading-none tracking-tight text-heading">
+              {t("title")}
+            </h1>
+            <p className="text-muted-foreground text-sm font-light tracking-wide max-w-2xl">
+              {t("description")}
+            </p>
+          </div>
+          <div className="shrink-0 flex items-center justify-center p-4 border-l border-border/40 pl-6">
+            <div className="text-right">
+              <p className="font-serif text-3xl font-medium text-heading tracking-tight">
+                {total}
+              </p>
+              <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mt-1">
+                Total
+              </p>
+            </div>
+          </div>
+        </div>
+      </header>
     </motion.div>
   )
 }

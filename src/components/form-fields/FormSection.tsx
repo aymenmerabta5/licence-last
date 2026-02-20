@@ -21,12 +21,14 @@ export function FormSection({
     <motion.div
       {...reveal}
       transition={revealWithDelay(delay)}
-      className={`space-y-5 ${className ?? ""}`}
+      className={`space-y-6 ${className ?? ""}`}
     >
-      <h2 className="text-[11px] font-semibold tracking-[0.15em] uppercase text-muted-foreground border-b border-border pb-2">
-        {title}
-      </h2>
-      {children}
+      <div className="flex items-center gap-4 border-b border-border/80 pb-4">
+        <h2 className="font-serif text-lg tracking-wide text-heading">
+          {title}
+        </h2>
+      </div>
+      <div className="space-y-6 pt-2">{children}</div>
     </motion.div>
   )
 }

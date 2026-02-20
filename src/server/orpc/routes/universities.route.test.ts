@@ -20,7 +20,10 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
   return (procedure as (input: unknown) => Promise<T>)(args)
 }
 
-const listUniversitiesMock = mock(async () => [])
+const listUniversitiesMock = mock(async () => ({
+  universities: [],
+  hasMore: false,
+}))
 const approveUniversityMock = mock(async () => ({ name: "USTHB" }))
 const updateUniversityMock = mock(async () => ({ universityId: "uni-1" }))
 const deleteUniversityMock = mock(async () => ({
@@ -36,6 +39,10 @@ const emitNotificationMock = mock(async () => ({
   emailSkipped: false,
   emailSuccess: true,
 }))
+const isAdminRoleMock = mock(
+  (role: string) =>
+    role === "super_admin" || role === "university_admin" || role === "dept_head",
+)
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   authedProcedureGenerous: createProcedureMock(),
@@ -44,7 +51,7 @@ mock.module("@/server/orpc/rate-limited-procedures", () => ({
 }))
 
 mock.module("@/server/orpc/middleware", () => ({
-  isAdminRole: () => false,
+  isAdminRole: isAdminRoleMock,
 }))
 
 mock.module("next/cache", () => ({
@@ -116,22 +123,66 @@ describe("src/server/orpc/routes/universities", () => {
     deleteUniversityMock.mockClear()
     revalidateTagMock.mockClear()
     emitNotificationMock.mockClear()
+    isAdminRoleMock.mockClear()
+    isAdminRoleMock.mockImplementation(
+      (role: string) =>
+        role === "super_admin" ||
+        role === "university_admin" ||
+        role === "dept_head",
+    )
   })
 
-  test("listUniversitiesProcedure enforces approved status for non-admin users", async () => {
+  test("listUniversitiesProcedure enforces approved status and strips search for non-admin users", async () => {
     const { listUniversitiesProcedure } = await import(
       "@/server/orpc/routes/universities"
     )
 
     await callProcedure(listUniversitiesProcedure, {
-      input: { status: "pending", limit: 10, offset: 0 },
+      input: { status: "pending", search: "USTHB", limit: 10, offset: 0 },
       context: { user: { role: "student" } },
     })
 
     expect(listUniversitiesMock).toHaveBeenCalledWith({
       status: "approved",
+      search: undefined,
       limit: 10,
       offset: 0,
+    })
+  })
+
+  test("listUniversitiesProcedure forwards search for super_admin", async () => {
+    const { listUniversitiesProcedure } = await import(
+      "@/server/orpc/routes/universities"
+    )
+
+    await callProcedure(listUniversitiesProcedure, {
+      input: { status: "pending", search: "poly", limit: 20, offset: 40 },
+      context: { user: { role: "super_admin" } },
+    })
+
+    expect(listUniversitiesMock).toHaveBeenCalledWith({
+      status: "pending",
+      search: "poly",
+      limit: 20,
+      offset: 40,
+    })
+  })
+
+  test("listUniversitiesProcedure strips search for non-super admins", async () => {
+    const { listUniversitiesProcedure } = await import(
+      "@/server/orpc/routes/universities"
+    )
+
+    await callProcedure(listUniversitiesProcedure, {
+      input: { status: "pending", search: "poly" },
+      context: { user: { role: "university_admin" } },
+    })
+
+    expect(listUniversitiesMock).toHaveBeenCalledWith({
+      status: "pending",
+      search: undefined,
+      limit: undefined,
+      offset: undefined,
     })
   })
 

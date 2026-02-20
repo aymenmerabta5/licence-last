@@ -63,6 +63,7 @@ export const listCompaniesProcedure = authedProcedureGenerous
     z
       .object({
         status: companyStatusSchema.optional(),
+        search: z.string().trim().min(1).max(120).optional(),
         limit: z.coerce.number().int().min(1).max(200).optional(),
         offset: z.coerce.number().int().min(0).max(10000).optional(),
       })
@@ -71,8 +72,12 @@ export const listCompaniesProcedure = authedProcedureGenerous
   .handler(async ({ input, context }) => {
     const isAdmin = isAdminRole(context.user.role)
     const effectiveStatus = isAdmin ? input?.status : "approved"
+    const effectiveSearch =
+      context.user.role === "super_admin" ? input?.search : undefined
+
     return listCompanies({
       status: effectiveStatus,
+      search: effectiveSearch,
       limit: input?.limit,
       offset: input?.offset,
     })

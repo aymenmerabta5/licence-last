@@ -1,6 +1,10 @@
 "use client"
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
@@ -8,8 +12,11 @@ import type {
   UniversityListItem,
   UpdateUniversityPayload,
 } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
+import { useDebounce, useInfiniteScroll } from "@/hooks"
 import type { UniversityStatus } from "@/lib/schemas/enums"
 import { orpc, orpcClient } from "@/server/orpc/client"
+
+const PAGE_SIZE = 20
 
 export function useUniversityValidation() {
   const t = useTranslations("dashboard.admin.universities")
@@ -17,20 +24,50 @@ export function useUniversityValidation() {
   const [statusFilter, setStatusFilter] = useState<UniversityStatus | "all">(
     "pending",
   )
+  const [search, setSearch] = useState("")
+  const debouncedSearch = useDebounce(search, 300)
+
   const universitiesQueryKey = useMemo(
     () => orpc.universities.list.queryOptions().queryKey,
     [],
   )
 
-  const queryOptions = useMemo(
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: [
+        ...universitiesQueryKey,
+        "validation",
+        statusFilter,
+        debouncedSearch,
+      ],
+      queryFn: async ({ pageParam }) =>
+        orpcClient.universities.list({
+          status: statusFilter === "all" ? undefined : statusFilter,
+          search: debouncedSearch || undefined,
+          limit: PAGE_SIZE,
+          offset: pageParam as number,
+        }),
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, allPages) => {
+        if (!lastPage.hasMore) return undefined
+        return allPages.reduce(
+          (total, page) => total + page.universities.length,
+          0,
+        )
+      },
+    })
+
+  const universities = useMemo(
     () =>
-      orpc.universities.list.queryOptions({
-        input: statusFilter === "all" ? {} : { status: statusFilter },
-      }),
-    [statusFilter],
+      (data?.pages.flatMap((page) => page.universities) ?? []) as UniversityListItem[],
+    [data],
   )
 
-  const { data, isLoading } = useQuery(queryOptions)
+  const sentinelRef = useInfiniteScroll(
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  )
 
   const invalidateUniversityQueries = () =>
     queryClient.invalidateQueries({ queryKey: universitiesQueryKey })
@@ -89,11 +126,15 @@ export function useUniversityValidation() {
   })
 
   return {
-    universities: (data?.universities ?? []) as UniversityListItem[],
-    hasMore: data?.hasMore ?? false,
+    universities,
+    hasMore: hasNextPage ?? false,
     isLoading,
+    isFetchingNextPage,
+    sentinelRef,
     statusFilter,
     setStatusFilter,
+    search,
+    setSearch,
     approveUniversity: approveMutation.mutate,
     isApproving: approveMutation.isPending,
     rejectUniversity: rejectMutation.mutate,

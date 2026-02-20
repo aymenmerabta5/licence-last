@@ -1,24 +1,17 @@
 "use client"
 
-import {
-  Building2,
-  Calendar,
-  Check,
-  Globe,
-  MapPin,
-  Pencil,
-  Trash2,
-  X,
-} from "lucide-react"
+import { Calendar, Check, Globe, MapPin, Pencil, Trash2, X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import type { UniversityListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
 const STATUS_STYLES: Record<string, string> = {
-  pending: "bg-amber-500/10 text-amber-600",
-  approved: "bg-emerald-500/10 text-emerald-600",
-  rejected: "bg-destructive/10 text-destructive",
+  pending:
+    "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-500",
+  approved:
+    "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-500",
+  rejected: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-500",
 }
 
 interface UniversityCardProps {
@@ -47,141 +40,112 @@ export function UniversityCard({
   const t = useTranslations("dashboard.admin.universities")
 
   return (
-    <div className="group relative border border-border/50 bg-background transition-all duration-300 hover:border-primary/30 hover:shadow-sm overflow-hidden">
-      {/* Top accent line on hover */}
-      <div className="absolute top-0 start-0 h-0.5 w-0 bg-primary group-hover:w-full transition-all duration-500" />
-
-      <div className="p-6 sm:p-7 space-y-5">
-        {/* Header row */}
-        <div className="flex items-start justify-between gap-4">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-lg bg-primary/5 text-primary">
-                <Building2 className="h-4 w-4" />
+    <div className="group relative border-b border-border/50 bg-background transition-colors hover:bg-muted/5">
+      <div className="py-6 px-4 sm:px-6">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+          <div className="space-y-4 flex-1">
+            {/* Header */}
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <Badge
+                  className={`shrink-0 px-2 py-0.5 rounded-sm font-semibold uppercase tracking-widest text-[10px] border-none ${
+                    STATUS_STYLES[university.status] ?? STATUS_STYLES.pending
+                  }`}
+                >
+                  {t(`status.${university.status}`)}
+                </Badge>
+                {university.departmentName && (
+                  <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+                    <Globe className="h-3 w-3" />
+                    {university.departmentName}
+                  </span>
+                )}
               </div>
-              <div>
-                <h3 className="font-serif text-lg font-bold text-heading tracking-tight leading-tight">
-                  {university.name}
-                  {university.abbreviation && (
-                    <span className="text-muted-foreground/50 font-normal ms-1.5 text-sm">
-                      ({university.abbreviation})
-                    </span>
-                  )}
-                </h3>
+              <h3 className="font-serif text-2xl font-bold text-heading tracking-tight flex items-baseline gap-2">
+                {university.name}
+                {university.abbreviation && (
+                  <span className="text-base font-sans text-muted-foreground font-light">
+                    {university.abbreviation}
+                  </span>
+                )}
+              </h3>
+            </div>
+
+            {/* Info */}
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground/80">
+              {university.city && (
+                <div className="flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5" />
+                  <span>{university.city}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5" />
+                <span>
+                  {new Date(university.createdAt).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </span>
               </div>
             </div>
           </div>
-          <Badge
-            className={`shrink-0 px-2.5 py-1 font-bold uppercase tracking-widest text-[9px] border-none rounded-full ${
-              STATUS_STYLES[university.status] ?? STATUS_STYLES.pending
-            }`}
-          >
-            {t(`status.${university.status}`)}
-          </Badge>
-        </div>
 
-        {/* Info grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {university.city && (
-            <InfoField
-              icon={MapPin}
-              label={t("card.location")}
-              value={university.city}
-            />
-          )}
-          {university.departmentName && (
-            <InfoField
-              icon={Globe}
-              label={t("card.department")}
-              value={university.departmentName}
-            />
-          )}
-          <InfoField
-            icon={Calendar}
-            label={t("card.registeredAt")}
-            value={new Date(university.createdAt).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })}
-          />
-        </div>
+          {/* Actions */}
+          <div className="shrink-0 flex flex-col items-stretch gap-2 min-w-[140px]">
+            {university.status === "pending" && (
+              <>
+                <Button
+                  type="button"
+                  variant="editorial"
+                  size="sm"
+                  className="w-full justify-start h-9 rounded-sm font-medium"
+                  disabled={isApproving}
+                  onClick={() => onApprove(university.id)}
+                >
+                  <Check className="h-3.5 w-3.5 me-2" />
+                  {t("approve")}
+                </Button>
+                <Button
+                  type="button"
+                  variant="editorial-outline"
+                  size="sm"
+                  className="w-full justify-start h-9 rounded-sm font-medium border-border/60 hover:border-black dark:hover:border-white"
+                  disabled={isRejecting}
+                  onClick={() => onReject(university.id)}
+                >
+                  <X className="h-3.5 w-3.5 me-2 text-red-500" />
+                  {t("reject")}
+                </Button>
+                <div className="h-px w-full bg-border/40 my-1" />
+              </>
+            )}
 
-        {/* Review actions */}
-        {university.status === "pending" && (
-          <div className="flex flex-wrap gap-3 pt-2 border-t border-border/30">
             <Button
               type="button"
-              variant="editorial"
+              variant="ghost"
               size="sm"
-              className="h-9 px-5 rounded-lg"
-              disabled={isApproving}
-              onClick={() => onApprove(university.id)}
+              className="w-full justify-start h-8 text-xs text-muted-foreground hover:text-foreground rounded-sm"
+              disabled={isUpdating}
+              onClick={() => onEdit(university)}
             >
-              <Check className="h-3.5 w-3.5 me-1.5" />
-              {t("approve")}
+              <Pencil className="h-3.5 w-3.5 me-2" />
+              {t("edit")}
             </Button>
             <Button
               type="button"
-              variant="editorial-outline"
+              variant="ghost"
               size="sm"
-              className="h-9 px-5 rounded-lg"
-              disabled={isRejecting}
-              onClick={() => onReject(university.id)}
+              className="w-full justify-start h-8 text-xs text-red-600/70 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-sm"
+              disabled={isDeleting}
+              onClick={() => onDelete(university)}
             >
-              <X className="h-3.5 w-3.5 me-1.5" />
-              {t("reject")}
+              <Trash2 className="h-3.5 w-3.5 me-2" />
+              {t("delete")}
             </Button>
           </div>
-        )}
-
-        {/* Management actions */}
-        <div className="flex flex-wrap gap-3 pt-2 border-t border-border/30">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-9 px-5 rounded-lg"
-            disabled={isUpdating}
-            onClick={() => onEdit(university)}
-          >
-            <Pencil className="h-3.5 w-3.5 me-1.5" />
-            {t("edit")}
-          </Button>
-          <Button
-            type="button"
-            variant="destructive"
-            size="sm"
-            className="h-9 px-5 rounded-lg"
-            disabled={isDeleting}
-            onClick={() => onDelete(university)}
-          >
-            <Trash2 className="h-3.5 w-3.5 me-1.5" />
-            {t("delete")}
-          </Button>
         </div>
-      </div>
-    </div>
-  )
-}
-
-function InfoField({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: typeof MapPin
-  label: string
-  value: string
-}) {
-  return (
-    <div className="flex items-center gap-2.5">
-      <Icon className="h-3.5 w-3.5 text-muted-foreground/40 shrink-0" />
-      <div className="min-w-0">
-        <p className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground/40 font-bold mb-0.5 [[dir=rtl]_&]:tracking-normal">
-          {label}
-        </p>
-        <p className="text-xs font-medium text-heading truncate">{value}</p>
       </div>
     </div>
   )

@@ -1,7 +1,9 @@
 "use client"
 
+import { Search } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -15,11 +17,15 @@ import type { UniversityStatus } from "@/lib/schemas/enums"
 interface UniversityStatusFilterProps {
   statusFilter: UniversityStatus | "all"
   onStatusChange: (status: UniversityStatus | "all") => void
+  search: string
+  onSearchChange: (search: string) => void
 }
 
 export function UniversityStatusFilter({
   statusFilter,
   onStatusChange,
+  search,
+  onSearchChange,
 }: UniversityStatusFilterProps) {
   const t = useTranslations("dashboard.admin.universities")
 
@@ -28,10 +34,24 @@ export function UniversityStatusFilter({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.15, ease }}
-      className="flex items-center gap-4"
+      className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
     >
-      <div className="flex items-center gap-2">
-        <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 [[dir=rtl]_&]:tracking-normal">
+      <div className="relative w-full sm:max-w-xs">
+        <label htmlFor="university-validation-search" className="sr-only">
+          {t("searchLabel")}
+        </label>
+        <Search className="pointer-events-none absolute start-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
+        <Input
+          id="university-validation-search"
+          value={search}
+          onChange={(event) => onSearchChange(event.target.value)}
+          placeholder={t("searchPlaceholder")}
+          className="h-9 rounded-sm border-border bg-background ps-9 text-sm hover:bg-muted/10"
+        />
+      </div>
+
+      <div className="flex items-center justify-end gap-3">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
           Filter
         </span>
         <Select
@@ -42,10 +62,10 @@ export function UniversityStatusFilter({
             }
           }}
         >
-          <SelectTrigger className="h-10 w-48 border-border/40 bg-background">
+          <SelectTrigger className="h-9 w-44 rounded-sm border-border bg-background font-medium text-sm transition-colors hover:bg-muted/10">
             <SelectValue placeholder={t("statusFilter")} />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="rounded-sm border-border">
             <SelectItem value="all">{t("allStatuses")}</SelectItem>
             <SelectItem value="pending">{t("status.pending")}</SelectItem>
             <SelectItem value="approved">{t("status.approved")}</SelectItem>

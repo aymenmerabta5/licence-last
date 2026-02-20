@@ -30,6 +30,15 @@ interface CompanyMemberRow {
 
 const updateCompanyMock = mock(async () => ({ companyId: "company-1" }))
 const createCompanyMock = mock(async () => ({ companyId: "company-1" }))
+const listCompaniesMock = mock(
+  async (): Promise<{
+    companies: Array<Record<string, unknown>>
+    hasMore: boolean
+  }> => ({
+    companies: [],
+    hasMore: false,
+  }),
+)
 const listCompanyMembersMock = mock(async (): Promise<CompanyMemberRow[]> => [])
 const inviteCompanyMemberMock = mock(async () => ({
   userId: "member-1",
@@ -56,6 +65,12 @@ const getCompanyMembershipMock = mock(
 const submitCompanyReportMock = mock(
   async (): Promise<{ reportId: string }> => ({ reportId: "report-0" }),
 )
+const isAdminRoleMock = mock(
+  (role: string) =>
+    role === "super_admin" ||
+    role === "university_admin" ||
+    role === "dept_head",
+)
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   authedProcedureGenerous: createProcedureMock(),
@@ -68,7 +83,7 @@ mock.module("@/server/orpc/rate-limited-procedures", () => ({
 }))
 
 mock.module("@/server/orpc/middleware", () => ({
-  isAdminRole: () => false,
+  isAdminRole: isAdminRoleMock,
 }))
 
 mock.module("next/cache", () => ({
@@ -86,7 +101,7 @@ mock.module("@/env", () => ({
 }))
 
 mock.module("@/server/services/companies/list", () => ({
-  listCompanies: mock(async () => []),
+  listCompanies: listCompaniesMock,
 }))
 mock.module("@/server/services/companies/get", () => ({
   getCompanyById: mock(async () => null),
@@ -146,6 +161,7 @@ mock.module("@/server/db", () => ({
 
 describe("src/server/orpc/routes/companies", () => {
   beforeEach(() => {
+    listCompaniesMock.mockClear()
     createCompanyMock.mockClear()
     updateCompanyMock.mockClear()
     listCompanyMembersMock.mockClear()
@@ -155,6 +171,7 @@ describe("src/server/orpc/routes/companies", () => {
     emitNotificationMock.mockClear()
     getCompanyMembershipMock.mockClear()
     submitCompanyReportMock.mockClear()
+    isAdminRoleMock.mockClear()
   })
 
   afterAll(() => {
@@ -223,6 +240,69 @@ describe("src/server/orpc/routes/companies", () => {
     ).rejects.toMatchObject({
       code: "NOT_FOUND",
       message: "Company not found",
+    })
+  })
+
+  test("listCompaniesProcedure forwards search for super admins", async () => {
+    listCompaniesMock.mockResolvedValueOnce({
+      companies: [{ id: "company-1", name: "Acme" }],
+      hasMore: false,
+    })
+
+    const { listCompaniesProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    const result = await callProcedure(listCompaniesProcedure, {
+      input: { status: "pending", search: "acme", limit: 20, offset: 0 },
+      context: { user: { id: "admin-1", role: "super_admin" } },
+    })
+
+    expect(listCompaniesMock).toHaveBeenCalledWith({
+      status: "pending",
+      search: "acme",
+      limit: 20,
+      offset: 0,
+    })
+    expect(result).toEqual({
+      companies: [{ id: "company-1", name: "Acme" }],
+      hasMore: false,
+    })
+  })
+
+  test("listCompaniesProcedure strips search for non-super admin roles", async () => {
+    const { listCompaniesProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    await callProcedure(listCompaniesProcedure, {
+      input: { status: "pending", search: "acme", limit: 20, offset: 0 },
+      context: { user: { id: "admin-2", role: "university_admin" } },
+    })
+
+    expect(listCompaniesMock).toHaveBeenCalledWith({
+      status: "pending",
+      search: undefined,
+      limit: 20,
+      offset: 0,
+    })
+  })
+
+  test("listCompaniesProcedure keeps non-admin status forcing behavior", async () => {
+    const { listCompaniesProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    await callProcedure(listCompaniesProcedure, {
+      input: { status: "pending", search: "acme", limit: 20, offset: 0 },
+      context: { user: { id: "student-1", role: "student" } },
+    })
+
+    expect(listCompaniesMock).toHaveBeenCalledWith({
+      status: "approved",
+      search: undefined,
+      limit: 20,
+      offset: 0,
     })
   })
 

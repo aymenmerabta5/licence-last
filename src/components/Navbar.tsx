@@ -143,12 +143,13 @@ export function Navbar() {
                     <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-1">
                       {user?.name ?? user?.email ?? "Account"}
                     </DropdownMenuLabel>
-                    <Link href="/dashboard">
-                      <DropdownMenuItem className="rounded-lg h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">
-                        <LayoutDashboard className="h-4 w-4 me-2" />{" "}
-                        {t("dashboard")}
-                      </DropdownMenuItem>
-                    </Link>
+                    <DropdownMenuItem
+                      className="rounded-lg h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
+                      onClick={() => router.push("/dashboard")}
+                    >
+                      <LayoutDashboard className="h-4 w-4 me-2" />
+                      {t("dashboard")}
+                    </DropdownMenuItem>
                   </DropdownMenuGroup>
 
                   <DropdownMenuSeparator className="my-1.5 opacity-50" />

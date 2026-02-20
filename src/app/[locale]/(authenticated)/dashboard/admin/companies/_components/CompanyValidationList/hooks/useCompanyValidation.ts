@@ -1,12 +1,19 @@
 "use client"
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
 import type { CompanyListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/types"
+import { useDebounce, useInfiniteScroll } from "@/hooks"
 import type { CompanyStatus } from "@/lib/schemas/enums"
 import { orpc, orpcClient } from "@/server/orpc/client"
+
+const PAGE_SIZE = 20
 
 export function useCompanyValidation() {
   const t = useTranslations("dashboard.admin.companies")
@@ -14,23 +21,63 @@ export function useCompanyValidation() {
   const [statusFilter, setStatusFilter] = useState<CompanyStatus | "all">(
     "pending",
   )
+  const [search, setSearch] = useState("")
+  const debouncedSearch = useDebounce(search, 300)
 
-  const queryOptions = useMemo(
-    () =>
-      orpc.companies.list.queryOptions({
-        input: statusFilter === "all" ? {} : { status: statusFilter },
-      }),
-    [statusFilter],
+  const listInput = useMemo<{ status?: CompanyStatus; search?: string }>(
+    () => ({
+      ...(statusFilter === "all" ? {} : { status: statusFilter }),
+      ...(debouncedSearch.trim() ? { search: debouncedSearch.trim() } : {}),
+    }),
+    [statusFilter, debouncedSearch],
   )
 
-  const { data, isLoading } = useQuery(queryOptions)
+  const queryKey = useMemo(
+    () => orpc.companies.list.queryOptions({ input: listInput }).queryKey,
+    [listInput],
+  )
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey,
+      queryFn: async ({ pageParam }) =>
+        orpcClient.companies.list({
+          ...listInput,
+          limit: PAGE_SIZE,
+          offset: pageParam as number,
+        }),
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, pages) => {
+        if (!lastPage.hasMore) {
+          return undefined
+        }
+
+        return pages.reduce(
+          (nextOffset, page) => nextOffset + page.companies.length,
+          0,
+        )
+      },
+    })
+
+  const companies = useMemo(
+    () => (data?.pages.flatMap((page) => page.companies) ?? []) as CompanyListItem[],
+    [data],
+  )
+
+  const sentinelRef = useInfiniteScroll(
+    () => {
+      void fetchNextPage()
+    },
+    hasNextPage,
+    isFetchingNextPage,
+  )
 
   const approveMutation = useMutation({
     mutationFn: (companyId: string) =>
       orpcClient.companies.approve({ companyId }),
     onSuccess: () => {
       toast.success(t("approveSuccess"))
-      queryClient.invalidateQueries({ queryKey: queryOptions.queryKey })
+      queryClient.invalidateQueries({ queryKey })
     },
     onError: () => {
       toast.error(t("approveError"))
@@ -47,7 +94,7 @@ export function useCompanyValidation() {
     }) => orpcClient.companies.reject({ companyId, reason }),
     onSuccess: () => {
       toast.success(t("rejectSuccess"))
-      queryClient.invalidateQueries({ queryKey: queryOptions.queryKey })
+      queryClient.invalidateQueries({ queryKey })
     },
     onError: () => {
       toast.error(t("rejectError"))
@@ -59,7 +106,7 @@ export function useCompanyValidation() {
       orpcClient.companies.suspend({ companyId }),
     onSuccess: () => {
       toast.success(t("suspendSuccess"))
-      queryClient.invalidateQueries({ queryKey: queryOptions.queryKey })
+      queryClient.invalidateQueries({ queryKey })
     },
     onError: () => {
       toast.error(t("suspendError"))
@@ -71,7 +118,7 @@ export function useCompanyValidation() {
       orpcClient.companies.reactivate({ companyId }),
     onSuccess: () => {
       toast.success(t("reactivateSuccess"))
-      queryClient.invalidateQueries({ queryKey: queryOptions.queryKey })
+      queryClient.invalidateQueries({ queryKey })
     },
     onError: () => {
       toast.error(t("reactivateError"))
@@ -79,11 +126,15 @@ export function useCompanyValidation() {
   })
 
   return {
-    companies: (data?.companies ?? []) as CompanyListItem[],
-    hasMore: data?.hasMore ?? false,
+    companies,
+    hasMore: hasNextPage ?? false,
     isLoading,
+    isFetchingNextPage,
+    sentinelRef,
     statusFilter,
     setStatusFilter,
+    search,
+    setSearch,
     approveCompany: approveMutation.mutate,
     isApproving: approveMutation.isPending,
     rejectCompany: rejectMutation.mutate,

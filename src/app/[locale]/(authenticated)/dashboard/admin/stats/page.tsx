@@ -5,7 +5,7 @@ export default async function AdminStatsPage() {
   await requireRole(["super_admin"])
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       <AdminStatsView />
     </div>
   )

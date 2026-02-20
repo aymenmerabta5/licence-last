@@ -60,48 +60,51 @@ export function UserRow({
   const hasAdminOnlyActions = canViewDetails || canSetRole || canSetPassword
 
   return (
-    <TableRow>
-      <TableCell>
+    <TableRow className="group hover:bg-primary/[0.02] border-b border-border/50 transition-colors">
+      <TableCell className="py-4">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground shrink-0">
+          <div className="h-9 w-9 bg-accent/50 border border-border/50 flex items-center justify-center text-xs font-semibold text-foreground shrink-0 rounded-sm">
             {(user.name?.[0] ?? user.email[0]).toUpperCase()}
           </div>
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-heading truncate">
+          <div className="min-w-0 flex flex-col justify-center">
+            <p className="text-[13px] font-medium text-foreground truncate leading-none mb-1.5 group-hover:text-primary transition-colors">
               {user.name || "—"}
             </p>
-            <p className="text-xs text-muted-foreground truncate">
+            <p className="text-[11px] text-muted-foreground truncate leading-none">
               {user.email}
             </p>
           </div>
         </div>
       </TableCell>
-      <TableCell>
+      <TableCell className="py-4">
         <Badge
           variant={roleBadgeVariant[user.role ?? ""] ?? "outline"}
-          className="text-[10px]"
+          className="text-[9px] uppercase tracking-wider font-semibold rounded-sm px-2 py-0.5"
         >
           {t(`roles.${user.role ?? "student"}`)}
         </Badge>
       </TableCell>
-      <TableCell>
+      <TableCell className="py-4">
         {user.banned ? (
-          <Badge variant="destructive" className="text-[10px]">
+          <Badge
+            variant="destructive"
+            className="text-[9px] uppercase tracking-wider font-semibold rounded-sm px-2 py-0.5"
+          >
             {t("status.banned")}
           </Badge>
         ) : (
           <Badge
             variant="outline"
-            className="text-[10px] text-emerald-600 border-emerald-200"
+            className="text-[9px] uppercase tracking-wider font-semibold rounded-sm px-2 py-0.5 text-emerald-600 border-emerald-200 bg-emerald-50 dark:bg-emerald-950/20"
           >
             {t("status.active")}
           </Badge>
         )}
       </TableCell>
-      <TableCell className="text-xs text-muted-foreground">
+      <TableCell className="py-4 text-[11px] text-muted-foreground font-medium">
         {new Date(user.createdAt).toLocaleDateString()}
       </TableCell>
-      <TableCell>
+      <TableCell className="py-4">
         <DropdownMenu>
           <DropdownMenuTrigger
             render={<Button variant="ghost" size="icon" className="h-8 w-8" />}

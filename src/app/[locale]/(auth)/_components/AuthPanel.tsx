@@ -26,7 +26,7 @@ function DotSeparator({
         className="h-px bg-current opacity-15"
         style={{ width: lineWidth }}
       />
-      <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+      <span className="h-1.5 w-1.5 rotate-45 bg-primary" />
       <span
         className="h-px bg-current opacity-15"
         style={{ width: lineWidth }}
@@ -40,29 +40,18 @@ export function AuthPanel() {
   const t = useTranslations("auth.panel")
 
   return (
-    <div className="relative flex h-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-accent via-accent to-muted text-accent-foreground transition-colors duration-500 dark:from-accent dark:via-accent dark:to-card">
-      {/* Ambient print-glow + vignette (dark mode only) */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100"
-        aria-hidden="true"
-      >
-        <div className="absolute -top-24 -start-24 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
-        <div className="absolute -bottom-32 start-1/2 h-[26rem] w-[26rem] -translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/20" />
+    <div className="relative flex h-full flex-col items-center justify-center overflow-hidden bg-sidebar text-sidebar-foreground border-e border-border/50 transition-colors duration-500">
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        {/* Subtle texture base without glowing spheres */}
+        <div className="absolute inset-0 bg-primary/[0.02]" />
       </div>
-
-      {/* Panel edge definition (helps against bg-background in dark mode) */}
-      <div
-        className="pointer-events-none absolute inset-0 ring-1 ring-border/30 dark:ring-border/60"
-        aria-hidden="true"
-      />
 
       <Link
         href="/"
         aria-label={t("backHomeAria")}
-        className="absolute top-5 start-5 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/40 bg-background/50 text-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-background/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:bg-background/20 dark:hover:bg-background/30"
+        className="absolute top-6 start-6 z-20 inline-flex h-10 w-10 items-center justify-center border border-border/60 bg-background text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-        <ArrowLeft className="h-4 w-4" />
+        <ArrowLeft className="h-4 w-4 in-[[dir=rtl]]:rotate-180" />
       </Link>
 
       {/* Content */}
@@ -71,7 +60,7 @@ export function AuthPanel() {
         <motion.span
           {...reveal}
           transition={{ duration: 0.7, ease, delay: 0.1 }}
-          className="mb-14 inline-flex items-center gap-2 rounded-full border border-border/40 bg-background/30 px-4 py-2 text-[10px] font-light uppercase tracking-[0.35em] text-muted-foreground backdrop-blur-sm [[dir=rtl]_&]:tracking-normal"
+          className="mb-14 inline-flex items-center gap-2 border border-border/60 bg-background px-4 py-2 text-[10px] font-medium uppercase tracking-[0.25em] text-foreground in-[[dir=rtl]]:tracking-normal"
         >
           {t("volume")}
         </motion.span>

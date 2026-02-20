@@ -8,6 +8,7 @@ import { company } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { placement, placementDocument } from "@/server/db/schema/placements"
 import { logger } from "@/server/logging"
+import { DocumentServiceError } from "@/server/services/documents/errors"
 import { generateCertificate } from "@/server/services/documents/generate-certificate"
 import { sendCertificateEmail } from "@/server/services/documents/send-certificate-email"
 import { createNotification } from "@/server/services/notifications/create"
@@ -62,15 +63,21 @@ export async function generateCertificateByCompany(
     .limit(1)
 
   if (!placementRow) {
-    throw new Error("Placement not found")
+    throw new DocumentServiceError("PLACEMENT_NOT_FOUND", "Placement not found")
   }
 
   if (placementRow.companyId !== companyId) {
-    throw new Error("You do not have access to this placement")
+    throw new DocumentServiceError(
+      "PLACEMENT_FORBIDDEN",
+      "You do not have access to this placement",
+    )
   }
 
   if (placementRow.applicationStatus !== "admin_validated") {
-    throw new Error("Only validated placements can receive certificates")
+    throw new DocumentServiceError(
+      "PLACEMENT_NOT_VALIDATED",
+      "Only validated placements can receive certificates",
+    )
   }
 
   const result = await generateCertificate({
@@ -79,7 +86,10 @@ export async function generateCertificateByCompany(
   })
 
   if (!result.buffer) {
-    throw new Error("Failed to generate certificate")
+    throw new DocumentServiceError(
+      "DOCUMENT_GENERATION_FAILED",
+      "Failed to generate certificate",
+    )
   }
 
   const [doc] = await db
@@ -98,7 +108,10 @@ export async function generateCertificateByCompany(
     .limit(1)
 
   if (!doc) {
-    throw new Error("Certificate document not found")
+    throw new DocumentServiceError(
+      "DOCUMENT_RECORD_NOT_FOUND",
+      "Certificate document not found",
+    )
   }
 
   await db

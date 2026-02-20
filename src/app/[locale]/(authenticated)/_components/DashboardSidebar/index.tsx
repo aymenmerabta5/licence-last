@@ -14,23 +14,32 @@ export function DashboardSidebar({ role = "student" }: { role?: string }) {
   return (
     <motion.aside
       initial={false}
-      animate={{ width: isCollapsed ? 80 : 280 }}
+      animate={{ width: isCollapsed ? 80 : 260 }}
       className={cn(
-        "relative sticky top-0 h-screen flex flex-col border-e border-border/50 bg-background transition-colors duration-500",
+        "relative sticky top-0 h-screen flex flex-col bg-background transition-all duration-500 ease-in-out",
         "z-30",
       )}
     >
+      {/* Editorial column rule — sidebar separator */}
+      <div className="absolute top-0 end-0 bottom-0 w-px bg-border" />
+
       <SidebarHeader isCollapsed={isCollapsed} />
-      <SidebarNav
-        items={filteredItems}
-        pathname={pathname}
-        isCollapsed={isCollapsed}
-      />
-      <SidebarFooter
-        isCollapsed={isCollapsed}
-        onToggle={() => setIsCollapsed(!isCollapsed)}
-        onLogout={logout}
-      />
+
+      <div className="flex-1 py-4 overflow-y-auto custom-scrollbar relative z-10">
+        <SidebarNav
+          items={filteredItems}
+          pathname={pathname}
+          isCollapsed={isCollapsed}
+        />
+      </div>
+
+      <div className="mb-6 relative z-10">
+        <SidebarFooter
+          isCollapsed={isCollapsed}
+          onToggle={() => setIsCollapsed(!isCollapsed)}
+          onLogout={logout}
+        />
+      </div>
     </motion.aside>
   )
 }

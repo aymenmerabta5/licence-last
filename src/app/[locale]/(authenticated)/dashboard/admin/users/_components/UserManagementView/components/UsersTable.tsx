@@ -58,15 +58,23 @@ export function UsersTable({
 
   return (
     <div className="space-y-4">
-      <div className="border border-border/60 bg-white dark:bg-card overflow-hidden">
+      <div className="bg-background border border-border/80 shadow-[4px_4px_0_0_oklch(var(--border))]">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>{t("table.user")}</TableHead>
-              <TableHead>{t("table.role")}</TableHead>
-              <TableHead>{t("table.status")}</TableHead>
-              <TableHead>{t("table.created")}</TableHead>
-              <TableHead className="w-[50px]" />
+            <TableRow className="hover:bg-transparent border-b-border/80">
+              <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
+                {t("table.user")}
+              </TableHead>
+              <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
+                {t("table.role")}
+              </TableHead>
+              <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
+                {t("table.status")}
+              </TableHead>
+              <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
+                {t("table.created")}
+              </TableHead>
+              <TableHead className="w-[50px] h-12" />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -100,7 +108,7 @@ export function UsersTable({
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <div className="flex items-center justify-between text-[11px] uppercase tracking-wider text-muted-foreground font-medium pt-2">
           <span>
             {t("pagination.showing", {
               from: page * 20 + 1,

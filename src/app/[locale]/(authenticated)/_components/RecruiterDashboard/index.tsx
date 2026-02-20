@@ -34,14 +34,17 @@ export function RecruiterDashboard({ user }: RecruiterDashboardProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-5 w-5 animate-spin text-primary" />
+      <div className="flex items-center justify-center py-20 min-h-[50vh]">
+        <div className="relative">
+          <Loader2 className="h-10 w-10 animate-spin text-primary" />
+          <div className="absolute inset-0 border-2 border-foreground animate-ping opacity-20" />
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       <RecruiterHero activeOffers={activeOffers} trustData={trustData} />
 
       <OffersPulse
@@ -52,13 +55,13 @@ export function RecruiterDashboard({ user }: RecruiterDashboardProps) {
         closedOffers={closedOffers}
       />
 
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 relative">
         <div className="lg:col-span-7 space-y-10">
           <RecentOffers offers={recentOffers} />
-          <TrustGauge trustData={trustData} isLoading={isTrustLoading} />
         </div>
 
-        <div className="lg:col-span-5">
+        <div className="lg:col-span-5 space-y-10">
+          <TrustGauge trustData={trustData} isLoading={isTrustLoading} />
           <RecruiterQuickActions />
         </div>
       </div>

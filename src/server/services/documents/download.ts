@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm"
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { placement, placementDocument } from "@/server/db/schema/placements"
+import { DocumentServiceError } from "@/server/services/documents/errors"
 import { generateAgreement } from "@/server/services/documents/generate-agreement"
 import { generateCertificate } from "@/server/services/documents/generate-certificate"
 
@@ -36,11 +37,14 @@ export async function downloadDocument(
     .limit(1)
 
   if (!row) {
-    throw new Error("Document not found")
+    throw new DocumentServiceError("DOCUMENT_NOT_FOUND", "Document not found")
   }
 
   if (row.studentUserId !== input.studentUserId) {
-    throw new Error("You do not have access to this document")
+    throw new DocumentServiceError(
+      "DOCUMENT_FORBIDDEN",
+      "You do not have access to this document",
+    )
   }
 
   if (row.documentType === "agreement") {
@@ -50,7 +54,10 @@ export async function downloadDocument(
     })
 
     if (!result.buffer) {
-      throw new Error("Failed to generate agreement")
+      throw new DocumentServiceError(
+        "DOCUMENT_GENERATION_FAILED",
+        "Failed to generate agreement",
+      )
     }
 
     return {
@@ -67,7 +74,10 @@ export async function downloadDocument(
     })
 
     if (!result.buffer) {
-      throw new Error("Failed to generate certificate")
+      throw new DocumentServiceError(
+        "DOCUMENT_GENERATION_FAILED",
+        "Failed to generate certificate",
+      )
     }
 
     return {
@@ -77,5 +87,8 @@ export async function downloadDocument(
     }
   }
 
-  throw new Error("Unsupported document type")
+  throw new DocumentServiceError(
+    "DOCUMENT_UNSUPPORTED_TYPE",
+    "Unsupported document type",
+  )
 }

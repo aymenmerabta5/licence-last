@@ -14,8 +14,12 @@ export function UniversityValidationList() {
   const {
     universities,
     isLoading,
+    isFetchingNextPage,
+    sentinelRef,
     statusFilter,
     setStatusFilter,
+    search,
+    setSearch,
     approveUniversity,
     isApproving,
     rejectUniversity,
@@ -51,17 +55,21 @@ export function UniversityValidationList() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-10 pb-20">
+    <div className="max-w-7xl mx-auto pb-20 px-4 md:px-0 space-y-10">
       <UniversityValidationHeader total={universities.length} />
 
       <UniversityStatusFilter
         statusFilter={statusFilter}
         onStatusChange={setStatusFilter}
+        search={search}
+        onSearchChange={setSearch}
       />
 
       <UniversityValidationContent
         universities={universities}
         isLoading={isLoading}
+        isFetchingNextPage={isFetchingNextPage}
+        sentinelRef={sentinelRef}
         onApprove={approveUniversity}
         onReject={state.handleRejectClick}
         onEdit={state.handleEditClick}

@@ -31,17 +31,17 @@ export function UserDropdown({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-2.5 px-2 py-1.5 rounded-full hover:bg-secondary/80 transition-all outline-none group">
-        <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[13px] shrink-0 group-hover:bg-primary group-hover:text-white transition-all ring-2 ring-transparent group-hover:ring-primary/20">
-          {user.name?.charAt(0) || "U"}
-        </div>
-        <div className="hidden sm:block text-start pe-1">
-          <p className="text-xs font-bold leading-none text-heading">
+      <DropdownMenuTrigger className="flex items-center gap-3 transition-all outline-none group">
+        <div className="hidden sm:flex flex-col items-end">
+          <p className="text-sm font-serif text-heading group-hover:text-primary transition-colors">
             {user.name || "User Name"}
           </p>
-          <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider font-medium">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans">
             {user.role || "Student"}
           </p>
+        </div>
+        <div className="h-10 w-10 border border-border/20 flex items-center justify-center text-heading font-serif text-lg group-hover:border-primary/50 transition-colors bg-background">
+          {user.name?.charAt(0) || "U"}
         </div>
       </DropdownMenuTrigger>
 

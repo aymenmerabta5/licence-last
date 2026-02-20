@@ -61,13 +61,10 @@ export function DashboardClientProvider({
         </div>
 
         {/* Main content area */}
-        <div className="flex-1 flex flex-col min-w-0 min-h-screen relative overflow-hidden">
-          {/* Subtle background glow — dark mode only */}
-          <div className="absolute top-0 end-0 w-[500px] h-[500px] bg-primary/3 blur-[120px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2 opacity-0 dark:opacity-100" />
-
+        <div className="flex-1 flex flex-col min-w-0 min-h-screen relative overflow-hidden bg-background">
           <DashboardNavbar user={user} />
 
-          <main className="flex-1 p-4 sm:p-6 lg:p-10 lg:pt-8 overflow-y-auto w-full max-h-[calc(100vh-80px)] scroll-smooth custom-scrollbar">
+          <main className="flex-1 px-4 py-8 sm:px-8 lg:px-12 lg:py-10 overflow-y-auto w-full max-h-[calc(100vh-96px)] scroll-smooth custom-scrollbar">
             <div className="max-w-7xl mx-auto w-full pb-10">{children}</div>
           </main>
         </div>

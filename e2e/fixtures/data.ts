@@ -1,4 +1,7 @@
 import { randomUUID } from "node:crypto"
+import { existsSync, readFileSync } from "node:fs"
+import { join } from "node:path"
+import postgres from "postgres"
 
 // Generate a unique timestamp-based suffix for test data uniqueness
 function generateUniqueSuffix(): string {
@@ -276,3 +279,250 @@ export const TEST_SKILLS = [
   "AWS",
   "Figma",
 ] as const
+
+type E2EApplicationStatus =
+  | "applied"
+  | "company_accepted"
+  | "company_refused"
+  | "admin_validated"
+  | "admin_rejected"
+  | "withdrawn"
+
+type E2EPipelineStage =
+  | "applied"
+  | "screening"
+  | "interview"
+  | "offer"
+  | "accepted"
+  | "rejected"
+
+interface SeededPrincipalIds {
+  studentUserId: string
+  companyUserId: string
+  adminUserId: string
+  companyId: string
+}
+
+export interface SeededOfferFixture extends SeededPrincipalIds {
+  offerId: string
+  offerTitle: string
+  searchToken: string
+}
+
+export interface SeededApplicationFixture extends SeededOfferFixture {
+  applicationId: string
+  status: E2EApplicationStatus
+  pipelineStage: E2EPipelineStage
+}
+
+interface SeedOfferFixtureOptions {
+  titlePrefix?: string
+}
+
+interface SeedApplicationFixtureOptions extends SeedOfferFixtureOptions {
+  status?: E2EApplicationStatus
+  pipelineStage?: E2EPipelineStage
+  includeCompanyAction?: boolean
+  coverLetter?: string
+}
+
+function loadDatabaseUrlFromEnvFile(): string | undefined {
+  const envPath = join(process.cwd(), ".env.development")
+  if (!existsSync(envPath)) {
+    return undefined
+  }
+
+  const envLines = readFileSync(envPath, "utf8").split(/\r?\n/)
+  const databaseLine = envLines.find((line) => line.startsWith("DATABASE_URL="))
+  if (!databaseLine) {
+    return undefined
+  }
+
+  const rawValue = databaseLine.slice("DATABASE_URL=".length).trim()
+  return rawValue.replace(/^['"]|['"]$/g, "")
+}
+
+function resolveDatabaseUrl(): string {
+  const databaseUrl = process.env.DATABASE_URL ?? loadDatabaseUrlFromEnvFile()
+
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL is required for E2E fixture seeding")
+  }
+
+  return databaseUrl
+}
+
+async function withE2EDatabase<T>(
+  run: (sql: ReturnType<typeof postgres>) => Promise<T>,
+): Promise<T> {
+  const sql = postgres(resolveDatabaseUrl(), { max: 1 })
+
+  try {
+    return await run(sql)
+  } finally {
+    await sql.end({ timeout: 5 })
+  }
+}
+
+function createFixtureToken(): string {
+  return `e2e-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
+}
+
+async function getSeededPrincipalIds(
+  sql: ReturnType<typeof postgres>,
+): Promise<SeededPrincipalIds> {
+  const [student] = await sql<{ id: string }[]>`
+    SELECT id
+    FROM "user"
+    WHERE email = ${TEST_CREDENTIALS.student.email}
+    LIMIT 1
+  `
+
+  const [companyUser] = await sql<{ id: string }[]>`
+    SELECT id
+    FROM "user"
+    WHERE email = ${TEST_CREDENTIALS.company.email}
+    LIMIT 1
+  `
+
+  const [adminUser] = await sql<{ id: string }[]>`
+    SELECT id
+    FROM "user"
+    WHERE email = ${TEST_CREDENTIALS.admin.email}
+    LIMIT 1
+  `
+
+  if (!student || !companyUser || !adminUser) {
+    throw new Error("Seeded E2E users are missing. Run Playwright global setup.")
+  }
+
+  const [membership] = await sql<{ company_id: string }[]>`
+    SELECT company_id
+    FROM company_member
+    WHERE user_id = ${companyUser.id}
+    LIMIT 1
+  `
+
+  if (!membership) {
+    throw new Error("Seeded company membership is missing for E2E company user.")
+  }
+
+  return {
+    studentUserId: student.id,
+    companyUserId: companyUser.id,
+    adminUserId: adminUser.id,
+    companyId: membership.company_id,
+  }
+}
+
+export async function seedOfferFixture(
+  options: SeedOfferFixtureOptions = {},
+): Promise<SeededOfferFixture> {
+  return withE2EDatabase(async (sql) => {
+    const principals = await getSeededPrincipalIds(sql)
+    const searchToken = createFixtureToken()
+    const offerId = generateId()
+    const offerTitle = `${options.titlePrefix ?? "E2E Internship Offer"} ${searchToken}`
+    const now = new Date()
+    const applicationDeadline = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000)
+    const expectedStartDate = new Date(now.getTime() + 21 * 24 * 60 * 60 * 1000)
+    const expectedEndDate = new Date(now.getTime() + 120 * 24 * 60 * 60 * 1000)
+
+    await sql`
+      INSERT INTO internship_offer (
+        id,
+        company_id,
+        title,
+        description,
+        internship_type,
+        work_mode,
+        wilaya_code,
+        duration_weeks,
+        max_positions,
+        status,
+        published_at,
+        application_deadline_at,
+        expected_start_date,
+        expected_end_date,
+        created_at,
+        updated_at
+      ) VALUES (
+        ${offerId},
+        ${principals.companyId},
+        ${offerTitle},
+        ${`Deterministic E2E offer for ${searchToken}.`},
+        ${"pfe"},
+        ${"hybrid"},
+        ${16},
+        ${24},
+        ${2},
+        ${"published"},
+        ${now},
+        ${applicationDeadline},
+        ${expectedStartDate},
+        ${expectedEndDate},
+        ${now},
+        ${now}
+      )
+    `
+
+    return {
+      ...principals,
+      offerId,
+      offerTitle,
+      searchToken,
+    }
+  })
+}
+
+export async function seedApplicationFixture(
+  options: SeedApplicationFixtureOptions = {},
+): Promise<SeededApplicationFixture> {
+  const status = options.status ?? "applied"
+  const pipelineStage =
+    options.pipelineStage ??
+    (status === "company_accepted" ? "offer" : "applied")
+  const offerFixture = await seedOfferFixture({ titlePrefix: options.titlePrefix })
+
+  return withE2EDatabase(async (sql) => {
+    const now = new Date()
+    const applicationId = generateId()
+    const includeCompanyAction =
+      options.includeCompanyAction ?? status === "company_accepted"
+
+    await sql`
+      INSERT INTO application (
+        id,
+        offer_id,
+        student_user_id,
+        status,
+        pipeline_stage,
+        cover_letter,
+        company_action_by_user_id,
+        company_action_at,
+        created_at,
+        pipeline_stage_updated_at,
+        updated_at
+      ) VALUES (
+        ${applicationId},
+        ${offerFixture.offerId},
+        ${offerFixture.studentUserId},
+        ${status},
+        ${pipelineStage},
+        ${options.coverLetter ?? `Deterministic E2E application for ${offerFixture.searchToken}.`},
+        ${includeCompanyAction ? offerFixture.companyUserId : null},
+        ${includeCompanyAction ? now : null},
+        ${now},
+        ${now},
+        ${now}
+      )
+    `
+
+    return {
+      ...offerFixture,
+      applicationId,
+      status,
+      pipelineStage,
+    }
+  })
+}

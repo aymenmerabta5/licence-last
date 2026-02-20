@@ -34,53 +34,71 @@ interface SettingsTabsProps {
 export function SettingsTabs({ activeTab, onTabChange }: SettingsTabsProps) {
   return (
     <nav className="lg:col-span-3" aria-label="Settings sections">
-      <div className="lg:sticky lg:top-24 space-y-1">
-        {TABS.map((tab) => {
-          const Icon = tab.icon
-          const isActive = activeTab === tab.id
-          return (
-            <button
-              key={tab.id}
-              onClick={() => onTabChange(tab.id)}
-              aria-current={isActive ? "page" : undefined}
-              className={cn(
-                "group relative w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-start transition-all duration-300",
-                !isActive && "hover:bg-secondary/30",
-              )}
-            >
-              <span
+      <div className="lg:sticky lg:top-24 space-y-1.5">
+        <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 px-5 mb-4">
+          Navigation Directory
+        </h3>
+
+        <div className="space-y-1 relative before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-border/30">
+          {TABS.map((tab) => {
+            const Icon = tab.icon
+            const isActive = activeTab === tab.id
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => onTabChange(tab.id)}
+                aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-300",
+                  "group relative w-full flex items-center gap-4 px-5 py-4 text-start transition-all duration-500 ease-out",
                   isActive
-                    ? "bg-primary text-white shadow-md shadow-primary/25"
-                    : "bg-secondary/40 text-muted-foreground group-hover:bg-secondary/60 group-hover:text-foreground",
+                    ? "bg-primary/[0.03] dark:bg-primary/[0.08]"
+                    : "hover:bg-secondary/40",
                 )}
               >
-                <Icon className="h-4 w-4" />
-              </span>
+                {isActive && (
+                  <div className="absolute left-0 inset-y-0 w-0.5 bg-primary rounded-r-full shadow-[0_0_8px_var(--color-primary)]" />
+                )}
 
-              <div className="min-w-0">
                 <span
                   className={cn(
-                    "block text-sm font-bold leading-tight transition-colors",
+                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-all duration-500",
                     isActive
-                      ? "text-heading"
-                      : "text-muted-foreground group-hover:text-foreground",
+                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 scale-110"
+                      : "bg-secondary text-muted-foreground group-hover:bg-secondary/80 group-hover:text-foreground group-hover:scale-105 group-active:scale-95",
                   )}
                 >
-                  {tab.label}
+                  <Icon
+                    className={cn("h-4 w-4", isActive && "stroke-[2.5px]")}
+                  />
                 </span>
-                <span className="block text-[11px] text-muted-foreground/60 leading-tight mt-0.5 truncate">
-                  {tab.hint}
-                </span>
-              </div>
-            </button>
-          )
-        })}
 
-        {/* Decorative rule */}
-        <div className="pt-3">
-          <div className="h-px bg-gradient-to-e from-border/40 to-transparent" />
+                <div className="min-w-0 flex-1">
+                  <span
+                    className={cn(
+                      "block text-sm font-bold tracking-wide transition-colors duration-300",
+                      isActive
+                        ? "text-primary"
+                        : "text-heading group-hover:text-foreground",
+                    )}
+                  >
+                    {tab.label}
+                  </span>
+                  <span className="block text-xs text-muted-foreground/60 leading-relaxed mt-0.5 truncate font-medium">
+                    {tab.hint}
+                  </span>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Decorative elements */}
+        <div className="pt-6 px-5 hidden lg:block">
+          <div className="h-px bg-gradient-to-r from-border/50 to-transparent mb-4" />
+          <p className="text-[9px] uppercase tracking-[0.2em] font-mono text-muted-foreground/40">
+            System Nav. Active
+          </p>
         </div>
       </div>
     </nav>

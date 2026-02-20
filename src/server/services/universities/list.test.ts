@@ -1,38 +1,47 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockChain: any = {
-  select: mock(() => mockChain),
-  from: mock(() => mockChain),
-  where: mock(() => Promise.resolve([])),
-  orderBy: mock(() => mockChain),
-  limit: mock(() => mockChain),
-  offset: mock(() => mockChain),
-}
+let queryResult: any[] = []
 
-mock.module("@/server/db", () => ({ db: mockChain }))
+const mockWhere = mock(() => Promise.resolve(queryResult))
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockOffset = mock((): any => Promise.resolve(queryResult))
+const mockLimit = mock(() => ({ offset: mockOffset }))
+const mockOrderBy = mock(() => ({ limit: mockLimit }))
+const mockFrom = mock(() => ({ orderBy: mockOrderBy }))
+const mockSelect = mock(() => ({ from: mockFrom }))
 
-describe("listUniversities", () => {
+mock.module("@/server/db", () => ({
+  db: {
+    select: mockSelect,
+  },
+}))
+
+describe("src/server/services/universities/list", () => {
   beforeEach(() => {
-    for (const fn of Object.values(mockChain))
-      (fn as ReturnType<typeof mock>).mockClear()
-    mockChain.select.mockReturnValue(mockChain)
-    mockChain.from.mockReturnValue(mockChain)
-    mockChain.orderBy.mockReturnValue(mockChain)
-    mockChain.limit.mockReturnValue(mockChain)
-    mockChain.offset.mockReturnValue(mockChain)
+    queryResult = []
+    mockSelect.mockClear()
+    mockFrom.mockClear()
+    mockOrderBy.mockClear()
+    mockLimit.mockClear()
+    mockOffset.mockClear()
+    mockWhere.mockClear()
+
+    mockSelect.mockReturnValue({ from: mockFrom })
+    mockFrom.mockReturnValue({ orderBy: mockOrderBy })
+    mockOrderBy.mockReturnValue({ limit: mockLimit })
+    mockLimit.mockReturnValue({ offset: mockOffset })
+    mockOffset.mockImplementation(() => Promise.resolve(queryResult))
+    mockWhere.mockImplementation(() => Promise.resolve(queryResult))
   })
 
   test("should return universities with default pagination", async () => {
-    const unis = [{ id: "uni-1", name: "Uni A" }]
-    mockChain.where.mockResolvedValue(unis)
-    // When no status filter, the chain resolves without where
-    // The query builder is: select().from().orderBy().limit().offset() → then .where or direct await
-    // Let's mock the final call (offset returns a thenable)
-    mockChain.offset.mockResolvedValue(unis)
+    queryResult = [{ id: "uni-1", name: "Uni A" }]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockOffset.mockResolvedValue(queryResult as any)
 
     const { listUniversities } = await import(
-      "@/server/services/universities/list"
+      "@/server/services/universities/list?fresh=1" as string
     )
     const result = await listUniversities()
 
@@ -41,16 +50,16 @@ describe("listUniversities", () => {
   })
 
   test("should detect hasMore when more rows than limit", async () => {
-    // Create 3 items, request limit=2 (internally fetches limit+1=3)
-    const unis = [
+    queryResult = [
       { id: "uni-1", name: "A" },
       { id: "uni-2", name: "B" },
       { id: "uni-3", name: "C" },
     ]
-    mockChain.offset.mockResolvedValue(unis)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockOffset.mockResolvedValue(queryResult as any)
 
     const { listUniversities } = await import(
-      "@/server/services/universities/list"
+      "@/server/services/universities/list?fresh=2" as string
     )
     const result = await listUniversities({ limit: 2 })
 
@@ -59,27 +68,46 @@ describe("listUniversities", () => {
   })
 
   test("should filter by status when provided", async () => {
-    const unis = [{ id: "uni-1", name: "A", status: "approved" }]
-    mockChain.where.mockResolvedValue(unis)
+    queryResult = [{ id: "uni-1", name: "A", status: "approved" }]
+    mockOffset.mockReturnValue({ where: mockWhere })
 
     const { listUniversities } = await import(
-      "@/server/services/universities/list"
+      "@/server/services/universities/list?fresh=3" as string
     )
     const result = await listUniversities({ status: "approved" })
 
-    expect(mockChain.where).toHaveBeenCalled()
+    expect(mockWhere).toHaveBeenCalled()
+    expect(result.universities).toHaveLength(1)
+  })
+
+  test("should filter by search across name and abbreviation", async () => {
+    queryResult = [
+      {
+        id: "uni-1",
+        name: "University of Science",
+        abbreviation: "USTHB",
+      },
+    ]
+    mockOffset.mockReturnValue({ where: mockWhere })
+
+    const { listUniversities } = await import(
+      "@/server/services/universities/list?fresh=4" as string
+    )
+    const result = await listUniversities({ search: "usth" })
+
+    expect(mockWhere).toHaveBeenCalled()
     expect(result.universities).toHaveLength(1)
   })
 
   test("should cap limit at 200", async () => {
-    mockChain.offset.mockResolvedValue([])
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockOffset.mockResolvedValue([] as any)
 
     const { listUniversities } = await import(
-      "@/server/services/universities/list"
+      "@/server/services/universities/list?fresh=5" as string
     )
     await listUniversities({ limit: 500 })
 
-    // Should use min(500, 200) = 200, then +1 = 201 for hasMore detection
-    expect(mockChain.limit).toHaveBeenCalled()
+    expect(mockLimit).toHaveBeenCalled()
   })
 })

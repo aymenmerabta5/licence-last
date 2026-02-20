@@ -24,7 +24,7 @@ export function UniversityOnboardingForm() {
         e.preventDefault()
         form.handleSubmit()
       }}
-      className="space-y-8"
+      className="space-y-12 lg:space-y-16"
     >
       <FormHeader title={t("title")} subtitle={t("subtitle")} />
       <ServerError message={serverError} />

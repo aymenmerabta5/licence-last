@@ -128,7 +128,8 @@ describe("src/server/services/companies/trust-index computeTrustFactors", () => 
     })
 
     expect(result.factors.reportPenalty).toBe(100)
-    // But actual penalty in score calc is capped at 40
+    // Score path still caps report penalty contribution at 40.
+    expect(result.trustScore).toBe(48)
   })
 
   test("should not penalize resolved reports", async () => {
@@ -175,5 +176,115 @@ describe("src/server/services/companies/trust-index computeTrustFactors", () => 
     // avgRating = 3, recommendRate = 0.5
     // feedbackScore = clamp((3/5)*70 + 0.5*30) = clamp(42 + 15) = 57
     expect(result.factors.feedbackScore).toBe(57)
+  })
+
+  test("should return good tier for healthy but non-perfect performance", async () => {
+    const { computeTrustFactors } = await import(
+      "@/server/services/companies/trust-index"
+    )
+
+    const result = computeTrustFactors({
+      companyId: "company-7",
+      totalApplications: 100,
+      respondedApplications: 70,
+      acceptedApplications: 50,
+      validatedApplications: 30,
+      feedback: [{ rating: 4, wouldRecommend: true }],
+      reports: [],
+      hasOffers: true,
+    })
+
+    expect(result.trustScore).toBe(75)
+    expect(result.tier).toBe("good")
+    expect(result.alerts).toEqual([])
+  })
+
+  test("should return watch tier for mediocre outcomes", async () => {
+    const { computeTrustFactors } = await import(
+      "@/server/services/companies/trust-index"
+    )
+
+    const result = computeTrustFactors({
+      companyId: "company-8",
+      totalApplications: 100,
+      respondedApplications: 50,
+      acceptedApplications: 50,
+      validatedApplications: 20,
+      feedback: [
+        { rating: 3, wouldRecommend: true },
+        { rating: 3, wouldRecommend: false },
+      ],
+      reports: [],
+      hasOffers: true,
+    })
+
+    expect(result.trustScore).toBe(54)
+    expect(result.tier).toBe("watch")
+  })
+
+  test("should apply fallback report severity weight for unknown severities", async () => {
+    const { computeTrustFactors } = await import(
+      "@/server/services/companies/trust-index"
+    )
+
+    const result = computeTrustFactors({
+      companyId: "company-9",
+      totalApplications: 10,
+      respondedApplications: 10,
+      acceptedApplications: 5,
+      validatedApplications: 5,
+      feedback: [],
+      reports: [
+        { severity: "mystery", status: "open" },
+        { severity: "medium", status: "reviewing" },
+      ],
+      hasOffers: true,
+    })
+
+    expect(result.factors.reportPenalty).toBe(16)
+    expect(result.trustScore).toBe(72)
+  })
+
+  test("should not flag response-rate alert at exactly 45 percent", async () => {
+    const { computeTrustFactors } = await import(
+      "@/server/services/companies/trust-index"
+    )
+
+    const result = computeTrustFactors({
+      companyId: "company-10",
+      totalApplications: 20,
+      respondedApplications: 9,
+      acceptedApplications: 0,
+      validatedApplications: 0,
+      feedback: [],
+      reports: [],
+      hasOffers: true,
+    })
+
+    expect(result.factors.responseRate).toBe(45)
+    expect(result.alerts).not.toContain(
+      "Response rate is below platform expectations.",
+    )
+  })
+
+  test("should clamp rates to 100 when counts exceed totals", async () => {
+    const { computeTrustFactors } = await import(
+      "@/server/services/companies/trust-index"
+    )
+
+    const result = computeTrustFactors({
+      companyId: "company-11",
+      totalApplications: 10,
+      respondedApplications: 20,
+      acceptedApplications: 5,
+      validatedApplications: 10,
+      feedback: [],
+      reports: [],
+      hasOffers: true,
+    })
+
+    expect(result.factors.responseRate).toBe(100)
+    expect(result.factors.completionRate).toBe(100)
+    expect(result.trustScore).toBe(88)
   })
 })

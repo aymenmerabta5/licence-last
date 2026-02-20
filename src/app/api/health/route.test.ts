@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 
 const pingDatabaseMock = mock(async () => true)
 const isRedisAvailableMock = mock(() => false)
@@ -26,11 +26,25 @@ mock.module("@/server/caching/redis-ratelimiter", () => ({
 }))
 
 describe("src/app/api/health/route", () => {
+  const originalNodeEnv = process.env.NODE_ENV
+  const setNodeEnv = (value: string) => {
+    Object.defineProperty(process.env, "NODE_ENV", {
+      value,
+      writable: true,
+      configurable: true,
+    })
+  }
+
   beforeEach(() => {
+    setNodeEnv("test")
     pingDatabaseMock.mockClear()
     isRedisAvailableMock.mockClear()
     pingRedisMock.mockClear()
     isRateLimitingEnabledMock.mockClear()
+  })
+
+  afterAll(() => {
+    setNodeEnv(originalNodeEnv ?? "test")
   })
 
   test("returns 200 and ok when required dependencies are healthy", async () => {
@@ -84,5 +98,21 @@ describe("src/app/api/health/route", () => {
     expect(response.status).toBe(503)
     expect(body.status).toBe("error")
     expect(body.checks.database.status).toBe("down")
+  })
+
+  test("redacts dependency checks in production responses", async () => {
+    setNodeEnv("production")
+    pingDatabaseMock.mockResolvedValueOnce(true)
+    isRedisAvailableMock.mockReturnValueOnce(true).mockReturnValueOnce(true)
+    pingRedisMock.mockResolvedValueOnce(false)
+    isRateLimitingEnabledMock.mockReturnValueOnce(true)
+
+    const { GET } = await import("@/app/api/health/route")
+    const response = await GET()
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.status).toBe("degraded")
+    expect(body.checks).toBeUndefined()
   })
 })

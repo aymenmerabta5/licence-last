@@ -14,13 +14,14 @@ function SectionDivider({
   label: string
 }) {
   return (
-    <div className="flex items-center gap-3">
-      <div className="h-px flex-1 bg-border/20" />
-      <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 shrink-0">
-        <Icon className="h-3 w-3" />
+    <div className="flex items-center gap-6 py-4">
+      <div className="h-px flex-1 bg-gradient-to-r from-transparent to-border/40" />
+      <span className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.3em] text-primary/60 shrink-0 bg-background/50 backdrop-blur-sm px-4 py-1 rounded-full border border-border/20">
+        <Icon className="h-3.5 w-3.5" />
         {label}
+        <span className="h-1 w-1 rounded-full bg-primary/40 inline-block" />
       </span>
-      <div className="h-px flex-1 bg-border/20" />
+      <div className="h-px flex-1 bg-gradient-to-l from-transparent to-border/40" />
     </div>
   )
 }

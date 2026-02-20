@@ -26,7 +26,7 @@ export function AvatarSection({
   const isBusy = isUploading || isDeleting
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-6">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-8 p-6 sm:p-10 rounded-[2rem] bg-secondary/[0.02] border border-border/20 shadow-inner">
       <input
         ref={inputRef}
         type="file"
@@ -36,21 +36,23 @@ export function AvatarSection({
         aria-label="Upload profile photo"
       />
 
-      <div className="relative group">
-        {/* Avatar ring */}
-        <div className="absolute -inset-1 rounded-[1.25rem] bg-gradient-to-br from-primary/20 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="relative group shrink-0">
+        {/* Editorial glow effect */}
+        <div className="absolute -inset-8 rounded-full bg-[radial-gradient(ellipse_at_center,_var(--color-primary)_0%,transparent_70%)] opacity-0 group-hover:opacity-[0.08] blur-2xl transition-opacity duration-[1500ms]" />
 
-        <div className="relative h-24 w-24 rounded-2xl bg-primary/8 flex items-center justify-center text-primary text-3xl font-serif font-bold overflow-hidden ring-2 ring-border/20 ring-offset-2 ring-offset-background transition-all">
+        <div className="relative h-32 w-32 sm:h-40 sm:w-40 rounded-[2rem] sm:rounded-[2.5rem] bg-background flex items-center justify-center text-primary text-5xl sm:text-6xl font-serif font-bold overflow-hidden shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)] ring-1 ring-border/30 transition-all duration-700 ease-out group-hover:ring-primary/40 group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] -rotate-2 group-hover:rotate-0 scale-95 group-hover:scale-100 dark:shadow-[inset_0_2px_10px_rgba(255,255,255,0.02)]">
           {imageUrl ? (
             <Image
               src={imageUrl}
               alt="Profile"
               fill
-              className="object-cover"
-              sizes="96px"
+              className="object-cover scale-105 group-hover:scale-100 transition-transform duration-700"
+              sizes="(max-width: 640px) 128px, 160px"
             />
           ) : (
-            avatarInitial
+            <span className="bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary/80 to-primary/40">
+              {avatarInitial}
+            </span>
           )}
 
           {/* Hover overlay */}
@@ -58,52 +60,60 @@ export function AvatarSection({
             type="button"
             disabled={isBusy}
             onClick={() => inputRef.current?.click()}
-            className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/40 transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
+            className="absolute inset-0 flex items-center justify-center bg-background/0 group-hover:bg-background/40 backdrop-blur-[0px] group-hover:backdrop-blur-sm transition-all duration-500 cursor-pointer disabled:cursor-not-allowed"
             aria-label="Upload profile photo"
           >
-            <Camera className="h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <Camera className="h-8 w-8 text-primary opacity-0 group-hover:opacity-100 transition-all duration-500 scale-75 group-hover:scale-100 drop-shadow-lg" />
           </button>
         </div>
 
         {/* Upload spinner indicator */}
         {isBusy && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-background/80 backdrop-blur-sm">
-            <Loader2 className="h-5 w-5 animate-spin text-primary" />
+          <div className="absolute inset-0 flex items-center justify-center rounded-[2rem] sm:rounded-[2.5rem] bg-background/80 backdrop-blur-md z-10">
+            <Loader2 className="h-8 w-8 animate-[spin_3s_linear_infinite] text-primary" />
           </div>
         )}
       </div>
 
-      <div className="space-y-2.5 flex flex-col items-start">
+      <div className="space-y-4 flex flex-col items-start border-l-0 sm:border-l-2 border-border/20 sm:ps-8">
         <div>
-          <h4 className="font-bold text-sm">Profile Picture</h4>
-          <p className="text-[11px] text-muted-foreground mt-0.5">
-            JPEG, PNG or WebP &middot; Max 2 MB
+          <h4 className="font-serif text-2xl tracking-tight text-heading">
+            Identity Visual
+          </h4>
+          <p className="text-sm text-muted-foreground/80 mt-1 max-w-xs leading-relaxed font-medium">
+            We recommend a professional headshot. <br />
+            <span className="text-[10px] font-mono tracking-widest uppercase opacity-60 mt-2 block">
+              JPG/PNG/WEBP &middot; 2MB MAX
+            </span>
           </p>
         </div>
-        <Button
-          type="button"
-          variant="editorial-outline"
-          size="editorial-sm"
-          className="h-8 px-3 text-xs gap-1.5 rounded-lg"
-          disabled={isBusy}
-          onClick={() => inputRef.current?.click()}
-        >
-          <ImagePlus className="h-3.5 w-3.5" />
-          Upload Photo
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="editorial-sm"
-          className="h-8 px-3 text-xs gap-1.5 rounded-lg text-destructive hover:text-destructive"
-          disabled={isBusy || !imageUrl}
-          onClick={() => {
-            void onDelete()
-          }}
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-          Remove Photo
-        </Button>
+
+        <div className="flex flex-wrap gap-3 mt-2">
+          <Button
+            type="button"
+            variant="default"
+            size="editorial-sm"
+            className="h-10 px-6 text-xs gap-2 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all"
+            disabled={isBusy}
+            onClick={() => inputRef.current?.click()}
+          >
+            <ImagePlus className="h-4 w-4" />
+            Upload Photo
+          </Button>
+          <Button
+            type="button"
+            variant="editorial-outline"
+            size="editorial-sm"
+            className="h-10 px-5 text-xs gap-2 rounded-xl text-destructive hover:bg-destructive/5 hover:text-destructive hover:border-destructive/30"
+            disabled={isBusy || !imageUrl}
+            onClick={() => {
+              void onDelete()
+            }}
+          >
+            <Trash2 className="h-4 w-4" />
+            Remove
+          </Button>
+        </div>
       </div>
     </div>
   )
