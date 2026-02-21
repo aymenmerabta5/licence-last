@@ -73,13 +73,20 @@ export async function POST(req: Request) {
     apiKey: env.ARCADE_API_KEY,
   })
 
-  const authResponse = await arcade.tools.authorize({
-    tool_name: body.toolName,
-    user_id: session.user.id,
-  })
+  try {
+    const authResponse = await arcade.tools.authorize({
+      tool_name: body.toolName,
+      user_id: session.user.id,
+    })
 
-  return Response.json({
-    status: authResponse.status ?? null,
-    url: authResponse.url ?? null,
-  })
+    return Response.json({
+      status: authResponse.status ?? null,
+      url: authResponse.url ?? null,
+    })
+  } catch {
+    return new Response(
+      "Authorization provider is temporarily unavailable. Please try again.",
+      { status: 502 },
+    )
+  }
 }

@@ -363,6 +363,33 @@ describe("src/app/api/assistant/auth/status/route", () => {
     })
   })
 
+  describe("provider failures", () => {
+    test("authorize failure returns 502 with safe message", async () => {
+      mockAuthorize.mockRejectedValue(
+        new Error("arcade timeout with internal trace"),
+      )
+
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
+
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "gmail.send" }),
+        },
+      )
+
+      const response = await POST(request)
+      expect(response.status).toBe(502)
+      const body = await response.text()
+      expect(body).toBe(
+        "Authorization provider is temporarily unavailable. Please try again.",
+      )
+      expect(body).not.toContain("internal trace")
+    })
+  })
+
   describe("success", () => {
     test("success returns 200 with status and url", async () => {
       mockAuthorize.mockResolvedValue({

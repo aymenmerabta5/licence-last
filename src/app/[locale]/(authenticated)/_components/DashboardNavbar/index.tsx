@@ -82,7 +82,7 @@ export function DashboardNavbar({ user }: { user: NavbarUser }) {
 
         {mounted && (
           <div className="flex items-center gap-4 border-s border-border/30 ps-4 sm:ps-6">
-            <div className="hidden xs:flex items-center gap-3 text-muted-foreground">
+            <div className="hidden sm:flex items-center gap-3 text-muted-foreground">
               <LanguageSwitcher />
               <ThemeToggle />
               <NotificationBell viewerId={user.id} />
