@@ -6,7 +6,7 @@ This file contains project-specific knowledge and patterns for Claude to referen
 
 ## Project Overview
 
-**Internex** — A Next.js 16 + React 19 application connecting companies with university students for internships.
+**Stag** — A Next.js 16 + React 19 application connecting companies with university students for internships.
 
 - **Framework**: Next.js 16 (App Router)
 - **Styling**: Tailwind CSS 4 + shadcn/ui
@@ -626,7 +626,7 @@ Validated via T3 Env (`src/env.ts`). See `.env.example` for defaults.
 **Required:**
 - `DATABASE_URL` — PostgreSQL connection string
 - `BETTER_AUTH_SECRET` — Auth secret (min 32 chars)
-- `NEXT_PUBLIC_BETTER_AUTH_URL` — Public app URL (e.g., `https://internex.example.com`)
+- `NEXT_PUBLIC_BETTER_AUTH_URL` — Public app URL (e.g., `https://stag.example.com`)
 
 **Optional — AI:**
 - `POE_API_KEY`, `POE_MODEL`, `POE_BASE_URL`, `POE_ALLOWED_MODELS` — AI provider

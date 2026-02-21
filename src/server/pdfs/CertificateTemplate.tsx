@@ -224,10 +224,10 @@ export function InternshipCertificateTemplate({
               <Text style={styles.verificationCode}>{verificationCode}</Text>
               <Text style={styles.verificationText}>
                 {locale === "fr"
-                  ? "Vérifiez ce document sur internex.dz/verify"
+                  ? "Vérifiez ce document sur stag.io/verify"
                   : locale === "ar"
-                    ? "تحقق من هذه الوثيقة على internex.dz/verify"
-                    : "Verify this document at internex.dz/verify"}
+                    ? "تحقق من هذه الوثيقة على stag.io/verify"
+                    : "Verify this document at stag.io/verify"}
               </Text>
             </View>
           </View>

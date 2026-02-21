@@ -80,7 +80,7 @@ export default async function CompanyRejectedPage() {
           size="editorial"
           className="w-full sm:w-auto"
           nativeButton={false}
-          render={<a href="mailto:support@internex.io" />}
+          render={<a href="mailto:support@stag.io" />}
         >
           {t("contactSupport")}
         </Button>

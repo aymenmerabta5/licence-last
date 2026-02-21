@@ -57,7 +57,7 @@ jobs:
       contents: read
     needs: lint-and-typecheck
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/internex
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/stag
       BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci!!
       NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
       NEXT_TELEMETRY_DISABLED: "1"
@@ -91,7 +91,7 @@ jobs:
       contents: read
     needs: lint-and-typecheck
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/internex
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/stag
       BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci!!
       NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
       NEXT_TELEMETRY_DISABLED: "1"
@@ -125,7 +125,7 @@ jobs:
       contents: read
     needs: lint-and-typecheck
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/internex
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/stag
       BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci!!
       NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
       NEXT_TELEMETRY_DISABLED: "1"
@@ -159,7 +159,7 @@ jobs:
       contents: read
     needs: lint-and-typecheck
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/internex
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/stag
       BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci!!
       NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
       NEXT_TELEMETRY_DISABLED: "1"
@@ -201,7 +201,7 @@ jobs:
       contents: read
     needs: [test-unit, test-api, test-pages, test-coverage]
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/internex
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/stag
       BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci!!
       NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
       NEXT_TELEMETRY_DISABLED: "1"
@@ -243,7 +243,7 @@ jobs:
       contents: read
     needs: build
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/internex
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/stag
       BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci!!
       NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
       NEXT_TELEMETRY_DISABLED: "1"
@@ -253,7 +253,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: internex
+          POSTGRES_DB: stag
         options: >-
           --health-cmd pg_isready
           --health-interval 10s

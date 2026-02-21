@@ -4,7 +4,6 @@ import {
   Briefcase,
   Calendar,
   Clock,
-  Info,
   MapPin,
   Monitor,
   Users,
@@ -44,15 +43,13 @@ export function DetailsSidebar({ offer }: DetailsSidebarProps) {
     <motion.div
       {...reveal}
       transition={{ duration: 0.5, ease, delay: 0.15 }}
-      className="border border-border bg-muted/30 p-5 space-y-4"
+      className="space-y-6"
     >
-      {/* Section divider header */}
-      <div className="flex items-center gap-2">
-        <Info className="h-3.5 w-3.5 text-muted-foreground/60" />
-        <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">
+      {/* Section divider header style */}
+      <div className="border-b border-border/80 pb-2 mb-4">
+        <h2 className="font-serif text-xl text-heading tracking-tight">
           {t("details")}
-        </span>
-        <div className="h-px flex-1 bg-border/30" />
+        </h2>
       </div>
 
       <dl className="divide-y divide-border/30">

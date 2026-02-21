@@ -39,9 +39,9 @@ export const ASSISTANT_INTENTS = new Set<AssistantIntent>([
 ])
 
 export type AssistantPersona =
-  | "Internex Admin Copilot"
-  | "Internex Student Copilot"
-  | "Internex Company Copilot"
+  | "Stag Admin Copilot"
+  | "Stag Student Copilot"
+  | "Stag Company Copilot"
 
 export interface ChatRequest {
   messages: UIMessage[]

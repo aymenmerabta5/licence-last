@@ -9,7 +9,7 @@ import pino from "pino"
 const loggerConfig: pino.LoggerOptions = {
   level: process.env.LOG_LEVEL ?? "info",
   base: {
-    service: "internex",
+    service: "stag",
     runtime: "nextjs",
     env: process.env.NODE_ENV ?? "development",
   },

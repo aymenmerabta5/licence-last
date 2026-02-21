@@ -25,138 +25,193 @@ export function WelcomeHero({
   const firstName = userName?.split(" ")[0]
   const displayName = firstName ?? t("defaultName")
   const now = new Date()
-  const dateStr = new Intl.DateTimeFormat(locale, {
-    weekday: "long",
+
+  // Format dates cleanly for the editorial column
+  const monthDay = new Intl.DateTimeFormat(locale, {
     month: "short",
     day: "2-digit",
-    year: "numeric",
   }).format(now)
+
+  const year = now.getFullYear().toString()
 
   return (
     <motion.div
-      initial={
-        prefersReducedMotion
-          ? { opacity: 0 }
-          : { opacity: 0, filter: "blur(10px)", y: 20 }
-      }
-      animate={
-        prefersReducedMotion
-          ? { opacity: 1 }
-          : { opacity: 1, filter: "blur(0px)", y: 0 }
-      }
+      initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 15 }}
+      animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
       transition={getTransition(
         { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
         prefersReducedMotion,
       )}
       className="relative w-full"
     >
-      <div className="relative border-y-4 border-foreground dark:border-foreground/80 py-8 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-4 group">
-        {/* Decorative corner accents */}
-        <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-primary -translate-x-1 -translate-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-        <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-primary translate-x-1 translate-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      {/* Top subtle decorative edge matching the newspaper feel */}
+      <div className="absolute top-0 right-0 w-1/3 h-[1px] bg-gradient-to-l from-primary/30 to-transparent -translate-y-px" />
 
-        {/* Date Area - Newspaper Date Column */}
-        <div className="md:col-span-2 flex flex-col justify-start items-start md:border-r border-border md:pr-4">
-          <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/50 mb-4 [[dir=rtl]_&]:tracking-normal">
-            Vol. 1
-          </div>
+      <div className="relative border-t-2 md:border-t-4 border-foreground/90 pt-8 pb-10 lg:py-16 grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-14 group">
+        {/* Column 1: Editorial Metadata (span 2) */}
+        <div className="md:col-span-3 lg:col-span-2 flex flex-row md:flex-col justify-between gap-6 uppercase font-sans tracking-widest text-[10px] md:text-xs text-muted-foreground md:border-r border-border/40 md:pr-4">
           <motion.div
-            className="font-serif text-3xl md:text-5xl font-normal leading-none text-primary"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
+            initial={
+              prefersReducedMotion ? { opacity: 1 } : { opacity: 0, x: -10 }
+            }
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
           >
-            {now.getDate().toString().padStart(2, "0")}
+            <span className="block text-foreground font-bold mb-1 opacity-60">
+              Vol.
+            </span>
+            <span className="font-serif text-xl md:text-2xl text-foreground font-medium tracking-normal">
+              01
+            </span>
           </motion.div>
-          <div className="text-xs uppercase font-medium tracking-[0.2em] mt-2 text-foreground/80 [[dir=rtl]_&]:tracking-normal">
-            {now.toLocaleString(locale, { month: "short" })} '
-            {now.getFullYear().toString().slice(-2)}
-          </div>
-          <div className="w-full h-[1px] bg-border my-6 hidden md:block" />
-          <div className="text-[9px] uppercase tracking-[0.2em] text-foreground/50 mt-auto hidden md:block">
-            {t("brief")}
-          </div>
+
+          <motion.div
+            initial={
+              prefersReducedMotion ? { opacity: 1 } : { opacity: 0, x: -10 }
+            }
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+          >
+            <span className="block text-foreground font-bold mb-1 opacity-60">
+              Date
+            </span>
+            <span className="text-foreground tracking-widest">
+              {monthDay}, {year}
+            </span>
+          </motion.div>
+
+          <motion.div
+            initial={
+              prefersReducedMotion ? { opacity: 1 } : { opacity: 0, x: -10 }
+            }
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="md:mt-auto"
+          >
+            <span className="block text-foreground font-bold mb-1 opacity-60">
+              Status
+            </span>
+            <span className="text-foreground font-medium flex items-center gap-2">
+              <span
+                className={`w-1.5 h-1.5 rounded-full block ${profileCompleteness === 100 ? "bg-green-500/80 shadow-[0_0_8px_rgba(34,197,94,0.6)]" : "bg-primary/80 animate-pulse"}`}
+              />
+              {profileCompleteness === 100 ? "Ready" : "In Progress"}
+            </span>
+          </motion.div>
         </div>
 
-        {/* Main Headings */}
-        <div className="md:col-span-6 flex flex-col justify-center px-0 md:px-6">
-          <h2 className="font-serif text-[clamp(2.5rem,6vw,4.5rem)] leading-[0.95] tracking-tighter text-foreground mb-6">
-            <span className="block text-foreground/50 text-xl md:text-2xl font-sans tracking-tight mb-2 italic">
+        {/* Column 2: Main Editorial Headline (span 7.5 relative to grid size contextually) */}
+        <div className="md:col-span-9 lg:col-span-7 flex flex-col justify-center relative">
+          <div className="absolute -top-10 -left-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none" />
+
+          <h1 className="font-serif text-[clamp(2.5rem,6.5vw,5.5rem)] leading-[0.9] tracking-tighter text-foreground mb-8">
+            <motion.span
+              initial={
+                prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }
+              }
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              className="block text-muted-foreground text-xl md:text-2xl lg:text-3xl font-sans tracking-tight mb-4 md:mb-6 font-light italic"
+            >
               {t("headlinePrefix")}
-            </span>
-            <span className="hover:text-primary transition-colors duration-500 selection:bg-primary selection:text-white">
-              {t("headlineAccent")}
-            </span>
-            <span className="text-primary italic block md:inline-block md:ml-2">
-              {displayName}.
-            </span>
-          </h2>
-          <p className="text-foreground/70 text-sm md:text-base font-light leading-relaxed max-w-lg mb-8 md:mb-0">
+            </motion.span>
+
+            <div className="flex flex-wrap items-baseline gap-x-3 md:gap-x-4">
+              <motion.span
+                initial={
+                  prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }
+                }
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.8 }}
+                className="hover:italic hover:text-primary transition-all duration-500 selection:bg-primary selection:text-white inline-block"
+              >
+                {t("headlineAccent")}
+              </motion.span>
+              <motion.span
+                initial={
+                  prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }
+                }
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="text-primary italic inline-block"
+              >
+                {displayName}.
+              </motion.span>
+            </div>
+          </h1>
+
+          <motion.p
+            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 1 }}
+            className="text-foreground/75 text-base md:text-lg lg:text-xl font-light leading-relaxed max-w-xl font-sans"
+          >
             {profileCompleteness < 100
               ? t("profileIncomplete")
               : "Your portfolio represents your highest professional standards. Continue curating your edge."}
-          </p>
+          </motion.p>
         </div>
 
-        {/* Profile Strength & CTAs */}
-        <div className="md:col-span-4 flex flex-col justify-between md:pl-6 md:border-l border-border group/meter">
-          <div className="space-y-4 flex-grow mb-8 md:mb-0">
-            <div className="flex items-end justify-between border-b-2 border-foreground/20 pb-2">
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/60 [[dir=rtl]_&]:tracking-normal">
-                {t("profileStrength")}
-              </span>
-              <span className="font-serif text-3xl md:text-4xl leading-none text-foreground tracking-tighter">
-                {profileCompleteness}
-                <span className="text-xl text-primary">%</span>
-              </span>
-            </div>
+        {/* Column 3: Profile Strength & CTAs (span 3) */}
+        <div className="md:col-span-12 lg:col-span-3 flex flex-col justify-between border-t md:border-t-0 md:pt-0 pt-8 lg:border-l lg:border-border/40 lg:pl-10 group/meter relative">
+          <div className="flex flex-col gap-6 md:flex-row lg:flex-col md:items-center lg:items-start justify-between">
+            <div className="flex-1 w-full">
+              <div className="flex justify-between items-end mb-2">
+                <div className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-foreground/60 font-semibold mb-1">
+                  {t("profileStrength")}
+                </div>
+                <div className="font-serif text-5xl md:text-6xl tracking-tighter text-foreground leading-none">
+                  {profileCompleteness}
+                  <span className="text-primary text-2xl md:text-3xl align-top ml-1 font-sans font-light">
+                    %
+                  </span>
+                </div>
+              </div>
 
-            <div className="relative h-1.5 w-full bg-border overflow-hidden rounded-none">
-              <motion.div
-                className="absolute top-0 left-0 h-full bg-primary"
-                initial={
-                  prefersReducedMotion
-                    ? { width: `${profileCompleteness}%` }
-                    : { width: 0 }
-                }
-                animate={{ width: `${profileCompleteness}%` }}
-                transition={getTransition(
-                  { duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] },
-                  prefersReducedMotion,
-                )}
-              />
-              {/* Texture overlay on progress bar */}
-              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMCIvPjxwYXRoIGQ9Ik0wLDRMMSw0TDEsM0wwLDNaIiBmaWxsPSIjMDAwIiBmaWxsLW9wYWNpdHk9IjAuMSIvPjwvc3ZnPg==')] opacity-30 mix-blend-overlay"></div>
-            </div>
+              <div className="relative h-[2px] w-full bg-border/40 overflow-hidden mt-4 mb-4">
+                <motion.div
+                  className="absolute top-0 left-0 bottom-0 bg-primary"
+                  initial={
+                    prefersReducedMotion
+                      ? { width: `${profileCompleteness}%` }
+                      : { width: 0 }
+                  }
+                  animate={{ width: `${profileCompleteness}%` }}
+                  transition={getTransition(
+                    { duration: 1.5, delay: 0.6, ease: [0.22, 1, 0.36, 1] },
+                    prefersReducedMotion,
+                  )}
+                />
+              </div>
 
-            <p className="text-[11px] text-foreground/50 font-medium leading-snug">
-              {profileCompleteness >= 100
-                ? t("profileReady")
-                : t("profileRemaining", {
-                    remaining: 100 - profileCompleteness,
-                  })}
-            </p>
+              <p className="text-[11px] md:text-xs text-muted-foreground leading-relaxed">
+                {profileCompleteness >= 100
+                  ? t("profileReady")
+                  : t("profileRemaining", {
+                      remaining: 100 - profileCompleteness,
+                    })}
+              </p>
+            </div>
           </div>
 
-          <div className="flex flex-col xl:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row lg:flex-col gap-3 mt-8 lg:mt-0">
             {profileCompleteness < 100 && (
-              <Link
-                href={`/profile/${profileUserId}` as Route}
-                className="w-full"
-              >
-                <Button className="w-full bg-foreground text-background hover:bg-primary hover:text-primary-foreground font-bold uppercase tracking-[0.15em] text-[10px] h-12 rounded-none transition-all duration-300 transform hover:-translate-y-1 hover:shadow-[4px_4px_0_0_oklch(var(--primary))]">
-                  {t("completeProfile")}
-                </Button>
-              </Link>
-            )}
-            <Link href="/dashboard/explore" className="w-full">
               <Button
-                variant="outline"
-                className="w-full border-foreground text-foreground hover:bg-foreground hover:text-background font-bold uppercase tracking-[0.15em] text-[10px] h-12 rounded-none transition-all duration-300"
-              >
-                {t("exploreInternships")}
-              </Button>
-            </Link>
+                render={
+                  <Link href={`/profile/${profileUserId}` as Route}>
+                    {t("completeProfile")}
+                  </Link>
+                }
+                className="w-full flex-1 rounded-none tracking-widest uppercase text-[10px] md:text-xs h-12 md:h-14 bg-foreground text-background hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+              ></Button>
+            )}
+            <Button
+              render={
+                <Link href="/dashboard/explore">{t("exploreInternships")}</Link>
+              }
+              variant="outline"
+              className="w-full flex-1 rounded-none tracking-widest uppercase text-[10px] md:text-xs h-12 md:h-14 border-foreground/30 hover:border-foreground hover:bg-foreground hover:text-background transition-all duration-300 bg-transparent"
+            ></Button>
           </div>
         </div>
       </div>

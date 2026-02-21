@@ -20,12 +20,12 @@ export function BackupCodesDisplay({ codes, onDone }: BackupCodesDisplayProps) {
   }
 
   function downloadCodes() {
-    const content = `Internex Backup Codes\n${"=".repeat(30)}\n\n${codes.join("\n")}\n\nEach code can only be used once.`
+    const content = `Stag Backup Codes\n${"=".repeat(30)}\n\n${codes.join("\n")}\n\nEach code can only be used once.`
     const blob = new Blob([content], { type: "text/plain" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url
-    a.download = "internex-backup-codes.txt"
+    a.download = "stag-backup-codes.txt"
     a.click()
     URL.revokeObjectURL(url)
   }

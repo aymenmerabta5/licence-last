@@ -70,7 +70,7 @@ export default async function CompanyPendingPage() {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <a href="mailto:support@internex.io" className="w-full sm:w-auto">
+        <a href="mailto:support@stag.io" className="w-full sm:w-auto">
           <Button
             variant="editorial-outline"
             size="editorial"

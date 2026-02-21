@@ -40,7 +40,7 @@ const tailwindConfig: TailwindConfig = {
 
 export default function EmailLayout({
   children,
-  title = "Internex",
+  title = "Stag",
 }: EmailLayoutProps) {
   return (
     <Html>

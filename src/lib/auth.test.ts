@@ -95,7 +95,7 @@ mock.module("better-auth/plugins", () => ({
 mock.module("@/env", () => ({
   env: {
     BETTER_AUTH_SECRET: "12345678901234567890123456789012",
-    NEXT_PUBLIC_BETTER_AUTH_URL: "https://internex.example.com",
+    NEXT_PUBLIC_BETTER_AUTH_URL: "https://stag.example.com",
     TURNSTILE_SECRET_KEY: undefined,
   },
 }))

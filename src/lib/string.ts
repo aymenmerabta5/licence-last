@@ -1,5 +1,5 @@
 /**
- * Centralized string utility functions for the Internex application.
+ * Centralized string utility functions for the Stag application.
  */
 
 /**

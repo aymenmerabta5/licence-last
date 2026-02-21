@@ -11,22 +11,22 @@ import VerifyEmailEmail from "@/server/email/templates/VerifyEmailEmail"
 describe("src/server/email/templates", () => {
   test("verify/signup email template renders branding and verification link", async () => {
     const html = await render(
-      <VerifyEmailEmail link="https://internex.test/verify?token=abc" />,
+      <VerifyEmailEmail link="https://stag.test/verify?token=abc" />,
     )
 
-    expect(html).toContain("Internex")
+    expect(html).toContain("Stag")
     expect(html).toContain("Verify your email")
-    expect(html).toContain("https://internex.test/verify?token=abc")
+    expect(html).toContain("https://stag.test/verify?token=abc")
   })
 
   test("reset password email template renders branding and reset link", async () => {
     const html = await render(
-      <ResetPasswordEmail link="https://internex.test/reset?token=abc" />,
+      <ResetPasswordEmail link="https://stag.test/reset?token=abc" />,
     )
 
-    expect(html).toContain("Internex")
+    expect(html).toContain("Stag")
     expect(html).toContain("Reset your password")
-    expect(html).toContain("https://internex.test/reset?token=abc")
+    expect(html).toContain("https://stag.test/reset?token=abc")
   })
 
   test("department invite email template renders recipient and setup link", async () => {
@@ -34,22 +34,22 @@ describe("src/server/email/templates", () => {
       <DeptHeadWelcomeEmail
         name="Aymen"
         departmentName="Computer Science"
-        universityName="Internex University"
-        link="https://internex.test/set-password?token=abc"
+        universityName="Stag University"
+        link="https://stag.test/set-password?token=abc"
       />,
     )
 
     expect(html).toContain("Department Head")
     expect(html).toContain("Computer Science")
-    expect(html).toContain("Internex University")
-    expect(html).toContain("https://internex.test/set-password?token=abc")
+    expect(html).toContain("Stag University")
+    expect(html).toContain("https://stag.test/set-password?token=abc")
   })
 
   test("company approved/rejected templates render decision content", async () => {
     const approvedHtml = await render(
       <CompanyApprovedEmail
         companyName="Acme Corp"
-        dashboardUrl="https://internex.test/dashboard"
+        dashboardUrl="https://stag.test/dashboard"
       />,
     )
     const rejectedHtml = await render(
@@ -61,7 +61,7 @@ describe("src/server/email/templates", () => {
 
     expect(approvedHtml).toContain("Acme Corp")
     expect(approvedHtml).toContain("Go to Dashboard")
-    expect(approvedHtml).toContain("https://internex.test/dashboard")
+    expect(approvedHtml).toContain("https://stag.test/dashboard")
     expect(rejectedHtml).toContain("Application not approved")
     expect(rejectedHtml).toContain("Insufficient verification documents")
   })
@@ -69,13 +69,13 @@ describe("src/server/email/templates", () => {
   test("university approved template renders dashboard access details", async () => {
     const html = await render(
       <UniversityApprovedEmail
-        universityName="Internex University"
-        dashboardUrl="https://internex.test/dashboard/admin"
+        universityName="Stag University"
+        dashboardUrl="https://stag.test/dashboard/admin"
       />,
     )
 
     expect(html).toContain("Your university has been approved")
-    expect(html).toContain("Internex University")
-    expect(html).toContain("https://internex.test/dashboard/admin")
+    expect(html).toContain("Stag University")
+    expect(html).toContain("https://stag.test/dashboard/admin")
   })
 })

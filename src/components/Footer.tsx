@@ -26,7 +26,7 @@ export function Footer() {
           <div className="lg:col-span-4 flex flex-col gap-6">
             <Link href="/" className="flex items-center gap-2">
               <span className="font-serif text-3xl tracking-tight text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
-                Internex<span className="text-primary">.</span>io
+                Stag<span className="text-primary">.</span>io
               </span>
             </Link>
             <p className="text-muted-foreground max-w-sm leading-relaxed text-lg">

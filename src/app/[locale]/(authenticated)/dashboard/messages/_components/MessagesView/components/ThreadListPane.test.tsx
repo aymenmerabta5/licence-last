@@ -16,7 +16,7 @@ describe("ThreadListPane", () => {
         offerId: "offer-1",
         offerTitle: "Backend Intern",
         companyId: "company-1",
-        companyName: "Internex",
+        companyName: "Stag",
         companyLogoUrl: null,
         lastMessageAt: new Date("2030-01-02T00:00:00.000Z"),
         createdAt: new Date("2030-01-01T00:00:00.000Z"),

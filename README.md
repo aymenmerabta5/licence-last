@@ -1,10 +1,10 @@
-# Internex
+# Stag
 
 A full-stack platform connecting Algerian companies with university students for internships. Built with Next.js 16, React 19, and an editorial "Morning Press / Night Edition" design aesthetic.
 
 ## Overview
 
-Internex manages the complete internship lifecycle:
+Stag manages the complete internship lifecycle:
 
 - **Students** discover offers, apply, track applications, and get AI-powered cover letter help
 - **Companies** post offers, manage candidate pipelines, and use an AI assistant for recruitment
@@ -67,7 +67,7 @@ Internex manages the complete internship lifecycle:
 ```bash
 # Clone and install
 git clone <repo-url>
-cd internex
+cd stag
 bun install
 
 # Configure environment
@@ -268,7 +268,7 @@ Single-server deployment with Docker Compose, Caddy (auto-HTTPS), and Watchtower
 
 ```bash
 # On your VPS
-mkdir -p /opt/internex && cd /opt/internex
+mkdir -p /opt/stag && cd /opt/stag
 # Copy docker-compose.prod.yml, Caddyfile, .env
 nano .env  # Set DATABASE_URL, BETTER_AUTH_SECRET, DOMAIN_NAME, etc.
 

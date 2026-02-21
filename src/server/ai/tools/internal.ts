@@ -62,7 +62,7 @@ export function createInternalTools({
         })
 
         const prompt = [
-          "Generate an internship offer draft for Internex.",
+          "Generate an internship offer draft for Stag.",
           "Return only the JSON that matches the schema.",
           "Use the provided available skill tags when suggesting skillTagIds.",
           `Context JSON:\n${contextJson}`,

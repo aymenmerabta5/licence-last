@@ -24,10 +24,10 @@ export default function CertificateGeneratedEmail({
   documentsUrl,
 }: CertificateGeneratedEmailProps) {
   return (
-    <EmailLayout title="Your Internship Certificate Is Ready - Internex">
+    <EmailLayout title="Your Internship Certificate Is Ready - Stag">
       <Section className="bg-card my-6 rounded-lg px-6 py-12 text-center">
         <Heading as="h1" className="text-primary mb-2 text-2xl font-bold">
-          Internex
+          Stag
         </Heading>
         <Heading as="h2" className="text-foreground mb-4 text-3xl font-bold">
           Your internship certificate is ready

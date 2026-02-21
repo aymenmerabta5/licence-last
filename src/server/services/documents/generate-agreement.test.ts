@@ -39,7 +39,7 @@ mock.module("@/server/pdfs/AgreementTemplate", () => ({
 }))
 
 mock.module("@/env", () => ({
-  env: { NEXT_PUBLIC_BETTER_AUTH_URL: "https://internex.test" },
+  env: { NEXT_PUBLIC_BETTER_AUTH_URL: "https://stag.test" },
 }))
 
 mock.module("@/server/services/documents/qr-utils", () => ({

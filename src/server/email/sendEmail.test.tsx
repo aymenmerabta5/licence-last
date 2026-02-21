@@ -40,7 +40,7 @@ describe("src/server/email/sendEmail", () => {
     mock.module("@/env", () => ({
       env: {
         RESEND_API_KEY: undefined,
-        EMAIL_FROM: "no-reply@internex.io",
+        EMAIL_FROM: "no-reply@stag.io",
       },
     }))
 
@@ -65,7 +65,7 @@ describe("src/server/email/sendEmail", () => {
     mock.module("@/env", () => ({
       env: {
         RESEND_API_KEY: "re_test_123",
-        EMAIL_FROM: "no-reply@internex.io",
+        EMAIL_FROM: "no-reply@stag.io",
       },
     }))
 

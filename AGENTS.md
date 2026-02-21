@@ -1,7 +1,7 @@
 # AGENTS.md â€” Coding Guidelines for AI Agents
 
 > Last updated: 2026-02-18
-> Project: Internex â€” A Next.js 16 + React 19 application with editorial design aesthetic, for linking companies internship programs with university students
+> Project: Stag â€” A Next.js 16 + React 19 application with editorial design aesthetic, for linking companies internship programs with university students
 
 ---
 

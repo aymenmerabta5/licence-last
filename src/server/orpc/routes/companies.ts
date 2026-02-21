@@ -429,7 +429,7 @@ export const approveCompanyProcedure = superAdminProcedureStandard
           payload: { companyId: input.companyId, companyName: result.name },
           email: {
             to: member.email,
-            subject: `${result.name} has been approved - Internex`,
+            subject: `${result.name} has been approved - Stag`,
             component: CompanyApprovedEmail,
             props: { companyName: result.name, dashboardUrl },
           },
@@ -477,7 +477,7 @@ export const rejectCompanyProcedure = superAdminProcedureStandard
           },
           email: {
             to: member.email,
-            subject: `Update on your ${result.name} application - Internex`,
+            subject: `Update on your ${result.name} application - Stag`,
             component: CompanyRejectedEmail,
             props: { companyName: result.name, reason: input.reason },
           },

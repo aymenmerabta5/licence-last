@@ -8,8 +8,8 @@ export async function GET() {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Internex API Reference</title>
-    <meta name="description" content="Interactive API documentation for the Internex platform." />
+    <title>Stag API Reference</title>
+    <meta name="description" content="Interactive API documentation for the Stag platform." />
   </head>
   <body>
     <script id="api-reference" data-url="${specUrl}"></script>

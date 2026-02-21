@@ -1,5 +1,5 @@
 /**
- * Centralized date formatting utilities for the Internex application.
+ * Centralized date formatting utilities for the Stag application.
  * All date/time formatting functions should be imported from this file.
  */
 

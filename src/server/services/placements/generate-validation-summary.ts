@@ -23,7 +23,7 @@ export async function generateValidationSummary(
   const contextJson = JSON.stringify(input.application)
 
   const prompt = [
-    "You are an admin assistant for Internex, an internship platform.",
+    "You are an admin assistant for Stag, an internship platform.",
     "Summarize this placement validation dossier. Provide:",
     "1. summaryBullets: 3-5 bullet points summarizing the application (student, company, offer, dates).",
     "2. checklist: list any missing or incomplete items that the admin should verify before validating (empty array if everything looks complete).",

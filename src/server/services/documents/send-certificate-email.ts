@@ -62,7 +62,7 @@ export async function sendCertificateEmail(input: SendCertificateEmailInput) {
 
   return sendEmail(
     input.to,
-    "Your internship certificate is ready - Internex",
+    "Your internship certificate is ready - Stag",
     CertificateGeneratedEmail,
     {
       studentName: input.studentName,

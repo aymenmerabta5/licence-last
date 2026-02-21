@@ -80,9 +80,9 @@ export function Navbar() {
           <Link
             href="/"
             className="font-serif text-2xl tracking-tight text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
-            aria-label="Internex"
+            aria-label="Stag"
           >
-            Internex<span className="text-primary">.</span>io
+            Stag<span className="text-primary">.</span>io
           </Link>
         </div>
 
@@ -190,7 +190,7 @@ export function Navbar() {
               onClick={() => setMobileOpen(false)}
               className="font-serif text-2xl tracking-tight text-heading"
             >
-              Internex<span className="text-primary">.</span>io
+              Stag<span className="text-primary">.</span>io
             </Link>
             <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
               {t("menu")}

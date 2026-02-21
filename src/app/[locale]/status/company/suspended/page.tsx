@@ -94,7 +94,7 @@ export default async function CompanySuspendedPage() {
           nativeButton={false}
           render={
             <a
-              href="mailto:support@internex.io"
+              href="mailto:support@stag.io"
               aria-label={t("contactSupport")}
             >
               <span className="sr-only">{t("contactSupport")}</span>
