@@ -97,12 +97,16 @@ describe("src/server/orpc/routes/messages", () => {
     const input = { limit: 10 }
     const result = await callProcedure(listMessageThreadsByCompanyProcedure, {
       input,
-      context: { companyMembership: { companyId: "company-1" } },
+      context: {
+        companyMembership: { companyId: "company-1" },
+        user: { id: "company-user-1" },
+      },
     })
 
     expect(result).toEqual({ threads: [] })
     expect(listMessageThreadsByCompanyMock).toHaveBeenCalledWith(
       "company-1",
+      "company-user-1",
       input,
     )
   })

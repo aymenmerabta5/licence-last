@@ -8,13 +8,16 @@ import type { BulkDepartmentRow } from "@/lib/schemas/department"
 import { bulkCreateDepartmentsSchema } from "@/lib/schemas/department"
 import { orpc } from "@/server/orpc/client"
 
+const DEPARTMENTS_LIST_QUERY_PATH = orpc.departments.list.queryOptions({
+  input: { universityId: "__all__" },
+}).queryKey[0]
+
 const emptyRow = (): BulkDepartmentRow => ({
   departmentName: "",
   headEmail: "",
-  headName: "",
 })
 
-export function useBulkCreateForm() {
+export function useBulkCreateForm(universityId: string | null) {
   const t = useTranslations("dashboard.admin.departments.bulkCreate")
   const queryClient = useQueryClient()
 
@@ -51,7 +54,9 @@ export function useBulkCreateForm() {
   const mutation = useMutation(
     orpc.departments.bulkCreateWithHeads.mutationOptions({
       onSuccess: (data) => {
-        queryClient.invalidateQueries({ queryKey: ["departments"] })
+        queryClient.invalidateQueries({
+          queryKey: [DEPARTMENTS_LIST_QUERY_PATH],
+        })
 
         if (data.errors.length === 0) {
           toast.success(t("successMessage", { count: data.created.length }))
@@ -87,6 +92,11 @@ export function useBulkCreateForm() {
   )
 
   const handleSubmit = useCallback(() => {
+    if (!universityId) {
+      toast.error(t("selectUniversityFirst"))
+      return
+    }
+
     const parsed = bulkCreateDepartmentsSchema.safeParse({ rows })
     if (!parsed.success) {
       // Map Zod errors to per-field errors
@@ -109,8 +119,8 @@ export function useBulkCreateForm() {
     }
 
     setFieldErrors(rows.map(() => ({})))
-    mutation.mutate(parsed.data)
-  }, [rows, mutation])
+    mutation.mutate({ ...parsed.data, universityId })
+  }, [mutation, rows, t, universityId])
 
   return {
     rows,
@@ -119,6 +129,7 @@ export function useBulkCreateForm() {
     removeRow,
     updateRow,
     handleSubmit,
+    canSubmit: Boolean(universityId),
     isPending: mutation.isPending,
   }
 }

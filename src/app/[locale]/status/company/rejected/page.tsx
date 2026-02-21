@@ -7,27 +7,29 @@ import { requireRole } from "@/lib/auth-guards"
 import { formatDateLong } from "@/lib/date"
 import { localeRedirect } from "@/lib/navigation"
 import { getCompanyByUserId } from "@/server/services/companies/get"
+import { getCompanyStatusByUserId } from "@/server/services/companies/get-status"
 
 export default async function CompanyRejectedPage() {
   const user = await requireRole(["company_admin"], { allowUnapproved: true })
+  const companyStatus = await getCompanyStatusByUserId(user.id)
 
-  if (!user.onboardingCompleted) {
+  if (!companyStatus) {
     return localeRedirect("/onboarding/company")
   }
 
-  const company = await getCompanyByUserId(user.id)
-
-  if (company?.status === "approved") {
+  if (companyStatus.status === "approved") {
     return localeRedirect("/dashboard/company")
   }
 
-  if (company?.status === "suspended") {
+  if (companyStatus.status === "suspended") {
     return localeRedirect("/status/company/suspended")
   }
 
-  if (company?.status !== "rejected") {
+  if (companyStatus.status !== "rejected") {
     return localeRedirect("/status/company/pending")
   }
+
+  const company = await getCompanyByUserId(user.id)
 
   const [t, tp] = await Promise.all([
     getTranslations("dashboard.company.rejected"),
@@ -57,7 +59,7 @@ export default async function CompanyRejectedPage() {
               {t("reason")}
             </p>
             <p className="mt-2 text-sm leading-relaxed text-foreground/80">
-              {company.rejectionReason || "—"}
+              {company?.rejectionReason ?? companyStatus.rejectionReason ?? "-"}
             </p>
           </div>
 
@@ -66,7 +68,7 @@ export default async function CompanyRejectedPage() {
               {tp("submittedOn")}
             </p>
             <p className="mt-2 font-serif text-lg text-heading">
-              {formatDateLong(company.createdAt)}
+              {company?.createdAt ? formatDateLong(company.createdAt) : "-"}
             </p>
           </div>
         </div>

@@ -134,7 +134,7 @@ export const navItems: NavItem[] = [
     labelKey: "validatePlacements",
     href: "/dashboard/admin/validations",
     icon: CheckCircle2,
-    roles: ["super_admin"],
+    roles: ["university_admin"],
   },
   {
     labelKey: "departments",

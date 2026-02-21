@@ -258,3 +258,11 @@ declare module "@/server/services/companies/remove-member?fresh=2" {
 declare module "@/server/services/companies/remove-member?fresh=3" {
   export * from "@/server/services/companies/remove-member"
 }
+
+declare module "@/server/email/sendEmail?noKey=1" {
+  export * from "@/server/email/sendEmail"
+}
+
+declare module "@/server/email/sendEmail?withKey=1" {
+  export * from "@/server/email/sendEmail"
+}

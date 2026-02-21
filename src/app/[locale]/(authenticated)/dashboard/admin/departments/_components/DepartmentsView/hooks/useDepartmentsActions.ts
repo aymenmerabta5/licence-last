@@ -7,15 +7,19 @@ import { toast } from "sonner"
 
 import { orpc } from "@/server/orpc/client"
 
-export function useDepartmentsActions() {
+const DEPARTMENTS_LIST_QUERY_PATH = orpc.departments.list.queryOptions({
+  input: { universityId: "__all__" },
+}).queryKey[0]
+
+export function useDepartmentsActions(selectedUniversityId: string | null) {
   const t = useTranslations("dashboard.admin.departments")
   const queryClient = useQueryClient()
 
   const [newName, setNewName] = useState("")
-  const [newHeadName, setNewHeadName] = useState("")
+  const canCreate = Boolean(selectedUniversityId)
 
   const invalidate = () => {
-    queryClient.invalidateQueries({ queryKey: ["departments"] })
+    queryClient.invalidateQueries({ queryKey: [DEPARTMENTS_LIST_QUERY_PATH] })
   }
 
   const createMutation = useMutation(
@@ -80,12 +84,16 @@ export function useDepartmentsActions() {
 
   const handleCreate = () => {
     if (!newName.trim()) return
+    if (!selectedUniversityId) {
+      toast.error(t("selectUniversityFirst"))
+      return
+    }
+
     createMutation.mutate(
-      { name: newName.trim(), headName: newHeadName.trim() || undefined },
+      { name: newName.trim(), universityId: selectedUniversityId },
       {
         onSuccess: () => {
           setNewName("")
-          setNewHeadName("")
         },
       },
     )
@@ -94,17 +102,15 @@ export function useDepartmentsActions() {
   const assignHead = async (
     departmentId: string,
     headEmail: string,
-    headName: string,
   ) =>
     assignHeadMutation.mutateAsync({
       departmentId,
       headEmail: headEmail.trim(),
-      headName: headName.trim(),
     })
 
   const updateDepartment = async (
     departmentId: string,
-    data: { name?: string; headName?: string | null },
+    data: { name?: string },
   ) => updateMutation.mutateAsync({ departmentId, ...data })
 
   const unassignHead = async (departmentId: string) =>
@@ -116,8 +122,7 @@ export function useDepartmentsActions() {
   return {
     newName,
     setNewName,
-    newHeadName,
-    setNewHeadName,
+    canCreate,
     handleCreate,
     updateDepartment,
     assignHead,

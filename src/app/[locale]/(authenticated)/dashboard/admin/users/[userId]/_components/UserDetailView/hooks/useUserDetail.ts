@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 
+import type { UserSession } from "@/app/[locale]/(authenticated)/dashboard/admin/users/[userId]/_components/UserDetailView/types"
 import { orpc } from "@/server/orpc/client"
 
 export function useUserDetail(userId: string) {
@@ -25,9 +26,19 @@ export function useUserDetail(userId: string) {
 
   const user = userQuery.data?.users?.[0] ?? null
 
-  // The listUserSessions API returns sessions nested in the response
   const sessionsData = sessionsQuery.data
-  const sessions = Array.isArray(sessionsData) ? sessionsData : []
+  const sessions = Array.isArray(sessionsData)
+    ? (sessionsData as UserSession[])
+    : Array.isArray(
+          (
+            sessionsData as
+              | { sessions?: UserSession[] }
+              | null
+              | undefined
+          )?.sessions,
+        )
+      ? ((sessionsData as { sessions?: UserSession[] }).sessions ?? [])
+      : []
 
   return {
     user,

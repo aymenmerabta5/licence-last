@@ -1303,6 +1303,9 @@
         "backToDashboard": "العودة إلى لوحة القيادة",
         "empty": "لم يتم إنشاء أقسام بعد.",
         "addDepartment": "إضافة قسم",
+        "university": "الجامعة",
+        "selectUniversity": "اختر جامعة",
+        "selectUniversityFirst": "اختر جامعة للمتابعة.",
         "name": "اسم القسم",
         "namePlaceholder": "على سبيل المثال علوم الكمبيوتر",
         "headName": "اسم الرأس (اختياري)",
@@ -1355,6 +1358,7 @@
           "successMessage": "تم إنشاء القسم (الأقسام) {count} بنجاح.",
           "partialSuccess": "تم إنشاء {created}، وفشل {failed}.",
           "rowError": "{name}: {error}",
+          "selectUniversityFirst": "اختر جامعة للمتابعة.",
           "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
         }
       },

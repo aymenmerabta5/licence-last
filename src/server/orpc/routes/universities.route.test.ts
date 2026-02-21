@@ -24,6 +24,7 @@ const listUniversitiesMock = mock(async () => ({
   universities: [],
   hasMore: false,
 }))
+const createUniversityMock = mock(async () => ({ universityId: "uni-1" }))
 const approveUniversityMock = mock(async () => ({ name: "USTHB" }))
 const updateUniversityMock = mock(async () => ({ universityId: "uni-1" }))
 const deleteUniversityMock = mock(async () => ({
@@ -75,7 +76,7 @@ mock.module("@/server/services/universities/get", () => ({
   getUniversityById: mock(async () => null),
 }))
 mock.module("@/server/services/universities/create", () => ({
-  createUniversity: mock(async () => ({ universityId: "uni-1" })),
+  createUniversity: createUniversityMock,
 }))
 mock.module("@/server/services/universities/update", () => ({
   updateUniversity: updateUniversityMock,
@@ -118,6 +119,7 @@ describe("src/server/orpc/routes/universities", () => {
     }))
 
     listUniversitiesMock.mockClear()
+    createUniversityMock.mockClear()
     approveUniversityMock.mockClear()
     updateUniversityMock.mockClear()
     deleteUniversityMock.mockClear()
@@ -184,6 +186,30 @@ describe("src/server/orpc/routes/universities", () => {
       limit: undefined,
       offset: undefined,
     })
+  })
+
+  test("createUniversityProcedure invalidates user and list cache tags", async () => {
+    const { createUniversityProcedure } = await import(
+      "@/server/orpc/routes/universities"
+    )
+
+    const result = await callProcedure(createUniversityProcedure, {
+      input: { name: "USTHB", domains: ["usthb.dz"] },
+      context: { user: { id: "admin-1", role: "university_admin" } },
+    })
+
+    expect(result).toEqual({ universityId: "uni-1" })
+    expect(createUniversityMock).toHaveBeenCalledWith(
+      { name: "USTHB", domains: ["usthb.dz"] },
+      "admin-1",
+    )
+    expect(revalidateTagMock).toHaveBeenCalledTimes(3)
+    expect(revalidateTagMock).toHaveBeenCalledWith("universities", "max")
+    expect(revalidateTagMock).toHaveBeenCalledWith("universities-uni-1", "max")
+    expect(revalidateTagMock).toHaveBeenCalledWith(
+      "universities-user-admin-1",
+      "max",
+    )
   })
 
   test("approveUniversityProcedure triggers cache invalidation and notifications", async () => {

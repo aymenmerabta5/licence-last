@@ -94,7 +94,9 @@ describe("src/server/services/messages/list-threads-by-company", () => {
     )
 
     await expectMessageError(
-      listMessageThreadsByCompany("company-1", { offerId: "offer-1" }),
+      listMessageThreadsByCompany("company-1", "company-admin-1", {
+        offerId: "offer-1",
+      }),
       "OFFER_NOT_FOUND",
       "Offer not found",
     )
@@ -112,7 +114,9 @@ describe("src/server/services/messages/list-threads-by-company", () => {
     )
 
     await expectMessageError(
-      listMessageThreadsByCompany("company-1", { offerId: "offer-1" }),
+      listMessageThreadsByCompany("company-1", "company-admin-1", {
+        offerId: "offer-1",
+      }),
       "OFFER_FORBIDDEN",
       "You do not have access to this offer",
     )
@@ -132,6 +136,9 @@ describe("src/server/services/messages/list-threads-by-company", () => {
         studentImage: null,
         lastMessageAt: new Date("2030-01-02T00:00:00.000Z"),
         createdAt: new Date("2030-01-01T00:00:00.000Z"),
+        lastMessageId: "message-2",
+        lastMessageSenderUserId: "student-1",
+        lastReadMessageId: "message-1",
       },
     ]
     dbSelectResults.push(rows)
@@ -140,9 +147,25 @@ describe("src/server/services/messages/list-threads-by-company", () => {
       "@/server/services/messages/list-threads-by-company?fresh=3" as string
     )
 
-    const result = await listMessageThreadsByCompany("company-1")
+    const result = await listMessageThreadsByCompany(
+      "company-1",
+      "company-admin-1",
+    )
 
-    expect(result).toEqual(rows)
+    expect(result).toEqual([
+      {
+        id: "thread-1",
+        offerId: "offer-1",
+        offerTitle: "Frontend Intern",
+        studentUserId: "student-1",
+        studentName: "Student One",
+        studentImage: null,
+        lastMessageAt: new Date("2030-01-02T00:00:00.000Z"),
+        createdAt: new Date("2030-01-01T00:00:00.000Z"),
+        hasUnread: true,
+        unreadCount: 1,
+      },
+    ])
     expect(dbSelect).toHaveBeenCalledTimes(1)
     expect(listLimit).toHaveBeenCalledWith(30)
   })
@@ -159,6 +182,9 @@ describe("src/server/services/messages/list-threads-by-company", () => {
         studentImage: null,
         lastMessageAt: new Date("2030-01-02T00:00:00.000Z"),
         createdAt: new Date("2030-01-01T00:00:00.000Z"),
+        lastMessageId: "message-2",
+        lastMessageSenderUserId: "student-1",
+        lastReadMessageId: "message-2",
       },
       {
         id: "thread-2",
@@ -169,6 +195,9 @@ describe("src/server/services/messages/list-threads-by-company", () => {
         studentImage: "https://example.com/student-two.png",
         lastMessageAt: new Date("2030-01-03T00:00:00.000Z"),
         createdAt: new Date("2030-01-01T01:00:00.000Z"),
+        lastMessageId: "message-3",
+        lastMessageSenderUserId: "company-admin-1",
+        lastReadMessageId: null,
       },
     ]
     dbSelectResults.push([{ id: "offer-1", companyId: "company-1" }])
@@ -178,12 +207,41 @@ describe("src/server/services/messages/list-threads-by-company", () => {
       "@/server/services/messages/list-threads-by-company?fresh=4" as string
     )
 
-    const result = await listMessageThreadsByCompany("company-1", {
-      offerId: "offer-1",
-      limit: 2,
-    })
+    const result = await listMessageThreadsByCompany(
+      "company-1",
+      "company-admin-1",
+      {
+        offerId: "offer-1",
+        limit: 2,
+      },
+    )
 
-    expect(result).toEqual(rows)
+    expect(result).toEqual([
+      {
+        id: "thread-1",
+        offerId: "offer-1",
+        offerTitle: "Frontend Intern",
+        studentUserId: "student-1",
+        studentName: "Student One",
+        studentImage: null,
+        lastMessageAt: new Date("2030-01-02T00:00:00.000Z"),
+        createdAt: new Date("2030-01-01T00:00:00.000Z"),
+        hasUnread: false,
+        unreadCount: 0,
+      },
+      {
+        id: "thread-2",
+        offerId: "offer-1",
+        offerTitle: "Frontend Intern",
+        studentUserId: "student-2",
+        studentName: "Student Two",
+        studentImage: "https://example.com/student-two.png",
+        lastMessageAt: new Date("2030-01-03T00:00:00.000Z"),
+        createdAt: new Date("2030-01-01T01:00:00.000Z"),
+        hasUnread: false,
+        unreadCount: 0,
+      },
+    ])
     expect(dbSelect).toHaveBeenCalledTimes(2)
     expect(offerLimit).toHaveBeenCalledWith(1)
     expect(listLimit).toHaveBeenCalledWith(2)

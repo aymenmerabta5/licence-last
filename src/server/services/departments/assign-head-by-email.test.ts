@@ -98,7 +98,6 @@ describe("assignDepartmentHeadByEmail", () => {
     const result = await assignDepartmentHeadByEmail({
       departmentId: "dept-1",
       headEmail: "head@university.dz",
-      headName: "Dr. Existing",
     })
 
     expect(result).toEqual({
@@ -134,13 +133,13 @@ describe("assignDepartmentHeadByEmail", () => {
     const result = await assignDepartmentHeadByEmail({
       departmentId: "dept-1",
       headEmail: "new-head@university.dz",
-      headName: "Dr. New Head",
     })
 
     expect(result.userId).toBe("new-user-id")
     expect(mockCreateUser).toHaveBeenCalledTimes(1)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const call = (mockCreateUser.mock.calls as any)[0][0]
+    expect(call.body.name).toBe("New Head")
     expect(call.body.data.emailVerified).toBe(true)
     expect(mockRequestPasswordReset).toHaveBeenCalledTimes(1)
     expect(pendingWelcomeEmails.has("new-head@university.dz")).toBe(true)
@@ -156,7 +155,6 @@ describe("assignDepartmentHeadByEmail", () => {
       assignDepartmentHeadByEmail({
         departmentId: "missing-dept",
         headEmail: "head@university.dz",
-        headName: "Dr. Head",
       }),
     ).rejects.toThrow("Department not found")
   })

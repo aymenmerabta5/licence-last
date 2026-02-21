@@ -16,7 +16,7 @@ import { orpc } from "@/server/orpc/client"
 export function UserManagementView() {
   const t = useTranslations("dashboard.superAdmin.users")
   const mgmt = useUserManagement()
-  const actions = useUserActions()
+  const actions = useUserActions(mgmt.refetch)
   const dialogState = useUserDialogState()
   const { data: meResult } = useQuery(orpc.users.getMe.queryOptions())
 

@@ -49,18 +49,6 @@ describe("createDepartment", () => {
     expect(mockInsert).toHaveBeenCalledTimes(1)
   })
 
-  test("should handle optional headName", async () => {
-    const { createDepartment } = await import(
-      "@/server/services/departments/create"
-    )
-    const result = await createDepartment({
-      universityId: "uni-1",
-      name: "CS",
-      headName: "Dr. Ahmed",
-    })
-    expect(result.departmentId).toBeDefined()
-  })
-
   test("should call insert exactly once", async () => {
     const { createDepartment } = await import(
       "@/server/services/departments/create"

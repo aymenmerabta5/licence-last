@@ -40,7 +40,8 @@ export function RemoveHeadDialog({
           <AlertDialogDescription>
             {t("removeHeadDescription", {
               name: department?.name ?? "",
-              headName: department?.headName ?? "",
+              headName:
+                department?.headUserName ?? department?.headUserEmail ?? "",
             })}
           </AlertDialogDescription>
         </AlertDialogHeader>

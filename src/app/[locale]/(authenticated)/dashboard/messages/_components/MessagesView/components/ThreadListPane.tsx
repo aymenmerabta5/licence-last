@@ -1,5 +1,6 @@
 import { Loader2, MessageCircleMore } from "lucide-react"
 import * as motion from "motion/react-client"
+
 import type {
   MessagesRole,
   MessageThread,
@@ -49,6 +50,14 @@ function getThreadImage(
   }
 
   return thread.studentImage ?? undefined
+}
+
+function formatUnreadCount(unreadCount: number): string {
+  if (unreadCount > 99) {
+    return "99+"
+  }
+
+  return String(unreadCount)
 }
 
 export function ThreadListPane({
@@ -120,9 +129,19 @@ export function ThreadListPane({
                         <p className="truncate text-sm font-medium text-foreground">
                           {displayName}
                         </p>
-                        <span className="shrink-0 text-[11px] text-muted-foreground">
-                          {formatRelativeTime(thread.lastMessageAt)}
-                        </span>
+                        <div className="flex shrink-0 items-center gap-1.5">
+                          {thread.hasUnread && thread.unreadCount > 0 && (
+                            <span
+                              aria-label={`${thread.unreadCount} unread messages`}
+                              className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground"
+                            >
+                              {formatUnreadCount(thread.unreadCount)}
+                            </span>
+                          )}
+                          <span className="text-[11px] text-muted-foreground">
+                            {formatRelativeTime(thread.lastMessageAt)}
+                          </span>
+                        </div>
                       </div>
 
                       <p className="mt-0.5 truncate text-xs text-muted-foreground">
@@ -131,7 +150,12 @@ export function ThreadListPane({
 
                       <div className="mt-2 flex items-center gap-1 text-[11px] text-muted-foreground/80">
                         <MessageCircleMore className="h-3 w-3" />
-                        <span>Open thread</span>
+                        <span>
+                          {thread.hasUnread ? "Unread messages" : "Open thread"}
+                        </span>
+                        {thread.hasUnread && (
+                          <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                        )}
                       </div>
                     </div>
                   </div>

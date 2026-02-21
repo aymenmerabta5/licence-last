@@ -13,6 +13,7 @@ import type { ListApplicationsByOfferResult } from "@/server/services/applicatio
 interface UseCandidateStageMutationParams {
   applicationsQueryKey: readonly [string, string, string]
   applicationStageById: Map<string, PipelineStage>
+  onStageSettled?: (applicationId: string) => Promise<void> | void
 }
 
 interface StageMutationContext {
@@ -23,6 +24,7 @@ interface StageMutationContext {
 export function useCandidateStageMutation({
   applicationsQueryKey,
   applicationStageById,
+  onStageSettled,
 }: UseCandidateStageMutationParams) {
   const t = useTranslations("dashboard.company.candidates")
   const queryClient = useQueryClient()
@@ -63,13 +65,14 @@ export function useCandidateStageMutation({
       }
       toast.error(t("stageUpdateFailed"))
     },
-    onSettled: (_data, _error, variables, context) => {
+    onSettled: async (_data, _error, variables, context) => {
       const settledApplicationId =
         context?.applicationId ?? variables.applicationId
       setPendingStageById((prev) =>
         removePendingStage(prev, settledApplicationId),
       )
-      queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+      await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+      await onStageSettled?.(settledApplicationId)
     },
   })
 

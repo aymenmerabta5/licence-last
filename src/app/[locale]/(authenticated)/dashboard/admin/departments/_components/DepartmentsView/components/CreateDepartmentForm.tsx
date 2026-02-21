@@ -6,12 +6,27 @@ import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+interface UniversityOption {
+  id: string
+  name: string
+}
 
 interface CreateDepartmentFormProps {
   name: string
   onNameChange: (v: string) => void
-  headName: string
-  onHeadNameChange: (v: string) => void
+  canCreate: boolean
+  showUniversitySelector?: boolean
+  selectedUniversityId?: string
+  universityOptions?: UniversityOption[]
+  onUniversityIdChange?: (id: string) => void
   isCreating: boolean
   onSubmit: () => void
 }
@@ -19,8 +34,11 @@ interface CreateDepartmentFormProps {
 export function CreateDepartmentForm({
   name,
   onNameChange,
-  headName,
-  onHeadNameChange,
+  canCreate,
+  showUniversitySelector = false,
+  selectedUniversityId,
+  universityOptions = [],
+  onUniversityIdChange,
   isCreating,
   onSubmit,
 }: CreateDepartmentFormProps) {
@@ -40,7 +58,32 @@ export function CreateDepartmentForm({
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4">
+          {showUniversitySelector ? (
+            <div className="space-y-2">
+              <Label className="text-xs uppercase tracking-[0.12em] text-muted-foreground [[dir=rtl]_&]:tracking-normal">
+                {t("university")} *
+              </Label>
+              <Select
+                value={selectedUniversityId}
+                onValueChange={(value) => {
+                  if (value) onUniversityIdChange?.(value)
+                }}
+              >
+                <SelectTrigger className="h-10 rounded-xl border-border/60">
+                  <SelectValue placeholder={t("selectUniversity")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {universityOptions.map((option) => (
+                    <SelectItem key={option.id} value={option.id}>
+                      {option.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          ) : null}
+
           <div className="space-y-2">
             <Label className="text-xs uppercase tracking-[0.12em] text-muted-foreground [[dir=rtl]_&]:tracking-normal">
               {t("name")} *
@@ -53,24 +96,11 @@ export function CreateDepartmentForm({
               className="h-10 rounded-xl border-border/60"
             />
           </div>
-
-          <div className="space-y-2">
-            <Label className="text-xs uppercase tracking-[0.12em] text-muted-foreground [[dir=rtl]_&]:tracking-normal">
-              {t("headName")}
-            </Label>
-            <Input
-              type="text"
-              value={headName}
-              onChange={(e) => onHeadNameChange(e.target.value)}
-              placeholder={t("headNamePlaceholder")}
-              className="h-10 rounded-xl border-border/60"
-            />
-          </div>
         </div>
 
         <Button
           onClick={onSubmit}
-          disabled={isCreating || !name.trim()}
+          disabled={isCreating || !name.trim() || !canCreate}
           variant="editorial"
           size="editorial-sm"
           className="rounded-lg"

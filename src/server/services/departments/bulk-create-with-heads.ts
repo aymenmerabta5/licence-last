@@ -10,6 +10,7 @@ import { user } from "@/server/db/schema/auth"
 import { createModuleLogger } from "@/server/logging"
 import { assignDepartmentHead } from "@/server/services/departments/assign-head"
 import { createDepartment } from "@/server/services/departments/create"
+import { deriveHeadNameFromEmail } from "@/server/services/departments/derive-head-name"
 
 const log = createModuleLogger("services/departments/bulk-create-with-heads")
 
@@ -42,33 +43,36 @@ export async function bulkCreateDepartmentsWithHeads(
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i]
+    const normalizedEmail = row.headEmail.trim().toLowerCase()
+    const derivedHeadName = deriveHeadNameFromEmail(normalizedEmail)
+
     try {
-      // 1. Create department
       const { departmentId } = await createDepartment({
         universityId,
         name: row.departmentName,
-        headName: row.headName,
       })
 
-      // 2. Find or create user
       let userId: string
 
       const [existingUser] = await db
-        .select({ id: user.id })
+        .select({ id: user.id, name: user.name })
         .from(user)
-        .where(eq(user.email, row.headEmail.toLowerCase()))
+        .where(eq(user.email, normalizedEmail))
         .limit(1)
+
+      const existingName = existingUser?.name?.trim() ?? ""
+      const resolvedHeadName = existingName || derivedHeadName
 
       if (existingUser) {
         userId = existingUser.id
       } else {
-        // Create user with a random password — they'll set their own via reset link
+        // Create user with a random password; they set their own via reset link.
         const password = randomBytes(18).toString("base64url")
         const created = await auth.api.createUser({
           body: {
-            email: row.headEmail.toLowerCase(),
+            email: normalizedEmail,
             password,
-            name: row.headName,
+            name: resolvedHeadName,
             role: "dept_head",
             data: {
               emailVerified: true,
@@ -78,38 +82,38 @@ export async function bulkCreateDepartmentsWithHeads(
         userId = created.user.id
       }
 
-      // 3. Assign as department head (sets role, departmentId, universityId)
       await assignDepartmentHead(departmentId, userId)
 
-      // 4. Mark onboarding as completed (dept_heads have no onboarding flow)
       await db
         .update(user)
-        .set({ onboardingCompleted: true })
+        .set({
+          onboardingCompleted: true,
+          ...(existingName ? {} : { name: resolvedHeadName }),
+        })
         .where(eq(user.id, userId))
 
-      // 5. Queue welcome email data and trigger password reset
-      pendingWelcomeEmails.set(row.headEmail.toLowerCase(), {
-        name: row.headName,
+      pendingWelcomeEmails.set(normalizedEmail, {
+        name: resolvedHeadName,
         departmentName: row.departmentName,
         universityName,
       })
 
       await auth.api.requestPasswordReset({
         body: {
-          email: row.headEmail.toLowerCase(),
+          email: normalizedEmail,
           redirectTo: "/reset-password/verify",
         },
       })
 
       result.created.push({
         departmentName: row.departmentName,
-        headEmail: row.headEmail,
+        headEmail: normalizedEmail,
         departmentId,
         userId,
       })
 
       log.info(
-        { departmentId, userId, email: row.headEmail, event: "row_created" },
+        { departmentId, userId, email: normalizedEmail, event: "row_created" },
         `Bulk row ${i + 1}/${rows.length} created`,
       )
     } catch (error) {
@@ -121,7 +125,7 @@ export async function bulkCreateDepartmentsWithHeads(
       result.errors.push({
         index: i,
         departmentName: row.departmentName,
-        headEmail: row.headEmail,
+        headEmail: normalizedEmail,
         message,
       })
     }

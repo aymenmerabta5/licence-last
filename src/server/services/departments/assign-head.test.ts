@@ -85,7 +85,7 @@ describe("assignDepartmentHead", () => {
     })
   })
 
-  test("should update both user role and department headName in a transaction", async () => {
+  test("should update user role and scope in a transaction", async () => {
     mockLimit
       .mockResolvedValueOnce([
         { id: "dept-1", universityId: "uni-1", name: "CS" },
@@ -98,9 +98,9 @@ describe("assignDepartmentHead", () => {
     await assignDepartmentHead("dept-1", "user-1")
 
     expect(mockTransaction).toHaveBeenCalledTimes(1)
-    expect(mockTxUpdate).toHaveBeenCalledTimes(2)
-    expect(mockTxUpdateSet).toHaveBeenCalledTimes(2)
-    expect(mockTxUpdateWhere).toHaveBeenCalledTimes(2)
+    expect(mockTxUpdate).toHaveBeenCalledTimes(1)
+    expect(mockTxUpdateSet).toHaveBeenCalledTimes(1)
+    expect(mockTxUpdateWhere).toHaveBeenCalledTimes(1)
   })
 
   test("should make two select queries (dept + user)", async () => {

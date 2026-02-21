@@ -2,9 +2,10 @@ import { notFound } from "next/navigation"
 import { ProfileContent } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent"
 import { requireRole } from "@/lib/auth-guards"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
-import { orpcClient } from "@/server/orpc/client"
 import { getStudentCv } from "@/server/services/students/get-cv"
 import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
+import { getPublicStudentProfile } from "@/server/services/students/get-public-profile"
+import { getUniversityById } from "@/server/services/universities/get"
 
 interface ProfileDataProps {
   userId: string
@@ -24,17 +25,16 @@ export async function ProfileData({ userId }: ProfileDataProps) {
   const isOwner = viewer.id === userId && viewer.role === "student"
   if (viewer.role === "student" && !isOwner) notFound()
 
-  const result = await orpcClient.students
-    .getPublicProfile({ userId })
-    .catch(() => null)
+  const result = await getPublicStudentProfile(
+    { id: viewer.id, role: viewer.role },
+    userId,
+  )
 
   if (!result) notFound()
 
   const [university, ownerStats, cvData] = await Promise.all([
     result.user.universityId
-      ? orpcClient.universities
-          .getById({ universityId: result.user.universityId })
-          .catch(() => null)
+      ? getUniversityById(result.user.universityId)
       : null,
     isOwner ? getStudentDashboardStats(viewer.id) : null,
     result.user.role === "student" ? getStudentCv(userId) : null,

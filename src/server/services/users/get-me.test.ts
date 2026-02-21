@@ -18,6 +18,18 @@ interface UniversitySummary {
   rejectionReason: string | null
 }
 
+interface UserSummary {
+  id: string
+  email: string
+  role: string
+  name: string | null
+  image: string | null
+}
+
+const mockGetUserById = mock<(userId: string) => Promise<UserSummary | null>>(
+  () => Promise.resolve(null),
+)
+
 const mockGetCompanyByUserId = mock<
   (userId: string) => Promise<CompanySummary | null>
 >(() => Promise.resolve(null))
@@ -28,6 +40,8 @@ const mockGetUniversityByUserId = mock<
 
 describe("src/server/services/users/get-me", () => {
   beforeEach(() => {
+    mockGetUserById.mockClear()
+    mockGetUserById.mockResolvedValue(null)
     mockGetCompanyByUserId.mockClear()
     mockGetCompanyByUserId.mockResolvedValue(null)
     mockGetUniversityByUserId.mockClear()
@@ -41,6 +55,7 @@ describe("src/server/services/users/get-me", () => {
         email: "user-1@example.com",
       },
       {
+        getUserById: mockGetUserById,
         getCompanyByUserId: mockGetCompanyByUserId,
         getUniversityByUserId: mockGetUniversityByUserId,
       },
@@ -69,6 +84,7 @@ describe("src/server/services/users/get-me", () => {
         onboardingCompleted: true,
       },
       {
+        getUserById: mockGetUserById,
         getCompanyByUserId: mockGetCompanyByUserId,
         getUniversityByUserId: mockGetUniversityByUserId,
       },
@@ -93,6 +109,7 @@ describe("src/server/services/users/get-me", () => {
         role: "company_admin",
       },
       {
+        getUserById: mockGetUserById,
         getCompanyByUserId: mockGetCompanyByUserId,
         getUniversityByUserId: mockGetUniversityByUserId,
       },
@@ -118,6 +135,7 @@ describe("src/server/services/users/get-me", () => {
         role: "university_admin",
       },
       {
+        getUserById: mockGetUserById,
         getCompanyByUserId: mockGetCompanyByUserId,
         getUniversityByUserId: mockGetUniversityByUserId,
       },
@@ -134,5 +152,36 @@ describe("src/server/services/users/get-me", () => {
       status: "approved",
       rejectionReason: null,
     })
+  })
+
+  test("should prefer fresh DB-backed user fields over stale session fields", async () => {
+    mockGetUserById.mockResolvedValue({
+      id: "user-1",
+      email: "fresh@example.com",
+      role: "student",
+      name: "Fresh Name",
+      image: null,
+    })
+
+    const result = await getMe(
+      {
+        id: "user-1",
+        email: "stale@example.com",
+        role: "student",
+        name: "Stale Name",
+        image: "https://cdn.example.com/old.png",
+      },
+      {
+        getUserById: mockGetUserById,
+        getCompanyByUserId: mockGetCompanyByUserId,
+        getUniversityByUserId: mockGetUniversityByUserId,
+      },
+    )
+
+    expect(mockGetUserById).toHaveBeenCalledWith("user-1")
+    expect(result.user.email).toBe("fresh@example.com")
+    expect(result.user.role).toBe("student")
+    expect(result.user.name).toBe("Fresh Name")
+    expect(result.user.image).toBeNull()
   })
 })

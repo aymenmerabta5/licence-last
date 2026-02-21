@@ -1,13 +1,17 @@
 "use client"
 
+import { useMemo, useState } from "react"
+
 import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { CompanyOffersEmptyState } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/CompanyOffersEmptyState"
+import { CompanyOffersFilters } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/CompanyOffersFilters"
 import { CompanyOffersHeader } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/CompanyOffersHeader"
 import { OfferCard } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/OfferCard"
 import { TrustBanner } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/TrustBanner"
 import { useCompanyOffers } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/hooks/useCompanyOffers"
+import type { OfferStatusFilter } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/types"
 
 export function CompanyOffersView() {
   const t = useTranslations("dashboard.company.offers")
@@ -20,6 +24,31 @@ export function CompanyOffersView() {
     handleClose,
     handleDelete,
   } = useCompanyOffers()
+  const [searchQuery, setSearchQuery] = useState("")
+  const [statusFilter, setStatusFilter] = useState<OfferStatusFilter>("all")
+  const normalizedQuery = searchQuery.trim().toLowerCase()
+  const filteredOffers = useMemo(
+    () =>
+      offers.filter((offer) => {
+        if (statusFilter !== "all" && offer.status !== statusFilter) {
+          return false
+        }
+
+        if (!normalizedQuery) {
+          return true
+        }
+
+        const description =
+          "description" in offer && typeof offer.description === "string"
+            ? offer.description
+            : ""
+
+        return `${offer.title} ${description}`
+          .toLowerCase()
+          .includes(normalizedQuery)
+      }),
+    [offers, normalizedQuery, statusFilter],
+  )
   const hasOffers = offers.length > 0
 
   return (
@@ -37,13 +66,20 @@ export function CompanyOffersView() {
 
       {!isLoading && hasOffers && (
         <>
+          <CompanyOffersFilters
+            searchQuery={searchQuery}
+            statusFilter={statusFilter}
+            onSearchChange={setSearchQuery}
+            onStatusChange={setStatusFilter}
+          />
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/40 [[dir=rtl]_&]:tracking-normal">
-              {offers.length} offer{offers.length !== 1 ? "s" : ""}
+              {filteredOffers.length} offer
+              {filteredOffers.length !== 1 ? "s" : ""}
             </span>
           </div>
           <div className="space-y-3">
-            {offers.map((offer, index) => (
+            {filteredOffers.map((offer, index) => (
               <OfferCard
                 key={offer.id}
                 offer={offer}

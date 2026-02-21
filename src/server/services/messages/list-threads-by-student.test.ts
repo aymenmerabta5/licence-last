@@ -46,6 +46,9 @@ describe("src/server/services/messages/list-threads-by-student", () => {
         companyLogoUrl: null,
         lastMessageAt: new Date("2030-01-03T00:00:00.000Z"),
         createdAt: new Date("2030-01-01T00:00:00.000Z"),
+        lastMessageId: "message-2",
+        lastMessageSenderUserId: "company-admin-1",
+        lastReadMessageId: "message-1",
       },
     ]
     dbRows = rows
@@ -56,7 +59,20 @@ describe("src/server/services/messages/list-threads-by-student", () => {
 
     const result = await listMessageThreadsByStudent("student-1")
 
-    expect(result).toEqual(rows)
+    expect(result).toEqual([
+      {
+        id: "thread-1",
+        offerId: "offer-1",
+        offerTitle: "Backend Intern",
+        companyId: "company-1",
+        companyName: "Internex",
+        companyLogoUrl: null,
+        lastMessageAt: new Date("2030-01-03T00:00:00.000Z"),
+        createdAt: new Date("2030-01-01T00:00:00.000Z"),
+        hasUnread: true,
+        unreadCount: 1,
+      },
+    ])
     expect(dbSelect).toHaveBeenCalledTimes(1)
     expect(dbLimit).toHaveBeenCalledWith(30)
   })
@@ -72,6 +88,9 @@ describe("src/server/services/messages/list-threads-by-student", () => {
         companyLogoUrl: null,
         lastMessageAt: new Date("2030-01-03T00:00:00.000Z"),
         createdAt: new Date("2030-01-01T00:00:00.000Z"),
+        lastMessageId: "message-2",
+        lastMessageSenderUserId: "company-admin-1",
+        lastReadMessageId: "message-2",
       },
       {
         id: "thread-2",
@@ -82,6 +101,9 @@ describe("src/server/services/messages/list-threads-by-student", () => {
         companyLogoUrl: "https://example.com/aster.png",
         lastMessageAt: new Date("2030-01-04T00:00:00.000Z"),
         createdAt: new Date("2030-01-02T00:00:00.000Z"),
+        lastMessageId: "message-3",
+        lastMessageSenderUserId: "student-1",
+        lastReadMessageId: null,
       },
     ]
     dbRows = rows
@@ -92,7 +114,32 @@ describe("src/server/services/messages/list-threads-by-student", () => {
 
     const result = await listMessageThreadsByStudent("student-1", { limit: 2 })
 
-    expect(result).toEqual(rows)
+    expect(result).toEqual([
+      {
+        id: "thread-1",
+        offerId: "offer-1",
+        offerTitle: "Backend Intern",
+        companyId: "company-1",
+        companyName: "Internex",
+        companyLogoUrl: null,
+        lastMessageAt: new Date("2030-01-03T00:00:00.000Z"),
+        createdAt: new Date("2030-01-01T00:00:00.000Z"),
+        hasUnread: false,
+        unreadCount: 0,
+      },
+      {
+        id: "thread-2",
+        offerId: "offer-2",
+        offerTitle: "Frontend Intern",
+        companyId: "company-2",
+        companyName: "Aster Labs",
+        companyLogoUrl: "https://example.com/aster.png",
+        lastMessageAt: new Date("2030-01-04T00:00:00.000Z"),
+        createdAt: new Date("2030-01-02T00:00:00.000Z"),
+        hasUnread: false,
+        unreadCount: 0,
+      },
+    ])
     expect(dbSelect).toHaveBeenCalledTimes(1)
     expect(dbLimit).toHaveBeenCalledWith(2)
   })

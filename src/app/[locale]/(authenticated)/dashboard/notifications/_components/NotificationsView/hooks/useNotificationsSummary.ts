@@ -24,11 +24,41 @@ interface Notification {
   payload: unknown
 }
 
+function buildFallbackSummary(notifications: Notification[]): NotificationsSummary {
+  const total = notifications.length
+  const unread = notifications.filter((item) => item.readAt === null).length
+
+  const typeCounts = notifications.reduce<Record<string, number>>((acc, item) => {
+    acc[item.type] = (acc[item.type] ?? 0) + 1
+    return acc
+  }, {})
+
+  const topTypes = Object.entries(typeCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([type, count]) => `${type.replaceAll("_", " ")}: ${count}`)
+
+  return {
+    summaryBullets: [
+      `${unread} unread out of ${total} notifications.`,
+      ...topTypes,
+    ],
+    suggestedNextActions:
+      unread > 0
+        ? [
+            "Review unread notifications and mark handled items as read.",
+            "Prioritize messages and interview updates first.",
+          ]
+        : ["You are up to date. Keep monitoring new activity."],
+  }
+}
+
 export function useNotificationsSummary() {
   const t = useTranslations("dashboard.notifications")
 
   const [aiSummary, setAiSummary] = useState<NotificationsSummary | null>(null)
   const aiActiveRef = useRef(false)
+  const lastNotificationsRef = useRef<Notification[]>([])
 
   const aiTransport = useState(
     () =>
@@ -51,7 +81,10 @@ export function useNotificationsSummary() {
       const out = asRecord(
         findLatestToolOutput(messages, "notifications_summarize"),
       )
-      if (!out) return
+      if (!out) {
+        setAiSummary(buildFallbackSummary(lastNotificationsRef.current))
+        return
+      }
 
       setAiSummary({
         summaryBullets: getStringArray(out.summaryBullets),
@@ -62,8 +95,9 @@ export function useNotificationsSummary() {
 
   const summarize = (role: string, notifications: Notification[]) => {
     aiActiveRef.current = true
-    setAiSummary(null)
+    setAiSummary(buildFallbackSummary(notifications))
     setAiMessages([])
+    lastNotificationsRef.current = notifications
 
     const context = {
       intent: "notifications_summarize",

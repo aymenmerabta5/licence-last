@@ -21,8 +21,24 @@ describe("listDepartments", () => {
 
   test("should return list of departments", async () => {
     const depts = [
-      { id: "d1", name: "CS", headName: "Dr. A", createdAt: new Date() },
-      { id: "d2", name: "Math", headName: null, createdAt: new Date() },
+      {
+        id: "d1",
+        name: "CS",
+        headUserId: "u-1",
+        headUserName: "Dr. A",
+        headUserEmail: "a@example.com",
+        skillCount: 2,
+        createdAt: new Date(),
+      },
+      {
+        id: "d2",
+        name: "Math",
+        headUserId: null,
+        headUserName: null,
+        headUserEmail: null,
+        skillCount: 0,
+        createdAt: new Date(),
+      },
     ]
     mockChain.orderBy.mockResolvedValue(depts)
 

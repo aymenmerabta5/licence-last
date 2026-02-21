@@ -68,6 +68,7 @@ export const listMessageThreadsByCompanyProcedure =
     .handler(async ({ input, context }) =>
       listMessageThreadsByCompany(
         context.companyMembership.companyId,
+        context.user.id,
         input ?? {},
       ),
     )

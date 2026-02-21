@@ -34,24 +34,6 @@ describe("updateDepartment", () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1)
   })
 
-  test("should update headName when provided", async () => {
-    const { updateDepartment } = await import(
-      "@/server/services/departments/update"
-    )
-    const result = await updateDepartment("dept-1", { headName: "Dr. New" })
-    expect(result).toEqual({ success: true })
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
-  })
-
-  test("should set headName to null when explicitly set to null", async () => {
-    const { updateDepartment } = await import(
-      "@/server/services/departments/update"
-    )
-    const result = await updateDepartment("dept-1", { headName: null })
-    expect(result).toEqual({ success: true })
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
-  })
-
   test("should return success without DB call when no updates provided", async () => {
     const { updateDepartment } = await import(
       "@/server/services/departments/update"
@@ -59,18 +41,6 @@ describe("updateDepartment", () => {
     const result = await updateDepartment("dept-1", {})
     expect(result).toEqual({ success: true })
     expect(mockUpdate).not.toHaveBeenCalled()
-  })
-
-  test("should update both fields when both provided", async () => {
-    const { updateDepartment } = await import(
-      "@/server/services/departments/update"
-    )
-    const result = await updateDepartment("dept-1", {
-      name: "X",
-      headName: "Dr. X",
-    })
-    expect(result).toEqual({ success: true })
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
   })
 
   test("should throw when department does not exist", async () => {

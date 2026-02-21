@@ -6,6 +6,8 @@ export interface MessageThread {
   offerTitle: string
   lastMessageAt: Date | string
   createdAt: Date | string
+  hasUnread: boolean
+  unreadCount: number
   companyId?: string
   companyName?: string | null
   companyLogoUrl?: string | null

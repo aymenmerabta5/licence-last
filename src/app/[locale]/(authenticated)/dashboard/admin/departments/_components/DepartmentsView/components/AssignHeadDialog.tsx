@@ -18,8 +18,6 @@ import { Label } from "@/components/ui/label"
 interface AssignHeadDialogProps {
   open: boolean
   departmentName: string | null
-  headName: string
-  onHeadNameChange: (value: string) => void
   headEmail: string
   onHeadEmailChange: (value: string) => void
   onOpenChange: (open: boolean) => void
@@ -30,8 +28,6 @@ interface AssignHeadDialogProps {
 export function AssignHeadDialog({
   open,
   departmentName,
-  headName,
-  onHeadNameChange,
   headEmail,
   onHeadEmailChange,
   onOpenChange,
@@ -39,7 +35,7 @@ export function AssignHeadDialog({
   isSaving,
 }: AssignHeadDialogProps) {
   const t = useTranslations("dashboard.admin.departments")
-  const isDisabled = isSaving || !headName.trim() || !headEmail.trim()
+  const isDisabled = isSaving || !headEmail.trim()
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -60,18 +56,6 @@ export function AssignHeadDialog({
         </DialogHeader>
 
         <div className="space-y-4">
-          <div className="space-y-2">
-            <Label className="text-xs uppercase tracking-[0.12em] text-muted-foreground [[dir=rtl]_&]:tracking-normal">
-              {t("bulkCreate.headName")} *
-            </Label>
-            <Input
-              value={headName}
-              onChange={(event) => onHeadNameChange(event.target.value)}
-              placeholder={t("bulkCreate.headNamePlaceholder")}
-              className="h-10 rounded-xl border-border/60"
-            />
-          </div>
-
           <div className="space-y-2">
             <Label className="text-xs uppercase tracking-[0.12em] text-muted-foreground [[dir=rtl]_&]:tracking-normal">
               {t("bulkCreate.headEmail")} *

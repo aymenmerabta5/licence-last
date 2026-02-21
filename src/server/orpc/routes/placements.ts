@@ -29,7 +29,23 @@ const PLACEMENT_ERROR_MAP = {
   PLACEMENT_ALREADY_EXISTS: "CONFLICT",
 } as const
 
-/* ── List Pending Placements (admin only) ── */
+function assertUniversityAdminRole(role: string | null | undefined): void {
+  if (role !== "university_admin") {
+    throw new ORPCError("FORBIDDEN", {
+      message: "University admin access required",
+    })
+  }
+}
+
+function assertNotSuperAdmin(role: string | null | undefined): void {
+  if (role === "super_admin") {
+    throw new ORPCError("FORBIDDEN", {
+      message: "Super admin cannot access placement validations",
+    })
+  }
+}
+
+/* List pending placements (university admin only) */
 
 export const listPendingProcedure = adminProcedureGenerous
   .input(
@@ -42,17 +58,16 @@ export const listPendingProcedure = adminProcedureGenerous
       })
       .optional(),
   )
-  .handler(async ({ input, context }) =>
-    listPendingApplications(input ?? {}, {
-      role:
-        context.user.role === "super_admin"
-          ? "super_admin"
-          : "university_admin",
-      universityId: context.user.universityId ?? null,
-    }),
-  )
+  .handler(async ({ input, context }) => {
+    assertUniversityAdminRole(context.user.role)
 
-/* ── Validate Placement (admin only) ── */
+    return listPendingApplications(input ?? {}, {
+      role: "university_admin",
+      universityId: context.user.universityId ?? null,
+    })
+  })
+
+/* Validate placement (university admin only) */
 
 export const validateProcedure = adminProcedureStandard
   .input(
@@ -63,7 +78,9 @@ export const validateProcedure = adminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    // Validate dates first — these throw user-facing messages
+    assertUniversityAdminRole(context.user.role)
+
+    // Validate dates first; these throw user-facing messages.
     let startDate: Date
     let endDate: Date
     try {
@@ -80,10 +97,7 @@ export const validateProcedure = adminProcedureStandard
       return await validatePlacement({
         applicationId: input.applicationId,
         adminUserId: context.user.id,
-        adminRole:
-          context.user.role === "super_admin"
-            ? "super_admin"
-            : "university_admin",
+        adminRole: "university_admin",
         adminUniversityId: context.user.universityId ?? null,
         startDate,
         endDate,
@@ -97,7 +111,7 @@ export const validateProcedure = adminProcedureStandard
     }
   })
 
-/* ── Reject Placement (admin only) ── */
+/* Reject placement (university admin only) */
 
 export const rejectProcedure = adminProcedureStandard
   .input(
@@ -107,14 +121,13 @@ export const rejectProcedure = adminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
+    assertUniversityAdminRole(context.user.role)
+
     try {
       return await rejectPlacement({
         applicationId: input.applicationId,
         adminUserId: context.user.id,
-        adminRole:
-          context.user.role === "super_admin"
-            ? "super_admin"
-            : "university_admin",
+        adminRole: "university_admin",
         adminUniversityId: context.user.universityId ?? null,
         reason: input.reason,
       })
@@ -127,7 +140,7 @@ export const rejectProcedure = adminProcedureStandard
     }
   })
 
-/* ── Dept Head: List Pending Placements ── */
+/* Dept head: list pending placements */
 
 export const deptHeadListPendingProcedure = deptHeadProcedureGenerous
   .input(
@@ -148,7 +161,7 @@ export const deptHeadListPendingProcedure = deptHeadProcedureGenerous
     }),
   )
 
-/* ── Dept Head: Validate Placement ── */
+/* Dept head: validate placement */
 
 export const deptHeadValidateProcedure = deptHeadProcedureStandard
   .input(
@@ -190,7 +203,7 @@ export const deptHeadValidateProcedure = deptHeadProcedureStandard
     }
   })
 
-/* ── AI Validation Summary (any authenticated admin/dept_head) ── */
+/* AI validation summary (university_admin + dept_head; super_admin blocked) */
 
 export const generateValidationSummaryProcedure = adminProcedureAssistant
   .input(
@@ -198,14 +211,16 @@ export const generateValidationSummaryProcedure = adminProcedureAssistant
       application: z.record(z.string(), z.unknown()),
     }),
   )
-  .handler(async ({ input }) => {
+  .handler(async ({ input, context }) => {
+    assertNotSuperAdmin(context.user.role)
+
     const { generateValidationSummary } = await import(
       "@/server/services/placements/generate-validation-summary"
     )
     return generateValidationSummary(input)
   })
 
-/* ── Dept Head: Reject Placement ── */
+/* Dept head: reject placement */
 
 export const deptHeadRejectProcedure = deptHeadProcedureStandard
   .input(

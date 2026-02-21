@@ -31,20 +31,47 @@ const tx = {
   update: txUpdate,
 }
 
+const dbSelectResults: unknown[][] = []
+let dbSelectCallIdx = 0
+
+const dbLimit = mock(() => {
+  const results = dbSelectResults[dbSelectCallIdx - 1] ?? []
+  return Promise.resolve(results)
+})
+const dbWhere = mock(() => ({
+  limit: dbLimit,
+  then: (resolve: (value: unknown[]) => void) =>
+    resolve(dbSelectResults[dbSelectCallIdx - 1] ?? []),
+}))
+const dbFrom = mock(() => ({ where: dbWhere }))
+const dbSelect = mock(() => {
+  dbSelectCallIdx += 1
+  return { from: dbFrom }
+})
+
 const mockTransaction = mock(
   async (callback: (trx: typeof tx) => Promise<unknown>) => callback(tx),
 )
 
+const createNotificationMock = mock(async () => ({ id: "notification-1" }))
+
 mock.module("@/server/db", () => ({
   db: {
+    select: dbSelect,
     transaction: mockTransaction,
   },
+}))
+
+mock.module("@/server/services/notifications/create", () => ({
+  createNotification: createNotificationMock,
 }))
 
 describe("src/server/services/interviews/confirm", () => {
   beforeEach(() => {
     txSelectResults.length = 0
     txSelectCallIdx = 0
+    dbSelectResults.length = 0
+    dbSelectCallIdx = 0
 
     txSelect.mockClear()
     txFromWithLock.mockClear()
@@ -57,6 +84,11 @@ describe("src/server/services/interviews/confirm", () => {
     txUpdateSet.mockClear()
     txUpdateWhere.mockClear()
     mockTransaction.mockClear()
+    dbSelect.mockClear()
+    dbFrom.mockClear()
+    dbWhere.mockClear()
+    dbLimit.mockClear()
+    createNotificationMock.mockClear()
 
     txFromWithLock.mockReturnValue({ where: txWhereWithLock })
     txWhereWithLock.mockReturnValue({ for: txForUpdate })
@@ -67,6 +99,13 @@ describe("src/server/services/interviews/confirm", () => {
     txUpdate.mockReturnValue({ set: txUpdateSet })
     txUpdateSet.mockReturnValue({ where: txUpdateWhere })
     txUpdateWhere.mockResolvedValue(undefined)
+
+    dbFrom.mockReturnValue({ where: dbWhere })
+    dbWhere.mockImplementation(() => ({
+      limit: dbLimit,
+      then: (resolve: (value: unknown[]) => void) =>
+        resolve(dbSelectResults[dbSelectCallIdx - 1] ?? []),
+    }))
 
     mockTransaction.mockImplementation(async (callback) => callback(tx))
   })
@@ -90,6 +129,8 @@ describe("src/server/services/interviews/confirm", () => {
       {
         id: "interview-1",
         studentUserId: "student-2",
+        companyId: "company-1",
+        offerId: "offer-1",
         status: "pending_confirmation",
       },
     ])
@@ -108,6 +149,8 @@ describe("src/server/services/interviews/confirm", () => {
       {
         id: "interview-1",
         studentUserId: "student-1",
+        companyId: "company-1",
+        offerId: "offer-1",
         status: "confirmed",
       },
     ])
@@ -126,6 +169,8 @@ describe("src/server/services/interviews/confirm", () => {
       {
         id: "interview-1",
         studentUserId: "student-1",
+        companyId: "company-1",
+        offerId: "offer-1",
         status: "pending_confirmation",
       },
     ])
@@ -150,6 +195,8 @@ describe("src/server/services/interviews/confirm", () => {
       {
         id: "interview-1",
         studentUserId: "student-1",
+        companyId: "company-1",
+        offerId: "offer-1",
         status: "pending_confirmation",
       },
     ])
@@ -160,6 +207,7 @@ describe("src/server/services/interviews/confirm", () => {
         endsAt,
       },
     ])
+    dbSelectResults.push([{ userId: "company-admin-1" }, { userId: "company-admin-2" }])
 
     const { confirmInterviewSlot } = await import(
       "@/server/services/interviews/confirm?fresh=5" as string
@@ -180,6 +228,7 @@ describe("src/server/services/interviews/confirm", () => {
     expect(mockTransaction).toHaveBeenCalledTimes(1)
     expect(txSelect).toHaveBeenCalledTimes(2)
     expect(txUpdate).toHaveBeenCalledTimes(1)
+    expect(createNotificationMock).toHaveBeenCalledTimes(2)
 
     const txUpdateSetCalls = txUpdateSet.mock.calls as unknown as unknown[][]
     const updatePayload = txUpdateSetCalls[0]?.[0] as {
@@ -191,5 +240,31 @@ describe("src/server/services/interviews/confirm", () => {
     expect(updatePayload.status).toBe("confirmed")
     expect(updatePayload.confirmedSlotId).toBe("slot-1")
     expect(updatePayload.confirmedByUserId).toBe("student-1")
+
+    const notificationCalls = createNotificationMock.mock
+      .calls as unknown as unknown[][]
+    const notifiedUserIds = notificationCalls
+      .map(
+        (call) => (call[0] as { userId: string }).userId,
+      )
+      .sort((a, b) => a.localeCompare(b))
+
+    expect(notifiedUserIds).toEqual(["company-admin-1", "company-admin-2"])
+
+    const firstNotification = notificationCalls[0]?.[0] as {
+      type: string
+      payload: {
+        interviewId: string
+        slotId: string
+        offerId: string
+        studentUserId: string
+      }
+    }
+
+    expect(firstNotification.type).toBe("interview_confirmed")
+    expect(firstNotification.payload.interviewId).toBe("interview-1")
+    expect(firstNotification.payload.slotId).toBe("slot-1")
+    expect(firstNotification.payload.offerId).toBe("offer-1")
+    expect(firstNotification.payload.studentUserId).toBe("student-1")
   })
 })

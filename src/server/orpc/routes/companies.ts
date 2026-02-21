@@ -168,10 +168,15 @@ export const submitCompanyQualityFeedbackProcedure = authedProcedureStandard
     }
 
     try {
-      return await submitCompanyQualityFeedback({
+      const result = await submitCompanyQualityFeedback({
         studentUserId: context.user.id,
         ...input,
       })
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(result.companyId), "max")
+      revalidateTag(CACHE_TAGS.COMPANY_CANDIDATES(result.companyId), {
+        expire: 0,
+      })
+      return result
     } catch (error) {
       throw new ORPCError("BAD_REQUEST", {
         message:
@@ -192,10 +197,25 @@ export const submitCompanyReportProcedure = authedProcedureStandard
       }
     }
 
-    return submitCompanyReport({
-      reporterUserId: context.user.id,
-      ...input,
-    })
+    try {
+      const result = await submitCompanyReport({
+        reporterUserId: context.user.id,
+        ...input,
+      })
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
+      revalidateTag(CACHE_TAGS.COMPANY_CANDIDATES(input.companyId), {
+        expire: 0,
+      })
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          COMPANY_REPORT_RELATIONSHIP_REQUIRED: "FORBIDDEN",
+          COMPANY_REPORT_DESCRIPTION_REQUIRED: "BAD_REQUEST",
+        },
+        fallbackMessage: "Failed to submit company report",
+      })
+    }
   })
 
 export const listCompanyReportsProcedure = superAdminProcedureGenerous
@@ -265,7 +285,13 @@ export const createCompanyProcedure = authedProcedureStandard
   )
   .handler(async ({ input, context }) => {
     try {
-      return await createCompany(input, context.user.id)
+      const result = await createCompany(input, context.user.id)
+
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(result.companyId), "max")
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`), "max")
+      revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
+
+      return result
     } catch (error) {
       createServiceORPCError(error, {
         codeMap: {

@@ -85,7 +85,7 @@ export function DashboardNavbar({ user }: { user: NavbarUser }) {
             <div className="hidden xs:flex items-center gap-3 text-muted-foreground">
               <LanguageSwitcher />
               <ThemeToggle />
-              <NotificationBell />
+              <NotificationBell viewerId={user.id} />
             </div>
 
             <UserDropdown

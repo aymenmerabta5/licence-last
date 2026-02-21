@@ -11,6 +11,7 @@ import {
 } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
 import { SelectField } from "@/components/form-fields"
 import { Button } from "@/components/ui/button"
+import { Link } from "@/i18n/routing"
 import type { PipelineStage } from "@/lib/constants/pipeline"
 import {
   canTransitionStage,
@@ -172,8 +173,16 @@ export function CandidateCard({
         </div>
       )}
 
+      <Link
+        href={`/profile/${app.student.id}` as "/profile"}
+        className="block w-full text-[10px] font-bold uppercase tracking-wider text-muted-foreground/40 hover:text-primary py-1 transition-colors text-center"
+      >
+        {t("viewProfile")}
+      </Link>
+
       {/* Timeline button */}
       <button
+        type="button"
         className="w-full text-[10px] font-bold uppercase tracking-wider text-muted-foreground/40 hover:text-primary py-1 transition-colors text-center"
         onClick={onViewTimeline}
       >

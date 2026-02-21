@@ -31,18 +31,52 @@ interface DepartmentAdminContext {
   }
 }
 
-async function assertCanManageDepartment(
-  departmentId: string,
-  context: DepartmentAdminContext,
-) {
-  if (
-    context.user.role !== "university_admin" &&
-    context.user.role !== "super_admin"
-  ) {
+function assertDepartmentAdminRole(role: string | null | undefined) {
+  if (role !== "university_admin" && role !== "super_admin") {
     throw new ORPCError("FORBIDDEN", {
       message: "Only university admins can manage departments",
     })
   }
+}
+
+function resolveTargetUniversityId(args: {
+  context: DepartmentAdminContext
+  inputUniversityId?: string
+}) {
+  const { context, inputUniversityId } = args
+  assertDepartmentAdminRole(context.user.role)
+
+  if (context.user.role === "super_admin") {
+    const universityId = inputUniversityId ?? context.user.universityId ?? null
+    if (!universityId) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "University is required for super admin actions",
+      })
+    }
+    return universityId
+  }
+
+  const universityId = context.user.universityId
+  if (!universityId) {
+    throw new ORPCError("BAD_REQUEST", {
+      message: "Admin must belong to a university",
+    })
+  }
+
+  if (inputUniversityId && inputUniversityId !== universityId) {
+    throw new ORPCError("FORBIDDEN", {
+      message: "University admins can only manage their own university",
+    })
+  }
+
+  return universityId
+}
+
+async function assertCanManageDepartment(
+  departmentId: string,
+  context: DepartmentAdminContext,
+) {
+  assertDepartmentAdminRole(context.user.role)
 
   const [dept] = await db
     .select({ universityId: department.universityId })
@@ -74,22 +108,19 @@ export const createDepartmentProcedure = adminProcedureStandard
   .input(
     z.object({
       name: z.string().min(2).max(200),
-      headName: z.string().max(200).optional(),
+      universityId: z.string().min(1).optional(),
     }),
   )
   .handler(async ({ input, context }) => {
-    const universityId = context.user.universityId
-    if (!universityId) {
-      throw new ORPCError("BAD_REQUEST", {
-        message: "Admin must belong to a university",
-      })
-    }
+    const universityId = resolveTargetUniversityId({
+      context,
+      inputUniversityId: input.universityId,
+    })
 
     try {
       return await createDepartment({
         universityId,
         name: input.name,
-        headName: input.headName,
       })
     } catch (error) {
       createServiceORPCError(error, {
@@ -106,7 +137,6 @@ export const updateDepartmentProcedure = adminProcedureStandard
     z.object({
       departmentId: z.string().min(1),
       name: z.string().min(2).max(200).optional(),
-      headName: z.string().max(200).nullable().optional(),
     }),
   )
   .handler(async ({ input, context }) => {
@@ -115,7 +145,6 @@ export const updateDepartmentProcedure = adminProcedureStandard
     try {
       return await updateDepartment(input.departmentId, {
         name: input.name,
-        headName: input.headName,
       })
     } catch (error) {
       createServiceORPCError(error, {
@@ -134,12 +163,10 @@ export const assignDepartmentHeadProcedure = adminProcedureStandard
         departmentId: z.string().min(1),
         userId: z.string().min(1).optional(),
         headEmail: z.string().email().optional(),
-        headName: z.string().min(2).max(120).optional(),
       })
-      .refine(
-        (value) => Boolean(value.userId || (value.headEmail && value.headName)),
-        { message: "Provide either userId or headEmail + headName" },
-      ),
+      .refine((value) => Boolean(value.userId || value.headEmail), {
+        message: "Provide either userId or headEmail",
+      }),
   )
   .handler(async ({ input, context }) => {
     await assertCanManageDepartment(input.departmentId, context)
@@ -152,7 +179,6 @@ export const assignDepartmentHeadProcedure = adminProcedureStandard
       return await assignDepartmentHeadByEmail({
         departmentId: input.departmentId,
         headEmail: input.headEmail!,
-        headName: input.headName!,
       })
     } catch (error) {
       createServiceORPCError(error, {
@@ -206,23 +232,16 @@ export const deleteDepartmentProcedure = adminProcedureStandard
   })
 
 export const bulkCreateDepartmentsProcedure = adminProcedureStandard
-  .input(bulkCreateDepartmentsSchema)
+  .input(
+    bulkCreateDepartmentsSchema.extend({
+      universityId: z.string().min(1).optional(),
+    }),
+  )
   .handler(async ({ input, context }) => {
-    if (
-      context.user.role !== "university_admin" &&
-      context.user.role !== "super_admin"
-    ) {
-      throw new ORPCError("FORBIDDEN", {
-        message: "Only university admins can bulk-create departments",
-      })
-    }
-
-    const universityId = context.user.universityId
-    if (!universityId) {
-      throw new ORPCError("BAD_REQUEST", {
-        message: "Admin must belong to a university",
-      })
-    }
+    const universityId = resolveTargetUniversityId({
+      context,
+      inputUniversityId: input.universityId,
+    })
 
     const [uni] = await db
       .select({ name: university.name })

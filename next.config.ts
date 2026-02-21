@@ -3,6 +3,57 @@ import createNextIntlPlugin from "next-intl/plugin"
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts")
 
+interface ImageRemotePattern {
+  hostname: string
+  pathname?: string
+  port?: string
+  protocol?: "http" | "https"
+}
+
+function toRemotePattern(rawUrl?: string): ImageRemotePattern | null {
+  if (!rawUrl) return null
+
+  try {
+    const url = new URL(rawUrl)
+    const protocol = url.protocol.replace(":", "")
+    if (protocol !== "http" && protocol !== "https") return null
+
+    const pathname =
+      url.pathname === "/" ? "/**" : `${url.pathname.replace(/\/+$/, "")}/**`
+
+    return {
+      protocol,
+      hostname: url.hostname,
+      port: url.port || undefined,
+      pathname,
+    }
+  } catch {
+    return null
+  }
+}
+
+function getStorageImageRemotePatterns(): ImageRemotePattern[] {
+  const candidates = [
+    process.env.S3_PUBLIC_URL,
+    process.env.NEXT_PUBLIC_S3_URL,
+    process.env.S3_ENDPOINT,
+    process.env.NEXT_PUBLIC_S3_ENDPOINT,
+  ]
+
+  const patterns = candidates
+    .map(toRemotePattern)
+    .filter((pattern): pattern is ImageRemotePattern => pattern !== null)
+
+  return Array.from(
+    new Map(
+      patterns.map((pattern) => [
+        `${pattern.protocol}:${pattern.hostname}:${pattern.port ?? ""}:${pattern.pathname ?? ""}`,
+        pattern,
+      ]),
+    ).values(),
+  )
+}
+
 const nextConfig: NextConfig = {
   typedRoutes: true,
   reactCompiler: true,
@@ -31,6 +82,9 @@ const nextConfig: NextConfig = {
         ],
       },
     ]
+  },
+  images: {
+    remotePatterns: getStorageImageRemotePatterns(),
   },
   allowedDevOrigins: ["http://localhost:3000", "http://xendate"],
 }

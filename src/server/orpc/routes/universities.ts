@@ -88,9 +88,15 @@ export const createUniversityProcedure = authedProcedureStandard
       departments: z.array(z.object({ name: z.string().min(2) })).optional(),
     }),
   )
-  .handler(async ({ input, context }) =>
-    createUniversity(input, context.user.id),
-  )
+  .handler(async ({ input, context }) => {
+    const result = await createUniversity(input, context.user.id)
+
+    revalidateTag(CACHE_TAGS.UNIVERSITIES, "max")
+    revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-${result.universityId}`, "max")
+    revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-user-${context.user.id}`, "max")
+
+    return result
+  })
 
 export const updateUniversityProcedure = superAdminProcedureStandard
   .input(

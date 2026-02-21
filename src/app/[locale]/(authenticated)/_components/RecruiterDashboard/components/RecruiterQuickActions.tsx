@@ -5,7 +5,7 @@ import {
   ArrowRight,
   Bot,
   Briefcase,
-  Building2,
+  FileText,
   Plus,
   UsersRound,
 } from "lucide-react"
@@ -26,6 +26,7 @@ interface ActionItem {
 
 export function RecruiterQuickActions() {
   const t = useTranslations("dashboard.recruiter")
+  const tNav = useTranslations("dashboard.nav")
 
   const actions: ActionItem[] = [
     {
@@ -42,16 +43,16 @@ export function RecruiterQuickActions() {
       icon: Briefcase,
     },
     {
-      title: "Company Profile",
-      description: "Update company info",
-      href: "/dashboard/company/profile",
-      icon: Building2,
+      title: t("actions.reviewCandidates"),
+      description: "Review applicant pipeline",
+      href: "/dashboard/candidates",
+      icon: UsersRound,
     },
     {
-      title: "Team Members",
-      description: "Manage recruiters",
-      href: "/dashboard/company/team",
-      icon: UsersRound,
+      title: tNav("companyDocuments"),
+      description: "Generate and download records",
+      href: "/dashboard/company/documents",
+      icon: FileText,
     },
     {
       title: "AI Assistant",
