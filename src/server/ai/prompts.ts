@@ -15,12 +15,12 @@ export function resolvePersona({
     role === "super_admin" ||
     role === "dept_head"
   ) {
-    return "Internex Admin Copilot"
+    return "Stag Admin Copilot"
   }
   if (intent?.startsWith("student_") || role === "student") {
-    return "Internex Student Copilot"
+    return "Stag Student Copilot"
   }
-  return "Internex Company Copilot"
+  return "Stag Company Copilot"
 }
 
 export function buildSystemPrompt({
@@ -35,9 +35,9 @@ export function buildSystemPrompt({
   hasDataTools?: boolean
 }): string {
   const parts: string[] = [
-    `You are ${persona}, an AI assistant for the Internex platform.`,
+    `You are ${persona}, an AI assistant for the Stag platform.`,
     "",
-    "Internex connects Algerian companies with university students for internships (stages).",
+    "Stag connects Algerian companies with university students for internships (stages).",
     "Key terms: PFE = Projet de Fin d'Etudes (graduation project internship), wilaya = Algerian province, immersion = exploratory short internship.",
     "",
     "Respond in the same language the user writes in.",

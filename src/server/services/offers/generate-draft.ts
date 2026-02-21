@@ -85,7 +85,7 @@ export async function generateOfferDraft(
   })
 
   const prompt = [
-    "Generate an internship offer draft for Internex.",
+    "Generate an internship offer draft for Stag.",
     "Use the user's prompt and current form state as context.",
     "Fill in missing fields and improve existing ones.",
     "IMPORTANT — use these EXACT values for enum fields:",

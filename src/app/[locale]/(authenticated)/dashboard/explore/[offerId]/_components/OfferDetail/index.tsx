@@ -27,7 +27,7 @@ export function OfferDetailClient({
   const companyReport = useCompanyReport(offer.companyId)
 
   return (
-    <div className="space-y-10 pb-20">
+    <div className="max-w-7xl mx-auto space-y-10 pb-20">
       {/* Editorial Masthead */}
       <OfferHeader
         offer={offer}
@@ -39,10 +39,10 @@ export function OfferDetailClient({
         }}
       />
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
+      {/* Main Content Grid - Newspaper spread effect */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 relative border-t-2 border-border/80 pt-8 mt-8">
         {/* Main column */}
-        <div className="lg:col-span-8 space-y-10">
+        <div className="lg:col-span-8 lg:pe-12 space-y-12">
           <OfferBody offer={offer} />
 
           <ApplicationPanel
@@ -63,11 +63,14 @@ export function OfferDetailClient({
           />
         </div>
 
+        {/* Vertical divider on desktop */}
+        <div className="hidden lg:block absolute inset-inline-start-[66.666667%] top-8 bottom-0 w-px bg-border/40" />
+
         {/* Sidebar column */}
         <motion.aside
           {...reveal}
           transition={{ duration: 0.5, ease, delay: 0.1 }}
-          className="lg:col-span-4 space-y-6"
+          className="lg:col-span-4 lg:ps-12 space-y-8 mt-12 lg:mt-0"
         >
           <DetailsSidebar offer={offer} />
 

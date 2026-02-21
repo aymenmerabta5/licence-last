@@ -11,10 +11,10 @@ export default function UniversityApprovedEmail({
   dashboardUrl,
 }: UniversityApprovedEmailProps) {
   return (
-    <EmailLayout title="University Approved — Internex">
+    <EmailLayout title="University Approved — Stag">
       <Section className="bg-card my-6 rounded-lg px-6 py-12 text-center">
         <Heading as="h1" className="text-primary mb-2 text-2xl font-bold">
-          Internex
+          Stag
         </Heading>
         <Heading as="h2" className="text-foreground mb-4 text-3xl font-bold">
           Your university has been approved

@@ -235,7 +235,7 @@ export const auth = betterAuth({
         pendingWelcomeEmails.delete(user.email)
         await sendEmail(
           user.email,
-          "Welcome to Internex — Set Your Password",
+          "Welcome to Stag — Set Your Password",
           DeptHeadWelcomeEmail,
           { ...welcomeData, link: url },
         )
@@ -269,12 +269,12 @@ export const auth = betterAuth({
       impersonationSessionDuration: 60 * 60, // 1 hour
     }),
     twoFactor({
-      issuer: "Internex",
+      issuer: "Stag",
       otpOptions: {
         async sendOTP({ user, otp }) {
           await sendEmail(
             user.email,
-            "Your Internex verification code",
+            "Your Stag verification code",
             TwoFactorOtpEmail,
             { otp, userName: user.name || "User" },
           )

@@ -74,7 +74,7 @@ export function AuthPanel() {
           transition={{ duration: 0.8, ease, delay: 0.3 }}
           className="mt-12 mb-6 font-serif text-5xl tracking-tight text-heading xl:text-6xl"
         >
-          Internex<span className="text-primary">.</span>io
+          Stag<span className="text-primary">.</span>io
         </motion.h1>
 
         {/* Tagline */}

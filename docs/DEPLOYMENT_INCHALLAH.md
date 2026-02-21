@@ -39,14 +39,14 @@ echo "YOUR_TOKEN" | docker login ghcr.io -u YOUR_USERNAME --password-stdin
 ### 3. Create deployment directory
 
 ```bash
-sudo mkdir -p /opt/internex/backups
-sudo chown $USER:$USER /opt/internex
-cd /opt/internex
+sudo mkdir -p /opt/stag/backups
+sudo chown $USER:$USER /opt/stag
+cd /opt/stag
 ```
 
 ### 4. Copy deployment files
 
-Copy these files from the repository to `/opt/internex/`:
+Copy these files from the repository to `/opt/stag/`:
 - `docker-compose.prod.yml`
 - `Caddyfile`
 
@@ -59,13 +59,13 @@ nano .env
 
 Required variables:
 ```env
-DATABASE_URL=postgresql://internex:YOUR_DB_PASSWORD@db:5432/internex
+DATABASE_URL=postgresql://stag:YOUR_DB_PASSWORD@db:5432/stag
 BETTER_AUTH_SECRET=your-secret-min-32-characters-long
 NEXT_PUBLIC_BETTER_AUTH_URL=https://your-domain.com
 
-POSTGRES_USER=internex
+POSTGRES_USER=stag
 POSTGRES_PASSWORD=YOUR_DB_PASSWORD
-POSTGRES_DB=internex
+POSTGRES_DB=stag
 
 GITHUB_REPO=your-username/your-repo
 DOMAIN_NAME=your-domain.com
@@ -78,7 +78,7 @@ Add an A record for your domain pointing to the server's IP address. Caddy will 
 ## First Deploy
 
 ```bash
-cd /opt/internex
+cd /opt/stag
 
 # Start with database seeding
 RUN_SEED=true docker compose -f docker-compose.prod.yml up -d
@@ -108,7 +108,7 @@ Fully automatic. The pipeline:
 ### View logs
 
 ```bash
-cd /opt/internex
+cd /opt/stag
 docker compose -f docker-compose.prod.yml logs -f app     # App logs
 docker compose -f docker-compose.prod.yml logs -f db       # Database logs
 docker compose -f docker-compose.prod.yml logs -f caddy    # Reverse proxy logs
@@ -134,17 +134,17 @@ docker images ghcr.io/YOUR_USERNAME/YOUR_REPO
 
 # Roll back to a specific commit
 docker compose -f docker-compose.prod.yml pull
-docker service update --image ghcr.io/YOUR_USERNAME/YOUR_REPO:sha-abc1234 internex_app
+docker service update --image ghcr.io/YOUR_USERNAME/YOUR_REPO:sha-abc1234 stag_app
 ```
 
 ### Database backup (manual)
 
 ```bash
 docker compose -f docker-compose.prod.yml exec db \
-  pg_dump -U internex internex > backup-$(date +%Y%m%d).sql
+  pg_dump -U stag stag > backup-$(date +%Y%m%d).sql
 ```
 
-Automated daily backups are stored in `/opt/internex/backups/`.
+Automated daily backups are stored in `/opt/stag/backups/`.
 
 ### Run migrations manually
 
@@ -174,6 +174,6 @@ Add these to your repository settings (Settings > Secrets and variables > Action
 
 | Secret | Description |
 |--------|-------------|
-| `NEXT_PUBLIC_BETTER_AUTH_URL` | Production URL (e.g., `https://internex.example.com`) |
+| `NEXT_PUBLIC_BETTER_AUTH_URL` | Production URL (e.g., `https://stag.example.com`) |
 
 `GITHUB_TOKEN` is provided automatically and has `packages:write` permission.

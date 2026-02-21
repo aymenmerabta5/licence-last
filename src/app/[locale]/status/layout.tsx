@@ -1,9 +1,11 @@
+import { Suspense } from "react"
+
 import { StatusContent } from "@/app/[locale]/status/_components/StatusContent"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { Link } from "@/i18n/routing"
 
-export default async function StatusLayout({
+export default function StatusLayout({
   children,
 }: {
   children: React.ReactNode
@@ -16,7 +18,7 @@ export default async function StatusLayout({
           href="/"
           className="font-serif text-xl tracking-tight text-heading transition-colors duration-500 ease-in-out"
         >
-          Internex<span className="text-primary">.</span>io
+          Stag<span className="text-primary">.</span>io
         </Link>
 
         <div className="flex items-center gap-3">
@@ -28,7 +30,9 @@ export default async function StatusLayout({
       {/* ── Centered content with auth guard ── */}
       <main className="flex-1 flex items-center justify-center px-6 pb-12 lg:px-10">
         <div className="w-full max-w-3xl">
-          <StatusContent>{children}</StatusContent>
+          <Suspense fallback={<div className="min-h-[200px]" />}>
+            <StatusContent>{children}</StatusContent>
+          </Suspense>
         </div>
       </main>
     </div>

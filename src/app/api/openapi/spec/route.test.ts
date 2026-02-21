@@ -1,6 +1,6 @@
 import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 
-const BASE_URL = "https://internex.example.com"
+const BASE_URL = "https://stag.example.com"
 const generateOpenAPISpecMock = mock(async () => ({ openapi: "3.1.0" }))
 
 mock.module("@/env", () => ({
@@ -33,7 +33,7 @@ describe("src/app/api/openapi/spec/route", () => {
   })
 
   test("returns generated spec and CORS in non-production", async () => {
-    const expectedSpec = { openapi: "3.1.0", info: { title: "Internex API" } }
+    const expectedSpec = { openapi: "3.1.0", info: { title: "Stag API" } }
     generateOpenAPISpecMock.mockResolvedValueOnce(expectedSpec)
 
     const { GET } = await import("@/app/api/openapi/spec/route")
@@ -44,7 +44,7 @@ describe("src/app/api/openapi/spec/route", () => {
     expect(body).toEqual(expectedSpec)
     expect(generateOpenAPISpecMock).toHaveBeenCalledWith(BASE_URL)
     expect(response.headers.get("Access-Control-Allow-Origin")).toBe(
-      "https://internex.example.com",
+      "https://stag.example.com",
     )
   })
 

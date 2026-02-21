@@ -10,7 +10,7 @@ describe("mcp guards", () => {
   test("marks safe for local dev mode", () => {
     const report = getHealthReport({
       env: {
-        DATABASE_URL: "postgresql://user:pass@localhost:5432/internex_dev",
+        DATABASE_URL: "postgresql://user:pass@localhost:5432/stag_dev",
         MCP_DEV_MODE: "true",
         NODE_ENV: "development",
       },
@@ -24,7 +24,7 @@ describe("mcp guards", () => {
   test("blocks when mcp dev mode is missing", () => {
     const report = getHealthReport({
       env: {
-        DATABASE_URL: "postgresql://user:pass@localhost:5432/internex_dev",
+        DATABASE_URL: "postgresql://user:pass@localhost:5432/stag_dev",
         NODE_ENV: "development",
       },
       argv: ["bun", "src/server/mcp/index.ts"],
@@ -37,7 +37,7 @@ describe("mcp guards", () => {
   test("blocks production-looking databases", () => {
     const report = getHealthReport({
       env: {
-        DATABASE_URL: "postgresql://user:pass@localhost:5432/internex_prod",
+        DATABASE_URL: "postgresql://user:pass@localhost:5432/stag_prod",
         MCP_DEV_MODE: "true",
         NODE_ENV: "development",
       },
@@ -52,7 +52,7 @@ describe("mcp guards", () => {
     expect(() =>
       assertDevMcpAllowed({
         env: {
-          DATABASE_URL: "postgresql://user:pass@localhost:5432/internex_prod",
+          DATABASE_URL: "postgresql://user:pass@localhost:5432/stag_prod",
           MCP_DEV_MODE: "true",
           NODE_ENV: "development",
         },

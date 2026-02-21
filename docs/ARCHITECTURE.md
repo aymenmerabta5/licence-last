@@ -1,4 +1,4 @@
-# Architecture Document — Internex Platform
+# Architecture Document — Stag Platform
 
 > Last updated: 2026-02-18
 > Version: 1.2
@@ -26,7 +26,7 @@
 
 ## 1. System Overview
 
-**Internex** is a full-stack web platform connecting Algerian companies with university students for internships (stages). The platform manages the complete internship lifecycle: company onboarding, offer creation, student discovery, application pipeline, placement validation, and feedback/trust scoring.
+**Stag** is a full-stack web platform connecting Algerian companies with university students for internships (stages). The platform manages the complete internship lifecycle: company onboarding, offer creation, student discovery, application pipeline, placement validation, and feedback/trust scoring.
 
 ### High-Level Architecture
 
@@ -723,9 +723,9 @@ Persistence (assistantConversation + assistantMessage)
 
 | Persona | Triggered By |
 |---------|-------------|
-| Internex Company Copilot | company_admin (default) |
-| Internex Student Copilot | student role or student_* intents |
-| Internex Admin Copilot | admin/super_admin or admin_* intents |
+| Stag Company Copilot | company_admin (default) |
+| Stag Student Copilot | student role or student_* intents |
+| Stag Admin Copilot | admin/super_admin or admin_* intents |
 
 ### Internal Tools (9)
 

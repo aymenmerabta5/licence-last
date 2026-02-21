@@ -29,7 +29,7 @@ export function AdminStatsHeader() {
             </h1>
             <p className="text-muted-foreground text-sm font-light tracking-wide max-w-2xl">
               Snapshot of placements, activity, and overall health across the
-              Internex platform.
+              Stag platform.
             </p>
           </div>
           <div className="shrink-0 flex items-center justify-center p-4 border-l border-border/40 pl-6 hidden md:block">

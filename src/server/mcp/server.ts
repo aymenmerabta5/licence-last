@@ -82,14 +82,14 @@ function withToolHandler<TInput extends object>(
   }
 }
 
-export function createInternexDevMcpServer() {
+export function createStagDevMcpServer() {
   const server = new McpServer({
-    name: "internex-local-dev-mcp",
+    name: "stag-local-dev-mcp",
     version: "1.0.0",
   })
 
   server.registerTool(
-    "internex.dev.health",
+    "stag.dev.health",
     {
       description:
         "Report MCP guard status and sanitized database fingerprint.",
@@ -101,7 +101,7 @@ export function createInternexDevMcpServer() {
   )
 
   server.registerTool(
-    "internex.dev.seed.list_scenarios",
+    "stag.dev.seed.list_scenarios",
     {
       description: "List available developer seed scenarios.",
       inputSchema: {},
@@ -115,7 +115,7 @@ export function createInternexDevMcpServer() {
   )
 
   server.registerTool(
-    "internex.dev.seed.run",
+    "stag.dev.seed.run",
     {
       description:
         "Create linked mock data for one scenario in the development database.",
@@ -137,7 +137,7 @@ export function createInternexDevMcpServer() {
   )
 
   server.registerTool(
-    "internex.dev.users.set_role",
+    "stag.dev.users.set_role",
     {
       description: "Set a user's role by id or email.",
       inputSchema: {
@@ -161,7 +161,7 @@ export function createInternexDevMcpServer() {
   )
 
   server.registerTool(
-    "internex.dev.companies.set_status",
+    "stag.dev.companies.set_status",
     {
       description: "Change company status by company id or slug.",
       inputSchema: {
@@ -228,7 +228,7 @@ export function createInternexDevMcpServer() {
   )
 
   server.registerTool(
-    "internex.dev.offers.transition_status",
+    "stag.dev.offers.transition_status",
     {
       description: "Transition offer status using the domain service rules.",
       inputSchema: {
@@ -247,7 +247,7 @@ export function createInternexDevMcpServer() {
   )
 
   server.registerTool(
-    "internex.dev.applications.transition",
+    "stag.dev.applications.transition",
     {
       description:
         "Apply role-aware application transitions: company accept/refuse, student withdraw, admin validate/reject.",
@@ -348,7 +348,7 @@ export function createInternexDevMcpServer() {
   )
 
   server.registerTool(
-    "internex.dev.seed.cleanup_plan",
+    "stag.dev.seed.cleanup_plan",
     {
       description:
         "Prepare a cleanup plan for seeded data and issue a short-lived confirmation token.",
@@ -367,7 +367,7 @@ export function createInternexDevMcpServer() {
   )
 
   server.registerTool(
-    "internex.dev.seed.cleanup_execute",
+    "stag.dev.seed.cleanup_execute",
     {
       description: "Execute cleanup using a token created by cleanup_plan.",
       inputSchema: {

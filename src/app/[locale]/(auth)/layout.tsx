@@ -2,7 +2,7 @@ import { AuthPanel } from "@/app/[locale]/(auth)/_components/AuthPanel"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
 
-export default async function AuthLayout({
+export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode
@@ -22,7 +22,7 @@ export default async function AuthLayout({
         <header className="flex items-center justify-between px-6 py-5 lg:px-10 lg:py-6">
           {/* Mobile brand (hidden on desktop — panel has logo) */}
           <span className="lg:hidden font-serif text-xl tracking-tight text-heading transition-colors duration-500 ease-in-out">
-            Internex<span className="text-primary">.</span>io
+            Stag<span className="text-primary">.</span>io
           </span>
 
           {/* Spacer for desktop alignment */}

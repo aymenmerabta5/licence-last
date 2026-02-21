@@ -1,7 +1,7 @@
 "use client"
 
 import type { UseQueryResult } from "@tanstack/react-query"
-import { Loader2, Target, TrendingUp } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 
@@ -38,57 +38,62 @@ export function MatchingPanel({
     <motion.div
       {...reveal}
       transition={{ duration: 0.5, ease, delay: 0.2 }}
-      className="border border-border p-5 space-y-4"
+      className="space-y-6 pt-6 border-t border-border/80"
     >
       {/* Section header */}
-      <div className="flex items-center gap-2">
-        <Target className="h-3.5 w-3.5 text-muted-foreground/60" />
-        <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">
+      <div className="mb-4">
+        <h2 className="font-serif text-xl text-heading tracking-tight">
           {t("title")}
-        </span>
-        <div className="h-px flex-1 bg-border/30" />
+        </h2>
       </div>
 
       {matchScoreQuery.isLoading ? (
-        <div className="flex items-center gap-2 text-xs text-muted-foreground py-4">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground py-4 font-mono uppercase tracking-widest">
           <Loader2 className="h-3.5 w-3.5 animate-spin" />
           {t("computing")}
         </div>
       ) : matchScoreQuery.data ? (
-        <div className="space-y-4">
+        <div className="space-y-8">
           {/* Score display */}
-          <div className="space-y-2">
-            <div className="flex items-end justify-between">
-              <p className="font-serif text-4xl text-heading tabular-nums leading-none">
+          <div className="space-y-3">
+            <div className="flex items-baseline justify-between">
+              <p className="font-serif text-6xl text-heading tabular-nums leading-none tracking-tighter">
                 {matchScoreQuery.data.score}
-                <span className="text-lg text-muted-foreground font-sans">
+                <span className="text-2xl text-muted-foreground/60 font-serif font-light hidden sm:inline-block ms-1">
                   /100
                 </span>
               </p>
-              <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
+              <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-muted-foreground bg-muted px-2 py-1">
                 {matchScoreQuery.data.version}
               </p>
             </div>
-            {/* Progress bar */}
-            <div className="h-1.5 bg-muted overflow-hidden">
+            {/* Minimal line indicator */}
+            <div className="h-px w-full bg-border/40 relative">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${matchScoreQuery.data.score}%` }}
-                transition={{ duration: 0.8, ease }}
-                className="h-full bg-primary"
+                transition={{ duration: 1, ease }}
+                className="absolute top-0 start-0 h-px bg-primary"
+              />
+              <motion.div
+                initial={{ insetInlineStart: 0 }}
+                animate={{ insetInlineStart: `${matchScoreQuery.data.score}%` }}
+                transition={{ duration: 1, ease }}
+                className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary"
               />
             </div>
           </div>
 
           {/* Reasons */}
-          <div className="space-y-2.5">
+          <div className="space-y-4">
             {matchScoreQuery.data.reasons.slice(0, 3).map((reason) => (
-              <div
-                key={reason.key}
-                className="text-xs border-s-2 border-primary/20 ps-3 py-0.5"
-              >
-                <p className="font-medium text-foreground">{reason.title}</p>
-                <p className="text-muted-foreground">{reason.detail}</p>
+              <div key={reason.key} className="space-y-1">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-foreground">
+                  {reason.title}
+                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {reason.detail}
+                </p>
               </div>
             ))}
           </div>
@@ -96,21 +101,21 @@ export function MatchingPanel({
           {/* Missing skills */}
           {skillGapQuery.data &&
             skillGapQuery.data.missingSkills.length > 0 && (
-              <div className="space-y-2 pt-3 border-t border-border/30">
-                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">
+              <div className="space-y-3 pt-6 border-t border-border/40">
+                <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
                   {t("missingSkills")}
                 </p>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-2">
                   {skillGapQuery.data.missingSkills.slice(0, 5).map((skill) => (
                     <span
                       key={skill.id}
-                      className="inline-flex items-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-300"
+                      className="inline-flex items-center text-[11px] font-bold uppercase tracking-widest text-foreground bg-transparent border-b border-destructive/30 pb-0.5"
                     >
                       {skill.name}
                     </span>
                   ))}
                 </div>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground/80 italic font-serif">
                   {t("estimatedImprovement", {
                     delta: skillGapQuery.data.estimatedDelta,
                   })}
@@ -119,21 +124,18 @@ export function MatchingPanel({
             )}
 
           {/* Readiness trend */}
-          <div className="pt-3 border-t border-border/30 space-y-1">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="h-3 w-3 text-muted-foreground/60" />
-              <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">
-                {t("readinessTrend")}
-              </p>
-            </div>
-            <p className="text-sm font-medium text-foreground tabular-nums">
+          <div className="pt-6 border-t border-border/40 flex items-center justify-between">
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+              {t("readinessTrend")}
+            </p>
+            <p className="text-xl font-serif text-heading tabular-nums">
               {latestReadiness ?? matchScoreQuery.data.readinessPercent}%
               {readinessDelta !== null && (
                 <span
                   className={
                     readinessDelta >= 0
-                      ? "text-green-600 dark:text-green-400 ms-1.5 text-xs"
-                      : "text-red-600 dark:text-red-400 ms-1.5 text-xs"
+                      ? "text-green-600 dark:text-green-400 ms-2 text-sm font-sans"
+                      : "text-destructive/80 ms-2 text-sm font-sans"
                   }
                 >
                   ({readinessDelta >= 0 ? "+" : ""}
@@ -144,7 +146,9 @@ export function MatchingPanel({
           </div>
         </div>
       ) : (
-        <p className="text-xs text-muted-foreground">{t("unavailable")}</p>
+        <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
+          {t("unavailable")}
+        </p>
       )}
     </motion.div>
   )

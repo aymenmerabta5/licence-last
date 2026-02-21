@@ -62,7 +62,7 @@ export default async function UniversityRejectedPage() {
         variant="editorial-outline"
         size="editorial"
         nativeButton={false}
-        render={<a href="mailto:support@internex.io" />}
+        render={<a href="mailto:support@stag.io" />}
       >
         {t("reapply")}
       </Button>

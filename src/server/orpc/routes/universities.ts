@@ -206,7 +206,7 @@ export const approveUniversityProcedure = superAdminProcedureStandard
         },
         email: {
           to: admin.email,
-          subject: `${result.name} has been approved - Internex`,
+          subject: `${result.name} has been approved - Stag`,
           component: UniversityApprovedEmail,
           props: { universityName: result.name, dashboardUrl },
         },

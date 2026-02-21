@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "title": "Internex — The Future of Internship Discovery",
+    "title": "Stag — The Future of Internship Discovery",
     "description": "A centralized platform bridging the gap between universities and enterprises. Skill-based matching, automated document generation, and placement tracking."
   },
   "nav": {
@@ -14,7 +14,7 @@
     "menu": "Sections and account",
     "aria": {
       "mainNav": "Main navigation",
-      "getStarted": "Get started with Internex",
+      "getStarted": "Get started with Stag",
       "openMenu": "Open menu",
       "dashboard": "Go to dashboard",
       "accountMenu": "Open account menu"
@@ -25,7 +25,7 @@
     "headline": "The Future of Internship Discovery",
     "headlineHighlight": "of Internship",
     "description1": "A centralized platform bridging the gap between universities and enterprises. Skill-based matching, automated document generation, and placement tracking—all in one elegant system.",
-    "description2": "Within the framework of MESRS strategy to strengthen the University-Enterprise link, Internex digitizes the entire internship lifecycle from discovery to official Convention de Stage.",
+    "description2": "Within the framework of MESRS strategy to strengthen the University-Enterprise link, Stag digitizes the entire internship lifecycle from discovery to official Convention de Stage.",
     "cta": "Explore Platform",
     "freeForStudents": "Free for Students",
     "aria": {
@@ -109,7 +109,7 @@
     "login": {
       "pageTitle": "Sign In",
       "title": "Welcome Back",
-      "subtitle": "Sign in to your Internex account",
+      "subtitle": "Sign in to your Stag account",
       "email": "Email address",
       "emailPlaceholder": "you@university.edu",
       "password": "Password",
@@ -143,11 +143,11 @@
     },
     "signup": {
       "pageTitle": "Create Account",
-      "title": "Join Internex",
+      "title": "Join Stag",
       "subtitle": "Create your account and start your journey",
       "roleSelection": {
         "title": "Choose Your Path",
-        "subtitle": "Select how you want to use Internex",
+        "subtitle": "Select how you want to use Stag",
         "student": {
           "title": "I'm a Student",
           "description": "Find internships, build your profile, and connect with companies."
@@ -1049,6 +1049,10 @@
         "remote": "Remote"
       },
       "application": "Application",
+      "actionRequired": "Action Required",
+      "presentedBy": "Presented By",
+      "save": "Save",
+      "saved": "Saved",
       "internshipOffer": "Internship Offer",
       "trustIndex": "Trust Index",
       "viewCompanyProfile": "View Company Profile",
@@ -1776,7 +1780,7 @@
   "howItWorks": {
     "label": "How It Works",
     "headline": "Streamlined Workflow for Everyone",
-    "description": "Whether you're a student seeking opportunities, a company looking for talent, or an administrator managing placements—Internex provides a seamless experience tailored to your role.",
+    "description": "Whether you're a student seeking opportunities, a company looking for talent, or an administrator managing placements—Stag provides a seamless experience tailored to your role.",
     "student": {
       "title": "Student Journey",
       "subtitle": "For Students",
@@ -1853,18 +1857,18 @@
     "cta": {
       "text": "Ready to transform your internship experience?",
       "button": "Get Started Free",
-      "aria": "Get started with Internex for free"
+      "aria": "Get started with Stag for free"
     }
   },
   "verify": {
     "title": "Document Verification",
-    "description": "Enter the verification code printed on your Internex document to confirm its authenticity.",
+    "description": "Enter the verification code printed on your Stag document to confirm its authenticity.",
     "placeholder": "INTX-XXXX-XXXX",
     "submit": "Verify Document",
     "checking": "Verifying...",
     "valid": {
       "title": "Document Verified",
-      "subtitle": "This document is authentic and was issued by Internex.",
+      "subtitle": "This document is authentic and was issued by Stag.",
       "type": "Document Type",
       "typeAgreement": "Internship Agreement",
       "typeCertificate": "Internship Certificate",
@@ -1889,12 +1893,12 @@
   "pages": {
     "discover": {
       "metadata": {
-        "title": "Discover — Internex",
-        "description": "Explore how Internex connects students with internship opportunities through intelligent matching."
+        "title": "Discover — Stag",
+        "description": "Explore how Stag connects students with internship opportunities through intelligent matching."
       },
       "hero": {
         "kicker": "Platform Overview",
-        "headline": "Discover What Internex Can Do",
+        "headline": "Discover What Stag Can Do",
         "headlineHighlight": "Can Do",
         "description": "A comprehensive platform that digitizes the entire internship lifecycle—from discovery to official Convention de Stage."
       },
@@ -1985,13 +1989,13 @@
       },
       "cta": {
         "headline": "Ready to explore?",
-        "description": "Join thousands of students and companies already using Internex.",
+        "description": "Join thousands of students and companies already using Stag.",
         "button": "Get Started Free"
       }
     },
     "forStudents": {
       "metadata": {
-        "title": "For Students — Internex",
+        "title": "For Students — Stag",
         "description": "Build your digital CV, find matching internships, and track your applications—all in one place."
       },
       "hero": {
@@ -2001,7 +2005,7 @@
         "description": "Build your digital CV, discover internships matched to your skills, and track every application from submission to placement."
       },
       "benefits": {
-        "label": "Why Internex",
+        "label": "Why Stag",
         "headline": "Built for Your Success",
         "cv": {
           "title": "Digital CV",
@@ -2061,7 +2065,7 @@
     },
     "forCompanies": {
       "metadata": {
-        "title": "For Companies — Internex",
+        "title": "For Companies — Stag",
         "description": "Find and recruit the best student talent with AI-powered screening and automated compliance."
       },
       "hero": {
@@ -2071,7 +2075,7 @@
         "description": "Publish internship offers, screen candidates with AI, and let the platform handle compliance and documents automatically."
       },
       "benefits": {
-        "label": "Why Internex",
+        "label": "Why Stag",
         "headline": "Recruit Smarter",
         "pipeline": {
           "title": "Talent Pipeline",
@@ -2135,28 +2139,28 @@
       },
       "cta": {
         "headline": "Ready to find talent?",
-        "description": "Join 350+ companies already recruiting on Internex.",
+        "description": "Join 350+ companies already recruiting on Stag.",
         "button": "Register Your Company"
       }
     },
     "about": {
       "metadata": {
-        "title": "About — Internex",
-        "description": "Learn about Internex's mission to digitize the internship lifecycle and strengthen the University-Enterprise link."
+        "title": "About — Stag",
+        "description": "Learn about Stag's mission to digitize the internship lifecycle and strengthen the University-Enterprise link."
       },
       "hero": {
-        "kicker": "About Internex",
+        "kicker": "About Stag",
         "headline": "Bridging University & Enterprise",
         "headlineHighlight": "University & Enterprise",
-        "description": "Within the framework of MESRS strategy to strengthen the University-Enterprise link, Internex digitizes the entire internship lifecycle from discovery to official Convention de Stage."
+        "description": "Within the framework of MESRS strategy to strengthen the University-Enterprise link, Stag digitizes the entire internship lifecycle from discovery to official Convention de Stage."
       },
       "mission": {
         "label": "Our Mission",
-        "headline": "Why We Built Internex",
+        "headline": "Why We Built Stag",
         "paragraphs": {
           "p1": "The internship process in Algeria has long been fragmented—students search manually, companies manage paper applications, and universities handle piles of administrative documents.",
-          "p2": "Internex was built to solve this. A single platform where students discover opportunities matched to their skills, companies manage talent pipelines efficiently, and administrators generate official documents with one click.",
-          "p3": "Aligned with the MESRS strategy to modernize higher education, Internex digitizes every step: from the initial search to the final Convention de Stage and completion certificate."
+          "p2": "Stag was built to solve this. A single platform where students discover opportunities matched to their skills, companies manage talent pipelines efficiently, and administrators generate official documents with one click.",
+          "p3": "Aligned with the MESRS strategy to modernize higher education, Stag digitizes every step: from the initial search to the final Convention de Stage and completion certificate."
         }
       },
       "values": {
@@ -2200,7 +2204,7 @@
       },
       "cta": {
         "headline": "Be part of the future",
-        "description": "Whether you're a student, company, or university—Internex is for you.",
+        "description": "Whether you're a student, company, or university—Stag is for you.",
         "button": "Get Started"
       }
     }
@@ -2226,7 +2230,7 @@
       "subscribe": "Subscribe"
     },
     "legal": {
-      "copyright": "(c) {year} Internex.io. All rights reserved.",
+      "copyright": "(c) {year} Stag.io. All rights reserved.",
       "privacyPolicy": "Privacy Policy",
       "termsOfService": "Terms of Service",
       "cookiePolicy": "Cookie Policy"

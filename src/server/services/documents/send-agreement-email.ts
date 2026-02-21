@@ -62,7 +62,7 @@ export async function sendAgreementEmail(input: SendAgreementEmailInput) {
 
   return sendEmail(
     input.to,
-    "Your internship agreement is ready - Internex",
+    "Your internship agreement is ready - Stag",
     AgreementGeneratedEmail,
     {
       studentName: input.studentName,

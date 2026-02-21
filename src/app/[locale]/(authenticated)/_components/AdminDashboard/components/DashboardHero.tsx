@@ -55,7 +55,7 @@ export function DashboardHero({ isSuperAdmin }: DashboardHeroProps) {
           </h2>
           <p className="text-foreground/70 text-sm md:text-base font-light leading-relaxed max-w-xl">
             {isSuperAdmin
-              ? "Monitor platform health, validate placements, and track institutional progress across the Internex network."
+              ? "Monitor platform health, validate placements, and track institutional progress across the Stag network."
               : "Follow key student and department indicators to run your university internship operations from one place."}
           </p>
         </div>

@@ -23,7 +23,7 @@ export default async function GoodbyePage({ params }: GoodbyePageProps) {
           transition={{ duration: 0.7, ease, delay: 0.1 }}
           className="text-[10px] font-medium tracking-[0.35em] uppercase text-primary mb-8 [[dir=rtl]_&]:tracking-normal"
         >
-          Internex
+          Stag
         </motion.span>
 
         {/* Headline */}

@@ -1,4 +1,4 @@
-﻿# Internex Architecture
+# Stag Architecture
 
 > Last updated: 2026-02-19
 > Scope: Root architecture snapshot for contributors and coding agents.
@@ -6,7 +6,7 @@
 
 ## 1. System Overview
 
-Internex is a Next.js 16 + React 19 internship platform connecting students, companies, department heads, university admins, and super admins.
+Stag is a Next.js 16 + React 19 internship platform connecting students, companies, department heads, university admins, and super admins.
 
 ```text
                         Internet

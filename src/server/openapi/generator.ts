@@ -11,7 +11,7 @@ const generator = new OpenAPIGenerator({
 export async function generateOpenAPISpec(baseUrl: string) {
   return generator.generate(appRouter, {
     info: {
-      title: "Internex API",
+      title: "Stag API",
       version: "1.0.0",
       description:
         "Internship platform connecting companies with university students.",

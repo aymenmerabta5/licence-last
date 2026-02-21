@@ -33,7 +33,7 @@ export default function OnboardingLayout({
         <header className="flex items-center justify-between px-6 py-5 lg:px-10 lg:py-6">
           {/* Mobile logo (desktop logo lives in panel) */}
           <span className="lg:hidden font-serif text-xl tracking-tight text-heading transition-colors duration-500 ease-in-out">
-            Internex<span className="text-primary">.</span>io
+            Stag<span className="text-primary">.</span>io
           </span>
 
           <div className="hidden lg:block" />

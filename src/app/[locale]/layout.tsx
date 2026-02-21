@@ -61,16 +61,16 @@ export async function generateMetadata({
     metadataBase: new URL(baseUrl),
     title: {
       default: t("title"),
-      template: "%s | Internex",
+      template: "%s | Stag",
     },
     description: t("description"),
     openGraph: {
       title: {
         default: t("title"),
-        template: "%s | Internex",
+        template: "%s | Stag",
       },
       description: t("description"),
-      siteName: "Internex",
+      siteName: "Stag",
       locale,
       type: "website",
     },
@@ -78,7 +78,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: {
         default: t("title"),
-        template: "%s | Internex",
+        template: "%s | Stag",
       },
       description: t("description"),
     },

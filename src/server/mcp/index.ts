@@ -4,12 +4,12 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 
 import { logger } from "@/server/logging"
 import { assertDevMcpAllowed } from "@/server/mcp/guards"
-import { createInternexDevMcpServer } from "@/server/mcp/server"
+import { createStagDevMcpServer } from "@/server/mcp/server"
 
 async function main() {
   assertDevMcpAllowed()
 
-  const server = createInternexDevMcpServer()
+  const server = createStagDevMcpServer()
   const transport = new StdioServerTransport()
 
   await server.connect(transport)
@@ -19,14 +19,14 @@ async function main() {
       transport: "stdio",
       environment: "development",
     },
-    "Internex local developer MCP is running on stdio",
+    "Stag local developer MCP is running on stdio",
   )
 }
 
 main().catch((error) => {
   logger.error(
     { err: error, event: "mcp_server_startup_failed", transport: "stdio" },
-    "Failed to start Internex developer MCP",
+    "Failed to start Stag developer MCP",
   )
   process.exit(1)
 })

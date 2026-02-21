@@ -59,7 +59,7 @@ export function getHealthReport(input: GuardInput = {}): HealthReport {
 
   return {
     server: {
-      name: "internex-local-dev-mcp",
+      name: "stag-local-dev-mcp",
       version: "1.0.0",
     },
     environment: {
