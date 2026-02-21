@@ -17,7 +17,6 @@ export const department = pgTable(
       .notNull()
       .references(() => university.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
-    headName: text("head_name"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

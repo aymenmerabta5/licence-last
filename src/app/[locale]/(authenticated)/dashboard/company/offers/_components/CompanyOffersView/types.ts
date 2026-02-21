@@ -12,6 +12,8 @@ export interface OfferItem {
   skills: { id: string; name: string }[]
 }
 
+export type OfferStatusFilter = "all" | "draft" | "published" | "closed"
+
 export interface TrustData {
   trustScore: number
   tier: string

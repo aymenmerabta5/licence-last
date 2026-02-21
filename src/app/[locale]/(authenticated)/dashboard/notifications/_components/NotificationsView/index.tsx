@@ -8,9 +8,10 @@ import { useNotificationsSummary } from "@/app/[locale]/(authenticated)/dashboar
 
 interface NotificationsViewProps {
   role: string
+  viewerId: string
 }
 
-export function NotificationsView({ role }: NotificationsViewProps) {
+export function NotificationsView({ role, viewerId }: NotificationsViewProps) {
   const {
     notifications,
     unreadCount,
@@ -20,7 +21,7 @@ export function NotificationsView({ role }: NotificationsViewProps) {
     markRead,
     markAllRead,
     isMarkingRead,
-  } = useNotifications()
+  } = useNotifications(viewerId)
 
   const { aiSummary, aiStatus, aiError, summarize } = useNotificationsSummary()
 

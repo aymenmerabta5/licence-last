@@ -27,6 +27,19 @@ const updateMeMock = mock(async () => ({
   image: null,
 }))
 
+interface SessionRecord {
+  id: string
+  token: string
+  userId: string
+  ipAddress: string
+  userAgent: string
+  createdAt: Date
+  updatedAt: Date
+  expiresAt: Date
+}
+
+const listMySessionsMock = mock<() => Promise<SessionRecord[]>>(async () => [])
+
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   authedSessionProcedureGenerous: createProcedureMock(),
   authedSessionProcedureStandard: createProcedureMock(),
@@ -45,7 +58,7 @@ mock.module("@/server/services/uploads/upload-image", () => ({
   })),
 }))
 mock.module("@/server/services/users/session-management", () => ({
-  listMySessions: mock(async () => []),
+  listMySessions: listMySessionsMock,
   revokeMySession: mock(async () => ({ success: true })),
   revokeOtherSessions: mock(async () => ({ success: true })),
 }))
@@ -67,6 +80,7 @@ mock.module("@/server/db", () => ({
 describe("src/server/orpc/routes/users", () => {
   beforeEach(() => {
     updateMeMock.mockClear()
+    listMySessionsMock.mockClear()
   })
 
   test("updateMeProcedure updates own profile", async () => {
@@ -103,5 +117,65 @@ describe("src/server/orpc/routes/users", () => {
       code: "NOT_FOUND",
       message: "User not found",
     })
+  })
+
+  test("listMySessionsProcedure returns token and computes isCurrent", async () => {
+    const createdAt = new Date("2026-02-01T08:00:00.000Z")
+    const updatedAt = new Date("2026-02-05T08:00:00.000Z")
+    const expiresAt = new Date("2026-03-01T08:00:00.000Z")
+
+    listMySessionsMock.mockResolvedValueOnce([
+      {
+        id: "session-1",
+        token: "token-1",
+        userId: "user-1",
+        ipAddress: "127.0.0.1",
+        userAgent: "agent-1",
+        createdAt,
+        updatedAt,
+        expiresAt,
+      },
+      {
+        id: "session-2",
+        token: "token-2",
+        userId: "user-1",
+        ipAddress: "127.0.0.2",
+        userAgent: "agent-2",
+        createdAt,
+        updatedAt,
+        expiresAt,
+      },
+    ])
+
+    const { listMySessionsProcedure } = await import("@/server/orpc/routes/users")
+
+    const result = await callProcedure(listMySessionsProcedure, {
+      context: { session: { token: "token-2" } },
+    })
+
+    expect(result).toEqual([
+      {
+        id: "session-1",
+        token: "token-1",
+        userId: "user-1",
+        ipAddress: "127.0.0.1",
+        userAgent: "agent-1",
+        createdAt,
+        updatedAt,
+        expiresAt,
+        isCurrent: false,
+      },
+      {
+        id: "session-2",
+        token: "token-2",
+        userId: "user-1",
+        ipAddress: "127.0.0.2",
+        userAgent: "agent-2",
+        createdAt,
+        updatedAt,
+        expiresAt,
+        isCurrent: true,
+      },
+    ])
   })
 })

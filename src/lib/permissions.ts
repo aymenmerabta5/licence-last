@@ -17,6 +17,8 @@ const statement = {
     "impersonate",
     "delete",
     "set-password",
+    "get",
+    "update",
   ],
   session: ["list", "revoke", "delete"],
 } as const
@@ -33,6 +35,8 @@ export const superAdmin = ac.newRole({
     "impersonate",
     "delete",
     "set-password",
+    "get",
+    "update",
   ],
   session: ["list", "revoke", "delete"],
 })

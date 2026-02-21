@@ -58,7 +58,7 @@ export function createOfferSchema(
       title: z.string().min(3, { error: t("offerTitleMin") }),
       description: z.string().min(10, { error: t("offerDescriptionMin") }),
       internshipType: internshipTypeSchema,
-      workMode: workModeSchema.optional(),
+      workMode: workModeSchema.optional().or(z.literal("")),
       wilayaCode: z.coerce
         .number()
         .int()

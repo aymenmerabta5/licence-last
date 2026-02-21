@@ -89,15 +89,14 @@ describe("src/server/orpc/routes/departments", () => {
     )
 
     const result = await callProcedure(createDepartmentProcedure, {
-      input: { name: "Computer Science", headName: "Head" },
-      context: { user: { universityId: "uni-1" } },
+      input: { name: "Computer Science" },
+      context: { user: { role: "university_admin", universityId: "uni-1" } },
     })
 
     expect(result).toEqual({ departmentId: "dept-1" })
     expect(createDepartmentMock).toHaveBeenCalledWith({
       universityId: "uni-1",
       name: "Computer Science",
-      headName: "Head",
     })
   })
 
@@ -115,11 +114,44 @@ describe("src/server/orpc/routes/departments", () => {
     await expect(
       callProcedure(createDepartmentProcedure, {
         input: { name: "Computer Science" },
-        context: { user: { universityId: "uni-1" } },
+        context: { user: { role: "university_admin", universityId: "uni-1" } },
       }),
     ).rejects.toMatchObject({
       code: "CONFLICT",
       message: "Department with this name already exists",
+    })
+  })
+
+  test("createDepartmentProcedure allows super admin with explicit university", async () => {
+    const { createDepartmentProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
+
+    const result = await callProcedure(createDepartmentProcedure, {
+      input: { name: "Computer Science", universityId: "uni-2" },
+      context: { user: { role: "super_admin", universityId: null } },
+    })
+
+    expect(result).toEqual({ departmentId: "dept-1" })
+    expect(createDepartmentMock).toHaveBeenCalledWith({
+      universityId: "uni-2",
+      name: "Computer Science",
+    })
+  })
+
+  test("createDepartmentProcedure requires university selection for super admin without context", async () => {
+    const { createDepartmentProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
+
+    await expect(
+      callProcedure(createDepartmentProcedure, {
+        input: { name: "Computer Science" },
+        context: { user: { role: "super_admin", universityId: null } },
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "University is required for super admin actions",
     })
   })
 

@@ -33,11 +33,6 @@ export async function unassignDepartmentHead(departmentId: string) {
       .where(
         and(eq(user.role, "dept_head"), eq(user.departmentId, departmentId)),
       )
-
-    await tx
-      .update(department)
-      .set({ headName: null })
-      .where(eq(department.id, departmentId))
   })
 
   log.info(

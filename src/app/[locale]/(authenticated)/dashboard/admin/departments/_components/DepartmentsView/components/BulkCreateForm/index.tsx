@@ -7,7 +7,11 @@ import { useBulkCreateForm } from "@/app/[locale]/(authenticated)/dashboard/admi
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 
-export function BulkCreateForm() {
+interface BulkCreateFormProps {
+  universityId: string | null
+}
+
+export function BulkCreateForm({ universityId }: BulkCreateFormProps) {
   const t = useTranslations("dashboard.admin.departments.bulkCreate")
   const {
     rows,
@@ -16,8 +20,9 @@ export function BulkCreateForm() {
     removeRow,
     updateRow,
     handleSubmit,
+    canSubmit,
     isPending,
-  } = useBulkCreateForm()
+  } = useBulkCreateForm(universityId)
 
   return (
     <section className="relative overflow-hidden border border-border/50 bg-background p-5 sm:p-6">
@@ -35,15 +40,12 @@ export function BulkCreateForm() {
         </div>
 
         {/* Column headers (visible on sm+) */}
-        <div className="hidden grid-cols-[1fr_1fr_1fr_auto] gap-3 sm:grid">
+        <div className="hidden grid-cols-[1fr_1fr_auto] gap-3 sm:grid">
           <Label className="text-xs uppercase tracking-[0.12em] text-muted-foreground [[dir=rtl]_&]:tracking-normal">
             {t("departmentName")} *
           </Label>
           <Label className="text-xs uppercase tracking-[0.12em] text-muted-foreground [[dir=rtl]_&]:tracking-normal">
             {t("headEmail")} *
-          </Label>
-          <Label className="text-xs uppercase tracking-[0.12em] text-muted-foreground [[dir=rtl]_&]:tracking-normal">
-            {t("headName")} *
           </Label>
           <span className="w-9" />
         </div>
@@ -77,7 +79,7 @@ export function BulkCreateForm() {
 
           <Button
             onClick={handleSubmit}
-            disabled={isPending}
+            disabled={isPending || !canSubmit}
             variant="editorial"
             size="editorial-sm"
             className="rounded-lg"

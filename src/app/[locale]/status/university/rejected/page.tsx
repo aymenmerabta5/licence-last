@@ -11,18 +11,17 @@ export default async function UniversityRejectedPage() {
   const user = await requireRole(["university_admin"], {
     allowUnapproved: true,
   })
+  const university = await getUniversityStatusByUserId(user.id)
 
-  if (!user.onboardingCompleted) {
+  if (!university) {
     return localeRedirect("/onboarding/university")
   }
 
-  const university = await getUniversityStatusByUserId(user.id)
-
-  if (university?.status === "approved") {
+  if (university.status === "approved") {
     return localeRedirect("/dashboard/admin")
   }
 
-  if (university?.status !== "rejected") {
+  if (university.status !== "rejected") {
     return localeRedirect("/status/university/pending")
   }
 

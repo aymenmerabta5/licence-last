@@ -19,11 +19,22 @@ import { reveal, revealWithDelay } from "@/lib/animations"
 
 export function DepartmentsView() {
   const t = useTranslations("dashboard.admin.departments")
-  const { universityId, departments, isLoading } = useDepartmentsData()
-  const actions = useDepartmentsActions()
+  const {
+    universityId,
+    departments,
+    isLoading,
+    isSuperAdmin,
+    universityOptions,
+    selectedUniversityId,
+    setSelectedUniversityId,
+  } = useDepartmentsData()
+  const actions = useDepartmentsActions(universityId)
   const assignHeadDialog = useAssignHeadDialog({ onAssign: actions.assignHead })
   const viewState = useDepartmentsViewState({ departments })
   const hasUniversityContext = Boolean(universityId)
+  const emptyLabel = hasUniversityContext
+    ? t("empty")
+    : t("selectUniversityFirst")
   const handleEditDepartment = async (department: DepartmentItem) => {
     const nextName = window.prompt(t("name"), department.name)?.trim()
     if (!nextName || nextName === department.name) return
@@ -56,20 +67,23 @@ export function DepartmentsView() {
         <CreateDepartmentForm
           name={actions.newName}
           onNameChange={actions.setNewName}
-          headName={actions.newHeadName}
-          onHeadNameChange={actions.setNewHeadName}
+          canCreate={actions.canCreate}
+          showUniversitySelector={isSuperAdmin}
+          selectedUniversityId={selectedUniversityId}
+          universityOptions={universityOptions}
+          onUniversityIdChange={setSelectedUniversityId}
           isCreating={actions.isCreating}
           onSubmit={actions.handleCreate}
         />
       </motion.div>
       <motion.div {...reveal} transition={revealWithDelay(0.12)}>
-        <BulkCreateForm />
+        <BulkCreateForm universityId={universityId} />
       </motion.div>
       <DepartmentsListSection
         departments={departments}
         isLoading={isLoading}
         hasUniversityContext={hasUniversityContext}
-        emptyLabel={t("empty")}
+        emptyLabel={emptyLabel}
         onEditDepartment={handleEditDepartment}
         onAssignHead={assignHeadDialog.open}
         onRemoveHead={viewState.setRemoveHeadTarget}
@@ -87,8 +101,6 @@ export function DepartmentsView() {
       <AssignHeadDialog
         open={Boolean(assignHeadDialog.department)}
         departmentName={assignHeadDialog.department?.name ?? null}
-        headName={assignHeadDialog.headName}
-        onHeadNameChange={assignHeadDialog.setHeadName}
         headEmail={assignHeadDialog.headEmail}
         onHeadEmailChange={assignHeadDialog.setHeadEmail}
         onOpenChange={(open) => !open && assignHeadDialog.close()}

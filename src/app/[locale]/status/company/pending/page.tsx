@@ -6,27 +6,30 @@ import { Separator } from "@/components/ui/separator"
 import { requireRole } from "@/lib/auth-guards"
 import { formatDateLong } from "@/lib/date"
 import { localeRedirect } from "@/lib/navigation"
+import { getCompanyStatusByUserId } from "@/server/services/companies/get-status"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 
 export default async function CompanyPendingPage() {
   const user = await requireRole(["company_admin"], { allowUnapproved: true })
-  const company = await getCompanyByUserId(user.id)
+  const companyStatus = await getCompanyStatusByUserId(user.id)
 
-  if (!user.onboardingCompleted && !company) {
+  if (!companyStatus) {
     return localeRedirect("/onboarding/company")
   }
 
-  if (company?.status === "approved") {
+  if (companyStatus.status === "approved") {
     return localeRedirect("/dashboard/company")
   }
 
-  if (company?.status === "rejected") {
+  if (companyStatus.status === "rejected") {
     return localeRedirect("/status/company/rejected")
   }
 
-  if (company?.status === "suspended") {
+  if (companyStatus.status === "suspended") {
     return localeRedirect("/status/company/suspended")
   }
+
+  const company = await getCompanyByUserId(user.id)
 
   const t = await getTranslations("dashboard.company.pending")
 

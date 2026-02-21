@@ -12,7 +12,11 @@ const dbLimit = mock(() => {
   const results = dbSelectResults[dbSelectCallIdx - 1] ?? []
   return Promise.resolve(results)
 })
-const dbWhere = mock(() => ({ limit: dbLimit }))
+const dbWhere = mock(() => ({
+  limit: dbLimit,
+  then: (resolve: (value: unknown[]) => void) =>
+    resolve(dbSelectResults[dbSelectCallIdx - 1] ?? []),
+}))
 const dbFrom = mock(() => ({ where: dbWhere }))
 const dbSelect = mock(() => {
   dbSelectCallIdx += 1
@@ -44,11 +48,17 @@ const mockTransaction = mock(
   async (callback: (trx: typeof tx) => Promise<unknown>) => callback(tx),
 )
 
+const createNotificationMock = mock(async () => ({ id: "notification-1" }))
+
 mock.module("@/server/db", () => ({
   db: {
     select: dbSelect,
     transaction: mockTransaction,
   },
+}))
+
+mock.module("@/server/services/notifications/create", () => ({
+  createNotification: createNotificationMock,
 }))
 
 async function expectMessageError(
@@ -83,9 +93,14 @@ describe("src/server/services/messages/send-by-student", () => {
     txReturning.mockClear()
     txValuesForMessage.mockClear()
     mockTransaction.mockClear()
+    createNotificationMock.mockClear()
 
     dbFrom.mockReturnValue({ where: dbWhere })
-    dbWhere.mockReturnValue({ limit: dbLimit })
+    dbWhere.mockImplementation(() => ({
+      limit: dbLimit,
+      then: (resolve: (value: unknown[]) => void) =>
+        resolve(dbSelectResults[dbSelectCallIdx - 1] ?? []),
+    }))
 
     txValuesForThread.mockReturnValue({
       onConflictDoUpdate: txOnConflictDoUpdate,
@@ -144,7 +159,9 @@ describe("src/server/services/messages/send-by-student", () => {
   })
 
   test("should throw typed error when student has not applied to the offer", async () => {
-    dbSelectResults.push([{ id: "offer-1", companyId: "company-1" }])
+    dbSelectResults.push([
+      { id: "offer-1", companyId: "company-1", title: "Offer title" },
+    ])
     dbSelectResults.push([])
 
     const { sendOfferMessageByStudent } = await import(
@@ -164,8 +181,14 @@ describe("src/server/services/messages/send-by-student", () => {
   })
 
   test("should create thread and message with trimmed body", async () => {
-    dbSelectResults.push([{ id: "offer-1", companyId: "company-1" }])
+    dbSelectResults.push([
+      { id: "offer-1", companyId: "company-1", title: "Offer title" },
+    ])
     dbSelectResults.push([{ id: "application-1" }])
+    dbSelectResults.push([
+      { userId: "company-admin-1" },
+      { userId: "company-admin-2" },
+    ])
 
     const { sendOfferMessageByStudent } = await import(
       "@/server/services/messages/send-by-student?fresh=4" as string
@@ -183,6 +206,7 @@ describe("src/server/services/messages/send-by-student", () => {
     expect(typeof result.messageId).toBe("string")
     expect(mockTransaction).toHaveBeenCalledTimes(1)
     expect(txInsert).toHaveBeenCalledTimes(2)
+    expect(createNotificationMock).toHaveBeenCalledTimes(2)
 
     const threadValueCalls = txValuesForThread.mock
       .calls as unknown as unknown[][]
@@ -209,5 +233,33 @@ describe("src/server/services/messages/send-by-student", () => {
     expect(messageValues.offerId).toBe("offer-1")
     expect(messageValues.senderUserId).toBe("student-1")
     expect(messageValues.body).toBe("Hello from student")
+
+    const notificationCalls = createNotificationMock.mock
+      .calls as unknown as unknown[][]
+    const notifiedUserIds = notificationCalls
+      .map(
+        (call) => (call[0] as { userId: string }).userId,
+      )
+      .sort((a, b) => a.localeCompare(b))
+
+    expect(notifiedUserIds).toEqual(["company-admin-1", "company-admin-2"])
+
+    const firstNotification = notificationCalls[0]?.[0] as {
+      type: string
+      payload: {
+        offerId: string
+        offerTitle: string
+        threadId: string
+        senderRole: string
+        senderUserId: string
+      }
+    }
+
+    expect(firstNotification.type).toBe("new_message")
+    expect(firstNotification.payload.offerId).toBe("offer-1")
+    expect(firstNotification.payload.offerTitle).toBe("Offer title")
+    expect(firstNotification.payload.threadId).toBe("thread-1")
+    expect(firstNotification.payload.senderRole).toBe("student")
+    expect(firstNotification.payload.senderUserId).toBe("student-1")
   })
 })

@@ -54,7 +54,7 @@ describe("unassignDepartmentHead", () => {
     )
   })
 
-  test("should clear department head and demote dept head users", async () => {
+  test("should demote dept head users for the department", async () => {
     mockLimit.mockResolvedValueOnce([{ id: "dept-1" }])
 
     const { unassignDepartmentHead } = await import(
@@ -64,8 +64,8 @@ describe("unassignDepartmentHead", () => {
 
     expect(result).toEqual({ success: true, departmentId: "dept-1" })
     expect(mockTransaction).toHaveBeenCalledTimes(1)
-    expect(mockTxUpdate).toHaveBeenCalledTimes(2)
-    expect(mockTxUpdateSet).toHaveBeenCalledTimes(2)
-    expect(mockTxUpdateWhere).toHaveBeenCalledTimes(2)
+    expect(mockTxUpdate).toHaveBeenCalledTimes(1)
+    expect(mockTxUpdateSet).toHaveBeenCalledTimes(1)
+    expect(mockTxUpdateWhere).toHaveBeenCalledTimes(1)
   })
 })

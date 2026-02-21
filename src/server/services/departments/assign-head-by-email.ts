@@ -11,27 +11,21 @@ import { department } from "@/server/db/schema/departments"
 import { university } from "@/server/db/schema/universities"
 
 import { assignDepartmentHead } from "@/server/services/departments/assign-head"
+import { deriveHeadNameFromEmail } from "@/server/services/departments/derive-head-name"
 
 interface AssignDepartmentHeadByEmailInput {
   departmentId: string
   headEmail: string
-  headName: string
 }
 
 export async function assignDepartmentHeadByEmail({
   departmentId,
   headEmail,
-  headName,
 }: AssignDepartmentHeadByEmailInput) {
   const normalizedEmail = headEmail.trim().toLowerCase()
-  const normalizedName = headName.trim()
 
   if (!normalizedEmail) {
     throw new Error("Head email is required")
-  }
-
-  if (!normalizedName) {
-    throw new Error("Head name is required")
   }
 
   const [dept] = await db
@@ -64,6 +58,10 @@ export async function assignDepartmentHeadByEmail({
     .where(eq(user.email, normalizedEmail))
     .limit(1)
 
+  const existingName = existingUser?.name?.trim() ?? ""
+  const resolvedHeadName =
+    existingName || deriveHeadNameFromEmail(normalizedEmail)
+
   let userId = existingUser?.id
 
   if (!userId) {
@@ -72,7 +70,7 @@ export async function assignDepartmentHeadByEmail({
       body: {
         email: normalizedEmail,
         password,
-        name: normalizedName,
+        name: resolvedHeadName,
         role: "dept_head",
         data: {
           emailVerified: true,
@@ -88,12 +86,12 @@ export async function assignDepartmentHeadByEmail({
     .update(user)
     .set({
       onboardingCompleted: true,
-      ...(existingUser?.name ? {} : { name: normalizedName }),
+      ...(existingName ? {} : { name: resolvedHeadName }),
     })
     .where(eq(user.id, userId))
 
   pendingWelcomeEmails.set(normalizedEmail, {
-    name: normalizedName,
+    name: resolvedHeadName,
     departmentName: dept.name,
     universityName: uni.name,
   })

@@ -48,6 +48,19 @@ describe("src/lib/schemas/offer", () => {
       expect(result.success).toBe(true)
     })
 
+    test("should accept empty workMode when left unselected", () => {
+      const result = schema.safeParse({
+        title: "Intern",
+        description: "Work with us on real projects",
+        internshipType: "summer",
+        workMode: "",
+        skillTagIds: [],
+        languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
+      })
+
+      expect(result.success).toBe(true)
+    })
+
     test("should reject missing title", () => {
       const result = schema.safeParse({
         description: "Some description here",

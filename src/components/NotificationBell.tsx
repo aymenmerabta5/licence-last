@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Link } from "@/i18n/routing"
 import { formatNotification } from "@/lib/notifications"
-import { orpc } from "@/server/orpc/client"
+import { notificationsQueryKeys } from "@/lib/notifications-query"
+import { orpc, orpcClient } from "@/server/orpc/client"
 
 function formatRelative(date: Date) {
   const diffMs = Date.now() - date.getTime()
@@ -26,13 +27,18 @@ function formatRelative(date: Date) {
   return `${diffD}d`
 }
 
-export function NotificationBell() {
+interface NotificationBellProps {
+  viewerId: string
+}
+
+export function NotificationBell({ viewerId }: NotificationBellProps) {
   const queryClient = useQueryClient()
 
   const { data } = useQuery(
-    orpc.notifications.list.queryOptions({
-      input: { limit: 6 },
-    }),
+    {
+      queryKey: notificationsQueryKeys.list(viewerId, 6),
+      queryFn: () => orpcClient.notifications.list({ limit: 6 }),
+    },
   )
 
   const unreadCount = data?.unreadCount ?? 0
@@ -42,9 +48,7 @@ export function NotificationBell() {
     orpc.notifications.markRead.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: orpc.notifications.list.queryOptions({
-            input: { limit: 6 },
-          }).queryKey,
+          queryKey: notificationsQueryKeys.root(viewerId),
         })
       },
     }),
@@ -54,9 +58,7 @@ export function NotificationBell() {
     orpc.notifications.markAllRead.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: orpc.notifications.list.queryOptions({
-            input: { limit: 6 },
-          }).queryKey,
+          queryKey: notificationsQueryKeys.root(viewerId),
         })
       },
     }),

@@ -1,7 +1,9 @@
 export interface DepartmentItem {
   id: string
   name: string
-  headName: string | null
+  headUserId: string | null
+  headUserName: string | null
+  headUserEmail: string | null
   skillCount: number
   createdAt: Date | string
 }

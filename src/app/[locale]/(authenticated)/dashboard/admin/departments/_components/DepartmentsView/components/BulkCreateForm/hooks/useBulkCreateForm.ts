@@ -15,10 +15,9 @@ const DEPARTMENTS_LIST_QUERY_PATH = orpc.departments.list.queryOptions({
 const emptyRow = (): BulkDepartmentRow => ({
   departmentName: "",
   headEmail: "",
-  headName: "",
 })
 
-export function useBulkCreateForm() {
+export function useBulkCreateForm(universityId: string | null) {
   const t = useTranslations("dashboard.admin.departments.bulkCreate")
   const queryClient = useQueryClient()
 
@@ -93,6 +92,11 @@ export function useBulkCreateForm() {
   )
 
   const handleSubmit = useCallback(() => {
+    if (!universityId) {
+      toast.error(t("selectUniversityFirst"))
+      return
+    }
+
     const parsed = bulkCreateDepartmentsSchema.safeParse({ rows })
     if (!parsed.success) {
       // Map Zod errors to per-field errors
@@ -115,8 +119,8 @@ export function useBulkCreateForm() {
     }
 
     setFieldErrors(rows.map(() => ({})))
-    mutation.mutate(parsed.data)
-  }, [rows, mutation])
+    mutation.mutate({ ...parsed.data, universityId })
+  }, [mutation, rows, t, universityId])
 
   return {
     rows,
@@ -125,6 +129,7 @@ export function useBulkCreateForm() {
     removeRow,
     updateRow,
     handleSubmit,
+    canSubmit: Boolean(universityId),
     isPending: mutation.isPending,
   }
 }

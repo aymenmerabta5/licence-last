@@ -4,6 +4,7 @@ import * as motion from "motion/react-client"
 import type { HeroContentProps } from "@/app/[locale]/_components/HeroSection/types"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { Link } from "@/i18n/routing"
 import { ease, getRevealVariants, getTransition } from "@/lib/animations"
 
 export function HeroContent({
@@ -99,6 +100,8 @@ export function HeroContent({
           variant="editorial-link"
           size="editorial-sm"
           className="group"
+          nativeButton={false}
+          render={<Link href="/discover" />}
           aria-label={ctaAriaLabel}
         >
           {ctaLabel}

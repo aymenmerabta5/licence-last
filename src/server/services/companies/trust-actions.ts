@@ -3,6 +3,7 @@ import "server-only"
 import { and, desc, eq, type SQL } from "drizzle-orm"
 import { db } from "@/server/db"
 import { createModuleLogger } from "@/server/logging"
+import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/companies/trust-actions")
 
@@ -11,6 +12,8 @@ import { companyMember } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { placement } from "@/server/db/schema/placements"
 import { companyQualityFeedback, companyReport } from "@/server/db/schema/trust"
+
+const REPORT_CATEGORIES_WITHOUT_RELATIONSHIP = new Set(["misleading_offer"])
 
 async function hasRelationshipWithCompany(
   userId: string,
@@ -140,14 +143,29 @@ export async function submitCompanyReport(input: {
   severity: "low" | "medium" | "high" | "critical"
   description: string
 }) {
-  const hasRelationship = await hasRelationshipWithCompany(
-    input.reporterUserId,
-    input.companyId,
+  const requiresRelationship = !REPORT_CATEGORIES_WITHOUT_RELATIONSHIP.has(
+    input.category,
   )
 
-  if (!hasRelationship) {
-    throw new Error(
-      "You can only report companies you have applied to, worked with, or are a member of",
+  if (requiresRelationship) {
+    const hasRelationship = await hasRelationshipWithCompany(
+      input.reporterUserId,
+      input.companyId,
+    )
+
+    if (!hasRelationship) {
+      throw new ServiceError(
+        "COMPANY_REPORT_RELATIONSHIP_REQUIRED",
+        "You can only report companies you have applied to, worked with, or are a member of",
+      )
+    }
+  }
+
+  const description = input.description.trim()
+  if (!description) {
+    throw new ServiceError(
+      "COMPANY_REPORT_DESCRIPTION_REQUIRED",
+      "Report description is required",
     )
   }
 
@@ -167,7 +185,7 @@ export async function submitCompanyReport(input: {
     reporterUserId: input.reporterUserId,
     category: input.category,
     severity: input.severity,
-    description: input.description,
+    description,
   })
 
   log.info({ reportId, event: "report_submitted" }, "Company report submitted")

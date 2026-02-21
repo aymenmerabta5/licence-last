@@ -1,8 +1,9 @@
+import { headers } from "next/headers"
 import { notFound } from "next/navigation"
 import { getTranslations } from "next-intl/server"
 
 import { Link } from "@/i18n/routing"
-import { requireRole } from "@/lib/auth-guards"
+import { auth } from "@/lib/auth"
 import { getWilayaName } from "@/lib/wilayas"
 import { orpcClient } from "@/server/orpc/client"
 import { getPublicCompanyBySlug } from "@/server/services/companies/get-public-by-slug"
@@ -16,13 +17,9 @@ export default async function CompanyPublicProfilePage({
 }: {
   params: Params
 }) {
-  const viewer = await requireRole([
-    "student",
-    "company_admin",
-    "dept_head",
-    "university_admin",
-    "super_admin",
-  ])
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
   const { slug } = await params
 
   const company = await getPublicCompanyBySlug(slug)
@@ -38,7 +35,7 @@ export default async function CompanyPublicProfilePage({
   ])
   const companyData = companyFromRpc ?? company
 
-  const canOpenOffers = viewer.role === "student"
+  const canOpenOffers = session?.user.role === "student"
   const location = getWilayaName(companyData.wilayaCode)
 
   return (

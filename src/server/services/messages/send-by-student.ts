@@ -4,9 +4,14 @@ import { and, eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
+import { companyMember } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { offerMessage, offerMessageThread } from "@/server/db/schema/messages"
+import { createModuleLogger } from "@/server/logging"
 import { MessageServiceError } from "@/server/services/messages/errors"
+import { createNotification } from "@/server/services/notifications/create"
+
+const log = createModuleLogger("services/messages/send-by-student")
 
 interface SendOfferMessageByStudentInput {
   offerId: string
@@ -29,6 +34,7 @@ export async function sendOfferMessageByStudent(
     .select({
       id: internshipOffer.id,
       companyId: internshipOffer.companyId,
+      title: internshipOffer.title,
     })
     .from(internshipOffer)
     .where(eq(internshipOffer.id, input.offerId))
@@ -58,7 +64,7 @@ export async function sendOfferMessageByStudent(
 
   const now = new Date()
 
-  return db.transaction(async (tx) => {
+  const result = await db.transaction(async (tx) => {
     const [thread] = await tx
       .insert(offerMessageThread)
       .values({
@@ -94,4 +100,53 @@ export async function sendOfferMessageByStudent(
       messageId,
     }
   })
+
+  try {
+    const members = await db
+      .select({ userId: companyMember.userId })
+      .from(companyMember)
+      .where(eq(companyMember.companyId, offer.companyId))
+
+    if (members.length > 0) {
+      const notificationResults = await Promise.allSettled(
+        members.map((member) =>
+          createNotification({
+            userId: member.userId,
+            type: "new_message",
+            payload: {
+              offerId: input.offerId,
+              offerTitle: offer.title,
+              threadId: result.threadId,
+              messageId: result.messageId,
+              senderRole: "student",
+              senderUserId: studentUserId,
+            },
+          }),
+        ),
+      )
+
+      const failedCount = notificationResults.filter(
+        (item) => item.status === "rejected",
+      ).length
+
+      if (failedCount > 0) {
+        log.warn(
+          {
+            offerId: input.offerId,
+            threadId: result.threadId,
+            failedCount,
+            memberCount: members.length,
+          },
+          "Failed to notify some company members about new student message",
+        )
+      }
+    }
+  } catch (error) {
+    log.warn(
+      { error, offerId: input.offerId, threadId: result.threadId },
+      "Failed to dispatch company notifications for student message",
+    )
+  }
+
+  return result
 }

@@ -82,6 +82,12 @@ const getCompanyMembershipMock = mock(
 const submitCompanyReportMock = mock(
   async (): Promise<{ reportId: string }> => ({ reportId: "report-0" }),
 )
+const submitCompanyQualityFeedbackMock = mock(
+  async (): Promise<{ feedbackId: string; companyId: string }> => ({
+    feedbackId: "feedback-0",
+    companyId: "company-0",
+  }),
+)
 const isAdminRoleMock = mock(
   (role: string) =>
     role === "super_admin" ||
@@ -180,7 +186,7 @@ mock.module("@/server/services/companies/trust-index", () => ({
 mock.module("@/server/services/companies/trust-actions", () => ({
   listCompanyReports: mock(async () => []),
   resolveCompanyReport: mock(async () => ({ success: true })),
-  submitCompanyQualityFeedback: mock(async () => ({ success: true })),
+  submitCompanyQualityFeedback: submitCompanyQualityFeedbackMock,
   submitCompanyReport: submitCompanyReportMock,
 }))
 mock.module("@/server/db", () => ({
@@ -209,12 +215,36 @@ describe("src/server/orpc/routes/companies", () => {
     revalidateTagMock.mockClear()
     emitNotificationMock.mockClear()
     getCompanyMembershipMock.mockClear()
+    submitCompanyQualityFeedbackMock.mockClear()
     submitCompanyReportMock.mockClear()
     isAdminRoleMock.mockClear()
   })
 
   afterAll(() => {
     mock.restore()
+  })
+
+  test("createCompanyProcedure revalidates onboarding and directory cache tags", async () => {
+    const { createCompanyProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    const result = await callProcedure(createCompanyProcedure, {
+      input: { name: "Acme", wilayaCode: 16 },
+      context: { user: { id: "user-1", role: "company_admin" } },
+    })
+
+    expect(result).toEqual({ companyId: "company-1" })
+    expect(createCompanyMock).toHaveBeenCalledWith(
+      { name: "Acme", wilayaCode: 16 },
+      "user-1",
+    )
+    expect(revalidateTagMock).toHaveBeenCalledTimes(3)
+    expect(revalidateTagMock).toHaveBeenCalledWith("company-company-1", "max")
+    expect(revalidateTagMock).toHaveBeenCalledWith("company-user-user-1", "max")
+    expect(revalidateTagMock).toHaveBeenCalledWith("companies-directory", {
+      expire: 0,
+    })
   })
 
   test("createCompanyProcedure maps membership conflicts", async () => {
@@ -587,6 +617,74 @@ describe("src/server/orpc/routes/companies", () => {
       category: "unsafe_conditions",
       severity: "medium",
       description: "The workspace conditions were not safe during the visit.",
+    })
+    expect(revalidateTagMock).toHaveBeenCalledWith("company-company-9", "max")
+    expect(revalidateTagMock).toHaveBeenCalledWith("company-candidates-company-9", {
+      expire: 0,
+    })
+  })
+
+  test("submitCompanyQualityFeedbackProcedure revalidates trust-related tags", async () => {
+    submitCompanyQualityFeedbackMock.mockResolvedValueOnce({
+      feedbackId: "feedback-1",
+      companyId: "company-9",
+    })
+
+    const { submitCompanyQualityFeedbackProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    const result = await callProcedure(submitCompanyQualityFeedbackProcedure, {
+      input: {
+        placementId: "placement-1",
+        rating: 4,
+        wouldRecommend: true,
+        comment: "Good mentorship and clear project scope.",
+      },
+      context: { user: { id: "student-1", role: "student" } },
+    })
+
+    expect(result).toEqual({ feedbackId: "feedback-1", companyId: "company-9" })
+    expect(submitCompanyQualityFeedbackMock).toHaveBeenCalledWith({
+      studentUserId: "student-1",
+      placementId: "placement-1",
+      rating: 4,
+      wouldRecommend: true,
+      comment: "Good mentorship and clear project scope.",
+    })
+    expect(revalidateTagMock).toHaveBeenCalledWith("company-company-9", "max")
+    expect(revalidateTagMock).toHaveBeenCalledWith("company-candidates-company-9", {
+      expire: 0,
+    })
+  })
+
+  test("submitCompanyReportProcedure maps relationship guard errors", async () => {
+    submitCompanyReportMock.mockRejectedValueOnce(
+      new ServiceError(
+        "COMPANY_REPORT_RELATIONSHIP_REQUIRED",
+        "You can only report companies you have applied to, worked with, or are a member of",
+      ),
+    )
+
+    const { submitCompanyReportProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    await expect(
+      callProcedure(submitCompanyReportProcedure, {
+        input: {
+          companyId: "company-9",
+          category: "professional_conduct",
+          severity: "medium",
+          description:
+            "The behavior described here should be blocked without relationship.",
+        },
+        context: { user: { id: "student-1", role: "student" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message:
+        "You can only report companies you have applied to, worked with, or are a member of",
     })
   })
 })

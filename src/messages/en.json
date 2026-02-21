@@ -1303,6 +1303,9 @@
         "backToDashboard": "Back to dashboard",
         "empty": "No departments created yet.",
         "addDepartment": "Add Department",
+        "university": "University",
+        "selectUniversity": "Select a university",
+        "selectUniversityFirst": "Select a university to continue.",
         "name": "Department name",
         "namePlaceholder": "e.g. Computer Science",
         "headName": "Head name (optional)",
@@ -1355,6 +1358,7 @@
           "successMessage": "{count} department(s) created successfully.",
           "partialSuccess": "{created} created, {failed} failed.",
           "rowError": "{name}: {error}",
+          "selectUniversityFirst": "Select a university to continue.",
           "error": "Something went wrong. Please try again."
         }
       },

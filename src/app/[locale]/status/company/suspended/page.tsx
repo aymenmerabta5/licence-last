@@ -7,31 +7,36 @@ import { requireRole } from "@/lib/auth-guards"
 import { formatDateLong } from "@/lib/date"
 import { localeRedirect } from "@/lib/navigation"
 import { getCompanyByUserId } from "@/server/services/companies/get"
+import { getCompanyStatusByUserId } from "@/server/services/companies/get-status"
 
 export default async function CompanySuspendedPage() {
   const user = await requireRole(["company_admin"], { allowUnapproved: true })
+  const companyStatus = await getCompanyStatusByUserId(user.id)
 
-  if (!user.onboardingCompleted) {
+  if (!companyStatus) {
     return localeRedirect("/onboarding/company")
   }
 
-  const company = await getCompanyByUserId(user.id)
-
-  if (company?.status === "approved") {
+  if (companyStatus.status === "approved") {
     return localeRedirect("/dashboard/company")
   }
 
-  if (company?.status === "rejected") {
+  if (companyStatus.status === "rejected") {
     return localeRedirect("/status/company/rejected")
   }
 
-  if (company?.status !== "suspended") {
+  if (companyStatus.status !== "suspended") {
     return localeRedirect("/status/company/pending")
   }
 
-  const [t, tp] = await Promise.all([
+  const company = await getCompanyByUserId(user.id)
+  const suspensionReason =
+    company?.rejectionReason?.trim() || companyStatus.rejectionReason?.trim() || "-"
+
+  const [t, tp, tr] = await Promise.all([
     getTranslations("dashboard.company.suspended"),
     getTranslations("dashboard.company.pending"),
+    getTranslations("dashboard.company.rejected"),
   ])
 
   return (
@@ -51,13 +56,22 @@ export default async function CompanySuspendedPage() {
       <Separator className="bg-border/60" />
 
       <Card className="rounded-none border border-border/60 bg-background/40 p-6 shadow-none space-y-5">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground [[dir=rtl]_&]:tracking-normal">
+            {tr("reason")}
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-foreground/80">
+            {suspensionReason}
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground [[dir=rtl]_&]:tracking-normal">
               {tp("companyName")}
             </p>
             <p className="mt-2 text-sm leading-relaxed text-foreground/80">
-              {company.name}
+              {company?.name ?? "-"}
             </p>
           </div>
 
@@ -66,7 +80,7 @@ export default async function CompanySuspendedPage() {
               {tp("submittedOn")}
             </p>
             <p className="mt-2 font-serif text-lg text-heading">
-              {formatDateLong(company.createdAt)}
+              {company?.createdAt ? formatDateLong(company.createdAt) : "-"}
             </p>
           </div>
         </div>
@@ -78,7 +92,14 @@ export default async function CompanySuspendedPage() {
           size="editorial"
           className="w-full sm:w-auto"
           nativeButton={false}
-          render={<a href="mailto:support@internex.io" />}
+          render={
+            <a
+              href="mailto:support@internex.io"
+              aria-label={t("contactSupport")}
+            >
+              <span className="sr-only">{t("contactSupport")}</span>
+            </a>
+          }
         >
           {t("contactSupport")}
         </Button>

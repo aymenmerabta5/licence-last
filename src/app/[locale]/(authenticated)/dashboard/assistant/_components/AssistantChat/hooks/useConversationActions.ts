@@ -29,6 +29,37 @@ interface UseConversationActionsOptions {
   onSelectedConversationChange: (conversationId: string | null) => void
 }
 
+interface ResolveSelectionAfterDeleteInput {
+  deletedConversationId: string
+  activeConversationId: string | null
+  selectedConversationId: string | null
+  conversations: ConversationListItem[]
+}
+
+/**
+ * Returns the next selected conversation id only when the deleted conversation
+ * was currently selected/active. Returns `undefined` when selection should stay.
+ */
+export function resolveSelectionAfterDelete({
+  deletedConversationId,
+  activeConversationId,
+  selectedConversationId,
+  conversations,
+}: ResolveSelectionAfterDeleteInput): string | null | undefined {
+  const didDeleteActive = deletedConversationId === activeConversationId
+  const didDeleteSelected = deletedConversationId === selectedConversationId
+
+  if (!didDeleteActive && !didDeleteSelected) {
+    return undefined
+  }
+
+  const remaining = conversations.filter(
+    (conversation) => conversation.id !== deletedConversationId,
+  )
+
+  return remaining[0]?.id ?? null
+}
+
 export function useConversationActions({
   t,
   activeConversationId,
@@ -95,12 +126,16 @@ export function useConversationActions({
 
   const deleteConversationMutation = useMutation(
     orpc.assistant.deleteConversation.mutationOptions({
-      onSuccess: async () => {
-        if (selectedConversationId === activeConversationId) {
-          const remaining = conversations.filter(
-            (conversation) => conversation.id !== activeConversationId,
-          )
-          onSelectedConversationChange(remaining[0]?.id ?? null)
+      onSuccess: async (_data, variables) => {
+        const nextSelectedConversationId = resolveSelectionAfterDelete({
+          deletedConversationId: variables.conversationId,
+          activeConversationId,
+          selectedConversationId,
+          conversations,
+        })
+
+        if (nextSelectedConversationId !== undefined) {
+          onSelectedConversationChange(nextSelectedConversationId)
         }
 
         await invalidateConversationList()

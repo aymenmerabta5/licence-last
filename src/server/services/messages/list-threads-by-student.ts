@@ -1,11 +1,15 @@
 import "server-only"
 
-import { desc, eq } from "drizzle-orm"
+import { desc, eq, sql } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { company } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
-import { offerMessageThread } from "@/server/db/schema/messages"
+import {
+  offerMessage,
+  offerMessageReadState,
+  offerMessageThread,
+} from "@/server/db/schema/messages"
 
 interface ListStudentMessageThreadsParams {
   limit?: number
@@ -17,7 +21,7 @@ export async function listMessageThreadsByStudent(
 ) {
   const { limit = 30 } = params
 
-  return db
+  const rows = await db
     .select({
       id: offerMessageThread.id,
       offerId: offerMessageThread.offerId,
@@ -27,6 +31,27 @@ export async function listMessageThreadsByStudent(
       companyLogoUrl: company.logoUrl,
       lastMessageAt: offerMessageThread.lastMessageAt,
       createdAt: offerMessageThread.createdAt,
+      lastMessageId: sql<string | null>`(
+        select ${offerMessage.id}
+        from ${offerMessage}
+        where ${offerMessage.threadId} = ${offerMessageThread.id}
+        order by ${offerMessage.createdAt} desc, ${offerMessage.id} desc
+        limit 1
+      )`,
+      lastMessageSenderUserId: sql<string | null>`(
+        select ${offerMessage.senderUserId}
+        from ${offerMessage}
+        where ${offerMessage.threadId} = ${offerMessageThread.id}
+        order by ${offerMessage.createdAt} desc, ${offerMessage.id} desc
+        limit 1
+      )`,
+      lastReadMessageId: sql<string | null>`(
+        select ${offerMessageReadState.lastReadMessageId}
+        from ${offerMessageReadState}
+        where ${offerMessageReadState.threadId} = ${offerMessageThread.id}
+          and ${offerMessageReadState.userId} = ${studentUserId}
+        limit 1
+      )`,
     })
     .from(offerMessageThread)
     .innerJoin(
@@ -40,4 +65,19 @@ export async function listMessageThreadsByStudent(
       desc(offerMessageThread.id),
     )
     .limit(limit)
+
+  return rows.map(
+    ({ lastMessageId, lastMessageSenderUserId, lastReadMessageId, ...thread }) => {
+      const hasUnread =
+        lastMessageId != null &&
+        lastMessageSenderUserId !== studentUserId &&
+        lastReadMessageId !== lastMessageId
+
+      return {
+        ...thread,
+        hasUnread,
+        unreadCount: hasUnread ? 1 : 0,
+      }
+    },
+  )
 }

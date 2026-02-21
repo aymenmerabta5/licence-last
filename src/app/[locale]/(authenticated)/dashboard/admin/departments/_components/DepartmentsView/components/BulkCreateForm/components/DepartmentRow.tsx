@@ -31,7 +31,7 @@ export function DepartmentRow({
   const t = useTranslations("dashboard.admin.departments.bulkCreate")
 
   return (
-    <div className="grid grid-cols-1 items-start gap-3 rounded-xl border border-border/60 bg-muted/10 p-3 sm:grid-cols-[1fr_1fr_1fr_auto]">
+    <div className="grid grid-cols-1 items-start gap-3 rounded-xl border border-border/60 bg-muted/10 p-3 sm:grid-cols-[1fr_1fr_auto]">
       <div className="space-y-1">
         <Input
           type="text"
@@ -55,19 +55,6 @@ export function DepartmentRow({
         />
         {errors.headEmail && (
           <p className="text-xs text-destructive">{errors.headEmail}</p>
-        )}
-      </div>
-
-      <div className="space-y-1">
-        <Input
-          type="text"
-          value={row.headName}
-          onChange={(e) => onUpdate(index, "headName", e.target.value)}
-          placeholder={t("headNamePlaceholder")}
-          className="h-10 rounded-lg border-border/60"
-        />
-        {errors.headName && (
-          <p className="text-xs text-destructive">{errors.headName}</p>
         )}
       </div>
 

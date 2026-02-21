@@ -1,11 +1,15 @@
 import "server-only"
 
-import { and, desc, eq } from "drizzle-orm"
+import { and, desc, eq, sql } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { internshipOffer } from "@/server/db/schema/internships"
-import { offerMessageThread } from "@/server/db/schema/messages"
+import {
+  offerMessage,
+  offerMessageReadState,
+  offerMessageThread,
+} from "@/server/db/schema/messages"
 import { MessageServiceError } from "@/server/services/messages/errors"
 
 interface ListCompanyMessageThreadsParams {
@@ -15,6 +19,7 @@ interface ListCompanyMessageThreadsParams {
 
 export async function listMessageThreadsByCompany(
   companyId: string,
+  viewerUserId: string,
   params: ListCompanyMessageThreadsParams = {},
 ) {
   const { offerId, limit = 30 } = params
@@ -46,7 +51,7 @@ export async function listMessageThreadsByCompany(
     conditions.push(eq(offerMessageThread.offerId, offerId))
   }
 
-  return db
+  const rows = await db
     .select({
       id: offerMessageThread.id,
       offerId: offerMessageThread.offerId,
@@ -56,6 +61,27 @@ export async function listMessageThreadsByCompany(
       studentImage: user.image,
       lastMessageAt: offerMessageThread.lastMessageAt,
       createdAt: offerMessageThread.createdAt,
+      lastMessageId: sql<string | null>`(
+        select ${offerMessage.id}
+        from ${offerMessage}
+        where ${offerMessage.threadId} = ${offerMessageThread.id}
+        order by ${offerMessage.createdAt} desc, ${offerMessage.id} desc
+        limit 1
+      )`,
+      lastMessageSenderUserId: sql<string | null>`(
+        select ${offerMessage.senderUserId}
+        from ${offerMessage}
+        where ${offerMessage.threadId} = ${offerMessageThread.id}
+        order by ${offerMessage.createdAt} desc, ${offerMessage.id} desc
+        limit 1
+      )`,
+      lastReadMessageId: sql<string | null>`(
+        select ${offerMessageReadState.lastReadMessageId}
+        from ${offerMessageReadState}
+        where ${offerMessageReadState.threadId} = ${offerMessageThread.id}
+          and ${offerMessageReadState.userId} = ${viewerUserId}
+        limit 1
+      )`,
     })
     .from(offerMessageThread)
     .innerJoin(
@@ -69,4 +95,19 @@ export async function listMessageThreadsByCompany(
       desc(offerMessageThread.id),
     )
     .limit(limit)
+
+  return rows.map(
+    ({ lastMessageId, lastMessageSenderUserId, lastReadMessageId, ...thread }) => {
+      const hasUnread =
+        lastMessageId != null &&
+        lastMessageSenderUserId !== viewerUserId &&
+        lastReadMessageId !== lastMessageId
+
+      return {
+        ...thread,
+        hasUnread,
+        unreadCount: hasUnread ? 1 : 0,
+      }
+    },
+  )
 }

@@ -13,7 +13,6 @@ const log = createModuleLogger("services/departments/create")
 export async function createDepartment(data: {
   universityId: string
   name: string
-  headName?: string
 }) {
   const existing = await db.query.department.findFirst({
     where: and(
@@ -40,7 +39,6 @@ export async function createDepartment(data: {
     id,
     universityId: data.universityId,
     name: data.name.trim(),
-    headName: data.headName?.trim() || null,
   })
 
   log.info({ id, event: "department_created" }, "Department created")

@@ -181,6 +181,53 @@ describe("src/server/orpc/routes/student-cv", () => {
     })
   })
 
+  test("uploadStudentResumeProcedure rejects files above 10MB", async () => {
+    const { uploadStudentResumeProcedure } = await import(
+      "@/server/orpc/routes/student-cv"
+    )
+
+    const file = new File([new Uint8Array([37, 80, 68, 70])], "resume.pdf", {
+      type: "application/pdf",
+    })
+    Object.defineProperty(file, "size", {
+      value: 10 * 1024 * 1024 + 1,
+      configurable: true,
+    })
+
+    await expect(
+      callProcedure(uploadStudentResumeProcedure, {
+        input: { file },
+        context: { user: { id: "student-1" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "Resume file size cannot exceed 10MB",
+    })
+  })
+
+  test("uploadStudentResumeProcedure rejects mismatched PDF magic bytes", async () => {
+    const { uploadStudentResumeProcedure } = await import(
+      "@/server/orpc/routes/student-cv"
+    )
+
+    // PNG header while declaring PDF.
+    const file = new File(
+      [new Uint8Array([0x89, 0x50, 0x4e, 0x47])],
+      "resume.pdf",
+      { type: "application/pdf" },
+    )
+
+    await expect(
+      callProcedure(uploadStudentResumeProcedure, {
+        input: { file },
+        context: { user: { id: "student-1" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "File content does not match PDF format",
+    })
+  })
+
   test("uploadStudentResumeProcedure uploads PDF and persists resume metadata", async () => {
     const { uploadStudentResumeProcedure } = await import(
       "@/server/orpc/routes/student-cv"

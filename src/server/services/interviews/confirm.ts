@@ -3,19 +3,26 @@ import "server-only"
 import { and, eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
+import { companyMember } from "@/server/db/schema/companies"
 import { interview, interviewSlot } from "@/server/db/schema/interviews"
+import { createModuleLogger } from "@/server/logging"
 import { InterviewServiceError } from "@/server/services/interviews/errors"
+import { createNotification } from "@/server/services/notifications/create"
+
+const log = createModuleLogger("services/interviews/confirm")
 
 export async function confirmInterviewSlot(
   interviewId: string,
   slotId: string,
   studentUserId: string,
 ) {
-  return db.transaction(async (tx) => {
+  const confirmation = await db.transaction(async (tx) => {
     const [interviewRow] = await tx
       .select({
         id: interview.id,
         studentUserId: interview.studentUserId,
+        companyId: interview.companyId,
+        offerId: interview.offerId,
         status: interview.status,
       })
       .from(interview)
@@ -88,6 +95,61 @@ export async function confirmInterviewSlot(
       confirmedSlotId: slot.id,
       startsAt: slot.startsAt,
       endsAt: slot.endsAt,
+      companyId: interviewRow.companyId,
+      offerId: interviewRow.offerId,
     }
   })
+
+  try {
+    const members = await db
+      .select({ userId: companyMember.userId })
+      .from(companyMember)
+      .where(eq(companyMember.companyId, confirmation.companyId))
+
+    if (members.length > 0) {
+      const notificationResults = await Promise.allSettled(
+        members.map((member) =>
+          createNotification({
+            userId: member.userId,
+            type: "interview_confirmed",
+            payload: {
+              interviewId: confirmation.interviewId,
+              slotId: confirmation.confirmedSlotId,
+              offerId: confirmation.offerId,
+              studentUserId,
+              startsAt: confirmation.startsAt.toISOString(),
+              endsAt: confirmation.endsAt.toISOString(),
+            },
+          }),
+        ),
+      )
+
+      const failedCount = notificationResults.filter(
+        (item) => item.status === "rejected",
+      ).length
+
+      if (failedCount > 0) {
+        log.warn(
+          {
+            interviewId: confirmation.interviewId,
+            failedCount,
+            memberCount: members.length,
+          },
+          "Failed to notify some company members about interview confirmation",
+        )
+      }
+    }
+  } catch (error) {
+    log.warn(
+      { error, interviewId: confirmation.interviewId },
+      "Failed to dispatch company notifications for interview confirmation",
+    )
+  }
+
+  return {
+    interviewId: confirmation.interviewId,
+    confirmedSlotId: confirmation.confirmedSlotId,
+    startsAt: confirmation.startsAt,
+    endsAt: confirmation.endsAt,
+  }
 }

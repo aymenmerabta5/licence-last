@@ -29,6 +29,8 @@ export function DepartmentCard({
   onManageSkills,
 }: DepartmentCardProps) {
   const t = useTranslations("dashboard.admin.departments")
+  const hasAssignedHead = Boolean(department.headUserId)
+  const headLabel = department.headUserName ?? department.headUserEmail
 
   return (
     <article className="group relative overflow-hidden border border-border/50 bg-background p-5 transition-all duration-300 hover:border-primary/30 hover:shadow-sm sm:p-6">
@@ -48,10 +50,10 @@ export function DepartmentCard({
               <Badge variant="outline" className="text-[10px]">
                 {department.skillCount} {t("manageSkills")}
               </Badge>
-              {department.headName ? (
+              {hasAssignedHead ? (
                 <Badge variant="secondary" className="gap-1 text-[10px]">
                   <UserCheck className="h-3 w-3" />
-                  {department.headName}
+                  {headLabel}
                 </Badge>
               ) : null}
             </div>
@@ -79,7 +81,7 @@ export function DepartmentCard({
             <Boxes className="h-3.5 w-3.5" />
             {t("manageSkills")}
           </Button>
-          {department.headName ? (
+          {hasAssignedHead ? (
             <Button
               type="button"
               variant="outline"

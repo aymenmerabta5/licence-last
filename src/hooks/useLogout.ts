@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useState } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "@/i18n/routing"
 import { authClient } from "@/lib/auth-client"
 
@@ -13,6 +14,7 @@ import { authClient } from "@/lib/auth-client"
  */
 export function useLogout() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   const logout = useCallback(async () => {
@@ -20,12 +22,13 @@ export function useLogout() {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
+          queryClient.clear()
           router.replace("/")
         },
       },
     })
     setIsLoggingOut(false)
-  }, [router])
+  }, [queryClient, router])
 
   return { logout, isLoggingOut }
 }

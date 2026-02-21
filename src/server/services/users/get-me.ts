@@ -15,12 +15,25 @@ interface UniversitySummary {
   rejectionReason: string | null
 }
 
+interface UserSummary {
+  id: string
+  email: string
+  role: string | null
+  name: string | null
+  image: string | null
+}
+
 interface GetMeDependencies {
+  getUserById: (userId: string) => Promise<UserSummary | null>
   getCompanyByUserId: (userId: string) => Promise<CompanySummary | null>
   getUniversityByUserId: (userId: string) => Promise<UniversitySummary | null>
 }
 
 const DEFAULT_GET_ME_DEPENDENCIES: GetMeDependencies = {
+  getUserById: async (userId) => {
+    const { getUserById } = await import("@/server/services/users/get-by-id")
+    return getUserById(userId)
+  },
   getCompanyByUserId: async (userId) => {
     const { getCompanyByUserId } = await import(
       "@/server/services/companies/get"
@@ -55,6 +68,7 @@ export async function getMe(
     ...DEFAULT_GET_ME_DEPENDENCIES,
     ...dependencies,
   }
+  const freshUser = await resolvedDependencies.getUserById(user.id)
 
   let companyData = null
   if (user.role === "company_admin") {
@@ -90,10 +104,10 @@ export async function getMe(
   return {
     user: {
       id: user.id,
-      email: user.email,
-      role: user.role ?? "student",
-      name: user.name ?? null,
-      image: user.image ?? null,
+      email: freshUser ? freshUser.email : user.email,
+      role: freshUser ? (freshUser.role ?? "student") : (user.role ?? "student"),
+      name: freshUser ? freshUser.name : (user.name ?? null),
+      image: freshUser ? freshUser.image : (user.image ?? null),
       onboardingCompleted: user.onboardingCompleted ?? false,
       twoFactorEnabled: user.twoFactorEnabled ?? false,
     },
