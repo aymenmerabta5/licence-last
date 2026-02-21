@@ -59,3 +59,8 @@ tmp-biome-schema.json
 .tmp-biome-schema.json
 .tmp-devserver.pid
 RESULT.txt
+.agents
+.agent
+.opencode
+.claude
+.cursor
