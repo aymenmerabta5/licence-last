@@ -1,9 +1,9 @@
 import "server-only"
 
-import { generateObject } from "ai"
+import { generateText, Output } from "ai"
 import { z } from "zod"
 
-import { getPoeModel } from "@/server/ai/model"
+import { getAIModel } from "@/server/ai/model"
 
 const coverLetterSchema = z.object({
   coverLetter: z.string().min(1),
@@ -48,23 +48,11 @@ export async function generateCoverLetter(
     `Context:\n${contextJson}`,
   ].join("\n\n")
 
-  const result = await generateObject({
-    model: getPoeModel(),
-    schema: coverLetterSchema,
+  const result = await generateText({
+    model: getAIModel(),
+    output: Output.object({ schema: coverLetterSchema }),
     prompt,
-    experimental_repairText: async ({ text }) => {
-      // Poe's API sometimes returns plain text instead of JSON.
-      // If the response isn't valid JSON, wrap it in the expected schema.
-      try {
-        JSON.parse(text)
-        return text
-      } catch {
-        // Escape the raw text for safe JSON embedding
-        const escaped = JSON.stringify(text.trim())
-        return `{"coverLetter":${escaped}}`
-      }
-    },
   })
 
-  return result.object
+  return result.output
 }

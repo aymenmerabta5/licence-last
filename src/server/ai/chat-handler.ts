@@ -17,7 +17,7 @@ import { isRoleAllowedForIntent } from "@/server/ai/access"
 import { resolveToolAuthContext } from "@/server/ai/auth-context"
 import { generateConversationTitle } from "@/server/ai/auto-title"
 import { assistantContextToJson } from "@/server/ai/context"
-import { getPoeModel } from "@/server/ai/model"
+import { getAIModel } from "@/server/ai/model"
 import { persistUserMessage, resolvePersistence } from "@/server/ai/persistence"
 import { buildSystemPrompt, resolvePersona } from "@/server/ai/prompts"
 import { checkRateLimit } from "@/server/ai/rate-limit"
@@ -281,7 +281,7 @@ export async function handleChatRequest(req: Request): Promise<Response> {
     },
     execute: async ({ writer }) => {
       const result = streamText({
-        model: getPoeModel(
+        model: getAIModel(
           persistence?.ok && persistence.modelId
             ? persistence.modelId
             : undefined,

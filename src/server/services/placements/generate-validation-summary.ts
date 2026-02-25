@@ -1,9 +1,9 @@
 import "server-only"
 
-import { generateObject } from "ai"
+import { generateText, Output } from "ai"
 import { z } from "zod"
 
-import { getPoeModel } from "@/server/ai/model"
+import { getAIModel } from "@/server/ai/model"
 
 const validationSummarySchema = z.object({
   summaryBullets: z.array(z.string()),
@@ -32,22 +32,11 @@ export async function generateValidationSummary(
     `Application data:\n${contextJson}`,
   ].join("\n\n")
 
-  const result = await generateObject({
-    model: getPoeModel(),
-    schema: validationSummarySchema,
+  const result = await generateText({
+    model: getAIModel(),
+    output: Output.object({ schema: validationSummarySchema }),
     prompt,
-    experimental_repairText: async ({ text }) => {
-      // Poe's API may return malformed JSON — attempt repair
-      try {
-        JSON.parse(text)
-        return text
-      } catch {
-        // Try wrapping plain text as a single summary bullet
-        const escaped = JSON.stringify(text.trim())
-        return `{"summaryBullets":[${escaped}],"checklist":[],"potentialInconsistencies":[]}`
-      }
-    },
   })
 
-  return result.object
+  return result.output
 }

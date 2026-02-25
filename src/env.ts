@@ -8,7 +8,14 @@ export const env = createEnv({
       .string()
       .min(32, "Auth secret must be at least 32 characters"),
 
-    // AI (Phase 1)
+    // AI provider routing (gateway-first with Poe compatibility)
+    AI_PROVIDER: z.enum(["gateway", "poe"]).optional(),
+    AI_API_KEY: z.string().min(1).optional(),
+    AI_MODEL: z.string().min(1).optional(),
+    AI_ALLOWED_MODELS: z.string().min(1).optional(),
+    AI_BASE_URL: z.string().url().optional(),
+
+    // Legacy Poe compatibility (safe fallback during migration)
     POE_API_KEY: z.string().min(1).optional(),
     POE_MODEL: z.string().min(1).optional(),
     POE_ALLOWED_MODELS: z.string().min(1).optional(),
@@ -71,8 +78,7 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES,
     NEXT_PUBLIC_FEATURE_SAVED_OFFERS:
       process.env.NEXT_PUBLIC_FEATURE_SAVED_OFFERS,
-    NEXT_PUBLIC_FEATURE_INTERVIEWS:
-      process.env.NEXT_PUBLIC_FEATURE_INTERVIEWS,
+    NEXT_PUBLIC_FEATURE_INTERVIEWS: process.env.NEXT_PUBLIC_FEATURE_INTERVIEWS,
     NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS:
       process.env.NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS,
   },

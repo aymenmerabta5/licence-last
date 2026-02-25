@@ -1,9 +1,9 @@
 import "server-only"
 
-import { generateObject } from "ai"
+import { generateText, Output } from "ai"
 import { z } from "zod"
 
-import { getPoeModel } from "@/server/ai/model"
+import { getAIModel } from "@/server/ai/model"
 
 const internshipTypes = ["pfe", "immersion", "summer", "practical"] as const
 const workModes = ["on_site", "hybrid", "remote"] as const
@@ -22,25 +22,6 @@ const generateDraftSchema = z.object({
   suggestedSkillTagIds: z.array(z.string()).optional(),
   suggestedSkillTagNames: z.array(z.string()).optional(),
 })
-
-/** Maps common AI-generated labels back to our enum codes */
-const internshipTypeMap: Record<string, (typeof internshipTypes)[number]> = {
-  pfe: "pfe",
-  "final year project": "pfe",
-  immersion: "immersion",
-  summer: "summer",
-  "summer internship": "summer",
-  practical: "practical",
-  "practical training": "practical",
-}
-const workModeMap: Record<string, (typeof workModes)[number]> = {
-  on_site: "on_site",
-  onsite: "on_site",
-  "on-site": "on_site",
-  "on site": "on_site",
-  hybrid: "hybrid",
-  remote: "remote",
-}
 
 export type GenerateDraftResult = z.infer<typeof generateDraftSchema>
 
@@ -88,7 +69,7 @@ export async function generateOfferDraft(
     "Generate an internship offer draft for Stag.",
     "Use the user's prompt and current form state as context.",
     "Fill in missing fields and improve existing ones.",
-    "IMPORTANT — use these EXACT values for enum fields:",
+    "IMPORTANT - use these EXACT values for enum fields:",
     '- internshipType: one of "pfe", "immersion", "summer", "practical"',
     '- workMode: one of "on_site", "hybrid", "remote"',
     '- wilayaCode: an integer (e.g. 16, not "16")',
@@ -102,36 +83,11 @@ export async function generateOfferDraft(
     `Context JSON:\n${contextJson}`,
   ].join("\n\n")
 
-  const result = await generateObject({
-    model: getPoeModel(),
-    schema: generateDraftSchema,
+  const result = await generateText({
+    model: getAIModel(),
+    output: Output.object({ schema: generateDraftSchema }),
     prompt,
-    experimental_repairText: async ({ text }) => {
-      let fixed = text
-      // Fix internshipType — replace human-readable label with enum code
-      fixed = fixed.replace(
-        /"internshipType"\s*:\s*"([^"]+)"/,
-        (_m: string, val: string) => {
-          const mapped = internshipTypeMap[val.toLowerCase()]
-          return `"internshipType": "${mapped ?? "summer"}"`
-        },
-      )
-      // Fix workMode — replace human-readable label with enum code
-      fixed = fixed.replace(
-        /"workMode"\s*:\s*"([^"]+)"/,
-        (_m: string, val: string) => {
-          const mapped = workModeMap[val.toLowerCase()]
-          return `"workMode": "${mapped ?? "on_site"}"`
-        },
-      )
-      // Fix wilayaCode string → number
-      fixed = fixed.replace(
-        /"wilayaCode"\s*:\s*"(\d+)"/,
-        (_m: string, val: string) => `"wilayaCode": ${Number(val)}`,
-      )
-      return fixed
-    },
   })
 
-  return result.object
+  return result.output
 }

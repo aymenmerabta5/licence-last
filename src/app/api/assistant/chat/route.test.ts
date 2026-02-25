@@ -205,7 +205,7 @@ mock.module("@/server/ai/context", () => ({
 
 // Mock model
 mock.module("@/server/ai/model", () => ({
-  getPoeModel: () => "gpt-4",
+  getAIModel: () => "gpt-4",
 }))
 
 // Mock auto-title

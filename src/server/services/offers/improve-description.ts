@@ -1,9 +1,9 @@
 import "server-only"
 
-import { generateObject } from "ai"
+import { generateText, Output } from "ai"
 import { z } from "zod"
 
-import { getPoeModel } from "@/server/ai/model"
+import { getAIModel } from "@/server/ai/model"
 
 const improveDescriptionSchema = z.object({
   description: z.string().min(1),
@@ -44,11 +44,11 @@ export async function improveOfferDescription(
     `Current description to improve:\n${input.description ?? ""}`,
   ].join("\n")
 
-  const result = await generateObject({
-    model: getPoeModel(),
-    schema: improveDescriptionSchema,
+  const result = await generateText({
+    model: getAIModel(),
+    output: Output.object({ schema: improveDescriptionSchema }),
     prompt,
   })
 
-  return result.object
+  return result.output
 }

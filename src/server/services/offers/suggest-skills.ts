@@ -1,9 +1,9 @@
 import "server-only"
 
-import { generateObject } from "ai"
+import { generateText, Output } from "ai"
 import { z } from "zod"
 
-import { getPoeModel } from "@/server/ai/model"
+import { getAIModel } from "@/server/ai/model"
 
 const suggestSkillsSchema = z.object({
   skillTagIds: z.array(z.string()).default([]),
@@ -49,11 +49,11 @@ export async function suggestOfferSkills(
     `Context JSON:\n${contextJson}`,
   ].join("\n\n")
 
-  const result = await generateObject({
-    model: getPoeModel(),
-    schema: suggestSkillsSchema,
+  const result = await generateText({
+    model: getAIModel(),
+    output: Output.object({ schema: suggestSkillsSchema }),
     prompt,
   })
 
-  return result.object
+  return result.output
 }

@@ -64,3 +64,5 @@ RESULT.txt
 .opencode
 .claude
 .cursor
+docs/diagrams/
+docs/plantuml-1.2026.1.jar
