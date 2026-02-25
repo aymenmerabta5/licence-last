@@ -5,9 +5,8 @@ import { createOpenAI } from "@ai-sdk/openai"
 import { env } from "@/env"
 
 /**
- * Poe's OpenAI-compatible streaming API omits `choices[].index` in SSE chunks,
- * which @ai-sdk/openai v3 requires. This fetch wrapper patches each SSE line
- * to add the missing field so Zod validation passes.
+ * Poe's OpenAI-compatible streaming API can omit `choices[].index` in SSE chunks.
+ * This fetch wrapper patches each SSE line to add the missing field.
  */
 async function poeFetch(
   input: RequestInfo | URL,
@@ -70,53 +69,128 @@ function patchSSELine(line: string): string {
       if (changed) return `data: ${JSON.stringify(json)}`
     }
   } catch {
-    // Not valid JSON — pass through unchanged
+    // Not valid JSON - pass through unchanged.
   }
   return line
 }
 
-const poe = createOpenAI({
-  apiKey: env.POE_API_KEY,
-  baseURL: env.POE_BASE_URL ?? "https://api.poe.com/v1",
-  fetch: poeFetch as typeof globalThis.fetch,
-})
+const DEFAULT_POE_BASE_URL = "https://api.poe.com/v1"
+const DEFAULT_GATEWAY_BASE_URL = "https://ai-gateway.vercel.sh/v1"
 
-const FALLBACK_ALLOWED_MODELS = ["GPT-5.2", "GPT-4o", "GPT-4o-mini"]
+const POE_FALLBACK_ALLOWED_MODELS = ["GPT-5.2", "GPT-4o", "GPT-4o-mini"]
+const GATEWAY_FALLBACK_ALLOWED_MODELS = ["openai/gpt-4o-mini", "openai/gpt-4o"]
 
-function parseAllowedModels(raw: string | undefined): string[] {
-  if (!raw) return [...FALLBACK_ALLOWED_MODELS]
+type AIProvider = "gateway" | "poe"
+
+function resolveProvider(): AIProvider {
+  if (env.AI_PROVIDER) return env.AI_PROVIDER
+
+  if (
+    env.AI_API_KEY ||
+    env.AI_BASE_URL ||
+    env.AI_MODEL ||
+    env.AI_ALLOWED_MODELS
+  ) {
+    return "gateway"
+  }
+
+  return "poe"
+}
+
+function resolveApiKey(provider: AIProvider): string | undefined {
+  if (provider === "gateway") {
+    return env.AI_API_KEY ?? env.POE_API_KEY
+  }
+
+  return env.POE_API_KEY ?? env.AI_API_KEY
+}
+
+function resolveBaseURL(provider: AIProvider): string {
+  if (provider === "gateway") {
+    return env.AI_BASE_URL ?? DEFAULT_GATEWAY_BASE_URL
+  }
+
+  return env.POE_BASE_URL ?? DEFAULT_POE_BASE_URL
+}
+
+function resolveFallbackAllowedModels(provider: AIProvider): string[] {
+  return provider === "gateway"
+    ? [...GATEWAY_FALLBACK_ALLOWED_MODELS]
+    : [...POE_FALLBACK_ALLOWED_MODELS]
+}
+
+function resolveModelRaw(provider: AIProvider): string | undefined {
+  if (provider === "gateway") {
+    return env.AI_MODEL ?? env.POE_MODEL
+  }
+
+  return env.POE_MODEL ?? env.AI_MODEL
+}
+
+function resolveAllowedModelsRaw(provider: AIProvider): string | undefined {
+  if (provider === "gateway") {
+    return env.AI_ALLOWED_MODELS ?? env.POE_ALLOWED_MODELS
+  }
+
+  return env.POE_ALLOWED_MODELS ?? env.AI_ALLOWED_MODELS
+}
+
+function parseAllowedModels(
+  raw: string | undefined,
+  fallback: string[],
+): string[] {
+  if (!raw) return [...fallback]
   const list = raw
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean)
-  return list.length > 0 ? list : [...FALLBACK_ALLOWED_MODELS]
+  return list.length > 0 ? list : [...fallback]
 }
 
-export function getDefaultPoeModelId(): string {
-  const allowed = getAllowedPoeModelIds()
-  const preferred = env.POE_MODEL
+const activeProvider = resolveProvider()
+const aiProvider = createOpenAI({
+  apiKey: resolveApiKey(activeProvider),
+  baseURL: resolveBaseURL(activeProvider),
+  fetch:
+    activeProvider === "poe"
+      ? (poeFetch as typeof globalThis.fetch)
+      : undefined,
+})
+
+export function getAIProvider(): AIProvider {
+  return activeProvider
+}
+
+export function getDefaultModelId(): string {
+  const allowed = getAllowedModelIds()
+  const preferred = resolveModelRaw(activeProvider)
 
   if (preferred && allowed.includes(preferred)) {
     return preferred
   }
 
-  return allowed[0] ?? FALLBACK_ALLOWED_MODELS[0]
+  return allowed[0] ?? resolveFallbackAllowedModels(activeProvider)[0]
 }
 
-export function getAllowedPoeModelIds(): string[] {
-  return parseAllowedModels(env.POE_ALLOWED_MODELS)
+export function getAllowedModelIds(): string[] {
+  return parseAllowedModels(
+    resolveAllowedModelsRaw(activeProvider),
+    resolveFallbackAllowedModels(activeProvider),
+  )
 }
 
-export function isAllowedPoeModelId(modelId: string): boolean {
-  return getAllowedPoeModelIds().includes(modelId)
+export function isAllowedModelId(modelId: string): boolean {
+  return getAllowedModelIds().includes(modelId)
 }
 
-export function getPoeModel(modelId?: string) {
-  const requested = modelId ?? getDefaultPoeModelId()
-  const model = isAllowedPoeModelId(requested)
-    ? requested
-    : getDefaultPoeModelId()
-  // Poe's OpenAI-compatible API does not reliably support the Responses API
-  // for all models. Use Chat Completions for maximum compatibility.
-  return poe.chat(model)
+export function getAIModel(modelId?: string) {
+  const requested = modelId ?? getDefaultModelId()
+  const model = isAllowedModelId(requested) ? requested : getDefaultModelId()
+  return aiProvider.chat(model)
 }
+
+// Backward-compatible exports during migration.
+export const getDefaultPoeModelId = getDefaultModelId
+export const getAllowedPoeModelIds = getAllowedModelIds
+export const isAllowedPoeModelId = isAllowedModelId
+export const getPoeModel = getAIModel

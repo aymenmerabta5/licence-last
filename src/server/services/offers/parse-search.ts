@@ -1,10 +1,10 @@
 import "server-only"
 
-import { generateObject } from "ai"
+import { generateText, Output } from "ai"
 import { z } from "zod"
 
 import { WILAYAS } from "@/lib/wilayas"
-import { getPoeModel } from "@/server/ai/model"
+import { getAIModel } from "@/server/ai/model"
 
 const parseResultSchema = z.object({
   keyword: z.string().optional(),
@@ -65,11 +65,11 @@ export async function parseSearchQuery(
     `Context JSON:\n${contextJson}`,
   ].join("\n\n")
 
-  const result = await generateObject({
-    model: getPoeModel(),
-    schema: parseResultSchema,
+  const result = await generateText({
+    model: getAIModel(),
+    output: Output.object({ schema: parseResultSchema }),
     prompt,
   })
 
-  return result.object
+  return result.output
 }

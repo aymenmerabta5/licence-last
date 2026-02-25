@@ -2,9 +2,9 @@ import "server-only"
 
 import { z } from "zod"
 import {
-  getAllowedPoeModelIds,
-  getDefaultPoeModelId,
-  isAllowedPoeModelId,
+  getAllowedModelIds,
+  getDefaultModelId,
+  isAllowedModelId,
 } from "@/server/ai/model"
 import {
   companyAdminProcedureAssistant,
@@ -27,14 +27,14 @@ import {
 const ASSISTANT_MODEL_SCHEMA = z
   .string()
   .min(1)
-  .refine((v) => isAllowedPoeModelId(v), { message: "Model not allowed" })
+  .refine((v) => isAllowedModelId(v), { message: "Model not allowed" })
 
 export const listAssistantModelsProcedure = companyAdminProcedureGenerous
   .input(z.undefined().optional())
   .handler(async () => {
     return {
-      models: getAllowedPoeModelIds().map((id) => ({ id, label: id })),
-      defaultModelId: getDefaultPoeModelId(),
+      models: getAllowedModelIds().map((id) => ({ id, label: id })),
+      defaultModelId: getDefaultModelId(),
     }
   })
 

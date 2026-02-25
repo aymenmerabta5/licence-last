@@ -24,7 +24,37 @@ mock.module("@/server/logging", () => ({
     warn: loggerWarnMock,
     info: loggerInfoMock,
     error: loggerErrorMock,
+    trace: () => {},
+    debug: () => {},
+    fatal: () => {},
+    child: () => ({
+      warn: loggerWarnMock,
+      info: loggerInfoMock,
+      error: loggerErrorMock,
+      trace: () => {},
+      debug: () => {},
+      fatal: () => {},
+      child: () => ({}),
+    }),
   },
+  createLogger: () => ({
+    warn: loggerWarnMock,
+    info: loggerInfoMock,
+    error: loggerErrorMock,
+    trace: () => {},
+    debug: () => {},
+    fatal: () => {},
+    child: () => ({}),
+  }),
+  createModuleLogger: () => ({
+    warn: loggerWarnMock,
+    info: loggerInfoMock,
+    error: loggerErrorMock,
+    trace: () => {},
+    debug: () => {},
+    fatal: () => {},
+    child: () => ({}),
+  }),
 }))
 
 describe("src/server/email/sendEmail", () => {

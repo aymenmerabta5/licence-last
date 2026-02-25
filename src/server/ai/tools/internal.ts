@@ -1,16 +1,16 @@
 import "server-only"
 
-import { generateObject, type ToolSet, tool } from "ai"
+import { generateText, Output, type ToolSet, tool } from "ai"
 import { z } from "zod"
 
 import { WILAYAS } from "@/lib/wilayas"
-import { getPoeModel } from "@/server/ai/model"
+import { getAIModel } from "@/server/ai/model"
 
 interface CreateInternalToolsParams {
   contextJson: string
 }
 
-async function safeGenerateObject<T>({
+async function safeGenerateOutput<T>({
   schema,
   prompt,
   system,
@@ -20,13 +20,13 @@ async function safeGenerateObject<T>({
   system?: string
 }): Promise<T | { error: string; detail: string }> {
   try {
-    const result = await generateObject({
-      model: getPoeModel(),
-      schema,
+    const result = await generateText({
+      model: getAIModel(),
+      output: Output.object({ schema }),
       prompt,
       ...(system && { system }),
     })
-    return result.object as T
+    return result.output as T
   } catch (e) {
     return {
       error: "Failed to generate.",
@@ -68,7 +68,7 @@ export function createInternalTools({
           `Context JSON:\n${contextJson}`,
         ].join("\n\n")
 
-        return safeGenerateObject({ schema, prompt })
+        return safeGenerateOutput({ schema, prompt })
       },
     }),
 
@@ -88,7 +88,7 @@ export function createInternalTools({
           `Context JSON:\n${contextJson}`,
         ].join("\n\n")
 
-        return safeGenerateObject({ schema, prompt })
+        return safeGenerateOutput({ schema, prompt })
       },
     }),
 
@@ -110,7 +110,7 @@ export function createInternalTools({
           `Context JSON:\n${contextJson}`,
         ].join("\n\n")
 
-        return safeGenerateObject({ schema, prompt })
+        return safeGenerateOutput({ schema, prompt })
       },
     }),
 
@@ -134,7 +134,7 @@ export function createInternalTools({
           `Context JSON:\n${contextJson}`,
         ].join("\n\n")
 
-        return safeGenerateObject({ schema, prompt })
+        return safeGenerateOutput({ schema, prompt })
       },
     }),
 
@@ -156,7 +156,7 @@ export function createInternalTools({
           `Context JSON:\n${contextJson}`,
         ].join("\n\n")
 
-        return safeGenerateObject({ schema, prompt })
+        return safeGenerateOutput({ schema, prompt })
       },
     }),
 
@@ -180,7 +180,7 @@ export function createInternalTools({
           `Context JSON:\n${contextJson}`,
         ].join("\n\n")
 
-        return safeGenerateObject({ schema, prompt })
+        return safeGenerateOutput({ schema, prompt })
       },
     }),
 
@@ -237,7 +237,7 @@ export function createInternalTools({
           `Context JSON:\n${JSON.stringify(enrichedContext)}`,
         ].join("\n\n")
 
-        return safeGenerateObject({ schema, prompt })
+        return safeGenerateOutput({ schema, prompt })
       },
     }),
 
@@ -257,7 +257,7 @@ export function createInternalTools({
           `Context JSON:\n${contextJson}`,
         ].join("\n\n")
 
-        return safeGenerateObject({ schema, prompt })
+        return safeGenerateOutput({ schema, prompt })
       },
     }),
 
@@ -278,7 +278,7 @@ export function createInternalTools({
           `Context JSON:\n${contextJson}`,
         ].join("\n\n")
 
-        return safeGenerateObject({ schema, prompt })
+        return safeGenerateOutput({ schema, prompt })
       },
     }),
   }

@@ -42,7 +42,7 @@
              (RSC + CC)     /     |     \
                           Auth   oRPC   Assistant
                           |       |        |
-                   Better Auth 131 procs  Poe AI
+                   Better Auth 131 procs  AI SDK Gateway/Poe
                           \       |      /
                        ┌──────────────────────┐
                        │   Services Layer     │
@@ -116,7 +116,7 @@
 | Category | Technology | Version |
 |----------|-----------|---------|
 | AI SDK | ai (Vercel) | 6.0.78 |
-| LLM Provider | @ai-sdk/openai (Poe-compatible) | 3.0.26 |
+| LLM Provider | @ai-sdk/openai (gateway + Poe-compatible) | 3.0.26 |
 | Tool Integration | @arcadeai/arcadejs | 2.2.0 |
 | Email | resend + @react-email | 6.9.1 |
 | PDF | @react-pdf/renderer | 4.3.2 |
@@ -270,7 +270,7 @@ src/
 │   │   ├── uploads/                  # S3 file storage (2 files)
 │   │   └── users/                    # Current user/session ops (10 files)
 │   ├── ai/                           # AI integration
-│   │   ├── model.ts                  # Poe model config
+│   │   ├── model.ts                  # AI provider routing (gateway/Poe)
 │   │   ├── chat-handler.ts           # Stream handler
 │   │   ├── tools/                    # Internal + Arcade tools
 │   │   ├── context.ts                # Context minimization
@@ -711,9 +711,9 @@ Chat Handler (auth + rate limit + intent detection)
     ├── Context Minimization (strip PII, limit depth)
     ├── System Prompt (persona-based)
     ├── Tool Resolution
-    │   ├── Internal Tools (9) -- generateObject via Poe
+    │   ├── Internal Tools (9) -- generateText with structured output via AI model router
     │   └── Arcade Tools (GitHub, Gmail) -- external services
-    └── Poe Model (streaming via Vercel AI SDK)
+    └── AI model router (streaming via Vercel AI SDK)
     |
     v
 Persistence (assistantConversation + assistantMessage)
@@ -948,7 +948,7 @@ Pino structured JSON logging with automatic redaction:
 **Optional but important**:
 - `RESEND_API_KEY` -- Email service
 - `REDIS_URL` + `REDIS_RATE_LIMIT_ENABLED` -- Rate limiting
-- `POE_API_KEY` -- AI provider
+- `AI_API_KEY` (or `POE_API_KEY` legacy fallback) -- AI provider
 - `ARCADE_API_KEY` -- External tool integration
 - `S3_*` -- File storage (bucket, endpoint, keys)
 
@@ -1024,3 +1024,4 @@ When adding or modifying features, **update all relevant documentation files** t
 | `AGENTS.md` | Coding guidelines for AI agents | Service lists, route procedure tables, feature folder references |
 | `docs/ARCHITECTURE.md` | Full system architecture | Data model, service tables, procedure counts, file counts |
 | `README.md` | Project overview | High-level capabilities, architecture summary |
+

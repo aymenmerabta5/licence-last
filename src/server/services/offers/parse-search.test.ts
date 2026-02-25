@@ -2,11 +2,14 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 import type { ParseSearchResult } from "@/server/services/offers/parse-search"
 
-const mockGenerateObject = mock()
-const mockGetPoeModel = mock(() => "poe-model")
+const mockGenerateText = mock()
+const mockGetAIModel = mock(() => "poe-model")
 
 mock.module("ai", () => ({
-  generateObject: mockGenerateObject,
+  generateText: mockGenerateText,
+  Output: {
+    object: ({ schema }: { schema: unknown }) => ({ schema }),
+  },
   convertToModelMessages: <T>(messages: T) => messages,
   tool: <T>(definition: T) => definition,
   createUIMessageStream: ({
@@ -38,19 +41,19 @@ mock.module("ai", () => ({
 }))
 
 mock.module("@/server/ai/model", () => ({
-  getPoeModel: mockGetPoeModel,
-  getAllowedPoeModelIds: () => ["poe-model"],
-  getDefaultPoeModelId: () => "poe-model",
-  isAllowedPoeModelId: (value: string) => value === "poe-model",
+  getAIModel: mockGetAIModel,
+  getAllowedModelIds: () => ["poe-model"],
+  getDefaultModelId: () => "poe-model",
+  isAllowedModelId: (value: string) => value === "poe-model",
 }))
 
 describe("src/server/services/offers/parse-search", () => {
   beforeEach(() => {
-    mockGenerateObject.mockClear()
-    mockGetPoeModel.mockClear()
+    mockGenerateText.mockClear()
+    mockGetAIModel.mockClear()
   })
 
-  test("returns parsed object from generateObject", async () => {
+  test("returns parsed object from generateText", async () => {
     const expected: ParseSearchResult = {
       keyword: "react",
       wilayaCode: 16,
@@ -59,7 +62,7 @@ describe("src/server/services/offers/parse-search", () => {
       skillTagIds: ["skill-1"],
       explanation: "matches intent",
     }
-    mockGenerateObject.mockResolvedValueOnce({ object: expected })
+    mockGenerateText.mockResolvedValueOnce({ output: expected })
 
     const { parseSearchQuery } = await import(
       "@/server/services/offers/parse-search"
@@ -70,13 +73,13 @@ describe("src/server/services/offers/parse-search", () => {
     })
 
     expect(result).toEqual(expected)
-    expect(mockGetPoeModel).toHaveBeenCalledTimes(1)
-    expect(mockGenerateObject).toHaveBeenCalledTimes(1)
+    expect(mockGetAIModel).toHaveBeenCalledTimes(1)
+    expect(mockGenerateText).toHaveBeenCalledTimes(1)
   })
 
   test("builds prompt context with fallback when no skill tags are available", async () => {
-    mockGenerateObject.mockResolvedValueOnce({
-      object: {
+    mockGenerateText.mockResolvedValueOnce({
+      output: {
         internshipTypes: [],
         workModes: [],
         skillTagIds: [],
@@ -91,7 +94,7 @@ describe("src/server/services/offers/parse-search", () => {
       availableSkillTags: [],
     })
 
-    const firstCallArg = mockGenerateObject.mock.calls[0]?.[0] as {
+    const firstCallArg = mockGenerateText.mock.calls[0]?.[0] as {
       prompt: string
     }
 

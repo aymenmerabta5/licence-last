@@ -1,9 +1,9 @@
 import "server-only"
 
-import { generateObject } from "ai"
+import { generateText, Output } from "ai"
 import { z } from "zod"
 
-import { getPoeModel } from "@/server/ai/model"
+import { getAIModel } from "@/server/ai/model"
 
 /**
  * Generate a conversation title based on the first user message
@@ -26,13 +26,13 @@ export async function generateConversationTitle(
 
 The title should capture the main topic or intent of the conversation. Keep it brief and informative.`
 
-    const result = await generateObject({
-      model: getPoeModel(),
-      schema,
+    const result = await generateText({
+      model: getAIModel(),
+      output: Output.object({ schema }),
       prompt,
     })
 
-    return result.object.title
+    return result.output.title
   } catch {
     // Return a fallback title based on timestamp if generation fails
     return `Chat ${new Date().toLocaleDateString()}`
