@@ -6,9 +6,9 @@ import {
   getTranslations,
   setRequestLocale,
 } from "next-intl/server"
-import { ThemeProvider } from "next-themes"
 import type { ReactNode } from "react"
 
+import { ThemeProvider } from "@/components/providers/ThemeProvider"
 import { MotionProvider } from "@/components/providers/MotionProvider"
 import { QueryProvider } from "@/components/providers/QueryProvider"
 import { Toaster } from "@/components/ui/sonner"
@@ -107,8 +107,10 @@ export default async function LocaleLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+          storageKey="theme"
         >
           <MotionProvider>
             <QueryProvider>
