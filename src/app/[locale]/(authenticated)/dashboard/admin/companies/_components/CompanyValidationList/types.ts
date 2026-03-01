@@ -8,6 +8,8 @@ export interface CompanyListItem {
   representativeName: string | null
   contactEmail: string | null
   wilayaCode: number | null
+  verificationDocumentName: string | null
+  verificationDocumentUploadedAt: Date | null
   status: string
   createdAt: Date
 }

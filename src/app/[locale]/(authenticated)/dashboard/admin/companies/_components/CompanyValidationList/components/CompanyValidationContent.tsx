@@ -18,6 +18,8 @@ interface CompanyValidationContentProps {
   onReject: (id: string) => void
   onSuspend: (id: string) => void
   onReactivate: (id: string) => void
+  onDownloadVerificationDocument: (companyId: string) => void
+  downloadingVerificationCompanyId: string | null
   onDelete: (company: CompanyListItem) => void
   isApproving: boolean
   isRejecting: boolean
@@ -36,6 +38,8 @@ export function CompanyValidationContent({
   onReject,
   onSuspend,
   onReactivate,
+  onDownloadVerificationDocument,
+  downloadingVerificationCompanyId,
   onDelete,
   isApproving,
   isRejecting,
@@ -84,6 +88,10 @@ export function CompanyValidationContent({
             onReject={onReject}
             onSuspend={onSuspend}
             onReactivate={onReactivate}
+            onDownloadVerificationDocument={onDownloadVerificationDocument}
+            isDownloadingVerificationDocument={
+              downloadingVerificationCompanyId === company.id
+            }
             onDelete={onDelete}
             isApproving={isApproving}
             isRejecting={isRejecting}

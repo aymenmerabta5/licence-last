@@ -3,6 +3,7 @@
 import {
   Building2,
   Calendar,
+  FileCheck2,
   Globe,
   Mail,
   MapPin,
@@ -31,11 +32,13 @@ interface CompanyCardProps {
   onReject: (id: string) => void
   onSuspend: (id: string) => void
   onReactivate: (id: string) => void
+  onDownloadVerificationDocument: (id: string) => void
   onDelete: (company: CompanyListItem) => void
   isApproving: boolean
   isRejecting: boolean
   isSuspending: boolean
   isReactivating: boolean
+  isDownloadingVerificationDocument: boolean
   isDeleting: boolean
 }
 
@@ -45,11 +48,13 @@ export function CompanyCard({
   onReject,
   onSuspend,
   onReactivate,
+  onDownloadVerificationDocument,
   onDelete,
   isApproving,
   isRejecting,
   isSuspending,
   isReactivating,
+  isDownloadingVerificationDocument,
   isDeleting,
 }: CompanyCardProps) {
   const t = useTranslations("dashboard.admin.companies")
@@ -138,6 +143,15 @@ export function CompanyCard({
                   })}
                 </span>
               </div>
+              <div className="flex items-center gap-1.5">
+                <FileCheck2 className="h-3.5 w-3.5" />
+                <span>
+                  {t("card.verificationDocument")}:{" "}
+                  {company.verificationDocumentName
+                    ? t("card.verificationDocumentUploaded")
+                    : t("card.verificationDocumentMissing")}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -148,6 +162,11 @@ export function CompanyCard({
             isRejecting={isRejecting}
             isSuspending={isSuspending}
             isReactivating={isReactivating}
+            hasVerificationDocument={Boolean(company.verificationDocumentName)}
+            isDownloadingVerificationDocument={isDownloadingVerificationDocument}
+            onDownloadVerificationDocument={() =>
+              onDownloadVerificationDocument(company.id)
+            }
             isDeleting={isDeleting}
             onApprove={onApprove}
             onReject={onReject}

@@ -30,6 +30,18 @@ interface CompanyMemberRow {
 
 const updateCompanyMock = mock(async () => ({ companyId: "company-1" }))
 const createCompanyMock = mock(async () => ({ companyId: "company-1" }))
+const uploadCompanyVerificationDocumentMock = mock(async () => ({
+  key: "company-verification/user-1/doc-1.pdf",
+  fileName: "trade-license.pdf",
+  mimeType: "application/pdf",
+  fileSizeBytes: 1024,
+}))
+const deleteFileMock = mock(async () => {})
+const downloadCompanyVerificationDocumentMock = mock(async () => ({
+  buffer: Buffer.from("verification-document"),
+  fileName: "trade-license.pdf",
+  mimeType: "application/pdf",
+}))
 const listCompaniesMock = mock(
   async (): Promise<{
     companies: Array<Record<string, unknown>>
@@ -95,6 +107,12 @@ const isAdminRoleMock = mock(
     role === "dept_head",
 )
 
+function createPdfFile(name = "verification.pdf"): File {
+  const bytes = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x37])
+  const blob = new Blob([bytes], { type: "application/pdf" })
+  return new File([blob], name, { type: "application/pdf" })
+}
+
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   publicProcedureStrict: createProcedureMock(),
   publicProcedureStandard: createProcedureMock(),
@@ -149,6 +167,9 @@ mock.module("@/server/services/companies/get", () => ({
 mock.module("@/server/services/companies/create", () => ({
   createCompany: createCompanyMock,
 }))
+mock.module("@/server/services/companies/download-verification-document", () => ({
+  downloadCompanyVerificationDocument: downloadCompanyVerificationDocumentMock,
+}))
 mock.module("@/server/services/companies/update", () => ({
   updateCompany: updateCompanyMock,
 }))
@@ -175,6 +196,12 @@ mock.module("@/server/services/companies/membership", () => ({
 }))
 mock.module("@/server/services/uploads/upload-image", () => ({
   uploadImageToS3: mock(async () => ({ url: "https://example.com/logo.png" })),
+}))
+mock.module("@/server/services/uploads/upload-company-verification-document", () => ({
+  uploadCompanyVerificationDocument: uploadCompanyVerificationDocumentMock,
+}))
+mock.module("@/server/storage/s3", () => ({
+  deleteFile: deleteFileMock,
 }))
 mock.module("@/server/services/notifications/emit", () => ({
   emitNotification: emitNotificationMock,
@@ -207,6 +234,9 @@ describe("src/server/orpc/routes/companies", () => {
     listCompaniesMock.mockClear()
     listPublicDirectoryCompaniesMock.mockClear()
     createCompanyMock.mockClear()
+    uploadCompanyVerificationDocumentMock.mockClear()
+    deleteFileMock.mockClear()
+    downloadCompanyVerificationDocumentMock.mockClear()
     updateCompanyMock.mockClear()
     listCompanyMembersMock.mockClear()
     inviteCompanyMemberMock.mockClear()
@@ -228,15 +258,29 @@ describe("src/server/orpc/routes/companies", () => {
     const { createCompanyProcedure } = await import(
       "@/server/orpc/routes/companies"
     )
+    const file = createPdfFile("trade-license.pdf")
 
     const result = await callProcedure(createCompanyProcedure, {
-      input: { name: "Acme", wilayaCode: 16 },
+      input: { name: "Acme", wilayaCode: 16, verificationDocument: file },
       context: { user: { id: "user-1", role: "company_admin" } },
     })
 
     expect(result).toEqual({ companyId: "company-1" })
+    expect(uploadCompanyVerificationDocumentMock).toHaveBeenCalledWith({
+      file,
+      userId: "user-1",
+    })
     expect(createCompanyMock).toHaveBeenCalledWith(
-      { name: "Acme", wilayaCode: 16 },
+      {
+        name: "Acme",
+        wilayaCode: 16,
+        verificationDocument: {
+          key: "company-verification/user-1/doc-1.pdf",
+          fileName: "trade-license.pdf",
+          mimeType: "application/pdf",
+          fileSizeBytes: 1024,
+        },
+      },
       "user-1",
     )
     expect(revalidateTagMock).toHaveBeenCalledTimes(3)
@@ -261,13 +305,48 @@ describe("src/server/orpc/routes/companies", () => {
 
     await expect(
       callProcedure(createCompanyProcedure, {
-        input: { name: "Acme", wilayaCode: 16 },
+        input: {
+          name: "Acme",
+          wilayaCode: 16,
+          verificationDocument: createPdfFile("license.pdf"),
+        },
         context: { user: { id: "user-1", role: "company_admin" } },
       }),
     ).rejects.toMatchObject({
       code: "CONFLICT",
       message: "Company admin is already assigned to a company",
     })
+
+    expect(deleteFileMock).toHaveBeenCalledWith(
+      "company-verification/user-1/doc-1.pdf",
+    )
+  })
+
+  test("createCompanyProcedure maps upload validation errors to BAD_REQUEST", async () => {
+    uploadCompanyVerificationDocumentMock.mockRejectedValueOnce(
+      new Error("Verification document must be a PDF, JPEG, or PNG file"),
+    )
+
+    const { createCompanyProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    await expect(
+      callProcedure(createCompanyProcedure, {
+        input: {
+          name: "Acme",
+          wilayaCode: 16,
+          verificationDocument: createPdfFile("license.pdf"),
+        },
+        context: { user: { id: "user-1", role: "company_admin" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "Verification document must be a PDF, JPEG, or PNG file",
+    })
+
+    expect(createCompanyMock).not.toHaveBeenCalled()
+    expect(deleteFileMock).not.toHaveBeenCalled()
   })
 
   test("updateCompanyProcedure revalidates profile tags on success", async () => {
@@ -564,6 +643,49 @@ describe("src/server/orpc/routes/companies", () => {
     ).rejects.toMatchObject({
       code: "NOT_FOUND",
       message: "Company not found",
+    })
+  })
+
+  test("downloadCompanyVerificationDocumentProcedure returns encoded document for super admin review", async () => {
+    const { downloadCompanyVerificationDocumentProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    const result = await callProcedure(downloadCompanyVerificationDocumentProcedure, {
+      input: { companyId: "company-1" },
+      context: { user: { id: "super-admin-1", role: "super_admin" } },
+    })
+
+    expect(downloadCompanyVerificationDocumentMock).toHaveBeenCalledWith(
+      "company-1",
+    )
+    expect(result).toEqual({
+      fileName: "trade-license.pdf",
+      mimeType: "application/pdf",
+      fileBase64: Buffer.from("verification-document").toString("base64"),
+    })
+  })
+
+  test("downloadCompanyVerificationDocumentProcedure maps missing document errors", async () => {
+    downloadCompanyVerificationDocumentMock.mockRejectedValueOnce(
+      new ServiceError(
+        "COMPANY_VERIFICATION_DOCUMENT_NOT_FOUND",
+        "Company verification document not found",
+      ),
+    )
+
+    const { downloadCompanyVerificationDocumentProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    await expect(
+      callProcedure(downloadCompanyVerificationDocumentProcedure, {
+        input: { companyId: "company-1" },
+        context: { user: { id: "super-admin-1", role: "super_admin" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "NOT_FOUND",
+      message: "Company verification document not found",
     })
   })
 

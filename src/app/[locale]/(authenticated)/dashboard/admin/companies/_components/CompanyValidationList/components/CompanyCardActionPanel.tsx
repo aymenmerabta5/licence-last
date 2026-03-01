@@ -1,4 +1,4 @@
-import { Check, PauseCircle, PlayCircle, Trash2, X } from "lucide-react"
+import { Check, Download, PauseCircle, PlayCircle, Trash2, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -13,11 +13,14 @@ interface CompanyCardActionPanelProps {
   onReject: (id: string) => void
   onSuspend: (id: string) => void
   onReactivate: (id: string) => void
+  onDownloadVerificationDocument: () => void
   onDelete: () => void
   isApproving: boolean
   isRejecting: boolean
   isSuspending: boolean
   isReactivating: boolean
+  hasVerificationDocument: boolean
+  isDownloadingVerificationDocument: boolean
   isDeleting: boolean
   t: TranslationFn
 }
@@ -29,16 +32,33 @@ export function CompanyCardActionPanel({
   onReject,
   onSuspend,
   onReactivate,
+  onDownloadVerificationDocument,
   onDelete,
   isApproving,
   isRejecting,
   isSuspending,
   isReactivating,
+  hasVerificationDocument,
+  isDownloadingVerificationDocument,
   isDeleting,
   t,
 }: CompanyCardActionPanelProps) {
   return (
     <div className="shrink-0 flex flex-col items-stretch gap-2 min-w-[140px]">
+      {hasVerificationDocument ? (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="w-full justify-start h-8 rounded-sm font-medium"
+          disabled={isDownloadingVerificationDocument}
+          onClick={onDownloadVerificationDocument}
+        >
+          <Download className="h-3.5 w-3.5 me-2" />
+          {t("downloadVerificationDocument")}
+        </Button>
+      ) : null}
+
       {companyStatus === "pending" && (
         <>
           <Button
