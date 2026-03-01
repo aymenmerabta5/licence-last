@@ -259,7 +259,10 @@
       "expectedPeriodInvalid": "يجب أن يكون تاريخ البدء قبل تاريخ الانتهاء",
       "deadlineAfterExpectedStart": "يجب أن يكون الموعد النهائي للتقديم قبل أو في تاريخ البدء",
       "universityNameMin": "يجب أن يكون اسم الجامعة حرفين على الأقل",
-      "domainsRequired": "مطلوب نطاق بريد إلكتروني واحد على الأقل"
+      "domainsRequired": "مطلوب نطاق بريد إلكتروني واحد على الأقل",
+      "companyVerificationDocumentRequired": "يرجى رفع وثيقة تحقق للشركة",
+      "companyVerificationDocumentType": "يجب أن تكون وثيقة التحقق PDF أو JPEG أو PNG",
+      "companyVerificationDocumentSize": "لا يمكن أن يتجاوز حجم ملف وثيقة التحقق 10 ميغابايت"
     }
   },
   "onboarding": {
@@ -285,7 +288,11 @@
       "address": "العنوان",
       "addressPlaceholder": "123 شارع الاستقلال",
       "submit": "إكمال الإعداد",
-      "error": "حدث شيء خاطئ. يرجى المحاولة مرة أخرى."
+      "error": "حدث شيء خاطئ. يرجى المحاولة مرة أخرى.",
+      "verificationDocument": "وثيقة التحقق",
+      "verificationDocumentHint": "ارفع السجل التجاري أو مستنداً مكافئاً (PDF، JPEG، PNG، بحد أقصى 10 ميغابايت).",
+      "verificationDocumentSelected": "تم اختيار: {fileName}",
+      "verificationDocumentRequired": "يرجى رفع وثيقة التحقق قبل المتابعة."
     },
     "university": {
       "pageTitle": "إعداد الجامعة",
@@ -1483,7 +1490,10 @@
           "location": "موقع",
           "representative": "ممثل",
           "contact": "اتصال",
-          "registeredAt": "مسجل"
+          "registeredAt": "مسجل",
+          "verificationDocument": "وثيقة التحقق",
+          "verificationDocumentUploaded": "متاح",
+          "verificationDocumentMissing": "غير متاح"
         },
         "delete": "Delete",
         "deleteSuccess": "Company deleted successfully.",
@@ -1495,7 +1505,9 @@
           "confirmationPlaceholder": "Type {name}",
           "cancel": "Cancel",
           "confirm": "Delete Company"
-        }
+        },
+        "downloadVerificationDocument": "تنزيل وثيقة التحقق",
+        "downloadVerificationDocumentError": "فشل تنزيل وثيقة التحقق."
       },
       "pending": {
         "kicker": "الوضع الجامعي",

@@ -27,6 +27,13 @@ export const company = pgTable(
     representativeName: text("representative_name"),
     wilayaCode: integer("wilaya_code"),
     address: text("address"),
+    verificationDocumentKey: text("verification_document_key"),
+    verificationDocumentName: text("verification_document_name"),
+    verificationDocumentMimeType: text("verification_document_mime_type"),
+    verificationDocumentSizeBytes: integer("verification_document_size_bytes"),
+    verificationDocumentUploadedAt: timestamp(
+      "verification_document_uploaded_at",
+    ),
     status: companyStatusEnum("status").default("pending").notNull(),
     approvedAt: timestamp("approved_at"),
     approvedByUserId: text("approved_by_user_id").references(() => user.id, {

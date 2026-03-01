@@ -61,6 +61,12 @@ export async function createCompany(
     websiteUrl?: string
     wilayaCode: number
     address?: string
+    verificationDocument: {
+      key: string
+      fileName: string
+      mimeType: string
+      fileSizeBytes: number
+    }
   },
   userId: string,
 ) {
@@ -78,6 +84,11 @@ export async function createCompany(
         websiteUrl: data.websiteUrl || null,
         wilayaCode: data.wilayaCode,
         address: data.address || null,
+        verificationDocumentKey: data.verificationDocument.key,
+        verificationDocumentName: data.verificationDocument.fileName,
+        verificationDocumentMimeType: data.verificationDocument.mimeType,
+        verificationDocumentSizeBytes: data.verificationDocument.fileSizeBytes,
+        verificationDocumentUploadedAt: new Date(),
         status: "pending",
       })
 

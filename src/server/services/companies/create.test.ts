@@ -23,6 +23,13 @@ const dbMock = {
 
 mock.module("@/server/db", () => ({ db: dbMock }))
 
+const VERIFICATION_DOCUMENT = {
+  key: "company-verification/user-1/doc-1.pdf",
+  fileName: "trade-license.pdf",
+  mimeType: "application/pdf",
+  fileSizeBytes: 1024,
+}
+
 describe("src/server/services/companies/create", () => {
   beforeEach(() => {
     mockInsert.mockClear()
@@ -55,6 +62,7 @@ describe("src/server/services/companies/create", () => {
         name: "Acme Corp",
         description: "Test company",
         wilayaCode: 16,
+        verificationDocument: VERIFICATION_DOCUMENT,
       },
       "user-1",
     )
@@ -72,6 +80,7 @@ describe("src/server/services/companies/create", () => {
       {
         name: "Test Co",
         wilayaCode: 1,
+        verificationDocument: VERIFICATION_DOCUMENT,
       },
       "user-2",
     )
@@ -79,6 +88,16 @@ describe("src/server/services/companies/create", () => {
     // 2 inserts (company + member) + 1 update (onboardingCompleted)
     expect(mockInsert).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
+    const firstInsertValues = (
+      mockValues.mock.calls[0] as unknown as [Record<string, unknown>] | undefined
+    )?.[0]
+
+    expect(firstInsertValues).toMatchObject({
+      verificationDocumentKey: "company-verification/user-1/doc-1.pdf",
+      verificationDocumentName: "trade-license.pdf",
+      verificationDocumentMimeType: "application/pdf",
+      verificationDocumentSizeBytes: 1024,
+    })
   })
 
   test("should generate a URL-safe slug from company name", async () => {
@@ -90,6 +109,7 @@ describe("src/server/services/companies/create", () => {
       {
         name: "My Company! @#$%",
         wilayaCode: 16,
+        verificationDocument: VERIFICATION_DOCUMENT,
       },
       "user-3",
     )
@@ -113,6 +133,7 @@ describe("src/server/services/companies/create", () => {
         {
           name: "Conflict Co",
           wilayaCode: 1,
+          verificationDocument: VERIFICATION_DOCUMENT,
         },
         "user-4",
       ),

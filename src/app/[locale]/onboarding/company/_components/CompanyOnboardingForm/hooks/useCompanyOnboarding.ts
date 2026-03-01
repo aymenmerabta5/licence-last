@@ -30,6 +30,7 @@ export function useCompanyOnboarding() {
       websiteUrl: "",
       wilayaCode: 0,
       address: "",
+      verificationDocument: null as File | null,
     },
     validators: {
       onSubmit: ({ value }) => mapZodErrors(schema.safeParse(value)),
@@ -38,12 +39,18 @@ export function useCompanyOnboarding() {
       setServerError("")
 
       try {
+        if (!value.verificationDocument) {
+          setServerError(t("verificationDocumentRequired"))
+          return
+        }
+
         await orpcClient.companies.create({
           name: value.name,
           description: value.description || undefined,
           websiteUrl: value.websiteUrl || undefined,
           wilayaCode: value.wilayaCode,
           address: value.address || undefined,
+          verificationDocument: value.verificationDocument,
         })
 
         // Refresh session cookie cache so downstream pages see onboardingCompleted=true

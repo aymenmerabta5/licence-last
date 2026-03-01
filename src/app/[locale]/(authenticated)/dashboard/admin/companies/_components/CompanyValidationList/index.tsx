@@ -27,6 +27,8 @@ export function CompanyValidationList() {
     isSuspending,
     reactivateCompany,
     isReactivating,
+    downloadVerificationDocument,
+    downloadingVerificationCompanyId,
     deleteCompany,
     isDeleting,
   } = useCompanyValidation()
@@ -68,6 +70,8 @@ export function CompanyValidationList() {
         onReject={state.handleRejectClick}
         onSuspend={suspendCompany}
         onReactivate={reactivateCompany}
+        onDownloadVerificationDocument={downloadVerificationDocument}
+        downloadingVerificationCompanyId={downloadingVerificationCompanyId}
         onDelete={state.handleDeleteClick}
         isApproving={isApproving}
         isRejecting={isRejecting}

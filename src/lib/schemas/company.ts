@@ -1,5 +1,9 @@
 import { z } from "zod"
 
+import {
+  COMPANY_VERIFICATION_DOCUMENT_ALLOWED_TYPES,
+  COMPANY_VERIFICATION_DOCUMENT_MAX_SIZE,
+} from "@/lib/constants/uploads"
 import type { TranslationFn } from "@/lib/schemas/auth"
 import { companyReportSeveritySchema } from "@/lib/schemas/enums"
 
@@ -22,6 +26,19 @@ export function createCompanyOnboardingSchema(t: TranslationFn) {
       .min(1, { error: t("wilayaRequired") })
       .max(58, { error: t("wilayaInvalid") }),
     address: z.string().optional(),
+    verificationDocument: z
+      .instanceof(File, {
+        error: t("companyVerificationDocumentRequired"),
+      })
+      .refine(
+        (file) => COMPANY_VERIFICATION_DOCUMENT_ALLOWED_TYPES.has(file.type),
+        {
+          error: t("companyVerificationDocumentType"),
+        },
+      )
+      .refine((file) => file.size <= COMPANY_VERIFICATION_DOCUMENT_MAX_SIZE, {
+        error: t("companyVerificationDocumentSize"),
+      }),
   })
 }
 

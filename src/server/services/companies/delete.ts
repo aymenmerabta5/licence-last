@@ -16,7 +16,11 @@ const log = createModuleLogger("services/companies/delete")
  */
 export async function deleteCompany(companyId: string, deletedByUserId: string) {
   const [existing] = await db
-    .select({ id: company.id, name: company.name })
+    .select({
+      id: company.id,
+      name: company.name,
+      verificationDocumentKey: company.verificationDocumentKey,
+    })
     .from(company)
     .where(eq(company.id, companyId))
     .limit(1)
@@ -62,6 +66,9 @@ export async function deleteCompany(companyId: string, deletedByUserId: string) 
     success: true as const,
     companyId,
     companyName: existing.name,
+    ...(existing.verificationDocumentKey
+      ? { verificationDocumentKey: existing.verificationDocumentKey }
+      : {}),
     affectedUserIds,
   }
 }

@@ -27,6 +27,7 @@ import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import { approveCompany } from "@/server/services/companies/approve"
 import { createCompany } from "@/server/services/companies/create"
 import { deleteCompany } from "@/server/services/companies/delete"
+import { downloadCompanyVerificationDocument } from "@/server/services/companies/download-verification-document"
 import { getCompanyById } from "@/server/services/companies/get"
 import { inviteCompanyMember } from "@/server/services/companies/invite-member"
 import { listCompanies } from "@/server/services/companies/list"
@@ -49,7 +50,9 @@ import {
 } from "@/server/services/companies/trust-index"
 import { updateCompany } from "@/server/services/companies/update"
 import { emitNotification } from "@/server/services/notifications/emit"
+import { uploadCompanyVerificationDocument } from "@/server/services/uploads/upload-company-verification-document"
 import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
+import { deleteFile } from "@/server/storage/s3"
 
 const {
   authedProcedureGenerous,
@@ -246,6 +249,28 @@ export const listCompanyMembersProcedure =
     listCompanyMembers(context.companyMembership.companyId),
   )
 
+export const downloadCompanyVerificationDocumentProcedure =
+  superAdminProcedureStandard
+    .input(z.object({ companyId: z.string().min(1) }))
+    .handler(async ({ input }) => {
+      try {
+        const result = await downloadCompanyVerificationDocument(input.companyId)
+        return {
+          fileName: result.fileName,
+          mimeType: result.mimeType,
+          fileBase64: result.buffer.toString("base64"),
+        }
+      } catch (error) {
+        createServiceORPCError(error, {
+          codeMap: {
+            COMPANY_NOT_FOUND: "NOT_FOUND",
+            COMPANY_VERIFICATION_DOCUMENT_NOT_FOUND: "NOT_FOUND",
+          },
+          fallbackMessage: "Failed to download company verification document",
+        })
+      }
+    })
+
 /* ── Mutations ── */
 
 function revalidateAfterCompanyDeletion(
@@ -281,11 +306,30 @@ export const createCompanyProcedure = authedProcedureStandard
       websiteUrl: z.string().url().optional().or(z.literal("")),
       wilayaCode: z.coerce.number().int().min(1).max(58),
       address: z.string().optional(),
+      verificationDocument: z.file(),
     }),
   )
   .handler(async ({ input, context }) => {
+    let uploadedDocumentKey: string | null = null
+
     try {
-      const result = await createCompany(input, context.user.id)
+      const uploadedDocument = await uploadCompanyVerificationDocument({
+        file: input.verificationDocument,
+        userId: context.user.id,
+      })
+      uploadedDocumentKey = uploadedDocument.key
+
+      const result = await createCompany(
+        {
+          name: input.name,
+          description: input.description,
+          websiteUrl: input.websiteUrl,
+          wilayaCode: input.wilayaCode,
+          address: input.address,
+          verificationDocument: uploadedDocument,
+        },
+        context.user.id,
+      )
 
       revalidateTag(CACHE_TAGS.COMPANY_PROFILE(result.companyId), "max")
       revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`), "max")
@@ -293,6 +337,23 @@ export const createCompanyProcedure = authedProcedureStandard
 
       return result
     } catch (error) {
+      if (uploadedDocumentKey) {
+        try {
+          await deleteFile(uploadedDocumentKey)
+        } catch {
+          // Company creation failed; cleanup should not mask the root error.
+        }
+      }
+
+      const message = error instanceof Error ? error.message : ""
+      if (
+        message.startsWith("Verification document must be") ||
+        message.startsWith("Verification document file size") ||
+        message.startsWith("File content does not match declared document type")
+      ) {
+        throw new ORPCError("BAD_REQUEST", { message })
+      }
+
       createServiceORPCError(error, {
         codeMap: {
           COMPANY_MEMBERSHIP_ALREADY_EXISTS: "CONFLICT",
@@ -574,6 +635,14 @@ export const deleteCompanyProcedure = superAdminProcedureStandard
     try {
       const result = await deleteCompany(input.companyId, context.user.id)
 
+      if (result.verificationDocumentKey) {
+        try {
+          await deleteFile(result.verificationDocumentKey)
+        } catch {
+          // Database deletion succeeded; S3 cleanup failure should be non-blocking.
+        }
+      }
+
       revalidateAfterCompanyDeletion(result.companyId, result.affectedUserIds)
 
       return {
@@ -600,6 +669,14 @@ export const deleteOwnCompanyProcedure = companyOwnerProcedureStandard
         context.companyMembership.companyId,
         context.user.id,
       )
+
+      if (result.verificationDocumentKey) {
+        try {
+          await deleteFile(result.verificationDocumentKey)
+        } catch {
+          // Database deletion succeeded; S3 cleanup failure should be non-blocking.
+        }
+      }
 
       revalidateAfterCompanyDeletion(result.companyId, result.affectedUserIds)
 

@@ -259,7 +259,10 @@
       "expectedPeriodInvalid": "Expected start date must be before expected end date",
       "deadlineAfterExpectedStart": "Application deadline must be on or before expected start date",
       "universityNameMin": "University name must be at least 2 characters",
-      "domainsRequired": "At least one email domain is required"
+      "domainsRequired": "At least one email domain is required",
+      "companyVerificationDocumentRequired": "Please upload a company verification document",
+      "companyVerificationDocumentType": "Verification document must be a PDF, JPEG, or PNG file",
+      "companyVerificationDocumentSize": "Verification document file size cannot exceed 10MB"
     }
   },
   "onboarding": {
@@ -284,6 +287,10 @@
       "wilayaPlaceholder": "Select your wilaya",
       "address": "Address",
       "addressPlaceholder": "123 Main Street",
+      "verificationDocument": "Verification Document",
+      "verificationDocumentHint": "Upload a trade register or equivalent proof (PDF, JPEG, PNG, max 10MB).",
+      "verificationDocumentSelected": "Selected: {fileName}",
+      "verificationDocumentRequired": "Please upload a verification document before continuing.",
       "submit": "Complete Setup",
       "error": "Something went wrong. Please try again."
     },
@@ -1462,6 +1469,7 @@
         "reject": "Reject",
         "suspend": "Suspend",
         "reactivate": "Reactivate",
+        "downloadVerificationDocument": "Download Verification Doc",
         "delete": "Delete",
         "approveSuccess": "Company approved successfully.",
         "rejectSuccess": "Company rejected.",
@@ -1472,6 +1480,7 @@
         "rejectError": "Failed to reject company.",
         "suspendError": "Failed to suspend company.",
         "reactivateError": "Failed to reactivate company.",
+        "downloadVerificationDocumentError": "Failed to download verification document.",
         "deleteError": "Failed to delete company.",
         "rejectDialog": {
           "title": "Reject Company",
@@ -1494,7 +1503,10 @@
           "location": "Location",
           "representative": "Representative",
           "contact": "Contact",
-          "registeredAt": "Registered"
+          "registeredAt": "Registered",
+          "verificationDocument": "Verification Document",
+          "verificationDocumentUploaded": "Uploaded",
+          "verificationDocumentMissing": "Missing"
         }
       },
       "pending": {

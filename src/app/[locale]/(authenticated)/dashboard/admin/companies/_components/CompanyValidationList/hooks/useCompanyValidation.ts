@@ -15,6 +15,18 @@ import { orpc, orpcClient } from "@/server/orpc/client"
 
 const PAGE_SIZE = 20
 
+function downloadFile(base64: string, fileName: string, mimeType: string) {
+  const bytes = Uint8Array.from(atob(base64), (char) => char.charCodeAt(0))
+  const blob = new Blob([bytes], { type: mimeType })
+  const url = URL.createObjectURL(blob)
+
+  const link = document.createElement("a")
+  link.href = url
+  link.download = fileName
+  link.click()
+  URL.revokeObjectURL(url)
+}
+
 export function useCompanyValidation() {
   const t = useTranslations("dashboard.admin.companies")
   const queryClient = useQueryClient()
@@ -22,6 +34,8 @@ export function useCompanyValidation() {
     "pending",
   )
   const [search, setSearch] = useState("")
+  const [downloadingVerificationCompanyId, setDownloadingVerificationCompanyId] =
+    useState<string | null>(null)
   const debouncedSearch = useDebounce(search, 300)
 
   const listInput = useMemo<{ status?: CompanyStatus; search?: string }>(
@@ -125,6 +139,14 @@ export function useCompanyValidation() {
     },
   })
 
+  const downloadVerificationDocumentMutation = useMutation({
+    mutationFn: ({ companyId }: { companyId: string }) =>
+      orpcClient.companies.downloadVerificationDocument({ companyId }),
+    onError: () => {
+      toast.error(t("downloadVerificationDocumentError"))
+    },
+  })
+
   const deleteMutation = useMutation({
     mutationFn: ({ companyId }: { companyId: string }) =>
       orpcClient.companies.delete({ companyId }),
@@ -136,6 +158,20 @@ export function useCompanyValidation() {
       toast.error(t("deleteError"))
     },
   })
+
+  async function downloadVerificationDocument(companyId: string) {
+    setDownloadingVerificationCompanyId(companyId)
+    try {
+      const result = await downloadVerificationDocumentMutation.mutateAsync({
+        companyId,
+      })
+      downloadFile(result.fileBase64, result.fileName, result.mimeType)
+    } catch {
+      // Error toast is handled by the mutation's onError callback.
+    } finally {
+      setDownloadingVerificationCompanyId(null)
+    }
+  }
 
   return {
     companies,
@@ -155,6 +191,8 @@ export function useCompanyValidation() {
     isSuspending: suspendMutation.isPending,
     reactivateCompany: reactivateMutation.mutate,
     isReactivating: reactivateMutation.isPending,
+    downloadVerificationDocument,
+    downloadingVerificationCompanyId,
     deleteCompany: deleteMutation.mutate,
     isDeleting: deleteMutation.isPending,
   }

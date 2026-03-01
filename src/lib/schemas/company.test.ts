@@ -6,6 +6,15 @@ function t(key: string) {
   return `t:${key}`
 }
 
+function createVerificationDocument(
+  type = "application/pdf",
+  name = "verification.pdf",
+) {
+  const bytes = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x37])
+  const blob = new Blob([bytes], { type })
+  return new File([blob], name, { type })
+}
+
 describe("src/lib/schemas/company", () => {
   describe("createCompanyOnboardingSchema", () => {
     test("should accept minimal valid input and coerce wilayaCode", () => {
@@ -14,6 +23,7 @@ describe("src/lib/schemas/company", () => {
         name: "Acme",
         websiteUrl: "",
         wilayaCode: "5",
+        verificationDocument: createVerificationDocument(),
       })
 
       expect(result.success).toBe(true)
@@ -28,6 +38,7 @@ describe("src/lib/schemas/company", () => {
       const result = schema.safeParse({
         name: "Acme",
         wilayaCode: 1,
+        verificationDocument: createVerificationDocument(),
       })
       expect(result.success).toBe(true)
     })
@@ -38,6 +49,7 @@ describe("src/lib/schemas/company", () => {
         name: "Acme",
         websiteUrl: "not-a-url",
         wilayaCode: 1,
+        verificationDocument: createVerificationDocument(),
       })
 
       expect(result.success).toBe(false)
@@ -54,6 +66,7 @@ describe("src/lib/schemas/company", () => {
       const result = schema.safeParse({
         name: "Acme",
         wilayaCode: "0",
+        verificationDocument: createVerificationDocument(),
       })
 
       expect(result.success).toBe(false)
@@ -70,6 +83,7 @@ describe("src/lib/schemas/company", () => {
       const result = schema.safeParse({
         name: "Acme",
         wilayaCode: 59,
+        verificationDocument: createVerificationDocument(),
       })
 
       expect(result.success).toBe(false)
@@ -86,12 +100,46 @@ describe("src/lib/schemas/company", () => {
       const result = schema.safeParse({
         name: "A",
         wilayaCode: 1,
+        verificationDocument: createVerificationDocument(),
       })
 
       expect(result.success).toBe(false)
       if (!result.success) {
         const issue = result.error.issues.find((i) => i.path[0] === "name")
         expect(issue?.message).toBe("t:companyNameMin")
+      }
+    })
+
+    test("should reject missing verificationDocument with translated message", () => {
+      const schema = createCompanyOnboardingSchema(t)
+      const result = schema.safeParse({
+        name: "Acme",
+        wilayaCode: 1,
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        const issue = result.error.issues.find(
+          (i) => i.path[0] === "verificationDocument",
+        )
+        expect(issue?.message).toBe("t:companyVerificationDocumentRequired")
+      }
+    })
+
+    test("should reject unsupported verificationDocument type", () => {
+      const schema = createCompanyOnboardingSchema(t)
+      const result = schema.safeParse({
+        name: "Acme",
+        wilayaCode: 1,
+        verificationDocument: createVerificationDocument("application/msword"),
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        const issue = result.error.issues.find(
+          (i) => i.path[0] === "verificationDocument",
+        )
+        expect(issue?.message).toBe("t:companyVerificationDocumentType")
       }
     })
   })

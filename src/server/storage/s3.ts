@@ -2,6 +2,7 @@ import "server-only"
 
 import {
   DeleteObjectCommand,
+  GetObjectCommand,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3"
@@ -90,4 +91,27 @@ export async function deleteFile(key: string): Promise<void> {
       Key: key,
     }),
   )
+}
+
+export async function getFile(key: string): Promise<Buffer> {
+  const s3 = getClient()
+  const { bucket } = getConfig()
+
+  const response = await s3.send(
+    new GetObjectCommand({
+      Bucket: bucket,
+      Key: key,
+    }),
+  )
+
+  if (!response.Body) {
+    throw new Error("S3 object has no body")
+  }
+
+  const chunks: Uint8Array[] = []
+  for await (const chunk of response.Body as AsyncIterable<Uint8Array>) {
+    chunks.push(chunk)
+  }
+
+  return Buffer.concat(chunks.map((chunk) => Buffer.from(chunk)))
 }
