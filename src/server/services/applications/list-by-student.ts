@@ -1,5 +1,3 @@
-"use cache"
-
 import "server-only"
 
 import { and, desc, eq, lt, or } from "drizzle-orm"
@@ -18,17 +16,14 @@ interface ListParams {
   limit: number
 }
 
-/**
- * List a student's applications with offer + company info.
- * Cached for 5 minutes per user.
- */
-export async function listApplicationsByStudent(
+function isE2ECacheDisabled(): boolean {
+  return process.env.E2E_DISABLE_CACHE === "1"
+}
+
+async function listApplicationsByStudentUncached(
   studentUserId: string,
   params: ListParams,
 ) {
-  cacheLife("minutes")
-  cacheTag(CACHE_TAGS.STUDENT_APPLICATIONS(studentUserId))
-
   const { status, pipelineStage, cursor, limit } = params
 
   const conditions = [eq(application.studentUserId, studentUserId)]
@@ -87,4 +82,30 @@ export async function listApplicationsByStudent(
       : undefined
 
   return { applications, nextCursor, hasMore }
+}
+
+async function listApplicationsByStudentCached(
+  studentUserId: string,
+  params: ListParams,
+) {
+  "use cache"
+  cacheLife("minutes")
+  cacheTag(CACHE_TAGS.STUDENT_APPLICATIONS(studentUserId))
+
+  return listApplicationsByStudentUncached(studentUserId, params)
+}
+
+/**
+ * List a student's applications with offer + company info.
+ * Uses cache by default and bypasses it in E2E mode.
+ */
+export async function listApplicationsByStudent(
+  studentUserId: string,
+  params: ListParams,
+) {
+  if (isE2ECacheDisabled()) {
+    return listApplicationsByStudentUncached(studentUserId, params)
+  }
+
+  return listApplicationsByStudentCached(studentUserId, params)
 }

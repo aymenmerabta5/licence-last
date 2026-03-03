@@ -22,7 +22,7 @@ export default async function ForCompaniesPage({ params }: { params: Params }) {
   setRequestLocale(locale)
 
   return (
-    <main className="min-h-screen bg-background text-foreground transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
+    <main className="min-h-screen overflow-x-clip bg-background text-foreground transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
       <Navbar />
       <MarqueeRibbon />
       <ForCompaniesContent />

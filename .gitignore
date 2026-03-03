@@ -66,3 +66,16 @@ RESULT.txt
 .cursor
 docs/diagrams/
 docs/plantuml-1.2026.1.jar
+
+# image files (keep out of source control)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.svg
+*.avif
+*.ico
+*.bmp
+*.tiff
+*.tif

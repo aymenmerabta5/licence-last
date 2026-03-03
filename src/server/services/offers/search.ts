@@ -1,5 +1,3 @@
-"use cache"
-
 import "server-only"
 
 import {
@@ -33,30 +31,13 @@ interface SearchParams {
   limit: number
 }
 
-/**
- * Search published internship offers with filtering.
- * Cached for 2 minutes with tag-based invalidation.
- */
-export async function searchOffers(params: SearchParams) {
-  cacheLife("minutes")
-  cacheTag(CACHE_TAGS.OFFER_SEARCH)
-  cacheTag(CACHE_TAGS.OFFERS_PUBLIC)
+function isE2ECacheDisabled(): boolean {
+  return process.env.E2E_DISABLE_CACHE === "1"
+}
 
+async function searchOffersUncached(params: SearchParams) {
   const { db } = await import("@/server/db")
 
-  if (params.wilayaCode) {
-    cacheTag(`offers-wilaya-${params.wilayaCode}`)
-  }
-  if (params.internshipTypes?.length) {
-    for (const type of params.internshipTypes) {
-      cacheTag(`offers-type-${type}`)
-    }
-  }
-  if (params.skillTagIds?.length) {
-    for (const skillId of params.skillTagIds) {
-      cacheTag(`offers-skill-${skillId}`)
-    }
-  }
   const {
     keyword,
     wilayaCode,
@@ -207,4 +188,38 @@ export async function searchOffers(params: SearchParams) {
     nextCursor,
     hasMore,
   }
+}
+
+async function searchOffersCached(params: SearchParams) {
+  "use cache"
+  cacheLife("minutes")
+  cacheTag(CACHE_TAGS.OFFER_SEARCH)
+  cacheTag(CACHE_TAGS.OFFERS_PUBLIC)
+
+  if (params.wilayaCode) {
+    cacheTag(`offers-wilaya-${params.wilayaCode}`)
+  }
+  if (params.internshipTypes?.length) {
+    for (const type of params.internshipTypes) {
+      cacheTag(`offers-type-${type}`)
+    }
+  }
+  if (params.skillTagIds?.length) {
+    for (const skillId of params.skillTagIds) {
+      cacheTag(`offers-skill-${skillId}`)
+    }
+  }
+  return searchOffersUncached(params)
+}
+
+/**
+ * Search published internship offers with filtering.
+ * Uses cache by default and bypasses it in E2E mode.
+ */
+export async function searchOffers(params: SearchParams) {
+  if (isE2ECacheDisabled()) {
+    return searchOffersUncached(params)
+  }
+
+  return searchOffersCached(params)
 }

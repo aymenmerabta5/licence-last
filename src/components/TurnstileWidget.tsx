@@ -25,6 +25,7 @@ export function TurnstileWidget({
   onError,
 }: TurnstileWidgetProps) {
   const siteKey = env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+  const e2eCaptchaDisabled = env.NEXT_PUBLIC_E2E_DISABLE_CAPTCHA === "true"
   const locale = useLocale()
   const { resolvedTheme } = useTheme()
   const internalRef = useRef<TurnstileInstance>(null)
@@ -33,7 +34,7 @@ export function TurnstileWidget({
     reset: () => internalRef.current?.reset(),
   }))
 
-  if (!siteKey) return null
+  if (!siteKey || e2eCaptchaDisabled) return null
 
   return (
     <Turnstile
