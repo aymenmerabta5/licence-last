@@ -23,7 +23,7 @@
     "test:api:app-routes": "node scripts/run-tests-isolated.cjs src/app/api/health src/app/api/rpc src/app/api/assistant/chat src/app/api/assistant/auth/status",
     "test:api": "bun run test:api:app-routes && bun run test:orpc-routes",
     "test:pages": "node scripts/run-tests-isolated.cjs \"src/app/[locale]\"",
-    "test:e2e": "PLAYWRIGHT_REUSE_SERVER=1 E2E_DISABLE_CAPTCHA=1 bun --env-file=.env.development x playwright test",
+    "test:e2e": "PLAYWRIGHT_REUSE_SERVER=1 bun --env-file=.env.e2e x playwright test",
     "test:ci": "bun run test:unit && bun run test:api && bun run test:pages",
     "check:all": "bun run lint && bun run lint:architecture && bun run typecheck && bun run test:unit && bun run test:api && bun run test:orpc-routes && bun run build",
     "db:generate": "bun run db:generate:dev",
