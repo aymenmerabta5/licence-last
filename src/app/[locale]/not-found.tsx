@@ -42,7 +42,7 @@ export default async function NotFoundPage() {
       <Navbar />
 
       {/* ── 404 Content ── */}
-      <div className="flex-1 relative flex items-center justify-center px-6 py-16 lg:py-24">
+      <div className="flex-1 relative flex items-center justify-center overflow-x-clip px-6 py-16 lg:py-24">
         {/* Ambient glow — dark mode only */}
         <div
           className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100"
