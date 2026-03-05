@@ -35,11 +35,11 @@ export function SettingsView() {
               measures, and calibrate your ecosystem.
             </p>
           </div>
-          <div className="hidden lg:flex flex-col items-end justify-end gap-3 pb-1 border-l border-border/40 pl-6 shrink-0">
+          <div className="hidden lg:flex flex-col items-end justify-end gap-3 pb-1 border-s border-border/40 ps-6 shrink-0">
             <div className="h-10 w-10 flex items-center justify-center rounded-2xl bg-secondary/30 border border-border/50 text-primary shadow-inner">
               <Settings className="h-5 w-5 stroke-1 animate-[spin_10s_linear_infinite]" />
             </div>
-            <div className="text-right font-mono text-[9px] uppercase tracking-widest text-muted-foreground/50">
+            <div className="text-end font-mono text-[9px] uppercase tracking-widest text-muted-foreground/50">
               <p>v2.4.0</p>
             </div>
           </div>

@@ -39,7 +39,7 @@ export function SettingsTabs({ activeTab, onTabChange }: SettingsTabsProps) {
           Navigation Directory
         </h3>
 
-        <div className="space-y-1 relative before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-border/30">
+        <div className="space-y-1 relative before:absolute before:inset-y-0 before:start-0 before:w-px before:bg-border/30">
           {TABS.map((tab) => {
             const Icon = tab.icon
             const isActive = activeTab === tab.id
@@ -57,7 +57,7 @@ export function SettingsTabs({ activeTab, onTabChange }: SettingsTabsProps) {
                 )}
               >
                 {isActive && (
-                  <div className="absolute left-0 inset-y-0 w-0.5 bg-primary rounded-r-full shadow-[0_0_8px_var(--color-primary)]" />
+                  <div className="absolute start-0 inset-y-0 w-0.5 bg-primary rounded-e-full shadow-[0_0_8px_var(--color-primary)]" />
                 )}
 
                 <span
