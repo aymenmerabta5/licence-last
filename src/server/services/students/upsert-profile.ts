@@ -6,6 +6,7 @@ import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/students/upsert-profile")
 
+import { ServiceError } from "@/server/services/errors"
 import { normalizeLanguageEntries } from "@/lib/constants/languages"
 import type { ProficiencyLevel } from "@/lib/schemas/enums"
 import { user } from "@/server/db/schema/auth"
@@ -41,7 +42,10 @@ export async function upsertStudentProfile(
   )
 
   if (skillTagIds.length > 10) {
-    throw new Error("A maximum of 10 skills is allowed")
+    throw new ServiceError(
+      "SKILL_LIMIT_EXCEEDED",
+      "A maximum of 10 skills is allowed",
+    )
   }
 
   if (skillTagIds.length > 0) {
