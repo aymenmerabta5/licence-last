@@ -75,7 +75,6 @@ describe("src/server/services/companies/invite-member", () => {
   test("creates a new account and sends reset link when email does not exist", async () => {
     selectResponses = [[{ id: "company-1", name: "Acme" }], []]
 
-    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
     const { inviteCompanyMember } = await import(
       "@/server/services/companies/invite-member?fresh=1"
     )
@@ -116,7 +115,6 @@ describe("src/server/services/companies/invite-member", () => {
       [{ companyId: "company-1", role: "recruiter" }],
     ]
 
-    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
     const { inviteCompanyMember } = await import(
       "@/server/services/companies/invite-member?fresh=2"
     )
@@ -150,7 +148,6 @@ describe("src/server/services/companies/invite-member", () => {
       [{ companyId: "company-2", role: "owner" }],
     ]
 
-    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
     const { inviteCompanyMember } = await import(
       "@/server/services/companies/invite-member?fresh=3"
     )
@@ -180,7 +177,6 @@ describe("src/server/services/companies/invite-member", () => {
       ],
     ]
 
-    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
     const { inviteCompanyMember } = await import(
       "@/server/services/companies/invite-member?fresh=4"
     )

@@ -18,8 +18,7 @@ interface RecruiterDashboardProps {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- kept for consistent dashboard component interface
-export function RecruiterDashboard({ user }: RecruiterDashboardProps) {
+export function RecruiterDashboard({ user: _user }: RecruiterDashboardProps) {
   const {
     activeOffers,
     draftOffers,

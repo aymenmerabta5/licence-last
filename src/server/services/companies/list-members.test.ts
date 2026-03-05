@@ -45,7 +45,6 @@ describe("src/server/services/companies/list-members", () => {
       },
     ]
 
-    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
     const { listCompanyMembers } = await import(
       "@/server/services/companies/list-members?fresh=1"
     )

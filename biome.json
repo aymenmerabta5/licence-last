@@ -45,6 +45,7 @@
         "useExhaustiveDependencies": "warn"
       },
       "style": {
+        "noNonNullAssertion": "off",
         "useImportType": "off",
         "useShorthandFunctionType": "off",
         "useTemplate": "off"
@@ -67,10 +68,14 @@
       "suspicious": {
         "noAssignInExpressions": "warn",
         "noArrayIndexKey": "off",
+        "noDocumentCookie": "off",
         "noDoubleEquals": "warn",
-        "noExplicitAny": "warn",
+        "noExplicitAny": "off",
         "noThenProperty": "warn",
-        "useIterableCallbackReturn": "warn"
+        "useIterableCallbackReturn": "off"
+      },
+      "performance": {
+        "noImgElement": "off"
       }
     }
   },

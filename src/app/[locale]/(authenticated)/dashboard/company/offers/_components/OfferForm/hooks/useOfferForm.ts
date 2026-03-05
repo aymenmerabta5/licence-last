@@ -122,8 +122,12 @@ export function useOfferForm(
               : {}),
           })
         } else {
+          if (!initialData?.offerId) {
+            throw new Error("Offer ID is required to update an offer")
+          }
+
           await orpcClient.offers.update({
-            offerId: initialData!.offerId,
+            offerId: initialData.offerId,
             title: value.title,
             description: value.description,
             internshipType: value.internshipType as

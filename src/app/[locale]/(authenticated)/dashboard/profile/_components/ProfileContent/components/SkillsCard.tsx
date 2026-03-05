@@ -61,7 +61,10 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
             </span>
             {canEdit && (
               <Link href="/dashboard/settings">
-                <button className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary hover:text-primary/80 transition-colors [[dir=rtl]_&]:tracking-normal">
+                <button
+                  type="button"
+                  className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary hover:text-primary/80 transition-colors [[dir=rtl]_&]:tracking-normal"
+                >
                   + {t("addMoreSkills")}
                 </button>
               </Link>

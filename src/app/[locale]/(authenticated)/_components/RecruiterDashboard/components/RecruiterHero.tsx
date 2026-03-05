@@ -1,7 +1,6 @@
 "use client"
 
 import * as motion from "motion/react-client"
-import { ease } from "@/lib/animations"
 
 interface RecruiterHeroProps {
   activeOffers: number

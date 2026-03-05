@@ -19,7 +19,10 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <button className="p-2.5 rounded-full hover:bg-secondary transition-colors opacity-0">
+      <button
+        type="button"
+        className="p-2.5 rounded-full hover:bg-secondary transition-colors opacity-0"
+      >
         <Sun className="h-4 w-4" />
       </button>
     )
@@ -29,6 +32,7 @@ export function ThemeToggle() {
 
   return (
     <button
+      type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className="relative h-10 w-10 rounded-full hover:bg-secondary/80 transition-all group overflow-hidden"
       aria-label={isDark ? t("toLight") : t("toDark")}
