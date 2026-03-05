@@ -50,7 +50,7 @@ const TURNSTILE_SECRET_KEY = env.TURNSTILE_SECRET_KEY
 const CAPTCHA_ENABLED =
   Boolean(TURNSTILE_SECRET_KEY) &&
   process.env.CI !== "true" &&
-  process.env.E2E_DISABLE_CAPTCHA !== "1"
+  !(process.env.NODE_ENV !== "production" && process.env.E2E_DISABLE_CAPTCHA === "1")
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
