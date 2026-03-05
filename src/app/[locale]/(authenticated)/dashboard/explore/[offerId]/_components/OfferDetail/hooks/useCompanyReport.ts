@@ -127,7 +127,17 @@ export function useCompanyReport(companyId: string): UseCompanyReportResult {
       return
     }
 
-    reportMutation.mutate(parsed.data)
+    if (typeof reportMutation.mutate === "function") {
+      reportMutation.mutate(parsed.data)
+      return
+    }
+
+    if (typeof reportMutation.mutateAsync === "function") {
+      void reportMutation.mutateAsync(parsed.data)
+      return
+    }
+
+    toast.error(t("submitError"))
   }
 
   return {

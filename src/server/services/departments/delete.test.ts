@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockLimit = mock((): any => Promise.resolve([]))
+const selectLimitQueue: unknown[][] = []
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockLimit = mock((): any => Promise.resolve(selectLimitQueue.shift() ?? []))
 const mockWhere = mock(() => ({ limit: mockLimit }))
 const mockFrom = mock(() => ({ where: mockWhere }))
 const mockSelect = mock(() => ({ from: mockFrom }))
@@ -25,16 +27,26 @@ const mockTransaction = mock(
       delete: mockTxDelete,
     }),
 )
+let moduleImportCounter = 0
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockSelect,
-    transaction: mockTransaction,
-  },
-}))
+function applyDeleteDepartmentMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: mockSelect,
+      transaction: mockTransaction,
+    },
+  }))
+}
+
+async function loadDeleteDepartmentModule() {
+  moduleImportCounter += 1
+  return import(`@/server/services/departments/delete?test=${moduleImportCounter}`)
+}
 
 describe("deleteDepartment", () => {
   beforeEach(() => {
+    selectLimitQueue.length = 0
+    applyDeleteDepartmentMocks()
     mockSelect.mockClear()
     mockFrom.mockClear()
     mockWhere.mockClear()
@@ -57,22 +69,18 @@ describe("deleteDepartment", () => {
   })
 
   test("should throw when department is not found", async () => {
-    mockLimit.mockResolvedValueOnce([])
+    selectLimitQueue.push([])
 
-    const { deleteDepartment } = await import(
-      "@/server/services/departments/delete"
-    )
+    const { deleteDepartment } = await loadDeleteDepartmentModule()
     expect(deleteDepartment("missing-department")).rejects.toThrow(
       "Department not found",
     )
   })
 
   test("should demote dept heads and delete the department", async () => {
-    mockLimit.mockResolvedValueOnce([{ id: "dept-1" }])
+    selectLimitQueue.push([{ id: "dept-1" }])
 
-    const { deleteDepartment } = await import(
-      "@/server/services/departments/delete"
-    )
+    const { deleteDepartment } = await loadDeleteDepartmentModule()
     const result = await deleteDepartment("dept-1")
 
     expect(result).toEqual({ success: true, departmentId: "dept-1" })

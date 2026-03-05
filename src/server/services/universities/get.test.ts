@@ -9,37 +9,49 @@ const mockChain: any = {
   innerJoin: mock(() => mockChain),
 }
 
-mock.module("@/server/db", () => ({ db: mockChain }))
+function applyUniversityGetMocks() {
+  mock.module("@/server/db", () => ({ db: mockChain }))
 
-// Mock cache utilities
-mock.module("@/lib/cache", () => ({
-  CACHE_TAGS: {
-    SKILLS: "skills",
-    UNIVERSITIES: "universities",
-    STUDENT_PROFILE: (userId: string) => `student-profile-${userId}`,
-    STUDENT_STATS: (userId: string) => `student-stats-${userId}`,
-    STUDENT_APPLICATIONS: (userId: string) => `student-apps-${userId}`,
-    COMPANY_PROFILE: (companyId: string) => `company-${companyId}`,
-    COMPANY_OFFERS: (companyId: string) => `company-offers-${companyId}`,
-    COMPANY_CANDIDATES: (companyId: string) =>
-      `company-candidates-${companyId}`,
-    OFFER_SEARCH: "offer-search",
-    OFFER_DETAIL: (offerId: string) => `offer-${offerId}`,
-    OFFERS_PUBLIC: "offers-public",
-    PUBLIC_PROFILE: (userId: string) => `public-profile-${userId}`,
-  },
-  CACHE_PROFILES: {
-    STATIC: () => {},
-    REFERENCE: () => {},
-    PROFILE: () => {},
-    STATS: () => {},
-    SEARCH: () => {},
-    LISTINGS: () => {},
-  },
-}))
+  // Mock cache utilities
+  mock.module("@/lib/cache", () => ({
+    CACHE_TAGS: {
+      SKILLS: "skills",
+      UNIVERSITIES: "universities",
+      STUDENT_PROFILE: (userId: string) => `student-profile-${userId}`,
+      STUDENT_STATS: (userId: string) => `student-stats-${userId}`,
+      STUDENT_APPLICATIONS: (userId: string) => `student-apps-${userId}`,
+      COMPANY_PROFILE: (companyId: string) => `company-${companyId}`,
+      COMPANY_OFFERS: (companyId: string) => `company-offers-${companyId}`,
+      COMPANY_CANDIDATES: (companyId: string) =>
+        `company-candidates-${companyId}`,
+      OFFER_SEARCH: "offer-search",
+      OFFER_DETAIL: (offerId: string) => `offer-${offerId}`,
+      OFFERS_PUBLIC: "offers-public",
+      PUBLIC_PROFILE: (userId: string) => `public-profile-${userId}`,
+    },
+    CACHE_PROFILES: {
+      STATIC: () => {},
+      REFERENCE: () => {},
+      PROFILE: () => {},
+      STATS: () => {},
+      SEARCH: () => {},
+      LISTINGS: () => {},
+    },
+  }))
+}
+
+let universityGetImportCounter = 0
+async function importUniversitiesGet() {
+  universityGetImportCounter += 1
+  return import(
+    `@/server/services/universities/get?test=${universityGetImportCounter}`
+  )
+}
 
 describe("getUniversityById", () => {
   beforeEach(() => {
+    applyUniversityGetMocks()
+
     for (const fn of Object.values(mockChain))
       (fn as ReturnType<typeof mock>).mockClear()
     mockChain.select.mockReturnValue(mockChain)
@@ -52,9 +64,7 @@ describe("getUniversityById", () => {
     const uni = { id: "uni-1", name: "Test Uni", status: "approved" }
     mockChain.limit.mockResolvedValue([uni])
 
-    const { getUniversityById } = await import(
-      "@/server/services/universities/get"
-    )
+    const { getUniversityById } = await importUniversitiesGet()
     const result = await getUniversityById("uni-1")
     expect(result).toEqual(uni as typeof result)
   })
@@ -62,9 +72,7 @@ describe("getUniversityById", () => {
   test("should return null when not found", async () => {
     mockChain.limit.mockResolvedValue([])
 
-    const { getUniversityById } = await import(
-      "@/server/services/universities/get"
-    )
+    const { getUniversityById } = await importUniversitiesGet()
     const result = await getUniversityById("nonexistent")
     expect(result).toBeNull()
   })
@@ -72,6 +80,8 @@ describe("getUniversityById", () => {
 
 describe("getUniversityByUserId", () => {
   beforeEach(() => {
+    applyUniversityGetMocks()
+
     for (const fn of Object.values(mockChain))
       (fn as ReturnType<typeof mock>).mockClear()
     mockChain.select.mockReturnValue(mockChain)
@@ -91,9 +101,7 @@ describe("getUniversityByUserId", () => {
     }
     mockChain.limit.mockResolvedValue([uniData])
 
-    const { getUniversityByUserId } = await import(
-      "@/server/services/universities/get"
-    )
+    const { getUniversityByUserId } = await importUniversitiesGet()
     const result = await getUniversityByUserId("user-1")
     expect(result).toEqual(uniData as typeof result)
   })
@@ -101,9 +109,7 @@ describe("getUniversityByUserId", () => {
   test("should return null when user has no university", async () => {
     mockChain.limit.mockResolvedValue([])
 
-    const { getUniversityByUserId } = await import(
-      "@/server/services/universities/get"
-    )
+    const { getUniversityByUserId } = await importUniversitiesGet()
     const result = await getUniversityByUserId("user-no-uni")
     expect(result).toBeNull()
   })

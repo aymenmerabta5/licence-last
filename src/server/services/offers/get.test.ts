@@ -44,33 +44,45 @@ const mockGroupBy = mock(() => ({ as: mockAs }))
 const mockSubqueryWhere = mock(() => ({ groupBy: mockGroupBy }))
 const mockSubqueryFrom = mock(() => ({ where: mockSubqueryWhere }))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => {
-      selectCallCount++
-      // Call 1: Subquery builder (no execution, just building)
-      // Call 2: Main query execution
-      // Call 3: Skills query execution
-      if (selectCallCount === 1) {
-        // First call is for the subquery builder
-        return { from: mockSubqueryFrom }
-      }
-      if (selectCallCount === 2) {
-        // Second call is for the main query
-        return { from: mockFromWithJoins }
-      }
-      // Third call is for skills
-      if (selectCallCount === 3) {
-        return { from: mockFromSkills }
-      }
-      // Fourth call is for language requirements
-      return { from: mockFromLanguages }
+function applyGetOfferMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => {
+        selectCallCount++
+        // Call 1: Subquery builder (no execution, just building)
+        // Call 2: Main query execution
+        // Call 3: Skills query execution
+        if (selectCallCount === 1) {
+          // First call is for the subquery builder
+          return { from: mockSubqueryFrom }
+        }
+        if (selectCallCount === 2) {
+          // Second call is for the main query
+          return { from: mockFromWithJoins }
+        }
+        // Third call is for skills
+        if (selectCallCount === 3) {
+          return { from: mockFromSkills }
+        }
+        // Fourth call is for language requirements
+        return { from: mockFromLanguages }
+      },
     },
-  },
-}))
+  }))
+}
+
+let getOfferImportCounter = 0
+async function importOfferGet() {
+  getOfferImportCounter += 1
+  return (await import(
+    `@/server/services/offers/get?test=${getOfferImportCounter}`
+  )) as typeof import("@/server/services/offers/get")
+}
 
 describe("src/server/services/offers/get", () => {
   beforeEach(() => {
+    applyGetOfferMocks()
+
     queryResultIdx = 0
     selectCallCount = 0
     mockQueryResults.length = 0
@@ -153,7 +165,7 @@ describe("src/server/services/offers/get", () => {
     // Language requirements query result (index 2)
     mockQueryResults.push([])
 
-    const { getOfferById } = await import("@/server/services/offers/get")
+    const { getOfferById } = await importOfferGet()
     const result = await getOfferById("offer-1")
 
     expect(result?.id).toBe("offer-1")
@@ -197,7 +209,7 @@ describe("src/server/services/offers/get", () => {
     // Language requirements query result (index 2)
     mockQueryResults.push([])
 
-    const { getOfferById } = await import("@/server/services/offers/get")
+    const { getOfferById } = await importOfferGet()
     const result = await getOfferById("offer-1")
 
     expect(result?.id).toBe("offer-1")
@@ -240,7 +252,7 @@ describe("src/server/services/offers/get", () => {
     // Language requirements query result (index 2)
     mockQueryResults.push([])
 
-    const { getOfferById } = await import("@/server/services/offers/get")
+    const { getOfferById } = await importOfferGet()
     const result = await getOfferById("offer-1")
 
     expect(result?.id).toBe("offer-1")

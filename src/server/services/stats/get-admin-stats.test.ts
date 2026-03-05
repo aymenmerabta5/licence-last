@@ -28,19 +28,31 @@ const mockGroupBy = mock<() => Promise<any[]>>(() => {
 })
 const mockFromGroupBy = mock(() => ({ groupBy: mockGroupBy }))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => {
-      selectCallIdx++
-      if (selectCallIdx === 2) return { from: mockFromInnerJoin }
-      if (selectCallIdx === 5) return { from: mockFromGroupBy }
-      return { from: mockFromWhere }
+function applyGetAdminStatsMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => {
+        selectCallIdx++
+        if (selectCallIdx === 2) return { from: mockFromInnerJoin }
+        if (selectCallIdx === 5) return { from: mockFromGroupBy }
+        return { from: mockFromWhere }
+      },
     },
-  },
-}))
+  }))
+}
+
+let getAdminStatsImportCounter = 0
+async function importGetAdminStats() {
+  getAdminStatsImportCounter += 1
+  return import(
+    `@/server/services/stats/get-admin-stats?test=${getAdminStatsImportCounter}`
+  )
+}
 
 describe("src/server/services/stats/get-admin-stats", () => {
   beforeEach(() => {
+    applyGetAdminStatsMocks()
+
     selectCallIdx = 0
     mockSelectResults.length = 0
     mockWhere.mockClear()
@@ -66,9 +78,7 @@ describe("src/server/services/stats/get-admin-stats", () => {
       { status: "admin_validated", value: 1 },
     ])
 
-    const { getAdminStats } = await import(
-      "@/server/services/stats/get-admin-stats"
-    )
+    const { getAdminStats } = await importGetAdminStats()
     const stats = await getAdminStats()
 
     expect(stats.totalStudents).toBe(10)

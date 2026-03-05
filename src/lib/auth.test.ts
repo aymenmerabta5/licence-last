@@ -67,72 +67,58 @@ const getEmailDomainMock = mock((email: string) =>
 )
 const domainCandidatesMock = mock((domain: string) => [domain])
 
-mock.module("better-auth", () => ({
-  betterAuth: betterAuthMock,
-}))
+function applyAuthModuleMocks() {
+  mock.module("better-auth", () => ({
+    betterAuth: betterAuthMock,
+  }))
 
-mock.module("better-auth/api", () => ({
-  APIError: MockAPIError,
-}))
+  mock.module("better-auth/api", () => ({
+    APIError: MockAPIError,
+  }))
 
-mock.module("better-auth/adapters/drizzle", () => ({
-  drizzleAdapter: () => ({}),
-}))
+  mock.module("better-auth/adapters/drizzle", () => ({
+    drizzleAdapter: () => ({}),
+  }))
 
-mock.module("better-auth/next-js", () => ({
-  nextCookies: () => ({}),
-}))
+  mock.module("better-auth/next-js", () => ({
+    nextCookies: () => ({}),
+  }))
 
-mock.module("better-auth/plugins", () => ({
-  admin: () => ({}),
-  captcha: () => ({}),
-  haveIBeenPwned: () => ({}),
-  multiSession: () => ({}),
-  openAPI: () => ({}),
-  twoFactor: () => ({}),
-}))
+  mock.module("better-auth/plugins", () => ({
+    admin: () => ({}),
+    captcha: () => ({}),
+    haveIBeenPwned: () => ({}),
+    multiSession: () => ({}),
+    openAPI: () => ({}),
+    twoFactor: () => ({}),
+  }))
 
-mock.module("@/env", () => ({
-  env: {
-    BETTER_AUTH_SECRET: "12345678901234567890123456789012",
-    NEXT_PUBLIC_BETTER_AUTH_URL: "https://stag.example.com",
-    TURNSTILE_SECRET_KEY: undefined,
-  },
-}))
+  mock.module("@/env", () => ({
+    env: {
+      BETTER_AUTH_SECRET: "12345678901234567890123456789012",
+      NEXT_PUBLIC_BETTER_AUTH_URL: "https://stag.example.com",
+      TURNSTILE_SECRET_KEY: undefined,
+    },
+  }))
 
-mock.module("@/lib/auth-utils", () => ({
-  domainCandidates: domainCandidatesMock,
-  getEmailDomain: getEmailDomainMock,
-}))
+  mock.module("@/lib/auth-utils", () => ({
+    domainCandidates: domainCandidatesMock,
+    getEmailDomain: getEmailDomainMock,
+  }))
 
-mock.module("@/lib/permissions", () => ({
-  ac: {},
-  companyAdmin: {},
-  deptHead: {},
-  student: {},
-  superAdmin: {},
-  universityAdmin: {},
-}))
+  mock.module("@/lib/permissions", () => ({
+    ac: {},
+    companyAdmin: {},
+    deptHead: {},
+    student: {},
+    superAdmin: {},
+    universityAdmin: {},
+  }))
 
-mock.module("@/server/email/sendEmail", () => ({
-  sendEmail: mock(async () => undefined),
-}))
-
-mock.module("@/server/email/templates/DeptHeadWelcomeEmail", () => ({
-  default: {},
-}))
-
-mock.module("@/server/email/templates/ResetPasswordEmail", () => ({
-  default: {},
-}))
-
-mock.module("@/server/email/templates/TwoFactorOtpEmail", () => ({
-  default: {},
-}))
-
-mock.module("@/server/email/templates/VerifyEmailEmail", () => ({
-  default: {},
-}))
+  mock.module("@/server/email/sendEmail", () => ({
+    sendEmail: mock(async () => undefined),
+  }))
+}
 
 describe("src/lib/auth self-signup role hardening", () => {
   let beforeCreateUserHook: (data: SignupData, ctx?: SignupContext) => Promise<{
@@ -141,6 +127,7 @@ describe("src/lib/auth self-signup role hardening", () => {
   let originalDbSelect: unknown
 
   beforeEach(async () => {
+    applyAuthModuleMocks()
     betterAuthMock.mockClear()
     selectMock.mockClear()
     fromMock.mockClear()

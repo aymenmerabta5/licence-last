@@ -28,14 +28,26 @@ const mockCountsWhere = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockGroupBy = mock((): any => [])
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockSelect,
-  },
-}))
+function applyListByCompanyMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: mockSelect,
+    },
+  }))
+}
+
+let listByCompanyImportCounter = 0
+async function importListByCompany() {
+  listByCompanyImportCounter += 1
+  return (await import(
+    `@/server/services/offers/list-by-company?test=${listByCompanyImportCounter}`
+  )) as typeof import("@/server/services/offers/list-by-company")
+}
 
 describe("src/server/services/offers/list-by-company", () => {
   beforeEach(() => {
+    applyListByCompanyMocks()
+
     mockSelect.mockClear()
     mockFrom.mockClear()
     mockSelectWhere.mockClear()
@@ -82,9 +94,7 @@ describe("src/server/services/offers/list-by-company", () => {
   test("should return empty array for no offers", async () => {
     mockOrderBy.mockResolvedValue([])
 
-    const { listOffersByCompany } = await import(
-      "@/server/services/offers/list-by-company"
-    )
+    const { listOffersByCompany } = await importListByCompany()
 
     const result = await listOffersByCompany("company-1")
 
@@ -126,9 +136,7 @@ describe("src/server/services/offers/list-by-company", () => {
       { offerId: "offer-2", count: 1 },
     ])
 
-    const { listOffersByCompany } = await import(
-      "@/server/services/offers/list-by-company"
-    )
+    const { listOffersByCompany } = await importListByCompany()
 
     const result = await listOffersByCompany("company-1")
 

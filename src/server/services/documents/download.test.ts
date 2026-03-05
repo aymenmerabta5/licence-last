@@ -20,23 +20,32 @@ const selectBuilder = {
   where: () => selectBuilder,
   limit: selectLimitMock,
 }
+let moduleImportCounter = 0
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => ({ from: () => selectBuilder }),
-  },
-}))
+function applyDownloadDocumentMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => ({ from: () => selectBuilder }),
+    },
+  }))
 
-mock.module("@/server/services/documents/generate-agreement", () => ({
-  generateAgreement: generateAgreementMock,
-}))
+  mock.module("@/server/services/documents/generate-agreement", () => ({
+    generateAgreement: generateAgreementMock,
+  }))
 
-mock.module("@/server/services/documents/generate-certificate", () => ({
-  generateCertificate: generateCertificateMock,
-}))
+  mock.module("@/server/services/documents/generate-certificate", () => ({
+    generateCertificate: generateCertificateMock,
+  }))
+}
+
+async function loadDownloadDocumentModule() {
+  moduleImportCounter += 1
+  return import(`@/server/services/documents/download?test=${moduleImportCounter}`)
+}
 
 describe("src/server/services/documents/download", () => {
   beforeEach(() => {
+    applyDownloadDocumentMocks()
     selectResultsQueue.length = 0
     selectLimitMock.mockClear()
     generateAgreementMock.mockClear()
@@ -46,9 +55,7 @@ describe("src/server/services/documents/download", () => {
   test("throws typed not-found error when document is missing", async () => {
     selectResultsQueue.push([])
 
-    const { downloadDocument } = await import(
-      "@/server/services/documents/download"
-    )
+    const { downloadDocument } = await loadDownloadDocumentModule()
 
     await expect(
       downloadDocument({
@@ -70,9 +77,7 @@ describe("src/server/services/documents/download", () => {
       },
     ])
 
-    const { downloadDocument } = await import(
-      "@/server/services/documents/download"
-    )
+    const { downloadDocument } = await loadDownloadDocumentModule()
 
     await expect(
       downloadDocument({

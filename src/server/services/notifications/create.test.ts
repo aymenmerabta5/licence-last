@@ -4,48 +4,51 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 const mockInsert = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockValues = mock((): any => Promise.resolve())
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSelect = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockFrom = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockWhere = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockLimit = mock<() => Promise<any[]>>(() => Promise.resolve([]))
+const mockGetNotificationPreferences = mock(() =>
+  Promise.resolve({
+    inAppEnabled: true,
+    emailEnabled: true,
+  }),
+)
 
-mock.module("@/server/db", () => ({
-  db: {
-    insert: mockInsert,
-    select: mockSelect,
-  },
-}))
+function applyCreateNotificationMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      insert: mockInsert,
+    },
+  }))
+
+  mock.module("@/server/services/notifications/get-preferences", () => ({
+    getNotificationPreferences: mockGetNotificationPreferences,
+  }))
+}
+
+let createNotificationImportCounter = 0
+async function importCreateNotification() {
+  createNotificationImportCounter += 1
+  return (await import(
+    `@/server/services/notifications/create?test=${createNotificationImportCounter}`
+  )) as typeof import("@/server/services/notifications/create")
+}
 
 describe("src/server/services/notifications/create", () => {
   beforeEach(() => {
+    applyCreateNotificationMocks()
+
     mockInsert.mockClear()
     mockValues.mockClear()
-    mockSelect.mockClear()
-    mockFrom.mockClear()
-    mockWhere.mockClear()
-    mockLimit.mockClear()
+    mockGetNotificationPreferences.mockClear()
 
     mockInsert.mockReturnValue({ values: mockValues })
     mockValues.mockResolvedValue(undefined)
-    mockSelect.mockReturnValue({ from: mockFrom })
-    mockFrom.mockReturnValue({ where: mockWhere })
-    mockWhere.mockReturnValue({ limit: mockLimit })
-    mockLimit.mockResolvedValue([
-      {
-        inAppEnabled: true,
-        emailEnabled: true,
-      },
-    ])
+    mockGetNotificationPreferences.mockResolvedValue({
+      inAppEnabled: true,
+      emailEnabled: true,
+    })
   })
 
   test("should insert a notification", async () => {
-    const { createNotification } = await import(
-      "@/server/services/notifications/create?fresh=1" as string
-    )
+    const { createNotification } = await importCreateNotification()
     const result = await createNotification({
       userId: "u-1",
       type: "test",
@@ -58,16 +61,12 @@ describe("src/server/services/notifications/create", () => {
   })
 
   test("should skip insert when in-app notifications are disabled", async () => {
-    mockLimit.mockResolvedValueOnce([
-      {
-        inAppEnabled: false,
-        emailEnabled: true,
-      },
-    ])
+    mockGetNotificationPreferences.mockResolvedValueOnce({
+      inAppEnabled: false,
+      emailEnabled: true,
+    })
 
-    const { createNotification } = await import(
-      "@/server/services/notifications/create?fresh=2" as string
-    )
+    const { createNotification } = await importCreateNotification()
     const result = await createNotification({
       userId: "u-1",
       type: "test",

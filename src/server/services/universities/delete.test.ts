@@ -28,15 +28,27 @@ const tx = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const transactionMock = mock(async (fn: (trx: any) => Promise<any>) => fn(tx))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: dbSelectMock,
-    transaction: transactionMock,
-  },
-}))
+function applyDeleteUniversityMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: dbSelectMock,
+      transaction: transactionMock,
+    },
+  }))
+}
+
+let deleteUniversityImportCounter = 0
+async function importDeleteUniversity() {
+  deleteUniversityImportCounter += 1
+  return import(
+    `@/server/services/universities/delete?test=${deleteUniversityImportCounter}`
+  )
+}
 
 describe("deleteUniversity", () => {
   beforeEach(() => {
+    applyDeleteUniversityMocks()
+
     dbSelectMock.mockClear()
     dbFromMock.mockClear()
     dbWhereMock.mockClear()
@@ -75,9 +87,7 @@ describe("deleteUniversity", () => {
   })
 
   test("should delete university and return affected users", async () => {
-    const { deleteUniversity } = await import(
-      "@/server/services/universities/delete"
-    )
+    const { deleteUniversity } = await importDeleteUniversity()
 
     const result = await deleteUniversity("uni-1")
 
@@ -89,9 +99,7 @@ describe("deleteUniversity", () => {
   })
 
   test("should cleanup linked users in a transaction", async () => {
-    const { deleteUniversity } = await import(
-      "@/server/services/universities/delete"
-    )
+    const { deleteUniversity } = await importDeleteUniversity()
 
     await deleteUniversity("uni-1")
 
@@ -103,9 +111,7 @@ describe("deleteUniversity", () => {
   test("should throw when university is not found", async () => {
     dbLimitMock.mockResolvedValue([])
 
-    const { deleteUniversity } = await import(
-      "@/server/services/universities/delete"
-    )
+    const { deleteUniversity } = await importDeleteUniversity()
 
     await expect(deleteUniversity("missing")).rejects.toThrow(
       "University not found",

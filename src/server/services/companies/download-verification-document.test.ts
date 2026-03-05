@@ -9,19 +9,33 @@ const selectBuilder = {
   where: () => selectBuilder,
   limit: selectLimitMock,
 }
+let moduleImportCounter = 0
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => ({ from: () => selectBuilder }),
-  },
-}))
+function applyDownloadVerificationMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => ({ from: () => selectBuilder }),
+    },
+  }))
 
-mock.module("@/server/storage/s3", () => ({
-  getFile: getFileMock,
-}))
+  mock.module("@/server/storage/s3", () => ({
+    uploadFile: mock(async () => "https://example.com/mock-upload.pdf"),
+    deleteFile: mock(async () => {}),
+    getFile: getFileMock,
+    isConfigured: () => true,
+  }))
+}
+
+async function loadDownloadVerificationModule() {
+  moduleImportCounter += 1
+  return import(
+    `@/server/services/companies/download-verification-document?test=${moduleImportCounter}`
+  )
+}
 
 describe("src/server/services/companies/download-verification-document", () => {
   beforeEach(() => {
+    applyDownloadVerificationMocks()
     selectResultsQueue.length = 0
     selectLimitMock.mockClear()
     getFileMock.mockClear()
@@ -30,9 +44,8 @@ describe("src/server/services/companies/download-verification-document", () => {
   test("throws COMPANY_NOT_FOUND when company does not exist", async () => {
     selectResultsQueue.push([])
 
-    const { downloadCompanyVerificationDocument } = await import(
-      "@/server/services/companies/download-verification-document"
-    )
+    const { downloadCompanyVerificationDocument } =
+      await loadDownloadVerificationModule()
 
     await expect(
       downloadCompanyVerificationDocument("company-missing"),
@@ -52,9 +65,8 @@ describe("src/server/services/companies/download-verification-document", () => {
       },
     ])
 
-    const { downloadCompanyVerificationDocument } = await import(
-      "@/server/services/companies/download-verification-document"
-    )
+    const { downloadCompanyVerificationDocument } =
+      await loadDownloadVerificationModule()
 
     await expect(
       downloadCompanyVerificationDocument("company-1"),
@@ -74,9 +86,8 @@ describe("src/server/services/companies/download-verification-document", () => {
       },
     ])
 
-    const { downloadCompanyVerificationDocument } = await import(
-      "@/server/services/companies/download-verification-document"
-    )
+    const { downloadCompanyVerificationDocument } =
+      await loadDownloadVerificationModule()
 
     const result = await downloadCompanyVerificationDocument("company-1")
 

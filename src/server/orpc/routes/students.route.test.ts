@@ -32,58 +32,61 @@ const isFeatureEnabledMock = mock(
   (flag: keyof typeof featureFlagsState) => featureFlagsState[flag],
 )
 
-mock.module("@/server/orpc/rate-limited-procedures", () => ({
-  publicProcedureStrict: createProcedureMock(),
-  publicProcedureStandard: createProcedureMock(),
-  authedSessionProcedureStandard: createProcedureMock(),
-  authedSessionProcedureGenerous: createProcedureMock(),
-  authedProcedureGenerous: createProcedureMock(),
-  authedProcedureStandard: createProcedureMock(),
-  authedProcedureStrict: createProcedureMock(),
-  adminProcedureGenerous: createProcedureMock(),
-  adminProcedureStandard: createProcedureMock(),
-  adminProcedureAssistant: createProcedureMock(),
-  superAdminProcedureGenerous: createProcedureMock(),
-  superAdminProcedureStandard: createProcedureMock(),
-  assistantProcedureLimited: createProcedureMock(),
-  companyAdminProcedureStandard: createProcedureMock(),
-  companyAdminProcedureGenerous: createProcedureMock(),
-  companyAdminProcedureAssistant: createProcedureMock(),
-  studentProcedureStandard: createProcedureMock(),
-  studentProcedureGenerous: createProcedureMock(),
-  deptHeadProcedureStandard: createProcedureMock(),
-  deptHeadProcedureGenerous: createProcedureMock(),
-}))
+function applyStudentsRouteMocks() {
+  mock.module("@/server/orpc/rate-limited-procedures", () => ({
+    publicProcedureStrict: createProcedureMock(),
+    publicProcedureStandard: createProcedureMock(),
+    authedSessionProcedureStandard: createProcedureMock(),
+    authedSessionProcedureGenerous: createProcedureMock(),
+    authedProcedureGenerous: createProcedureMock(),
+    authedProcedureStandard: createProcedureMock(),
+    authedProcedureStrict: createProcedureMock(),
+    adminProcedureGenerous: createProcedureMock(),
+    adminProcedureStandard: createProcedureMock(),
+    adminProcedureAssistant: createProcedureMock(),
+    superAdminProcedureGenerous: createProcedureMock(),
+    superAdminProcedureStandard: createProcedureMock(),
+    assistantProcedureLimited: createProcedureMock(),
+    companyAdminProcedureStandard: createProcedureMock(),
+    companyAdminProcedureGenerous: createProcedureMock(),
+    companyAdminProcedureAssistant: createProcedureMock(),
+    studentProcedureStandard: createProcedureMock(),
+    studentProcedureGenerous: createProcedureMock(),
+    deptHeadProcedureStandard: createProcedureMock(),
+    deptHeadProcedureGenerous: createProcedureMock(),
+  }))
 
-mock.module("next/cache", () => ({
-  cacheLife: () => {},
-  cacheTag: () => {},
-  revalidateTag: revalidateTagMock,
-  revalidatePath: () => {},
-  updateTag: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  unstable_cache: (fn: (...args: any[]) => any) => fn,
-}))
+  mock.module("next/cache", () => ({
+    cacheLife: () => {},
+    cacheTag: () => {},
+    revalidateTag: revalidateTagMock,
+    revalidatePath: () => {},
+    updateTag: () => {},
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    unstable_cache: (fn: (...args: any[]) => any) => fn,
+  }))
 
-mock.module("@/server/services/students/get-profile", () => ({
-  getStudentProfile: getStudentProfileMock,
-}))
-mock.module("@/server/services/students/get-public-profile", () => ({
-  getPublicStudentProfile: getPublicStudentProfileMock,
-}))
-mock.module("@/server/services/students/upsert-profile", () => ({
-  upsertStudentProfile: upsertStudentProfileMock,
-}))
-mock.module("@/server/services/students/upsert-profile-details", () => ({
-  upsertStudentProfileDetails: mock(async () => ({ success: true })),
-}))
-mock.module("@/lib/feature-flags", () => ({
-  FEATURE_FLAGS: featureFlagsState,
-  isFeatureEnabled: isFeatureEnabledMock,
-}))
+  mock.module("@/server/services/students/get-profile", () => ({
+    getStudentProfile: getStudentProfileMock,
+  }))
+  mock.module("@/server/services/students/get-public-profile", () => ({
+    getPublicStudentProfile: getPublicStudentProfileMock,
+  }))
+  mock.module("@/server/services/students/upsert-profile", () => ({
+    upsertStudentProfile: upsertStudentProfileMock,
+  }))
+  mock.module("@/server/services/students/upsert-profile-details", () => ({
+    upsertStudentProfileDetails: mock(async () => ({ success: true })),
+  }))
+  mock.module("@/lib/feature-flags", () => ({
+    FEATURE_FLAGS: featureFlagsState,
+    isFeatureEnabled: isFeatureEnabledMock,
+  }))
+}
 
 describe("src/server/orpc/routes/students", () => {
   beforeEach(() => {
+    applyStudentsRouteMocks()
     getStudentProfileMock.mockClear()
     getPublicStudentProfileMock.mockClear()
     upsertStudentProfileMock.mockClear()

@@ -5,12 +5,24 @@ const mockWhere = mock(() => ({ returning: mockReturning }))
 const mockSet = mock(() => ({ where: mockWhere }))
 const mockUpdate = mock(() => ({ set: mockSet }))
 
-mock.module("@/server/db", () => ({
-  db: { update: mockUpdate },
-}))
+function applyUpdateUniversityMocks() {
+  mock.module("@/server/db", () => ({
+    db: { update: mockUpdate },
+  }))
+}
+
+let updateUniversityImportCounter = 0
+async function importUpdateUniversity() {
+  updateUniversityImportCounter += 1
+  return import(
+    `@/server/services/universities/update?test=${updateUniversityImportCounter}`
+  )
+}
 
 describe("updateUniversity", () => {
   beforeEach(() => {
+    applyUpdateUniversityMocks()
+
     mockUpdate.mockClear()
     mockSet.mockClear()
     mockWhere.mockClear()
@@ -23,9 +35,7 @@ describe("updateUniversity", () => {
   })
 
   test("should update fields and return universityId", async () => {
-    const { updateUniversity } = await import(
-      "@/server/services/universities/update"
-    )
+    const { updateUniversity } = await importUpdateUniversity()
 
     const result = await updateUniversity("uni-1", {
       name: "  Updated University  ",
@@ -42,9 +52,7 @@ describe("updateUniversity", () => {
   })
 
   test("should return input universityId when no fields are provided", async () => {
-    const { updateUniversity } = await import(
-      "@/server/services/universities/update"
-    )
+    const { updateUniversity } = await importUpdateUniversity()
 
     const result = await updateUniversity("uni-1", {})
 
@@ -55,9 +63,7 @@ describe("updateUniversity", () => {
   test("should throw when university is not found", async () => {
     mockReturning.mockResolvedValue([])
 
-    const { updateUniversity } = await import(
-      "@/server/services/universities/update"
-    )
+    const { updateUniversity } = await importUpdateUniversity()
 
     await expect(
       updateUniversity("missing", { name: "Updated" }),

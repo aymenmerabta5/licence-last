@@ -58,11 +58,21 @@ function createQuery(result: any): any {
 
 const mockSelect = mock(() => createQuery(selectResultQueue.shift() ?? []))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockSelect,
-  },
-}))
+function applyScoreMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: mockSelect,
+    },
+  }))
+}
+
+let scoreImportCounter = 0
+async function importScoreModule() {
+  scoreImportCounter += 1
+  return (await import(
+    `@/server/services/matching/score?test=${scoreImportCounter}`
+  )) as typeof import("@/server/services/matching/score")
+}
 
 function queueMatchScoreQueries(fixture: MatchScoreFixture) {
   selectResultQueue.push(
@@ -76,6 +86,7 @@ function queueMatchScoreQueries(fixture: MatchScoreFixture) {
 }
 
 beforeEach(() => {
+  applyScoreMocks()
   selectResultQueue = []
   mockSelect.mockClear()
 })
@@ -91,9 +102,7 @@ describe("getExplainableMatchScore", () => {
       languages: [],
     })
 
-    const { getExplainableMatchScore } = await import(
-      "@/server/services/matching/score"
-    )
+    const { getExplainableMatchScore } = await importScoreModule()
 
     await expect(
       getExplainableMatchScore("student-1", "offer-missing"),
@@ -127,9 +136,7 @@ describe("getExplainableMatchScore", () => {
       languages: [],
     })
 
-    const { getExplainableMatchScore } = await import(
-      "@/server/services/matching/score"
-    )
+    const { getExplainableMatchScore } = await importScoreModule()
     const result = await getExplainableMatchScore("student-1", "offer-1")
 
     expect(result.score).toBe(100)
@@ -191,9 +198,7 @@ describe("getExplainableMatchScore", () => {
       ],
     })
 
-    const { getExplainableMatchScore } = await import(
-      "@/server/services/matching/score"
-    )
+    const { getExplainableMatchScore } = await importScoreModule()
     const result = await getExplainableMatchScore("student-2", "offer-2")
 
     expect(result.score).toBe(33)
@@ -239,9 +244,7 @@ describe("getExplainableMatchScore", () => {
       languages: [],
     })
 
-    const { getExplainableMatchScore } = await import(
-      "@/server/services/matching/score"
-    )
+    const { getExplainableMatchScore } = await importScoreModule()
     const result = await getExplainableMatchScore("student-3", "offer-3")
 
     expect(result.score).toBe(62)
@@ -266,18 +269,14 @@ describe("canAccessMatchScore", () => {
   }
 
   test("allows super_admin regardless of params", async () => {
-    const { canAccessMatchScore } = await import(
-      "@/server/services/matching/score"
-    )
+    const { canAccessMatchScore } = await importScoreModule()
     expect(
       canAccessMatchScore({ id: "admin-1", role: "super_admin" }, baseParams),
     ).toBe(true)
   })
 
   test("allows university_admin regardless of params", async () => {
-    const { canAccessMatchScore } = await import(
-      "@/server/services/matching/score"
-    )
+    const { canAccessMatchScore } = await importScoreModule()
     expect(
       canAccessMatchScore(
         { id: "uadmin-1", role: "university_admin" },
@@ -287,18 +286,14 @@ describe("canAccessMatchScore", () => {
   })
 
   test("allows student viewing own score for visible offer", async () => {
-    const { canAccessMatchScore } = await import(
-      "@/server/services/matching/score"
-    )
+    const { canAccessMatchScore } = await importScoreModule()
     expect(
       canAccessMatchScore({ id: "student-1", role: "student" }, baseParams),
     ).toBe(true)
   })
 
   test("denies student viewing own score for non-visible offer", async () => {
-    const { canAccessMatchScore } = await import(
-      "@/server/services/matching/score"
-    )
+    const { canAccessMatchScore } = await importScoreModule()
     expect(
       canAccessMatchScore(
         { id: "student-1", role: "student" },
@@ -308,18 +303,14 @@ describe("canAccessMatchScore", () => {
   })
 
   test("denies student viewing another student's score", async () => {
-    const { canAccessMatchScore } = await import(
-      "@/server/services/matching/score"
-    )
+    const { canAccessMatchScore } = await importScoreModule()
     expect(
       canAccessMatchScore({ id: "student-2", role: "student" }, baseParams),
     ).toBe(false)
   })
 
   test("allows company_admin for their own company's offer", async () => {
-    const { canAccessMatchScore } = await import(
-      "@/server/services/matching/score"
-    )
+    const { canAccessMatchScore } = await importScoreModule()
     expect(
       canAccessMatchScore(
         { id: "cadmin-1", role: "company_admin" },
@@ -329,9 +320,7 @@ describe("canAccessMatchScore", () => {
   })
 
   test("allows company_admin even when offer is hidden from students", async () => {
-    const { canAccessMatchScore } = await import(
-      "@/server/services/matching/score"
-    )
+    const { canAccessMatchScore } = await importScoreModule()
     expect(
       canAccessMatchScore(
         { id: "cadmin-1", role: "company_admin" },
@@ -341,9 +330,7 @@ describe("canAccessMatchScore", () => {
   })
 
   test("denies company_admin for another company's offer", async () => {
-    const { canAccessMatchScore } = await import(
-      "@/server/services/matching/score"
-    )
+    const { canAccessMatchScore } = await importScoreModule()
     expect(
       canAccessMatchScore(
         { id: "cadmin-1", role: "company_admin" },
@@ -353,9 +340,7 @@ describe("canAccessMatchScore", () => {
   })
 
   test("denies company_admin with undefined viewerCompanyId", async () => {
-    const { canAccessMatchScore } = await import(
-      "@/server/services/matching/score"
-    )
+    const { canAccessMatchScore } = await importScoreModule()
     expect(
       canAccessMatchScore(
         { id: "cadmin-1", role: "company_admin" },
@@ -365,9 +350,7 @@ describe("canAccessMatchScore", () => {
   })
 
   test("denies unsupported roles", async () => {
-    const { canAccessMatchScore } = await import(
-      "@/server/services/matching/score"
-    )
+    const { canAccessMatchScore } = await importScoreModule()
     expect(
       canAccessMatchScore({ id: "dh-1", role: "dept_head" }, baseParams),
     ).toBe(false)
@@ -378,9 +361,7 @@ describe("getOfferAccessContext", () => {
   test("returns offer context when found", async () => {
     selectResultQueue.push([{ companyId: "company-1", status: "published" }])
 
-    const { getOfferAccessContext } = await import(
-      "@/server/services/matching/score"
-    )
+    const { getOfferAccessContext } = await importScoreModule()
     const result = await getOfferAccessContext("offer-1")
 
     expect(result).toEqual({
@@ -393,9 +374,7 @@ describe("getOfferAccessContext", () => {
   test("returns draft and closed statuses without remapping", async () => {
     selectResultQueue.push([{ companyId: "company-2", status: "closed" }])
 
-    const { getOfferAccessContext } = await import(
-      "@/server/services/matching/score"
-    )
+    const { getOfferAccessContext } = await importScoreModule()
     const result = await getOfferAccessContext("offer-2")
 
     expect(result).toEqual({
@@ -407,9 +386,7 @@ describe("getOfferAccessContext", () => {
   test("returns null when offer does not exist", async () => {
     selectResultQueue.push([])
 
-    const { getOfferAccessContext } = await import(
-      "@/server/services/matching/score"
-    )
+    const { getOfferAccessContext } = await importScoreModule()
     const result = await getOfferAccessContext("offer-missing")
 
     expect(result).toBeNull()

@@ -5,7 +5,6 @@ const insertResultsQueue: unknown[][] = []
 
 const renderToBufferMock = mock(async () => new Uint8Array([1]))
 const generateQRCodeDataUrlMock = mock(async () => "data:image/png;base64,qr")
-const generateVerificationCodeMock = mock(() => "INTX-AAAA-BBBB")
 
 const selectLimitMock = mock(async () => selectResultsQueue.shift() ?? [])
 const selectBuilder = {
@@ -24,33 +23,31 @@ const insertValuesMock = mock(() => ({
 const updateWhereMock = mock(async () => undefined)
 const updateSetMock = mock(() => ({ where: updateWhereMock }))
 
-mock.module("@react-pdf/renderer", () => ({
-  renderToBuffer: renderToBufferMock,
-}))
+function applyGenerateCertificateMocks() {
+  mock.module("@react-pdf/renderer", () => ({
+    renderToBuffer: renderToBufferMock,
+  }))
 
-mock.module("@/server/pdfs/CertificateTemplate", () => ({
-  InternshipCertificateTemplate: () => null,
-}))
+  mock.module("@/server/pdfs/CertificateTemplate", () => ({
+    InternshipCertificateTemplate: () => null,
+  }))
 
-mock.module("@/env", () => ({
-  env: { NEXT_PUBLIC_BETTER_AUTH_URL: "https://stag.test" },
-}))
+  mock.module("@/env", () => ({
+    env: { NEXT_PUBLIC_BETTER_AUTH_URL: "https://stag.test" },
+  }))
 
-mock.module("@/server/services/documents/qr-utils", () => ({
-  generateQRCodeDataUrl: generateQRCodeDataUrlMock,
-}))
+  mock.module("@/server/services/documents/qr-utils", () => ({
+    generateQRCodeDataUrl: generateQRCodeDataUrlMock,
+  }))
 
-mock.module("@/server/services/documents/verification-code", () => ({
-  generateVerificationCode: generateVerificationCodeMock,
-}))
-
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => ({ from: () => selectBuilder }),
-    insert: () => ({ values: insertValuesMock }),
-    update: () => ({ set: updateSetMock }),
-  },
-}))
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => ({ from: () => selectBuilder }),
+      insert: () => ({ values: insertValuesMock }),
+      update: () => ({ set: updateSetMock }),
+    },
+  }))
+}
 
 async function importGenerateCertificate() {
   return (await import(
@@ -60,12 +57,13 @@ async function importGenerateCertificate() {
 
 describe("src/server/services/documents/generate-certificate", () => {
   beforeEach(() => {
+    applyGenerateCertificateMocks()
+
     selectResultsQueue.length = 0
     insertResultsQueue.length = 0
 
     renderToBufferMock.mockClear()
     generateQRCodeDataUrlMock.mockClear()
-    generateVerificationCodeMock.mockClear()
     selectLimitMock.mockClear()
     insertReturningMock.mockClear()
     insertValuesMock.mockClear()
@@ -73,7 +71,6 @@ describe("src/server/services/documents/generate-certificate", () => {
     updateWhereMock.mockClear()
 
     renderToBufferMock.mockResolvedValue(new Uint8Array([1]))
-    generateVerificationCodeMock.mockReturnValue("INTX-AAAA-BBBB")
   })
 
   test("throws typed error when placement does not exist", async () => {

@@ -35,34 +35,50 @@ const mockMembersWhere = mock<() => Promise<any[]>>(() => {
 })
 const mockFromMembers = mock(() => ({ where: mockMembersWhere }))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => {
-      selectCallIdx++
-      // Call 1: app join query (limit)
-      // Call 2: company members (no limit)
-      if (selectCallIdx === 1) return { from: mockFromJoin }
-      return { from: mockFromMembers }
-    },
-    update: mockUpdate,
-    insert: mockInsert,
-  },
-}))
-
 const createNotificationMock = mock(() =>
   Promise.resolve({ id: "notification-1", skipped: false }),
 )
 
-mock.module("@/server/services/notifications/create", () => ({
-  createNotification: createNotificationMock,
-}))
+const appendTimelineEventMock = mock(() =>
+  Promise.resolve({ eventId: "evt-1" }),
+)
 
-mock.module("@/server/services/applications/pipeline", () => ({
-  appendTimelineEvent: mock(() => Promise.resolve({ eventId: "evt-1" })),
-}))
+function applyRejectPlacementMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => {
+        selectCallIdx++
+        // Call 1: app join query (limit)
+        // Call 2: company members (no limit)
+        if (selectCallIdx === 1) return { from: mockFromJoin }
+        return { from: mockFromMembers }
+      },
+      update: mockUpdate,
+      insert: mockInsert,
+    },
+  }))
+
+  mock.module("@/server/services/notifications/create", () => ({
+    createNotification: createNotificationMock,
+  }))
+
+  mock.module("@/server/services/applications/pipeline", () => ({
+    appendTimelineEvent: appendTimelineEventMock,
+  }))
+}
+
+let rejectPlacementImportCounter = 0
+async function importRejectPlacement() {
+  rejectPlacementImportCounter += 1
+  return import(
+    `@/server/services/placements/reject?test=${rejectPlacementImportCounter}`
+  )
+}
 
 describe("src/server/services/placements/reject", () => {
   beforeEach(() => {
+    applyRejectPlacementMocks()
+
     selectCallIdx = 0
     mockSelectResults.length = 0
 
@@ -81,6 +97,7 @@ describe("src/server/services/placements/reject", () => {
     mockInsert.mockClear()
     mockValues.mockClear()
     createNotificationMock.mockClear()
+    appendTimelineEventMock.mockClear()
 
     mockMembersWhere.mockClear()
     mockFromMembers.mockClear()
@@ -121,9 +138,7 @@ describe("src/server/services/placements/reject", () => {
     ])
     mockSelectResults.push([{ userId: "member-1" }])
 
-    const { rejectPlacement } = await import(
-      "@/server/services/placements/reject"
-    )
+    const { rejectPlacement } = await importRejectPlacement()
     const result = await rejectPlacement({
       applicationId: "app-1",
       adminUserId: "admin-1",

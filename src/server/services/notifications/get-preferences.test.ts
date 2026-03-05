@@ -9,14 +9,26 @@ const mockWhere = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockLimit = mock<() => Promise<any[]>>(() => Promise.resolve([]))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockSelect,
-  },
-}))
+function applyGetPreferencesMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: mockSelect,
+    },
+  }))
+}
+
+let getPreferencesImportCounter = 0
+async function importGetPreferences() {
+  getPreferencesImportCounter += 1
+  return (await import(
+    `@/server/services/notifications/get-preferences?test=${getPreferencesImportCounter}`
+  )) as typeof import("@/server/services/notifications/get-preferences")
+}
 
 describe("src/server/services/notifications/get-preferences", () => {
   beforeEach(() => {
+    applyGetPreferencesMocks()
+
     mockSelect.mockClear()
     mockFrom.mockClear()
     mockWhere.mockClear()
@@ -30,9 +42,7 @@ describe("src/server/services/notifications/get-preferences", () => {
   test("returns defaults when no row exists", async () => {
     mockLimit.mockResolvedValue([])
 
-    const { getNotificationPreferences } = await import(
-      "@/server/services/notifications/get-preferences"
-    )
+    const { getNotificationPreferences } = await importGetPreferences()
 
     const result = await getNotificationPreferences("user-1")
 
@@ -45,9 +55,7 @@ describe("src/server/services/notifications/get-preferences", () => {
   test("returns stored preferences when row exists", async () => {
     mockLimit.mockResolvedValue([{ inAppEnabled: false, emailEnabled: true }])
 
-    const { getNotificationPreferences } = await import(
-      "@/server/services/notifications/get-preferences"
-    )
+    const { getNotificationPreferences } = await importGetPreferences()
 
     const result = await getNotificationPreferences("user-2")
 

@@ -85,59 +85,72 @@ if (!window.matchMedia) {
   })
 }
 
-import { expect, mock } from "bun:test"
+import { afterEach, expect, mock } from "bun:test"
 import * as matchers from "@testing-library/jest-dom/matchers"
 
-// Next.js "server-only" guard throws at runtime; in unit tests we treat it as a no-op.
-mock.module("server-only", () => ({}))
+function applyGlobalModuleMocks() {
+  // Next.js "server-only" guard throws at runtime; in unit tests we treat it as a no-op.
+  mock.module("server-only", () => ({}))
 
-// Cloudflare Turnstile — mock both the raw library and our wrapper component
-// so tests don't hit useLocale()/useTheme() outside providers.
-mock.module("@marsidev/react-turnstile", () => ({
-  Turnstile: () => null,
-}))
-mock.module("@/components/TurnstileWidget", () => ({
-  TurnstileWidget: () => null,
-}))
+  // Cloudflare Turnstile - mock both the raw library and our wrapper component
+  // so tests don't hit useLocale()/useTheme() outside providers.
+  mock.module("@marsidev/react-turnstile", () => ({
+    Turnstile: () => null,
+  }))
+  mock.module("@/components/TurnstileWidget", () => ({
+    TurnstileWidget: () => null,
+  }))
 
-// Next.js cacheLife/cacheTag require the cacheComponents runtime; stub them for unit tests.
-mock.module("next/cache", () => ({
-  cacheLife: () => {},
-  cacheTag: () => {},
-  revalidateTag: () => {},
-  revalidatePath: () => {},
-  updateTag: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  unstable_cache: (fn: (...args: any[]) => any) => fn,
-}))
+  // Next.js cacheLife/cacheTag require the cacheComponents runtime; stub them for unit tests.
+  mock.module("next/cache", () => ({
+    cacheLife: () => {},
+    cacheTag: () => {},
+    revalidateTag: () => {},
+    revalidatePath: () => {},
+    updateTag: () => {},
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    unstable_cache: (fn: (...args: any[]) => any) => fn,
+  }))
 
-// Logger imports read validated env at module load time; stub them in tests.
-mock.module("@/server/logging", () => {
-  const createMockLogger = () => ({
-    fatal: () => {},
-    error: () => {},
-    warn: () => {},
-    info: () => {},
-    debug: () => {},
-    trace: () => {},
-    child: () => createMockLogger(),
+  // Logger imports read validated env at module load time; stub them in tests.
+  mock.module("@/server/logging", () => {
+    const createMockLogger = () => ({
+      fatal: () => {},
+      error: () => {},
+      warn: () => {},
+      info: () => {},
+      debug: () => {},
+      trace: () => {},
+      child: () => createMockLogger(),
+    })
+
+    const logger = createMockLogger()
+    return {
+      logger,
+      createLogger: () => createMockLogger(),
+      createModuleLogger: () => createMockLogger(),
+    }
   })
 
-  const logger = createMockLogger()
-  return {
-    logger,
-    createLogger: () => createMockLogger(),
-    createModuleLogger: () => createMockLogger(),
-  }
+  // Mock next-intl/server for page component tests
+  mock.module("next-intl/server", () => ({
+    getTranslations: mock(() => Promise.resolve((key: string) => key)),
+    getLocale: mock(() => Promise.resolve("en")),
+    getMessages: mock(() => Promise.resolve({})),
+    getTimeZone: mock(() => Promise.resolve("UTC")),
+    getNow: mock(() => Promise.resolve(new Date())),
+  }))
+}
+
+applyGlobalModuleMocks()
+
+// `mock.module()` state is process-global in Bun. Reset between tests so
+// file-local mocks cannot leak into later suites.
+afterEach(() => {
+  mock.restore()
+  applyGlobalModuleMocks()
 })
 
-// Mock next-intl/server for page component tests
-mock.module("next-intl/server", () => ({
-  getTranslations: mock(() => Promise.resolve((key: string) => key)),
-  getLocale: mock(() => Promise.resolve("en")),
-  getMessages: mock(() => Promise.resolve({})),
-  getTimeZone: mock(() => Promise.resolve("UTC")),
-  getNow: mock(() => Promise.resolve(new Date())),
-}))
-
 expect.extend(matchers)
+
+

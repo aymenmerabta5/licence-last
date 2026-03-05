@@ -63,7 +63,10 @@ mock.module("@/server/services/users/session-management", () => ({
   revokeOtherSessions: mock(async () => ({ success: true })),
 }))
 mock.module("@/server/storage/s3", () => ({
+  uploadFile: mock(async () => "https://example.com/mock-upload.png"),
   deleteFile: mock(async () => {}),
+  getFile: mock(async () => Buffer.from("")),
+  isConfigured: () => true,
 }))
 mock.module("@/server/db", () => ({
   db: {

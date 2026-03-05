@@ -14,25 +14,40 @@ const mockTransaction = mock(
     await fn(mockTx)
   },
 )
+const mockValidateSkillTagIds = mock(() => Promise.resolve())
 
-mock.module("@/server/db", () => ({
-  db: {
-    transaction: mockTransaction,
-  },
-}))
+function applyCreateOfferMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      transaction: mockTransaction,
+    },
+  }))
 
-mock.module("@/server/services/skills/validate", () => ({
-  validateSkillTagIds: mock(() => Promise.resolve()),
-}))
+  mock.module("@/server/services/skills/validate", () => ({
+    validateSkillTagIds: mockValidateSkillTagIds,
+  }))
+}
+
+let createOfferImportCounter = 0
+async function importCreateOffer() {
+  createOfferImportCounter += 1
+  return (await import(
+    `@/server/services/offers/create?test=${createOfferImportCounter}`
+  )) as typeof import("@/server/services/offers/create")
+}
 
 describe("src/server/services/offers/create", () => {
   beforeEach(() => {
+    applyCreateOfferMocks()
+
     mockTransaction.mockClear()
     mockInsert.mockClear()
     mockValues.mockClear()
+    mockValidateSkillTagIds.mockClear()
 
     mockInsert.mockReturnValue({ values: mockValues })
     mockValues.mockResolvedValue(undefined)
+    mockValidateSkillTagIds.mockResolvedValue(undefined)
 
     mockTransaction.mockImplementation(async (fn) => {
       await fn(mockTx)
@@ -40,7 +55,7 @@ describe("src/server/services/offers/create", () => {
   })
 
   test("should create offer with skills", async () => {
-    const { createOffer } = await import("@/server/services/offers/create")
+    const { createOffer } = await importCreateOffer()
 
     const result = await createOffer({
       companyId: "company-1",
@@ -57,7 +72,7 @@ describe("src/server/services/offers/create", () => {
   })
 
   test("should create offer without skills", async () => {
-    const { createOffer } = await import("@/server/services/offers/create")
+    const { createOffer } = await importCreateOffer()
 
     const result = await createOffer({
       companyId: "company-1",
@@ -72,7 +87,7 @@ describe("src/server/services/offers/create", () => {
   })
 
   test("should return offerId", async () => {
-    const { createOffer } = await import("@/server/services/offers/create")
+    const { createOffer } = await importCreateOffer()
 
     const result = await createOffer({
       companyId: "company-1",
