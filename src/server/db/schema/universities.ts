@@ -43,6 +43,7 @@ export const university = pgTable(
   (table) => [
     index("university_name_idx").on(table.name),
     index("university_status_idx").on(table.status),
+    index("university_approvedByUserId_idx").on(table.approvedByUserId),
   ],
 )
 

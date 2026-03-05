@@ -34,6 +34,7 @@ export const user = pgTable(
   (table) => [
     index("user_universityId_idx").on(table.universityId),
     index("user_role_universityId_idx").on(table.role, table.universityId),
+    index("user_departmentId_idx").on(table.departmentId),
   ],
 )
 
