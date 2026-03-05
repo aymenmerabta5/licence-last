@@ -1,6 +1,10 @@
 import { env } from "@/env"
 
 export async function GET() {
+  if (process.env.NODE_ENV === "production") {
+    return new Response("Not Found", { status: 404 })
+  }
+
   const specUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/api/openapi/spec`
 
   const html = `<!DOCTYPE html>
