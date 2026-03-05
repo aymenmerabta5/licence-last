@@ -15,24 +15,24 @@ export async function listMySessions() {
 
 /**
  * Revoke a single session belonging to the authenticated user.
- * Verifies ownership before revoking to prevent token-guessing.
+ * Accepts session ID (not token) so that full tokens are never exposed to the client.
  */
-export async function revokeMySession(sessionToken: string) {
+export async function revokeMySession(sessionId: string) {
   const hdrs = await headers()
 
-  // Verify the session belongs to the current user
+  // Verify the session belongs to the current user and resolve its token
   const sessions = await auth.api.listSessions({
     headers: hdrs,
   })
 
-  const ownsSession = sessions.some((s) => s.token === sessionToken)
-  if (!ownsSession) {
+  const target = sessions.find((s) => s.id === sessionId)
+  if (!target) {
     throw new Error("Session not found or does not belong to you")
   }
 
   return auth.api.revokeSession({
     headers: hdrs,
-    body: { token: sessionToken },
+    body: { token: target.token },
   })
 }
 

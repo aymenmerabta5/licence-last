@@ -57,8 +57,8 @@ export function useSessionManagement() {
     currentSession,
     otherSessions,
     isLoading: sessionsQuery.isLoading,
-    revokeSession: (token: string) =>
-      revokeMutation.mutateAsync({ sessionToken: token }),
+    revokeSession: (sessionId: string) =>
+      revokeMutation.mutateAsync({ sessionId }),
     revokeOthers: () => revokeOthersMutation.mutateAsync(undefined),
     isRevoking: revokeMutation.isPending,
     isRevokingOthers: revokeOthersMutation.isPending,

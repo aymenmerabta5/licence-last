@@ -3,7 +3,7 @@ import type { ParsedUserAgent } from "@/lib/user-agent"
 /** Session enriched with parsed user-agent info for display. */
 export interface EnrichedSession {
   id: string
-  token: string
+  tokenPrefix: string
   userId: string
   ipAddress?: string | null
   userAgent?: string | null

@@ -78,7 +78,7 @@ export function SessionManagement() {
                 <SessionCard
                   key={session.id}
                   session={session}
-                  onRevoke={() => setRevokeToken(session.token)}
+                  onRevoke={() => setRevokeToken(session.id)}
                   isRevoking={isRevoking}
                 />
               ))

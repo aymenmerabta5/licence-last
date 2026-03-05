@@ -179,14 +179,14 @@ export const listMySessionsProcedure = authedSessionProcedureGenerous.handler(
 )
 
 export const revokeMySessionProcedure = authedSessionProcedureStandard
-  .input(z.object({ sessionToken: z.string().min(1) }))
+  .input(z.object({ sessionId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
-    if (input.sessionToken === context.session.token) {
+    if (input.sessionId === context.session.id) {
       throw new ORPCError("BAD_REQUEST", {
         message: "Cannot revoke your current session. Use logout instead.",
       })
     }
-    return revokeMySession(input.sessionToken)
+    return revokeMySession(input.sessionId)
   })
 
 export const revokeOtherSessionsProcedure =
