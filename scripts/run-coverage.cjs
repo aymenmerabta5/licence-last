@@ -7,62 +7,30 @@ const fs = require("node:fs")
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require("node:path")
 
-const COVERAGE_DIR = path.join(process.cwd(), "coverage")
+const ROOT = process.cwd()
+const COVERAGE_DIR = path.join(ROOT, "coverage")
 const BUN_BIN = "bun"
+const TEST_FILE_REGEX = /\.test\.(ts|tsx)$/
 
-const segments = [
-  {
-    name: "unit-core",
-    args: [
-      "test",
-      "--coverage",
-      "src/lib",
-      "src/server/services",
-      "src/server/db",
-      "src/server/caching",
-      "src/server/storage",
-      "src/server/email",
-      "src/server/logging",
-      "src/server/openapi",
-      "src/server/ai",
-      "src/server/pdfs",
-      "src/server/mcp",
-      "src/server/orpc/utils",
-    ],
-  },
-  { name: "api-health", args: ["test", "--coverage", "src/app/api/health"] },
-  { name: "api-rpc", args: ["test", "--coverage", "src/app/api/rpc"] },
-  {
-    name: "api-assistant-chat",
-    args: ["test", "--coverage", "src/app/api/assistant/chat"],
-  },
-  {
-    name: "api-assistant-auth-status",
-    args: ["test", "--coverage", "src/app/api/assistant/auth/status"],
-  },
-  { name: "app-locale", args: ["test", "--coverage", "src/app/[locale]"] },
-]
+function toPosix(filePath) {
+  return filePath.split(path.sep).join("/")
+}
 
-function runSegment(segment, index) {
-  const result = spawnSync(BUN_BIN, segment.args, {
-    cwd: process.cwd(),
-    encoding: "utf8",
-    shell: false,
-  })
-
-  const output = `${result.stdout ?? ""}${result.stderr ?? ""}`
-  const reportPath = path.join(COVERAGE_DIR, `${index + 1}-${segment.name}.txt`)
-
-  fs.writeFileSync(reportPath, output)
-  process.stdout.write(output)
-
-  if (result.error) {
-    process.stderr.write(`${result.error}\n`)
-    process.exit(1)
+function collectTestFiles(rootPath, out) {
+  if (!fs.existsSync(rootPath)) return
+  const stats = fs.statSync(rootPath)
+  if (stats.isFile()) {
+    if (TEST_FILE_REGEX.test(rootPath)) out.push(rootPath)
+    return
   }
-
-  if (result.status !== 0) {
-    process.exit(result.status ?? 1)
+  const entries = fs.readdirSync(rootPath, { withFileTypes: true })
+  for (const entry of entries) {
+    const entryPath = path.join(rootPath, entry.name)
+    if (entry.isDirectory()) {
+      collectTestFiles(entryPath, out)
+    } else if (entry.isFile() && TEST_FILE_REGEX.test(entry.name)) {
+      out.push(entryPath)
+    }
   }
 }
 
@@ -70,22 +38,45 @@ function main() {
   fs.rmSync(COVERAGE_DIR, { recursive: true, force: true })
   fs.mkdirSync(COVERAGE_DIR, { recursive: true })
 
-  const runAt = new Date().toISOString()
-  const headerLines = [
-    "# Bun Coverage Segments",
-    "",
-    `Generated at: ${runAt}`,
-    "",
-  ]
-  fs.writeFileSync(
-    path.join(COVERAGE_DIR, "README.md"),
-    `${headerLines.join("\n")}\n`,
+  // Collect all test files
+  const files = []
+  collectTestFiles(path.resolve(ROOT, "src"), files)
+  const sorted = [...new Set(files)].sort((a, b) =>
+    toPosix(a).localeCompare(toPosix(b)),
   )
 
-  for (const [index, segment] of segments.entries()) {
-    const sectionHeader = [`## ${index + 1}. ${segment.name}`, ""].join("\n")
-    fs.appendFileSync(path.join(COVERAGE_DIR, "README.md"), sectionHeader)
-    runSegment(segment, index)
+  if (sorted.length === 0) {
+    process.stdout.write("No test files found.\n")
+    return
+  }
+
+  process.stdout.write(`[coverage] Running ${sorted.length} files isolated with --coverage\n`)
+
+  let failed = 0
+
+  for (const filePath of sorted) {
+    const relative = toPosix(path.relative(ROOT, filePath))
+
+    const result = spawnSync(BUN_BIN, ["test", "--coverage", relative], {
+      cwd: ROOT,
+      encoding: "utf8",
+      shell: false,
+      env: process.env,
+    })
+
+    const exitCode = result.error ? 1 : (result.status ?? 1)
+
+    if (exitCode !== 0) {
+      failed++
+      process.stderr.write(`  FAIL: ${relative}\n`)
+      process.stdout.write(`${result.stdout ?? ""}${result.stderr ?? ""}`)
+    }
+  }
+
+  process.stdout.write(`\n[coverage] ${sorted.length} files, ${failed} failed\n`)
+
+  if (failed > 0) {
+    process.exit(1)
   }
 }
 
