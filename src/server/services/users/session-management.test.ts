@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 interface SessionItem {
+  id: string
   token: string
 }
 
@@ -61,21 +62,21 @@ describe("src/server/services/users/session-management", () => {
     expect(call.headers).toBeInstanceOf(Headers)
   })
 
-  test("revokeMySession should reject unknown tokens", async () => {
+  test("revokeMySession should reject unknown session IDs", async () => {
     const { revokeMySession } = await importSessionManagement()
-    mockListSessions.mockResolvedValue([{ token: "token-1" }])
+    mockListSessions.mockResolvedValue([{ id: "session-1", token: "token-1" }])
 
-    await expect(revokeMySession("token-2")).rejects.toThrow(
+    await expect(revokeMySession("session-unknown")).rejects.toThrow(
       "Session not found or does not belong to you",
     )
     expect(mockRevokeSession).not.toHaveBeenCalled()
   })
 
-  test("revokeMySession should revoke owned token", async () => {
+  test("revokeMySession should revoke by session ID and resolve token server-side", async () => {
     const { revokeMySession } = await importSessionManagement()
-    mockListSessions.mockResolvedValue([{ token: "token-1" }])
+    mockListSessions.mockResolvedValue([{ id: "session-1", token: "token-1" }])
 
-    const result = await revokeMySession("token-1")
+    const result = await revokeMySession("session-1")
 
     expect(result).toEqual({ status: true })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -85,7 +86,7 @@ describe("src/server/services/users/session-management", () => {
 
   test("revokeOtherSessions should return 0 when no other sessions exist", async () => {
     const { revokeOtherSessions } = await importSessionManagement()
-    mockListSessions.mockResolvedValue([{ token: "current-token" }])
+    mockListSessions.mockResolvedValue([{ id: "s1", token: "current-token" }])
 
     const result = await revokeOtherSessions("current-token")
 
@@ -96,9 +97,9 @@ describe("src/server/services/users/session-management", () => {
   test("revokeOtherSessions should revoke all non-current sessions", async () => {
     const { revokeOtherSessions } = await importSessionManagement()
     mockListSessions.mockResolvedValue([
-      { token: "current-token" },
-      { token: "other-token-1" },
-      { token: "other-token-2" },
+      { id: "s1", token: "current-token" },
+      { id: "s2", token: "other-token-1" },
+      { id: "s3", token: "other-token-2" },
     ])
 
     const result = await revokeOtherSessions("current-token")

@@ -14,6 +14,12 @@ mock.module("@/server/db", () => ({
   },
 }))
 
+let importCounter = 0
+async function importModule() {
+  importCounter += 1
+  return import(`@/server/services/assistant/update?fresh=${importCounter}`)
+}
+
 describe("src/server/services/assistant/update — updateAssistantConversationModel", () => {
   beforeEach(() => {
     returningResult = []
@@ -31,9 +37,7 @@ describe("src/server/services/assistant/update — updateAssistantConversationMo
   test("should return updatedCount 1 when conversation exists", async () => {
     returningResult = [{ id: "conv-1" }]
 
-    const { updateAssistantConversationModel } = await import(
-      "@/server/services/assistant/update?fresh=1"
-    )
+    const { updateAssistantConversationModel } = await importModule()
     const result = await updateAssistantConversationModel({
       conversationId: "conv-1",
       companyId: "company-1",
@@ -46,9 +50,7 @@ describe("src/server/services/assistant/update — updateAssistantConversationMo
   test("should return updatedCount 0 when conversation not found", async () => {
     returningResult = []
 
-    const { updateAssistantConversationModel } = await import(
-      "@/server/services/assistant/update?fresh=2"
-    )
+    const { updateAssistantConversationModel } = await importModule()
     const result = await updateAssistantConversationModel({
       conversationId: "missing",
       companyId: "company-1",
@@ -76,9 +78,7 @@ describe("src/server/services/assistant/update — updateAssistantConversationTi
   test("should return updatedCount 1 when title is updated", async () => {
     returningResult = [{ id: "conv-1" }]
 
-    const { updateAssistantConversationTitle } = await import(
-      "@/server/services/assistant/update?fresh=3"
-    )
+    const { updateAssistantConversationTitle } = await importModule()
     const result = await updateAssistantConversationTitle({
       conversationId: "conv-1",
       companyId: "company-1",
@@ -91,9 +91,7 @@ describe("src/server/services/assistant/update — updateAssistantConversationTi
   test("should allow setting title to null", async () => {
     returningResult = [{ id: "conv-1" }]
 
-    const { updateAssistantConversationTitle } = await import(
-      "@/server/services/assistant/update?fresh=4"
-    )
+    const { updateAssistantConversationTitle } = await importModule()
     const result = await updateAssistantConversationTitle({
       conversationId: "conv-1",
       companyId: "company-1",
@@ -106,9 +104,7 @@ describe("src/server/services/assistant/update — updateAssistantConversationTi
   test("should return updatedCount 0 when conversation not found", async () => {
     returningResult = []
 
-    const { updateAssistantConversationTitle } = await import(
-      "@/server/services/assistant/update?fresh=5"
-    )
+    const { updateAssistantConversationTitle } = await importModule()
     const result = await updateAssistantConversationTitle({
       conversationId: "missing",
       companyId: "company-1",

@@ -15,6 +15,12 @@ mock.module("@/server/db", () => ({
   },
 }))
 
+let importCounter = 0
+async function importModule() {
+  importCounter += 1
+  return import(`@/server/services/assistant/list?fresh=${importCounter}`)
+}
+
 describe("src/server/services/assistant/list", () => {
   beforeEach(() => {
     queryResult = []
@@ -34,9 +40,7 @@ describe("src/server/services/assistant/list", () => {
   test("should return empty conversations array when none exist", async () => {
     queryResult = []
 
-    const { listAssistantConversationsByCompanyId } = await import(
-      "@/server/services/assistant/list?fresh=1"
-    )
+    const { listAssistantConversationsByCompanyId } = await importModule()
     const result = await listAssistantConversationsByCompanyId({
       companyId: "company-1",
     })
@@ -64,9 +68,7 @@ describe("src/server/services/assistant/list", () => {
       },
     ]
 
-    const { listAssistantConversationsByCompanyId } = await import(
-      "@/server/services/assistant/list?fresh=2"
-    )
+    const { listAssistantConversationsByCompanyId } = await importModule()
     const result = await listAssistantConversationsByCompanyId({
       companyId: "company-1",
     })
@@ -79,9 +81,7 @@ describe("src/server/services/assistant/list", () => {
   test("should use default limit of 50", async () => {
     queryResult = []
 
-    const { listAssistantConversationsByCompanyId } = await import(
-      "@/server/services/assistant/list?fresh=3"
-    )
+    const { listAssistantConversationsByCompanyId } = await importModule()
     await listAssistantConversationsByCompanyId({ companyId: "company-1" })
 
     expect(mockLimit).toHaveBeenCalledWith(50)
@@ -90,9 +90,7 @@ describe("src/server/services/assistant/list", () => {
   test("should respect custom limit parameter", async () => {
     queryResult = []
 
-    const { listAssistantConversationsByCompanyId } = await import(
-      "@/server/services/assistant/list?fresh=4"
-    )
+    const { listAssistantConversationsByCompanyId } = await importModule()
     await listAssistantConversationsByCompanyId({
       companyId: "company-1",
       limit: 10,

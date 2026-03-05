@@ -14,6 +14,12 @@ mock.module("@/server/db", () => ({
   },
 }))
 
+let importCounter = 0
+async function importModule() {
+  importCounter += 1
+  return import(`@/server/services/assistant/get?fresh=${importCounter}`)
+}
+
 describe("src/server/services/assistant/get", () => {
   beforeEach(() => {
     queryResult = []
@@ -40,9 +46,7 @@ describe("src/server/services/assistant/get", () => {
       },
     ]
 
-    const { getAssistantConversationByIdForCompany } = await import(
-      "@/server/services/assistant/get?fresh=1"
-    )
+    const { getAssistantConversationByIdForCompany } = await importModule()
     const result = await getAssistantConversationByIdForCompany({
       conversationId: "conv-1",
       companyId: "company-1",
@@ -57,9 +61,7 @@ describe("src/server/services/assistant/get", () => {
   test("should return null when conversation not found", async () => {
     queryResult = []
 
-    const { getAssistantConversationByIdForCompany } = await import(
-      "@/server/services/assistant/get?fresh=2"
-    )
+    const { getAssistantConversationByIdForCompany } = await importModule()
     const result = await getAssistantConversationByIdForCompany({
       conversationId: "missing",
       companyId: "company-1",
@@ -71,9 +73,7 @@ describe("src/server/services/assistant/get", () => {
   test("should return null when conversation belongs to different company", async () => {
     queryResult = []
 
-    const { getAssistantConversationByIdForCompany } = await import(
-      "@/server/services/assistant/get?fresh=3"
-    )
+    const { getAssistantConversationByIdForCompany } = await importModule()
     const result = await getAssistantConversationByIdForCompany({
       conversationId: "conv-1",
       companyId: "wrong-company",

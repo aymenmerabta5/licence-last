@@ -18,6 +18,12 @@ mock.module("@/server/db", () => ({
   },
 }))
 
+let importCounter = 0
+async function importModule() {
+  importCounter += 1
+  return import(`@/server/services/assistant/delete?fresh=${importCounter}`)
+}
+
 describe("src/server/services/assistant/delete", () => {
   beforeEach(() => {
     selectResult = []
@@ -39,9 +45,7 @@ describe("src/server/services/assistant/delete", () => {
   test("should delete conversation and return deletedCount 1", async () => {
     selectResult = [{ id: "conv-1" }]
 
-    const { deleteAssistantConversation } = await import(
-      "@/server/services/assistant/delete?fresh=1"
-    )
+    const { deleteAssistantConversation } = await importModule()
     const result = await deleteAssistantConversation({
       conversationId: "conv-1",
       companyId: "company-1",
@@ -55,9 +59,7 @@ describe("src/server/services/assistant/delete", () => {
   test("should return deletedCount 0 when conversation not found", async () => {
     selectResult = []
 
-    const { deleteAssistantConversation } = await import(
-      "@/server/services/assistant/delete?fresh=2"
-    )
+    const { deleteAssistantConversation } = await importModule()
     const result = await deleteAssistantConversation({
       conversationId: "missing",
       companyId: "company-1",
@@ -77,9 +79,7 @@ describe("src/server/services/assistant/delete", () => {
       return { where: mockDeleteWhere }
     })
 
-    const { deleteAssistantConversation } = await import(
-      "@/server/services/assistant/delete?fresh=3"
-    )
+    const { deleteAssistantConversation } = await importModule()
     await deleteAssistantConversation({
       conversationId: "conv-1",
       companyId: "company-1",

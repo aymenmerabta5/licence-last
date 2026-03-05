@@ -122,7 +122,7 @@ describe("src/server/orpc/routes/users", () => {
     })
   })
 
-  test("listMySessionsProcedure returns token and computes isCurrent", async () => {
+  test("listMySessionsProcedure returns tokenPrefix and computes isCurrent", async () => {
     const createdAt = new Date("2026-02-01T08:00:00.000Z")
     const updatedAt = new Date("2026-02-05T08:00:00.000Z")
     const expiresAt = new Date("2026-03-01T08:00:00.000Z")
@@ -159,7 +159,7 @@ describe("src/server/orpc/routes/users", () => {
     expect(result).toEqual([
       {
         id: "session-1",
-        token: "token-1",
+        tokenPrefix: "en-1",
         userId: "user-1",
         ipAddress: "127.0.0.1",
         userAgent: "agent-1",
@@ -170,7 +170,7 @@ describe("src/server/orpc/routes/users", () => {
       },
       {
         id: "session-2",
-        token: "token-2",
+        tokenPrefix: "en-2",
         userId: "user-1",
         ipAddress: "127.0.0.2",
         userAgent: "agent-2",

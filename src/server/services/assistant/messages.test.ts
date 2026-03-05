@@ -40,15 +40,12 @@ const mockTransaction = mock(async (fn: (tx: any) => Promise<void>) => {
 
 // Track which select call we're on: first = verify, subsequent = query
 let selectCallCount = 0
-const dbSelectRouter = mock((...args: unknown[]) => {
+const dbSelectRouter = mock(() => {
   selectCallCount++
-  // appendAssistantMessage: first select is verification, uses verifySelect chain
-  // listAssistantMessages / getLatestAssistantMessage: uses normal select chain
   if (verifyConversationResult.length >= 0 && selectCallCount === 1 && mockTransaction.mock.calls.length === 0) {
-    // For append tests, the first select is the verification query
-    return mockVerifySelect(...args)
+    return mockVerifySelect()
   }
-  return mockSelect(...args)
+  return mockSelect()
 })
 
 mock.module("@/server/db", () => ({
@@ -57,6 +54,12 @@ mock.module("@/server/db", () => ({
     transaction: mockTransaction,
   },
 }))
+
+let importCounter = 0
+async function importModule() {
+  importCounter += 1
+  return import(`@/server/services/assistant/messages?fresh=${importCounter}`)
+}
 
 describe("src/server/services/assistant/messages — listAssistantMessages", () => {
   beforeEach(() => {
@@ -75,23 +78,22 @@ describe("src/server/services/assistant/messages — listAssistantMessages", () 
     mockSelectFrom.mockReturnValue({ innerJoin: mockSelectInnerJoin })
     mockSelectInnerJoin.mockReturnValue({ where: mockSelectWhere })
     mockSelectWhere.mockReturnValue({ orderBy: mockSelectOrderBy })
-    mockSelectOrderBy.mockImplementation(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockSelectOrderBy.mockImplementation((() => {
       const p = Promise.resolve(selectQueryResult)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ;(p as any).limit = mockSelectLimit
       return p
-    })
+    }) as any)
     mockSelectLimit.mockImplementation(() => Promise.resolve(selectQueryResult))
 
-    dbSelectRouter.mockImplementation((...args: unknown[]) => mockSelect(...args))
+    dbSelectRouter.mockImplementation(() => mockSelect())
   })
 
   test("should return empty messages array for empty conversation", async () => {
     selectQueryResult = []
 
-    const { listAssistantMessages } = await import(
-      "@/server/services/assistant/messages?fresh=1"
-    )
+    const { listAssistantMessages } = await importModule()
     const result = await listAssistantMessages({
       conversationId: "conv-1",
       companyId: "company-1",
@@ -118,9 +120,7 @@ describe("src/server/services/assistant/messages — listAssistantMessages", () 
       },
     ]
 
-    const { listAssistantMessages } = await import(
-      "@/server/services/assistant/messages?fresh=2"
-    )
+    const { listAssistantMessages } = await importModule()
     const result = await listAssistantMessages({
       conversationId: "conv-1",
       companyId: "company-1",
@@ -149,10 +149,11 @@ describe("src/server/services/assistant/messages — getLatestAssistantMessage",
     mockSelectFrom.mockReturnValue({ innerJoin: mockSelectInnerJoin })
     mockSelectInnerJoin.mockReturnValue({ where: mockSelectWhere })
     mockSelectWhere.mockReturnValue({ orderBy: mockSelectOrderBy })
-    mockSelectOrderBy.mockReturnValue({ limit: mockSelectLimit })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockSelectOrderBy.mockReturnValue({ limit: mockSelectLimit } as any)
     mockSelectLimit.mockImplementation(() => Promise.resolve(selectQueryResult))
 
-    dbSelectRouter.mockImplementation((...args: unknown[]) => mockSelect(...args))
+    dbSelectRouter.mockImplementation(() => mockSelect())
   })
 
   test("should return latest message when it exists", async () => {
@@ -165,9 +166,7 @@ describe("src/server/services/assistant/messages — getLatestAssistantMessage",
       },
     ]
 
-    const { getLatestAssistantMessage } = await import(
-      "@/server/services/assistant/messages?fresh=3"
-    )
+    const { getLatestAssistantMessage } = await importModule()
     const result = await getLatestAssistantMessage({
       conversationId: "conv-1",
       companyId: "company-1",
@@ -181,9 +180,7 @@ describe("src/server/services/assistant/messages — getLatestAssistantMessage",
   test("should return null when no messages exist", async () => {
     selectQueryResult = []
 
-    const { getLatestAssistantMessage } = await import(
-      "@/server/services/assistant/messages?fresh=4"
-    )
+    const { getLatestAssistantMessage } = await importModule()
     const result = await getLatestAssistantMessage({
       conversationId: "conv-1",
       companyId: "company-1",
@@ -225,15 +222,13 @@ describe("src/server/services/assistant/messages — appendAssistantMessage", ()
     })
 
     // For append: first select is verification
-    dbSelectRouter.mockImplementation((...args: unknown[]) => mockVerifySelect(...args))
+    dbSelectRouter.mockImplementation(() => mockVerifySelect())
   })
 
   test("should append message and return ok true when conversation exists", async () => {
     verifyConversationResult = [{ id: "conv-1" }]
 
-    const { appendAssistantMessage } = await import(
-      "@/server/services/assistant/messages?fresh=5"
-    )
+    const { appendAssistantMessage } = await importModule()
     const result = await appendAssistantMessage({
       conversationId: "conv-1",
       companyId: "company-1",
@@ -250,9 +245,7 @@ describe("src/server/services/assistant/messages — appendAssistantMessage", ()
   test("should return ok false when conversation does not exist", async () => {
     verifyConversationResult = []
 
-    const { appendAssistantMessage } = await import(
-      "@/server/services/assistant/messages?fresh=6"
-    )
+    const { appendAssistantMessage } = await importModule()
     const result = await appendAssistantMessage({
       conversationId: "missing",
       companyId: "company-1",
@@ -268,9 +261,7 @@ describe("src/server/services/assistant/messages — appendAssistantMessage", ()
   test("should strip provider metadata and redact secrets from parts", async () => {
     verifyConversationResult = [{ id: "conv-1" }]
 
-    const { appendAssistantMessage } = await import(
-      "@/server/services/assistant/messages?fresh=7"
-    )
+    const { appendAssistantMessage } = await importModule()
     await appendAssistantMessage({
       conversationId: "conv-1",
       companyId: "company-1",
@@ -298,9 +289,7 @@ describe("src/server/services/assistant/messages — appendAssistantMessage", ()
   test("should handle empty parts gracefully", async () => {
     verifyConversationResult = [{ id: "conv-1" }]
 
-    const { appendAssistantMessage } = await import(
-      "@/server/services/assistant/messages?fresh=8"
-    )
+    const { appendAssistantMessage } = await importModule()
     const result = await appendAssistantMessage({
       conversationId: "conv-1",
       companyId: "company-1",

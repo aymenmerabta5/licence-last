@@ -9,6 +9,12 @@ mock.module("@/server/db", () => ({
   },
 }))
 
+let importCounter = 0
+async function importModule() {
+  importCounter += 1
+  return import(`@/server/services/assistant/create?fresh=${importCounter}`)
+}
+
 describe("src/server/services/assistant/create", () => {
   beforeEach(() => {
     mockInsert.mockClear()
@@ -19,9 +25,7 @@ describe("src/server/services/assistant/create", () => {
   })
 
   test("should create a conversation and return values with generated id", async () => {
-    const { createAssistantConversation } = await import(
-      "@/server/services/assistant/create?fresh=1"
-    )
+    const { createAssistantConversation } = await importModule()
 
     const result = await createAssistantConversation({
       companyId: "company-1",
@@ -38,9 +42,7 @@ describe("src/server/services/assistant/create", () => {
   })
 
   test("should use provided title when given", async () => {
-    const { createAssistantConversation } = await import(
-      "@/server/services/assistant/create?fresh=2"
-    )
+    const { createAssistantConversation } = await importModule()
 
     const result = await createAssistantConversation({
       companyId: "company-1",
@@ -53,9 +55,7 @@ describe("src/server/services/assistant/create", () => {
   })
 
   test("should call db.insert with correct values", async () => {
-    const { createAssistantConversation } = await import(
-      "@/server/services/assistant/create?fresh=3"
-    )
+    const { createAssistantConversation } = await importModule()
 
     await createAssistantConversation({
       companyId: "company-2",
