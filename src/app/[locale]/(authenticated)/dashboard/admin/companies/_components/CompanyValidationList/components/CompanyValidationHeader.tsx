@@ -33,8 +33,8 @@ export function CompanyValidationHeader({
               {t("description")}
             </p>
           </div>
-          <div className="shrink-0 flex items-center justify-center p-4 border-l border-border/40 pl-6">
-            <div className="text-right">
+          <div className="shrink-0 flex items-center justify-center p-4 border-s border-border/40 ps-6">
+            <div className="text-end">
               <p className="font-serif text-3xl font-medium text-heading tracking-tight">
                 {total}
               </p>

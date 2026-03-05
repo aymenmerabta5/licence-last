@@ -32,8 +32,8 @@ export function AdminStatsHeader() {
               Stag platform.
             </p>
           </div>
-          <div className="shrink-0 flex items-center justify-center p-4 border-l border-border/40 pl-6 hidden md:block">
-            <div className="text-right">
+          <div className="shrink-0 flex items-center justify-center p-4 border-s border-border/40 ps-6 hidden md:block">
+            <div className="text-end">
               <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40">
                 {currentDate}
               </span>
