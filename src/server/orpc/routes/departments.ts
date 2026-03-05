@@ -266,27 +266,7 @@ export const syncDepartmentSkillsProcedure = adminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    if (context.user.role !== "super_admin") {
-      const universityId = context.user.universityId
-      if (!universityId) {
-        throw new ORPCError("FORBIDDEN", {
-          message: "Admin must belong to a university",
-        })
-      }
-
-      const [dept] = await db
-        .select({ universityId: department.universityId })
-        .from(department)
-        .where(eq(department.id, input.departmentId))
-        .limit(1)
-
-      if (!dept || dept.universityId !== universityId) {
-        throw new ORPCError("FORBIDDEN", {
-          message: "Department does not belong to your university",
-        })
-      }
-    }
-
+    await assertCanManageDepartment(input.departmentId, context)
     return syncDepartmentSkills(input.departmentId, input.skillTagIds)
   })
 
