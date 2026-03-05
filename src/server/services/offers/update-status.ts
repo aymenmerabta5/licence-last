@@ -1,6 +1,6 @@
 import "server-only"
 
-import { and, eq } from "drizzle-orm"
+import { and, eq, ne } from "drizzle-orm"
 import { db } from "@/server/db"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { createModuleLogger } from "@/server/logging"
@@ -124,6 +124,18 @@ export async function updateOfferStatus(
       .update(internshipOffer)
       .set({ status: "closed", closesAt: new Date() })
       .where(eq(internshipOffer.id, offerId))
+
+    // Cancel pending interviews when offer closes
+    const { interview } = await import("@/server/db/schema/interviews")
+    await db
+      .update(interview)
+      .set({ status: "cancelled" })
+      .where(
+        and(
+          eq(interview.offerId, offerId),
+          ne(interview.status, "cancelled"),
+        ),
+      )
 
     log.info({ offerId, event: "offer_closed" }, "Offer closed")
     return { offerId, newStatus: "closed" as const }
