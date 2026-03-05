@@ -113,124 +113,133 @@ function createPdfFile(name = "verification.pdf"): File {
   return new File([blob], name, { type: "application/pdf" })
 }
 
-mock.module("@/server/orpc/rate-limited-procedures", () => ({
-  publicProcedureStrict: createProcedureMock(),
-  publicProcedureStandard: createProcedureMock(),
-  authedSessionProcedureStandard: createProcedureMock(),
-  authedSessionProcedureGenerous: createProcedureMock(),
-  authedProcedureGenerous: createProcedureMock(),
-  authedProcedureStandard: createProcedureMock(),
-  authedProcedureStrict: createProcedureMock(),
-  adminProcedureGenerous: createProcedureMock(),
-  adminProcedureStandard: createProcedureMock(),
-  adminProcedureAssistant: createProcedureMock(),
-  assistantProcedureLimited: createProcedureMock(),
-  companyAdminProcedureAssistant: createProcedureMock(),
-  companyAdminProcedureGenerous: createProcedureMock(),
-  companyAdminProcedureStandard: createProcedureMock(),
-  companyOwnerProcedureStandard: createProcedureMock(),
-  studentProcedureGenerous: createProcedureMock(),
-  studentProcedureStandard: createProcedureMock(),
-  deptHeadProcedureStandard: createProcedureMock(),
-  deptHeadProcedureGenerous: createProcedureMock(),
-  superAdminProcedureGenerous: createProcedureMock(),
-  superAdminProcedureStandard: createProcedureMock(),
-}))
+function applyCompaniesRouteMocks() {
+  mock.module("@/server/orpc/rate-limited-procedures", () => ({
+    publicProcedureStrict: createProcedureMock(),
+    publicProcedureStandard: createProcedureMock(),
+    authedSessionProcedureStandard: createProcedureMock(),
+    authedSessionProcedureGenerous: createProcedureMock(),
+    authedProcedureGenerous: createProcedureMock(),
+    authedProcedureStandard: createProcedureMock(),
+    authedProcedureStrict: createProcedureMock(),
+    adminProcedureGenerous: createProcedureMock(),
+    adminProcedureStandard: createProcedureMock(),
+    adminProcedureAssistant: createProcedureMock(),
+    assistantProcedureLimited: createProcedureMock(),
+    companyAdminProcedureAssistant: createProcedureMock(),
+    companyAdminProcedureGenerous: createProcedureMock(),
+    companyAdminProcedureStandard: createProcedureMock(),
+    companyOwnerProcedureStandard: createProcedureMock(),
+    studentProcedureGenerous: createProcedureMock(),
+    studentProcedureStandard: createProcedureMock(),
+    deptHeadProcedureStandard: createProcedureMock(),
+    deptHeadProcedureGenerous: createProcedureMock(),
+    superAdminProcedureGenerous: createProcedureMock(),
+    superAdminProcedureStandard: createProcedureMock(),
+  }))
 
-mock.module("@/server/orpc/middleware", () => ({
-  isAdminRole: isAdminRoleMock,
-}))
+  mock.module("@/server/orpc/middleware", () => ({
+    isAdminRole: isAdminRoleMock,
+  }))
 
-mock.module("next/cache", () => ({
-  cacheLife: () => {},
-  cacheTag: () => {},
-  revalidateTag: revalidateTagMock,
-  revalidatePath: () => {},
-  updateTag: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  unstable_cache: (fn: (...args: any[]) => any) => fn,
-}))
+  mock.module("next/cache", () => ({
+    cacheLife: () => {},
+    cacheTag: () => {},
+    revalidateTag: revalidateTagMock,
+    revalidatePath: () => {},
+    updateTag: () => {},
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    unstable_cache: (fn: (...args: any[]) => any) => fn,
+  }))
 
-mock.module("@/env", () => ({
-  env: { NEXT_PUBLIC_BETTER_AUTH_URL: "http://localhost:3000" },
-}))
+  mock.module("@/env", () => ({
+    env: { NEXT_PUBLIC_BETTER_AUTH_URL: "http://localhost:3000" },
+  }))
 
-mock.module("@/server/services/companies/list", () => ({
-  listCompanies: listCompaniesMock,
-}))
-mock.module("@/server/services/companies/list-public-directory", () => ({
-  listPublicDirectoryCompanies: listPublicDirectoryCompaniesMock,
-}))
-mock.module("@/server/services/companies/get", () => ({
-  getCompanyById: mock(async () => null),
-}))
-mock.module("@/server/services/companies/create", () => ({
-  createCompany: createCompanyMock,
-}))
-mock.module("@/server/services/companies/download-verification-document", () => ({
-  downloadCompanyVerificationDocument: downloadCompanyVerificationDocumentMock,
-}))
-mock.module("@/server/services/companies/update", () => ({
-  updateCompany: updateCompanyMock,
-}))
-mock.module("@/server/services/companies/list-members", () => ({
-  listCompanyMembers: listCompanyMembersMock,
-}))
-mock.module("@/server/services/companies/invite-member", () => ({
-  inviteCompanyMember: inviteCompanyMemberMock,
-}))
-mock.module("@/server/services/companies/remove-member", () => ({
-  removeCompanyMember: removeCompanyMemberMock,
-}))
-mock.module("@/server/services/companies/delete", () => ({
-  deleteCompany: deleteCompanyMock,
-}))
-mock.module("@/server/services/companies/approve", () => ({
-  approveCompany: mock(async () => ({ name: "ACME" })),
-}))
-mock.module("@/server/services/companies/reject", () => ({
-  rejectCompany: mock(async () => ({ name: "ACME" })),
-}))
-mock.module("@/server/services/companies/membership", () => ({
-  getCompanyMembership: getCompanyMembershipMock,
-}))
-mock.module("@/server/services/uploads/upload-image", () => ({
-  uploadImageToS3: mock(async () => ({ url: "https://example.com/logo.png" })),
-}))
-mock.module("@/server/services/uploads/upload-company-verification-document", () => ({
-  uploadCompanyVerificationDocument: uploadCompanyVerificationDocumentMock,
-}))
-mock.module("@/server/storage/s3", () => ({
-  deleteFile: deleteFileMock,
-}))
-mock.module("@/server/services/notifications/emit", () => ({
-  emitNotification: emitNotificationMock,
-}))
-mock.module("@/server/services/companies/trust-index", () => ({
-  getCompanyTrustIndex: mock(async () => ({ score: 80 })),
-  listCompanyTrustIndices: mock(async () => []),
-}))
-mock.module("@/server/services/companies/trust-actions", () => ({
-  listCompanyReports: mock(async () => []),
-  resolveCompanyReport: mock(async () => ({ success: true })),
-  submitCompanyQualityFeedback: submitCompanyQualityFeedbackMock,
-  submitCompanyReport: submitCompanyReportMock,
-}))
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => ({
-      from: () => ({
-        where: async () => [],
-        innerJoin: () => ({
+  mock.module("@/server/services/companies/list", () => ({
+    listCompanies: listCompaniesMock,
+  }))
+  mock.module("@/server/services/companies/list-public-directory", () => ({
+    listPublicDirectoryCompanies: listPublicDirectoryCompaniesMock,
+  }))
+  mock.module("@/server/services/companies/get", () => ({
+    getCompanyById: mock(async () => null),
+  }))
+  mock.module("@/server/services/companies/create", () => ({
+    createCompany: createCompanyMock,
+  }))
+  mock.module("@/server/services/companies/download-verification-document", () => ({
+    downloadCompanyVerificationDocument: downloadCompanyVerificationDocumentMock,
+  }))
+  mock.module("@/server/services/companies/update", () => ({
+    updateCompany: updateCompanyMock,
+  }))
+  mock.module("@/server/services/companies/list-members", () => ({
+    listCompanyMembers: listCompanyMembersMock,
+  }))
+  mock.module("@/server/services/companies/invite-member", () => ({
+    inviteCompanyMember: inviteCompanyMemberMock,
+  }))
+  mock.module("@/server/services/companies/remove-member", () => ({
+    removeCompanyMember: removeCompanyMemberMock,
+  }))
+  mock.module("@/server/services/companies/delete", () => ({
+    deleteCompany: deleteCompanyMock,
+  }))
+  mock.module("@/server/services/companies/approve", () => ({
+    approveCompany: mock(async () => ({ name: "ACME" })),
+  }))
+  mock.module("@/server/services/companies/reject", () => ({
+    rejectCompany: mock(async () => ({ name: "ACME" })),
+  }))
+  mock.module("@/server/services/companies/membership", () => ({
+    getCompanyMembership: getCompanyMembershipMock,
+  }))
+  mock.module("@/server/services/uploads/upload-image", () => ({
+    uploadImageToS3: mock(async () => ({ url: "https://example.com/logo.png" })),
+  }))
+  mock.module(
+    "@/server/services/uploads/upload-company-verification-document",
+    () => ({
+      uploadCompanyVerificationDocument: uploadCompanyVerificationDocumentMock,
+    }),
+  )
+  mock.module("@/server/storage/s3", () => ({
+    uploadFile: mock(async () => "https://example.com/mock-upload.pdf"),
+    deleteFile: deleteFileMock,
+    getFile: mock(async () => Buffer.from("")),
+    isConfigured: () => true,
+  }))
+  mock.module("@/server/services/notifications/emit", () => ({
+    emitNotification: emitNotificationMock,
+  }))
+  mock.module("@/server/services/companies/trust-index", () => ({
+    getCompanyTrustIndex: mock(async () => ({ score: 80 })),
+    listCompanyTrustIndices: mock(async () => []),
+  }))
+  mock.module("@/server/services/companies/trust-actions", () => ({
+    listCompanyReports: mock(async () => []),
+    resolveCompanyReport: mock(async () => ({ success: true })),
+    submitCompanyQualityFeedback: submitCompanyQualityFeedbackMock,
+    submitCompanyReport: submitCompanyReportMock,
+  }))
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => ({
+        from: () => ({
           where: async () => [],
+          innerJoin: () => ({
+            where: async () => [],
+          }),
         }),
       }),
-    }),
-  },
-}))
+    },
+  }))
+}
 
 describe("src/server/orpc/routes/companies", () => {
   beforeEach(() => {
+    applyCompaniesRouteMocks()
     listCompaniesMock.mockClear()
     listPublicDirectoryCompaniesMock.mockClear()
     createCompanyMock.mockClear()

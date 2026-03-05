@@ -44,7 +44,6 @@ describe("src/server/services/companies/remove-member", () => {
   test("removes recruiter membership", async () => {
     selectResponses = [[{ userId: "member-1", role: "recruiter" }]]
 
-    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
     const { removeCompanyMember } = await import(
       "@/server/services/companies/remove-member?fresh=1"
     )
@@ -66,7 +65,6 @@ describe("src/server/services/companies/remove-member", () => {
   test("rejects owner removal", async () => {
     selectResponses = [[{ userId: "owner-1", role: "owner" }]]
 
-    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
     const { removeCompanyMember } = await import(
       "@/server/services/companies/remove-member?fresh=2"
     )
@@ -83,7 +81,6 @@ describe("src/server/services/companies/remove-member", () => {
   })
 
   test("rejects self removal", async () => {
-    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
     const { removeCompanyMember } = await import(
       "@/server/services/companies/remove-member?fresh=3"
     )

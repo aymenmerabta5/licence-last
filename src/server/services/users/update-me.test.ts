@@ -8,14 +8,24 @@ const mockWhere = mock(() => ({ returning: mockReturning }))
 const mockSet = mock(() => ({ where: mockWhere }))
 const mockUpdate = mock(() => ({ set: mockSet }))
 
-mock.module("@/server/db", () => ({
-  db: {
-    update: mockUpdate,
-  },
-}))
+function applyDbMock() {
+  mock.module("@/server/db", () => ({
+    db: {
+      update: mockUpdate,
+    },
+  }))
+}
+
+let moduleNonce = 0
+
+async function importUpdateMe() {
+  moduleNonce += 1
+  return import(`@/server/services/users/update-me?test=${moduleNonce}`)
+}
 
 describe("src/server/services/users/update-me", () => {
   beforeEach(() => {
+    applyDbMock()
     mockReturningResult = []
     mockUpdate.mockClear()
     mockSet.mockClear()
@@ -37,7 +47,7 @@ describe("src/server/services/users/update-me", () => {
       },
     ]
 
-    const { updateMe } = await import("@/server/services/users/update-me")
+    const { updateMe } = await importUpdateMe()
     const result = await updateMe("user-1", { name: "New Name" })
 
     expect(result).toEqual({
@@ -54,7 +64,7 @@ describe("src/server/services/users/update-me", () => {
       { id: "user-1", name: null, email: "test@example.com", image: null },
     ]
 
-    const { updateMe } = await import("@/server/services/users/update-me")
+    const { updateMe } = await importUpdateMe()
     const result = await updateMe("user-1", { name: null })
 
     expect(result.name).toBeNull()
@@ -63,7 +73,7 @@ describe("src/server/services/users/update-me", () => {
   test("should throw when user not found", async () => {
     mockReturningResult = []
 
-    const { updateMe } = await import("@/server/services/users/update-me")
+    const { updateMe } = await importUpdateMe()
 
     await expect(updateMe("missing", { name: "Test" })).rejects.toThrow(
       "User not found",

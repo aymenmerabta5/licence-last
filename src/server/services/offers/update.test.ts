@@ -35,20 +35,33 @@ const mockTransaction = mock(
     await fn(mockTx)
   },
 )
+const mockValidateSkillTagIds = mock(() => Promise.resolve())
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockSelect,
-    transaction: mockTransaction,
-  },
-}))
+function applyUpdateOfferMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: mockSelect,
+      transaction: mockTransaction,
+    },
+  }))
 
-mock.module("@/server/services/skills/validate", () => ({
-  validateSkillTagIds: mock(() => Promise.resolve()),
-}))
+  mock.module("@/server/services/skills/validate", () => ({
+    validateSkillTagIds: mockValidateSkillTagIds,
+  }))
+}
+
+let updateOfferImportCounter = 0
+async function importUpdateOffer() {
+  updateOfferImportCounter += 1
+  return (await import(
+    `@/server/services/offers/update?test=${updateOfferImportCounter}`
+  )) as typeof import("@/server/services/offers/update")
+}
 
 describe("src/server/services/offers/update", () => {
   beforeEach(() => {
+    applyUpdateOfferMocks()
+
     mockSelect.mockClear()
     mockFrom.mockClear()
     mockSelectWhere.mockClear()
@@ -61,6 +74,7 @@ describe("src/server/services/offers/update", () => {
     mockDelete.mockClear()
     mockDeleteWhere.mockClear()
     mockTransaction.mockClear()
+    mockValidateSkillTagIds.mockClear()
 
     mockSelect.mockReturnValue({ from: mockFrom })
     mockFrom.mockReturnValue({ where: mockSelectWhere })
@@ -73,6 +87,7 @@ describe("src/server/services/offers/update", () => {
     mockTxUpdateWhere.mockResolvedValue(undefined)
     mockDelete.mockReturnValue({ where: mockDeleteWhere })
     mockDeleteWhere.mockResolvedValue(undefined)
+    mockValidateSkillTagIds.mockResolvedValue(undefined)
 
     mockTransaction.mockImplementation(async (fn) => {
       await fn(mockTx)
@@ -84,7 +99,7 @@ describe("src/server/services/offers/update", () => {
       { id: "offer-1", companyId: "company-1", status: "draft" },
     ])
 
-    const { updateOffer } = await import("@/server/services/offers/update")
+    const { updateOffer } = await importUpdateOffer()
 
     const result = await updateOffer("offer-1", "company-1", {
       title: "Updated Title",
@@ -102,7 +117,7 @@ describe("src/server/services/offers/update", () => {
       { id: "offer-1", companyId: "company-1", status: "closed" },
     ])
 
-    const { updateOffer } = await import("@/server/services/offers/update")
+    const { updateOffer } = await importUpdateOffer()
 
     expect(
       updateOffer("offer-1", "company-1", { title: "New" }),
@@ -112,7 +127,7 @@ describe("src/server/services/offers/update", () => {
   test("should throw when offer not found or wrong company", async () => {
     mockLimit.mockResolvedValue([])
 
-    const { updateOffer } = await import("@/server/services/offers/update")
+    const { updateOffer } = await importUpdateOffer()
 
     expect(
       updateOffer("offer-1", "wrong-company", { title: "New" }),

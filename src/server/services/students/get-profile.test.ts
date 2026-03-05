@@ -19,26 +19,38 @@ const mockJoinFrom = mock(() => ({ innerJoin: mockInnerJoin }))
 const mockLanguagesWhere = mock<() => Promise<any[]>>(() => Promise.resolve([]))
 const mockLanguagesFrom = mock(() => ({ where: mockLanguagesWhere }))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => {
-      selectCallIdx++
-      // Calls 1 & 2 = profile & user queries (with limit)
-      // Call 3 = skills join query (no limit, returns from innerJoin.where)
-      // Call 4 = languages query (no limit, returns from where)
-      if (selectCallIdx <= 2) {
-        return { from: mockFrom }
-      }
-      if (selectCallIdx === 3) {
-        return { from: mockJoinFrom }
-      }
-      return { from: mockLanguagesFrom }
+function applyGetStudentProfileMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => {
+        selectCallIdx++
+        // Calls 1 & 2 = profile & user queries (with limit)
+        // Call 3 = skills join query (no limit, returns from innerJoin.where)
+        // Call 4 = languages query (no limit, returns from where)
+        if (selectCallIdx <= 2) {
+          return { from: mockFrom }
+        }
+        if (selectCallIdx === 3) {
+          return { from: mockJoinFrom }
+        }
+        return { from: mockLanguagesFrom }
+      },
     },
-  },
-}))
+  }))
+}
+
+let getStudentProfileImportCounter = 0
+async function importGetStudentProfile() {
+  getStudentProfileImportCounter += 1
+  return import(
+    `@/server/services/students/get-profile?test=${getStudentProfileImportCounter}`
+  )
+}
 
 describe("src/server/services/students/get-profile", () => {
   beforeEach(() => {
+    applyGetStudentProfileMocks()
+
     selectCallIdx = 0
     mockSelectResults.length = 0
     mockLimit.mockClear()
@@ -91,9 +103,7 @@ describe("src/server/services/students/get-profile", () => {
     mockJoinWhere.mockResolvedValue(mockSkills)
     mockLanguagesWhere.mockResolvedValue([])
 
-    const { getStudentProfile } = await import(
-      "@/server/services/students/get-profile"
-    )
+    const { getStudentProfile } = await importGetStudentProfile()
     const result = await getStudentProfile("user-1")
 
     expect(result).not.toBeNull()
@@ -110,9 +120,7 @@ describe("src/server/services/students/get-profile", () => {
       return Promise.resolve(results)
     })
 
-    const { getStudentProfile } = await import(
-      "@/server/services/students/get-profile"
-    )
+    const { getStudentProfile } = await importGetStudentProfile()
     const result = await getStudentProfile("user-nonexistent")
 
     expect(result).toBeNull()

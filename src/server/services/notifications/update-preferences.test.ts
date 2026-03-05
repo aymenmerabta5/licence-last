@@ -8,32 +8,39 @@ const mockValues = mock(() => ({}) as any)
 const mockOnConflictDoUpdate = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockReturning = mock<() => Promise<any[]>>(() => Promise.resolve([]))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSelect = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockFrom = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockWhere = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockLimit = mock<() => Promise<any[]>>(() => Promise.resolve([]))
+const mockGetNotificationPreferences = mock(() =>
+  Promise.resolve({ inAppEnabled: true, emailEnabled: true }),
+)
 
-mock.module("@/server/db", () => ({
-  db: {
-    insert: mockInsert,
-    select: mockSelect,
-  },
-}))
+function applyUpdatePreferencesMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      insert: mockInsert,
+    },
+  }))
+
+  mock.module("@/server/services/notifications/get-preferences", () => ({
+    getNotificationPreferences: mockGetNotificationPreferences,
+  }))
+}
+
+let updatePreferencesImportCounter = 0
+async function importUpdatePreferences() {
+  updatePreferencesImportCounter += 1
+  return (await import(
+    `@/server/services/notifications/update-preferences?test=${updatePreferencesImportCounter}`
+  )) as typeof import("@/server/services/notifications/update-preferences")
+}
 
 describe("src/server/services/notifications/update-preferences", () => {
   beforeEach(() => {
+    applyUpdatePreferencesMocks()
+
     mockInsert.mockClear()
     mockValues.mockClear()
     mockOnConflictDoUpdate.mockClear()
     mockReturning.mockClear()
-    mockSelect.mockClear()
-    mockFrom.mockClear()
-    mockWhere.mockClear()
-    mockLimit.mockClear()
+    mockGetNotificationPreferences.mockClear()
 
     mockInsert.mockReturnValue({ values: mockValues })
     mockValues.mockReturnValue({ onConflictDoUpdate: mockOnConflictDoUpdate })
@@ -41,23 +48,21 @@ describe("src/server/services/notifications/update-preferences", () => {
     mockReturning.mockResolvedValue([
       { inAppEnabled: false, emailEnabled: true },
     ])
-    mockSelect.mockReturnValue({ from: mockFrom })
-    mockFrom.mockReturnValue({ where: mockWhere })
-    mockWhere.mockReturnValue({ limit: mockLimit })
-    mockLimit.mockResolvedValue([{ inAppEnabled: true, emailEnabled: true }])
+    mockGetNotificationPreferences.mockResolvedValue({
+      inAppEnabled: true,
+      emailEnabled: true,
+    })
   })
 
   test("updates preferences with merged values", async () => {
-    const { updateNotificationPreferences } = await import(
-      "@/server/services/notifications/update-preferences"
-    )
+    const { updateNotificationPreferences } = await importUpdatePreferences()
 
     const result = await updateNotificationPreferences("user-1", {
       inAppEnabled: false,
     })
 
     expect(result).toEqual({ inAppEnabled: false, emailEnabled: true })
-    expect(mockSelect).toHaveBeenCalledTimes(1)
+    expect(mockGetNotificationPreferences).toHaveBeenCalledTimes(1)
     expect(mockInsert).toHaveBeenCalledTimes(1)
   })
 })

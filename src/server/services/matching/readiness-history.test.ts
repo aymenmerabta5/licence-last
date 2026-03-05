@@ -20,27 +20,39 @@ const mockWhere = mock((): any => ({
 const mockFrom = mock(() => ({ where: mockWhere }))
 const mockSelect = mock(() => ({ from: mockFrom }))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockSelect,
-    insert: mockInsert,
-  },
-}))
+function applyReadinessHistoryMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: mockSelect,
+      insert: mockInsert,
+    },
+  }))
 
-mock.module("@/server/services/matching/skill-gap", () => ({
-  getSkillGapRoadmap: mock(() =>
-    Promise.resolve({
-      readyPercent: 70,
-      missingSkills: [{ id: "s1", name: "React" }],
-      estimatedDelta: 10,
-      recommendedLearningOrder: [],
-      roadmapSteps: [],
-    }),
-  ),
-}))
+  mock.module("@/server/services/matching/skill-gap", () => ({
+    getSkillGapRoadmap: mock(() =>
+      Promise.resolve({
+        readyPercent: 70,
+        missingSkills: [{ id: "s1", name: "React" }],
+        estimatedDelta: 10,
+        recommendedLearningOrder: [],
+        roadmapSteps: [],
+      }),
+    ),
+  }))
+}
+
+let readinessHistoryImportCounter = 0
+async function importReadinessHistory() {
+  readinessHistoryImportCounter += 1
+  return (await import(
+    `@/server/services/matching/readiness-history?test=${readinessHistoryImportCounter}`
+  )) as typeof import("@/server/services/matching/readiness-history")
+}
 
 describe("src/server/services/matching/readiness-history", () => {
   beforeEach(() => {
+    applyReadinessHistoryMocks()
+
     mockListResult = []
     mockSnapshotCheckResult = []
     mockSelect.mockClear()
@@ -68,9 +80,7 @@ describe("src/server/services/matching/readiness-history", () => {
       mockListResult = []
       mockLimitList.mockResolvedValue(mockListResult)
 
-      const { listReadinessHistory } = await import(
-        "@/server/services/matching/readiness-history"
-      )
+      const { listReadinessHistory } = await importReadinessHistory()
       const result = await listReadinessHistory("student-1", "offer-1")
 
       expect(result).toEqual([])
@@ -96,9 +106,7 @@ describe("src/server/services/matching/readiness-history", () => {
       ]
       mockLimitList.mockResolvedValue(mockListResult)
 
-      const { listReadinessHistory } = await import(
-        "@/server/services/matching/readiness-history"
-      )
+      const { listReadinessHistory } = await importReadinessHistory()
       const result = await listReadinessHistory("student-1", "offer-1")
 
       expect(result).toHaveLength(2)
@@ -111,9 +119,7 @@ describe("src/server/services/matching/readiness-history", () => {
       mockSnapshotCheckResult = [{ id: "existing-snap" }]
       mockLimitCheck.mockResolvedValue(mockSnapshotCheckResult)
 
-      const { captureReadinessSnapshot } = await import(
-        "@/server/services/matching/readiness-history"
-      )
+      const { captureReadinessSnapshot } = await importReadinessHistory()
       const result = await captureReadinessSnapshot(
         "student-1",
         "offer-1",
@@ -128,9 +134,7 @@ describe("src/server/services/matching/readiness-history", () => {
       mockSnapshotCheckResult = []
       mockLimitCheck.mockResolvedValue(mockSnapshotCheckResult)
 
-      const { captureReadinessSnapshot } = await import(
-        "@/server/services/matching/readiness-history"
-      )
+      const { captureReadinessSnapshot } = await importReadinessHistory()
       const result = await captureReadinessSnapshot(
         "student-1",
         "offer-1",

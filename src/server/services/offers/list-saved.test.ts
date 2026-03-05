@@ -25,14 +25,26 @@ const mockSkillsInnerJoin = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSkillsWhere = mock<() => Promise<any[]>>(() => Promise.resolve([]))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockSelect,
-  },
-}))
+function applyListSavedMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: mockSelect,
+    },
+  }))
+}
+
+let listSavedImportCounter = 0
+async function importListSaved() {
+  listSavedImportCounter += 1
+  return (await import(
+    `@/server/services/offers/list-saved?test=${listSavedImportCounter}`
+  )) as typeof import("@/server/services/offers/list-saved")
+}
 
 describe("src/server/services/offers/list-saved", () => {
   beforeEach(() => {
+    applyListSavedMocks()
+
     mockSelect.mockClear()
     mockSavedFrom.mockClear()
     mockSavedInnerJoinOffer.mockClear()
@@ -68,9 +80,7 @@ describe("src/server/services/offers/list-saved", () => {
   test("returns empty result when no saved offers exist", async () => {
     mockSavedLimit.mockResolvedValue([])
 
-    const { listSavedOffers } = await import(
-      "@/server/services/offers/list-saved"
-    )
+    const { listSavedOffers } = await importListSaved()
     const result = await listSavedOffers("student-1")
 
     expect(result).toEqual({
@@ -139,9 +149,7 @@ describe("src/server/services/offers/list-saved", () => {
       },
     ])
 
-    const { listSavedOffers } = await import(
-      "@/server/services/offers/list-saved"
-    )
+    const { listSavedOffers } = await importListSaved()
     const result = await listSavedOffers("student-1", { limit: 1 })
 
     expect(result.offers).toHaveLength(1)

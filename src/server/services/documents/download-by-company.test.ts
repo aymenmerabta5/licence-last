@@ -20,23 +20,34 @@ const selectBuilder = {
   where: () => selectBuilder,
   limit: selectLimitMock,
 }
+let moduleImportCounter = 0
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => ({ from: () => selectBuilder }),
-  },
-}))
+function applyDownloadDocumentByCompanyMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => ({ from: () => selectBuilder }),
+    },
+  }))
 
-mock.module("@/server/services/documents/generate-agreement", () => ({
-  generateAgreement: generateAgreementMock,
-}))
+  mock.module("@/server/services/documents/generate-agreement", () => ({
+    generateAgreement: generateAgreementMock,
+  }))
 
-mock.module("@/server/services/documents/generate-certificate", () => ({
-  generateCertificate: generateCertificateMock,
-}))
+  mock.module("@/server/services/documents/generate-certificate", () => ({
+    generateCertificate: generateCertificateMock,
+  }))
+}
+
+async function loadDownloadByCompanyModule() {
+  moduleImportCounter += 1
+  return import(
+    `@/server/services/documents/download-by-company?test=${moduleImportCounter}`
+  )
+}
 
 describe("src/server/services/documents/download-by-company", () => {
   beforeEach(() => {
+    applyDownloadDocumentByCompanyMocks()
     selectResultsQueue.length = 0
     selectLimitMock.mockClear()
     generateAgreementMock.mockClear()
@@ -46,9 +57,7 @@ describe("src/server/services/documents/download-by-company", () => {
   test("throws typed not-found error when document is missing", async () => {
     selectResultsQueue.push([])
 
-    const { downloadDocumentByCompany } = await import(
-      "@/server/services/documents/download-by-company"
-    )
+    const { downloadDocumentByCompany } = await loadDownloadByCompanyModule()
 
     await expect(
       downloadDocumentByCompany({
@@ -70,9 +79,7 @@ describe("src/server/services/documents/download-by-company", () => {
       },
     ])
 
-    const { downloadDocumentByCompany } = await import(
-      "@/server/services/documents/download-by-company"
-    )
+    const { downloadDocumentByCompany } = await loadDownloadByCompanyModule()
 
     await expect(
       downloadDocumentByCompany({

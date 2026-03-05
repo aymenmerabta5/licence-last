@@ -1,8 +1,6 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 import type { CompanyStatus } from "@/lib/schemas/enums"
 
-import { getMe } from "@/server/services/users/get-me"
-
 interface CompanySummary {
   id: string
   name: string
@@ -38,6 +36,12 @@ const mockGetUniversityByUserId = mock<
   (userId: string) => Promise<UniversitySummary | null>
 >(() => Promise.resolve(null))
 
+let getMeImportCounter = 0
+async function importGetMe() {
+  getMeImportCounter += 1
+  return import(`@/server/services/users/get-me?test=${getMeImportCounter}`)
+}
+
 describe("src/server/services/users/get-me", () => {
   beforeEach(() => {
     mockGetUserById.mockClear()
@@ -49,6 +53,7 @@ describe("src/server/services/users/get-me", () => {
   })
 
   test("should default to student role and omit company data", async () => {
+    const { getMe } = await importGetMe()
     const result = await getMe(
       {
         id: "user-1",
@@ -69,6 +74,7 @@ describe("src/server/services/users/get-me", () => {
   })
 
   test("should include company summary for company_admins with membership", async () => {
+    const { getMe } = await importGetMe()
     mockGetCompanyByUserId.mockResolvedValue({
       id: "company-1",
       name: "Acme",
@@ -100,6 +106,7 @@ describe("src/server/services/users/get-me", () => {
   })
 
   test("should return null company when company_admin has no membership", async () => {
+    const { getMe } = await importGetMe()
     mockGetCompanyByUserId.mockResolvedValue(null)
 
     const result = await getMe(
@@ -120,6 +127,7 @@ describe("src/server/services/users/get-me", () => {
   })
 
   test("should not query company data for admins but query university", async () => {
+    const { getMe } = await importGetMe()
     mockGetUniversityByUserId.mockResolvedValue({
       id: "uni-1",
       name: "University of Algiers",
@@ -155,6 +163,7 @@ describe("src/server/services/users/get-me", () => {
   })
 
   test("should prefer fresh DB-backed user fields over stale session fields", async () => {
+    const { getMe } = await importGetMe()
     mockGetUserById.mockResolvedValue({
       id: "user-1",
       email: "fresh@example.com",

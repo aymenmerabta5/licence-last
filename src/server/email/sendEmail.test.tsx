@@ -15,19 +15,30 @@ const ResendMock = mock(() => ({
   },
 }))
 
-mock.module("resend", () => ({
-  Resend: ResendMock,
-}))
+function applyLocalMocks() {
+  mock.module("resend", () => ({
+    Resend: ResendMock,
+  }))
 
-mock.module("@/server/logging", () => ({
-  logger: {
-    warn: loggerWarnMock,
-    info: loggerInfoMock,
-    error: loggerErrorMock,
-    trace: () => {},
-    debug: () => {},
-    fatal: () => {},
-    child: () => ({
+  mock.module("@/server/logging", () => ({
+    logger: {
+      warn: loggerWarnMock,
+      info: loggerInfoMock,
+      error: loggerErrorMock,
+      trace: () => {},
+      debug: () => {},
+      fatal: () => {},
+      child: () => ({
+        warn: loggerWarnMock,
+        info: loggerInfoMock,
+        error: loggerErrorMock,
+        trace: () => {},
+        debug: () => {},
+        fatal: () => {},
+        child: () => ({}),
+      }),
+    },
+    createLogger: () => ({
       warn: loggerWarnMock,
       info: loggerInfoMock,
       error: loggerErrorMock,
@@ -36,29 +47,21 @@ mock.module("@/server/logging", () => ({
       fatal: () => {},
       child: () => ({}),
     }),
-  },
-  createLogger: () => ({
-    warn: loggerWarnMock,
-    info: loggerInfoMock,
-    error: loggerErrorMock,
-    trace: () => {},
-    debug: () => {},
-    fatal: () => {},
-    child: () => ({}),
-  }),
-  createModuleLogger: () => ({
-    warn: loggerWarnMock,
-    info: loggerInfoMock,
-    error: loggerErrorMock,
-    trace: () => {},
-    debug: () => {},
-    fatal: () => {},
-    child: () => ({}),
-  }),
-}))
+    createModuleLogger: () => ({
+      warn: loggerWarnMock,
+      info: loggerInfoMock,
+      error: loggerErrorMock,
+      trace: () => {},
+      debug: () => {},
+      fatal: () => {},
+      child: () => ({}),
+    }),
+  }))
+}
 
 describe("src/server/email/sendEmail", () => {
   beforeEach(() => {
+    applyLocalMocks()
     loggerWarnMock.mockClear()
     loggerInfoMock.mockClear()
     loggerErrorMock.mockClear()

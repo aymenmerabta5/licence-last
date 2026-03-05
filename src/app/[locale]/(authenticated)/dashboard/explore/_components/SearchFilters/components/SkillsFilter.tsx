@@ -36,7 +36,9 @@ export function SkillsFilter({
     const categorized = unselected.reduce<Record<string, typeof skills>>(
       (acc, skill) => {
         const category = skill.category ?? "Other"
-        ;(acc[category] ??= []).push(skill)
+        const categorySkills = acc[category] ?? []
+        categorySkills.push(skill)
+        acc[category] = categorySkills
         return acc
       },
       {},

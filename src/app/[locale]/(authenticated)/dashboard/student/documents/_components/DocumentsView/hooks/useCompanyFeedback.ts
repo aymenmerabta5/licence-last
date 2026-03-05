@@ -148,7 +148,17 @@ export function useCompanyFeedback(): UseCompanyFeedbackResult {
       return
     }
 
-    feedbackMutation.mutate(parsed.data)
+    if (typeof feedbackMutation.mutate === "function") {
+      feedbackMutation.mutate(parsed.data)
+      return
+    }
+
+    if (typeof feedbackMutation.mutateAsync === "function") {
+      void feedbackMutation.mutateAsync(parsed.data)
+      return
+    }
+
+    toast.error(t("submitError"))
   }
 
   return {

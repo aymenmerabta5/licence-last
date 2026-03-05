@@ -7,13 +7,22 @@ const mockReturning = mock(() => Promise.resolve(mockReturningResult))
 const mockWhere = mock(() => ({ returning: mockReturning }))
 const mockSet = mock(() => ({ where: mockWhere }))
 const mockUpdate = mock(() => ({ set: mockSet }))
+let moduleImportCounter = 0
 
-mock.module("@/server/db", () => ({
-  db: { update: mockUpdate },
-}))
+function applyUpdateDepartmentMocks() {
+  mock.module("@/server/db", () => ({
+    db: { update: mockUpdate },
+  }))
+}
+
+async function loadUpdateDepartmentModule() {
+  moduleImportCounter += 1
+  return import(`@/server/services/departments/update?test=${moduleImportCounter}`)
+}
 
 describe("updateDepartment", () => {
   beforeEach(() => {
+    applyUpdateDepartmentMocks()
     mockReturningResult = [{ id: "dept-1" }]
     mockUpdate.mockClear()
     mockSet.mockClear()
@@ -26,18 +35,14 @@ describe("updateDepartment", () => {
   })
 
   test("should update name when provided", async () => {
-    const { updateDepartment } = await import(
-      "@/server/services/departments/update"
-    )
+    const { updateDepartment } = await loadUpdateDepartmentModule()
     const result = await updateDepartment("dept-1", { name: "New Name" })
     expect(result).toEqual({ success: true })
     expect(mockUpdate).toHaveBeenCalledTimes(1)
   })
 
   test("should return success without DB call when no updates provided", async () => {
-    const { updateDepartment } = await import(
-      "@/server/services/departments/update"
-    )
+    const { updateDepartment } = await loadUpdateDepartmentModule()
     const result = await updateDepartment("dept-1", {})
     expect(result).toEqual({ success: true })
     expect(mockUpdate).not.toHaveBeenCalled()
@@ -46,9 +51,7 @@ describe("updateDepartment", () => {
   test("should throw when department does not exist", async () => {
     mockReturningResult = []
 
-    const { updateDepartment } = await import(
-      "@/server/services/departments/update"
-    )
+    const { updateDepartment } = await loadUpdateDepartmentModule()
 
     await expect(
       updateDepartment("missing-dept", { name: "New Name" }),

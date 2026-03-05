@@ -8,15 +8,24 @@ const mockSet = mock(() => ({}) as any)
 const mockWhere = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockReturning = mock((): any => [])
+let moduleImportCounter = 0
 
-mock.module("@/server/db", () => ({
-  db: {
-    update: mockUpdate,
-  },
-}))
+function applyUpdateCompanyMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      update: mockUpdate,
+    },
+  }))
+}
+
+async function loadUpdateCompanyModule() {
+  moduleImportCounter += 1
+  return import(`@/server/services/companies/update?test=${moduleImportCounter}`)
+}
 
 describe("src/server/services/companies/update", () => {
   beforeEach(() => {
+    applyUpdateCompanyMocks()
     mockUpdate.mockClear()
     mockSet.mockClear()
     mockWhere.mockClear()
@@ -30,7 +39,7 @@ describe("src/server/services/companies/update", () => {
   test("should update company and return companyId", async () => {
     mockReturning.mockResolvedValue([{ companyId: "company-1" }])
 
-    const { updateCompany } = await import("@/server/services/companies/update")
+    const { updateCompany } = await loadUpdateCompanyModule()
 
     const result = await updateCompany("company-1", {
       description: "Updated description",
@@ -45,7 +54,7 @@ describe("src/server/services/companies/update", () => {
   test("should throw when company not found", async () => {
     mockReturning.mockResolvedValue([])
 
-    const { updateCompany } = await import("@/server/services/companies/update")
+    const { updateCompany } = await loadUpdateCompanyModule()
 
     expect(
       updateCompany("nonexistent", { description: "test" }),

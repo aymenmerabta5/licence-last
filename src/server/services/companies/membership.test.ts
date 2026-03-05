@@ -7,15 +7,24 @@ const mockLimit = mock(() => Promise.resolve(mockLimitResult))
 const mockWhere = mock(() => ({ limit: mockLimit }))
 const mockFrom = mock(() => ({ where: mockWhere }))
 const mockSelect = mock(() => ({ from: mockFrom }))
+let moduleImportCounter = 0
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockSelect,
-  },
-}))
+function applyMembershipMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: mockSelect,
+    },
+  }))
+}
+
+async function loadMembershipModule() {
+  moduleImportCounter += 1
+  return import(`@/server/services/companies/membership?test=${moduleImportCounter}`)
+}
 
 describe("src/server/services/companies/membership", () => {
   beforeEach(() => {
+    applyMembershipMocks()
     mockLimitResult = []
     mockSelect.mockClear()
     mockFrom.mockClear()
@@ -32,9 +41,7 @@ describe("src/server/services/companies/membership", () => {
       { companyId: "company-1", userId: "user-1", role: "owner" },
     ]
 
-    const { getCompanyMembership } = await import(
-      "@/server/services/companies/membership"
-    )
+    const { getCompanyMembership } = await loadMembershipModule()
     const result = await getCompanyMembership("user-1")
 
     expect(result).not.toBeNull()
@@ -45,9 +52,7 @@ describe("src/server/services/companies/membership", () => {
   test("should return null when user has no membership", async () => {
     mockLimitResult = []
 
-    const { getCompanyMembership } = await import(
-      "@/server/services/companies/membership"
-    )
+    const { getCompanyMembership } = await loadMembershipModule()
     const result = await getCompanyMembership("user-orphan")
 
     expect(result).toBeNull()
@@ -59,9 +64,7 @@ describe("src/server/services/companies/membership", () => {
       { companyId: "company-2", userId: "user-1", role: "owner" },
     ]
 
-    const { getCompanyMembership } = await import(
-      "@/server/services/companies/membership"
-    )
+    const { getCompanyMembership } = await loadMembershipModule()
 
     await expect(getCompanyMembership("user-1")).rejects.toMatchObject({
       code: "COMPANY_MEMBERSHIP_CONFLICT",

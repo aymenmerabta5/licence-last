@@ -19,16 +19,25 @@ const mockInsertValues = mock(() => ({
   onConflictDoUpdate: mockInsertConflict,
 }))
 const mockInsert = mock(() => ({ values: mockInsertValues }))
+let moduleImportCounter = 0
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => ({ from: mockSelectFrom }),
-    insert: mockInsert,
-  },
-}))
+function applyTrustActionsFeedbackMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => ({ from: mockSelectFrom }),
+      insert: mockInsert,
+    },
+  }))
+}
+
+async function loadTrustActionsModule() {
+  moduleImportCounter += 1
+  return import(`@/server/services/companies/trust-actions?test=${moduleImportCounter}`)
+}
 
 describe("src/server/services/companies/trust-actions submitCompanyQualityFeedback", () => {
   beforeEach(() => {
+    applyTrustActionsFeedbackMocks()
     mockPlacementRows = []
     mockUpsertRows = []
 
@@ -56,9 +65,7 @@ describe("src/server/services/companies/trust-actions submitCompanyQualityFeedba
     ]
     mockUpsertRows = [{ id: "feedback-existing-id" }]
 
-    const { submitCompanyQualityFeedback } = await import(
-      "@/server/services/companies/trust-actions"
-    )
+    const { submitCompanyQualityFeedback } = await loadTrustActionsModule()
     const result = await submitCompanyQualityFeedback({
       studentUserId: "student-1",
       placementId: "placement-1",

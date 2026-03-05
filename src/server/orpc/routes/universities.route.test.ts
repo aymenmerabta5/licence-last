@@ -45,78 +45,69 @@ const isAdminRoleMock = mock(
     role === "super_admin" || role === "university_admin" || role === "dept_head",
 )
 
-mock.module("@/server/orpc/rate-limited-procedures", () => ({
-  authedProcedureGenerous: createProcedureMock(),
-  authedProcedureStandard: createProcedureMock(),
-  superAdminProcedureStandard: createProcedureMock(),
-}))
+function applyUniversitiesRouteMocks() {
+  mock.module("@/server/orpc/rate-limited-procedures", () => ({
+    authedProcedureGenerous: createProcedureMock(),
+    authedProcedureStandard: createProcedureMock(),
+    superAdminProcedureStandard: createProcedureMock(),
+  }))
 
-mock.module("@/server/orpc/middleware", () => ({
-  isAdminRole: isAdminRoleMock,
-}))
+  mock.module("@/server/orpc/middleware", () => ({
+    isAdminRole: isAdminRoleMock,
+  }))
 
-mock.module("next/cache", () => ({
-  cacheLife: () => {},
-  cacheTag: () => {},
-  revalidateTag: revalidateTagMock,
-  revalidatePath: () => {},
-  updateTag: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  unstable_cache: (fn: (...args: any[]) => any) => fn,
-}))
+  mock.module("next/cache", () => ({
+    cacheLife: () => {},
+    cacheTag: () => {},
+    revalidateTag: revalidateTagMock,
+    revalidatePath: () => {},
+    updateTag: () => {},
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    unstable_cache: (fn: (...args: any[]) => any) => fn,
+  }))
 
-mock.module("@/env", () => ({
-  env: { NEXT_PUBLIC_BETTER_AUTH_URL: "http://localhost:3000" },
-}))
+  mock.module("@/env", () => ({
+    env: { NEXT_PUBLIC_BETTER_AUTH_URL: "http://localhost:3000" },
+  }))
 
-mock.module("@/server/services/universities/list", () => ({
-  listUniversities: listUniversitiesMock,
-}))
-mock.module("@/server/services/universities/get", () => ({
-  getUniversityById: mock(async () => null),
-}))
-mock.module("@/server/services/universities/create", () => ({
-  createUniversity: createUniversityMock,
-}))
-mock.module("@/server/services/universities/update", () => ({
-  updateUniversity: updateUniversityMock,
-}))
-mock.module("@/server/services/universities/delete", () => ({
-  deleteUniversity: deleteUniversityMock,
-}))
-mock.module("@/server/services/universities/approve", () => ({
-  approveUniversity: approveUniversityMock,
-}))
-mock.module("@/server/services/universities/reject", () => ({
-  rejectUniversity: mock(async () => ({ success: true })),
-}))
-mock.module("@/server/services/notifications/emit", () => ({
-  emitNotification: emitNotificationMock,
-}))
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => ({
-      from: () => ({
-        where: async () => [{ userId: "admin-1", email: "admin@uni.dz" }],
+  mock.module("@/server/services/universities/list", () => ({
+    listUniversities: listUniversitiesMock,
+  }))
+  mock.module("@/server/services/universities/get", () => ({
+    getUniversityById: mock(async () => null),
+  }))
+  mock.module("@/server/services/universities/create", () => ({
+    createUniversity: createUniversityMock,
+  }))
+  mock.module("@/server/services/universities/update", () => ({
+    updateUniversity: updateUniversityMock,
+  }))
+  mock.module("@/server/services/universities/delete", () => ({
+    deleteUniversity: deleteUniversityMock,
+  }))
+  mock.module("@/server/services/universities/approve", () => ({
+    approveUniversity: approveUniversityMock,
+  }))
+  mock.module("@/server/services/universities/reject", () => ({
+    rejectUniversity: mock(async () => ({ success: true })),
+  }))
+  mock.module("@/server/services/notifications/emit", () => ({
+    emitNotification: emitNotificationMock,
+  }))
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => ({
+        from: () => ({
+          where: async () => [{ userId: "admin-1", email: "admin@uni.dz" }],
+        }),
       }),
-    }),
-  },
-}))
+    },
+  }))
+}
 
 describe("src/server/orpc/routes/universities", () => {
   beforeEach(() => {
-    mock.module("@/server/services/notifications/emit", () => ({
-      emitNotification: emitNotificationMock,
-    }))
-    mock.module("@/server/db", () => ({
-      db: {
-        select: () => ({
-          from: () => ({
-            where: async () => [{ userId: "admin-1", email: "admin@uni.dz" }],
-          }),
-        }),
-      },
-    }))
+    applyUniversitiesRouteMocks()
 
     listUniversitiesMock.mockClear()
     createUniversityMock.mockClear()

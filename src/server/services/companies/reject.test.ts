@@ -7,15 +7,24 @@ const mockReturning = mock(() => Promise.resolve(mockReturningResult))
 const mockWhere = mock(() => ({ returning: mockReturning }))
 const mockSet = mock(() => ({ where: mockWhere }))
 const mockUpdate = mock(() => ({ set: mockSet }))
+let moduleImportCounter = 0
 
-mock.module("@/server/db", () => ({
-  db: {
-    update: mockUpdate,
-  },
-}))
+function applyRejectCompanyMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      update: mockUpdate,
+    },
+  }))
+}
+
+async function loadRejectCompanyModule() {
+  moduleImportCounter += 1
+  return import(`@/server/services/companies/reject?test=${moduleImportCounter}`)
+}
 
 describe("src/server/services/companies/reject", () => {
   beforeEach(() => {
+    applyRejectCompanyMocks()
     mockReturningResult = []
     mockUpdate.mockClear()
     mockSet.mockClear()
@@ -30,7 +39,7 @@ describe("src/server/services/companies/reject", () => {
   test("should reject a company and return its id and name", async () => {
     mockReturningResult = [{ id: "company-1", name: "Bad Corp" }]
 
-    const { rejectCompany } = await import("@/server/services/companies/reject")
+    const { rejectCompany } = await loadRejectCompanyModule()
     const result = await rejectCompany(
       "company-1",
       "Incomplete documentation",
@@ -44,7 +53,7 @@ describe("src/server/services/companies/reject", () => {
   test("should throw when company not found", async () => {
     mockReturningResult = []
 
-    const { rejectCompany } = await import("@/server/services/companies/reject")
+    const { rejectCompany } = await loadRejectCompanyModule()
 
     await expect(rejectCompany("missing", "reason", "admin-1")).rejects.toThrow(
       "Company not found",

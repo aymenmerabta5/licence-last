@@ -2,7 +2,9 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // Separate mocks for select chain vs transaction update chain
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockLimit = mock((): any => Promise.resolve([]))
+const selectLimitQueue: unknown[][] = []
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockLimit = mock((): any => Promise.resolve(selectLimitQueue.shift() ?? []))
 const mockSelectWhere = mock(() => ({ limit: mockLimit }))
 const mockFrom = mock(() => ({ where: mockSelectWhere }))
 const mockSelect = mock(() => ({ from: mockFrom }))
@@ -17,13 +19,23 @@ const mockTransaction = mock(
       update: mockTxUpdate,
     }),
 )
+let moduleImportCounter = 0
 
-mock.module("@/server/db", () => ({
-  db: { select: mockSelect, transaction: mockTransaction },
-}))
+function applyAssignHeadMocks() {
+  mock.module("@/server/db", () => ({
+    db: { select: mockSelect, transaction: mockTransaction },
+  }))
+}
+
+async function loadAssignHeadModule() {
+  moduleImportCounter += 1
+  return import(`@/server/services/departments/assign-head?test=${moduleImportCounter}`)
+}
 
 describe("assignDepartmentHead", () => {
   beforeEach(() => {
+    selectLimitQueue.length = 0
+    applyAssignHeadMocks()
     mockSelect.mockClear()
     mockFrom.mockClear()
     mockSelectWhere.mockClear()
@@ -42,41 +54,33 @@ describe("assignDepartmentHead", () => {
   })
 
   test("should throw when department not found", async () => {
-    mockLimit.mockResolvedValueOnce([])
+    selectLimitQueue.push([])
 
-    const { assignDepartmentHead } = await import(
-      "@/server/services/departments/assign-head"
-    )
+    const { assignDepartmentHead } = await loadAssignHeadModule()
     expect(assignDepartmentHead("dept-1", "user-1")).rejects.toThrow(
       "Department not found",
     )
   })
 
   test("should throw when user not found", async () => {
-    mockLimit
-      .mockResolvedValueOnce([
-        { id: "dept-1", universityId: "uni-1", name: "CS" },
-      ])
-      .mockResolvedValueOnce([])
-
-    const { assignDepartmentHead } = await import(
-      "@/server/services/departments/assign-head"
+    selectLimitQueue.push(
+      [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
+      [],
     )
+
+    const { assignDepartmentHead } = await loadAssignHeadModule()
     expect(assignDepartmentHead("dept-1", "user-1")).rejects.toThrow(
       "User not found",
     )
   })
 
   test("should return success when both exist", async () => {
-    mockLimit
-      .mockResolvedValueOnce([
-        { id: "dept-1", universityId: "uni-1", name: "CS" },
-      ])
-      .mockResolvedValueOnce([{ id: "user-1", role: "student" }])
-
-    const { assignDepartmentHead } = await import(
-      "@/server/services/departments/assign-head"
+    selectLimitQueue.push(
+      [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
+      [{ id: "user-1", role: "student" }],
     )
+
+    const { assignDepartmentHead } = await loadAssignHeadModule()
     const result = await assignDepartmentHead("dept-1", "user-1")
     expect(result).toEqual({
       success: true,
@@ -86,15 +90,12 @@ describe("assignDepartmentHead", () => {
   })
 
   test("should update user role and scope in a transaction", async () => {
-    mockLimit
-      .mockResolvedValueOnce([
-        { id: "dept-1", universityId: "uni-1", name: "CS" },
-      ])
-      .mockResolvedValueOnce([{ id: "user-1", role: "student" }])
-
-    const { assignDepartmentHead } = await import(
-      "@/server/services/departments/assign-head"
+    selectLimitQueue.push(
+      [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
+      [{ id: "user-1", role: "student" }],
     )
+
+    const { assignDepartmentHead } = await loadAssignHeadModule()
     await assignDepartmentHead("dept-1", "user-1")
 
     expect(mockTransaction).toHaveBeenCalledTimes(1)
@@ -104,15 +105,12 @@ describe("assignDepartmentHead", () => {
   })
 
   test("should make two select queries (dept + user)", async () => {
-    mockLimit
-      .mockResolvedValueOnce([
-        { id: "dept-1", universityId: "uni-1", name: "CS" },
-      ])
-      .mockResolvedValueOnce([{ id: "user-1", role: "student" }])
-
-    const { assignDepartmentHead } = await import(
-      "@/server/services/departments/assign-head"
+    selectLimitQueue.push(
+      [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
+      [{ id: "user-1", role: "student" }],
     )
+
+    const { assignDepartmentHead } = await loadAssignHeadModule()
     await assignDepartmentHead("dept-1", "user-1")
 
     expect(mockSelect).toHaveBeenCalledTimes(2)

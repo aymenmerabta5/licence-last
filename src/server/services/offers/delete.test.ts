@@ -21,16 +21,28 @@ const mockSet = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockUpdateWhere = mock((): any => Promise.resolve())
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockSelect,
-    delete: mockDeleteFn,
-    update: mockUpdate,
-  },
-}))
+function applyDeleteOfferMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: mockSelect,
+      delete: mockDeleteFn,
+      update: mockUpdate,
+    },
+  }))
+}
+
+let deleteOfferImportCounter = 0
+async function importDeleteOffer() {
+  deleteOfferImportCounter += 1
+  return (await import(
+    `@/server/services/offers/delete?test=${deleteOfferImportCounter}`
+  )) as typeof import("@/server/services/offers/delete")
+}
 
 describe("src/server/services/offers/delete", () => {
   beforeEach(() => {
+    applyDeleteOfferMocks()
+
     mockSelect.mockClear()
     mockFrom.mockClear()
     mockSelectWhere.mockClear()
@@ -58,7 +70,7 @@ describe("src/server/services/offers/delete", () => {
       { id: "offer-1", companyId: "company-1", status: "draft" },
     ])
 
-    const { deleteOffer } = await import("@/server/services/offers/delete")
+    const { deleteOffer } = await importDeleteOffer()
 
     const result = await deleteOffer("offer-1", "company-1")
 
@@ -71,7 +83,7 @@ describe("src/server/services/offers/delete", () => {
       { id: "offer-1", companyId: "company-1", status: "published" },
     ])
 
-    const { deleteOffer } = await import("@/server/services/offers/delete")
+    const { deleteOffer } = await importDeleteOffer()
 
     const result = await deleteOffer("offer-1", "company-1")
 
@@ -82,7 +94,7 @@ describe("src/server/services/offers/delete", () => {
   test("should throw when offer not found", async () => {
     mockLimit.mockResolvedValue([])
 
-    const { deleteOffer } = await import("@/server/services/offers/delete")
+    const { deleteOffer } = await importDeleteOffer()
 
     expect(deleteOffer("nonexistent", "company-1")).rejects.toThrow(
       "Offer not found or access denied",

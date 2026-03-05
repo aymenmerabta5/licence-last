@@ -1,4 +1,4 @@
-import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const relationshipQueryResults: Array<Array<Record<string, unknown>>> = []
 const insertedReportRows: Array<Record<string, unknown>> = []
@@ -22,16 +22,25 @@ const mockInsertValues = mock((values: Record<string, unknown>) => {
   return Promise.resolve()
 })
 const mockInsert = mock(() => ({ values: mockInsertValues }))
+let moduleImportCounter = 0
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockSelect,
-    insert: mockInsert,
-  },
-}))
+function applySubmitCompanyReportMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: mockSelect,
+      insert: mockInsert,
+    },
+  }))
+}
+
+async function loadTrustActionsModule() {
+  moduleImportCounter += 1
+  return import(`@/server/services/companies/trust-actions?test=${moduleImportCounter}`)
+}
 
 describe("src/server/services/companies/trust-actions submitCompanyReport", () => {
   beforeEach(() => {
+    applySubmitCompanyReportMocks()
     relationshipQueryResults.length = 0
     insertedReportRows.length = 0
 
@@ -45,14 +54,8 @@ describe("src/server/services/companies/trust-actions submitCompanyReport", () =
     mockInsert.mockClear()
   })
 
-  afterAll(() => {
-    mock.restore()
-  })
-
   test("allows misleading_offer reports without prior relationship", async () => {
-    const { submitCompanyReport } = await import(
-      "@/server/services/companies/trust-actions"
-    )
+    const { submitCompanyReport } = await loadTrustActionsModule()
 
     const result = await submitCompanyReport({
       reporterUserId: "student-1",
@@ -77,9 +80,7 @@ describe("src/server/services/companies/trust-actions submitCompanyReport", () =
   test("throws typed error when relationship is required but missing", async () => {
     relationshipQueryResults.push([], [], [])
 
-    const { submitCompanyReport } = await import(
-      "@/server/services/companies/trust-actions"
-    )
+    const { submitCompanyReport } = await loadTrustActionsModule()
 
     await expect(
       submitCompanyReport({
@@ -101,9 +102,7 @@ describe("src/server/services/companies/trust-actions submitCompanyReport", () =
   test("allows relationship-required reports when an application exists", async () => {
     relationshipQueryResults.push([{ id: "application-1" }])
 
-    const { submitCompanyReport } = await import(
-      "@/server/services/companies/trust-actions"
-    )
+    const { submitCompanyReport } = await loadTrustActionsModule()
 
     const result = await submitCompanyReport({
       reporterUserId: "student-1",

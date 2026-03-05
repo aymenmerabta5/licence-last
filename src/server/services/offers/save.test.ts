@@ -20,15 +20,27 @@ const mockOnConflictDoNothing = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockReturning = mock<() => Promise<any[]>>(() => Promise.resolve([]))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockSelect,
-    insert: mockInsert,
-  },
-}))
+function applySaveOfferMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: mockSelect,
+      insert: mockInsert,
+    },
+  }))
+}
+
+let saveOfferImportCounter = 0
+async function importSaveOffer() {
+  saveOfferImportCounter += 1
+  return (await import(
+    `@/server/services/offers/save?test=${saveOfferImportCounter}`
+  )) as typeof import("@/server/services/offers/save")
+}
 
 describe("src/server/services/offers/save", () => {
   beforeEach(() => {
+    applySaveOfferMocks()
+
     mockSelect.mockClear()
     mockFrom.mockClear()
     mockInnerJoin.mockClear()
@@ -55,7 +67,7 @@ describe("src/server/services/offers/save", () => {
     ])
     mockReturning.mockResolvedValue([{ offerId: "offer-1" }])
 
-    const { saveOffer } = await import("@/server/services/offers/save")
+    const { saveOffer } = await importSaveOffer()
     const result = await saveOffer("offer-1", "student-1")
 
     expect(result).toEqual({ offerId: "offer-1", saved: true })
@@ -68,7 +80,7 @@ describe("src/server/services/offers/save", () => {
     ])
     mockReturning.mockResolvedValue([])
 
-    const { saveOffer } = await import("@/server/services/offers/save")
+    const { saveOffer } = await importSaveOffer()
     const result = await saveOffer("offer-1", "student-1")
 
     expect(result).toEqual({ offerId: "offer-1", saved: false })
@@ -77,7 +89,7 @@ describe("src/server/services/offers/save", () => {
   test("throws when offer does not exist", async () => {
     mockLimit.mockResolvedValue([])
 
-    const { saveOffer } = await import("@/server/services/offers/save")
+    const { saveOffer } = await importSaveOffer()
 
     await expect(saveOffer("missing", "student-1")).rejects.toThrow(
       "Offer not found",
@@ -89,7 +101,7 @@ describe("src/server/services/offers/save", () => {
       { id: "offer-1", status: "draft", companyStatus: "approved" },
     ])
 
-    const { saveOffer } = await import("@/server/services/offers/save")
+    const { saveOffer } = await importSaveOffer()
 
     await expect(saveOffer("offer-1", "student-1")).rejects.toThrow(
       "Only published offers can be saved",
@@ -101,7 +113,7 @@ describe("src/server/services/offers/save", () => {
       { id: "offer-1", status: "published", companyStatus: "suspended" },
     ])
 
-    const { saveOffer } = await import("@/server/services/offers/save")
+    const { saveOffer } = await importSaveOffer()
 
     await expect(saveOffer("offer-1", "student-1")).rejects.toThrow(
       "Only published offers can be saved",

@@ -7,12 +7,24 @@ const mockWhere = mock(() => ({ returning: mockReturning }))
 const mockSet = mock(() => ({ where: mockWhere }))
 const mockUpdate = mock(() => ({ set: mockSet }))
 
-mock.module("@/server/db", () => ({
-  db: { update: mockUpdate },
-}))
+function applyRejectUniversityMocks() {
+  mock.module("@/server/db", () => ({
+    db: { update: mockUpdate },
+  }))
+}
+
+let rejectUniversityImportCounter = 0
+async function importRejectUniversity() {
+  rejectUniversityImportCounter += 1
+  return import(
+    `@/server/services/universities/reject?test=${rejectUniversityImportCounter}`
+  )
+}
 
 describe("rejectUniversity", () => {
   beforeEach(() => {
+    applyRejectUniversityMocks()
+
     mockUpdate.mockClear()
     mockSet.mockClear()
     mockWhere.mockClear()
@@ -25,17 +37,13 @@ describe("rejectUniversity", () => {
   })
 
   test("should return universityId and name on success", async () => {
-    const { rejectUniversity } = await import(
-      "@/server/services/universities/reject"
-    )
+    const { rejectUniversity } = await importRejectUniversity()
     const result = await rejectUniversity("uni-1", "Not eligible", "admin-1")
     expect(result).toEqual({ universityId: "uni-1", name: "Test Uni" })
   })
 
   test("should call update with rejection data", async () => {
-    const { rejectUniversity } = await import(
-      "@/server/services/universities/reject"
-    )
+    const { rejectUniversity } = await importRejectUniversity()
     await rejectUniversity("uni-1", "Incomplete docs", "admin-1")
     expect(mockUpdate).toHaveBeenCalledTimes(1)
   })
@@ -43,9 +51,7 @@ describe("rejectUniversity", () => {
   test("should throw when university not found", async () => {
     mockReturning.mockResolvedValue([])
 
-    const { rejectUniversity } = await import(
-      "@/server/services/universities/reject"
-    )
+    const { rejectUniversity } = await importRejectUniversity()
     expect(
       rejectUniversity("nonexistent", "reason", "admin-1"),
     ).rejects.toThrow("University not found")

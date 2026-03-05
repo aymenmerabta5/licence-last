@@ -7,11 +7,20 @@ const mockChain: any = {
   where: mock(() => mockChain),
   orderBy: mock(() => Promise.resolve([])),
 }
+let moduleImportCounter = 0
 
-mock.module("@/server/db", () => ({ db: mockChain }))
+function applyListDepartmentsMocks() {
+  mock.module("@/server/db", () => ({ db: mockChain }))
+}
+
+async function loadListDepartmentsModule() {
+  moduleImportCounter += 1
+  return import(`@/server/services/departments/list?test=${moduleImportCounter}`)
+}
 
 describe("listDepartments", () => {
   beforeEach(() => {
+    applyListDepartmentsMocks()
     for (const fn of Object.values(mockChain))
       (fn as ReturnType<typeof mock>).mockClear()
     mockChain.select.mockReturnValue(mockChain)
@@ -42,9 +51,7 @@ describe("listDepartments", () => {
     ]
     mockChain.orderBy.mockResolvedValue(depts)
 
-    const { listDepartments } = await import(
-      "@/server/services/departments/list"
-    )
+    const { listDepartments } = await loadListDepartmentsModule()
     const result = await listDepartments("uni-1")
 
     expect(result).toHaveLength(2)
@@ -54,9 +61,7 @@ describe("listDepartments", () => {
   test("should return empty array when no departments exist", async () => {
     mockChain.orderBy.mockResolvedValue([])
 
-    const { listDepartments } = await import(
-      "@/server/services/departments/list"
-    )
+    const { listDepartments } = await loadListDepartmentsModule()
     const result = await listDepartments("uni-1")
 
     expect(result).toHaveLength(0)
@@ -65,9 +70,7 @@ describe("listDepartments", () => {
   test("should call select and filter by universityId", async () => {
     mockChain.orderBy.mockResolvedValue([])
 
-    const { listDepartments } = await import(
-      "@/server/services/departments/list"
-    )
+    const { listDepartments } = await loadListDepartmentsModule()
     await listDepartments("uni-1")
 
     expect(mockChain.select).toHaveBeenCalled()

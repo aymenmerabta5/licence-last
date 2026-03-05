@@ -15,21 +15,33 @@ const mockRevokeOtherSessions = mock<() => Promise<{ status: boolean }>>(() =>
 )
 const mockHeaders = mock(() => Promise.resolve(new Headers()))
 
-mock.module("@/lib/auth", () => ({
-  auth: {
-    api: {
-      listSessions: mockListSessions,
-      revokeSession: mockRevokeSession,
-      revokeOtherSessions: mockRevokeOtherSessions,
+function applySessionManagementMocks() {
+  mock.module("@/lib/auth", () => ({
+    auth: {
+      api: {
+        listSessions: mockListSessions,
+        revokeSession: mockRevokeSession,
+        revokeOtherSessions: mockRevokeOtherSessions,
+      },
     },
-  },
-  pendingWelcomeEmails: new Map(),
-}))
+    pendingWelcomeEmails: new Map(),
+  }))
 
-mock.module("next/headers", () => ({ headers: mockHeaders }))
+  mock.module("next/headers", () => ({ headers: mockHeaders }))
+}
+
+let sessionManagementImportCounter = 0
+async function importSessionManagement() {
+  sessionManagementImportCounter += 1
+  return import(
+    `@/server/services/users/session-management?test=${sessionManagementImportCounter}`
+  )
+}
 
 describe("src/server/services/users/session-management", () => {
   beforeEach(() => {
+    applySessionManagementMocks()
+
     mockListSessions.mockClear()
     mockRevokeSession.mockClear()
     mockRevokeOtherSessions.mockClear()
@@ -38,9 +50,7 @@ describe("src/server/services/users/session-management", () => {
   })
 
   test("listMySessions should call auth.api.listSessions", async () => {
-    const { listMySessions } = await import(
-      "@/server/services/users/session-management"
-    )
+    const { listMySessions } = await importSessionManagement()
 
     const result = await listMySessions()
 
@@ -52,9 +62,7 @@ describe("src/server/services/users/session-management", () => {
   })
 
   test("revokeMySession should reject unknown tokens", async () => {
-    const { revokeMySession } = await import(
-      "@/server/services/users/session-management"
-    )
+    const { revokeMySession } = await importSessionManagement()
     mockListSessions.mockResolvedValue([{ token: "token-1" }])
 
     await expect(revokeMySession("token-2")).rejects.toThrow(
@@ -64,9 +72,7 @@ describe("src/server/services/users/session-management", () => {
   })
 
   test("revokeMySession should revoke owned token", async () => {
-    const { revokeMySession } = await import(
-      "@/server/services/users/session-management"
-    )
+    const { revokeMySession } = await importSessionManagement()
     mockListSessions.mockResolvedValue([{ token: "token-1" }])
 
     const result = await revokeMySession("token-1")
@@ -78,9 +84,7 @@ describe("src/server/services/users/session-management", () => {
   })
 
   test("revokeOtherSessions should return 0 when no other sessions exist", async () => {
-    const { revokeOtherSessions } = await import(
-      "@/server/services/users/session-management"
-    )
+    const { revokeOtherSessions } = await importSessionManagement()
     mockListSessions.mockResolvedValue([{ token: "current-token" }])
 
     const result = await revokeOtherSessions("current-token")
@@ -90,9 +94,7 @@ describe("src/server/services/users/session-management", () => {
   })
 
   test("revokeOtherSessions should revoke all non-current sessions", async () => {
-    const { revokeOtherSessions } = await import(
-      "@/server/services/users/session-management"
-    )
+    const { revokeOtherSessions } = await importSessionManagement()
     mockListSessions.mockResolvedValue([
       { token: "current-token" },
       { token: "other-token-1" },

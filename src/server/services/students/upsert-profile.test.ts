@@ -27,18 +27,32 @@ const mockTransaction = mock(
   },
 )
 
-mock.module("@/server/db", () => ({
-  db: {
-    transaction: mockTransaction,
-  },
-}))
+const mockValidateSkillTagIds = mock(() => Promise.resolve())
 
-mock.module("@/server/services/skills/validate", () => ({
-  validateSkillTagIds: mock(() => Promise.resolve()),
-}))
+function applyUpsertStudentProfileMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      transaction: mockTransaction,
+    },
+  }))
+
+  mock.module("@/server/services/skills/validate", () => ({
+    validateSkillTagIds: mockValidateSkillTagIds,
+  }))
+}
+
+let upsertStudentProfileImportCounter = 0
+async function importUpsertStudentProfile() {
+  upsertStudentProfileImportCounter += 1
+  return import(
+    `@/server/services/students/upsert-profile?test=${upsertStudentProfileImportCounter}`
+  )
+}
 
 describe("src/server/services/students/upsert-profile", () => {
   beforeEach(() => {
+    applyUpsertStudentProfileMocks()
+
     mockTransaction.mockClear()
     mockSelect.mockClear()
     mockFrom.mockClear()
@@ -52,6 +66,7 @@ describe("src/server/services/students/upsert-profile", () => {
     mockUpdate.mockClear()
     mockSet.mockClear()
     mockUpdateWhere.mockClear()
+    mockValidateSkillTagIds.mockClear()
 
     // Reset mock chain
     mockSelect.mockReturnValue({ from: mockFrom })
@@ -74,9 +89,7 @@ describe("src/server/services/students/upsert-profile", () => {
   })
 
   test("should create profile, skills, and set onboardingCompleted", async () => {
-    const { upsertStudentProfile } = await import(
-      "@/server/services/students/upsert-profile"
-    )
+    const { upsertStudentProfile } = await importUpsertStudentProfile()
 
     const result = await upsertStudentProfile(
       { bio: "Hello", phone: "0555" },
@@ -95,9 +108,7 @@ describe("src/server/services/students/upsert-profile", () => {
   })
 
   test("should throw if skillTagIds.length > 10", async () => {
-    const { upsertStudentProfile } = await import(
-      "@/server/services/students/upsert-profile"
-    )
+    const { upsertStudentProfile } = await importUpsertStudentProfile()
 
     const tooManySkills = Array.from({ length: 11 }, (_, i) => `skill-${i}`)
 
@@ -107,9 +118,7 @@ describe("src/server/services/students/upsert-profile", () => {
   })
 
   test("should replace existing skills on update (delete + insert)", async () => {
-    const { upsertStudentProfile } = await import(
-      "@/server/services/students/upsert-profile"
-    )
+    const { upsertStudentProfile } = await importUpsertStudentProfile()
 
     await upsertStudentProfile({ bio: "Updated" }, ["skill-3"], "user-1")
 

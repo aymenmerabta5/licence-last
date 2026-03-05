@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockLimit = mock((): any => Promise.resolve([]))
+const selectLimitQueue: unknown[][] = []
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockLimit = mock((): any => Promise.resolve(selectLimitQueue.shift() ?? []))
 const mockWhere = mock(() => ({ limit: mockLimit }))
 const mockFrom = mock(() => ({ where: mockWhere }))
 const mockSelect = mock(() => ({ from: mockFrom }))
@@ -31,27 +33,39 @@ const pendingWelcomeEmails = new Map<
   string,
   { name: string; departmentName: string; universityName: string }
 >()
+let moduleImportCounter = 0
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockSelect,
-    update: mockUpdate,
-    transaction: mockTransaction,
-  },
-}))
-
-mock.module("@/lib/auth", () => ({
-  auth: {
-    api: {
-      createUser: mockCreateUser,
-      requestPasswordReset: mockRequestPasswordReset,
+function applyAssignHeadByEmailMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: mockSelect,
+      update: mockUpdate,
+      transaction: mockTransaction,
     },
-  },
-  pendingWelcomeEmails,
-}))
+  }))
+
+  mock.module("@/lib/auth", () => ({
+    auth: {
+      api: {
+        createUser: mockCreateUser,
+        requestPasswordReset: mockRequestPasswordReset,
+      },
+    },
+    pendingWelcomeEmails,
+  }))
+}
+
+async function loadAssignHeadByEmailModule() {
+  moduleImportCounter += 1
+  return import(
+    `@/server/services/departments/assign-head-by-email?test=${moduleImportCounter}`
+  )
+}
 
 describe("assignDepartmentHeadByEmail", () => {
   beforeEach(() => {
+    selectLimitQueue.length = 0
+    applyAssignHeadByEmailMocks()
     mockSelect.mockClear()
     mockFrom.mockClear()
     mockWhere.mockClear()
@@ -79,22 +93,15 @@ describe("assignDepartmentHeadByEmail", () => {
   })
 
   test("should assign existing user and trigger password reset", async () => {
-    mockLimit
-      .mockResolvedValueOnce([
-        { id: "dept-1", name: "Computer Science", universityId: "uni-1" },
-      ])
-      .mockResolvedValueOnce([{ name: "University of Algiers" }])
-      .mockResolvedValueOnce([{ id: "user-1", name: "Existing Head" }])
-      .mockResolvedValueOnce([
-        { id: "dept-1", name: "Computer Science", universityId: "uni-1" },
-      ])
-      .mockResolvedValueOnce([
-        { id: "user-1", role: "student", name: "Existing Head" },
-      ])
-
-    const { assignDepartmentHeadByEmail } = await import(
-      "@/server/services/departments/assign-head-by-email"
+    selectLimitQueue.push(
+      [{ id: "dept-1", name: "Computer Science", universityId: "uni-1" }],
+      [{ name: "University of Algiers" }],
+      [{ id: "user-1", name: "Existing Head" }],
+      [{ id: "dept-1", name: "Computer Science", universityId: "uni-1" }],
+      [{ id: "user-1", role: "student", name: "Existing Head" }],
     )
+
+    const { assignDepartmentHeadByEmail } = await loadAssignHeadByEmailModule()
     const result = await assignDepartmentHeadByEmail({
       departmentId: "dept-1",
       headEmail: "head@university.dz",
@@ -114,22 +121,15 @@ describe("assignDepartmentHeadByEmail", () => {
   })
 
   test("should create missing user, assign head, and trigger reset", async () => {
-    mockLimit
-      .mockResolvedValueOnce([
-        { id: "dept-1", name: "Computer Science", universityId: "uni-1" },
-      ])
-      .mockResolvedValueOnce([{ name: "University of Algiers" }])
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([
-        { id: "dept-1", name: "Computer Science", universityId: "uni-1" },
-      ])
-      .mockResolvedValueOnce([
-        { id: "new-user-id", role: "dept_head", name: "Dr. New Head" },
-      ])
-
-    const { assignDepartmentHeadByEmail } = await import(
-      "@/server/services/departments/assign-head-by-email"
+    selectLimitQueue.push(
+      [{ id: "dept-1", name: "Computer Science", universityId: "uni-1" }],
+      [{ name: "University of Algiers" }],
+      [],
+      [{ id: "dept-1", name: "Computer Science", universityId: "uni-1" }],
+      [{ id: "new-user-id", role: "dept_head", name: "Dr. New Head" }],
     )
+
+    const { assignDepartmentHeadByEmail } = await loadAssignHeadByEmailModule()
     const result = await assignDepartmentHeadByEmail({
       departmentId: "dept-1",
       headEmail: "new-head@university.dz",
@@ -146,11 +146,9 @@ describe("assignDepartmentHeadByEmail", () => {
   })
 
   test("should throw when department is not found", async () => {
-    mockLimit.mockResolvedValueOnce([])
+    selectLimitQueue.push([])
 
-    const { assignDepartmentHeadByEmail } = await import(
-      "@/server/services/departments/assign-head-by-email"
-    )
+    const { assignDepartmentHeadByEmail } = await loadAssignHeadByEmailModule()
     expect(
       assignDepartmentHeadByEmail({
         departmentId: "missing-dept",

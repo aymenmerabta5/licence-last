@@ -16,14 +16,24 @@ const mockWhere = mock(() => ({ orderBy: mockOrderBy }))
 const mockFrom = mock(() => ({ where: mockWhere }))
 const mockSelect = mock(() => ({ from: mockFrom }))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockSelect,
-  },
-}))
+function applySkillsListMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: mockSelect,
+    },
+  }))
+}
+
+let listSkillTagsImportCounter = 0
+async function importListSkillTags() {
+  listSkillTagsImportCounter += 1
+  return import(`@/server/services/skills/list?test=${listSkillTagsImportCounter}`)
+}
 
 describe("src/server/services/skills/list", () => {
   beforeEach(() => {
+    applySkillsListMocks()
+
     mockSelect.mockClear()
     mockFrom.mockClear()
     mockWhere.mockClear()
@@ -46,7 +56,7 @@ describe("src/server/services/skills/list", () => {
     ]
     mockOffset.mockResolvedValue(skills)
 
-    const { listSkillTags } = await import("@/server/services/skills/list")
+    const { listSkillTags } = await importListSkillTags()
     const result = await listSkillTags()
 
     expect(result.skills).toEqual(skills)
@@ -61,7 +71,7 @@ describe("src/server/services/skills/list", () => {
     ]
     mockOffset.mockResolvedValue(skills)
 
-    const { listSkillTags } = await import("@/server/services/skills/list")
+    const { listSkillTags } = await importListSkillTags()
     const result = await listSkillTags({ category: "frontend" })
 
     expect(result.skills).toEqual(skills)

@@ -75,7 +75,7 @@ describe("deleteCompany", () => {
   })
 
   test("should delete company and return affected users", async () => {
-    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
+    // @ts-expect-error - Bun's ?fresh suffix is test-runtime only.
     const { deleteCompany } = await import("@/server/services/companies/delete?fresh=1")
 
     const result = await deleteCompany("company-1", "super-admin-1")
@@ -89,7 +89,7 @@ describe("deleteCompany", () => {
   })
 
   test("should reset linked users onboarding state and delete in a transaction", async () => {
-    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
+    // @ts-expect-error - Bun's ?fresh suffix is test-runtime only.
     const { deleteCompany } = await import("@/server/services/companies/delete?fresh=2")
 
     await deleteCompany("company-1", "super-admin-1")
@@ -102,7 +102,7 @@ describe("deleteCompany", () => {
   test("should throw when company is not found", async () => {
     dbLimitMock.mockResolvedValue([])
 
-    // @ts-ignore - Bun's ?fresh suffix is test-runtime only.
+    // @ts-expect-error - Bun's ?fresh suffix is test-runtime only.
     const { deleteCompany } = await import("@/server/services/companies/delete?fresh=3")
 
     await expect(deleteCompany("missing", "super-admin-1")).rejects.toThrow(

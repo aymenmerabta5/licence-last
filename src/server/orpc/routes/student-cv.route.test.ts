@@ -43,70 +43,81 @@ const parseInputDateMock = mock((value: string, fieldLabel: string) => {
   return parsed
 })
 
-mock.module("@/server/orpc/rate-limited-procedures", () => ({
-  publicProcedureStrict: createProcedureMock(),
-  publicProcedureStandard: createProcedureMock(),
-  authedSessionProcedureStandard: createProcedureMock(),
-  authedSessionProcedureGenerous: createProcedureMock(),
-  authedProcedureGenerous: createProcedureMock(),
-  authedProcedureStandard: createProcedureMock(),
-  authedProcedureStrict: createProcedureMock(),
-  adminProcedureGenerous: createProcedureMock(),
-  adminProcedureStandard: createProcedureMock(),
-  adminProcedureAssistant: createProcedureMock(),
-  superAdminProcedureGenerous: createProcedureMock(),
-  superAdminProcedureStandard: createProcedureMock(),
-  assistantProcedureLimited: createProcedureMock(),
-  companyAdminProcedureStandard: createProcedureMock(),
-  companyAdminProcedureGenerous: createProcedureMock(),
-  companyAdminProcedureAssistant: createProcedureMock(),
-  studentProcedureGenerous: createProcedureMock(),
-  studentProcedureStandard: createProcedureMock(),
-  deptHeadProcedureStandard: createProcedureMock(),
-  deptHeadProcedureGenerous: createProcedureMock(),
-}))
-mock.module("@/server/orpc/utils/date", () => ({
-  parseInputDate: parseInputDateMock,
-  validatePlacementDateRange: (startDate: Date, endDate: Date) => {
-    if (startDate >= endDate) {
-      throw new Error("Start date must be before end date")
-    }
-  },
-}))
-mock.module("@/server/services/students/get-cv", () => ({
-  getStudentCv: getStudentCvMock,
-}))
-mock.module("@/server/services/students/create-experience", () => ({
-  createStudentExperience: createStudentExperienceMock,
-}))
-mock.module("@/server/services/students/create-project", () => ({
-  createStudentProject: createStudentProjectMock,
-}))
-mock.module("@/server/services/students/delete-experience", () => ({
-  deleteStudentExperience: deleteStudentExperienceMock,
-}))
-mock.module("@/server/services/students/delete-project", () => ({
-  deleteStudentProject: deleteStudentProjectMock,
-}))
-mock.module("@/server/services/students/delete-resume", () => ({
-  deleteStudentResume: deleteStudentResumeMock,
-}))
-mock.module("@/server/services/students/update-experience", () => ({
-  updateStudentExperience: updateStudentExperienceMock,
-}))
-mock.module("@/server/services/students/update-project", () => ({
-  updateStudentProject: updateStudentProjectMock,
-}))
-mock.module("@/server/services/students/upsert-resume", () => ({
-  upsertStudentResume: upsertStudentResumeMock,
-}))
-mock.module("@/server/storage/s3", () => ({
-  uploadFile: uploadFileMock,
-  deleteFile: deleteFileMock,
-}))
+function applyStudentCvRouteMocks() {
+  mock.module("@/server/orpc/rate-limited-procedures", () => ({
+    publicProcedureStrict: createProcedureMock(),
+    publicProcedureStandard: createProcedureMock(),
+    authedSessionProcedureStandard: createProcedureMock(),
+    authedSessionProcedureGenerous: createProcedureMock(),
+    authedProcedureGenerous: createProcedureMock(),
+    authedProcedureStandard: createProcedureMock(),
+    authedProcedureStrict: createProcedureMock(),
+    adminProcedureGenerous: createProcedureMock(),
+    adminProcedureStandard: createProcedureMock(),
+    adminProcedureAssistant: createProcedureMock(),
+    superAdminProcedureGenerous: createProcedureMock(),
+    superAdminProcedureStandard: createProcedureMock(),
+    assistantProcedureLimited: createProcedureMock(),
+    companyAdminProcedureStandard: createProcedureMock(),
+    companyAdminProcedureGenerous: createProcedureMock(),
+    companyAdminProcedureAssistant: createProcedureMock(),
+    studentProcedureGenerous: createProcedureMock(),
+    studentProcedureStandard: createProcedureMock(),
+    deptHeadProcedureStandard: createProcedureMock(),
+    deptHeadProcedureGenerous: createProcedureMock(),
+  }))
+  mock.module("@/server/orpc/utils/date", () => ({
+    parseInputDate: parseInputDateMock,
+    validatePlacementDateRange: (startDate: Date, endDate: Date) => {
+      if (startDate >= endDate) {
+        throw new Error("Start date must be before end date")
+      }
+    },
+  }))
+  mock.module("@/server/services/students/get-cv", () => ({
+    getStudentCv: getStudentCvMock,
+  }))
+  mock.module("@/server/services/students/create-experience", () => ({
+    createStudentExperience: createStudentExperienceMock,
+  }))
+  mock.module("@/server/services/students/create-project", () => ({
+    createStudentProject: createStudentProjectMock,
+  }))
+  mock.module("@/server/services/students/delete-experience", () => ({
+    deleteStudentExperience: deleteStudentExperienceMock,
+  }))
+  mock.module("@/server/services/students/delete-project", () => ({
+    deleteStudentProject: deleteStudentProjectMock,
+  }))
+  mock.module("@/server/services/students/delete-resume", () => ({
+    deleteStudentResume: deleteStudentResumeMock,
+  }))
+  mock.module("@/server/services/students/update-experience", () => ({
+    updateStudentExperience: updateStudentExperienceMock,
+  }))
+  mock.module("@/server/services/students/update-project", () => ({
+    updateStudentProject: updateStudentProjectMock,
+  }))
+  mock.module("@/server/services/students/upsert-resume", () => ({
+    upsertStudentResume: upsertStudentResumeMock,
+  }))
+  mock.module("@/server/storage/s3", () => ({
+    uploadFile: uploadFileMock,
+    deleteFile: deleteFileMock,
+    getFile: mock(async () => Buffer.from("")),
+    isConfigured: () => true,
+  }))
+}
+
+let studentCvRouteImportVersion = 0
+async function loadStudentCvRouteModule() {
+  studentCvRouteImportVersion += 1
+  return import(`@/server/orpc/routes/student-cv?test=${studentCvRouteImportVersion}`)
+}
 
 describe("src/server/orpc/routes/student-cv", () => {
   beforeEach(() => {
+    applyStudentCvRouteMocks()
     getStudentCvMock.mockClear()
     createStudentExperienceMock.mockClear()
     createStudentProjectMock.mockClear()
@@ -122,9 +133,7 @@ describe("src/server/orpc/routes/student-cv", () => {
   })
 
   test("getStudentCvProcedure delegates with student user id", async () => {
-    const { getStudentCvProcedure } = await import(
-      "@/server/orpc/routes/student-cv"
-    )
+    const { getStudentCvProcedure } = await loadStudentCvRouteModule()
 
     const result = await callProcedure(getStudentCvProcedure, {
       context: { user: { id: "student-1" } },
@@ -135,9 +144,7 @@ describe("src/server/orpc/routes/student-cv", () => {
   })
 
   test("createStudentExperienceProcedure parses dates and delegates", async () => {
-    const { createStudentExperienceProcedure } = await import(
-      "@/server/orpc/routes/student-cv"
-    )
+    const { createStudentExperienceProcedure } = await loadStudentCvRouteModule()
 
     const result = await callProcedure(createStudentExperienceProcedure, {
       input: {
@@ -165,9 +172,7 @@ describe("src/server/orpc/routes/student-cv", () => {
   })
 
   test("uploadStudentResumeProcedure rejects non-PDF files", async () => {
-    const { uploadStudentResumeProcedure } = await import(
-      "@/server/orpc/routes/student-cv"
-    )
+    const { uploadStudentResumeProcedure } = await loadStudentCvRouteModule()
 
     const file = new File(["hello"], "resume.txt", { type: "text/plain" })
     await expect(
@@ -182,9 +187,7 @@ describe("src/server/orpc/routes/student-cv", () => {
   })
 
   test("uploadStudentResumeProcedure rejects files above 10MB", async () => {
-    const { uploadStudentResumeProcedure } = await import(
-      "@/server/orpc/routes/student-cv"
-    )
+    const { uploadStudentResumeProcedure } = await loadStudentCvRouteModule()
 
     const file = new File([new Uint8Array([37, 80, 68, 70])], "resume.pdf", {
       type: "application/pdf",
@@ -206,9 +209,7 @@ describe("src/server/orpc/routes/student-cv", () => {
   })
 
   test("uploadStudentResumeProcedure rejects mismatched PDF magic bytes", async () => {
-    const { uploadStudentResumeProcedure } = await import(
-      "@/server/orpc/routes/student-cv"
-    )
+    const { uploadStudentResumeProcedure } = await loadStudentCvRouteModule()
 
     // PNG header while declaring PDF.
     const file = new File(
@@ -229,9 +230,7 @@ describe("src/server/orpc/routes/student-cv", () => {
   })
 
   test("uploadStudentResumeProcedure uploads PDF and persists resume metadata", async () => {
-    const { uploadStudentResumeProcedure } = await import(
-      "@/server/orpc/routes/student-cv"
-    )
+    const { uploadStudentResumeProcedure } = await loadStudentCvRouteModule()
 
     const file = new File([new Uint8Array([37, 80, 68, 70])], "resume.pdf", {
       type: "application/pdf",
@@ -247,9 +246,7 @@ describe("src/server/orpc/routes/student-cv", () => {
   })
 
   test("deleteStudentResumeProcedure deletes metadata and storage file", async () => {
-    const { deleteStudentResumeProcedure } = await import(
-      "@/server/orpc/routes/student-cv"
-    )
+    const { deleteStudentResumeProcedure } = await loadStudentCvRouteModule()
 
     const result = await callProcedure(deleteStudentResumeProcedure, {
       context: { user: { id: "student-1" } },

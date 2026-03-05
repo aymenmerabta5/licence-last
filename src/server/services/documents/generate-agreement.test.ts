@@ -10,7 +10,6 @@ const createNotificationMock = mock(async () => ({
   skipped: false,
 }))
 const sendAgreementEmailMock = mock(async () => undefined)
-const generateVerificationCodeMock = mock(() => "INTX-AAAA-BBBB")
 
 const selectLimitMock = mock(async () => selectResultsQueue.shift() ?? [])
 const selectBuilder = {
@@ -30,41 +29,39 @@ const insertValuesMock = mock(() => ({
 const updateWhereMock = mock(async () => undefined)
 const updateSetMock = mock(() => ({ where: updateWhereMock }))
 
-mock.module("@react-pdf/renderer", () => ({
-  renderToBuffer: renderToBufferMock,
-}))
+function applyGenerateAgreementMocks() {
+  mock.module("@react-pdf/renderer", () => ({
+    renderToBuffer: renderToBufferMock,
+  }))
 
-mock.module("@/server/pdfs/AgreementTemplate", () => ({
-  ConventionDeStageTemplate: () => null,
-}))
+  mock.module("@/server/pdfs/AgreementTemplate", () => ({
+    ConventionDeStageTemplate: () => null,
+  }))
 
-mock.module("@/env", () => ({
-  env: { NEXT_PUBLIC_BETTER_AUTH_URL: "https://stag.test" },
-}))
+  mock.module("@/env", () => ({
+    env: { NEXT_PUBLIC_BETTER_AUTH_URL: "https://stag.test" },
+  }))
 
-mock.module("@/server/services/documents/qr-utils", () => ({
-  generateQRCodeDataUrl: generateQRCodeDataUrlMock,
-}))
+  mock.module("@/server/services/documents/qr-utils", () => ({
+    generateQRCodeDataUrl: generateQRCodeDataUrlMock,
+  }))
 
-mock.module("@/server/services/documents/verification-code", () => ({
-  generateVerificationCode: generateVerificationCodeMock,
-}))
+  mock.module("@/server/services/notifications/create", () => ({
+    createNotification: createNotificationMock,
+  }))
 
-mock.module("@/server/services/notifications/create", () => ({
-  createNotification: createNotificationMock,
-}))
+  mock.module("@/server/services/documents/send-agreement-email", () => ({
+    sendAgreementEmail: sendAgreementEmailMock,
+  }))
 
-mock.module("@/server/services/documents/send-agreement-email", () => ({
-  sendAgreementEmail: sendAgreementEmailMock,
-}))
-
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => ({ from: () => selectBuilder }),
-    insert: () => ({ values: insertValuesMock }),
-    update: () => ({ set: updateSetMock }),
-  },
-}))
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => ({ from: () => selectBuilder }),
+      insert: () => ({ values: insertValuesMock }),
+      update: () => ({ set: updateSetMock }),
+    },
+  }))
+}
 
 async function importGenerateAgreement() {
   return (await import(
@@ -74,6 +71,8 @@ async function importGenerateAgreement() {
 
 describe("src/server/services/documents/generate-agreement", () => {
   beforeEach(() => {
+    applyGenerateAgreementMocks()
+
     selectResultsQueue.length = 0
     insertResultsQueue.length = 0
 
@@ -81,7 +80,6 @@ describe("src/server/services/documents/generate-agreement", () => {
     generateQRCodeDataUrlMock.mockClear()
     createNotificationMock.mockClear()
     sendAgreementEmailMock.mockClear()
-    generateVerificationCodeMock.mockClear()
     selectLimitMock.mockClear()
     insertReturningMock.mockClear()
     insertValuesMock.mockClear()
@@ -89,7 +87,6 @@ describe("src/server/services/documents/generate-agreement", () => {
     updateWhereMock.mockClear()
 
     renderToBufferMock.mockResolvedValue(new Uint8Array([1]))
-    generateVerificationCodeMock.mockReturnValue("INTX-AAAA-BBBB")
   })
 
   test("throws typed error when placement does not exist", async () => {

@@ -32,18 +32,30 @@ const mockWhere2 = mock<() => Promise<any[]>>(() => {
 const mockInnerJoin2 = mock(() => ({ where: mockWhere2 }))
 const mockFrom2 = mock(() => ({ innerJoin: mockInnerJoin2 }))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => {
-      selectCallIdx += 1
-      if (selectCallIdx === 1) return { from: mockFrom1 }
-      return { from: mockFrom2 }
+function applyListPendingMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => {
+        selectCallIdx += 1
+        if (selectCallIdx === 1) return { from: mockFrom1 }
+        return { from: mockFrom2 }
+      },
     },
-  },
-}))
+  }))
+}
+
+let listPendingImportCounter = 0
+async function importListPendingApplications() {
+  listPendingImportCounter += 1
+  return import(
+    `@/server/services/placements/list-pending?test=${listPendingImportCounter}`
+  )
+}
 
 describe("src/server/services/placements/list-pending", () => {
   beforeEach(() => {
+    applyListPendingMocks()
+
     selectCallIdx = 0
     mockSelectResults.length = 0
 
@@ -173,9 +185,7 @@ describe("src/server/services/placements/list-pending", () => {
       },
     ])
 
-    const { listPendingApplications } = await import(
-      "@/server/services/placements/list-pending"
-    )
+    const { listPendingApplications } = await importListPendingApplications()
     const result = await listPendingApplications(
       {},
       { role: "super_admin", universityId: null },
@@ -189,9 +199,7 @@ describe("src/server/services/placements/list-pending", () => {
   })
 
   test("should return empty results when admin has no university scope", async () => {
-    const { listPendingApplications } = await import(
-      "@/server/services/placements/list-pending"
-    )
+    const { listPendingApplications } = await importListPendingApplications()
     const result = await listPendingApplications(
       {},
       { role: "university_admin", universityId: null },

@@ -4,20 +4,29 @@ const mockValues = mock(() => Promise.resolve())
 const mockInsert = mock(() => ({ values: mockValues }))
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockFindFirst = mock(() => Promise.resolve(null as any))
+let moduleImportCounter = 0
 
-mock.module("@/server/db", () => ({
-  db: {
-    insert: mockInsert,
-    query: {
-      department: {
-        findFirst: mockFindFirst,
+function applyCreateDepartmentMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      insert: mockInsert,
+      query: {
+        department: {
+          findFirst: mockFindFirst,
+        },
       },
     },
-  },
-}))
+  }))
+}
+
+async function loadCreateDepartmentModule() {
+  moduleImportCounter += 1
+  return import(`@/server/services/departments/create?test=${moduleImportCounter}`)
+}
 
 describe("createDepartment", () => {
   beforeEach(() => {
+    applyCreateDepartmentMocks()
     mockInsert.mockClear()
     mockValues.mockClear()
     mockFindFirst.mockClear()
@@ -27,9 +36,7 @@ describe("createDepartment", () => {
   })
 
   test("should return departmentId", async () => {
-    const { createDepartment } = await import(
-      "@/server/services/departments/create"
-    )
+    const { createDepartment } = await loadCreateDepartmentModule()
     const result = await createDepartment({
       universityId: "uni-1",
       name: "Computer Science",
@@ -39,9 +46,7 @@ describe("createDepartment", () => {
   })
 
   test("should call insert with trimmed name", async () => {
-    const { createDepartment } = await import(
-      "@/server/services/departments/create"
-    )
+    const { createDepartment } = await loadCreateDepartmentModule()
     await createDepartment({
       universityId: "uni-1",
       name: "  Computer Science  ",
@@ -50,9 +55,7 @@ describe("createDepartment", () => {
   })
 
   test("should call insert exactly once", async () => {
-    const { createDepartment } = await import(
-      "@/server/services/departments/create"
-    )
+    const { createDepartment } = await loadCreateDepartmentModule()
     await createDepartment({ universityId: "uni-1", name: "Math" })
     expect(mockInsert).toHaveBeenCalledTimes(1)
     expect(mockValues).toHaveBeenCalledTimes(1)
@@ -60,9 +63,7 @@ describe("createDepartment", () => {
 
   test("should throw if department already exists", async () => {
     mockFindFirst.mockResolvedValue({ id: "existing-id", name: "CS" })
-    const { createDepartment } = await import(
-      "@/server/services/departments/create"
-    )
+    const { createDepartment } = await loadCreateDepartmentModule()
     expect(
       createDepartment({ universityId: "uni-1", name: "CS" }),
     ).rejects.toThrow("Department with this name already exists")

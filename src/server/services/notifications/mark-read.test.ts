@@ -11,14 +11,26 @@ const mockReturning = mock<() => Promise<any[]>>(() =>
   Promise.resolve([{ id: "n-1" }]),
 )
 
-mock.module("@/server/db", () => ({
-  db: {
-    update: mockUpdate,
-  },
-}))
+function applyMarkReadMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      update: mockUpdate,
+    },
+  }))
+}
+
+let markReadImportCounter = 0
+async function importMarkRead() {
+  markReadImportCounter += 1
+  return (await import(
+    `@/server/services/notifications/mark-read?test=${markReadImportCounter}`
+  )) as typeof import("@/server/services/notifications/mark-read")
+}
 
 describe("src/server/services/notifications/mark-read", () => {
   beforeEach(() => {
+    applyMarkReadMocks()
+
     mockUpdate.mockClear()
     mockSet.mockClear()
     mockWhere.mockClear()
@@ -31,17 +43,13 @@ describe("src/server/services/notifications/mark-read", () => {
   })
 
   test("markNotificationRead should return updated count", async () => {
-    const { markNotificationRead } = await import(
-      "@/server/services/notifications/mark-read"
-    )
+    const { markNotificationRead } = await importMarkRead()
     const result = await markNotificationRead("u-1", "n-1")
     expect(result.updated).toBe(1)
   })
 
   test("markAllNotificationsRead should return updated count", async () => {
-    const { markAllNotificationsRead } = await import(
-      "@/server/services/notifications/mark-read"
-    )
+    const { markAllNotificationsRead } = await importMarkRead()
     const result = await markAllNotificationsRead("u-1")
     expect(result.success).toBe(true)
   })

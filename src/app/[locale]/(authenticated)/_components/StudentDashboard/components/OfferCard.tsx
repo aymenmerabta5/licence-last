@@ -11,7 +11,7 @@ interface OfferCardProps {
   index: number
 }
 
-export function OfferCard({ offer, index }: OfferCardProps) {
+export function OfferCard({ offer, index: _index }: OfferCardProps) {
   const locale = useLocale()
 
   return (

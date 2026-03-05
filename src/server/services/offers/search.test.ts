@@ -25,18 +25,30 @@ const mockSkillWhere = mock<() => Promise<any[]>>(() =>
 const mockJoinSkill = mock(() => ({ where: mockSkillWhere }))
 const mockFromSkills = mock(() => ({ innerJoin: mockJoinSkill }))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => {
-      selectCallIdx++
-      if (selectCallIdx === 1) return { from: mockFromOffers }
-      return { from: mockFromSkills }
+function applySearchOffersMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => {
+        selectCallIdx++
+        if (selectCallIdx === 1) return { from: mockFromOffers }
+        return { from: mockFromSkills }
+      },
     },
-  },
-}))
+  }))
+}
+
+let searchOffersImportCounter = 0
+async function importSearchOffers() {
+  searchOffersImportCounter += 1
+  return (await import(
+    `@/server/services/offers/search?test=${searchOffersImportCounter}`
+  )) as typeof import("@/server/services/offers/search")
+}
 
 describe("src/server/services/offers/search", () => {
   beforeEach(() => {
+    applySearchOffersMocks()
+
     selectCallIdx = 0
     mockOffersRows = []
     mockOfferSkillsRows = []
@@ -113,7 +125,7 @@ describe("src/server/services/offers/search", () => {
       },
     ]
 
-    const { searchOffers } = await import("@/server/services/offers/search")
+    const { searchOffers } = await importSearchOffers()
     const result = await searchOffers({ limit: 1 })
 
     expect(result.offers).toHaveLength(1)

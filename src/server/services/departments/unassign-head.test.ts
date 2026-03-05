@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockLimit = mock((): any => Promise.resolve([]))
+const selectLimitQueue: unknown[][] = []
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockLimit = mock((): any => Promise.resolve(selectLimitQueue.shift() ?? []))
 const mockWhere = mock(() => ({ limit: mockLimit }))
 const mockFrom = mock(() => ({ where: mockWhere }))
 const mockSelect = mock(() => ({ from: mockFrom }))
@@ -16,16 +18,28 @@ const mockTransaction = mock(
       update: mockTxUpdate,
     }),
 )
+let moduleImportCounter = 0
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockSelect,
-    transaction: mockTransaction,
-  },
-}))
+function applyUnassignHeadMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: mockSelect,
+      transaction: mockTransaction,
+    },
+  }))
+}
+
+async function loadUnassignHeadModule() {
+  moduleImportCounter += 1
+  return import(
+    `@/server/services/departments/unassign-head?test=${moduleImportCounter}`
+  )
+}
 
 describe("unassignDepartmentHead", () => {
   beforeEach(() => {
+    selectLimitQueue.length = 0
+    applyUnassignHeadMocks()
     mockSelect.mockClear()
     mockFrom.mockClear()
     mockWhere.mockClear()
@@ -44,22 +58,18 @@ describe("unassignDepartmentHead", () => {
   })
 
   test("should throw when department is not found", async () => {
-    mockLimit.mockResolvedValueOnce([])
+    selectLimitQueue.push([])
 
-    const { unassignDepartmentHead } = await import(
-      "@/server/services/departments/unassign-head"
-    )
+    const { unassignDepartmentHead } = await loadUnassignHeadModule()
     expect(unassignDepartmentHead("missing-department")).rejects.toThrow(
       "Department not found",
     )
   })
 
   test("should demote dept head users for the department", async () => {
-    mockLimit.mockResolvedValueOnce([{ id: "dept-1" }])
+    selectLimitQueue.push([{ id: "dept-1" }])
 
-    const { unassignDepartmentHead } = await import(
-      "@/server/services/departments/unassign-head"
-    )
+    const { unassignDepartmentHead } = await loadUnassignHeadModule()
     const result = await unassignDepartmentHead("dept-1")
 
     expect(result).toEqual({ success: true, departmentId: "dept-1" })

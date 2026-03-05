@@ -18,18 +18,30 @@ const mockUnreadWhere = mock<() => Promise<any[]>>(() =>
 )
 const mockUnreadFrom = mock(() => ({ where: mockUnreadWhere }))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => {
-      selectCallIdx++
-      if (selectCallIdx === 1) return { from: mockFrom }
-      return { from: mockUnreadFrom }
+function applyListNotificationsMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => {
+        selectCallIdx++
+        if (selectCallIdx === 1) return { from: mockFrom }
+        return { from: mockUnreadFrom }
+      },
     },
-  },
-}))
+  }))
+}
+
+let listNotificationsImportCounter = 0
+async function importListNotifications() {
+  listNotificationsImportCounter += 1
+  return (await import(
+    `@/server/services/notifications/list?test=${listNotificationsImportCounter}`
+  )) as typeof import("@/server/services/notifications/list")
+}
 
 describe("src/server/services/notifications/list", () => {
   beforeEach(() => {
+    applyListNotificationsMocks()
+
     selectCallIdx = 0
     mockRows = []
 
@@ -58,9 +70,7 @@ describe("src/server/services/notifications/list", () => {
       },
     ]
 
-    const { listNotifications } = await import(
-      "@/server/services/notifications/list"
-    )
+    const { listNotifications } = await importListNotifications()
     const result = await listNotifications("u-1", { limit: 10 })
 
     expect(result.notifications).toHaveLength(1)

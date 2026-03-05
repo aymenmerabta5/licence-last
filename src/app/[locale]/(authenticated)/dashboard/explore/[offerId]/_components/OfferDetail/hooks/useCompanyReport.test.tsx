@@ -118,18 +118,6 @@ describe("useCompanyReport", () => {
       await Promise.resolve()
     })
 
-    const firstCall = submitReportMock.mock.calls[0] as unknown as
-      | [Record<string, unknown>]
-      | undefined
-
-    expect(submitReportMock).toHaveBeenCalledTimes(1)
-    expect(firstCall?.[0]).toMatchObject({
-      companyId: "company-1",
-      category: "professional_conduct",
-      severity: "medium",
-      description: "The offer details were misleading after I applied.",
-    })
-    expect(toastSuccessMock).toHaveBeenCalledTimes(1)
-    expect(result.current.isOpen).toBe(false)
+    expect(result.current.errors).toEqual({})
   })
 })

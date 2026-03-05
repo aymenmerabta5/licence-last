@@ -13,18 +13,30 @@ const mockFromWhere = mock(() => ({ where: mockWhere }))
 const mockInnerJoin = mock(() => ({ where: mockWhere }))
 const mockFromInnerJoin = mock(() => ({ innerJoin: mockInnerJoin }))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => {
-      selectCallIdx++
-      if (selectCallIdx <= 3) return { from: mockFromWhere }
-      return { from: mockFromInnerJoin }
+function applyGetUniversityDashboardStatsMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => {
+        selectCallIdx++
+        if (selectCallIdx <= 3) return { from: mockFromWhere }
+        return { from: mockFromInnerJoin }
+      },
     },
-  },
-}))
+  }))
+}
+
+let getUniversityDashboardStatsImportCounter = 0
+async function importGetUniversityDashboardStats() {
+  getUniversityDashboardStatsImportCounter += 1
+  return import(
+    `@/server/services/stats/get-university-dashboard-stats?test=${getUniversityDashboardStatsImportCounter}`
+  )
+}
 
 describe("src/server/services/stats/get-university-dashboard-stats", () => {
   beforeEach(() => {
+    applyGetUniversityDashboardStatsMocks()
+
     selectCallIdx = 0
     mockSelectResults.length = 0
     mockWhere.mockClear()
@@ -45,9 +57,8 @@ describe("src/server/services/stats/get-university-dashboard-stats", () => {
     mockSelectResults.push([{ value: 18 }]) // pending validations
     mockSelectResults.push([{ value: 90 }]) // validated placements
 
-    const { getUniversityDashboardStats } = await import(
-      "@/server/services/stats/get-university-dashboard-stats"
-    )
+    const { getUniversityDashboardStats } =
+      await importGetUniversityDashboardStats()
     const stats = await getUniversityDashboardStats("uni-1")
 
     expect(stats.totalStudents).toBe(120)
@@ -67,9 +78,8 @@ describe("src/server/services/stats/get-university-dashboard-stats", () => {
     mockSelectResults.push([])
     mockSelectResults.push([])
 
-    const { getUniversityDashboardStats } = await import(
-      "@/server/services/stats/get-university-dashboard-stats"
-    )
+    const { getUniversityDashboardStats } =
+      await importGetUniversityDashboardStats()
     const stats = await getUniversityDashboardStats("uni-empty")
 
     expect(stats).toEqual({

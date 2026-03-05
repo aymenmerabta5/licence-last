@@ -11,15 +11,27 @@ const mockWhere = mock(() => ({ limit: mockLimit }))
 const mockFrom = mock(() => ({ where: mockWhere }))
 const mockSelect = mock(() => ({ from: mockFrom }))
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockSelect,
-    insert: mockInsert,
-  },
-}))
+function applyUpsertProfileDetailsMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: mockSelect,
+      insert: mockInsert,
+    },
+  }))
+}
+
+let upsertProfileDetailsImportCounter = 0
+async function importUpsertStudentProfileDetails() {
+  upsertProfileDetailsImportCounter += 1
+  return import(
+    `@/server/services/students/upsert-profile-details?test=${upsertProfileDetailsImportCounter}`
+  )
+}
 
 describe("src/server/services/students/upsert-profile-details", () => {
   beforeEach(() => {
+    applyUpsertProfileDetailsMocks()
+
     existingProfile = []
     mockSelect.mockClear()
     mockFrom.mockClear()
@@ -40,9 +52,8 @@ describe("src/server/services/students/upsert-profile-details", () => {
   test("should create profile for new user", async () => {
     existingProfile = []
 
-    const { upsertStudentProfileDetails } = await import(
-      "@/server/services/students/upsert-profile-details"
-    )
+    const { upsertStudentProfileDetails } =
+      await importUpsertStudentProfileDetails()
     const result = await upsertStudentProfileDetails(
       { bio: "Hello world", phone: "0555123456" },
       "user-new",
@@ -68,9 +79,8 @@ describe("src/server/services/students/upsert-profile-details", () => {
       },
     ]
 
-    const { upsertStudentProfileDetails } = await import(
-      "@/server/services/students/upsert-profile-details"
-    )
+    const { upsertStudentProfileDetails } =
+      await importUpsertStudentProfileDetails()
     // Only update bio, leave everything else
     const result = await upsertStudentProfileDetails(
       { bio: "New bio" },
@@ -84,9 +94,8 @@ describe("src/server/services/students/upsert-profile-details", () => {
   test("should handle empty string as null for optional fields", async () => {
     existingProfile = []
 
-    const { upsertStudentProfileDetails } = await import(
-      "@/server/services/students/upsert-profile-details"
-    )
+    const { upsertStudentProfileDetails } =
+      await importUpsertStudentProfileDetails()
     const result = await upsertStudentProfileDetails(
       { bio: "", githubUrl: "" },
       "user-2",
@@ -98,9 +107,8 @@ describe("src/server/services/students/upsert-profile-details", () => {
   test("should handle wilayaCode=0 as null", async () => {
     existingProfile = [{ wilayaCode: 16 }]
 
-    const { upsertStudentProfileDetails } = await import(
-      "@/server/services/students/upsert-profile-details"
-    )
+    const { upsertStudentProfileDetails } =
+      await importUpsertStudentProfileDetails()
     const result = await upsertStudentProfileDetails(
       { wilayaCode: 0 },
       "user-3",

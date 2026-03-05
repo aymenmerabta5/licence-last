@@ -61,33 +61,49 @@ const mockInsert = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockValues = mock((): any => Promise.resolve())
 
-mock.module("@/server/db", () => ({
-  db: {
-    select: () => {
-      selectCallIdx++
-      if (selectCallIdx === 1) return { from: mockFromJoin }
-      if (selectCallIdx === 2) return { from: mockFrom2 }
-      return { from: mockFrom3 }
-    },
-    transaction: mockTransaction,
-    insert: mockInsert,
-  },
-}))
-
 const createNotificationMock = mock(() =>
   Promise.resolve({ id: "notification-1", skipped: false }),
 )
 
-mock.module("@/server/services/notifications/create", () => ({
-  createNotification: createNotificationMock,
-}))
+const appendTimelineEventMock = mock(() =>
+  Promise.resolve({ eventId: "evt-1" }),
+)
 
-mock.module("@/server/services/applications/pipeline", () => ({
-  appendTimelineEvent: mock(() => Promise.resolve({ eventId: "evt-1" })),
-}))
+function applyValidatePlacementMocks() {
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => {
+        selectCallIdx++
+        if (selectCallIdx === 1) return { from: mockFromJoin }
+        if (selectCallIdx === 2) return { from: mockFrom2 }
+        return { from: mockFrom3 }
+      },
+      transaction: mockTransaction,
+      insert: mockInsert,
+    },
+  }))
+
+  mock.module("@/server/services/notifications/create", () => ({
+    createNotification: createNotificationMock,
+  }))
+
+  mock.module("@/server/services/applications/pipeline", () => ({
+    appendTimelineEvent: appendTimelineEventMock,
+  }))
+}
+
+let validatePlacementImportCounter = 0
+async function importValidatePlacement() {
+  validatePlacementImportCounter += 1
+  return import(
+    `@/server/services/placements/validate?test=${validatePlacementImportCounter}`
+  )
+}
 
 describe("src/server/services/placements/validate", () => {
   beforeEach(() => {
+    applyValidatePlacementMocks()
+
     selectCallIdx = 0
     mockSelectResults.length = 0
 
@@ -116,6 +132,7 @@ describe("src/server/services/placements/validate", () => {
     mockInsert.mockClear()
     mockValues.mockClear()
     createNotificationMock.mockClear()
+    appendTimelineEventMock.mockClear()
 
     mockFromJoin.mockReturnValue({ innerJoin: mockJoin1 })
     mockJoin1.mockReturnValue({ innerJoin: mockJoin2 })
@@ -164,9 +181,7 @@ describe("src/server/services/placements/validate", () => {
       },
     ])
 
-    const { validatePlacement } = await import(
-      "@/server/services/placements/validate"
-    )
+    const { validatePlacement } = await importValidatePlacement()
 
     await expect(
       validatePlacement({
@@ -203,9 +218,7 @@ describe("src/server/services/placements/validate", () => {
     mockSelectResults.push([])
     mockSelectResults.push([{ userId: "member-1" }])
 
-    const { validatePlacement } = await import(
-      "@/server/services/placements/validate"
-    )
+    const { validatePlacement } = await importValidatePlacement()
     const result = await validatePlacement({
       applicationId: "app-1",
       adminUserId: "admin-1",
