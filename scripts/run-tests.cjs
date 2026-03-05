@@ -1,73 +1,81 @@
 #!/usr/bin/env node
 
-// Runs all tests: bulk via `bun test`, then oRPC route tests isolated
-// (route tests use mock.module() which leaks across files in one process)
+// Runs every test file in its own process to avoid mock.module collisions.
+// Bun's mock.module() leaks across files when run in a single process on Linux.
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { spawnSync } = require("node:child_process")
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const { readdirSync } = require("node:fs")
+const fs = require("node:fs")
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require("node:path")
 
 const ROOT = process.cwd()
+const BUN_BIN = "bun"
+const TEST_FILE_REGEX = /\.test\.(ts|tsx)$/
 
-// Step 1: Run all tests except oRPC route tests (they need isolation)
-const bulkDirs = [
-  "src/lib",
-  "src/hooks",
-  "src/components",
-  "src/server/services",
-  "src/server/db",
-  "src/server/caching",
-  "src/server/storage",
-  "src/server/email",
-  "src/server/logging",
-  "src/server/openapi",
-  "src/server/ai",
-  "src/server/pdfs",
-  "src/server/mcp",
-  "src/server/auth",
-  "src/server/orpc/utils",
-  "src/server/orpc/ratelimit-middleware.test.ts",
-  "src/server/orpc/router.smoke.test.ts",
-  "src/app",
-  "src/proxy.test.ts",
-]
-
-process.stdout.write("[test] Running bulk tests...\n")
-const bulk = spawnSync("bun", ["test", ...bulkDirs], {
-  cwd: ROOT,
-  stdio: "inherit",
-  shell: false,
-})
-
-if (bulk.status !== 0) {
-  process.exit(bulk.status ?? 1)
+function toPosix(filePath) {
+  return filePath.split(path.sep).join("/")
 }
 
-// Step 2: Run oRPC route tests isolated (mock.module requires it)
-const routeDir = path.join(ROOT, "src/server/orpc/routes")
-const routeFiles = readdirSync(routeDir)
-  .filter((f) => f.endsWith(".route.test.ts"))
-  .sort()
-
-process.stdout.write(`\n[test] Running ${routeFiles.length} route tests isolated...\n`)
-
-for (const file of routeFiles) {
-  const relative = `src/server/orpc/routes/${file}`
-  const result = spawnSync("bun", ["test", relative], {
-    cwd: ROOT,
-    stdio: "inherit",
-    shell: false,
-  })
-
-  if (result.status !== 0) {
-    process.stderr.write(`FAIL: ${relative}\n`)
-    process.exit(result.status ?? 1)
+function collectTestFiles(rootPath, out) {
+  if (!fs.existsSync(rootPath)) return
+  const stats = fs.statSync(rootPath)
+  if (stats.isFile()) {
+    if (TEST_FILE_REGEX.test(rootPath)) out.push(rootPath)
+    return
+  }
+  const entries = fs.readdirSync(rootPath, { withFileTypes: true })
+  for (const entry of entries) {
+    const entryPath = path.join(rootPath, entry.name)
+    if (entry.isDirectory()) {
+      collectTestFiles(entryPath, out)
+    } else if (entry.isFile() && TEST_FILE_REGEX.test(entry.name)) {
+      out.push(entryPath)
+    }
   }
 }
 
-process.stdout.write(
-  `\n[test] All tests passed (bulk + ${routeFiles.length} isolated route tests)\n`,
-)
+function main() {
+  const roots =
+    process.argv.length > 2
+      ? process.argv.slice(2).map((s) => path.resolve(ROOT, s))
+      : [path.resolve(ROOT, "src")]
+
+  const files = []
+  for (const root of roots) {
+    collectTestFiles(root, files)
+  }
+
+  const sorted = [...new Set(files)].sort((a, b) =>
+    toPosix(a).localeCompare(toPosix(b)),
+  )
+
+  if (sorted.length === 0) {
+    process.stdout.write("No test files found.\n")
+    return
+  }
+
+  process.stdout.write(`[test] Running ${sorted.length} files isolated\n`)
+
+  for (const filePath of sorted) {
+    const relative = toPosix(path.relative(ROOT, filePath))
+    const result = spawnSync(BUN_BIN, ["test", relative], {
+      cwd: ROOT,
+      stdio: "inherit",
+      shell: false,
+    })
+
+    if (result.error) {
+      process.stderr.write(`${result.error}\n`)
+      process.exit(1)
+    }
+    if (result.status !== 0) {
+      process.exit(result.status ?? 1)
+    }
+  }
+
+  process.stdout.write(`\n[test] ${sorted.length} files passed\n`)
+}
+
+main()
