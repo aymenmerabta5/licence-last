@@ -61,7 +61,7 @@ export function NotificationsList({
                 {...reveal}
                 transition={{ duration: 0.4, ease, delay: 0.02 * i }}
                 disabled={n.readAt !== null}
-                onClick={() => onMarkRead(n.id)}
+                onClick={() => n.readAt === null && onMarkRead(n.id)}
                 className={cn(
                   "block w-full text-start border border-border p-4",
                   n.readAt === null &&
