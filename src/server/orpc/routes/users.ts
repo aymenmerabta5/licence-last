@@ -166,7 +166,7 @@ export const listMySessionsProcedure = authedSessionProcedureGenerous.handler(
     const sessions = await listMySessions()
     return sessions.map((s) => ({
       id: s.id,
-      token: s.token,
+      tokenPrefix: s.token.slice(-4),
       userId: s.userId,
       ipAddress: s.ipAddress,
       userAgent: s.userAgent,
