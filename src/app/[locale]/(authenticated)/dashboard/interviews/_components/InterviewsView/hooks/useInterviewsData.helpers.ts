@@ -39,6 +39,20 @@ export function mapCompanyApplications(
   }))
 }
 
+export function normalizeLocalDateTimeInput(value: string): string | null {
+  const trimmed = value.trim()
+  if (trimmed.length === 0) {
+    return null
+  }
+
+  const parsed = new Date(trimmed)
+  if (Number.isNaN(parsed.getTime())) {
+    return null
+  }
+
+  return parsed.toISOString()
+}
+
 export function getInterviewsErrorMessage(error: unknown): string | null {
   if (!error || isInterviewsFeatureDisabledError(error)) {
     return null

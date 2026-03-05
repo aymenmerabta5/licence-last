@@ -73,11 +73,7 @@ export async function proposeInterviewSlots(
       )
     }
 
-    if (
-      applicationRow.status === "withdrawn" ||
-      applicationRow.status === "company_refused" ||
-      applicationRow.status === "admin_rejected"
-    ) {
+    if (applicationRow.status !== "applied") {
       throw new InterviewServiceError(
         "INTERVIEW_INVALID_APPLICATION_STATE",
         "Interview cannot be proposed for this application status",

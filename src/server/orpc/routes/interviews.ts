@@ -21,10 +21,39 @@ import { listInterviewsForCompany } from "@/server/services/interviews/list-for-
 import { listInterviewsForStudent } from "@/server/services/interviews/list-for-student"
 import { proposeInterviewSlots } from "@/server/services/interviews/propose"
 
+const INTERVIEW_DATE_TIME_SCHEMA = z.string().datetime({ offset: true })
+const INTERVIEW_MEETING_URL_SCHEMA = z
+  .union([z.literal(""), z.string().url()])
+  .optional()
+  .refine((value) => {
+    if (!value) {
+      return true
+    }
+
+    try {
+      const protocol = new URL(value).protocol
+      return protocol === "http:" || protocol === "https:"
+    } catch {
+      return false
+    }
+  }, "Meeting URL must use http:// or https://")
+
 function assertInterviewsEnabled() {
   if (!isFeatureEnabled("INTERVIEWS")) {
     throw new ORPCError("FORBIDDEN", {
       message: "Interviews feature is disabled",
+    })
+  }
+}
+
+function parseInterviewSlotDate(value: string, fieldLabel: string) {
+  try {
+    return parseInputDate(value, fieldLabel)
+  } catch (error) {
+    throw new ORPCError("BAD_REQUEST", {
+      message:
+        error instanceof Error ? error.message : `${fieldLabel} is invalid`,
+      cause: error,
     })
   }
 }
@@ -90,10 +119,10 @@ export const proposeInterviewSlotsProcedure = companyAdminProcedureStandard
       slots: z
         .array(
           z.object({
-            startsAt: z.string().min(1),
-            endsAt: z.string().min(1),
+            startsAt: INTERVIEW_DATE_TIME_SCHEMA,
+            endsAt: INTERVIEW_DATE_TIME_SCHEMA,
             location: z.string().max(200).optional(),
-            meetingUrl: z.string().url().optional().or(z.literal("")),
+            meetingUrl: INTERVIEW_MEETING_URL_SCHEMA,
           }),
         )
         .min(1)
@@ -109,11 +138,11 @@ export const proposeInterviewSlotsProcedure = companyAdminProcedureStandard
           applicationId: input.applicationId,
           note: input.note,
           slots: input.slots.map((slot, index) => ({
-            startsAt: parseInputDate(
+            startsAt: parseInterviewSlotDate(
               slot.startsAt,
               `Interview slot ${index + 1} start`,
             ),
-            endsAt: parseInputDate(
+            endsAt: parseInterviewSlotDate(
               slot.endsAt,
               `Interview slot ${index + 1} end`,
             ),
