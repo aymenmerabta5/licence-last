@@ -64,12 +64,12 @@ src/
 ├── server/
 │   ├── db/                 (Drizzle schema — 19 modules + seed)
 │   ├── orpc/               (Controller — oRPC router)
-│   │   ├── middleware.ts   (auth chain — 7 procedure types)
+│   │   ├── middleware.ts   (auth chain — 9 procedure types)
 │   │   ├── rate-limited-procedures.ts (20 variants)
 │   │   ├── ratelimit-middleware.ts
 │   │   ├── router.ts
 │   │   ├── client.ts
-│   │   └── routes/         (18 route modules, 19 namespaces, 136 procedures)
+│   │   └── routes/         (18 route modules, 19 namespaces, 140 procedures)
 │   ├── services/           (Model — 18 service domains)
 │   │   ├── admin/          (User management: ban, create, sessions, etc.)
 │   │   ├── applications/   (Application workflow + pipeline + timeline)
@@ -204,10 +204,12 @@ Route handlers should map service-domain failures through `createServiceORPCErro
 **Middleware chain** (`src/server/orpc/middleware.ts`):
 ```
 publicProcedure              — No auth required
-├── authedProcedure          — Valid session required
+├── authedSessionProcedure   — Valid session only (no approval gate)
+├── authedProcedure          — Valid session + approval gate
 │   ├── adminProcedure       — university_admin, dept_head, or super_admin
 │   ├── superAdminProcedure  — super_admin only
 │   ├── companyAdminProcedure — company_admin + injects companyMembership
+│   ├── companyOwnerProcedure — company_admin + membership role is "owner"
 │   ├── studentProcedure     — student role + injects studentProfile
 │   └── deptHeadProcedure    — dept_head + injects departmentId + universityId
 ```

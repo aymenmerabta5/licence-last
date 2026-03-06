@@ -174,11 +174,11 @@ describe("src/server/services/interviews/propose", () => {
     ).rejects.toThrow("You do not have access to this application")
   })
 
-  test("should throw when application status cannot be interviewed", async () => {
+  test("should throw when application is already company accepted", async () => {
     txSelectResults.push([
       {
         id: "application-1",
-        status: "company_refused",
+        status: "company_accepted",
         offerId: "offer-1",
         studentUserId: "student-1",
         companyId: "company-1",
@@ -187,6 +187,40 @@ describe("src/server/services/interviews/propose", () => {
 
     const { proposeInterviewSlots } = await import(
       "@/server/services/interviews/propose?fresh=5" as string
+    )
+
+    await expect(
+      proposeInterviewSlots(
+        {
+          applicationId: "application-1",
+          slots: [
+            {
+              startsAt: new Date("2030-04-10T09:00:00.000Z"),
+              endsAt: new Date("2030-04-10T10:00:00.000Z"),
+            },
+          ],
+        },
+        "company-1",
+        "actor-1",
+      ),
+    ).rejects.toThrow(
+      "Interview cannot be proposed for this application status",
+    )
+  })
+
+  test("should throw when application is already admin validated", async () => {
+    txSelectResults.push([
+      {
+        id: "application-1",
+        status: "admin_validated",
+        offerId: "offer-1",
+        studentUserId: "student-1",
+        companyId: "company-1",
+      },
+    ])
+
+    const { proposeInterviewSlots } = await import(
+      "@/server/services/interviews/propose?fresh=8" as string
     )
 
     await expect(
@@ -261,7 +295,7 @@ describe("src/server/services/interviews/propose", () => {
     txSelectResults.push([])
 
     const { proposeInterviewSlots } = await import(
-      "@/server/services/interviews/propose?fresh=7" as string
+      "@/server/services/interviews/propose?fresh=9" as string
     )
 
     const result = await proposeInterviewSlots(

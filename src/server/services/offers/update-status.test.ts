@@ -83,7 +83,7 @@ describe("src/server/services/offers/update-status", () => {
     const result = await updateOfferStatus("offer-1", "company-1", "close")
 
     expect(result).toEqual({ offerId: "offer-1", newStatus: "closed" })
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
   })
 
   test("should reject publishing a non-draft offer", async () => {

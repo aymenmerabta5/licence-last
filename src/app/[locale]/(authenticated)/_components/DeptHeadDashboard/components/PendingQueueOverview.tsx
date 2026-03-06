@@ -143,7 +143,7 @@ export function PendingQueueOverview({
                 </div>
 
                 {/* Hover Arrow */}
-                <div className="absolute right-6 top-1/2 -translate-y-1/2 text-primary opacity-0 group-hover/item:opacity-100 -translate-x-4 group-hover/item:translate-x-0 transition-all duration-500 hidden sm:block">
+                <div className="absolute end-6 top-1/2 -translate-y-1/2 text-primary opacity-0 group-hover/item:opacity-100 -translate-x-4 group-hover/item:translate-x-0 transition-all duration-500 hidden sm:block">
                   <ArrowRight className="h-5 w-5" />
                 </div>
               </Link>

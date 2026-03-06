@@ -95,7 +95,7 @@ export function TrustGauge({ trustData, isLoading }: TrustGaugeProps) {
         {/* Score bar */}
         <div className="h-1.5 bg-background/20 overflow-hidden relative border border-background/10">
           <motion.div
-            className={cn("h-full absolute left-0 top-0", config.bar)}
+            className={cn("h-full absolute start-0 top-0", config.bar)}
             initial={{ width: 0 }}
             animate={{ width: `${Math.min(trustData.trustScore, 100)}%` }}
             transition={{ duration: 1, delay: 0.5, ease }}

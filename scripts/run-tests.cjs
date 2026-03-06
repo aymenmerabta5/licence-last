@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// Runs every test file in its own process to avoid mock.module collisions.
+// Bun's mock.module() leaks across files when run in a single process on Linux.
+
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { spawnSync } = require("node:child_process")
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -8,7 +11,6 @@ const fs = require("node:fs")
 const path = require("node:path")
 
 const ROOT = process.cwd()
-const COVERAGE_DIR = path.join(ROOT, "coverage")
 const BUN_BIN = "bun"
 const TEST_FILE_REGEX = /\.test\.(ts|tsx)$/
 
@@ -35,12 +37,16 @@ function collectTestFiles(rootPath, out) {
 }
 
 function main() {
-  fs.rmSync(COVERAGE_DIR, { recursive: true, force: true })
-  fs.mkdirSync(COVERAGE_DIR, { recursive: true })
+  const roots =
+    process.argv.length > 2
+      ? process.argv.slice(2).map((s) => path.resolve(ROOT, s))
+      : [path.resolve(ROOT, "src")]
 
-  // Collect all test files
   const files = []
-  collectTestFiles(path.resolve(ROOT, "src"), files)
+  for (const root of roots) {
+    collectTestFiles(root, files)
+  }
+
   const sorted = [...new Set(files)].sort((a, b) =>
     toPosix(a).localeCompare(toPosix(b)),
   )
@@ -50,34 +56,26 @@ function main() {
     return
   }
 
-  process.stdout.write(`[coverage] Running ${sorted.length} files isolated with --coverage\n`)
-
-  let failed = 0
+  process.stdout.write(`[test] Running ${sorted.length} files isolated\n`)
 
   for (const filePath of sorted) {
     const relative = toPosix(path.relative(ROOT, filePath))
-
-    const result = spawnSync(BUN_BIN, ["test", "--coverage", relative], {
+    const result = spawnSync(BUN_BIN, ["test", relative], {
       cwd: ROOT,
-      encoding: "utf8",
+      stdio: "inherit",
       shell: false,
-      env: process.env,
     })
 
-    const exitCode = result.error ? 1 : (result.status ?? 1)
-
-    if (exitCode !== 0) {
-      failed++
-      process.stderr.write(`  FAIL: ${relative}\n`)
-      process.stdout.write(`${result.stdout ?? ""}${result.stderr ?? ""}`)
+    if (result.error) {
+      process.stderr.write(`${result.error}\n`)
+      process.exit(1)
+    }
+    if (result.status !== 0) {
+      process.exit(result.status ?? 1)
     }
   }
 
-  process.stdout.write(`\n[coverage] ${sorted.length} files, ${failed} failed\n`)
-
-  if (failed > 0) {
-    process.exit(1)
-  }
+  process.stdout.write(`\n[test] ${sorted.length} files passed\n`)
 }
 
 main()

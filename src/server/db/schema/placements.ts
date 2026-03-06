@@ -32,6 +32,7 @@ export const placement = pgTable(
   (table) => [
     uniqueIndex("placement_applicationId_uidx").on(table.applicationId),
     index("placement_validatedAt_idx").on(table.validatedAt),
+    index("placement_validatedByUserId_idx").on(table.validatedByUserId),
   ],
 )
 
@@ -59,5 +60,6 @@ export const placementDocument = pgTable(
     index("document_placementId_idx").on(table.placementId),
     index("document_type_idx").on(table.type),
     index("document_status_idx").on(table.status),
+    index("document_storageKey_idx").on(table.storageKey),
   ],
 )

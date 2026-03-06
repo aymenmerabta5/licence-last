@@ -50,6 +50,7 @@ export const company = pgTable(
     index("company_slug_idx").on(table.slug),
     index("company_wilayaCode_idx").on(table.wilayaCode),
     index("company_status_idx").on(table.status),
+    index("company_approvedByUserId_idx").on(table.approvedByUserId),
   ],
 )
 

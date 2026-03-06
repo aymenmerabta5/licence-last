@@ -56,6 +56,8 @@ export const interview = pgTable(
     index("interview_companyId_idx").on(table.companyId),
     index("interview_studentUserId_idx").on(table.studentUserId),
     index("interview_status_idx").on(table.status),
+    index("interview_proposedByUserId_idx").on(table.proposedByUserId),
+    index("interview_confirmedByUserId_idx").on(table.confirmedByUserId),
   ],
 )
 

@@ -7,6 +7,7 @@ import {
   getInterviewsErrorMessage,
   mapCompanyApplications,
   mapCompanyOffers,
+  normalizeLocalDateTimeInput,
 } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsData.helpers"
 import type {
   CompanyInterviewView,
@@ -49,6 +50,7 @@ export function useInterviewsData({
     ...orpc.applications.listByOffer.queryOptions({
       input: {
         offerId: selectedOfferId || "offer-not-selected",
+        status: "applied",
         limit: 50,
       },
     }),
@@ -128,16 +130,33 @@ export function useInterviewsData({
       return false
     }
 
+    const normalizedSlots: Array<{
+      startsAt: string
+      endsAt: string
+      location?: string
+      meetingUrl?: string
+    }> = []
+    for (const slot of cleanedSlots) {
+      const startsAt = normalizeLocalDateTimeInput(slot.startsAt)
+      const endsAt = normalizeLocalDateTimeInput(slot.endsAt)
+      if (!startsAt || !endsAt) {
+        toast.error("Each slot must include a valid start and end date/time.")
+        return false
+      }
+
+      normalizedSlots.push({
+        startsAt,
+        endsAt,
+        location: slot.location || undefined,
+        meetingUrl: slot.meetingUrl || undefined,
+      })
+    }
+
     try {
       await proposeSlotsMutation.mutateAsync({
         applicationId: selectedApplicationId,
         note: input.note.trim() || undefined,
-        slots: cleanedSlots.map((slot) => ({
-          startsAt: slot.startsAt,
-          endsAt: slot.endsAt,
-          location: slot.location || undefined,
-          meetingUrl: slot.meetingUrl || undefined,
-        })),
+        slots: normalizedSlots,
       })
       return true
     } catch {

@@ -70,5 +70,6 @@ export const companyReport = pgTable(
     index("company_report_status_idx").on(table.status),
     index("company_report_severity_idx").on(table.severity),
     index("company_report_reporter_idx").on(table.reporterUserId),
+    index("company_report_resolvedByUserId_idx").on(table.resolvedByUserId),
   ],
 )

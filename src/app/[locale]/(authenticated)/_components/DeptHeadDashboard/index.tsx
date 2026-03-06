@@ -40,11 +40,11 @@ export function DeptHeadDashboard({ user }: DeptHeadDashboardProps) {
       >
         <div className="relative border-y-4 border-foreground dark:border-foreground/80 py-8 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-4 group">
           {/* Decorative corner accents */}
-          <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-primary -translate-x-1 -translate-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-          <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-primary translate-x-1 translate-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          <div className="absolute top-0 start-0 w-4 h-4 border-s-2 border-t-2 border-primary -translate-x-1 -translate-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          <div className="absolute bottom-0 end-0 w-4 h-4 border-e-2 border-b-2 border-primary translate-x-1 translate-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
           {/* Date Column */}
-          <div className="md:col-span-2 flex flex-col justify-start items-start md:border-r border-border md:pr-4">
+          <div className="md:col-span-2 flex flex-col justify-start items-start md:border-e border-border md:pe-4">
             <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/50 mb-4 [[dir=rtl]_&]:tracking-normal">
               {t("kicker")}
             </div>
@@ -79,7 +79,7 @@ export function DeptHeadDashboard({ user }: DeptHeadDashboardProps) {
           </div>
 
           {/* Actions */}
-          <div className="md:col-span-4 flex flex-col justify-end md:pl-6 md:border-l border-border group/meter h-full pb-2">
+          <div className="md:col-span-4 flex flex-col justify-end md:ps-6 md:border-s border-border group/meter h-full pb-2">
             <Link
               href={"/dashboard/dept-validations" as "/dashboard"}
               className="w-full"

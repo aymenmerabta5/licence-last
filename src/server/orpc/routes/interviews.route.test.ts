@@ -1,15 +1,31 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 function createProcedureMock() {
+  let inputParser: ((input: unknown) => unknown) | null = null
+
   return {
     use() {
       return this
     },
-    input() {
+
+    input(schema: { parse: (value: unknown) => unknown }) {
+      inputParser = (input) => schema.parse(input)
       return this
     },
-    handler<T>(fn: T) {
-      return fn
+
+    handler<T extends (args: Record<string, unknown>) => Promise<unknown>>(
+      fn: T,
+    ) {
+      return async (args: Record<string, unknown>) => {
+        const parsedInput = inputParser
+          ? inputParser(args.input)
+          : args.input
+
+        return fn({
+          ...args,
+          input: parsedInput,
+        })
+      }
     },
   }
 }
@@ -159,6 +175,93 @@ describe("src/server/orpc/routes/interviews", () => {
       "company-1",
       "company-user-1",
     )
+  })
+
+  test("proposeInterviewSlotsProcedure rejects naive datetimes without timezone", async () => {
+    const { proposeInterviewSlotsProcedure } = await import(
+      "@/server/orpc/routes/interviews"
+    )
+
+    await expect(
+      callProcedure(proposeInterviewSlotsProcedure, {
+        input: {
+          applicationId: "app-1",
+          slots: [
+            {
+              startsAt: "2026-02-20T10:00:00",
+              endsAt: "2026-02-20T11:00:00",
+            },
+          ],
+        },
+        context: {
+          user: { id: "company-user-1" },
+          companyMembership: { companyId: "company-1" },
+        },
+      }),
+    ).rejects.toThrow()
+
+    expect(parseInputDateMock).not.toHaveBeenCalled()
+    expect(proposeInterviewSlotsMock).not.toHaveBeenCalled()
+  })
+
+  test("proposeInterviewSlotsProcedure rejects non-http(s) meeting urls", async () => {
+    const { proposeInterviewSlotsProcedure } = await import(
+      "@/server/orpc/routes/interviews"
+    )
+
+    await expect(
+      callProcedure(proposeInterviewSlotsProcedure, {
+        input: {
+          applicationId: "app-1",
+          slots: [
+            {
+              startsAt: "2026-02-20T10:00:00.000Z",
+              endsAt: "2026-02-20T11:00:00.000Z",
+              meetingUrl: "javascript:alert(1)",
+            },
+          ],
+        },
+        context: {
+          user: { id: "company-user-1" },
+          companyMembership: { companyId: "company-1" },
+        },
+      }),
+    ).rejects.toThrow("Meeting URL must use http:// or https://")
+
+    expect(proposeInterviewSlotsMock).not.toHaveBeenCalled()
+  })
+
+  test("proposeInterviewSlotsProcedure maps date parse errors to BAD_REQUEST", async () => {
+    parseInputDateMock.mockImplementationOnce(() => {
+      throw new Error("Interview slot 1 start is invalid")
+    })
+
+    const { proposeInterviewSlotsProcedure } = await import(
+      "@/server/orpc/routes/interviews"
+    )
+
+    await expect(
+      callProcedure(proposeInterviewSlotsProcedure, {
+        input: {
+          applicationId: "app-1",
+          slots: [
+            {
+              startsAt: "2026-02-20T10:00:00.000Z",
+              endsAt: "2026-02-20T11:00:00.000Z",
+            },
+          ],
+        },
+        context: {
+          user: { id: "company-user-1" },
+          companyMembership: { companyId: "company-1" },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "Interview slot 1 start is invalid",
+    })
+
+    expect(proposeInterviewSlotsMock).not.toHaveBeenCalled()
   })
 
   test("listInterviewsForStudentProcedure rejects when feature is disabled", async () => {

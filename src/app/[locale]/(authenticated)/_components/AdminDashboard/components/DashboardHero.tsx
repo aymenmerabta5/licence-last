@@ -17,10 +17,10 @@ export function DashboardHero({ isSuperAdmin }: DashboardHeroProps) {
       className="relative w-full"
     >
       <div className="relative border-y-4 border-foreground dark:border-foreground/80 py-8 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-4 group">
-        <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-primary -translate-x-1 -translate-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-        <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-primary translate-x-1 translate-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        <div className="absolute top-0 start-0 w-4 h-4 border-s-2 border-t-2 border-primary -translate-x-1 -translate-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        <div className="absolute bottom-0 end-0 w-4 h-4 border-e-2 border-b-2 border-primary translate-x-1 translate-y-1 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-        <div className="md:col-span-2 flex flex-col justify-start items-start md:border-r border-border md:pe-4">
+        <div className="md:col-span-2 flex flex-col justify-start items-start md:border-e border-border md:pe-4">
           <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/50 mb-4 [[dir=rtl]_&]:tracking-normal">
             {isSuperAdmin ? "System" : "University"}
           </div>

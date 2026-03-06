@@ -8,6 +8,28 @@ import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { getTransition } from "@/lib/animations"
 
+interface MetadataItemProps {
+  label: string
+  delay: number
+  prefersReducedMotion: boolean
+  children: React.ReactNode
+}
+
+function MetadataItem({ label, delay, prefersReducedMotion, children }: MetadataItemProps) {
+  return (
+    <motion.div
+      initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay, duration: 0.8 }}
+    >
+      <span className="block text-foreground font-bold mb-1 opacity-60">
+        {label}
+      </span>
+      {children}
+    </motion.div>
+  )
+}
+
 interface WelcomeHeroProps {
   userName: string | null
   profileCompleteness: number
@@ -22,6 +44,7 @@ export function WelcomeHero({
   const t = useTranslations("dashboard.student.welcomeHero")
   const locale = useLocale()
   const prefersReducedMotion = useReducedMotion() ?? false
+  const fadeUp = prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 10 }
   const firstName = userName?.split(" ")[0]
   const displayName = firstName ?? t("defaultName")
   const now = new Date()
@@ -37,7 +60,7 @@ export function WelcomeHero({
   return (
     <motion.div
       initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 15 }}
-      animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={getTransition(
         { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
         prefersReducedMotion,
@@ -50,54 +73,20 @@ export function WelcomeHero({
       <div className="relative border-t-2 md:border-t-4 border-foreground/90 pt-8 pb-10 lg:py-16 grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-14 group">
         {/* Column 1: Editorial Metadata (span 2) */}
         <div className="md:col-span-3 lg:col-span-2 flex flex-row md:flex-col justify-between gap-6 uppercase font-sans tracking-widest text-[10px] md:text-xs text-muted-foreground md:border-r border-border/40 md:pr-4">
-          <motion.div
-            initial={
-              prefersReducedMotion ? { opacity: 1 } : { opacity: 0, x: -10 }
-            }
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-          >
-            <span className="block text-foreground font-bold mb-1 opacity-60">
-              Vol.
-            </span>
-            <span className="font-serif text-xl md:text-2xl text-foreground font-medium tracking-normal">
-              01
-            </span>
-          </motion.div>
+          <MetadataItem label="Vol." delay={0.2} prefersReducedMotion={prefersReducedMotion}>
+            <span className="font-serif text-xl md:text-2xl text-foreground font-medium tracking-normal">01</span>
+          </MetadataItem>
 
-          <motion.div
-            initial={
-              prefersReducedMotion ? { opacity: 1 } : { opacity: 0, x: -10 }
-            }
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-          >
-            <span className="block text-foreground font-bold mb-1 opacity-60">
-              Date
-            </span>
-            <span className="text-foreground tracking-widest">
-              {monthDay}, {year}
-            </span>
-          </motion.div>
+          <MetadataItem label="Date" delay={0.3} prefersReducedMotion={prefersReducedMotion}>
+            <span className="text-foreground tracking-widest">{monthDay}, {year}</span>
+          </MetadataItem>
 
-          <motion.div
-            initial={
-              prefersReducedMotion ? { opacity: 1 } : { opacity: 0, x: -10 }
-            }
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="md:mt-auto"
-          >
-            <span className="block text-foreground font-bold mb-1 opacity-60">
-              Status
-            </span>
+          <MetadataItem label="Status" delay={0.4} prefersReducedMotion={prefersReducedMotion}>
             <span className="text-foreground font-medium flex items-center gap-2">
-              <span
-                className={`w-1.5 h-1.5 rounded-full block ${profileCompleteness === 100 ? "bg-green-500/80 shadow-[0_0_8px_rgba(34,197,94,0.6)]" : "bg-primary/80 animate-pulse"}`}
-              />
+              <span className={`w-1.5 h-1.5 rounded-full block ${profileCompleteness === 100 ? "bg-green-500/80 shadow-[0_0_8px_rgba(34,197,94,0.6)]" : "bg-primary/80 animate-pulse"}`} />
               {profileCompleteness === 100 ? "Ready" : "In Progress"}
             </span>
-          </motion.div>
+          </MetadataItem>
         </div>
 
         {/* Column 2: Main Editorial Headline (span 7.5 relative to grid size contextually) */}
@@ -106,9 +95,7 @@ export function WelcomeHero({
 
           <h1 className="font-serif text-[clamp(2.5rem,6.5vw,5.5rem)] leading-[0.9] tracking-tighter text-foreground mb-8">
             <motion.span
-              initial={
-                prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }
-              }
+              initial={fadeUp}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
               className="block text-muted-foreground text-xl md:text-2xl lg:text-3xl font-sans tracking-tight mb-4 md:mb-6 font-light italic"
@@ -141,8 +128,7 @@ export function WelcomeHero({
           </h1>
 
           <motion.p
-            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 1 }}
             className="text-foreground/75 text-base md:text-lg lg:text-xl font-light leading-relaxed max-w-xl font-sans"
           >
@@ -171,16 +157,9 @@ export function WelcomeHero({
               <div className="relative h-[2px] w-full bg-border/40 overflow-hidden mt-4 mb-4">
                 <motion.div
                   className="absolute top-0 left-0 bottom-0 bg-primary"
-                  initial={
-                    prefersReducedMotion
-                      ? { width: `${profileCompleteness}%` }
-                      : { width: 0 }
-                  }
+                  initial={prefersReducedMotion ? { width: `${profileCompleteness}%` } : { width: 0 }}
                   animate={{ width: `${profileCompleteness}%` }}
-                  transition={getTransition(
-                    { duration: 1.5, delay: 0.6, ease: [0.22, 1, 0.36, 1] },
-                    prefersReducedMotion,
-                  )}
+                  transition={getTransition({ duration: 1.5, delay: 0.6, ease: [0.22, 1, 0.36, 1] }, prefersReducedMotion)}
                 />
               </div>
 

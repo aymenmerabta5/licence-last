@@ -24,7 +24,7 @@ function SettingsPageFallback() {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-14">
         {/* Sidebar skeleton */}
         <div className="space-y-2 lg:col-span-3 lg:top-24 lg:sticky">
-          <Skeleton className="h-3 w-32 ml-5 mb-6" />
+          <Skeleton className="h-3 w-32 ms-5 mb-6" />
           {[...Array(4)].map((_, i) => (
             <div key={i} className="flex items-center gap-4 px-5 py-4">
               <Skeleton className="h-9 w-9 shrink-0 rounded-lg" />
