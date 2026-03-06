@@ -1,6 +1,7 @@
 import "server-only"
 
 import { ORPCError } from "@orpc/server"
+import { eq } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
 import { z } from "zod"
 import { CACHE_TAGS } from "@/lib/cache"
@@ -10,6 +11,11 @@ import {
 } from "@/lib/constants/languages"
 import { isFeatureEnabled } from "@/lib/feature-flags"
 import { proficiencyLevelSchema } from "@/lib/schemas/enums"
+import { db } from "@/server/db"
+import { user } from "@/server/db/schema/auth"
+import {
+  canAccessPrivateStudentProfile,
+} from "@/server/orpc/utils/student-scope"
 import {
   authedProcedureGenerous,
   studentProcedureStandard,
@@ -19,7 +25,7 @@ import { getPublicStudentProfile } from "@/server/services/students/get-public-p
 import { upsertStudentProfile } from "@/server/services/students/upsert-profile"
 import { upsertStudentProfileDetails } from "@/server/services/students/upsert-profile-details"
 
-/* ── Reads ── */
+/* Reads */
 
 export const getStudentProfileProcedure = authedProcedureGenerous
   .input(
@@ -32,15 +38,42 @@ export const getStudentProfileProcedure = authedProcedureGenerous
   .handler(async ({ input, context }) => {
     const targetUserId = input?.userId ?? context.user.id
 
-    // Students can only view their own profile.
-    // Admins/super_admins can view any profile.
-    const isAdmin =
-      context.user.role === "university_admin" ||
-      context.user.role === "super_admin"
-    if (targetUserId !== context.user.id && !isAdmin) {
+    if (targetUserId !== context.user.id && context.user.role === "student") {
       throw new ORPCError("FORBIDDEN", {
         message: "You can only view your own profile",
       })
+    }
+
+    if (targetUserId !== context.user.id) {
+      const [targetUser] = await db
+        .select({
+          universityId: user.universityId,
+          departmentId: user.departmentId,
+        })
+        .from(user)
+        .where(eq(user.id, targetUserId))
+        .limit(1)
+
+      if (
+        targetUser &&
+        !canAccessPrivateStudentProfile(
+          {
+            id: context.user.id,
+            role: context.user.role,
+            universityId: context.user.universityId,
+            departmentId: context.user.departmentId,
+          },
+          {
+            userId: targetUserId,
+            universityId: targetUser.universityId,
+            departmentId: targetUser.departmentId,
+          },
+        )
+      ) {
+        throw new ORPCError("FORBIDDEN", {
+          message: "You do not have access to this profile",
+        })
+      }
     }
 
     return getStudentProfile(targetUserId)
@@ -72,7 +105,7 @@ export const getPublicStudentProfileProcedure = authedProcedureGenerous
     )
   })
 
-/* ── Mutations ── */
+/* Mutations */
 
 export const upsertStudentProfileProcedure = studentProcedureStandard
   .input(
@@ -131,7 +164,6 @@ export const upsertStudentProfileProcedure = studentProcedureStandard
       isLanguageRequirementsEnabled ? (languages ?? []) : undefined,
     )
 
-    // Invalidate profile caches after update
     revalidateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id), "max")
     revalidateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id), "max")
     revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), "max")
@@ -162,7 +194,6 @@ export const upsertStudentProfileDetailsProcedure = studentProcedureStandard
   .handler(async ({ input, context }) => {
     const result = await upsertStudentProfileDetails(input, context.user.id)
 
-    // Invalidate profile caches after update
     revalidateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id), "max")
     revalidateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id), "max")
 

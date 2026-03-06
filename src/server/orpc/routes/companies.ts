@@ -57,8 +57,6 @@ import { deleteFile } from "@/server/storage/s3"
 const {
   authedProcedureGenerous,
   authedProcedureStandard,
-  companyAdminProcedureGenerous,
-  companyAdminProcedureStandard,
   studentProcedureGenerous,
   superAdminProcedureGenerous,
   superAdminProcedureStandard,
@@ -67,8 +65,21 @@ const {
 const companyOwnerProcedureStandard =
   rateLimitedProcedures.companyOwnerProcedureStandard ??
   rateLimitedProcedures.companyAdminProcedureStandard
+const companyOwnerProcedureGenerous =
+  rateLimitedProcedures.companyOwnerProcedureGenerous ??
+  rateLimitedProcedures.companyAdminProcedureGenerous
 
-/* ── Reads ── */
+function assertCompanyOwner(context: {
+  companyMembership: { role?: string | null }
+}): void {
+  if (context.companyMembership.role !== "owner") {
+    throw new ORPCError("FORBIDDEN", {
+      message: "Company owner access required",
+    })
+  }
+}
+
+/* â”€â”€ Reads â”€â”€ */
 
 export const listCompaniesProcedure = authedProcedureGenerous
   .input(
@@ -110,7 +121,7 @@ export const getCompanyByIdProcedure = authedProcedureGenerous
     let isOwner = false
     if (context.user.role === "company_admin") {
       const membership = await getCompanyMembership(context.user.id)
-      isOwner = membership?.companyId === company.id
+      isOwner = membership?.companyId === company.id && membership.role === "owner"
     }
 
     if (isAdmin || isOwner) {
@@ -245,9 +256,10 @@ export const resolveCompanyReportProcedure = superAdminProcedureStandard
   )
 
 export const listCompanyMembersProcedure =
-  companyAdminProcedureGenerous.handler(async ({ context }) =>
-    listCompanyMembers(context.companyMembership.companyId),
-  )
+  companyOwnerProcedureGenerous.handler(async ({ context }) => {
+    assertCompanyOwner(context)
+    return listCompanyMembers(context.companyMembership.companyId)
+  })
 
 export const downloadCompanyVerificationDocumentProcedure =
   superAdminProcedureStandard
@@ -271,7 +283,7 @@ export const downloadCompanyVerificationDocumentProcedure =
       }
     })
 
-/* ── Mutations ── */
+/* â”€â”€ Mutations â”€â”€ */
 
 function revalidateAfterCompanyDeletion(
   companyId: string,
@@ -371,6 +383,8 @@ export const inviteCompanyMemberProcedure = companyOwnerProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
+    assertCompanyOwner(context)
+
     try {
       const result = await inviteCompanyMember({
         companyId: context.companyMembership.companyId,
@@ -402,6 +416,8 @@ export const removeCompanyMemberProcedure = companyOwnerProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
+    assertCompanyOwner(context)
+
     try {
       const result = await removeCompanyMember({
         companyId: context.companyMembership.companyId,
@@ -423,7 +439,7 @@ export const removeCompanyMemberProcedure = companyOwnerProcedureStandard
     }
   })
 
-export const updateCompanyProcedure = companyAdminProcedureStandard
+export const updateCompanyProcedure = companyOwnerProcedureStandard
   .input(
     z.object({
       description: z.string().optional(),
@@ -437,6 +453,8 @@ export const updateCompanyProcedure = companyAdminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
+    assertCompanyOwner(context)
+
     try {
       const result = await updateCompany(
         context.companyMembership.companyId,
@@ -627,7 +645,7 @@ export const reactivateCompanyProcedure = superAdminProcedureStandard
     }
   })
 
-/* ── Uploads ── */
+/* â”€â”€ Uploads â”€â”€ */
 
 export const deleteCompanyProcedure = superAdminProcedureStandard
   .input(z.object({ companyId: z.string().min(1) }))
@@ -664,6 +682,8 @@ export const deleteCompanyProcedure = superAdminProcedureStandard
 export const deleteOwnCompanyProcedure = companyOwnerProcedureStandard
   .input(z.object({}))
   .handler(async ({ context }) => {
+    assertCompanyOwner(context)
+
     try {
       const result = await deleteCompany(
         context.companyMembership.companyId,
@@ -696,13 +716,15 @@ export const deleteOwnCompanyProcedure = companyOwnerProcedureStandard
     }
   })
 
-export const uploadCompanyLogoProcedure = companyAdminProcedureStandard
+export const uploadCompanyLogoProcedure = companyOwnerProcedureStandard
   .input(
     z.object({
       file: z.file(),
     }),
   )
   .handler(async ({ input, context }) => {
+    assertCompanyOwner(context)
+
     try {
       const result = await uploadImageToS3({
         file: input.file,

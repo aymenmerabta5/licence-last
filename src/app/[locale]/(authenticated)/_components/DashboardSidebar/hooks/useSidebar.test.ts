@@ -56,4 +56,24 @@ describe("useSidebar", () => {
     expect(labelKeys).toContain("savedOffers")
     expect(labelKeys).not.toContain("interviews")
   })
+
+  test("hides company governance items for recruiters", () => {
+    const { result } = renderHook(() =>
+      useSidebar("company_admin", "recruiter"),
+    )
+    const labelKeys = result.current.filteredItems.map((item) => item.labelKey)
+
+    expect(labelKeys).not.toContain("companyProfile")
+    expect(labelKeys).not.toContain("teamMembers")
+    expect(labelKeys).toContain("companyDocuments")
+    expect(labelKeys).toContain("manageOffers")
+  })
+
+  test("keeps company governance items for owners", () => {
+    const { result } = renderHook(() => useSidebar("company_admin", "owner"))
+    const labelKeys = result.current.filteredItems.map((item) => item.labelKey)
+
+    expect(labelKeys).toContain("companyProfile")
+    expect(labelKeys).toContain("teamMembers")
+  })
 })

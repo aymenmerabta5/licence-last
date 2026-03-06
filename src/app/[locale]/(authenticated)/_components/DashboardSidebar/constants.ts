@@ -25,6 +25,7 @@ export interface NavItem {
   href: string
   icon: React.ComponentType<{ className?: string }>
   roles: string[]
+  companyMembershipRoles?: string[]
 }
 
 export const navItems: NavItem[] = [
@@ -93,12 +94,14 @@ export const navItems: NavItem[] = [
     href: "/dashboard/company/profile",
     icon: Building2,
     roles: ["company_admin"],
+    companyMembershipRoles: ["owner"],
   },
   {
     labelKey: "teamMembers",
     href: "/dashboard/company/team",
     icon: UsersRound,
     roles: ["company_admin"],
+    companyMembershipRoles: ["owner"],
   },
   {
     labelKey: "manageOffers",

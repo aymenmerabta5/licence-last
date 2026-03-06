@@ -2,16 +2,10 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const selectResultsQueue: unknown[][] = []
 
-const generateAgreementMock = mock(async () => ({
-  success: true,
-  documentId: "doc-1",
-  buffer: Buffer.from("agreement"),
-}))
-const generateCertificateMock = mock(async () => ({
-  success: true,
-  documentId: "doc-2",
-  buffer: Buffer.from("certificate"),
-}))
+const renderAgreementPdfBufferMock = mock(async () => Buffer.from("agreement"))
+const renderCertificatePdfBufferMock = mock(async () =>
+  Buffer.from("certificate"),
+)
 
 const selectLimitMock = mock(async () => selectResultsQueue.shift() ?? [])
 const selectBuilder = {
@@ -30,11 +24,11 @@ function applyDownloadDocumentByCompanyMocks() {
   }))
 
   mock.module("@/server/services/documents/generate-agreement", () => ({
-    generateAgreement: generateAgreementMock,
+    renderAgreementPdfBuffer: renderAgreementPdfBufferMock,
   }))
 
   mock.module("@/server/services/documents/generate-certificate", () => ({
-    generateCertificate: generateCertificateMock,
+    renderCertificatePdfBuffer: renderCertificatePdfBufferMock,
   }))
 }
 
@@ -50,8 +44,8 @@ describe("src/server/services/documents/download-by-company", () => {
     applyDownloadDocumentByCompanyMocks()
     selectResultsQueue.length = 0
     selectLimitMock.mockClear()
-    generateAgreementMock.mockClear()
-    generateCertificateMock.mockClear()
+    renderAgreementPdfBufferMock.mockClear()
+    renderCertificatePdfBufferMock.mockClear()
   })
 
   test("throws typed not-found error when document is missing", async () => {
@@ -91,7 +85,33 @@ describe("src/server/services/documents/download-by-company", () => {
       message: "You do not have access to this document",
     })
 
-    expect(generateAgreementMock).not.toHaveBeenCalled()
-    expect(generateCertificateMock).not.toHaveBeenCalled()
+    expect(renderAgreementPdfBufferMock).not.toHaveBeenCalled()
+    expect(renderCertificatePdfBufferMock).not.toHaveBeenCalled()
+  })
+
+  test("throws typed conflict when company document is still pending", async () => {
+    selectResultsQueue.push([
+      {
+        documentType: "certificate",
+        placementId: "placement-1",
+        companyId: "company-1",
+        status: "pending",
+      },
+    ])
+
+    const { downloadDocumentByCompany } = await loadDownloadByCompanyModule()
+
+    await expect(
+      downloadDocumentByCompany({
+        documentId: "doc-pending",
+        companyId: "company-1",
+      }),
+    ).rejects.toMatchObject({
+      code: "DOCUMENT_NOT_READY",
+      message: "Document is not ready for download",
+    })
+
+    expect(renderAgreementPdfBufferMock).not.toHaveBeenCalled()
+    expect(renderCertificatePdfBufferMock).not.toHaveBeenCalled()
   })
 })

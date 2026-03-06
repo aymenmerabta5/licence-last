@@ -86,10 +86,18 @@ export function PlacementDocumentCard({
               verificationCodeLabel={t("placement.verificationCode")}
               verificationCode={doc.verificationCode}
               notAvailableLabel={t("placement.notAvailable")}
-              isDownloading={downloadingDocumentId === doc.id}
-              downloadLabel={t("download")}
-              downloadingLabel={t("downloading")}
-              onDownload={() => onDownload(doc.id)}
+              isActionLoading={downloadingDocumentId === doc.id}
+              isActionDisabled={
+                doc.status !== "generated" || downloadingDocumentId === doc.id
+              }
+              actionLabel={
+                doc.status === "generated"
+                  ? t("download")
+                  : t(`status.${doc.status}` as "status.pending")
+              }
+              actionLoadingLabel={t("downloading")}
+              showDownloadIcon={doc.status === "generated"}
+              onAction={() => onDownload(doc.id)}
             />
           ))}
         </div>

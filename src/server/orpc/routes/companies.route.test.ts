@@ -16,6 +16,31 @@ function createProcedureMock() {
   }
 }
 
+function createCompanyOwnerProcedureMock() {
+  return {
+    use() {
+      return this
+    },
+    input() {
+      return this
+    },
+    handler<T>(fn: T) {
+      return async (args: {
+        context?: { companyMembership?: { role?: string } }
+      }) => {
+        if (args.context?.companyMembership?.role !== "owner") {
+          throw {
+            code: "FORBIDDEN",
+            message: "Company owner access required",
+          }
+        }
+
+        return (fn as (value: typeof args) => Promise<unknown>)(args)
+      }
+    },
+  }
+}
+
 async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
   return (procedure as (input: unknown) => Promise<T>)(args)
 }
@@ -37,6 +62,9 @@ const uploadCompanyVerificationDocumentMock = mock(async () => ({
   fileSizeBytes: 1024,
 }))
 const deleteFileMock = mock(async () => {})
+const uploadImageToS3Mock = mock(async () => ({
+  url: "https://example.com/logo.png",
+}))
 const downloadCompanyVerificationDocumentMock = mock(async () => ({
   buffer: Buffer.from("verification-document"),
   fileName: "trade-license.pdf",
@@ -129,7 +157,8 @@ function applyCompaniesRouteMocks() {
     companyAdminProcedureAssistant: createProcedureMock(),
     companyAdminProcedureGenerous: createProcedureMock(),
     companyAdminProcedureStandard: createProcedureMock(),
-    companyOwnerProcedureStandard: createProcedureMock(),
+    companyOwnerProcedureStandard: createCompanyOwnerProcedureMock(),
+    companyOwnerProcedureGenerous: createCompanyOwnerProcedureMock(),
     studentProcedureGenerous: createProcedureMock(),
     studentProcedureStandard: createProcedureMock(),
     deptHeadProcedureStandard: createProcedureMock(),
@@ -164,6 +193,7 @@ function applyCompaniesRouteMocks() {
   }))
   mock.module("@/server/services/companies/get", () => ({
     getCompanyById: mock(async () => null),
+    getCompanyByUserId: mock(async () => null),
   }))
   mock.module("@/server/services/companies/create", () => ({
     createCompany: createCompanyMock,
@@ -196,7 +226,7 @@ function applyCompaniesRouteMocks() {
     getCompanyMembership: getCompanyMembershipMock,
   }))
   mock.module("@/server/services/uploads/upload-image", () => ({
-    uploadImageToS3: mock(async () => ({ url: "https://example.com/logo.png" })),
+    uploadImageToS3: uploadImageToS3Mock,
   }))
   mock.module(
     "@/server/services/uploads/upload-company-verification-document",
@@ -245,6 +275,7 @@ describe("src/server/orpc/routes/companies", () => {
     createCompanyMock.mockClear()
     uploadCompanyVerificationDocumentMock.mockClear()
     deleteFileMock.mockClear()
+    uploadImageToS3Mock.mockClear()
     downloadCompanyVerificationDocumentMock.mockClear()
     updateCompanyMock.mockClear()
     listCompanyMembersMock.mockClear()
@@ -366,8 +397,8 @@ describe("src/server/orpc/routes/companies", () => {
     const result = await callProcedure(updateCompanyProcedure, {
       input: { description: "updated" },
       context: {
-        user: { id: "user-1" },
-        companyMembership: { companyId: "company-1" },
+        user: { id: "user-1", role: "company_admin" },
+        companyMembership: { companyId: "company-1", role: "owner" },
       },
     })
 
@@ -390,8 +421,8 @@ describe("src/server/orpc/routes/companies", () => {
       callProcedure(updateCompanyProcedure, {
         input: { description: "updated" },
         context: {
-          user: { id: "user-1" },
-          companyMembership: { companyId: "company-1" },
+          user: { id: "user-1", role: "company_admin" },
+          companyMembership: { companyId: "company-1", role: "owner" },
         },
       }),
     ).rejects.toMatchObject({
@@ -506,7 +537,9 @@ describe("src/server/orpc/routes/companies", () => {
     )
 
     const result = await callProcedure(listCompanyMembersProcedure, {
-      context: { companyMembership: { companyId: "company-1" } },
+      context: {
+        companyMembership: { companyId: "company-1", role: "owner" },
+      },
     })
 
     expect(listCompanyMembersMock).toHaveBeenCalledWith("company-1")
@@ -816,6 +849,84 @@ describe("src/server/orpc/routes/companies", () => {
       code: "FORBIDDEN",
       message:
         "You can only report companies you have applied to, worked with, or are a member of",
+    })
+  })
+  test("updateCompanyProcedure rejects recruiter governance writes", async () => {
+    const { updateCompanyProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    await expect(
+      callProcedure(updateCompanyProcedure, {
+        input: { description: "updated" },
+        context: {
+          user: { id: "recruiter-1", role: "company_admin" },
+          companyMembership: { companyId: "company-1", role: "recruiter" },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "Company owner access required",
+    })
+  })
+
+  test("listCompanyMembersProcedure rejects recruiter governance reads", async () => {
+    const { listCompanyMembersProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    await expect(
+      callProcedure(listCompanyMembersProcedure, {
+        context: {
+          companyMembership: { companyId: "company-1", role: "recruiter" },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "Company owner access required",
+    })
+  })
+
+  test("uploadCompanyLogoProcedure rejects recruiter governance writes", async () => {
+    const { uploadCompanyLogoProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+
+    await expect(
+      callProcedure(uploadCompanyLogoProcedure, {
+        input: { file: createPdfFile("logo.png") },
+        context: {
+          user: { id: "recruiter-1", role: "company_admin" },
+          companyMembership: { companyId: "company-1", role: "recruiter" },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "Company owner access required",
+    })
+  })
+
+  test("uploadCompanyLogoProcedure allows owner governance writes", async () => {
+    const { uploadCompanyLogoProcedure } = await import(
+      "@/server/orpc/routes/companies"
+    )
+    const file = createPdfFile("logo.png")
+
+    const result = await callProcedure(uploadCompanyLogoProcedure, {
+      input: { file },
+      context: {
+        user: { id: "owner-1", role: "company_admin" },
+        companyMembership: { companyId: "company-1", role: "owner" },
+      },
+    })
+
+    expect(result).toEqual({ url: "https://example.com/logo.png" })
+    expect(uploadImageToS3Mock).toHaveBeenCalledWith({
+      file,
+      folder: "logos",
+    })
+    expect(updateCompanyMock).toHaveBeenCalledWith("company-1", {
+      logoUrl: "https://example.com/logo.png",
     })
   })
 })

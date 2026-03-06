@@ -4,23 +4,93 @@ import { ORPCError } from "@orpc/server"
 import { z } from "zod"
 
 import { verifyCodeSchema } from "@/lib/schemas/verify"
+import * as rateLimitedProcedures from "@/server/orpc/rate-limited-procedures"
+import { downloadDocument } from "@/server/services/documents/download"
+import { downloadDocumentByCompany } from "@/server/services/documents/download-by-company"
 import {
+  generateAgreement,
+  type AgreementIssuerContext,
+} from "@/server/services/documents/generate-agreement"
+import { generateCertificateByCompany } from "@/server/services/documents/generate-certificate-by-company"
+import {
+  isDocumentServiceError,
+} from "@/server/services/documents/errors"
+import { listDocumentsByCompany } from "@/server/services/documents/list-by-company"
+import { listDocumentsByStudent } from "@/server/services/documents/list-by-student"
+import { verifyDocument } from "@/server/services/documents/verify"
+
+const {
   adminProcedureStandard,
   companyAdminProcedureGenerous,
   companyAdminProcedureStandard,
   publicProcedureStandard,
   studentProcedureGenerous,
   studentProcedureStandard,
-} from "@/server/orpc/rate-limited-procedures"
-import { downloadDocument } from "@/server/services/documents/download"
-import { downloadDocumentByCompany } from "@/server/services/documents/download-by-company"
-import { generateAgreement } from "@/server/services/documents/generate-agreement"
-import { generateCertificateByCompany } from "@/server/services/documents/generate-certificate-by-company"
-import { listDocumentsByCompany } from "@/server/services/documents/list-by-company"
-import { listDocumentsByStudent } from "@/server/services/documents/list-by-student"
-import { verifyDocument } from "@/server/services/documents/verify"
+} = rateLimitedProcedures
 
-/* -- Generate Agreement PDF (admin only) -- */
+const companyOwnerProcedureStandard =
+  rateLimitedProcedures.companyOwnerProcedureStandard ??
+  rateLimitedProcedures.companyAdminProcedureStandard
+
+function throwDocumentRouteError(
+  error: unknown,
+  fallbackMessage: string,
+): never {
+  if (error instanceof ORPCError) {
+    throw error
+  }
+
+  if (isDocumentServiceError(error)) {
+    if (error.code === "DOCUMENT_NOT_FOUND" || error.code === "PLACEMENT_NOT_FOUND") {
+      throw new ORPCError("NOT_FOUND", { message: error.message })
+    }
+
+    if (
+      error.code === "DOCUMENT_FORBIDDEN" ||
+      error.code === "PLACEMENT_FORBIDDEN"
+    ) {
+      throw new ORPCError("FORBIDDEN", { message: error.message })
+    }
+
+    if (error.code === "DOCUMENT_NOT_READY") {
+      throw new ORPCError("CONFLICT", { message: error.message })
+    }
+
+    throw new ORPCError("BAD_REQUEST", { message: error.message })
+  }
+
+  throw new ORPCError("BAD_REQUEST", {
+    message: error instanceof Error ? error.message : fallbackMessage,
+  })
+}
+
+function toAgreementIssuerContext(context: {
+  user: {
+    id: string
+    role?: string | null
+    universityId?: string | null
+    departmentId?: string | null
+  }
+}): AgreementIssuerContext {
+  return {
+    userId: context.user.id,
+    role: context.user.role ?? null,
+    universityId: context.user.universityId ?? null,
+    departmentId: context.user.departmentId ?? null,
+  }
+}
+
+function assertCompanyOwner(context: {
+  companyMembership: { role?: string | null }
+}): void {
+  if (context.companyMembership.role !== "owner") {
+    throw new ORPCError("FORBIDDEN", {
+      message: "Company owner access required",
+    })
+  }
+}
+
+/* Generate Agreement PDF */
 
 export const generateAgreementProcedure = adminProcedureStandard
   .input(
@@ -29,11 +99,21 @@ export const generateAgreementProcedure = adminProcedureStandard
       locale: z.enum(["en", "fr", "ar"]).optional(),
     }),
   )
-  .handler(async ({ input }) => {
+  .handler(async ({ input, context }) => {
+    if (
+      context.user.role !== "university_admin" &&
+      context.user.role !== "dept_head"
+    ) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "You do not have access to this placement",
+      })
+    }
+
     try {
       const result = await generateAgreement({
         placementId: input.placementId,
         locale: input.locale,
+        issuer: toAgreementIssuerContext(context),
       })
 
       return {
@@ -42,30 +122,24 @@ export const generateAgreementProcedure = adminProcedureStandard
         pdfBase64: result.buffer?.toString("base64"),
       }
     } catch (error) {
-      if (error instanceof ORPCError) throw error
-      throw new ORPCError("BAD_REQUEST", {
-        message:
-          error instanceof Error
-            ? error.message
-            : "Failed to generate agreement",
-      })
+      throwDocumentRouteError(error, "Failed to generate agreement")
     }
   })
 
-/* -- Student Documents List -- */
+/* Student Documents List */
 
 export const listStudentDocumentsProcedure = studentProcedureGenerous.handler(
   async ({ context }) => listDocumentsByStudent(context.user.id),
 )
 
-/* -- Company Documents List -- */
+/* Company Documents List */
 
 export const listCompanyDocumentsProcedure =
   companyAdminProcedureGenerous.handler(async ({ context }) =>
     listDocumentsByCompany(context.companyMembership.companyId),
   )
 
-/* -- Student Document Download -- */
+/* Student Document Download */
 
 export const downloadDocumentProcedure = studentProcedureStandard
   .input(
@@ -88,29 +162,13 @@ export const downloadDocumentProcedure = studentProcedureStandard
         pdfBase64: result.buffer.toString("base64"),
       }
     } catch (error) {
-      if (error instanceof ORPCError) throw error
-
-      if (error instanceof Error) {
-        if (error.message === "Document not found") {
-          throw new ORPCError("NOT_FOUND", { message: error.message })
-        }
-        if (error.message === "You do not have access to this document") {
-          throw new ORPCError("FORBIDDEN", { message: error.message })
-        }
-      }
-
-      throw new ORPCError("BAD_REQUEST", {
-        message:
-          error instanceof Error
-            ? error.message
-            : "Failed to download document",
-      })
+      throwDocumentRouteError(error, "Failed to download document")
     }
   })
 
-/* -- Company Certificate Generation -- */
+/* Company Certificate Generation */
 
-export const generateCompanyCertificateProcedure = companyAdminProcedureStandard
+export const generateCompanyCertificateProcedure = companyOwnerProcedureStandard
   .input(
     z.object({
       placementId: z.string().min(1),
@@ -118,11 +176,14 @@ export const generateCompanyCertificateProcedure = companyAdminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
+    assertCompanyOwner(context)
+
     try {
       const result = await generateCertificateByCompany({
         placementId: input.placementId,
         companyId: context.companyMembership.companyId,
         issuedByUserId: context.user.id,
+        issuedByMembershipRole: context.companyMembership.role,
         locale: input.locale,
       })
 
@@ -133,27 +194,11 @@ export const generateCompanyCertificateProcedure = companyAdminProcedureStandard
         pdfBase64: result.buffer?.toString("base64"),
       }
     } catch (error) {
-      if (error instanceof ORPCError) throw error
-
-      if (error instanceof Error) {
-        if (error.message === "Placement not found") {
-          throw new ORPCError("NOT_FOUND", { message: error.message })
-        }
-        if (error.message === "You do not have access to this placement") {
-          throw new ORPCError("FORBIDDEN", { message: error.message })
-        }
-      }
-
-      throw new ORPCError("BAD_REQUEST", {
-        message:
-          error instanceof Error
-            ? error.message
-            : "Failed to generate certificate",
-      })
+      throwDocumentRouteError(error, "Failed to generate certificate")
     }
   })
 
-/* -- Company Document Download -- */
+/* Company Document Download */
 
 export const downloadCompanyDocumentProcedure = companyAdminProcedureStandard
   .input(
@@ -176,27 +221,11 @@ export const downloadCompanyDocumentProcedure = companyAdminProcedureStandard
         pdfBase64: result.buffer.toString("base64"),
       }
     } catch (error) {
-      if (error instanceof ORPCError) throw error
-
-      if (error instanceof Error) {
-        if (error.message === "Document not found") {
-          throw new ORPCError("NOT_FOUND", { message: error.message })
-        }
-        if (error.message === "You do not have access to this document") {
-          throw new ORPCError("FORBIDDEN", { message: error.message })
-        }
-      }
-
-      throw new ORPCError("BAD_REQUEST", {
-        message:
-          error instanceof Error
-            ? error.message
-            : "Failed to download document",
-      })
+      throwDocumentRouteError(error, "Failed to download document")
     }
   })
 
-/* -- Verify Document (public) -- */
+/* Verify Document */
 
 export const verifyDocumentProcedure = publicProcedureStandard
   .input(verifyCodeSchema)

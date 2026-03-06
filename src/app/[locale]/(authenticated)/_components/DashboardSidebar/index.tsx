@@ -7,9 +7,15 @@ import { SidebarNav } from "@/app/[locale]/(authenticated)/_components/Dashboard
 import { useSidebar } from "@/app/[locale]/(authenticated)/_components/DashboardSidebar/hooks/useSidebar"
 import { cn } from "@/lib/utils"
 
-export function DashboardSidebar({ role = "student" }: { role?: string }) {
+export function DashboardSidebar({
+  role = "student",
+  companyMembershipRole = null,
+}: {
+  role?: string
+  companyMembershipRole?: string | null
+}) {
   const { isCollapsed, setIsCollapsed, filteredItems, pathname, logout } =
-    useSidebar(role)
+    useSidebar(role, companyMembershipRole)
 
   return (
     <motion.aside

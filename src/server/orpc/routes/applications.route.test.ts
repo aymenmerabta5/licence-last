@@ -99,19 +99,17 @@ mock.module("@/server/services/applications/pipeline", () => ({
   listApplicationTimeline: listApplicationTimelineMock,
   updateApplicationPipelineStage: updatePipelineStageMock,
 }))
+const selectBuilder = {
+  from: () => selectBuilder,
+  innerJoin: () => selectBuilder,
+  where: () => selectBuilder,
+  limit: async () => getNextDbRows(),
+}
+
 mock.module("@/server/db", () => ({
   db: {
     select: () => ({
-      from: () => ({
-        innerJoin: () => ({
-          where: () => ({
-            limit: async () => getNextDbRows(),
-          }),
-        }),
-        where: () => ({
-          limit: async () => getNextDbRows(),
-        }),
-      }),
+      from: () => selectBuilder,
     }),
   },
 }))
@@ -261,7 +259,13 @@ describe("src/server/orpc/routes/applications", () => {
 
   test("getTimelineProcedure returns timeline for the owning student", async () => {
     dbLimitQueue.push([
-      { id: "app-1", studentUserId: "student-1", companyId: "company-1" },
+      {
+        id: "app-1",
+        studentUserId: "student-1",
+        studentUniversityId: "uni-1",
+        studentDepartmentId: "dep-1",
+        companyId: "company-1",
+      },
     ])
     listApplicationTimelineMock.mockResolvedValueOnce([
       { id: "evt-1", eventType: "application_created" },
@@ -280,9 +284,84 @@ describe("src/server/orpc/routes/applications", () => {
     expect(listApplicationTimelineMock).toHaveBeenCalledWith("app-1")
   })
 
-  test("getTimelineProcedure returns timeline for company owner membership", async () => {
+  test("getTimelineProcedure allows same-university university admin", async () => {
     dbLimitQueue.push([
-      { id: "app-1", studentUserId: "student-1", companyId: "company-1" },
+      {
+        id: "app-1",
+        studentUserId: "student-1",
+        studentUniversityId: "uni-1",
+        studentDepartmentId: "dep-1",
+        companyId: "company-1",
+      },
+    ])
+    listApplicationTimelineMock.mockResolvedValueOnce([
+      { id: "evt-1", eventType: "application_status_changed" },
+    ])
+
+    const { getTimelineProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
+
+    const result = await callProcedure(getTimelineProcedure, {
+      input: { applicationId: "app-1" },
+      context: {
+        user: {
+          id: "admin-1",
+          role: "university_admin",
+          universityId: "uni-1",
+        },
+      },
+    })
+
+    expect(result).toEqual([
+      { id: "evt-1", eventType: "application_status_changed" },
+    ])
+  })
+
+  test("getTimelineProcedure allows same-department dept head", async () => {
+    dbLimitQueue.push([
+      {
+        id: "app-1",
+        studentUserId: "student-1",
+        studentUniversityId: "uni-1",
+        studentDepartmentId: "dep-1",
+        companyId: "company-1",
+      },
+    ])
+    listApplicationTimelineMock.mockResolvedValueOnce([
+      { id: "evt-2", eventType: "application_status_changed" },
+    ])
+
+    const { getTimelineProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
+
+    const result = await callProcedure(getTimelineProcedure, {
+      input: { applicationId: "app-1" },
+      context: {
+        user: {
+          id: "head-1",
+          role: "dept_head",
+          universityId: "uni-1",
+          departmentId: "dep-1",
+        },
+      },
+    })
+
+    expect(result).toEqual([
+      { id: "evt-2", eventType: "application_status_changed" },
+    ])
+  })
+
+  test("getTimelineProcedure returns timeline for same-company membership", async () => {
+    dbLimitQueue.push([
+      {
+        id: "app-1",
+        studentUserId: "student-1",
+        studentUniversityId: "uni-1",
+        studentDepartmentId: "dep-1",
+        companyId: "company-1",
+      },
     ])
     dbLimitQueue.push([{ companyId: "company-1" }])
     listApplicationTimelineMock.mockResolvedValueOnce([
@@ -324,7 +403,13 @@ describe("src/server/orpc/routes/applications", () => {
 
   test("getTimelineProcedure rejects unauthorized actor", async () => {
     dbLimitQueue.push([
-      { id: "app-1", studentUserId: "student-1", companyId: "company-1" },
+      {
+        id: "app-1",
+        studentUserId: "student-1",
+        studentUniversityId: "uni-1",
+        studentDepartmentId: "dep-1",
+        companyId: "company-1",
+      },
     ])
 
     const { getTimelineProcedure } = await import(
@@ -342,9 +427,48 @@ describe("src/server/orpc/routes/applications", () => {
     })
   })
 
+  test("getTimelineProcedure rejects cross-department dept head", async () => {
+    dbLimitQueue.push([
+      {
+        id: "app-1",
+        studentUserId: "student-1",
+        studentUniversityId: "uni-1",
+        studentDepartmentId: "dep-1",
+        companyId: "company-1",
+      },
+    ])
+
+    const { getTimelineProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
+
+    await expect(
+      callProcedure(getTimelineProcedure, {
+        input: { applicationId: "app-1" },
+        context: {
+          user: {
+            id: "head-1",
+            role: "dept_head",
+            universityId: "uni-1",
+            departmentId: "dep-2",
+          },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "You do not have access to this timeline",
+    })
+  })
+
   test("getTimelineProcedure rejects company admin with mismatched membership", async () => {
     dbLimitQueue.push([
-      { id: "app-1", studentUserId: "student-1", companyId: "company-1" },
+      {
+        id: "app-1",
+        studentUserId: "student-1",
+        studentUniversityId: "uni-1",
+        studentDepartmentId: "dep-1",
+        companyId: "company-1",
+      },
     ])
     dbLimitQueue.push([{ companyId: "company-2" }])
 
@@ -365,7 +489,13 @@ describe("src/server/orpc/routes/applications", () => {
 
   test("getTimelineProcedure rejects multiple company memberships", async () => {
     dbLimitQueue.push([
-      { id: "app-1", studentUserId: "student-1", companyId: "company-1" },
+      {
+        id: "app-1",
+        studentUserId: "student-1",
+        studentUniversityId: "uni-1",
+        studentDepartmentId: "dep-1",
+        companyId: "company-1",
+      },
     ])
     dbLimitQueue.push([{ companyId: "company-1" }, { companyId: "company-2" }])
 

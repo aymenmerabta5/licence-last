@@ -9,7 +9,7 @@ import {
   isSavedOffersEnabledOnClient,
 } from "@/lib/feature-flags-client"
 
-export function useSidebar(role: string) {
+export function useSidebar(role: string, companyMembershipRole?: string | null) {
   const pathname = usePathname()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const { logout } = useLogout()
@@ -25,9 +25,16 @@ export function useSidebar(role: string) {
         if (item.labelKey === "interviews" && !interviewsEnabled) {
           return false
         }
+        if (
+          role === "company_admin" &&
+          item.companyMembershipRoles &&
+          !item.companyMembershipRoles.includes(companyMembershipRole ?? "")
+        ) {
+          return false
+        }
         return item.roles.includes(role)
       }),
-    [interviewsEnabled, role, savedOffersEnabled],
+    [companyMembershipRole, interviewsEnabled, role, savedOffersEnabled],
   )
 
   return { isCollapsed, setIsCollapsed, filteredItems, pathname, logout }

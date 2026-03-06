@@ -22,6 +22,7 @@ const getStudentProfileMock = mock(async () => ({ userId: "student-1" }))
 const getPublicStudentProfileMock = mock(async () => ({ userId: "student-1" }))
 const upsertStudentProfileMock = mock(async () => ({ success: true }))
 const revalidateTagMock = mock(() => {})
+const dbLimitQueue: unknown[][] = []
 const featureFlagsState = {
   NOTIF_PREFERENCES: true,
   SAVED_OFFERS: true,
@@ -66,6 +67,18 @@ function applyStudentsRouteMocks() {
     unstable_cache: (fn: (...args: any[]) => any) => fn,
   }))
 
+  mock.module("@/server/db", () => ({
+    db: {
+      select: () => ({
+        from: () => ({
+          where: () => ({
+            limit: async () => dbLimitQueue.shift() ?? [],
+          }),
+        }),
+      }),
+    },
+  }))
+
   mock.module("@/server/services/students/get-profile", () => ({
     getStudentProfile: getStudentProfileMock,
   }))
@@ -92,6 +105,7 @@ describe("src/server/orpc/routes/students", () => {
     upsertStudentProfileMock.mockClear()
     revalidateTagMock.mockClear()
     isFeatureEnabledMock.mockClear()
+    dbLimitQueue.length = 0
     isFeatureEnabledMock.mockImplementation(
       (flag: keyof typeof featureFlagsState) => featureFlagsState[flag],
     )
@@ -110,6 +124,52 @@ describe("src/server/orpc/routes/students", () => {
     ).rejects.toMatchObject({
       code: "FORBIDDEN",
       message: "You can only view your own profile",
+    })
+  })
+
+  test("getStudentProfileProcedure allows same-university university admin", async () => {
+    dbLimitQueue.push([{ universityId: "uni-1", departmentId: "dep-1" }])
+
+    const { getStudentProfileProcedure } = await import(
+      "@/server/orpc/routes/students"
+    )
+
+    const result = await callProcedure(getStudentProfileProcedure, {
+      input: { userId: "student-2" },
+      context: {
+        user: {
+          id: "admin-1",
+          role: "university_admin",
+          universityId: "uni-1",
+        },
+      },
+    })
+
+    expect(result).toEqual({ userId: "student-1" })
+    expect(getStudentProfileMock).toHaveBeenCalledWith("student-2")
+  })
+
+  test("getStudentProfileProcedure rejects cross-university university admin", async () => {
+    dbLimitQueue.push([{ universityId: "uni-2", departmentId: "dep-1" }])
+
+    const { getStudentProfileProcedure } = await import(
+      "@/server/orpc/routes/students"
+    )
+
+    await expect(
+      callProcedure(getStudentProfileProcedure, {
+        input: { userId: "student-2" },
+        context: {
+          user: {
+            id: "admin-1",
+            role: "university_admin",
+            universityId: "uni-1",
+          },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "You do not have access to this profile",
     })
   })
 

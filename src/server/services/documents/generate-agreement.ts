@@ -23,9 +23,17 @@ import { sendAgreementEmail } from "@/server/services/documents/send-agreement-e
 import { generateVerificationCode } from "@/server/services/documents/verification-code"
 import { createNotification } from "@/server/services/notifications/create"
 
+export interface AgreementIssuerContext {
+  userId: string
+  role: string | null
+  universityId: string | null
+  departmentId: string | null
+}
+
 export interface GenerateAgreementInput {
   placementId: string
   locale?: string
+  issuer: AgreementIssuerContext
 }
 
 export interface GenerateAgreementResult {
@@ -34,11 +42,73 @@ export interface GenerateAgreementResult {
   buffer?: Buffer
 }
 
-export async function generateAgreement(
-  input: GenerateAgreementInput,
-): Promise<GenerateAgreementResult> {
-  const { placementId, locale = "en" } = input
+interface AgreementContext {
+  placementRecord: typeof placement.$inferSelect
+  row: {
+    applicationId: string
+    offerTitle: string
+    internshipType: string
+    workMode: string | null
+    durationWeeks: number | null
+    companyName: string
+    companyAddress: string | null
+    companyPhone: string | null
+    companyRepresentativeName: string | null
+    companyContactEmail: string | null
+    studentName: string | null
+    studentEmail: string
+    studentUserId: string
+    studentUniversityId: string | null
+    studentDepartmentId: string | null
+    studentPhone: string | null
+    studentNumber: string | null
+    studentDepartment: string | null
+    studentAddress: string | null
+    universityName: string | null
+    universityDepartmentName: string | null
+    universityAddress: string | null
+    universityPhone: string | null
+  }
+  data: AgreementData
+}
 
+function toMetaRecord(value: unknown): Record<string, unknown> {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value as Record<string, unknown>
+  }
+
+  return {}
+}
+
+function pickString(value: unknown): string | null {
+  return typeof value === "string" && value.length > 0 ? value : null
+}
+
+function canIssueAgreement(
+  issuer: AgreementIssuerContext,
+  studentUniversityId: string | null,
+  studentDepartmentId: string | null,
+): boolean {
+  if (issuer.role === "university_admin") {
+    return (
+      issuer.universityId != null &&
+      issuer.universityId === studentUniversityId
+    )
+  }
+
+  if (issuer.role === "dept_head") {
+    return (
+      issuer.universityId != null &&
+      issuer.departmentId != null &&
+      issuer.universityId === studentUniversityId &&
+      issuer.departmentId === studentDepartmentId
+    )
+  }
+
+  return false
+}
+
+async function loadAgreementContext(placementId: string): Promise<AgreementContext> {
   const [placementRecord] = await db
     .select()
     .from(placement)
@@ -52,28 +122,24 @@ export async function generateAgreement(
   const [row] = await db
     .select({
       applicationId: application.id,
-
       offerTitle: internshipOffer.title,
       internshipType: internshipOffer.internshipType,
       workMode: internshipOffer.workMode,
       durationWeeks: internshipOffer.durationWeeks,
-
       companyName: company.name,
       companyAddress: company.address,
       companyPhone: company.phone,
       companyRepresentativeName: company.representativeName,
       companyContactEmail: company.contactEmail,
-
       studentName: user.name,
       studentEmail: user.email,
       studentUserId: user.id,
       studentUniversityId: user.universityId,
-
+      studentDepartmentId: user.departmentId,
       studentPhone: studentProfile.phone,
       studentNumber: studentProfile.studentNumber,
       studentDepartment: studentProfile.department,
       studentAddress: studentProfile.address,
-
       universityName: university.name,
       universityDepartmentName: university.departmentName,
       universityAddress: university.address,
@@ -95,7 +161,87 @@ export async function generateAgreement(
     )
   }
 
-  // Check for existing document to preserve verification code on regeneration
+  return {
+    placementRecord,
+    row,
+    data: {
+      studentName: row.studentName ?? "Unknown",
+      studentEmail: row.studentEmail,
+      studentPhone: row.studentPhone ?? null,
+      studentNumber: row.studentNumber ?? null,
+      studentDepartment: row.studentDepartment ?? null,
+      studentAddress: row.studentAddress ?? null,
+      companyName: row.companyName,
+      companyAddress: row.companyAddress ?? null,
+      companyPhone: row.companyPhone ?? null,
+      companyRepresentativeName: row.companyRepresentativeName ?? null,
+      companyContactEmail: row.companyContactEmail ?? null,
+      universityName: row.universityName ?? null,
+      universityDepartmentName: row.universityDepartmentName ?? null,
+      universityAddress: row.universityAddress ?? null,
+      universityPhone: row.universityPhone ?? null,
+      offerTitle: row.offerTitle,
+      internshipType: row.internshipType,
+      startDate: placementRecord.startDate,
+      endDate: placementRecord.endDate,
+      workMode: row.workMode ?? null,
+      durationWeeks: row.durationWeeks ?? null,
+    },
+  }
+}
+
+async function renderAgreementBuffer(params: {
+  data: AgreementData
+  locale: string
+  verificationCode: string
+}): Promise<Buffer> {
+  const verificationUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/${params.locale}/verify/${params.verificationCode}`
+  const qrCodeDataUrl = await generateQRCodeDataUrl(verificationUrl)
+
+  const pdfBuffer = await renderToBuffer(
+    createElement(ConventionDeStageTemplate, {
+      data: params.data,
+      locale: params.locale,
+      verificationCode: params.verificationCode,
+      qrCodeDataUrl,
+    }) as unknown as Parameters<typeof renderToBuffer>[0],
+  )
+
+  return Buffer.from(pdfBuffer)
+}
+
+export async function renderAgreementPdfBuffer(input: {
+  placementId: string
+  locale: string
+  verificationCode: string
+}): Promise<Buffer> {
+  const context = await loadAgreementContext(input.placementId)
+  return renderAgreementBuffer({
+    data: context.data,
+    locale: input.locale,
+    verificationCode: input.verificationCode,
+  })
+}
+
+export async function generateAgreement(
+  input: GenerateAgreementInput,
+): Promise<GenerateAgreementResult> {
+  const { placementId, locale = "en", issuer } = input
+  const context = await loadAgreementContext(placementId)
+
+  if (
+    !canIssueAgreement(
+      issuer,
+      context.row.studentUniversityId,
+      context.row.studentDepartmentId,
+    )
+  ) {
+    throw new DocumentServiceError(
+      "PLACEMENT_FORBIDDEN",
+      "You do not have access to this placement",
+    )
+  }
+
   const [existingDoc] = await db
     .select()
     .from(placementDocument)
@@ -107,62 +253,44 @@ export async function generateAgreement(
     )
     .limit(1)
 
-  let verificationCode = existingDoc?.verificationCode ?? generateVerificationCode()
+  const existingMeta = toMetaRecord(existingDoc?.meta)
+  const existingVerificationCode = pickString(existingDoc?.verificationCode)
+  const existingLocale = pickString(existingMeta.locale)
+  const existingFileName = pickString(existingMeta.fileName)
+  const existingGeneratedAt = pickString(existingMeta.generatedAt)
+  const existingIssuedByUserId = pickString(existingMeta.issuedByUserId)
+  const existingIssuedByRole = pickString(existingMeta.issuedByRole)
 
-  const data: AgreementData = {
-    // Student info
-    studentName: row.studentName ?? "Unknown",
-    studentEmail: row.studentEmail,
-    studentPhone: row.studentPhone ?? null,
-    studentNumber: row.studentNumber ?? null,
-    studentDepartment: row.studentDepartment ?? null,
-    studentAddress: row.studentAddress ?? null,
-
-    // Company info
-    companyName: row.companyName,
-    companyAddress: row.companyAddress ?? null,
-    companyPhone: row.companyPhone ?? null,
-    companyRepresentativeName: row.companyRepresentativeName ?? null,
-    companyContactEmail: row.companyContactEmail ?? null,
-
-    // University info
-    universityName: row.universityName ?? null,
-    universityDepartmentName: row.universityDepartmentName ?? null,
-    universityAddress: row.universityAddress ?? null,
-    universityPhone: row.universityPhone ?? null,
-
-    // Placement info
-    offerTitle: row.offerTitle,
-    internshipType: row.internshipType,
-    startDate: placementRecord.startDate,
-    endDate: placementRecord.endDate,
-    workMode: row.workMode ?? null,
-    durationWeeks: row.durationWeeks ?? null,
+  if (existingDoc?.status === "generated" && existingVerificationCode) {
+    return {
+      success: true,
+      documentId: existingDoc.id,
+      buffer: await renderAgreementBuffer({
+        data: context.data,
+        locale: existingLocale ?? locale,
+        verificationCode: existingVerificationCode,
+      }),
+    }
   }
 
-  const renderAgreementPdf = async (code: string) => {
-    const verificationUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/${locale}/verify/${code}`
-    const qrCodeDataUrl = await generateQRCodeDataUrl(verificationUrl)
-
-    return renderToBuffer(
-      createElement(ConventionDeStageTemplate, {
-        data,
-        locale,
-        verificationCode: code,
-        qrCodeDataUrl,
-      }) as unknown as Parameters<typeof renderToBuffer>[0],
-    )
+  let verificationCode = existingVerificationCode ?? generateVerificationCode()
+  const issuedLocale = existingLocale ?? locale
+  const issuedMeta = {
+    ...existingMeta,
+    generatedAt: existingGeneratedAt ?? new Date().toISOString(),
+    locale: issuedLocale,
+    fileName: existingFileName ?? `agreement_${placementId}.pdf`,
+    applicationId: context.row.applicationId,
+    studentUniversityId: context.row.studentUniversityId,
+    issuedByUserId: existingIssuedByUserId ?? issuer.userId,
+    issuedByRole: existingIssuedByRole ?? issuer.role,
   }
 
-  let pdfBuffer = await renderAgreementPdf(verificationCode)
-
-  const nextMeta = {
-    generatedAt: new Date().toISOString(),
-    locale,
-    fileName: `agreement_${placementId}.pdf`,
-    applicationId: row.applicationId,
-    studentUniversityId: row.studentUniversityId,
-  }
+  let pdfBuffer = await renderAgreementBuffer({
+    data: context.data,
+    locale: issuedLocale,
+    verificationCode,
+  })
 
   let documentRecord = existingDoc
   let shouldSendAgreementEmail = false
@@ -173,9 +301,10 @@ export async function generateAgreement(
       .set({
         status: "generated",
         verificationCode,
-        meta: nextMeta,
+        meta: issuedMeta,
       })
       .where(eq(placementDocument.id, documentRecord.id))
+    shouldSendAgreementEmail = documentRecord.status !== "generated"
   } else {
     const [insertedDoc] = await db
       .insert(placementDocument)
@@ -185,7 +314,7 @@ export async function generateAgreement(
         type: "agreement",
         status: "generated",
         verificationCode,
-        meta: nextMeta,
+        meta: issuedMeta,
       })
       .onConflictDoNothing({
         target: [placementDocument.placementId, placementDocument.type],
@@ -214,23 +343,51 @@ export async function generateAgreement(
         )
       }
 
-      documentRecord = resolvedDoc
+      const resolvedMeta = toMetaRecord(resolvedDoc.meta)
       const resolvedVerificationCode =
-        resolvedDoc.verificationCode ?? verificationCode
+        pickString(resolvedDoc.verificationCode) ?? verificationCode
 
-      if (resolvedVerificationCode !== verificationCode) {
-        verificationCode = resolvedVerificationCode
-        pdfBuffer = await renderAgreementPdf(verificationCode)
+      if (resolvedDoc.status === "generated" && resolvedVerificationCode) {
+        return {
+          success: true,
+          documentId: resolvedDoc.id,
+          buffer: await renderAgreementBuffer({
+            data: context.data,
+            locale: pickString(resolvedMeta.locale) ?? issuedLocale,
+            verificationCode: resolvedVerificationCode,
+          }),
+        }
       }
+
+      documentRecord = resolvedDoc
+      verificationCode = resolvedVerificationCode
+      pdfBuffer = await renderAgreementBuffer({
+        data: context.data,
+        locale: pickString(resolvedMeta.locale) ?? issuedLocale,
+        verificationCode,
+      })
 
       await db
         .update(placementDocument)
         .set({
           status: "generated",
           verificationCode,
-          meta: nextMeta,
+          meta: {
+            ...resolvedMeta,
+            generatedAt:
+              pickString(resolvedMeta.generatedAt) ?? issuedMeta.generatedAt,
+            locale: pickString(resolvedMeta.locale) ?? issuedMeta.locale,
+            fileName: pickString(resolvedMeta.fileName) ?? issuedMeta.fileName,
+            applicationId: context.row.applicationId,
+            studentUniversityId: context.row.studentUniversityId,
+            issuedByUserId:
+              pickString(resolvedMeta.issuedByUserId) ?? issuedMeta.issuedByUserId,
+            issuedByRole:
+              pickString(resolvedMeta.issuedByRole) ?? issuedMeta.issuedByRole,
+          },
         })
         .where(eq(placementDocument.id, documentRecord.id))
+      shouldSendAgreementEmail = true
     }
   }
 
@@ -243,34 +400,34 @@ export async function generateAgreement(
 
   if (shouldSendAgreementEmail) {
     await createNotification({
-      userId: row.studentUserId,
+      userId: context.row.studentUserId,
       type: "agreement_generated",
       payload: {
         placementId,
         documentId: documentRecord.id,
-        companyName: row.companyName,
-        offerTitle: row.offerTitle,
+        companyName: context.row.companyName,
+        offerTitle: context.row.offerTitle,
       },
     })
 
     void sendAgreementEmail({
-      userId: row.studentUserId,
-      to: row.studentEmail,
-      studentName: row.studentName ?? "Student",
-      companyName: row.companyName,
-      offerTitle: row.offerTitle,
-      internshipType: row.internshipType,
-      startDate: placementRecord.startDate,
-      endDate: placementRecord.endDate,
+      userId: context.row.studentUserId,
+      to: context.row.studentEmail,
+      studentName: context.row.studentName ?? "Student",
+      companyName: context.row.companyName,
+      offerTitle: context.row.offerTitle,
+      internshipType: context.row.internshipType,
+      startDate: context.placementRecord.startDate,
+      endDate: context.placementRecord.endDate,
       verificationCode,
-      locale,
+      locale: issuedLocale,
     }).catch((error) => {
       logger.error(
         {
           err: error,
           event: "agreement_email_failed",
           placementId,
-          studentEmail: row.studentEmail,
+          studentEmail: context.row.studentEmail,
         },
         "Failed to send agreement generated email",
       )
@@ -280,6 +437,6 @@ export async function generateAgreement(
   return {
     success: true,
     documentId: documentRecord.id,
-    buffer: Buffer.from(pdfBuffer),
+    buffer: pdfBuffer,
   }
 }
