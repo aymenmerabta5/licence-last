@@ -185,6 +185,7 @@ export const assignDepartmentHeadProcedure = adminProcedureStandard
         codeMap: {
           DEPARTMENT_NOT_FOUND: "NOT_FOUND",
           USER_NOT_FOUND: "NOT_FOUND",
+          USER_INELIGIBLE_FOR_DEPARTMENT_HEAD: "FORBIDDEN",
         },
         fallbackMessage: "Failed to assign department head",
       })

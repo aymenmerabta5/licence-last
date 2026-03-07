@@ -74,10 +74,34 @@ describe("assignDepartmentHead", () => {
     )
   })
 
+  test("should throw when user role is ineligible", async () => {
+    selectLimitQueue.push(
+      [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
+      [{ id: "user-1", role: "company_admin", universityId: null }],
+    )
+
+    const { assignDepartmentHead } = await loadAssignHeadModule()
+    expect(assignDepartmentHead("dept-1", "user-1")).rejects.toThrow(
+      "User role cannot be assigned as department head",
+    )
+  })
+
+  test("should throw when user belongs to another university", async () => {
+    selectLimitQueue.push(
+      [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
+      [{ id: "user-1", role: "student", universityId: "uni-2" }],
+    )
+
+    const { assignDepartmentHead } = await loadAssignHeadModule()
+    expect(assignDepartmentHead("dept-1", "user-1")).rejects.toThrow(
+      "User belongs to a different university",
+    )
+  })
+
   test("should return success when both exist", async () => {
     selectLimitQueue.push(
       [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
-      [{ id: "user-1", role: "student" }],
+      [{ id: "user-1", role: "student", universityId: "uni-1" }],
     )
 
     const { assignDepartmentHead } = await loadAssignHeadModule()
@@ -92,7 +116,7 @@ describe("assignDepartmentHead", () => {
   test("should update user role and scope in a transaction", async () => {
     selectLimitQueue.push(
       [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
-      [{ id: "user-1", role: "student" }],
+      [{ id: "user-1", role: "student", universityId: "uni-1" }],
     )
 
     const { assignDepartmentHead } = await loadAssignHeadModule()
@@ -107,7 +131,7 @@ describe("assignDepartmentHead", () => {
   test("should make two select queries (dept + user)", async () => {
     selectLimitQueue.push(
       [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
-      [{ id: "user-1", role: "student" }],
+      [{ id: "user-1", role: "student", universityId: "uni-1" }],
     )
 
     const { assignDepartmentHead } = await loadAssignHeadModule()
