@@ -173,6 +173,29 @@ describe("src/server/orpc/routes/students", () => {
     })
   })
 
+  test("getStudentProfileProcedure forbids company admins from probing missing private profiles", async () => {
+    const { getStudentProfileProcedure } = await import(
+      "@/server/orpc/routes/students"
+    )
+
+    await expect(
+      callProcedure(getStudentProfileProcedure, {
+        input: { userId: "missing-student" },
+        context: {
+          user: {
+            id: "company-admin-1",
+            role: "company_admin",
+          },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "You do not have access to this profile",
+    })
+
+    expect(getStudentProfileMock).not.toHaveBeenCalled()
+  })
+
   test("upsertStudentProfileProcedure revalidates student profile tags", async () => {
     const { upsertStudentProfileProcedure } = await import(
       "@/server/orpc/routes/students"

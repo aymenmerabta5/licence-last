@@ -37,14 +37,28 @@ export const getStudentProfileProcedure = authedProcedureGenerous
   )
   .handler(async ({ input, context }) => {
     const targetUserId = input?.userId ?? context.user.id
+    const isOwnProfile = targetUserId === context.user.id
 
-    if (targetUserId !== context.user.id && context.user.role === "student") {
+    if (!isOwnProfile && context.user.role === "student") {
       throw new ORPCError("FORBIDDEN", {
         message: "You can only view your own profile",
       })
     }
 
-    if (targetUserId !== context.user.id) {
+    if (!isOwnProfile) {
+      if (
+        context.user.role !== "super_admin" &&
+        context.user.role !== "university_admin"
+      ) {
+        throw new ORPCError("FORBIDDEN", {
+          message: "You do not have access to this profile",
+        })
+      }
+
+      if (context.user.role === "super_admin") {
+        return getStudentProfile(targetUserId)
+      }
+
       const [targetUser] = await db
         .select({
           universityId: user.universityId,
