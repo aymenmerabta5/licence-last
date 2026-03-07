@@ -1196,6 +1196,7 @@
       "generatedSuccess": "Certificate generated successfully.",
       "generateError": "Failed to generate certificate.",
       "downloadError": "Failed to download document.",
+      "ownerOnlyGenerate": "Owners issue certificates",
       "agreement": "Agreement",
       "certificate": "Certificate",
       "status": {

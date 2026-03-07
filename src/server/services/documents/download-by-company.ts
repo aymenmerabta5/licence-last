@@ -7,8 +7,6 @@ import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { placement, placementDocument } from "@/server/db/schema/placements"
 import { DocumentServiceError } from "@/server/services/documents/errors"
-import { generateAgreement } from "@/server/services/documents/generate-agreement"
-import { generateCertificate } from "@/server/services/documents/generate-certificate"
 
 interface DownloadDocumentByCompanyInput {
   documentId: string
@@ -22,6 +20,18 @@ interface DownloadDocumentByCompanyResult {
   documentType: "agreement" | "certificate"
 }
 
+function toMetaRecord(value: unknown): Record<string, unknown> {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value as Record<string, unknown>
+  }
+
+  return {}
+}
+
+function pickString(value: unknown): string | null {
+  return typeof value === "string" && value.length > 0 ? value : null
+}
+
 export async function downloadDocumentByCompany(
   input: DownloadDocumentByCompanyInput,
 ): Promise<DownloadDocumentByCompanyResult> {
@@ -29,6 +39,9 @@ export async function downloadDocumentByCompany(
     .select({
       documentType: placementDocument.type,
       placementId: placement.id,
+      status: placementDocument.status,
+      meta: placementDocument.meta,
+      verificationCode: placementDocument.verificationCode,
       companyId: internshipOffer.companyId,
     })
     .from(placementDocument)
@@ -49,42 +62,54 @@ export async function downloadDocumentByCompany(
     )
   }
 
-  if (row.documentType === "agreement") {
-    const result = await generateAgreement({
-      placementId: row.placementId,
-      locale: input.locale,
-    })
+  if (row.status !== "generated") {
+    throw new DocumentServiceError(
+      "DOCUMENT_NOT_READY",
+      "Document is not ready for download",
+    )
+  }
 
-    if (!result.buffer) {
-      throw new DocumentServiceError(
-        "DOCUMENT_GENERATION_FAILED",
-        "Failed to generate agreement",
-      )
-    }
+  const meta = toMetaRecord(row.meta)
+  const locale = pickString(meta.locale) ?? input.locale ?? "en"
+  const fileName =
+    pickString(meta.fileName) ?? `${row.documentType}_${row.placementId}.pdf`
+  const verificationCode = pickString(row.verificationCode)
+
+  if (!verificationCode) {
+    throw new DocumentServiceError(
+      "DOCUMENT_GENERATION_FAILED",
+      "Document verification is unavailable",
+    )
+  }
+
+  if (row.documentType === "agreement") {
+    const { renderAgreementPdfBuffer } = await import(
+      "@/server/services/documents/generate-agreement"
+    )
 
     return {
-      buffer: result.buffer,
-      fileName: `agreement_${row.placementId}.pdf`,
+      buffer: await renderAgreementPdfBuffer({
+        placementId: row.placementId,
+        locale,
+        verificationCode,
+      }),
+      fileName,
       documentType: "agreement",
     }
   }
 
   if (row.documentType === "certificate") {
-    const result = await generateCertificate({
-      placementId: row.placementId,
-      locale: input.locale,
-    })
-
-    if (!result.buffer) {
-      throw new DocumentServiceError(
-        "DOCUMENT_GENERATION_FAILED",
-        "Failed to generate certificate",
-      )
-    }
+    const { renderCertificatePdfBuffer } = await import(
+      "@/server/services/documents/generate-certificate"
+    )
 
     return {
-      buffer: result.buffer,
-      fileName: `certificate_${row.placementId}.pdf`,
+      buffer: await renderCertificatePdfBuffer({
+        placementId: row.placementId,
+        locale,
+        verificationCode,
+      }),
+      fileName,
       documentType: "certificate",
     }
   }

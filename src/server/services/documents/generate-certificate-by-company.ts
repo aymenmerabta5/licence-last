@@ -9,7 +9,6 @@ import { internshipOffer } from "@/server/db/schema/internships"
 import { placement, placementDocument } from "@/server/db/schema/placements"
 import { logger } from "@/server/logging"
 import { DocumentServiceError } from "@/server/services/documents/errors"
-import { generateCertificate } from "@/server/services/documents/generate-certificate"
 import { sendCertificateEmail } from "@/server/services/documents/send-certificate-email"
 import { createNotification } from "@/server/services/notifications/create"
 
@@ -17,6 +16,7 @@ interface GenerateCertificateByCompanyInput {
   placementId: string
   companyId: string
   issuedByUserId: string
+  issuedByMembershipRole: string
   locale?: string
 }
 
@@ -35,10 +35,27 @@ function toMetaRecord(value: unknown): Record<string, unknown> {
   return {}
 }
 
+function pickString(value: unknown): string | null {
+  return typeof value === "string" && value.length > 0 ? value : null
+}
+
 export async function generateCertificateByCompany(
   input: GenerateCertificateByCompanyInput,
 ): Promise<GenerateCertificateByCompanyResult> {
-  const { placementId, companyId, issuedByUserId, locale } = input
+  const {
+    placementId,
+    companyId,
+    issuedByUserId,
+    issuedByMembershipRole,
+    locale,
+  } = input
+
+  if (issuedByMembershipRole !== "owner") {
+    throw new DocumentServiceError(
+      "PLACEMENT_FORBIDDEN",
+      "You do not have access to this placement",
+    )
+  }
 
   const [placementRow] = await db
     .select({
@@ -80,6 +97,10 @@ export async function generateCertificateByCompany(
     )
   }
 
+  const { generateCertificate } = await import(
+    "@/server/services/documents/generate-certificate"
+  )
+
   const result = await generateCertificate({
     placementId: placementRow.placementId,
     locale,
@@ -114,58 +135,68 @@ export async function generateCertificateByCompany(
     )
   }
 
-  await db
-    .update(placementDocument)
-    .set({
-      meta: {
-        ...toMetaRecord(doc.meta),
-        issuedByUserId,
-        issuedByRole: "company_admin",
-        issuedAt: new Date().toISOString(),
+  const meta = toMetaRecord(doc.meta)
+  const hasImmutableIssuer =
+    pickString(meta.issuedAt) != null &&
+    pickString(meta.issuedByUserId) != null &&
+    pickString(meta.issuedByRole) != null
+
+  if (!hasImmutableIssuer) {
+    await db
+      .update(placementDocument)
+      .set({
+        meta: {
+          ...meta,
+          issuedByUserId,
+          issuedByRole: "company_admin",
+          issuedByMembershipRole,
+          issuedAt: new Date().toISOString(),
+        },
+      })
+      .where(eq(placementDocument.id, doc.id))
+
+    await createNotification({
+      userId: placementRow.studentUserId,
+      type: "certificate_generated",
+      payload: {
+        placementId: placementRow.placementId,
+        documentId: doc.id,
+        companyName: placementRow.companyName,
+        offerTitle: placementRow.offerTitle,
       },
     })
-    .where(eq(placementDocument.id, doc.id))
 
-  await createNotification({
-    userId: placementRow.studentUserId,
-    type: "certificate_generated",
-    payload: {
-      placementId: placementRow.placementId,
-      documentId: doc.id,
-      companyName: placementRow.companyName,
-      offerTitle: placementRow.offerTitle,
-    },
-  })
-
-  if (doc.verificationCode) {
-    void sendCertificateEmail({
-      userId: placementRow.studentUserId,
-      to: placementRow.studentEmail,
-      studentName: placementRow.studentName ?? "Student",
-      companyName: placementRow.companyName,
-      offerTitle: placementRow.offerTitle,
-      internshipType: placementRow.internshipType,
-      startDate: placementRow.startDate,
-      endDate: placementRow.endDate,
-      verificationCode: doc.verificationCode,
-      locale,
-    }).catch((error) => {
-      logger.error(
-        {
-          err: error,
-          event: "certificate_email_failed",
-          placementId,
-          studentEmail: placementRow.studentEmail,
-        },
-        "Failed to send certificate generated email",
-      )
-    })
+    if (doc.verificationCode) {
+      void sendCertificateEmail({
+        userId: placementRow.studentUserId,
+        to: placementRow.studentEmail,
+        studentName: placementRow.studentName ?? "Student",
+        companyName: placementRow.companyName,
+        offerTitle: placementRow.offerTitle,
+        internshipType: placementRow.internshipType,
+        startDate: placementRow.startDate,
+        endDate: placementRow.endDate,
+        verificationCode: doc.verificationCode,
+        locale,
+      }).catch((error) => {
+        logger.error(
+          {
+            err: error,
+            event: "certificate_email_failed",
+            placementId,
+            studentEmail: placementRow.studentEmail,
+          },
+          "Failed to send certificate generated email",
+        )
+      })
+    }
   }
 
   return {
     success: true,
     documentId: doc.id,
-    fileName: `certificate_${placementRow.placementId}.pdf`,
+    fileName:
+      pickString(meta.fileName) ?? `certificate_${placementRow.placementId}.pdf`,
     buffer: result.buffer,
   }
 }

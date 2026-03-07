@@ -30,11 +30,33 @@ export interface GenerateCertificateResult {
   buffer?: Buffer
 }
 
-export async function generateCertificate(
-  input: GenerateCertificateInput,
-): Promise<GenerateCertificateResult> {
-  const { placementId, locale = "en" } = input
+interface CertificateContext {
+  placementRecord: typeof placement.$inferSelect
+  app: {
+    applicationId: string
+    offerTitle: string
+    offerInternshipType: string
+    companyName: string
+    studentName: string | null
+    studentEmail: string
+    studentUniversityId: string | null
+  }
+  data: CertificateData
+}
 
+function toMetaRecord(value: unknown): Record<string, unknown> {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value as Record<string, unknown>
+  }
+
+  return {}
+}
+
+function pickString(value: unknown): string | null {
+  return typeof value === "string" && value.length > 0 ? value : null
+}
+
+async function loadCertificateContext(placementId: string): Promise<CertificateContext> {
   const [placementRecord] = await db
     .select()
     .from(placement)
@@ -79,7 +101,61 @@ export async function generateCertificate(
     uniName = uni?.name ?? null
   }
 
-  // Check for existing document to preserve verification code on regeneration
+  return {
+    placementRecord,
+    app,
+    data: {
+      studentName: app.studentName ?? "Unknown",
+      studentEmail: app.studentEmail,
+      universityName: uniName,
+      companyName: app.companyName,
+      offerTitle: app.offerTitle,
+      internshipType: app.offerInternshipType,
+      startDate: placementRecord.startDate,
+      endDate: placementRecord.endDate,
+    },
+  }
+}
+
+async function renderCertificateBuffer(params: {
+  data: CertificateData
+  locale: string
+  verificationCode: string
+}): Promise<Buffer> {
+  const verificationUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/${params.locale}/verify/${params.verificationCode}`
+  const qrCodeDataUrl = await generateQRCodeDataUrl(verificationUrl)
+
+  const pdfBuffer = await renderToBuffer(
+    createElement(InternshipCertificateTemplate, {
+      data: params.data,
+      locale: params.locale,
+      verificationCode: params.verificationCode,
+      qrCodeDataUrl,
+    }) as unknown as Parameters<typeof renderToBuffer>[0],
+  )
+
+  return Buffer.from(pdfBuffer)
+}
+
+export async function renderCertificatePdfBuffer(input: {
+  placementId: string
+  locale: string
+  verificationCode: string
+}): Promise<Buffer> {
+  const context = await loadCertificateContext(input.placementId)
+  return renderCertificateBuffer({
+    data: context.data,
+    locale: input.locale,
+    verificationCode: input.verificationCode,
+  })
+}
+
+export async function generateCertificate(
+  input: GenerateCertificateInput,
+): Promise<GenerateCertificateResult> {
+  const { placementId, locale = "en" } = input
+  const context = await loadCertificateContext(placementId)
+
   const [existingDoc] = await db
     .select()
     .from(placementDocument)
@@ -91,40 +167,38 @@ export async function generateCertificate(
     )
     .limit(1)
 
-  let verificationCode = existingDoc?.verificationCode ?? generateVerificationCode()
+  const existingMeta = toMetaRecord(existingDoc?.meta)
+  const existingVerificationCode = pickString(existingDoc?.verificationCode)
+  const existingLocale = pickString(existingMeta.locale)
+  const existingFileName = pickString(existingMeta.fileName)
+  const existingGeneratedAt = pickString(existingMeta.generatedAt)
 
-  const data: CertificateData = {
-    studentName: app.studentName ?? "Unknown",
-    studentEmail: app.studentEmail,
-    universityName: uniName,
-    companyName: app.companyName,
-    offerTitle: app.offerTitle,
-    internshipType: app.offerInternshipType,
-    startDate: placementRecord.startDate,
-    endDate: placementRecord.endDate,
+  if (existingDoc?.status === "generated" && existingVerificationCode) {
+    return {
+      success: true,
+      documentId: existingDoc.id,
+      buffer: await renderCertificateBuffer({
+        data: context.data,
+        locale: existingLocale ?? locale,
+        verificationCode: existingVerificationCode,
+      }),
+    }
   }
 
-  const renderCertificatePdf = async (code: string) => {
-    const verificationUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/${locale}/verify/${code}`
-    const qrCodeDataUrl = await generateQRCodeDataUrl(verificationUrl)
-
-    return renderToBuffer(
-      createElement(InternshipCertificateTemplate, {
-        data,
-        locale,
-        verificationCode: code,
-        qrCodeDataUrl,
-      }) as unknown as Parameters<typeof renderToBuffer>[0],
-    )
+  let verificationCode = existingVerificationCode ?? generateVerificationCode()
+  const issuedLocale = existingLocale ?? locale
+  const issuedMeta = {
+    ...existingMeta,
+    generatedAt: existingGeneratedAt ?? new Date().toISOString(),
+    locale: issuedLocale,
+    fileName: existingFileName ?? `certificate_${placementId}.pdf`,
   }
 
-  let pdfBuffer = await renderCertificatePdf(verificationCode)
-
-  const nextMeta = {
-    generatedAt: new Date().toISOString(),
-    locale,
-    fileName: `certificate_${placementId}.pdf`,
-  }
+  let pdfBuffer = await renderCertificateBuffer({
+    data: context.data,
+    locale: issuedLocale,
+    verificationCode,
+  })
 
   let documentRecord = existingDoc
 
@@ -134,7 +208,7 @@ export async function generateCertificate(
       .set({
         status: "generated",
         verificationCode,
-        meta: nextMeta,
+        meta: issuedMeta,
       })
       .where(eq(placementDocument.id, documentRecord.id))
   } else {
@@ -146,7 +220,7 @@ export async function generateCertificate(
         type: "certificate",
         status: "generated",
         verificationCode,
-        meta: nextMeta,
+        meta: issuedMeta,
       })
       .onConflictDoNothing({
         target: [placementDocument.placementId, placementDocument.type],
@@ -174,21 +248,42 @@ export async function generateCertificate(
         )
       }
 
-      documentRecord = resolvedDoc
+      const resolvedMeta = toMetaRecord(resolvedDoc.meta)
       const resolvedVerificationCode =
-        resolvedDoc.verificationCode ?? verificationCode
+        pickString(resolvedDoc.verificationCode) ?? verificationCode
 
-      if (resolvedVerificationCode !== verificationCode) {
-        verificationCode = resolvedVerificationCode
-        pdfBuffer = await renderCertificatePdf(verificationCode)
+      if (resolvedDoc.status === "generated" && resolvedVerificationCode) {
+        return {
+          success: true,
+          documentId: resolvedDoc.id,
+          buffer: await renderCertificateBuffer({
+            data: context.data,
+            locale: pickString(resolvedMeta.locale) ?? issuedLocale,
+            verificationCode: resolvedVerificationCode,
+          }),
+        }
       }
+
+      documentRecord = resolvedDoc
+      verificationCode = resolvedVerificationCode
+      pdfBuffer = await renderCertificateBuffer({
+        data: context.data,
+        locale: pickString(resolvedMeta.locale) ?? issuedLocale,
+        verificationCode,
+      })
 
       await db
         .update(placementDocument)
         .set({
           status: "generated",
           verificationCode,
-          meta: nextMeta,
+          meta: {
+            ...resolvedMeta,
+            generatedAt:
+              pickString(resolvedMeta.generatedAt) ?? issuedMeta.generatedAt,
+            locale: pickString(resolvedMeta.locale) ?? issuedMeta.locale,
+            fileName: pickString(resolvedMeta.fileName) ?? issuedMeta.fileName,
+          },
         })
         .where(eq(placementDocument.id, documentRecord.id))
     }
@@ -204,6 +299,6 @@ export async function generateCertificate(
   return {
     success: true,
     documentId: documentRecord.id,
-    buffer: Buffer.from(pdfBuffer),
+    buffer: pdfBuffer,
   }
 }

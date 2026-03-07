@@ -16,9 +16,12 @@ import {
 } from "@/lib/schemas/search"
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
+import { user } from "@/server/db/schema/auth"
 import { companyMember } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
-import { isAdminRole } from "@/server/orpc/middleware"
+import {
+  canAccessApplicationTimeline,
+} from "@/server/orpc/utils/student-scope"
 import {
   assistantProcedureLimited,
   authedProcedureGenerous,
@@ -49,13 +52,13 @@ import { withdrawApplication } from "@/server/services/applications/withdraw"
 import { getStudentApplicationForOffer } from "@/server/services/offers/get"
 import { searchOffers } from "@/server/services/offers/search"
 
-/* ── Offer Search (any authenticated user) ── */
+/* Offer Search */
 
 export const searchOffersProcedure = authedProcedureGenerous
   .input(searchOffersSchema)
   .handler(async ({ input }) => searchOffers(input))
 
-/* ── Application Procedures (student only) ── */
+/* Application Procedures */
 
 export const checkApplicationProcedure = studentProcedureGenerous
   .input(z.object({ offerId: z.string().min(1) }))
@@ -73,7 +76,6 @@ export const applyToOfferProcedure = studentProcedureStandard
         input.coverLetter,
       )
 
-      // Invalidate student applications cache
       revalidateTag(CACHE_TAGS.STUDENT_APPLICATIONS(context.user.id), "max")
       revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), "max")
 
@@ -107,7 +109,6 @@ export const withdrawApplicationProcedure = studentProcedureStandard
         context.user.id,
       )
 
-      // Invalidate student applications cache
       revalidateTag(CACHE_TAGS.STUDENT_APPLICATIONS(context.user.id), "max")
       revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), "max")
 
@@ -123,7 +124,7 @@ export const withdrawApplicationProcedure = studentProcedureStandard
     }
   })
 
-/* ── Company Admin Procedures ── */
+/* Company Admin Procedures */
 
 export const listByOfferProcedure = companyAdminProcedureGenerous
   .input(
@@ -171,7 +172,6 @@ export const companyAcceptProcedure = companyAdminProcedureStandard
         context.user.id,
       )
 
-      // Invalidate company candidates cache
       revalidateTag(
         CACHE_TAGS.COMPANY_CANDIDATES(context.companyMembership.companyId),
         "max",
@@ -208,7 +208,6 @@ export const companyRefuseProcedure = companyAdminProcedureStandard
         input.note,
       )
 
-      // Invalidate company candidates cache
       revalidateTag(
         CACHE_TAGS.COMPANY_CANDIDATES(context.companyMembership.companyId),
         "max",
@@ -260,7 +259,7 @@ export const updatePipelineStageProcedure = companyAdminProcedureStandard
     }
   })
 
-/* ── AI Cover Letter Generation ── */
+/* AI Cover Letter Generation */
 
 export const generateCoverLetterProcedure = assistantProcedureLimited
   .input(
@@ -289,10 +288,13 @@ export const getTimelineProcedure = authedProcedureGenerous
       .select({
         id: application.id,
         studentUserId: application.studentUserId,
+        studentUniversityId: user.universityId,
+        studentDepartmentId: user.departmentId,
         companyId: internshipOffer.companyId,
       })
       .from(application)
       .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
+      .innerJoin(user, eq(application.studentUserId, user.id))
       .where(eq(application.id, input.applicationId))
       .limit(1)
 
@@ -300,11 +302,7 @@ export const getTimelineProcedure = authedProcedureGenerous
       throw new ORPCError("NOT_FOUND", { message: "Application not found" })
     }
 
-    const isAdmin = isAdminRole(context.user.role)
-    const isStudentOwner =
-      context.user.role === "student" && context.user.id === row.studentUserId
-
-    let isCompanyOwner = false
+    let viewerCompanyId: string | null = null
     if (context.user.role === "company_admin") {
       const memberships = await db
         .select({ companyId: companyMember.companyId })
@@ -316,11 +314,26 @@ export const getTimelineProcedure = authedProcedureGenerous
           message: "Multiple company memberships found for user",
         })
       }
-      const membership = memberships[0]
-      isCompanyOwner = membership?.companyId === row.companyId
+      viewerCompanyId = memberships[0]?.companyId ?? null
     }
 
-    if (!isAdmin && !isStudentOwner && !isCompanyOwner) {
+    const hasAccess = canAccessApplicationTimeline(
+      {
+        id: context.user.id,
+        role: context.user.role,
+        universityId: context.user.universityId,
+        departmentId: context.user.departmentId,
+        companyId: viewerCompanyId,
+      },
+      {
+        userId: row.studentUserId,
+        universityId: row.studentUniversityId,
+        departmentId: row.studentDepartmentId,
+      },
+      row.companyId,
+    )
+
+    if (!hasAccess) {
       throw new ORPCError("FORBIDDEN", {
         message: "You do not have access to this timeline",
       })

@@ -10,10 +10,12 @@ interface PlacementDocumentRowProps {
   verificationCodeLabel: string
   verificationCode: string | null
   notAvailableLabel: string
-  isDownloading: boolean
-  downloadLabel: string
-  downloadingLabel: string
-  onDownload: () => void
+  isActionLoading: boolean
+  isActionDisabled: boolean
+  actionLabel: string
+  actionLoadingLabel: string
+  showDownloadIcon: boolean
+  onAction: () => void
 }
 
 export function PlacementDocumentRow({
@@ -23,10 +25,12 @@ export function PlacementDocumentRow({
   verificationCodeLabel,
   verificationCode,
   notAvailableLabel,
-  isDownloading,
-  downloadLabel,
-  downloadingLabel,
-  onDownload,
+  isActionLoading,
+  isActionDisabled,
+  actionLabel,
+  actionLoadingLabel,
+  showDownloadIcon,
+  onAction,
 }: PlacementDocumentRowProps) {
   return (
     <div className="grid gap-3 rounded-md border border-border/60 bg-muted/20 p-3 md:grid-cols-[1fr_auto]">
@@ -47,16 +51,16 @@ export function PlacementDocumentRow({
           type="button"
           variant="editorial-outline"
           size="sm"
-          onClick={onDownload}
-          disabled={isDownloading}
+          onClick={onAction}
+          disabled={isActionDisabled}
           className="gap-1.5"
         >
-          {isDownloading ? (
+          {isActionLoading ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
-          ) : (
+          ) : showDownloadIcon ? (
             <Download className="h-3.5 w-3.5" />
-          )}
-          {isDownloading ? downloadingLabel : downloadLabel}
+          ) : null}
+          {isActionLoading ? actionLoadingLabel : actionLabel}
         </Button>
       </div>
     </div>

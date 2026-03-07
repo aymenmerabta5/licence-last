@@ -8,9 +8,11 @@ import { ImpersonationBanner } from "@/components/ImpersonationBanner"
 const DashboardContext = createContext<{
   isSidebarOpen: boolean
   setIsSidebarOpen: (open: boolean) => void
+  companyMembershipRole: string | null
 }>({
   isSidebarOpen: false,
   setIsSidebarOpen: () => {},
+  companyMembershipRole: null,
 })
 
 export const useDashboard = () => useContext(DashboardContext)
@@ -19,6 +21,7 @@ export function DashboardClientProvider({
   children,
   user,
   impersonatedBy,
+  companyMembershipRole = null,
 }: {
   children: React.ReactNode
   user: {
@@ -28,11 +31,14 @@ export function DashboardClientProvider({
     role: string | null | undefined
   }
   impersonatedBy?: string | null
+  companyMembershipRole?: string | null
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
-    <DashboardContext.Provider value={{ isSidebarOpen, setIsSidebarOpen }}>
+    <DashboardContext.Provider
+      value={{ isSidebarOpen, setIsSidebarOpen, companyMembershipRole }}
+    >
       {impersonatedBy && (
         <ImpersonationBanner userName={user.name ?? user.email} />
       )}
@@ -40,7 +46,10 @@ export function DashboardClientProvider({
       <div className="flex min-h-screen bg-background text-foreground transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] selection:bg-primary/10 selection:text-primary">
         {/* Desktop Sidebar */}
         <div className="hidden lg:block shrink-0">
-          <DashboardSidebar role={user.role as string} />
+          <DashboardSidebar
+            role={user.role as string}
+            companyMembershipRole={companyMembershipRole}
+          />
         </div>
 
         {/* Mobile Sidebar — Overlay backdrop */}
@@ -56,7 +65,10 @@ export function DashboardClientProvider({
           className={`fixed inset-y-0 start-0 z-50 lg:hidden transform transition-all duration-500 ease-[cubic-bezier(0.4,1,0.2,1)] ${isSidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"}`}
         >
           <div className="bg-background h-full shadow-2xl shadow-foreground/5">
-            <DashboardSidebar role={user.role as string} />
+            <DashboardSidebar
+              role={user.role as string}
+              companyMembershipRole={companyMembershipRole}
+            />
           </div>
         </div>
 

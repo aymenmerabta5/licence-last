@@ -29,10 +29,14 @@ export interface VerificationNotFound {
 
 export type VerifyDocumentResult = VerificationResult | VerificationNotFound
 
-/**
- * Looks up a document by its verification code and returns public-safe data.
- * No emails, phones, addresses, or internal IDs are exposed.
- */
+function toMetaRecord(value: unknown): Record<string, unknown> {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value as Record<string, unknown>
+  }
+
+  return {}
+}
+
 export async function verifyDocument(
   code: string,
 ): Promise<VerifyDocumentResult> {
@@ -44,6 +48,7 @@ export async function verifyDocument(
       documentStatus: placementDocument.status,
       meta: placementDocument.meta,
       placementId: placementDocument.placementId,
+      createdAt: placementDocument.createdAt,
     })
     .from(placementDocument)
     .where(eq(placementDocument.verificationCode, normalizedCode))
@@ -95,7 +100,7 @@ export async function verifyDocument(
     universityName = uni?.name ?? null
   }
 
-  const meta = doc.meta as Record<string, unknown> | null
+  const meta = toMetaRecord(doc.meta)
 
   return {
     valid: true,
@@ -107,6 +112,8 @@ export async function verifyDocument(
     offerTitle: row.offerTitle,
     startDate: placementRecord.startDate,
     endDate: placementRecord.endDate,
-    generatedAt: (meta?.generatedAt as string) ?? null,
+    generatedAt:
+      (typeof meta.generatedAt === "string" ? meta.generatedAt : null) ??
+      doc.createdAt.toISOString(),
   }
 }

@@ -1196,6 +1196,7 @@
       "generatedSuccess": "تم إنشاء الشهادة بنجاح.",
       "generateError": "فشل في إنشاء الشهادة.",
       "downloadError": "فشل تنزيل المستند.",
+      "ownerOnlyGenerate": "المالكون فقط يصدرون الشهادات",
       "agreement": "اتفاق",
       "certificate": "شهادة",
       "status": {

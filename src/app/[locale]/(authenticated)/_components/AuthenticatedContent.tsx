@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth"
 import { requireRole } from "@/lib/auth-guards"
 import { localeRedirect } from "@/lib/navigation"
 import { getCompanyByUserId } from "@/server/services/companies/get"
+import { getCompanyMembership } from "@/server/services/companies/membership"
 import { getUniversityStatusByUserId } from "@/server/services/universities/get-status"
 
 interface AuthenticatedContentProps {
@@ -27,13 +28,18 @@ export async function AuthenticatedContent({
     "university_admin",
     "super_admin",
   ])
+  let companyMembershipRole: string | null = null
 
   // ── Block unapproved company_admin ──
   if (user.role === "company_admin") {
     if (!user.onboardingCompleted) {
       return localeRedirect("/onboarding/company")
     }
-    const company = await getCompanyByUserId(user.id)
+    const [company, membership] = await Promise.all([
+      getCompanyByUserId(user.id),
+      getCompanyMembership(user.id),
+    ])
+    companyMembershipRole = membership?.role ?? null
     if (!company || company.status === "pending") {
       return localeRedirect("/status/company/pending")
     }
@@ -66,7 +72,11 @@ export async function AuthenticatedContent({
     null
 
   return (
-    <DashboardClientProvider user={user} impersonatedBy={impersonatedBy}>
+    <DashboardClientProvider
+      user={user}
+      impersonatedBy={impersonatedBy}
+      companyMembershipRole={companyMembershipRole}
+    >
       {children}
     </DashboardClientProvider>
   )

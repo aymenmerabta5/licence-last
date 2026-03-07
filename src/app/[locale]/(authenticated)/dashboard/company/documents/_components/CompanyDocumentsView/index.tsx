@@ -3,6 +3,7 @@
 import { Loader2, RefreshCw } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+import { useDashboard } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import { PlacementCertificateCard } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/PlacementCertificateCard"
 import { useCompanyDocuments } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/hooks/useCompanyDocuments"
 import { Button } from "@/components/ui/button"
@@ -10,6 +11,7 @@ import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
 export function CompanyDocumentsView() {
   const t = useTranslations("dashboard.companyDocuments")
+  const { companyMembershipRole } = useDashboard()
   const {
     placements,
     isLoading,
@@ -78,6 +80,7 @@ export function CompanyDocumentsView() {
             >
               <PlacementCertificateCard
                 placement={placement}
+                companyMembershipRole={companyMembershipRole}
                 generatingPlacementId={generatingPlacementId}
                 downloadingDocumentId={downloadingDocumentId}
                 onGenerateCertificate={handleGenerateCertificate}

@@ -18,6 +18,10 @@ export default async function CompanyProfilePage() {
     return localeRedirect("/onboarding/company")
   }
 
+  if (membership?.role !== "owner") {
+    return localeRedirect("/dashboard/company")
+  }
+
   return (
     <div className="max-w-3xl mx-auto space-y-10">
       {/* Editorial masthead */}
