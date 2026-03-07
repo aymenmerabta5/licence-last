@@ -181,17 +181,20 @@ describe("src/lib/auth self-signup role hardening", () => {
     expect(selectMock).not.toHaveBeenCalled()
   })
 
-  test("allows university-admin self-signup without domain pre-linking", async () => {
-    const result = await beforeCreateUserHook(
-      {
-        email: "admin@new-university.dz",
-        emailVerified: false,
-      },
-      { body: { accountType: "university_admin" } },
-    )
+  test("rejects university-admin self-signup role escalation", async () => {
+    await expect(
+      beforeCreateUserHook(
+        {
+          email: "admin@new-university.dz",
+          emailVerified: false,
+        },
+        { body: { accountType: "university_admin" } },
+      ),
+    ).rejects.toMatchObject({
+      code: "ROLE_IS_NOT_ALLOWED_TO_BE_SET",
+      message: "role is not allowed to be set",
+    })
 
-    expect(result.data.role).toBe("university_admin")
-    expect(result.data.universityId).toBeUndefined()
     expect(getEmailDomainMock).not.toHaveBeenCalled()
     expect(selectMock).not.toHaveBeenCalled()
   })

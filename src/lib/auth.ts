@@ -137,7 +137,6 @@ export const auth = betterAuth({
           const ALLOWED_SIGNUP_ROLES = new Set<string>([
             "student",
             "company_admin",
-            "university_admin",
           ])
           const isAdminCreated = data.emailVerified === true
 
@@ -163,7 +162,7 @@ export const auth = betterAuth({
             })
           }
 
-          // Company and university admins complete their own onboarding flow.
+          // Company admins complete their own onboarding flow.
           // Only students are auto-linked to an approved university by email domain.
           if (requestedRole !== "student") {
             return {
