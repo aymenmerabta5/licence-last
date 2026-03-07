@@ -9,6 +9,8 @@ import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/departments/assign-head")
 
+const ROLE_BLOCKLIST = new Set(["company_admin", "super_admin"])
+
 /**
  * Assign a user as dept_head for a department.
  * Sets user.role = "dept_head", user.departmentId, and user.universityId.
@@ -34,13 +36,30 @@ export async function assignDepartmentHead(
 
   // Verify user exists
   const [targetUser] = await db
-    .select({ id: user.id, role: user.role })
+    .select({ id: user.id, role: user.role, universityId: user.universityId })
     .from(user)
     .where(eq(user.id, userId))
     .limit(1)
 
   if (!targetUser) {
     throw new ServiceError("USER_NOT_FOUND", "User not found")
+  }
+
+  if (ROLE_BLOCKLIST.has(targetUser.role)) {
+    throw new ServiceError(
+      "USER_INELIGIBLE_FOR_DEPARTMENT_HEAD",
+      "User role cannot be assigned as department head",
+    )
+  }
+
+  if (
+    targetUser.universityId &&
+    targetUser.universityId !== dept.universityId
+  ) {
+    throw new ServiceError(
+      "USER_INELIGIBLE_FOR_DEPARTMENT_HEAD",
+      "User belongs to a different university",
+    )
   }
 
   log.info(
