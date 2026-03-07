@@ -120,7 +120,7 @@ function applyAuthModuleMocks() {
   }))
 }
 
-describe("src/lib/auth self-signup role hardening", () => {
+describe("src/lib/auth self-signup role protections", () => {
   let beforeCreateUserHook: (data: SignupData, ctx?: SignupContext) => Promise<{
     data: Record<string, unknown>
   }>
@@ -166,34 +166,34 @@ describe("src/lib/auth self-signup role hardening", () => {
     })
   })
 
-  test("allows company self-signup without university auto-linking", async () => {
-    const result = await beforeCreateUserHook(
-      {
-        email: "recruiter@company.com",
-        emailVerified: false,
-      },
-      { body: { accountType: "company_admin" } },
-    )
-
-    expect(result.data.role).toBe("company_admin")
-    expect(result.data.universityId).toBeUndefined()
-    expect(getEmailDomainMock).not.toHaveBeenCalled()
-    expect(selectMock).not.toHaveBeenCalled()
+  test("rejects company-admin self-signup role claim", async () => {
+    await expect(
+      beforeCreateUserHook(
+        {
+          email: "recruiter@company.com",
+          emailVerified: false,
+        },
+        { body: { accountType: "company_admin" } },
+      ),
+    ).rejects.toMatchObject({
+      code: "ROLE_IS_NOT_ALLOWED_TO_BE_SET",
+      message: "role is not allowed to be set",
+    })
   })
 
-  test("allows university-admin self-signup without domain pre-linking", async () => {
-    const result = await beforeCreateUserHook(
-      {
-        email: "admin@new-university.dz",
-        emailVerified: false,
-      },
-      { body: { accountType: "university_admin" } },
-    )
-
-    expect(result.data.role).toBe("university_admin")
-    expect(result.data.universityId).toBeUndefined()
-    expect(getEmailDomainMock).not.toHaveBeenCalled()
-    expect(selectMock).not.toHaveBeenCalled()
+  test("rejects university-admin self-signup role claim", async () => {
+    await expect(
+      beforeCreateUserHook(
+        {
+          email: "admin@new-university.dz",
+          emailVerified: false,
+        },
+        { body: { accountType: "university_admin" } },
+      ),
+    ).rejects.toMatchObject({
+      code: "ROLE_IS_NOT_ALLOWED_TO_BE_SET",
+      message: "role is not allowed to be set",
+    })
   })
 
   test("keeps student self-signup flow with approved university domain", async () => {

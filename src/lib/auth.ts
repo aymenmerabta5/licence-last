@@ -134,11 +134,7 @@ export const auth = betterAuth({
             "university_admin",
             "super_admin",
           ])
-          const ALLOWED_SIGNUP_ROLES = new Set<string>([
-            "student",
-            "company_admin",
-            "university_admin",
-          ])
+          const ALLOWED_SIGNUP_ROLES = new Set<string>(["student"])
           const isAdminCreated = data.emailVerified === true
 
           if (isAdminCreated) {
@@ -161,17 +157,6 @@ export const auth = betterAuth({
               code: "ROLE_IS_NOT_ALLOWED_TO_BE_SET",
               message: "role is not allowed to be set",
             })
-          }
-
-          // Company and university admins complete their own onboarding flow.
-          // Only students are auto-linked to an approved university by email domain.
-          if (requestedRole !== "student") {
-            return {
-              data: {
-                ...data,
-                role: requestedRole,
-              },
-            }
           }
 
           const domain = getEmailDomain(data.email)
