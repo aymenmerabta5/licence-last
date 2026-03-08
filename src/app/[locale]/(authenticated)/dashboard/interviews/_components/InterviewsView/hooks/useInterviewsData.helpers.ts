@@ -19,6 +19,12 @@ interface CompanyApplicationSource {
   createdAt: Date | string
 }
 
+const INTERVIEW_ELIGIBLE_PIPELINE_STAGES = new Set([
+  "applied",
+  "screening",
+  "interview",
+])
+
 export function mapCompanyOffers(
   offers: CompanyOfferSource[] | undefined,
 ): CompanyOfferOption[] {
@@ -31,12 +37,16 @@ export function mapCompanyOffers(
 export function mapCompanyApplications(
   applications: CompanyApplicationSource[] | undefined,
 ): CompanyApplicationOption[] {
-  return (applications ?? []).map((application) => ({
-    id: application.id,
-    studentName: application.student.name ?? "Unnamed student",
-    pipelineStage: application.pipelineStage,
-    createdAt: application.createdAt,
-  }))
+  return (applications ?? [])
+    .filter((application) =>
+      INTERVIEW_ELIGIBLE_PIPELINE_STAGES.has(application.pipelineStage),
+    )
+    .map((application) => ({
+      id: application.id,
+      studentName: application.student.name ?? "Unnamed student",
+      pipelineStage: application.pipelineStage,
+      createdAt: application.createdAt,
+    }))
 }
 
 export function normalizeLocalDateTimeInput(value: string): string | null {

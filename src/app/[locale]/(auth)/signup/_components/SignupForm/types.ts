@@ -2,7 +2,7 @@ export type SignupRole = "student" | "company_admin" | "university_admin"
 
 export interface SignupFormProps {
   role: SignupRole
-  onBack: () => void
+  onBack?: () => void
 }
 
 export interface SignupFormValues {

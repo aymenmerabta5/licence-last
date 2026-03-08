@@ -20,10 +20,10 @@ export type PipelineStage =
   | "rejected"
 
 const STAGE_TRANSITIONS: Record<PipelineStage, PipelineStage[]> = {
-  applied: ["screening", "interview", "offer", "rejected"],
-  screening: ["applied", "interview", "offer", "rejected"],
-  interview: ["screening", "offer", "rejected"],
-  offer: ["rejected", "interview"],
+  applied: ["screening", "interview", "offer"],
+  screening: ["applied", "interview", "offer"],
+  interview: ["screening", "offer"],
+  offer: ["interview"],
   accepted: [],
   rejected: [],
 }
@@ -121,6 +121,20 @@ export async function updateApplicationPipelineStage(input: {
     throw new ApplicationServiceError(
       "APPLICATION_FORBIDDEN",
       "You do not have access to this application",
+    )
+  }
+
+  if (row.status !== "applied") {
+    throw new ApplicationServiceError(
+      "APPLICATION_INVALID_STATE",
+      "Pipeline stage can only be updated while the application is pending company review",
+    )
+  }
+
+  if (input.toStage === "accepted" || input.toStage === "rejected") {
+    throw new ApplicationServiceError(
+      "APPLICATION_INVALID_STATE",
+      "Use explicit company/admin actions for terminal application decisions",
     )
   }
 

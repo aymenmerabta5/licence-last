@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { DM_Sans, DM_Serif_Display, Noto_Sans_Arabic } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
 import {
   getMessages,
@@ -14,27 +13,6 @@ import { QueryProvider } from "@/components/providers/QueryProvider"
 import { Toaster } from "@/components/ui/sonner"
 import { env } from "@/env"
 import { routing } from "@/i18n/routing"
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-dm-sans",
-  display: "swap",
-})
-
-const dmSerif = DM_Serif_Display({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-dm-serif",
-  display: "swap",
-})
-
-const notoSansArabic = Noto_Sans_Arabic({
-  subsets: ["arabic"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-arabic",
-  display: "swap",
-})
 
 type Params = Promise<{ locale: string }>
 
@@ -101,25 +79,17 @@ export default async function LocaleLayout({
     : ""
 
   return (
-    <html lang={locale} dir={isRTL ? "rtl" : "ltr"} suppressHydrationWarning>
-      <body
-        className={`${dmSans.variable} ${dmSerif.variable} ${notoSansArabic.variable} ${rtlFontVars} font-sans antialiased`}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
-        >
-          <MotionProvider>
-            <QueryProvider>
-              <NextIntlClientProvider locale={locale} messages={messages}>
-                {children}
-              </NextIntlClientProvider>
-            </QueryProvider>
-          </MotionProvider>
-          <Toaster richColors />
-        </ThemeProvider>
-      </body>
-    </html>
+    <div dir={isRTL ? "rtl" : "ltr"} className={rtlFontVars}>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+        <MotionProvider>
+          <QueryProvider>
+            <NextIntlClientProvider locale={locale} messages={messages}>
+              {children}
+            </NextIntlClientProvider>
+          </QueryProvider>
+        </MotionProvider>
+        <Toaster richColors />
+      </ThemeProvider>
+    </div>
   )
 }

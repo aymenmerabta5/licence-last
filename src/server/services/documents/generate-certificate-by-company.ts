@@ -97,6 +97,13 @@ export async function generateCertificateByCompany(
     )
   }
 
+  if (placementRow.endDate > new Date()) {
+    throw new DocumentServiceError(
+      "INTERNSHIP_NOT_COMPLETED",
+      "Certificate can only be generated after the internship end date",
+    )
+  }
+
   const { generateCertificate } = await import(
     "@/server/services/documents/generate-certificate"
   )

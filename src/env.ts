@@ -1,6 +1,14 @@
 import { createEnv } from "@t3-oss/env-nextjs"
 import { z } from "zod"
 
+const optionalUrl = z.preprocess((value) => {
+  if (typeof value === "string" && value.trim() === "") {
+    return undefined
+  }
+
+  return value
+}, z.string().url().optional())
+
 export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
@@ -35,7 +43,7 @@ export const env = createEnv({
     AWS_SECRET_ACCESS_KEY: z.string().min(1).optional(),
 
     // Redis (for rate limiting)
-    REDIS_URL: z.string().url().optional(),
+    REDIS_URL: optionalUrl,
     REDIS_RATE_LIMIT_ENABLED: z
       .enum(["true", "false"])
       .default(process.env.NODE_ENV === "production" ? "true" : "false"),

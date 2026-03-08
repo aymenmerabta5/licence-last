@@ -23,6 +23,7 @@ const getPublicStudentProfileMock = mock(async () => ({ userId: "student-1" }))
 const upsertStudentProfileMock = mock(async () => ({ success: true }))
 const revalidateTagMock = mock(() => {})
 const dbLimitQueue: unknown[][] = []
+const dbJoinLimitQueue: unknown[][] = []
 const featureFlagsState = {
   NOTIF_PREFERENCES: true,
   SAVED_OFFERS: true,
@@ -74,6 +75,16 @@ function applyStudentsRouteMocks() {
           where: () => ({
             limit: async () => dbLimitQueue.shift() ?? [],
           }),
+          leftJoin: () => ({
+            where: () => ({
+              limit: async () => dbLimitQueue.shift() ?? [],
+            }),
+          }),
+          innerJoin: () => ({
+            where: () => ({
+              limit: async () => dbJoinLimitQueue.shift() ?? [],
+            }),
+          }),
         }),
       }),
     },
@@ -106,6 +117,7 @@ describe("src/server/orpc/routes/students", () => {
     revalidateTagMock.mockClear()
     isFeatureEnabledMock.mockClear()
     dbLimitQueue.length = 0
+    dbJoinLimitQueue.length = 0
     isFeatureEnabledMock.mockImplementation(
       (flag: keyof typeof featureFlagsState) => featureFlagsState[flag],
     )
@@ -219,7 +231,12 @@ describe("src/server/orpc/routes/students", () => {
     expect(revalidateTagMock).toHaveBeenCalledTimes(3)
   })
 
-  test("getPublicStudentProfileProcedure allows company admins", async () => {
+  test("getPublicStudentProfileProcedure allows company admins with application relationship", async () => {
+    // First query: companyMember lookup
+    dbLimitQueue.push([{ companyId: "company-1" }])
+    // Second query: application relationship check (via innerJoin)
+    dbJoinLimitQueue.push([{ id: "app-1" }])
+
     const { getPublicStudentProfileProcedure } = await import(
       "@/server/orpc/routes/students"
     )
@@ -234,6 +251,29 @@ describe("src/server/orpc/routes/students", () => {
       { id: "company-admin-1", role: "company_admin" },
       "student-1",
     )
+  })
+
+  test("getPublicStudentProfileProcedure rejects company admins without application relationship", async () => {
+    // First query: companyMember lookup
+    dbLimitQueue.push([{ companyId: "company-1" }])
+    // Second query: no application relationship (via innerJoin)
+    dbJoinLimitQueue.push([])
+
+    const { getPublicStudentProfileProcedure } = await import(
+      "@/server/orpc/routes/students"
+    )
+
+    await expect(
+      callProcedure(getPublicStudentProfileProcedure, {
+        input: { userId: "student-1" },
+        context: { user: { id: "company-admin-1", role: "company_admin" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "You do not have access to this profile",
+    })
+
+    expect(getPublicStudentProfileMock).not.toHaveBeenCalled()
   })
 
   test("upsertStudentProfileProcedure forwards languages when language feature is enabled", async () => {

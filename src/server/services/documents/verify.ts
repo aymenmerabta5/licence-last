@@ -37,6 +37,14 @@ function toMetaRecord(value: unknown): Record<string, unknown> {
   return {}
 }
 
+function toSnapshotRecord(value: unknown): Record<string, unknown> | null {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value as Record<string, unknown>
+  }
+
+  return null
+}
+
 export async function verifyDocument(
   code: string,
 ): Promise<VerifyDocumentResult> {
@@ -47,6 +55,7 @@ export async function verifyDocument(
       documentType: placementDocument.type,
       documentStatus: placementDocument.status,
       meta: placementDocument.meta,
+      snapshotData: placementDocument.snapshotData,
       placementId: placementDocument.placementId,
       createdAt: placementDocument.createdAt,
     })
@@ -56,6 +65,29 @@ export async function verifyDocument(
 
   if (!doc) {
     return { valid: false }
+  }
+
+  const meta = toMetaRecord(doc.meta)
+  const snapshot = toSnapshotRecord(doc.snapshotData)
+
+  if (snapshot) {
+    const startDate = snapshot.startDate
+    const endDate = snapshot.endDate
+
+    return {
+      valid: true,
+      documentType: doc.documentType as "agreement" | "certificate",
+      documentStatus: doc.documentStatus,
+      studentName: (typeof snapshot.studentName === "string" ? snapshot.studentName : null) ?? "Unknown",
+      companyName: (typeof snapshot.companyName === "string" ? snapshot.companyName : null) ?? "Unknown",
+      universityName: typeof snapshot.universityName === "string" ? snapshot.universityName : null,
+      offerTitle: (typeof snapshot.offerTitle === "string" ? snapshot.offerTitle : null) ?? "Unknown",
+      startDate: startDate instanceof Date ? startDate : new Date(startDate as string),
+      endDate: endDate instanceof Date ? endDate : new Date(endDate as string),
+      generatedAt:
+        (typeof meta.generatedAt === "string" ? meta.generatedAt : null) ??
+        doc.createdAt.toISOString(),
+    }
   }
 
   const [placementRecord] = await db
@@ -99,8 +131,6 @@ export async function verifyDocument(
       .limit(1)
     universityName = uni?.name ?? null
   }
-
-  const meta = toMetaRecord(doc.meta)
 
   return {
     valid: true,

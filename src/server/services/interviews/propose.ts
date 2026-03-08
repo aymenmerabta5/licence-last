@@ -6,7 +6,11 @@ import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { interview, interviewSlot } from "@/server/db/schema/interviews"
+import { createModuleLogger } from "@/server/logging"
 import { InterviewServiceError } from "@/server/services/interviews/errors"
+import { createNotification } from "@/server/services/notifications/create"
+
+const log = createModuleLogger("services/interviews/propose")
 
 interface ProposedInterviewSlotInput {
   startsAt: Date
@@ -49,6 +53,7 @@ export async function proposeInterviewSlots(
       .select({
         id: application.id,
         status: application.status,
+        pipelineStage: application.pipelineStage,
         offerId: application.offerId,
         studentUserId: application.studentUserId,
         companyId: internshipOffer.companyId,
@@ -77,6 +82,17 @@ export async function proposeInterviewSlots(
       throw new InterviewServiceError(
         "INTERVIEW_INVALID_APPLICATION_STATE",
         "Interview cannot be proposed for this application status",
+      )
+    }
+
+    if (
+      applicationRow.pipelineStage !== "applied" &&
+      applicationRow.pipelineStage !== "screening" &&
+      applicationRow.pipelineStage !== "interview"
+    ) {
+      throw new InterviewServiceError(
+        "INTERVIEW_INVALID_APPLICATION_STATE",
+        "Interview can only be proposed while the application is in an interview pipeline stage",
       )
     }
 
@@ -122,6 +138,23 @@ export async function proposeInterviewSlots(
       studentUserId: applicationRow.studentUserId,
     }
   })
+
+  try {
+    await createNotification({
+      userId: result.studentUserId,
+      type: "interview_proposed",
+      payload: {
+        interviewId: result.interviewId,
+        applicationId: input.applicationId,
+        slotCount: input.slots.length,
+      },
+    })
+  } catch (error) {
+    log.warn(
+      { error, interviewId: result.interviewId },
+      "Failed to notify student about interview proposal",
+    )
+  }
 
   return result
 }

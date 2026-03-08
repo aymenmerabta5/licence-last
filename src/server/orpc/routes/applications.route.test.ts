@@ -102,6 +102,7 @@ mock.module("@/server/services/applications/pipeline", () => ({
 const selectBuilder = {
   from: () => selectBuilder,
   innerJoin: () => selectBuilder,
+  leftJoin: () => selectBuilder,
   where: () => selectBuilder,
   limit: async () => getNextDbRows(),
 }

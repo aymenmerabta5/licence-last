@@ -48,6 +48,7 @@ export const placementDocument = pgTable(
     storageKey: text("storage_key"),
     url: text("url"),
     verificationCode: text("verification_code"),
+    snapshotData: jsonb("snapshot_data"),
     meta: jsonb("meta"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },

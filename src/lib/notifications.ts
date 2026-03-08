@@ -20,7 +20,9 @@ const TITLE_BY_TYPE: Record<string, string> = {
   placement_validated: "Placement validated",
   placement_rejected: "Placement rejected",
   new_message: "New message",
+  interview_proposed: "Interview proposed",
   interview_confirmed: "Interview confirmed",
+  interview_cancelled: "Interview cancelled",
   agreement_generated: "Agreement generated",
   certificate_generated: "Certificate generated",
   company_approved: "Company approved",
@@ -117,11 +119,21 @@ function formatByType(
         return `You received a new message about ${offerTitle}.`
       }
       return "You received a new message."
+    case "interview_proposed":
+      if (offerTitle) {
+        return `You have been invited to an interview for ${offerTitle}.`
+      }
+      return "You have been invited to an interview."
     case "interview_confirmed":
       if (offerTitle) {
         return `An interview slot was confirmed for ${offerTitle}.`
       }
       return "A student confirmed an interview slot."
+    case "interview_cancelled":
+      if (offerTitle) {
+        return `Your interview for ${offerTitle} has been cancelled.`
+      }
+      return "An interview has been cancelled."
     case "agreement_generated":
       if (offerTitle && companyName) {
         return `${offerTitle} agreement is ready from ${companyName}.`

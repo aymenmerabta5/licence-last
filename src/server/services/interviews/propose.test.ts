@@ -147,6 +147,7 @@ describe("src/server/services/interviews/propose", () => {
       {
         id: "application-1",
         status: "applied",
+        pipelineStage: "applied",
         offerId: "offer-1",
         studentUserId: "student-1",
         companyId: "company-2",
@@ -179,6 +180,7 @@ describe("src/server/services/interviews/propose", () => {
       {
         id: "application-1",
         status: "company_accepted",
+        pipelineStage: "offer",
         offerId: "offer-1",
         studentUserId: "student-1",
         companyId: "company-1",
@@ -213,6 +215,7 @@ describe("src/server/services/interviews/propose", () => {
       {
         id: "application-1",
         status: "admin_validated",
+        pipelineStage: "accepted",
         offerId: "offer-1",
         studentUserId: "student-1",
         companyId: "company-1",
@@ -220,7 +223,7 @@ describe("src/server/services/interviews/propose", () => {
     ])
 
     const { proposeInterviewSlots } = await import(
-      "@/server/services/interviews/propose?fresh=8" as string
+      "@/server/services/interviews/propose?fresh=6" as string
     )
 
     await expect(
@@ -242,11 +245,47 @@ describe("src/server/services/interviews/propose", () => {
     )
   })
 
+  test("should throw when application is already in offer stage", async () => {
+    txSelectResults.push([
+      {
+        id: "application-1",
+        status: "applied",
+        pipelineStage: "offer",
+        offerId: "offer-1",
+        studentUserId: "student-1",
+        companyId: "company-1",
+      },
+    ])
+
+    const { proposeInterviewSlots } = await import(
+      "@/server/services/interviews/propose?fresh=7" as string
+    )
+
+    await expect(
+      proposeInterviewSlots(
+        {
+          applicationId: "application-1",
+          slots: [
+            {
+              startsAt: new Date("2030-04-10T09:00:00.000Z"),
+              endsAt: new Date("2030-04-10T10:00:00.000Z"),
+            },
+          ],
+        },
+        "company-1",
+        "actor-1",
+      ),
+    ).rejects.toThrow(
+      "Interview can only be proposed while the application is in an interview pipeline stage",
+    )
+  })
+
   test("should throw when interview already exists for the application", async () => {
     txSelectResults.push([
       {
         id: "application-1",
         status: "applied",
+        pipelineStage: "interview",
         offerId: "offer-1",
         studentUserId: "student-1",
         companyId: "company-1",
@@ -255,7 +294,7 @@ describe("src/server/services/interviews/propose", () => {
     txSelectResults.push([{ id: "interview-1" }])
 
     const { proposeInterviewSlots } = await import(
-      "@/server/services/interviews/propose?fresh=6" as string
+      "@/server/services/interviews/propose?fresh=8" as string
     )
 
     await expect(
@@ -287,6 +326,7 @@ describe("src/server/services/interviews/propose", () => {
       {
         id: "application-1",
         status: "applied",
+        pipelineStage: "interview",
         offerId: "offer-1",
         studentUserId: "student-1",
         companyId: "company-1",

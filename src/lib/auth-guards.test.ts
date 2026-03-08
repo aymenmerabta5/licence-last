@@ -7,6 +7,7 @@ interface SessionUser {
   role: string
   name: string | null
   email: string
+  banned?: boolean
   onboardingCompleted?: boolean
   [key: string]: unknown
 }
@@ -74,6 +75,33 @@ describe("requireRole", () => {
 
     await requireRole(
       ["super_admin"],
+      {},
+      {
+        getSession: mockGetSession,
+        getHeaders: mockHeaders,
+        localeRedirect: mockLocaleRedirect,
+        getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
+        getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+      },
+    )
+
+    expect(mockLocaleRedirect).toHaveBeenCalledWith("/")
+  })
+
+  test("should redirect banned users to /", async () => {
+    mockGetSession.mockResolvedValue({
+      user: {
+        id: "user-banned",
+        role: "student",
+        name: "Banned User",
+        email: "banned@example.com",
+        banned: true,
+      },
+      session: {},
+    })
+
+    await requireRole(
+      ["student"],
       {},
       {
         getSession: mockGetSession,

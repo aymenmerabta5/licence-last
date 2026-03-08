@@ -23,6 +23,19 @@ mock.module("@/server/db", () => ({
   },
 }))
 
+const createNotificationMock = mock(async () => ({}))
+mock.module("@/server/services/notifications/create", () => ({
+  createNotification: createNotificationMock,
+}))
+mock.module("@/server/logging", () => ({
+  createModuleLogger: () => ({
+    info: () => {},
+    warn: () => {},
+    error: () => {},
+    debug: () => {},
+  }),
+}))
+
 describe("src/server/services/offers/update-status", () => {
   beforeEach(() => {
     mockSelect.mockClear()
@@ -75,6 +88,17 @@ describe("src/server/services/offers/update-status", () => {
         expectedEndDate: null,
       },
     ])
+
+    // Second db.select().from().where() for affected interviews (no .limit())
+    let selectWhereCallCount = 0
+    mockSelectWhere.mockImplementation(() => {
+      selectWhereCallCount++
+      if (selectWhereCallCount === 1) return { limit: mockLimit }
+      // Return affected interviews for the second query
+      return Promise.resolve([
+        { id: "int-1", studentUserId: "student-1" },
+      ])
+    })
 
     const { updateOfferStatus } = await import(
       "@/server/services/offers/update-status"

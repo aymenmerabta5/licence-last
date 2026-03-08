@@ -61,6 +61,11 @@ function applyGenerateAgreementMocks() {
     sendAgreementEmail: sendAgreementEmailMock,
   }))
 
+  mock.module("@/server/services/documents/persist", () => ({
+    persistDocumentBuffer: mock(async () => null),
+    fetchDocumentBuffer: mock(async () => null),
+  }))
+
   mock.module("@/server/db", () => ({
     db: {
       select: () => ({ from: () => selectBuilder }),

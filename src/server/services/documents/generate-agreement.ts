@@ -18,6 +18,7 @@ import {
   ConventionDeStageTemplate,
 } from "@/server/pdfs/AgreementTemplate"
 import { DocumentServiceError } from "@/server/services/documents/errors"
+import { persistDocumentBuffer } from "@/server/services/documents/persist"
 import { generateQRCodeDataUrl } from "@/server/services/documents/qr-utils"
 import { sendAgreementEmail } from "@/server/services/documents/send-agreement-email"
 import { generateVerificationCode } from "@/server/services/documents/verification-code"
@@ -84,6 +85,76 @@ function pickString(value: unknown): string | null {
   return typeof value === "string" && value.length > 0 ? value : null
 }
 
+function pickNumber(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null
+}
+
+function pickDate(value: unknown): Date | null {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value
+  }
+
+  if (typeof value === "string") {
+    const parsed = new Date(value)
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed
+    }
+  }
+
+  return null
+}
+
+function toAgreementSnapshot(value: unknown): AgreementData | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null
+  }
+
+  const record = value as Record<string, unknown>
+  const studentName = pickString(record.studentName)
+  const studentEmail = pickString(record.studentEmail)
+  const companyName = pickString(record.companyName)
+  const offerTitle = pickString(record.offerTitle)
+  const internshipType = pickString(record.internshipType)
+  const startDate = pickDate(record.startDate)
+  const endDate = pickDate(record.endDate)
+
+  if (
+    !studentName ||
+    !studentEmail ||
+    !companyName ||
+    !offerTitle ||
+    !internshipType ||
+    !startDate ||
+    !endDate
+  ) {
+    return null
+  }
+
+  return {
+    studentName,
+    studentEmail,
+    studentPhone: pickString(record.studentPhone),
+    studentNumber: pickString(record.studentNumber),
+    studentDepartment: pickString(record.studentDepartment),
+    studentAddress: pickString(record.studentAddress),
+    companyName,
+    companyAddress: pickString(record.companyAddress),
+    companyPhone: pickString(record.companyPhone),
+    companyRepresentativeName: pickString(record.companyRepresentativeName),
+    companyContactEmail: pickString(record.companyContactEmail),
+    universityName: pickString(record.universityName),
+    universityDepartmentName: pickString(record.universityDepartmentName),
+    universityAddress: pickString(record.universityAddress),
+    universityPhone: pickString(record.universityPhone),
+    offerTitle,
+    internshipType,
+    startDate,
+    endDate,
+    workMode: pickString(record.workMode),
+    durationWeeks: pickNumber(record.durationWeeks),
+  }
+}
+
 function canIssueAgreement(
   issuer: AgreementIssuerContext,
   studentUniversityId: string | null,
@@ -135,7 +206,7 @@ async function loadAgreementContext(placementId: string): Promise<AgreementConte
       studentEmail: user.email,
       studentUserId: user.id,
       studentUniversityId: user.universityId,
-      studentDepartmentId: user.departmentId,
+      studentDepartmentId: studentProfile.departmentId,
       studentPhone: studentProfile.phone,
       studentNumber: studentProfile.studentNumber,
       studentDepartment: studentProfile.department,
@@ -214,7 +285,17 @@ export async function renderAgreementPdfBuffer(input: {
   placementId: string
   locale: string
   verificationCode: string
+  snapshotData?: unknown
 }): Promise<Buffer> {
+  const snapshot = toAgreementSnapshot(input.snapshotData)
+  if (snapshot) {
+    return renderAgreementBuffer({
+      data: snapshot,
+      locale: input.locale,
+      verificationCode: input.verificationCode,
+    })
+  }
+
   const context = await loadAgreementContext(input.placementId)
   return renderAgreementBuffer({
     data: context.data,
@@ -260,16 +341,27 @@ export async function generateAgreement(
   const existingGeneratedAt = pickString(existingMeta.generatedAt)
   const existingIssuedByUserId = pickString(existingMeta.issuedByUserId)
   const existingIssuedByRole = pickString(existingMeta.issuedByRole)
+  const existingSnapshot = toAgreementSnapshot(existingDoc?.snapshotData)
 
   if (existingDoc?.status === "generated" && existingVerificationCode) {
+    const { fetchDocumentBuffer } = await import(
+      "@/server/services/documents/persist"
+    )
+    let buffer: Buffer | null = null
+    if (existingDoc.storageKey) {
+      buffer = await fetchDocumentBuffer(existingDoc.storageKey)
+    }
+    if (!buffer) {
+      buffer = await renderAgreementBuffer({
+        data: existingSnapshot ?? context.data,
+        locale: existingLocale ?? locale,
+        verificationCode: existingVerificationCode,
+      })
+    }
     return {
       success: true,
       documentId: existingDoc.id,
-      buffer: await renderAgreementBuffer({
-        data: context.data,
-        locale: existingLocale ?? locale,
-        verificationCode: existingVerificationCode,
-      }),
+      buffer,
     }
   }
 
@@ -292,6 +384,10 @@ export async function generateAgreement(
     verificationCode,
   })
 
+  const snapshotData = context.data
+  const storageKeyValue = `documents/agreement_${placementId}_${Date.now()}.pdf`
+  const persistedKey = await persistDocumentBuffer(storageKeyValue, pdfBuffer)
+
   let documentRecord = existingDoc
   let shouldSendAgreementEmail = false
 
@@ -301,6 +397,8 @@ export async function generateAgreement(
       .set({
         status: "generated",
         verificationCode,
+        storageKey: persistedKey,
+        snapshotData,
         meta: issuedMeta,
       })
       .where(eq(placementDocument.id, documentRecord.id))
@@ -314,6 +412,8 @@ export async function generateAgreement(
         type: "agreement",
         status: "generated",
         verificationCode,
+        storageKey: persistedKey,
+        snapshotData,
         meta: issuedMeta,
       })
       .onConflictDoNothing({
@@ -346,13 +446,14 @@ export async function generateAgreement(
       const resolvedMeta = toMetaRecord(resolvedDoc.meta)
       const resolvedVerificationCode =
         pickString(resolvedDoc.verificationCode) ?? verificationCode
+      const resolvedSnapshot = toAgreementSnapshot(resolvedDoc.snapshotData)
 
       if (resolvedDoc.status === "generated" && resolvedVerificationCode) {
         return {
           success: true,
           documentId: resolvedDoc.id,
           buffer: await renderAgreementBuffer({
-            data: context.data,
+            data: resolvedSnapshot ?? context.data,
             locale: pickString(resolvedMeta.locale) ?? issuedLocale,
             verificationCode: resolvedVerificationCode,
           }),
@@ -367,11 +468,18 @@ export async function generateAgreement(
         verificationCode,
       })
 
+      const resolvedPersistedKey = await persistDocumentBuffer(
+        `documents/agreement_${placementId}_${Date.now()}.pdf`,
+        pdfBuffer,
+      )
+
       await db
         .update(placementDocument)
         .set({
           status: "generated",
           verificationCode,
+          storageKey: resolvedPersistedKey,
+          snapshotData,
           meta: {
             ...resolvedMeta,
             generatedAt:

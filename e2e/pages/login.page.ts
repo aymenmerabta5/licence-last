@@ -17,9 +17,27 @@ export class LoginPage {
     await this.page.fill("#login-password", password)
     await this.page.click('button[type="submit"]')
 
-    await this.page.waitForURL(/\/en\/(dashboard|status|onboarding|verify)/, {
-      timeout: 45000,
-    })
+    await this.page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/auth/sign-in/email") &&
+        response.request().method() === "POST",
+      { timeout: 45000 },
+    )
+
+    await this.page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/rpc/users/getMe") &&
+        response.request().method() === "POST",
+      { timeout: 45000 },
+    )
+
+    await this.page.waitForFunction(
+      () =>
+        /\/en\/(dashboard|status|onboarding|verify)/.test(
+          window.location.pathname,
+        ),
+      { timeout: 90000 },
+    )
 
     await this.page.waitForSelector("main", {
       state: "visible",

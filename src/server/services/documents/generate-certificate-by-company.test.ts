@@ -126,13 +126,49 @@ describe("src/server/services/documents/generate-certificate-by-company", () => 
     expect(generateCertificateMock).not.toHaveBeenCalled()
   })
 
+  test("rejects certificate generation when internship has not ended", async () => {
+    selectResultsQueue.push([
+      {
+        placementId: "placement-1",
+        startDate: new Date("2030-01-01"),
+        endDate: new Date("2030-06-01"),
+        applicationStatus: "admin_validated",
+        offerTitle: "Frontend Internship",
+        internshipType: "pfe",
+        companyId: "company-1",
+        companyName: "Acme",
+        studentUserId: "student-1",
+        studentName: "Student",
+        studentEmail: "student@example.com",
+      },
+    ])
+
+    const { generateCertificateByCompany } =
+      await loadGenerateCertificateByCompanyModule()
+
+    await expect(
+      generateCertificateByCompany({
+        placementId: "placement-1",
+        companyId: "company-1",
+        issuedByUserId: "owner-1",
+        issuedByMembershipRole: "owner",
+        locale: "en",
+      } as never),
+    ).rejects.toMatchObject({
+      code: "INTERNSHIP_NOT_COMPLETED",
+      message: "Certificate can only be generated after the internship end date",
+    })
+
+    expect(generateCertificateMock).not.toHaveBeenCalled()
+  })
+
   test("stores membership-aware issuer metadata for owner issuance", async () => {
     selectResultsQueue.push(
       [
         {
           placementId: "placement-1",
-          startDate: new Date("2030-01-01"),
-          endDate: new Date("2030-02-01"),
+          startDate: new Date("2024-01-01"),
+          endDate: new Date("2024-02-01"),
           applicationStatus: "admin_validated",
           offerTitle: "Frontend Internship",
           internshipType: "pfe",
@@ -181,8 +217,8 @@ describe("src/server/services/documents/generate-certificate-by-company", () => 
       [
         {
           placementId: "placement-1",
-          startDate: new Date("2030-01-01"),
-          endDate: new Date("2030-02-01"),
+          startDate: new Date("2024-01-01"),
+          endDate: new Date("2024-02-01"),
           applicationStatus: "admin_validated",
           offerTitle: "Frontend Internship",
           internshipType: "pfe",

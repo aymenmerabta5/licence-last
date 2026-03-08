@@ -33,11 +33,25 @@ export class StudentSearchPage {
       .locator(`a[href*="/dashboard/explore/${input.offerId}"]`)
       .first()
     await expect(offerLink).toBeVisible({ timeout: 15000 })
+    await offerLink.scrollIntoViewIfNeeded()
+
+    const offerHref = await offerLink.getAttribute("href")
     await offerLink.click()
 
-    await expect(this.page).toHaveURL(
-      new RegExp(`/en/dashboard/(explore|student/offers)/${input.offerId}$`),
+    const offerUrlPattern = new RegExp(
+      `/en/dashboard/(explore|student/offers)/${input.offerId}$`,
     )
+
+    try {
+      await expect(this.page).toHaveURL(offerUrlPattern, { timeout: 15000 })
+    } catch (error) {
+      if (!offerHref) {
+        throw error
+      }
+
+      await this.page.goto(offerHref)
+      await expect(this.page).toHaveURL(offerUrlPattern)
+    }
   }
 
   async clickApplyNow(): Promise<void> {

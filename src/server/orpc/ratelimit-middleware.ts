@@ -153,6 +153,29 @@ function defaultKeyGenerator(ctx: { userId?: string; ip: string }): string {
   return ctx.userId ? `user:${ctx.userId}` : `ip:${ctx.ip}`
 }
 
+function createInMemoryLimiter(config: RateLimitConfig) {
+  return {
+    async limit(key: string) {
+      const allowed = checkInMemoryLimit(
+        key,
+        config.maxRequests,
+        config.windowMs,
+      )
+      const entry = inMemoryStore.get(key)
+      const remaining = entry
+        ? Math.max(0, config.maxRequests - entry.count)
+        : config.maxRequests
+
+      return {
+        success: allowed,
+        limit: config.maxRequests,
+        remaining,
+        reset: entry?.resetAt ?? Date.now() + config.windowMs,
+      }
+    },
+  }
+}
+
 /**
  * Create a rate limit middleware with custom configuration.
  *
@@ -180,8 +203,7 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
         "Redis unavailable while rate limiting is enabled - failing closed",
       )
       return createRatelimitMiddleware({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        limiter: () => null as unknown as any,
+        limiter: () => createInMemoryLimiter(config),
         key: async () => {
           throw new ORPCError("INTERNAL_SERVER_ERROR", {
             message: "Rate limiter backend unavailable",
@@ -194,8 +216,7 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
       log.warn("Redis unavailable - using in-memory rate limiter fallback")
     }
     return createRatelimitMiddleware({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      limiter: () => null as unknown as any,
+      limiter: () => createInMemoryLimiter(config),
       key: async ({ context }) => {
         const headersList = await headers()
         const ip = extractClientIp(headersList)

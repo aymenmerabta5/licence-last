@@ -27,6 +27,7 @@ interface InviteCompanyMemberResult {
 }
 
 const FORBIDDEN_EXISTING_ROLES = new Set([
+  "student",
   "super_admin",
   "university_admin",
   "dept_head",
@@ -137,7 +138,7 @@ export async function inviteCompanyMember(
     if (FORBIDDEN_EXISTING_ROLES.has(existingUser.role)) {
       throw new ServiceError(
         "COMPANY_MEMBER_ROLE_NOT_ELIGIBLE",
-        "Existing account role cannot be assigned as a company member",
+        "Existing account role cannot be reassigned as a company member; invite using a dedicated company account",
       )
     }
 
@@ -154,7 +155,6 @@ export async function inviteCompanyMember(
         await tx
           .update(user)
           .set({
-            role: "company_admin",
             onboardingCompleted: true,
             ...(existingUser.name ? {} : { name: nextName }),
           })

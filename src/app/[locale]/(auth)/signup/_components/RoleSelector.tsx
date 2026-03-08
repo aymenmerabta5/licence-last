@@ -1,12 +1,12 @@
 "use client"
 
-import { ArrowRight, Building2, GraduationCap, Landmark } from "lucide-react"
+import { ArrowRight, GraduationCap } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 
 import { ease } from "@/lib/animations"
 
-type SelectedRole = "student" | "company" | "university"
+type SelectedRole = "student"
 
 interface RoleSelectorProps {
   onSelect: (role: SelectedRole) => void
@@ -14,8 +14,6 @@ interface RoleSelectorProps {
 
 const roles = [
   { key: "student" as const, Icon: GraduationCap },
-  { key: "company" as const, Icon: Building2 },
-  { key: "university" as const, Icon: Landmark },
 ]
 
 export function RoleSelector({ onSelect }: RoleSelectorProps) {

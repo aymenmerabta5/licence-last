@@ -1,7 +1,12 @@
 import { notFound } from "next/navigation"
+import { and, eq } from "drizzle-orm"
 import { ProfileContent } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent"
 import { requireRole } from "@/lib/auth-guards"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
+import { db } from "@/server/db"
+import { application } from "@/server/db/schema/applications"
+import { companyMember } from "@/server/db/schema/companies"
+import { internshipOffer } from "@/server/db/schema/internships"
 import { getStudentCv } from "@/server/services/students/get-cv"
 import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
 import { getPublicStudentProfile } from "@/server/services/students/get-public-profile"
@@ -24,6 +29,31 @@ export async function ProfileData({ userId }: ProfileDataProps) {
   ])
   const isOwner = viewer.id === userId && viewer.role === "student"
   if (viewer.role === "student" && !isOwner) notFound()
+
+  // Company admins can only view profiles of students who applied to their offers
+  if (viewer.role === "company_admin") {
+    const [membership] = await db
+      .select({ companyId: companyMember.companyId })
+      .from(companyMember)
+      .where(eq(companyMember.userId, viewer.id))
+      .limit(1)
+
+    if (!membership) notFound()
+
+    const [hasRelationship] = await db
+      .select({ id: application.id })
+      .from(application)
+      .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
+      .where(
+        and(
+          eq(application.studentUserId, userId),
+          eq(internshipOffer.companyId, membership.companyId),
+        ),
+      )
+      .limit(1)
+
+    if (!hasRelationship) notFound()
+  }
 
   const result = await getPublicStudentProfile(
     { id: viewer.id, role: viewer.role },

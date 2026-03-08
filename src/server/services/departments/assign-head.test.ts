@@ -89,7 +89,7 @@ describe("assignDepartmentHead", () => {
   test("should throw when user belongs to another university", async () => {
     selectLimitQueue.push(
       [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
-      [{ id: "user-1", role: "student", universityId: "uni-2" }],
+      [{ id: "user-1", role: "dept_head", universityId: "uni-2" }],
     )
 
     const { assignDepartmentHead } = await loadAssignHeadModule()
@@ -98,14 +98,27 @@ describe("assignDepartmentHead", () => {
     )
   })
 
-  test("should return success when both exist", async () => {
+  test("should reject reassignment of non-dept-head roles", async () => {
     selectLimitQueue.push(
       [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
       [{ id: "user-1", role: "student", universityId: "uni-1" }],
     )
 
     const { assignDepartmentHead } = await loadAssignHeadModule()
+    expect(assignDepartmentHead("dept-1", "user-1")).rejects.toThrow(
+      "Existing account role cannot be reassigned as department head; create or use a dedicated department head account",
+    )
+  })
+
+  test("should return success when the target already is a dept_head", async () => {
+    selectLimitQueue.push(
+      [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
+      [{ id: "user-1", role: "dept_head", universityId: "uni-1" }],
+    )
+
+    const { assignDepartmentHead } = await loadAssignHeadModule()
     const result = await assignDepartmentHead("dept-1", "user-1")
+
     expect(result).toEqual({
       success: true,
       departmentId: "dept-1",
@@ -116,7 +129,7 @@ describe("assignDepartmentHead", () => {
   test("should update user role and scope in a transaction", async () => {
     selectLimitQueue.push(
       [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
-      [{ id: "user-1", role: "student", universityId: "uni-1" }],
+      [{ id: "user-1", role: "dept_head", universityId: "uni-1" }],
     )
 
     const { assignDepartmentHead } = await loadAssignHeadModule()
@@ -131,7 +144,7 @@ describe("assignDepartmentHead", () => {
   test("should make two select queries (dept + user)", async () => {
     selectLimitQueue.push(
       [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
-      [{ id: "user-1", role: "student", universityId: "uni-1" }],
+      [{ id: "user-1", role: "dept_head", universityId: "uni-1" }],
     )
 
     const { assignDepartmentHead } = await loadAssignHeadModule()
