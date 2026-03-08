@@ -52,6 +52,13 @@ export async function assignDepartmentHead(
     )
   }
 
+  if (targetUser.role !== "dept_head") {
+    throw new ServiceError(
+      "USER_INELIGIBLE_FOR_DEPARTMENT_HEAD",
+      "Existing account role cannot be reassigned as department head; create or use a dedicated department head account",
+    )
+  }
+
   if (
     targetUser.universityId &&
     targetUser.universityId !== dept.universityId

@@ -91,6 +91,10 @@ export async function requireRole(
 
   const { user } = session
 
+  if (user.banned) {
+    return resolvedDependencies.localeRedirect("/")
+  }
+
   if (!allowedRoles.includes(user.role as UserRole)) {
     return resolvedDependencies.localeRedirect("/")
   }

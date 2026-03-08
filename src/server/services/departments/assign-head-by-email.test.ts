@@ -98,7 +98,7 @@ describe("assignDepartmentHeadByEmail", () => {
       [{ name: "University of Algiers" }],
       [{ id: "user-1", name: "Existing Head" }],
       [{ id: "dept-1", name: "Computer Science", universityId: "uni-1" }],
-      [{ id: "user-1", role: "student", name: "Existing Head" }],
+      [{ id: "user-1", role: "dept_head", name: "Existing Head" }],
     )
 
     const { assignDepartmentHeadByEmail } = await loadAssignHeadByEmailModule()

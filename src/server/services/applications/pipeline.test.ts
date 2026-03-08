@@ -18,10 +18,10 @@ mock.module("@/server/db", () => ({
 // to match pipeline.ts and test it directly, avoiding Bun mock.module caching
 // issues where other test files' mock.module for the same module path wins.
 const STAGE_TRANSITIONS: Record<string, string[]> = {
-  applied: ["screening", "interview", "offer", "rejected"],
-  screening: ["applied", "interview", "offer", "rejected"],
-  interview: ["screening", "offer", "rejected"],
-  offer: ["rejected", "interview"],
+  applied: ["screening", "interview", "offer"],
+  screening: ["applied", "interview", "offer"],
+  interview: ["screening", "offer"],
+  offer: ["interview"],
   accepted: [],
   rejected: [],
 }
@@ -35,11 +35,11 @@ describe("src/server/services/applications/pipeline canTransitionStage", () => {
     expect(canTransitionStage("applied", "screening")).toBe(true)
     expect(canTransitionStage("applied", "interview")).toBe(true)
     expect(canTransitionStage("applied", "offer")).toBe(true)
-    expect(canTransitionStage("applied", "rejected")).toBe(true)
   })
 
   test("should deny invalid transitions from applied", () => {
     expect(canTransitionStage("applied", "accepted")).toBe(false)
+    expect(canTransitionStage("applied", "rejected")).toBe(false)
   })
 
   test("should deny all transitions from accepted", () => {

@@ -127,6 +127,13 @@
       "when": 1772392000000,
       "tag": "0017_company_verification_document",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1772919352161,
+      "tag": "0018_tired_mandrill",
+      "breakpoints": true
     }
   ]
 }

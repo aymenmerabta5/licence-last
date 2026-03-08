@@ -1,19 +1,45 @@
-import { Suspense } from "react"
+import { notFound } from "next/navigation"
 
-import { OfferDetailRedirect } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetailRedirect"
+import { OfferDetailClient } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail"
+import { requireRole } from "@/lib/auth-guards"
+import { localeRedirect } from "@/lib/navigation"
+import {
+  getOfferById,
+  getStudentApplicationForOffer,
+} from "@/server/services/offers/get"
 
 type Params = Promise<{ offerId: string }>
 
-/**
- * Offer detail page wrapper with cacheComponents support.
- * Uses Suspense boundary for the redirect logic.
- */
 export default async function OfferDetailPage({ params }: { params: Params }) {
-  const { offerId } = await params
+  const [{ offerId }, user] = await Promise.all([
+    params,
+    requireRole(["student"]),
+  ])
+
+  if (!user.onboardingCompleted) {
+    return localeRedirect("/onboarding/student")
+  }
+
+  const offer = await getOfferById(offerId)
+
+  if (
+    !offer ||
+    offer.status !== "published" ||
+    offer.companyStatus !== "approved"
+  ) {
+    notFound()
+  }
+
+  const existingApplication = await getStudentApplicationForOffer(
+    offerId,
+    user.id,
+  )
 
   return (
-    <Suspense fallback={null}>
-      <OfferDetailRedirect offerId={offerId} />
-    </Suspense>
+    <OfferDetailClient
+      offer={offer}
+      existingApplication={existingApplication}
+      studentUserId={user.id}
+    />
   )
 }

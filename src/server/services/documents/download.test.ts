@@ -6,6 +6,7 @@ const renderAgreementPdfBufferMock = mock(async () => Buffer.from("agreement"))
 const renderCertificatePdfBufferMock = mock(async () =>
   Buffer.from("certificate"),
 )
+const fetchDocumentBufferMock = mock(async () => null as Buffer | null)
 
 const selectLimitMock = mock(async () => selectResultsQueue.shift() ?? [])
 const selectBuilder = {
@@ -30,6 +31,10 @@ function applyDownloadDocumentMocks() {
   mock.module("@/server/services/documents/generate-certificate", () => ({
     renderCertificatePdfBuffer: renderCertificatePdfBufferMock,
   }))
+
+  mock.module("@/server/services/documents/persist", () => ({
+    fetchDocumentBuffer: fetchDocumentBufferMock,
+  }))
 }
 
 async function loadDownloadDocumentModule() {
@@ -44,6 +49,7 @@ describe("src/server/services/documents/download", () => {
     selectLimitMock.mockClear()
     renderAgreementPdfBufferMock.mockClear()
     renderCertificatePdfBufferMock.mockClear()
+    fetchDocumentBufferMock.mockClear()
   })
 
   test("throws typed not-found error when document is missing", async () => {
@@ -111,5 +117,49 @@ describe("src/server/services/documents/download", () => {
 
     expect(renderAgreementPdfBufferMock).not.toHaveBeenCalled()
     expect(renderCertificatePdfBufferMock).not.toHaveBeenCalled()
+  })
+
+  test("uses snapshot data when stored agreement file is unavailable", async () => {
+    selectResultsQueue.push([
+      {
+        documentType: "agreement",
+        placementId: "placement-1",
+        studentUserId: "student-1",
+        status: "generated",
+        meta: { locale: "en", fileName: "agreement.pdf" },
+        verificationCode: "INTX-ABCD-EF12",
+        storageKey: "documents/agreement.pdf",
+        snapshotData: {
+          studentName: "Student",
+          studentEmail: "student@example.com",
+          companyName: "Acme",
+          offerTitle: "Frontend Internship",
+          internshipType: "pfe",
+          startDate: "2024-01-01T00:00:00.000Z",
+          endDate: "2024-02-01T00:00:00.000Z",
+        },
+      },
+    ])
+
+    const { downloadDocument } = await loadDownloadDocumentModule()
+
+    const result = await downloadDocument({
+      documentId: "doc-1",
+      studentUserId: "student-1",
+    })
+
+    expect(result.fileName).toBe("agreement.pdf")
+    expect(fetchDocumentBufferMock).toHaveBeenCalledWith(
+      "documents/agreement.pdf",
+    )
+    expect(renderAgreementPdfBufferMock).toHaveBeenCalledWith({
+      placementId: "placement-1",
+      locale: "en",
+      verificationCode: "INTX-ABCD-EF12",
+      snapshotData: expect.objectContaining({
+        studentName: "Student",
+        companyName: "Acme",
+      }),
+    })
   })
 })

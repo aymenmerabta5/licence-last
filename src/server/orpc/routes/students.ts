@@ -1,7 +1,7 @@
 import "server-only"
 
 import { ORPCError } from "@orpc/server"
-import { eq } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
 import { z } from "zod"
 import { CACHE_TAGS } from "@/lib/cache"
@@ -12,7 +12,11 @@ import {
 import { isFeatureEnabled } from "@/lib/feature-flags"
 import { proficiencyLevelSchema } from "@/lib/schemas/enums"
 import { db } from "@/server/db"
+import { application } from "@/server/db/schema/applications"
 import { user } from "@/server/db/schema/auth"
+import { companyMember } from "@/server/db/schema/companies"
+import { internshipOffer } from "@/server/db/schema/internships"
+import { studentProfile } from "@/server/db/schema/students"
 import {
   canAccessPrivateStudentProfile,
 } from "@/server/orpc/utils/student-scope"
@@ -62,9 +66,10 @@ export const getStudentProfileProcedure = authedProcedureGenerous
       const [targetUser] = await db
         .select({
           universityId: user.universityId,
-          departmentId: user.departmentId,
+          departmentId: studentProfile.departmentId,
         })
         .from(user)
+        .leftJoin(studentProfile, eq(user.id, studentProfile.userId))
         .where(eq(user.id, targetUserId))
         .limit(1)
 
@@ -111,6 +116,43 @@ export const getPublicStudentProfileProcedure = authedProcedureGenerous
       throw new ORPCError("FORBIDDEN", {
         message: "You do not have access to this profile",
       })
+    }
+
+    // Company admins can only view profiles of students who have a relationship
+    // (application) with one of the company's offers.
+    if (isCompanyAdmin) {
+      const [membership] = await db
+        .select({ companyId: companyMember.companyId })
+        .from(companyMember)
+        .where(eq(companyMember.userId, context.user.id))
+        .limit(1)
+
+      if (!membership) {
+        throw new ORPCError("FORBIDDEN", {
+          message: "No company membership found",
+        })
+      }
+
+      const [hasRelationship] = await db
+        .select({ id: application.id })
+        .from(application)
+        .innerJoin(
+          internshipOffer,
+          eq(application.offerId, internshipOffer.id),
+        )
+        .where(
+          and(
+            eq(application.studentUserId, input.userId),
+            eq(internshipOffer.companyId, membership.companyId),
+          ),
+        )
+        .limit(1)
+
+      if (!hasRelationship) {
+        throw new ORPCError("FORBIDDEN", {
+          message: "You do not have access to this profile",
+        })
+      }
     }
 
     return getPublicStudentProfile(

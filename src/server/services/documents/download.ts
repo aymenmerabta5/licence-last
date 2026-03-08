@@ -41,6 +41,8 @@ export async function downloadDocument(
       status: placementDocument.status,
       meta: placementDocument.meta,
       verificationCode: placementDocument.verificationCode,
+      storageKey: placementDocument.storageKey,
+      snapshotData: placementDocument.snapshotData,
       studentUserId: application.studentUserId,
     })
     .from(placementDocument)
@@ -80,6 +82,20 @@ export async function downloadDocument(
     )
   }
 
+  if (row.storageKey) {
+    const { fetchDocumentBuffer } = await import(
+      "@/server/services/documents/persist"
+    )
+    const stored = await fetchDocumentBuffer(row.storageKey)
+    if (stored) {
+      return {
+        buffer: stored,
+        fileName,
+        documentType: row.documentType as "agreement" | "certificate",
+      }
+    }
+  }
+
   if (row.documentType === "agreement") {
     const { renderAgreementPdfBuffer } = await import(
       "@/server/services/documents/generate-agreement"
@@ -90,6 +106,7 @@ export async function downloadDocument(
         placementId: row.placementId,
         locale,
         verificationCode,
+        snapshotData: row.snapshotData,
       }),
       fileName,
       documentType: "agreement",
@@ -106,6 +123,7 @@ export async function downloadDocument(
         placementId: row.placementId,
         locale,
         verificationCode,
+        snapshotData: row.snapshotData,
       }),
       fileName,
       documentType: "certificate",

@@ -40,6 +40,11 @@ function applyGenerateCertificateMocks() {
     generateQRCodeDataUrl: generateQRCodeDataUrlMock,
   }))
 
+  mock.module("@/server/services/documents/persist", () => ({
+    persistDocumentBuffer: mock(async () => null),
+    fetchDocumentBuffer: mock(async () => null),
+  }))
+
   mock.module("@/server/db", () => ({
     db: {
       select: () => ({ from: () => selectBuilder }),
@@ -86,14 +91,47 @@ describe("src/server/services/documents/generate-certificate", () => {
     })
   })
 
-  test("handles concurrent insert conflict and regenerates with canonical verification code", async () => {
+  test("rejects certificate generation when internship has not ended", async () => {
     selectResultsQueue.push(
       [
         {
           id: "placement-1",
           applicationId: "app-1",
           startDate: new Date("2030-01-01"),
-          endDate: new Date("2030-02-01"),
+          endDate: new Date("2030-06-01"),
+        },
+      ],
+      [
+        {
+          applicationId: "app-1",
+          offerTitle: "Frontend Internship",
+          offerInternshipType: "pfe",
+          companyName: "Acme",
+          studentName: "Student",
+          studentEmail: "student@example.com",
+          studentUniversityId: null,
+        },
+      ],
+    )
+
+    const { generateCertificate } = await importGenerateCertificate()
+
+    await expect(
+      generateCertificate({ placementId: "placement-1", locale: "en" }),
+    ).rejects.toMatchObject({
+      code: "INTERNSHIP_NOT_COMPLETED",
+      message: "Certificate can only be generated after the internship end date",
+    })
+  })
+
+  test("handles concurrent insert conflict and regenerates with canonical verification code", async () => {
+    selectResultsQueue.push(
+      [
+        {
+          id: "placement-1",
+          applicationId: "app-1",
+          startDate: new Date("2024-01-01"),
+          endDate: new Date("2024-02-01"),
         },
       ],
       [

@@ -133,6 +133,41 @@ describe("src/server/services/companies/invite-member", () => {
     expect(mockCreateUser).not.toHaveBeenCalled()
   })
 
+  test("attaches an existing company_admin account without rewriting role", async () => {
+    selectResponses = [
+      [{ id: "company-1", name: "Acme" }],
+      [
+        {
+          id: "member-3",
+          email: "member3@example.com",
+          name: "Member Three",
+          role: "company_admin",
+          onboardingCompleted: false,
+        },
+      ],
+      [],
+    ]
+
+    const { inviteCompanyMember } = await import(
+      "@/server/services/companies/invite-member?fresh=5"
+    )
+    const result = await inviteCompanyMember({
+      companyId: "company-1",
+      invitedByUserId: "owner-1",
+      email: "member3@example.com",
+    })
+
+    expect(result).toMatchObject({
+      userId: "member-3",
+      createdUser: false,
+      alreadyMember: false,
+      role: "recruiter",
+    })
+    expect(mockTxUpdateSet).toHaveBeenCalledWith({
+      onboardingCompleted: true,
+    })
+  })
+
   test("throws conflict when user belongs to another company", async () => {
     selectResponses = [
       [{ id: "company-1", name: "Acme" }],
@@ -160,6 +195,36 @@ describe("src/server/services/companies/invite-member", () => {
       }),
     ).rejects.toMatchObject({
       code: "COMPANY_MEMBER_ALREADY_ASSIGNED",
+    })
+  })
+
+  test("rejects reassignment of student accounts", async () => {
+    selectResponses = [
+      [{ id: "company-1", name: "Acme" }],
+      [
+        {
+          id: "student-1",
+          email: "student@example.com",
+          name: "Student",
+          role: "student",
+          onboardingCompleted: true,
+        },
+      ],
+      [],
+    ]
+
+    const { inviteCompanyMember } = await import(
+      "@/server/services/companies/invite-member?fresh=6"
+    )
+
+    await expect(
+      inviteCompanyMember({
+        companyId: "company-1",
+        invitedByUserId: "owner-1",
+        email: "student@example.com",
+      }),
+    ).rejects.toMatchObject({
+      code: "COMPANY_MEMBER_ROLE_NOT_ELIGIBLE",
     })
   })
 

@@ -493,6 +493,12 @@ export const updateOfferStatusProcedure = companyAdminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
+    // Owner-only gate for publish/close (recruiters can still draft/update)
+    if (context.companyMembership.role !== "owner") {
+      throw new ORPCError("FORBIDDEN", {
+        message: "Only company owners can publish or close offers",
+      })
+    }
     try {
       const result = await updateOfferStatus(
         input.offerId,

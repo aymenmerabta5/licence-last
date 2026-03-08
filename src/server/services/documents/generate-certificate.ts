@@ -16,6 +16,7 @@ import {
   InternshipCertificateTemplate,
 } from "@/server/pdfs/CertificateTemplate"
 import { DocumentServiceError } from "@/server/services/documents/errors"
+import { persistDocumentBuffer } from "@/server/services/documents/persist"
 import { generateQRCodeDataUrl } from "@/server/services/documents/qr-utils"
 import { generateVerificationCode } from "@/server/services/documents/verification-code"
 
@@ -54,6 +55,59 @@ function toMetaRecord(value: unknown): Record<string, unknown> {
 
 function pickString(value: unknown): string | null {
   return typeof value === "string" && value.length > 0 ? value : null
+}
+
+function pickDate(value: unknown): Date | null {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value
+  }
+
+  if (typeof value === "string") {
+    const parsed = new Date(value)
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed
+    }
+  }
+
+  return null
+}
+
+function toCertificateSnapshot(value: unknown): CertificateData | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null
+  }
+
+  const record = value as Record<string, unknown>
+  const studentName = pickString(record.studentName)
+  const studentEmail = pickString(record.studentEmail)
+  const companyName = pickString(record.companyName)
+  const offerTitle = pickString(record.offerTitle)
+  const internshipType = pickString(record.internshipType)
+  const startDate = pickDate(record.startDate)
+  const endDate = pickDate(record.endDate)
+
+  if (
+    !studentName ||
+    !studentEmail ||
+    !companyName ||
+    !offerTitle ||
+    !internshipType ||
+    !startDate ||
+    !endDate
+  ) {
+    return null
+  }
+
+  return {
+    studentName,
+    studentEmail,
+    universityName: pickString(record.universityName),
+    companyName,
+    offerTitle,
+    internshipType,
+    startDate,
+    endDate,
+  }
 }
 
 async function loadCertificateContext(placementId: string): Promise<CertificateContext> {
@@ -141,7 +195,17 @@ export async function renderCertificatePdfBuffer(input: {
   placementId: string
   locale: string
   verificationCode: string
+  snapshotData?: unknown
 }): Promise<Buffer> {
+  const snapshot = toCertificateSnapshot(input.snapshotData)
+  if (snapshot) {
+    return renderCertificateBuffer({
+      data: snapshot,
+      locale: input.locale,
+      verificationCode: input.verificationCode,
+    })
+  }
+
   const context = await loadCertificateContext(input.placementId)
   return renderCertificateBuffer({
     data: context.data,
@@ -155,6 +219,13 @@ export async function generateCertificate(
 ): Promise<GenerateCertificateResult> {
   const { placementId, locale = "en" } = input
   const context = await loadCertificateContext(placementId)
+
+  if (context.placementRecord.endDate > new Date()) {
+    throw new DocumentServiceError(
+      "INTERNSHIP_NOT_COMPLETED",
+      "Certificate can only be generated after the internship end date",
+    )
+  }
 
   const [existingDoc] = await db
     .select()
@@ -172,16 +243,27 @@ export async function generateCertificate(
   const existingLocale = pickString(existingMeta.locale)
   const existingFileName = pickString(existingMeta.fileName)
   const existingGeneratedAt = pickString(existingMeta.generatedAt)
+  const existingSnapshot = toCertificateSnapshot(existingDoc?.snapshotData)
 
   if (existingDoc?.status === "generated" && existingVerificationCode) {
+    const { fetchDocumentBuffer } = await import(
+      "@/server/services/documents/persist"
+    )
+    let buffer: Buffer | null = null
+    if (existingDoc.storageKey) {
+      buffer = await fetchDocumentBuffer(existingDoc.storageKey)
+    }
+    if (!buffer) {
+      buffer = await renderCertificateBuffer({
+        data: existingSnapshot ?? context.data,
+        locale: existingLocale ?? locale,
+        verificationCode: existingVerificationCode,
+      })
+    }
     return {
       success: true,
       documentId: existingDoc.id,
-      buffer: await renderCertificateBuffer({
-        data: context.data,
-        locale: existingLocale ?? locale,
-        verificationCode: existingVerificationCode,
-      }),
+      buffer,
     }
   }
 
@@ -200,6 +282,10 @@ export async function generateCertificate(
     verificationCode,
   })
 
+  const snapshotData = context.data
+  const storageKeyValue = `documents/certificate_${placementId}_${Date.now()}.pdf`
+  const persistedKey = await persistDocumentBuffer(storageKeyValue, pdfBuffer)
+
   let documentRecord = existingDoc
 
   if (documentRecord) {
@@ -208,6 +294,8 @@ export async function generateCertificate(
       .set({
         status: "generated",
         verificationCode,
+        storageKey: persistedKey,
+        snapshotData,
         meta: issuedMeta,
       })
       .where(eq(placementDocument.id, documentRecord.id))
@@ -220,6 +308,8 @@ export async function generateCertificate(
         type: "certificate",
         status: "generated",
         verificationCode,
+        storageKey: persistedKey,
+        snapshotData,
         meta: issuedMeta,
       })
       .onConflictDoNothing({
@@ -251,13 +341,14 @@ export async function generateCertificate(
       const resolvedMeta = toMetaRecord(resolvedDoc.meta)
       const resolvedVerificationCode =
         pickString(resolvedDoc.verificationCode) ?? verificationCode
+      const resolvedSnapshot = toCertificateSnapshot(resolvedDoc.snapshotData)
 
       if (resolvedDoc.status === "generated" && resolvedVerificationCode) {
         return {
           success: true,
           documentId: resolvedDoc.id,
           buffer: await renderCertificateBuffer({
-            data: context.data,
+            data: resolvedSnapshot ?? context.data,
             locale: pickString(resolvedMeta.locale) ?? issuedLocale,
             verificationCode: resolvedVerificationCode,
           }),
@@ -272,11 +363,18 @@ export async function generateCertificate(
         verificationCode,
       })
 
+      const resolvedPersistedKey = await persistDocumentBuffer(
+        `documents/certificate_${placementId}_${Date.now()}.pdf`,
+        pdfBuffer,
+      )
+
       await db
         .update(placementDocument)
         .set({
           status: "generated",
           verificationCode,
+          storageKey: resolvedPersistedKey,
+          snapshotData,
           meta: {
             ...resolvedMeta,
             generatedAt:

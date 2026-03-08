@@ -28,10 +28,10 @@ export const STAGE_LABELS: Record<PipelineStage, string> = {
  * src/server/services/applications/pipeline.ts.
  */
 export const STAGE_TRANSITIONS: Record<PipelineStage, PipelineStage[]> = {
-  applied: ["screening", "interview", "offer", "rejected"],
-  screening: ["applied", "interview", "offer", "rejected"],
-  interview: ["screening", "offer", "rejected"],
-  offer: ["rejected", "interview"],
+  applied: ["screening", "interview", "offer"],
+  screening: ["applied", "interview", "offer"],
+  interview: ["screening", "offer"],
+  offer: ["interview"],
   accepted: [],
   rejected: [],
 }

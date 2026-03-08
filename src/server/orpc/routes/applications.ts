@@ -19,6 +19,7 @@ import { application } from "@/server/db/schema/applications"
 import { user } from "@/server/db/schema/auth"
 import { companyMember } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
+import { studentProfile } from "@/server/db/schema/students"
 import {
   canAccessApplicationTimeline,
 } from "@/server/orpc/utils/student-scope"
@@ -289,12 +290,13 @@ export const getTimelineProcedure = authedProcedureGenerous
         id: application.id,
         studentUserId: application.studentUserId,
         studentUniversityId: user.universityId,
-        studentDepartmentId: user.departmentId,
+        studentDepartmentId: studentProfile.departmentId,
         companyId: internshipOffer.companyId,
       })
       .from(application)
       .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
       .innerJoin(user, eq(application.studentUserId, user.id))
+      .leftJoin(studentProfile, eq(user.id, studentProfile.userId))
       .where(eq(application.id, input.applicationId))
       .limit(1)
 

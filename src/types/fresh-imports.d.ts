@@ -247,6 +247,14 @@ declare module "@/server/services/companies/invite-member?fresh=4" {
   export * from "@/server/services/companies/invite-member"
 }
 
+declare module "@/server/services/companies/invite-member?fresh=5" {
+  export * from "@/server/services/companies/invite-member"
+}
+
+declare module "@/server/services/companies/invite-member?fresh=6" {
+  export * from "@/server/services/companies/invite-member"
+}
+
 declare module "@/server/services/companies/remove-member?fresh=1" {
   export * from "@/server/services/companies/remove-member"
 }

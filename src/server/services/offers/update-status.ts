@@ -3,8 +3,10 @@ import "server-only"
 import { and, eq, ne } from "drizzle-orm"
 import { db } from "@/server/db"
 import { internshipOffer } from "@/server/db/schema/internships"
+import { interview } from "@/server/db/schema/interviews"
 import { createModuleLogger } from "@/server/logging"
 import { ServiceError } from "@/server/services/errors"
+import { createNotification } from "@/server/services/notifications/create"
 
 const log = createModuleLogger("services/offers/update-status")
 
@@ -125,17 +127,65 @@ export async function updateOfferStatus(
       .set({ status: "closed", closesAt: new Date() })
       .where(eq(internshipOffer.id, offerId))
 
-    // Cancel pending interviews when offer closes
-    const { interview } = await import("@/server/db/schema/interviews")
-    await db
-      .update(interview)
-      .set({ status: "cancelled" })
+    // Find students with active interviews before cancelling
+    const affectedInterviews = await db
+      .select({
+        id: interview.id,
+        studentUserId: interview.studentUserId,
+      })
+      .from(interview)
       .where(
         and(
           eq(interview.offerId, offerId),
           ne(interview.status, "cancelled"),
         ),
       )
+
+    // Cancel pending interviews when offer closes
+    if (affectedInterviews.length > 0) {
+      await db
+        .update(interview)
+        .set({ status: "cancelled" })
+        .where(
+          and(
+            eq(interview.offerId, offerId),
+            ne(interview.status, "cancelled"),
+          ),
+        )
+
+      // Notify affected students
+      try {
+        const notificationResults = await Promise.allSettled(
+          affectedInterviews.map((row) =>
+            createNotification({
+              userId: row.studentUserId,
+              type: "interview_cancelled",
+              payload: {
+                interviewId: row.id,
+                offerId,
+                reason: "offer_closed",
+              },
+            }),
+          ),
+        )
+
+        const failedCount = notificationResults.filter(
+          (item) => item.status === "rejected",
+        ).length
+
+        if (failedCount > 0) {
+          log.warn(
+            { offerId, failedCount, total: affectedInterviews.length },
+            "Failed to notify some students about interview cancellation",
+          )
+        }
+      } catch (error) {
+        log.warn(
+          { error, offerId },
+          "Failed to dispatch interview cancellation notifications",
+        )
+      }
+    }
 
     log.info({ offerId, event: "offer_closed" }, "Offer closed")
     return { offerId, newStatus: "closed" as const }

@@ -159,9 +159,13 @@ export async function upsertStudentProfile(
       }
     }
 
+    // Sync user.departmentId from studentProfile for backward compat
     await tx
       .update(user)
-      .set({ onboardingCompleted: true })
+      .set({
+        onboardingCompleted: true,
+        departmentId: nextProfile.departmentId,
+      })
       .where(eq(user.id, userId))
   })
 

@@ -1,18 +1,45 @@
 import "./globals.css"
 
+import { DM_Sans, DM_Serif_Display, Noto_Sans_Arabic } from "next/font/google"
 import { Suspense, type ReactNode } from "react"
 
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-dm-sans",
+  display: "swap",
+})
+
+const dmSerif = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-dm-serif",
+  display: "swap",
+})
+
+const notoSansArabic = Noto_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-arabic",
+  display: "swap",
+})
+
 /**
- * Minimal root layout — delegates <html>/<body> to [locale]/layout.tsx
- * so that lang/dir attributes can be set from the locale param
- * without accessing dynamic headers (cacheComponents compatible).
- *
- * The Suspense boundary here is critical: [locale]/layout.tsx is async
- * (awaits params + getMessages). During locale transitions (e.g. en→ar),
- * React needs a parent Suspense boundary to handle the async re-render
- * of the locale layout without triggering the "cleaning up async info"
- * React bug.
+ * Root layout must own <html>/<body> for Next.js runtime error handling.
+ * Locale-specific providers still live under app/[locale]/layout.tsx.
  */
-export default function RootLayout({ children }: { children: ReactNode }) {
-  return <Suspense>{children}</Suspense>
+export default async function RootLayout({
+  children,
+}: {
+  children: ReactNode
+}) {
+  return (
+    <html lang="en" dir="ltr" suppressHydrationWarning>
+      <body
+        className={`${dmSans.variable} ${dmSerif.variable} ${notoSansArabic.variable} font-sans antialiased`}
+      >
+        <Suspense>{children}</Suspense>
+      </body>
+    </html>
+  )
 }
