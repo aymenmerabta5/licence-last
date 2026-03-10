@@ -420,6 +420,13 @@
       "logout": "Log out"
     },
     "navbar": {
+      "roles": {
+        "student": "Student",
+        "company_admin": "Recruiter",
+        "university_admin": "University Admin",
+        "super_admin": "Super Admin",
+        "dept_head": "Dept. Head"
+      },
       "accountSettings": "Account Settings",
       "viewProfile": "View Profile",
       "profileSettings": "Profile Settings",

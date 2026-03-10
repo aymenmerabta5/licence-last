@@ -1,12 +1,12 @@
 "use client"
 
-import { ArrowRight, GraduationCap } from "lucide-react"
+import { ArrowRight, Building2, GraduationCap, School } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 
 import { ease } from "@/lib/animations"
 
-type SelectedRole = "student"
+type SelectedRole = "student" | "company_admin" | "university_admin"
 
 interface RoleSelectorProps {
   onSelect: (role: SelectedRole) => void
@@ -14,7 +14,15 @@ interface RoleSelectorProps {
 
 const roles = [
   { key: "student" as const, Icon: GraduationCap },
+  { key: "company_admin" as const, Icon: Building2 },
+  { key: "university_admin" as const, Icon: School },
 ]
+
+const translationKey: Record<string, string> = {
+  student: "student",
+  company_admin: "company",
+  university_admin: "university",
+}
 
 export function RoleSelector({ onSelect }: RoleSelectorProps) {
   const t = useTranslations("auth.signup.roleSelection")
@@ -50,10 +58,10 @@ export function RoleSelector({ onSelect }: RoleSelectorProps) {
             </div>
             <div className="flex-1 space-y-1">
               <p className="font-serif text-lg text-heading transition-colors duration-300">
-                {t(`${key}.title`)}
+                {t(`${translationKey[key]}.title`)}
               </p>
               <p className="text-sm text-muted-foreground font-light leading-relaxed">
-                {t(`${key}.description`)}
+                {t(`${translationKey[key]}.description`)}
               </p>
             </div>
             <ArrowRight className="h-4 w-4 mt-3 shrink-0 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-1 transition-all duration-300 [[dir=rtl]_&]:rotate-180 [[dir=rtl]_&]:group-hover:-translate-x-1" />

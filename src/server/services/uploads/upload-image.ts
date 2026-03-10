@@ -34,7 +34,7 @@ export async function uploadImageToS3({
   }
 
   if (file.size > MAX_IMAGE_SIZE) {
-    throw new Error("File too large. Maximum size is 2MB")
+    throw new Error("File too large. Maximum size is 5MB")
   }
 
   const buffer = Buffer.from(await file.arrayBuffer())

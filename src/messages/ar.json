@@ -420,6 +420,13 @@
       "logout": "تسجيل الخروج"
     },
     "navbar": {
+      "roles": {
+        "student": "طالب",
+        "company_admin": "موظف توظيف",
+        "university_admin": "مشرف جامعة",
+        "super_admin": "مشرف عام",
+        "dept_head": "رئيس قسم"
+      },
       "accountSettings": "إعدادات الحساب",
       "viewProfile": "عرض الملف الشخصي",
       "profileSettings": "إعدادات الملف",
