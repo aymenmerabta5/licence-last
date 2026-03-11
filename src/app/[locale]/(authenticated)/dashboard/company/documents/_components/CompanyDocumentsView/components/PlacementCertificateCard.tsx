@@ -34,7 +34,12 @@ export function PlacementCertificateCard({
   const internshipTypeLabel =
     INTERNSHIP_TYPE_LABELS[placement.internshipType] ?? placement.internshipType
   const dateFormatter = useMemo(
-    () => new Intl.DateTimeFormat(locale, { year: "numeric", month: "short", day: "numeric" }),
+    () =>
+      new Intl.DateTimeFormat(locale, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }),
     [locale],
   )
   const agreementDoc =
@@ -49,12 +54,16 @@ export function PlacementCertificateCard({
     ? downloadingDocumentId === certificateDoc.id
     : false
   const agreementAction = agreementDoc
-    ? getReadonlyDocumentActionState(agreementDoc.status, isAgreementDownloading, {
-        download: t("download"),
-        downloading: t("downloading"),
-        pending: t("status.pending"),
-        failed: t("status.failed"),
-      })
+    ? getReadonlyDocumentActionState(
+        agreementDoc.status,
+        isAgreementDownloading,
+        {
+          download: t("download"),
+          downloading: t("downloading"),
+          pending: t("status.pending"),
+          failed: t("status.failed"),
+        },
+      )
     : null
   const certificateAction = getCertificateActionState({
     status: certificateDoc?.status ?? "notGenerated",
@@ -79,11 +88,15 @@ export function PlacementCertificateCard({
       <CardHeader className="pb-2">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-1">
-            <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">{t("placement.student")}</p>
+            <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+              {t("placement.student")}
+            </p>
             <CardTitle className="font-serif text-xl text-heading">
               {placement.studentName ?? placement.studentEmail}
             </CardTitle>
-            <p className="text-xs text-muted-foreground">{placement.studentEmail}</p>
+            <p className="text-xs text-muted-foreground">
+              {placement.studentEmail}
+            </p>
           </div>
           <Badge variant="editorial-outline">{internshipTypeLabel}</Badge>
         </div>
@@ -91,31 +104,49 @@ export function PlacementCertificateCard({
       <CardContent className="space-y-5">
         <dl className="grid gap-3 text-sm md:grid-cols-2">
           <div className="space-y-1">
-            <dt className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{t("placement.offer")}</dt>
+            <dt className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+              {t("placement.offer")}
+            </dt>
             <dd className="text-foreground">{placement.offerTitle}</dd>
           </div>
           <div className="space-y-1">
-            <dt className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{t("placement.type")}</dt>
+            <dt className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+              {t("placement.type")}
+            </dt>
             <dd className="text-foreground">{internshipTypeLabel}</dd>
           </div>
           <div className="space-y-1">
-            <dt className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{t("placement.startDate")}</dt>
-            <dd className="text-foreground">{dateFormatter.format(new Date(placement.startDate))}</dd>
+            <dt className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+              {t("placement.startDate")}
+            </dt>
+            <dd className="text-foreground">
+              {dateFormatter.format(new Date(placement.startDate))}
+            </dd>
           </div>
           <div className="space-y-1">
-            <dt className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{t("placement.endDate")}</dt>
-            <dd className="text-foreground">{dateFormatter.format(new Date(placement.endDate))}</dd>
+            <dt className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+              {t("placement.endDate")}
+            </dt>
+            <dd className="text-foreground">
+              {dateFormatter.format(new Date(placement.endDate))}
+            </dd>
           </div>
           <div className="space-y-1 md:col-span-2">
-            <dt className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{t("placement.validatedAt")}</dt>
-            <dd className="text-foreground">{dateFormatter.format(new Date(placement.validatedAt))}</dd>
+            <dt className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+              {t("placement.validatedAt")}
+            </dt>
+            <dd className="text-foreground">
+              {dateFormatter.format(new Date(placement.validatedAt))}
+            </dd>
           </div>
         </dl>
         <div className="space-y-3 border-t border-border pt-4">
           {agreementDoc && agreementAction ? (
             <PlacementDocumentPanel
               title={t("agreement")}
-              statusLabel={t(`status.${agreementDoc.status}` as "status.pending")}
+              statusLabel={t(
+                `status.${agreementDoc.status}` as "status.pending",
+              )}
               statusClassName={STATUS_STYLES[agreementDoc.status]}
               verificationCodeLabel={t("placement.verificationCode")}
               verificationCode={agreementDoc.verificationCode}
@@ -126,7 +157,10 @@ export function PlacementCertificateCard({
               showDownloadIcon={agreementAction.showDownloadIcon}
               isActionLoading={isAgreementDownloading}
               isActionDisabled={agreementAction.isActionDisabled}
-              onAction={() => agreementAction.actionKind === "download" && onDownloadDocument(agreementDoc.id)}
+              onAction={() =>
+                agreementAction.actionKind === "download" &&
+                onDownloadDocument(agreementDoc.id)
+              }
             />
           ) : null}
           <PlacementDocumentPanel
@@ -149,11 +183,16 @@ export function PlacementCertificateCard({
             isActionLoading={
               certificateAction.actionKind === "download"
                 ? isCertificateDownloading
-                : certificateAction.actionKind === "generate" ? isGenerating : false
+                : certificateAction.actionKind === "generate"
+                  ? isGenerating
+                  : false
             }
             isActionDisabled={certificateAction.isActionDisabled}
             onAction={() => {
-              if (certificateAction.actionKind === "download" && certificateDoc) {
+              if (
+                certificateAction.actionKind === "download" &&
+                certificateDoc
+              ) {
                 onDownloadDocument(certificateDoc.id)
               }
               if (certificateAction.actionKind === "generate") {

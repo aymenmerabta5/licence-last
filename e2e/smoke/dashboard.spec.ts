@@ -111,10 +111,7 @@ test.describe("Dashboard Smoke Coverage", () => {
 
     test("company profile page loads", async ({ page }) => {
       await page.goto("/en/dashboard/company/profile")
-      await expectDashboardPageReady(
-        page,
-        /\/en\/dashboard\/company\/profile$/,
-      )
+      await expectDashboardPageReady(page, /\/en\/dashboard\/company\/profile$/)
     })
 
     test("company team page loads", async ({ page }) => {
@@ -198,10 +195,7 @@ test.describe("Dashboard Smoke Coverage", () => {
 
     test("dept head validations page loads", async ({ page }) => {
       await page.goto("/en/dashboard/dept-validations")
-      await expectDashboardPageReady(
-        page,
-        /\/en\/dashboard\/dept-validations$/,
-      )
+      await expectDashboardPageReady(page, /\/en\/dashboard\/dept-validations$/)
     })
 
     test("dept head notifications page loads", async ({ page }) => {
@@ -232,10 +226,7 @@ test.describe("Dashboard Smoke Coverage", () => {
 
     test("super admin companies page loads", async ({ page }) => {
       await page.goto("/en/dashboard/admin/companies")
-      await expectDashboardPageReady(
-        page,
-        /\/en\/dashboard\/admin\/companies$/,
-      )
+      await expectDashboardPageReady(page, /\/en\/dashboard\/admin\/companies$/)
     })
 
     test("super admin universities page loads", async ({ page }) => {

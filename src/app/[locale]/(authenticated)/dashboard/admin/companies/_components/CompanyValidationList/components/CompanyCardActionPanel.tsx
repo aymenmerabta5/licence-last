@@ -1,4 +1,11 @@
-import { Check, Download, PauseCircle, PlayCircle, Trash2, X } from "lucide-react"
+import {
+  Check,
+  Download,
+  PauseCircle,
+  PlayCircle,
+  Trash2,
+  X,
+} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 

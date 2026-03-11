@@ -58,7 +58,12 @@ export function useDepartmentsData() {
     if (ownUniversityId && ownUniversityId !== selectedUniversityId) {
       setSelectedUniversityId(ownUniversityId)
     }
-  }, [isSuperAdmin, me?.university?.id, selectedUniversityId, universityOptions])
+  }, [
+    isSuperAdmin,
+    me?.university?.id,
+    selectedUniversityId,
+    universityOptions,
+  ])
 
   const universityId = selectedUniversityId || null
 

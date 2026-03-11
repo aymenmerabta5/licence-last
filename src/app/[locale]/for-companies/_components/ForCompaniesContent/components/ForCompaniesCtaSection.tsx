@@ -15,7 +15,9 @@ export function ForCompaniesCtaSection({ t }: ForCompaniesSectionProps) {
         className="mx-auto flex max-w-6xl flex-col items-center justify-center gap-8 sm:flex-row"
       >
         <div className="text-center sm:text-start">
-          <h2 className="font-serif text-2xl text-heading">{t("cta.headline")}</h2>
+          <h2 className="font-serif text-2xl text-heading">
+            {t("cta.headline")}
+          </h2>
           <p className="mt-2 text-muted-foreground">{t("cta.description")}</p>
         </div>
         <Separator

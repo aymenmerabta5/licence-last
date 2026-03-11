@@ -30,7 +30,7 @@ export function TwoFactorSettings({
   return (
     <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-75 fill-mode-both">
       <Card className="border-border/60 bg-background/60 backdrop-blur-xl rounded-[2.5rem] overflow-hidden shadow-sm shadow-black/5 ring-1 ring-border/10">
-        <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 border-b border-border/20 bg-gradient-to-b from-secondary/40 via-secondary/10 to-transparent">
+        <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 bg-gradient-to-b from-muted/80 via-muted/30 to-transparent">
           <div
             className="absolute -top-12 -right-8 flex items-center opacity-[0.02] dark:opacity-[0.05] pointer-events-none scale-[2] rotate-12"
             aria-hidden="true"
@@ -51,7 +51,7 @@ export function TwoFactorSettings({
               className={`px-3 py-1 font-mono font-bold uppercase tracking-widest text-[9px] border ${
                 isTwoFactorEnabled
                   ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400"
-                  : "bg-secondary text-muted-foreground border-border/40"
+                  : "bg-foreground text-background border-foreground/20"
               }`}
             >
               {isTwoFactorEnabled ? t("active") : t("inactive")}
@@ -61,7 +61,7 @@ export function TwoFactorSettings({
             {t("description")}
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-8 sm:p-12 pt-8 space-y-8 bg-gradient-to-b from-transparent to-secondary/[0.02]">
+        <CardContent className="px-8 pb-8 pt-4 sm:px-12 sm:pb-12 sm:pt-6 space-y-8">
           {state.phase === "idle" && (
             <Button
               type="button"

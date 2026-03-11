@@ -19,7 +19,9 @@ function applyRejectCompanyMocks() {
 
 async function loadRejectCompanyModule() {
   moduleImportCounter += 1
-  return import(`@/server/services/companies/reject?test=${moduleImportCounter}`)
+  return import(
+    `@/server/services/companies/reject?test=${moduleImportCounter}`
+  )
 }
 
 describe("src/server/services/companies/reject", () => {

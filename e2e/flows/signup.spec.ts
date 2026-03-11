@@ -102,7 +102,9 @@ test.describe("Student Signup Flow", () => {
 
     const studentButton = page.getByRole("button", { name: /student/i }).first()
     const companyButton = page.getByRole("button", { name: /company/i }).first()
-    const universityButton = page.getByRole("button", { name: /university/i }).first()
+    const universityButton = page
+      .getByRole("button", { name: /university/i })
+      .first()
 
     await expect(studentButton).toBeVisible()
     await expect(companyButton).toBeVisible()

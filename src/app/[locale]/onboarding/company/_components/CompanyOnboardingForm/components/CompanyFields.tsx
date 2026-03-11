@@ -104,7 +104,10 @@ export function CompanyFields({ form }: CompanyFieldsProps) {
               </p>
             ) : null}
             {field.state.meta.errors.length > 0 ? (
-              <p className="text-destructive text-[11px] tracking-wide" role="alert">
+              <p
+                className="text-destructive text-[11px] tracking-wide"
+                role="alert"
+              >
                 {errorMessage(field.state.meta.errors[0])}
               </p>
             ) : null}

@@ -156,7 +156,8 @@ describe("src/server/services/documents/generate-certificate-by-company", () => 
       } as never),
     ).rejects.toMatchObject({
       code: "INTERNSHIP_NOT_COMPLETED",
-      message: "Certificate can only be generated after the internship end date",
+      message:
+        "Certificate can only be generated after the internship end date",
     })
 
     expect(generateCertificateMock).not.toHaveBeenCalled()

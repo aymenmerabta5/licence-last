@@ -135,10 +135,7 @@ export async function updateOfferStatus(
       })
       .from(interview)
       .where(
-        and(
-          eq(interview.offerId, offerId),
-          ne(interview.status, "cancelled"),
-        ),
+        and(eq(interview.offerId, offerId), ne(interview.status, "cancelled")),
       )
 
     // Cancel pending interviews when offer closes

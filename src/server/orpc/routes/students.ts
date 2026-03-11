@@ -17,9 +17,7 @@ import { user } from "@/server/db/schema/auth"
 import { companyMember } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { studentProfile } from "@/server/db/schema/students"
-import {
-  canAccessPrivateStudentProfile,
-} from "@/server/orpc/utils/student-scope"
+import { canAccessPrivateStudentProfile } from "@/server/orpc/utils/student-scope"
 import {
   authedProcedureGenerous,
   studentProcedureStandard,
@@ -136,10 +134,7 @@ export const getPublicStudentProfileProcedure = authedProcedureGenerous
       const [hasRelationship] = await db
         .select({ id: application.id })
         .from(application)
-        .innerJoin(
-          internshipOffer,
-          eq(application.offerId, internshipOffer.id),
-        )
+        .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
         .where(
           and(
             eq(application.studentUserId, input.userId),

@@ -24,14 +24,19 @@ interface Notification {
   payload: unknown
 }
 
-function buildFallbackSummary(notifications: Notification[]): NotificationsSummary {
+function buildFallbackSummary(
+  notifications: Notification[],
+): NotificationsSummary {
   const total = notifications.length
   const unread = notifications.filter((item) => item.readAt === null).length
 
-  const typeCounts = notifications.reduce<Record<string, number>>((acc, item) => {
-    acc[item.type] = (acc[item.type] ?? 0) + 1
-    return acc
-  }, {})
+  const typeCounts = notifications.reduce<Record<string, number>>(
+    (acc, item) => {
+      acc[item.type] = (acc[item.type] ?? 0) + 1
+      return acc
+    },
+    {},
+  )
 
   const topTypes = Object.entries(typeCounts)
     .sort((a, b) => b[1] - a[1])

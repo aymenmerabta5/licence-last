@@ -12,7 +12,9 @@ describe("useInterviewsData.helpers", () => {
 
     expect(normalized).not.toBeNull()
     expect(normalized?.endsWith("Z")).toBe(true)
-    expect(new Date(normalized ?? "").getTime()).toBe(new Date(localValue).getTime())
+    expect(new Date(normalized ?? "").getTime()).toBe(
+      new Date(localValue).getTime(),
+    )
   })
 
   test("normalizeLocalDateTimeInput returns null for invalid values", () => {

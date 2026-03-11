@@ -42,7 +42,9 @@ const emitNotificationMock = mock(async () => ({
 }))
 const isAdminRoleMock = mock(
   (role: string) =>
-    role === "super_admin" || role === "university_admin" || role === "dept_head",
+    role === "super_admin" ||
+    role === "university_admin" ||
+    role === "dept_head",
 )
 
 function applyUniversitiesRouteMocks() {

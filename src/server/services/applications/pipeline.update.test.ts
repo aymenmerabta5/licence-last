@@ -106,7 +106,8 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
       }),
     ).rejects.toMatchObject({
       code: "APPLICATION_INVALID_STATE",
-      message: "Use explicit company/admin actions for terminal application decisions",
+      message:
+        "Use explicit company/admin actions for terminal application decisions",
     })
   })
 

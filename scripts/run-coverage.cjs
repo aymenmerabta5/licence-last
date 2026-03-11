@@ -50,7 +50,9 @@ function main() {
     return
   }
 
-  process.stdout.write(`[coverage] Running ${sorted.length} files isolated with --coverage\n`)
+  process.stdout.write(
+    `[coverage] Running ${sorted.length} files isolated with --coverage\n`,
+  )
 
   let failed = 0
 
@@ -73,7 +75,9 @@ function main() {
     }
   }
 
-  process.stdout.write(`\n[coverage] ${sorted.length} files, ${failed} failed\n`)
+  process.stdout.write(
+    `\n[coverage] ${sorted.length} files, ${failed} failed\n`,
+  )
 
   if (failed > 0) {
     process.exit(1)

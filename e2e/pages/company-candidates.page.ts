@@ -6,7 +6,9 @@ export class CompanyCandidatesPage {
   async gotoDashboard(): Promise<void> {
     await this.page.goto("/en/dashboard/candidates")
     await expect(this.page).toHaveURL(/\/en\/dashboard\/candidates/)
-    await expect(this.page.getByRole("heading", { name: /pipeline/i })).toBeVisible()
+    await expect(
+      this.page.getByRole("heading", { name: /pipeline/i }),
+    ).toBeVisible()
   }
 
   async gotoOfferCandidates(offerId: string): Promise<void> {
@@ -18,7 +20,9 @@ export class CompanyCandidatesPage {
   }
 
   async acceptFirstCandidate(): Promise<void> {
-    const acceptButton = this.page.getByRole("button", { name: /accept/i }).first()
+    const acceptButton = this.page
+      .getByRole("button", { name: /accept/i })
+      .first()
     await expect(acceptButton).toBeVisible()
     await acceptButton.click()
 
@@ -31,7 +35,9 @@ export class CompanyCandidatesPage {
   }
 
   async rejectFirstCandidate(): Promise<void> {
-    const refuseButton = this.page.getByRole("button", { name: /refuse/i }).first()
+    const refuseButton = this.page
+      .getByRole("button", { name: /refuse/i })
+      .first()
     await expect(refuseButton).toBeVisible()
     await refuseButton.click()
 

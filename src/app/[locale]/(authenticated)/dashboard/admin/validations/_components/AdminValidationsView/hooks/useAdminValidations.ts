@@ -21,10 +21,10 @@ export function useAdminValidations() {
       queryFn: async ({ pageParam }) =>
         unwrapORPCPayload<ListPendingApplicationsResult>(
           await orpcClient.placements.listPending({
-          cursor: pageParam as
-            | { companyActionAt: string; id: string }
-            | undefined,
-          limit: 15,
+            cursor: pageParam as
+              | { companyActionAt: string; id: string }
+              | undefined,
+            limit: 15,
           }),
         ),
       initialPageParam: undefined as

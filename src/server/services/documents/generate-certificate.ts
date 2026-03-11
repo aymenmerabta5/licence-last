@@ -110,7 +110,9 @@ function toCertificateSnapshot(value: unknown): CertificateData | null {
   }
 }
 
-async function loadCertificateContext(placementId: string): Promise<CertificateContext> {
+async function loadCertificateContext(
+  placementId: string,
+): Promise<CertificateContext> {
   const [placementRecord] = await db
     .select()
     .from(placement)

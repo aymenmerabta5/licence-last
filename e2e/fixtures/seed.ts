@@ -6,14 +6,8 @@ import { drizzle } from "drizzle-orm/postgres-js"
 import { eq } from "drizzle-orm"
 import postgres from "postgres"
 
-import {
-  account,
-  user,
-} from "../../src/server/db/schema/auth"
-import {
-  company,
-  companyMember,
-} from "../../src/server/db/schema/companies"
+import { account, user } from "../../src/server/db/schema/auth"
+import { company, companyMember } from "../../src/server/db/schema/companies"
 import { department } from "../../src/server/db/schema/departments"
 import * as schema from "../../src/server/db/schema"
 import { studentProfile } from "../../src/server/db/schema/students"
@@ -305,9 +299,13 @@ export async function seedTestUsers(
   try {
     const { universityId, departmentId } = await resolveSeedContext(db, options)
 
-    const studentUserId = await seedCredentialUser(db, TEST_CREDENTIALS.student, {
-      universityId,
-    })
+    const studentUserId = await seedCredentialUser(
+      db,
+      TEST_CREDENTIALS.student,
+      {
+        universityId,
+      },
+    )
 
     await db.insert(studentProfile).values({
       userId: studentUserId,
@@ -356,10 +354,14 @@ export async function seedTestUsers(
       { universityId },
     )
 
-    const deptHeadUserId = await seedCredentialUser(db, TEST_CREDENTIALS.deptHead, {
-      universityId,
-      departmentId,
-    })
+    const deptHeadUserId = await seedCredentialUser(
+      db,
+      TEST_CREDENTIALS.deptHead,
+      {
+        universityId,
+        departmentId,
+      },
+    )
 
     const superAdminUserId = await seedCredentialUser(
       db,
@@ -410,7 +412,9 @@ async function getSeededPrincipalIds(
   `
 
   if (!student || !companyUser || !adminUser) {
-    throw new Error("Seeded E2E users are missing. Run Playwright global setup.")
+    throw new Error(
+      "Seeded E2E users are missing. Run Playwright global setup.",
+    )
   }
 
   const [membership] = await sql<{ company_id: string }[]>`
@@ -421,7 +425,9 @@ async function getSeededPrincipalIds(
   `
 
   if (!membership) {
-    throw new Error("Seeded company membership is missing for E2E company user.")
+    throw new Error(
+      "Seeded company membership is missing for E2E company user.",
+    )
   }
 
   return {
@@ -441,7 +447,9 @@ export async function seedOfferFixture(
     const offerId = generateId()
     const offerTitle = `${options.titlePrefix ?? "E2E Internship Offer"} ${searchToken}`
     const now = new Date()
-    const applicationDeadline = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000)
+    const applicationDeadline = new Date(
+      now.getTime() + 14 * 24 * 60 * 60 * 1000,
+    )
     const expectedStartDate = new Date(now.getTime() + 21 * 24 * 60 * 60 * 1000)
     const expectedEndDate = new Date(now.getTime() + 120 * 24 * 60 * 60 * 1000)
 
@@ -499,7 +507,9 @@ export async function seedApplicationFixture(
   const pipelineStage =
     options.pipelineStage ??
     (status === "company_accepted" ? "offer" : "applied")
-  const offerFixture = await seedOfferFixture({ titlePrefix: options.titlePrefix })
+  const offerFixture = await seedOfferFixture({
+    titlePrefix: options.titlePrefix,
+  })
 
   return withE2EDatabase(async (sql) => {
     const now = new Date()

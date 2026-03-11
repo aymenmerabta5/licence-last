@@ -59,7 +59,8 @@ export function useUniversityValidation() {
 
   const universities = useMemo(
     () =>
-      (data?.pages.flatMap((page) => page.universities) ?? []) as UniversityListItem[],
+      (data?.pages.flatMap((page) => page.universities) ??
+        []) as UniversityListItem[],
     [data],
   )
 

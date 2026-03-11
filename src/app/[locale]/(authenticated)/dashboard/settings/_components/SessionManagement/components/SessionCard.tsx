@@ -44,9 +44,9 @@ export function SessionCard({
   const DeviceIcon = DEVICE_ICONS[session.parsed.device]
 
   return (
-    <div className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 my-2.5 rounded-[1.5rem] transition-all duration-300 hover:bg-secondary/[0.04] hover:shadow-sm border border-transparent hover:border-border/10">
+    <div className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 my-2.5 rounded-[1.5rem] transition-all duration-300 hover:bg-muted/40 hover:shadow-sm border border-transparent hover:border-border/10">
       <div className="flex items-start gap-5">
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary/30 shadow-inner group-hover:bg-background group-hover:scale-105 transition-all duration-500">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-muted shadow-inner group-hover:bg-primary/[0.08] group-hover:scale-105 transition-all duration-500">
           <DeviceIcon className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
         </span>
         <div className="space-y-1.5 pt-0.5">

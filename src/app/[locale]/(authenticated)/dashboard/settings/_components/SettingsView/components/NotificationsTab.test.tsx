@@ -24,7 +24,8 @@ mock.module("@tanstack/react-query", () => ({
 }))
 
 mock.module("@/lib/feature-flags-client", () => ({
-  isNotificationPreferencesEnabledOnClient: () => notificationsEnabledState.value,
+  isNotificationPreferencesEnabledOnClient: () =>
+    notificationsEnabledState.value,
 }))
 
 mock.module("@/server/orpc/client", () => ({

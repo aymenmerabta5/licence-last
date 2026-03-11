@@ -78,11 +78,24 @@ export async function verifyDocument(
       valid: true,
       documentType: doc.documentType as "agreement" | "certificate",
       documentStatus: doc.documentStatus,
-      studentName: (typeof snapshot.studentName === "string" ? snapshot.studentName : null) ?? "Unknown",
-      companyName: (typeof snapshot.companyName === "string" ? snapshot.companyName : null) ?? "Unknown",
-      universityName: typeof snapshot.universityName === "string" ? snapshot.universityName : null,
-      offerTitle: (typeof snapshot.offerTitle === "string" ? snapshot.offerTitle : null) ?? "Unknown",
-      startDate: startDate instanceof Date ? startDate : new Date(startDate as string),
+      studentName:
+        (typeof snapshot.studentName === "string"
+          ? snapshot.studentName
+          : null) ?? "Unknown",
+      companyName:
+        (typeof snapshot.companyName === "string"
+          ? snapshot.companyName
+          : null) ?? "Unknown",
+      universityName:
+        typeof snapshot.universityName === "string"
+          ? snapshot.universityName
+          : null,
+      offerTitle:
+        (typeof snapshot.offerTitle === "string"
+          ? snapshot.offerTitle
+          : null) ?? "Unknown",
+      startDate:
+        startDate instanceof Date ? startDate : new Date(startDate as string),
       endDate: endDate instanceof Date ? endDate : new Date(endDate as string),
       generatedAt:
         (typeof meta.generatedAt === "string" ? meta.generatedAt : null) ??

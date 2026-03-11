@@ -19,7 +19,9 @@ function applyMembershipMocks() {
 
 async function loadMembershipModule() {
   moduleImportCounter += 1
-  return import(`@/server/services/companies/membership?test=${moduleImportCounter}`)
+  return import(
+    `@/server/services/companies/membership?test=${moduleImportCounter}`
+  )
 }
 
 describe("src/server/services/companies/membership", () => {

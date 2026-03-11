@@ -178,7 +178,12 @@ export async function applyToOffer(
 
         if (failedCount > 0) {
           log.warn(
-            { offerId, applicationId, failedCount, memberCount: members.length },
+            {
+              offerId,
+              applicationId,
+              failedCount,
+              memberCount: members.length,
+            },
             "Failed to notify some company members about new application",
           )
         }

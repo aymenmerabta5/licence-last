@@ -54,7 +54,10 @@ export class AdminValidationsPage {
   }
 
   async rejectPlacement(reason: string): Promise<void> {
-    await this.page.getByRole("button", { name: /reject/i }).first().click()
+    await this.page
+      .getByRole("button", { name: /reject/i })
+      .first()
+      .click()
     await this.page.locator("textarea").first().fill(reason)
     await this.page.getByRole("button", { name: /confirm reject/i }).click()
 

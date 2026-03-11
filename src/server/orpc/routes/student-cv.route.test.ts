@@ -112,7 +112,9 @@ function applyStudentCvRouteMocks() {
 let studentCvRouteImportVersion = 0
 async function loadStudentCvRouteModule() {
   studentCvRouteImportVersion += 1
-  return import(`@/server/orpc/routes/student-cv?test=${studentCvRouteImportVersion}`)
+  return import(
+    `@/server/orpc/routes/student-cv?test=${studentCvRouteImportVersion}`
+  )
 }
 
 describe("src/server/orpc/routes/student-cv", () => {
@@ -144,7 +146,8 @@ describe("src/server/orpc/routes/student-cv", () => {
   })
 
   test("createStudentExperienceProcedure parses dates and delegates", async () => {
-    const { createStudentExperienceProcedure } = await loadStudentCvRouteModule()
+    const { createStudentExperienceProcedure } =
+      await loadStudentCvRouteModule()
 
     const result = await callProcedure(createStudentExperienceProcedure, {
       input: {

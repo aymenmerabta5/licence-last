@@ -9,7 +9,10 @@ import {
   isSavedOffersEnabledOnClient,
 } from "@/lib/feature-flags-client"
 
-export function useSidebar(role: string, companyMembershipRole?: string | null) {
+export function useSidebar(
+  role: string,
+  companyMembershipRole?: string | null,
+) {
   const pathname = usePathname()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const { logout } = useLogout()

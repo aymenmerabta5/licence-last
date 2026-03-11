@@ -46,8 +46,8 @@ export function ProfileSettingsTabForm({
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-6 duration-700 space-y-8">
-      <Card className="border-border/60 bg-background/60 backdrop-blur-xl rounded-[2.5rem] overflow-hidden shadow-sm shadow-black/5 ring-1 ring-border/10">
-        <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 border-b border-border/20 bg-gradient-to-b from-secondary/40 via-secondary/10 to-transparent">
+      <Card className="border-border/60 bg-card rounded-[2.5rem] overflow-hidden shadow-sm ring-1 ring-border/5">
+        <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 border-b border-border/20 bg-transparent">
           <div
             className="absolute -top-12 -right-8 flex items-center opacity-[0.02] dark:opacity-[0.05] pointer-events-none scale-[2] rotate-12"
             aria-hidden="true"
@@ -69,7 +69,7 @@ export function ProfileSettingsTabForm({
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="p-8 sm:p-12 space-y-12 bg-gradient-to-b from-transparent to-secondary/[0.02]">
+        <CardContent className="p-8 sm:p-12 space-y-12 bg-transparent">
           <ServerError message={serverError} />
           <SuccessMessage message={successTick > 0 ? "Saved." : ""} />
 

@@ -100,4 +100,3 @@ describe("src/server/services/companies/remove-member", () => {
     mock.restore()
   })
 })
-

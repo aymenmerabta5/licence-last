@@ -121,7 +121,8 @@ export const getCompanyByIdProcedure = authedProcedureGenerous
     let isOwner = false
     if (context.user.role === "company_admin") {
       const membership = await getCompanyMembership(context.user.id)
-      isOwner = membership?.companyId === company.id && membership.role === "owner"
+      isOwner =
+        membership?.companyId === company.id && membership.role === "owner"
     }
 
     if (isAdmin || isOwner) {
@@ -206,7 +207,8 @@ export const submitCompanyReportProcedure = authedProcedureStandard
       const membership = await getCompanyMembership(context.user.id)
       if (membership?.companyId === input.companyId) {
         throw new ORPCError("FORBIDDEN", {
-          message: "Company admins cannot submit reports against their own company",
+          message:
+            "Company admins cannot submit reports against their own company",
         })
       }
     }
@@ -266,7 +268,9 @@ export const downloadCompanyVerificationDocumentProcedure =
     .input(z.object({ companyId: z.string().min(1) }))
     .handler(async ({ input }) => {
       try {
-        const result = await downloadCompanyVerificationDocument(input.companyId)
+        const result = await downloadCompanyVerificationDocument(
+          input.companyId,
+        )
         return {
           fileName: result.fileName,
           mimeType: result.mimeType,
@@ -344,7 +348,10 @@ export const createCompanyProcedure = authedProcedureStandard
       )
 
       revalidateTag(CACHE_TAGS.COMPANY_PROFILE(result.companyId), "max")
-      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`), "max")
+      revalidateTag(
+        CACHE_TAGS.COMPANY_PROFILE(`user-${context.user.id}`),
+        "max",
+      )
       revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
       return result

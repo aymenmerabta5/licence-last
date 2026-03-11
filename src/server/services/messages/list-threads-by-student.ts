@@ -67,7 +67,12 @@ export async function listMessageThreadsByStudent(
     .limit(limit)
 
   return rows.map(
-    ({ lastMessageId, lastMessageSenderUserId, lastReadMessageId, ...thread }) => {
+    ({
+      lastMessageId,
+      lastMessageSenderUserId,
+      lastReadMessageId,
+      ...thread
+    }) => {
       const hasUnread =
         lastMessageId != null &&
         lastMessageSenderUserId !== studentUserId &&

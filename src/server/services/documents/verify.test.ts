@@ -21,7 +21,9 @@ function applyVerifyDocumentMocks() {
 
 async function loadVerifyDocumentModule() {
   moduleImportCounter += 1
-  return import(`@/server/services/documents/verify?test=${moduleImportCounter}`)
+  return import(
+    `@/server/services/documents/verify?test=${moduleImportCounter}`
+  )
 }
 
 describe("src/server/services/documents/verify", () => {

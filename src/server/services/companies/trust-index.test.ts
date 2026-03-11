@@ -16,7 +16,9 @@ function applyTrustIndexMocks() {
 
 async function loadTrustIndexModule() {
   moduleImportCounter += 1
-  return import(`@/server/services/companies/trust-index?test=${moduleImportCounter}`)
+  return import(
+    `@/server/services/companies/trust-index?test=${moduleImportCounter}`
+  )
 }
 
 describe("src/server/services/companies/trust-index getCompanyTrustIndex", () => {
@@ -281,5 +283,3 @@ describe("src/server/services/companies/trust-index computeTrustFactors", () => 
     expect(result.trustScore).toBe(88)
   })
 })
-
-

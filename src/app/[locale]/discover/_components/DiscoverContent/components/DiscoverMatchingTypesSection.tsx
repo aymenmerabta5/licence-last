@@ -76,7 +76,11 @@ export function DiscoverMatchingTypesSection({ t }: DiscoverSectionProps) {
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: weight.width }}
-                    transition={{ duration: 1, ease, delay: 0.5 + index * 0.15 }}
+                    transition={{
+                      duration: 1,
+                      ease,
+                      delay: 0.5 + index * 0.15,
+                    }}
                     className={`h-full rounded-full ${weight.color}`}
                   />
                 </div>

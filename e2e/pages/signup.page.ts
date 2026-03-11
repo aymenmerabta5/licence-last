@@ -17,7 +17,9 @@ export class SignupPage {
   async openStudentSignupForm(): Promise<void> {
     await this.goto()
 
-    const studentButton = this.page.getByRole("button", { name: /student/i }).first()
+    const studentButton = this.page
+      .getByRole("button", { name: /student/i })
+      .first()
     await expect(studentButton).toBeVisible()
     await studentButton.click()
 

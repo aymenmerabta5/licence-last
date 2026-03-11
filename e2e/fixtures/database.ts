@@ -83,7 +83,9 @@ function isPrivateIpv4Address(hostname: string): boolean {
   }
 
   const octets = parts.map((part) => Number(part))
-  if (octets.some((octet) => !Number.isInteger(octet) || octet < 0 || octet > 255)) {
+  if (
+    octets.some((octet) => !Number.isInteger(octet) || octet < 0 || octet > 255)
+  ) {
     return false
   }
 

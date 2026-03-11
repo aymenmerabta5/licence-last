@@ -7,9 +7,11 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 import { useLogout } from "@/hooks/useLogout"
 
 const replaceMock = mock(() => {})
-const signOutMock = mock(async (options?: { fetchOptions?: { onSuccess?: () => void } }) => {
-  options?.fetchOptions?.onSuccess?.()
-})
+const signOutMock = mock(
+  async (options?: { fetchOptions?: { onSuccess?: () => void } }) => {
+    options?.fetchOptions?.onSuccess?.()
+  },
+)
 
 mock.module("@/i18n/routing", () => ({
   useRouter: () => ({

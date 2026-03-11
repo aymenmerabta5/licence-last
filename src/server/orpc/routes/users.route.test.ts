@@ -150,7 +150,9 @@ describe("src/server/orpc/routes/users", () => {
       },
     ])
 
-    const { listMySessionsProcedure } = await import("@/server/orpc/routes/users")
+    const { listMySessionsProcedure } = await import(
+      "@/server/orpc/routes/users"
+    )
 
     const result = await callProcedure(listMySessionsProcedure, {
       context: { session: { token: "token-2" } },

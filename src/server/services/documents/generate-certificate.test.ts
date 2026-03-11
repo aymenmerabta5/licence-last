@@ -120,7 +120,8 @@ describe("src/server/services/documents/generate-certificate", () => {
       generateCertificate({ placementId: "placement-1", locale: "en" }),
     ).rejects.toMatchObject({
       code: "INTERNSHIP_NOT_COMPLETED",
-      message: "Certificate can only be generated after the internship end date",
+      message:
+        "Certificate can only be generated after the internship end date",
     })
   })
 

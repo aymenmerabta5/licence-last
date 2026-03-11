@@ -207,7 +207,10 @@ describe("src/server/services/interviews/confirm", () => {
         endsAt,
       },
     ])
-    dbSelectResults.push([{ userId: "company-admin-1" }, { userId: "company-admin-2" }])
+    dbSelectResults.push([
+      { userId: "company-admin-1" },
+      { userId: "company-admin-2" },
+    ])
 
     const { confirmInterviewSlot } = await import(
       "@/server/services/interviews/confirm?fresh=5" as string
@@ -244,9 +247,7 @@ describe("src/server/services/interviews/confirm", () => {
     const notificationCalls = createNotificationMock.mock
       .calls as unknown as unknown[][]
     const notifiedUserIds = notificationCalls
-      .map(
-        (call) => (call[0] as { userId: string }).userId,
-      )
+      .map((call) => (call[0] as { userId: string }).userId)
       .sort((a, b) => a.localeCompare(b))
 
     expect(notifiedUserIds).toEqual(["company-admin-1", "company-admin-2"])

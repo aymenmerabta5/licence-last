@@ -14,7 +14,10 @@ const log = createModuleLogger("services/companies/delete")
  * Hard-delete a company and reset linked company admins to onboarding state.
  * Pure business logic - caller must enforce authorization.
  */
-export async function deleteCompany(companyId: string, deletedByUserId: string) {
+export async function deleteCompany(
+  companyId: string,
+  deletedByUserId: string,
+) {
   const [existing] = await db
     .select({
       id: company.id,

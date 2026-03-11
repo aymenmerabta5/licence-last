@@ -255,7 +255,8 @@ describe("getExplainableMatchScore", () => {
       profile: 0,
     })
     expect(
-      result.reasons.find((reason) => reason.key === "location_alignment")?.impact,
+      result.reasons.find((reason) => reason.key === "location_alignment")
+        ?.impact,
     ).toBe(7)
   })
 })

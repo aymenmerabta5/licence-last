@@ -14,12 +14,19 @@ export class StudentApplicationsPage {
   }
 
   async expectApplicationVisible(offerTitle: string): Promise<void> {
-    await expect(this.applicationCard(offerTitle)).toBeVisible({ timeout: 15000 })
+    await expect(this.applicationCard(offerTitle)).toBeVisible({
+      timeout: 15000,
+    })
   }
 
-  async expectStatusText(offerTitle: string, statusPattern: RegExp): Promise<void> {
+  async expectStatusText(
+    offerTitle: string,
+    statusPattern: RegExp,
+  ): Promise<void> {
     await expect(
-      this.applicationCard(offerTitle).locator("text=/applied|accepted|rejected|withdrawn|validated/i").first(),
+      this.applicationCard(offerTitle)
+        .locator("text=/applied|accepted|rejected|withdrawn|validated/i")
+        .first(),
     ).toBeVisible()
     await expect(
       this.applicationCard(offerTitle).getByText(statusPattern).first(),

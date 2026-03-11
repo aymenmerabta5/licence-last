@@ -80,7 +80,11 @@ export default async function LocaleLayout({
 
   return (
     <div dir={isRTL ? "rtl" : "ltr"} className={rtlFontVars}>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="light"
+        enableSystem={false}
+      >
         <MotionProvider>
           <QueryProvider>
             <NextIntlClientProvider locale={locale} messages={messages}>

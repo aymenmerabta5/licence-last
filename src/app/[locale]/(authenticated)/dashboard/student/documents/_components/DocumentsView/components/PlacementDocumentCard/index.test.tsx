@@ -61,11 +61,11 @@ describe("PlacementDocumentCard", () => {
       />,
     )
 
-    const button = screen.getByRole("button", { name: "Pending" }) as HTMLButtonElement
+    const button = screen.getByRole("button", {
+      name: "Pending",
+    }) as HTMLButtonElement
 
     expect(button.disabled).toBe(true)
-    expect(
-      screen.queryByRole("button", { name: "Download" }),
-    ).toBeNull()
+    expect(screen.queryByRole("button", { name: "Download" })).toBeNull()
   })
 })

@@ -20,7 +20,9 @@ function applyUpdateCompanyMocks() {
 
 async function loadUpdateCompanyModule() {
   moduleImportCounter += 1
-  return import(`@/server/services/companies/update?test=${moduleImportCounter}`)
+  return import(
+    `@/server/services/companies/update?test=${moduleImportCounter}`
+  )
 }
 
 describe("src/server/services/companies/update", () => {

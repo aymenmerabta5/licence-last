@@ -23,9 +23,7 @@ export async function persistDocumentBuffer(
   }
 }
 
-export async function fetchDocumentBuffer(
-  key: string,
-): Promise<Buffer | null> {
+export async function fetchDocumentBuffer(key: string): Promise<Buffer | null> {
   if (!s3.isConfigured()) {
     return null
   }

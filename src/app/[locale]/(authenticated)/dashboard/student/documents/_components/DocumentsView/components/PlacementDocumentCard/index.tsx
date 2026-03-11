@@ -61,7 +61,9 @@ export function PlacementDocumentCard({
           endDateLabel={t("placement.endDate")}
           endDateValue={dateFormatter.format(new Date(placement.endDate))}
           validatedAtLabel={t("placement.validatedAt")}
-          validatedAtValue={dateFormatter.format(new Date(placement.validatedAt))}
+          validatedAtValue={dateFormatter.format(
+            new Date(placement.validatedAt),
+          )}
         />
 
         <FeedbackCallout

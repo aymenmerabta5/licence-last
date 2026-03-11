@@ -16,11 +16,14 @@ const THEMES = [
     hint: "Warm parchment tones",
     icon: Sun,
     iconColor: "text-orange-500",
+    activeBorder: "border-orange-400/60",
+    activeGlow: "shadow-orange-400/15",
     preview: {
       bg: "bg-[#faf8f5]",
       bar: "bg-[#1a1a1a]",
       accent: "bg-[#c17f3e]",
       text: "bg-[#1a1a1a]/70",
+      textLight: "bg-[#1a1a1a]/30",
     },
   },
   {
@@ -29,11 +32,14 @@ const THEMES = [
     hint: "Deep ink on charcoal",
     icon: Moon,
     iconColor: "text-amber-500",
+    activeBorder: "border-amber-400/60",
+    activeGlow: "shadow-amber-400/15",
     preview: {
       bg: "bg-[#141414]",
       bar: "bg-[#f5f0e8]",
       accent: "bg-[#c17f3e]",
       text: "bg-[#f5f0e8]/50",
+      textLight: "bg-[#f5f0e8]/20",
     },
   },
   {
@@ -42,11 +48,14 @@ const THEMES = [
     hint: "Match your device",
     icon: Monitor,
     iconColor: "text-slate-500",
+    activeBorder: "border-primary/60",
+    activeGlow: "shadow-primary/15",
     preview: {
       bg: "bg-gradient-to-br from-[#faf8f5] to-[#141414]",
       bar: "bg-gradient-to-r from-[#1a1a1a] to-[#f5f0e8]",
       accent: "bg-[#c17f3e]",
       text: "bg-gradient-to-r from-[#1a1a1a]/60 to-[#f5f0e8]/40",
+      textLight: "bg-gradient-to-r from-[#1a1a1a]/25 to-[#f5f0e8]/15",
     },
   },
 ] as const
@@ -56,8 +65,8 @@ export function PreferencesTab() {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <Card className="border-border/60 bg-background/60 backdrop-blur-xl rounded-[2.5rem] overflow-hidden shadow-sm shadow-black/5 ring-1 ring-border/10">
-        <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 border-b border-border/20 bg-gradient-to-b from-secondary/40 via-secondary/10 to-transparent">
+      <Card className="border-border/60 bg-card rounded-[2.5rem] overflow-hidden shadow-sm ring-1 ring-border/5">
+        <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 bg-gradient-to-b from-primary/[0.03] to-transparent">
           <div
             className="absolute -top-12 -right-8 flex items-center opacity-[0.02] dark:opacity-[0.05] pointer-events-none scale-[2] rotate-12"
             aria-hidden="true"
@@ -79,8 +88,8 @@ export function PreferencesTab() {
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="p-8">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <CardContent className="px-8 pb-8 pt-4 sm:px-10 sm:pb-10 sm:pt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {THEMES.map((t) => {
               const Icon = t.icon
               const isActive = theme === t.id
@@ -91,41 +100,54 @@ export function PreferencesTab() {
                   type="button"
                   onClick={() => setTheme(t.id)}
                   className={cn(
-                    "group relative p-5 rounded-2xl border-2 text-start transition-all duration-300",
+                    "group relative p-4 rounded-2xl border-2 text-start transition-all duration-300 overflow-hidden",
                     isActive
-                      ? "border-primary bg-primary/[0.04] shadow-sm shadow-primary/10"
-                      : "border-border/30 hover:border-border/60 bg-secondary/5 hover:bg-secondary/10",
+                      ? `${t.activeBorder} bg-primary/[0.03] shadow-xl ${t.activeGlow}`
+                      : "border-border/20 hover:border-border/50 bg-secondary/5 hover:bg-secondary/10 hover:shadow-md",
                   )}
                 >
                   {/* Active check */}
                   {isActive && (
-                    <span className="absolute top-3 end-3 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-white">
-                      <Check className="h-3 w-3" />
+                    <span className="absolute top-3 end-3 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md shadow-primary/30 z-10">
+                      <Check className="h-3.5 w-3.5 stroke-[3]" />
                     </span>
                   )}
 
-                  {/* Mini preview mockup */}
+                  {/* Enhanced mini preview mockup */}
                   <div
                     className={cn(
-                      "w-full aspect-[4/3] rounded-xl overflow-hidden mb-4 border border-border/10",
+                      "w-full aspect-[4/3] rounded-xl overflow-hidden mb-4 border border-border/10 transition-transform duration-500 group-hover:scale-[1.02]",
                       t.preview.bg,
                     )}
                   >
                     <div className="p-3 h-full flex flex-col gap-2">
+                      {/* Mini title bar */}
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <div className="h-1.5 w-1.5 rounded-full bg-red-400/60" />
+                        <div className="h-1.5 w-1.5 rounded-full bg-yellow-400/60" />
+                        <div className="h-1.5 w-1.5 rounded-full bg-green-400/60" />
+                      </div>
                       <div
-                        className={cn("h-1.5 w-8 rounded-full", t.preview.bar)}
+                        className={cn("h-1.5 w-10 rounded-full", t.preview.bar)}
                       />
                       <div
-                        className={cn("h-1 w-12 rounded-full", t.preview.text)}
+                        className={cn(
+                          "h-1 w-14 rounded-full",
+                          t.preview.textLight,
+                        )}
                       />
                       <div className="flex-1" />
+                      {/* Mini content blocks */}
                       <div className="flex gap-1.5">
                         <div
-                          className={cn("h-2 w-6 rounded-sm", t.preview.accent)}
+                          className={cn(
+                            "h-2.5 w-8 rounded-sm",
+                            t.preview.accent,
+                          )}
                         />
                         <div
                           className={cn(
-                            "h-2 w-10 rounded-sm opacity-40",
+                            "h-2.5 w-12 rounded-sm opacity-40",
                             t.preview.text,
                           )}
                         />
@@ -134,13 +156,22 @@ export function PreferencesTab() {
                   </div>
 
                   {/* Label */}
-                  <div className="flex items-center gap-2">
-                    <Icon className={cn("h-4 w-4", t.iconColor)} />
-                    <span className="text-sm font-bold">{t.label}</span>
+                  <div className="flex items-center gap-2.5">
+                    <div
+                      className={cn(
+                        "flex h-8 w-8 items-center justify-center rounded-lg transition-colors duration-300",
+                        isActive ? "bg-primary/10" : "bg-secondary/30",
+                      )}
+                    >
+                      <Icon className={cn("h-4 w-4", t.iconColor)} />
+                    </div>
+                    <div>
+                      <span className="text-sm font-bold block">{t.label}</span>
+                      <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                        {t.hint}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-0.5 ps-6">
-                    {t.hint}
-                  </p>
                 </button>
               )
             })}

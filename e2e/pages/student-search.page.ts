@@ -12,7 +12,9 @@ export class StudentSearchPage {
   }
 
   async searchByKeyword(keyword: string): Promise<void> {
-    const searchInput = this.page.getByPlaceholder(/search by title or keyword/i)
+    const searchInput = this.page.getByPlaceholder(
+      /search by title or keyword/i,
+    )
     await searchInput.fill(keyword)
   }
 
@@ -55,7 +57,9 @@ export class StudentSearchPage {
   }
 
   async clickApplyNow(): Promise<void> {
-    const applyButton = this.page.getByRole("button", { name: /apply now/i }).first()
+    const applyButton = this.page
+      .getByRole("button", { name: /apply now/i })
+      .first()
     await expect(applyButton).toBeVisible()
     await applyButton.click()
   }
