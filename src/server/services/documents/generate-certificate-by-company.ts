@@ -203,7 +203,8 @@ export async function generateCertificateByCompany(
     success: true,
     documentId: doc.id,
     fileName:
-      pickString(meta.fileName) ?? `certificate_${placementRow.placementId}.pdf`,
+      pickString(meta.fileName) ??
+      `certificate_${placementRow.placementId}.pdf`,
     buffer: result.buffer,
   }
 }

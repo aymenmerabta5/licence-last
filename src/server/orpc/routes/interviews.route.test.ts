@@ -17,9 +17,7 @@ function createProcedureMock() {
       fn: T,
     ) {
       return async (args: Record<string, unknown>) => {
-        const parsedInput = inputParser
-          ? inputParser(args.input)
-          : args.input
+        const parsedInput = inputParser ? inputParser(args.input) : args.input
 
         return fn({
           ...args,

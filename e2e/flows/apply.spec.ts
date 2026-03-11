@@ -39,7 +39,9 @@ test.describe("Student Application Flow", () => {
     const searchPage = new StudentSearchPage(page)
     await searchPage.openSeededOfferDetails(offer)
     await searchPage.clickApplyNow()
-    await searchPage.fillCoverLetter("I am interested in this internship opportunity.")
+    await searchPage.fillCoverLetter(
+      "I am interested in this internship opportunity.",
+    )
     await searchPage.submitApplication()
     await searchPage.expectApplicationSubmitted()
   })
@@ -56,7 +58,9 @@ test.describe("Student Application Flow", () => {
     await applicationsPage.expectApplicationVisible(fixture.offerTitle)
   })
 
-  test("application status is visible in applications list", async ({ page }) => {
+  test("application status is visible in applications list", async ({
+    page,
+  }) => {
     const fixture = await seedApplicationFixture({
       titlePrefix: "Applications Status Offer",
       status: "company_accepted",
@@ -96,6 +100,8 @@ test.describe("Student Application Flow", () => {
 
     const searchPage = new StudentSearchPage(page)
     await searchPage.openSeededOfferDetails(offer)
-    await expect(page.locator("text=/test company|company/i").first()).toBeVisible()
+    await expect(
+      page.locator("text=/test company|company/i").first(),
+    ).toBeVisible()
   })
 })

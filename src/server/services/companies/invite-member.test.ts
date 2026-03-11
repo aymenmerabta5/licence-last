@@ -261,4 +261,3 @@ describe("src/server/services/companies/invite-member", () => {
     mock.restore()
   })
 })
-

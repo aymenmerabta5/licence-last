@@ -105,7 +105,9 @@ export async function getMe(
     user: {
       id: user.id,
       email: freshUser ? freshUser.email : user.email,
-      role: freshUser ? (freshUser.role ?? "student") : (user.role ?? "student"),
+      role: freshUser
+        ? (freshUser.role ?? "student")
+        : (user.role ?? "student"),
       name: freshUser ? freshUser.name : (user.name ?? null),
       image: freshUser ? freshUser.image : (user.image ?? null),
       onboardingCompleted: user.onboardingCompleted ?? false,

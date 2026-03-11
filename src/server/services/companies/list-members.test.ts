@@ -60,4 +60,3 @@ describe("src/server/services/companies/list-members", () => {
     mock.restore()
   })
 })
-

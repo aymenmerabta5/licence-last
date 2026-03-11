@@ -12,9 +12,7 @@ import {
   type AgreementIssuerContext,
 } from "@/server/services/documents/generate-agreement"
 import { generateCertificateByCompany } from "@/server/services/documents/generate-certificate-by-company"
-import {
-  isDocumentServiceError,
-} from "@/server/services/documents/errors"
+import { isDocumentServiceError } from "@/server/services/documents/errors"
 import { listDocumentsByCompany } from "@/server/services/documents/list-by-company"
 import { listDocumentsByStudent } from "@/server/services/documents/list-by-student"
 import { verifyDocument } from "@/server/services/documents/verify"
@@ -41,7 +39,10 @@ function throwDocumentRouteError(
   }
 
   if (isDocumentServiceError(error)) {
-    if (error.code === "DOCUMENT_NOT_FOUND" || error.code === "PLACEMENT_NOT_FOUND") {
+    if (
+      error.code === "DOCUMENT_NOT_FOUND" ||
+      error.code === "PLACEMENT_NOT_FOUND"
+    ) {
       throw new ORPCError("NOT_FOUND", { message: error.message })
     }
 

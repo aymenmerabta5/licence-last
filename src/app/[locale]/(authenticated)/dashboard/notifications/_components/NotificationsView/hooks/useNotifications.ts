@@ -1,10 +1,6 @@
 "use client"
 
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { useRef } from "react"
 import { toast } from "sonner"
@@ -15,12 +11,10 @@ export function useNotifications(viewerId: string) {
   const t = useTranslations("dashboard.notifications")
   const queryClient = useQueryClient()
 
-  const { data, isLoading } = useQuery(
-    {
-      queryKey: notificationsQueryKeys.list(viewerId, 50),
-      queryFn: () => orpcClient.notifications.list({ limit: 50 }),
-    },
-  )
+  const { data, isLoading } = useQuery({
+    queryKey: notificationsQueryKeys.list(viewerId, 50),
+    queryFn: () => orpcClient.notifications.list({ limit: 50 }),
+  })
   const notifications = data?.notifications ?? []
   const unreadCount = data?.unreadCount ?? 0
 

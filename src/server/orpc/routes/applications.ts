@@ -20,9 +20,7 @@ import { user } from "@/server/db/schema/auth"
 import { companyMember } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { studentProfile } from "@/server/db/schema/students"
-import {
-  canAccessApplicationTimeline,
-} from "@/server/orpc/utils/student-scope"
+import { canAccessApplicationTimeline } from "@/server/orpc/utils/student-scope"
 import {
   assistantProcedureLimited,
   authedProcedureGenerous,

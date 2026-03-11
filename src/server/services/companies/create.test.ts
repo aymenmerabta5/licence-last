@@ -89,7 +89,9 @@ describe("src/server/services/companies/create", () => {
     expect(mockInsert).toHaveBeenCalledTimes(2)
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     const firstInsertValues = (
-      mockValues.mock.calls[0] as unknown as [Record<string, unknown>] | undefined
+      mockValues.mock.calls[0] as unknown as
+        | [Record<string, unknown>]
+        | undefined
     )?.[0]
 
     expect(firstInsertValues).toMatchObject({

@@ -15,7 +15,9 @@ function applyListDepartmentsMocks() {
 
 async function loadListDepartmentsModule() {
   moduleImportCounter += 1
-  return import(`@/server/services/departments/list?test=${moduleImportCounter}`)
+  return import(
+    `@/server/services/departments/list?test=${moduleImportCounter}`
+  )
 }
 
 describe("listDepartments", () => {

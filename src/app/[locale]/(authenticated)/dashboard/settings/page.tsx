@@ -10,30 +10,24 @@ function SettingsPageFallback() {
       aria-busy="true"
       aria-live="polite"
     >
-      {/* Header skeleton */}
-      <div className="space-y-3 pt-6 pb-2">
-        <Skeleton className="h-6 w-32 rounded-full" />
-        <Skeleton className="h-14 w-64 lg:w-96" />
-        <Skeleton className="h-5 w-full max-w-xl" />
-        <div className="mt-10 flex items-center">
-          <Skeleton className="h-[2px] w-12" />
-          <div className="h-[1px] flex-1 bg-border/20" />
-        </div>
-      </div>
+      {/* Header skeleton — matches the rounded hero card */}
+      <Skeleton className="h-48 sm:h-52 rounded-[2.5rem]" />
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-14">
-        {/* Sidebar skeleton */}
-        <div className="space-y-2 lg:col-span-3 lg:top-24 lg:sticky">
-          <Skeleton className="h-3 w-32 ms-5 mb-6" />
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="flex items-center gap-4 px-5 py-4">
-              <Skeleton className="h-9 w-9 shrink-0 rounded-lg" />
-              <div className="flex-1 space-y-2.5">
-                <Skeleton className="h-3.5 w-24" />
-                <Skeleton className="h-2.5 w-32" />
+        {/* Sidebar skeleton — matches the card container */}
+        <div className="lg:col-span-3 lg:top-24 lg:sticky">
+          <div className="rounded-[2rem] border border-border/30 bg-background/60 p-3 space-y-1">
+            <Skeleton className="h-3 w-24 ms-4 mt-3 mb-4" />
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="flex items-center gap-4 px-4 py-3.5">
+                <Skeleton className="h-10 w-10 shrink-0 rounded-xl" />
+                <div className="flex-1 space-y-2.5">
+                  <Skeleton className="h-3.5 w-20" />
+                  <Skeleton className="h-2.5 w-28" />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Content skeleton */}

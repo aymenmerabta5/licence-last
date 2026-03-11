@@ -34,8 +34,10 @@ export function useCompanyValidation() {
     "pending",
   )
   const [search, setSearch] = useState("")
-  const [downloadingVerificationCompanyId, setDownloadingVerificationCompanyId] =
-    useState<string | null>(null)
+  const [
+    downloadingVerificationCompanyId,
+    setDownloadingVerificationCompanyId,
+  ] = useState<string | null>(null)
   const debouncedSearch = useDebounce(search, 300)
 
   const listInput = useMemo<{ status?: CompanyStatus; search?: string }>(
@@ -74,7 +76,9 @@ export function useCompanyValidation() {
     })
 
   const companies = useMemo(
-    () => (data?.pages.flatMap((page) => page.companies) ?? []) as CompanyListItem[],
+    () =>
+      (data?.pages.flatMap((page) => page.companies) ??
+        []) as CompanyListItem[],
     [data],
   )
 

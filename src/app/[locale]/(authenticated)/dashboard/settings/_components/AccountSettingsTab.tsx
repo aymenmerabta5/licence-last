@@ -35,8 +35,8 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
       {/* Security Baseline */}
-      <Card className="border-border/60 bg-background/60 backdrop-blur-xl rounded-[2.5rem] overflow-hidden shadow-sm shadow-black/5 ring-1 ring-border/10">
-        <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 border-b border-border/20 bg-gradient-to-b from-secondary/40 via-secondary/10 to-transparent">
+      <Card className="border-border/60 bg-card rounded-[2.5rem] overflow-hidden shadow-sm ring-1 ring-border/5">
+        <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 bg-transparent">
           <div
             className="absolute -top-12 -right-8 flex items-center opacity-[0.02] dark:opacity-[0.05] pointer-events-none scale-[2] -rotate-12"
             aria-hidden="true"
@@ -58,16 +58,16 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="p-8 space-y-0 divide-y divide-border/15">
+        <CardContent className="px-8 pb-8 pt-4 sm:px-10 sm:pb-10 sm:pt-6 space-y-0 divide-y divide-border/15">
           {/* Email row */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6 first:pt-0">
+          <div className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6 first:pt-0 rounded-xl transition-colors duration-300 hover:bg-muted/40 -mx-2 px-2">
             <div className="flex items-start gap-3.5">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/30 mt-0.5">
-                <Mail className="h-4 w-4 text-muted-foreground" />
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-muted mt-0.5 transition-colors duration-300 group-hover:bg-primary/[0.08]">
+                <Mail className="h-[18px] w-[18px] text-muted-foreground" />
               </span>
-              <div className="space-y-0.5">
+              <div className="space-y-1">
                 <h4 className="font-bold text-sm">Primary Email</h4>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-[11px] text-muted-foreground leading-relaxed">
                   Used for login and official notifications.
                 </p>
               </div>
@@ -83,14 +83,14 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
           </div>
 
           {/* Password row */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6">
+          <div className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6 rounded-xl transition-colors duration-300 hover:bg-muted/40 -mx-2 px-2">
             <div className="flex items-start gap-3.5">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/30 mt-0.5">
-                <KeyRound className="h-4 w-4 text-muted-foreground" />
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-muted mt-0.5 transition-colors duration-300 group-hover:bg-primary/[0.08]">
+                <KeyRound className="h-[18px] w-[18px] text-muted-foreground" />
               </span>
-              <div className="space-y-0.5">
+              <div className="space-y-1">
                 <h4 className="font-bold text-sm">Password</h4>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-[11px] text-muted-foreground leading-relaxed">
                   Update your password. Other active sessions will be revoked.
                 </p>
               </div>
@@ -117,21 +117,21 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
       <SessionManagement />
 
       {/* Danger Zone */}
-      <Card className="border-destructive/20 bg-destructive/[0.02] rounded-[2rem] overflow-hidden shadow-sm relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-destructive)_0%,transparent_50%)] opacity-[0.03]" />
+      <Card className="border-destructive/15 bg-destructive/[0.02] rounded-[2.5rem] overflow-hidden shadow-sm relative group">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-destructive)_0%,transparent_50%)] opacity-[0.03] transition-opacity duration-500 group-hover:opacity-[0.06]" />
 
         <div className="relative z-10 px-8 py-8 sm:px-12 sm:py-10 flex flex-col sm:flex-row sm:items-center justify-between gap-8">
           <div className="flex items-start gap-5">
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-destructive/10 text-destructive/80 shadow-inner ring-1 ring-destructive/20">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-destructive/10 text-destructive/80 shadow-inner ring-1 ring-destructive/15 transition-all duration-300 group-hover:ring-destructive/30 group-hover:bg-destructive/15">
               <AlertTriangle className="h-6 w-6" />
             </span>
             <div className="space-y-1.5 max-w-sm pt-0.5">
               <h4 className="font-serif text-2xl sm:text-3xl tracking-tight text-destructive/90">
-                System Termination
+                Danger Zone
               </h4>
               <p className="text-sm text-muted-foreground/80 leading-relaxed font-medium">
-                Irreversibly obliterate your account and all associated data
-                records. Proceed with extreme caution.
+                Permanently delete your account and all associated data.
+                This action cannot be undone.
               </p>
             </div>
           </div>

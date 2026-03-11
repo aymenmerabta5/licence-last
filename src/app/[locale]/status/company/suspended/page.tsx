@@ -31,7 +31,9 @@ export default async function CompanySuspendedPage() {
 
   const company = await getCompanyByUserId(user.id)
   const suspensionReason =
-    company?.rejectionReason?.trim() || companyStatus.rejectionReason?.trim() || "-"
+    company?.rejectionReason?.trim() ||
+    companyStatus.rejectionReason?.trim() ||
+    "-"
 
   const [t, tp, tr] = await Promise.all([
     getTranslations("dashboard.company.suspended"),
@@ -93,10 +95,7 @@ export default async function CompanySuspendedPage() {
           className="w-full sm:w-auto"
           nativeButton={false}
           render={
-            <a
-              href="mailto:support@stag.io"
-              aria-label={t("contactSupport")}
-            >
+            <a href="mailto:support@stag.io" aria-label={t("contactSupport")}>
               <span className="sr-only">{t("contactSupport")}</span>
             </a>
           }

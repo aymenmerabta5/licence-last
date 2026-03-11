@@ -29,4 +29,3 @@ describe("src/lib/notifications-query", () => {
     ])
   })
 })
-

@@ -34,12 +34,10 @@ interface NotificationBellProps {
 export function NotificationBell({ viewerId }: NotificationBellProps) {
   const queryClient = useQueryClient()
 
-  const { data } = useQuery(
-    {
-      queryKey: notificationsQueryKeys.list(viewerId, 6),
-      queryFn: () => orpcClient.notifications.list({ limit: 6 }),
-    },
-  )
+  const { data } = useQuery({
+    queryKey: notificationsQueryKeys.list(viewerId, 6),
+    queryFn: () => orpcClient.notifications.list({ limit: 6 }),
+  })
 
   const unreadCount = data?.unreadCount ?? 0
   const notifications = data?.notifications ?? []

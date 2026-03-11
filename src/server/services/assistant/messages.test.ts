@@ -42,7 +42,11 @@ const mockTransaction = mock(async (fn: (tx: any) => Promise<void>) => {
 let selectCallCount = 0
 const dbSelectRouter = mock(() => {
   selectCallCount++
-  if (verifyConversationResult.length >= 0 && selectCallCount === 1 && mockTransaction.mock.calls.length === 0) {
+  if (
+    verifyConversationResult.length >= 0 &&
+    selectCallCount === 1 &&
+    mockTransaction.mock.calls.length === 0
+  ) {
     return mockVerifySelect()
   }
   return mockSelect()
@@ -210,7 +214,9 @@ describe("src/server/services/assistant/messages — appendAssistantMessage", ()
     mockVerifySelect.mockReturnValue({ from: mockVerifyFrom })
     mockVerifyFrom.mockReturnValue({ where: mockVerifyWhere })
     mockVerifyWhere.mockReturnValue({ limit: mockVerifyLimit })
-    mockVerifyLimit.mockImplementation(() => Promise.resolve(verifyConversationResult))
+    mockVerifyLimit.mockImplementation(() =>
+      Promise.resolve(verifyConversationResult),
+    )
 
     mockTxInsert.mockReturnValue({ values: mockTxValues })
     mockTxValues.mockResolvedValue(undefined)
@@ -274,7 +280,9 @@ describe("src/server/services/assistant/messages — appendAssistantMessage", ()
 
     expect(mockTxInsert).toHaveBeenCalledTimes(1)
     const insertedValues = (
-      mockTxValues.mock.calls[0] as unknown as [Record<string, unknown>] | undefined
+      mockTxValues.mock.calls[0] as unknown as
+        | [Record<string, unknown>]
+        | undefined
     )?.[0]
 
     // providerMetadata should be stripped
@@ -299,7 +307,9 @@ describe("src/server/services/assistant/messages — appendAssistantMessage", ()
 
     expect(result.ok).toBe(true)
     const insertedValues = (
-      mockTxValues.mock.calls[0] as unknown as [Record<string, unknown>] | undefined
+      mockTxValues.mock.calls[0] as unknown as
+        | [Record<string, unknown>]
+        | undefined
     )?.[0]
     // Empty text should be stored as null
     expect(insertedValues?.text).toBeNull()

@@ -8,9 +8,8 @@ export function useCompanyValidationState() {
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
   const [rejectingId, setRejectingId] = useState<string | null>(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [deletingCompany, setDeletingCompany] = useState<CompanyListItem | null>(
-    null,
-  )
+  const [deletingCompany, setDeletingCompany] =
+    useState<CompanyListItem | null>(null)
 
   function handleRejectClick(companyId: string) {
     setRejectingId(companyId)

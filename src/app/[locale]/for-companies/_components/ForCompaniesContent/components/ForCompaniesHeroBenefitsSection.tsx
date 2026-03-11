@@ -1,11 +1,5 @@
 import type { LucideIcon } from "lucide-react"
-import {
-  ArrowRight,
-  Bot,
-  FileCheck,
-  ShieldCheck,
-  Users,
-} from "lucide-react"
+import { ArrowRight, Bot, FileCheck, ShieldCheck, Users } from "lucide-react"
 import * as motion from "motion/react-client"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -20,7 +14,9 @@ const BENEFITS: Array<{ key: string; icon: LucideIcon }> = [
   { key: "compliance", icon: FileCheck },
 ]
 
-export function ForCompaniesHeroBenefitsSection({ t }: ForCompaniesSectionProps) {
+export function ForCompaniesHeroBenefitsSection({
+  t,
+}: ForCompaniesSectionProps) {
   const headline = t("hero.headline")
   const highlight = t("hero.headlineHighlight")
   const idx = highlight.length > 0 ? headline.indexOf(highlight) : -1

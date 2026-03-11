@@ -7,8 +7,7 @@ import postgres from "postgres"
 
 import { logger } from "@/server/logging/logger"
 
-const REQUIRE_PRODUCTION_CONFIRMATION_FLAG =
-  "--require-production-confirmation"
+const REQUIRE_PRODUCTION_CONFIRMATION_FLAG = "--require-production-confirmation"
 const PRODUCTION_RESET_CONFIRMATION_PHRASE = "RESET PRODUCTION DATABASE"
 
 function getDatabaseIdentifier(databaseUrl: string) {

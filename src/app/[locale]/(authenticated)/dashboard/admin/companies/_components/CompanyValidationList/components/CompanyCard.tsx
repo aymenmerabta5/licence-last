@@ -163,7 +163,9 @@ export function CompanyCard({
             isSuspending={isSuspending}
             isReactivating={isReactivating}
             hasVerificationDocument={Boolean(company.verificationDocumentName)}
-            isDownloadingVerificationDocument={isDownloadingVerificationDocument}
+            isDownloadingVerificationDocument={
+              isDownloadingVerificationDocument
+            }
             onDownloadVerificationDocument={() =>
               onDownloadVerificationDocument(company.id)
             }

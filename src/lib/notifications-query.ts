@@ -3,4 +3,3 @@ export const notificationsQueryKeys = {
   list: (viewerId: string, limit: number) =>
     ["notifications", viewerId, "list", limit] as const,
 }
-

@@ -17,7 +17,9 @@ function applyUpdateDepartmentMocks() {
 
 async function loadUpdateDepartmentModule() {
   moduleImportCounter += 1
-  return import(`@/server/services/departments/update?test=${moduleImportCounter}`)
+  return import(
+    `@/server/services/departments/update?test=${moduleImportCounter}`
+  )
 }
 
 describe("updateDepartment", () => {

@@ -36,7 +36,8 @@ export function useCompaniesDirectory() {
       queryFn: async ({ pageParam }) =>
         orpcClient.companies.listPublicDirectory({
           ...input,
-          cursor: (pageParam as CompanyDirectoryCursor | undefined) ?? undefined,
+          cursor:
+            (pageParam as CompanyDirectoryCursor | undefined) ?? undefined,
         }),
       initialPageParam: undefined as CompanyDirectoryCursor | undefined,
       getNextPageParam: (lastPage) => lastPage.nextCursor,

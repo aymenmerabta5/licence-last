@@ -43,6 +43,8 @@ setup("setup test database", async () => {
   console.info("E2E test environment setup complete.")
   console.info("Seeded credentials:")
   for (const credential of Object.values(TEST_CREDENTIALS)) {
-    console.info(`  ${credential.role}: ${credential.email} / ${credential.password}`)
+    console.info(
+      `  ${credential.role}: ${credential.email} / ${credential.password}`,
+    )
   }
 })

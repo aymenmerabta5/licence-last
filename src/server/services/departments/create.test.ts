@@ -21,7 +21,9 @@ function applyCreateDepartmentMocks() {
 
 async function loadCreateDepartmentModule() {
   moduleImportCounter += 1
-  return import(`@/server/services/departments/create?test=${moduleImportCounter}`)
+  return import(
+    `@/server/services/departments/create?test=${moduleImportCounter}`
+  )
 }
 
 describe("createDepartment", () => {

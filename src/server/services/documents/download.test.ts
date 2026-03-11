@@ -39,7 +39,9 @@ function applyDownloadDocumentMocks() {
 
 async function loadDownloadDocumentModule() {
   moduleImportCounter += 1
-  return import(`@/server/services/documents/download?test=${moduleImportCounter}`)
+  return import(
+    `@/server/services/documents/download?test=${moduleImportCounter}`
+  )
 }
 
 describe("src/server/services/documents/download", () => {

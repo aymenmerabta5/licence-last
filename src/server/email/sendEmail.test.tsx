@@ -79,12 +79,7 @@ describe("src/server/email/sendEmail", () => {
 
     const { sendEmail } = await import("@/server/email/sendEmail?noKey=1")
 
-    const result = await sendEmail(
-      "qa@example.com",
-      "Subject",
-      TestEmail,
-      {},
-    )
+    const result = await sendEmail("qa@example.com", "Subject", TestEmail, {})
 
     expect(result).toEqual({
       success: false,
@@ -104,12 +99,7 @@ describe("src/server/email/sendEmail", () => {
 
     const { sendEmail } = await import("@/server/email/sendEmail?withKey=1")
 
-    const result = await sendEmail(
-      "qa@example.com",
-      "Subject",
-      TestEmail,
-      {},
-    )
+    const result = await sendEmail("qa@example.com", "Subject", TestEmail, {})
 
     expect(result).toEqual({
       success: true,

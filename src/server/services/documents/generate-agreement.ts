@@ -162,8 +162,7 @@ function canIssueAgreement(
 ): boolean {
   if (issuer.role === "university_admin") {
     return (
-      issuer.universityId != null &&
-      issuer.universityId === studentUniversityId
+      issuer.universityId != null && issuer.universityId === studentUniversityId
     )
   }
 
@@ -179,7 +178,9 @@ function canIssueAgreement(
   return false
 }
 
-async function loadAgreementContext(placementId: string): Promise<AgreementContext> {
+async function loadAgreementContext(
+  placementId: string,
+): Promise<AgreementContext> {
   const [placementRecord] = await db
     .select()
     .from(placement)
@@ -489,7 +490,8 @@ export async function generateAgreement(
             applicationId: context.row.applicationId,
             studentUniversityId: context.row.studentUniversityId,
             issuedByUserId:
-              pickString(resolvedMeta.issuedByUserId) ?? issuedMeta.issuedByUserId,
+              pickString(resolvedMeta.issuedByUserId) ??
+              issuedMeta.issuedByUserId,
             issuedByRole:
               pickString(resolvedMeta.issuedByRole) ?? issuedMeta.issuedByRole,
           },

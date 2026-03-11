@@ -35,7 +35,9 @@ function applySubmitCompanyReportMocks() {
 
 async function loadTrustActionsModule() {
   moduleImportCounter += 1
-  return import(`@/server/services/companies/trust-actions?test=${moduleImportCounter}`)
+  return import(
+    `@/server/services/companies/trust-actions?test=${moduleImportCounter}`
+  )
 }
 
 describe("src/server/services/companies/trust-actions submitCompanyReport", () => {

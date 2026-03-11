@@ -75,7 +75,9 @@ export const application = pgTable(
       table.studentUserId,
       table.status,
     ),
-    index("application_companyActionByUserId_idx").on(table.companyActionByUserId),
+    index("application_companyActionByUserId_idx").on(
+      table.companyActionByUserId,
+    ),
     index("application_adminActionByUserId_idx").on(table.adminActionByUserId),
   ],
 )
@@ -108,6 +110,9 @@ export const applicationTimelineEvent = pgTable(
     index("application_timeline_event_actorUserId_idx").on(table.actorUserId),
     index("application_timeline_event_eventType_idx").on(table.eventType),
     index("application_timeline_event_createdAt_idx").on(table.createdAt),
-    index("application_timeline_event_applicationId_createdAt_idx").on(table.applicationId, table.createdAt),
+    index("application_timeline_event_applicationId_createdAt_idx").on(
+      table.applicationId,
+      table.createdAt,
+    ),
   ],
 )

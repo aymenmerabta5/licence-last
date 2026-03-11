@@ -35,7 +35,7 @@ export function SessionManagement() {
     <>
       <div className="animate-in fade-in slide-in-from-bottom-6 duration-700">
         <Card className="border-border/60 bg-background/60 backdrop-blur-xl rounded-[2.5rem] overflow-hidden shadow-sm shadow-black/5 ring-1 ring-border/10">
-          <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 border-b border-border/20 bg-gradient-to-b from-secondary/40 via-secondary/10 to-transparent">
+          <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 bg-gradient-to-b from-muted/80 via-muted/30 to-transparent">
             <div
               className="absolute -top-12 -right-8 flex items-center opacity-[0.02] dark:opacity-[0.05] pointer-events-none scale-[2] rotate-12"
               aria-hidden="true"
@@ -56,7 +56,7 @@ export function SessionManagement() {
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="p-8 sm:p-12 space-y-0 divide-y divide-border/15">
+          <CardContent className="px-8 pb-8 pt-4 sm:px-12 sm:pb-12 sm:pt-6 space-y-0 divide-y divide-border/15">
             {isLoading ? (
               <div className="space-y-4 py-2">
                 {[1, 2].map((i) => (

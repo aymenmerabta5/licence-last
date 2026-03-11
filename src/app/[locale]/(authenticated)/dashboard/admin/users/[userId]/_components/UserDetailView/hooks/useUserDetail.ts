@@ -30,12 +30,8 @@ export function useUserDetail(userId: string) {
   const sessions = Array.isArray(sessionsData)
     ? (sessionsData as UserSession[])
     : Array.isArray(
-          (
-            sessionsData as
-              | { sessions?: UserSession[] }
-              | null
-              | undefined
-          )?.sessions,
+          (sessionsData as { sessions?: UserSession[] } | null | undefined)
+            ?.sessions,
         )
       ? ((sessionsData as { sessions?: UserSession[] }).sessions ?? [])
       : []

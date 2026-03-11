@@ -198,9 +198,13 @@ function applyCompaniesRouteMocks() {
   mock.module("@/server/services/companies/create", () => ({
     createCompany: createCompanyMock,
   }))
-  mock.module("@/server/services/companies/download-verification-document", () => ({
-    downloadCompanyVerificationDocument: downloadCompanyVerificationDocumentMock,
-  }))
+  mock.module(
+    "@/server/services/companies/download-verification-document",
+    () => ({
+      downloadCompanyVerificationDocument:
+        downloadCompanyVerificationDocumentMock,
+    }),
+  )
   mock.module("@/server/services/companies/update", () => ({
     updateCompany: updateCompanyMock,
   }))
@@ -615,10 +619,9 @@ describe("src/server/orpc/routes/companies", () => {
       affectedUsers: 2,
     })
     expect(revalidateTagMock).toHaveBeenCalledWith("company-company-1", "max")
-    expect(revalidateTagMock).toHaveBeenCalledWith(
-      "company-offers-company-1",
-      { expire: 0 },
-    )
+    expect(revalidateTagMock).toHaveBeenCalledWith("company-offers-company-1", {
+      expire: 0,
+    })
     expect(revalidateTagMock).toHaveBeenCalledWith(
       "company-candidates-company-1",
       { expire: 0 },
@@ -632,7 +635,10 @@ describe("src/server/orpc/routes/companies", () => {
     expect(revalidateTagMock).toHaveBeenCalledWith("companies-directory", {
       expire: 0,
     })
-    expect(revalidateTagMock).toHaveBeenCalledWith("company-user-owner-1", "max")
+    expect(revalidateTagMock).toHaveBeenCalledWith(
+      "company-user-owner-1",
+      "max",
+    )
     expect(revalidateTagMock).toHaveBeenCalledWith(
       "company-user-member-1",
       "max",
@@ -693,10 +699,13 @@ describe("src/server/orpc/routes/companies", () => {
       "@/server/orpc/routes/companies"
     )
 
-    const result = await callProcedure(downloadCompanyVerificationDocumentProcedure, {
-      input: { companyId: "company-1" },
-      context: { user: { id: "super-admin-1", role: "super_admin" } },
-    })
+    const result = await callProcedure(
+      downloadCompanyVerificationDocumentProcedure,
+      {
+        input: { companyId: "company-1" },
+        context: { user: { id: "super-admin-1", role: "super_admin" } },
+      },
+    )
 
     expect(downloadCompanyVerificationDocumentMock).toHaveBeenCalledWith(
       "company-1",
@@ -783,9 +792,12 @@ describe("src/server/orpc/routes/companies", () => {
       description: "The workspace conditions were not safe during the visit.",
     })
     expect(revalidateTagMock).toHaveBeenCalledWith("company-company-9", "max")
-    expect(revalidateTagMock).toHaveBeenCalledWith("company-candidates-company-9", {
-      expire: 0,
-    })
+    expect(revalidateTagMock).toHaveBeenCalledWith(
+      "company-candidates-company-9",
+      {
+        expire: 0,
+      },
+    )
   })
 
   test("submitCompanyQualityFeedbackProcedure revalidates trust-related tags", async () => {
@@ -817,9 +829,12 @@ describe("src/server/orpc/routes/companies", () => {
       comment: "Good mentorship and clear project scope.",
     })
     expect(revalidateTagMock).toHaveBeenCalledWith("company-company-9", "max")
-    expect(revalidateTagMock).toHaveBeenCalledWith("company-candidates-company-9", {
-      expire: 0,
-    })
+    expect(revalidateTagMock).toHaveBeenCalledWith(
+      "company-candidates-company-9",
+      {
+        expire: 0,
+      },
+    )
   })
 
   test("submitCompanyReportProcedure maps relationship guard errors", async () => {

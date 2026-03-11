@@ -27,7 +27,9 @@ export function CompanyOffersFilters({
   onStatusChange,
 }: CompanyOffersFiltersProps) {
   const t = useTranslations("dashboard.company.offers")
-  const tStatusFilter = useTranslations("dashboard.company.candidates.statusFilter")
+  const tStatusFilter = useTranslations(
+    "dashboard.company.candidates.statusFilter",
+  )
 
   return (
     <div className="space-y-3 border border-border/40 p-4 sm:p-5">

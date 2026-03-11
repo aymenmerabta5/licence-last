@@ -4,7 +4,9 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const selectLimitQueue: unknown[][] = []
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockLimit = mock((): any => Promise.resolve(selectLimitQueue.shift() ?? []))
+const mockLimit = mock((): any =>
+  Promise.resolve(selectLimitQueue.shift() ?? []),
+)
 const mockSelectWhere = mock(() => ({ limit: mockLimit }))
 const mockFrom = mock(() => ({ where: mockSelectWhere }))
 const mockSelect = mock(() => ({ from: mockFrom }))
@@ -29,7 +31,9 @@ function applyAssignHeadMocks() {
 
 async function loadAssignHeadModule() {
   moduleImportCounter += 1
-  return import(`@/server/services/departments/assign-head?test=${moduleImportCounter}`)
+  return import(
+    `@/server/services/departments/assign-head?test=${moduleImportCounter}`
+  )
 }
 
 describe("assignDepartmentHead", () => {

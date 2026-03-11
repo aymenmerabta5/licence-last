@@ -95,9 +95,7 @@ describe("src/server/services/offers/update-status", () => {
       selectWhereCallCount++
       if (selectWhereCallCount === 1) return { limit: mockLimit }
       // Return affected interviews for the second query
-      return Promise.resolve([
-        { id: "int-1", studentUserId: "student-1" },
-      ])
+      return Promise.resolve([{ id: "int-1", studentUserId: "student-1" }])
     })
 
     const { updateOfferStatus } = await import(

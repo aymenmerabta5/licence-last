@@ -64,7 +64,8 @@ export function ApplicationPanel({
           {t("application")}
         </h2>
         <span className="text-[10px] font-mono text-muted-foreground">
-          {"// "}{t("actionRequired").toUpperCase()}
+          {"// "}
+          {t("actionRequired").toUpperCase()}
         </span>
       </div>
 

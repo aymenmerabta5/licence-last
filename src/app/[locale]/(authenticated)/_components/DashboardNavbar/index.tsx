@@ -24,16 +24,16 @@ export function DashboardNavbar({ user }: { user: NavbarUser }) {
   const { logout, isLoggingOut } = useLogout()
 
   const segments = pathname.split("/").filter(Boolean)
-  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  const UUID_RE =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
   const lastSegment = segments[segments.length - 1] || "overview"
   // When the last segment is a UUID (detail page), use the parent segment instead
   const currentSection = UUID_RE.test(lastSegment)
-    ? (segments[segments.length - 2] || "overview")
+    ? segments[segments.length - 2] || "overview"
     : lastSegment
 
   return (
     <header className="sticky top-0 z-20 h-24 flex items-center justify-between px-6 sm:px-12 bg-background transition-colors duration-500 border-b border-border">
-
       <div className="flex items-center gap-6">
         {/* Mobile menu toggle */}
         <button

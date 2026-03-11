@@ -67,7 +67,9 @@ describe("src/server/services/assistant/create", () => {
     expect(mockValues).toHaveBeenCalledTimes(1)
 
     const insertedValues = (
-      mockValues.mock.calls[0] as unknown as [Record<string, unknown>] | undefined
+      mockValues.mock.calls[0] as unknown as
+        | [Record<string, unknown>]
+        | undefined
     )?.[0]
 
     expect(insertedValues).toMatchObject({

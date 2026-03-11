@@ -99,10 +99,7 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
     )
   }
 
-  const assignHead = async (
-    departmentId: string,
-    headEmail: string,
-  ) =>
+  const assignHead = async (departmentId: string, headEmail: string) =>
     assignHeadMutation.mutateAsync({
       departmentId,
       headEmail: headEmail.trim(),

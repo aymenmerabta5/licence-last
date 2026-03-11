@@ -68,8 +68,8 @@ export function NotificationsTab({ email }: NotificationsTabProps) {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-6 duration-700">
-      <Card className="border-border/60 bg-background/60 backdrop-blur-xl rounded-[2.5rem] overflow-hidden shadow-sm shadow-black/5 ring-1 ring-border/10">
-        <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 border-b border-border/20 bg-gradient-to-b from-secondary/40 via-secondary/10 to-transparent">
+      <Card className="border-border/60 bg-card rounded-[2.5rem] overflow-hidden shadow-sm flex flex-col">
+        <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 bg-transparent">
           <div
             className="absolute -top-12 -right-8 flex items-center opacity-[0.02] dark:opacity-[0.05] pointer-events-none scale-[2] rotate-12"
             aria-hidden="true"
@@ -98,10 +98,10 @@ export function NotificationsTab({ email }: NotificationsTabProps) {
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="p-8 sm:p-12 space-y-6 bg-gradient-to-b from-transparent to-secondary/[0.02]">
+        <CardContent className="px-8 pb-8 pt-4 sm:px-12 sm:pb-12 sm:pt-6 space-y-6">
           {showSoonState ? (
-            <div className="flex items-start gap-3.5 rounded-2xl bg-secondary/10 border border-border/15 p-5">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/30 mt-0.5">
+            <div className="flex items-start gap-3.5 rounded-2xl bg-muted/60 border border-border/15 p-5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted mt-0.5">
                 <Mail className="h-4 w-4 text-muted-foreground" />
               </span>
               <div className="space-y-1">

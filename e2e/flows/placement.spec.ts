@@ -66,7 +66,9 @@ test.describe("Placement Validation Flow", () => {
 
       const candidatesPage = new CompanyCandidatesPage(page)
       await candidatesPage.gotoOfferCandidates(fixture.offerId)
-      await expect(page.getByRole("heading", { name: /pipeline/i })).toBeVisible()
+      await expect(
+        page.getByRole("heading", { name: /pipeline/i }),
+      ).toBeVisible()
     })
   })
 
@@ -149,7 +151,11 @@ test.describe("Placement Validation Flow", () => {
       const applicationsPage = new StudentApplicationsPage(page)
       await applicationsPage.goto()
       await applicationsPage.expectApplicationVisible(fixture.offerTitle)
-      await expect(applicationsPage.applicationCard(fixture.offerTitle).getByText(/^validated$/i)).toBeVisible()
+      await expect(
+        applicationsPage
+          .applicationCard(fixture.offerTitle)
+          .getByText(/^validated$/i),
+      ).toBeVisible()
     })
 
     test("student can see rejected placement status", async ({ page }) => {
@@ -162,7 +168,11 @@ test.describe("Placement Validation Flow", () => {
       const applicationsPage = new StudentApplicationsPage(page)
       await applicationsPage.goto()
       await applicationsPage.expectApplicationVisible(fixture.offerTitle)
-      await expect(applicationsPage.applicationCard(fixture.offerTitle).getByText(/^rejected$/i)).toBeVisible()
+      await expect(
+        applicationsPage
+          .applicationCard(fixture.offerTitle)
+          .getByText(/^rejected$/i),
+      ).toBeVisible()
     })
 
     test("student sees pending status for in-progress applications", async ({
@@ -177,7 +187,11 @@ test.describe("Placement Validation Flow", () => {
       const applicationsPage = new StudentApplicationsPage(page)
       await applicationsPage.goto()
       await applicationsPage.expectApplicationVisible(fixture.offerTitle)
-      await expect(applicationsPage.applicationCard(fixture.offerTitle).getByText(/^applied$/i)).toBeVisible()
+      await expect(
+        applicationsPage
+          .applicationCard(fixture.offerTitle)
+          .getByText(/^applied$/i),
+      ).toBeVisible()
     })
   })
 

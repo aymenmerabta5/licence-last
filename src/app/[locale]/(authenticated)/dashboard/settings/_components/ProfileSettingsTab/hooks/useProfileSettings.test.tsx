@@ -3,7 +3,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-const uploadAvatarMock = mock(async () => ({ url: "https://cdn.example.com/avatar.png" }))
+const uploadAvatarMock = mock(async () => ({
+  url: "https://cdn.example.com/avatar.png",
+}))
 const toastErrorMock = mock(() => {})
 
 mock.module("sonner", () => ({
@@ -20,7 +22,9 @@ mock.module("@/server/orpc/client", () => ({
       updateMe: { mutationOptions: () => ({ mutationFn: async () => ({}) }) },
     },
     students: {
-      getProfile: { queryOptions: () => ({ queryKey: ["students", "profile"] }) },
+      getProfile: {
+        queryOptions: () => ({ queryKey: ["students", "profile"] }),
+      },
       upsertProfileDetails: {
         mutationOptions: () => ({ mutationFn: async () => ({}) }),
       },

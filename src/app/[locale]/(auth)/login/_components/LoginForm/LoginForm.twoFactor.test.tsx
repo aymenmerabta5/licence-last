@@ -102,9 +102,8 @@ interface SignInResult {
   data?: { twoFactorRedirect?: boolean } | null
 }
 
-const mockSignIn = mock(
-  (_payload: Record<string, unknown>) =>
-    Promise.resolve<SignInResult>({ error: null, data: null }),
+const mockSignIn = mock((_payload: Record<string, unknown>) =>
+  Promise.resolve<SignInResult>({ error: null, data: null }),
 )
 const mockSendVerificationEmail = mock(() =>
   Promise.resolve<{ error: AuthError | null }>({ error: null }),

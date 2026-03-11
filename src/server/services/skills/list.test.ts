@@ -27,7 +27,9 @@ function applySkillsListMocks() {
 let listSkillTagsImportCounter = 0
 async function importListSkillTags() {
   listSkillTagsImportCounter += 1
-  return import(`@/server/services/skills/list?test=${listSkillTagsImportCounter}`)
+  return import(
+    `@/server/services/skills/list?test=${listSkillTagsImportCounter}`
+  )
 }
 
 describe("src/server/services/skills/list", () => {
