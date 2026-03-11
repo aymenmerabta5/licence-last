@@ -1,11 +1,4 @@
-import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  mock,
-  test,
-} from "bun:test"
+import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
 
 interface MockApiErrorOptions {
   code?: string
@@ -121,7 +114,10 @@ function applyAuthModuleMocks() {
 }
 
 describe("src/lib/auth self-signup role protections", () => {
-  let beforeCreateUserHook: (data: SignupData, ctx?: SignupContext) => Promise<{
+  let beforeCreateUserHook: (
+    data: SignupData,
+    ctx?: SignupContext,
+  ) => Promise<{
     data: Record<string, unknown>
   }>
   let originalDbSelect: unknown
@@ -166,34 +162,32 @@ describe("src/lib/auth self-signup role protections", () => {
     })
   })
 
-  test("rejects company-admin self-signup role claim", async () => {
-    await expect(
-      beforeCreateUserHook(
-        {
-          email: "recruiter@company.com",
-          emailVerified: false,
-        },
-        { body: { accountType: "company_admin" } },
-      ),
-    ).rejects.toMatchObject({
-      code: "ROLE_IS_NOT_ALLOWED_TO_BE_SET",
-      message: "role is not allowed to be set",
-    })
+  test("allows company-admin self-signup", async () => {
+    const result = await beforeCreateUserHook(
+      {
+        email: "recruiter@company.com",
+        emailVerified: false,
+      },
+      { body: { accountType: "company_admin" } },
+    )
+
+    expect(result.data.role).toBe("company_admin")
+    // Company admins don't need university domain check
+    expect(selectMock).not.toHaveBeenCalled()
   })
 
-  test("rejects university-admin self-signup role claim", async () => {
-    await expect(
-      beforeCreateUserHook(
-        {
-          email: "admin@new-university.dz",
-          emailVerified: false,
-        },
-        { body: { accountType: "university_admin" } },
-      ),
-    ).rejects.toMatchObject({
-      code: "ROLE_IS_NOT_ALLOWED_TO_BE_SET",
-      message: "role is not allowed to be set",
-    })
+  test("allows university-admin self-signup", async () => {
+    const result = await beforeCreateUserHook(
+      {
+        email: "admin@new-university.dz",
+        emailVerified: false,
+      },
+      { body: { accountType: "university_admin" } },
+    )
+
+    expect(result.data.role).toBe("university_admin")
+    // University admins don't need university domain check
+    expect(selectMock).not.toHaveBeenCalled()
   })
 
   test("keeps student self-signup flow with approved university domain", async () => {

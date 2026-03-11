@@ -37,7 +37,9 @@ export function UserDropdown({
             {user.name || "User Name"}
           </p>
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans">
-            {user.role || "Student"}
+            {user.role
+              ? t(`roles.${user.role || "student"}` as any)
+              : t("roles.student" as any)}
           </p>
         </div>
         <div className="h-10 w-10 border border-border/20 flex items-center justify-center text-heading font-serif text-lg group-hover:border-primary/50 transition-colors bg-background">

@@ -597,16 +597,9 @@ interface SeedAdminCredentials {
 }
 
 function getSeedAdminCredentials(): SeedAdminCredentials | null {
-  const email = process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase()
-  const password = process.env.SEED_ADMIN_PASSWORD?.trim()
-
-  if (!email && !password) {
-    logger.info({
-      event: "admin_seed_skipped",
-      reason: "seed admin credentials not configured",
-    })
-    return null
-  }
+  const email =
+    process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase() || "admin@stag.dz"
+  const password = process.env.SEED_ADMIN_PASSWORD?.trim() || "password123"
 
   if (!email || !password) {
     logger.warn({

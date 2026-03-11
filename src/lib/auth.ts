@@ -50,7 +50,10 @@ const TURNSTILE_SECRET_KEY = env.TURNSTILE_SECRET_KEY
 const CAPTCHA_ENABLED =
   Boolean(TURNSTILE_SECRET_KEY) &&
   process.env.CI !== "true" &&
-  !(process.env.NODE_ENV !== "production" && process.env.E2E_DISABLE_CAPTCHA === "1")
+  !(
+    process.env.NODE_ENV !== "production" &&
+    process.env.E2E_DISABLE_CAPTCHA === "1"
+  )
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
@@ -134,7 +137,11 @@ export const auth = betterAuth({
             "university_admin",
             "super_admin",
           ])
-          const ALLOWED_SIGNUP_ROLES = new Set<string>(["student"])
+          const ALLOWED_SIGNUP_ROLES = new Set<string>([
+            "student",
+            "company_admin",
+            "university_admin",
+          ])
           const isAdminCreated = data.emailVerified === true
 
           if (isAdminCreated) {
@@ -159,6 +166,21 @@ export const auth = betterAuth({
             })
           }
 
+          // Company and university admins can sign up with any email.
+          // They go through onboarding + verification after signup.
+          if (
+            requestedRole === "company_admin" ||
+            requestedRole === "university_admin"
+          ) {
+            return {
+              data: {
+                ...data,
+                role: requestedRole,
+              },
+            }
+          }
+
+          // Student signup — require an approved university email domain
           const domain = getEmailDomain(data.email)
           if (!domain) {
             throw new APIError("BAD_REQUEST", {

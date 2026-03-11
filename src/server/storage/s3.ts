@@ -78,7 +78,8 @@ export async function uploadFile(
     throw err
   }
 
-  return `${publicUrl}/${key}`
+  const cleanPublicUrl = publicUrl.replace(/\/+$/, "")
+  return `${cleanPublicUrl}/${key}`
 }
 
 export async function deleteFile(key: string): Promise<void> {
