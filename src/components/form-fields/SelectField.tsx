@@ -8,6 +8,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select"
 
 interface SelectOption {
@@ -44,9 +45,6 @@ export function SelectField({
   className,
 }: SelectFieldProps) {
   const stringValue = String(value ?? "")
-  const selectedLabel = options.find(
-    (o) => String(o.value) === stringValue,
-  )?.label
 
   return (
     <div className="space-y-2">
@@ -60,6 +58,7 @@ export function SelectField({
         value={stringValue}
         onValueChange={(v) => v && onChange(String(v))}
         disabled={disabled}
+        items={options.map((o) => ({ value: String(o.value), label: String(o.label) }))}
       >
         <InputGroup className={`rounded-none h-11 ${className ?? ""}`}>
           {Icon && (
@@ -73,11 +72,7 @@ export function SelectField({
             aria-invalid={!!error}
             className="h-full w-full border-0 bg-transparent shadow-none ring-0 hover:border-0 focus-visible:ring-0 focus-visible:border-0"
           >
-            <span className="flex flex-1 text-start truncate">
-              {selectedLabel ?? (
-                <span className="text-muted-foreground">{placeholder}</span>
-              )}
-            </span>
+            <SelectValue placeholder={placeholder} />
           </SelectTrigger>
         </InputGroup>
         <SelectContent>

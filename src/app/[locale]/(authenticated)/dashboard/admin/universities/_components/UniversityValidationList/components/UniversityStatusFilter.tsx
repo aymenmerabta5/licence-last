@@ -61,6 +61,12 @@ export function UniversityStatusFilter({
               onStatusChange(value as UniversityStatus | "all")
             }
           }}
+          items={[
+            { value: "all", label: t("allStatuses") },
+            { value: "pending", label: t("status.pending") },
+            { value: "approved", label: t("status.approved") },
+            { value: "rejected", label: t("status.rejected") },
+          ]}
         >
           <SelectTrigger className="h-9 w-44 rounded-sm border-border bg-background font-medium text-sm transition-colors hover:bg-muted/10">
             <SelectValue placeholder={t("statusFilter")} />

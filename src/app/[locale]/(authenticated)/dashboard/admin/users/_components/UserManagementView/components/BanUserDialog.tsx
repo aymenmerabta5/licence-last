@@ -90,7 +90,14 @@ export function BanUserDialog({
           </div>
           <div className="space-y-2">
             <Label>{t("dialogs.ban.duration")}</Label>
-            <Select value={duration} onValueChange={(v) => v && setDuration(v)}>
+            <Select
+              value={duration}
+              onValueChange={(v) => v && setDuration(v)}
+              items={durations.map((d) => ({
+                value: d.value,
+                label: t(`dialogs.ban.durations.${d.value}`),
+              }))}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>

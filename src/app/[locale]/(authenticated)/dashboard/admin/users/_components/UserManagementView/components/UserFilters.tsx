@@ -54,6 +54,10 @@ export function UserFilters({
       <Select
         value={roleFilter}
         onValueChange={(v) => v && onRoleFilterChange(v)}
+        items={roles.map((role) => ({
+          value: role,
+          label: role === "all" ? t("allRoles") : t(`roles.${role}`),
+        }))}
       >
         <SelectTrigger className="w-full sm:w-[180px]">
           <SelectValue placeholder={t("filterByRole")} />

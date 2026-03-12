@@ -69,6 +69,7 @@ export function CreateDepartmentForm({
                 onValueChange={(value) => {
                   if (value) onUniversityIdChange?.(value)
                 }}
+                items={universityOptions.map((o) => ({ value: o.id, label: o.name }))}
               >
                 <SelectTrigger className="h-10 rounded-xl border-border/60">
                   <SelectValue placeholder={t("selectUniversity")} />

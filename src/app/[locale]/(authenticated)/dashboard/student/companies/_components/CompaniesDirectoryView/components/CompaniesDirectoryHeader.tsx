@@ -62,6 +62,13 @@ export function CompaniesDirectoryHeader({
             onValueChange={(value) =>
               onWilayaCodeChange(value === "all" ? undefined : Number(value))
             }
+            items={[
+              { value: "all", label: t("wilayaPlaceholder") },
+              ...WILAYA_OPTIONS.map((option) => ({
+                value: String(option.value),
+                label: option.label,
+              })),
+            ]}
           >
             <SelectTrigger className="h-11 w-full rounded-none border-2 border-foreground/10 bg-transparent text-sm lg:w-56">
               <SelectValue placeholder={t("wilayaPlaceholder")} />
