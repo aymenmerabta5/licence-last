@@ -10,6 +10,16 @@ import { CompanyOffersFilters } from "@/app/[locale]/(authenticated)/dashboard/c
 import { CompanyOffersHeader } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/CompanyOffersHeader"
 import { OfferCard } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/OfferCard"
 import { TrustBanner } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/TrustBanner"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { useCompanyOffers } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/hooks/useCompanyOffers"
 import type { OfferStatusFilter } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/types"
 
@@ -26,6 +36,11 @@ export function CompanyOffersView() {
   } = useCompanyOffers()
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState<OfferStatusFilter>("all")
+  const [confirmInfo, setConfirmInfo] = useState<{
+    offerId: string
+    type: "close" | "delete"
+  } | null>(null)
+
   const normalizedQuery = searchQuery.trim().toLowerCase()
   const filteredOffers = useMemo(
     () =>
@@ -86,13 +101,59 @@ export function CompanyOffersView() {
                 index={index}
                 isActionLoading={actionLoading === offer.id}
                 onPublish={() => handlePublish(offer.id)}
-                onClose={() => handleClose(offer.id, t("actions.confirmClose"))}
+                onClose={() =>
+                  setConfirmInfo({ offerId: offer.id, type: "close" })
+                }
                 onDelete={() =>
-                  handleDelete(offer.id, t("actions.confirmDelete"))
+                  setConfirmInfo({ offerId: offer.id, type: "delete" })
                 }
               />
             ))}
           </div>
+
+          <AlertDialog
+            open={!!confirmInfo}
+            onOpenChange={(open) => !open && setConfirmInfo(null)}
+          >
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {confirmInfo?.type === "close"
+                    ? t("actions.close")
+                    : t("actions.delete")}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {confirmInfo?.type === "close"
+                    ? t("actions.confirmClose")
+                    : t("actions.confirmDelete")}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("form.cancel")}</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    if (confirmInfo) {
+                      if (confirmInfo.type === "close") {
+                        handleClose(confirmInfo.offerId)
+                      } else {
+                        handleDelete(confirmInfo.offerId)
+                      }
+                      setConfirmInfo(null)
+                    }
+                  }}
+                  className={
+                    confirmInfo?.type === "delete"
+                      ? "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      : ""
+                  }
+                >
+                  {confirmInfo?.type === "close"
+                    ? t("actions.close")
+                    : t("actions.delete")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </>
       )}
     </div>

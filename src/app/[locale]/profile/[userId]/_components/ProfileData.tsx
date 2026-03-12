@@ -27,11 +27,13 @@ export async function ProfileData({ userId }: ProfileDataProps) {
     "university_admin",
     "super_admin",
   ])
-  const isOwner = viewer.id === userId && viewer.role === "student"
-  if (viewer.role === "student" && !isOwner) notFound()
+  const isSelf = viewer.id === userId
+  const isOwner = isSelf && viewer.role === "student"
+  if (viewer.role === "student" && !isSelf) notFound()
 
-  // Company admins can only view profiles of students who applied to their offers
-  if (viewer.role === "company_admin") {
+  // Company admins can only view profiles of students who applied to their offers,
+  // unless they are viewing their own profile.
+  if (viewer.role === "company_admin" && !isSelf) {
     const [membership] = await db
       .select({ companyId: companyMember.companyId })
       .from(companyMember)

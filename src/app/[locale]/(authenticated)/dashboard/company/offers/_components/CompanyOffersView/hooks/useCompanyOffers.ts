@@ -54,8 +54,7 @@ export function useCompanyOffers() {
     }
   }
 
-  const handleClose = async (offerId: string, confirmMessage: string) => {
-    if (!window.confirm(confirmMessage)) return
+  const handleClose = async (offerId: string) => {
     setActionLoading(offerId)
     try {
       const result = await statusMutation.mutateAsync({
@@ -76,8 +75,7 @@ export function useCompanyOffers() {
     }
   }
 
-  const handleDelete = async (offerId: string, confirmMessage: string) => {
-    if (!window.confirm(confirmMessage)) return
+  const handleDelete = async (offerId: string) => {
     setActionLoading(offerId)
     try {
       await deleteMutation.mutateAsync({ offerId })
