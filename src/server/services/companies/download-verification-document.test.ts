@@ -77,6 +77,58 @@ describe("src/server/services/companies/download-verification-document", () => {
     expect(getFileMock).not.toHaveBeenCalled()
   })
 
+  test("throws STORAGE_UNAVAILABLE when S3 is not configured", async () => {
+    mock.module("@/server/storage/s3", () => ({
+      uploadFile: mock(async () => "https://example.com/mock-upload.pdf"),
+      deleteFile: mock(async () => {}),
+      getFile: getFileMock,
+      isConfigured: () => false,
+    }))
+
+    selectResultsQueue.push([
+      {
+        verificationDocumentKey: "company-verification/company-1/doc.pdf",
+        verificationDocumentName: "trade-license.pdf",
+        verificationDocumentMimeType: "application/pdf",
+      },
+    ])
+
+    const { downloadCompanyVerificationDocument } =
+      await loadDownloadVerificationModule()
+
+    await expect(
+      downloadCompanyVerificationDocument("company-1"),
+    ).rejects.toMatchObject({
+      code: "STORAGE_UNAVAILABLE",
+      message: "File storage is not configured",
+    })
+    expect(getFileMock).not.toHaveBeenCalled()
+  })
+
+  test("throws STORAGE_UNAVAILABLE when S3 getFile fails", async () => {
+    getFileMock.mockImplementationOnce(async () => {
+      throw new Error("NoSuchBucket: The specified bucket does not exist.")
+    })
+
+    selectResultsQueue.push([
+      {
+        verificationDocumentKey: "company-verification/company-1/doc.pdf",
+        verificationDocumentName: "trade-license.pdf",
+        verificationDocumentMimeType: "application/pdf",
+      },
+    ])
+
+    const { downloadCompanyVerificationDocument } =
+      await loadDownloadVerificationModule()
+
+    await expect(
+      downloadCompanyVerificationDocument("company-1"),
+    ).rejects.toMatchObject({
+      code: "STORAGE_UNAVAILABLE",
+      message: "File storage is temporarily unavailable",
+    })
+  })
+
   test("downloads file bytes when document metadata is present", async () => {
     selectResultsQueue.push([
       {

@@ -281,6 +281,7 @@ export const downloadCompanyVerificationDocumentProcedure =
           codeMap: {
             COMPANY_NOT_FOUND: "NOT_FOUND",
             COMPANY_VERIFICATION_DOCUMENT_NOT_FOUND: "NOT_FOUND",
+            STORAGE_UNAVAILABLE: "SERVICE_UNAVAILABLE",
           },
           fallbackMessage: "Failed to download company verification document",
         })
