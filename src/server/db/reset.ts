@@ -5,6 +5,7 @@ import { sql } from "drizzle-orm"
 import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 
+import { getMaintenancePostgresOptions } from "@/server/db/postgres-options"
 import { logger } from "@/server/logging/logger"
 
 const REQUIRE_PRODUCTION_CONFIRMATION_FLAG = "--require-production-confirmation"
@@ -69,7 +70,7 @@ async function resetDatabase(options: ResetDatabaseOptions = {}) {
     await confirmProductionReset(databaseUrl)
   }
 
-  const client = postgres(databaseUrl, { max: 1 })
+  const client = postgres(databaseUrl, getMaintenancePostgresOptions())
   const db = drizzle(client)
 
   try {
