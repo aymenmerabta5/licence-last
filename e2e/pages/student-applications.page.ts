@@ -4,8 +4,8 @@ export class StudentApplicationsPage {
   constructor(private readonly page: Page) {}
 
   async goto(): Promise<void> {
-    await this.page.goto("/en/dashboard/student/applications")
-    await expect(this.page).toHaveURL(/\/en\/dashboard\/student\/applications/)
+    await this.page.goto("/en/dashboard/applications")
+    await expect(this.page).toHaveURL(/\/en\/dashboard\/applications/)
     await expect(this.page.locator("h1").first()).toBeVisible()
   }
 

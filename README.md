@@ -143,7 +143,7 @@ bun test:api:app-routes # App Router API route tests only
 bun test:api           # API route tests + oRPC route suite
 bun test:pages         # App Router page/component tests (src/app/[locale])
 bun test:coverage      # Segmented coverage run; writes reports to coverage/*.txt
-bun test:e2e           # Playwright E2E (sets PLAYWRIGHT_REUSE_SERVER=1, E2E_DISABLE_CAPTCHA=1, and loads .env.development)
+bun test:e2e           # Playwright E2E (loads .env.e2e; if a dev server is already running, reuse can keep it on your dev DB)
 bun test:ci            # CI pipeline (unit + api + pages)
 bun run check:all      # Full pre-release checks (lint, typecheck, tests, build)
 

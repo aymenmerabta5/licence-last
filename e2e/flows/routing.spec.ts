@@ -4,25 +4,25 @@ import { loginAsCompany, loginAsStudent } from "../fixtures/auth"
 import { seedOfferFixture } from "../fixtures/seed"
 
 test.describe("Dashboard Route Redirects", () => {
-  test("student applications alias redirects to student applications page", async ({
+  test("student applications alias redirects to the canonical applications page", async ({
     page,
   }) => {
     await loginAsStudent(page)
-    await page.goto("/en/dashboard/applications")
+    await page.goto("/en/dashboard/student/applications")
 
-    await expect(page).toHaveURL(/\/en\/dashboard\/student\/applications$/)
+    await expect(page).toHaveURL(/\/en\/dashboard\/applications$/)
   })
 
-  test("student explore alias redirects to student search page", async ({
+  test("student search alias redirects to the canonical explore page", async ({
     page,
   }) => {
     await loginAsStudent(page)
-    await page.goto("/en/dashboard/explore")
+    await page.goto("/en/dashboard/student/search")
 
-    await expect(page).toHaveURL(/\/en\/dashboard\/student\/search$/)
+    await expect(page).toHaveURL(/\/en\/dashboard\/explore$/)
   })
 
-  test("explore detail alias redirects to student offer detail page", async ({
+  test("student offer detail alias redirects to the canonical explore detail page", async ({
     page,
   }) => {
     const offer = await seedOfferFixture({
@@ -30,19 +30,17 @@ test.describe("Dashboard Route Redirects", () => {
     })
 
     await loginAsStudent(page)
-    await page.goto(`/en/dashboard/explore/${offer.offerId}`)
+    await page.goto(`/en/dashboard/student/offers/${offer.offerId}`)
 
-    await expect(page).toHaveURL(
-      new RegExp(`/en/dashboard/student/offers/${offer.offerId}$`),
-    )
+    await expect(page).toHaveURL(new RegExp(`/en/dashboard/explore/${offer.offerId}$`))
   })
 
-  test("company is redirected away from student applications alias", async ({
+  test("company is redirected away from the canonical student applications page", async ({
     page,
   }) => {
     await loginAsCompany(page)
     await page.goto("/en/dashboard/applications")
 
-    await expect(page).toHaveURL(/\/en\/dashboard\/company$/)
+    await expect(page).toHaveURL(/\/en\/dashboard$/)
   })
 })
