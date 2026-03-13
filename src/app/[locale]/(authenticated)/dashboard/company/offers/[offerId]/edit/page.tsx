@@ -1,8 +1,7 @@
 import { OfferForm } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm"
-import { requireRole } from "@/lib/auth-guards"
+import { requireApprovedCompanyAdmin } from "@/lib/dashboard-access"
 import type { LanguageCode } from "@/lib/constants/languages"
 import { localeRedirect } from "@/lib/navigation"
-import { getCompanyByUserId } from "@/server/services/companies/get"
 import { getOfferById } from "@/server/services/offers/get"
 
 export default async function EditOfferPage({
@@ -10,7 +9,7 @@ export default async function EditOfferPage({
 }: {
   params: Promise<{ offerId: string }>
 }) {
-  const sessionUser = await requireRole(["company_admin"])
+  const { company } = await requireApprovedCompanyAdmin()
   const { offerId } = await params
 
   const offer = await getOfferById(offerId)
@@ -20,8 +19,7 @@ export default async function EditOfferPage({
   }
 
   // Verify ownership
-  const company = await getCompanyByUserId(sessionUser.id)
-  if (!company || offer.companyId !== company.id) {
+  if (offer.companyId !== company.id) {
     return localeRedirect("/dashboard/company/offers")
   }
 

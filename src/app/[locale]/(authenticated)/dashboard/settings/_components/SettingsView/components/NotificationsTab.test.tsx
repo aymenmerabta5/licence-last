@@ -1,5 +1,14 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react"
-import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
+import * as React from "react"
+import {
+  afterAll,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  mock,
+  test,
+} from "bun:test"
 
 const setQueryDataMock = mock(() => {})
 const mutateAsyncMock = mock(async () => {})
@@ -12,16 +21,78 @@ const queryState = {
 
 const notificationsEnabledState = { value: true }
 
-mock.module("@tanstack/react-query", () => ({
-  useQueryClient: () => ({
-    setQueryData: setQueryDataMock,
-  }),
-  useQuery: () => queryState,
-  useMutation: () => ({
-    mutateAsync: mutateAsyncMock,
-    isPending: false,
-  }),
-}))
+function applyReactQueryMock() {
+  mock.module("@tanstack/react-query", () => ({
+    QueryClient: class QueryClient {
+      constructor(public options?: unknown) {}
+    },
+    QueryClientProvider: ({
+      children,
+    }: {
+      children: React.ReactNode
+      client: unknown
+    }) => <>{children}</>,
+    useQueryClient: () => ({
+      setQueryData: setQueryDataMock,
+    }),
+    useQuery: (options?: {
+      enabled?: boolean
+      queryFn?: () => Promise<unknown>
+      queryKey?: unknown[]
+    }) => {
+      const queryKey = Array.isArray(options?.queryKey) ? options.queryKey[0] : null
+      const isNotificationsQuery = queryKey === "notifications"
+
+      const [data, setData] = React.useState<unknown>(undefined)
+      const [isLoading, setIsLoading] = React.useState(Boolean(options?.enabled !== false))
+      const queryFnRef = React.useRef(options?.queryFn)
+      queryFnRef.current = options?.queryFn
+
+      React.useEffect(() => {
+        let isActive = true
+
+        if (isNotificationsQuery) {
+          setIsLoading(false)
+          return () => {
+            isActive = false
+          }
+        }
+
+        if (options?.enabled === false || !queryFnRef.current) {
+          setIsLoading((current) => (current ? false : current))
+          return () => {
+            isActive = false
+          }
+        }
+
+        setIsLoading((current) => (current ? current : true))
+
+        Promise.resolve(queryFnRef.current()).then((result) => {
+          if (!isActive) {
+            return
+          }
+
+          setData(result)
+          setIsLoading(false)
+        })
+
+        return () => {
+          isActive = false
+        }
+      }, [isNotificationsQuery, options?.enabled])
+
+      if (isNotificationsQuery) {
+        return queryState
+      }
+
+      return { data, isLoading }
+    },
+    useMutation: () => ({
+      mutateAsync: mutateAsyncMock,
+      isPending: false,
+    }),
+  }))
+}
 
 mock.module("@/lib/feature-flags-client", () => ({
   isNotificationPreferencesEnabledOnClient: () =>
@@ -30,6 +101,22 @@ mock.module("@/lib/feature-flags-client", () => ({
 
 mock.module("@/server/orpc/client", () => ({
   orpc: {
+    placements: {
+      getPendingById: {
+        queryOptions: ({ input }: { input: { applicationId: string } }) => ({
+          queryKey: ["placements", "getPendingById", input],
+          queryFn: async () => ({ application: { id: input.applicationId } }),
+        }),
+      },
+    },
+    deptHead: {
+      getPendingById: {
+        queryOptions: ({ input }: { input: { applicationId: string } }) => ({
+          queryKey: ["deptHead", "getPendingById", input],
+          queryFn: async () => ({ application: { id: input.applicationId } }),
+        }),
+      },
+    },
     notifications: {
       getPreferences: {
         queryOptions: () => ({ queryKey: ["notifications", "preferences"] }),
@@ -64,11 +151,16 @@ mock.module("@/components/ui/checkbox", () => ({
 }))
 
 describe("NotificationsTab", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   afterEach(() => {
     cleanup()
   })
 
   beforeEach(() => {
+    applyReactQueryMock()
     setQueryDataMock.mockClear()
     mutateAsyncMock.mockClear()
     queryState.data = { inAppEnabled: true, emailEnabled: true }

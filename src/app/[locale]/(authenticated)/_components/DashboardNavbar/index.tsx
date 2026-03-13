@@ -1,6 +1,6 @@
 "use client"
 
-import { Menu, Search } from "lucide-react"
+import { Menu } from "lucide-react"
 import { useSyncExternalStore } from "react"
 import { useDashboard } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import { UserDropdown } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/components/UserDropdown"
@@ -24,17 +24,17 @@ export function DashboardNavbar({ user }: { user: NavbarUser }) {
   const { logout, isLoggingOut } = useLogout()
 
   const segments = pathname.split("/").filter(Boolean)
-  const UUID_RE =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  const ID_RE =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$|^[a-zA-Z0-9]{20,}$/i
   const lastSegment = segments[segments.length - 1] || "overview"
-  // When the last segment is a UUID (detail page), use the parent segment instead
-  const currentSection = UUID_RE.test(lastSegment)
+  // When the last segment is an ID (UUID or Better Auth base62), use the parent segment instead
+  const currentSection = ID_RE.test(lastSegment)
     ? segments[segments.length - 2] || "overview"
     : lastSegment
 
   return (
     <header className="sticky top-0 z-20 h-24 flex items-center justify-between px-6 sm:px-12 bg-background transition-colors duration-500 border-b border-border">
-      <div className="flex items-center gap-6">
+      <div className="flex min-w-0 items-center gap-4 sm:gap-5">
         {/* Mobile menu toggle */}
         <button
           type="button"
@@ -46,11 +46,11 @@ export function DashboardNavbar({ user }: { user: NavbarUser }) {
         </button>
 
         {/* Clean minimalist breadcrumb */}
-        <div className="hidden sm:flex items-baseline gap-3">
+        <div className="min-w-0">
           <h2 className="text-2xl font-serif text-heading tracking-tight capitalize">
             {currentSection.replace(/-/g, " ")}
           </h2>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono tracking-wider opacity-60">
+          <div className="hidden xl:flex items-center gap-2 text-xs text-muted-foreground font-mono tracking-wider opacity-60">
             <span>[</span>
             <span className="uppercase">{segments[0] || "dashboard"}</span>
             <span>]</span>
@@ -58,37 +58,14 @@ export function DashboardNavbar({ user }: { user: NavbarUser }) {
         </div>
       </div>
 
-      {/* Mobile logo */}
-      <div className="md:hidden lg:block">
-        <span className="font-serif text-xl tracking-tight text-heading lg:hidden">
-          Stag<span className="text-primary font-bold">.</span>io
-        </span>
-      </div>
-
       {/* Right section */}
-      <div className="flex items-center gap-4 sm:gap-6">
-        {/* Search — Minimalist underline style */}
-        <div className="hidden md:flex items-center w-48 lg:w-64 relative group transition-all duration-300">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-full bg-transparent border-b border-border/20 focus:border-primary py-1.5 px-0 text-sm focus:outline-none transition-all placeholder:text-muted-foreground/40 text-foreground font-serif italic"
-          />
-          <Search className="absolute end-0 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40 group-focus-within:text-primary transition-colors pointer-events-none" />
-        </div>
-
-        {/* Mobile search icon */}
-        <button
-          type="button"
-          className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-all"
-        >
-          <Search className="h-5 w-5" />
-        </button>
-
+      <div className="flex min-w-0 items-center gap-3 sm:gap-4">
         {mounted && (
-          <div className="flex items-center gap-4 border-s border-border/30 ps-4 sm:ps-6">
-            <div className="hidden sm:flex items-center gap-3 text-muted-foreground">
-              <LanguageSwitcher />
+          <div className="flex min-w-0 items-center gap-3 border-s border-border/30 ps-3 sm:gap-4 sm:ps-4">
+            <div className="hidden items-center gap-2.5 text-muted-foreground sm:flex xl:gap-3">
+              <div className="hidden xl:block">
+                <LanguageSwitcher />
+              </div>
               <ThemeToggle />
               <NotificationBell viewerId={user.id} />
             </div>

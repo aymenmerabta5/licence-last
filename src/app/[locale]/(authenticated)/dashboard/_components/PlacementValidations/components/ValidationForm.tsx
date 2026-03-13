@@ -3,6 +3,7 @@
 import { Calendar, Check, Loader2, X } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+
 import { Button } from "@/components/ui/button"
 import { ease, reveal } from "@/lib/animations"
 
@@ -39,14 +40,14 @@ export function ValidationForm({
     <motion.div
       {...reveal}
       transition={{ duration: 0.5, ease, delay: 0.2 }}
-      className="lg:col-span-2 border border-primary/30 bg-primary/5 p-6 space-y-6"
+      className="space-y-6 border border-primary/30 bg-primary/5 p-6 lg:col-span-2"
     >
-      <h2 className="font-serif text-lg text-heading flex items-center gap-2">
+      <h2 className="flex items-center gap-2 font-serif text-lg text-heading">
         <Calendar className="h-4 w-4" />
         {t("setInternshipPeriod")}
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <label className="text-xs font-medium text-muted-foreground">
             {t("startDate")} *
@@ -54,9 +55,9 @@ export function ValidationForm({
           <input
             type="date"
             value={startDate}
-            onChange={(e) => onStartDateChange(e.target.value)}
+            onChange={(event) => onStartDateChange(event.target.value)}
             min={new Date().toISOString().split("T")[0]}
-            className="w-full px-3 py-2 text-sm border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
         <div className="space-y-2">
@@ -66,9 +67,9 @@ export function ValidationForm({
           <input
             type="date"
             value={endDate}
-            onChange={(e) => onEndDateChange(e.target.value)}
+            onChange={(event) => onEndDateChange(event.target.value)}
             min={startDate || new Date().toISOString().split("T")[0]}
-            className="w-full px-3 py-2 text-sm border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
       </div>
@@ -86,7 +87,7 @@ export function ValidationForm({
         </div>
       )}
 
-      <div className="flex flex-col sm:flex-row gap-3 pt-4">
+      <div className="flex flex-col gap-3 pt-4 sm:flex-row">
         <Button
           onClick={onValidate}
           disabled={actionLoading || !startDate || !endDate}
@@ -103,7 +104,7 @@ export function ValidationForm({
           variant="outline"
           onClick={onOpenReject}
           disabled={actionLoading}
-          className="flex-1 gap-2 text-destructive border-destructive/30 hover:bg-destructive/10"
+          className="flex-1 gap-2 border-destructive/30 text-destructive hover:bg-destructive/10"
         >
           <X className="h-4 w-4" />
           {t("reject")}

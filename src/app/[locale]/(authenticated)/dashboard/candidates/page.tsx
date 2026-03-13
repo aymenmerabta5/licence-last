@@ -1,14 +1,12 @@
 import { getTranslations } from "next-intl/server"
 
 import { CandidatesPipelinePage } from "@/app/[locale]/(authenticated)/dashboard/candidates/_components/CandidatesPipelinePage"
-import { requireRole } from "@/lib/auth-guards"
+import { requireApprovedCompanyAdmin } from "@/lib/dashboard-access"
 import { localeRedirect } from "@/lib/navigation"
-import { getCompanyByUserId } from "@/server/services/companies/get"
 import { listOffersByCompany } from "@/server/services/offers/list-by-company"
 
 export default async function CandidatesPage() {
-  const user = await requireRole(["company_admin"])
-  const company = await getCompanyByUserId(user.id)
+  const { company } = await requireApprovedCompanyAdmin()
 
   if (!company) {
     return localeRedirect("/dashboard/company/profile")

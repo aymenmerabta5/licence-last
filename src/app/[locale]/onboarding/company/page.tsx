@@ -13,7 +13,7 @@ export default async function CompanyOnboardingPage() {
     const company = await getCompanyStatusByUserId(session.user.id)
 
     if (company?.status === "approved") {
-      return localeRedirect("/dashboard/company")
+      return localeRedirect("/dashboard")
     }
 
     if (company?.status === "rejected") {

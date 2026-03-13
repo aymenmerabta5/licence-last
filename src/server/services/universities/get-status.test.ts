@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockLimitResult: any[] = []
@@ -16,7 +16,25 @@ mock.module("@/server/db", () => ({
 }))
 
 describe("src/server/services/universities/get-status", () => {
+  let importCounter = 0
+
+  async function importGetUniversityStatus() {
+    importCounter += 1
+    return import(
+      `@/server/services/universities/get-status?test=${importCounter}`
+    )
+  }
+
+  afterAll(() => {
+    mock.restore()
+  })
+
   beforeEach(() => {
+    mock.module("@/server/db", () => ({
+      db: {
+        select: mockSelect,
+      },
+    }))
     mockLimitResult = []
     mockSelect.mockClear()
     mockFrom.mockClear()
@@ -39,9 +57,7 @@ describe("src/server/services/universities/get-status", () => {
       },
     ]
 
-    const { getUniversityStatusByUserId } = await import(
-      "@/server/services/universities/get-status"
-    )
+    const { getUniversityStatusByUserId } = await importGetUniversityStatus()
     const result = await getUniversityStatusByUserId("user-1")
 
     expect(result).toEqual({
@@ -54,9 +70,7 @@ describe("src/server/services/universities/get-status", () => {
   test("returns null when user has no university", async () => {
     mockLimitResult = []
 
-    const { getUniversityStatusByUserId } = await import(
-      "@/server/services/universities/get-status"
-    )
+    const { getUniversityStatusByUserId } = await importGetUniversityStatus()
     const result = await getUniversityStatusByUserId("user-2")
 
     expect(result).toBeNull()

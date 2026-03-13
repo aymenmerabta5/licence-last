@@ -8,12 +8,13 @@ interface InfoRowProps {
 
 export function InfoRow({ label, value, icon }: InfoRowProps) {
   if (!value) return null
+
   return (
     <div className="flex items-start gap-2">
-      {icon && <span className="text-muted-foreground mt-0.5">{icon}</span>}
-      <div className="flex-1 min-w-0">
-        <span className="text-muted-foreground text-xs">{label}:</span>{" "}
-        <span className="text-foreground break-words">{value}</span>
+      {icon && <span className="mt-0.5 text-muted-foreground">{icon}</span>}
+      <div className="min-w-0 flex-1">
+        <span className="text-xs text-muted-foreground">{label}:</span>{" "}
+        <span className="break-words text-foreground">{value}</span>
       </div>
     </div>
   )

@@ -3,9 +3,8 @@
 import { useReducedMotion } from "motion/react"
 import * as motion from "motion/react-client"
 import { useLocale, useTranslations } from "next-intl"
+import { ProfileStrengthColumn } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/ProfileStrengthColumn"
 import { getTransition } from "@/lib/animations"
-
-import { ProfileStrengthColumn } from "./ProfileStrengthColumn"
 
 interface MetadataItemProps {
   label: string

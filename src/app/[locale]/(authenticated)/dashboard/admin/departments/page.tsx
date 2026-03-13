@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import { DepartmentsView } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView"
 import { Skeleton } from "@/components/ui/skeleton"
-import { requireRole } from "@/lib/auth-guards"
+import { requireApprovedUniversityAdmin } from "@/lib/dashboard-access"
 
 function DepartmentsFallback() {
   return (
@@ -26,7 +26,7 @@ function DepartmentsFallback() {
 }
 
 export default async function DepartmentsPage() {
-  await requireRole(["university_admin", "super_admin"])
+  await requireApprovedUniversityAdmin()
 
   return (
     <Suspense fallback={<DepartmentsFallback />}>

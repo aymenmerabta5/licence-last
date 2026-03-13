@@ -32,7 +32,7 @@ describe("src/lib/post-login-redirect", () => {
         ...baseMe(),
         user: { ...baseMe().user, onboardingCompleted: true },
       }
-      expect(getPostLoginRedirectPath(me)).toBe("/dashboard/student")
+      expect(getPostLoginRedirectPath(me)).toBe("/dashboard")
     })
 
     test("should redirect company admins who are not onboarded to onboarding", () => {
@@ -57,7 +57,7 @@ describe("src/lib/post-login-redirect", () => {
         },
         company: { id: "c1", name: "Acme", slug: "acme", status: "approved" },
       }
-      expect(getPostLoginRedirectPath(me)).toBe("/dashboard/company")
+      expect(getPostLoginRedirectPath(me)).toBe("/dashboard")
     })
 
     test("should redirect company admins with rejected company to rejected page", () => {
@@ -127,7 +127,7 @@ describe("src/lib/post-login-redirect", () => {
           rejectionReason: null,
         },
       }
-      expect(getPostLoginRedirectPath(me)).toBe("/dashboard/admin")
+      expect(getPostLoginRedirectPath(me)).toBe("/dashboard")
     })
 
     test("should redirect university_admin with rejected university to rejected page", () => {
@@ -177,7 +177,7 @@ describe("src/lib/post-login-redirect", () => {
           onboardingCompleted: true,
         },
       }
-      expect(getPostLoginRedirectPath(me)).toBe("/dashboard/admin")
+      expect(getPostLoginRedirectPath(me)).toBe("/dashboard")
     })
 
     test("should fall back to / for unknown roles", () => {

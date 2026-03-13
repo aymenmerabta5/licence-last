@@ -3,26 +3,13 @@
 import { GraduationCap, Mail, MapPin, Phone, User } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { InfoRow } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/InfoRow"
+
+import { InfoRow } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/InfoRow"
+import type { ValidationDetailData } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/types"
 import { ease, reveal } from "@/lib/animations"
 
 interface StudentInfoCardProps {
-  application: {
-    student: { name: string | null; email: string }
-    profile: {
-      phone?: string | null
-      studentNumber?: string | null
-      department?: string | null
-      level?: string | null
-    } | null
-    university: {
-      name: string
-      abbreviation?: string | null
-      departmentName?: string | null
-      address?: string | null
-    } | null
-    skills: { id: string; name: string; category?: string | null }[]
-  }
+  application: ValidationDetailData
 }
 
 export function StudentInfoCard({ application }: StudentInfoCardProps) {
@@ -32,9 +19,9 @@ export function StudentInfoCard({ application }: StudentInfoCardProps) {
     <motion.div
       {...reveal}
       transition={{ duration: 0.5, ease, delay: 0.1 }}
-      className="border border-border p-6 space-y-4"
+      className="space-y-4 border border-border p-6"
     >
-      <h2 className="font-serif text-lg text-heading flex items-center gap-2">
+      <h2 className="flex items-center gap-2 font-serif text-lg text-heading">
         <User className="h-4 w-4" />
         {t("studentInfo")}
       </h2>
@@ -70,8 +57,8 @@ export function StudentInfoCard({ application }: StudentInfoCardProps) {
       </div>
 
       {application.university && (
-        <div className="pt-4 border-t border-border space-y-3">
-          <h3 className="font-medium text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+        <div className="space-y-3 border-t border-border pt-4">
+          <h3 className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
             <GraduationCap className="h-3.5 w-3.5" />
             {t("university")}
           </h3>
@@ -95,15 +82,15 @@ export function StudentInfoCard({ application }: StudentInfoCardProps) {
       )}
 
       {application.skills.length > 0 && (
-        <div className="pt-4 border-t border-border">
-          <h3 className="font-medium text-xs uppercase tracking-wider text-muted-foreground mb-3">
+        <div className="border-t border-border pt-4">
+          <h3 className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
             {t("skills")}
           </h3>
           <div className="flex flex-wrap gap-1.5">
             {application.skills.map((skill) => (
               <span
                 key={skill.id}
-                className="inline-flex items-center px-2 py-0.5 text-[10px] bg-primary/10 border border-primary/20 text-primary"
+                className="inline-flex items-center border border-primary/20 bg-primary/10 px-2 py-0.5 text-[10px] text-primary"
               >
                 {skill.name}
               </span>

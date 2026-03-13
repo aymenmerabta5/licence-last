@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { act, renderHook, waitFor } from "@testing-library/react"
 
@@ -43,6 +43,22 @@ mock.module("sonner", () => ({
 
 mock.module("@/server/orpc/client", () => ({
   orpc: {
+    placements: {
+      getPendingById: {
+        queryOptions: ({ input }: { input: { applicationId: string } }) => ({
+          queryKey: ["placements", "getPendingById", input],
+          queryFn: async () => ({ application: { id: input.applicationId } }),
+        }),
+      },
+    },
+    deptHead: {
+      getPendingById: {
+        queryOptions: ({ input }: { input: { applicationId: string } }) => ({
+          queryKey: ["deptHead", "getPendingById", input],
+          queryFn: async () => ({ application: { id: input.applicationId } }),
+        }),
+      },
+    },
     interviews: {
       listForStudent: {
         queryOptions: listInterviewsForStudentQueryOptionsMock,
@@ -92,6 +108,10 @@ function createWrapper() {
 }
 
 describe("useInterviewsData", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   beforeEach(() => {
     listInterviewsForStudentQueryOptionsMock.mockClear()
     listInterviewsForCompanyQueryOptionsMock.mockClear()

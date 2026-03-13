@@ -1,4 +1,12 @@
-import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
+import {
+  afterAll,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  mock,
+  test,
+} from "bun:test"
 import {
   cleanup,
   fireEvent,
@@ -6,8 +14,8 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react"
-import type { ComponentProps, ReactNode } from "react"
-import { LoginForm } from "@/app/[locale]/(auth)/login/_components/LoginForm"
+import type { ReactNode } from "react"
+import { createMotionReactClientMock } from "@/test/mocks/motion-react-client"
 
 const mockToastError = mock(() => {})
 const mockToastSuccess = mock(() => {})
@@ -137,7 +145,7 @@ mock.module("@/lib/auth-client", () => ({
 }))
 
 mock.module("@/lib/post-login-redirect", () => ({
-  getPostLoginRedirectPath: () => "/dashboard/student",
+  getPostLoginRedirectPath: () => "/dashboard",
 }))
 
 const mockGetMe = mock(() =>
@@ -159,7 +167,24 @@ mock.module("@/server/orpc/client", () => ({
       getMe: mockGetMe,
     },
   },
-  orpc: {},
+  orpc: {
+    placements: {
+      getPendingById: {
+        queryOptions: ({ input }: { input: { applicationId: string } }) => ({
+          queryKey: ["placements", "getPendingById", input],
+          queryFn: async () => ({ application: { id: input.applicationId } }),
+        }),
+      },
+    },
+    deptHead: {
+      getPendingById: {
+        queryOptions: ({ input }: { input: { applicationId: string } }) => ({
+          queryKey: ["deptHead", "getPendingById", input],
+          queryFn: async () => ({ application: { id: input.applicationId } }),
+        }),
+      },
+    },
+  },
 }))
 
 const mockRouterPush = mock(() => {})
@@ -177,41 +202,15 @@ mock.module("@/i18n/routing", () => ({
   }),
 }))
 
-const motionDiv = ({
-  children,
-  ...props
-}: ComponentProps<"div"> & {
-  children?: ReactNode
-}) => <div {...props}>{children}</div>
-
-const motionP = ({
-  children,
-  ...props
-}: ComponentProps<"p"> & {
-  children?: ReactNode
-}) => <p {...props}>{children}</p>
-
-const motionSpan = ({
-  children,
-  ...props
-}: ComponentProps<"span"> & {
-  children?: ReactNode
-}) => <span {...props}>{children}</span>
-
-mock.module("motion/react-client", () => ({
-  div: motionDiv,
-  p: motionP,
-  span: motionSpan,
-  motion: {
-    div: motionDiv,
-    p: motionP,
-    span: motionSpan,
-  },
-}))
+mock.module("motion/react-client", createMotionReactClientMock)
 
 mock.module("@/components/TurnstileWidget", () => ({
   TurnstileWidget: () => <div data-testid="turnstile-widget" />,
 }))
+
+const { LoginForm } = await import(
+  "@/app/[locale]/(auth)/login/_components/LoginForm"
+)
 
 async function openTwoFactorStep() {
   const emailInput = screen.getByLabelText("Email")
@@ -231,6 +230,10 @@ async function openTwoFactorStep() {
 }
 
 describe("LoginForm 2FA flows", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   beforeEach(() => {
     mockSignIn.mockClear()
     mockSendVerificationEmail.mockClear()
@@ -283,7 +286,7 @@ describe("LoginForm 2FA flows", () => {
     })
 
     await waitFor(() => {
-      expect(mockRouterPush).toHaveBeenCalledWith("/dashboard/student")
+      expect(mockRouterPush).toHaveBeenCalledWith("/dashboard")
     })
   })
 

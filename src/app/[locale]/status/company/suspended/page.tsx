@@ -18,7 +18,7 @@ export default async function CompanySuspendedPage() {
   }
 
   if (companyStatus.status === "approved") {
-    return localeRedirect("/dashboard/company")
+    return localeRedirect("/dashboard")
   }
 
   if (companyStatus.status === "rejected") {

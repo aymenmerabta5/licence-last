@@ -58,8 +58,9 @@ export function UsersTable({
 
   return (
     <div className="space-y-4">
-      <div className="bg-background border border-border/80 shadow-[4px_4px_0_0_oklch(var(--border))]">
-        <Table>
+      <div className="border border-border/80 bg-background shadow-[4px_4px_0_0_oklch(var(--border))]">
+        <div className="overflow-x-auto">
+          <Table className="min-w-[700px]">
           <TableHeader>
             <TableRow className="hover:bg-transparent border-b-border/80">
               <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
@@ -104,7 +105,8 @@ export function UsersTable({
               ))
             )}
           </TableBody>
-        </Table>
+          </Table>
+        </div>
       </div>
 
       {totalPages > 1 && (

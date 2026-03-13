@@ -1,5 +1,3 @@
-export type AdminValidationSummary = {
-  summaryBullets: string[]
-  checklist: string[]
-  potentialInconsistencies: string[]
-}
+import type { ValidationSummary as AdminValidationSummary } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations"
+
+export type { AdminValidationSummary }

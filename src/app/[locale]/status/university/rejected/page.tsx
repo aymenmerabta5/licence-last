@@ -18,7 +18,7 @@ export default async function UniversityRejectedPage() {
   }
 
   if (university.status === "approved") {
-    return localeRedirect("/dashboard/admin")
+    return localeRedirect("/dashboard")
   }
 
   if (university.status !== "rejected") {

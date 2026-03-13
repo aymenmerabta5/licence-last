@@ -16,7 +16,7 @@ export default async function UniversityPendingPage() {
   }
 
   if (university.status === "approved") {
-    return localeRedirect("/dashboard/admin")
+    return localeRedirect("/dashboard")
   }
 
   if (university.status === "rejected") {

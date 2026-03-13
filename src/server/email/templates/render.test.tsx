@@ -70,12 +70,12 @@ describe("src/server/email/templates", () => {
     const html = await render(
       <UniversityApprovedEmail
         universityName="Stag University"
-        dashboardUrl="https://stag.test/dashboard/admin"
+        dashboardUrl="https://stag.test/dashboard"
       />,
     )
 
     expect(html).toContain("Your university has been approved")
     expect(html).toContain("Stag University")
-    expect(html).toContain("https://stag.test/dashboard/admin")
+    expect(html).toContain("https://stag.test/dashboard")
   })
 })

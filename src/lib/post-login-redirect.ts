@@ -10,14 +10,14 @@ export function getPostLoginRedirectPath(me: MeResult): string {
   switch (user.role) {
     case "student":
       if (!user.onboardingCompleted) return "/onboarding/student"
-      return "/dashboard/student"
+      return "/dashboard"
 
     case "company_admin":
       if (!user.onboardingCompleted) {
         return "/onboarding/company"
       }
       if (company?.status === "approved") {
-        return "/dashboard/company"
+        return "/dashboard"
       }
       if (company?.status === "rejected") {
         return "/status/company/rejected"
@@ -32,7 +32,7 @@ export function getPostLoginRedirectPath(me: MeResult): string {
         return "/onboarding/university"
       }
       if (university?.status === "approved") {
-        return "/dashboard/admin"
+        return "/dashboard"
       }
       if (university?.status === "rejected") {
         return "/status/university/rejected"
@@ -43,7 +43,7 @@ export function getPostLoginRedirectPath(me: MeResult): string {
       return "/dashboard"
 
     case "super_admin":
-      return "/dashboard/admin"
+      return "/dashboard"
 
     default:
       return "/"

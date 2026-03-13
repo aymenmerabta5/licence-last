@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 
 const selectResultsQueue: unknown[][] = []
 const insertResultsQueue: unknown[][] = []
@@ -61,6 +61,10 @@ async function importGenerateCertificate() {
 }
 
 describe("src/server/services/documents/generate-certificate", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   beforeEach(() => {
     applyGenerateCertificateMocks()
 

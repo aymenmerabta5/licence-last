@@ -2,7 +2,7 @@ import { Suspense } from "react"
 
 import { UserManagementView } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView"
 import { Skeleton } from "@/components/ui/skeleton"
-import { requireRole } from "@/lib/auth-guards"
+import { requireApprovedUniversityAdmin } from "@/lib/dashboard-access"
 
 function UserManagementFallback() {
   return (
@@ -26,7 +26,7 @@ function UserManagementFallback() {
 }
 
 export default async function UserManagementPage() {
-  await requireRole(["university_admin", "super_admin"])
+  await requireApprovedUniversityAdmin()
 
   return (
     <Suspense fallback={<UserManagementFallback />}>

@@ -83,7 +83,7 @@ export function AvatarSection({
           <p className="text-sm text-muted-foreground/80 mt-1 max-w-xs leading-relaxed font-medium">
             We recommend a professional headshot. <br />
             <span className="text-[10px] font-mono tracking-widest uppercase opacity-60 mt-2 block">
-              JPG/PNG/WEBP &middot; 2MB MAX
+              JPG/PNG/WEBP &middot; 5MB MAX
             </span>
           </p>
         </div>

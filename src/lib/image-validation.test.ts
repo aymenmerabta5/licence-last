@@ -23,8 +23,8 @@ describe("src/lib/image-validation", () => {
   })
 
   describe("MAX_IMAGE_SIZE", () => {
-    test("is 2MB", () => {
-      expect(MAX_IMAGE_SIZE).toBe(2 * 1024 * 1024)
+    test("is 5MB", () => {
+      expect(MAX_IMAGE_SIZE).toBe(5 * 1024 * 1024)
     })
   })
 

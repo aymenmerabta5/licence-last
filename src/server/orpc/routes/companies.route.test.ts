@@ -272,6 +272,13 @@ function applyCompaniesRouteMocks() {
 }
 
 describe("src/server/orpc/routes/companies", () => {
+  let importCounter = 0
+
+  async function importCompaniesRoute() {
+    importCounter += 1
+    return import(`@/server/orpc/routes/companies?test=${importCounter}`)
+  }
+
   beforeEach(() => {
     applyCompaniesRouteMocks()
     listCompaniesMock.mockClear()
@@ -299,9 +306,7 @@ describe("src/server/orpc/routes/companies", () => {
   })
 
   test("createCompanyProcedure revalidates onboarding and directory cache tags", async () => {
-    const { createCompanyProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { createCompanyProcedure } = await importCompaniesRoute()
     const file = createPdfFile("trade-license.pdf")
 
     const result = await callProcedure(createCompanyProcedure, {
@@ -343,9 +348,7 @@ describe("src/server/orpc/routes/companies", () => {
       ),
     )
 
-    const { createCompanyProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { createCompanyProcedure } = await importCompaniesRoute()
 
     await expect(
       callProcedure(createCompanyProcedure, {
@@ -371,9 +374,7 @@ describe("src/server/orpc/routes/companies", () => {
       new Error("Verification document must be a PDF, JPEG, or PNG file"),
     )
 
-    const { createCompanyProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { createCompanyProcedure } = await importCompaniesRoute()
 
     await expect(
       callProcedure(createCompanyProcedure, {
@@ -394,9 +395,7 @@ describe("src/server/orpc/routes/companies", () => {
   })
 
   test("updateCompanyProcedure revalidates profile tags on success", async () => {
-    const { updateCompanyProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { updateCompanyProcedure } = await importCompaniesRoute()
 
     const result = await callProcedure(updateCompanyProcedure, {
       input: { description: "updated" },
@@ -417,9 +416,7 @@ describe("src/server/orpc/routes/companies", () => {
     updateCompanyMock.mockRejectedValueOnce(
       new ServiceError("COMPANY_NOT_FOUND", "Company not found"),
     )
-    const { updateCompanyProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { updateCompanyProcedure } = await importCompaniesRoute()
 
     await expect(
       callProcedure(updateCompanyProcedure, {
@@ -441,9 +438,7 @@ describe("src/server/orpc/routes/companies", () => {
       hasMore: false,
     })
 
-    const { listCompaniesProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { listCompaniesProcedure } = await importCompaniesRoute()
 
     const result = await callProcedure(listCompaniesProcedure, {
       input: { status: "pending", search: "acme", limit: 20, offset: 0 },
@@ -463,9 +458,7 @@ describe("src/server/orpc/routes/companies", () => {
   })
 
   test("listCompaniesProcedure strips search for non-super admin roles", async () => {
-    const { listCompaniesProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { listCompaniesProcedure } = await importCompaniesRoute()
 
     await callProcedure(listCompaniesProcedure, {
       input: { status: "pending", search: "acme", limit: 20, offset: 0 },
@@ -481,9 +474,7 @@ describe("src/server/orpc/routes/companies", () => {
   })
 
   test("listCompaniesProcedure keeps non-admin status forcing behavior", async () => {
-    const { listCompaniesProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { listCompaniesProcedure } = await importCompaniesRoute()
 
     await callProcedure(listCompaniesProcedure, {
       input: { status: "pending", search: "acme", limit: 20, offset: 0 },
@@ -505,9 +496,7 @@ describe("src/server/orpc/routes/companies", () => {
       nextCursor: undefined,
     })
 
-    const { listPublicDirectoryProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { listPublicDirectoryProcedure } = await importCompaniesRoute()
 
     const result = await callProcedure(listPublicDirectoryProcedure, {
       input: { keyword: "acme", limit: 12 },
@@ -536,9 +525,7 @@ describe("src/server/orpc/routes/companies", () => {
       },
     ])
 
-    const { listCompanyMembersProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { listCompanyMembersProcedure } = await importCompaniesRoute()
 
     const result = await callProcedure(listCompanyMembersProcedure, {
       context: {
@@ -558,9 +545,7 @@ describe("src/server/orpc/routes/companies", () => {
       ),
     )
 
-    const { inviteCompanyMemberProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { inviteCompanyMemberProcedure } = await importCompaniesRoute()
 
     await expect(
       callProcedure(inviteCompanyMemberProcedure, {
@@ -577,9 +562,7 @@ describe("src/server/orpc/routes/companies", () => {
   })
 
   test("removeCompanyMemberProcedure revalidates removed user cache tag", async () => {
-    const { removeCompanyMemberProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { removeCompanyMemberProcedure } = await importCompaniesRoute()
 
     const result = await callProcedure(removeCompanyMemberProcedure, {
       input: { userId: "member-1" },
@@ -602,9 +585,7 @@ describe("src/server/orpc/routes/companies", () => {
   })
 
   test("deleteCompanyProcedure hard-deletes company and revalidates caches", async () => {
-    const { deleteCompanyProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { deleteCompanyProcedure } = await importCompaniesRoute()
 
     const result = await callProcedure(deleteCompanyProcedure, {
       input: { companyId: "company-1" },
@@ -653,9 +634,7 @@ describe("src/server/orpc/routes/companies", () => {
       affectedUserIds: ["owner-1"],
     })
 
-    const { deleteOwnCompanyProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { deleteOwnCompanyProcedure } = await importCompaniesRoute()
 
     const result = await callProcedure(deleteOwnCompanyProcedure, {
       input: {},
@@ -679,9 +658,7 @@ describe("src/server/orpc/routes/companies", () => {
       new ServiceError("COMPANY_NOT_FOUND", "Company not found"),
     )
 
-    const { deleteCompanyProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { deleteCompanyProcedure } = await importCompaniesRoute()
 
     await expect(
       callProcedure(deleteCompanyProcedure, {
@@ -695,9 +672,8 @@ describe("src/server/orpc/routes/companies", () => {
   })
 
   test("downloadCompanyVerificationDocumentProcedure returns encoded document for super admin review", async () => {
-    const { downloadCompanyVerificationDocumentProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { downloadCompanyVerificationDocumentProcedure } =
+      await importCompaniesRoute()
 
     const result = await callProcedure(
       downloadCompanyVerificationDocumentProcedure,
@@ -725,9 +701,8 @@ describe("src/server/orpc/routes/companies", () => {
       ),
     )
 
-    const { downloadCompanyVerificationDocumentProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { downloadCompanyVerificationDocumentProcedure } =
+      await importCompaniesRoute()
 
     await expect(
       callProcedure(downloadCompanyVerificationDocumentProcedure, {
@@ -743,9 +718,7 @@ describe("src/server/orpc/routes/companies", () => {
   test("submitCompanyReportProcedure blocks company admin self-reports", async () => {
     getCompanyMembershipMock.mockResolvedValueOnce({ companyId: "company-1" })
 
-    const { submitCompanyReportProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { submitCompanyReportProcedure } = await importCompaniesRoute()
 
     await expect(
       callProcedure(submitCompanyReportProcedure, {
@@ -768,9 +741,7 @@ describe("src/server/orpc/routes/companies", () => {
   test("submitCompanyReportProcedure delegates for valid reporters", async () => {
     submitCompanyReportMock.mockResolvedValueOnce({ reportId: "report-1" })
 
-    const { submitCompanyReportProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { submitCompanyReportProcedure } = await importCompaniesRoute()
 
     const result = await callProcedure(submitCompanyReportProcedure, {
       input: {
@@ -806,9 +777,8 @@ describe("src/server/orpc/routes/companies", () => {
       companyId: "company-9",
     })
 
-    const { submitCompanyQualityFeedbackProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { submitCompanyQualityFeedbackProcedure } =
+      await importCompaniesRoute()
 
     const result = await callProcedure(submitCompanyQualityFeedbackProcedure, {
       input: {
@@ -845,9 +815,7 @@ describe("src/server/orpc/routes/companies", () => {
       ),
     )
 
-    const { submitCompanyReportProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { submitCompanyReportProcedure } = await importCompaniesRoute()
 
     await expect(
       callProcedure(submitCompanyReportProcedure, {
@@ -867,9 +835,7 @@ describe("src/server/orpc/routes/companies", () => {
     })
   })
   test("updateCompanyProcedure rejects recruiter governance writes", async () => {
-    const { updateCompanyProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { updateCompanyProcedure } = await importCompaniesRoute()
 
     await expect(
       callProcedure(updateCompanyProcedure, {
@@ -886,9 +852,7 @@ describe("src/server/orpc/routes/companies", () => {
   })
 
   test("listCompanyMembersProcedure rejects recruiter governance reads", async () => {
-    const { listCompanyMembersProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { listCompanyMembersProcedure } = await importCompaniesRoute()
 
     await expect(
       callProcedure(listCompanyMembersProcedure, {
@@ -903,9 +867,7 @@ describe("src/server/orpc/routes/companies", () => {
   })
 
   test("uploadCompanyLogoProcedure rejects recruiter governance writes", async () => {
-    const { uploadCompanyLogoProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { uploadCompanyLogoProcedure } = await importCompaniesRoute()
 
     await expect(
       callProcedure(uploadCompanyLogoProcedure, {
@@ -922,9 +884,7 @@ describe("src/server/orpc/routes/companies", () => {
   })
 
   test("uploadCompanyLogoProcedure allows owner governance writes", async () => {
-    const { uploadCompanyLogoProcedure } = await import(
-      "@/server/orpc/routes/companies"
-    )
+    const { uploadCompanyLogoProcedure } = await importCompaniesRoute()
     const file = createPdfFile("logo.png")
 
     const result = await callProcedure(uploadCompanyLogoProcedure, {

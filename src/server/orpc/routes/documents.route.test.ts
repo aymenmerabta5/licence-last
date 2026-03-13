@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 
 import { DocumentServiceError } from "@/server/services/documents/errors"
 
@@ -62,6 +62,9 @@ const generateAgreementMock = mock(async () => ({
   documentId: "doc-1",
   buffer: Buffer.from("agreement-pdf"),
 }))
+const renderAgreementPdfBufferMock = mock(async () =>
+  Buffer.from("agreement-pdf"),
+)
 const downloadDocumentMock = mock(async () => ({
   documentType: "agreement",
   fileName: "agreement.pdf",
@@ -92,6 +95,7 @@ mock.module("@/server/orpc/rate-limited-procedures", () => ({
 
 mock.module("@/server/services/documents/generate-agreement", () => ({
   generateAgreement: generateAgreementMock,
+  renderAgreementPdfBuffer: renderAgreementPdfBufferMock,
 }))
 mock.module("@/server/services/documents/list-by-student", () => ({
   listDocumentsByStudent: mock(async () => []),
@@ -116,8 +120,13 @@ mock.module("@/server/services/documents/verify", () => ({
 }))
 
 describe("src/server/orpc/routes/documents", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   beforeEach(() => {
     generateAgreementMock.mockClear()
+    renderAgreementPdfBufferMock.mockClear()
     downloadDocumentMock.mockClear()
     generateCompanyCertificateMock.mockClear()
     downloadDocumentByCompanyMock.mockClear()

@@ -13,7 +13,7 @@ export default async function UniversityOnboardingPage() {
     const university = await getUniversityStatusByUserId(session.user.id)
 
     if (university?.status === "approved") {
-      return localeRedirect("/dashboard/admin")
+      return localeRedirect("/dashboard")
     }
 
     if (university?.status === "rejected") {

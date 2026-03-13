@@ -66,6 +66,7 @@ export function ProfileStrengthColumn({
       <div className="flex flex-col sm:flex-row lg:flex-col gap-3 mt-8 lg:mt-0">
         {profileCompleteness < 100 && (
           <Button
+            nativeButton={false}
             render={
               <Link href={`/profile/${profileUserId}` as Route}>
                 {t("completeProfile")}
@@ -75,6 +76,7 @@ export function ProfileStrengthColumn({
           ></Button>
         )}
         <Button
+          nativeButton={false}
           render={
             <Link href="/dashboard/explore">{t("exploreInternships")}</Link>
           }

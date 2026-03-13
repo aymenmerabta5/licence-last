@@ -4,6 +4,7 @@ import { Ban, Calendar, Mail, Shield } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { Badge } from "@/components/ui/badge"
+import { UserRoleBadge } from "@/components/UserRoleBadge"
 
 interface UserInfoCardProps {
   user: {
@@ -16,16 +17,6 @@ interface UserInfoCardProps {
     createdAt: string | Date
     image?: string | null
   }
-}
-
-const roleBadgeVariant: Record<
-  string,
-  "default" | "secondary" | "destructive" | "outline"
-> = {
-  super_admin: "destructive",
-  admin: "default",
-  company_admin: "secondary",
-  student: "outline",
 }
 
 export function UserInfoCard({ user }: UserInfoCardProps) {
@@ -42,12 +33,10 @@ export function UserInfoCard({ user }: UserInfoCardProps) {
             {user.name || t("unnamed")}
           </h2>
           <div className="flex items-center gap-2 mt-1">
-            <Badge
-              variant={roleBadgeVariant[user.role ?? ""] ?? "outline"}
-              className="text-[10px]"
-            >
-              {t(`roles.${user.role ?? "student"}`)}
-            </Badge>
+            <UserRoleBadge
+              role={user.role}
+              label={t(`roles.${user.role ?? "student"}`)}
+            />
             {user.banned ? (
               <Badge variant="destructive" className="text-[10px]">
                 {t("status.banned")}

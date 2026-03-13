@@ -1,4 +1,12 @@
-import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
+import {
+  afterAll,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  mock,
+  test,
+} from "bun:test"
 import {
   cleanup,
   fireEvent,
@@ -6,7 +14,7 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react"
-import { StudentSignupForm } from "@/app/[locale]/(auth)/signup/_components/SignupForm/StudentSignupForm"
+import { createMotionReactClientMock } from "@/test/mocks/motion-react-client"
 
 // Mock next-intl
 mock.module("next-intl", () => ({
@@ -112,19 +120,17 @@ mock.module("@/i18n/routing", () => ({
   ),
 }))
 
-// Mock motion
-mock.module("motion/react-client", () => ({
-  motion: {
-    div: ({ children, ...props }: { children: React.ReactNode }) => (
-      <div {...props}>{children}</div>
-    ),
-    p: ({ children, ...props }: { children: React.ReactNode }) => (
-      <p {...props}>{children}</p>
-    ),
-  },
-}))
+mock.module("motion/react-client", createMotionReactClientMock)
+
+const { StudentSignupForm } = await import(
+  "@/app/[locale]/(auth)/signup/_components/SignupForm/StudentSignupForm"
+)
 
 describe("StudentSignupForm", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   beforeEach(() => {
     mockSignUp.mockClear()
   })

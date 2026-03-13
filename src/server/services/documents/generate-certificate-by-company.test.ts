@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 
 const selectResultsQueue: unknown[][] = []
 
@@ -57,6 +57,10 @@ async function loadGenerateCertificateByCompanyModule() {
 }
 
 describe("src/server/services/documents/generate-certificate-by-company", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   beforeEach(() => {
     applyGenerateCertificateByCompanyMocks()
     selectResultsQueue.length = 0

@@ -26,11 +26,11 @@ export function RejectDialog({
   const t = useTranslations("dashboard.admin.validations.detail")
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-background border border-border p-6 max-w-md w-full space-y-4"
+        className="w-full max-w-md space-y-4 border border-border bg-background p-6"
       >
         <h3 className="font-serif text-lg text-heading">{t("rejectTitle")}</h3>
         <p className="text-sm text-muted-foreground">
@@ -38,11 +38,11 @@ export function RejectDialog({
         </p>
         <textarea
           value={rejectReason}
-          onChange={(e) => onRejectReasonChange(e.target.value)}
+          onChange={(event) => onRejectReasonChange(event.target.value)}
           placeholder={t("rejectReasonPlaceholder")}
-          className="w-full min-h-[80px] px-3 py-2 text-sm border border-border bg-background resize-none focus:outline-none focus:ring-1 focus:ring-primary"
+          className="min-h-[80px] w-full resize-none border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
         />
-        <div className="flex gap-2 justify-end">
+        <div className="flex justify-end gap-2">
           <Button variant="outline" size="sm" onClick={onClose}>
             {t("cancel")}
           </Button>
