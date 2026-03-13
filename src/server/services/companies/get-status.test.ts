@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockLimitResult: any[] = []
@@ -16,7 +16,23 @@ mock.module("@/server/db", () => ({
 }))
 
 describe("src/server/services/companies/get-status", () => {
+  let importCounter = 0
+
+  async function importGetCompanyStatus() {
+    importCounter += 1
+    return import(`@/server/services/companies/get-status?test=${importCounter}`)
+  }
+
+  afterAll(() => {
+    mock.restore()
+  })
+
   beforeEach(() => {
+    mock.module("@/server/db", () => ({
+      db: {
+        select: mockSelect,
+      },
+    }))
     mockLimitResult = []
     mockSelect.mockClear()
     mockFrom.mockClear()
@@ -35,9 +51,7 @@ describe("src/server/services/companies/get-status", () => {
       { id: "company-1", status: "approved", rejectionReason: null },
     ]
 
-    const { getCompanyStatusByUserId } = await import(
-      "@/server/services/companies/get-status"
-    )
+    const { getCompanyStatusByUserId } = await importGetCompanyStatus()
     const result = await getCompanyStatusByUserId("user-1")
 
     expect(result).toEqual({
@@ -50,9 +64,7 @@ describe("src/server/services/companies/get-status", () => {
   test("returns null when user has no company membership", async () => {
     mockLimitResult = []
 
-    const { getCompanyStatusByUserId } = await import(
-      "@/server/services/companies/get-status"
-    )
+    const { getCompanyStatusByUserId } = await importGetCompanyStatus()
     const result = await getCompanyStatusByUserId("user-2")
 
     expect(result).toBeNull()
@@ -64,9 +76,7 @@ describe("src/server/services/companies/get-status", () => {
       { id: "company-2", status: "approved", rejectionReason: null },
     ]
 
-    const { getCompanyStatusByUserId } = await import(
-      "@/server/services/companies/get-status"
-    )
+    const { getCompanyStatusByUserId } = await importGetCompanyStatus()
 
     await expect(getCompanyStatusByUserId("user-3")).rejects.toMatchObject({
       code: "COMPANY_MEMBERSHIP_CONFLICT",

@@ -1,5 +1,8 @@
-import { localeRedirect } from "@/lib/navigation"
+import { ApplicationsView } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsView"
+import { requireOnboardedStudent } from "@/lib/dashboard-access"
 
 export default async function ApplicationsPage() {
-  return localeRedirect("/dashboard/student/applications")
+  await requireOnboardedStudent()
+
+  return <ApplicationsView />
 }

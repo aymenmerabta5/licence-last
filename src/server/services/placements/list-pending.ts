@@ -77,7 +77,7 @@ interface ListPendingParams {
   limit?: number
 }
 
-interface ListPendingViewer {
+export interface ListPendingViewer {
   role: "university_admin" | "dept_head" | "super_admin"
   universityId: string | null
   /** Required when role is "dept_head" */

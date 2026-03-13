@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 
 const selectResultsQueue: unknown[][] = []
 
@@ -34,6 +34,7 @@ function applyDownloadDocumentMocks() {
 
   mock.module("@/server/services/documents/persist", () => ({
     fetchDocumentBuffer: fetchDocumentBufferMock,
+    persistDocumentBuffer: mock(async () => null),
   }))
 }
 
@@ -45,6 +46,10 @@ async function loadDownloadDocumentModule() {
 }
 
 describe("src/server/services/documents/download", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   beforeEach(() => {
     applyDownloadDocumentMocks()
     selectResultsQueue.length = 0

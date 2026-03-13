@@ -1,9 +1,3 @@
-export interface ValidationSummary {
-  summaryBullets: string[]
-  checklist: string[]
-  potentialInconsistencies: string[]
-}
-
 export function toDateInputValue(
   value: Date | string | null | undefined,
 ): string {

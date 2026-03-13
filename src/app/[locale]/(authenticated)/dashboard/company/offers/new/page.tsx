@@ -1,8 +1,8 @@
 import { OfferForm } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm"
-import { requireRole } from "@/lib/auth-guards"
+import { requireApprovedCompanyAdmin } from "@/lib/dashboard-access"
 
 export default async function CreateOfferPage() {
-  await requireRole(["company_admin"])
+  await requireApprovedCompanyAdmin()
 
   return (
     <div className="max-w-3xl mx-auto">

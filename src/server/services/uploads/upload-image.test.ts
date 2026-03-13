@@ -50,12 +50,12 @@ describe("src/server/services/uploads/upload-image", () => {
     await expect(uploadImageToS3({ file })).rejects.toThrow("Invalid file type")
   })
 
-  test("should reject files exceeding 2MB", async () => {
+  test("should reject files exceeding 5MB", async () => {
     const { uploadImageToS3 } = await importUploadImageToS3()
     const file = createMockFile(
       "image/jpeg",
       [0xff, 0xd8, 0xff],
-      3 * 1024 * 1024, // 3MB
+      6 * 1024 * 1024, // 6MB
     )
 
     await expect(uploadImageToS3({ file })).rejects.toThrow("File too large")

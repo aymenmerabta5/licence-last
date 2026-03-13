@@ -6,11 +6,13 @@ import { orpc } from "@/server/orpc/client"
 
 export function useDeptHeadPlacementData(applicationId: string) {
   const { data, isLoading } = useQuery({
-    ...orpc.deptHead.listPending.queryOptions({}),
+    ...orpc.deptHead.getPendingById.queryOptions({
+      input: { applicationId },
+    }),
     enabled: !!applicationId,
   })
 
-  const application = data?.applications.find((app) => app.id === applicationId)
+  const application = data?.application ?? null
 
   return { application, isLoading: isLoading || !applicationId }
 }

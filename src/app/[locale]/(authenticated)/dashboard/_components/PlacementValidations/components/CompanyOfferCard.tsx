@@ -3,33 +3,14 @@
 import { Building2, Clock, Mail, MapPin, Phone } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useLocale, useTranslations } from "next-intl"
-import { InfoRow } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/InfoRow"
 
-import { formatDate } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/utils"
+import { InfoRow } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/InfoRow"
+import type { ValidationDetailData } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/types"
+import { formatDate } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/utils"
 import { ease, reveal } from "@/lib/animations"
 
 interface CompanyOfferCardProps {
-  application: {
-    createdAt: Date | string
-    companyActionAt: Date | string | null
-    coverLetter: string | null
-    company: {
-      name: string
-      address?: string | null
-      phone?: string | null
-      representativeName?: string | null
-      contactEmail?: string | null
-    }
-    offer: {
-      title: string
-      internshipType: string
-      workMode?: string | null
-      durationWeeks?: number | null
-      applicationDeadlineAt?: Date | string | null
-      expectedStartDate?: Date | string | null
-      expectedEndDate?: Date | string | null
-    }
-  }
+  application: ValidationDetailData
 }
 
 export function CompanyOfferCard({ application }: CompanyOfferCardProps) {
@@ -40,9 +21,9 @@ export function CompanyOfferCard({ application }: CompanyOfferCardProps) {
     <motion.div
       {...reveal}
       transition={{ duration: 0.5, ease, delay: 0.15 }}
-      className="border border-border p-6 space-y-4"
+      className="space-y-4 border border-border p-6"
     >
-      <h2 className="font-serif text-lg text-heading flex items-center gap-2">
+      <h2 className="flex items-center gap-2 font-serif text-lg text-heading">
         <Building2 className="h-4 w-4" />
         {t("companyInfo")}
       </h2>
@@ -77,9 +58,8 @@ export function CompanyOfferCard({ application }: CompanyOfferCardProps) {
         )}
       </div>
 
-      {/* Offer Details */}
-      <div className="pt-4 border-t border-border space-y-3">
-        <h3 className="font-medium text-xs uppercase tracking-wider text-muted-foreground">
+      <div className="space-y-3 border-t border-border pt-4">
+        <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {t("offerDetails")}
         </h3>
         <div className="space-y-2 text-sm">
@@ -134,9 +114,8 @@ export function CompanyOfferCard({ application }: CompanyOfferCardProps) {
         </div>
       </div>
 
-      {/* Timeline */}
-      <div className="pt-4 border-t border-border space-y-3">
-        <h3 className="font-medium text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+      <div className="space-y-3 border-t border-border pt-4">
+        <h3 className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
           <Clock className="h-3.5 w-3.5" />
           {t("timeline")}
         </h3>
@@ -152,13 +131,12 @@ export function CompanyOfferCard({ application }: CompanyOfferCardProps) {
         </div>
       </div>
 
-      {/* Cover Letter */}
       {application.coverLetter && (
-        <div className="pt-4 border-t border-border">
-          <h3 className="font-medium text-xs uppercase tracking-wider text-muted-foreground mb-2">
+        <div className="border-t border-border pt-4">
+          <h3 className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
             {t("coverLetter")}
           </h3>
-          <p className="text-xs text-muted-foreground line-clamp-4">
+          <p className="line-clamp-4 text-xs text-muted-foreground">
             {application.coverLetter}
           </p>
         </div>

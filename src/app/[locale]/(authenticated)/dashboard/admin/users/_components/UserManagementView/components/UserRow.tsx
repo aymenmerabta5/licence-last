@@ -11,6 +11,7 @@ import {
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
+import { UserRoleBadge } from "@/components/UserRoleBadge"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -33,16 +34,6 @@ interface UserRowProps {
   canViewDetails: boolean
   canSetRole: boolean
   canSetPassword: boolean
-}
-
-const roleBadgeVariant: Record<
-  string,
-  "default" | "secondary" | "destructive" | "outline"
-> = {
-  super_admin: "destructive",
-  admin: "default",
-  company_admin: "secondary",
-  student: "outline",
 }
 
 export function UserRow({
@@ -77,12 +68,10 @@ export function UserRow({
         </div>
       </TableCell>
       <TableCell className="py-4">
-        <Badge
-          variant={roleBadgeVariant[user.role ?? ""] ?? "outline"}
-          className="text-[9px] uppercase tracking-wider font-semibold rounded-sm px-2 py-0.5"
-        >
-          {t(`roles.${user.role ?? "student"}`)}
-        </Badge>
+        <UserRoleBadge
+          role={user.role}
+          label={t(`roles.${user.role ?? "student"}`)}
+        />
       </TableCell>
       <TableCell className="py-4">
         {user.banned ? (

@@ -2,7 +2,7 @@ import { Suspense } from "react"
 
 import { CandidatesView } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView"
 import { Skeleton } from "@/components/ui/skeleton"
-import { requireRole } from "@/lib/auth-guards"
+import { requireApprovedCompanyAdmin } from "@/lib/dashboard-access"
 
 interface CandidatesPageProps {
   params: Promise<{ offerId: string }>
@@ -26,7 +26,7 @@ function CandidatesPageFallback() {
 }
 
 export default async function CandidatesPage({ params }: CandidatesPageProps) {
-  await requireRole(["company_admin"])
+  await requireApprovedCompanyAdmin()
   const { offerId } = await params
 
   return (

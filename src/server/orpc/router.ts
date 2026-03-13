@@ -124,9 +124,11 @@ import {
 } from "@/server/orpc/routes/offers"
 import {
   deptHeadListPendingProcedure,
+  deptHeadGetPendingByIdProcedure,
   deptHeadRejectProcedure,
   deptHeadValidateProcedure,
   generateValidationSummaryProcedure,
+  getPendingByIdProcedure,
   listPendingProcedure,
   rejectProcedure,
   validateProcedure,
@@ -256,12 +258,14 @@ export const appRouter = {
   },
   placements: {
     listPending: listPendingProcedure,
+    getPendingById: getPendingByIdProcedure,
     validate: validateProcedure,
     reject: rejectProcedure,
     generateValidationSummary: generateValidationSummaryProcedure,
   },
   deptHead: {
     listPending: deptHeadListPendingProcedure,
+    getPendingById: deptHeadGetPendingByIdProcedure,
     validate: deptHeadValidateProcedure,
     reject: deptHeadRejectProcedure,
   },

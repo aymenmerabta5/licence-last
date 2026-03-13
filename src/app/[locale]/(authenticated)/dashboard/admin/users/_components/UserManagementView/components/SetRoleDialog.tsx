@@ -75,6 +75,7 @@ export function SetRoleDialog({
             <Select
               value={role}
               onValueChange={(v) => v && setRole(v as typeof role)}
+              items={roles.map((r) => ({ value: r, label: t(`roles.${r}`) }))}
             >
               <SelectTrigger>
                 <SelectValue />

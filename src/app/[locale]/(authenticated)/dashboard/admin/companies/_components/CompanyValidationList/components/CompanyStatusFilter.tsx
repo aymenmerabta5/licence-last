@@ -57,6 +57,13 @@ export function CompanyStatusFilter({
               onStatusChange(value as CompanyStatus | "all")
             }
           }}
+          items={[
+            { value: "all", label: t("allStatuses") },
+            { value: "pending", label: t("status.pending") },
+            { value: "approved", label: t("status.approved") },
+            { value: "rejected", label: t("status.rejected") },
+            { value: "suspended", label: t("status.suspended") },
+          ]}
         >
           <SelectTrigger className="h-9 w-44 rounded-sm border-border bg-background text-sm font-medium transition-colors hover:bg-muted/10">
             <SelectValue placeholder={t("statusFilter")} />

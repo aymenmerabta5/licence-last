@@ -3,12 +3,13 @@
 import { Loader2, Sparkles } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import type { AdminValidationSummary } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/types"
+
+import type { ValidationSummary } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/types"
 import { Button } from "@/components/ui/button"
 import { ease, reveal } from "@/lib/animations"
 
 interface AISummaryPanelProps {
-  aiSummary: AdminValidationSummary | null
+  aiSummary: ValidationSummary | null
   isSummarizing: boolean
   summaryError: Error | null
   onGenerate: () => void
@@ -26,15 +27,15 @@ export function AISummaryPanel({
     <motion.div
       {...reveal}
       transition={{ duration: 0.5, ease, delay: 0.18 }}
-      className="lg:col-span-2 border border-border p-6 space-y-4"
+      className="space-y-4 border border-border p-6 lg:col-span-2"
     >
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
-          <h2 className="font-serif text-lg text-heading flex items-center gap-2">
+          <h2 className="flex items-center gap-2 font-serif text-lg text-heading">
             <Sparkles className="h-4 w-4" />
             {t("ai.title")}
           </h2>
-          <p className="text-sm text-muted-foreground font-light">
+          <p className="text-sm font-light text-muted-foreground">
             {t("ai.description")}
           </p>
         </div>
@@ -60,13 +61,13 @@ export function AISummaryPanel({
 
       {aiSummary ? (
         <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2 space-y-2">
+          <div className="space-y-2 lg:col-span-2">
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
               {t("ai.summary")}
             </p>
-            <ul className="list-disc ps-5 text-sm text-muted-foreground space-y-1">
-              {aiSummary.summaryBullets.map((item, idx) => (
-                <li key={idx}>{item}</li>
+            <ul className="list-disc space-y-1 ps-5 text-sm text-muted-foreground">
+              {aiSummary.summaryBullets.map((item, index) => (
+                <li key={index}>{item}</li>
               ))}
             </ul>
           </div>
@@ -80,9 +81,9 @@ export function AISummaryPanel({
                   {t("ai.noMissingItems")}
                 </p>
               ) : (
-                <ul className="list-disc ps-5 text-sm text-muted-foreground space-y-1">
-                  {aiSummary.checklist.map((item, idx) => (
-                    <li key={idx}>{item}</li>
+                <ul className="list-disc space-y-1 ps-5 text-sm text-muted-foreground">
+                  {aiSummary.checklist.map((item, index) => (
+                    <li key={index}>{item}</li>
                   ))}
                 </ul>
               )}
@@ -93,9 +94,9 @@ export function AISummaryPanel({
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
                   {t("ai.potentialInconsistencies")}
                 </p>
-                <ul className="list-disc ps-5 text-sm text-muted-foreground space-y-1">
-                  {aiSummary.potentialInconsistencies.map((item, idx) => (
-                    <li key={idx}>{item}</li>
+                <ul className="list-disc space-y-1 ps-5 text-sm text-muted-foreground">
+                  {aiSummary.potentialInconsistencies.map((item, index) => (
+                    <li key={index}>{item}</li>
                   ))}
                 </ul>
               </div>

@@ -1,39 +1,18 @@
 import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
 import { cleanup, render, screen } from "@testing-library/react"
 
-const requireRoleMock = mock(async () => ({
-  id: "user-1",
-  role: "company_admin",
-}))
-const localeRedirectMock = mock(
-  async (path: string) => `redirect:${path}` as never,
-)
-const getCompanyByUserIdMock = mock(async () => ({
-  id: "company-1",
-  status: "approved",
-}))
-const getCompanyMembershipMock = mock(async () => ({
-  companyId: "company-1",
-  role: "owner",
+const requireCompanyOwnerMock = mock(async () => ({
+  user: {
+    id: "user-1",
+    role: "company_admin",
+  },
 }))
 
 let pageImportCounter = 0
 
 function applyPageMocks() {
-  mock.module("@/lib/auth-guards", () => ({
-    requireRole: requireRoleMock,
-  }))
-
-  mock.module("@/lib/navigation", () => ({
-    localeRedirect: localeRedirectMock,
-  }))
-
-  mock.module("@/server/services/companies/get", () => ({
-    getCompanyByUserId: getCompanyByUserIdMock,
-  }))
-
-  mock.module("@/server/services/companies/membership", () => ({
-    getCompanyMembership: getCompanyMembershipMock,
+  mock.module("@/lib/dashboard-access", () => ({
+    requireCompanyOwner: requireCompanyOwnerMock,
   }))
 
   mock.module(
@@ -60,36 +39,14 @@ describe("dashboard/company/team/page", () => {
 
   beforeEach(() => {
     applyPageMocks()
-    requireRoleMock.mockClear()
-    localeRedirectMock.mockClear()
-    getCompanyByUserIdMock.mockClear()
-    getCompanyMembershipMock.mockClear()
+    requireCompanyOwnerMock.mockClear()
 
-    requireRoleMock.mockResolvedValue({
-      id: "user-1",
-      role: "company_admin",
+    requireCompanyOwnerMock.mockResolvedValue({
+      user: {
+        id: "user-1",
+        role: "company_admin",
+      },
     })
-    getCompanyByUserIdMock.mockResolvedValue({
-      id: "company-1",
-      status: "approved",
-    })
-    getCompanyMembershipMock.mockResolvedValue({
-      companyId: "company-1",
-      role: "owner",
-    })
-  })
-
-  test("redirects recruiters away from the company team page", async () => {
-    const { default: CompanyTeamPage } = await loadCompanyTeamPage()
-    getCompanyMembershipMock.mockResolvedValueOnce({
-      companyId: "company-1",
-      role: "recruiter",
-    })
-
-    const result = await CompanyTeamPage()
-
-    expect(localeRedirectMock).toHaveBeenCalledWith("/dashboard/company")
-    expect(result).toBeDefined()
   })
 
   test("renders the team view for company owners", async () => {

@@ -2,11 +2,11 @@ import { getTranslations } from "next-intl/server"
 import { Suspense } from "react"
 import type { StudentDashboardData } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 
-import { requireRole } from "@/lib/auth-guards"
+import { requireDashboardUser } from "@/lib/dashboard-access"
 import { localeRedirect } from "@/lib/navigation"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 import { listApplicationsByStudent } from "@/server/services/applications/list-by-student"
-import { searchOffers } from "@/server/services/offers/search"
+import { recommendOffersForStudent } from "@/server/services/offers/recommend"
 import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
 import { getStudentProfile } from "@/server/services/students/get-profile"
 
@@ -52,7 +52,7 @@ async function StudentDashboardContent({
       getStudentDashboardStats(user.id),
       listApplicationsByStudent(user.id, { limit: 5 }),
       getStudentProfile(user.id),
-      searchOffers({ limit: 3 }),
+      recommendOffersForStudent({ studentUserId: user.id, limit: 3 }),
     ])
 
   const profileCompleteness = calculateProfileCompleteness({
@@ -116,13 +116,7 @@ export async function DashboardContent({
   deptHeadComponent: DeptHeadDashboard,
 }: DashboardContentProps) {
   const [user, t] = await Promise.all([
-    requireRole([
-      "student",
-      "company_admin",
-      "dept_head",
-      "university_admin",
-      "super_admin",
-    ]),
+    requireDashboardUser(),
     getTranslations("dashboard"),
   ])
 

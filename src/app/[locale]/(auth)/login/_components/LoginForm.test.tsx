@@ -1,4 +1,12 @@
-import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
+import {
+  afterAll,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  mock,
+  test,
+} from "bun:test"
 import {
   cleanup,
   fireEvent,
@@ -6,7 +14,7 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react"
-import { LoginForm } from "@/app/[locale]/(auth)/login/_components/LoginForm"
+import { createMotionReactClientMock } from "@/test/mocks/motion-react-client"
 
 // Mock sonner
 const mockToastError = mock(() => {})
@@ -94,7 +102,7 @@ mock.module("@/lib/auth-client", () => ({
 
 // Mock post-login redirect
 mock.module("@/lib/post-login-redirect", () => ({
-  getPostLoginRedirectPath: () => "/dashboard/student",
+  getPostLoginRedirectPath: () => "/dashboard",
 }))
 
 // Mock oRPC client
@@ -115,7 +123,24 @@ mock.module("@/server/orpc/client", () => ({
       ),
     },
   },
-  orpc: {},
+  orpc: {
+    placements: {
+      getPendingById: {
+        queryOptions: ({ input }: { input: { applicationId: string } }) => ({
+          queryKey: ["placements", "getPendingById", input],
+          queryFn: async () => ({ application: { id: input.applicationId } }),
+        }),
+      },
+    },
+    deptHead: {
+      getPendingById: {
+        queryOptions: ({ input }: { input: { applicationId: string } }) => ({
+          queryKey: ["deptHead", "getPendingById", input],
+          queryFn: async () => ({ application: { id: input.applicationId } }),
+        }),
+      },
+    },
+  },
 }))
 
 // Mock routing
@@ -134,19 +159,17 @@ mock.module("@/i18n/routing", () => ({
   }),
 }))
 
-// Mock motion
-mock.module("motion/react-client", () => ({
-  motion: {
-    div: ({ children, ...props }: { children: React.ReactNode }) => (
-      <div {...props}>{children}</div>
-    ),
-    p: ({ children, ...props }: { children: React.ReactNode }) => (
-      <p {...props}>{children}</p>
-    ),
-  },
-}))
+mock.module("motion/react-client", createMotionReactClientMock)
+
+const { LoginForm } = await import(
+  "@/app/[locale]/(auth)/login/_components/LoginForm"
+)
 
 describe("LoginForm", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   beforeEach(() => {
     mockSignIn.mockClear()
     mockSendVerificationEmail.mockClear()

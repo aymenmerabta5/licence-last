@@ -1,9 +1,8 @@
-import { headers } from "next/headers"
 import { notFound } from "next/navigation"
+import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
 
-import { Link } from "@/i18n/routing"
-import { auth } from "@/lib/auth"
+import { CompanyOffersSection } from "@/app/[locale]/company/[slug]/_components/CompanyOffersSection"
 import { getWilayaName } from "@/lib/wilayas"
 import { orpcClient } from "@/server/orpc/client"
 import { getPublicCompanyBySlug } from "@/server/services/companies/get-public-by-slug"
@@ -12,14 +11,20 @@ import { listPublicOffersByCompany } from "@/server/services/offers/list-public-
 
 type Params = Promise<{ slug: string }>
 
+function CompanyOffersFallback() {
+  return (
+    <div aria-label="Loading company offers" className="space-y-3">
+      <div className="h-24 animate-pulse border border-border/50 bg-muted/10" />
+      <div className="h-24 animate-pulse border border-border/50 bg-muted/10" />
+    </div>
+  )
+}
+
 export default async function CompanyPublicProfilePage({
   params,
 }: {
   params: Params
 }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
   const { slug } = await params
 
   const company = await getPublicCompanyBySlug(slug)
@@ -34,8 +39,6 @@ export default async function CompanyPublicProfilePage({
     listPublicOffersByCompany(company.id),
   ])
   const companyData = companyFromRpc ?? company
-
-  const canOpenOffers = session?.user.role === "student"
   const location = getWilayaName(companyData.wilayaCode)
 
   return (
@@ -100,38 +103,15 @@ export default async function CompanyPublicProfilePage({
           <h2 className="font-serif text-2xl text-heading">
             {t("openOffers")}
           </h2>
-          {offers.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t("noOffers")}</p>
-          ) : (
-            <div className="space-y-3">
-              {offers.map((offer) => {
-                const content = (
-                  <article className="border border-border/50 p-4 hover:border-primary/30 transition-colors">
-                    <h3 className="font-serif text-lg text-heading">
-                      {offer.title}
-                    </h3>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {offer.internshipType} · {offer.maxPositions}{" "}
-                      {t("positions")}
-                    </p>
-                  </article>
-                )
-
-                if (!canOpenOffers) return <div key={offer.id}>{content}</div>
-
-                return (
-                  <Link
-                    key={offer.id}
-                    href={
-                      `/dashboard/student/offers/${offer.id}` as "/dashboard"
-                    }
-                  >
-                    {content}
-                  </Link>
-                )
-              })}
-            </div>
-          )}
+          <Suspense fallback={<CompanyOffersFallback />}>
+            <CompanyOffersSection
+              offers={offers}
+              labels={{
+                noOffers: t("noOffers"),
+                positions: t("positions"),
+              }}
+            />
+          </Suspense>
         </section>
       </div>
     </main>

@@ -89,6 +89,10 @@ export function ReportCompanyDialog({
                 }
               }}
               disabled={isSubmitting}
+              items={CATEGORY_OPTIONS.map((cat) => ({
+                value: cat,
+                label: t(`categories.${cat}`),
+              }))}
             >
               <SelectTrigger
                 id="company-report-category"
@@ -121,6 +125,10 @@ export function ReportCompanyDialog({
                 }
               }}
               disabled={isSubmitting}
+              items={SEVERITY_OPTIONS.map((sev) => ({
+                value: sev,
+                label: t(`severity.${sev}`),
+              }))}
             >
               <SelectTrigger
                 id="company-report-severity"

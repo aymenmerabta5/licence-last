@@ -119,9 +119,7 @@ export function SavedOffersList({
             </div>
 
             <Link
-              href={
-                `/dashboard/student/offers/${offer.offerId}` as "/dashboard"
-              }
+              href={`/dashboard/explore/${offer.offerId}` as "/dashboard"}
               className="inline-flex items-center text-xs font-semibold text-primary hover:underline"
             >
               View details

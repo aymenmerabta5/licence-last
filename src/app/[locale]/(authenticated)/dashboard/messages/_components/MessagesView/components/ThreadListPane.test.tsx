@@ -1,10 +1,19 @@
-import { afterEach, describe, expect, test } from "bun:test"
+import { afterAll, afterEach, describe, expect, mock, test } from "bun:test"
 import { cleanup, render, screen } from "@testing-library/react"
-
-import { ThreadListPane } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/ThreadListPane"
 import type { MessageThread } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
+import { createMotionReactClientMock } from "@/test/mocks/motion-react-client"
+
+mock.module("motion/react-client", createMotionReactClientMock)
+
+const { ThreadListPane } = await import(
+  "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/ThreadListPane"
+)
 
 describe("ThreadListPane", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   afterEach(() => {
     cleanup()
   })

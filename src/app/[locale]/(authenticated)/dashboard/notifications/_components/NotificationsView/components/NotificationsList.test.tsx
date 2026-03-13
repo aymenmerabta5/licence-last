@@ -1,8 +1,7 @@
-import { describe, expect, mock, test } from "bun:test"
+import { afterAll, describe, expect, mock, test } from "bun:test"
 import { fireEvent, render, screen } from "@testing-library/react"
-import type { ButtonHTMLAttributes, HTMLAttributes, RefObject } from "react"
-
-import { NotificationsList } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/components/NotificationsList"
+import type { RefObject } from "react"
+import { createMotionReactClientMock } from "@/test/mocks/motion-react-client"
 
 mock.module("next-intl", () => ({
   useTranslations: () => (key: string) => {
@@ -13,16 +12,17 @@ mock.module("next-intl", () => ({
   },
 }))
 
-mock.module("motion/react-client", () => ({
-  button: ({ children, ...props }: ButtonHTMLAttributes<HTMLButtonElement>) => (
-    <button {...props}>{children}</button>
-  ),
-  div: ({ children, ...props }: HTMLAttributes<HTMLDivElement>) => (
-    <div {...props}>{children}</div>
-  ),
-}))
+mock.module("motion/react-client", createMotionReactClientMock)
+
+const { NotificationsList } = await import(
+  "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/components/NotificationsList"
+)
 
 describe("src/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/components/NotificationsList", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   const sentinelRef = { current: null } as RefObject<HTMLDivElement | null>
 
   test("renders a formatted notification message instead of raw payload JSON", () => {

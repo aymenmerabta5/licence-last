@@ -3,12 +3,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
+import type { ValidationSummary } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations"
 import { toast } from "sonner"
 import {
   isAfterDate,
   isBeforeDate,
   toDateInputValue,
-  type ValidationSummary,
 } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/[applicationId]/_components/DeptHeadPlacementDetail/hooks/placementActionUtils"
 import { useRouter } from "@/i18n/routing"
 import { orpc, orpcClient } from "@/server/orpc/client"

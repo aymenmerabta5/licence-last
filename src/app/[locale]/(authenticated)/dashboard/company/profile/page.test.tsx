@@ -1,30 +1,29 @@
 import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
 import { cleanup, render, screen } from "@testing-library/react"
 
-const requireRoleMock = mock(async () => ({
-  id: "user-1",
-  role: "company_admin",
-  name: "Owner User",
-}))
-const localeRedirectMock = mock(
-  async (path: string) => `redirect:${path}` as never,
-)
-const getCompanyByUserIdMock = mock(async () => ({
-  id: "company-1",
-  name: "Acme",
-  status: "approved",
-  description: "Editorial internships",
-  logoUrl: "",
-  websiteUrl: "",
-  phone: "",
-  contactEmail: "",
-  representativeName: "",
-  wilayaCode: 16,
-  address: "",
-}))
-const getCompanyMembershipMock = mock(async () => ({
-  companyId: "company-1",
-  role: "owner",
+const requireCompanyOwnerMock = mock(async () => ({
+  user: {
+    id: "user-1",
+    role: "company_admin",
+    name: "Owner User",
+  },
+  company: {
+    id: "company-1",
+    name: "Acme",
+    status: "approved",
+    description: "Editorial internships",
+    logoUrl: "",
+    websiteUrl: "",
+    phone: "",
+    contactEmail: "",
+    representativeName: "",
+    wilayaCode: 16,
+    address: "",
+  },
+  membership: {
+    companyId: "company-1",
+    role: "owner",
+  },
 }))
 const getTranslationsMock = mock(
   async () => (key: string) =>
@@ -41,20 +40,8 @@ function applyPageMocks() {
     getTranslations: getTranslationsMock,
   }))
 
-  mock.module("@/lib/auth-guards", () => ({
-    requireRole: requireRoleMock,
-  }))
-
-  mock.module("@/lib/navigation", () => ({
-    localeRedirect: localeRedirectMock,
-  }))
-
-  mock.module("@/server/services/companies/get", () => ({
-    getCompanyByUserId: getCompanyByUserIdMock,
-  }))
-
-  mock.module("@/server/services/companies/membership", () => ({
-    getCompanyMembership: getCompanyMembershipMock,
+  mock.module("@/lib/dashboard-access", () => ({
+    requireCompanyOwner: requireCompanyOwnerMock,
   }))
 
   mock.module(
@@ -87,47 +74,33 @@ describe("dashboard/company/profile/page", () => {
 
   beforeEach(() => {
     applyPageMocks()
-    requireRoleMock.mockClear()
-    localeRedirectMock.mockClear()
-    getCompanyByUserIdMock.mockClear()
-    getCompanyMembershipMock.mockClear()
+    requireCompanyOwnerMock.mockClear()
     getTranslationsMock.mockClear()
 
-    requireRoleMock.mockResolvedValue({
-      id: "user-1",
-      role: "company_admin",
-      name: "Owner User",
+    requireCompanyOwnerMock.mockResolvedValue({
+      user: {
+        id: "user-1",
+        role: "company_admin",
+        name: "Owner User",
+      },
+      company: {
+        id: "company-1",
+        name: "Acme",
+        status: "approved",
+        description: "Editorial internships",
+        logoUrl: "",
+        websiteUrl: "",
+        phone: "",
+        contactEmail: "",
+        representativeName: "",
+        wilayaCode: 16,
+        address: "",
+      },
+      membership: {
+        companyId: "company-1",
+        role: "owner",
+      },
     })
-    getCompanyByUserIdMock.mockResolvedValue({
-      id: "company-1",
-      name: "Acme",
-      status: "approved",
-      description: "Editorial internships",
-      logoUrl: "",
-      websiteUrl: "",
-      phone: "",
-      contactEmail: "",
-      representativeName: "",
-      wilayaCode: 16,
-      address: "",
-    })
-    getCompanyMembershipMock.mockResolvedValue({
-      companyId: "company-1",
-      role: "owner",
-    })
-  })
-
-  test("redirects recruiters away from the company profile page", async () => {
-    const { default: CompanyProfilePage } = await loadCompanyProfilePage()
-    getCompanyMembershipMock.mockResolvedValueOnce({
-      companyId: "company-1",
-      role: "recruiter",
-    })
-
-    const result = await CompanyProfilePage()
-
-    expect(localeRedirectMock).toHaveBeenCalledWith("/dashboard/company")
-    expect(result).toBeDefined()
   })
 
   test("renders the profile form for company owners", async () => {

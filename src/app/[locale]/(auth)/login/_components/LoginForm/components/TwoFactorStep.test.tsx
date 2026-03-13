@@ -1,21 +1,6 @@
-import { afterEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, afterEach, describe, expect, mock, test } from "bun:test"
 import { cleanup, fireEvent, render, screen } from "@testing-library/react"
-import type { ComponentProps, ReactNode } from "react"
-import { TwoFactorStep } from "@/app/[locale]/(auth)/login/_components/LoginForm/components/TwoFactorStep"
-
-const motionDiv = ({
-  children,
-  ...props
-}: ComponentProps<"div"> & {
-  children?: ReactNode
-}) => <div {...props}>{children}</div>
-
-const motionSpan = ({
-  children,
-  ...props
-}: ComponentProps<"span"> & {
-  children?: ReactNode
-}) => <span {...props}>{children}</span>
+import { createMotionReactClientMock } from "@/test/mocks/motion-react-client"
 
 mock.module("next-intl", () => ({
   useTranslations: () => (key: string) => {
@@ -37,16 +22,17 @@ mock.module("next-intl", () => ({
   },
 }))
 
-mock.module("motion/react-client", () => ({
-  div: motionDiv,
-  span: motionSpan,
-  motion: {
-    div: motionDiv,
-    span: motionSpan,
-  },
-}))
+mock.module("motion/react-client", createMotionReactClientMock)
+
+const { TwoFactorStep } = await import(
+  "@/app/[locale]/(auth)/login/_components/LoginForm/components/TwoFactorStep"
+)
 
 describe("TwoFactorStep", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   afterEach(() => {
     cleanup()
   })

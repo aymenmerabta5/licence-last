@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 
 const selectResultsQueue: unknown[][] = []
 const insertResultsQueue: unknown[][] = []
@@ -82,6 +82,10 @@ async function importGenerateAgreement() {
 }
 
 describe("src/server/services/documents/generate-agreement", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   beforeEach(() => {
     applyGenerateAgreementMocks()
 

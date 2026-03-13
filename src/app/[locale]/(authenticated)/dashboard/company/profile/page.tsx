@@ -1,26 +1,12 @@
 import { getTranslations } from "next-intl/server"
 import { CompanyProfileForm } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm"
-import { requireRole } from "@/lib/auth-guards"
-import { localeRedirect } from "@/lib/navigation"
-import { getCompanyByUserId } from "@/server/services/companies/get"
-import { getCompanyMembership } from "@/server/services/companies/membership"
+import { requireCompanyOwner } from "@/lib/dashboard-access"
 
 export default async function CompanyProfilePage() {
-  const [sessionUser, t] = await Promise.all([
-    requireRole(["company_admin"]),
+  const [{ company, membership }, t] = await Promise.all([
+    requireCompanyOwner(),
     getTranslations("dashboard.company.profile"),
   ])
-
-  const company = await getCompanyByUserId(sessionUser.id)
-  const membership = await getCompanyMembership(sessionUser.id)
-
-  if (!company) {
-    return localeRedirect("/onboarding/company")
-  }
-
-  if (membership?.role !== "owner") {
-    return localeRedirect("/dashboard/company")
-  }
 
   return (
     <div className="max-w-3xl mx-auto space-y-10">

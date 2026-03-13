@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation"
 
 import { OfferDetailClient } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail"
-import { requireRole } from "@/lib/auth-guards"
-import { localeRedirect } from "@/lib/navigation"
+import { requireOnboardedStudent } from "@/lib/dashboard-access"
 import {
   getOfferById,
   getStudentApplicationForOffer,
@@ -11,14 +10,10 @@ import {
 type Params = Promise<{ offerId: string }>
 
 export default async function OfferDetailPage({ params }: { params: Params }) {
-  const [{ offerId }, user] = await Promise.all([
+  const [{ offerId }, { user }] = await Promise.all([
     params,
-    requireRole(["student"]),
+    requireOnboardedStudent(),
   ])
-
-  if (!user.onboardingCompleted) {
-    return localeRedirect("/onboarding/student")
-  }
 
   const offer = await getOfferById(offerId)
 

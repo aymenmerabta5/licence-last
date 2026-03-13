@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
-import type { AdminValidationSummary } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/types"
+import type { ValidationSummary } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations"
 import { useRouter } from "@/i18n/routing"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
@@ -46,9 +46,7 @@ export function usePlacementActions(
   const [actionLoading, setActionLoading] = useState(false)
   const [pdfLoading, setPdfLoading] = useState(false)
 
-  const [aiSummary, setAiSummary] = useState<AdminValidationSummary | null>(
-    null,
-  )
+  const [aiSummary, setAiSummary] = useState<ValidationSummary | null>(null)
 
   useEffect(() => {
     if (!startDate && expectedStartDate) {

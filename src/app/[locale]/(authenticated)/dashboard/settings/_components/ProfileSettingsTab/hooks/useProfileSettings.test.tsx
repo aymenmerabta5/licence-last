@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { act, renderHook } from "@testing-library/react"
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 
 const uploadAvatarMock = mock(async () => ({
   url: "https://cdn.example.com/avatar.png",
@@ -17,6 +17,22 @@ mock.module("sonner", () => ({
 
 mock.module("@/server/orpc/client", () => ({
   orpc: {
+    placements: {
+      getPendingById: {
+        queryOptions: ({ input }: { input: { applicationId: string } }) => ({
+          queryKey: ["placements", "getPendingById", input],
+          queryFn: async () => ({ application: { id: input.applicationId } }),
+        }),
+      },
+    },
+    deptHead: {
+      getPendingById: {
+        queryOptions: ({ input }: { input: { applicationId: string } }) => ({
+          queryKey: ["deptHead", "getPendingById", input],
+          queryFn: async () => ({ application: { id: input.applicationId } }),
+        }),
+      },
+    },
     users: {
       getMe: { queryOptions: () => ({ queryKey: ["users", "me"] }) },
       updateMe: { mutationOptions: () => ({ mutationFn: async () => ({}) }) },
@@ -39,6 +55,10 @@ mock.module("@/server/orpc/client", () => ({
 }))
 
 describe("useProfileSettings upload failures", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   beforeEach(() => {
     uploadAvatarMock.mockClear()
     toastErrorMock.mockClear()

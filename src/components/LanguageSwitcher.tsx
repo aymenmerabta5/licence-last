@@ -3,7 +3,12 @@
 import { ChevronDownIcon, Globe } from "lucide-react"
 
 import { useLocale, useTranslations } from "next-intl"
-import { useEffect, useSyncExternalStore, useTransition } from "react"
+import {
+  Suspense,
+  useEffect,
+  useSyncExternalStore,
+  useTransition,
+} from "react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,7 +37,40 @@ const triggerClassName = cn(
   "disabled:pointer-events-none disabled:opacity-50",
 )
 
-export function LanguageSwitcher() {
+function getLocaleLabel(
+  t: ReturnType<typeof useTranslations<"language.switcher">>,
+  code: string,
+) {
+  if (code === "en") return t("en")
+  if (code === "fr") return t("fr")
+  if (code === "ar") return t("ar")
+  return code.toUpperCase()
+}
+
+function LanguageSwitcherFallback() {
+  const t = useTranslations("language.switcher")
+  const locale = useLocale()
+
+  return (
+    <button
+      type="button"
+      disabled
+      aria-label={t("aria")}
+      className={triggerClassName}
+    >
+      <Globe className="h-3.5 w-3.5 text-foreground/40" aria-hidden="true" />
+      <span className="min-w-8 text-start">
+        {getLocaleLabel(t, locale)}
+      </span>
+      <ChevronDownIcon
+        className="h-3.5 w-3.5 text-foreground/35"
+        aria-hidden="true"
+      />
+    </button>
+  )
+}
+
+function LanguageSwitcherContent() {
   const t = useTranslations("language.switcher")
   const locale = useLocale()
   const router = useRouter()
@@ -68,13 +106,6 @@ export function LanguageSwitcher() {
     }
   }, [locale])
 
-  const getLocaleLabel = (code: string) => {
-    if (code === "en") return t("en")
-    if (code === "fr") return t("fr")
-    if (code === "ar") return t("ar")
-    return code.toUpperCase()
-  }
-
   const handleLocaleChange = (newLocale: string) => {
     if (newLocale === locale) return
     startTransition(() => {
@@ -85,21 +116,7 @@ export function LanguageSwitcher() {
   // Render a static placeholder during SSR / hydration to avoid Base UI's
   // useId() mismatch between server and client (identical visual output).
   if (!mounted) {
-    return (
-      <button
-        type="button"
-        disabled
-        aria-label={t("aria")}
-        className={triggerClassName}
-      >
-        <Globe className="h-3.5 w-3.5 text-foreground/40" aria-hidden="true" />
-        <span className="min-w-8 text-start">{getLocaleLabel(locale)}</span>
-        <ChevronDownIcon
-          className="h-3.5 w-3.5 text-foreground/35"
-          aria-hidden="true"
-        />
-      </button>
-    )
+    return <LanguageSwitcherFallback />
   }
 
   return (
@@ -110,7 +127,7 @@ export function LanguageSwitcher() {
         className={triggerClassName}
       >
         <Globe className="h-3.5 w-3.5 text-foreground/40" aria-hidden="true" />
-        <span className="min-w-8 text-start">{getLocaleLabel(locale)}</span>
+        <span className="min-w-8 text-start">{getLocaleLabel(t, locale)}</span>
         <ChevronDownIcon
           className="h-3.5 w-3.5 text-foreground/35"
           aria-hidden="true"
@@ -124,11 +141,19 @@ export function LanguageSwitcher() {
         >
           {LOCALES.map((code) => (
             <DropdownMenuRadioItem key={code} value={code} disabled={isPending}>
-              {getLocaleLabel(code)}
+              {getLocaleLabel(t, code)}
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
+  )
+}
+
+export function LanguageSwitcher() {
+  return (
+    <Suspense fallback={<LanguageSwitcherFallback />}>
+      <LanguageSwitcherContent />
+    </Suspense>
   )
 }

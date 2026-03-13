@@ -15,6 +15,7 @@ import {
   validatePlacementDateRange,
 } from "@/server/orpc/utils/date"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+import { getPendingApplicationById } from "@/server/services/placements/get-pending-by-id"
 import { listPendingApplications } from "@/server/services/placements/list-pending"
 import { rejectPlacement } from "@/server/services/placements/reject"
 import { validatePlacement } from "@/server/services/placements/validate"
@@ -65,6 +66,23 @@ export const listPendingProcedure = adminProcedureGenerous
       role: "university_admin",
       universityId: context.user.universityId ?? null,
     })
+  })
+
+export const getPendingByIdProcedure = adminProcedureGenerous
+  .input(
+    z.object({
+      applicationId: z.string().min(1),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    assertUniversityAdminRole(context.user.role)
+
+    return {
+      application: await getPendingApplicationById(input.applicationId, {
+        role: "university_admin",
+        universityId: context.user.universityId ?? null,
+      }),
+    }
   })
 
 /* Validate placement (university admin only) */
@@ -160,6 +178,20 @@ export const deptHeadListPendingProcedure = deptHeadProcedureGenerous
       departmentId: context.departmentId,
     }),
   )
+
+export const deptHeadGetPendingByIdProcedure = deptHeadProcedureGenerous
+  .input(
+    z.object({
+      applicationId: z.string().min(1),
+    }),
+  )
+  .handler(async ({ input, context }) => ({
+    application: await getPendingApplicationById(input.applicationId, {
+      role: "dept_head",
+      universityId: context.universityId,
+      departmentId: context.departmentId,
+    }),
+  }))
 
 /* Dept head: validate placement */
 

@@ -95,6 +95,7 @@ export function CompanyProposeForm({
             <Select
               value={selectedOfferId}
               onValueChange={(value) => value && onOfferChange(value)}
+              items={offers.map((o) => ({ value: o.id, label: o.title }))}
             >
               <SelectTrigger id="interview-offer" className="w-full">
                 <SelectValue
@@ -129,6 +130,10 @@ export function CompanyProposeForm({
               value={applicationId}
               onValueChange={(value) => value && onApplicationIdChange(value)}
               disabled={!selectedOfferId}
+              items={applications.map((a) => ({
+                value: a.id,
+                label: `${a.studentName} - ${formatPipelineStage(a.pipelineStage)}`,
+              }))}
             >
               <SelectTrigger id="interview-application" className="w-full">
                 <SelectValue

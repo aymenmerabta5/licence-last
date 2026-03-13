@@ -1,5 +1,8 @@
-import { localeRedirect } from "@/lib/navigation"
+import { ExploreClient } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient"
+import { requireOnboardedStudent } from "@/lib/dashboard-access"
 
 export default async function ExplorePage() {
-  return localeRedirect("/dashboard/student/search")
+  await requireOnboardedStudent()
+
+  return <ExploreClient />
 }

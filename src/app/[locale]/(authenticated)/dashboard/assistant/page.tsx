@@ -1,9 +1,9 @@
 import { getTranslations } from "next-intl/server"
 import { AssistantChat } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat"
-import { requireRole } from "@/lib/auth-guards"
+import { requireApprovedCompanyAdmin } from "@/lib/dashboard-access"
 
 export default async function AssistantPage() {
-  await requireRole(["company_admin"])
+  await requireApprovedCompanyAdmin()
 
   // Preload translations for client component
   await getTranslations("dashboard.assistant")

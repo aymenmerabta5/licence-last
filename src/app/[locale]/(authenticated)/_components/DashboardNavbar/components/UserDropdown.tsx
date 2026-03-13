@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { UserRoleBadge } from "@/components/UserRoleBadge"
 import { Link } from "@/i18n/routing"
 
 interface UserDropdownProps {
@@ -28,21 +29,34 @@ export function UserDropdown({
   isLoggingOut,
 }: UserDropdownProps) {
   const t = useTranslations("dashboard.navbar")
+  const roleLabel = user.role
+    ? t(`roles.${user.role || "student"}` as any)
+    : t("roles.student" as any)
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-3 transition-all outline-none group">
-        <div className="hidden sm:flex flex-col items-end">
-          <p className="text-sm font-serif text-heading group-hover:text-primary transition-colors">
+      <DropdownMenuTrigger className="group flex min-w-0 items-center gap-2.5 outline-none">
+        <div className="hidden min-w-0 xl:flex items-center gap-2.5">
+          <p className="max-w-[10rem] truncate text-sm font-medium text-heading transition-colors group-hover:text-primary">
             {user.name || "User Name"}
           </p>
-          <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans">
-            {user.role
-              ? t(`roles.${user.role || "student"}` as any)
-              : t("roles.student" as any)}
-          </p>
+          <UserRoleBadge
+            role={user.role}
+            label={roleLabel}
+            className="text-[9px]"
+          />
         </div>
-        <div className="h-10 w-10 border border-border/20 flex items-center justify-center text-heading font-serif text-lg group-hover:border-primary/50 transition-colors bg-background">
+        <div
+          data-testid="user-dropdown-compact-badge"
+          className="flex xl:hidden"
+        >
+          <UserRoleBadge
+            role={user.role}
+            label={roleLabel}
+            className="text-[9px]"
+          />
+        </div>
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-border/30 bg-background text-lg font-serif text-heading transition-colors group-hover:border-primary/50">
           {user.name?.charAt(0) || "U"}
         </div>
       </DropdownMenuTrigger>

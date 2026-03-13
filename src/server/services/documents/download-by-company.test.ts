@@ -1,11 +1,22 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 
 const selectResultsQueue: unknown[][] = []
 
 const renderAgreementPdfBufferMock = mock(async () => Buffer.from("agreement"))
+const generateAgreementMock = mock(async () => ({
+  success: true,
+  documentId: "doc-1",
+  buffer: Buffer.from("agreement"),
+}))
 const renderCertificatePdfBufferMock = mock(async () =>
   Buffer.from("certificate"),
 )
+const generateCertificateMock = mock(async () => ({
+  success: true,
+  documentId: "doc-2",
+  fileName: "certificate.pdf",
+  buffer: Buffer.from("certificate"),
+}))
 const fetchDocumentBufferMock = mock(async () => null as Buffer | null)
 
 const selectLimitMock = mock(async () => selectResultsQueue.shift() ?? [])
@@ -25,15 +36,18 @@ function applyDownloadDocumentByCompanyMocks() {
   }))
 
   mock.module("@/server/services/documents/generate-agreement", () => ({
+    generateAgreement: generateAgreementMock,
     renderAgreementPdfBuffer: renderAgreementPdfBufferMock,
   }))
 
   mock.module("@/server/services/documents/generate-certificate", () => ({
+    generateCertificate: generateCertificateMock,
     renderCertificatePdfBuffer: renderCertificatePdfBufferMock,
   }))
 
   mock.module("@/server/services/documents/persist", () => ({
     fetchDocumentBuffer: fetchDocumentBufferMock,
+    persistDocumentBuffer: mock(async () => null),
   }))
 }
 
@@ -45,11 +59,17 @@ async function loadDownloadByCompanyModule() {
 }
 
 describe("src/server/services/documents/download-by-company", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   beforeEach(() => {
     applyDownloadDocumentByCompanyMocks()
     selectResultsQueue.length = 0
     selectLimitMock.mockClear()
+    generateAgreementMock.mockClear()
     renderAgreementPdfBufferMock.mockClear()
+    generateCertificateMock.mockClear()
     renderCertificatePdfBufferMock.mockClear()
     fetchDocumentBufferMock.mockClear()
   })

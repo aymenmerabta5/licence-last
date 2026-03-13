@@ -57,6 +57,7 @@ export function ChatHeader({
             onValueChange={(val) => {
               if (val) onUpdateModel(val)
             }}
+            items={models.map((m) => ({ value: m.id, label: m.label }))}
           >
             <SelectTrigger size="sm" className="rounded-none">
               <SelectValue placeholder={t("selectModel")} />

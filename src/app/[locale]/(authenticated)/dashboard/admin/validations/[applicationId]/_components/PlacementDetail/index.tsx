@@ -1,11 +1,15 @@
 "use client"
 
-import { AISummaryPanel } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/AISummaryPanel"
-import { CompanyOfferCard } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/CompanyOfferCard"
-import { PlacementHeader } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/PlacementHeader"
-import { RejectDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/RejectDialog"
-import { StudentInfoCard } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/StudentInfoCard"
-import { ValidationForm } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/components/ValidationForm"
+import { useTranslations } from "next-intl"
+import {
+  AISummaryPanel,
+  buildValidationSummaryInput,
+  CompanyOfferCard,
+  RejectDialog,
+  StudentInfoCard,
+  ValidationDetailLayout,
+  ValidationForm,
+} from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations"
 import { usePlacementActions } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/hooks/usePlacementActions"
 import { usePlacementData } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail/hooks/usePlacementData"
 
@@ -14,6 +18,7 @@ export function PlacementDetailClient({
 }: {
   applicationId: string
 }) {
+  const t = useTranslations("dashboard.admin.validations.detail")
   const { application, isLoading } = usePlacementData(applicationId)
   const actions = usePlacementActions(applicationId, {
     expectedStartDate: application?.offer.expectedStartDate,
@@ -21,16 +26,18 @@ export function PlacementDetailClient({
   })
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <PlacementHeader
-        isLoading={isLoading}
-        hasApplication={!!application}
-        studentName={application?.student.name}
-        companyName={application?.company.name}
-      />
-
+    <ValidationDetailLayout
+      isLoading={isLoading}
+      hasApplication={!!application}
+      studentName={application?.student.name}
+      companyName={application?.company.name}
+      backHref="/dashboard/admin/validations"
+      backLabel={t("backToList")}
+      title={t("title")}
+      notFoundLabel={t("notFound")}
+    >
       {application && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <StudentInfoCard application={application} />
           <CompanyOfferCard application={application} />
 
@@ -38,38 +45,9 @@ export function PlacementDetailClient({
             aiSummary={actions.aiSummary}
             isSummarizing={actions.isSummarizing}
             summaryError={actions.summaryError}
-            onGenerate={() => {
-              actions.generateAiSummary({
-                id: application.id,
-                createdAt: application.createdAt,
-                companyActionAt: application.companyActionAt,
-                coverLetter: application.coverLetter,
-                student: { name: application.student?.name ?? null },
-                profile: {
-                  level: application.profile?.level ?? null,
-                  department: application.profile?.department ?? null,
-                },
-                university: application.university
-                  ? {
-                      name: application.university.name ?? null,
-                      abbreviation: application.university.abbreviation ?? null,
-                    }
-                  : null,
-                offer: {
-                  title: application.offer?.title ?? null,
-                  internshipType: application.offer?.internshipType ?? null,
-                  workMode: application.offer?.workMode ?? null,
-                  wilayaCode: application.offer?.wilayaCode ?? null,
-                  durationWeeks: application.offer?.durationWeeks ?? null,
-                },
-                company: { name: application.company?.name ?? null },
-                skills: application.skills.map((s) => ({
-                  id: s.id,
-                  name: s.name,
-                  category: s.category ?? null,
-                })),
-              })
-            }}
+            onGenerate={() =>
+              actions.generateAiSummary(buildValidationSummaryInput(application))
+            }
           />
 
           <ValidationForm
@@ -101,6 +79,6 @@ export function PlacementDetailClient({
           }}
         />
       )}
-    </div>
+    </ValidationDetailLayout>
   )
 }

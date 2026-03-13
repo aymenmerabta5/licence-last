@@ -2,7 +2,7 @@ import { Suspense } from "react"
 
 import { CompanyOffersView } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView"
 import { Skeleton } from "@/components/ui/skeleton"
-import { requireRole } from "@/lib/auth-guards"
+import { requireApprovedCompanyAdmin } from "@/lib/dashboard-access"
 
 function CompanyOffersFallback() {
   return (
@@ -30,7 +30,7 @@ function CompanyOffersFallback() {
 }
 
 export default async function CompanyOffersPage() {
-  await requireRole(["company_admin"])
+  await requireApprovedCompanyAdmin()
 
   return (
     <Suspense fallback={<CompanyOffersFallback />}>
