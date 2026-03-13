@@ -39,6 +39,6 @@ test.describe("Login Flow", () => {
     await loginAsStudent(page)
 
     await page.goto("/en/login")
-    await expect(page).toHaveURL(/\/en\/dashboard\/student$/)
+    await expect(page).toHaveURL(/\/en\/dashboard$/)
   })
 })

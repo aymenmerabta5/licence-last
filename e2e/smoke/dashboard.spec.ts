@@ -37,16 +37,13 @@ test.describe("Dashboard Smoke Coverage", () => {
     })
 
     test("student search page loads", async ({ page }) => {
-      await page.goto("/en/dashboard/student/search")
-      await expectDashboardPageReady(page, /\/en\/dashboard\/student\/search$/)
+      await page.goto("/en/dashboard/explore")
+      await expectDashboardPageReady(page, /\/en\/dashboard\/explore$/)
     })
 
     test("student applications page loads", async ({ page }) => {
-      await page.goto("/en/dashboard/student/applications")
-      await expectDashboardPageReady(
-        page,
-        /\/en\/dashboard\/student\/applications$/,
-      )
+      await page.goto("/en/dashboard/applications")
+      await expectDashboardPageReady(page, /\/en\/dashboard\/applications$/)
     })
 
     test("student cv page loads", async ({ page }) => {
@@ -79,13 +76,13 @@ test.describe("Dashboard Smoke Coverage", () => {
     })
 
     test("student explore alias redirects to search", async ({ page }) => {
-      await page.goto("/en/dashboard/explore")
-      await expectDashboardPageReady(page, /\/en\/dashboard\/student\/search$/)
+      await page.goto("/en/dashboard/student/search")
+      await expectDashboardPageReady(page, /\/en\/dashboard\/explore$/)
     })
 
     test("student cannot access company dashboard", async ({ page }) => {
       await page.goto("/en/dashboard/company")
-      await expectRedirectToRoleHome(page, /\/en\/dashboard\/student$/)
+      await expectRedirectToRoleHome(page, /\/en\/dashboard$/)
     })
   })
 
@@ -95,8 +92,8 @@ test.describe("Dashboard Smoke Coverage", () => {
     })
 
     test("company dashboard loads", async ({ page }) => {
-      await page.goto("/en/dashboard/company")
-      await expectDashboardPageReady(page, /\/en\/dashboard\/company$/)
+      await page.goto("/en/dashboard")
+      await expectDashboardPageReady(page, /\/en\/dashboard$/)
     })
 
     test("company offers page loads", async ({ page }) => {
@@ -142,7 +139,7 @@ test.describe("Dashboard Smoke Coverage", () => {
 
     test("company cannot access admin validations", async ({ page }) => {
       await page.goto("/en/dashboard/admin/validations")
-      await expectRedirectToRoleHome(page, /\/en\/dashboard\/company$/)
+      await expectRedirectToRoleHome(page, /\/en\/dashboard$/)
     })
   })
 
@@ -152,8 +149,8 @@ test.describe("Dashboard Smoke Coverage", () => {
     })
 
     test("admin dashboard loads", async ({ page }) => {
-      await page.goto("/en/dashboard/admin")
-      await expectDashboardPageReady(page, /\/en\/dashboard\/admin$/)
+      await page.goto("/en/dashboard")
+      await expectDashboardPageReady(page, /\/en\/dashboard$/)
     })
 
     test("admin validations page loads", async ({ page }) => {
@@ -179,7 +176,7 @@ test.describe("Dashboard Smoke Coverage", () => {
 
     test("admin cannot access company dashboard", async ({ page }) => {
       await page.goto("/en/dashboard/company")
-      await expectRedirectToRoleHome(page, /\/en\/dashboard\/admin$/)
+      await expectRedirectToRoleHome(page, /\/en\/dashboard$/)
     })
   })
 
@@ -215,8 +212,8 @@ test.describe("Dashboard Smoke Coverage", () => {
     })
 
     test("super admin dashboard loads", async ({ page }) => {
-      await page.goto("/en/dashboard/admin")
-      await expectDashboardPageReady(page, /\/en\/dashboard\/admin$/)
+      await page.goto("/en/dashboard")
+      await expectDashboardPageReady(page, /\/en\/dashboard$/)
     })
 
     test("super admin stats page loads", async ({ page }) => {
@@ -246,12 +243,12 @@ test.describe("Dashboard Smoke Coverage", () => {
       page,
     }) => {
       await page.goto("/en/dashboard/admin/validations")
-      await expectRedirectToRoleHome(page, /\/en\/dashboard\/admin$/)
+      await expectRedirectToRoleHome(page, /\/en\/dashboard$/)
     })
 
     test("super admin cannot access company dashboard", async ({ page }) => {
       await page.goto("/en/dashboard/company")
-      await expectRedirectToRoleHome(page, /\/en\/dashboard\/admin$/)
+      await expectRedirectToRoleHome(page, /\/en\/dashboard$/)
     })
   })
 })

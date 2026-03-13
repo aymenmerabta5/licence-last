@@ -18,7 +18,7 @@ mock.module("@/server/db", () => ({
   },
 }))
 
-describe("src/server/services/applications/list-by-student", () => {
+describe("src/server/services/applications/list-by-student-base", () => {
   beforeEach(() => {
     mockLimit.mockClear()
     mockOrderBy.mockClear()
@@ -34,7 +34,7 @@ describe("src/server/services/applications/list-by-student", () => {
     mockOrderBy.mockReturnValue({ limit: mockLimit })
   })
 
-  test.skip("should paginate and return nextCursor when hasMore", async () => {
+  test("should paginate and return nextCursor when hasMore", async () => {
     const createdAt1 = new Date("2025-01-02T00:00:00.000Z")
     const createdAt2 = new Date("2025-01-01T00:00:00.000Z")
 
@@ -69,10 +69,12 @@ describe("src/server/services/applications/list-by-student", () => {
       },
     ])
 
-    const { listApplicationsByStudent } = await import(
-      "@/server/services/applications/list-by-student"
+    const { listApplicationsByStudentUncached } = await import(
+      "@/server/services/applications/list-by-student-base"
     )
-    const result = await listApplicationsByStudent("student-1", { limit: 1 })
+    const result = await listApplicationsByStudentUncached("student-1", {
+      limit: 1,
+    })
 
     expect(result.applications).toHaveLength(1)
     expect(result.hasMore).toBe(true)

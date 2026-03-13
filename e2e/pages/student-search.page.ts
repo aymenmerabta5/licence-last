@@ -4,8 +4,8 @@ export class StudentSearchPage {
   constructor(private readonly page: Page) {}
 
   async goto(): Promise<void> {
-    await this.page.goto("/en/dashboard/student/search")
-    await expect(this.page).toHaveURL(/\/en\/dashboard\/student\/search/)
+    await this.page.goto("/en/dashboard/explore")
+    await expect(this.page).toHaveURL(/\/en\/dashboard\/explore/)
     await expect(
       this.page.getByPlaceholder(/search by title or keyword/i),
     ).toBeVisible()
@@ -41,7 +41,7 @@ export class StudentSearchPage {
     await offerLink.click()
 
     const offerUrlPattern = new RegExp(
-      `/en/dashboard/(explore|student/offers)/${input.offerId}$`,
+      `/en/dashboard/explore/${input.offerId}$`,
     )
 
     try {

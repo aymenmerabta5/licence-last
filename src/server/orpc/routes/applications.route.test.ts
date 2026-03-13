@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 
 import { ApplicationServiceError } from "@/server/services/applications/errors"
 
@@ -119,6 +119,10 @@ mock.module("@/server/orpc/middleware", () => ({
 }))
 
 describe("src/server/orpc/routes/applications", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   beforeEach(() => {
     applyToOfferMock.mockClear()
     withdrawApplicationMock.mockClear()

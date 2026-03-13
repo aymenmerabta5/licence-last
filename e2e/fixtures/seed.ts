@@ -6,6 +6,7 @@ import { drizzle } from "drizzle-orm/postgres-js"
 import { eq } from "drizzle-orm"
 import postgres from "postgres"
 
+import { getMaintenancePostgresOptions } from "../../src/server/db/postgres-options"
 import { account, user } from "../../src/server/db/schema/auth"
 import { company, companyMember } from "../../src/server/db/schema/companies"
 import { department } from "../../src/server/db/schema/departments"
@@ -109,10 +110,10 @@ async function withE2EDatabase<T>(
   run: (sql: ReturnType<typeof postgres>) => Promise<T>,
   databaseUrl?: string,
 ): Promise<T> {
-  const sql = postgres(resolveDatabaseUrl(databaseUrl), {
-    max: 1,
-    prepare: false,
-  })
+  const sql = postgres(
+    resolveDatabaseUrl(databaseUrl),
+    getMaintenancePostgresOptions(),
+  )
 
   try {
     return await run(sql)
@@ -165,7 +166,7 @@ export async function seedBaseReferenceData(
   databaseUrl?: string,
 ): Promise<SeedBaseReferenceData> {
   const targetDatabaseUrl = resolveDatabaseUrl(databaseUrl)
-  const client = postgres(targetDatabaseUrl, { max: 1, prepare: false })
+  const client = postgres(targetDatabaseUrl, getMaintenancePostgresOptions())
   const db = drizzle(client, { schema })
 
   try {
@@ -293,7 +294,7 @@ export async function seedTestUsers(
   options: SeedTestUsersOptions = {},
 ): Promise<SeededTestUsers> {
   const targetDatabaseUrl = resolveDatabaseUrl(options.databaseUrl)
-  const client = postgres(targetDatabaseUrl, { max: 1, prepare: false })
+  const client = postgres(targetDatabaseUrl, getMaintenancePostgresOptions())
   const db = drizzle(client, { schema })
 
   try {
