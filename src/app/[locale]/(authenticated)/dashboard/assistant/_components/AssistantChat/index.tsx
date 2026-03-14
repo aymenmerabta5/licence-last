@@ -1,6 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import { useState } from "react"
 import { AssistantHeader } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/AssistantHeader"
 import { ChatHeader } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ChatHeader"
 import { ConversationSidebar } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ConversationSidebar"
@@ -10,6 +11,7 @@ import { Card } from "@/components/ui/card"
 
 export function AssistantChat() {
   const t = useTranslations("dashboard.assistant")
+  const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false)
 
   const {
     conversations,
@@ -59,7 +61,7 @@ export function AssistantChat() {
             activeModel={activeModel}
             onUpdateModel={handleUpdateModel}
             onUpdateTitle={handleUpdateTitle}
-            onAppendNote={handleAppendNote}
+            onOpenNoteDialog={() => setIsNoteDialogOpen(true)}
             onCreateConversation={handleCreateConversation}
           />
 
@@ -74,6 +76,9 @@ export function AssistantChat() {
                 conversationId={activeConversationId}
                 initialMessages={initialMessages}
                 messageCreatedAtById={messageCreatedAtById}
+                isNoteDialogOpen={isNoteDialogOpen}
+                onNoteDialogOpenChange={setIsNoteDialogOpen}
+                onAppendNote={handleAppendNote}
               />
             )}
           </div>

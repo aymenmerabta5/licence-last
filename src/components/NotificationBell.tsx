@@ -62,8 +62,16 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
     }),
   )
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open || unreadCount === 0 || markAllReadMutation.isPending) {
+      return
+    }
+
+    markAllReadMutation.mutate({})
+  }
+
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={handleOpenChange}>
       <DropdownMenuTrigger className="relative p-2.5 rounded-full hover:bg-secondary/80 transition-all group outline-none">
         <Bell className="h-5 w-5 text-foreground/60 group-hover:text-primary transition-colors" />
         {unreadCount > 0 && (

@@ -6,12 +6,17 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "@/i18n/routing"
 import { authClient } from "@/lib/auth-client"
+import { cn } from "@/lib/utils"
 
 interface ImpersonationBannerProps {
   userName: string
+  className?: string
 }
 
-export function ImpersonationBanner({ userName }: ImpersonationBannerProps) {
+export function ImpersonationBanner({
+  userName,
+  className,
+}: ImpersonationBannerProps) {
   const t = useTranslations("dashboard.superAdmin.impersonation")
   const router = useRouter()
   const [isPending, setIsPending] = useState(false)
@@ -30,7 +35,12 @@ export function ImpersonationBanner({ userName }: ImpersonationBannerProps) {
   }
 
   return (
-    <div className="sticky top-0 z-50 bg-amber-500 text-amber-950 px-4 py-2 flex items-center justify-center gap-3 text-sm font-medium">
+    <div
+      className={cn(
+        "sticky top-0 z-50 bg-amber-500 text-amber-950 px-4 py-2 flex items-center justify-center gap-3 text-sm font-medium",
+        className,
+      )}
+    >
       <Eye className="h-4 w-4 shrink-0" />
       <span>{t("banner", { name: userName })}</span>
       <Button

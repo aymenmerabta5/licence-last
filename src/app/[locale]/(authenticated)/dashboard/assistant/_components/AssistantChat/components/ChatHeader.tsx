@@ -1,6 +1,10 @@
+"use client"
+
 import { NotebookPen, Pencil, Plus } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { useState } from "react"
 import { formatConversationTitle } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/utils"
+import { RenameConversationDialog } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/RenameConversationDialog"
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -21,7 +25,7 @@ interface ChatHeaderProps {
   activeModel: string | null
   onUpdateModel: (modelId: string) => void
   onUpdateTitle: (title: string | null) => void
-  onAppendNote: (note: string) => void
+  onOpenNoteDialog: () => void
   onCreateConversation: () => void
 }
 
@@ -31,10 +35,11 @@ export function ChatHeader({
   activeModel,
   onUpdateModel,
   onUpdateTitle,
-  onAppendNote,
+  onOpenNoteDialog,
   onCreateConversation,
 }: ChatHeaderProps) {
   const t = useTranslations("dashboard.assistant")
+  const [isRenameOpen, setIsRenameOpen] = useState(false)
 
   return (
     <div className="border-b border-border/60 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shrink-0">
@@ -77,28 +82,25 @@ export function ChatHeader({
           variant="editorial-ghost"
           size="editorial-sm"
           className="gap-2"
-          onClick={() => {
-            const currentTitle = formatConversationTitle(conversationTitle)
-            const nextTitle = window.prompt(t("renamePrompt"), currentTitle)
-            if (nextTitle === null) return
-            const trimmed = nextTitle.trim()
-            onUpdateTitle(trimmed.length > 0 ? trimmed : null)
-          }}
+          onClick={() => setIsRenameOpen(true)}
         >
           <Pencil className="h-4 w-4" />
           {t("renameConversation")}
         </Button>
+
+        <RenameConversationDialog
+          open={isRenameOpen}
+          onOpenChange={setIsRenameOpen}
+          currentTitle={formatConversationTitle(conversationTitle)}
+          onSave={onUpdateTitle}
+        />
 
         <Button
           type="button"
           variant="editorial-ghost"
           size="editorial-sm"
           className="gap-2"
-          onClick={() => {
-            const note = window.prompt(t("notePrompt"), "")
-            if (note === null) return
-            onAppendNote(note)
-          }}
+          onClick={onOpenNoteDialog}
         >
           <NotebookPen className="h-4 w-4" />
           {t("saveNote")}

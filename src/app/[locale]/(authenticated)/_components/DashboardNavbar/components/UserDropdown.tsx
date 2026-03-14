@@ -3,6 +3,7 @@
 import { User } from "lucide-react"
 import { Route } from "next"
 import { useTranslations } from "next-intl"
+import { useDashboard } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import type { NavbarUser } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
 
 import {
@@ -29,9 +30,12 @@ export function UserDropdown({
   isLoggingOut,
 }: UserDropdownProps) {
   const t = useTranslations("dashboard.navbar")
-  const roleLabel = user.role
-    ? t(`roles.${user.role || "student"}` as any)
-    : t("roles.student" as any)
+  const { companyMembershipRole } = useDashboard()
+  const roleKey =
+    user.role === "company_admin" && companyMembershipRole === "recruiter"
+      ? "recruiter"
+      : (user.role ?? "student")
+  const roleLabel = t(`roles.${roleKey}` as any)
 
   return (
     <DropdownMenu>
