@@ -7,7 +7,7 @@ const cardVariants = cva("group/card flex flex-col text-sm", {
   variants: {
     variant: {
       default:
-        "ring-foreground/10 bg-card text-card-foreground gap-4 overflow-hidden rounded-xl py-4 ring-1 has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
+        "ring-foreground/10 bg-card text-card-foreground gap-4 overflow-hidden rounded-xl pt-0 pb-4 ring-1 has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:pt-0 data-[size=sm]:pb-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
       editorial:
         "border border-border bg-transparent text-card-foreground p-6 transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:bg-secondary hover:text-secondary-foreground hover:border-secondary dark:bg-foreground/[0.02] dark:hover:bg-primary dark:hover:text-primary-foreground dark:hover:border-primary dark:hover:shadow-[0_4px_30px_oklch(from_var(--color-primary)_l_c_h_/_0.20)] cursor-pointer",
       ghost: "bg-transparent text-card-foreground border-none",
