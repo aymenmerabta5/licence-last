@@ -2,13 +2,9 @@ import "server-only"
 
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
+import type { PrimaryUserRole } from "@/lib/effective-role"
 
-type UserRole =
-  | "student"
-  | "company_admin"
-  | "dept_head"
-  | "university_admin"
-  | "super_admin"
+type UserRole = PrimaryUserRole
 
 type RequestHeaders = Awaited<ReturnType<typeof headers>>
 

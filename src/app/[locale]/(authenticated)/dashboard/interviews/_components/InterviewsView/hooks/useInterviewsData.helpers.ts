@@ -28,7 +28,11 @@ const INTERVIEW_ELIGIBLE_PIPELINE_STAGES = new Set([
 export function mapCompanyOffers(
   offers: CompanyOfferSource[] | undefined,
 ): CompanyOfferOption[] {
-  return (offers ?? []).map((offer) => ({
+  if (!Array.isArray(offers)) {
+    return []
+  }
+
+  return offers.map((offer) => ({
     id: offer.id,
     title: offer.title,
   }))
@@ -37,7 +41,11 @@ export function mapCompanyOffers(
 export function mapCompanyApplications(
   applications: CompanyApplicationSource[] | undefined,
 ): CompanyApplicationOption[] {
-  return (applications ?? [])
+  if (!Array.isArray(applications)) {
+    return []
+  }
+
+  return applications
     .filter((application) =>
       INTERVIEW_ELIGIBLE_PIPELINE_STAGES.has(application.pipelineStage),
     )

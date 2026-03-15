@@ -30,6 +30,15 @@ const mockGetCompanyStatusByUserId = mock(
 const mockGetUniversityStatusByUserId = mock(
   async () => null as { status: string } | null,
 )
+const mockGetUniversityMembership = mock(
+  async () =>
+    null as {
+      universityId: string
+      userId: string
+      role: "department_head"
+      departmentId: string | null
+    } | null,
+)
 
 describe("requireRole", () => {
   beforeEach(() => {
@@ -38,10 +47,12 @@ describe("requireRole", () => {
     mockHeaders.mockClear()
     mockGetCompanyStatusByUserId.mockClear()
     mockGetUniversityStatusByUserId.mockClear()
+    mockGetUniversityMembership.mockClear()
 
     mockHeaders.mockResolvedValue(new Headers())
     mockGetCompanyStatusByUserId.mockResolvedValue(null)
     mockGetUniversityStatusByUserId.mockResolvedValue(null)
+    mockGetUniversityMembership.mockResolvedValue(null)
   })
 
   test("should redirect to /login when no session exists", async () => {
@@ -56,6 +67,7 @@ describe("requireRole", () => {
         localeRedirect: mockLocaleRedirect,
         getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
         getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
@@ -82,6 +94,7 @@ describe("requireRole", () => {
         localeRedirect: mockLocaleRedirect,
         getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
         getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
@@ -109,6 +122,7 @@ describe("requireRole", () => {
         localeRedirect: mockLocaleRedirect,
         getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
         getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
@@ -133,6 +147,7 @@ describe("requireRole", () => {
         localeRedirect: mockLocaleRedirect,
         getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
         getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
@@ -158,6 +173,7 @@ describe("requireRole", () => {
         localeRedirect: mockLocaleRedirect,
         getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
         getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
@@ -179,21 +195,28 @@ describe("requireRole", () => {
         localeRedirect: mockLocaleRedirect,
         getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
         getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
     expect(mockGetSession).toHaveBeenCalledWith({ headers: customHeaders })
   })
 
-  test("should reject dept_head when only university_admin is allowed", async () => {
+  test("should reject department-head membership when only university_admin is allowed", async () => {
     mockGetSession.mockResolvedValue({
       user: {
         id: "user-3",
-        role: "dept_head",
+        role: "university_admin",
         name: "Dept Head",
         email: "dept@example.com",
       },
       session: {},
+    })
+    mockGetUniversityMembership.mockResolvedValue({
+      universityId: "uni-1",
+      userId: "user-3",
+      role: "department_head",
+      departmentId: "dept-1",
     })
 
     await requireRole(
@@ -205,10 +228,49 @@ describe("requireRole", () => {
         localeRedirect: mockLocaleRedirect,
         getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
         getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
     expect(mockLocaleRedirect).toHaveBeenCalledWith("/")
+  })
+
+  test("should allow department-head membership when dept_head is allowed", async () => {
+    mockGetSession.mockResolvedValue({
+      user: {
+        id: "user-3a",
+        role: "university_admin",
+        name: "Dept Head",
+        email: "dept@example.com",
+      },
+      session: {},
+    })
+    mockGetUniversityMembership.mockResolvedValue({
+      universityId: "uni-1",
+      userId: "user-3a",
+      role: "department_head",
+      departmentId: "dept-1",
+    })
+
+    const result = await requireRole(
+      ["dept_head"],
+      {},
+      {
+        getSession: mockGetSession,
+        getHeaders: mockHeaders,
+        localeRedirect: mockLocaleRedirect,
+        getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
+        getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
+      },
+    )
+
+    expect(result.id).toBe("user-3a")
+    expect(result.role).toBe("dept_head")
+    expect(result.effectiveRole).toBe("dept_head")
+    expect(result.rawRole).toBe("university_admin")
+    expect(result.universityMembershipRole).toBe("department_head")
+    expect(result.universityDepartmentId).toBe("dept-1")
   })
 
   test("should redirect pending company_admin to company pending status", async () => {
@@ -233,6 +295,7 @@ describe("requireRole", () => {
         localeRedirect: mockLocaleRedirect,
         getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
         getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
@@ -261,6 +324,7 @@ describe("requireRole", () => {
         localeRedirect: mockLocaleRedirect,
         getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
         getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
@@ -289,6 +353,7 @@ describe("requireRole", () => {
         localeRedirect: mockLocaleRedirect,
         getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
         getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
@@ -319,6 +384,7 @@ describe("requireRole", () => {
         localeRedirect: mockLocaleRedirect,
         getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
         getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
@@ -347,6 +413,7 @@ describe("requireRole", () => {
         localeRedirect: mockLocaleRedirect,
         getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
         getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 

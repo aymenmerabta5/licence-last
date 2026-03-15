@@ -31,10 +31,11 @@ export function UserDropdown({
 }: UserDropdownProps) {
   const t = useTranslations("dashboard.navbar")
   const { companyMembershipRole } = useDashboard()
+  const effectiveRole = user.effectiveRole ?? user.role ?? "student"
   const roleKey =
-    user.role === "company_admin" && companyMembershipRole === "recruiter"
+    effectiveRole === "company_admin" && companyMembershipRole === "recruiter"
       ? "recruiter"
-      : (user.role ?? "student")
+      : effectiveRole
   const roleLabel = t(`roles.${roleKey}` as any)
 
   return (
@@ -45,7 +46,7 @@ export function UserDropdown({
             {user.name || "User Name"}
           </p>
           <UserRoleBadge
-            role={user.role}
+            role={effectiveRole}
             label={roleLabel}
             className="text-[9px]"
           />
@@ -55,7 +56,7 @@ export function UserDropdown({
           className="flex xl:hidden"
         >
           <UserRoleBadge
-            role={user.role}
+            role={effectiveRole}
             label={roleLabel}
             className="text-[9px]"
           />

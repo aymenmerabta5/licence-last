@@ -49,6 +49,7 @@ const isAdminRoleMock = mock(
 
 function applyUniversitiesRouteMocks() {
   mock.module("@/server/orpc/rate-limited-procedures", () => ({
+    universityProcedureAssistant: createProcedureMock(),
     authedProcedureGenerous: createProcedureMock(),
     authedProcedureStandard: createProcedureMock(),
     superAdminProcedureStandard: createProcedureMock(),

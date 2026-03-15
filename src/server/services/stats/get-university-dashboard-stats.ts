@@ -6,6 +6,7 @@ import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { user } from "@/server/db/schema/auth"
 import { department } from "@/server/db/schema/departments"
+import { universityMember } from "@/server/db/schema/university-memberships"
 
 export interface UniversityDashboardStats {
   totalStudents: number
@@ -40,9 +41,12 @@ export async function getUniversityDashboardStats(
       .where(eq(department.universityId, universityId)),
     db
       .select({ value: count() })
-      .from(user)
+      .from(universityMember)
       .where(
-        and(eq(user.role, "dept_head"), eq(user.universityId, universityId)),
+        and(
+          eq(universityMember.role, "department_head"),
+          eq(universityMember.universityId, universityId),
+        ),
       ),
     db
       .select({ value: count() })

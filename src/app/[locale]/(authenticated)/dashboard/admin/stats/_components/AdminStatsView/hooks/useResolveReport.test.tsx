@@ -27,20 +27,33 @@ mock.module("sonner", () => ({
 }))
 
 mock.module("@tanstack/react-query", () => ({
+  QueryClient: class QueryClient {
+    invalidateQueries() {}
+    clear() {}
+  },
+  QueryClientProvider: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
   useMutation: useMutationMock,
   useQueryClient: () => ({
     invalidateQueries: invalidateQueriesMock,
+    clear: () => {},
   }),
 }))
 
 mock.module("@/server/orpc/client", () => ({
+  orpcClient: {},
   orpc: {
     companies: {
       resolveReport: {
         mutationOptions: (options: Record<string, unknown>) => options,
       },
       listReports: {
-        queryOptions: ({ input }: { input: { status: string; limit: number } }) => ({
+        queryOptions: ({
+          input,
+        }: {
+          input: { status: string; limit: number }
+        }) => ({
           queryKey: ["companies", "listReports", input],
         }),
       },
@@ -80,12 +93,10 @@ describe("useResolveReport", () => {
       resolutionNote: "Handled",
     })
     expect(invalidateQueriesMock).toHaveBeenCalledWith({
-      queryKey: [
-        "companies",
-        "listReports",
-        { status: "open", limit: 12 },
-      ],
+      queryKey: ["companies", "listReports", { status: "open", limit: 12 }],
     })
-    expect(toastSuccessMock).toHaveBeenCalledWith("Report resolved successfully.")
+    expect(toastSuccessMock).toHaveBeenCalledWith(
+      "Report resolved successfully.",
+    )
   })
 })

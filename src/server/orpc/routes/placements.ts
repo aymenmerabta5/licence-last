@@ -4,11 +4,11 @@ import { ORPCError } from "@orpc/server"
 import { z } from "zod"
 
 import {
-  adminProcedureAssistant,
   adminProcedureGenerous,
   adminProcedureStandard,
   deptHeadProcedureGenerous,
   deptHeadProcedureStandard,
+  universityProcedureAssistant,
 } from "@/server/orpc/rate-limited-procedures"
 import {
   parseInputDate,
@@ -60,7 +60,7 @@ export const listPendingProcedure = adminProcedureGenerous
       .optional(),
   )
   .handler(async ({ input, context }) => {
-    assertUniversityAdminRole(context.user.role)
+    assertUniversityAdminRole(context.user.effectiveRole ?? context.user.role)
 
     return listPendingApplications(input ?? {}, {
       role: "university_admin",
@@ -75,7 +75,7 @@ export const getPendingByIdProcedure = adminProcedureGenerous
     }),
   )
   .handler(async ({ input, context }) => {
-    assertUniversityAdminRole(context.user.role)
+    assertUniversityAdminRole(context.user.effectiveRole ?? context.user.role)
 
     return {
       application: await getPendingApplicationById(input.applicationId, {
@@ -96,7 +96,7 @@ export const validateProcedure = adminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    assertUniversityAdminRole(context.user.role)
+    assertUniversityAdminRole(context.user.effectiveRole ?? context.user.role)
 
     // Validate dates first; these throw user-facing messages.
     let startDate: Date
@@ -139,7 +139,7 @@ export const rejectProcedure = adminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    assertUniversityAdminRole(context.user.role)
+    assertUniversityAdminRole(context.user.effectiveRole ?? context.user.role)
 
     try {
       return await rejectPlacement({
@@ -237,14 +237,14 @@ export const deptHeadValidateProcedure = deptHeadProcedureStandard
 
 /* AI validation summary (university_admin + dept_head; super_admin blocked) */
 
-export const generateValidationSummaryProcedure = adminProcedureAssistant
+export const generateValidationSummaryProcedure = universityProcedureAssistant
   .input(
     z.object({
       application: z.record(z.string(), z.unknown()),
     }),
   )
   .handler(async ({ input, context }) => {
-    assertNotSuperAdmin(context.user.role)
+    assertNotSuperAdmin(context.user.effectiveRole ?? context.user.role)
 
     const { generateValidationSummary } = await import(
       "@/server/services/placements/generate-validation-summary"

@@ -79,5 +79,16 @@ describe("unassignDepartmentHead", () => {
     expect(mockTxUpdate).toHaveBeenCalledTimes(1)
     expect(mockTxUpdateSet).toHaveBeenCalledTimes(1)
     expect(mockTxUpdateWhere).toHaveBeenCalledTimes(1)
+
+    const updatePayload =
+      (
+        mockTxUpdateSet.mock.calls as unknown as Array<
+          [{ departmentId: string | null } | undefined]
+        >
+      )[0]?.[0] ?? null
+
+    expect(updatePayload).toEqual({
+      departmentId: null,
+    })
   })
 })

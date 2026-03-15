@@ -27,6 +27,7 @@ const getExplainableMatchScoreMock = mock(async () => ({ score: 82 }))
 const captureReadinessSnapshotMock = mock(async () => ({ success: true }))
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
+  universityProcedureAssistant: createProcedureMock(),
   authedProcedureGenerous: createProcedureMock(),
   studentProcedureStandard: createProcedureMock(),
 }))

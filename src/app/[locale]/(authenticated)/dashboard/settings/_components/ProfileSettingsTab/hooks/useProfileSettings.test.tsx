@@ -1,7 +1,7 @@
-import type { ReactNode } from "react"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { act, renderHook } from "@testing-library/react"
-import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
+import type { ReactNode } from "react"
 
 const uploadAvatarMock = mock(async () => ({
   url: "https://cdn.example.com/avatar.png",

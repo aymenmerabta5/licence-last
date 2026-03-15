@@ -51,8 +51,8 @@ export async function AuthenticatedContent({
     }
   }
 
-  // ── Block unapproved university_admin ──
-  if (user.role === "university_admin") {
+  // ── Block unapproved university-side accounts ──
+  if (user.rawRole === "university_admin" || user.role === "university_admin") {
     if (!user.onboardingCompleted) {
       return localeRedirect("/onboarding/university")
     }
@@ -76,6 +76,8 @@ export async function AuthenticatedContent({
       user={user}
       impersonatedBy={impersonatedBy}
       companyMembershipRole={companyMembershipRole}
+      universityMembershipRole={user.universityMembershipRole ?? null}
+      universityDepartmentId={user.universityDepartmentId ?? null}
     >
       {children}
     </DashboardClientProvider>

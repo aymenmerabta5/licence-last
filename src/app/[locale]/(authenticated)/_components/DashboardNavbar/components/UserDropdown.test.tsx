@@ -33,7 +33,9 @@ mock.module(
 )
 
 mock.module("@/i18n/routing", () => ({
-  Link: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
+  Link: ({ children }: { children: React.ReactNode }) => (
+    <span>{children}</span>
+  ),
 }))
 
 mock.module("@/components/ui/dropdown-menu", () => ({
@@ -54,6 +56,11 @@ mock.module("@/components/ui/dropdown-menu", () => ({
 }))
 
 async function loadModule() {
+  mock.module("@/i18n/routing", () => ({
+    Link: ({ children }: { children: React.ReactNode }) => (
+      <span>{children}</span>
+    ),
+  }))
   importCounter += 1
   return import(
     `@/app/[locale]/(authenticated)/_components/DashboardNavbar/components/UserDropdown?test=${importCounter}`

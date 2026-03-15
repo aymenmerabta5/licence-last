@@ -21,7 +21,11 @@ const mockAdminsWhere = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)
 })
-const mockFromAdmins = mock(() => ({ where: mockAdminsWhere }))
+const mockLeftJoinAdmins = mock(() => ({ where: mockAdminsWhere }))
+const mockFromAdmins = mock(() => ({
+  leftJoin: mockLeftJoinAdmins,
+  where: mockAdminsWhere,
+}))
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockUpdate = mock(() => ({}) as any)
@@ -74,6 +78,7 @@ describe("src/server/services/applications/company-accept", () => {
     mockFromWithTwoJoins.mockClear()
 
     mockAdminsWhere.mockClear()
+    mockLeftJoinAdmins.mockClear()
     mockFromAdmins.mockClear()
 
     mockUpdate.mockClear()
@@ -91,7 +96,11 @@ describe("src/server/services/applications/company-accept", () => {
     mockLeftJoin.mockReturnValue({ where: mockWhereWithLimit })
     mockWhereWithLimit.mockReturnValue({ limit: mockLimit })
 
-    mockFromAdmins.mockReturnValue({ where: mockAdminsWhere })
+    mockFromAdmins.mockReturnValue({
+      leftJoin: mockLeftJoinAdmins,
+      where: mockAdminsWhere,
+    })
+    mockLeftJoinAdmins.mockReturnValue({ where: mockAdminsWhere })
 
     mockUpdate.mockReturnValue({ set: mockSet })
     mockSet.mockReturnValue({ where: mockUpdateWhere })

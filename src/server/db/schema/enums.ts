@@ -27,6 +27,10 @@ export const companyMemberRoleEnum = pgEnum("company_member_role", [
   "recruiter",
 ])
 
+export const universityMemberRoleEnum = pgEnum("university_member_role", [
+  "department_head",
+])
+
 export const offerStatusEnum = pgEnum("offer_status", [
   "draft",
   "published",

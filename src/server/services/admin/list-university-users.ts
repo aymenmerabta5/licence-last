@@ -2,15 +2,9 @@ import "server-only"
 
 import { and, asc, count, desc, eq, ilike, ne } from "drizzle-orm"
 
+import type { PrimaryUserRole } from "@/lib/effective-role"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
-
-type UserRole =
-  | "student"
-  | "company_admin"
-  | "dept_head"
-  | "university_admin"
-  | "super_admin"
 
 interface ListUniversityUsersParams {
   universityId: string
@@ -78,8 +72,8 @@ export async function listUniversityUsers(params: ListUniversityUsersParams) {
     ) {
       conditions.push(
         filterOperator === "ne"
-          ? ne(user.role, params.filterValue as UserRole)
-          : eq(user.role, params.filterValue as UserRole),
+          ? ne(user.role, params.filterValue as PrimaryUserRole)
+          : eq(user.role, params.filterValue as PrimaryUserRole),
       )
     }
 

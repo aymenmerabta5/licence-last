@@ -10,6 +10,7 @@ import {
   publicProcedure,
   studentProcedure,
   superAdminProcedure,
+  universityProcedure,
 } from "@/server/orpc/middleware"
 import {
   createAssistantRateLimitMiddleware,
@@ -43,6 +44,13 @@ export const publicProcedureStandard = publicProcedure.use(
  */
 export const authedProcedureStandard = authedProcedure.use(
   createStandardRateLimitMiddleware("authed-standard"),
+)
+
+/**
+ * Authenticated procedure with assistant rate limiting (20 req/min).
+ */
+export const authedProcedureAssistant = authedProcedure.use(
+  createAssistantRateLimitMiddleware("authed-assistant"),
 )
 
 /**
@@ -99,11 +107,20 @@ export const adminProcedureStandard = adminProcedure.use(
 
 /**
  * Admin procedure with AI rate limiting (20 req/min)
- * Use for: Expensive AI operations available to admin and dept-head roles
+ * Use for: Expensive AI operations available to true university admins.
  * Key: User-based
  */
 export const adminProcedureAssistant = adminProcedure.use(
   createAssistantRateLimitMiddleware("admin-assistant"),
+)
+
+/**
+ * University access procedure with AI rate limiting (20 req/min)
+ * Use for: University-scoped AI operations available to admins and dept heads.
+ * Key: User-based
+ */
+export const universityProcedureAssistant = universityProcedure.use(
+  createAssistantRateLimitMiddleware("university-assistant"),
 )
 
 /**

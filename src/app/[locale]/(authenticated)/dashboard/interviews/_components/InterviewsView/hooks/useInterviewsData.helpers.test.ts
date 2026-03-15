@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test"
 
 import {
   mapCompanyApplications,
+  mapCompanyOffers,
   normalizeLocalDateTimeInput,
 } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsData.helpers"
 
@@ -45,5 +46,21 @@ describe("useInterviewsData.helpers", () => {
         createdAt: "2026-02-20T10:00:00.000Z",
       },
     ])
+  })
+
+  test("mapping helpers return empty arrays for unexpected payloads", () => {
+    expect(
+      mapCompanyOffers({} as unknown as Array<{ id: string; title: string }>),
+    ).toEqual([])
+    expect(
+      mapCompanyApplications(
+        {} as unknown as Array<{
+          id: string
+          student: { name: string | null }
+          pipelineStage: string
+          createdAt: string
+        }>,
+      ),
+    ).toEqual([])
   })
 })

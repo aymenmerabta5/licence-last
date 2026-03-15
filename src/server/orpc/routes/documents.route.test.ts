@@ -85,6 +85,7 @@ const verifyDocumentMock = mock(async () => ({ valid: true }))
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   adminProcedureStandard: createProcedureMock(),
+  universityProcedureAssistant: createProcedureMock(),
   companyAdminProcedureGenerous: createProcedureMock(),
   companyAdminProcedureStandard: createProcedureMock(),
   companyOwnerProcedureStandard: createCompanyOwnerProcedureMock(),

@@ -3,23 +3,85 @@ import "server-only"
 import { ORPCError, os } from "@orpc/server"
 import { eq } from "drizzle-orm"
 import { headers } from "next/headers"
-
 import { auth } from "@/lib/auth"
+import { deriveEffectiveUserRole } from "@/lib/effective-role"
 import { checkAdminApproval } from "@/server/auth/approval-gate"
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
 import { studentProfile } from "@/server/db/schema/students"
 import { isServiceError } from "@/server/services/errors"
+import { getUniversityMembership } from "@/server/services/universities/membership"
+
+interface SessionUser {
+  id: string
+  email: string
+  name?: string | null
+  image?: string | null
+  role?: string | null
+  banned?: boolean | null
+  onboardingCompleted?: boolean | null
+  twoFactorEnabled?: boolean | null
+  universityId?: string | null
+  departmentId?: string | null
+  [key: string]: unknown
+}
+
+function buildLegacyMembership(user: SessionUser) {
+  if (user.role !== "dept_head" || !user.universityId) {
+    return null
+  }
+
+  return {
+    userId: user.id,
+    universityId: user.universityId,
+    role: "department_head" as const,
+    departmentId: user.departmentId ?? null,
+    createdAt: new Date(0),
+    updatedAt: new Date(0),
+  }
+}
+
+async function resolveUniversityMembership(user: SessionUser) {
+  if (user.role === "university_admin") {
+    return getUniversityMembership(user.id)
+  }
+
+  return buildLegacyMembership(user)
+}
+
+async function resolveContextUser(user: SessionUser) {
+  const universityMembership = await resolveUniversityMembership(user)
+  const effectiveRole =
+    deriveEffectiveUserRole({
+      userRole: user.role,
+      universityMembershipRole: universityMembership?.role ?? null,
+    }) ??
+    user.role ??
+    "student"
+
+  return {
+    user: {
+      ...user,
+      role: effectiveRole,
+      effectiveRole,
+      rawRole: user.role ?? null,
+      universityId:
+        universityMembership?.universityId ?? user.universityId ?? null,
+      departmentId:
+        universityMembership?.departmentId ?? user.departmentId ?? null,
+      universityMembershipRole: universityMembership?.role ?? null,
+      universityDepartmentId:
+        universityMembership?.departmentId ?? user.departmentId ?? null,
+    },
+    universityMembership,
+  }
+}
 
 /**
- * Check if a user role has admin privileges (university_admin, dept_head, or super_admin).
+ * Check if a user role has admin privileges (university_admin or super_admin).
  */
 export function isAdminRole(role: string | null | undefined): boolean {
-  return (
-    role === "university_admin" ||
-    role === "dept_head" ||
-    role === "super_admin"
-  )
+  return role === "university_admin" || role === "super_admin"
 }
 
 /** Public — no auth required. */
@@ -39,17 +101,44 @@ export const authedSessionProcedure = os.use(async ({ next }) => {
     throw new ORPCError("FORBIDDEN", { message: "Account suspended" })
   }
 
-  return next({ context: { session: session.session, user: session.user } })
+  try {
+    const resolvedUser = await resolveContextUser(session.user)
+    return next({
+      context: {
+        session: session.session,
+        user: resolvedUser.user,
+        universityMembership: resolvedUser.universityMembership,
+      },
+    })
+  } catch (error) {
+    if (
+      isServiceError(error) &&
+      error.code === "UNIVERSITY_MEMBERSHIP_CONFLICT"
+    ) {
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "Multiple university memberships found for user",
+      })
+    }
+
+    throw error
+  }
 })
 
 /** Enforce super-admin approval for onboarded company/university admins. */
 async function assertApprovedAdminAccess(user: {
   id: string
   role?: string | null
+  rawRole?: string | null
   onboardingCompleted?: boolean | null
 }) {
   try {
-    const approval = await checkAdminApproval(user)
+    const approval = await checkAdminApproval({
+      ...user,
+      role:
+        user.rawRole === "dept_head"
+          ? "university_admin"
+          : (user.rawRole ?? user.role),
+    })
 
     if (approval.ok) {
       return
@@ -83,7 +172,7 @@ export const authedProcedure = authedSessionProcedure.use(
   },
 )
 
-/** Admin — requires admin or super_admin role. */
+/** Admin — requires true university admin or super_admin role. */
 export const adminProcedure = authedProcedure.use(async ({ context, next }) => {
   if (!isAdminRole(context.user.role)) {
     throw new ORPCError("FORBIDDEN", {
@@ -92,6 +181,23 @@ export const adminProcedure = authedProcedure.use(async ({ context, next }) => {
   }
   return next({ context })
 })
+
+/** University-scoped access — allows university admins, department heads, and super admins. */
+export const universityProcedure = authedProcedure.use(
+  async ({ context, next }) => {
+    if (
+      context.user.role !== "university_admin" &&
+      context.user.role !== "dept_head" &&
+      context.user.role !== "super_admin"
+    ) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "University access required",
+      })
+    }
+
+    return next({ context })
+  },
+)
 
 /** Super admin only. */
 export const superAdminProcedure = authedProcedure.use(
@@ -170,7 +276,7 @@ export const studentProcedure = authedProcedure.use(
   },
 )
 
-/** Department head — requires dept_head role, injects departmentId + universityId. */
+/** Department head — requires department_head membership and a current department assignment. */
 export const deptHeadProcedure = authedProcedure.use(
   async ({ context, next }) => {
     if (context.user.role !== "dept_head") {
@@ -185,7 +291,7 @@ export const deptHeadProcedure = authedProcedure.use(
       })
     }
 
-    if (!context.user.departmentId) {
+    if (!context.user.universityDepartmentId) {
       throw new ORPCError("FORBIDDEN", {
         message: "Department head must be assigned to a department",
       })
@@ -194,7 +300,7 @@ export const deptHeadProcedure = authedProcedure.use(
     return next({
       context: {
         ...context,
-        departmentId: context.user.departmentId,
+        departmentId: context.user.universityDepartmentId,
         universityId: context.user.universityId,
       },
     })

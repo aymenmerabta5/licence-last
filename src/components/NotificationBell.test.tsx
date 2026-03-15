@@ -3,8 +3,8 @@ import { fireEvent, render, screen } from "@testing-library/react"
 import * as React from "react"
 
 const invalidateQueriesMock = mock(() => {})
-const markAllReadMutateMock = mock(() => {})
-const markReadMutateMock = mock(() => {})
+const markAllReadMutateMock = mock((_input?: unknown) => {})
+const markReadMutateMock = mock((_input?: unknown) => {})
 
 const queryState = {
   data: {
@@ -22,9 +22,17 @@ const queryState = {
 let openChangeHandler: ((open: boolean) => void) | undefined
 
 mock.module("@tanstack/react-query", () => ({
+  QueryClient: class QueryClient {
+    invalidateQueries() {}
+    clear() {}
+  },
+  QueryClientProvider: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
   useQuery: () => ({ data: queryState.data }),
   useQueryClient: () => ({
     invalidateQueries: invalidateQueriesMock,
+    clear: () => {},
   }),
   useMutation: (options?: {
     kind?: "markRead" | "markAllRead"
@@ -123,7 +131,12 @@ mock.module("@/server/orpc/client", () => ({
   },
 }))
 
-const { NotificationBell } = await import("@/components/NotificationBell")
+let importCounter = 0
+
+async function loadNotificationBell() {
+  importCounter += 1
+  return import(`@/components/NotificationBell?test=${importCounter}`)
+}
 
 describe("src/components/NotificationBell", () => {
   beforeEach(() => {
@@ -137,10 +150,17 @@ describe("src/components/NotificationBell", () => {
     openChangeHandler = undefined
   })
 
-  test("marks all unread notifications when the bell dropdown opens", () => {
+  test("marks all unread notifications when the bell dropdown opens", async () => {
+    const { NotificationBell } = await loadNotificationBell()
+
     render(<NotificationBell viewerId="viewer-1" />)
 
-    fireEvent.click(screen.getAllByRole("button")[0] as HTMLButtonElement)
+    const trigger = screen.getByText("Bell").closest("button")
+    if (!trigger) {
+      throw new Error("Expected notification trigger button")
+    }
+
+    fireEvent.click(trigger)
 
     expect(markAllReadMutateMock).toHaveBeenCalledTimes(1)
     expect(markAllReadMutateMock).toHaveBeenCalledWith({})

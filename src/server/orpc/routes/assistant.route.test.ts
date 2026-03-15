@@ -27,6 +27,7 @@ const listAssistantConversationsByCompanyIdMock = mock(async () => ({
 }))
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
+  universityProcedureAssistant: createProcedureMock(),
   companyAdminProcedureGenerous: createProcedureMock(),
   companyAdminProcedureStandard: createProcedureMock(),
   companyAdminProcedureAssistant: createProcedureMock(),

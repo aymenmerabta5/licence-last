@@ -1,5 +1,7 @@
 import "server-only"
 
+import { deriveEffectiveUserRole } from "@/lib/effective-role"
+
 interface CompanySummary {
   id: string
   name: string
@@ -15,6 +17,12 @@ interface UniversitySummary {
   rejectionReason: string | null
 }
 
+interface UniversityMembershipSummary {
+  role: "department_head"
+  departmentId: string | null
+  universityId: string
+}
+
 interface UserSummary {
   id: string
   email: string
@@ -27,6 +35,9 @@ interface GetMeDependencies {
   getUserById: (userId: string) => Promise<UserSummary | null>
   getCompanyByUserId: (userId: string) => Promise<CompanySummary | null>
   getUniversityByUserId: (userId: string) => Promise<UniversitySummary | null>
+  getUniversityMembership: (
+    userId: string,
+  ) => Promise<UniversityMembershipSummary | null>
 }
 
 const DEFAULT_GET_ME_DEPENDENCIES: GetMeDependencies = {
@@ -45,6 +56,12 @@ const DEFAULT_GET_ME_DEPENDENCIES: GetMeDependencies = {
       "@/server/services/universities/get"
     )
     return getUniversityByUserId(userId)
+  },
+  getUniversityMembership: async (userId) => {
+    const { getUniversityMembership } = await import(
+      "@/server/services/universities/membership"
+    )
+    return getUniversityMembership(userId)
   },
 }
 
@@ -69,9 +86,21 @@ export async function getMe(
     ...dependencies,
   }
   const freshUser = await resolvedDependencies.getUserById(user.id)
+  const rawRole =
+    freshUser?.role ?? user.role ?? "student"
+  const universityMembership =
+    rawRole === "university_admin" || rawRole === "dept_head"
+      ? await resolvedDependencies.getUniversityMembership(user.id)
+      : null
+  const visibleRole =
+    deriveEffectiveUserRole({
+      userRole: rawRole,
+      universityMembershipRole:
+        universityMembership?.role ?? (rawRole === "dept_head" ? "department_head" : null),
+    }) ?? "student"
 
   let companyData = null
-  if (user.role === "company_admin") {
+  if (visibleRole === "company_admin") {
     const company = await resolvedDependencies.getCompanyByUserId(user.id)
     if (company) {
       companyData = {
@@ -85,9 +114,9 @@ export async function getMe(
 
   let universityData = null
   if (
-    user.role === "student" ||
-    user.role === "university_admin" ||
-    user.role === "dept_head"
+    visibleRole === "student" ||
+    visibleRole === "university_admin" ||
+    visibleRole === "dept_head"
   ) {
     const uni = await resolvedDependencies.getUniversityByUserId(user.id)
     if (uni) {
@@ -105,13 +134,15 @@ export async function getMe(
     user: {
       id: user.id,
       email: freshUser ? freshUser.email : user.email,
-      role: freshUser
-        ? (freshUser.role ?? "student")
-        : (user.role ?? "student"),
+      role: visibleRole,
+      effectiveRole: visibleRole,
+      rawRole,
       name: freshUser ? freshUser.name : (user.name ?? null),
       image: freshUser ? freshUser.image : (user.image ?? null),
       onboardingCompleted: user.onboardingCompleted ?? false,
       twoFactorEnabled: user.twoFactorEnabled ?? false,
+      universityMembershipRole: universityMembership?.role ?? null,
+      universityDepartmentId: universityMembership?.departmentId ?? null,
     },
     company: companyData,
     university: universityData,

@@ -10,6 +10,7 @@ import { getRateLimiter } from "@/server/caching/redis-ratelimiter"
 import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("ratelimit")
+const E2E_RATE_LIMIT_DISABLED = process.env.E2E_DISABLE_RATE_LIMIT === "1"
 
 // Simple in-memory rate limit store (fallback when Redis is unavailable)
 interface InMemoryRateLimitEntry {
@@ -192,6 +193,27 @@ function createInMemoryLimiter(config: RateLimitConfig) {
  * ```
  */
 export function createRateLimitMiddleware(config: RateLimitConfig) {
+  if (E2E_RATE_LIMIT_DISABLED) {
+    return createRatelimitMiddleware({
+      limiter: () =>
+        createInMemoryLimiter({
+          ...config,
+          maxRequests: Number.MAX_SAFE_INTEGER,
+          windowMs: 60_000,
+        }),
+      key: async ({ context }: { context: ContextWithUser }) => {
+        const headersList = await headers()
+        const ip = extractClientIp(headersList)
+        const userId = (context as ContextWithUser).user?.id
+        const keyGenerator = config.keyGenerator || defaultKeyGenerator
+        const key = keyGenerator({ userId, ip })
+
+        return config.keyPrefix ? `${config.keyPrefix}:${key}` : key
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any)
+  }
+
   const limiter = getRateLimiter()
   const isRedisRateLimitingEnabled = env.REDIS_RATE_LIMIT_ENABLED === "true"
 

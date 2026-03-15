@@ -71,7 +71,7 @@ export async function assignDepartmentHeadByEmail({
         email: normalizedEmail,
         password,
         name: resolvedHeadName,
-        role: "dept_head",
+        role: "university_admin",
         data: {
           emailVerified: true,
         },

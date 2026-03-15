@@ -9,10 +9,14 @@ const DashboardContext = createContext<{
   isSidebarOpen: boolean
   setIsSidebarOpen: (open: boolean) => void
   companyMembershipRole: string | null
+  universityMembershipRole: string | null
+  universityDepartmentId: string | null
 }>({
   isSidebarOpen: false,
   setIsSidebarOpen: () => {},
   companyMembershipRole: null,
+  universityMembershipRole: null,
+  universityDepartmentId: null,
 })
 
 export const useDashboard = () => useContext(DashboardContext)
@@ -34,6 +38,8 @@ export function DashboardClientProvider({
   user,
   impersonatedBy,
   companyMembershipRole = null,
+  universityMembershipRole = null,
+  universityDepartmentId = null,
 }: {
   children: React.ReactNode
   user: {
@@ -41,15 +47,25 @@ export function DashboardClientProvider({
     name: string | null
     email: string
     role: string | null | undefined
+    effectiveRole?: string | null
   }
   impersonatedBy?: string | null
   companyMembershipRole?: string | null
+  universityMembershipRole?: string | null
+  universityDepartmentId?: string | null
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const effectiveRole = user.effectiveRole ?? user.role ?? "student"
 
   return (
     <DashboardContext.Provider
-      value={{ isSidebarOpen, setIsSidebarOpen, companyMembershipRole }}
+      value={{
+        isSidebarOpen,
+        setIsSidebarOpen,
+        companyMembershipRole,
+        universityMembershipRole,
+        universityDepartmentId,
+      }}
     >
       {impersonatedBy && (
         <ImpersonationBanner userName={user.name ?? user.email} />
@@ -60,7 +76,7 @@ export function DashboardClientProvider({
         <div className="hidden lg:block shrink-0">
           <Suspense fallback={<DashboardSidebarFallback />}>
             <DashboardSidebar
-              role={user.role as string}
+              role={effectiveRole}
               companyMembershipRole={companyMembershipRole}
             />
           </Suspense>
@@ -81,7 +97,7 @@ export function DashboardClientProvider({
           <div className="bg-background h-full shadow-2xl shadow-foreground/5">
             <Suspense fallback={<DashboardSidebarFallback />}>
               <DashboardSidebar
-                role={user.role as string}
+                role={effectiveRole}
                 companyMembershipRole={companyMembershipRole}
               />
             </Suspense>
@@ -91,7 +107,7 @@ export function DashboardClientProvider({
         {/* Main content area */}
         <div className="flex-1 flex flex-col min-w-0 min-h-screen relative overflow-hidden bg-background">
           <Suspense fallback={<DashboardNavbarFallback />}>
-            <DashboardNavbar user={user} />
+            <DashboardNavbar user={{ ...user, effectiveRole }} />
           </Suspense>
 
           <main className="flex-1 px-4 py-8 sm:px-8 lg:px-12 lg:py-10 overflow-y-auto w-full max-h-[calc(100vh-96px)] scroll-smooth custom-scrollbar">

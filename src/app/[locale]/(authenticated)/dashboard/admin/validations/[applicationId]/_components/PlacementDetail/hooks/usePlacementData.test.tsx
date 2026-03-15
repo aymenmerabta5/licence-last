@@ -16,6 +16,7 @@ const getPendingByIdQueryOptionsMock = mock(
 
 function applyORPCClientMock() {
   mock.module("@/server/orpc/client", () => ({
+  orpcClient: {},
     orpc: {
       placements: {
         getPendingById: {

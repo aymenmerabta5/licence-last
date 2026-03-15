@@ -7,6 +7,7 @@ const isSavedOffersEnabledOnClientMock = mock(() => true)
 const isInterviewsEnabledOnClientMock = mock(() => true)
 
 mock.module("@/i18n/routing", () => ({
+  Link: ({ children }: { children?: unknown }) => children,
   usePathname: usePathnameMock,
 }))
 

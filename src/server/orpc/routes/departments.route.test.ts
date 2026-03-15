@@ -32,6 +32,7 @@ const dbSelectMock = mock(() => ({ from: dbFromMock }))
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   authedProcedureGenerous: createProcedureMock(),
   adminProcedureStandard: createProcedureMock(),
+  universityProcedureAssistant: createProcedureMock(),
 }))
 
 mock.module("@/server/services/departments/create", () => ({

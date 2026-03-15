@@ -81,7 +81,7 @@ describe("deleteDepartment", () => {
     )
   })
 
-  test("should demote dept heads and delete the department", async () => {
+  test("should clear dept-head memberships and delete the department", async () => {
     selectLimitQueue.push([{ id: "dept-1" }])
 
     const { deleteDepartment } = await loadDeleteDepartmentModule()
@@ -91,5 +91,16 @@ describe("deleteDepartment", () => {
     expect(mockTransaction).toHaveBeenCalledTimes(1)
     expect(mockTxUpdate).toHaveBeenCalledTimes(1)
     expect(mockTxDelete).toHaveBeenCalledTimes(1)
+
+    const updatePayload =
+      (
+        mockTxUpdateSet.mock.calls as unknown as Array<
+          [{ departmentId: string | null } | undefined]
+        >
+      )[0]?.[0] ?? null
+
+    expect(updatePayload).toEqual({
+      departmentId: null,
+    })
   })
 })

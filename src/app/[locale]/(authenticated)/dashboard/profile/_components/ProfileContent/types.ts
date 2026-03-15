@@ -51,6 +51,7 @@ export interface StudentData {
 export interface ViewerIdentity {
   id: string
   role: string | null | undefined
+  effectiveRole?: string | null
 }
 
 export interface ProfileUser {
@@ -58,6 +59,7 @@ export interface ProfileUser {
   name: string | null
   email: string | null
   role: string | null | undefined
+  effectiveRole?: string | null
   image: string | null | undefined
   createdAt: string
 }

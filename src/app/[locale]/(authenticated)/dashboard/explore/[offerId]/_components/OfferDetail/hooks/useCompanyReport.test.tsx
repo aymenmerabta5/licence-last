@@ -25,6 +25,7 @@ mock.module("sonner", () => ({
 }))
 
 mock.module("@/server/orpc/client", () => ({
+  orpcClient: {},
   orpc: {
     placements: {
       getPendingById: {

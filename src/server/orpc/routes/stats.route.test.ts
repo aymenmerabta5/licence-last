@@ -23,6 +23,7 @@ const getUniversityDashboardStatsMock = mock(async () => ({ accepted: 5 }))
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   adminProcedureGenerous: createProcedureMock(),
+  universityProcedureAssistant: createProcedureMock(),
   superAdminProcedureGenerous: createProcedureMock(),
 }))
 

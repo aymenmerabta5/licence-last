@@ -4,7 +4,7 @@ import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
 
-import { userRoleSchema } from "@/lib/schemas/enums"
+import { primaryUserRoleSchema } from "@/lib/schemas/enums"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import {
@@ -123,7 +123,7 @@ export const createUserProcedure = superAdminProcedureStandard
       email: z.email(),
       password: z.string().min(8).max(128),
       name: z.string().min(2).max(120),
-      role: userRoleSchema,
+      role: primaryUserRoleSchema,
     }),
   )
   .handler(async ({ input }) => createUser(input))
@@ -132,7 +132,7 @@ export const setRoleProcedure = superAdminProcedureStandard
   .input(
     z.object({
       userId: z.string().min(1),
-      role: userRoleSchema,
+      role: primaryUserRoleSchema,
     }),
   )
   .handler(async ({ input }) => setUserRole(input.userId, input.role))
@@ -234,7 +234,7 @@ export const updateUserProcedure = superAdminProcedureStandard
       userId: z.string().min(1),
       name: z.string().min(2).max(120).optional(),
       email: z.string().email().optional(),
-      role: userRoleSchema.optional(),
+      role: primaryUserRoleSchema.optional(),
     }),
   )
   .handler(async ({ input }) => {

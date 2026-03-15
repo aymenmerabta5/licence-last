@@ -161,6 +161,10 @@ mock.module("@/i18n/routing", () => ({
 
 mock.module("motion/react-client", createMotionReactClientMock)
 
+mock.module("@/components/TurnstileWidget", () => ({
+  TurnstileWidget: () => null,
+}))
+
 const { LoginForm } = await import(
   "@/app/[locale]/(auth)/login/_components/LoginForm"
 )

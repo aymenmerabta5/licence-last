@@ -41,6 +41,7 @@ interface SessionRecord {
 const listMySessionsMock = mock<() => Promise<SessionRecord[]>>(async () => [])
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
+  universityProcedureAssistant: createProcedureMock(),
   authedSessionProcedureGenerous: createProcedureMock(),
   authedSessionProcedureStandard: createProcedureMock(),
   authedProcedureStandard: createProcedureMock(),

@@ -1,25 +1,26 @@
 import "server-only"
 
-import { eq } from "drizzle-orm"
+import { and, eq, ne } from "drizzle-orm"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { department } from "@/server/db/schema/departments"
+import { universityMember } from "@/server/db/schema/university-memberships"
 import { createModuleLogger } from "@/server/logging"
 import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/departments/assign-head")
 
 const ROLE_BLOCKLIST = new Set(["company_admin", "super_admin"])
+const ELIGIBLE_ROLES = new Set(["university_admin", "dept_head"])
 
 /**
- * Assign a user as dept_head for a department.
- * Sets user.role = "dept_head", user.departmentId, and user.universityId.
+ * Assign a user as department head for a department.
+ * Uses a membership row for permissions while keeping the auth role on university_admin.
  */
 export async function assignDepartmentHead(
   departmentId: string,
   userId: string,
 ) {
-  // Verify department exists and get its universityId
   const [dept] = await db
     .select({
       id: department.id,
@@ -34,7 +35,6 @@ export async function assignDepartmentHead(
     throw new ServiceError("DEPARTMENT_NOT_FOUND", "Department not found")
   }
 
-  // Verify user exists
   const [targetUser] = await db
     .select({ id: user.id, role: user.role, universityId: user.universityId })
     .from(user)
@@ -52,7 +52,7 @@ export async function assignDepartmentHead(
     )
   }
 
-  if (targetUser.role !== "dept_head") {
+  if (!ELIGIBLE_ROLES.has(targetUser.role)) {
     throw new ServiceError(
       "USER_INELIGIBLE_FOR_DEPARTMENT_HEAD",
       "Existing account role cannot be reassigned as department head; create or use a dedicated department head account",
@@ -76,13 +76,44 @@ export async function assignDepartmentHead(
 
   await db.transaction(async (tx) => {
     await tx
+      .update(universityMember)
+      .set({
+        departmentId: null,
+      })
+      .where(
+        and(
+          eq(universityMember.role, "department_head"),
+          eq(universityMember.departmentId, departmentId),
+          ne(universityMember.userId, userId),
+        ),
+      )
+
+    await tx
       .update(user)
       .set({
-        role: "dept_head",
-        departmentId,
+        role: "university_admin",
+        departmentId: null,
         universityId: dept.universityId,
       })
       .where(eq(user.id, userId))
+
+    await tx
+      .insert(universityMember)
+      .values({
+        universityId: dept.universityId,
+        userId,
+        role: "department_head",
+        departmentId,
+      })
+      .onConflictDoUpdate({
+        target: universityMember.userId,
+        set: {
+          universityId: dept.universityId,
+          role: "department_head",
+          departmentId,
+          updatedAt: new Date(),
+        },
+      })
   })
 
   log.info(

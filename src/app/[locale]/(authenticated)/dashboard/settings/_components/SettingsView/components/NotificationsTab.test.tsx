@@ -1,5 +1,3 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react"
-import * as React from "react"
 import {
   afterAll,
   afterEach,
@@ -9,6 +7,8 @@ import {
   mock,
   test,
 } from "bun:test"
+import { cleanup, fireEvent, render, screen } from "@testing-library/react"
+import * as React from "react"
 
 const setQueryDataMock = mock(() => {})
 const mutateAsyncMock = mock(async () => {})
@@ -40,11 +40,15 @@ function applyReactQueryMock() {
       queryFn?: () => Promise<unknown>
       queryKey?: unknown[]
     }) => {
-      const queryKey = Array.isArray(options?.queryKey) ? options.queryKey[0] : null
+      const queryKey = Array.isArray(options?.queryKey)
+        ? options.queryKey[0]
+        : null
       const isNotificationsQuery = queryKey === "notifications"
 
       const [data, setData] = React.useState<unknown>(undefined)
-      const [isLoading, setIsLoading] = React.useState(Boolean(options?.enabled !== false))
+      const [isLoading, setIsLoading] = React.useState(
+        Boolean(options?.enabled !== false),
+      )
       const queryFnRef = React.useRef(options?.queryFn)
       queryFnRef.current = options?.queryFn
 
@@ -100,6 +104,7 @@ mock.module("@/lib/feature-flags-client", () => ({
 }))
 
 mock.module("@/server/orpc/client", () => ({
+  orpcClient: {},
   orpc: {
     placements: {
       getPendingById: {

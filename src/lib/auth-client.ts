@@ -8,7 +8,6 @@ import { createAuthClient } from "better-auth/react"
 import {
   ac,
   companyAdmin,
-  deptHead,
   student,
   superAdmin,
   universityAdmin,
@@ -21,7 +20,6 @@ export const authClient = createAuthClient({
       roles: {
         super_admin: superAdmin,
         university_admin: universityAdmin,
-        dept_head: deptHead,
         student,
         company_admin: companyAdmin,
       },

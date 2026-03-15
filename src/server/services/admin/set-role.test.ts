@@ -36,7 +36,6 @@ describe("setUserRole", () => {
     const roles = [
       "student",
       "company_admin",
-      "dept_head",
       "university_admin",
       "super_admin",
     ] as const

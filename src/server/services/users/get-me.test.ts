@@ -24,6 +24,13 @@ interface UserSummary {
   image: string | null
 }
 
+interface UniversityMembershipSummary {
+  universityId: string
+  userId: string
+  role: "department_head"
+  departmentId: string | null
+}
+
 const mockGetUserById = mock<(userId: string) => Promise<UserSummary | null>>(
   () => Promise.resolve(null),
 )
@@ -34,6 +41,9 @@ const mockGetCompanyByUserId = mock<
 
 const mockGetUniversityByUserId = mock<
   (userId: string) => Promise<UniversitySummary | null>
+>(() => Promise.resolve(null))
+const mockGetUniversityMembership = mock<
+  (userId: string) => Promise<UniversityMembershipSummary | null>
 >(() => Promise.resolve(null))
 
 let getMeImportCounter = 0
@@ -50,6 +60,8 @@ describe("src/server/services/users/get-me", () => {
     mockGetCompanyByUserId.mockResolvedValue(null)
     mockGetUniversityByUserId.mockClear()
     mockGetUniversityByUserId.mockResolvedValue(null)
+    mockGetUniversityMembership.mockClear()
+    mockGetUniversityMembership.mockResolvedValue(null)
   })
 
   test("should default to student role and omit company data", async () => {
@@ -63,6 +75,7 @@ describe("src/server/services/users/get-me", () => {
         getUserById: mockGetUserById,
         getCompanyByUserId: mockGetCompanyByUserId,
         getUniversityByUserId: mockGetUniversityByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
@@ -93,6 +106,7 @@ describe("src/server/services/users/get-me", () => {
         getUserById: mockGetUserById,
         getCompanyByUserId: mockGetCompanyByUserId,
         getUniversityByUserId: mockGetUniversityByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
@@ -119,6 +133,7 @@ describe("src/server/services/users/get-me", () => {
         getUserById: mockGetUserById,
         getCompanyByUserId: mockGetCompanyByUserId,
         getUniversityByUserId: mockGetUniversityByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
@@ -146,10 +161,13 @@ describe("src/server/services/users/get-me", () => {
         getUserById: mockGetUserById,
         getCompanyByUserId: mockGetCompanyByUserId,
         getUniversityByUserId: mockGetUniversityByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
     expect(result.user.role).toBe("university_admin")
+    expect(result.user.effectiveRole).toBe("university_admin")
+    expect(result.user.rawRole).toBe("university_admin")
     expect(result.company).toBeNull()
     expect(mockGetCompanyByUserId).not.toHaveBeenCalled()
     expect(mockGetUniversityByUserId).toHaveBeenCalledWith("user-1")
@@ -184,6 +202,7 @@ describe("src/server/services/users/get-me", () => {
         getUserById: mockGetUserById,
         getCompanyByUserId: mockGetCompanyByUserId,
         getUniversityByUserId: mockGetUniversityByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
       },
     )
 
@@ -192,5 +211,36 @@ describe("src/server/services/users/get-me", () => {
     expect(result.user.role).toBe("student")
     expect(result.user.name).toBe("Fresh Name")
     expect(result.user.image).toBeNull()
+  })
+
+  test("should expose department-head effective role from university membership", async () => {
+    const { getMe } = await importGetMe()
+    mockGetUniversityMembership.mockResolvedValue({
+      universityId: "uni-1",
+      userId: "user-1",
+      role: "department_head",
+      departmentId: "dept-7",
+    })
+
+    const result = await getMe(
+      {
+        id: "user-1",
+        email: "user-1@example.com",
+        role: "university_admin",
+        onboardingCompleted: true,
+      },
+      {
+        getUserById: mockGetUserById,
+        getCompanyByUserId: mockGetCompanyByUserId,
+        getUniversityByUserId: mockGetUniversityByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
+      },
+    )
+
+    expect(result.user.role).toBe("dept_head")
+    expect(result.user.effectiveRole).toBe("dept_head")
+    expect(result.user.rawRole).toBe("university_admin")
+    expect(result.user.universityMembershipRole).toBe("department_head")
+    expect(result.user.universityDepartmentId).toBe("dept-7")
   })
 })
