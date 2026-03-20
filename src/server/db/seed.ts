@@ -635,7 +635,9 @@ async function seedSuperAdmin(db: ReturnType<typeof drizzle>) {
     return
   }
 
-  const created = await auth.api.createUser({
+  const { auth } = await import("@/lib/auth")
+
+  await auth.api.createUser({
     body: {
       email: credentials.email,
       password: credentials.password,
@@ -643,14 +645,10 @@ async function seedSuperAdmin(db: ReturnType<typeof drizzle>) {
       role: "super_admin",
       data: {
         emailVerified: true,
+        onboardingCompleted: true,
       },
     },
   })
-
-  await db
-    .update(user)
-    .set({ onboardingCompleted: true })
-    .where(eq(user.id, created.user.id))
 
   logger.info({
     event: "admin_seeded",
