@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react"
 import * as motion from "motion/react-client"
 import { getTranslations, setRequestLocale } from "next-intl/server"
+import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Link } from "@/i18n/routing"
 import { ease, reveal } from "@/lib/animations"
@@ -58,13 +59,15 @@ export default async function GoodbyePage({ params }: GoodbyePageProps) {
           {...reveal}
           transition={{ duration: 0.7, ease, delay: 0.5 }}
         >
-          <Link
-            href="/"
-            className="rounded-none inline-flex items-center justify-center gap-3 border-2 border-secondary text-secondary bg-transparent font-bold uppercase tracking-[0.15em] transition-colors duration-300 hover:bg-secondary hover:text-secondary-foreground h-10 px-5 py-2.5 text-xs group"
+          <Button
+            variant="editorial"
+            size="editorial"
+            render={<Link href="/" />}
+            className="group"
           >
             {t("returnHome")}
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-2 [[dir=rtl]_&]:group-hover:-translate-x-2" />
-          </Link>
+          </Button>
         </motion.div>
       </div>
     </main>

@@ -16,6 +16,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
 import { usePathname, useRouter } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 
@@ -29,12 +30,10 @@ const getHydratedSnapshot = () => true
 const getServerHydratedSnapshot = () => false
 
 const triggerClassName = cn(
-  "focus-visible:border-ring focus-visible:ring-ring/50 outline-none focus-visible:ring-3",
-  "flex items-center gap-2 border border-border/30 bg-transparent px-3 py-2 select-none",
+  "h-9 gap-2 border-border/30 bg-transparent px-3 select-none",
   "text-xs font-medium tracking-wide text-foreground/55 transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
   "hover:border-primary hover:text-foreground/80",
   "aria-expanded:border-primary aria-expanded:text-foreground",
-  "disabled:pointer-events-none disabled:opacity-50",
 )
 
 function getLocaleLabel(
@@ -52,8 +51,9 @@ function LanguageSwitcherFallback() {
   const locale = useLocale()
 
   return (
-    <button
-      type="button"
+    <Button
+      variant="outline"
+      size="sm"
       disabled
       aria-label={t("aria")}
       className={triggerClassName}
@@ -66,7 +66,7 @@ function LanguageSwitcherFallback() {
         className="h-3.5 w-3.5 text-foreground/35"
         aria-hidden="true"
       />
-    </button>
+    </Button>
   )
 }
 
@@ -122,9 +122,9 @@ function LanguageSwitcherContent() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
+        render={<Button variant="outline" size="sm" className={triggerClassName} />}
         disabled={isPending}
         aria-label={t("aria")}
-        className={triggerClassName}
       >
         <Globe className="h-3.5 w-3.5 text-foreground/40" aria-hidden="true" />
         <span className="min-w-8 text-start">{getLocaleLabel(t, locale)}</span>

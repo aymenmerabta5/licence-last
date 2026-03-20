@@ -36,11 +36,9 @@ export function RevokeConfirmDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="rounded-2xl">
+      <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle className="font-serif">
-            {t(`${ns}.title`)}
-          </AlertDialogTitle>
+          <AlertDialogTitle>{t(`${ns}.title`)}</AlertDialogTitle>
           <AlertDialogDescription>
             {mode === "all"
               ? t("revokeAllDialog.description", { count: count ?? 0 })
@@ -52,9 +50,9 @@ export function RevokeConfirmDialog({
             {t(`${ns}.cancel`)}
           </AlertDialogCancel>
           <AlertDialogAction
+            variant="destructive"
             onClick={onConfirm}
             disabled={isLoading}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
             {t(`${ns}.confirm`)}
           </AlertDialogAction>

@@ -8,7 +8,9 @@ export function MarqueeRibbon() {
   const t = useTranslations("marquee")
   const locale = useLocale()
   const items = t.raw("items") as string[]
-  const xKeyframes: string[] = locale === "ar" ? ["-50%", "0%"] : ["0%", "-50%"]
+  const cloneCount = 4
+  const shift = `${100 / cloneCount}%`
+  const xKeyframes: string[] = locale === "ar" ? [`-${shift}`, "0%"] : ["0%", `-${shift}`]
 
   return (
     <div
@@ -17,12 +19,16 @@ export function MarqueeRibbon() {
     >
       <div className="w-full max-w-full min-w-0 overflow-x-hidden">
         <motion.div
-          className="flex w-max whitespace-nowrap gap-12 will-change-transform"
+          className="flex w-max whitespace-nowrap will-change-transform"
           animate={{ x: xKeyframes }}
           transition={{ duration: 25, ease: "linear", repeat: Infinity }}
         >
-          {[...Array(2)].map((_, setIdx) => (
-            <div key={setIdx} className="flex items-center gap-12 shrink-0">
+          {Array.from({ length: cloneCount }).map((_, setIdx) => (
+            <div
+              key={setIdx}
+              className="flex shrink-0 items-center gap-12 pe-12"
+              aria-hidden={setIdx > 0}
+            >
               {items.map((txt, i) => (
                 <span key={i} className="flex items-center gap-3">
                   <Star

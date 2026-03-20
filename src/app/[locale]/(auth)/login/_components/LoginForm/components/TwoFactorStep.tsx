@@ -7,6 +7,7 @@ import type { TwoFactorMethod } from "@/app/[locale]/(auth)/login/_components/Lo
 import { ServerError } from "@/components/ServerError"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ease, reveal } from "@/lib/animations"
 
 interface TwoFactorStepProps {
@@ -62,30 +63,20 @@ export function TwoFactorStep({
         transition={{ duration: 0.6, ease, delay: 0.05 }}
         className="border-b border-border/60"
       >
-        <div className="flex">
+        <Tabs value={method} onValueChange={(value) => onMethodChange(value as TwoFactorMethod)}>
+          <TabsList variant="line" className="w-full">
           {methods.map(({ key, Icon }) => (
-            <button
+            <TabsTrigger
               key={key}
-              type="button"
-              onClick={() => onMethodChange(key)}
-              className={`relative flex-1 flex items-center justify-center gap-1.5 pb-3 text-[11px] font-bold uppercase tracking-[0.1em] transition-colors duration-200 ${
-                method === key
-                  ? "text-heading"
-                  : "text-muted-foreground/60 hover:text-muted-foreground"
-              }`}
+              value={key}
+              className="relative h-auto flex-1 rounded-none px-0 pb-3 text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground/60 transition-colors duration-200 hover:text-muted-foreground data-active:text-heading after:bg-primary group-data-[variant=line]/tabs-list:after:bottom-[-1px] group-data-[variant=line]/tabs-list:after:h-0.5"
             >
               <Icon className="h-3.5 w-3.5" />
               <span>{t(key)}</span>
-              {method === key && (
-                <motion.span
-                  layoutId="2fa-tab-indicator"
-                  className="absolute inset-x-0 -bottom-px h-0.5 bg-primary"
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                />
-              )}
-            </button>
+            </TabsTrigger>
           ))}
-        </div>
+          </TabsList>
+        </Tabs>
       </motion.div>
 
       <motion.div
@@ -179,14 +170,16 @@ export function TwoFactorStep({
           )}
         </Button>
 
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
           onClick={onBack}
-          className="flex items-center justify-center gap-1.5 w-full text-xs font-medium text-muted-foreground hover:text-primary transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] uppercase tracking-wide [[dir=rtl]_&]:tracking-normal"
+          className="h-auto w-full gap-1.5 px-0 py-0 text-xs font-medium uppercase tracking-wide text-muted-foreground hover:bg-transparent hover:text-primary [[dir=rtl]_&]:tracking-normal"
         >
           <ArrowLeft className="h-3.5 w-3.5 [[dir=rtl]_&]:rotate-180" />
           {t("backToLogin")}
-        </button>
+        </Button>
       </motion.div>
     </div>
   )
