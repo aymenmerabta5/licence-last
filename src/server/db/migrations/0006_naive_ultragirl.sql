@@ -1,2 +1,0 @@
-CREATE INDEX "application_createdAt_idx" ON "application" USING btree ("created_at");--> statement-breakpoint
-CREATE INDEX "internship_offer_createdAt_idx" ON "internship_offer" USING btree ("created_at");

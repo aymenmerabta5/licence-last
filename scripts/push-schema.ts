@@ -1,6 +1,25 @@
-import { drizzle } from "drizzle-orm/postgres-js"
-import { migrate } from "drizzle-orm/postgres-js/migrator"
 import postgres from "postgres"
+
+interface MigrationEntry {
+  idx: number
+  version: string
+  when: number
+  tag: string
+  breakpoints: boolean
+}
+
+interface MigrationJournal {
+  entries: MigrationEntry[]
+}
+
+interface PreparedMigration extends MigrationEntry {
+  hash: string
+  statements: string[]
+}
+
+interface PostgresLikeError extends Error {
+  code?: string
+}
 
 const databaseUrl = process.env.DATABASE_URL
 if (!databaseUrl) {
@@ -9,6 +28,75 @@ if (!databaseUrl) {
 }
 
 const sql = postgres(databaseUrl, { max: 1, prepare: false })
+const RETRYABLE_DEPENDENCY_ERROR_CODES = new Set(["42P01", "42704"])
+
+function isAlreadyExistsError(message: string): boolean {
+  return message.includes("already exists")
+}
+
+function isRetryableDependencyError(error: unknown): boolean {
+  const code = (error as PostgresLikeError | undefined)?.code
+  return typeof code === "string" && RETRYABLE_DEPENDENCY_ERROR_CODES.has(code)
+}
+
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
+
+function getStatementPreview(statement: string): string {
+  return statement.replace(/\s+/g, " ").slice(0, 200)
+}
+
+async function ensureMigrationsTable(): Promise<void> {
+  await sql`CREATE SCHEMA IF NOT EXISTS drizzle`
+  await sql`
+    CREATE TABLE IF NOT EXISTS drizzle.__drizzle_migrations (
+      id SERIAL PRIMARY KEY,
+      hash TEXT NOT NULL,
+      created_at BIGINT
+    )
+  `
+}
+
+async function getAppliedHashes(): Promise<Set<string>> {
+  const applied = await sql`SELECT hash FROM drizzle.__drizzle_migrations`
+
+  return new Set(
+    applied.map((row) => (row as Record<string, unknown>).hash as string),
+  )
+}
+
+async function recordMigration(hash: string, createdAt: number): Promise<void> {
+  await sql`
+    INSERT INTO drizzle.__drizzle_migrations (hash, created_at)
+    VALUES (${hash}, ${createdAt})
+  `
+}
+
+async function runMigrationStatements(
+  migration: PreparedMigration,
+): Promise<void> {
+  for (const statement of migration.statements) {
+    try {
+      await sql.unsafe(statement)
+    } catch (error: unknown) {
+      const message = getErrorMessage(error)
+
+      if (isAlreadyExistsError(message)) {
+        continue
+      }
+
+      if (isRetryableDependencyError(error)) {
+        throw error
+      }
+
+      console.error(
+        `Migration ${migration.tag} failed while executing: ${getStatementPreview(statement)}`,
+      )
+      throw error
+    }
+  }
+}
 
 try {
   // Read and execute each migration file in order, ignoring "already exists" errors
@@ -19,21 +107,12 @@ try {
   const migrationsDir = "./src/server/db/migrations"
   const journal = JSON.parse(
     fs.readFileSync(path.join(migrationsDir, "meta/_journal.json"), "utf8"),
-  )
+  ) as MigrationJournal
 
-  // Ensure drizzle schema and migrations table exist
-  await sql`CREATE SCHEMA IF NOT EXISTS drizzle`
-  await sql`
-    CREATE TABLE IF NOT EXISTS drizzle.__drizzle_migrations (
-      id SERIAL PRIMARY KEY,
-      hash TEXT NOT NULL,
-      created_at BIGINT
-    )
-  `
+  await ensureMigrationsTable()
 
-  // Check which migrations are already applied
-  const applied = await sql`SELECT hash FROM drizzle.__drizzle_migrations`
-  const appliedHashes = new Set(applied.map((r) => (r as Record<string, unknown>).hash as string))
+  const appliedHashes = await getAppliedHashes()
+  const pendingMigrations: PreparedMigration[] = []
 
   for (const entry of journal.entries) {
     const filePath = path.join(migrationsDir, `${entry.tag}.sql`)
@@ -45,28 +124,64 @@ try {
       continue
     }
 
-    // Split by statement breakpoint and execute each statement
-    const statements = content.split("--> statement-breakpoint").map((s: string) => s.trim()).filter(Boolean)
+    pendingMigrations.push({
+      ...entry,
+      hash,
+      statements: content
+        .split("--> statement-breakpoint")
+        .map((statement) => statement.trim())
+        .filter(Boolean),
+    })
+  }
 
-    for (const stmt of statements) {
+  const deferredErrors = new Map<string, string>()
+
+  while (pendingMigrations.length > 0) {
+    let appliedThisPass = 0
+
+    for (let index = 0; index < pendingMigrations.length; ) {
+      const migration = pendingMigrations[index]
+
       try {
-        await sql.unsafe(stmt)
-      } catch (err: unknown) {
-        const msg = err instanceof Error ? err.message : String(err)
-        // Ignore "already exists" errors — safe on fresh + partial state
-        if (msg.includes("already exists")) {
+        await runMigrationStatements(migration)
+        await recordMigration(migration.hash, migration.when)
+        console.log(`  ✓ ${migration.tag}`)
+        pendingMigrations.splice(index, 1)
+        deferredErrors.delete(migration.tag)
+        appliedThisPass += 1
+      } catch (error: unknown) {
+        if (isRetryableDependencyError(error)) {
+          const message = getErrorMessage(error)
+
+          if (!deferredErrors.has(migration.tag)) {
+            console.warn(`  … deferring ${migration.tag}: ${message}`)
+          }
+
+          deferredErrors.set(migration.tag, message)
+          index += 1
           continue
         }
-        throw err
+
+        throw error
       }
     }
 
-    // Record migration as applied
-    await sql`
-      INSERT INTO drizzle.__drizzle_migrations (hash, created_at)
-      VALUES (${hash}, ${entry.when})
-    `
-    console.log(`  ✓ ${entry.tag}`)
+    if (pendingMigrations.length === 0) {
+      break
+    }
+
+    if (appliedThisPass === 0) {
+      const unresolved = pendingMigrations
+        .map(
+          (migration) =>
+            `- ${migration.tag}: ${deferredErrors.get(migration.tag) ?? "unknown error"}`,
+        )
+        .join("\n")
+
+      throw new Error(
+        `Unable to resolve migration dependencies after retrying pending migrations:\n${unresolved}`,
+      )
+    }
   }
 
   console.log("Schema push complete")
