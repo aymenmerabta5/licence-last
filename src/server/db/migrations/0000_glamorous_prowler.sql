@@ -1,3 +1,39 @@
+CREATE TYPE "user_role" AS ENUM ('student', 'company_admin', 'dept_head', 'university_admin', 'super_admin');
+--> statement-breakpoint
+CREATE TYPE "company_status" AS ENUM ('pending', 'approved', 'rejected', 'suspended');
+--> statement-breakpoint
+CREATE TYPE "university_domain_status" AS ENUM ('pending', 'approved', 'rejected', 'disabled');
+--> statement-breakpoint
+CREATE TYPE "company_member_role" AS ENUM ('owner', 'recruiter');
+--> statement-breakpoint
+CREATE TYPE "university_member_role" AS ENUM ('department_head');
+--> statement-breakpoint
+CREATE TYPE "offer_status" AS ENUM ('draft', 'published', 'closed');
+--> statement-breakpoint
+CREATE TYPE "work_mode" AS ENUM ('on_site', 'hybrid', 'remote');
+--> statement-breakpoint
+CREATE TYPE "application_status" AS ENUM ('applied', 'company_accepted', 'company_refused', 'admin_validated', 'admin_rejected', 'withdrawn');
+--> statement-breakpoint
+CREATE TYPE "application_pipeline_stage" AS ENUM ('applied', 'screening', 'interview', 'offer', 'accepted', 'rejected');
+--> statement-breakpoint
+CREATE TYPE "document_type" AS ENUM ('agreement', 'certificate');
+--> statement-breakpoint
+CREATE TYPE "internship_type" AS ENUM ('pfe', 'immersion', 'summer', 'practical');
+--> statement-breakpoint
+CREATE TYPE "assistant_message_role" AS ENUM ('system', 'user', 'assistant');
+--> statement-breakpoint
+CREATE TYPE "document_status" AS ENUM ('pending', 'generated', 'failed');
+--> statement-breakpoint
+CREATE TYPE "proficiency_level" AS ENUM ('a1', 'a2', 'b1', 'b2', 'c1', 'c2', 'native');
+--> statement-breakpoint
+CREATE TYPE "company_report_status" AS ENUM ('open', 'reviewing', 'resolved', 'dismissed');
+--> statement-breakpoint
+CREATE TYPE "company_report_severity" AS ENUM ('low', 'medium', 'high', 'critical');
+--> statement-breakpoint
+CREATE TYPE "university_status" AS ENUM ('pending', 'approved', 'rejected');
+--> statement-breakpoint
+CREATE TYPE "interview_status" AS ENUM ('pending_confirmation', 'confirmed', 'cancelled');
+--> statement-breakpoint
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"account_id" text NOT NULL,
