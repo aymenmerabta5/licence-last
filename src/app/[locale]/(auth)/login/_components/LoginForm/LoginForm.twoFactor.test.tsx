@@ -324,7 +324,7 @@ describe("LoginForm 2FA flows", () => {
     render(<LoginForm />)
     await openTwoFactorStep()
 
-    fireEvent.click(screen.getByRole("button", { name: /Email Code/i }))
+    fireEvent.click(screen.getByRole("tab", { name: /Email Code/i }))
     fireEvent.click(screen.getByRole("button", { name: /Send Code/i }))
 
     await waitFor(() => {
@@ -343,7 +343,7 @@ describe("LoginForm 2FA flows", () => {
     render(<LoginForm />)
     await openTwoFactorStep()
 
-    fireEvent.click(screen.getByRole("button", { name: /Email Code/i }))
+    fireEvent.click(screen.getByRole("tab", { name: /Email Code/i }))
     fireEvent.change(screen.getByLabelText("Verification code"), {
       target: { value: "654321" },
     })
