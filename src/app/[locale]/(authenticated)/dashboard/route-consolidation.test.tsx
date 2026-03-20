@@ -21,6 +21,16 @@ function applyRouteMocks() {
     localeRedirect: localeRedirectMock,
   }))
 
+  mock.module("@/lib/dashboard-access", () => ({
+    requireOnboardedStudent: async () => {
+      const user = await requireRoleMock()
+      if (!user.onboardingCompleted) {
+        return localeRedirectMock("/onboarding/student")
+      }
+      return { user }
+    },
+  }))
+
   mock.module(
     "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient",
     () => ({

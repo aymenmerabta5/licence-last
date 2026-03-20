@@ -72,7 +72,7 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
   }
 
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={handleOpenChange}>
       <DropdownMenuTrigger
         render={
           <Button

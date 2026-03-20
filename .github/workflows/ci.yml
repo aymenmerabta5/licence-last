@@ -1,241 +1,127 @@
-name: CI (Disabled)
+name: CI
 
 on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  disabled:
+  # Foundation checks
+  lint-and-typecheck:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - run: echo "This workflow is temporarily disabled."
+      - name: Checkout
+        uses: actions/checkout@v4
 
-# name: CI
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
 
-# on:
-#   push:
-#     branches:
-#       - master
-#       - main
-#   pull_request:
-#   workflow_dispatch:
+      - name: Cache Bun install cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-cache-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-cache-
 
-# concurrency:
-#   group: ci-${{ github.workflow }}-${{ github.ref }}
-#   cancel-in-progress: true
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
-# jobs:
-#   # Foundation checks
-#   lint-and-typecheck:
-#     runs-on: ubuntu-latest
-#     permissions:
-#       contents: read
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
+      - name: Lint
+        run: bun run lint
 
-#       - name: Setup Bun
-#         uses: oven-sh/setup-bun@v2
-#         with:
-#           bun-version: 1.3.9
+      - name: Architecture guard
+        run: bun run lint:architecture
 
-#       - name: Cache Bun install cache
-#         uses: actions/cache@v4
-#         with:
-#           path: ~/.bun/install/cache
-#           key: ${{ runner.os }}-bun-cache-${{ hashFiles('bun.lock') }}
-#           restore-keys: |
-#             ${{ runner.os }}-bun-cache-
+      - name: RTL logical CSS guard
+        run: bun run lint:rtl-logical
 
-#       - name: Install dependencies
-#         run: bun install --frozen-lockfile
+      - name: Typecheck
+        run: bun run typecheck
 
-#       - name: Lint
-#         run: bun run lint
+  # Unit & integration tests
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    needs: lint-and-typecheck
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/stag
+      BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci!!
+      NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-#       - name: Architecture guard
-#         run: bun run lint:architecture
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
 
-#       - name: RTL logical CSS guard
-#         run: bun run lint:rtl-logical
+      - name: Cache Bun install cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-cache-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-cache-
 
-#       - name: Typecheck
-#         run: bun run typecheck
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
-#   # Bulk tests + oRPC route tests isolated (mock.module needs process isolation)
-#   test:
-#     runs-on: ubuntu-latest
-#     permissions:
-#       contents: read
-#     needs: lint-and-typecheck
-#     env:
-#       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/stag
-#       BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci!!
-#       NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
-#       NEXT_TELEMETRY_DISABLED: "1"
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
+      - name: Run all tests
+        run: bun run test:ci
 
-#       - name: Setup Bun
-#         uses: oven-sh/setup-bun@v2
-#         with:
-#           bun-version: 1.3.9
+  # Build check
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    needs: test
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/stag
+      BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci!!
+      NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-#       - name: Cache Bun install cache
-#         uses: actions/cache@v4
-#         with:
-#           path: ~/.bun/install/cache
-#           key: ${{ runner.os }}-bun-cache-${{ hashFiles('bun.lock') }}
-#           restore-keys: |
-#             ${{ runner.os }}-bun-cache-
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
 
-#       - name: Install dependencies
-#         run: bun install --frozen-lockfile
+      - name: Cache Bun install cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-cache-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-cache-
 
-#       - name: Run all tests
-#         run: bun run test:ci
+      - name: Cache Next.js build cache
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-next-cache-${{ hashFiles('bun.lock', 'package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-next-cache-
 
-#   # Coverage (runs each file isolated to avoid memory issues with --coverage)
-#   test-coverage:
-#     runs-on: ubuntu-latest
-#     permissions:
-#       contents: read
-#     needs: lint-and-typecheck
-#     env:
-#       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/stag
-#       BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci!!
-#       NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
-#       NEXT_TELEMETRY_DISABLED: "1"
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
-#       - name: Setup Bun
-#         uses: oven-sh/setup-bun@v2
-#         with:
-#           bun-version: 1.3.9
-
-#       - name: Cache Bun install cache
-#         uses: actions/cache@v4
-#         with:
-#           path: ~/.bun/install/cache
-#           key: ${{ runner.os }}-bun-cache-${{ hashFiles('bun.lock') }}
-#           restore-keys: |
-#             ${{ runner.os }}-bun-cache-
-
-#       - name: Install dependencies
-#         run: bun install --frozen-lockfile
-
-#       - name: Run coverage suite
-#         run: bun run test:coverage
-
-#       - name: Upload coverage artifacts
-#         if: always()
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: bun-coverage
-#           path: coverage/
-#           retention-days: 7
-
-#   # Build check (must pass before E2E)
-#   build:
-#     runs-on: ubuntu-latest
-#     permissions:
-#       contents: read
-#     needs: [test, test-coverage]
-#     env:
-#       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/stag
-#       BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci!!
-#       NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
-#       NEXT_TELEMETRY_DISABLED: "1"
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
-
-#       - name: Setup Bun
-#         uses: oven-sh/setup-bun@v2
-#         with:
-#           bun-version: 1.3.9
-
-#       - name: Cache Bun install cache
-#         uses: actions/cache@v4
-#         with:
-#           path: ~/.bun/install/cache
-#           key: ${{ runner.os }}-bun-cache-${{ hashFiles('bun.lock') }}
-#           restore-keys: |
-#             ${{ runner.os }}-bun-cache-
-
-#       - name: Cache Next.js build cache
-#         uses: actions/cache@v4
-#         with:
-#           path: .next/cache
-#           key: ${{ runner.os }}-next-cache-${{ hashFiles('bun.lock', 'package.json') }}
-#           restore-keys: |
-#             ${{ runner.os }}-next-cache-
-
-#       - name: Install dependencies
-#         run: bun install --frozen-lockfile
-
-#       - name: Build
-#         run: bun run build
-
-#   # E2E tests with Playwright
-#   test-e2e:
-#     runs-on: ubuntu-latest
-#     permissions:
-#       contents: read
-#     needs: build
-#     env:
-#       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/stag
-#       BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci!!
-#       NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
-#       NEXT_TELEMETRY_DISABLED: "1"
-#     services:
-#       postgres:
-#         image: postgres:16
-#         env:
-#           POSTGRES_USER: postgres
-#           POSTGRES_PASSWORD: postgres
-#           POSTGRES_DB: stag
-#         options: >-
-#           --health-cmd pg_isready
-#           --health-interval 10s
-#           --health-timeout 5s
-#           --health-retries 5
-#         ports:
-#           - 5432:5432
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
-
-#       - name: Setup Bun
-#         uses: oven-sh/setup-bun@v2
-#         with:
-#           bun-version: 1.3.9
-
-#       - name: Cache Bun install cache
-#         uses: actions/cache@v4
-#         with:
-#           path: ~/.bun/install/cache
-#           key: ${{ runner.os }}-bun-cache-${{ hashFiles('bun.lock') }}
-#           restore-keys: |
-#             ${{ runner.os }}-bun-cache-
-
-#       - name: Install dependencies
-#         run: bun install --frozen-lockfile
-
-#       - name: Install Playwright browsers
-#         run: bunx playwright install chromium
-
-#       - name: Run E2E tests
-#         run: bun run test:e2e
-#         env:
-#           CI: true
-
-#       - name: Upload Playwright report
-#         uses: actions/upload-artifact@v4
-#         if: always()
-#         with:
-#           name: playwright-report
-#           path: playwright-report/
-#           retention-days: 7
+      - name: Build
+        run: bun run build

@@ -47,12 +47,7 @@ const CATEGORY_OPTIONS = [
   "other",
 ] as const
 
-const SEVERITY_OPTIONS: CompanyReportSeverity[] = [
-  "low",
-  "medium",
-  "high",
-  "critical",
-]
+const SEVERITY_OPTIONS: CompanyReportSeverity[] = ["low", "medium", "high", "critical"]
 
 export function ReportCompanyDialog({
   companyName,
