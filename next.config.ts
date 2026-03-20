@@ -58,6 +58,9 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
   reactCompiler: true,
   output: "standalone",
+  experimental: {
+    turbopackFileSystemCacheForBuild: true,
+  },
   outputFileTracingIncludes: {
     "/*": ["./node_modules/dejavu-fonts-ttf/ttf/**/*"],
   },

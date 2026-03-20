@@ -65,17 +65,15 @@ export function Navbar() {
         aria-label={t("aria.mainNav")}
       >
         <div className="flex items-center gap-3">
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="icon-lg"
             onClick={() => setMobileOpen(true)}
-            className={cn(
-              "md:hidden p-2.5 rounded-full hover:bg-secondary/80 transition-colors",
-              "focus-visible:border-ring focus-visible:ring-ring/50 outline-none focus-visible:ring-3",
-            )}
+            className="md:hidden rounded-full text-foreground/70 hover:bg-secondary/80 hover:text-foreground"
             aria-label={t("aria.openMenu")}
           >
             <Menu className="h-5 w-5 text-foreground/70" aria-hidden="true" />
-          </button>
+          </Button>
 
           <Link
             href="/"
@@ -124,10 +122,13 @@ export function Navbar() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger
-                  className={cn(
-                    "flex items-center gap-2.5 p-1 rounded-full hover:bg-secondary/80 transition-all outline-none group",
-                    "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3",
-                  )}
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon-lg"
+                      className="group rounded-full p-1 hover:bg-secondary/80"
+                    />
+                  }
                   aria-label={t("aria.accountMenu")}
                 >
                   <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[13px] shrink-0 group-hover:bg-primary group-hover:text-white transition-all ring-2 ring-transparent group-hover:ring-primary/20">
@@ -137,7 +138,7 @@ export function Navbar() {
                 <DropdownMenuContent
                   align="end"
                   sideOffset={10}
-                  className="w-64 mt-2 p-1.5 rounded-xl border-border/40 shadow-xl backdrop-blur-xl bg-background/95"
+                  className="w-64"
                 >
                   <DropdownMenuGroup>
                     <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-1">
@@ -156,7 +157,8 @@ export function Navbar() {
 
                   <DropdownMenuGroup>
                     <DropdownMenuItem
-                      className="text-destructive focus:bg-destructive/5 focus:text-destructive rounded-lg h-9 cursor-pointer transition-colors"
+                      variant="destructive"
+                      className="rounded-lg h-9 cursor-pointer transition-colors"
                       onClick={handleLogout}
                     >
                       <LogOut className="h-4 w-4 me-2" /> {t("logout")}

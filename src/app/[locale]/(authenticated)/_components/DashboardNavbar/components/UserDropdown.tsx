@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { UserRoleBadge } from "@/components/UserRoleBadge"
+import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 
 interface UserDropdownProps {
@@ -40,7 +41,14 @@ export function UserDropdown({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="group flex min-w-0 items-center gap-2.5 outline-none">
+      <DropdownMenuTrigger
+        render={
+          <Button
+            variant="ghost"
+            className="group h-auto min-w-0 items-center gap-2.5 rounded-full px-2 py-1 hover:bg-secondary/80"
+          />
+        }
+      >
         <div className="hidden min-w-0 xl:flex items-center gap-2.5">
           <p className="max-w-[10rem] truncate text-sm font-medium text-heading transition-colors group-hover:text-primary">
             {user.name || "User Name"}
@@ -66,10 +74,7 @@ export function UserDropdown({
         </div>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent
-        align="end"
-        className="w-72 mt-2 p-1.5 rounded-xl border-border/40 shadow-xl backdrop-blur-xl bg-background/95"
-      >
+      <DropdownMenuContent align="end" className="w-72">
         {/* Profile Links */}
         <DropdownMenuGroup>
           <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-1">
@@ -91,7 +96,8 @@ export function UserDropdown({
         <DropdownMenuSeparator className="my-1.5 opacity-50" />
         <DropdownMenuGroup>
           <DropdownMenuItem
-            className="text-destructive focus:bg-destructive/5 focus:text-destructive rounded-lg h-9 cursor-pointer transition-colors"
+            variant="destructive"
+            className="rounded-lg h-9 cursor-pointer transition-colors"
             disabled={isLoggingOut}
             onClick={onLogout}
           >

@@ -90,11 +90,11 @@ export function DashboardClientProvider({
           />
         )}
 
-        {/* Mobile Sidebar — Drawer */}
+        {/* Shared Sidebar */}
         <div
-          className={`fixed inset-y-0 start-0 z-50 lg:hidden transform transition-all duration-500 ease-[cubic-bezier(0.4,1,0.2,1)] ${isSidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"}`}
+          className={`fixed inset-y-0 start-0 z-50 transform transition-all duration-500 ease-[cubic-bezier(0.4,1,0.2,1)] lg:static lg:z-auto lg:translate-x-0 lg:opacity-100 lg:shrink-0 ${isSidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0 pointer-events-none lg:pointer-events-auto"}`}
         >
-          <div className="bg-background h-full shadow-2xl shadow-foreground/5">
+          <div className="bg-background h-full shadow-2xl shadow-foreground/5 lg:shadow-none">
             <Suspense fallback={<DashboardSidebarFallback />}>
               <DashboardSidebar
                 role={effectiveRole}

@@ -8,6 +8,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
@@ -44,26 +45,20 @@ export function TimelineModal({
       }}
     >
       <DialogContent
-        className="max-w-lg space-y-4 border border-border p-6"
-        showCloseButton={false}
+        size="lg"
+        className="space-y-4"
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="space-y-4"
         >
-          <DialogHeader className="flex-row items-center justify-between gap-2">
-            <DialogTitle className="font-serif text-lg text-heading">
-              Application Timeline
-            </DialogTitle>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              Close
-            </Button>
+          <DialogHeader>
+            <DialogTitle>Application Timeline</DialogTitle>
+            <DialogDescription className="sr-only">
+              Timeline of application stage updates and related events.
+            </DialogDescription>
           </DialogHeader>
-
-          <DialogDescription className="sr-only">
-            Timeline of application stage updates and related events.
-          </DialogDescription>
 
           {isLoading && (
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -95,6 +90,12 @@ export function TimelineModal({
               )}
             </div>
           ))}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={onClose}>
+              Close
+            </Button>
+          </DialogFooter>
         </motion.div>
       </DialogContent>
     </Dialog>

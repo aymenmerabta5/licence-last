@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react"
 import { Bell, Globe, Lock, User } from "lucide-react"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 
 interface Tab {
@@ -35,29 +36,27 @@ export function SettingsTabs({ activeTab, onTabChange }: SettingsTabsProps) {
   return (
     <nav className="lg:col-span-3" aria-label="Settings sections">
       {/* ── Mobile: Horizontal scrollable pill tabs ── */}
-      <div className="flex lg:hidden overflow-x-auto gap-2 pb-2 -mx-2 px-2 scrollbar-none">
-        {TABS.map((tab) => {
-          const Icon = tab.icon
-          const isActive = activeTab === tab.id
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => onTabChange(tab.id)}
-              aria-current={isActive ? "page" : undefined}
-              className={cn(
-                "flex items-center gap-2.5 whitespace-nowrap rounded-2xl px-5 py-3 text-sm font-bold transition-all duration-300 shrink-0 border",
-                isActive
-                  ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/25"
-                  : "bg-card text-muted-foreground border-border/40 shadow-sm hover:bg-primary/[0.06] hover:text-foreground",
-              )}
-            >
-              <Icon className="h-4 w-4" />
-              {tab.label}
-            </button>
-          )
-        })}
-      </div>
+      <Tabs
+        value={activeTab}
+        onValueChange={onTabChange}
+        className="lg:hidden"
+      >
+        <TabsList className="scrollbar-none -mx-2 flex w-auto overflow-x-auto gap-2 bg-transparent px-2 pb-2 pt-0">
+          {TABS.map((tab) => {
+            const Icon = tab.icon
+            return (
+              <TabsTrigger
+                key={tab.id}
+                value={tab.id}
+                className="h-auto shrink-0 whitespace-nowrap rounded-2xl border px-5 py-3 text-sm font-bold shadow-sm transition-all duration-300 data-active:border-primary data-active:bg-primary data-active:text-primary-foreground data-active:shadow-lg data-active:shadow-primary/25 not-data-active:border-border/40 not-data-active:bg-card not-data-active:text-muted-foreground not-data-active:hover:bg-primary/[0.06] not-data-active:hover:text-foreground after:hidden"
+              >
+                <Icon className="h-4 w-4" />
+                {tab.label}
+              </TabsTrigger>
+            )
+          })}
+        </TabsList>
+      </Tabs>
 
       {/* ── Desktop: Vertical sidebar tabs with card container ── */}
       <div className="hidden lg:block lg:sticky lg:top-24">
@@ -66,66 +65,71 @@ export function SettingsTabs({ activeTab, onTabChange }: SettingsTabsProps) {
             Navigation
           </h3>
 
-          <div className="space-y-1">
-            {TABS.map((tab) => {
-              const Icon = tab.icon
-              const isActive = activeTab === tab.id
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => onTabChange(tab.id)}
-                  aria-current={isActive ? "page" : undefined}
-                  className={cn(
-                    "group relative w-full flex items-center gap-4 px-4 py-3.5 text-start rounded-xl transition-all duration-300 ease-out",
-                    isActive
-                      ? "bg-primary/[0.06] dark:bg-primary/[0.12]"
-                      : "hover:bg-muted/80",
-                  )}
-                >
-                  {isActive && (
-                    <div className="absolute start-0 top-2 bottom-2 w-[3px] bg-primary rounded-e-full shadow-[0_0_12px_var(--color-primary)]" />
-                  )}
-
-                  <span
+          <Tabs
+            value={activeTab}
+            onValueChange={onTabChange}
+            orientation="vertical"
+            className="gap-0"
+          >
+            <TabsList className="h-auto w-full flex-col gap-1 bg-transparent p-0">
+              {TABS.map((tab) => {
+                const Icon = tab.icon
+                const isActive = activeTab === tab.id
+                return (
+                  <TabsTrigger
+                    key={tab.id}
+                    value={tab.id}
                     className={cn(
-                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300",
+                      "group relative h-auto w-full justify-start gap-4 rounded-xl px-4 py-3.5 text-start transition-all duration-300 ease-out after:hidden",
                       isActive
-                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 scale-105"
-                        : "bg-muted text-muted-foreground group-hover:bg-primary/[0.08] group-hover:text-foreground group-hover:scale-105 group-active:scale-95",
+                        ? "bg-primary/[0.06] text-primary dark:bg-primary/[0.12]"
+                        : "hover:bg-muted/80",
                     )}
                   >
-                    <Icon
-                      className={cn(
-                        "h-[18px] w-[18px] transition-all duration-300",
-                        isActive && "stroke-[2.5px]",
-                      )}
-                    />
-                  </span>
+                    {isActive && (
+                      <span className="absolute start-0 top-2 bottom-2 w-[3px] rounded-e-full bg-primary shadow-[0_0_12px_var(--color-primary)]" />
+                    )}
 
-                  <div className="min-w-0 flex-1">
                     <span
                       className={cn(
-                        "block text-[13px] font-bold tracking-wide transition-colors duration-300",
+                        "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300",
                         isActive
-                          ? "text-primary"
-                          : "text-heading group-hover:text-foreground",
+                          ? "scale-105 bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                          : "bg-muted text-muted-foreground group-hover:bg-primary/[0.08] group-hover:text-foreground group-hover:scale-105 group-active:scale-95",
                       )}
                     >
-                      {tab.label}
+                      <Icon
+                        className={cn(
+                          "h-[18px] w-[18px] transition-all duration-300",
+                          isActive && "stroke-[2.5px]",
+                        )}
+                      />
                     </span>
-                    <span className="block text-[11px] text-muted-foreground/50 leading-relaxed mt-0.5 truncate font-medium">
-                      {tab.hint}
-                    </span>
-                  </div>
 
-                  {isActive && (
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_6px_var(--color-primary)] shrink-0" />
-                  )}
-                </button>
-              )
-            })}
-          </div>
+                    <span className="min-w-0 flex-1">
+                      <span
+                        className={cn(
+                          "block text-[13px] font-bold tracking-wide transition-colors duration-300",
+                          isActive
+                            ? "text-primary"
+                            : "text-heading group-hover:text-foreground",
+                        )}
+                      >
+                        {tab.label}
+                      </span>
+                      <span className="mt-0.5 block truncate text-[11px] font-medium leading-relaxed text-muted-foreground/50">
+                        {tab.hint}
+                      </span>
+                    </span>
+
+                    {isActive && (
+                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary shadow-[0_0_6px_var(--color-primary)]" />
+                    )}
+                  </TabsTrigger>
+                )
+              })}
+            </TabsList>
+          </Tabs>
 
           {/* Decorative footer */}
           <div className="pt-4 pb-2 px-4 mt-2 border-t border-border/15">

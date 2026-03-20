@@ -31,11 +31,9 @@ export function DeleteAccountDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={handleOpenChange}>
-      <AlertDialogContent className="sm:max-w-md rounded-2xl">
+      <AlertDialogContent size="lg">
         <AlertDialogHeader>
-          <AlertDialogTitle className="font-serif text-destructive">
-            {t("title")}
-          </AlertDialogTitle>
+          <AlertDialogTitle className="text-destructive">{t("title")}</AlertDialogTitle>
           <AlertDialogDescription>{t("description")}</AlertDialogDescription>
         </AlertDialogHeader>
 

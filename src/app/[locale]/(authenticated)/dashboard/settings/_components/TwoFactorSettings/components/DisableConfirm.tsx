@@ -52,8 +52,8 @@ export function DisableConfirm({ state }: DisableConfirmProps) {
       <div className="flex gap-2">
         <Button
           type="button"
-          variant="editorial"
-          className="bg-destructive hover:bg-destructive/90 text-white rounded-xl h-11"
+          variant="destructive"
+          className="h-11"
           disabled={state.isLoading}
           onClick={state.confirmDisable}
         >
@@ -65,8 +65,8 @@ export function DisableConfirm({ state }: DisableConfirmProps) {
         </Button>
         <Button
           type="button"
-          variant="editorial-outline"
-          className="rounded-xl h-11"
+          variant="outline"
+          className="h-11"
           onClick={state.cancel}
         >
           {t("cancel")}

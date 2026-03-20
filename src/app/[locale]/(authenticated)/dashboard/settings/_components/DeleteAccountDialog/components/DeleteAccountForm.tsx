@@ -59,8 +59,8 @@ export function DeleteAccountForm({ state }: DeleteAccountFormProps) {
         disabled={
           state.isLoading || !state.isConfirmed || !state.password.trim()
         }
-        variant="editorial"
-        className="w-full rounded-xl h-11 bg-destructive text-destructive-foreground hover:bg-destructive/90"
+        variant="destructive"
+        className="h-11 w-full"
       >
         {state.isLoading ? (
           <>

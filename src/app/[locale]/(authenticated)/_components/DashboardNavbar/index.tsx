@@ -1,17 +1,28 @@
 "use client"
 
 import { Menu } from "lucide-react"
+import dynamic from "next/dynamic"
 import { useSyncExternalStore } from "react"
 import { useDashboard } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import { UserDropdown } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/components/UserDropdown"
 import type { NavbarUser } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
-import { NotificationBell } from "@/components/NotificationBell"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { useLogout } from "@/hooks/useLogout"
 import { usePathname } from "@/i18n/routing"
 
 const emptySubscribe = () => () => {}
+const NotificationBell = dynamic(
+  () =>
+    import("@/components/NotificationBell").then((module) => ({
+      default: module.NotificationBell,
+    })),
+  {
+    loading: () => (
+      <div className="h-11 w-11 rounded-full" aria-hidden="true" />
+    ),
+  },
+)
 
 export function DashboardNavbar({ user }: { user: NavbarUser }) {
   const pathname = usePathname()
