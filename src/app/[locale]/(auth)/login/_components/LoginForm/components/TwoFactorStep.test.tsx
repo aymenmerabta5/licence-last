@@ -56,7 +56,7 @@ describe("TwoFactorStep", () => {
       />,
     )
 
-    fireEvent.click(screen.getByRole("button", { name: /Email Code/i }))
+    fireEvent.click(screen.getByRole("tab", { name: /Email Code/i }))
 
     expect(onMethodChange).toHaveBeenCalledTimes(1)
     expect(onMethodChange).toHaveBeenCalledWith("otp")
