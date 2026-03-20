@@ -1,10 +1,10 @@
 import { randomUUID } from "node:crypto"
-import { hashPassword } from "better-auth/crypto"
 import { eq } from "drizzle-orm"
 import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
+import { auth } from "@/lib/auth"
 import * as schema from "@/server/db/schema"
-import { account, user } from "@/server/db/schema/auth"
+import { user } from "@/server/db/schema/auth"
 import { department, departmentSkill } from "@/server/db/schema/departments"
 import { skillTag } from "@/server/db/schema/skills"
 import { university, universityDomain } from "@/server/db/schema/universities"
@@ -635,25 +635,22 @@ async function seedSuperAdmin(db: ReturnType<typeof drizzle>) {
     return
   }
 
-  const userId = randomUUID()
-  const hashedPassword = await hashPassword(credentials.password)
-
-  await db.insert(user).values({
-    id: userId,
-    email: credentials.email,
-    name: credentials.name,
-    role: "super_admin",
-    emailVerified: true,
-    onboardingCompleted: true,
+  const created = await auth.api.createUser({
+    body: {
+      email: credentials.email,
+      password: credentials.password,
+      name: credentials.name,
+      role: "super_admin",
+      data: {
+        emailVerified: true,
+      },
+    },
   })
 
-  await db.insert(account).values({
-    id: randomUUID(),
-    accountId: userId,
-    providerId: "credential",
-    userId,
-    password: hashedPassword,
-  })
+  await db
+    .update(user)
+    .set({ onboardingCompleted: true })
+    .where(eq(user.id, created.user.id))
 
   logger.info({
     event: "admin_seeded",
