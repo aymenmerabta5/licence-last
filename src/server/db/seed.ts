@@ -2,7 +2,6 @@ import { randomUUID } from "node:crypto"
 import { eq } from "drizzle-orm"
 import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
-import { auth } from "@/lib/auth"
 import * as schema from "@/server/db/schema"
 import { user } from "@/server/db/schema/auth"
 import { department, departmentSkill } from "@/server/db/schema/departments"
@@ -635,7 +634,9 @@ async function seedSuperAdmin(db: ReturnType<typeof drizzle>) {
     return
   }
 
-  const created = await auth.api.createUser({
+  const { auth } = await import("@/lib/auth")
+
+  await auth.api.createUser({
     body: {
       email: credentials.email,
       password: credentials.password,
@@ -643,14 +644,10 @@ async function seedSuperAdmin(db: ReturnType<typeof drizzle>) {
       role: "super_admin",
       data: {
         emailVerified: true,
+        onboardingCompleted: true,
       },
     },
   })
-
-  await db
-    .update(user)
-    .set({ onboardingCompleted: true })
-    .where(eq(user.id, created.user.id))
 
   logger.info({
     event: "admin_seeded",
