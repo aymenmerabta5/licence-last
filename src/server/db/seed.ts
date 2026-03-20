@@ -1,14 +1,7 @@
-import { randomUUID } from "node:crypto"
-import { eq } from "drizzle-orm"
-import { drizzle } from "drizzle-orm/postgres-js"
+import { randomBytes, randomUUID, scryptSync } from "node:crypto"
 import postgres from "postgres"
-import { auth } from "@/lib/auth"
-import * as schema from "@/server/db/schema"
-import { user } from "@/server/db/schema/auth"
-import { department, departmentSkill } from "@/server/db/schema/departments"
-import { skillTag } from "@/server/db/schema/skills"
-import { university, universityDomain } from "@/server/db/schema/universities"
-import { logger } from "@/server/logging/logger"
+
+const logger = console
 
 /**
  * Parse a comma-separated string of domains into an array of normalized domains.
@@ -22,6 +15,7 @@ export function parseDomains(input: string | undefined): string[] {
     .filter(Boolean)
 }
 
+type SeedDb = ReturnType<typeof postgres>
 type SeedUniversity = { name: string; domains: string[] }
 
 const SEED_UNIVERSITIES: SeedUniversity[] = [
@@ -31,49 +25,51 @@ const SEED_UNIVERSITIES: SeedUniversity[] = [
   },
 ]
 
-async function seedUniversity(
-  db: ReturnType<typeof drizzle>,
-  entry: SeedUniversity,
-) {
-  const [existing] = await db
-    .select({ id: university.id })
-    .from(university)
-    .where(eq(university.name, entry.name))
-    .limit(1)
+async function seedUniversity(db: SeedDb, entry: SeedUniversity) {
+  const universityRows = await db<{ id: string }[]>`
+    select id
+    from "university"
+    where "name" = ${entry.name}
+    limit 1
+  `
 
-  const universityId = existing?.id ?? randomUUID()
+  const universityId = universityRows[0]?.id ?? randomUUID()
 
-  if (!existing) {
-    await db.insert(university).values({ id: universityId, name: entry.name })
+  if (!universityRows[0]) {
+    await db`
+      insert into "university" ("id", "name")
+      values (${universityId}, ${entry.name})
+    `
     logger.info({ event: "university_seeded", name: entry.name })
   }
 
   for (const domain of entry.domains) {
-    const [existingDomain] = await db
-      .select({ id: universityDomain.id, status: universityDomain.status })
-      .from(universityDomain)
-      .where(eq(universityDomain.domain, domain))
-      .limit(1)
+    const domainRows = await db<{ id: string; status: string }[]>`
+      select id, status
+      from "university_domain"
+      where "domain" = ${domain}
+      limit 1
+    `
+
+    const existingDomain = domainRows[0]
 
     if (!existingDomain) {
-      await db.insert(universityDomain).values({
-        id: randomUUID(),
-        universityId,
-        domain,
-        status: "approved",
-      })
+      await db`
+        insert into "university_domain" ("id", "university_id", "domain", "status")
+        values (${randomUUID()}, ${universityId}, ${domain}, ${"approved"})
+      `
       logger.info({ event: "domain_approved", domain })
       continue
     }
 
     if (existingDomain.status !== "approved") {
-      await db
-        .update(universityDomain)
-        .set({
-          status: "approved",
-          universityId,
-        })
-        .where(eq(universityDomain.id, existingDomain.id))
+      await db`
+        update "university_domain"
+        set
+          "status" = ${"approved"},
+          "university_id" = ${universityId}
+        where "id" = ${existingDomain.id}
+      `
       logger.info({ event: "domain_updated", domain, status: "approved" })
     }
   }
@@ -216,22 +212,21 @@ function toSlug(name: string): string {
     .replace(/^-+|-+$/g, "")
 }
 
-async function seedSkillTags(db: ReturnType<typeof drizzle>) {
+async function seedSkillTags(db: SeedDb) {
   for (const entry of SEED_SKILL_TAGS) {
     const slug = toSlug(entry.name)
-    const [existing] = await db
-      .select({ id: skillTag.id })
-      .from(skillTag)
-      .where(eq(skillTag.slug, slug))
-      .limit(1)
+    const existingRows = await db<{ id: string }[]>`
+      select id
+      from "skill_tag"
+      where "slug" = ${slug}
+      limit 1
+    `
 
-    if (!existing) {
-      await db.insert(skillTag).values({
-        id: randomUUID(),
-        name: entry.name,
-        slug,
-        category: entry.category,
-      })
+    if (!existingRows[0]) {
+      await db`
+        insert into "skill_tag" ("id", "name", "slug", "category")
+        values (${randomUUID()}, ${entry.name}, ${slug}, ${entry.category})
+      `
       logger.info({ event: "skill_tag_seeded", name: entry.name })
     }
   }
@@ -504,14 +499,17 @@ const SEED_DEPARTMENTS: Record<string, string[]> = {
   ],
 }
 
-async function seedDepartments(db: ReturnType<typeof drizzle>) {
-  const [uni] = await db
-    .select({ id: university.id })
-    .from(university)
-    .where(eq(university.name, "University Of Constantine 2"))
-    .limit(1)
+async function seedDepartments(db: SeedDb) {
+  const universityRows = await db<{ id: string }[]>`
+    select id
+    from "university"
+    where "name" = ${"University Of Constantine 2"}
+    limit 1
+  `
 
-  if (!uni) {
+  const seededUniversity = universityRows[0]
+
+  if (!seededUniversity) {
     logger.warn({
       event: "department_seed_skipped",
       reason: "university not found",
@@ -520,60 +518,64 @@ async function seedDepartments(db: ReturnType<typeof drizzle>) {
   }
 
   for (const name of Object.keys(SEED_DEPARTMENTS)) {
-    const [existing] = await db
-      .select({ id: department.id })
-      .from(department)
-      .where(eq(department.name, name))
-      .limit(1)
+    const departmentRows = await db<{ id: string }[]>`
+      select id
+      from "department"
+      where "name" = ${name}
+        and "university_id" = ${seededUniversity.id}
+      limit 1
+    `
 
-    if (!existing) {
-      await db.insert(department).values({
-        id: randomUUID(),
-        universityId: uni.id,
-        name,
-      })
+    if (!departmentRows[0]) {
+      await db`
+        insert into "department" ("id", "university_id", "name")
+        values (${randomUUID()}, ${seededUniversity.id}, ${name})
+      `
       logger.info({ event: "department_seeded", name })
     }
   }
 }
 
-async function seedDepartmentSkills(db: ReturnType<typeof drizzle>) {
-  // Build a slug→id lookup for all skill tags
-  const allSkills = await db
-    .select({ id: skillTag.id, slug: skillTag.slug, name: skillTag.name })
-    .from(skillTag)
-  const skillByName = new Map(allSkills.map((s) => [s.name, s.id]))
+async function seedDepartmentSkills(db: SeedDb) {
+  const allSkills = await db<{ id: string; name: string; slug: string }[]>`
+    select id, name, slug
+    from "skill_tag"
+  `
+  const skillByName = new Map(allSkills.map((skill) => [skill.name, skill.id]))
 
-  // Build a name→id lookup for all departments
-  const allDepts = await db
-    .select({ id: department.id, name: department.name })
-    .from(department)
-  const deptByName = new Map(allDepts.map((d) => [d.name, d.id]))
+  const allDepartments = await db<{ id: string; name: string }[]>`
+    select id, name
+    from "department"
+  `
+  const departmentByName = new Map(
+    allDepartments.map((department) => [department.name, department.id]),
+  )
 
-  for (const [deptName, skillNames] of Object.entries(SEED_DEPARTMENTS)) {
-    const deptId = deptByName.get(deptName)
-    if (!deptId) continue
+  for (const [departmentName, skillNames] of Object.entries(SEED_DEPARTMENTS)) {
+    const departmentId = departmentByName.get(departmentName)
+    if (!departmentId) continue
 
     const uniqueSkillNames = [...new Set(skillNames)]
     let seeded = 0
 
     for (const skillName of uniqueSkillNames) {
       const skillId = skillByName.get(skillName)
+
       if (!skillId) {
         logger.warn({
           event: "department_skill_skip",
-          deptName,
+          deptName: departmentName,
           skillName,
           reason: "skill not found",
         })
         continue
       }
 
-      // onConflictDoNothing skips if the (departmentId, skillTagId) pair already exists
-      await db
-        .insert(departmentSkill)
-        .values({ departmentId: deptId, skillTagId: skillId })
-        .onConflictDoNothing()
+      await db`
+        insert into "department_skill" ("department_id", "skill_tag_id")
+        values (${departmentId}, ${skillId})
+        on conflict ("department_id", "skill_tag_id") do nothing
+      `
 
       seeded++
     }
@@ -581,7 +583,7 @@ async function seedDepartmentSkills(db: ReturnType<typeof drizzle>) {
     if (seeded > 0) {
       logger.info({
         event: "department_skills_seeded",
-        department: deptName,
+        department: departmentName,
         count: seeded,
       })
     }
@@ -589,6 +591,12 @@ async function seedDepartmentSkills(db: ReturnType<typeof drizzle>) {
 }
 
 const DEFAULT_SEED_ADMIN_NAME = "Seed Super Admin"
+const BETTER_AUTH_SCRYPT_CONFIG = {
+  N: 16384,
+  r: 16,
+  p: 1,
+  dkLen: 64,
+}
 
 interface SeedAdminCredentials {
   email: string
@@ -618,43 +626,131 @@ function getSeedAdminCredentials(): SeedAdminCredentials | null {
   }
 }
 
-async function seedSuperAdmin(db: ReturnType<typeof drizzle>) {
+function hashSeedPassword(password: string): string {
+  const salt = randomBytes(16).toString("hex")
+  const key = scryptSync(
+    password.normalize("NFKC"),
+    salt,
+    BETTER_AUTH_SCRYPT_CONFIG.dkLen,
+    {
+      N: BETTER_AUTH_SCRYPT_CONFIG.N,
+      r: BETTER_AUTH_SCRYPT_CONFIG.r,
+      p: BETTER_AUTH_SCRYPT_CONFIG.p,
+      maxmem:
+        128 * BETTER_AUTH_SCRYPT_CONFIG.N * BETTER_AUTH_SCRYPT_CONFIG.r * 2,
+    },
+  )
+
+  return `${salt}:${key.toString("hex")}`
+}
+
+async function seedSuperAdmin(db: SeedDb) {
   const credentials = getSeedAdminCredentials()
   if (!credentials) {
     return
   }
 
-  const [existing] = await db
-    .select({ id: user.id })
-    .from(user)
-    .where(eq(user.email, credentials.email))
-    .limit(1)
+  const userRows = await db<{ id: string }[]>`
+    select id
+    from "user"
+    where "email" = ${credentials.email}
+    limit 1
+  `
 
-  if (existing) {
-    logger.info({ event: "admin_exists", email: credentials.email })
+  const existingUserId = userRows[0]?.id
+  const userId = existingUserId ?? randomUUID()
+
+  if (!existingUserId) {
+    await db`
+      insert into "user" (
+        "id",
+        "email",
+        "email_verified",
+        "role",
+        "onboarding_completed",
+        "name"
+      )
+      values (
+        ${userId},
+        ${credentials.email},
+        ${true},
+        ${"super_admin"},
+        ${true},
+        ${credentials.name}
+      )
+    `
+    logger.info({
+      event: "admin_seeded",
+      email: credentials.email,
+      role: "super_admin",
+    })
+  } else {
+    await db`
+      update "user"
+      set
+        "role" = ${"super_admin"},
+        "email_verified" = ${true},
+        "onboarding_completed" = ${true}
+      where "id" = ${userId}
+    `
+    logger.info({
+      event: "admin_ensured",
+      email: credentials.email,
+      role: "super_admin",
+    })
+  }
+
+  const credentialAccountRows = await db<
+    { id: string; password: string | null }[]
+  >`
+    select id, password
+    from "account"
+    where "user_id" = ${userId}
+      and "provider_id" = ${"credential"}
+    limit 1
+  `
+
+  const credentialAccount = credentialAccountRows[0]
+
+  if (!credentialAccount) {
+    await db`
+      insert into "account" (
+        "id",
+        "account_id",
+        "provider_id",
+        "user_id",
+        "password",
+        "updated_at"
+      )
+      values (
+        ${randomUUID()},
+        ${userId},
+        ${"credential"},
+        ${userId},
+        ${hashSeedPassword(credentials.password)},
+        ${new Date()}
+      )
+    `
+    logger.info({
+      event: "admin_credential_linked",
+      email: credentials.email,
+    })
     return
   }
 
-  const { auth } = await import("@/lib/auth")
-
-  await auth.api.createUser({
-    body: {
+  if (!credentialAccount.password) {
+    await db`
+      update "account"
+      set
+        "password" = ${hashSeedPassword(credentials.password)},
+        "updated_at" = ${new Date()}
+      where "id" = ${credentialAccount.id}
+    `
+    logger.info({
+      event: "admin_credential_repaired",
       email: credentials.email,
-      password: credentials.password,
-      name: credentials.name,
-      role: "super_admin",
-      data: {
-        emailVerified: true,
-        onboardingCompleted: true,
-      },
-    },
-  })
-
-  logger.info({
-    event: "admin_seeded",
-    email: credentials.email,
-    role: "super_admin",
-  })
+    })
+  }
 }
 
 async function main() {
@@ -663,38 +759,32 @@ async function main() {
     throw new Error("DATABASE_URL is required")
   }
 
-  const client = postgres(databaseUrl, { max: 1 })
-  const db = drizzle(client, { schema })
+  const db = postgres(databaseUrl, {
+    max: 1,
+    prepare: false,
+  })
 
-  // ── Seed built-in universities ──
-  for (const entry of SEED_UNIVERSITIES) {
-    await seedUniversity(db, entry)
+  try {
+    for (const entry of SEED_UNIVERSITIES) {
+      await seedUniversity(db, entry)
+    }
+
+    const envDomains = parseDomains(process.env.SEED_UNIVERSITY_DOMAINS)
+    if (envDomains.length > 0) {
+      const envName =
+        process.env.SEED_UNIVERSITY_NAME?.trim() || "Example University"
+      await seedUniversity(db, { name: envName, domains: envDomains })
+    }
+
+    await seedDepartments(db)
+    await seedSkillTags(db)
+    await seedDepartmentSkills(db)
+    await seedSuperAdmin(db)
+  } finally {
+    await db.end({ timeout: 5 })
   }
-
-  // ── Seed env-based university (optional extra) ──
-  const envDomains = parseDomains(process.env.SEED_UNIVERSITY_DOMAINS)
-  if (envDomains.length > 0) {
-    const envName =
-      process.env.SEED_UNIVERSITY_NAME?.trim() || "Example University"
-    await seedUniversity(db, { name: envName, domains: envDomains })
-  }
-
-  // ── Seed departments ──
-  await seedDepartments(db)
-
-  // ── Seed skill tags ──
-  await seedSkillTags(db)
-
-  // ── Seed department ↔ skill links ──
-  await seedDepartmentSkills(db)
-
-  // ── Seed super_admin user ──
-  await seedSuperAdmin(db)
-
-  await client.end({ timeout: 5 })
 }
 
-// Only run main if this file is executed directly (not imported)
 if (import.meta.main) {
   main()
     .then(() => {
