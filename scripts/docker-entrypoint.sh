@@ -1,8 +1,8 @@
 #!/bin/sh
 set -e
 
-echo "Running database migrations..."
-bun run scripts/migrate.ts
+echo "Running database schema setup..."
+bun run scripts/push-schema.ts
 
 if [ "$RUN_SEED" = "true" ]; then
   echo "Seeding database..."
