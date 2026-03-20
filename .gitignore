@@ -54,9 +54,7 @@ playwright-report
 test-results
 tmp-biome-schema.json
 .tmp-biome-schema.json
-**/*/migrations
 .tmp/
-.tmp-biome-schema.json
 .tmp-devserver.pid
 RESULT.txt
 .agents
