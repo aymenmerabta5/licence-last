@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { formatNotification } from "@/lib/notifications"
 import { notificationsQueryKeys } from "@/lib/notifications-query"
@@ -64,7 +65,15 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="relative p-2.5 rounded-full hover:bg-secondary/80 transition-all group outline-none">
+      <DropdownMenuTrigger
+        render={
+          <Button
+            variant="ghost"
+            size="icon-lg"
+            className="group relative rounded-full hover:bg-secondary/80"
+          />
+        }
+      >
         <Bell className="h-5 w-5 text-foreground/60 group-hover:text-primary transition-colors" />
         {unreadCount > 0 && (
           <span className="absolute -top-0.5 -end-0.5 min-w-5 h-5 px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold inline-flex items-center justify-center ring-2 ring-background">
@@ -73,24 +82,22 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
         )}
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent
-        align="end"
-        className="w-80 mt-2 p-1.5 rounded-xl border-border/40 shadow-xl backdrop-blur-xl bg-background/95"
-      >
+      <DropdownMenuContent align="end" className="w-80">
         <DropdownMenuGroup>
           <div className="flex items-center justify-between px-2 py-1">
             <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
               Notifications
             </DropdownMenuLabel>
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => markAllReadMutation.mutate({})}
               disabled={unreadCount === 0 || markAllReadMutation.isPending}
-              className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground hover:text-primary disabled:opacity-50 disabled:hover:text-muted-foreground transition-colors"
+              className="h-auto gap-1.5 px-1 py-1 text-[11px] text-muted-foreground hover:bg-transparent hover:text-primary"
             >
               <CheckCheck className="h-3.5 w-3.5" />
               Mark all read
-            </button>
+            </Button>
           </div>
         </DropdownMenuGroup>
 
@@ -142,7 +149,7 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
         )}
 
         <DropdownMenuSeparator className="my-1 opacity-50" />
-        <DropdownMenuItem className="rounded-lg cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">
+        <DropdownMenuItem className="rounded-lg cursor-pointer transition-colors">
           <Link
             href={"/dashboard/notifications" as "/dashboard"}
             className="w-full text-xs"

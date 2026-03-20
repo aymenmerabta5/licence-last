@@ -5,6 +5,7 @@ import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { useTheme } from "next-themes"
 import { useSyncExternalStore } from "react"
+import { Button } from "@/components/ui/button"
 
 const emptySubscribe = () => () => {}
 
@@ -19,22 +20,24 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <button
-        type="button"
-        className="p-2.5 rounded-full hover:bg-secondary transition-colors opacity-0"
+      <Button
+        variant="ghost"
+        size="icon-lg"
+        className="rounded-full opacity-0"
       >
         <Sun className="h-4 w-4" />
-      </button>
+      </Button>
     )
   }
 
   const isDark = theme === "dark"
 
   return (
-    <button
-      type="button"
+    <Button
+      variant="ghost"
+      size="icon-lg"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="relative h-10 w-10 rounded-full hover:bg-secondary/80 transition-all group overflow-hidden"
+      className="group relative overflow-hidden rounded-full hover:bg-secondary/80"
       aria-label={isDark ? t("toLight") : t("toDark")}
     >
       <motion.div
@@ -62,6 +65,6 @@ export function ThemeToggle() {
       >
         <Sun className="h-5 w-5 text-orange-500" />
       </motion.div>
-    </button>
+    </Button>
   )
 }
