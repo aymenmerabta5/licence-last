@@ -5,17 +5,21 @@ import { localeRedirect } from "@/lib/navigation"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 import { getCompanyMembership } from "@/server/services/companies/membership"
 
-type DashboardRole =
+type AuthRole =
   | "student"
   | "company_admin"
-  | "dept_head"
   | "university_admin"
   | "super_admin"
+
+type EffectiveRole = AuthRole | "dept_head"
 
 interface DashboardUser {
   id: string
   email: string
-  role: DashboardRole
+  role: AuthRole
+  effectiveRole: EffectiveRole
+  universityMembershipRole?: "department_head" | null
+  universityDepartmentId?: string | null
   name: string | null
   onboardingCompleted?: boolean | null
   [key: string]: unknown
@@ -27,11 +31,11 @@ type CompanyMembership = NonNullable<
 >
 
 export interface OnboardedStudentContext {
-  user: DashboardUser & { role: "student" }
+  user: DashboardUser & { role: "student"; effectiveRole: "student" }
 }
 
 export interface ApprovedCompanyContext {
-  user: DashboardUser & { role: "company_admin" }
+  user: DashboardUser & { role: "company_admin"; effectiveRole: "company_admin" }
   company: ApprovedCompany
 }
 
@@ -52,6 +56,7 @@ export async function requireDashboardUser() {
 export async function requireOnboardedStudent(): Promise<OnboardedStudentContext> {
   const user = (await requireRole(["student"])) as DashboardUser & {
     role: "student"
+    effectiveRole: "student"
   }
 
   if (!user.onboardingCompleted) {
@@ -64,6 +69,7 @@ export async function requireOnboardedStudent(): Promise<OnboardedStudentContext
 export async function requireApprovedCompanyAdmin(): Promise<ApprovedCompanyContext> {
   const user = (await requireRole(["company_admin"])) as DashboardUser & {
     role: "company_admin"
+    effectiveRole: "company_admin"
   }
 
   if (!user.onboardingCompleted) {
@@ -110,7 +116,10 @@ export async function requireApprovedUniversityAdmin() {
   const user = (await requireRole([
     "university_admin",
     "super_admin",
-  ])) as DashboardUser & { role: "university_admin" | "super_admin" }
+  ])) as DashboardUser & {
+    role: "university_admin" | "super_admin"
+    effectiveRole: "university_admin" | "super_admin"
+  }
 
   if (user.role === "university_admin" && !user.onboardingCompleted) {
     return localeRedirect("/onboarding/university")

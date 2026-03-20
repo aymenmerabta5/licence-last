@@ -69,9 +69,10 @@ export function ProfileContent({
     university_admin: t("student.profile.roles.university_admin"),
     super_admin: t("student.profile.roles.super_admin"),
   }
+  const effectiveRole = user.effectiveRole ?? user.role ?? "student"
   const roleLabel =
-    roleLabels[user.role || "student"] ||
-    user.role ||
+    roleLabels[effectiveRole] ||
+    effectiveRole ||
     t("student.profile.unknownRole")
 
   const profileText = buildProfileText(user, profile, skills, university, {

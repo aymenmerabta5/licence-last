@@ -63,6 +63,14 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
     }),
   )
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open || unreadCount === 0 || markAllReadMutation.isPending) {
+      return
+    }
+
+    markAllReadMutation.mutate({})
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger

@@ -24,13 +24,6 @@ export class LoginPage {
       { timeout: 45000 },
     )
 
-    await this.page.waitForResponse(
-      (response) =>
-        response.url().includes("/api/rpc/users/getMe") &&
-        response.request().method() === "POST",
-      { timeout: 45000 },
-    )
-
     await this.page.waitForFunction(
       () =>
         /\/en\/(dashboard|status|onboarding|verify)/.test(

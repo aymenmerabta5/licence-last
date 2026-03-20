@@ -14,11 +14,22 @@ const mockSelect = mock(() => ({ from: mockFrom }))
 const mockTxUpdateWhere = mock(() => Promise.resolve())
 const mockTxUpdateSet = mock(() => ({ where: mockTxUpdateWhere }))
 const mockTxUpdate = mock(() => ({ set: mockTxUpdateSet }))
+const mockTxInsertConflict = mock(() => Promise.resolve())
+const mockTxInsertValues = mock(() => ({
+  onConflictDoUpdate: mockTxInsertConflict,
+}))
+const mockTxInsert = mock(() => ({ values: mockTxInsertValues }))
 
 const mockTransaction = mock(
-  async (callback: (tx: { update: typeof mockTxUpdate }) => Promise<unknown>) =>
+  async (
+    callback: (tx: {
+      update: typeof mockTxUpdate
+      insert: typeof mockTxInsert
+    }) => Promise<unknown>,
+  ) =>
     callback({
       update: mockTxUpdate,
+      insert: mockTxInsert,
     }),
 )
 let moduleImportCounter = 0
@@ -47,6 +58,9 @@ describe("assignDepartmentHead", () => {
     mockTxUpdate.mockClear()
     mockTxUpdateSet.mockClear()
     mockTxUpdateWhere.mockClear()
+    mockTxInsert.mockClear()
+    mockTxInsertValues.mockClear()
+    mockTxInsertConflict.mockClear()
     mockTransaction.mockClear()
 
     mockSelect.mockReturnValue({ from: mockFrom })
@@ -55,6 +69,11 @@ describe("assignDepartmentHead", () => {
     mockTxUpdate.mockReturnValue({ set: mockTxUpdateSet })
     mockTxUpdateSet.mockReturnValue({ where: mockTxUpdateWhere })
     mockTxUpdateWhere.mockResolvedValue(undefined)
+    mockTxInsert.mockReturnValue({ values: mockTxInsertValues })
+    mockTxInsertValues.mockReturnValue({
+      onConflictDoUpdate: mockTxInsertConflict,
+    })
+    mockTxInsertConflict.mockResolvedValue(undefined)
   })
 
   test("should throw when department not found", async () => {
@@ -93,7 +112,7 @@ describe("assignDepartmentHead", () => {
   test("should throw when user belongs to another university", async () => {
     selectLimitQueue.push(
       [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
-      [{ id: "user-1", role: "dept_head", universityId: "uni-2" }],
+      [{ id: "user-1", role: "university_admin", universityId: "uni-2" }],
     )
 
     const { assignDepartmentHead } = await loadAssignHeadModule()
@@ -114,10 +133,10 @@ describe("assignDepartmentHead", () => {
     )
   })
 
-  test("should return success when the target already is a dept_head", async () => {
+  test("should return success when the target already is a university admin", async () => {
     selectLimitQueue.push(
       [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
-      [{ id: "user-1", role: "dept_head", universityId: "uni-1" }],
+      [{ id: "user-1", role: "university_admin", universityId: "uni-1" }],
     )
 
     const { assignDepartmentHead } = await loadAssignHeadModule()
@@ -130,25 +149,48 @@ describe("assignDepartmentHead", () => {
     })
   })
 
-  test("should update user role and scope in a transaction", async () => {
+  test("should upsert membership and update carrier role in a transaction", async () => {
     selectLimitQueue.push(
       [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
-      [{ id: "user-1", role: "dept_head", universityId: "uni-1" }],
+      [{ id: "user-1", role: "university_admin", universityId: "uni-1" }],
     )
 
     const { assignDepartmentHead } = await loadAssignHeadModule()
     await assignDepartmentHead("dept-1", "user-1")
 
     expect(mockTransaction).toHaveBeenCalledTimes(1)
-    expect(mockTxUpdate).toHaveBeenCalledTimes(1)
-    expect(mockTxUpdateSet).toHaveBeenCalledTimes(1)
-    expect(mockTxUpdateWhere).toHaveBeenCalledTimes(1)
+    expect(mockTxUpdate.mock.calls.length).toBeGreaterThanOrEqual(2)
+    expect(mockTxInsert).toHaveBeenCalledTimes(1)
+    expect(mockTxUpdateSet.mock.calls.length).toBeGreaterThanOrEqual(2)
+    expect(mockTxUpdateWhere.mock.calls.length).toBeGreaterThanOrEqual(2)
+
+    const updatePayloads = (
+      mockTxUpdateSet.mock.calls as unknown as Array<
+        [
+          | {
+              role?: string
+              universityId?: string | null
+              departmentId?: string | null
+            }
+          | undefined,
+        ]
+      >
+    ).map(([payload]) => payload ?? null)
+
+    expect(
+      updatePayloads.some(
+        (payload) =>
+          payload?.role === "university_admin" &&
+          payload.universityId === "uni-1" &&
+          payload.departmentId === null,
+      ),
+    ).toBe(true)
   })
 
   test("should make two select queries (dept + user)", async () => {
     selectLimitQueue.push(
       [{ id: "dept-1", universityId: "uni-1", name: "CS" }],
-      [{ id: "user-1", role: "dept_head", universityId: "uni-1" }],
+      [{ id: "user-1", role: "university_admin", universityId: "uni-1" }],
     )
 
     const { assignDepartmentHead } = await loadAssignHeadModule()

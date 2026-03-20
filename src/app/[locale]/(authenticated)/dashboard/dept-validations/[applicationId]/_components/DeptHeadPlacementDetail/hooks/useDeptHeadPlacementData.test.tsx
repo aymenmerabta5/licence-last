@@ -16,6 +16,7 @@ const getPendingByIdQueryOptionsMock = mock(
 
 function applyORPCClientMock() {
   mock.module("@/server/orpc/client", () => ({
+    orpcClient: {},
     orpc: {
       deptHead: {
         getPendingById: {
@@ -62,12 +63,9 @@ describe("useDeptHeadPlacementData", () => {
   test("should query the dept-head pending application directly by id", async () => {
     const { useDeptHeadPlacementData } = await importUseDeptHeadPlacementData()
 
-    const { result } = renderHook(
-      () => useDeptHeadPlacementData("app-42"),
-      {
-        wrapper: createWrapper(),
-      },
-    )
+    const { result } = renderHook(() => useDeptHeadPlacementData("app-42"), {
+      wrapper: createWrapper(),
+    })
 
     await waitFor(() => {
       expect(result.current.application?.id).toBe("app-42")

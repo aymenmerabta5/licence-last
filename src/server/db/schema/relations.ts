@@ -10,6 +10,7 @@ import {
 import { user } from "@/server/db/schema/auth"
 import { company, companyMember } from "@/server/db/schema/companies"
 import { department, departmentSkill } from "@/server/db/schema/departments"
+import { universityMember } from "@/server/db/schema/university-members"
 import {
   internshipOffer,
   internshipOfferSkill,
@@ -58,6 +59,10 @@ export const userRelations = relations(user, ({ one, many }) => ({
   }),
   studentSkills: many(studentSkill),
   companyMemberships: many(companyMember),
+  universityMembership: one(universityMember, {
+    fields: [user.id],
+    references: [universityMember.userId],
+  }),
   applications: many(application),
   notifications: many(notification),
   notificationPreference: one(notificationPreference, {
@@ -93,6 +98,7 @@ export const universityRelations = relations(university, ({ one, many }) => ({
   domains: many(universityDomain),
   departments: many(department),
   students: many(user),
+  memberships: many(universityMember),
   approvedBy: one(user, {
     fields: [university.approvedByUserId],
     references: [user.id],
@@ -118,7 +124,7 @@ export const departmentRelations = relations(department, ({ one, many }) => ({
     references: [university.id],
   }),
   students: many(studentProfile),
-  heads: many(user),
+  memberships: many(universityMember),
   skills: many(departmentSkill),
 }))
 
@@ -224,6 +230,22 @@ export const companyMemberRelations = relations(companyMember, ({ one }) => ({
     references: [user.id],
   }),
 }))
+
+export const universityMemberRelations = relations(universityMember, ({ one }) => ({
+  university: one(university, {
+    fields: [universityMember.universityId],
+    references: [university.id],
+  }),
+  user: one(user, {
+    fields: [universityMember.userId],
+    references: [user.id],
+  }),
+  department: one(department, {
+    fields: [universityMember.departmentId],
+    references: [department.id],
+  }),
+}))
+
 
 // ── Assistant (Company Copilot) ────────────────────────
 

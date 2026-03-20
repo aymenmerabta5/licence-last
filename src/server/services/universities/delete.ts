@@ -10,7 +10,7 @@ import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/universities/delete")
 
-const UNIVERSITY_ADMIN_ROLES = ["university_admin", "dept_head"] as const
+const UNIVERSITY_ADMIN_ROLES = ["university_admin"] as const
 
 /**
  * Delete a university and cleanup user role/state references.

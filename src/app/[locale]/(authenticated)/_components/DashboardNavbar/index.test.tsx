@@ -21,7 +21,7 @@ mock.module(
         super_admin: "Super Admin",
         dept_head: "Department Head",
       }
-      const label = user.role ? labelMap[user.role] ?? user.role : "Student"
+      const label = user.role ? (labelMap[user.role] ?? user.role) : "Student"
 
       return (
         <div data-testid="user-dropdown">
@@ -58,6 +58,9 @@ mock.module("@/hooks/useLogout", () => ({
 }))
 
 mock.module("@/i18n/routing", () => ({
+  Link: ({ children }: { children: React.ReactNode }) => (
+    <span>{children}</span>
+  ),
   usePathname: () => "/en/dashboard/messages",
 }))
 

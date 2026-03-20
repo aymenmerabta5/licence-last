@@ -120,8 +120,10 @@ export async function DashboardContent({
     getTranslations("dashboard"),
   ])
 
+  const effectiveRole = user.effectiveRole ?? user.role ?? "student"
+
   // Redirects for incomplete onboarding
-  if (user.role === "student" && !user.onboardingCompleted) {
+  if (effectiveRole === "student" && !user.onboardingCompleted) {
     return localeRedirect("/onboarding/student")
   }
 
@@ -136,7 +138,7 @@ export async function DashboardContent({
   } as const
 
   const subtitle = t(
-    roleSubtitleKey[user.role as keyof typeof roleSubtitleKey] ||
+    roleSubtitleKey[effectiveRole as keyof typeof roleSubtitleKey] ||
       "student.subtitle",
   )
 
@@ -147,11 +149,11 @@ export async function DashboardContent({
         <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50">
           {t(
             `roles.${
-              user.role === "company_admin"
+              effectiveRole === "company_admin"
                 ? "recruiter"
-                : user.role === "super_admin"
+                : effectiveRole === "super_admin"
                   ? "university_admin"
-                  : user.role
+                  : effectiveRole
             }`,
           )}{" "}
           Dashboard
@@ -168,23 +170,23 @@ export async function DashboardContent({
       </header>
 
       {/* ── Role-Specific Content with Suspense boundaries ── */}
-      {user.role === "student" && (
+      {effectiveRole === "student" && (
         <Suspense fallback={studentFallback}>
           <StudentDashboardContent
-            user={{ ...user, role: user.role as string }}
+            user={{ ...user, role: effectiveRole as string }}
             component={studentComponent}
           />
         </Suspense>
       )}
 
-      {user.role === "company_admin" && (
-        <RecruiterDashboard user={{ ...user, role: user.role as string }} />
+      {effectiveRole === "company_admin" && (
+        <RecruiterDashboard user={{ ...user, role: effectiveRole as string }} />
       )}
-      {user.role === "dept_head" && (
-        <DeptHeadDashboard user={{ ...user, role: user.role as string }} />
+      {effectiveRole === "dept_head" && (
+        <DeptHeadDashboard user={{ ...user, role: effectiveRole as string }} />
       )}
-      {(user.role === "university_admin" || user.role === "super_admin") && (
-        <AdminDashboard user={{ ...user, role: user.role as string }} />
+      {(effectiveRole === "university_admin" || effectiveRole === "super_admin") && (
+        <AdminDashboard user={{ ...user, role: effectiveRole as string }} />
       )}
     </div>
   )

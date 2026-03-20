@@ -3,6 +3,7 @@
 import { User } from "lucide-react"
 import { Route } from "next"
 import { useTranslations } from "next-intl"
+import { useDashboard } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import type { NavbarUser } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
 
 import {
@@ -30,9 +31,13 @@ export function UserDropdown({
   isLoggingOut,
 }: UserDropdownProps) {
   const t = useTranslations("dashboard.navbar")
-  const roleLabel = user.role
-    ? t(`roles.${user.role || "student"}` as any)
-    : t("roles.student" as any)
+  const { companyMembershipRole } = useDashboard()
+  const effectiveRole = user.effectiveRole ?? user.role ?? "student"
+  const roleKey =
+    effectiveRole === "company_admin" && companyMembershipRole === "recruiter"
+      ? "recruiter"
+      : effectiveRole
+  const roleLabel = t(`roles.${roleKey}` as any)
 
   return (
     <DropdownMenu>
@@ -49,7 +54,7 @@ export function UserDropdown({
             {user.name || "User Name"}
           </p>
           <UserRoleBadge
-            role={user.role}
+            role={effectiveRole}
             label={roleLabel}
             className="text-[9px]"
           />
@@ -59,7 +64,7 @@ export function UserDropdown({
           className="flex xl:hidden"
         >
           <UserRoleBadge
-            role={user.role}
+            role={effectiveRole}
             label={roleLabel}
             className="text-[9px]"
           />

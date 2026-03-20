@@ -3,8 +3,8 @@ import "server-only"
 import { and, eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
-import { user } from "@/server/db/schema/auth"
 import { department } from "@/server/db/schema/departments"
+import { universityMember } from "@/server/db/schema/university-memberships"
 import { createModuleLogger } from "@/server/logging"
 import { ServiceError } from "@/server/services/errors"
 
@@ -25,13 +25,15 @@ export async function deleteDepartment(departmentId: string) {
 
   await db.transaction(async (tx) => {
     await tx
-      .update(user)
+      .update(universityMember)
       .set({
-        role: "student",
         departmentId: null,
       })
       .where(
-        and(eq(user.role, "dept_head"), eq(user.departmentId, departmentId)),
+        and(
+          eq(universityMember.role, "department_head"),
+          eq(universityMember.departmentId, departmentId),
+        ),
       )
 
     await tx.delete(department).where(eq(department.id, departmentId))

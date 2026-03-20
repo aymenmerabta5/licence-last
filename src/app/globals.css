@@ -142,6 +142,16 @@ html[lang="ar"] {
   }
 }
 
+/* Text selection — semi-transparent overlay so it's always readable
+   regardless of background (works on both light content and the orange user bubble) */
+::selection {
+  background-color: oklch(0.145 0 0 / 22%);
+}
+
+.dark ::selection {
+  background-color: oklch(0.87 0.016 75 / 28%);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

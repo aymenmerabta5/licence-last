@@ -19,6 +19,7 @@ mock.module("next-intl", () => ({
 }))
 
 mock.module("@/i18n/routing", () => ({
+  Link: ({ children }: { children?: unknown }) => <>{children}</>,
   usePathname: usePathnameMock,
   useRouter: () => ({
     replace: replaceMock,
@@ -29,6 +30,14 @@ mock.module("@/components/ui/dropdown-menu", () => ({
   DropdownMenu: ({ children }: { children: React.ReactNode }) => children,
   DropdownMenuContent: ({ children }: { children: React.ReactNode }) =>
     children,
+  DropdownMenuGroup: ({ children }: { children: React.ReactNode }) => children,
+  DropdownMenuItem: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  DropdownMenuLabel: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  DropdownMenuSeparator: () => <div />,
   DropdownMenuRadioGroup: ({ children }: { children: React.ReactNode }) =>
     children,
   DropdownMenuRadioItem: ({ children }: { children: React.ReactNode }) => (

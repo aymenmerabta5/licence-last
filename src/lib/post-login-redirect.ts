@@ -6,8 +6,9 @@ import type { MeResult } from "@/server/services/users/get-me"
  */
 export function getPostLoginRedirectPath(me: MeResult): string {
   const { user, company, university } = me
+  const effectiveRole = user.effectiveRole ?? user.role
 
-  switch (user.role) {
+  switch (effectiveRole) {
     case "student":
       if (!user.onboardingCompleted) return "/onboarding/student"
       return "/dashboard"

@@ -41,6 +41,7 @@ mock.module("@/server/orpc/rate-limited-procedures", () => ({
   adminProcedureGenerous: createProcedureMock(),
   adminProcedureStandard: createProcedureMock(),
   adminProcedureAssistant: createProcedureMock(),
+  universityProcedureAssistant: createProcedureMock(),
   deptHeadProcedureGenerous: createProcedureMock(),
   deptHeadProcedureStandard: createProcedureMock(),
 }))
@@ -100,6 +101,7 @@ describe("src/server/orpc/routes/placements", () => {
       adminProcedureGenerous: createProcedureMock(),
       adminProcedureStandard: createProcedureMock(),
       adminProcedureAssistant: createProcedureMock(),
+      universityProcedureAssistant: createProcedureMock(),
       assistantProcedureLimited: createProcedureMock(),
       companyAdminProcedureAssistant: createProcedureMock(),
       companyAdminProcedureGenerous: createProcedureMock(),
@@ -139,9 +141,12 @@ describe("src/server/orpc/routes/placements", () => {
     mock.module("@/server/services/placements/reject", () => ({
       rejectPlacement: rejectPlacementMock,
     }))
-    mock.module("@/server/services/placements/generate-validation-summary", () => ({
-      generateValidationSummary: generateValidationSummaryMock,
-    }))
+    mock.module(
+      "@/server/services/placements/generate-validation-summary",
+      () => ({
+        generateValidationSummary: generateValidationSummaryMock,
+      }),
+    )
     validatePlacementMock.mockClear()
     rejectPlacementMock.mockClear()
     listPendingApplicationsMock.mockClear()

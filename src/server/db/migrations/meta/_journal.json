@@ -134,6 +134,13 @@
       "when": 1772919352161,
       "tag": "0018_tired_mandrill",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1773531290357,
+      "tag": "0019_bouncy_logan",
+      "breakpoints": true
     }
   ]
 }

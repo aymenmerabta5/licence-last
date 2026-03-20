@@ -30,6 +30,14 @@ export type PipelineStage = z.infer<typeof pipelineStageSchema>
 export const userRoleSchema = z.enum(userRoleEnum.enumValues)
 export type UserRole = z.infer<typeof userRoleSchema>
 
+export const primaryUserRoleSchema = z.enum([
+  "student",
+  "company_admin",
+  "university_admin",
+  "super_admin",
+])
+export type PrimaryUserRole = z.infer<typeof primaryUserRoleSchema>
+
 export const companyStatusSchema = z.enum(companyStatusEnum.enumValues)
 export type CompanyStatus = z.infer<typeof companyStatusSchema>
 

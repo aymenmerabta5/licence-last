@@ -34,6 +34,7 @@ type InMemoryBucket = {
 const inMemoryBuckets = new Map<string, InMemoryBucket>()
 let lastCleanupAtMs = 0
 const CLEANUP_INTERVAL_MS = 5 * 60 * 1000
+const E2E_RATE_LIMIT_DISABLED = process.env.E2E_DISABLE_RATE_LIMIT === "1"
 
 function cleanupStaleInMemoryBuckets(nowMs: number) {
   if (nowMs - lastCleanupAtMs < CLEANUP_INTERVAL_MS) return
@@ -123,7 +124,7 @@ export async function checkRateLimit({
   now = Date.now(),
   store = getDefaultStore(),
 }: RateLimitOptions): Promise<RateLimitResult> {
-  if (limit <= 0 || windowMs <= 0) {
+  if (E2E_RATE_LIMIT_DISABLED || limit <= 0 || windowMs <= 0) {
     return {
       ok: true,
       remaining: Number.MAX_SAFE_INTEGER,

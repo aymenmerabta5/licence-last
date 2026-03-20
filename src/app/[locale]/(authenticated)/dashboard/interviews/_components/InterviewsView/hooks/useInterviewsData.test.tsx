@@ -1,5 +1,4 @@
 import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { act, renderHook, waitFor } from "@testing-library/react"
 
 const listInterviewsForStudentQueryOptionsMock = mock(() => ({
@@ -33,6 +32,59 @@ const confirmSlotMutationFnMock = mock(async () => ({ confirmed: true }))
 const proposeSlotsMutationFnMock = mock(async () => ({ interviewId: "int-1" }))
 const toastSuccessMock = mock(() => {})
 const toastErrorMock = mock(() => {})
+let importCounter = 0
+const invalidateQueriesMock = mock(async () => undefined)
+
+function applyReactQueryMock() {
+  mock.module("@tanstack/react-query", () => ({
+    useQuery: (options?: { enabled?: boolean; queryKey?: unknown[] }) => {
+      if (options?.enabled === false) {
+        return { data: undefined, isLoading: false, error: null }
+      }
+
+      const scope = Array.isArray(options?.queryKey)
+        ? options.queryKey[0]
+        : null
+
+      if (scope === "offers") {
+        return {
+          data: [{ id: "offer-1", title: "Backend Internship" }],
+          isLoading: false,
+          error: null,
+        }
+      }
+
+      if (scope === "applications") {
+        return {
+          data: {
+            applications: [
+              {
+                id: "app-1",
+                student: { name: "Alex Student" },
+                pipelineStage: "applied",
+                createdAt: "2026-02-20T10:00:00.000Z",
+              },
+            ],
+          },
+          isLoading: false,
+          error: null,
+        }
+      }
+
+      return { data: [], isLoading: false, error: null }
+    },
+    useQueryClient: () => ({
+      invalidateQueries: invalidateQueriesMock,
+    }),
+    useMutation: (options?: {
+      mutationFn?: (input: unknown) => Promise<unknown>
+    }) => ({
+      mutateAsync: async (input: unknown) => options?.mutationFn?.(input),
+      isPending: false,
+      error: null,
+    }),
+  }))
+}
 
 mock.module("sonner", () => ({
   toast: {
@@ -41,70 +93,73 @@ mock.module("sonner", () => ({
   },
 }))
 
-mock.module("@/server/orpc/client", () => ({
-  orpc: {
-    placements: {
-      getPendingById: {
-        queryOptions: ({ input }: { input: { applicationId: string } }) => ({
-          queryKey: ["placements", "getPendingById", input],
-          queryFn: async () => ({ application: { id: input.applicationId } }),
-        }),
+function applyOrpcClientMock() {
+  mock.module("@/server/orpc/client", () => ({
+    orpcClient: {},
+    orpc: {
+      placements: {
+        getPendingById: {
+          queryOptions: ({ input }: { input: { applicationId: string } }) => ({
+            queryKey: ["placements", "getPendingById", input],
+            queryFn: async () => ({ application: { id: input.applicationId } }),
+          }),
+        },
+      },
+      deptHead: {
+        getPendingById: {
+          queryOptions: ({ input }: { input: { applicationId: string } }) => ({
+            queryKey: ["deptHead", "getPendingById", input],
+            queryFn: async () => ({ application: { id: input.applicationId } }),
+          }),
+        },
+      },
+      interviews: {
+        listForStudent: {
+          queryOptions: listInterviewsForStudentQueryOptionsMock,
+        },
+        listForCompany: {
+          queryOptions: listInterviewsForCompanyQueryOptionsMock,
+        },
+        confirmSlot: {
+          mutationOptions: (options: Record<string, unknown>) => ({
+            mutationFn: confirmSlotMutationFnMock,
+            ...options,
+          }),
+        },
+        proposeSlots: {
+          mutationOptions: (options: Record<string, unknown>) => ({
+            mutationFn: proposeSlotsMutationFnMock,
+            ...options,
+          }),
+        },
+      },
+      offers: {
+        listByCompany: {
+          queryOptions: listByCompanyQueryOptionsMock,
+        },
+      },
+      applications: {
+        listByOffer: {
+          queryOptions: listByOfferQueryOptionsMock,
+        },
       },
     },
-    deptHead: {
-      getPendingById: {
-        queryOptions: ({ input }: { input: { applicationId: string } }) => ({
-          queryKey: ["deptHead", "getPendingById", input],
-          queryFn: async () => ({ application: { id: input.applicationId } }),
-        }),
-      },
-    },
-    interviews: {
-      listForStudent: {
-        queryOptions: listInterviewsForStudentQueryOptionsMock,
-      },
-      listForCompany: {
-        queryOptions: listInterviewsForCompanyQueryOptionsMock,
-      },
-      confirmSlot: {
-        mutationOptions: (options: Record<string, unknown>) => ({
-          mutationFn: confirmSlotMutationFnMock,
-          ...options,
-        }),
-      },
-      proposeSlots: {
-        mutationOptions: (options: Record<string, unknown>) => ({
-          mutationFn: proposeSlotsMutationFnMock,
-          ...options,
-        }),
-      },
-    },
-    offers: {
-      listByCompany: {
-        queryOptions: listByCompanyQueryOptionsMock,
-      },
-    },
-    applications: {
-      listByOffer: {
-        queryOptions: listByOfferQueryOptionsMock,
-      },
-    },
-  },
-}))
+  }))
+}
+
+applyOrpcClientMock()
 
 function createWrapper() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: { retry: false },
-      mutations: { retry: false },
-    },
-  })
-
   return function Wrapper({ children }: { children: React.ReactNode }) {
-    return (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    )
+    return <>{children}</>
   }
+}
+
+async function loadUseInterviewsData() {
+  importCounter += 1
+  return import(
+    `@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsData?test=${importCounter}`
+  )
 }
 
 describe("useInterviewsData", () => {
@@ -113,6 +168,8 @@ describe("useInterviewsData", () => {
   })
 
   beforeEach(() => {
+    applyReactQueryMock()
+    applyOrpcClientMock()
     listInterviewsForStudentQueryOptionsMock.mockClear()
     listInterviewsForCompanyQueryOptionsMock.mockClear()
     listByCompanyQueryOptionsMock.mockClear()
@@ -124,9 +181,7 @@ describe("useInterviewsData", () => {
   })
 
   test("requests applied applications only", async () => {
-    const { useInterviewsData } = await import(
-      "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsData"
-    )
+    const { useInterviewsData } = await loadUseInterviewsData()
 
     renderHook(
       () =>
@@ -151,9 +206,7 @@ describe("useInterviewsData", () => {
   })
 
   test("converts local datetime slot values to ISO before mutation", async () => {
-    const { useInterviewsData } = await import(
-      "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsData"
-    )
+    const { useInterviewsData } = await loadUseInterviewsData()
 
     const { result } = renderHook(
       () =>
@@ -204,9 +257,7 @@ describe("useInterviewsData", () => {
   })
 
   test("blocks proposal when datetime-local value is invalid", async () => {
-    const { useInterviewsData } = await import(
-      "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsData"
-    )
+    const { useInterviewsData } = await loadUseInterviewsData()
 
     const { result } = renderHook(
       () =>

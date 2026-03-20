@@ -4,8 +4,10 @@ import type { UIMessage } from "ai"
 import { ChevronDown } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+import { useState } from "react"
 import { ConversationComposer } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ConversationComposer"
 import { MessageBubble } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/MessageBubble"
+import { SaveNoteDialog } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/SaveNoteDialog"
 import { useConversationThread } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/hooks/useConversationThread"
 import { Button } from "@/components/ui/button"
 import { ease, reveal } from "@/lib/animations"
@@ -14,6 +16,9 @@ interface ConversationThreadProps {
   conversationId: string
   initialMessages: UIMessage[]
   messageCreatedAtById: Record<string, string | Date | undefined>
+  isNoteDialogOpen: boolean
+  onNoteDialogOpenChange: (open: boolean) => void
+  onAppendNote: (note: string, onSuccess?: (savedText: string) => void) => Promise<void>
 }
 
 function TypingIndicator() {
@@ -47,11 +52,16 @@ export function ConversationThread({
   conversationId,
   initialMessages,
   messageCreatedAtById,
+  isNoteDialogOpen,
+  onNoteDialogOpenChange,
+  onAppendNote,
 }: ConversationThreadProps) {
   const t = useTranslations("dashboard.assistant")
+  const [isSavingNote, setIsSavingNote] = useState(false)
 
   const {
     messages,
+    setMessages,
     status,
     error,
     input,
@@ -71,11 +81,31 @@ export function ConversationThread({
     handleTextareaChange,
   } = useConversationThread({ conversationId, initialMessages })
 
+  const handleSaveNote = async (noteText: string) => {
+    setIsSavingNote(true)
+    try {
+      await onAppendNote(noteText, (savedText) => {
+        const noteMessage = {
+          id: crypto.randomUUID(),
+          role: "user" as const,
+          parts: [
+            { type: "text", text: savedText },
+            { type: "note-marker" },
+          ] as UIMessage["parts"],
+        }
+        setMessages((prev) => [...prev, noteMessage])
+        scrollToBottom()
+      })
+    } finally {
+      setIsSavingNote(false)
+    }
+  }
+
   return (
     <div className="flex flex-col h-full min-h-0">
       <div
         ref={messagesContainerRef}
-        className="flex-1 overflow-y-auto space-y-4 min-h-0 pe-2"
+        className="flex-1 overflow-y-auto space-y-4 min-h-0 pe-2 pt-4"
       >
         {messages.length === 0 ? (
           <motion.div
@@ -148,6 +178,13 @@ export function ConversationThread({
         onKeyDown={handleKeyDown}
         onTextareaChange={handleTextareaChange}
         onStop={stop}
+      />
+
+      <SaveNoteDialog
+        open={isNoteDialogOpen}
+        onOpenChange={onNoteDialogOpenChange}
+        onSave={handleSaveNote}
+        isSaving={isSavingNote}
       />
     </div>
   )

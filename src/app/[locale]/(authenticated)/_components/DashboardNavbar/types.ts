@@ -3,6 +3,7 @@ export interface NavbarUser {
   name: string | null
   email: string
   role: string | null | undefined
+  effectiveRole?: string | null
 }
 
 export interface DeviceSession {

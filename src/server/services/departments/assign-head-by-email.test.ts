@@ -18,11 +18,22 @@ const mockUpdate = mock(() => ({ set: mockSet }))
 const mockTxUpdateWhere = mock(() => Promise.resolve())
 const mockTxUpdateSet = mock(() => ({ where: mockTxUpdateWhere }))
 const mockTxUpdate = mock(() => ({ set: mockTxUpdateSet }))
+const mockTxInsertConflict = mock(() => Promise.resolve())
+const mockTxInsertValues = mock(() => ({
+  onConflictDoUpdate: mockTxInsertConflict,
+}))
+const mockTxInsert = mock(() => ({ values: mockTxInsertValues }))
 
 const mockTransaction = mock(
-  async (callback: (tx: { update: typeof mockTxUpdate }) => Promise<unknown>) =>
+  async (
+    callback: (tx: {
+      update: typeof mockTxUpdate
+      insert: typeof mockTxInsert
+    }) => Promise<unknown>,
+  ) =>
     callback({
       update: mockTxUpdate,
+      insert: mockTxInsert,
     }),
 )
 
@@ -78,6 +89,9 @@ describe("assignDepartmentHeadByEmail", () => {
     mockTxUpdate.mockClear()
     mockTxUpdateSet.mockClear()
     mockTxUpdateWhere.mockClear()
+    mockTxInsert.mockClear()
+    mockTxInsertValues.mockClear()
+    mockTxInsertConflict.mockClear()
     mockTransaction.mockClear()
     mockCreateUser.mockClear()
     mockRequestPasswordReset.mockClear()
@@ -92,6 +106,11 @@ describe("assignDepartmentHeadByEmail", () => {
     mockTxUpdate.mockReturnValue({ set: mockTxUpdateSet })
     mockTxUpdateSet.mockReturnValue({ where: mockTxUpdateWhere })
     mockTxUpdateWhere.mockResolvedValue(undefined)
+    mockTxInsert.mockReturnValue({ values: mockTxInsertValues })
+    mockTxInsertValues.mockReturnValue({
+      onConflictDoUpdate: mockTxInsertConflict,
+    })
+    mockTxInsertConflict.mockResolvedValue(undefined)
   })
 
   test("should assign existing user and trigger password reset", async () => {
@@ -142,6 +161,7 @@ describe("assignDepartmentHeadByEmail", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const call = (mockCreateUser.mock.calls as any)[0][0]
     expect(call.body.name).toBe("New Head")
+    expect(call.body.role).toBe("university_admin")
     expect(call.body.data.emailVerified).toBe(true)
     expect(mockRequestPasswordReset).toHaveBeenCalledTimes(1)
     expect(pendingWelcomeEmails.has("new-head@university.dz")).toBe(true)

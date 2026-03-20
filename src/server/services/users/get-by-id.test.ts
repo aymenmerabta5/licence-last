@@ -49,7 +49,11 @@ describe("src/server/services/users/get-by-id", () => {
     const { getUserById } = await import("@/server/services/users/get-by-id")
     const result = await getUserById("user-1")
 
-    expect(result).toEqual(mockUser)
+    expect(result).toEqual({
+      ...mockUser,
+      rawRole: "student",
+      effectiveRole: "student",
+    })
   })
 
   test("should return null when it does not exist", async () => {

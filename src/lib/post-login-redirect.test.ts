@@ -10,10 +10,14 @@ function baseMe(): MeResult {
       id: "user-1",
       email: "user-1@example.com",
       role: "student",
+      effectiveRole: "student",
+      rawRole: "student",
       name: null,
       image: null,
       onboardingCompleted: false,
       twoFactorEnabled: false,
+      universityMembershipRole: null,
+      universityDepartmentId: null,
     },
     company: null,
     university: null,
@@ -41,6 +45,8 @@ describe("src/lib/post-login-redirect", () => {
         user: {
           ...baseMe().user,
           role: "company_admin",
+          effectiveRole: "company_admin",
+          rawRole: "company_admin",
           onboardingCompleted: false,
         },
       }
@@ -53,6 +59,8 @@ describe("src/lib/post-login-redirect", () => {
         user: {
           ...baseMe().user,
           role: "company_admin",
+          effectiveRole: "company_admin",
+          rawRole: "company_admin",
           onboardingCompleted: true,
         },
         company: { id: "c1", name: "Acme", slug: "acme", status: "approved" },
@@ -66,6 +74,8 @@ describe("src/lib/post-login-redirect", () => {
         user: {
           ...baseMe().user,
           role: "company_admin",
+          effectiveRole: "company_admin",
+          rawRole: "company_admin",
           onboardingCompleted: true,
         },
         company: { id: "c1", name: "Acme", slug: "acme", status: "rejected" },
@@ -79,6 +89,8 @@ describe("src/lib/post-login-redirect", () => {
         user: {
           ...baseMe().user,
           role: "company_admin",
+          effectiveRole: "company_admin",
+          rawRole: "company_admin",
           onboardingCompleted: true,
         },
         company: { id: "c1", name: "Acme", slug: "acme", status: "suspended" },
@@ -92,6 +104,8 @@ describe("src/lib/post-login-redirect", () => {
         user: {
           ...baseMe().user,
           role: "company_admin",
+          effectiveRole: "company_admin",
+          rawRole: "company_admin",
           onboardingCompleted: true,
         },
         company: null,
@@ -105,6 +119,8 @@ describe("src/lib/post-login-redirect", () => {
         user: {
           ...baseMe().user,
           role: "university_admin",
+          effectiveRole: "university_admin",
+          rawRole: "university_admin",
           onboardingCompleted: false,
         },
       }
@@ -117,6 +133,8 @@ describe("src/lib/post-login-redirect", () => {
         user: {
           ...baseMe().user,
           role: "university_admin",
+          effectiveRole: "university_admin",
+          rawRole: "university_admin",
           onboardingCompleted: true,
         },
         university: {
@@ -136,6 +154,8 @@ describe("src/lib/post-login-redirect", () => {
         user: {
           ...baseMe().user,
           role: "university_admin",
+          effectiveRole: "university_admin",
+          rawRole: "university_admin",
           onboardingCompleted: true,
         },
         university: {
@@ -155,6 +175,8 @@ describe("src/lib/post-login-redirect", () => {
         user: {
           ...baseMe().user,
           role: "university_admin",
+          effectiveRole: "university_admin",
+          rawRole: "university_admin",
           onboardingCompleted: true,
         },
         university: {
@@ -174,6 +196,8 @@ describe("src/lib/post-login-redirect", () => {
         user: {
           ...baseMe().user,
           role: "super_admin",
+          effectiveRole: "super_admin",
+          rawRole: "super_admin",
           onboardingCompleted: true,
         },
       }
@@ -183,7 +207,12 @@ describe("src/lib/post-login-redirect", () => {
     test("should fall back to / for unknown roles", () => {
       const me = {
         ...baseMe(),
-        user: { ...baseMe().user, role: "unknown_role" },
+        user: {
+          ...baseMe().user,
+          role: "unknown_role",
+          effectiveRole: "unknown_role",
+          rawRole: "unknown_role",
+        },
       } as unknown as MeResult
 
       expect(getPostLoginRedirectPath(me)).toBe("/")

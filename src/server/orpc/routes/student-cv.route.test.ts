@@ -55,6 +55,7 @@ function applyStudentCvRouteMocks() {
     adminProcedureGenerous: createProcedureMock(),
     adminProcedureStandard: createProcedureMock(),
     adminProcedureAssistant: createProcedureMock(),
+    universityProcedureAssistant: createProcedureMock(),
     superAdminProcedureGenerous: createProcedureMock(),
     superAdminProcedureStandard: createProcedureMock(),
     assistantProcedureLimited: createProcedureMock(),

@@ -2,16 +2,12 @@ import "server-only"
 
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
+import type { PrimaryUserRole } from "@/lib/effective-role"
 
 interface UpdateUserData {
   name?: string
   email?: string
-  role?:
-    | "student"
-    | "company_admin"
-    | "dept_head"
-    | "university_admin"
-    | "super_admin"
+  role?: PrimaryUserRole
 }
 
 type RequestHeaders = Awaited<ReturnType<typeof headers>>

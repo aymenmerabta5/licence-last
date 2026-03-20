@@ -194,7 +194,10 @@ export function useConversationActions({
     })
   }
 
-  const handleAppendNote = async (note: string) => {
+  const handleAppendNote = async (
+    note: string,
+    onSuccess?: (savedText: string) => void,
+  ) => {
     if (!activeConversationId) return
 
     const trimmed = note.trim()
@@ -204,9 +207,10 @@ export function useConversationActions({
       await appendMessageMutation.mutateAsync({
         conversationId: activeConversationId,
         role: "user",
-        parts: [{ type: "text", text: trimmed }],
+        parts: [{ type: "text", text: trimmed }, { type: "note-marker" }],
       })
       toast.success(t("noteSavedSuccess"))
+      onSuccess?.(trimmed)
     } catch {
       toast.error(t("noteSavedError"))
     }

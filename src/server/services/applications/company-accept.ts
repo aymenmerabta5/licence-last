@@ -1,6 +1,6 @@
 import "server-only"
 
-import { and, eq } from "drizzle-orm"
+import { and, eq, isNull } from "drizzle-orm"
 import { db } from "@/server/db"
 import { createModuleLogger } from "@/server/logging"
 
@@ -11,6 +11,7 @@ import { user } from "@/server/db/schema/auth"
 import { company } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { studentProfile } from "@/server/db/schema/students"
+import { universityMember } from "@/server/db/schema/university-memberships"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { createNotification } from "@/server/services/notifications/create"
@@ -103,7 +104,6 @@ export async function companyAcceptApplication(
     },
   })
 
-  // Notify the relevant validators: dept_head first, fallback to admin.
   if (!app.studentUniversityId) {
     return { success: true, applicationId }
   }
@@ -117,30 +117,30 @@ export async function companyAcceptApplication(
     companyName: app.companyName,
   }
 
-  // Try to find dept_head(s) for the student's department first
   let validators: { id: string }[] = []
   if (app.studentDepartmentId) {
     validators = await db
-      .select({ id: user.id })
-      .from(user)
+      .select({ id: universityMember.userId })
+      .from(universityMember)
       .where(
         and(
-          eq(user.role, "dept_head"),
-          eq(user.departmentId, app.studentDepartmentId),
+          eq(universityMember.role, "department_head"),
+          eq(universityMember.departmentId, app.studentDepartmentId),
         ),
       )
   }
 
-  // Fallback: if no dept_head found, notify university admins
   if (validators.length === 0) {
     validators = await db
       .select({ id: user.id })
       .from(user)
+      .leftJoin(universityMember, eq(universityMember.userId, user.id))
       .where(
         and(
           eq(user.role, "university_admin"),
           eq(user.onboardingCompleted, true),
           eq(user.universityId, app.studentUniversityId),
+          isNull(universityMember.userId),
         ),
       )
   }

@@ -64,6 +64,7 @@ mock.module("@/server/orpc/rate-limited-procedures", () => ({
   adminProcedureGenerous: createProcedureMock(),
   adminProcedureStandard: createProcedureMock(),
   adminProcedureAssistant: createProcedureMock(),
+  universityProcedureAssistant: createProcedureMock(),
   superAdminProcedureGenerous: createProcedureMock(),
   superAdminProcedureStandard: createProcedureMock(),
   assistantProcedureLimited: createProcedureMock(),

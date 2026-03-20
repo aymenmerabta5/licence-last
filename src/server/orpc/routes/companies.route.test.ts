@@ -153,6 +153,7 @@ function applyCompaniesRouteMocks() {
     adminProcedureGenerous: createProcedureMock(),
     adminProcedureStandard: createProcedureMock(),
     adminProcedureAssistant: createProcedureMock(),
+    universityProcedureAssistant: createProcedureMock(),
     assistantProcedureLimited: createProcedureMock(),
     companyAdminProcedureAssistant: createProcedureMock(),
     companyAdminProcedureGenerous: createProcedureMock(),

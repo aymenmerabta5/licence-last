@@ -10,6 +10,7 @@ import {
   isWorkMode,
   offerStatusSchema,
   pipelineStageSchema,
+  primaryUserRoleSchema,
   proficiencyLevelSchema,
   universityStatusSchema,
   userRoleSchema,
@@ -92,6 +93,24 @@ describe("userRoleSchema", () => {
 
   test("should reject admin (old name)", () => {
     expect(userRoleSchema.safeParse("admin").success).toBe(false)
+  })
+})
+
+describe("primaryUserRoleSchema", () => {
+  test("should accept only active auth roles", () => {
+    const valid = [
+      "student",
+      "company_admin",
+      "university_admin",
+      "super_admin",
+    ]
+    for (const v of valid) {
+      expect(primaryUserRoleSchema.safeParse(v).success).toBe(true)
+    }
+  })
+
+  test("should reject dept_head as a raw auth role", () => {
+    expect(primaryUserRoleSchema.safeParse("dept_head").success).toBe(false)
   })
 })
 

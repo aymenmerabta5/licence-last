@@ -22,6 +22,7 @@ const listSkillTagsMock = mock(async () => ({ items: [] }))
 const listSkillTagsPrioritizedMock = mock(async () => ({ items: [] }))
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
+  universityProcedureAssistant: createProcedureMock(),
   publicProcedureStandard: createProcedureMock(),
 }))
 

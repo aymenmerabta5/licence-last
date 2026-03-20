@@ -40,7 +40,7 @@ export function useConversationThread({
     [conversationId],
   )
 
-  const { messages, status, error, sendMessage, regenerate, stop } = useChat({
+  const { messages, setMessages, status, error, sendMessage, regenerate, stop } = useChat({
     transport,
     messages: initialMessages,
     onFinish: async () => {
@@ -155,6 +155,7 @@ export function useConversationThread({
 
   return {
     messages,
+    setMessages,
     status,
     error,
     input,

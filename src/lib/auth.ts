@@ -16,7 +16,6 @@ import { domainCandidates, getEmailDomain } from "@/lib/auth-utils"
 import {
   ac,
   companyAdmin,
-  deptHead,
   student,
   superAdmin,
   universityAdmin,
@@ -47,18 +46,21 @@ export const pendingWelcomeEmails = new Map<
 >()
 
 const TURNSTILE_SECRET_KEY = env.TURNSTILE_SECRET_KEY
+const E2E_RATE_LIMIT_DISABLED = process.env.E2E_DISABLE_RATE_LIMIT === "1"
 const CAPTCHA_ENABLED =
   Boolean(TURNSTILE_SECRET_KEY) &&
   process.env.CI !== "true" &&
-  !(
-    process.env.NODE_ENV !== "production" &&
-    process.env.E2E_DISABLE_CAPTCHA === "1"
-  )
+  process.env.E2E_DISABLE_CAPTCHA !== "1"
+const AUTH_RATE_LIMIT_ENABLED =
+  process.env.NODE_ENV === "production" && !E2E_RATE_LIMIT_DISABLED
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.NEXT_PUBLIC_BETTER_AUTH_URL,
+  rateLimit: {
+    enabled: AUTH_RATE_LIMIT_ENABLED,
+  },
   user: {
     additionalFields: {
       role: {
@@ -133,7 +135,6 @@ export const auth = betterAuth({
           const VALID_ROLES = new Set<string>([
             "student",
             "company_admin",
-            "dept_head",
             "university_admin",
             "super_admin",
           ])
@@ -267,7 +268,6 @@ export const auth = betterAuth({
       roles: {
         super_admin: superAdmin,
         university_admin: universityAdmin,
-        dept_head: deptHead,
         student,
         company_admin: companyAdmin,
       },
