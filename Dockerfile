@@ -17,6 +17,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Ensure public/ exists (Next.js standalone output expects it)
+RUN mkdir -p public
+
 # Build-time env values are required for T3 Env validation during `next build`.
 # These are safe defaults; provide real values at runtime via .env on the server.
 ARG NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
