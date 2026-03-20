@@ -2,7 +2,7 @@
 set -e
 
 echo "Running database migrations..."
-bunx drizzle-kit migrate
+bun run scripts/migrate.ts
 
 if [ "$RUN_SEED" = "true" ]; then
   echo "Seeding database..."
