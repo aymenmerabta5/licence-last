@@ -64,6 +64,11 @@ RESULT.txt
 .cursor
 docs/diagrams/
 docs/plantuml-1.2026.1.jar
+docs/chapter-1/
+docs/chapter-2/
+docs/chapter-3/
+docs/chapter-4/
+
 
 # image files (keep out of source control)
 *.png
