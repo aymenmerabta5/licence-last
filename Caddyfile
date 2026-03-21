@@ -1,9 +1,5 @@
-# Caddy reverse proxy for Next.js behind Cloudflare Proxy
-# Cloudflare SSL/TLS mode must be set to "Full" in the dashboard
+# Caddy reverse proxy for Next.js with direct public HTTPS
 {$DOMAIN_NAME:localhost} {
-	# Self-signed cert — Cloudflare "Full" mode accepts this
-	tls internal
-
 	encode zstd gzip
 
 	# Cache immutable Next.js static assets (1 year)
@@ -14,10 +10,7 @@
 
 	# All other requests → Next.js
 	handle {
-		reverse_proxy app:3000 {
-			# Always tell Next.js the original request was HTTPS (Cloudflare terminates SSL)
-			header_up X-Forwarded-Proto https
-		}
+		reverse_proxy app:3000
 	}
 
 	log {
