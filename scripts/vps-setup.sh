@@ -7,7 +7,7 @@ set -e
 #
 # Prerequisites:
 #   - Ubuntu/Debian VPS with root or sudo access
-#   - Domain DNS already pointing to this server via Cloudflare
+#   - Domain DNS already pointing to this server
 #   - GitHub Personal Access Token with read:packages scope
 #
 # Usage:
@@ -97,10 +97,12 @@ POSTGRES_DB=stag
 # ─── Auth ───────────────────────────────────────────
 BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET
 NEXT_PUBLIC_BETTER_AUTH_URL=https://$DOMAIN
+BETTER_AUTH_TRUSTED_ORIGINS=https://$DOMAIN,https://www.$DOMAIN
 
 # ─── Domain & Image ────────────────────────────────
 DOMAIN_NAME=$DOMAIN
 GITHUB_REPO=$GITHUB_REPO
+APP_IMAGE=ghcr.io/$GITHUB_REPO:latest
 
 # ─── First Deploy (set to false after first run) ───
 RUN_SEED=true
@@ -185,7 +187,11 @@ echo "║                                                      ║"
 echo "║  After first deploy, edit .env:                      ║"
 echo "║    RUN_SEED=false                                    ║"
 echo "║                                                      ║"
-echo "║  Watchtower auto-updates the app when you push       ║"
-echo "║  to master (after CD builds a new image).            ║"
+echo "║  GitHub Actions CD updates APP_IMAGE on each         ║"
+echo "║  successful push to master and redeploys the app.    ║"
+echo "║                                                      ║"
+echo "║  PostgreSQL is only reachable inside Docker          ║"
+echo "║  by default. Use 'docker compose exec db psql'       ║"
+echo "║  for local debugging on the VPS.                     ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo ""

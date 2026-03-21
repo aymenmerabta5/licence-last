@@ -53,7 +53,7 @@ Stag manages the complete internship lifecycle:
 | i18n | next-intl (English, French, Arabic with full RTL) |
 | PDF | @react-pdf/renderer (agreements, certificates) |
 | Testing | Bun test runner + Playwright E2E |
-| Deployment | Docker + Caddy + Watchtower (auto-deploy) |
+| Deployment | Docker + Caddy + GitHub Actions SSH deploy |
 
 ## Getting Started
 
@@ -264,21 +264,21 @@ Editorial "Morning Press / Night Edition" aesthetic:
 
 ## Deployment
 
-Single-server deployment with Docker Compose, Caddy (auto-HTTPS), and Watchtower (auto-deploy from GHCR).
+Single-server deployment with Docker Compose, Caddy (auto-HTTPS), and GitHub Actions deploying exact GHCR image digests over SSH.
 
 ```bash
 # On your VPS
-mkdir -p /opt/stag && cd /opt/stag
+mkdir -p /root/stag && cd /root/stag
 # Copy docker-compose.prod.yml, Caddyfile, .env
-nano .env  # Set DATABASE_URL, BETTER_AUTH_SECRET, DOMAIN_NAME, etc.
+nano .env  # Set APP_IMAGE, auth, database, and domain values
 
 # First deploy (with seeding)
 RUN_SEED=true docker compose -f docker-compose.prod.yml up -d
 ```
 
-**Auto-deploy pipeline**: Push to `master` triggers CI (lint, typecheck, unit/api/pages tests, coverage guard, build, E2E), then CD builds and pushes a Docker image to GHCR. Watchtower detects the new image within 60 seconds and restarts the app.
+**Auto-deploy pipeline**: Push to `master` triggers CI (lint, typecheck, unit/api/pages tests, coverage guard, build, E2E), then CD builds and pushes a Docker image to GHCR, updates `APP_IMAGE` on the VPS to the exact image digest it just built, and recreates `app` + `caddy` over SSH.
 
-Memory budget for a 2GB server: PostgreSQL 384MB, Next.js 512MB, Redis 64MB, Caddy 64MB, Watchtower 64MB.
+Memory budget for a 2GB server: PostgreSQL 384MB, Next.js 512MB, Redis 64MB, Caddy 64MB, Backup 64MB.
 
 See [docs/DEPLOYMENT_INCHALLAH.md](docs/DEPLOYMENT_INCHALLAH.md) for the full guide.
 
@@ -287,7 +287,7 @@ See [docs/DEPLOYMENT_INCHALLAH.md](docs/DEPLOYMENT_INCHALLAH.md) for the full gu
 | Document | Description |
 |----------|-------------|
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Full system architecture snapshot (kept in sync with `docs/ARCHITECTURE.md`) |
-| [DEPLOYMENT_INCHALLAH.md](docs/DEPLOYMENT_INCHALLAH.md) | Server setup, Docker Compose, Caddy, Watchtower guide |
+| [DEPLOYMENT_INCHALLAH.md](docs/DEPLOYMENT_INCHALLAH.md) | Server setup, Docker Compose, Caddy, and GitHub Actions deploy guide |
 | [CLAUDE.md](CLAUDE.md) | Project conventions and patterns for Claude Code |
 | [AGENTS.md](AGENTS.md) | Agent instructions and codebase reference |
 

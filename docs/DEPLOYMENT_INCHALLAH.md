@@ -1,14 +1,14 @@
 # Deployment Guide
 
-Single-server deployment using Docker Compose, Caddy (auto-HTTPS), and Watchtower (auto-deploy).
+Single-server deployment using Docker Compose, Caddy (auto-HTTPS), and GitHub Actions deploying exact GHCR image digests over SSH.
 
 ## Architecture
 
 ```
 Internet → Caddy :80/:443 → Next.js App :3000
-                                 ├── PostgreSQL :5432
-                                 └── Redis :6379
-            Watchtower polls GHCR every 60s for new images
+                                 ├── PostgreSQL :5432 (internal-only)
+                                 └── Redis :6379 (internal-only)
+            GitHub Actions updates APP_IMAGE on the VPS
             Backup runs daily pg_dump
 ```
 
@@ -39,14 +39,13 @@ echo "YOUR_TOKEN" | docker login ghcr.io -u YOUR_USERNAME --password-stdin
 ### 3. Create deployment directory
 
 ```bash
-sudo mkdir -p /opt/stag/backups
-sudo chown $USER:$USER /opt/stag
-cd /opt/stag
+mkdir -p /root/stag/backups
+cd /root/stag
 ```
 
 ### 4. Copy deployment files
 
-Copy these files from the repository to `/opt/stag/`:
+Copy these files from the repository to `/root/stag/`:
 - `docker-compose.prod.yml`
 - `Caddyfile`
 
@@ -59,15 +58,15 @@ nano .env
 
 Required variables:
 ```env
-DATABASE_URL=postgresql://stag:YOUR_DB_PASSWORD@db:5432/stag
 BETTER_AUTH_SECRET=your-secret-min-32-characters-long
 NEXT_PUBLIC_BETTER_AUTH_URL=https://your-domain.com
+BETTER_AUTH_TRUSTED_ORIGINS=https://your-domain.com,https://www.your-domain.com
 
 POSTGRES_USER=stag
 POSTGRES_PASSWORD=YOUR_DB_PASSWORD
 POSTGRES_DB=stag
 
-GITHUB_REPO=your-username/your-repo
+APP_IMAGE=ghcr.io/your-username/your-repo:latest
 DOMAIN_NAME=your-domain.com
 ```
 
@@ -78,7 +77,7 @@ Add an A record for your domain pointing to the server's IP address. Caddy will 
 ## First Deploy
 
 ```bash
-cd /opt/stag
+cd /root/stag
 
 # Start with database seeding
 RUN_SEED=true docker compose -f docker-compose.prod.yml up -d
@@ -98,8 +97,8 @@ Fully automatic. The pipeline:
 1. Push code to `master`
 2. CI runs (lint, typecheck, tests, build, e2e)
 3. CD builds Docker image and pushes to GHCR
-4. Watchtower detects new image within 60 seconds
-5. Watchtower pulls new image and restarts the app container
+4. CD updates `APP_IMAGE` in `/root/stag/.env` to the exact digest it just built
+5. CD pulls that exact image and recreates `app` + `caddy`
 6. Entrypoint runs any pending database migrations
 7. App starts serving traffic
 
@@ -108,7 +107,7 @@ Fully automatic. The pipeline:
 ### View logs
 
 ```bash
-cd /opt/stag
+cd /root/stag
 docker compose -f docker-compose.prod.yml logs -f app     # App logs
 docker compose -f docker-compose.prod.yml logs -f db       # Database logs
 docker compose -f docker-compose.prod.yml logs -f caddy    # Reverse proxy logs
@@ -129,12 +128,12 @@ docker compose -f docker-compose.prod.yml restart app
 ### Manual rollback
 
 ```bash
-# List available image tags
-docker images ghcr.io/YOUR_USERNAME/YOUR_REPO
+# Edit APP_IMAGE in /root/stag/.env to a previous digest or sha-tag
+nano /root/stag/.env
 
-# Roll back to a specific commit
-docker compose -f docker-compose.prod.yml pull
-docker service update --image ghcr.io/YOUR_USERNAME/YOUR_REPO:sha-abc1234 stag_app
+# Recreate the app with that image
+docker compose --env-file .env -f docker-compose.prod.yml pull app
+docker compose --env-file .env -f docker-compose.prod.yml up -d --force-recreate app caddy
 ```
 
 ### Database backup (manual)
@@ -144,13 +143,53 @@ docker compose -f docker-compose.prod.yml exec db \
   pg_dump -U stag stag > backup-$(date +%Y%m%d).sql
 ```
 
-Automated daily backups are stored in `/opt/stag/backups/`.
+Automated daily backups are stored in `/root/stag/backups/`.
+
+### Database restore
+
+Stop writes before restore:
+
+```bash
+cd /root/stag
+docker compose -f docker-compose.prod.yml stop app
+```
+
+Recreate the target database:
+
+```bash
+docker compose -f docker-compose.prod.yml exec -T db psql -U "${POSTGRES_USER:-stag}" -d postgres \
+  -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${POSTGRES_DB:-stag}' AND pid <> pg_backend_pid();"
+docker compose -f docker-compose.prod.yml exec -T db psql -U "${POSTGRES_USER:-stag}" -d postgres \
+  -c "DROP DATABASE IF EXISTS ${POSTGRES_DB:-stag};"
+docker compose -f docker-compose.prod.yml exec -T db psql -U "${POSTGRES_USER:-stag}" -d postgres \
+  -c "CREATE DATABASE ${POSTGRES_DB:-stag};"
+```
+
+Restore from a plain SQL file:
+
+```bash
+cat backups/your-backup.sql | docker compose -f docker-compose.prod.yml exec -T db \
+  psql -U "${POSTGRES_USER:-stag}" -d "${POSTGRES_DB:-stag}"
+```
+
+Restore from a gzipped SQL file:
+
+```bash
+gunzip -c backups/your-backup.sql.gz | docker compose -f docker-compose.prod.yml exec -T db \
+  psql -U "${POSTGRES_USER:-stag}" -d "${POSTGRES_DB:-stag}"
+```
+
+Start the app again:
+
+```bash
+docker compose -f docker-compose.prod.yml up -d app caddy
+```
 
 ### Run migrations manually
 
 ```bash
 docker compose -f docker-compose.prod.yml exec app \
-  bunx drizzle-kit migrate
+  bun run scripts/migrate.ts
 ```
 
 ## Memory Budget (2GB Server)
@@ -161,10 +200,9 @@ docker compose -f docker-compose.prod.yml exec app \
 | Next.js App | 512 MB |
 | Redis       | 64 MB  |
 | Caddy       | 64 MB  |
-| Watchtower  | 64 MB  |
 | Backup      | 64 MB  |
 | OS + Docker | ~300 MB |
-| **Total**   | **~1.45 GB** |
+| **Total**   | **~1.39 GB** |
 
 If you experience OOM issues, reduce PostgreSQL `shared_buffers` to `64MB` in docker-compose.prod.yml.
 
@@ -175,5 +213,8 @@ Add these to your repository settings (Settings > Secrets and variables > Action
 | Secret | Description |
 |--------|-------------|
 | `NEXT_PUBLIC_BETTER_AUTH_URL` | Production URL (e.g., `https://stag.example.com`) |
+| `DEPLOY_HOST` | VPS host or IP |
+| `DEPLOY_USER` | SSH user for deploys |
+| `DEPLOY_SSH_KEY` | Private SSH deploy key |
 
 `GITHUB_TOKEN` is provided automatically and has `packages:write` permission.

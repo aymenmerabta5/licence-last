@@ -135,7 +135,7 @@
 | Container | Docker (multi-stage) |
 | Orchestration | Docker Compose |
 | Reverse Proxy | Caddy 2 (auto-HTTPS) |
-| Auto-Deploy | Watchtower |
+| Auto-Deploy | GitHub Actions over SSH |
 | CI/CD | GitHub Actions |
 | Registry | GitHub Container Registry (ghcr.io) |
 | Logging | Pino 10.x (structured JSON) |
@@ -878,7 +878,7 @@ Internet --> Caddy :80/:443 --> Next.js App :3000
                                      |
                               PostgreSQL :5432
                               Redis :6379
-             Watchtower polls GHCR every 60s
+             GitHub Actions updates APP_IMAGE over SSH
              Backup runs daily pg_dump
 ```
 
@@ -888,9 +888,8 @@ Internet --> Caddy :80/:443 --> Next.js App :3000
 |---------|-------|--------|---------|
 | PostgreSQL | postgres:16-alpine | 384 MB | Primary database |
 | Redis | redis:7-alpine | 64 MB | Rate limiting |
-| Next.js App | ghcr.io/{repo}:latest | 512 MB | Application |
+| Next.js App | `${APP_IMAGE}` | 512 MB | Application |
 | Caddy | caddy:2-alpine | 64 MB | Reverse proxy + auto-HTTPS |
-| Watchtower | containrrr/watchtower | 64 MB | Auto-deploy |
 | Backup | postgres-backup-local | 64 MB | Daily pg_dump |
 
 ### CI/CD Pipeline
@@ -912,13 +911,11 @@ CI (GitHub Actions):
 CD:
   1. Docker build (multi-stage)
   2. Push to ghcr.io
-    |
-    v (within 60s)
-Watchtower:
-  1. Detect new image
-  2. Pull + restart container
-  3. Entrypoint runs migrations
-  4. App serves traffic
+  3. SSH to VPS
+  4. Update APP_IMAGE in /root/stag/.env
+  5. Pull + recreate app/caddy
+  6. Entrypoint runs migrations
+  7. App serves traffic
 ```
 
 ### Security Headers
@@ -1024,4 +1021,3 @@ When adding or modifying features, **update all relevant documentation files** t
 | `AGENTS.md` | Coding guidelines for AI agents | Service lists, route procedure tables, feature folder references |
 | `docs/ARCHITECTURE.md` | Full system architecture | Data model, service tables, procedure counts, file counts |
 | `README.md` | Project overview | High-level capabilities, architecture summary |
-

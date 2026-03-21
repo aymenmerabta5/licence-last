@@ -2,7 +2,7 @@
 set -e
 
 echo "Running database schema setup..."
-bun run scripts/push-schema.ts
+bun run scripts/migrate.ts
 
 if [ "$RUN_SEED" = "true" ]; then
   echo "Seeding database..."
