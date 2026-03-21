@@ -67,103 +67,97 @@ jobs:
     needs: build
     permissions:
       contents: read
-    env:
-      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-      DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      packages: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Prepare SSH key
-        run: |
-          set -euo pipefail
-          install -m 700 -d ~/.ssh
-          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
-
       - name: Sync deployment config
-        run: |
-          set -euo pipefail
-          scp -i ~/.ssh/deploy_key \
-            docker-compose.prod.yml \
-            Caddyfile \
-            "${DEPLOY_USER}@${DEPLOY_HOST}:/root/stag/"
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: "docker-compose.prod.yml,Caddyfile"
+          target: "/root/stag"
 
       - name: Deploy exact image
+        uses: appleboy/ssh-action@v1.2.5
         env:
           IMAGE_REF: ${{ needs.build.outputs.image_ref }}
           GHCR_USERNAME: ${{ github.actor }}
-          GHCR_TOKEN: ${{ secrets.GHCR_PAT }}
-        run: |
-          set -euo pipefail
-          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" \
-            IMAGE_REF="$IMAGE_REF" \
-            GHCR_USERNAME="$GHCR_USERNAME" \
-            GHCR_TOKEN="$GHCR_TOKEN" \
-            'bash -se' <<'EOF'
-          set -euo pipefail
+          GHCR_TOKEN: ${{ github.token }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: IMAGE_REF,GHCR_USERNAME,GHCR_TOKEN
+          script: |
+            set -euo pipefail
 
-          cd /root/stag
+            cd /root/stag
 
-          if [ ! -f .env ]; then
-            echo ".env not found at /root/stag/.env" >&2
-            exit 1
-          fi
+            if [ ! -f .env ]; then
+              echo ".env not found at /root/stag/.env" >&2
+              exit 1
+            fi
 
-          python3 - <<'PY'
-          import os
-          from pathlib import Path
+            python3 - <<'PY'
+            import os
+            from pathlib import Path
 
-          env_path = Path(".env")
-          current_lines = env_path.read_text().splitlines()
-          updates = {
-              "APP_IMAGE": os.environ["IMAGE_REF"],
-          }
+            env_path = Path(".env")
+            current_lines = env_path.read_text().splitlines()
+            updates = {
+                "APP_IMAGE": os.environ["IMAGE_REF"],
+            }
 
-          rewritten = []
-          updated_keys = set()
+            rewritten = []
+            updated_keys = set()
 
-          for line in current_lines:
-              if "=" not in line or line.lstrip().startswith("#"):
-                  rewritten.append(line)
-                  continue
+            for line in current_lines:
+                if "=" not in line or line.lstrip().startswith("#"):
+                    rewritten.append(line)
+                    continue
 
-              key, _ = line.split("=", 1)
-              if key in updates:
-                  rewritten.append(f"{key}={updates[key]}")
-                  updated_keys.add(key)
-              else:
-                  rewritten.append(line)
+                key, _ = line.split("=", 1)
+                if key in updates:
+                    rewritten.append(f"{key}={updates[key]}")
+                    updated_keys.add(key)
+                else:
+                    rewritten.append(line)
 
-          for key, value in updates.items():
-              if key not in updated_keys:
-                  rewritten.append(f"{key}={value}")
+            for key, value in updates.items():
+                if key not in updated_keys:
+                    rewritten.append(f"{key}={value}")
 
-          env_path.write_text("\n".join(rewritten) + "\n")
-          PY
+            env_path.write_text("\n".join(rewritten) + "\n")
+            PY
 
-          echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
 
-          docker compose --env-file .env -f docker-compose.prod.yml pull app
-          docker compose --env-file .env -f docker-compose.prod.yml up -d --force-recreate --wait --remove-orphans app caddy
+            docker compose --env-file .env -f docker-compose.prod.yml pull app
+            docker compose --env-file .env -f docker-compose.prod.yml up -d --force-recreate --wait --remove-orphans app caddy
 
-          DOMAIN_NAME="$(awk -F= '/^DOMAIN_NAME=/{print $2}' .env | tail -n 1)"
-          if [ -z "$DOMAIN_NAME" ]; then
-            echo "DOMAIN_NAME is missing in /root/stag/.env" >&2
-            exit 1
-          fi
+            DOMAIN_NAME="$(awk -F= '/^DOMAIN_NAME=/{print $2}' .env | tail -n 1)"
+            if [ -z "$DOMAIN_NAME" ]; then
+              echo "DOMAIN_NAME is missing in /root/stag/.env" >&2
+              exit 1
+            fi
 
-          curl --fail --silent --show-error \
-            --resolve "${DOMAIN_NAME}:443:127.0.0.1" \
-            "https://${DOMAIN_NAME}/api/health" >/dev/null
+            curl --fail --silent --show-error \
+              --resolve "${DOMAIN_NAME}:443:127.0.0.1" \
+              "https://${DOMAIN_NAME}/api/health" >/dev/null
 
-          docker compose --env-file .env -f docker-compose.prod.yml ps
-          EOF
+            docker compose --env-file .env -f docker-compose.prod.yml ps
 
       - name: Cleanup old images on server
         if: success()
-        run: |
-          set -euo pipefail
-          ssh -i ~/.ssh/deploy_key "${DEPLOY_USER}@${DEPLOY_HOST}" 'docker image prune -f'
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            docker image prune -f
