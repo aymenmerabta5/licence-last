@@ -10,12 +10,17 @@ concurrency:
   group: cd-deploy
   cancel-in-progress: false
 
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}
+
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    outputs:
+      image_ref: ${{ steps.image.outputs.ref }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,12 +39,13 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: ${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest
             type=sha,prefix=sha-
 
       - name: Build and push
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -51,3 +57,106 @@ jobs:
             NEXT_PUBLIC_TURNSTILE_SITE_KEY=${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Record exact image reference
+        id: image
+        run: echo "ref=${IMAGE_NAME}@${{ steps.build.outputs.digest }}" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sync deployment config
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: "docker-compose.prod.yml,Caddyfile"
+          target: "/root/stag"
+
+      - name: Deploy exact image
+        uses: appleboy/ssh-action@v1
+        env:
+          IMAGE_REF: ${{ needs.build.outputs.image_ref }}
+          GHCR_USERNAME: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GHCR_PAT }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: IMAGE_REF,GHCR_USERNAME,GHCR_TOKEN
+          script: |
+            set -euo pipefail
+
+            cd /root/stag
+
+            if [ ! -f .env ]; then
+              echo ".env not found at /root/stag/.env" >&2
+              exit 1
+            fi
+
+            python3 - <<'PY'
+            import os
+            from pathlib import Path
+
+            env_path = Path(".env")
+            current_lines = env_path.read_text().splitlines()
+            updates = {
+                "APP_IMAGE": os.environ["IMAGE_REF"],
+            }
+
+            rewritten = []
+            updated_keys = set()
+
+            for line in current_lines:
+                if "=" not in line or line.lstrip().startswith("#"):
+                    rewritten.append(line)
+                    continue
+
+                key, _ = line.split("=", 1)
+                if key in updates:
+                    rewritten.append(f"{key}={updates[key]}")
+                    updated_keys.add(key)
+                else:
+                    rewritten.append(line)
+
+            for key, value in updates.items():
+                if key not in updated_keys:
+                    rewritten.append(f"{key}={value}")
+
+            env_path.write_text("\n".join(rewritten) + "\n")
+            PY
+
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+
+            docker compose --env-file .env -f docker-compose.prod.yml pull app
+            docker compose --env-file .env -f docker-compose.prod.yml up -d --force-recreate --wait --remove-orphans app caddy
+
+            DOMAIN_NAME="$(awk -F= '/^DOMAIN_NAME=/{print $2}' .env | tail -n 1)"
+            if [ -z "$DOMAIN_NAME" ]; then
+              echo "DOMAIN_NAME is missing in /root/stag/.env" >&2
+              exit 1
+            fi
+
+            curl --fail --silent --show-error \
+              --resolve "${DOMAIN_NAME}:443:127.0.0.1" \
+              "https://${DOMAIN_NAME}/api/health" >/dev/null
+
+            docker compose --env-file .env -f docker-compose.prod.yml ps
+
+      - name: Cleanup old images on server
+        if: success()
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            docker image prune -f

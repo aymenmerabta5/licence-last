@@ -66,7 +66,7 @@ services:
 
   # ─── Next.js Application ────────────────────────────────────
   app:
-    image: ghcr.io/${GITHUB_REPO:?Set GITHUB_REPO in .env}:latest
+    image: ${APP_IMAGE:?Set APP_IMAGE in .env}
     restart: unless-stopped
     depends_on:
       db:
@@ -102,8 +102,6 @@ services:
       resources:
         limits:
           memory: 512M
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
     logging:
       driver: json-file
       options:
@@ -126,30 +124,6 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
-    networks:
-      - stag-net
-    deploy:
-      resources:
-        limits:
-          memory: 64M
-    logging:
-      driver: json-file
-      options:
-        max-size: "25m"
-        max-file: "3"
-
-  # ─── Watchtower (Auto-deploy) ───────────────────────────────
-  watchtower:
-    image: containrrr/watchtower
-    restart: unless-stopped
-    environment:
-      WATCHTOWER_POLL_INTERVAL: 60
-      WATCHTOWER_LABEL_ENABLE: "true"
-      WATCHTOWER_CLEANUP: "true"
-      WATCHTOWER_ROLLING_RESTART: "true"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ~/.docker/config.json:/config.json:ro
     networks:
       - stag-net
     deploy:

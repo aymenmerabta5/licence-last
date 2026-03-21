@@ -72,16 +72,6 @@ export function DashboardClientProvider({
       )}
 
       <div className="flex min-h-screen bg-background text-foreground transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] selection:bg-primary/10 selection:text-primary">
-        {/* Desktop Sidebar */}
-        <div className="hidden lg:block shrink-0">
-          <Suspense fallback={<DashboardSidebarFallback />}>
-            <DashboardSidebar
-              role={effectiveRole}
-              companyMembershipRole={companyMembershipRole}
-            />
-          </Suspense>
-        </div>
-
         {/* Mobile Sidebar — Overlay backdrop */}
         {isSidebarOpen && (
           <div
