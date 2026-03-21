@@ -23,9 +23,11 @@ RUN mkdir -p public
 # Build-time env values are required for T3 Env validation during `next build`.
 # These are safe defaults; provide real values at runtime via .env on the server.
 ARG NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
+ARG NEXT_PUBLIC_TURNSTILE_SITE_KEY=
 RUN DATABASE_URL=postgresql://postgres:postgres@localhost:5432/stag \
     BETTER_AUTH_SECRET=build-secret-not-for-production-use \
     NEXT_PUBLIC_BETTER_AUTH_URL=$NEXT_PUBLIC_BETTER_AUTH_URL \
+    NEXT_PUBLIC_TURNSTILE_SITE_KEY=$NEXT_PUBLIC_TURNSTILE_SITE_KEY \
     bun run build
 
 # --- Production runner ---

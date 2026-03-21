@@ -16,14 +16,23 @@ set -e
 #   3. Run:          bash vps-setup.sh
 # ============================================================================
 
-DOMAIN="xendate.com"
+DOMAIN="${1:-}"
 GITHUB_USER="aymenmerabta5"
 GITHUB_REPO="aymenmerabta5/licence-last"
 APP_DIR="$HOME/stag"
 
+if [ -z "$DOMAIN" ]; then
+  read -r -p "Enter your domain (e.g. azeldin.de): " DOMAIN
+fi
+
+if [ -z "$DOMAIN" ]; then
+  echo "✗ ERROR: domain is required"
+  exit 1
+fi
+
 echo ""
 echo "╔══════════════════════════════════════════════╗"
-echo "║       Stag.io  VPS Setup — xendate.com       ║"
+echo "║       Stag.io  VPS Setup — $DOMAIN       ║"
 echo "╚══════════════════════════════════════════════╝"
 echo ""
 

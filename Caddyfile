@@ -1,3 +1,8 @@
+# Redirect common alternate host to the canonical apex domain.
+www.{$DOMAIN_NAME:localhost} {
+	redir https://{$DOMAIN_NAME}{uri} permanent
+}
+
 # Caddy reverse proxy for Next.js with direct public HTTPS
 {$DOMAIN_NAME:localhost} {
 	encode zstd gzip
