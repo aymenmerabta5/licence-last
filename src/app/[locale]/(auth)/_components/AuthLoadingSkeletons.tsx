@@ -53,7 +53,12 @@ export function SignupRoleSelectorSkeleton() {
 
 export function ResetPasswordVerifySkeleton() {
   return (
-    <div aria-busy="true" aria-live="polite" className="space-y-8">
+    <div
+      aria-busy="true"
+      aria-live="polite"
+      aria-label="Loading reset password verification form"
+      className="space-y-8"
+    >
       <div className="space-y-3">
         <Skeleton className="h-10 w-72" />
         <Skeleton className="h-4 w-full max-w-sm" />
