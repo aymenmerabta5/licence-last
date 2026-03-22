@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
 
+import { ResetPasswordVerifySkeleton } from "@/app/[locale]/(auth)/_components/AuthLoadingSkeletons"
 import { ResetPasswordVerifyForm } from "@/app/[locale]/(auth)/reset-password/verify/_components/ResetPasswordVerifyForm"
 
 type Params = Promise<{ locale: string }>
@@ -20,12 +21,7 @@ export async function generateMetadata({
 }
 
 function ResetPasswordVerifyFallback() {
-  return (
-    <div
-      aria-label="Loading reset password verification form"
-      className="h-[420px] w-full animate-pulse border-t-2 border-primary/20 bg-muted/5"
-    />
-  )
+  return <ResetPasswordVerifySkeleton />
 }
 
 export default function ResetPasswordVerifyPage() {

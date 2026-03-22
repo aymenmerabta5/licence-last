@@ -3,6 +3,11 @@ import {
   DecorativePanel,
   MobileHeroBanner,
 } from "@/app/[locale]/onboarding/_components/DecorativePanel"
+import {
+  DecorativePanelSkeleton,
+  MobileHeroBannerSkeleton,
+  OnboardingFormSkeleton,
+} from "@/app/[locale]/onboarding/_components/OnboardingLoadingSkeletons"
 import { OnboardingContent } from "@/app/[locale]/onboarding/_components/OnboardingContent"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
@@ -22,7 +27,7 @@ export default function OnboardingLayout({
       {/* Decorative side panel — desktop only */}
       <aside className="hidden lg:block lg:w-[42%] xl:w-[38%] relative">
         <div className="sticky top-0 h-screen">
-          <Suspense fallback={<div className="h-full bg-accent" />}>
+          <Suspense fallback={<DecorativePanelSkeleton />}>
             <DecorativePanel />
           </Suspense>
         </div>
@@ -48,7 +53,7 @@ export default function OnboardingLayout({
           <div className="w-full max-w-[680px] space-y-10">
             {/* Mobile hero banner */}
             <div className="lg:hidden">
-              <Suspense fallback={null}>
+              <Suspense fallback={<MobileHeroBannerSkeleton />}>
                 <MobileHeroBanner />
               </Suspense>
             </div>
@@ -64,11 +69,7 @@ export default function OnboardingLayout({
 
               {/* The form area */}
               <div className="relative bg-transparent z-10">
-                <Suspense
-                  fallback={
-                    <div className="h-[600px] w-full animate-pulse border-t-2 border-primary/20 bg-muted/5 mt-8" />
-                  }
-                >
+                <Suspense fallback={<OnboardingFormSkeleton sections={[3, 3, 3]} />}>
                   <OnboardingContent>{children}</OnboardingContent>
                 </Suspense>
               </div>

@@ -1,5 +1,5 @@
 import { OnboardingFormSkeleton } from "@/app/[locale]/onboarding/_components/OnboardingLoadingSkeletons"
 
-export default function OnboardingLoading() {
-  return <OnboardingFormSkeleton sections={[3, 3, 3]} />
+export default function CompanyOnboardingLoading() {
+  return <OnboardingFormSkeleton sections={[4, 3]} />
 }

@@ -1,6 +1,7 @@
 import { Suspense } from "react"
 
 import { AuthenticatedContent } from "@/app/[locale]/(authenticated)/_components/AuthenticatedContent"
+import { DashboardShellSkeleton } from "@/app/[locale]/(authenticated)/_components/DashboardShellSkeleton"
 
 /**
  * Authenticated layout with cacheComponents support.
@@ -12,7 +13,7 @@ export default async function AuthenticatedLayout({
   children: React.ReactNode
 }) {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-background" />}>
+    <Suspense fallback={<DashboardShellSkeleton />}>
       <AuthenticatedContent>{children}</AuthenticatedContent>
     </Suspense>
   )

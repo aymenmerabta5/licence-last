@@ -1,6 +1,7 @@
 import { Suspense } from "react"
 
 import { StatusContent } from "@/app/[locale]/status/_components/StatusContent"
+import { StatusContentSkeleton } from "@/app/[locale]/status/_components/StatusPageSkeleton"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { Link } from "@/i18n/routing"
@@ -30,7 +31,7 @@ export default function StatusLayout({
       {/* ── Centered content with auth guard ── */}
       <main className="flex-1 flex items-center justify-center px-6 pb-12 lg:px-10">
         <div className="w-full max-w-3xl">
-          <Suspense fallback={<div className="min-h-[200px]" />}>
+          <Suspense fallback={<StatusContentSkeleton />}>
             <StatusContent>{children}</StatusContent>
           </Suspense>
         </div>
