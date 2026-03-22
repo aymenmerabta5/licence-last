@@ -22,7 +22,7 @@ export function ProfileStrengthColumn({
   const t = useTranslations("dashboard.student.welcomeHero")
 
   return (
-    <div className="md:col-span-12 lg:col-span-3 flex flex-col justify-between border-t md:border-t-0 md:pt-0 pt-8 lg:border-l lg:border-border/40 lg:pl-10 group/meter relative">
+    <div className="md:col-span-12 lg:col-span-3 flex flex-col justify-between border-t md:border-t-0 md:pt-0 pt-8 lg:border-s lg:border-border/40 lg:ps-10 group/meter relative">
       <div className="flex flex-col gap-6 md:flex-row lg:flex-col md:items-center lg:items-start justify-between">
         <div className="flex-1 w-full">
           <div className="flex justify-between items-end mb-2">
@@ -31,7 +31,7 @@ export function ProfileStrengthColumn({
             </div>
             <div className="font-serif text-5xl md:text-6xl tracking-tighter text-foreground leading-none">
               {profileCompleteness}
-              <span className="text-primary text-2xl md:text-3xl align-top ml-1 font-sans font-light">
+              <span className="text-primary text-2xl md:text-3xl align-top ms-1 font-sans font-light">
                 %
               </span>
             </div>
@@ -39,7 +39,7 @@ export function ProfileStrengthColumn({
 
           <div className="relative h-[2px] w-full bg-border/40 overflow-hidden mt-4 mb-4">
             <motion.div
-              className="absolute top-0 left-0 bottom-0 bg-primary"
+              className="absolute top-0 start-0 bottom-0 bg-primary"
               initial={
                 prefersReducedMotion
                   ? { width: `${profileCompleteness}%` }

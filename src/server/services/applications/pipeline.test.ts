@@ -1,5 +1,11 @@
 import { describe, expect, mock, test } from "bun:test"
 
+import {
+  STAGE_COLUMNS,
+  STAGE_TRANSITIONS,
+  canTransitionStage,
+} from "@/lib/constants/pipeline"
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockValues = mock((): any => Promise.resolve())
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -14,46 +20,14 @@ mock.module("@/server/db", () => ({
   },
 }))
 
-// canTransitionStage is a pure function — we define the transition map here
-// to match pipeline.ts and test it directly, avoiding Bun mock.module caching
-// issues where other test files' mock.module for the same module path wins.
-const STAGE_TRANSITIONS: Record<string, string[]> = {
-  applied: ["screening", "interview", "offer"],
-  screening: ["applied", "interview", "offer"],
-  interview: ["screening", "offer"],
-  offer: ["interview"],
-  accepted: [],
-  rejected: [],
-}
-
-function canTransitionStage(from: string, to: string): boolean {
-  return STAGE_TRANSITIONS[from]?.includes(to) ?? false
-}
-
 describe("src/server/services/applications/pipeline canTransitionStage", () => {
-  test("should allow valid transitions from applied", () => {
-    expect(canTransitionStage("applied", "screening")).toBe(true)
-    expect(canTransitionStage("applied", "interview")).toBe(true)
-    expect(canTransitionStage("applied", "offer")).toBe(true)
-  })
-
-  test("should deny invalid transitions from applied", () => {
-    expect(canTransitionStage("applied", "accepted")).toBe(false)
-    expect(canTransitionStage("applied", "rejected")).toBe(false)
-  })
-
-  test("should deny all transitions from accepted", () => {
-    expect(canTransitionStage("accepted", "applied")).toBe(false)
-    expect(canTransitionStage("accepted", "rejected")).toBe(false)
-  })
-
-  test("should deny all transitions from rejected", () => {
-    expect(canTransitionStage("rejected", "applied")).toBe(false)
-    expect(canTransitionStage("rejected", "screening")).toBe(false)
-  })
-
-  test("should allow backward transition from offer to interview", () => {
-    expect(canTransitionStage("offer", "interview")).toBe(true)
+  test("matches the declared stage transition matrix for every stage pair", () => {
+    for (const fromStage of STAGE_COLUMNS) {
+      for (const toStage of STAGE_COLUMNS) {
+        const expected = STAGE_TRANSITIONS[fromStage].includes(toStage)
+        expect(canTransitionStage(fromStage, toStage)).toBe(expected)
+      }
+    }
   })
 })
 

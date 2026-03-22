@@ -2,6 +2,10 @@ import "server-only"
 
 import { desc, eq } from "drizzle-orm"
 
+import {
+  canTransitionStage,
+  type PipelineStage,
+} from "@/lib/constants/pipeline"
 import { db } from "@/server/db"
 import {
   application,
@@ -10,27 +14,6 @@ import {
 import { internshipOffer } from "@/server/db/schema/internships"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
 import { createNotification } from "@/server/services/notifications/create"
-
-export type PipelineStage =
-  | "applied"
-  | "screening"
-  | "interview"
-  | "offer"
-  | "accepted"
-  | "rejected"
-
-const STAGE_TRANSITIONS: Record<PipelineStage, PipelineStage[]> = {
-  applied: ["screening", "interview", "offer"],
-  screening: ["applied", "interview", "offer"],
-  interview: ["screening", "offer"],
-  offer: ["interview"],
-  accepted: [],
-  rejected: [],
-}
-
-export function canTransitionStage(from: PipelineStage, to: PipelineStage) {
-  return STAGE_TRANSITIONS[from].includes(to)
-}
 
 export async function appendTimelineEvent(input: {
   applicationId: string
@@ -97,6 +80,8 @@ export async function updateApplicationPipelineStage(input: {
   toStage: PipelineStage
   note?: string
 }) {
+  const normalizedNote = input.note?.trim() ? input.note : null
+
   const [row] = await db
     .select({
       id: application.id,
@@ -162,7 +147,7 @@ export async function updateApplicationPipelineStage(input: {
     toStage: input.toStage,
     fromStatus: row.status,
     toStatus: row.status,
-    payload: input.note ? { note: input.note } : {},
+    payload: normalizedNote ? { note: normalizedNote } : {},
   })
 
   if (row.studentUserId !== input.actorUserId) {
@@ -172,7 +157,7 @@ export async function updateApplicationPipelineStage(input: {
       payload: {
         applicationId: input.applicationId,
         stage: input.toStage,
-        note: input.note ?? null,
+        note: normalizedNote,
       },
     })
   }

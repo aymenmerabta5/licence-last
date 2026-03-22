@@ -21,8 +21,8 @@ export function OfferCard({ offer, index: _index }: OfferCardProps) {
     >
       <div className="relative h-full border border-border/80 bg-background hover:bg-foreground hover:text-background flex flex-col p-6 transition-all duration-500 shadow-[6px_6px_0_0_oklch(var(--border)_/_0.3)] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px]">
         {/* Image/Graphic Placeholder */}
-        <div className="absolute top-0 right-0 w-24 h-24 overflow-hidden pointer-events-none opacity-20 group-hover:opacity-10 transition-opacity">
-          <Hexagon className="w-full h-full text-primary absolute -top-10 -right-10 rotate-12 scale-150 group-hover:rotate-45 transition-transform duration-1000 ease-out" />
+        <div className="absolute top-0 end-0 w-24 h-24 overflow-hidden pointer-events-none opacity-20 group-hover:opacity-10 transition-opacity">
+          <Hexagon className="w-full h-full text-primary absolute -top-10 -end-10 rotate-12 scale-150 group-hover:rotate-45 transition-transform duration-1000 ease-out" />
         </div>
 
         {/* Company & Meta */}

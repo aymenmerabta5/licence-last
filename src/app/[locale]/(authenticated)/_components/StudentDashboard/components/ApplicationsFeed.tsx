@@ -23,7 +23,7 @@ export function ApplicationsFeed({
   return (
     <section className="relative">
       {/* Decorative vertical line */}
-      <div className="absolute top-0 bottom-0 -left-6 w-px bg-border/40 hidden lg:block" />
+      <div className="absolute top-0 bottom-0 -start-6 w-px bg-border/40 hidden lg:block" />
 
       {/* Editorial section header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-6 mb-8 border-b-4 border-foreground">

@@ -71,7 +71,7 @@ export function NotificationsTab({ email }: NotificationsTabProps) {
       <Card className="border-border/60 bg-card rounded-[2.5rem] overflow-hidden shadow-sm flex flex-col">
         <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 bg-transparent">
           <div
-            className="absolute -top-12 -right-8 flex items-center opacity-[0.02] dark:opacity-[0.05] pointer-events-none scale-[2] rotate-12"
+            className="absolute -top-12 -end-8 flex items-center opacity-[0.02] dark:opacity-[0.05] pointer-events-none scale-[2] rotate-12"
             aria-hidden="true"
           >
             <Bell className="h-64 w-64 text-primary" />

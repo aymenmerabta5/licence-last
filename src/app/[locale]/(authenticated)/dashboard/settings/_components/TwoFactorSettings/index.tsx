@@ -32,7 +32,7 @@ export function TwoFactorSettings({
       <Card className="border-border/60 bg-background/60 backdrop-blur-xl rounded-[2.5rem] overflow-hidden shadow-sm shadow-black/5 ring-1 ring-border/10">
         <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 bg-gradient-to-b from-muted/80 via-muted/30 to-transparent">
           <div
-            className="absolute -top-12 -right-8 flex items-center opacity-[0.02] dark:opacity-[0.05] pointer-events-none scale-[2] rotate-12"
+            className="absolute -top-12 -end-8 flex items-center opacity-[0.02] dark:opacity-[0.05] pointer-events-none scale-[2] rotate-12"
             aria-hidden="true"
           >
             <ShieldCheck className="h-64 w-64 text-primary" />

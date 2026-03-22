@@ -259,6 +259,243 @@ describe("getExplainableMatchScore", () => {
         ?.impact,
     ).toBe(7)
   })
+
+  test("treats optional zero or negative language weights as weighted requirements and matches codes case-insensitively", async () => {
+    queueMatchScoreQueries({
+      offer: {
+        id: "offer-4",
+        wilayaCode: null,
+        workMode: "remote",
+      },
+      profile: {
+        wilayaCode: "16",
+        bio: "Final-year software student",
+        phone: "+213555000000",
+        githubUrl: "https://github.com/student",
+        portfolioUrl: "https://student.dev",
+        department: "Computer Science",
+        level: "M2",
+      },
+      offerSkills: [
+        { id: "s1", name: "React", slug: "react", category: "frontend" },
+        { id: "s2", name: "TypeScript", slug: "typescript", category: "web" },
+      ],
+      studentSkills: [
+        { id: "s1", name: "React", slug: "react", category: "frontend" },
+        { id: "s2", name: "TypeScript", slug: "typescript", category: "web" },
+        { id: "s3", name: "SQL", slug: "sql", category: "data" },
+      ],
+      languageReqs: [
+        {
+          languageCode: "EN",
+          minimumProficiency: "b2",
+          isRequired: false,
+          weight: 0,
+        },
+        {
+          languageCode: "FR",
+          minimumProficiency: "b1",
+          isRequired: false,
+          weight: -2,
+        },
+      ],
+      languages: [
+        { languageCode: "en", proficiency: "c1" },
+        { languageCode: "fr", proficiency: "b1" },
+      ],
+    })
+
+    const { getExplainableMatchScore } = await importScoreModule()
+    const result = await getExplainableMatchScore("student-4", "offer-4")
+
+    expect(result.score).toBe(100)
+    expect(result.breakdown.language).toBe(20)
+    expect(
+      result.reasons.find((reason) => reason.key === "language_match")?.detail,
+    ).toContain("2/2 weighted requirements met.")
+  })
+
+  test("applies a required-language penalty when only some required languages are satisfied", async () => {
+    queueMatchScoreQueries({
+      offer: {
+        id: "offer-5",
+        wilayaCode: null,
+        workMode: "remote",
+      },
+      profile: {
+        wilayaCode: "16",
+        bio: "Final-year software student",
+        phone: "+213555000000",
+        githubUrl: "https://github.com/student",
+        portfolioUrl: "https://student.dev",
+        department: "Computer Science",
+        level: "M2",
+      },
+      offerSkills: [],
+      studentSkills: [
+        { id: "s1", name: "React", slug: "react", category: "frontend" },
+        { id: "s2", name: "Node.js", slug: "node", category: "backend" },
+        { id: "s3", name: "SQL", slug: "sql", category: "data" },
+      ],
+      languageReqs: [
+        {
+          languageCode: "en",
+          minimumProficiency: "b2",
+          isRequired: true,
+          weight: 2,
+        },
+        {
+          languageCode: "fr",
+          minimumProficiency: "b1",
+          isRequired: true,
+          weight: 1,
+        },
+        {
+          languageCode: "de",
+          minimumProficiency: "a2",
+          isRequired: false,
+          weight: 1,
+        },
+      ],
+      languages: [
+        { languageCode: "en", proficiency: "c1" },
+        { languageCode: "fr", proficiency: "a2" },
+      ],
+    })
+
+    const { getExplainableMatchScore } = await importScoreModule()
+    const result = await getExplainableMatchScore("student-5", "offer-5")
+
+    expect(result.score).toBe(85)
+    expect(result.breakdown.language).toBe(5)
+    expect(
+      result.reasons.find((reason) => reason.key === "language_match")?.detail,
+    ).toContain("2/4 weighted requirements met (1/2 required languages met).")
+  })
+
+  test("treats unknown student proficiency values as unmet language requirements", async () => {
+    queueMatchScoreQueries({
+      offer: {
+        id: "offer-6",
+        wilayaCode: null,
+        workMode: "remote",
+      },
+      profile: {
+        wilayaCode: "16",
+        bio: "Final-year software student",
+        phone: "+213555000000",
+        githubUrl: "https://github.com/student",
+        portfolioUrl: "https://student.dev",
+        department: "Computer Science",
+        level: "M2",
+      },
+      offerSkills: [],
+      studentSkills: [
+        { id: "s1", name: "React", slug: "react", category: "frontend" },
+        { id: "s2", name: "Node.js", slug: "node", category: "backend" },
+        { id: "s3", name: "SQL", slug: "sql", category: "data" },
+      ],
+      languageReqs: [
+        {
+          languageCode: "en",
+          minimumProficiency: "b1",
+          isRequired: false,
+          weight: 1,
+        },
+      ],
+      languages: [{ languageCode: "en", proficiency: "expert" }],
+    })
+
+    const { getExplainableMatchScore } = await importScoreModule()
+    const result = await getExplainableMatchScore("student-6", "offer-6")
+
+    expect(result.score).toBe(80)
+    expect(result.breakdown.language).toBe(0)
+    expect(
+      result.reasons.find((reason) => reason.key === "language_match")?.detail,
+    ).toContain("0/1 weighted requirements met.")
+  })
+
+  test("awards the profile readiness threshold bonus when the student has exactly three skills", async () => {
+    queueMatchScoreQueries({
+      offer: {
+        id: "offer-7",
+        wilayaCode: "16",
+        workMode: "on_site",
+      },
+      profile: {
+        wilayaCode: "16",
+        bio: null,
+        phone: null,
+        githubUrl: null,
+        portfolioUrl: null,
+        department: null,
+        level: null,
+      },
+      offerSkills: [
+        { id: "s1", name: "React", slug: "react", category: "frontend" },
+      ],
+      studentSkills: [
+        { id: "s1", name: "React", slug: "react", category: "frontend" },
+        { id: "s2", name: "Node.js", slug: "node", category: "backend" },
+        { id: "s3", name: "SQL", slug: "sql", category: "data" },
+      ],
+      languageReqs: [],
+      languages: [],
+    })
+
+    const { getExplainableMatchScore } = await importScoreModule()
+    const result = await getExplainableMatchScore("student-7", "offer-7")
+
+    expect(result.score).toBe(91)
+    expect(result.breakdown).toEqual({
+      skills: 55,
+      language: 20,
+      location: 15,
+      profile: 1,
+    })
+    expect(
+      result.reasons.find((reason) => reason.key === "profile_strength")
+        ?.detail,
+    ).toContain("14% of profile readiness signals complete.")
+  })
+
+  test("applies the hybrid location mismatch penalty when student and offer wilayas differ", async () => {
+    queueMatchScoreQueries({
+      offer: {
+        id: "offer-8",
+        wilayaCode: "16",
+        workMode: "hybrid",
+      },
+      profile: {
+        wilayaCode: "31",
+        bio: "Final-year software student",
+        phone: "+213555000000",
+        githubUrl: "https://github.com/student",
+        portfolioUrl: "https://student.dev",
+        department: "Computer Science",
+        level: "M2",
+      },
+      offerSkills: [],
+      studentSkills: [
+        { id: "s1", name: "React", slug: "react", category: "frontend" },
+        { id: "s2", name: "Node.js", slug: "node", category: "backend" },
+        { id: "s3", name: "SQL", slug: "sql", category: "data" },
+      ],
+      languageReqs: [],
+      languages: [],
+    })
+
+    const { getExplainableMatchScore } = await importScoreModule()
+    const result = await getExplainableMatchScore("student-8", "offer-8")
+
+    expect(result.score).toBe(93)
+    expect(result.breakdown.location).toBe(8)
+    expect(
+      result.reasons.find((reason) => reason.key === "location_alignment")
+        ?.impact,
+    ).toBe(8)
+  })
 })
 
 describe("canAccessMatchScore", () => {

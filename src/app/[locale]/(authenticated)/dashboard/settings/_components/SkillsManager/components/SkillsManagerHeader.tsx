@@ -45,7 +45,7 @@ export function SkillsManagerHeader({
               style={{ width: `${(selectedCount / maxSkills) * 100}%` }}
             />
           </div>
-          <span className="tabular-nums text-xs font-bold text-muted-foreground/60 w-12 text-right">
+          <span className="tabular-nums text-xs font-bold text-muted-foreground/60 w-12 text-end">
             {selectedCount}/{maxSkills}
           </span>
         </div>

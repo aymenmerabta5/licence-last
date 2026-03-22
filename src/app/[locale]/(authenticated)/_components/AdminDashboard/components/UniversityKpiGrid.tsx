@@ -98,7 +98,7 @@ export function UniversityKpiGrid({ stats }: UniversityKpiGridProps) {
             <span className="text-primary/40 leading-none">.</span>
           </h2>
         </div>
-        <p className="text-xs font-bold uppercase tracking-[0.1em] text-foreground/50 max-w-xs sm:text-right mt-4 sm:mt-0">
+        <p className="text-xs font-bold uppercase tracking-[0.1em] text-foreground/50 max-w-xs sm:text-end mt-4 sm:mt-0">
           Key indicators for student activity, structure, and validation
           progress
         </p>

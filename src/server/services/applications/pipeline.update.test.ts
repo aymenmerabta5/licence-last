@@ -42,6 +42,27 @@ async function loadPipelineModule() {
   )
 }
 
+function queueApplicationRow(
+  overrides: Partial<{
+    id: string
+    pipelineStage: string
+    status: string
+    studentUserId: string
+    offerCompanyId: string
+  }> = {},
+) {
+  selectResultsQueue.push([
+    {
+      id: "app-1",
+      pipelineStage: "screening",
+      status: "applied",
+      studentUserId: "student-1",
+      offerCompanyId: "company-1",
+      ...overrides,
+    },
+  ])
+}
+
 describe("src/server/services/applications/updateApplicationPipelineStage", () => {
   beforeEach(() => {
     applyPipelineMocks()
@@ -55,16 +76,55 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
     createNotificationMock.mockClear()
   })
 
+  test("rejects when the application does not exist", async () => {
+    selectResultsQueue.push([])
+
+    const { updateApplicationPipelineStage } = await loadPipelineModule()
+
+    await expect(
+      updateApplicationPipelineStage({
+        applicationId: "app-missing",
+        actorUserId: "company-user-1",
+        companyId: "company-1",
+        toStage: "screening",
+      }),
+    ).rejects.toMatchObject({
+      code: "APPLICATION_NOT_FOUND",
+      message: "Application not found",
+    })
+
+    expect(updateSetMock).not.toHaveBeenCalled()
+    expect(insertValuesMock).not.toHaveBeenCalled()
+    expect(createNotificationMock).not.toHaveBeenCalled()
+  })
+
+  test("rejects when the actor does not own the offer", async () => {
+    queueApplicationRow({ offerCompanyId: "company-2" })
+
+    const { updateApplicationPipelineStage } = await loadPipelineModule()
+
+    await expect(
+      updateApplicationPipelineStage({
+        applicationId: "app-1",
+        actorUserId: "company-user-1",
+        companyId: "company-1",
+        toStage: "interview",
+      }),
+    ).rejects.toMatchObject({
+      code: "APPLICATION_FORBIDDEN",
+      message: "You do not have access to this application",
+    })
+
+    expect(updateSetMock).not.toHaveBeenCalled()
+    expect(insertValuesMock).not.toHaveBeenCalled()
+    expect(createNotificationMock).not.toHaveBeenCalled()
+  })
+
   test("rejects stage changes once the application is no longer pending", async () => {
-    selectResultsQueue.push([
-      {
-        id: "app-1",
-        pipelineStage: "offer",
-        status: "company_accepted",
-        studentUserId: "student-1",
-        offerCompanyId: "company-1",
-      },
-    ])
+    queueApplicationRow({
+      pipelineStage: "offer",
+      status: "company_accepted",
+    })
 
     const { updateApplicationPipelineStage } = await loadPipelineModule()
 
@@ -85,15 +145,7 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
   })
 
   test("rejects terminal pipeline targets", async () => {
-    selectResultsQueue.push([
-      {
-        id: "app-1",
-        pipelineStage: "interview",
-        status: "applied",
-        studentUserId: "student-1",
-        offerCompanyId: "company-1",
-      },
-    ])
+    queueApplicationRow({ pipelineStage: "interview" })
 
     const { updateApplicationPipelineStage } = await loadPipelineModule()
 
@@ -111,16 +163,30 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
     })
   })
 
+  test("rejects invalid non-terminal transitions", async () => {
+    queueApplicationRow({ pipelineStage: "offer" })
+
+    const { updateApplicationPipelineStage } = await loadPipelineModule()
+
+    await expect(
+      updateApplicationPipelineStage({
+        applicationId: "app-1",
+        actorUserId: "company-user-1",
+        companyId: "company-1",
+        toStage: "screening",
+      }),
+    ).rejects.toMatchObject({
+      code: "APPLICATION_INVALID_STATE",
+      message: "Invalid stage transition: offer -> screening",
+    })
+
+    expect(updateSetMock).not.toHaveBeenCalled()
+    expect(insertValuesMock).not.toHaveBeenCalled()
+    expect(createNotificationMock).not.toHaveBeenCalled()
+  })
+
   test("updates non-terminal stages and appends a timeline event", async () => {
-    selectResultsQueue.push([
-      {
-        id: "app-1",
-        pipelineStage: "screening",
-        status: "applied",
-        studentUserId: "student-1",
-        offerCompanyId: "company-1",
-      },
-    ])
+    queueApplicationRow()
 
     const { updateApplicationPipelineStage } = await loadPipelineModule()
 
@@ -161,5 +227,53 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
         note: "Move to interview",
       },
     })
+  })
+
+  test("normalizes blank notes to an empty timeline payload and null notification note", async () => {
+    queueApplicationRow()
+
+    const { updateApplicationPipelineStage } = await loadPipelineModule()
+
+    await updateApplicationPipelineStage({
+      applicationId: "app-1",
+      actorUserId: "company-user-1",
+      companyId: "company-1",
+      toStage: "interview",
+      note: "   ",
+    })
+
+    expect(insertValuesMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        applicationId: "app-1",
+        eventType: "pipeline_stage_changed",
+        payload: {},
+      }),
+    )
+    expect(createNotificationMock).toHaveBeenCalledWith({
+      userId: "student-1",
+      type: "application_stage_changed",
+      payload: {
+        applicationId: "app-1",
+        stage: "interview",
+        note: null,
+      },
+    })
+  })
+
+  test("skips notifications when the actor is the student", async () => {
+    queueApplicationRow({ studentUserId: "student-1" })
+
+    const { updateApplicationPipelineStage } = await loadPipelineModule()
+
+    await updateApplicationPipelineStage({
+      applicationId: "app-1",
+      actorUserId: "student-1",
+      companyId: "company-1",
+      toStage: "interview",
+    })
+
+    expect(updateSetMock).toHaveBeenCalledTimes(1)
+    expect(insertValuesMock).toHaveBeenCalledTimes(1)
+    expect(createNotificationMock).not.toHaveBeenCalled()
   })
 })

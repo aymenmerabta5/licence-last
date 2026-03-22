@@ -73,9 +73,9 @@ export function PlatformBulletin({ stats }: PlatformBulletinProps) {
           <div
             key={metric.label}
             className={cn(
-              "relative px-4 py-8 md:px-6 md:py-10 text-center sm:text-left flex flex-col justify-between group overflow-hidden border-border/50 transition-colors duration-500",
+              "relative px-4 py-8 md:px-6 md:py-10 text-center sm:text-start flex flex-col justify-between group overflow-hidden border-border/50 transition-colors duration-500",
               "hover:bg-foreground hover:text-background",
-              index < metrics.length - 1 && "border-r",
+              index < metrics.length - 1 && "border-e",
               index < metrics.length - 1 &&
                 index % 2 === 1 &&
                 "max-lg:border-none",
@@ -85,7 +85,7 @@ export function PlatformBulletin({ stats }: PlatformBulletinProps) {
             )}
           >
             {/* Hover decorative element */}
-            <div className="absolute top-0 right-0 w-8 h-8 bg-primary/10 translate-x-4 -translate-y-4 rounded-full group-hover:scale-[15] transition-transform duration-700 ease-in-out origin-center pointer-events-none" />
+            <div className="absolute top-0 end-0 w-8 h-8 bg-primary/10 translate-x-4 -translate-y-4 rounded-full group-hover:scale-[15] transition-transform duration-700 ease-in-out origin-center pointer-events-none [[dir=rtl]_&]:-translate-x-4" />
 
             <div className="relative z-10 mb-6 md:mb-10 flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-0 justify-between">
               <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/50 group-hover:text-background/70 [[dir=rtl]_&]:tracking-normal">

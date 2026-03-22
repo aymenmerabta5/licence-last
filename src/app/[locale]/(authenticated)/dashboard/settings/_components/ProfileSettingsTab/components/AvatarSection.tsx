@@ -75,7 +75,7 @@ export function AvatarSection({
         )}
       </div>
 
-      <div className="space-y-4 flex flex-col items-start border-l-0 sm:border-l-2 border-border/20 sm:ps-8">
+      <div className="space-y-4 flex flex-col items-start border-s-0 sm:border-s-2 border-border/20 sm:ps-8">
         <div>
           <h4 className="font-serif text-2xl tracking-tight text-heading">
             Identity Visual

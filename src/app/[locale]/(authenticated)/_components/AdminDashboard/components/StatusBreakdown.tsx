@@ -100,7 +100,7 @@ export function StatusBreakdown({
               className={cn(
                 "h-full relative overflow-hidden",
                 config?.color ?? "bg-foreground",
-                i !== entries.length - 1 && "border-r border-background",
+                i !== entries.length - 1 && "border-e border-background",
               )}
               initial={{ width: 0 }}
               animate={{ width: `${pct}%` }}

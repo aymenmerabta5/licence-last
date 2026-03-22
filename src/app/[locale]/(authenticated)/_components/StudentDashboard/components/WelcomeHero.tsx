@@ -71,11 +71,11 @@ export function WelcomeHero({
       className="relative w-full"
     >
       {/* Top subtle decorative edge matching the newspaper feel */}
-      <div className="absolute top-0 right-0 w-1/3 h-[1px] bg-gradient-to-l from-primary/30 to-transparent -translate-y-px" />
+      <div className="absolute top-0 end-0 w-1/3 h-[1px] bg-gradient-to-l from-primary/30 to-transparent -translate-y-px [[dir=rtl]_&]:bg-gradient-to-r" />
 
       <div className="relative border-t-2 md:border-t-4 border-foreground/90 pt-8 pb-10 lg:py-16 grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-14 group">
         {/* Column 1: Editorial Metadata (span 2) */}
-        <div className="md:col-span-3 lg:col-span-2 flex flex-row md:flex-col justify-between gap-6 uppercase font-sans tracking-widest text-[10px] md:text-xs text-muted-foreground md:border-r border-border/40 md:pr-4">
+        <div className="md:col-span-3 lg:col-span-2 flex flex-row md:flex-col justify-between gap-6 uppercase font-sans tracking-widest text-[10px] md:text-xs text-muted-foreground md:border-e border-border/40 md:pe-4">
           <MetadataItem
             label="Vol."
             delay={0.2}
@@ -112,7 +112,7 @@ export function WelcomeHero({
 
         {/* Column 2: Main Editorial Headline (span 7.5 relative to grid size contextually) */}
         <div className="md:col-span-9 lg:col-span-7 flex flex-col justify-center relative">
-          <div className="absolute -top-10 -left-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none" />
+          <div className="absolute -top-10 -start-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none" />
 
           <h1 className="font-serif text-[clamp(2.5rem,6.5vw,5.5rem)] leading-[0.9] tracking-tighter text-foreground mb-8">
             <motion.span
