@@ -24,8 +24,19 @@ import {
 } from "@/server/orpc/rate-limited-procedures"
 import { getStudentProfile } from "@/server/services/students/get-profile"
 import { getPublicStudentProfile } from "@/server/services/students/get-public-profile"
+import { upsertStudentLanguages } from "@/server/services/students/upsert-languages"
 import { upsertStudentProfile } from "@/server/services/students/upsert-profile"
 import { upsertStudentProfileDetails } from "@/server/services/students/upsert-profile-details"
+import { upsertStudentSkills } from "@/server/services/students/upsert-skills"
+
+const studentLanguagesInputSchema = z
+  .array(
+    z.object({
+      languageCode: z.enum(LANGUAGE_CODES),
+      proficiency: proficiencyLevelSchema,
+    }),
+  )
+  .min(1)
 
 /* Reads */
 
@@ -247,6 +258,44 @@ export const upsertStudentProfileDetailsProcedure = studentProcedureStandard
 
     revalidateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id), "max")
     revalidateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id), "max")
+
+    return result
+  })
+
+export const upsertStudentSkillsProcedure = studentProcedureStandard
+  .input(
+    z.object({
+      skillTagIds: z.array(z.string()).min(1).max(10),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    const result = await upsertStudentSkills(input.skillTagIds, context.user.id)
+
+    revalidateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id), "max")
+    revalidateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id), "max")
+    revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), "max")
+
+    return result
+  })
+
+export const upsertStudentLanguagesProcedure = studentProcedureStandard
+  .input(
+    z.object({
+      languages: studentLanguagesInputSchema,
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    if (hasDuplicateLanguageCodes(input.languages)) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "Duplicate languages are not allowed",
+      })
+    }
+
+    const result = await upsertStudentLanguages(input.languages, context.user.id)
+
+    revalidateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id), "max")
+    revalidateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id), "max")
+    revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), "max")
 
     return result
   })

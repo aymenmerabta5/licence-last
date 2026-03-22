@@ -4,6 +4,7 @@ import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
 import { z } from "zod"
+import { LANGUAGE_CODES } from "@/lib/constants/languages"
 import { CACHE_TAGS } from "@/lib/cache"
 import {
   applicationStatusSchema,
@@ -131,6 +132,8 @@ export const listByOfferProcedure = companyAdminProcedureGenerous
       offerId: z.string().min(1),
       status: applicationStatusSchema.optional(),
       pipelineStage: pipelineStageSchema.optional(),
+      skillTagIds: z.array(z.string()).max(20).optional(),
+      languageCodes: z.array(z.enum(LANGUAGE_CODES)).max(LANGUAGE_CODES.length).optional(),
       cursor: z.object({ createdAt: z.string(), id: z.string() }).optional(),
       limit: z.coerce.number().int().min(1).max(50).optional(),
     }),
@@ -143,6 +146,8 @@ export const listByOfferProcedure = companyAdminProcedureGenerous
         {
           status: input.status,
           pipelineStage: input.pipelineStage,
+          skillTagIds: input.skillTagIds,
+          languageCodes: input.languageCodes,
           cursor: input.cursor,
           limit: input.limit,
         },

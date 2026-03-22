@@ -1,6 +1,7 @@
 "use client"
 
 import { InternshipTypeFilter } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/InternshipTypeFilter"
+import { LanguagesFilter } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/LanguagesFilter"
 import { SkillsFilter } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/SkillsFilter"
 import { WilayaFilter } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/WilayaFilter"
 import { WorkModeFilter } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/WorkModeFilter"
@@ -24,6 +25,19 @@ export function SearchFilters({
       <WorkModeFilter
         filters={filters}
         onFiltersChange={onFiltersChange}
+        t={t}
+      />
+
+      <LanguagesFilter
+        selectedCodes={filters.languageCodes}
+        onToggle={(languageCode) =>
+          toggleMultiValueFilter(
+            filters,
+            onFiltersChange,
+            "languageCodes",
+            languageCode,
+          )
+        }
         t={t}
       />
 

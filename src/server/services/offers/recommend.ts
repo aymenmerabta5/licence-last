@@ -39,6 +39,12 @@ interface RankedOffer {
     slug: string
     category: string | null
   }[]
+  languageRequirements: {
+    languageCode: string
+    minimumProficiency: "a1" | "a2" | "b1" | "b2" | "c1" | "c2" | "native"
+    isRequired: boolean
+    weight: number
+  }[]
   matchScore: number
 }
 

@@ -5,6 +5,7 @@ import { BioSection } from "@/app/[locale]/(authenticated)/dashboard/profile/_co
 import { ContactInfoCard } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/ContactInfoCard"
 import { EducationSection } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/EducationSection"
 import { ExperienceSection } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/ExperienceSection"
+import { LanguagesCard } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/LanguagesCard"
 import { ProfileHeader } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/ProfileHeader"
 import { ProfileStats } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/components/ProfileStats"
 import {
@@ -19,12 +20,15 @@ function buildProfileText(
   user: ProfileContentProps["user"],
   profile: ReturnType<typeof useProfileData>["profile"],
   skills: ReturnType<typeof useProfileData>["skills"],
+  languages: ReturnType<typeof useProfileData>["languages"],
   university: ReturnType<typeof useProfileData>["university"],
   labels: {
     anonymousUser: string
     skillsLabel: string
+    languagesLabel: string
     githubLabel: string
     portfolioLabel: string
+    formatLanguage: (languageCode: string, proficiency: string) => string
   },
 ): string {
   const lines: string[] = []
@@ -46,6 +50,15 @@ function buildProfileText(
     lines.push("")
     lines.push(`${labels.skillsLabel}: ${skills.map((s) => s.name).join(", ")}`)
   }
+  if (languages.length > 0) {
+    lines.push(
+      `${labels.languagesLabel}: ${languages
+        .map((language) =>
+          labels.formatLanguage(language.languageCode, language.proficiency),
+        )
+        .join(", ")}`,
+    )
+  }
   if (profile?.githubUrl)
     lines.push(`${labels.githubLabel}: ${profile.githubUrl}`)
   if (profile?.portfolioUrl)
@@ -59,7 +72,8 @@ export function ProfileContent({
   studentData,
 }: ProfileContentProps) {
   const t = useTranslations("dashboard")
-  const { canEdit, profile, stats, university, skills, experiences } =
+  const tProficiency = useTranslations("onboarding.student.proficiencyLevels")
+  const { canEdit, profile, stats, university, skills, languages, experiences } =
     useProfileData(viewer, user, (key, values) => t(key, values), studentData)
 
   const roleLabels: Record<string, string> = {
@@ -75,12 +89,22 @@ export function ProfileContent({
     effectiveRole ||
     t("student.profile.unknownRole")
 
-  const profileText = buildProfileText(user, profile, skills, university, {
+  const profileText = buildProfileText(
+    user,
+    profile,
+    skills,
+    languages,
+    university,
+    {
     anonymousUser: t("student.profile.anonymousUser"),
     skillsLabel: t("student.profile.skillsLabel"),
+    languagesLabel: t("student.profile.languagesLabel"),
     githubLabel: t("student.profile.githubLabel"),
     portfolioLabel: t("student.profile.portfolioLabel"),
-  })
+    formatLanguage: (languageCode, proficiency) =>
+      `${languageCode.toUpperCase()} (${tProficiency(proficiency as "a1")})`,
+    },
+  )
 
   const sidebarLabels = {
     personalInfo: t("student.profile.personalInfo"),
@@ -97,6 +121,13 @@ export function ProfileContent({
     skills: t("student.profile.skills"),
     addSkills: t("student.profile.addSkills"),
     emptyMessage: t("student.profile.skillsEmptyMessage"),
+  }
+
+  const languagesLabels = {
+    languages: t("student.profile.languages"),
+    addLanguages: t("student.profile.addLanguages"),
+    emptyMessage: t("student.profile.languagesEmptyMessage"),
+    noLanguagesListed: t("student.profile.noLanguagesListed"),
   }
 
   const socialLabels = {
@@ -148,6 +179,11 @@ export function ProfileContent({
             labels={sidebarLabels}
           />
           <SkillsCard skills={skills} labels={skillsLabels} canEdit={canEdit} />
+          <LanguagesCard
+            languages={languages}
+            labels={languagesLabels}
+            canEdit={canEdit}
+          />
           <SocialLinks profile={profile} labels={socialLabels} />
         </div>
 

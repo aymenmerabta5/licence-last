@@ -52,7 +52,7 @@ export const env = createEnv({
     FEATURE_NOTIF_PREFERENCES: z.enum(["true", "false"]).default("false"),
     FEATURE_SAVED_OFFERS: z.enum(["true", "false"]).default("true"),
     FEATURE_INTERVIEWS: z.enum(["true", "false"]).default("false"),
-    FEATURE_LANGUAGE_REQUIREMENTS: z.enum(["true", "false"]).default("false"),
+    FEATURE_LANGUAGE_REQUIREMENTS: z.enum(["true", "false"]).default("true"),
 
     // Logging
     LOG_LEVEL: z
@@ -75,7 +75,7 @@ export const env = createEnv({
     NEXT_PUBLIC_FEATURE_INTERVIEWS: z.enum(["true", "false"]).default("false"),
     NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS: z
       .enum(["true", "false"])
-      .default("false"),
+      .default("true"),
   },
 
   experimental__runtimeEnv: {

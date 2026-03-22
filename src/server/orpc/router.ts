@@ -155,8 +155,10 @@ import {
 import {
   getPublicStudentProfileProcedure,
   getStudentProfileProcedure,
+  upsertStudentLanguagesProcedure,
   upsertStudentProfileDetailsProcedure,
   upsertStudentProfileProcedure,
+  upsertStudentSkillsProcedure,
 } from "@/server/orpc/routes/students"
 import {
   approveUniversityProcedure,
@@ -220,6 +222,8 @@ export const appRouter = {
     getPublicProfile: getPublicStudentProfileProcedure,
     upsertProfile: upsertStudentProfileProcedure,
     upsertProfileDetails: upsertStudentProfileDetailsProcedure,
+    upsertSkills: upsertStudentSkillsProcedure,
+    upsertLanguages: upsertStudentLanguagesProcedure,
   },
   offers: {
     getById: getOfferByIdProcedure,

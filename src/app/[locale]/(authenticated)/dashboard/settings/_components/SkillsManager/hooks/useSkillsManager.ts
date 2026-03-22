@@ -93,7 +93,7 @@ export function useSkillsManager() {
     useSkillGrouping(filteredSkills)
 
   const upsertMutation = useMutation(
-    orpc.students.upsertProfile.mutationOptions({
+    orpc.students.upsertSkills.mutationOptions({
       onSuccess: async () => {
         await queryClient.invalidateQueries({
           queryKey: profileQueryOptions.queryKey,

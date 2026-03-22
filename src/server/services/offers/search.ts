@@ -12,6 +12,7 @@ import {
   or,
   sql,
 } from "drizzle-orm"
+import { internshipOfferLanguageRequirement } from "@/server/db/schema/languages"
 import { cacheLife, cacheTag } from "next/cache"
 import { CACHE_TAGS } from "@/lib/cache"
 import { company } from "@/server/db/schema/companies"
@@ -27,6 +28,7 @@ interface SearchParams {
   internshipTypes?: ("pfe" | "immersion" | "summer" | "practical")[]
   workModes?: ("on_site" | "hybrid" | "remote")[]
   skillTagIds?: string[]
+  languageCodes?: string[]
   cursor?: { createdAt: string; id: string }
   limit: number
 }
@@ -44,6 +46,7 @@ async function searchOffersUncached(params: SearchParams) {
     internshipTypes,
     workModes,
     skillTagIds,
+    languageCodes,
     cursor,
     limit,
   } = params
@@ -90,6 +93,16 @@ async function searchOffersUncached(params: SearchParams) {
         SELECT ${internshipOfferSkill.offerId}
         FROM ${internshipOfferSkill}
         WHERE ${inArray(internshipOfferSkill.skillTagId, skillTagIds)}
+      )`,
+    )
+  }
+
+  if (languageCodes && languageCodes.length > 0) {
+    conditions.push(
+      sql`${internshipOffer.id} IN (
+        SELECT ${internshipOfferLanguageRequirement.offerId}
+        FROM ${internshipOfferLanguageRequirement}
+        WHERE ${inArray(internshipOfferLanguageRequirement.languageCode, languageCodes)}
       )`,
     )
   }
@@ -147,19 +160,41 @@ async function searchOffersUncached(params: SearchParams) {
     string,
     { id: string; name: string; slug: string; category: string | null }[]
   >()
+  let languagesByOffer = new Map<
+    string,
+    {
+      languageCode: string
+      minimumProficiency: "a1" | "a2" | "b1" | "b2" | "c1" | "c2" | "native"
+      isRequired: boolean
+      weight: number
+    }[]
+  >()
 
   if (offerIds.length > 0) {
-    const offerSkills = await db
-      .select({
-        offerId: internshipOfferSkill.offerId,
-        skillId: skillTag.id,
-        skillName: skillTag.name,
-        skillSlug: skillTag.slug,
-        skillCategory: skillTag.category,
-      })
-      .from(internshipOfferSkill)
-      .innerJoin(skillTag, eq(internshipOfferSkill.skillTagId, skillTag.id))
-      .where(inArray(internshipOfferSkill.offerId, offerIds))
+    const [offerSkills, offerLanguages] = await Promise.all([
+      db
+        .select({
+          offerId: internshipOfferSkill.offerId,
+          skillId: skillTag.id,
+          skillName: skillTag.name,
+          skillSlug: skillTag.slug,
+          skillCategory: skillTag.category,
+        })
+        .from(internshipOfferSkill)
+        .innerJoin(skillTag, eq(internshipOfferSkill.skillTagId, skillTag.id))
+        .where(inArray(internshipOfferSkill.offerId, offerIds)),
+      db
+        .select({
+          offerId: internshipOfferLanguageRequirement.offerId,
+          languageCode: internshipOfferLanguageRequirement.languageCode,
+          minimumProficiency:
+            internshipOfferLanguageRequirement.minimumProficiency,
+          isRequired: internshipOfferLanguageRequirement.isRequired,
+          weight: internshipOfferLanguageRequirement.weight,
+        })
+        .from(internshipOfferLanguageRequirement)
+        .where(inArray(internshipOfferLanguageRequirement.offerId, offerIds)),
+    ])
 
     skillsByOffer = new Map()
     for (const row of offerSkills) {
@@ -171,6 +206,18 @@ async function searchOffersUncached(params: SearchParams) {
         category: row.skillCategory,
       })
       skillsByOffer.set(row.offerId, existing)
+    }
+
+    languagesByOffer = new Map()
+    for (const row of offerLanguages) {
+      const existing = languagesByOffer.get(row.offerId) ?? []
+      existing.push({
+        languageCode: row.languageCode,
+        minimumProficiency: row.minimumProficiency,
+        isRequired: row.isRequired,
+        weight: row.weight,
+      })
+      languagesByOffer.set(row.offerId, existing)
     }
   }
 
@@ -184,6 +231,7 @@ async function searchOffersUncached(params: SearchParams) {
     offers: offers.map((offer) => ({
       ...offer,
       skills: skillsByOffer.get(offer.id) ?? [],
+      languageRequirements: languagesByOffer.get(offer.id) ?? [],
     })),
     nextCursor,
     hasMore,
@@ -207,6 +255,11 @@ async function searchOffersCached(params: SearchParams) {
   if (params.skillTagIds?.length) {
     for (const skillId of params.skillTagIds) {
       cacheTag(`offers-skill-${skillId}`)
+    }
+  }
+  if (params.languageCodes?.length) {
+    for (const languageCode of params.languageCodes) {
+      cacheTag(`offers-language-${languageCode}`)
     }
   }
   return searchOffersUncached(params)

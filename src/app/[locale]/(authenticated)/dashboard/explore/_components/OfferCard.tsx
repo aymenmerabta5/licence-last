@@ -1,9 +1,13 @@
 "use client"
 
 import { ArrowRight, Building2, Clock, MapPin, Users } from "lucide-react"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 
 import { Link } from "@/i18n/routing"
+import {
+  getLanguageLabel,
+  toSupportedLocale,
+} from "@/lib/constants/languages"
 import { INTERNSHIP_TYPE_COLORS } from "@/lib/constants/internship"
 import { cn } from "@/lib/utils"
 import { getWilayaName } from "@/lib/wilayas"
@@ -23,10 +27,16 @@ interface OfferCardProps {
     companySlug: string
     companyLogoUrl: string | null
     skills: { id: string; name: string }[]
+    languageRequirements: {
+      languageCode: string
+      minimumProficiency: string
+      isRequired: boolean
+    }[]
   }
 }
 
 const MAX_VISIBLE_SKILLS = 4
+const MAX_VISIBLE_LANGUAGES = 2
 
 /** Top accent color per internship type */
 const TYPE_ACCENT: Record<string, string> = {
@@ -37,13 +47,20 @@ const TYPE_ACCENT: Record<string, string> = {
 }
 
 export function OfferCard({ offer }: OfferCardProps) {
+  const locale = useLocale()
   const t = useTranslations("dashboard.explore")
+  const tProficiency = useTranslations("dashboard.company.offers.form.proficiencyLevels")
 
   const initial = offer.companyName.charAt(0).toUpperCase()
   const hiddenSkillCount = Math.max(0, offer.skills.length - MAX_VISIBLE_SKILLS)
+  const hiddenLanguageCount = Math.max(
+    0,
+    offer.languageRequirements.length - MAX_VISIBLE_LANGUAGES,
+  )
   const wilayaName = getWilayaName(offer.wilayaCode)
   const accentColor = TYPE_ACCENT[offer.internshipType] ?? "bg-primary"
   const typeColorClasses = INTERNSHIP_TYPE_COLORS[offer.internshipType] ?? ""
+  const languageLocale = toSupportedLocale(locale)
 
   return (
     <Link
@@ -139,6 +156,27 @@ export function OfferCard({ offer }: OfferCardProps) {
               {hiddenSkillCount > 0 && (
                 <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] bg-muted/50 border border-border/40 text-muted-foreground/40 font-medium">
                   +{hiddenSkillCount}
+                </span>
+              )}
+            </div>
+          )}
+
+          {offer.languageRequirements.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {offer.languageRequirements
+                .slice(0, MAX_VISIBLE_LANGUAGES)
+                .map((requirement) => (
+                  <span
+                    key={requirement.languageCode}
+                    className="inline-flex items-center px-1.5 py-0.5 text-[9px] bg-secondary/30 border border-border/40 text-foreground/70 font-medium"
+                  >
+                    {getLanguageLabel(requirement.languageCode, languageLocale)} ·{" "}
+                    {tProficiency(requirement.minimumProficiency as "a1")}
+                  </span>
+                ))}
+              {hiddenLanguageCount > 0 && (
+                <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] bg-muted/50 border border-border/40 text-muted-foreground/40 font-medium">
+                  +{hiddenLanguageCount}
                 </span>
               )}
             </div>

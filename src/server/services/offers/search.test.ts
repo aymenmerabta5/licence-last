@@ -4,6 +4,8 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 let mockOffersRows: any[] = []
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockOfferSkillsRows: any[] = []
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let mockOfferLanguagesRows: any[] = []
 
 let selectCallIdx = 0
 
@@ -25,16 +27,24 @@ const mockSkillWhere = mock<() => Promise<any[]>>(() =>
 const mockJoinSkill = mock(() => ({ where: mockSkillWhere }))
 const mockFromSkills = mock(() => ({ innerJoin: mockJoinSkill }))
 
+// Query 3 (languages)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockLanguageWhere = mock<() => Promise<any[]>>(() =>
+  Promise.resolve(mockOfferLanguagesRows),
+)
+const mockFromLanguages = mock(() => ({ where: mockLanguageWhere }))
+
 function applySearchOffersMocks() {
   mock.module("@/server/db", () => ({
     db: {
       select: () => {
-        selectCallIdx++
-        if (selectCallIdx === 1) return { from: mockFromOffers }
-        return { from: mockFromSkills }
-      },
+      selectCallIdx++
+      if (selectCallIdx === 1) return { from: mockFromOffers }
+      if (selectCallIdx === 2) return { from: mockFromSkills }
+      return { from: mockFromLanguages }
     },
-  }))
+  },
+}))
 }
 
 let searchOffersImportCounter = 0
@@ -52,6 +62,7 @@ describe("src/server/services/offers/search", () => {
     selectCallIdx = 0
     mockOffersRows = []
     mockOfferSkillsRows = []
+    mockOfferLanguagesRows = []
 
     mockLimit.mockClear()
     mockOrderBy.mockClear()
@@ -62,6 +73,8 @@ describe("src/server/services/offers/search", () => {
     mockSkillWhere.mockClear()
     mockJoinSkill.mockClear()
     mockFromSkills.mockClear()
+    mockLanguageWhere.mockClear()
+    mockFromLanguages.mockClear()
 
     mockFromOffers.mockReturnValue({ innerJoin: mockJoinCompany })
     mockJoinCompany.mockReturnValue({ where: mockWhere })
@@ -70,6 +83,7 @@ describe("src/server/services/offers/search", () => {
 
     mockFromSkills.mockReturnValue({ innerJoin: mockJoinSkill })
     mockJoinSkill.mockReturnValue({ where: mockSkillWhere })
+    mockFromLanguages.mockReturnValue({ where: mockLanguageWhere })
   })
 
   test("should slice results to limit and compute nextCursor", async () => {
@@ -124,6 +138,15 @@ describe("src/server/services/offers/search", () => {
         skillCategory: "frontend",
       },
     ]
+    mockOfferLanguagesRows = [
+      {
+        offerId: "offer-1",
+        languageCode: "en",
+        minimumProficiency: "b2",
+        isRequired: true,
+        weight: 1,
+      },
+    ]
 
     const { searchOffers } = await importSearchOffers()
     const result = await searchOffers({ limit: 1 })
@@ -136,5 +159,13 @@ describe("src/server/services/offers/search", () => {
     })
     expect(result.offers[0].skills).toHaveLength(1)
     expect(result.offers[0].skills[0].name).toBe("React")
+    expect(result.offers[0].languageRequirements).toEqual([
+      {
+        languageCode: "en",
+        minimumProficiency: "b2",
+        isRequired: true,
+        weight: 1,
+      },
+    ])
   })
 })

@@ -915,12 +915,16 @@
         "university": "University",
         "links": "Links",
         "skills": "Technical Skills",
+        "languages": "Languages",
         "skillCount": "{count, plural, one {{count} SKILL} other {{count} SKILLS}}",
         "addMoreSkills": "Add more",
         "noSkillsListed": "No skills listed yet.",
+        "noLanguagesListed": "No languages listed yet.",
         "generalCategory": "General",
         "addSkills": "Add Skills",
+        "addLanguages": "Add Languages",
         "skillsEmptyMessage": "Add your technical skills to stand out to recruiters",
+        "languagesEmptyMessage": "Add the languages you can work in to strengthen your profile.",
         "bioEmptyMessage": "No bio added yet. Tell companies and recruiters about yourself, your interests, and what kind of internship you are looking for.",
         "writeBio": "Write your bio",
         "educationTitle": "Education",
@@ -948,6 +952,7 @@
           "keepGoing": "Keep going"
         },
         "skillsLabel": "Skills",
+        "languagesLabel": "Languages",
         "githubLabel": "GitHub",
         "portfolioLabel": "Portfolio"
       }
@@ -994,6 +999,8 @@
       "workMode": "Work Mode",
       "skills": "Skills",
       "skillsPlaceholder": "Filter by skills",
+      "languages": "Languages",
+      "languagesPlaceholder": "Filter by languages",
       "noResults": "No internships found",
       "noResultsHint": "Try adjusting your filters or search terms to discover more opportunities.",
       "results": "Results",
@@ -1041,6 +1048,7 @@
       "back": "Back to search",
       "description": "Description",
       "requiredSkills": "Required Skills",
+      "languageRequirements": "Language Requirements",
       "details": "Details",
       "internshipType": "Type",
       "workMode": "Work Mode",
@@ -1119,6 +1127,7 @@
         "title": "Why this match?",
         "computing": "Computing fit score...",
         "unavailable": "Score unavailable right now.",
+        "languageRequirements": "Language Requirements",
         "missingSkills": "Missing Skills Roadmap",
         "estimatedImprovement": "Estimated improvement: +{delta}% readiness",
         "readinessTrend": "Readiness Trend"
@@ -1770,6 +1779,15 @@
         "minRequired": "Select at least 1 skill.",
         "saveSuccess": "Skills updated.",
         "saveError": "Could not save skills."
+      },
+      "languageManager": {
+        "title": "Languages",
+        "description": "List the languages you can work in and your proficiency for each.",
+        "minRequired": "Add at least 1 language.",
+        "save": "Save Languages",
+        "saving": "Saving…",
+        "saveSuccess": "Languages updated.",
+        "saveError": "Could not save languages."
       }
     },
     "departments": {

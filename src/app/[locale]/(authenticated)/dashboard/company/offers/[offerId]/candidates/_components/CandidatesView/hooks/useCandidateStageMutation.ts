@@ -11,7 +11,7 @@ import { orpcClient } from "@/server/orpc/client"
 import type { ListApplicationsByOfferResult } from "@/server/services/applications/list-by-offer"
 
 interface UseCandidateStageMutationParams {
-  applicationsQueryKey: readonly [string, string, string]
+  applicationsQueryKey: readonly unknown[]
   applicationStageById: Map<string, PipelineStage>
   onStageSettled?: (applicationId: string) => Promise<void> | void
 }

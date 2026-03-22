@@ -76,7 +76,7 @@ export function MatchPreview({ offerId, studentUserId }: MatchPreviewProps) {
       </div>
 
       {/* Top reasons */}
-      {query.data.reasons.slice(0, 2).map((reason) => (
+      {query.data.reasons.slice(0, 3).map((reason) => (
         <p
           key={reason.key}
           className="text-[10px] text-muted-foreground/50 leading-relaxed"

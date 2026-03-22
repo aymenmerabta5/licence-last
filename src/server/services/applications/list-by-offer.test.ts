@@ -46,6 +46,13 @@ const mockWhere4 = mock<() => Promise<any[]>>(() => {
 const mockInnerJoin4 = mock(() => ({ where: mockWhere4 }))
 const mockFrom4 = mock(() => ({ innerJoin: mockInnerJoin4 }))
 
+// Call 5: student languages (where => Promise)
+const mockWhere5 = mock<() => Promise<any[]>>(() => {
+  const results = mockSelectResults[selectCallIdx - 1] ?? []
+  return Promise.resolve(results)
+})
+const mockFrom5 = mock(() => ({ where: mockWhere5 }))
+
 mock.module("@/server/db", () => ({
   db: {
     select: () => {
@@ -53,7 +60,8 @@ mock.module("@/server/db", () => ({
       if (selectCallIdx === 1) return { from: mockFrom1 }
       if (selectCallIdx === 2) return { from: mockFrom2 }
       if (selectCallIdx === 3) return { from: mockFrom3 }
-      return { from: mockFrom4 }
+      if (selectCallIdx === 4) return { from: mockFrom4 }
+      return { from: mockFrom5 }
     },
   },
 }))
@@ -80,6 +88,8 @@ describe("src/server/services/applications/list-by-offer", () => {
     mockWhere4.mockClear()
     mockInnerJoin4.mockClear()
     mockFrom4.mockClear()
+    mockWhere5.mockClear()
+    mockFrom5.mockClear()
 
     mockFrom1.mockReturnValue({ where: mockWhere1 })
     mockWhere1.mockReturnValue({ limit: mockLimit1 })
@@ -95,6 +105,7 @@ describe("src/server/services/applications/list-by-offer", () => {
 
     mockFrom4.mockReturnValue({ innerJoin: mockInnerJoin4 })
     mockInnerJoin4.mockReturnValue({ where: mockWhere4 })
+    mockFrom5.mockReturnValue({ where: mockWhere5 })
   })
 
   test("should compute skillMatchPercentage", async () => {
@@ -134,6 +145,13 @@ describe("src/server/services/applications/list-by-offer", () => {
         skillCategory: "frontend",
       },
     ])
+    mockSelectResults.push([
+      {
+        userId: "stu-1",
+        languageCode: "en",
+        proficiency: "b2",
+      },
+    ])
 
     const { listApplicationsByOffer } = await import(
       "@/server/services/applications/list-by-offer?fresh=1"
@@ -142,6 +160,9 @@ describe("src/server/services/applications/list-by-offer", () => {
 
     expect(result.applications).toHaveLength(1)
     expect(result.applications[0]?.skillMatchPercentage).toBe(50)
+    expect(result.applications[0]?.languages).toEqual([
+      { languageCode: "en", proficiency: "b2" },
+    ])
   })
 
   test("should return profile when bio is null but other profile fields exist", async () => {
@@ -173,6 +194,7 @@ describe("src/server/services/applications/list-by-offer", () => {
         profileDepartment: null,
       },
     ])
+    mockSelectResults.push([])
     mockSelectResults.push([])
 
     const { listApplicationsByOffer } = await import(

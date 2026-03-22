@@ -31,6 +31,7 @@ export function useSearchCopilot() {
         internshipTypes: data.internshipTypes,
         workModes: data.workModes,
         skillTagIds: data.skillTagIds,
+        languageCodes: [],
       })
     },
   })

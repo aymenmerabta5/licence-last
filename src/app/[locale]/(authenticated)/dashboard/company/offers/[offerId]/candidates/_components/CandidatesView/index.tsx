@@ -3,18 +3,22 @@
 import { Loader2 } from "lucide-react"
 import { AcceptModal } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/AcceptModal"
 import { CandidatesHeader } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidatesHeader"
+import { CandidatesFilters } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidatesFilters"
 import { PipelineGrid } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/PipelineGrid"
 import { RefuseModal } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/RefuseModal"
 import { useCandidates } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/hooks/useCandidates"
 import { TimelineModal } from "@/components/TimelineModal"
+import { useTranslations } from "next-intl"
 
 interface CandidatesViewProps {
   offerId: string
 }
 
 export function CandidatesView({ offerId }: CandidatesViewProps) {
+  const tExplore = useTranslations("dashboard.explore")
   const {
     offer,
+    availableSkills,
     applications,
     isLoading,
     isFetchingNextPage,
@@ -35,6 +39,11 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
     setOpenedTimelineFor,
     timelineData,
     isTimelineLoading,
+    filters,
+    hasActiveFilters,
+    toggleSkill,
+    toggleLanguage,
+    clearFilters,
   } = useCandidates(offerId)
 
   return (
@@ -44,10 +53,22 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
         totalCandidates={applications.length}
       />
 
+      <CandidatesFilters
+        skills={availableSkills}
+        skillTagIds={filters.skillTagIds}
+        languageCodes={filters.languageCodes}
+        onToggleSkill={toggleSkill}
+        onToggleLanguage={toggleLanguage}
+        onClear={clearFilters}
+        hasActiveFilters={hasActiveFilters}
+        tExplore={tExplore}
+      />
+
       <PipelineGrid
         applications={applications}
         grouped={grouped}
         isLoading={isLoading}
+        isFiltered={hasActiveFilters}
         offerId={offerId}
         actionLoading={actionLoading}
         pendingStageById={pendingStageById}

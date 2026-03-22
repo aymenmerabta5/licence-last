@@ -17,6 +17,11 @@ export interface StudentSkill {
   category: string | null
 }
 
+export interface StudentLanguage {
+  languageCode: string
+  proficiency: string
+}
+
 export interface StudentExperience {
   id: string
   title: string
@@ -43,6 +48,7 @@ export interface StudentUniversity {
 export interface StudentData {
   profile: StudentProfile | null
   skills: StudentSkill[]
+  languages: StudentLanguage[]
   experiences: StudentExperience[]
   university: StudentUniversity | null
   stats: StudentStats | null

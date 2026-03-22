@@ -21,6 +21,8 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
 const getStudentProfileMock = mock(async () => ({ userId: "student-1" }))
 const getPublicStudentProfileMock = mock(async () => ({ userId: "student-1" }))
 const upsertStudentProfileMock = mock(async () => ({ success: true }))
+const upsertStudentSkillsMock = mock(async () => ({ success: true }))
+const upsertStudentLanguagesMock = mock(async () => ({ success: true }))
 const revalidateTagMock = mock(() => {})
 const dbLimitQueue: unknown[][] = []
 const dbJoinLimitQueue: unknown[][] = []
@@ -100,6 +102,12 @@ function applyStudentsRouteMocks() {
   mock.module("@/server/services/students/upsert-profile", () => ({
     upsertStudentProfile: upsertStudentProfileMock,
   }))
+  mock.module("@/server/services/students/upsert-skills", () => ({
+    upsertStudentSkills: upsertStudentSkillsMock,
+  }))
+  mock.module("@/server/services/students/upsert-languages", () => ({
+    upsertStudentLanguages: upsertStudentLanguagesMock,
+  }))
   mock.module("@/server/services/students/upsert-profile-details", () => ({
     upsertStudentProfileDetails: mock(async () => ({ success: true })),
   }))
@@ -115,6 +123,8 @@ describe("src/server/orpc/routes/students", () => {
     getStudentProfileMock.mockClear()
     getPublicStudentProfileMock.mockClear()
     upsertStudentProfileMock.mockClear()
+    upsertStudentSkillsMock.mockClear()
+    upsertStudentLanguagesMock.mockClear()
     revalidateTagMock.mockClear()
     isFeatureEnabledMock.mockClear()
     dbLimitQueue.length = 0
@@ -275,6 +285,44 @@ describe("src/server/orpc/routes/students", () => {
     })
 
     expect(getPublicStudentProfileMock).not.toHaveBeenCalled()
+  })
+
+  test("upsertStudentSkillsProcedure revalidates student tags", async () => {
+    const { upsertStudentSkillsProcedure } = await import(
+      "@/server/orpc/routes/students"
+    )
+
+    const result = await callProcedure(upsertStudentSkillsProcedure, {
+      input: { skillTagIds: ["skill-1", "skill-2"] },
+      context: { user: { id: "student-1" } },
+    })
+
+    expect(result).toEqual({ success: true })
+    expect(upsertStudentSkillsMock).toHaveBeenCalledWith(
+      ["skill-1", "skill-2"],
+      "student-1",
+    )
+    expect(revalidateTagMock).toHaveBeenCalledTimes(3)
+  })
+
+  test("upsertStudentLanguagesProcedure revalidates student tags", async () => {
+    const { upsertStudentLanguagesProcedure } = await import(
+      "@/server/orpc/routes/students"
+    )
+
+    const result = await callProcedure(upsertStudentLanguagesProcedure, {
+      input: {
+        languages: [{ languageCode: "en", proficiency: "b2" }],
+      },
+      context: { user: { id: "student-1" } },
+    })
+
+    expect(result).toEqual({ success: true })
+    expect(upsertStudentLanguagesMock).toHaveBeenCalledWith(
+      [{ languageCode: "en", proficiency: "b2" }],
+      "student-1",
+    )
+    expect(revalidateTagMock).toHaveBeenCalledTimes(3)
   })
 
   test("upsertStudentProfileProcedure forwards languages when language feature is enabled", async () => {

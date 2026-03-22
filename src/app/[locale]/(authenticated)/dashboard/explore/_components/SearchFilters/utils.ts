@@ -1,6 +1,6 @@
 import type { FilterState } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient"
 
-type MultiValueFilterKey = "internshipTypes" | "workModes" | "skillTagIds"
+type MultiValueFilterKey = "internshipTypes" | "workModes" | "skillTagIds" | "languageCodes"
 
 export function toggleMultiValueFilter(
   filters: FilterState,
@@ -8,12 +8,12 @@ export function toggleMultiValueFilter(
   key: MultiValueFilterKey,
   value: string,
 ) {
-  const currentValues = filters[key]
+  const currentValues = filters[key] as string[]
 
   onFiltersChange({
     ...filters,
     [key]: currentValues.includes(value)
       ? currentValues.filter((entry) => entry !== value)
       : [...currentValues, value],
-  })
+  } as FilterState)
 }

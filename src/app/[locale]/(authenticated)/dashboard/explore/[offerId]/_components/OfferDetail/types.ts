@@ -28,6 +28,12 @@ export interface OfferDetailProps {
       slug: string
       category: string | null
     }[]
+    languageRequirements: {
+      languageCode: string
+      minimumProficiency: string
+      isRequired: boolean
+      weight: number
+    }[]
   }
   existingApplication: {
     id: string

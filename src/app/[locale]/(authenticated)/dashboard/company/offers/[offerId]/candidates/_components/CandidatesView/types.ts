@@ -11,11 +11,29 @@ export interface CandidateApp {
   student: {
     id: string
     name: string | null
+    image?: string | null
+    email?: string | null
   }
   university: {
     name: string
     abbreviation: string | null
   } | null
+  skills: Array<{
+    id: string
+    name: string
+    slug: string
+    category: string | null
+  }>
+  languages: Array<{
+    languageCode: string
+    proficiency: string
+  }>
+  skillMatchPercentage: number
+}
+
+export interface CandidateFiltersState {
+  skillTagIds: string[]
+  languageCodes: string[]
 }
 
 export interface CandidateCardDragItem {

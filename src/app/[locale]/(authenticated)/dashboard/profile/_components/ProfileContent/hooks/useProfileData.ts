@@ -62,6 +62,7 @@ export function useProfileData(
     stats,
     university: studentData?.university,
     skills: studentData?.skills ?? [],
+    languages: studentData?.languages ?? [],
     experiences: studentData?.experiences ?? [],
   }
 }

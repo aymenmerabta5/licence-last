@@ -9,16 +9,23 @@ import {
 import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
+import type { CandidateFiltersState } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
 import { useCandidateStageMutation } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/hooks/useCandidateStageMutation"
 import type {
   AcceptModalState,
   RefuseModalState,
 } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll"
+import type { LanguageCode } from "@/lib/constants/languages"
 import type { PipelineStage } from "@/lib/constants/pipeline"
 import { STAGE_COLUMNS } from "@/lib/constants/pipeline"
 import { orpc, orpcClient } from "@/server/orpc/client"
 import type { ListApplicationsByOfferResult } from "@/server/services/applications/list-by-offer"
+
+const EMPTY_FILTERS: CandidateFiltersState = {
+  skillTagIds: [],
+  languageCodes: [],
+}
 
 export function useCandidates(offerId: string) {
   const t = useTranslations("dashboard.company.candidates")
@@ -28,10 +35,14 @@ export function useCandidates(offerId: string) {
   const [acceptModal, setAcceptModal] = useState<AcceptModalState | null>(null)
   const [refuseModal, setRefuseModal] = useState<RefuseModalState | null>(null)
   const [refuseNote, setRefuseNote] = useState("")
+  const [filters, setFilters] = useState<CandidateFiltersState>(EMPTY_FILTERS)
   const [openedTimelineFor, setOpenedTimelineFor] = useState<string | null>(
     null,
   )
-  const applicationsQueryKey = ["applications", "listByOffer", offerId] as const
+  const applicationsQueryKey = useMemo(
+    () => ["applications", "listByOffer", offerId, filters] as const,
+    [offerId, filters],
+  )
 
   const refreshTimelineForApplication = async (applicationId: string) => {
     if (openedTimelineFor !== applicationId) return
@@ -50,6 +61,7 @@ export function useCandidates(offerId: string) {
     ...orpc.offers.getById.queryOptions({ input: { offerId } }),
     enabled: !!offerId,
   })
+  const { data: skillsResult } = useQuery(orpc.skills.list.queryOptions())
 
   const {
     data,
@@ -62,6 +74,12 @@ export function useCandidates(offerId: string) {
     queryFn: async ({ pageParam }) =>
       orpcClient.applications.listByOffer({
         offerId,
+        skillTagIds:
+          filters.skillTagIds.length > 0 ? filters.skillTagIds : undefined,
+        languageCodes:
+          filters.languageCodes.length > 0
+            ? (filters.languageCodes as LanguageCode[])
+            : undefined,
         cursor: pageParam as { createdAt: string; id: string } | undefined,
         limit: 24,
       }),
@@ -75,6 +93,10 @@ export function useCandidates(offerId: string) {
   const applications = useMemo(
     () => data?.pages.flatMap((page) => page.applications) ?? [],
     [data],
+  )
+  const availableSkills = useMemo(
+    () => skillsResult?.skills ?? [],
+    [skillsResult?.skills],
   )
   const applicationStageById = useMemo(
     () =>
@@ -160,8 +182,30 @@ export function useCandidates(offerId: string) {
     isFetchingNextPage,
   )
 
+  const hasActiveFilters =
+    filters.skillTagIds.length > 0 || filters.languageCodes.length > 0
+
+  function toggleSkill(skillTagId: string) {
+    setFilters((current) => ({
+      ...current,
+      skillTagIds: current.skillTagIds.includes(skillTagId)
+        ? current.skillTagIds.filter((id) => id !== skillTagId)
+        : [...current.skillTagIds, skillTagId],
+    }))
+  }
+
+  function toggleLanguage(languageCode: string) {
+    setFilters((current) => ({
+      ...current,
+      languageCodes: current.languageCodes.includes(languageCode)
+        ? current.languageCodes.filter((code) => code !== languageCode)
+        : [...current.languageCodes, languageCode],
+    }))
+  }
+
   return {
     offer,
+    availableSkills,
     applications,
     isLoading: offerLoading || applicationsLoading || !offerId,
     isFetchingNextPage,
@@ -182,5 +226,10 @@ export function useCandidates(offerId: string) {
     setOpenedTimelineFor,
     timelineData: timelineQuery.data ?? [],
     isTimelineLoading: timelineQuery.isLoading,
+    filters,
+    hasActiveFilters,
+    toggleSkill,
+    toggleLanguage,
+    clearFilters: () => setFilters(EMPTY_FILTERS),
   }
 }

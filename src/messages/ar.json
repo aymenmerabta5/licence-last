@@ -912,6 +912,11 @@
           "keepGoing": "استمر"
         },
         "skillsLabel": "المهارات",
+        "languages": "اللغات",
+        "noLanguagesListed": "لا توجد لغات مضافة بعد.",
+        "addLanguages": "إضافة لغات",
+        "languagesEmptyMessage": "أضف اللغات التي يمكنك العمل بها لتعزيز ملفك الشخصي.",
+        "languagesLabel": "اللغات",
         "githubLabel": "جيثب",
         "portfolioLabel": "معرض الأعمال"
       }
@@ -929,6 +934,8 @@
       "workMode": "نمط العمل",
       "skills": "المهارات",
       "skillsPlaceholder": "تصفية حسب المهارات",
+      "languages": "اللغات",
+      "languagesPlaceholder": "تصفية حسب اللغات",
       "noResults": "لم يتم العثور على تربصات",
       "noResultsHint": "حاول تعديل مرشحاتك أو مصطلحات البحث لاكتشاف المزيد من الفرص.",
       "results": "النتائج",
@@ -976,6 +983,7 @@
       "back": "العودة للبحث",
       "description": "الوصف",
       "requiredSkills": "المهارات المطلوبة",
+      "languageRequirements": "اللغات المطلوبة",
       "details": "التفاصيل",
       "internshipType": "النوع",
       "workMode": "نمط العمل",
@@ -1770,6 +1778,15 @@
         "minRequired": "اختر مهارة واحدة على الأقل.",
         "saveSuccess": "تم تحديث المهارات.",
         "saveError": "لا يمكن حفظ المهارات."
+      },
+      "languageManager": {
+        "title": "اللغات",
+        "description": "أضف اللغات التي يمكنك العمل بها ومستوى الإتقان لكل لغة.",
+        "minRequired": "أضف لغة واحدة على الأقل.",
+        "save": "حفظ اللغات",
+        "saving": "جارٍ الحفظ...",
+        "saveSuccess": "تم تحديث اللغات.",
+        "saveError": "تعذر حفظ اللغات."
       }
     },
     "departments": {

@@ -1,13 +1,14 @@
 "use client"
 
-import { Clock, MapPin, Users } from "lucide-react"
+import { Clock, Languages, MapPin, Users } from "lucide-react"
 import * as motion from "motion/react-client"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { OfferCardActions } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/OfferCardActions"
 import { OfferCardCandidatesLink } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/OfferCardCandidatesLink"
 import type { OfferItem } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/types"
 import { Badge } from "@/components/ui/badge"
 import { ease } from "@/lib/animations"
+import { getLanguageLabel, toSupportedLocale } from "@/lib/constants/languages"
 import { cn } from "@/lib/utils"
 
 const STATUS_CONFIG: Record<
@@ -50,8 +51,11 @@ export function OfferCard({
   onClose,
   onDelete,
 }: OfferCardProps) {
+  const locale = useLocale()
   const t = useTranslations("dashboard.company.offers")
+  const tProficiency = useTranslations("dashboard.company.offers.form.proficiencyLevels")
   const config = STATUS_CONFIG[offer.status] ?? STATUS_CONFIG.draft
+  const languageLocale = toSupportedLocale(locale)
 
   return (
     <motion.div
@@ -132,6 +136,22 @@ export function OfferCard({
               className="rounded-full bg-primary/5 px-2.5 py-0.5 text-[10px] font-medium text-primary/80"
             >
               {skill.name}
+            </Badge>
+          ))}
+        </div>
+      )}
+
+      {offer.languageRequirements.length > 0 && (
+        <div className="mb-4 flex flex-wrap gap-1.5">
+          {offer.languageRequirements.map((requirement) => (
+            <Badge
+              key={requirement.languageCode}
+              variant="outline"
+              className="rounded-full px-2.5 py-0.5 text-[10px] font-medium"
+            >
+              <Languages className="me-1 h-3 w-3" />
+              {getLanguageLabel(requirement.languageCode, languageLocale)} ·{" "}
+              {tProficiency(requirement.minimumProficiency as "a1")}
             </Badge>
           ))}
         </div>

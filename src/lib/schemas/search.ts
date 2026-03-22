@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+import { LANGUAGE_CODES } from "@/lib/constants/languages"
 import {
   applicationStatusSchema,
   internshipTypeSchema,
@@ -24,6 +25,7 @@ export const searchOffersSchema = z.object({
   internshipTypes: z.array(internshipTypeSchema).optional(),
   workModes: z.array(workModeSchema).optional(),
   skillTagIds: z.array(z.string()).max(20).optional(),
+  languageCodes: z.array(z.enum(LANGUAGE_CODES)).max(LANGUAGE_CODES.length).optional(),
   cursor: cursorSchema,
   limit: z.coerce.number().int().min(1).max(50).default(12),
 })

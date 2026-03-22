@@ -1,8 +1,10 @@
 "use client"
 
 import { Globe, GraduationCap, MapPin, PenLine } from "lucide-react"
+import { LanguagesManager } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/LanguagesManager"
 import { SkillsManager } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager"
 import { SelectField, TextAreaField, TextField } from "@/components/form-fields"
+import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"
 import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYA_OPTIONS_WITH_PLACEHOLDER } from "@/lib/wilayas"
 
@@ -36,6 +38,8 @@ export function StudentDetailsSection({
   form,
   isBusy,
 }: StudentDetailsSectionProps) {
+  const isLanguageRequirementsEnabled = isLanguageRequirementsEnabledOnClient()
+
   return (
     <>
       {/* Academic Info */}
@@ -177,6 +181,13 @@ export function StudentDetailsSection({
       {/* Skills */}
       <div className="h-px bg-border/20 w-full" />
       <SkillsManager />
+
+      {isLanguageRequirementsEnabled ? (
+        <>
+          <div className="h-px bg-border/20 w-full" />
+          <LanguagesManager />
+        </>
+      ) : null}
     </>
   )
 }

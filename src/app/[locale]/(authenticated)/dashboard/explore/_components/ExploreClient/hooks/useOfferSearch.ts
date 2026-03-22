@@ -3,6 +3,7 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 import { useDebounce, useInfiniteScroll } from "@/hooks"
+import type { LanguageCode } from "@/lib/constants/languages"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
 export interface FilterState {
@@ -10,12 +11,14 @@ export interface FilterState {
   internshipTypes: string[]
   workModes: string[]
   skillTagIds: string[]
+  languageCodes: string[]
 }
 
 const EMPTY_FILTERS: FilterState = {
   internshipTypes: [],
   workModes: [],
   skillTagIds: [],
+  languageCodes: [],
 }
 
 export function useOfferSearch() {
@@ -48,6 +51,10 @@ export function useOfferSearch() {
               : undefined,
           skillTagIds:
             filters.skillTagIds.length > 0 ? filters.skillTagIds : undefined,
+          languageCodes:
+            filters.languageCodes.length > 0
+              ? (filters.languageCodes as LanguageCode[])
+              : undefined,
           cursor: pageParam ?? undefined,
           limit: 12,
         })
@@ -73,7 +80,8 @@ export function useOfferSearch() {
     (filters.wilayaCode ? 1 : 0) +
     filters.internshipTypes.length +
     filters.workModes.length +
-    filters.skillTagIds.length
+    filters.skillTagIds.length +
+    filters.languageCodes.length
 
   const hasActiveFilters = activeFilterCount > 0
 

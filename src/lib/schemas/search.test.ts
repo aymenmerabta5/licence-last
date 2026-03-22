@@ -24,6 +24,7 @@ describe("src/lib/schemas/search", () => {
         internshipTypes: ["pfe", "summer"],
         workModes: ["remote", "hybrid"],
         skillTagIds: ["skill-1", "skill-2"],
+        languageCodes: ["en", "fr"],
         cursor: {
           createdAt: "2025-01-01T00:00:00.000Z",
           id: "abc-123",
@@ -79,6 +80,14 @@ describe("src/lib/schemas/search", () => {
       const result = searchOffersSchema.safeParse({
         skillTagIds: Array.from({ length: 21 }, (_, i) => `skill-${i}`),
       })
+      expect(result.success).toBe(false)
+    })
+
+    test("should reject invalid language code", () => {
+      const result = searchOffersSchema.safeParse({
+        languageCodes: ["en", "xx"],
+      })
+
       expect(result.success).toBe(false)
     })
 

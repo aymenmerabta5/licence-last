@@ -46,6 +46,7 @@ export function ExploreClient() {
         internshipTypes: aiSuggestion.internshipTypes,
         workModes: aiSuggestion.workModes,
         skillTagIds: safeSkillIds,
+        languageCodes: [],
       })
       if (aiSuggestion.keyword) setKeyword(aiSuggestion.keyword)
     }

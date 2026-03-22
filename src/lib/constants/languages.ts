@@ -84,6 +84,10 @@ export function normalizeLanguageCode(code: string) {
   return code.trim().toLowerCase()
 }
 
+export function isLanguageCode(code: string): code is LanguageCode {
+  return LANGUAGE_CODES.includes(normalizeLanguageCode(code) as LanguageCode)
+}
+
 export function normalizeLanguageEntries<
   TLanguageEntry extends { languageCode: string },
 >(languages: TLanguageEntry[]) {
@@ -116,10 +120,12 @@ export function hasDuplicateLanguageCodes<
   return false
 }
 
-export function getLanguageLabel(
-  code: LanguageCode,
-  locale: SupportedLocale = "en",
-) {
-  const entry = LANGUAGE_CATALOG.find((item) => item.code === code)
+export function getLanguageLabel(code: string, locale: SupportedLocale = "en") {
+  const normalizedCode = normalizeLanguageCode(code)
+  const entry = LANGUAGE_CATALOG.find((item) => item.code === normalizedCode)
   return entry?.labels[locale] ?? code
+}
+
+export function toSupportedLocale(locale: string): SupportedLocale {
+  return locale === "fr" || locale === "ar" ? locale : "en"
 }

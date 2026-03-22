@@ -26,6 +26,7 @@ const searchOffersMock = mock(async () => ({
       companyLogoUrl: null,
       companyWilayaCode: 16,
       skills: [],
+      languageRequirements: [],
     },
     {
       id: "offer-2",
@@ -48,6 +49,7 @@ const searchOffersMock = mock(async () => ({
       companyLogoUrl: null,
       companyWilayaCode: 31,
       skills: [],
+      languageRequirements: [],
     },
   ],
   hasMore: false,

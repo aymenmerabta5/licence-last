@@ -10,6 +10,12 @@ export interface OfferItem {
   companyId: string
   candidatesCount: number
   skills: { id: string; name: string }[]
+  languageRequirements: {
+    languageCode: string
+    minimumProficiency: string
+    isRequired: boolean
+    weight: number
+  }[]
 }
 
 export type OfferStatusFilter = "all" | "draft" | "published" | "closed"

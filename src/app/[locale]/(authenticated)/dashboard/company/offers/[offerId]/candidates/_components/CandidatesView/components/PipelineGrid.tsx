@@ -14,6 +14,7 @@ interface PipelineGridProps {
   applications: CandidateApp[]
   grouped: Map<PipelineStage, CandidateApp[]>
   isLoading: boolean
+  isFiltered: boolean
   offerId: string
   actionLoading: string | null
   pendingStageById: Record<string, true>
@@ -27,6 +28,7 @@ export function PipelineGrid({
   applications,
   grouped,
   isLoading,
+  isFiltered,
   offerId,
   actionLoading,
   pendingStageById,
@@ -56,7 +58,9 @@ export function PipelineGrid({
         <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-primary/5">
           <Users className="h-8 w-8 text-primary/30" />
         </div>
-        <p className="text-sm text-muted-foreground/60">{t("empty")}</p>
+        <p className="text-sm text-muted-foreground/60">
+          {isFiltered ? t("emptyFiltered") : t("empty")}
+        </p>
       </motion.div>
     )
   }

@@ -90,6 +90,7 @@ export async function ProfileData({ userId }: ProfileDataProps) {
       ? {
           profile: result.profile,
           skills: result.skills,
+          languages: result.languages,
           experiences: cvData?.experiences ?? [],
           university,
           stats:
