@@ -19,6 +19,7 @@ import { createMotionReactClientMock } from "@/test/mocks/motion-react-client"
 // Mock sonner
 const mockToastError = mock(() => {})
 const mockToastSuccess = mock(() => {})
+let turnstileEnabled = false
 mock.module("sonner", () => ({
   toast: {
     error: mockToastError,
@@ -27,28 +28,32 @@ mock.module("sonner", () => ({
 }))
 
 // Mock next-intl
+const TRANSLATIONS: Record<string, string> = {
+  title: "Welcome Back",
+  subtitle: "Sign in to your account",
+  email: "Email",
+  emailPlaceholder: "you@university.edu",
+  password: "Password",
+  passwordPlaceholder: "Enter your password",
+  rememberMe: "Remember me",
+  forgotPassword: "Forgot password?",
+  submit: "Sign In",
+  or: "Or",
+  noAccount: "Don't have an account?",
+  createOne: "Create one",
+  error: "An error occurred. Please try again.",
+  emailNotVerified: "Please verify your email first",
+  resendVerification: "Resend verification email",
+  verificationSent: "Verification email sent",
+  "auth.login.error": "An error occurred. Please try again.",
+  "errors.auth.captchaRequired": "Please complete the CAPTCHA challenge.",
+  "errors.auth.rateLimitExceeded": "Too many attempts. Please try again later.",
+}
+
 mock.module("next-intl", () => ({
-  useTranslations: () => (key: string) => {
-    const translations: Record<string, string> = {
-      title: "Welcome Back",
-      subtitle: "Sign in to your account",
-      email: "Email",
-      emailPlaceholder: "you@university.edu",
-      password: "Password",
-      passwordPlaceholder: "Enter your password",
-      rememberMe: "Remember me",
-      forgotPassword: "Forgot password?",
-      submit: "Sign In",
-      or: "Or",
-      noAccount: "Don't have an account?",
-      createOne: "Create one",
-      error: "An error occurred. Please try again.",
-      emailNotVerified: "Please verify your email first",
-      resendVerification: "Resend verification email",
-      verificationSent: "Verification email sent",
-    }
-    return translations[key] || key
-  },
+  useTranslations: () => Object.assign((key: string) => TRANSLATIONS[key] || key, {
+    has: (key: string) => key in TRANSLATIONS,
+  }),
 }))
 
 // Mock auth validation
@@ -163,6 +168,7 @@ mock.module("motion/react-client", createMotionReactClientMock)
 
 mock.module("@/components/TurnstileWidget", () => ({
   TurnstileWidget: () => null,
+  isTurnstileEnabledOnClient: () => turnstileEnabled,
 }))
 
 const { LoginForm } = await import(
@@ -180,6 +186,7 @@ describe("LoginForm", () => {
     mockRouterPush.mockClear()
     mockToastError.mockClear()
     mockToastSuccess.mockClear()
+    turnstileEnabled = false
   })
 
   afterEach(() => {
@@ -352,6 +359,31 @@ describe("LoginForm", () => {
       expect(callArg.rememberMe).toBe(true)
     })
 
+    test("should show localized CAPTCHA error before submitting when captcha is required", async () => {
+      turnstileEnabled = true
+
+      render(<LoginForm />)
+
+      fireEvent.change(screen.getByLabelText("Email"), {
+        target: { value: "test@example.com" },
+      })
+      fireEvent.change(screen.getByLabelText("Password"), {
+        target: { value: "password123" },
+      })
+
+      const form = document.querySelector("form")
+      if (form) {
+        fireEvent.submit(form)
+      }
+
+      await waitFor(() => {
+        expect(
+          screen.getByText("Please complete the CAPTCHA challenge."),
+        ).toBeDefined()
+      })
+      expect(mockSignIn).not.toHaveBeenCalled()
+    })
+
     test("should show server error on failed login", async () => {
       mockSignIn.mockResolvedValueOnce({
         error: { message: "Invalid credentials" },
@@ -371,7 +403,9 @@ describe("LoginForm", () => {
       }
 
       await waitFor(() => {
-        expect(screen.getByText("Invalid credentials")).toBeDefined()
+        expect(
+          screen.getByText("An error occurred. Please try again."),
+        ).toBeDefined()
       })
     })
 
@@ -445,7 +479,7 @@ describe("LoginForm", () => {
         error: { status: 403, message: "Email not verified" },
       })
       mockSendVerificationEmail.mockResolvedValueOnce({
-        error: { message: "Rate limit exceeded" },
+        error: { status: 429, message: "Rate limit exceeded" },
       })
 
       render(<LoginForm />)
@@ -469,7 +503,9 @@ describe("LoginForm", () => {
       fireEvent.click(resendButton)
 
       await waitFor(() => {
-        expect(mockToastError).toHaveBeenCalledWith("Rate limit exceeded")
+        expect(mockToastError).toHaveBeenCalledWith(
+          "Too many attempts. Please try again later.",
+        )
       })
     })
   })

@@ -1,17 +1,19 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
 import { InviteMemberForm } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/components/InviteMemberForm"
 import { MembersList } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/components/MembersList"
 import { useCompanyTeamData } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/hooks/useCompanyTeamData"
-import { getErrorMessage } from "@/lib/error-message"
+import { resolveLocalizedError } from "@/lib/error-message"
 
 interface CompanyTeamViewProps {
   currentUserId: string
 }
 
 export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
+  const t = useTranslations()
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
   const { members, isLoading, isError, error, inviteMutation, removeMutation } =
@@ -54,13 +56,16 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
                 setName("")
                 toast.success(
                   result.createdUser
-                    ? "Invite sent with password setup email."
-                    : "Member added to company successfully.",
+                    ? t("errors.common.companyInviteSent")
+                    : t("errors.common.companyMemberAdded"),
                 )
               })
               .catch((inviteError) => {
                 toast.error(
-                  getErrorMessage(inviteError, "Failed to invite member."),
+                  resolveLocalizedError(inviteError, {
+                    t,
+                    fallbackKey: "errors.common.companyInviteFailed",
+                  }),
                 )
               })
           }}
@@ -81,7 +86,10 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
 
       {isError && (
         <div className="border border-destructive/20 text-destructive p-4 text-sm">
-          {getErrorMessage(error, "Failed to load company members.")}
+          {resolveLocalizedError(error, {
+            t,
+            fallbackKey: "errors.common.companyMembersLoadFailed",
+          })}
         </div>
       )}
 
@@ -95,11 +103,14 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
             void removeMutation
               .mutateAsync({ userId: member.userId })
               .then(() => {
-                toast.success("Member removed successfully.")
+                toast.success(t("errors.common.companyMemberRemoved"))
               })
               .catch((removeError) => {
                 toast.error(
-                  getErrorMessage(removeError, "Failed to remove member."),
+                  resolveLocalizedError(removeError, {
+                    t,
+                    fallbackKey: "errors.common.companyMemberRemoveFailed",
+                  }),
                 )
               })
           }}

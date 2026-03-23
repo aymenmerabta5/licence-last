@@ -5,11 +5,12 @@ import { useTranslations } from "next-intl"
 import { useMemo } from "react"
 import { toast } from "sonner"
 import type { EnrichedSession } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/types"
-import { getErrorMessage } from "@/lib/error-message"
+import { resolveLocalizedError } from "@/lib/error-message"
 import { parseUserAgent } from "@/lib/user-agent"
 import { orpc } from "@/server/orpc/client"
 
 export function useSessionManagement() {
+  const tr = useTranslations()
   const t = useTranslations("dashboard.settings.sessions")
   const queryClient = useQueryClient()
 
@@ -35,7 +36,12 @@ export function useSessionManagement() {
       })
     },
     onError: (err) => {
-      toast.error(getErrorMessage(err, t("revokeError")))
+      toast.error(
+        resolveLocalizedError(err, {
+          t: tr,
+          fallbackKey: "dashboard.settings.sessions.revokeError",
+        }),
+      )
     },
   })
 
@@ -48,7 +54,12 @@ export function useSessionManagement() {
       })
     },
     onError: (err) => {
-      toast.error(getErrorMessage(err, t("revokeOthersError")))
+      toast.error(
+        resolveLocalizedError(err, {
+          t: tr,
+          fallbackKey: "dashboard.settings.sessions.revokeOthersError",
+        }),
+      )
     },
   })
 

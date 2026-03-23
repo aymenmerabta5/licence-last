@@ -29,6 +29,34 @@ function applyRouteMocks() {
       }
       return { user }
     },
+    requireApprovedCompanyAdmin: async () => ({
+      user: {
+        id: "company-user-1",
+        role: "company_admin",
+        onboardingCompleted: true,
+      },
+      company: {
+        id: "company-1",
+        name: "Acme",
+        status: "approved",
+      },
+    }),
+    requireCompanyOwner: async () => ({
+      user: {
+        id: "company-user-1",
+        role: "company_admin",
+        onboardingCompleted: true,
+      },
+      company: {
+        id: "company-1",
+        name: "Acme",
+        status: "approved",
+      },
+      membership: {
+        companyId: "company-1",
+        role: "owner",
+      },
+    }),
   }))
 
   mock.module(

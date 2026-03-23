@@ -129,7 +129,7 @@ describe("src/server/orpc/routes/admin-users", () => {
       }),
     ).rejects.toMatchObject({
       code: "BAD_REQUEST",
-      message: "University admin must belong to a university",
+      data: { code: "ADMIN_MUST_BELONG_TO_UNIVERSITY" },
     })
   })
 

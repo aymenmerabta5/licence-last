@@ -1,12 +1,14 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 import { SavedOffersList } from "@/app/[locale]/(authenticated)/dashboard/student/saved-offers/_components/SavedOffersView/components/SavedOffersList"
 import { useSavedOffers } from "@/app/[locale]/(authenticated)/dashboard/student/saved-offers/_components/SavedOffersView/hooks/useSavedOffers"
 import { Button } from "@/components/ui/button"
-import { getErrorMessage } from "@/lib/error-message"
+import { resolveLocalizedError } from "@/lib/error-message"
 
 export function SavedOffersView() {
+  const t = useTranslations()
   const {
     offers,
     isLoading,
@@ -38,7 +40,10 @@ export function SavedOffersView() {
 
       {isError && (
         <div className="border border-destructive/20 text-destructive p-4 text-sm">
-          {getErrorMessage(error, "Failed to load saved offers.")}
+          {resolveLocalizedError(error, {
+            t,
+            fallbackKey: "errors.common.savedOffersLoadFailed",
+          })}
         </div>
       )}
 
@@ -49,9 +54,14 @@ export function SavedOffersView() {
           onUnsave={async (offerId) => {
             try {
               await unsaveMutation.mutateAsync({ offerId })
-              toast.success("Offer removed from saved list.")
+              toast.success(t("errors.common.savedOfferRemoved"))
             } catch (err) {
-              toast.error(getErrorMessage(err, "Failed to remove saved offer."))
+              toast.error(
+                resolveLocalizedError(err, {
+                  t,
+                  fallbackKey: "errors.common.savedOfferRemoveFailed",
+                }),
+              )
             }
           }}
         />

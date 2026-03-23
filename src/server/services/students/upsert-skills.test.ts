@@ -17,6 +17,7 @@ const mockTransaction = mock(
 )
 
 const mockValidateSkillTagIds = mock(() => Promise.resolve())
+let importCounter = 0
 
 mock.module("@/server/db", () => ({
   db: {
@@ -45,7 +46,7 @@ describe("src/server/services/students/upsert-skills", () => {
 
   test("should replace student skills", async () => {
     const { upsertStudentSkills } = await import(
-      "@/server/services/students/upsert-skills"
+      `@/server/services/students/upsert-skills?test=${++importCounter}`
     )
 
     const result = await upsertStudentSkills(["skill-1", "skill-2"], "user-1")
@@ -58,7 +59,7 @@ describe("src/server/services/students/upsert-skills", () => {
 
   test("should reject more than 10 skills", async () => {
     const { upsertStudentSkills } = await import(
-      "@/server/services/students/upsert-skills"
+      `@/server/services/students/upsert-skills?test=${++importCounter}`
     )
 
     await expect(

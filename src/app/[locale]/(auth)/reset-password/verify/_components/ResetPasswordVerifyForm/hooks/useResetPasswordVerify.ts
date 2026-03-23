@@ -6,11 +6,16 @@ import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 
 import { authClient } from "@/lib/auth-client"
-import { getErrorMessage } from "@/lib/error-message"
+import {
+  AUTH_ERROR_MESSAGE_KEYS,
+  AUTH_ERROR_STATUS_KEYS,
+  resolveLocalizedError,
+} from "@/lib/error-message"
 import { createChangePasswordSchema } from "@/lib/schemas/auth"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 
 export function useResetPasswordVerify() {
+  const tr = useTranslations()
   const t = useTranslations("auth.resetPassword")
   const tv = useTranslations("auth.validation")
   const searchParams = useSearchParams()
@@ -62,14 +67,28 @@ export function useResetPasswordVerify() {
         })
 
         if (result.error) {
-          setServerError(result.error.message ?? t("setPasswordError"))
+          setServerError(
+            resolveLocalizedError(result.error, {
+              t: tr,
+              fallbackKey: "auth.resetPassword.setPasswordError",
+              messageMap: AUTH_ERROR_MESSAGE_KEYS,
+              statusMap: AUTH_ERROR_STATUS_KEYS,
+            }),
+          )
           return
         }
 
         setIsSuccess(true)
         form.reset()
       } catch (err) {
-        setServerError(getErrorMessage(err, t("setPasswordError")))
+        setServerError(
+          resolveLocalizedError(err, {
+            t: tr,
+            fallbackKey: "auth.resetPassword.setPasswordError",
+            messageMap: AUTH_ERROR_MESSAGE_KEYS,
+            statusMap: AUTH_ERROR_STATUS_KEYS,
+          }),
+        )
       }
     },
   })

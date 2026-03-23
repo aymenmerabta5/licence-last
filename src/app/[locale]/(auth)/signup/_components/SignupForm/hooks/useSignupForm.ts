@@ -5,14 +5,23 @@ import type {
   SignupFormValues,
   SignupRole,
 } from "@/app/[locale]/(auth)/signup/_components/SignupForm/types"
-import type { CaptchaHandle } from "@/components/TurnstileWidget"
+import {
+  isTurnstileEnabledOnClient,
+  type CaptchaHandle,
+} from "@/components/TurnstileWidget"
 import { authClient } from "@/lib/auth-client"
+import {
+  AUTH_ERROR_MESSAGE_KEYS,
+  AUTH_ERROR_STATUS_KEYS,
+  resolveLocalizedError,
+} from "@/lib/error-message"
 import { createSignupSchema } from "@/lib/schemas/auth"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 
 export type SignupFormApi = ReturnType<typeof useSignupForm>["form"]
 
 export function useSignupForm(role: SignupRole) {
+  const tr = useTranslations()
   const t = useTranslations("auth.validation")
   const [serverError, setServerError] = useState("")
   const [success, setSuccess] = useState(false)
@@ -60,6 +69,11 @@ export function useSignupForm(role: SignupRole) {
       setSuccess(false)
 
       try {
+        if (isTurnstileEnabledOnClient() && !turnstileToken) {
+          setServerError(tr("errors.auth.captchaRequired"))
+          return
+        }
+
         const result = await authClient.signUp.email({
           email: value.email,
           password: value.password,
@@ -75,14 +89,31 @@ export function useSignupForm(role: SignupRole) {
 
         if (result.error) {
           resetTurnstile()
-          setServerError(result.error.message || "Signup failed")
+          setServerError(
+            resolveLocalizedError(result.error, {
+              t: tr,
+              fallbackKey: "auth.signup.error",
+              messageMap: AUTH_ERROR_MESSAGE_KEYS,
+              statusMap: AUTH_ERROR_STATUS_KEYS,
+              codeMap: {
+                USER_ALREADY_EXISTS: "errors.auth.emailAlreadyExists",
+              },
+            }),
+          )
           return
         }
 
         setSuccess(true)
-      } catch {
+      } catch (err) {
         resetTurnstile()
-        setServerError("An error occurred. Please try again.")
+        setServerError(
+          resolveLocalizedError(err, {
+            t: tr,
+            fallbackKey: "auth.signup.error",
+            messageMap: AUTH_ERROR_MESSAGE_KEYS,
+            statusMap: AUTH_ERROR_STATUS_KEYS,
+          }),
+        )
       }
     },
   })

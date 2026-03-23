@@ -7,11 +7,6 @@ import {
   LANGUAGE_CODES,
 } from "@/lib/constants/languages"
 import type { TranslationFn } from "@/lib/schemas/auth"
-import {
-  internshipTypeSchema,
-  proficiencyLevelSchema,
-  workModeSchema,
-} from "@/lib/schemas/enums"
 
 function parseDateOnly(value: string): Date | null {
   const parsed = new Date(value)
@@ -20,18 +15,6 @@ function parseDateOnly(value: string): Date | null {
   }
   return parsed
 }
-
-const offerLanguageRequirementSchema = z.object({
-  languageCode: z.enum(LANGUAGE_CODES),
-  minimumProficiency: proficiencyLevelSchema,
-  isRequired: z.boolean().default(DEFAULT_OFFER_LANGUAGE_REQUIRED),
-  weight: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .max(5)
-    .default(DEFAULT_OFFER_LANGUAGE_WEIGHT),
-})
 
 interface OfferSchemaOptions {
   requireLanguageRequirements?: boolean
@@ -45,6 +28,24 @@ export function createOfferSchema(
   t: TranslationFn,
   options: OfferSchemaOptions = {},
 ) {
+  const offerLanguageRequirementSchema = z.object({
+    languageCode: z.enum(LANGUAGE_CODES, {
+      error: t("languageCodeInvalid"),
+    }),
+    minimumProficiency: z.enum(
+      ["a1", "a2", "b1", "b2", "c1", "c2", "native"] as const,
+      {
+        error: t("proficiencyInvalid"),
+      },
+    ),
+    isRequired: z.boolean().default(DEFAULT_OFFER_LANGUAGE_REQUIRED),
+    weight: z.coerce
+      .number()
+      .int()
+      .min(1, { error: t("languageWeightMin") })
+      .max(5, { error: t("languageWeightMax") })
+      .default(DEFAULT_OFFER_LANGUAGE_WEIGHT),
+  })
   const requireLanguageRequirements =
     options.requireLanguageRequirements ?? true
   const languageRequirementsSchema = requireLanguageRequirements
@@ -57,8 +58,15 @@ export function createOfferSchema(
     .object({
       title: z.string().min(3, { error: t("offerTitleMin") }),
       description: z.string().min(10, { error: t("offerDescriptionMin") }),
-      internshipType: internshipTypeSchema,
-      workMode: workModeSchema.optional().or(z.literal("")),
+      internshipType: z.enum(["pfe", "immersion", "summer", "practical"], {
+        error: t("internshipTypeRequired"),
+      }),
+      workMode: z
+        .enum(["on_site", "hybrid", "remote"], {
+          error: t("workModeInvalid"),
+        })
+        .optional()
+        .or(z.literal("")),
       wilayaCode: z.coerce
         .number()
         .int()

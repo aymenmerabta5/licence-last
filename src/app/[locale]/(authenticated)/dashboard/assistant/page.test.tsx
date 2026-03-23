@@ -21,6 +21,11 @@ let pageImportCounter = 0
 function applyPageMocks() {
   mock.module("@/lib/dashboard-access", () => ({
     requireApprovedCompanyAdmin: requireApprovedCompanyAdminMock,
+    requireCompanyOwner: mock(async () => ({
+      user: { id: "user-1", role: "company_admin" },
+      company: { id: "company-1", name: "Acme", status: "approved" },
+      membership: { companyId: "company-1", role: "owner" },
+    })),
   }))
 
   mock.module("next-intl/server", () => ({
@@ -28,9 +33,11 @@ function applyPageMocks() {
   }))
 
   mock.module(
-    "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat",
+    "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantPageContent",
     () => ({
-      AssistantChat: () => <div data-testid="assistant-chat">Assistant Chat</div>,
+      AssistantPageContent: () => (
+        <div data-testid="assistant-chat">Assistant Chat</div>
+      ),
     }),
   )
 }

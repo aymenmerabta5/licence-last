@@ -3,7 +3,7 @@ import type {
   CompanyOfferOption,
 } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 import { isInterviewsFeatureDisabledError } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/utils"
-import { getErrorMessage } from "@/lib/error-message"
+import { resolveLocalizedError } from "@/lib/error-message"
 
 interface CompanyOfferSource {
   id: string
@@ -71,10 +71,16 @@ export function normalizeLocalDateTimeInput(value: string): string | null {
   return parsed.toISOString()
 }
 
-export function getInterviewsErrorMessage(error: unknown): string | null {
+export function getInterviewsErrorMessage(
+  error: unknown,
+  t: (key: string) => string,
+): string | null {
   if (!error || isInterviewsFeatureDisabledError(error)) {
     return null
   }
 
-  return getErrorMessage(error, "Could not load interviews.")
+  return resolveLocalizedError(error, {
+    t,
+    fallbackKey: "errors.common.interviewsLoadFailed",
+  })
 }

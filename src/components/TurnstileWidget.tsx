@@ -11,6 +11,13 @@ export interface CaptchaHandle {
   reset: () => void
 }
 
+export function isTurnstileEnabledOnClient() {
+  return (
+    Boolean(env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) &&
+    env.NEXT_PUBLIC_E2E_DISABLE_CAPTCHA !== "true"
+  )
+}
+
 interface TurnstileWidgetProps {
   ref?: Ref<CaptchaHandle | null>
   onVerify: (token: string) => void
@@ -25,7 +32,6 @@ export function TurnstileWidget({
   onError,
 }: TurnstileWidgetProps) {
   const siteKey = env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
-  const e2eCaptchaDisabled = env.NEXT_PUBLIC_E2E_DISABLE_CAPTCHA === "true"
   const locale = useLocale()
   const { resolvedTheme } = useTheme()
   const internalRef = useRef<TurnstileInstance>(null)
@@ -34,7 +40,7 @@ export function TurnstileWidget({
     reset: () => internalRef.current?.reset(),
   }))
 
-  if (!siteKey || e2eCaptchaDisabled) return null
+  if (!siteKey || !isTurnstileEnabledOnClient()) return null
 
   return (
     <Turnstile

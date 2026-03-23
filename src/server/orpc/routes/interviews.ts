@@ -1,6 +1,5 @@
 import "server-only"
 
-import { ORPCError } from "@orpc/server"
 import { z } from "zod"
 
 import { isFeatureEnabled } from "@/lib/feature-flags"
@@ -11,7 +10,10 @@ import {
   studentProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
 import { parseInputDate } from "@/server/orpc/utils/date"
-import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+import {
+  createServiceORPCError,
+  throwCodedORPCError,
+} from "@/server/orpc/utils/service-error"
 import { confirmInterviewSlot } from "@/server/services/interviews/confirm"
 import {
   InterviewServiceError,
@@ -40,7 +42,7 @@ const INTERVIEW_MEETING_URL_SCHEMA = z
 
 function assertInterviewsEnabled() {
   if (!isFeatureEnabled("INTERVIEWS")) {
-    throw new ORPCError("FORBIDDEN", {
+    throwCodedORPCError("FORBIDDEN", "INTERVIEWS_FEATURE_DISABLED", {
       message: "Interviews feature is disabled",
     })
   }
@@ -50,9 +52,10 @@ function parseInterviewSlotDate(value: string, fieldLabel: string) {
   try {
     return parseInputDate(value, fieldLabel)
   } catch (error) {
-    throw new ORPCError("BAD_REQUEST", {
+    throwCodedORPCError("BAD_REQUEST", "INTERVIEW_SLOT_DATE_INVALID", {
       message:
         error instanceof Error ? error.message : `${fieldLabel} is invalid`,
+      meta: { fieldLabel },
       cause: error,
     })
   }

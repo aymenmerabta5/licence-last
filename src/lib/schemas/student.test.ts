@@ -156,5 +156,27 @@ describe("src/lib/schemas/student", () => {
         expect(result.data.wilayaCode).toBe(25)
       }
     })
+
+    test("should use translated messages for invalid nested language values", () => {
+      const schema = createStudentProfileSchema(t)
+      const result = schema.safeParse({
+        skillTagIds: ["skill-1"],
+        languages: [{ languageCode: "xx", proficiency: "expert" }],
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(
+          result.error.issues.find(
+            (issue) => issue.path.join(".") === "languages.0.languageCode",
+          )?.message,
+        ).toBe("t:languageCodeInvalid")
+        expect(
+          result.error.issues.find(
+            (issue) => issue.path.join(".") === "languages.0.proficiency",
+          )?.message,
+        ).toBe("t:proficiencyInvalid")
+      }
+    })
   })
 })

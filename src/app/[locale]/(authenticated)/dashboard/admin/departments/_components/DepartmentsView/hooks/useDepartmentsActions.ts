@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { toast } from "sonner"
 
+import { resolveLocalizedError } from "@/lib/error-message"
 import { orpc } from "@/server/orpc/client"
 
 const DEPARTMENTS_LIST_QUERY_PATH = orpc.departments.list.queryOptions({
@@ -12,6 +13,7 @@ const DEPARTMENTS_LIST_QUERY_PATH = orpc.departments.list.queryOptions({
 }).queryKey[0]
 
 export function useDepartmentsActions(selectedUniversityId: string | null) {
+  const tr = useTranslations()
   const t = useTranslations("dashboard.admin.departments")
   const queryClient = useQueryClient()
 
@@ -29,7 +31,12 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
         toast.success(t("createSuccess"))
       },
       onError: (error) => {
-        toast.error(error.message || t("error"))
+        toast.error(
+          resolveLocalizedError(error, {
+            t: tr,
+            fallbackKey: "dashboard.admin.departments.error",
+          }),
+        )
       },
     }),
   )
@@ -41,7 +48,12 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
         toast.success(t("updateSuccess"))
       },
       onError: (error) => {
-        toast.error(error.message || t("error"))
+        toast.error(
+          resolveLocalizedError(error, {
+            t: tr,
+            fallbackKey: "dashboard.admin.departments.error",
+          }),
+        )
       },
     }),
   )
@@ -53,7 +65,12 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
         toast.success(t("assignSuccess"))
       },
       onError: (error) => {
-        toast.error(error.message || t("error"))
+        toast.error(
+          resolveLocalizedError(error, {
+            t: tr,
+            fallbackKey: "dashboard.admin.departments.error",
+          }),
+        )
       },
     }),
   )
@@ -65,7 +82,12 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
         toast.success(t("removeHeadSuccess"))
       },
       onError: (error) => {
-        toast.error(error.message || t("error"))
+        toast.error(
+          resolveLocalizedError(error, {
+            t: tr,
+            fallbackKey: "dashboard.admin.departments.error",
+          }),
+        )
       },
     }),
   )
@@ -77,7 +99,12 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
         toast.success(t("deleteSuccess"))
       },
       onError: (error) => {
-        toast.error(error.message || t("error"))
+        toast.error(
+          resolveLocalizedError(error, {
+            t: tr,
+            fallbackKey: "dashboard.admin.departments.error",
+          }),
+        )
       },
     }),
   )

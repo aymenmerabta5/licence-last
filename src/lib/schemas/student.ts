@@ -5,12 +5,6 @@ import {
   LANGUAGE_CODES,
 } from "@/lib/constants/languages"
 import type { TranslationFn } from "@/lib/schemas/auth"
-import { proficiencyLevelSchema } from "@/lib/schemas/enums"
-
-const studentLanguageSchema = z.object({
-  languageCode: z.enum(LANGUAGE_CODES),
-  proficiency: proficiencyLevelSchema,
-})
 
 interface StudentProfileSchemaOptions {
   requireLanguages?: boolean
@@ -24,6 +18,17 @@ export function createStudentProfileSchema(
   t: TranslationFn,
   options: StudentProfileSchemaOptions = {},
 ) {
+  const studentLanguageSchema = z.object({
+    languageCode: z.enum(LANGUAGE_CODES, {
+      error: t("languageCodeInvalid"),
+    }),
+    proficiency: z.enum(
+      ["a1", "a2", "b1", "b2", "c1", "c2", "native"] as const,
+      {
+        error: t("proficiencyInvalid"),
+      },
+    ),
+  })
   const requireLanguages = options.requireLanguages ?? true
   const languagesSchema = requireLanguages
     ? z.array(studentLanguageSchema).min(1, { error: t("studentLanguagesMin") })

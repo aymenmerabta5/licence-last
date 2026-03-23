@@ -84,6 +84,27 @@ describe("createUniversityOnboardingSchema", () => {
   test("should reject domain shorter than 3 characters", () => {
     const result = schema.safeParse({ ...validInput, domains: ["ab"] })
     expect(result.success).toBe(false)
+    if (!result.success) {
+      const issue = result.error.issues.find(
+        (current) => current.path.join(".") === "domains.0",
+      )
+      expect(issue?.message).toBe("t:domainMin")
+    }
+  })
+
+  test("should reject department entries shorter than 2 characters", () => {
+    const result = schema.safeParse({
+      ...validInput,
+      departments: [{ name: "A" }],
+    })
+
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      const issue = result.error.issues.find(
+        (current) => current.path.join(".") === "departments.0.name",
+      )
+      expect(issue?.message).toBe("t:departmentEntryNameMin")
+    }
   })
 
   test("should coerce string wilayaCode to number", () => {

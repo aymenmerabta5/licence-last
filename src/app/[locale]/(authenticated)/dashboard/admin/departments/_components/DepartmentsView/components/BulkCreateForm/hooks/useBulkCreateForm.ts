@@ -4,8 +4,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { useCallback, useState } from "react"
 import { toast } from "sonner"
+import { resolveLocalizedError } from "@/lib/error-message"
 import type { BulkDepartmentRow } from "@/lib/schemas/department"
-import { bulkCreateDepartmentsSchema } from "@/lib/schemas/department"
+import { createBulkCreateDepartmentsSchema } from "@/lib/schemas/department"
 import { orpc } from "@/server/orpc/client"
 
 const DEPARTMENTS_LIST_QUERY_PATH = orpc.departments.list.queryOptions({
@@ -18,7 +19,9 @@ const emptyRow = (): BulkDepartmentRow => ({
 })
 
 export function useBulkCreateForm(universityId: string | null) {
+  const tr = useTranslations()
   const t = useTranslations("dashboard.admin.departments.bulkCreate")
+  const tv = useTranslations("auth.validation")
   const queryClient = useQueryClient()
 
   const [rows, setRows] = useState<BulkDepartmentRow[]>([emptyRow()])
@@ -86,7 +89,12 @@ export function useBulkCreateForm(universityId: string | null) {
         }
       },
       onError: (error) => {
-        toast.error(error.message || t("error"))
+        toast.error(
+          resolveLocalizedError(error, {
+            t: tr,
+            fallbackKey: "dashboard.admin.departments.bulkCreate.error",
+          }),
+        )
       },
     }),
   )
@@ -97,7 +105,7 @@ export function useBulkCreateForm(universityId: string | null) {
       return
     }
 
-    const parsed = bulkCreateDepartmentsSchema.safeParse({ rows })
+    const parsed = createBulkCreateDepartmentsSchema(tv).safeParse({ rows })
     if (!parsed.success) {
       // Map Zod errors to per-field errors
       const newFieldErrors: Array<
@@ -120,7 +128,7 @@ export function useBulkCreateForm(universityId: string | null) {
 
     setFieldErrors(rows.map(() => ({})))
     mutation.mutate({ ...parsed.data, universityId })
-  }, [mutation, rows, t, universityId])
+  }, [mutation, rows, t, tv, universityId])
 
   return {
     rows,

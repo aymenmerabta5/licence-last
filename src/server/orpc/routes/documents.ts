@@ -5,6 +5,7 @@ import { z } from "zod"
 
 import { verifyCodeSchema } from "@/lib/schemas/verify"
 import * as rateLimitedProcedures from "@/server/orpc/rate-limited-procedures"
+import { throwCodedORPCError } from "@/server/orpc/utils/service-error"
 import { downloadDocument } from "@/server/services/documents/download"
 import { downloadDocumentByCompany } from "@/server/services/documents/download-by-company"
 import {
@@ -43,24 +44,32 @@ function throwDocumentRouteError(
       error.code === "DOCUMENT_NOT_FOUND" ||
       error.code === "PLACEMENT_NOT_FOUND"
     ) {
-      throw new ORPCError("NOT_FOUND", { message: error.message })
+      throwCodedORPCError("NOT_FOUND", error.code, {
+        message: error.message,
+      })
     }
 
     if (
       error.code === "DOCUMENT_FORBIDDEN" ||
       error.code === "PLACEMENT_FORBIDDEN"
     ) {
-      throw new ORPCError("FORBIDDEN", { message: error.message })
+      throwCodedORPCError("FORBIDDEN", error.code, {
+        message: error.message,
+      })
     }
 
     if (error.code === "DOCUMENT_NOT_READY") {
-      throw new ORPCError("CONFLICT", { message: error.message })
+      throwCodedORPCError("CONFLICT", error.code, {
+        message: error.message,
+      })
     }
 
-    throw new ORPCError("BAD_REQUEST", { message: error.message })
+    throwCodedORPCError("BAD_REQUEST", error.code, {
+      message: error.message,
+    })
   }
 
-  throw new ORPCError("BAD_REQUEST", {
+  throwCodedORPCError("BAD_REQUEST", "DOCUMENT_ROUTE_ERROR", {
     message: error instanceof Error ? error.message : fallbackMessage,
   })
 }
@@ -85,7 +94,7 @@ function assertCompanyOwner(context: {
   companyMembership: { role?: string | null }
 }): void {
   if (context.companyMembership.role !== "owner") {
-    throw new ORPCError("FORBIDDEN", {
+    throwCodedORPCError("FORBIDDEN", "COMPANY_OWNER_ACCESS_REQUIRED", {
       message: "Company owner access required",
     })
   }
@@ -105,7 +114,7 @@ export const generateAgreementProcedure = adminProcedureStandard
       context.user.role !== "university_admin" &&
       context.user.role !== "dept_head"
     ) {
-      throw new ORPCError("FORBIDDEN", {
+      throwCodedORPCError("FORBIDDEN", "PLACEMENT_FORBIDDEN", {
         message: "You do not have access to this placement",
       })
     }

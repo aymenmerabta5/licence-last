@@ -5,9 +5,14 @@ import { useTranslations } from "next-intl"
 import { useState } from "react"
 
 import { authClient } from "@/lib/auth-client"
-import { getErrorMessage } from "@/lib/error-message"
+import {
+  AUTH_ERROR_MESSAGE_KEYS,
+  AUTH_ERROR_STATUS_KEYS,
+  resolveLocalizedError,
+} from "@/lib/error-message"
 
 export function useDeleteAccount() {
+  const tr = useTranslations()
   const t = useTranslations("dashboard.settings.deleteAccount")
   const router = useRouter()
 
@@ -38,7 +43,14 @@ export function useDeleteAccount() {
       })
 
       if (result.error) {
-        setError(getErrorMessage(result.error, t("error.deleteFailed")))
+        setError(
+          resolveLocalizedError(result.error, {
+            t: tr,
+            fallbackKey: "dashboard.settings.deleteAccount.error.deleteFailed",
+            messageMap: AUTH_ERROR_MESSAGE_KEYS,
+            statusMap: AUTH_ERROR_STATUS_KEYS,
+          }),
+        )
         setIsLoading(false)
         return
       }
@@ -46,7 +58,14 @@ export function useDeleteAccount() {
       // Account deleted — redirect to goodbye page
       router.push("/goodbye")
     } catch (err) {
-      setError(getErrorMessage(err, t("error.deleteFailed")))
+      setError(
+        resolveLocalizedError(err, {
+          t: tr,
+          fallbackKey: "dashboard.settings.deleteAccount.error.deleteFailed",
+          messageMap: AUTH_ERROR_MESSAGE_KEYS,
+          statusMap: AUTH_ERROR_STATUS_KEYS,
+        }),
+      )
       setIsLoading(false)
     }
   }

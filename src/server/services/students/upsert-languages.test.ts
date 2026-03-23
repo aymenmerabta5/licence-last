@@ -15,6 +15,7 @@ const mockTransaction = mock(
     await fn(mockTx)
   },
 )
+let importCounter = 0
 
 mock.module("@/server/db", () => ({
   db: {
@@ -38,7 +39,7 @@ describe("src/server/services/students/upsert-languages", () => {
 
   test("should replace student languages", async () => {
     const { upsertStudentLanguages } = await import(
-      "@/server/services/students/upsert-languages"
+      `@/server/services/students/upsert-languages?test=${++importCounter}`
     )
 
     const result = await upsertStudentLanguages(
@@ -56,7 +57,7 @@ describe("src/server/services/students/upsert-languages", () => {
 
   test("should reject duplicate languages", async () => {
     const { upsertStudentLanguages } = await import(
-      "@/server/services/students/upsert-languages"
+      `@/server/services/students/upsert-languages?test=${++importCounter}`
     )
 
     await expect(

@@ -7,7 +7,7 @@ import { toast } from "sonner"
 import type { CompanyProfileFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/types"
 import { useRouter } from "@/i18n/routing"
 import { authClient } from "@/lib/auth-client"
-import { getErrorMessage } from "@/lib/error-message"
+import { resolveLocalizedError } from "@/lib/error-message"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { createCompanyProfileSchema } from "@/lib/schemas/offer"
 import { orpcClient } from "@/server/orpc/client"
@@ -15,6 +15,7 @@ import { orpcClient } from "@/server/orpc/client"
 export function useCompanyProfileForm(
   initialData: CompanyProfileFormProps["initialData"],
 ) {
+  const tr = useTranslations()
   const t = useTranslations("dashboard.company.profile")
   const tv = useTranslations("auth.validation")
   const router = useRouter()
@@ -100,7 +101,10 @@ export function useCompanyProfileForm(
       toast.success(t("deleteCompany.success"))
       router.push("/onboarding/company")
     } catch (error) {
-      const message = getErrorMessage(error, t("deleteCompany.error"))
+      const message = resolveLocalizedError(error, {
+        t: tr,
+        fallbackKey: "dashboard.company.profile.deleteCompany.error",
+      })
       setDeleteCompanyError(message)
       toast.error(message)
     } finally {

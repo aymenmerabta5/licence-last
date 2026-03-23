@@ -1,11 +1,13 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { StudentCvSections } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/StudentCvSections"
 
 import { useStudentCvData } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/hooks/useStudentCvData"
-import { getErrorMessage } from "@/lib/error-message"
+import { resolveLocalizedError } from "@/lib/error-message"
 
 export function StudentCvView() {
+  const t = useTranslations()
   const studentCvData = useStudentCvData()
 
   if (studentCvData.isLoading) {
@@ -17,7 +19,10 @@ export function StudentCvView() {
   if (studentCvData.isError) {
     return (
       <div className="border border-destructive/20 text-destructive p-4 text-sm">
-        {getErrorMessage(studentCvData.error, "Failed to load CV data.")}
+        {resolveLocalizedError(studentCvData.error, {
+          t,
+          fallbackKey: "errors.common.studentCvLoadFailed",
+        })}
       </div>
     )
   }

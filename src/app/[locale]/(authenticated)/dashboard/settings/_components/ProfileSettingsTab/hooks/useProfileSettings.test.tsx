@@ -15,6 +15,18 @@ mock.module("sonner", () => ({
   },
 }))
 
+mock.module("next-intl", () => ({
+  useTranslations: () => (key: string) =>
+    ({
+      "errors.common.profilePhotoUpdated": "Profile photo updated.",
+      "errors.common.uploadFailed": "Upload failed. Please try again.",
+      "errors.common.profilePhotoRemoved": "Profile photo removed.",
+      "errors.common.profilePhotoRemoveFailed":
+        "Could not remove profile photo.",
+      "errors.common.saveChangesFailed": "Could not save changes.",
+    })[key] ?? key,
+}))
+
 mock.module("@/server/orpc/client", () => ({
   orpc: {
     placements: {

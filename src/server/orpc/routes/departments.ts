@@ -1,6 +1,5 @@
 import "server-only"
 
-import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
 
@@ -12,7 +11,10 @@ import {
   adminProcedureStandard,
   authedProcedureGenerous,
 } from "@/server/orpc/rate-limited-procedures"
-import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+import {
+  createServiceORPCError,
+  throwCodedORPCError,
+} from "@/server/orpc/utils/service-error"
 import { assignDepartmentHead } from "@/server/services/departments/assign-head"
 import { assignDepartmentHeadByEmail } from "@/server/services/departments/assign-head-by-email"
 import { bulkCreateDepartmentsWithHeads } from "@/server/services/departments/bulk-create-with-heads"
@@ -33,7 +35,7 @@ interface DepartmentAdminContext {
 
 function assertDepartmentAdminRole(role: string | null | undefined) {
   if (role !== "university_admin" && role !== "super_admin") {
-    throw new ORPCError("FORBIDDEN", {
+    throwCodedORPCError("FORBIDDEN", "DEPARTMENT_ADMIN_ACCESS_REQUIRED", {
       message: "Only university admins can manage departments",
     })
   }
@@ -49,7 +51,7 @@ function resolveTargetUniversityId(args: {
   if (context.user.role === "super_admin") {
     const universityId = inputUniversityId ?? context.user.universityId ?? null
     if (!universityId) {
-      throw new ORPCError("BAD_REQUEST", {
+      throwCodedORPCError("BAD_REQUEST", "UNIVERSITY_REQUIRED_FOR_SUPER_ADMIN_ACTIONS", {
         message: "University is required for super admin actions",
       })
     }
@@ -58,13 +60,13 @@ function resolveTargetUniversityId(args: {
 
   const universityId = context.user.universityId
   if (!universityId) {
-    throw new ORPCError("BAD_REQUEST", {
+    throwCodedORPCError("BAD_REQUEST", "ADMIN_MUST_BELONG_TO_UNIVERSITY", {
       message: "Admin must belong to a university",
     })
   }
 
   if (inputUniversityId && inputUniversityId !== universityId) {
-    throw new ORPCError("FORBIDDEN", {
+    throwCodedORPCError("FORBIDDEN", "UNIVERSITY_SCOPE_FORBIDDEN", {
       message: "University admins can only manage their own university",
     })
   }
@@ -85,7 +87,7 @@ async function assertCanManageDepartment(
     .limit(1)
 
   if (!dept) {
-    throw new ORPCError("NOT_FOUND", {
+    throwCodedORPCError("NOT_FOUND", "DEPARTMENT_NOT_FOUND", {
       message: "Department not found",
     })
   }
@@ -93,7 +95,7 @@ async function assertCanManageDepartment(
   if (context.user.role !== "super_admin") {
     const universityId = context.user.universityId
     if (!universityId || dept.universityId !== universityId) {
-      throw new ORPCError("FORBIDDEN", {
+      throwCodedORPCError("FORBIDDEN", "DEPARTMENT_SCOPE_FORBIDDEN", {
         message: "Department does not belong to your university",
       })
     }
@@ -165,7 +167,7 @@ export const assignDepartmentHeadProcedure = adminProcedureStandard
         headEmail: z.string().email().optional(),
       })
       .refine((value) => Boolean(value.userId || value.headEmail), {
-        message: "Provide either userId or headEmail",
+        message: "DEPARTMENT_HEAD_TARGET_REQUIRED",
       }),
   )
   .handler(async ({ input, context }) => {
@@ -251,7 +253,7 @@ export const bulkCreateDepartmentsProcedure = adminProcedureStandard
       .limit(1)
 
     if (!uni) {
-      throw new ORPCError("NOT_FOUND", {
+      throwCodedORPCError("NOT_FOUND", "UNIVERSITY_NOT_FOUND", {
         message: "University not found",
       })
     }

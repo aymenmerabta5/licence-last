@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test"
-import { verifyCodeSchema } from "@/lib/schemas/verify"
+import { createVerifyCodeSchema, verifyCodeSchema } from "@/lib/schemas/verify"
 
 describe("verifyCodeSchema", () => {
   test("should accept valid verification code", () => {
@@ -37,5 +37,22 @@ describe("verifyCodeSchema", () => {
     // Users might enter partial codes; schema allows anything 1-20 chars
     const result = verifyCodeSchema.safeParse({ code: "INTX" })
     expect(result.success).toBe(true)
+  })
+
+  test("should use translated validation messages in the schema factory", () => {
+    const schema = createVerifyCodeSchema((key) => `t:${key}`)
+    const empty = schema.safeParse({ code: "" })
+    const tooLong = schema.safeParse({ code: "A".repeat(21) })
+
+    expect(empty.success).toBe(false)
+    expect(tooLong.success).toBe(false)
+
+    if (!empty.success) {
+      expect(empty.error.issues[0]?.message).toBe("t:verifyCodeRequired")
+    }
+
+    if (!tooLong.success) {
+      expect(tooLong.error.issues[0]?.message).toBe("t:verifyCodeMax")
+    }
   })
 })

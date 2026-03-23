@@ -1,6 +1,9 @@
 import { describe, expect, test } from "bun:test"
 
-import { getErrorMessage } from "@/lib/error-message"
+import {
+  getErrorMessage,
+  resolveLocalizedError,
+} from "@/lib/error-message"
 
 describe("getErrorMessage", () => {
   test("should extract message from Error instance", () => {
@@ -47,5 +50,74 @@ describe("getErrorMessage", () => {
 
   test("should return fallback for empty object", () => {
     expect(getErrorMessage({})).toBe("An error occurred")
+  })
+})
+
+describe("resolveLocalizedError", () => {
+  const translations: Record<string, string> = {
+    "errors.codes.ACCOUNT_SUSPENDED": "Compte suspendu.",
+    "auth.login.error": "Identifiants invalides.",
+    "errors.auth.captchaRequired": "Veuillez completer le CAPTCHA.",
+    "errors.auth.rateLimitExceeded": "Trop de tentatives. Veuillez reessayer plus tard.",
+    "errors.common.unexpected": "Une erreur inattendue est survenue.",
+  }
+
+  const t = Object.assign(
+    (key: string) => translations[key] ?? key,
+    { has: (key: string) => key in translations },
+  )
+
+  test("should resolve a translated message from error data.code", () => {
+    const message = resolveLocalizedError(
+      { data: { code: "ACCOUNT_SUSPENDED" } },
+      {
+        t,
+        fallbackKey: "errors.common.unexpected",
+      },
+    )
+
+    expect(message).toBe("Compte suspendu.")
+  })
+
+  test("should resolve a translated message from a mapped backend message", () => {
+    const message = resolveLocalizedError(
+      { message: "Missing CAPTCHA response" },
+      {
+        t,
+        fallbackKey: "errors.common.unexpected",
+        messageMap: {
+          "missing captcha response": "errors.auth.captchaRequired",
+        },
+      },
+    )
+
+    expect(message).toBe("Veuillez completer le CAPTCHA.")
+  })
+
+  test("should resolve a translated message from a mapped status code", () => {
+    const message = resolveLocalizedError(
+      { status: 429 },
+      {
+        t,
+        fallbackKey: "errors.common.unexpected",
+        statusMap: {
+          429: "errors.auth.rateLimitExceeded",
+        },
+      },
+    )
+
+    expect(message).toBe("Trop de tentatives. Veuillez reessayer plus tard.")
+  })
+
+  test("should use the translated fallback when no code mapping is available", () => {
+    const message = resolveLocalizedError(
+      { message: "Invalid credentials" },
+      {
+        t,
+        fallbackKey: "auth.login.error",
+      },
+    )
+
+    expect(message).toBe("Identifiants invalides.")
   })
 })

@@ -93,6 +93,25 @@ mock.module("sonner", () => ({
   },
 }))
 
+mock.module("next-intl", () => ({
+  useTranslations: () => (key: string) =>
+    ({
+      "errors.common.interviewSlotConfirmed": "Interview slot confirmed.",
+      "errors.common.confirmInterviewSlotFailed":
+        "Could not confirm this slot.",
+      "errors.common.interviewProposalSent": "Interview proposal sent.",
+      "errors.common.interviewProposalFailed":
+        "Could not send interview proposal.",
+      "errors.common.selectApplication": "Please select an application.",
+      "errors.common.invalidApplicationSelection":
+        "Please select a valid application for this offer.",
+      "errors.common.interviewSlotRequired":
+        "Add at least one complete interview slot.",
+      "errors.common.interviewDateTimeInvalid":
+        "Each slot must include a valid start and end date/time.",
+    })[key] ?? key,
+}))
+
 function applyOrpcClientMock() {
   mock.module("@/server/orpc/client", () => ({
     orpcClient: {},

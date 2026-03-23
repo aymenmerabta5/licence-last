@@ -1,8 +1,10 @@
 "use client"
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 
+import { resolveLocalizedError } from "@/lib/error-message"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
 const ADMIN_USERS_LIST_QUERY_PATH = orpc.adminUsers.list.queryOptions({
@@ -15,6 +17,7 @@ const ADMIN_USERS_LIST_SESSIONS_QUERY_PATH =
   }).queryKey[0]
 
 export function useUserDetailActions() {
+  const t = useTranslations()
   const queryClient = useQueryClient()
 
   const invalidate = async () => {
@@ -32,20 +35,32 @@ export function useUserDetailActions() {
     mutationFn: (sessionToken: string) =>
       orpcClient.adminUsers.revokeSession({ sessionToken }),
     onSuccess: async () => {
-      toast.success("Session revoked")
+      toast.success(t("errors.common.sessionRevoked"))
       await invalidate()
     },
-    onError: (err) => toast.error(err.message),
+    onError: (err) =>
+      toast.error(
+        resolveLocalizedError(err, {
+          t,
+          fallbackKey: "errors.common.userActionFailed",
+        }),
+      ),
   })
 
   const revokeAllSessions = useMutation({
     mutationFn: (userId: string) =>
       orpcClient.adminUsers.revokeAllSessions({ userId }),
     onSuccess: async () => {
-      toast.success("All sessions revoked")
+      toast.success(t("errors.common.allSessionsRevoked"))
       await invalidate()
     },
-    onError: (err) => toast.error(err.message),
+    onError: (err) =>
+      toast.error(
+        resolveLocalizedError(err, {
+          t,
+          fallbackKey: "errors.common.userActionFailed",
+        }),
+      ),
   })
 
   const banUser = useMutation({
@@ -55,19 +70,31 @@ export function useUserDetailActions() {
       banExpiresIn?: number
     }) => orpcClient.adminUsers.ban(data),
     onSuccess: async () => {
-      toast.success("User banned")
+      toast.success(t("errors.common.userBanned"))
       await invalidate()
     },
-    onError: (err) => toast.error(err.message),
+    onError: (err) =>
+      toast.error(
+        resolveLocalizedError(err, {
+          t,
+          fallbackKey: "errors.common.userActionFailed",
+        }),
+      ),
   })
 
   const unbanUser = useMutation({
     mutationFn: (userId: string) => orpcClient.adminUsers.unban({ userId }),
     onSuccess: async () => {
-      toast.success("User unbanned")
+      toast.success(t("errors.common.userUnbanned"))
       await invalidate()
     },
-    onError: (err) => toast.error(err.message),
+    onError: (err) =>
+      toast.error(
+        resolveLocalizedError(err, {
+          t,
+          fallbackKey: "errors.common.userActionFailed",
+        }),
+      ),
   })
 
   return { revokeSession, revokeAllSessions, banUser, unbanUser }

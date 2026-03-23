@@ -212,6 +212,44 @@ describe("src/lib/schemas/offer", () => {
       })
 
       expect(result.success).toBe(false)
+      if (!result.success) {
+        const issue = result.error.issues.find(
+          (current) => current.path.join(".") === "languageRequirements.0.weight",
+        )
+        expect(issue?.message).toBe("t:languageWeightMax")
+      }
+    })
+
+    test("should use translated messages for invalid language requirement enums", () => {
+      const result = schema.safeParse({
+        title: "Good Title",
+        description: "A long enough description",
+        internshipType: "pfe",
+        workMode: "office",
+        skillTagIds: [],
+        languageRequirements: [
+          {
+            languageCode: "xx",
+            minimumProficiency: "expert",
+          },
+        ],
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(
+          result.error.issues.find(
+            (issue) => issue.path.join(".") === "languageRequirements.0.languageCode",
+          )?.message,
+        ).toBe("t:languageCodeInvalid")
+        expect(
+          result.error.issues.find(
+            (issue) =>
+              issue.path.join(".") ===
+              "languageRequirements.0.minimumProficiency",
+          )?.message,
+        ).toBe("t:proficiencyInvalid")
+      }
     })
 
     test("should accept valid language metadata fields", () => {

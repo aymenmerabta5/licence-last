@@ -8,10 +8,17 @@ import {
   type TwoFactorMethod,
   verifyTwoFactorCode,
 } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/twoFactorUtils"
-import type { CaptchaHandle } from "@/components/TurnstileWidget"
+import {
+  isTurnstileEnabledOnClient,
+  type CaptchaHandle,
+} from "@/components/TurnstileWidget"
 import { useRouter } from "@/i18n/routing"
 import { authClient } from "@/lib/auth-client"
-import { getErrorMessage } from "@/lib/error-message"
+import {
+  AUTH_ERROR_MESSAGE_KEYS,
+  AUTH_ERROR_STATUS_KEYS,
+  resolveLocalizedError,
+} from "@/lib/error-message"
 import { getPostLoginRedirectPath } from "@/lib/post-login-redirect"
 import { createLoginSchema } from "@/lib/schemas/auth"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
@@ -20,6 +27,7 @@ import { orpcClient } from "@/server/orpc/client"
 export type LoginFormApi = ReturnType<typeof useLoginForm>["form"]
 
 export function useLoginForm() {
+  const tr = useTranslations()
   const t = useTranslations("auth.login")
   const t2fa = useTranslations("auth.login.twoFactor")
   const tv = useTranslations("auth.validation")
@@ -61,6 +69,11 @@ export function useLoginForm() {
       setPendingEmail(value.email)
 
       try {
+        if (isTurnstileEnabledOnClient() && !turnstileToken) {
+          setServerError(tr("errors.auth.captchaRequired"))
+          return
+        }
+
         const result = await authClient.signIn.email({
           email: value.email,
           password: value.password,
@@ -79,7 +92,14 @@ export function useLoginForm() {
             setServerError(t("emailNotVerified"))
             return
           }
-          setServerError(result.error.message || t("error"))
+          setServerError(
+            resolveLocalizedError(result.error, {
+              t: tr,
+              fallbackKey: "auth.login.error",
+              messageMap: AUTH_ERROR_MESSAGE_KEYS,
+              statusMap: AUTH_ERROR_STATUS_KEYS,
+            }),
+          )
           return
         }
 
@@ -94,7 +114,14 @@ export function useLoginForm() {
         router.push(redirectPath)
       } catch (err) {
         resetTurnstile()
-        setServerError(getErrorMessage(err, t("error")))
+        setServerError(
+          resolveLocalizedError(err, {
+            t: tr,
+            fallbackKey: "auth.login.error",
+            messageMap: AUTH_ERROR_MESSAGE_KEYS,
+            statusMap: AUTH_ERROR_STATUS_KEYS,
+          }),
+        )
       }
     },
   })
@@ -112,7 +139,17 @@ export function useLoginForm() {
       })
 
       if (result.error) {
-        setServerError(t2fa("invalidCode"))
+        setServerError(
+          resolveLocalizedError(result.error, {
+            t: tr,
+            fallbackKey: "auth.login.twoFactor.error",
+            messageMap: AUTH_ERROR_MESSAGE_KEYS,
+            statusMap: AUTH_ERROR_STATUS_KEYS,
+            codeMap: {
+              INVALID_CODE: "auth.login.twoFactor.invalidCode",
+            },
+          }),
+        )
         return
       }
 
@@ -120,7 +157,14 @@ export function useLoginForm() {
       const redirectPath = getPostLoginRedirectPath(me)
       router.push(redirectPath)
     } catch (err) {
-      setServerError(getErrorMessage(err, t2fa("error")))
+      setServerError(
+        resolveLocalizedError(err, {
+          t: tr,
+          fallbackKey: "auth.login.twoFactor.error",
+          messageMap: AUTH_ERROR_MESSAGE_KEYS,
+          statusMap: AUTH_ERROR_STATUS_KEYS,
+        }),
+      )
     } finally {
       setIsVerifying2FA(false)
     }
@@ -130,12 +174,26 @@ export function useLoginForm() {
     try {
       const result = await authClient.twoFactor.sendOtp()
       if (result.error) {
-        toast.error(result.error.message || t2fa("error"))
+        toast.error(
+          resolveLocalizedError(result.error, {
+            t: tr,
+            fallbackKey: "auth.login.twoFactor.error",
+            messageMap: AUTH_ERROR_MESSAGE_KEYS,
+            statusMap: AUTH_ERROR_STATUS_KEYS,
+          }),
+        )
         return
       }
       toast.success(t2fa("otpSent"))
     } catch (err) {
-      toast.error(getErrorMessage(err, t2fa("error")))
+      toast.error(
+        resolveLocalizedError(err, {
+          t: tr,
+          fallbackKey: "auth.login.twoFactor.error",
+          messageMap: AUTH_ERROR_MESSAGE_KEYS,
+          statusMap: AUTH_ERROR_STATUS_KEYS,
+        }),
+      )
     }
   }
 
@@ -156,13 +214,27 @@ export function useLoginForm() {
       })
 
       if (result.error) {
-        toast.error(result.error.message || t("error"))
+        toast.error(
+          resolveLocalizedError(result.error, {
+            t: tr,
+            fallbackKey: "auth.login.error",
+            messageMap: AUTH_ERROR_MESSAGE_KEYS,
+            statusMap: AUTH_ERROR_STATUS_KEYS,
+          }),
+        )
         return
       }
 
       toast.success(t("verificationSent"))
     } catch (err) {
-      toast.error(getErrorMessage(err, t("error")))
+      toast.error(
+        resolveLocalizedError(err, {
+          t: tr,
+          fallbackKey: "auth.login.error",
+          messageMap: AUTH_ERROR_MESSAGE_KEYS,
+          statusMap: AUTH_ERROR_STATUS_KEYS,
+        }),
+      )
     }
   }
 

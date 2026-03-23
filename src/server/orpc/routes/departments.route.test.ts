@@ -152,7 +152,7 @@ describe("src/server/orpc/routes/departments", () => {
       }),
     ).rejects.toMatchObject({
       code: "BAD_REQUEST",
-      message: "University is required for super admin actions",
+      data: { code: "UNIVERSITY_REQUIRED_FOR_SUPER_ADMIN_ACTIONS" },
     })
   })
 
@@ -182,7 +182,7 @@ describe("src/server/orpc/routes/departments", () => {
       }),
     ).rejects.toMatchObject({
       code: "FORBIDDEN",
-      message: "Only university admins can manage departments",
+      data: { code: "DEPARTMENT_ADMIN_ACCESS_REQUIRED" },
     })
 
     expect(updateDepartmentMock).not.toHaveBeenCalled()

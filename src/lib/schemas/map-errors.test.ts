@@ -71,4 +71,24 @@ describe("mapZodErrors", () => {
     expect(errors).toBeDefined()
     expect(errors?.fields["0"]).toBe("Required")
   })
+
+  test("should preserve nested field paths while keeping the root field fallback", () => {
+    const nestedSchema = z.object({
+      rows: z.array(
+        z.object({
+          departmentName: z.string().min(2, "Department name too short"),
+        }),
+      ),
+    })
+
+    const result = nestedSchema.safeParse({
+      rows: [{ departmentName: "A" }],
+    })
+    const errors = mapZodErrors(result)
+
+    expect(errors?.fields["rows.0.departmentName"]).toBe(
+      "Department name too short",
+    )
+    expect(errors?.fields.rows).toBe("Department name too short")
+  })
 })

@@ -19,12 +19,17 @@ let pageImportCounter = 0
 function applyPageMocks() {
   mock.module("@/lib/dashboard-access", () => ({
     requireApprovedCompanyAdmin: requireApprovedCompanyAdminMock,
+    requireCompanyOwner: mock(async () => ({
+      user: { id: "user-1", role: "company_admin" },
+      company: { id: "company-1", name: "Acme", status: "approved" },
+      membership: { companyId: "company-1", role: "owner" },
+    })),
   }))
 
   mock.module(
-    "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView",
+    "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsPageContent",
     () => ({
-      CompanyDocumentsView: () => (
+      CompanyDocumentsPageContent: () => (
         <div data-testid="company-documents-view">Company Documents</div>
       ),
     }),

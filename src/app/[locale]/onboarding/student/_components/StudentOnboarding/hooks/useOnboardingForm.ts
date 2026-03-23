@@ -9,14 +9,14 @@ import {
   DEFAULT_STUDENT_LANGUAGE_CODE,
   DEFAULT_STUDENT_LANGUAGE_PROFICIENCY,
 } from "@/lib/constants/languages"
-import { getErrorMessage } from "@/lib/error-message"
+import { resolveLocalizedError } from "@/lib/error-message"
 import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { createStudentProfileSchema } from "@/lib/schemas/student"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
 export function useOnboardingForm() {
-  const t = useTranslations("onboarding.student")
+  const tr = useTranslations()
   const tv = useTranslations("auth.validation")
   const router = useRouter()
   const isLanguageRequirementsEnabled = isLanguageRequirementsEnabledOnClient()
@@ -125,7 +125,12 @@ export function useOnboardingForm() {
 
         router.push("/dashboard")
       } catch (err) {
-        setServerError(getErrorMessage(err, t("error")))
+        setServerError(
+          resolveLocalizedError(err, {
+            t: tr,
+            fallbackKey: "onboarding.student.error",
+          }),
+        )
       }
     },
   })

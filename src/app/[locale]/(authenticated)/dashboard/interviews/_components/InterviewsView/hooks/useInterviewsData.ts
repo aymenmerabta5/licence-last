@@ -1,6 +1,7 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { toast } from "sonner"
 import {
@@ -18,13 +19,14 @@ import type {
   UseInterviewsDataResult,
 } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 import { isInterviewsFeatureDisabledError } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/utils"
-import { getErrorMessage } from "@/lib/error-message"
+import { resolveLocalizedError } from "@/lib/error-message"
 import { orpc } from "@/server/orpc/client"
 
 export function useInterviewsData({
   role,
   selectedOfferId,
 }: UseInterviewsDataParams): UseInterviewsDataResult {
+  const t = useTranslations()
   const queryClient = useQueryClient()
   const [confirmingSlotId, setConfirmingSlotId] = useState<string | null>(null)
 
@@ -68,10 +70,15 @@ export function useInterviewsData({
         await queryClient.invalidateQueries({
           queryKey: studentListQueryOptions.queryKey,
         })
-        toast.success("Interview slot confirmed.")
+        toast.success(t("errors.common.interviewSlotConfirmed"))
       },
       onError: (error) => {
-        toast.error(getErrorMessage(error, "Could not confirm this slot."))
+        toast.error(
+          resolveLocalizedError(error, {
+            t,
+            fallbackKey: "errors.common.confirmInterviewSlotFailed",
+          }),
+        )
       },
     }),
   )
@@ -82,11 +89,14 @@ export function useInterviewsData({
         await queryClient.invalidateQueries({
           queryKey: companyListQueryOptions.queryKey,
         })
-        toast.success("Interview proposal sent.")
+        toast.success(t("errors.common.interviewProposalSent"))
       },
       onError: (error) => {
         toast.error(
-          getErrorMessage(error, "Could not send interview proposal."),
+          resolveLocalizedError(error, {
+            t,
+            fallbackKey: "errors.common.interviewProposalFailed",
+          }),
         )
       },
     }),
@@ -104,7 +114,7 @@ export function useInterviewsData({
   const proposeSlots = async (input: ProposeSlotsInput) => {
     const selectedApplicationId = input.applicationId.trim()
     if (selectedApplicationId.length === 0) {
-      toast.error("Please select an application.")
+      toast.error(t("errors.common.selectApplication"))
       return false
     }
 
@@ -112,7 +122,7 @@ export function useInterviewsData({
       (application) => application.id === selectedApplicationId,
     )
     if (!hasSelectedApplication) {
-      toast.error("Please select a valid application for this offer.")
+      toast.error(t("errors.common.invalidApplicationSelection"))
       return false
     }
 
@@ -126,7 +136,7 @@ export function useInterviewsData({
       .filter((slot) => slot.startsAt.length > 0 && slot.endsAt.length > 0)
 
     if (cleanedSlots.length === 0) {
-      toast.error("Add at least one complete interview slot.")
+      toast.error(t("errors.common.interviewSlotRequired"))
       return false
     }
 
@@ -140,7 +150,7 @@ export function useInterviewsData({
       const startsAt = normalizeLocalDateTimeInput(slot.startsAt)
       const endsAt = normalizeLocalDateTimeInput(slot.endsAt)
       if (!startsAt || !endsAt) {
-        toast.error("Each slot must include a valid start and end date/time.")
+        toast.error(t("errors.common.interviewDateTimeInvalid"))
         return false
       }
 
@@ -170,9 +180,11 @@ export function useInterviewsData({
     []) as CompanyInterviewView[]
   const studentErrorMessage = getInterviewsErrorMessage(
     studentInterviewsQuery.error,
+    t,
   )
   const companyErrorMessage = getInterviewsErrorMessage(
     companyInterviewsQuery.error,
+    t,
   )
 
   const isFeatureDisabled = [

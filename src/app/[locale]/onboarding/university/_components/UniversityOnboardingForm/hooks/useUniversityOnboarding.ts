@@ -6,7 +6,7 @@ import { useMemo, useState } from "react"
 
 import { useRouter } from "@/i18n/routing"
 import { authClient } from "@/lib/auth-client"
-import { getErrorMessage } from "@/lib/error-message"
+import { resolveLocalizedError } from "@/lib/error-message"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { createUniversityOnboardingSchema } from "@/lib/schemas/university"
 import { orpcClient } from "@/server/orpc/client"
@@ -16,7 +16,7 @@ export type UniversityOnboardingFormApi = ReturnType<
 >["form"]
 
 export function useUniversityOnboarding() {
-  const t = useTranslations("onboarding.university")
+  const tr = useTranslations()
   const tv = useTranslations("auth.validation")
   const router = useRouter()
   const [serverError, setServerError] = useState("")
@@ -65,7 +65,12 @@ export function useUniversityOnboarding() {
 
         router.push("/status/university/pending")
       } catch (err) {
-        setServerError(getErrorMessage(err, t("error")))
+        setServerError(
+          resolveLocalizedError(err, {
+            t: tr,
+            fallbackKey: "onboarding.university.error",
+          }),
+        )
       }
     },
   })

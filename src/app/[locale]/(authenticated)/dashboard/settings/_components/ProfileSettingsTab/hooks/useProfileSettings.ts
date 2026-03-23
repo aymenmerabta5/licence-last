@@ -2,6 +2,7 @@
 
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
 import { useCallback, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
 import { studentProfileDetailsSchema } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/hooks/profileSettingsSchema"
@@ -9,7 +10,7 @@ import type {
   MeResult,
   StudentProfileResult,
 } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/types"
-import { getErrorMessage } from "@/lib/error-message"
+import { resolveLocalizedError } from "@/lib/error-message"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
@@ -17,6 +18,7 @@ export function useProfileSettings(
   me: MeResult,
   studentProfile: StudentProfileResult | null,
 ) {
+  const t = useTranslations()
   const queryClient = useQueryClient()
 
   const meQueryOptions = useMemo(() => orpc.users.getMe.queryOptions(), [])
@@ -114,7 +116,12 @@ export function useProfileSettings(
         await Promise.all(tasks)
         setSuccessTick((t) => t + 1)
       } catch (err) {
-        setServerError(getErrorMessage(err, "Could not save changes."))
+        setServerError(
+          resolveLocalizedError(err, {
+            t,
+            fallbackKey: "errors.common.saveChangesFailed",
+          }),
+        )
       }
     },
   })
@@ -152,14 +159,19 @@ export function useProfileSettings(
         await queryClient.invalidateQueries({
           queryKey: meQueryOptions.queryKey,
         })
-        toast.success("Profile photo updated.")
+        toast.success(t("errors.common.profilePhotoUpdated"))
       } catch (err) {
-        toast.error(getErrorMessage(err, "Upload failed. Please try again."))
+        toast.error(
+          resolveLocalizedError(err, {
+            t,
+            fallbackKey: "errors.common.uploadFailed",
+          }),
+        )
       } finally {
         setIsAvatarUploading(false)
       }
     },
-    [queryClient, meQueryOptions.queryKey],
+    [queryClient, meQueryOptions.queryKey, t],
   )
 
   const handleAvatarDelete = useCallback(async () => {
@@ -169,13 +181,18 @@ export function useProfileSettings(
       await orpcClient.users.deleteAvatar({})
       setAvatarUrl(null)
       await queryClient.invalidateQueries({ queryKey: meQueryOptions.queryKey })
-      toast.success("Profile photo removed.")
+      toast.success(t("errors.common.profilePhotoRemoved"))
     } catch (err) {
-      toast.error(getErrorMessage(err, "Could not remove profile photo."))
+      toast.error(
+        resolveLocalizedError(err, {
+          t,
+          fallbackKey: "errors.common.profilePhotoRemoveFailed",
+        }),
+      )
     } finally {
       setIsAvatarDeleting(false)
     }
-  }, [avatarUrl, meQueryOptions.queryKey, queryClient])
+  }, [avatarUrl, meQueryOptions.queryKey, queryClient, t])
 
   return {
     form,

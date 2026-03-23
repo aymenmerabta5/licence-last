@@ -11,6 +11,7 @@ import { companyMember } from "@/server/db/schema/companies"
 import { studentProfile } from "@/server/db/schema/students"
 import { isServiceError } from "@/server/services/errors"
 import { getUniversityMembership } from "@/server/services/universities/membership"
+import { throwCodedORPCError } from "@/server/orpc/utils/service-error"
 
 interface SessionUser {
   id: string
@@ -98,7 +99,9 @@ export const authedSessionProcedure = os.use(async ({ next }) => {
   }
 
   if (session.user.banned) {
-    throw new ORPCError("FORBIDDEN", { message: "Account suspended" })
+    throwCodedORPCError("FORBIDDEN", "ACCOUNT_SUSPENDED", {
+      message: "Account suspended",
+    })
   }
 
   try {
@@ -115,7 +118,7 @@ export const authedSessionProcedure = os.use(async ({ next }) => {
       isServiceError(error) &&
       error.code === "UNIVERSITY_MEMBERSHIP_CONFLICT"
     ) {
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+      throwCodedORPCError("INTERNAL_SERVER_ERROR", "UNIVERSITY_MEMBERSHIP_CONFLICT", {
         message: "Multiple university memberships found for user",
       })
     }
@@ -152,10 +155,12 @@ async function assertApprovedAdminAccess(user: {
           ? "Company account is not approved by super admin yet"
           : "University account is not approved by super admin yet"
 
-    throw new ORPCError("FORBIDDEN", { message })
+    throwCodedORPCError("FORBIDDEN", `ADMIN_APPROVAL_${approval.reason.toUpperCase()}`, {
+      message,
+    })
   } catch (error) {
     if (isServiceError(error) && error.code === "COMPANY_MEMBERSHIP_CONFLICT") {
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+      throwCodedORPCError("INTERNAL_SERVER_ERROR", "COMPANY_MEMBERSHIP_CONFLICT", {
         message: "Multiple company memberships found for user",
       })
     }
@@ -175,7 +180,7 @@ export const authedProcedure = authedSessionProcedure.use(
 /** Admin — requires true university admin or super_admin role. */
 export const adminProcedure = authedProcedure.use(async ({ context, next }) => {
   if (!isAdminRole(context.user.role)) {
-    throw new ORPCError("FORBIDDEN", {
+    throwCodedORPCError("FORBIDDEN", "ADMIN_ACCESS_REQUIRED", {
       message: "Admin access required",
     })
   }
@@ -190,7 +195,7 @@ export const universityProcedure = authedProcedure.use(
       context.user.role !== "dept_head" &&
       context.user.role !== "super_admin"
     ) {
-      throw new ORPCError("FORBIDDEN", {
+      throwCodedORPCError("FORBIDDEN", "UNIVERSITY_ACCESS_REQUIRED", {
         message: "University access required",
       })
     }
@@ -203,7 +208,7 @@ export const universityProcedure = authedProcedure.use(
 export const superAdminProcedure = authedProcedure.use(
   async ({ context, next }) => {
     if (context.user.role !== "super_admin") {
-      throw new ORPCError("FORBIDDEN", {
+      throwCodedORPCError("FORBIDDEN", "SUPER_ADMIN_ACCESS_REQUIRED", {
         message: "Super admin access required",
       })
     }
@@ -215,7 +220,7 @@ export const superAdminProcedure = authedProcedure.use(
 export const companyAdminProcedure = authedProcedure.use(
   async ({ context, next }) => {
     if (context.user.role !== "company_admin") {
-      throw new ORPCError("FORBIDDEN", {
+      throwCodedORPCError("FORBIDDEN", "COMPANY_ADMIN_ACCESS_REQUIRED", {
         message: "Company admin access required",
       })
     }
@@ -227,7 +232,7 @@ export const companyAdminProcedure = authedProcedure.use(
       .limit(2)
 
     if (memberships.length > 1) {
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+      throwCodedORPCError("INTERNAL_SERVER_ERROR", "COMPANY_MEMBERSHIP_CONFLICT", {
         message: "Multiple company memberships found for user",
       })
     }
@@ -235,7 +240,7 @@ export const companyAdminProcedure = authedProcedure.use(
     const membership = memberships[0]
 
     if (!membership) {
-      throw new ORPCError("FORBIDDEN", {
+      throwCodedORPCError("FORBIDDEN", "NO_COMPANY_MEMBERSHIP", {
         message: "No company membership found",
       })
     }
@@ -248,7 +253,7 @@ export const companyAdminProcedure = authedProcedure.use(
 export const companyOwnerProcedure = companyAdminProcedure.use(
   async ({ context, next }) => {
     if (context.companyMembership.role !== "owner") {
-      throw new ORPCError("FORBIDDEN", {
+      throwCodedORPCError("FORBIDDEN", "COMPANY_OWNER_ACCESS_REQUIRED", {
         message: "Company owner access required",
       })
     }
@@ -261,7 +266,7 @@ export const companyOwnerProcedure = companyAdminProcedure.use(
 export const studentProcedure = authedProcedure.use(
   async ({ context, next }) => {
     if (context.user.role !== "student") {
-      throw new ORPCError("FORBIDDEN", {
+      throwCodedORPCError("FORBIDDEN", "STUDENT_ACCESS_REQUIRED", {
         message: "Student access required",
       })
     }
@@ -280,19 +285,19 @@ export const studentProcedure = authedProcedure.use(
 export const deptHeadProcedure = authedProcedure.use(
   async ({ context, next }) => {
     if (context.user.role !== "dept_head") {
-      throw new ORPCError("FORBIDDEN", {
+      throwCodedORPCError("FORBIDDEN", "DEPARTMENT_HEAD_ACCESS_REQUIRED", {
         message: "Department head access required",
       })
     }
 
     if (!context.user.universityId) {
-      throw new ORPCError("FORBIDDEN", {
+      throwCodedORPCError("FORBIDDEN", "DEPARTMENT_HEAD_UNIVERSITY_REQUIRED", {
         message: "Department head must belong to a university",
       })
     }
 
     if (!context.user.universityDepartmentId) {
-      throw new ORPCError("FORBIDDEN", {
+      throwCodedORPCError("FORBIDDEN", "DEPARTMENT_HEAD_DEPARTMENT_REQUIRED", {
         message: "Department head must be assigned to a department",
       })
     }

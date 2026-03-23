@@ -5,7 +5,11 @@ import { useState } from "react"
 import { toast } from "sonner"
 
 import { authClient } from "@/lib/auth-client"
-import { getErrorMessage } from "@/lib/error-message"
+import {
+  AUTH_ERROR_MESSAGE_KEYS,
+  AUTH_ERROR_STATUS_KEYS,
+  resolveLocalizedError,
+} from "@/lib/error-message"
 
 export type TwoFactorSetupPhase =
   | "idle"
@@ -15,6 +19,7 @@ export type TwoFactorSetupPhase =
   | "disabling"
 
 export function useTwoFactorSetup(isTwoFactorEnabled: boolean) {
+  const tr = useTranslations()
   const t = useTranslations("dashboard.settings.twoFactor")
 
   const [phase, setPhase] = useState<TwoFactorSetupPhase>("idle")
@@ -47,7 +52,14 @@ export function useTwoFactorSetup(isTwoFactorEnabled: boolean) {
       })
 
       if (result.error) {
-        setError(getErrorMessage(result.error, t("error.enableFailed")))
+        setError(
+          resolveLocalizedError(result.error, {
+            t: tr,
+            fallbackKey: "dashboard.settings.twoFactor.error.enableFailed",
+            messageMap: AUTH_ERROR_MESSAGE_KEYS,
+            statusMap: AUTH_ERROR_STATUS_KEYS,
+          }),
+        )
         setIsLoading(false)
         return
       }
@@ -59,7 +71,14 @@ export function useTwoFactorSetup(isTwoFactorEnabled: boolean) {
       setPhase("verifying")
       setVerifyCode("")
     } catch (err) {
-      setError(getErrorMessage(err, t("error.enableFailed")))
+      setError(
+        resolveLocalizedError(err, {
+          t: tr,
+          fallbackKey: "dashboard.settings.twoFactor.error.enableFailed",
+          messageMap: AUTH_ERROR_MESSAGE_KEYS,
+          statusMap: AUTH_ERROR_STATUS_KEYS,
+        }),
+      )
     } finally {
       setIsLoading(false)
     }
@@ -93,7 +112,14 @@ export function useTwoFactorSetup(isTwoFactorEnabled: boolean) {
       setPhase("showBackupCodes")
       toast.success(t("success.enabled"))
     } catch (err) {
-      setError(getErrorMessage(err, t("error.verifyFailed")))
+      setError(
+        resolveLocalizedError(err, {
+          t: tr,
+          fallbackKey: "dashboard.settings.twoFactor.error.verifyFailed",
+          messageMap: AUTH_ERROR_MESSAGE_KEYS,
+          statusMap: AUTH_ERROR_STATUS_KEYS,
+        }),
+      )
     } finally {
       setIsLoading(false)
     }
@@ -131,7 +157,14 @@ export function useTwoFactorSetup(isTwoFactorEnabled: boolean) {
       })
 
       if (result.error) {
-        setError(getErrorMessage(result.error, t("error.disableFailed")))
+        setError(
+          resolveLocalizedError(result.error, {
+            t: tr,
+            fallbackKey: "dashboard.settings.twoFactor.error.disableFailed",
+            messageMap: AUTH_ERROR_MESSAGE_KEYS,
+            statusMap: AUTH_ERROR_STATUS_KEYS,
+          }),
+        )
         setIsLoading(false)
         return
       }
@@ -140,7 +173,14 @@ export function useTwoFactorSetup(isTwoFactorEnabled: boolean) {
       setPhase("idle")
       window.location.reload()
     } catch (err) {
-      setError(getErrorMessage(err, t("error.disableFailed")))
+      setError(
+        resolveLocalizedError(err, {
+          t: tr,
+          fallbackKey: "dashboard.settings.twoFactor.error.disableFailed",
+          messageMap: AUTH_ERROR_MESSAGE_KEYS,
+          statusMap: AUTH_ERROR_STATUS_KEYS,
+        }),
+      )
     } finally {
       setIsLoading(false)
     }

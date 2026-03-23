@@ -5,12 +5,17 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { authClient } from "@/lib/auth-client"
-import { getErrorMessage } from "@/lib/error-message"
+import {
+  AUTH_ERROR_MESSAGE_KEYS,
+  AUTH_ERROR_STATUS_KEYS,
+  resolveLocalizedError,
+} from "@/lib/error-message"
 import { createChangePasswordSchema } from "@/lib/schemas/auth"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { orpc } from "@/server/orpc/client"
 
 export function useChangePassword(onSuccess?: () => void) {
+  const tr = useTranslations()
   const tv = useTranslations("auth.validation")
   const queryClient = useQueryClient()
 
@@ -50,7 +55,14 @@ export function useChangePassword(onSuccess?: () => void) {
         })
 
         if (result.error) {
-          setServerError(result.error.message ?? "Could not change password.")
+          setServerError(
+            resolveLocalizedError(result.error, {
+              t: tr,
+              fallbackKey: "errors.auth.changePasswordFailed",
+              messageMap: AUTH_ERROR_MESSAGE_KEYS,
+              statusMap: AUTH_ERROR_STATUS_KEYS,
+            }),
+          )
           return
         }
 
@@ -61,7 +73,14 @@ export function useChangePassword(onSuccess?: () => void) {
         setIsSuccess(true)
         onSuccess?.()
       } catch (err) {
-        setServerError(getErrorMessage(err, "Could not change password."))
+        setServerError(
+          resolveLocalizedError(err, {
+            t: tr,
+            fallbackKey: "errors.auth.changePasswordFailed",
+            messageMap: AUTH_ERROR_MESSAGE_KEYS,
+            statusMap: AUTH_ERROR_STATUS_KEYS,
+          }),
+        )
       }
     },
   })

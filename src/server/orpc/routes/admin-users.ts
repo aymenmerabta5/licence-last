@@ -1,6 +1,5 @@
 import "server-only"
 
-import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
 
@@ -13,6 +12,7 @@ import {
   superAdminProcedureGenerous,
   superAdminProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
+import { throwCodedORPCError } from "@/server/orpc/utils/service-error"
 import { banUser, unbanUser } from "@/server/services/admin/ban-user"
 import { createUser } from "@/server/services/admin/create-user"
 import { listUniversityUsers } from "@/server/services/admin/list-university-users"
@@ -42,7 +42,7 @@ const listUsersInputSchema = z.object({
 
 function assertUserManagementRole(role: string | null | undefined) {
   if (role !== "super_admin" && role !== "university_admin") {
-    throw new ORPCError("FORBIDDEN", {
+    throwCodedORPCError("FORBIDDEN", "USER_MANAGEMENT_ACCESS_REQUIRED", {
       message:
         "User management access requires super admin or university admin role",
     })
@@ -72,25 +72,25 @@ async function assertUniversityScopedTarget(args: {
     .limit(1)
 
   if (!targetUser) {
-    throw new ORPCError("NOT_FOUND", {
+    throwCodedORPCError("NOT_FOUND", "USER_NOT_FOUND", {
       message: "User not found",
     })
   }
 
   if (forbidSelf && targetUser.id === actingUserId) {
-    throw new ORPCError("BAD_REQUEST", {
+    throwCodedORPCError("BAD_REQUEST", "SELF_ACTION_FORBIDDEN", {
       message: "You cannot perform this action on your own account",
     })
   }
 
   if (targetUser.role === "super_admin") {
-    throw new ORPCError("FORBIDDEN", {
+    throwCodedORPCError("FORBIDDEN", "SUPER_ADMIN_TARGET_FORBIDDEN", {
       message: "Super admin accounts cannot be managed by university admins",
     })
   }
 
   if (targetUser.universityId !== actingUniversityId) {
-    throw new ORPCError("FORBIDDEN", {
+    throwCodedORPCError("FORBIDDEN", "UNIVERSITY_TARGET_SCOPE_FORBIDDEN", {
       message: "Target user does not belong to your university",
     })
   }
@@ -106,7 +106,7 @@ export const listUsersProcedure = adminProcedureGenerous
     }
 
     if (!context.user.universityId) {
-      throw new ORPCError("BAD_REQUEST", {
+      throwCodedORPCError("BAD_REQUEST", "ADMIN_MUST_BELONG_TO_UNIVERSITY", {
         message: "University admin must belong to a university",
       })
     }
@@ -153,7 +153,7 @@ export const banUserProcedure = adminProcedureStandard
     }
 
     if (!context.user.universityId) {
-      throw new ORPCError("BAD_REQUEST", {
+      throwCodedORPCError("BAD_REQUEST", "ADMIN_MUST_BELONG_TO_UNIVERSITY", {
         message: "University admin must belong to a university",
       })
     }
@@ -178,7 +178,7 @@ export const unbanUserProcedure = adminProcedureStandard
     }
 
     if (!context.user.universityId) {
-      throw new ORPCError("BAD_REQUEST", {
+      throwCodedORPCError("BAD_REQUEST", "ADMIN_MUST_BELONG_TO_UNIVERSITY", {
         message: "University admin must belong to a university",
       })
     }
@@ -202,7 +202,7 @@ export const removeUserProcedure = adminProcedureStandard
     }
 
     if (!context.user.universityId) {
-      throw new ORPCError("BAD_REQUEST", {
+      throwCodedORPCError("BAD_REQUEST", "ADMIN_MUST_BELONG_TO_UNIVERSITY", {
         message: "University admin must belong to a university",
       })
     }

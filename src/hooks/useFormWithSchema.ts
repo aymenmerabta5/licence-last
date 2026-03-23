@@ -4,7 +4,7 @@ import { useForm } from "@tanstack/react-form"
 import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import type { ZodType } from "zod"
-import { getErrorMessage } from "@/lib/error-message"
+import { resolveLocalizedError } from "@/lib/error-message"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 
 interface UseFormWithSchemaOptions<TValues extends Record<string, unknown>> {
@@ -25,6 +25,7 @@ export function useFormWithSchema<TValues extends Record<string, unknown>>({
   defaultValues,
   onSubmit,
 }: UseFormWithSchemaOptions<TValues>) {
+  const t = useTranslations()
   const tv = useTranslations(validationNamespace)
   const [serverError, setServerError] = useState("")
 
@@ -41,7 +42,12 @@ export function useFormWithSchema<TValues extends Record<string, unknown>>({
       try {
         await onSubmit(value)
       } catch (err) {
-        setServerError(getErrorMessage(err, "Something went wrong"))
+        setServerError(
+          resolveLocalizedError(err, {
+            t,
+            fallbackKey: "errors.common.unexpected",
+          }),
+        )
       }
     },
   })

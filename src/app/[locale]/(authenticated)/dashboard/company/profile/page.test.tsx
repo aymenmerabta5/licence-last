@@ -42,6 +42,10 @@ function applyPageMocks() {
 
   mock.module("@/lib/dashboard-access", () => ({
     requireCompanyOwner: requireCompanyOwnerMock,
+    requireApprovedCompanyAdmin: mock(async () => ({
+      user: { id: "user-1", role: "company_admin" },
+      company: { id: "company-1", name: "Acme", status: "approved" },
+    })),
   }))
 
   mock.module(

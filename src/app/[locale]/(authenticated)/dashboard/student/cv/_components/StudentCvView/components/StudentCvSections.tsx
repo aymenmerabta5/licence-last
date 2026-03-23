@@ -1,11 +1,12 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 import { ExperienceSection } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/ExperienceSection"
 import { ProjectsSection } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/ProjectsSection"
 import { ResumeSection } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/ResumeSection"
 import type { useStudentCvData } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/hooks/useStudentCvData"
-import { getErrorMessage } from "@/lib/error-message"
+import { resolveLocalizedError } from "@/lib/error-message"
 
 interface MutationRunner<TInput> {
   (input: TInput): Promise<unknown>
@@ -28,14 +29,20 @@ interface StudentCvSectionsProps {
 async function runMutationWithToast<TInput>(
   mutateAsync: MutationRunner<TInput>,
   input: TInput,
+  t: (key: string) => string,
   successMessage: string,
-  errorMessage: string,
+  errorKey: string,
 ) {
   try {
     await mutateAsync(input)
     toast.success(successMessage)
   } catch (error) {
-    toast.error(getErrorMessage(error, errorMessage))
+    toast.error(
+      resolveLocalizedError(error, {
+        t,
+        fallbackKey: errorKey,
+      }),
+    )
   }
 }
 
@@ -50,6 +57,7 @@ export function StudentCvSections({
   uploadResumeMutation,
   deleteResumeMutation,
 }: StudentCvSectionsProps) {
+  const t = useTranslations()
   const experiences = cv?.experiences ?? []
   const projects = cv?.projects ?? []
   const resume = cv?.resume ?? null
@@ -64,16 +72,18 @@ export function StudentCvSections({
           runMutationWithToast(
             uploadResumeMutation.mutateAsync,
             { file },
-            "Resume uploaded.",
-            "Failed to upload resume.",
+            t,
+            t("errors.common.resumeUploaded"),
+            "errors.common.resumeUploadFailed",
           )
         }
         onDelete={() =>
           runMutationWithToast(
             deleteResumeMutation.mutateAsync,
             {},
-            "Resume removed.",
-            "Failed to remove resume.",
+            t,
+            t("errors.common.resumeRemoved"),
+            "errors.common.resumeRemoveFailed",
           )
         }
       />
@@ -87,24 +97,27 @@ export function StudentCvSections({
           runMutationWithToast(
             createExperienceMutation.mutateAsync,
             input,
-            "Experience added.",
-            "Failed to add experience.",
+            t,
+            t("errors.common.experienceAdded"),
+            "errors.common.experienceAddFailed",
           )
         }
         onUpdate={(input) =>
           runMutationWithToast(
             updateExperienceMutation.mutateAsync,
             input,
-            "Experience updated.",
-            "Failed to update experience.",
+            t,
+            t("errors.common.experienceUpdated"),
+            "errors.common.experienceUpdateFailed",
           )
         }
         onDelete={(experienceId) =>
           runMutationWithToast(
             deleteExperienceMutation.mutateAsync,
             { experienceId },
-            "Experience deleted.",
-            "Failed to delete experience.",
+            t,
+            t("errors.common.experienceDeleted"),
+            "errors.common.experienceDeleteFailed",
           )
         }
       />
@@ -118,24 +131,27 @@ export function StudentCvSections({
           runMutationWithToast(
             createProjectMutation.mutateAsync,
             input,
-            "Project added.",
-            "Failed to add project.",
+            t,
+            t("errors.common.projectAdded"),
+            "errors.common.projectAddFailed",
           )
         }
         onUpdate={(input) =>
           runMutationWithToast(
             updateProjectMutation.mutateAsync,
             input,
-            "Project updated.",
-            "Failed to update project.",
+            t,
+            t("errors.common.projectUpdated"),
+            "errors.common.projectUpdateFailed",
           )
         }
         onDelete={(projectId) =>
           runMutationWithToast(
             deleteProjectMutation.mutateAsync,
             { projectId },
-            "Project deleted.",
-            "Failed to delete project.",
+            t,
+            t("errors.common.projectDeleted"),
+            "errors.common.projectDeleteFailed",
           )
         }
       />

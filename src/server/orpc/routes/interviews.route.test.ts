@@ -280,7 +280,7 @@ describe("src/server/orpc/routes/interviews", () => {
       }),
     ).rejects.toMatchObject({
       code: "FORBIDDEN",
-      message: "Interviews feature is disabled",
+      data: { code: "INTERVIEWS_FEATURE_DISABLED" },
     })
   })
 })

@@ -4,6 +4,35 @@ import { isServiceError } from "@/server/services/errors"
 
 type ORPCStatusCode = ConstructorParameters<typeof ORPCError>[0]
 
+interface CodedORPCErrorOptions {
+  message: string
+  meta?: Record<string, unknown>
+  cause?: unknown
+}
+
+export function createCodedORPCError(
+  status: ORPCStatusCode,
+  code: string,
+  { message, meta, cause }: CodedORPCErrorOptions,
+) {
+  return new ORPCError(status, {
+    message,
+    data: {
+      code,
+      ...(meta ? { meta } : {}),
+    },
+    cause,
+  })
+}
+
+export function throwCodedORPCError(
+  status: ORPCStatusCode,
+  code: string,
+  options: CodedORPCErrorOptions,
+): never {
+  throw createCodedORPCError(status, code, options)
+}
+
 export function createServiceORPCError(
   error: unknown,
   {

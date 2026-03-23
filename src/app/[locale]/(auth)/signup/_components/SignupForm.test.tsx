@@ -17,36 +17,39 @@ import {
 import { createMotionReactClientMock } from "@/test/mocks/motion-react-client"
 
 // Mock next-intl
+const TRANSLATIONS: Record<string, string> = {
+  title: "Create Account",
+  subtitle: "Sign up for a new account",
+  name: "Full Name",
+  namePlaceholder: "John Doe",
+  email: "Email",
+  emailPlaceholder: "you@university.edu",
+  password: "Password",
+  passwordPlaceholder: "Create a password",
+  passwordHint: "Must be at least 8 characters",
+  confirmPassword: "Confirm Password",
+  confirmPasswordPlaceholder: "Confirm your password",
+  agreeToTerms: "I agree to the",
+  terms: "Terms of Service",
+  and: "and",
+  privacy: "Privacy Policy",
+  submit: "Create Account",
+  or: "Or",
+  hasAccount: "Already have an account?",
+  signIn: "Sign In",
+  error: "An error occurred. Please try again.",
+  verifyTitle: "Verify your email",
+  verifyDescription: "Check your email to complete registration",
+  backToLogin: "Back to login",
+  back: "Back",
+  "errors.auth.emailAlreadyExists": "An account with this email already exists.",
+  "errors.auth.captchaRequired": "Please complete the CAPTCHA challenge.",
+}
+
 mock.module("next-intl", () => ({
-  useTranslations: () => (key: string) => {
-    const translations: Record<string, string> = {
-      title: "Create Account",
-      subtitle: "Sign up for a new account",
-      name: "Full Name",
-      namePlaceholder: "John Doe",
-      email: "Email",
-      emailPlaceholder: "you@university.edu",
-      password: "Password",
-      passwordPlaceholder: "Create a password",
-      passwordHint: "Must be at least 8 characters",
-      confirmPassword: "Confirm Password",
-      confirmPasswordPlaceholder: "Confirm your password",
-      agreeToTerms: "I agree to the",
-      terms: "Terms of Service",
-      and: "and",
-      privacy: "Privacy Policy",
-      submit: "Create Account",
-      or: "Or",
-      hasAccount: "Already have an account?",
-      signIn: "Sign In",
-      error: "An error occurred. Please try again.",
-      verifyTitle: "Verify your email",
-      verifyDescription: "Check your email to complete registration",
-      backToLogin: "Back to login",
-      back: "Back",
-    }
-    return translations[key] || key
-  },
+  useTranslations: () => Object.assign((key: string) => TRANSLATIONS[key] || key, {
+    has: (key: string) => key in TRANSLATIONS,
+  }),
 }))
 
 // Mock auth validation
@@ -121,6 +124,10 @@ mock.module("@/i18n/routing", () => ({
 }))
 
 mock.module("motion/react-client", createMotionReactClientMock)
+mock.module("@/components/TurnstileWidget", () => ({
+  TurnstileWidget: () => null,
+  isTurnstileEnabledOnClient: () => false,
+}))
 
 const { StudentSignupForm } = await import(
   "@/app/[locale]/(auth)/signup/_components/SignupForm/StudentSignupForm"
@@ -439,7 +446,9 @@ describe("StudentSignupForm", () => {
       }
 
       await waitFor(() => {
-        expect(screen.getByText("Email already exists")).toBeDefined()
+        expect(
+          screen.getByText("An account with this email already exists."),
+        ).toBeDefined()
       })
     })
   })
