@@ -49,9 +49,9 @@ export const env = createEnv({
       .default(process.env.NODE_ENV === "production" ? "true" : "false"),
 
     // Server feature flags
-    FEATURE_NOTIF_PREFERENCES: z.enum(["true", "false"]).default("false"),
+    FEATURE_NOTIF_PREFERENCES: z.enum(["true", "false"]).default("true"),
     FEATURE_SAVED_OFFERS: z.enum(["true", "false"]).default("true"),
-    FEATURE_INTERVIEWS: z.enum(["true", "false"]).default("false"),
+    FEATURE_INTERVIEWS: z.enum(["true", "false"]).default("true"),
     FEATURE_LANGUAGE_REQUIREMENTS: z.enum(["true", "false"]).default("true"),
 
     // Logging
@@ -70,9 +70,9 @@ export const env = createEnv({
     NEXT_PUBLIC_E2E_DISABLE_CAPTCHA: z.enum(["true", "false"]).optional(),
     NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES: z
       .enum(["true", "false"])
-      .default("false"),
+      .default("true"),
     NEXT_PUBLIC_FEATURE_SAVED_OFFERS: z.enum(["true", "false"]).default("true"),
-    NEXT_PUBLIC_FEATURE_INTERVIEWS: z.enum(["true", "false"]).default("false"),
+    NEXT_PUBLIC_FEATURE_INTERVIEWS: z.enum(["true", "false"]).default("true"),
     NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS: z
       .enum(["true", "false"])
       .default("true"),

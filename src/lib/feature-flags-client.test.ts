@@ -45,9 +45,9 @@ describe("feature-flags-client", () => {
     expect(isSavedOffersEnabledOnClient()).toBe(false)
   })
 
-  test("interviews is enabled only when explicitly true", () => {
+  test("interviews is enabled unless explicitly false", () => {
     delete process.env.NEXT_PUBLIC_FEATURE_INTERVIEWS
-    expect(isInterviewsEnabledOnClient()).toBe(false)
+    expect(isInterviewsEnabledOnClient()).toBe(true)
 
     process.env.NEXT_PUBLIC_FEATURE_INTERVIEWS = "false"
     expect(isInterviewsEnabledOnClient()).toBe(false)
@@ -56,9 +56,9 @@ describe("feature-flags-client", () => {
     expect(isInterviewsEnabledOnClient()).toBe(true)
   })
 
-  test("notification preferences is enabled only when explicitly true", () => {
+  test("notification preferences is enabled unless explicitly false", () => {
     delete process.env.NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES
-    expect(isNotificationPreferencesEnabledOnClient()).toBe(false)
+    expect(isNotificationPreferencesEnabledOnClient()).toBe(true)
 
     process.env.NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES = "false"
     expect(isNotificationPreferencesEnabledOnClient()).toBe(false)
@@ -67,9 +67,9 @@ describe("feature-flags-client", () => {
     expect(isNotificationPreferencesEnabledOnClient()).toBe(true)
   })
 
-  test("language requirements is enabled only when explicitly true", () => {
+  test("language requirements is enabled unless explicitly false", () => {
     delete process.env.NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS
-    expect(isLanguageRequirementsEnabledOnClient()).toBe(false)
+    expect(isLanguageRequirementsEnabledOnClient()).toBe(true)
 
     process.env.NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS = "false"
     expect(isLanguageRequirementsEnabledOnClient()).toBe(false)

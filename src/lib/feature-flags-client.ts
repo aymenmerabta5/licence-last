@@ -3,13 +3,13 @@ export function isSavedOffersEnabledOnClient() {
 }
 
 export function isInterviewsEnabledOnClient() {
-  return process.env.NEXT_PUBLIC_FEATURE_INTERVIEWS === "true"
+  return process.env.NEXT_PUBLIC_FEATURE_INTERVIEWS !== "false"
 }
 
 export function isNotificationPreferencesEnabledOnClient() {
-  return process.env.NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES === "true"
+  return process.env.NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES !== "false"
 }
 
 export function isLanguageRequirementsEnabledOnClient() {
-  return process.env.NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS === "true"
+  return process.env.NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS !== "false"
 }
