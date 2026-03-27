@@ -1,25 +1,18 @@
 "use client"
 
-import { Check, Clock, GraduationCap, Loader2, X } from "lucide-react"
+import { Clock, GraduationCap } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { useDrag } from "react-dnd"
+import { CandidateCardActions } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidateCardActions"
+import { CandidateCardDetails } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidateCardDetails"
 import { MatchPreview } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/MatchPreview"
 import {
   CANDIDATE_CARD_DND_TYPE,
   type CandidateApp,
   type CandidateCardDragItem,
 } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
-import { SelectField } from "@/components/form-fields"
-import { Button } from "@/components/ui/button"
-import { Link } from "@/i18n/routing"
-import { getLanguageLabel, toSupportedLocale } from "@/lib/constants/languages"
 import type { PipelineStage } from "@/lib/constants/pipeline"
-import {
-  canTransitionStage,
-  STAGE_COLUMNS,
-  STAGE_LABELS,
-  STATUS_COLORS,
-} from "@/lib/constants/pipeline"
+import { STATUS_COLORS } from "@/lib/constants/pipeline"
 import { cn } from "@/lib/utils"
 
 interface CandidateCardProps {
@@ -46,10 +39,7 @@ export function CandidateCard({
   onViewTimeline,
 }: CandidateCardProps) {
   const t = useTranslations("dashboard.company.candidates")
-  const tExplore = useTranslations("dashboard.explore")
-  const tProficiency = useTranslations("onboarding.student.proficiencyLevels")
   const locale = useLocale()
-  const languageLocale = toSupportedLocale(locale)
   const [{ isDragging }, dragRef] = useDrag(
     () => ({
       type: CANDIDATE_CARD_DND_TYPE,
@@ -127,126 +117,16 @@ export function CandidateCard({
       {/* Match score */}
       <MatchPreview offerId={offerId} studentUserId={app.student.id} />
 
-      <div className="flex items-center justify-between gap-2 text-[10px]">
-        <span className="font-bold uppercase tracking-wider text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
-          {tExplore("skills")}
-        </span>
-        <span className="font-serif text-sm text-heading">
-          {app.skillMatchPercentage}
-          <span className="text-[9px] text-muted-foreground/50">%</span>{" "}
-          <span className="text-[9px] uppercase tracking-wider text-muted-foreground/50">
-            {t("skillMatch")}
-          </span>
-        </span>
-      </div>
-
-      {app.skills.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {app.skills.slice(0, 3).map((skill) => (
-            <span
-              key={skill.id}
-              className="inline-flex items-center rounded-full bg-primary/5 px-2 py-0.5 text-[9px] font-medium text-primary/80"
-            >
-              {skill.name}
-            </span>
-          ))}
-          {app.skills.length > 3 && (
-            <span className="inline-flex items-center rounded-full bg-muted/50 px-2 py-0.5 text-[9px] font-medium text-muted-foreground/60">
-              +{app.skills.length - 3}
-            </span>
-          )}
-        </div>
-      )}
-
-      {app.languages.length > 0 && (
-        <div className="space-y-1.5">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
-            {tExplore("languages")}
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {app.languages.slice(0, 3).map((language) => (
-              <span
-                key={language.languageCode}
-                className="inline-flex items-center rounded-full bg-secondary/30 px-2 py-0.5 text-[9px] font-medium text-foreground/80"
-              >
-                {getLanguageLabel(language.languageCode, languageLocale)} ·{" "}
-                {tProficiency(language.proficiency as "a1")}
-              </span>
-            ))}
-            {app.languages.length > 3 && (
-              <span className="inline-flex items-center rounded-full bg-muted/50 px-2 py-0.5 text-[9px] font-medium text-muted-foreground/60">
-                +{app.languages.length - 3}
-              </span>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Pipeline stage selector */}
-      <SelectField
-        id={`pipeline-stage-${app.id}`}
-        label={t("pipelineStage")}
-        options={STAGE_COLUMNS.map((option) => ({
-          value: option,
-          label: STAGE_LABELS[option],
-          disabled:
-            option !== app.pipelineStage &&
-            !canTransitionStage(app.pipelineStage, option),
-        }))}
-        value={app.pipelineStage}
-        onChange={(value) => onStageChange(value as PipelineStage)}
-        disabled={
-          isStagePending ||
-          app.pipelineStage === "accepted" ||
-          app.pipelineStage === "rejected"
-        }
-        className="h-8 rounded-sm border-border/50 bg-secondary/10 text-xs"
+      <CandidateCardDetails app={app} />
+      <CandidateCardActions
+        app={app}
+        actionLoading={actionLoading}
+        isStagePending={isStagePending}
+        onAccept={onAccept}
+        onRefuse={onRefuse}
+        onStageChange={onStageChange}
+        onViewTimeline={onViewTimeline}
       />
-
-      {/* Accept / Refuse — only at "offer" stage (final decision) */}
-      {app.status === "applied" && app.pipelineStage === "offer" && (
-        <div className="flex items-center gap-2">
-          <Button
-            size="sm"
-            className="h-7 text-[10px] gap-1.5 bg-emerald-600 hover:bg-emerald-700 flex-1 font-bold uppercase tracking-wider"
-            onClick={onAccept}
-            disabled={actionLoading === app.id}
-          >
-            {actionLoading === app.id ? (
-              <Loader2 className="h-3 w-3 animate-spin" />
-            ) : (
-              <Check className="h-3 w-3" />
-            )}
-            {t("accept")}
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7 text-[10px] gap-1.5 text-destructive border-destructive/20 hover:bg-destructive/5 flex-1 font-bold uppercase tracking-wider"
-            onClick={onRefuse}
-          >
-            <X className="h-3 w-3" />
-            {t("refuse")}
-          </Button>
-        </div>
-      )}
-
-      <Link
-        href={`/profile/${app.student.id}` as "/profile"}
-        className="block w-full text-[10px] font-bold uppercase tracking-wider text-muted-foreground/40 hover:text-primary py-1 transition-colors text-center"
-      >
-        {t("viewProfile")}
-      </Link>
-
-      {/* Timeline button */}
-      <button
-        type="button"
-        className="w-full text-[10px] font-bold uppercase tracking-wider text-muted-foreground/40 hover:text-primary py-1 transition-colors text-center"
-        onClick={onViewTimeline}
-      >
-        View timeline
-      </button>
     </article>
   )
 }

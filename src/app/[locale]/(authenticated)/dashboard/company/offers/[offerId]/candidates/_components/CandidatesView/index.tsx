@@ -1,13 +1,11 @@
 "use client"
 
 import { Loader2 } from "lucide-react"
-import { AcceptModal } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/AcceptModal"
+import { CandidatesDialogs } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidatesDialogs"
 import { CandidatesHeader } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidatesHeader"
 import { CandidatesFilters } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidatesFilters"
 import { PipelineGrid } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/PipelineGrid"
-import { RefuseModal } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/RefuseModal"
 import { useCandidates } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/hooks/useCandidates"
-import { TimelineModal } from "@/components/TimelineModal"
 import { useTranslations } from "next-intl"
 
 interface CandidatesViewProps {
@@ -96,38 +94,24 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
         </div>
       )}
 
-      {openedTimelineFor && (
-        <TimelineModal
-          events={timelineData}
-          isLoading={isTimelineLoading}
-          onClose={() => setOpenedTimelineFor(null)}
-        />
-      )}
-
-      {acceptModal && (
-        <AcceptModal
-          studentName={acceptModal.studentName}
-          applicationId={acceptModal.applicationId}
-          actionLoading={actionLoading}
-          onConfirm={handleAccept}
-          onCancel={() => setAcceptModal(null)}
-        />
-      )}
-
-      {refuseModal && (
-        <RefuseModal
-          studentName={refuseModal.studentName}
-          applicationId={refuseModal.applicationId}
-          actionLoading={actionLoading}
-          refuseNote={refuseNote}
-          onNoteChange={setRefuseNote}
-          onConfirm={handleRefuse}
-          onCancel={() => {
-            setRefuseModal(null)
-            setRefuseNote("")
-          }}
-        />
-      )}
+      <CandidatesDialogs
+        openedTimelineFor={openedTimelineFor}
+        timelineData={timelineData}
+        isTimelineLoading={isTimelineLoading}
+        onCloseTimeline={() => setOpenedTimelineFor(null)}
+        acceptModal={acceptModal}
+        actionLoading={actionLoading}
+        onConfirmAccept={handleAccept}
+        onCloseAccept={() => setAcceptModal(null)}
+        refuseModal={refuseModal}
+        refuseNote={refuseNote}
+        onRefuseNoteChange={setRefuseNote}
+        onConfirmRefuse={handleRefuse}
+        onCloseRefuse={() => {
+          setRefuseModal(null)
+          setRefuseNote("")
+        }}
+      />
     </div>
   )
 }

@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
+import { CompanyTeamHeader } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/components/CompanyTeamHeader"
 import { InviteMemberForm } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/components/InviteMemberForm"
 import { MembersList } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/components/MembersList"
 import { useCompanyTeamData } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/hooks/useCompanyTeamData"
@@ -27,18 +28,7 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-16">
-      <header className="space-y-2">
-        <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary">
-          Company Workspace
-        </p>
-        <h1 className="font-serif text-3xl tracking-tight text-heading">
-          Team Members
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Owners manage team access. Recruiters can work on offers and
-          candidates.
-        </p>
-      </header>
+      <CompanyTeamHeader />
 
       {canManageMembers && (
         <InviteMemberForm

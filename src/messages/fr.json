@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "Stag — The Future of Internship Discovery",
-    "description": "A centralized platform bridging the gap between universities and enterprises. Skill-based matching, automated document generation, and placement tracking."
+    "title": "Stag — L'Avenir de la Découverte de Stage",
+    "description": "Une plateforme centralisée qui fait le lien entre universités et entreprises. Correspondance par compétences, génération automatique de documents et suivi des placements."
   },
   "nav": {
     "discover": "Découvrir",
@@ -24,8 +24,8 @@
     "volume": "Vol. I - 2025",
     "headline": "L'Avenir de la Decouverte de Stage",
     "headlineHighlight": "de Stage",
-    "description1": "A centralized platform bridging the gap between universities and enterprises. Skill-based matching, automated document generation, and placement tracking—all in one elegant system.",
-    "description2": "Within the framework of MESRS strategy to strengthen the University-Enterprise link, Stag digitizes the entire internship lifecycle from discovery to official Convention de Stage.",
+    "description1": "Une plateforme centralisée qui fait le lien entre universités et entreprises. Correspondance par compétences, génération automatique de documents et suivi des placements — le tout dans un système élégant.",
+    "description2": "Dans le cadre de la stratégie du MESRS pour renforcer le lien Université-Entreprise, Stag numérise l'ensemble du cycle de stage, de la découverte à la Convention de Stage officielle.",
     "cta": "Explorer la Plateforme",
     "freeForStudents": "Gratuit pour les Etudiants",
     "aria": {
@@ -36,17 +36,17 @@
     "studentSpace": {
       "num": "01",
       "title": "Espace Etudiant",
-      "desc": "Build your profile, tag skills, connect GitHub. Search and apply with smart filters."
+      "desc": "Créez votre profil, étiquetez vos compétences, connectez GitHub. Recherchez et postulez avec des filtres intelligents."
     },
     "companyPortal": {
       "num": "02",
       "title": "Portail Entreprise",
-      "desc": "Publish offers, track candidates, accept talent. One click triggers the full workflow."
+      "desc": "Publiez des offres, suivez les candidats, acceptez les talents. Un clic déclenche le workflow complet."
     },
     "adminDashboard": {
       "num": "03",
       "title": "Tableau de Bord Admin",
-      "desc": "Validate placements, generate official PDFs, access global placement analytics."
+      "desc": "Validez les placements, générez des PDF officiels, accédez aux statistiques globales de placement."
     }
   },
   "marquee": {
@@ -96,13 +96,13 @@
   "notFound": {
     "edition": "Edition Manquante",
     "headline": "Page Non Trouvee",
-    "description": "The article you are looking for seems to have been removed from our publication, renamed, or is temporarily unavailable.",
+    "description": "L'article que vous recherchez semble avoir été retiré de notre publication, renommé ou est temporairement indisponible.",
     "returnHome": "Retour a l'Accueil",
-    "suggestion": "We suggest starting from the main edition"
+    "suggestion": "Nous vous suggérons de repartir de l'édition principale"
   },
   "goodbye": {
     "headline": "Compte Supprime",
-    "description": "Your account and all associated data have been permanently deleted. We're sorry to see you go. You're always welcome to create a new account in the future.",
+    "description": "Votre compte et toutes les données associées ont été définitivement supprimés. Nous sommes désolés de vous voir partir. Vous êtes toujours le bienvenu pour créer un nouveau compte à l'avenir.",
     "returnHome": "Retour a l'Accueil"
   },
   "auth": {
@@ -222,10 +222,10 @@
     },
     "panel": {
       "volume": "Vol. I - 2025",
-      "tagline": "Where Talent Meets Opportunity",
-      "description": "The bridge between University & Enterprise",
+      "tagline": "Là où le talent rencontre l'opportunité",
+      "description": "Le pont entre l'Université et l'Entreprise",
       "established": "Est. 2025",
-      "backHomeAria": "Back to home"
+      "backHomeAria": "Retour à l'accueil"
     },
     "validation": {
       "emailInvalid": "Veuillez saisir une adresse e-mail valide",
@@ -378,156 +378,156 @@
   },
   "onboarding": {
     "company": {
-      "pageTitle": "Company Setup",
-      "title": "Set Up Your Company",
-      "subtitle": "Tell us about your organization to get started",
-      "panelHeadline": "Build Your Dream Team",
-      "panelDescription": "Connect with top university talent across Algeria and streamline your internship recruitment.",
-      "panelFeature1": "Access verified student profiles",
-      "panelFeature2": "Streamlined recruitment pipeline",
-      "panelFeature3": "Direct university partnerships",
-      "companySection": "Company Details",
-      "locationSection": "Location",
-      "name": "Company name",
+      "pageTitle": "Configuration de l'entreprise",
+      "title": "Configurez votre entreprise",
+      "subtitle": "Parlez-nous de votre organisation pour commencer",
+      "panelHeadline": "Constituez votre équipe de rêve",
+      "panelDescription": "Connectez-vous avec les meilleurs talents universitaires d'Algérie et simplifiez votre recrutement de stagiaires.",
+      "panelFeature1": "Accédez à des profils étudiants vérifiés",
+      "panelFeature2": "Pipeline de recrutement simplifié",
+      "panelFeature3": "Partenariats universitaires directs",
+      "companySection": "Détails de l'entreprise",
+      "locationSection": "Localisation",
+      "name": "Nom de l'entreprise",
       "namePlaceholder": "Acme Corporation",
       "description": "Description",
-      "descriptionPlaceholder": "Brief description of your company...",
-      "websiteUrl": "Website",
-      "websiteUrlPlaceholder": "https://example.com",
+      "descriptionPlaceholder": "Brève description de votre entreprise...",
+      "websiteUrl": "Site web",
+      "websiteUrlPlaceholder": "https://exemple.com",
       "wilaya": "Wilaya",
-      "wilayaPlaceholder": "Select your wilaya",
-      "address": "Address",
-      "addressPlaceholder": "123 Main Street",
-      "verificationDocument": "Verification Document",
-      "verificationDocumentHint": "Upload a trade register or equivalent proof (PDF, JPEG, PNG, max 10MB).",
-      "verificationDocumentSelected": "Selected: {fileName}",
-      "verificationDocumentRequired": "Please upload a verification document before continuing.",
-      "submit": "Complete Setup",
+      "wilayaPlaceholder": "Sélectionnez votre wilaya",
+      "address": "Adresse",
+      "addressPlaceholder": "123 Rue Principale",
+      "verificationDocument": "Document de vérification",
+      "verificationDocumentHint": "Téléversez un registre de commerce ou une preuve équivalente (PDF, JPEG, PNG, max 10 Mo).",
+      "verificationDocumentSelected": "Sélectionné : {fileName}",
+      "verificationDocumentRequired": "Veuillez téléverser un document de vérification avant de continuer.",
+      "submit": "Terminer la configuration",
       "error": "Quelque chose s'est mal passe. Veuillez reessayer."
     },
     "university": {
-      "pageTitle": "University Setup",
-      "title": "Set Up Your University",
-      "subtitle": "Tell us about your institution to get started",
-      "panelHeadline": "Shape Tomorrow's Leaders",
-      "panelDescription": "Partner with companies to provide meaningful internship opportunities for your students.",
-      "panelFeature1": "Manage departments and placements",
-      "panelFeature2": "Track student progress in real-time",
-      "panelFeature3": "Verify and validate internships",
-      "universitySection": "University Details",
-      "locationSection": "Location",
-      "domainsSection": "Email Domains",
-      "departmentsSection": "Departments",
-      "name": "University name",
-      "namePlaceholder": "University of Science and Technology",
-      "abbreviation": "Abbreviation",
+      "pageTitle": "Configuration de l'université",
+      "title": "Configurez votre université",
+      "subtitle": "Parlez-nous de votre établissement pour commencer",
+      "panelHeadline": "Formez les leaders de demain",
+      "panelDescription": "Collaborez avec des entreprises pour offrir des opportunités de stage enrichissantes à vos étudiants.",
+      "panelFeature1": "Gérez les départements et les placements",
+      "panelFeature2": "Suivez la progression des étudiants en temps réel",
+      "panelFeature3": "Vérifiez et validez les stages",
+      "universitySection": "Détails de l'université",
+      "locationSection": "Localisation",
+      "domainsSection": "Domaines e-mail",
+      "departmentsSection": "Départements",
+      "name": "Nom de l'université",
+      "namePlaceholder": "Université des Sciences et de la Technologie",
+      "abbreviation": "Abréviation",
       "abbreviationPlaceholder": "USTHB",
-      "departmentName": "Department name",
-      "departmentNamePlaceholder": "Computer Science Department",
-      "departments": "Departments",
-      "departmentsHint": "Add the departments in your university (e.g. Computer Science, Mathematics)",
-      "departmentPlaceholder": "e.g. Computer Science",
-      "addDepartment": "Add department",
-      "removeDepartment": "Remove",
-      "phone": "Phone number",
+      "departmentName": "Nom du département",
+      "departmentNamePlaceholder": "Département d'Informatique",
+      "departments": "Départements",
+      "departmentsHint": "Ajoutez les départements de votre université (ex. Informatique, Mathématiques)",
+      "departmentPlaceholder": "ex. Informatique",
+      "addDepartment": "Ajouter un département",
+      "removeDepartment": "Supprimer",
+      "phone": "Numéro de téléphone",
       "phonePlaceholder": "+213 21 XX XX XX",
       "wilaya": "Wilaya",
-      "wilayaPlaceholder": "Select your wilaya",
-      "city": "City",
-      "cityPlaceholder": "Algiers",
-      "address": "Address",
-      "addressPlaceholder": "University campus address",
-      "domains": "Email domains",
-      "domainsHint": "Add email domains that students and staff use (e.g. univ-alger.dz)",
-      "domainPlaceholder": "univ-example.dz",
-      "addDomain": "Add domain",
-      "removeDomain": "Remove",
-      "submit": "Complete Setup",
+      "wilayaPlaceholder": "Sélectionnez votre wilaya",
+      "city": "Ville",
+      "cityPlaceholder": "Alger",
+      "address": "Adresse",
+      "addressPlaceholder": "Adresse du campus universitaire",
+      "domains": "Domaines e-mail",
+      "domainsHint": "Ajoutez les domaines e-mail utilisés par les étudiants et le personnel (ex. univ-alger.dz)",
+      "domainPlaceholder": "univ-exemple.dz",
+      "addDomain": "Ajouter un domaine",
+      "removeDomain": "Supprimer",
+      "submit": "Terminer la configuration",
       "error": "Quelque chose s'est mal passe. Veuillez reessayer."
     },
     "student": {
-      "pageTitle": "Student Profile Setup",
-      "title": "Build Your Digital CV",
-      "subtitle": "Tell us about yourself and your skills to get started",
-      "panelHeadline": "Your Career Starts Here",
-      "panelDescription": "Create your professional profile and get matched with top companies across Algeria.",
-      "panelFeature1": "Get matched with top companies",
-      "panelFeature2": "Showcase your skills and projects",
-      "panelFeature3": "Track applications in real-time",
-      "personalSection": "Personal Information",
+      "pageTitle": "Configuration du profil étudiant",
+      "title": "Créez votre CV numérique",
+      "subtitle": "Parlez-nous de vous et de vos compétences pour commencer",
+      "panelHeadline": "Votre carrière commence ici",
+      "panelDescription": "Créez votre profil professionnel et soyez mis en relation avec les meilleures entreprises d'Algérie.",
+      "panelFeature1": "Soyez mis en relation avec les meilleures entreprises",
+      "panelFeature2": "Mettez en valeur vos compétences et projets",
+      "panelFeature3": "Suivez vos candidatures en temps réel",
+      "personalSection": "Informations personnelles",
       "bio": "Bio",
-      "bioPlaceholder": "Tell us a bit about yourself...",
-      "phone": "Phone number",
+      "bioPlaceholder": "Parlez-nous un peu de vous...",
+      "phone": "Numéro de téléphone",
       "phonePlaceholder": "0555 123 456",
-      "studentNumber": "Student number",
-      "studentNumberPlaceholder": "e.g. STU2025001",
-      "department": "Department",
-      "departmentPlaceholder": "Select your department",
-      "departmentFreetext": "Or type department name",
-      "level": "Level",
-      "levelPlaceholder": "e.g. L3, M1, M2",
-      "locationSection": "Location",
+      "studentNumber": "Numéro étudiant",
+      "studentNumberPlaceholder": "ex. STU2025001",
+      "department": "Département",
+      "departmentPlaceholder": "Sélectionnez votre département",
+      "departmentFreetext": "Ou saisissez le nom du département",
+      "level": "Niveau",
+      "levelPlaceholder": "ex. L3, M1, M2",
+      "locationSection": "Localisation",
       "wilaya": "Wilaya",
-      "wilayaPlaceholder": "Select your wilaya",
-      "address": "Address",
-      "addressPlaceholder": "123 Main Street",
-      "linksSection": "Links",
+      "wilayaPlaceholder": "Sélectionnez votre wilaya",
+      "address": "Adresse",
+      "addressPlaceholder": "123 Rue Principale",
+      "linksSection": "Liens",
       "githubUrl": "GitHub",
       "githubUrlPlaceholder": "https://github.com/username",
       "portfolioUrl": "Portfolio",
-      "portfolioUrlPlaceholder": "https://your-portfolio.com",
-      "languagesSection": "Languages",
-      "languagesHint": "Add the languages you can work in and your proficiency level.",
-      "language": "Language",
+      "portfolioUrlPlaceholder": "https://votre-portfolio.com",
+      "languagesSection": "Langues",
+      "languagesHint": "Ajoutez les langues dans lesquelles vous pouvez travailler et votre niveau de maîtrise.",
+      "language": "Langue",
       "languagePlaceholder": "Selectionner la langue",
-      "proficiency": "Proficiency",
-      "proficiencyPlaceholder": "Select proficiency",
-      "addLanguage": "Add Language",
-      "removeLanguageAria": "Remove {language}",
+      "proficiency": "Niveau",
+      "proficiencyPlaceholder": "Sélectionnez le niveau",
+      "addLanguage": "Ajouter une langue",
+      "removeLanguageAria": "Supprimer {language}",
       "proficiencyLevels": {
-        "a1": "A1 (Beginner)",
-        "a2": "A2 (Elementary)",
-        "b1": "B1 (Intermediate)",
-        "b2": "B2 (Upper Intermediate)",
-        "c1": "C1 (Advanced)",
-        "c2": "C2 (Proficient)",
-        "native": "Native"
+        "a1": "A1 (Débutant)",
+        "a2": "A2 (Élémentaire)",
+        "b1": "B1 (Intermédiaire)",
+        "b2": "B2 (Intermédiaire avancé)",
+        "c1": "C1 (Avancé)",
+        "c2": "C2 (Maîtrise)",
+        "native": "Langue maternelle"
       },
-      "skillsSection": "Technical Skills",
-      "skillsHint": "Select up to 10 skills that best describe your expertise",
-      "skillsSelectDepartmentFirst": "Please select a department first to see relevant skills",
-      "skillsSelected": "selected",
-      "recommendedSkills": "Recommended for your department",
-      "otherSkills": "Other skills",
-      "submit": "Complete Profile",
+      "skillsSection": "Compétences techniques",
+      "skillsHint": "Sélectionnez jusqu'à 10 compétences qui décrivent le mieux votre expertise",
+      "skillsSelectDepartmentFirst": "Veuillez d'abord sélectionner un département pour voir les compétences pertinentes",
+      "skillsSelected": "sélectionnées",
+      "recommendedSkills": "Recommandées pour votre département",
+      "otherSkills": "Autres compétences",
+      "submit": "Compléter le profil",
       "error": "Quelque chose s'est mal passe. Veuillez reessayer."
     }
   },
   "dashboard": {
     "nav": {
       "dashboard": "Tableau de Bord",
-      "exploreInternships": "Explore Internships",
-      "discoverCompanies": "Discover Companies",
-      "myApplications": "My Applications",
-      "myDocuments": "My Documents",
-      "studentCv": "My CV",
-      "savedOffers": "Saved Offers",
+      "exploreInternships": "Explorer les stages",
+      "discoverCompanies": "Découvrir les entreprises",
+      "myApplications": "Mes candidatures",
+      "myDocuments": "Mes documents",
+      "studentCv": "Mon CV",
+      "savedOffers": "Offres sauvegardées",
       "messages": "Messages",
-      "interviews": "Interviews",
-      "companyProfile": "Company Profile",
-      "teamMembers": "Team Members",
-      "manageOffers": "Manage Offers",
-      "candidatePipeline": "Candidate Pipeline",
-      "companyDocuments": "Company Documents",
+      "interviews": "Entretiens",
+      "companyProfile": "Profil de l'entreprise",
+      "teamMembers": "Membres de l'équipe",
+      "manageOffers": "Gérer les offres",
+      "candidatePipeline": "Pipeline de candidats",
+      "companyDocuments": "Documents de l'entreprise",
       "assistant": "Assistant",
-      "validatePlacements": "Validate Placements",
-      "deptValidations": "Department Validations",
-      "departments": "Departments",
-      "statistics": "Statistics",
-      "userManagement": "User Management",
-      "companies": "Companies",
-      "universities": "Universites",
-      "settings": "Settings",
+      "validatePlacements": "Valider les placements",
+      "deptValidations": "Validations du département",
+      "departments": "Départements",
+      "statistics": "Statistiques",
+      "userManagement": "Gestion des utilisateurs",
+      "companies": "Entreprises",
+      "universities": "Universités",
+      "settings": "Paramètres",
       "logout": "Se Déconnecter"
     },
     "navbar": {
@@ -539,73 +539,73 @@
         "super_admin": "Super Admin",
         "dept_head": "Chef de dépt"
       },
-      "accountSettings": "Account Settings",
-      "viewProfile": "View Profile",
-      "profileSettings": "Profile Settings",
+      "accountSettings": "Paramètres du compte",
+      "viewProfile": "Voir le profil",
+      "profileSettings": "Paramètres du profil",
       "logout": "Se Déconnecter"
     },
     "accountSwitcher": {
-      "title": "Accounts",
-      "activeLabel": "Active",
-      "switchTo": "Switch to {name}",
-      "addAccount": "Add another account",
-      "removeAccount": "Remove account",
-      "switching": "Switching account...",
-      "switchSuccess": "Switched to {name}",
-      "switchError": "Failed to switch account",
-      "removeSuccess": "Account removed",
-      "removeError": "Failed to remove account"
+      "title": "Comptes",
+      "activeLabel": "Actif",
+      "switchTo": "Basculer vers {name}",
+      "addAccount": "Ajouter un autre compte",
+      "removeAccount": "Supprimer le compte",
+      "switching": "Changement de compte...",
+      "switchSuccess": "Basculé vers {name}",
+      "switchError": "Échec du changement de compte",
+      "removeSuccess": "Compte supprimé",
+      "removeError": "Échec de la suppression du compte"
     },
     "assistant": {
-      "kicker": "AI Assistant",
-      "title": "Your <accent>AI Copilot</accent>",
-      "subtitle": "Get help with drafting offers, analyzing candidates, and more",
-      "badge": "AI Powered",
+      "kicker": "Assistant IA",
+      "title": "Votre <accent>Copilote IA</accent>",
+      "subtitle": "Obtenez de l'aide pour rédiger des offres, analyser des candidats et plus encore",
+      "badge": "Propulsé par l'IA",
       "conversation": "Conversation",
-      "model": "Model",
-      "selectModel": "Select model",
-      "newConversation": "New Chat",
+      "model": "Modèle",
+      "selectModel": "Sélectionner le modèle",
+      "newConversation": "Nouvelle discussion",
       "conversations": "Conversations",
-      "loadingConversations": "Loading conversations...",
-      "noConversations": "No conversations yet. Start a new chat!",
-      "noSearchResults": "No conversations found",
-      "searchConversations": "Search conversations...",
-      "loadingMessages": "Loading messages...",
-      "empty": "Start a conversation with your AI assistant",
-      "inputPlaceholder": "Type your message...",
-      "send": "Send",
-      "stop": "Stop",
-      "retry": "Retry",
-      "relativeNow": "just now",
+      "loadingConversations": "Chargement des conversations...",
+      "noConversations": "Aucune conversation pour le moment. Démarrez une nouvelle discussion !",
+      "noSearchResults": "Aucune conversation trouvée",
+      "searchConversations": "Rechercher des conversations...",
+      "loadingMessages": "Chargement des messages...",
+      "empty": "Démarrez une conversation avec votre assistant IA",
+      "inputPlaceholder": "Tapez votre message...",
+      "send": "Envoyer",
+      "stop": "Arrêter",
+      "retry": "Réessayer",
+      "relativeNow": "à l'instant",
       "relativeMinutesShort": "{count}m",
       "relativeHoursShort": "{count}h",
       "relativeDaysShort": "{count}d",
       "relativeMinutesAgo": "{count}m ago",
       "relativeHoursAgo": "{count}h ago",
       "relativeDaysAgo": "{count}d ago",
-      "assistantActor": "AI",
-      "userActor": "You",
-      "enterToSend": "Enter to send, Shift+Enter for new line",
-      "scrollToBottom": "Scroll to bottom",
-      "deleteConversation": "Delete conversation",
-      "createConversationSuccess": "Conversation created.",
-      "createConversationError": "Failed to create conversation.",
-      "deleteConversationSuccess": "Conversation deleted.",
-      "deleteConversationError": "Failed to delete conversation.",
-      "modelUpdateSuccess": "Model updated.",
-      "modelUpdateError": "Failed to update model.",
-      "titleUpdateSuccess": "Conversation title updated.",
-      "titleUpdateError": "Failed to update conversation title.",
+      "assistantActor": "IA",
+      "userActor": "Vous",
+      "enterToSend": "Entrée pour envoyer, Maj+Entrée pour un saut de ligne",
+      "scrollToBottom": "Défiler vers le bas",
+      "deleteConversation": "Supprimer la conversation",
+      "createConversationSuccess": "Conversation créée.",
+      "createConversationError": "Échec de la création de la conversation.",
+      "deleteConversationSuccess": "Conversation supprimée.",
+      "deleteConversationError": "Échec de la suppression de la conversation.",
+      "modelUpdateSuccess": "Modèle mis à jour.",
+      "modelUpdateError": "Échec de la mise à jour du modèle.",
+      "titleUpdateSuccess": "Titre de la conversation mis à jour.",
+      "titleUpdateError": "Échec de la mise à jour du titre de la conversation.",
       "renameConversation": "Renommer",
-      "renamePrompt": "Rename this conversation",
+      "renamePrompt": "Renommer cette conversation",
       "renameDialogTitle": "Renommer la conversation",
       "renameDialogDescription": "Donnez un nom mémorable à cette conversation.",
       "renamePlaceholder": "Nom de la conversation…",
       "renameCancel": "Annuler",
       "renameSave": "Enregistrer",
-      "saveNote": "Save Note",
-      "notePrompt": "Write a quick note for this conversation",
-      "noteSavedSuccess": "Note saved to conversation.",
+      "saveNote": "Enregistrer la note",
+      "notePrompt": "Rédigez une note rapide pour cette conversation",
+      "noteSavedSuccess": "Note enregistrée dans la conversation.",
       "noteSavedError": "Échec de la sauvegarde de la note.",
       "noteDialogTitle": "Enregistrer une note",
       "noteDialogDescription": "Épinglez une pensée, un rappel ou un contexte à cette conversation.",
@@ -613,91 +613,91 @@
       "noteLabel": "Note",
       "noteCancel": "Annuler",
       "noteSaving": "Enregistrement…",
-      "confirmDelete": "Delete",
-      "openSidebar": "Open conversation list",
-      "clearSearch": "Clear search query",
-      "copyCode": "Copy code",
-      "copied": "Copied!",
-      "toolLabel": "Tool: {toolName}",
-      "toolState": "Status: {state}",
-      "toolPreparing": "Preparing...",
-      "toolInput": "Input",
-      "toolOutput": "Output",
-      "authRequired": "Authentication required to use this tool",
-      "openAuthLink": "Open authentication",
-      "checkStatus": "Check status",
-      "retryTool": "Retry",
-      "authStatus": "Status: {status}",
-      "unknown": "Unknown"
+      "confirmDelete": "Supprimer",
+      "openSidebar": "Ouvrir la liste des conversations",
+      "clearSearch": "Effacer la recherche",
+      "copyCode": "Copier le code",
+      "copied": "Copié !",
+      "toolLabel": "Outil : {toolName}",
+      "toolState": "Statut : {state}",
+      "toolPreparing": "Préparation...",
+      "toolInput": "Entrée",
+      "toolOutput": "Sortie",
+      "authRequired": "Authentification requise pour utiliser cet outil",
+      "openAuthLink": "Ouvrir l'authentification",
+      "checkStatus": "Vérifier le statut",
+      "retryTool": "Réessayer",
+      "authStatus": "Statut : {status}",
+      "unknown": "Inconnu"
     },
     "notifications": {
       "title": "Notifications",
-      "unreadCount": "{count} unread",
-      "summarize": "Summarize",
-      "markAllRead": "Mark all read",
-      "markAllReadSuccess": "All notifications marked as read.",
-      "markAllReadError": "Failed to mark notifications as read.",
-      "empty": "No notifications yet.",
+      "unreadCount": "{count} non lues",
+      "summarize": "Résumer",
+      "markAllRead": "Tout marquer comme lu",
+      "markAllReadSuccess": "Toutes les notifications ont été marquées comme lues.",
+      "markAllReadError": "Échec du marquage des notifications comme lues.",
+      "empty": "Aucune notification pour le moment.",
       "prompts": {
-        "summarize": "Summarize notifications"
+        "summarize": "Résumer les notifications"
       },
       "aiSummary": {
-        "title": "AI Summary",
-        "suggestedNextActions": "Suggested Next Actions"
+        "title": "Résumé IA",
+        "suggestedNextActions": "Actions suggérées"
       }
     },
     "company": {
       "pending": {
-        "pageTitle": "Under Review",
-        "title": "Your Company Is Under Review",
-        "subtitle": "We're reviewing your company registration. This usually takes 1–2 business days.",
-        "submittedOn": "Submitted on",
-        "companyName": "Company",
-        "checkStatus": "Check Status",
-        "contactSupport": "Contact Support"
+        "pageTitle": "En cours d'examen",
+        "title": "Votre entreprise est en cours d'examen",
+        "subtitle": "Nous examinons l'inscription de votre entreprise. Cela prend généralement 1 à 2 jours ouvrables.",
+        "submittedOn": "Soumis le",
+        "companyName": "Entreprise",
+        "checkStatus": "Vérifier le statut",
+        "contactSupport": "Contacter le support"
       },
       "rejected": {
-        "pageTitle": "Registration Rejected",
-        "title": "Registration Not Approved",
-        "subtitle": "Unfortunately, your company registration was not approved.",
-        "reason": "Reason",
-        "contactSupport": "Contact Support",
-        "reapply": "Update & Resubmit"
+        "pageTitle": "Inscription rejetée",
+        "title": "Inscription non approuvée",
+        "subtitle": "Malheureusement, l'inscription de votre entreprise n'a pas été approuvée.",
+        "reason": "Motif",
+        "contactSupport": "Contacter le support",
+        "reapply": "Modifier et resoumettre"
       },
       "suspended": {
-        "pageTitle": "Account Suspended",
-        "title": "Your Company Access Is Suspended",
-        "subtitle": "Your company was temporarily suspended by platform moderation. Please contact support for assistance.",
-        "contactSupport": "Contact Support"
+        "pageTitle": "Compte suspendu",
+        "title": "L'accès à votre entreprise est suspendu",
+        "subtitle": "Votre entreprise a été temporairement suspendue par la modération de la plateforme. Veuillez contacter le support pour obtenir de l'aide.",
+        "contactSupport": "Contacter le support"
       },
       "profile": {
-        "pageTitle": "Company Profile",
-        "title": "Company Profile",
-        "subtitle": "Manage your company's public profile and contact information",
+        "pageTitle": "Profil de l'entreprise",
+        "title": "Profil de l'entreprise",
+        "subtitle": "Gérez le profil public et les informations de contact de votre entreprise",
         "descriptionLabel": "À Propos",
         "contactLabel": "Contact",
-        "locationLabel": "Location",
+        "locationLabel": "Localisation",
         "description": "Description",
-        "descriptionPlaceholder": "Describe your company and what makes it a great place to intern...",
-        "logo": "Company Logo",
-        "logoHint": "Upload a logo (JPEG, PNG, WebP, SVG, max 2MB)",
-        "logoUpload": "Upload Logo",
-        "logoUploading": "Uploading...",
-        "logoUploadSuccess": "Logo uploaded successfully.",
-        "websiteUrl": "Website",
-        "websiteUrlPlaceholder": "https://example.com",
-        "phone": "Phone",
+        "descriptionPlaceholder": "Décrivez votre entreprise et ce qui en fait un excellent lieu de stage...",
+        "logo": "Logo de l'entreprise",
+        "logoHint": "Téléversez un logo (JPEG, PNG, WebP, SVG, max 2 Mo)",
+        "logoUpload": "Téléverser le logo",
+        "logoUploading": "Téléversement...",
+        "logoUploadSuccess": "Logo téléversé avec succès.",
+        "websiteUrl": "Site web",
+        "websiteUrlPlaceholder": "https://exemple.com",
+        "phone": "Téléphone",
         "phonePlaceholder": "0555 123 456",
-        "contactEmail": "Contact Email",
-        "contactEmailPlaceholder": "contact@company.com",
-        "representativeName": "Representative Name",
-        "representativeNamePlaceholder": "John Doe",
+        "contactEmail": "E-mail de contact",
+        "contactEmailPlaceholder": "contact@entreprise.com",
+        "representativeName": "Nom du représentant",
+        "representativeNamePlaceholder": "Ahmed Benali",
         "wilaya": "Wilaya",
-        "wilayaPlaceholder": "Select your wilaya",
-        "address": "Address",
-        "addressPlaceholder": "123 Main Street",
-        "submit": "Save Changes",
-        "success": "Company profile updated successfully",
+        "wilayaPlaceholder": "Sélectionnez votre wilaya",
+        "address": "Adresse",
+        "addressPlaceholder": "123 Rue Principale",
+        "submit": "Enregistrer les modifications",
+        "success": "Profil de l'entreprise mis à jour avec succès",
         "error": "Quelque chose s'est mal passe. Veuillez reessayer.",
         "deleteCompany": {
           "title": "Supprimer l'entreprise",
@@ -714,324 +714,324 @@
         }
       },
       "offers": {
-        "pageTitle": "Manage Offers",
-        "title": "Internship Offers",
-        "subtitle": "Create and manage your internship positions",
-        "createOffer": "Create Offer",
-        "empty": "No offers yet. Create your first internship offer to start attracting talent.",
+        "pageTitle": "Gérer les offres",
+        "title": "Offres de stage",
+        "subtitle": "Créez et gérez vos postes de stage",
+        "createOffer": "Créer une offre",
+        "empty": "Aucune offre pour le moment. Créez votre première offre de stage pour attirer des talents.",
         "status": {
-          "draft": "Draft",
-          "published": "Published",
-          "closed": "Closed"
+          "draft": "Brouillon",
+          "published": "Publiée",
+          "closed": "Clôturée"
         },
         "type": {
           "pfe": "PFE",
           "immersion": "Immersion",
-          "summer": "Summer",
-          "practical": "Practical"
+          "summer": "Été",
+          "practical": "Pratique"
         },
         "workMode": {
-          "on_site": "On-site",
-          "hybrid": "Hybrid",
-          "remote": "Remote"
+          "on_site": "Sur site",
+          "hybrid": "Hybride",
+          "remote": "À distance"
         },
         "actions": {
-          "edit": "Edit",
-          "publish": "Publish",
-          "close": "Close",
-          "delete": "Delete",
-          "confirmDelete": "Are you sure? Draft offers will be permanently deleted.",
-          "confirmClose": "Are you sure? This will close the offer to new applicants."
+          "edit": "Modifier",
+          "publish": "Publier",
+          "close": "Clôturer",
+          "delete": "Supprimer",
+          "confirmDelete": "Êtes-vous sûr ? Les offres en brouillon seront définitivement supprimées.",
+          "confirmClose": "Êtes-vous sûr ? Cela clôturera l'offre aux nouveaux candidats."
         },
         "toasts": {
-          "publishSuccess": "Offer published.",
-          "closeSuccess": "Offer closed.",
-          "deleteSuccess": "Offer deleted."
+          "publishSuccess": "Offre publiée.",
+          "closeSuccess": "Offre clôturée.",
+          "deleteSuccess": "Offre supprimée."
         },
-        "positions": "positions",
-        "weeks": "weeks",
-        "skills": "Skills",
-        "candidates": "{count, plural, one {candidate} other {candidates}}",
+        "positions": "postes",
+        "weeks": "semaines",
+        "skills": "Compétences",
+        "candidates": "{count, plural, one {candidat} other {candidats}}",
         "form": {
-          "createTitle": "Create New Offer",
-          "createSubtitle": "Fill in the details for your new internship position",
-          "editTitle": "Edit Offer",
-          "editSubtitle": "Update the details of your internship position",
-          "basicInfo": "Basic Information",
-          "title": "Title",
-          "titlePlaceholder": "e.g. Frontend Developer Intern",
+          "createTitle": "Créer une nouvelle offre",
+          "createSubtitle": "Remplissez les détails de votre nouveau poste de stage",
+          "editTitle": "Modifier l'offre",
+          "editSubtitle": "Mettez à jour les détails de votre poste de stage",
+          "basicInfo": "Informations de base",
+          "title": "Titre",
+          "titlePlaceholder": "ex. Stagiaire Développeur Frontend",
           "description": "Description",
-          "descriptionPlaceholder": "Describe the internship role, responsibilities, and what the intern will learn...",
-          "details": "Details",
-          "internshipType": "Internship Type",
-          "internshipTypePlaceholder": "Select type",
-          "workMode": "Work Mode",
-          "workModePlaceholder": "Select work mode",
-          "wilaya": "Location (Wilaya)",
-          "wilayaPlaceholder": "Select wilaya",
-          "durationWeeks": "Duration (weeks)",
-          "durationWeeksPlaceholder": "e.g. 12",
-          "maxPositions": "Max Positions",
-          "maxPositionsPlaceholder": "e.g. 3",
-          "applicationDeadline": "Application Deadline",
-          "expectedStartDate": "Expected Start Date",
-          "expectedEndDate": "Expected End Date",
-          "languageRequirementsSection": "Language Requirements",
-          "languageRequirementsHint": "Set minimum proficiency, required/optional flag, and priority for each language.",
-          "language": "Language",
+          "descriptionPlaceholder": "Décrivez le rôle du stage, les responsabilités et ce que le stagiaire apprendra...",
+          "details": "Détails",
+          "internshipType": "Type de stage",
+          "internshipTypePlaceholder": "Sélectionner le type",
+          "workMode": "Mode de travail",
+          "workModePlaceholder": "Sélectionner le mode de travail",
+          "wilaya": "Localisation (Wilaya)",
+          "wilayaPlaceholder": "Sélectionner la wilaya",
+          "durationWeeks": "Durée (semaines)",
+          "durationWeeksPlaceholder": "ex. 12",
+          "maxPositions": "Nombre max de postes",
+          "maxPositionsPlaceholder": "ex. 3",
+          "applicationDeadline": "Date limite de candidature",
+          "expectedStartDate": "Date de début prévue",
+          "expectedEndDate": "Date de fin prévue",
+          "languageRequirementsSection": "Exigences linguistiques",
+          "languageRequirementsHint": "Définissez le niveau minimum, le caractère obligatoire/optionnel et la priorité pour chaque langue.",
+          "language": "Langue",
           "languagePlaceholder": "Selectionner la langue",
-          "minimumProficiency": "Minimum Proficiency",
-          "minimumProficiencyPlaceholder": "Select minimum level",
-          "weight": "Priority Weight",
-          "weightPlaceholder": "Select priority",
-          "weightOption": "Priority {weight}",
-          "requiredLabel": "This language is mandatory",
-          "addLanguageRequirement": "Add Language Requirement",
-          "removeLanguageRequirementAria": "Remove {language} requirement",
+          "minimumProficiency": "Niveau minimum",
+          "minimumProficiencyPlaceholder": "Sélectionner le niveau minimum",
+          "weight": "Poids de priorité",
+          "weightPlaceholder": "Sélectionner la priorité",
+          "weightOption": "Priorité {weight}",
+          "requiredLabel": "Cette langue est obligatoire",
+          "addLanguageRequirement": "Ajouter une exigence linguistique",
+          "removeLanguageRequirementAria": "Supprimer l'exigence {language}",
           "proficiencyLevels": {
-            "a1": "A1 (Beginner)",
-            "a2": "A2 (Elementary)",
-            "b1": "B1 (Intermediate)",
-            "b2": "B2 (Upper Intermediate)",
-            "c1": "C1 (Advanced)",
-            "c2": "C2 (Proficient)",
-            "native": "Native"
+            "a1": "A1 (Débutant)",
+            "a2": "A2 (Élémentaire)",
+            "b1": "B1 (Intermédiaire)",
+            "b2": "B2 (Intermédiaire avancé)",
+            "c1": "C1 (Avancé)",
+            "c2": "C2 (Maîtrise)",
+            "native": "Langue maternelle"
           },
-          "skillsSection": "Required Skills",
-          "skillsHint": "Select up to 20 skills that best match this position",
-          "skillsSelected": "selected",
-          "skillsSearchPlaceholder": "Search skills…",
-          "skillsMaxReached": "Maximum reached — remove a skill to add another.",
-          "submit": "Create Offer",
-          "submitEdit": "Save Changes",
-          "cancel": "Cancel",
-          "success": "Offer created successfully",
-          "successEdit": "Offer updated successfully",
+          "skillsSection": "Compétences requises",
+          "skillsHint": "Sélectionnez jusqu'à 20 compétences correspondant à ce poste",
+          "skillsSelected": "sélectionnées",
+          "skillsSearchPlaceholder": "Rechercher des compétences…",
+          "skillsMaxReached": "Maximum atteint — supprimez une compétence pour en ajouter une autre.",
+          "submit": "Créer l'offre",
+          "submitEdit": "Enregistrer les modifications",
+          "cancel": "Annuler",
+          "success": "Offre créée avec succès",
+          "successEdit": "Offre mise à jour avec succès",
           "error": "Quelque chose s'est mal passe. Veuillez reessayer.",
           "skillCategory": {
             "frontend": "Frontend",
             "backend": "Backend",
-            "languages": "Languages",
-            "database": "Database",
+            "languages": "Langages",
+            "database": "Base de données",
             "devops": "DevOps",
             "mobile": "Mobile",
-            "data_ai": "Data & AI",
-            "other": "Other"
+            "data_ai": "Data & IA",
+            "other": "Autre"
           },
           "copilot": {
-            "title": "AI Copilot",
-            "description": "Suggestions only. Preview first, then apply to the form.",
-            "promptPlaceholder": "Role, stack, constraints (e.g. 12w, remote, React + Node)",
-            "generateDraft": "Generate Draft",
-            "improveDescription": "Improve Description",
-            "suggestSkills": "Suggest Skills",
-            "applyToForm": "Apply to form",
-            "thinking": "Thinking…",
-            "ready": "Ready",
-            "appliedToForm": "Applied to form",
-            "generating": "Generating draft…",
-            "improving": "Improving description…",
-            "suggesting": "Suggesting skills…",
-            "previewTitle": "Title",
+            "title": "Copilote IA",
+            "description": "Suggestions uniquement. Prévisualisez d'abord, puis appliquez au formulaire.",
+            "promptPlaceholder": "Rôle, stack, contraintes (ex. 12 sem, à distance, React + Node)",
+            "generateDraft": "Générer un brouillon",
+            "improveDescription": "Améliorer la description",
+            "suggestSkills": "Suggérer des compétences",
+            "applyToForm": "Appliquer au formulaire",
+            "thinking": "Réflexion…",
+            "ready": "Prêt",
+            "appliedToForm": "Appliqué au formulaire",
+            "generating": "Génération du brouillon…",
+            "improving": "Amélioration de la description…",
+            "suggesting": "Suggestion de compétences…",
+            "previewTitle": "Titre",
             "previewDescription": "Description",
-            "previewDetails": "Details",
-            "previewSkills": "Skills",
-            "duration": "{weeks}w",
+            "previewDetails": "Détails",
+            "previewSkills": "Compétences",
+            "duration": "{weeks} sem",
             "positions": "{count} pos."
           }
         }
       },
       "candidates": {
-        "title": "Candidates",
-        "backToOffers": "Back to offers",
-        "empty": "No applications yet. Your offer is visible to students.",
-        "emptyFiltered": "No applications match this filter.",
-        "viewProfile": "View Profile",
-        "accept": "Accept",
-        "refuse": "Refuse",
-        "acceptTitle": "Accept Candidate",
-        "acceptDescription": "Accept {name}? This will notify administrators for placement validation.",
-        "confirmAcceptButton": "Accept",
-        "confirmRefuse": "Refuse this candidate? They will be notified.",
-        "refuseTitle": "Refuse Candidate",
-        "refuseDescription": "Are you sure you want to refuse {name}?",
-        "refuseNotePlaceholder": "Optional: Provide feedback to the candidate...",
-        "cancel": "Cancel",
-        "confirmRefuseButton": "Refuse",
-        "dragHint": "Drag and drop candidates between columns to update their pipeline stage.",
-        "pipelineStage": "Pipeline Stage",
-        "noApplications": "No applications",
-        "candidateCardAria": "{name} candidate card",
-        "kanbanColumnAria": "{stage} column",
-        "invalidStageTransition": "This stage transition is not allowed.",
-        "stageUpdateFailed": "Failed to update pipeline stage. The card was restored.",
-        "acceptSuccess": "Candidate accepted.",
-        "acceptError": "Failed to accept candidate.",
-        "refuseSuccess": "Candidate refused.",
-        "refuseError": "Failed to refuse candidate.",
+        "title": "Candidats",
+        "backToOffers": "Retour aux offres",
+        "empty": "Aucune candidature pour le moment. Votre offre est visible par les étudiants.",
+        "emptyFiltered": "Aucune candidature ne correspond à ce filtre.",
+        "viewProfile": "Voir le profil",
+        "accept": "Accepter",
+        "refuse": "Refuser",
+        "acceptTitle": "Accepter le candidat",
+        "acceptDescription": "Accepter {name} ? Cela notifiera les administrateurs pour la validation du placement.",
+        "confirmAcceptButton": "Accepter",
+        "confirmRefuse": "Refuser ce candidat ? Il sera notifié.",
+        "refuseTitle": "Refuser le candidat",
+        "refuseDescription": "Êtes-vous sûr de vouloir refuser {name} ?",
+        "refuseNotePlaceholder": "Optionnel : Fournissez un retour au candidat...",
+        "cancel": "Annuler",
+        "confirmRefuseButton": "Refuser",
+        "dragHint": "Glissez-déposez les candidats entre les colonnes pour mettre à jour leur étape dans le pipeline.",
+        "pipelineStage": "Étape du pipeline",
+        "noApplications": "Aucune candidature",
+        "candidateCardAria": "Carte du candidat {name}",
+        "kanbanColumnAria": "Colonne {stage}",
+        "invalidStageTransition": "Cette transition d'étape n'est pas autorisée.",
+        "stageUpdateFailed": "Échec de la mise à jour de l'étape du pipeline. La carte a été restaurée.",
+        "acceptSuccess": "Candidat accepté.",
+        "acceptError": "Échec de l'acceptation du candidat.",
+        "refuseSuccess": "Candidat refusé.",
+        "refuseError": "Échec du refus du candidat.",
         "statusFilter": {
-          "all": "All",
-          "applied": "Pending",
-          "company_accepted": "Accepted",
-          "company_refused": "Refused"
+          "all": "Tous",
+          "applied": "En attente",
+          "company_accepted": "Accepté",
+          "company_refused": "Refusé"
         },
         "status": {
-          "applied": "Pending",
-          "company_accepted": "Accepted",
-          "company_refused": "Refused"
+          "applied": "En attente",
+          "company_accepted": "Accepté",
+          "company_refused": "Refusé"
         },
-        "appliedOn": "Applied on",
-        "skillMatch": "match",
-        "coverLetter": "Cover Letter",
+        "appliedOn": "Postulé le",
+        "skillMatch": "correspondance",
+        "coverLetter": "Lettre de motivation",
         "portfolio": "Portfolio",
         "ai": {
-          "summaryTitle": "AI Summary",
-          "strengths": "Strengths",
-          "concerns": "Concerns",
-          "followUps": "Follow-ups",
-          "summarize": "Summarize",
-          "draftingNote": "Drafting note...",
-          "draftRefusalWithAi": "Draft note with AI",
-          "aiStatus": "AI: {status}",
+          "summaryTitle": "Résumé IA",
+          "strengths": "Points forts",
+          "concerns": "Points d'attention",
+          "followUps": "Suivis",
+          "summarize": "Résumer",
+          "draftingNote": "Rédaction de la note...",
+          "draftRefusalWithAi": "Rédiger une note avec l'IA",
+          "aiStatus": "IA : {status}",
           "prompts": {
-            "summarize": "Summarize this candidate",
-            "refusalNote": "Draft a short refusal note"
+            "summarize": "Résumer ce candidat",
+            "refusalNote": "Rédiger une courte note de refus"
           }
         }
       }
     },
     "candidates": {
-      "title": "Candidate Pipeline",
-      "description": "Manage {count, plural, =0 {candidates} one {# candidate} other {# candidates}} across all your offers",
+      "title": "Pipeline de candidats",
+      "description": "Gérez {count, plural, =0 {les candidats} one {# candidat} other {# candidats}} sur toutes vos offres",
       "stats": {
-        "totalOffers": "Total Offers",
-        "activeOffers": "Active Offers",
-        "totalCandidates": "Total Candidates"
+        "totalOffers": "Total des offres",
+        "activeOffers": "Offres actives",
+        "totalCandidates": "Total des candidats"
       },
-      "offersWithCandidates": "Offers with Candidates",
-      "noCandidatesYet": "No candidates yet",
-      "noCandidatesDescription": "Candidates will appear here when students apply to your offers",
-      "manageOffers": "Manage your offers",
-      "viewAllOffers": "View all offers",
-      "candidate": "candidate",
-      "candidates": "candidates",
+      "offersWithCandidates": "Offres avec candidats",
+      "noCandidatesYet": "Aucun candidat pour le moment",
+      "noCandidatesDescription": "Les candidats apparaîtront ici lorsque des étudiants postuleront à vos offres",
+      "manageOffers": "Gérer vos offres",
+      "viewAllOffers": "Voir toutes les offres",
+      "candidate": "candidat",
+      "candidates": "candidats",
       "offers": {
         "status": {
-          "draft": "Draft",
-          "published": "Published",
-          "closed": "Closed"
+          "draft": "Brouillon",
+          "published": "Publiée",
+          "closed": "Clôturée"
         }
       }
     },
     "offers": {
       "status": {
-        "draft": "Draft",
-        "published": "Published",
-        "closed": "Closed"
+        "draft": "Brouillon",
+        "published": "Publiée",
+        "closed": "Clôturée"
       },
       "type": {
         "pfe": "PFE",
         "immersion": "Immersion",
-        "summer": "Summer",
-        "practical": "Practical"
+        "summer": "Été",
+        "practical": "Pratique"
       }
     },
-    "welcome": "Welcome back,",
+    "welcome": "Bon retour,",
     "roles": {
-      "student": "Student",
-      "recruiter": "Recruiter",
-      "dept_head": "Department Head",
-      "university_admin": "Administrator"
+      "student": "Étudiant",
+      "recruiter": "Recruteur",
+      "dept_head": "Chef de département",
+      "university_admin": "Administrateur"
     },
     "student": {
-      "title": "Student Dashboard",
-      "subtitle": "Discover and manage your career journey",
+      "title": "Tableau de bord étudiant",
+      "subtitle": "Découvrez et gérez votre parcours professionnel",
       "stats": {
-        "applications": "Applications",
-        "savedOffers": "Saved Offers",
-        "interviews": "Interviews",
-        "pending": "{count} pending",
-        "accepted": "Accepted",
-        "acceptedDescription": "Accepted applications",
-        "profileBoosted": "Profile boosted",
-        "addMoreSkills": "Add more skills"
+        "applications": "Candidatures",
+        "savedOffers": "Offres sauvegardées",
+        "interviews": "Entretiens",
+        "pending": "{count} en attente",
+        "accepted": "Acceptées",
+        "acceptedDescription": "Candidatures acceptées",
+        "profileBoosted": "Profil boosté",
+        "addMoreSkills": "Ajouter des compétences"
       },
       "actions": {
-        "buildCV": "Complete Digital CV",
-        "searchOffers": "Search Internships",
-        "viewApplications": "Track Applications"
+        "buildCV": "Compléter le CV numérique",
+        "searchOffers": "Rechercher des stages",
+        "viewApplications": "Suivre les candidatures"
       },
-      "skillsSection": "Your Skill Stack",
-      "recentOffers": "Recommended for You",
+      "skillsSection": "Vos compétences",
+      "recentOffers": "Recommandées pour vous",
       "applications": {
-        "title": "Recent Applications",
-        "viewAll": "View All",
-        "emptyMessage": "You haven't applied to any internships yet. Start exploring opportunities!",
-        "exploreButton": "Explore Internships"
+        "title": "Candidatures récentes",
+        "viewAll": "Voir tout",
+        "emptyMessage": "Vous n'avez pas encore postulé à un stage. Commencez à explorer les opportunités !",
+        "exploreButton": "Explorer les stages"
       },
       "offers": {
-        "exploreAll": "Explore All"
+        "exploreAll": "Tout explorer"
       },
       "skills": {
-        "manageSkills": "Manage Skills",
-        "emptyMessage": "Add your technical skills to stand out to recruiters",
-        "addSkills": "Add Skills"
+        "manageSkills": "Gérer les compétences",
+        "emptyMessage": "Ajoutez vos compétences techniques pour vous démarquer auprès des recruteurs",
+        "addSkills": "Ajouter des compétences"
       },
       "welcomeHero": {
-        "brief": "Today's Brief",
-        "defaultName": "there",
-        "headlinePrefix": "Ready to secure your",
-        "headlineAccent": "dream internship",
-        "profileIncomplete": "Complete your profile to stand out to recruiters and unlock more opportunities.",
-        "profileComplete": "Your profile is complete! Keep exploring opportunities and applying.",
-        "completeProfile": "Complete Profile",
-        "exploreInternships": "Explore Internships",
-        "profileStrength": "Profile Strength",
-        "profileReady": "Your profile is ready",
-        "profileRemaining": "{remaining}% remaining to complete"
+        "brief": "Résumé du jour",
+        "defaultName": "là",
+        "headlinePrefix": "Prêt à décrocher votre",
+        "headlineAccent": "stage idéal",
+        "profileIncomplete": "Complétez votre profil pour vous démarquer auprès des recruteurs et débloquer plus d'opportunités.",
+        "profileComplete": "Votre profil est complet ! Continuez à explorer les opportunités et à postuler.",
+        "completeProfile": "Compléter le profil",
+        "exploreInternships": "Explorer les stages",
+        "profileStrength": "Force du profil",
+        "profileReady": "Votre profil est prêt",
+        "profileRemaining": "{remaining}% restant à compléter"
       },
       "status": {
-        "applied": "Pending",
-        "company_accepted": "Accepted",
-        "company_refused": "Refused",
-        "admin_validated": "Validated",
-        "admin_rejected": "Rejected",
-        "withdrawn": "Withdrawn"
+        "applied": "En attente",
+        "company_accepted": "Acceptée",
+        "company_refused": "Refusée",
+        "admin_validated": "Validée",
+        "admin_rejected": "Rejetée",
+        "withdrawn": "Retirée"
       },
       "profile": {
-        "title": "Your Digital CV",
-        "subtitle": "Your professional profile visible to recruiters",
-        "edit": "Edit Profile",
-        "kicker": "Profile",
-        "memberSince": "Member since {date}",
-        "since": "Since {date}",
-        "profileImageAlt": "Profile",
-        "copyProfile": "Copy Profile",
-        "copied": "Copied!",
-        "copySuccess": "Profile copied to clipboard",
-        "copyError": "Failed to copy profile",
-        "personalInfo": "Personal Information",
-        "name": "Name",
-        "email": "Email",
-        "phone": "Phone",
-        "role": "Role",
-        "notSetYet": "Not set yet",
-        "studentNumber": "Student Number",
-        "department": "Department",
-        "level": "Level",
+        "title": "Votre CV numérique",
+        "subtitle": "Votre profil professionnel visible par les recruteurs",
+        "edit": "Modifier le profil",
+        "kicker": "Profil",
+        "memberSince": "Membre depuis {date}",
+        "since": "Depuis {date}",
+        "profileImageAlt": "Profil",
+        "copyProfile": "Copier le profil",
+        "copied": "Copié !",
+        "copySuccess": "Profil copié dans le presse-papiers",
+        "copyError": "Échec de la copie du profil",
+        "personalInfo": "Informations personnelles",
+        "name": "Nom",
+        "email": "E-mail",
+        "phone": "Téléphone",
+        "role": "Rôle",
+        "notSetYet": "Non renseigné",
+        "studentNumber": "Numéro étudiant",
+        "department": "Département",
+        "level": "Niveau",
         "bio": "Bio",
-        "location": "Location",
+        "location": "Localisation",
         "wilaya": "Wilaya",
-        "address": "Address",
-        "university": "University",
-        "links": "Links",
+        "address": "Adresse",
+        "university": "Université",
+        "links": "Liens",
         "skills": "Compétences techniques",
         "languages": "Langues",
         "skillCount": "{count, plural, one {{count} COMPÉTENCE} other {{count} COMPÉTENCES}}",
         "addMoreSkills": "Ajouter",
         "noSkillsListed": "Aucune compétence renseignée pour le moment.",
         "noLanguagesListed": "Aucune langue renseignée pour le moment.",
-        "generalCategory": "General",
+        "generalCategory": "Général",
         "addSkills": "Ajouter des compétences",
         "addLanguages": "Ajouter des langues",
         "skillsEmptyMessage": "Ajoutez vos compétences techniques pour mieux ressortir auprès des recruteurs.",
@@ -1069,33 +1069,33 @@
       }
     },
     "recruiter": {
-      "title": "Recruiter Portal",
-      "subtitle": "Manage your talent pipeline",
+      "title": "Portail recruteur",
+      "subtitle": "Gérez votre pipeline de talents",
       "stats": {
-        "activeOffers": "Active Offers",
-        "totalApplicants": "Total Applicants",
-        "hired": "Successfully Placed"
+        "activeOffers": "Offres actives",
+        "totalApplicants": "Total des candidats",
+        "hired": "Placements réussis"
       },
       "actions": {
-        "postOffer": "Post New Offer",
-        "manageOffers": "Manage Offers",
-        "reviewCandidates": "Review Applications"
+        "postOffer": "Publier une offre",
+        "manageOffers": "Gérer les offres",
+        "reviewCandidates": "Examiner les candidatures"
       },
-      "pipeline": "Candidate Pipeline"
+      "pipeline": "Pipeline de candidats"
     },
     "deptHeadDashboard": {
-      "subtitle": "Review placement requests for your department",
-      "kicker": "Department Operations",
-      "title": "Your validation queue is ready.",
-      "description": "Track pending placement requests and jump directly into validation details.",
-      "openQueue": "Open Validation Queue",
-      "pendingLabel": "Pending Validations",
-      "queueStatusLabel": "Queue Status",
-      "queueBusy": "More requests are waiting in your queue.",
-      "queueClear": "All caught up for now.",
-      "recentTitle": "Recent Pending Requests",
-      "empty": "No pending validations in your department.",
-      "acceptedOn": "Accepted on"
+      "subtitle": "Examinez les demandes de placement de votre département",
+      "kicker": "Opérations du département",
+      "title": "Votre file de validation est prête.",
+      "description": "Suivez les demandes de placement en attente et accédez directement aux détails de validation.",
+      "openQueue": "Ouvrir la file de validation",
+      "pendingLabel": "Validations en attente",
+      "queueStatusLabel": "Statut de la file",
+      "queueBusy": "D'autres demandes attendent dans votre file.",
+      "queueClear": "Tout est à jour pour le moment.",
+      "recentTitle": "Demandes récentes en attente",
+      "empty": "Aucune validation en attente dans votre département.",
+      "acceptedOn": "Accepté le"
     },
     "explore": {
       "pageTitle": "Explorer les stages",
@@ -1105,7 +1105,7 @@
       "filters": "Filtres",
       "clearFilters": "Tout effacer",
       "wilaya": "Wilaya",
-      "wilayaPlaceholder": "Any location",
+      "wilayaPlaceholder": "Toutes les localisations",
       "internshipType": "Type de stage",
       "workMode": "Mode de travail",
       "skills": "Compétences",
@@ -1124,36 +1124,36 @@
       "type": {
         "pfe": "PFE",
         "immersion": "Immersion",
-        "summer": "Summer",
-        "practical": "Practical"
+        "summer": "Été",
+        "practical": "Pratique"
       },
       "workModeLabel": {
-        "on_site": "On-site",
-        "hybrid": "Hybrid",
-        "remote": "Remote"
+        "on_site": "Sur site",
+        "hybrid": "Hybride",
+        "remote": "À distance"
       },
       "copilot": {
-        "title": "Search Copilot",
-        "description": "Describe what you want. You'll review filters before applying.",
-        "aiStatus": "AI: {status}",
-        "placeholder": "e.g. Remote summer internship in Algiers, React + Node",
-        "parseFilters": "Parse Filters",
-        "apply": "Apply"
+        "title": "Copilote de recherche",
+        "description": "Décrivez ce que vous cherchez. Vous examinerez les filtres avant de les appliquer.",
+        "aiStatus": "IA : {status}",
+        "placeholder": "ex. Stage d'été à distance à Alger, React + Node",
+        "parseFilters": "Analyser les filtres",
+        "apply": "Appliquer"
       }
     },
     "studentCompanies": {
-      "kicker": "Company Directory",
-      "title": "Discover Companies",
-      "subtitle": "Browse approved companies currently recruiting for internships.",
-      "searchPlaceholder": "Search companies by name or slug...",
-      "wilayaPlaceholder": "Any location",
-      "clearFilters": "Clear filters",
-      "loading": "Loading companies...",
-      "loadingMore": "Loading more companies...",
-      "empty": "No companies matched your filters.",
-      "viewProfile": "View Company Profile",
-      "websiteAvailable": "Website available",
-      "openOffersCount": "{count, plural, one {# open offer} other {# open offers}}"
+      "kicker": "Annuaire des entreprises",
+      "title": "Découvrir les entreprises",
+      "subtitle": "Parcourez les entreprises approuvées qui recrutent actuellement des stagiaires.",
+      "searchPlaceholder": "Rechercher des entreprises par nom...",
+      "wilayaPlaceholder": "Toutes les localisations",
+      "clearFilters": "Effacer les filtres",
+      "loading": "Chargement des entreprises...",
+      "loadingMore": "Chargement de plus d'entreprises...",
+      "empty": "Aucune entreprise ne correspond à vos filtres.",
+      "viewProfile": "Voir le profil de l'entreprise",
+      "websiteAvailable": "Site web disponible",
+      "openOffersCount": "{count, plural, one {# offre ouverte} other {# offres ouvertes}}"
     },
     "offerDetail": {
       "back": "Retour à la recherche",
@@ -1185,13 +1185,13 @@
       "type": {
         "pfe": "PFE",
         "immersion": "Immersion",
-        "summer": "Summer",
-        "practical": "Practical"
+        "summer": "Été",
+        "practical": "Pratique"
       },
       "workModeLabel": {
-        "on_site": "On-site",
-        "hybrid": "Hybrid",
-        "remote": "Remote"
+        "on_site": "Sur site",
+        "hybrid": "Hybride",
+        "remote": "À distance"
       },
       "application": "Candidature",
       "actionRequired": "Action requise",
@@ -1202,351 +1202,351 @@
       "trustIndex": "Indice de confiance",
       "viewCompanyProfile": "Voir le profil de l’entreprise",
       "report": {
-        "trigger": "Report Company",
-        "title": "Report Company",
-        "description": "Share a trust or safety issue about {companyName}.",
-        "categoryLabel": "Category",
-        "categoryPlaceholder": "Select a category",
-        "severityLabel": "Severity",
-        "descriptionLabel": "What happened?",
-        "descriptionPlaceholder": "Describe the issue in detail (minimum 10 characters).",
-        "cancel": "Cancel",
-        "submit": "Submit report",
-        "submitting": "Submitting...",
-        "submitSuccess": "Report submitted successfully.",
-        "submitError": "Failed to submit report.",
+        "trigger": "Signaler l'entreprise",
+        "title": "Signaler l'entreprise",
+        "description": "Signalez un problème de confiance ou de sécurité concernant {companyName}.",
+        "categoryLabel": "Catégorie",
+        "categoryPlaceholder": "Sélectionner une catégorie",
+        "severityLabel": "Gravité",
+        "descriptionLabel": "Que s'est-il passé ?",
+        "descriptionPlaceholder": "Décrivez le problème en détail (minimum 10 caractères).",
+        "cancel": "Annuler",
+        "submit": "Envoyer le signalement",
+        "submitting": "Envoi en cours...",
+        "submitSuccess": "Signalement envoyé avec succès.",
+        "submitError": "Échec de l'envoi du signalement.",
         "categories": {
-          "professional_conduct": "Professional conduct",
-          "misleading_offer": "Misleading offer",
-          "communication_issue": "Communication issue",
-          "other": "Other"
+          "professional_conduct": "Conduite professionnelle",
+          "misleading_offer": "Offre trompeuse",
+          "communication_issue": "Problème de communication",
+          "other": "Autre"
         },
         "severity": {
-          "low": "Low",
-          "medium": "Medium",
-          "high": "High",
-          "critical": "Critical"
+          "low": "Faible",
+          "medium": "Moyen",
+          "high": "Élevé",
+          "critical": "Critique"
         }
       },
       "copilot": {
-        "draftWithAi": "Draft with AI",
-        "drafting": "Drafting...",
-        "previewTitle": "AI Draft Preview",
-        "applyDraft": "Apply draft"
+        "draftWithAi": "Rédiger avec l'IA",
+        "drafting": "Rédaction...",
+        "previewTitle": "Aperçu du brouillon IA",
+        "applyDraft": "Appliquer le brouillon"
       },
       "matching": {
-        "title": "Why this match?",
-        "computing": "Computing fit score...",
-        "unavailable": "Score unavailable right now.",
+        "title": "Pourquoi cette correspondance ?",
+        "computing": "Calcul du score de compatibilité...",
+        "unavailable": "Score indisponible pour le moment.",
         "languageRequirements": "Exigences linguistiques",
-        "missingSkills": "Missing Skills Roadmap",
-        "estimatedImprovement": "Estimated improvement: +{delta}% readiness",
-        "readinessTrend": "Readiness Trend"
+        "missingSkills": "Feuille de route des compétences manquantes",
+        "estimatedImprovement": "Amélioration estimée : +{delta}% de préparation",
+        "readinessTrend": "Tendance de préparation"
       }
     },
     "applications": {
-      "pageTitle": "My Applications",
-      "title": "My Applications",
-      "subtitle": "Track the status of your internship applications",
+      "pageTitle": "Mes candidatures",
+      "title": "Mes candidatures",
+      "subtitle": "Suivez le statut de vos candidatures de stage",
       "statusFilter": {
-        "all": "All",
-        "applied": "Applied",
-        "company_accepted": "Accepted",
-        "company_refused": "Refused",
-        "admin_validated": "Validated",
-        "admin_rejected": "Rejected",
-        "withdrawn": "Withdrawn"
+        "all": "Toutes",
+        "applied": "Postulée",
+        "company_accepted": "Acceptée",
+        "company_refused": "Refusée",
+        "admin_validated": "Validée",
+        "admin_rejected": "Rejetée",
+        "withdrawn": "Retirée"
       },
       "status": {
-        "applied": "Applied",
-        "company_accepted": "Accepted",
-        "company_refused": "Refused",
-        "admin_validated": "Validated",
-        "admin_rejected": "Rejected",
-        "withdrawn": "Withdrawn"
+        "applied": "Postulée",
+        "company_accepted": "Acceptée",
+        "company_refused": "Refusée",
+        "admin_validated": "Validée",
+        "admin_rejected": "Rejetée",
+        "withdrawn": "Retirée"
       },
-      "empty": "No applications yet. Start exploring internships to find your perfect match!",
-      "emptyFiltered": "No applications with this status.",
-      "appliedOn": "Applied on",
-      "withdraw": "Withdraw",
-      "withdrawConfirm": "Are you sure you want to withdraw this application? This action cannot be undone.",
-      "withdrawSuccess": "Application withdrawn successfully.",
-      "withdrawError": "Failed to withdraw application.",
-      "loading": "Loading...",
-      "loadMore": "Load more",
-      "exploreOffers": "Explore Internships"
+      "empty": "Aucune candidature pour le moment. Commencez à explorer les stages pour trouver votre correspondance idéale !",
+      "emptyFiltered": "Aucune candidature avec ce statut.",
+      "appliedOn": "Postulé le",
+      "withdraw": "Retirer",
+      "withdrawConfirm": "Êtes-vous sûr de vouloir retirer cette candidature ? Cette action est irréversible.",
+      "withdrawSuccess": "Candidature retirée avec succès.",
+      "withdrawError": "Échec du retrait de la candidature.",
+      "loading": "Chargement...",
+      "loadMore": "Charger plus",
+      "exploreOffers": "Explorer les stages"
     },
     "documents": {
-      "pageTitle": "My Documents",
-      "title": "My Documents",
-      "subtitle": "View and download your internship agreements and certificates",
-      "empty": "No placement documents available yet.",
-      "loadError": "Failed to load your documents.",
-      "retry": "Retry",
-      "download": "Download",
-      "downloading": "Downloading...",
-      "agreement": "Agreement",
-      "certificate": "Certificate",
+      "pageTitle": "Mes documents",
+      "title": "Mes documents",
+      "subtitle": "Consultez et téléchargez vos conventions de stage et certificats",
+      "empty": "Aucun document de placement disponible pour le moment.",
+      "loadError": "Échec du chargement de vos documents.",
+      "retry": "Réessayer",
+      "download": "Télécharger",
+      "downloading": "Téléchargement...",
+      "agreement": "Convention",
+      "certificate": "Certificat",
       "status": {
-        "pending": "Pending",
-        "generated": "Generated",
-        "failed": "Failed"
+        "pending": "En attente",
+        "generated": "Généré",
+        "failed": "Échoué"
       },
       "placement": {
-        "company": "Company",
-        "offer": "Offer",
+        "company": "Entreprise",
+        "offer": "Offre",
         "type": "Type",
-        "startDate": "Start date",
-        "endDate": "End date",
-        "validatedAt": "Validated on",
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "validatedAt": "Validé le",
         "verificationCode": "Code de verification",
-        "notAvailable": "Not available"
+        "notAvailable": "Non disponible"
       },
       "feedback": {
-        "ctaLabel": "Leave feedback",
-        "ctaDescription": "Help improve trust scoring by sharing your experience.",
-        "title": "Placement Feedback",
-        "description": "Share your experience with {companyName} for \"{offerTitle}\".",
-        "descriptionFallback": "Share your placement experience.",
-        "ratingLabel": "Overall rating",
-        "wouldRecommendLabel": "I would recommend this company for internships.",
-        "commentLabel": "Comment (optional)",
-        "commentPlaceholder": "What worked well and what could improve?",
-        "cancel": "Cancel",
-        "submit": "Submit feedback",
-        "submitting": "Submitting...",
-        "submitSuccess": "Feedback submitted successfully.",
-        "submitError": "Failed to submit feedback."
+        "ctaLabel": "Laisser un avis",
+        "ctaDescription": "Aidez à améliorer l'indice de confiance en partageant votre expérience.",
+        "title": "Avis sur le placement",
+        "description": "Partagez votre expérience avec {companyName} pour « {offerTitle} ».",
+        "descriptionFallback": "Partagez votre expérience de placement.",
+        "ratingLabel": "Évaluation globale",
+        "wouldRecommendLabel": "Je recommanderais cette entreprise pour des stages.",
+        "commentLabel": "Commentaire (optionnel)",
+        "commentPlaceholder": "Qu'est-ce qui a bien fonctionné et que pourrait-on améliorer ?",
+        "cancel": "Annuler",
+        "submit": "Envoyer l'avis",
+        "submitting": "Envoi en cours...",
+        "submitSuccess": "Avis envoyé avec succès.",
+        "submitError": "Échec de l'envoi de l'avis."
       },
-      "downloadSuccess": "Document downloaded.",
-      "downloadError": "Failed to download document."
+      "downloadSuccess": "Document téléchargé.",
+      "downloadError": "Échec du téléchargement du document."
     },
     "companyDocuments": {
-      "pageTitle": "Company Documents",
-      "title": "Company Documents",
-      "subtitle": "Generate and download placement certificates for your validated interns",
-      "empty": "No validated placements found for your company.",
-      "loadError": "Failed to load company documents.",
-      "retry": "Retry",
-      "generate": "Generate Certificate",
-      "generating": "Generating...",
-      "download": "Download",
-      "downloading": "Downloading...",
-      "generatedSuccess": "Certificate generated successfully.",
-      "generateError": "Failed to generate certificate.",
-      "downloadError": "Failed to download document.",
-      "ownerOnlyGenerate": "Owners issue certificates",
-      "agreement": "Agreement",
-      "certificate": "Certificate",
+      "pageTitle": "Documents de l'entreprise",
+      "title": "Documents de l'entreprise",
+      "subtitle": "Générez et téléchargez les certificats de placement pour vos stagiaires validés",
+      "empty": "Aucun placement validé trouvé pour votre entreprise.",
+      "loadError": "Échec du chargement des documents de l'entreprise.",
+      "retry": "Réessayer",
+      "generate": "Générer le certificat",
+      "generating": "Génération...",
+      "download": "Télécharger",
+      "downloading": "Téléchargement...",
+      "generatedSuccess": "Certificat généré avec succès.",
+      "generateError": "Échec de la génération du certificat.",
+      "downloadError": "Échec du téléchargement du document.",
+      "ownerOnlyGenerate": "Les propriétaires délivrent les certificats",
+      "agreement": "Convention",
+      "certificate": "Certificat",
       "status": {
-        "notGenerated": "Not generated",
-        "pending": "Pending",
-        "generated": "Generated",
-        "failed": "Failed"
+        "notGenerated": "Non généré",
+        "pending": "En attente",
+        "generated": "Généré",
+        "failed": "Échoué"
       },
       "placement": {
-        "student": "Student",
-        "offer": "Offer",
+        "student": "Étudiant",
+        "offer": "Offre",
         "type": "Type",
-        "startDate": "Start date",
-        "endDate": "End date",
-        "validatedAt": "Validated on",
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "validatedAt": "Validé le",
         "verificationCode": "Code de verification",
-        "notAvailable": "Not available"
+        "notAvailable": "Non disponible"
       }
     },
     "admin": {
       "title": "Tableau de Bord Admin",
-      "subtitle": "Overview of platform activity",
+      "subtitle": "Aperçu de l'activité de la plateforme",
       "stats": {
-        "totalPlacements": "Total Placements",
-        "pendingValidation": "Pending Validation",
-        "docsGenerated": "Documents Generated"
+        "totalPlacements": "Total des placements",
+        "pendingValidation": "En attente de validation",
+        "docsGenerated": "Documents générés"
       },
       "actions": {
-        "validatePlacements": "Validate Placements",
-        "systemHealth": "System Health",
-        "exportReports": "Export Reports"
+        "validatePlacements": "Valider les placements",
+        "systemHealth": "Santé du système",
+        "exportReports": "Exporter les rapports"
       },
       "validations": {
-        "backToDashboard": "Back to dashboard",
-        "title": "Validate Placements",
-        "description": "Review company-accepted applications and validate placements.",
-        "empty": "No placements pending validation.",
-        "companyAcceptedOn": "Company accepted on",
+        "backToDashboard": "Retour au tableau de bord",
+        "title": "Valider les placements",
+        "description": "Examinez les candidatures acceptées par les entreprises et validez les placements.",
+        "empty": "Aucun placement en attente de validation.",
+        "companyAcceptedOn": "Accepté par l'entreprise le",
         "detail": {
-          "backToList": "Back to validations",
-          "title": "Validation Details",
-          "notFound": "Application not found.",
-          "studentInfo": "Student Info",
-          "name": "Name",
-          "email": "Email",
-          "phone": "Phone",
-          "studentNumber": "Student number",
-          "department": "Department",
-          "level": "Level",
-          "university": "University",
-          "address": "Address",
-          "skills": "Skills",
-          "companyInfo": "Company Info",
-          "companyName": "Company name",
-          "representative": "Representative",
-          "offerDetails": "Offer Details",
+          "backToList": "Retour aux validations",
+          "title": "Détails de la validation",
+          "notFound": "Candidature introuvable.",
+          "studentInfo": "Informations de l'étudiant",
+          "name": "Nom",
+          "email": "E-mail",
+          "phone": "Téléphone",
+          "studentNumber": "Numéro étudiant",
+          "department": "Département",
+          "level": "Niveau",
+          "university": "Université",
+          "address": "Adresse",
+          "skills": "Compétences",
+          "companyInfo": "Informations de l'entreprise",
+          "companyName": "Nom de l'entreprise",
+          "representative": "Représentant",
+          "offerDetails": "Détails de l'offre",
           "type": "Type",
           "internshipTypeLabel": {
-            "pfe": "Final Year Project (PFE)",
-            "immersion": "Immersion Internship",
-            "summer": "Summer Internship",
-            "practical": "Practical Training"
+            "pfe": "Projet de fin d'études (PFE)",
+            "immersion": "Stage d'immersion",
+            "summer": "Stage d'été",
+            "practical": "Formation pratique"
           },
-          "workMode": "Work mode",
+          "workMode": "Mode de travail",
           "workModeLabel": {
-            "on_site": "On-site",
-            "hybrid": "Hybrid",
-            "remote": "Remote"
+            "on_site": "Sur site",
+            "hybrid": "Hybride",
+            "remote": "À distance"
           },
-          "duration": "Duration",
-          "durationWeeks": "{count} weeks",
-          "deadline": "Application deadline",
-          "expectedPeriod": "Expected period",
-          "timeline": "Timeline",
-          "appliedOn": "Applied on",
-          "companyAcceptedOn": "Company accepted on",
-          "coverLetter": "Cover letter",
-          "setInternshipPeriod": "Set internship period",
-          "startDate": "Start date",
-          "endDate": "End date",
-          "selectDates": "Please select both start and end dates.",
-          "invalidDates": "End date must be after start date.",
-          "selectedDatesOutsideExpectedRange": "Selected dates are outside the expected period defined on the offer.",
-          "confirmValidate": "Validate this placement?",
-          "validateSuccess": "Placement validated.",
-          "validateError": "Failed to validate placement.",
-          "rejectSuccess": "Placement rejected.",
-          "rejectError": "Failed to reject placement.",
-          "agreementGenerationError": "Placement validated, but agreement generation failed.",
-          "generatingPdf": "Generating PDF...",
-          "validateAndGenerate": "Validate & generate",
-          "reject": "Reject",
-          "rejectTitle": "Reject placement",
-          "rejectDescription": "Provide a short reason for rejecting {name} (optional).",
-          "rejectReasonPlaceholder": "Reason (optional)...",
-          "cancel": "Cancel",
-          "confirmReject": "Confirm reject",
-          "notAvailable": "N/A",
+          "duration": "Durée",
+          "durationWeeks": "{count} semaines",
+          "deadline": "Date limite de candidature",
+          "expectedPeriod": "Période prévue",
+          "timeline": "Chronologie",
+          "appliedOn": "Postulé le",
+          "companyAcceptedOn": "Accepté par l'entreprise le",
+          "coverLetter": "Lettre de motivation",
+          "setInternshipPeriod": "Définir la période de stage",
+          "startDate": "Date de début",
+          "endDate": "Date de fin",
+          "selectDates": "Veuillez sélectionner les dates de début et de fin.",
+          "invalidDates": "La date de fin doit être postérieure à la date de début.",
+          "selectedDatesOutsideExpectedRange": "Les dates sélectionnées sont en dehors de la période prévue définie sur l'offre.",
+          "confirmValidate": "Valider ce placement ?",
+          "validateSuccess": "Placement validé.",
+          "validateError": "Échec de la validation du placement.",
+          "rejectSuccess": "Placement rejeté.",
+          "rejectError": "Échec du rejet du placement.",
+          "agreementGenerationError": "Placement validé, mais la génération de la convention a échoué.",
+          "generatingPdf": "Génération du PDF...",
+          "validateAndGenerate": "Valider et générer",
+          "reject": "Rejeter",
+          "rejectTitle": "Rejeter le placement",
+          "rejectDescription": "Indiquez une courte raison pour le rejet de {name} (optionnel).",
+          "rejectReasonPlaceholder": "Motif (optionnel)...",
+          "cancel": "Annuler",
+          "confirmReject": "Confirmer le rejet",
+          "notAvailable": "N/D",
           "ai": {
-            "title": "AI Summary",
-            "description": "Quick summary and checklist. No validate/reject decisions.",
-            "generate": "Generate",
-            "summary": "Summary",
+            "title": "Résumé IA",
+            "description": "Résumé rapide et checklist. Aucune décision de validation/rejet.",
+            "generate": "Générer",
+            "summary": "Résumé",
             "checklist": "Checklist",
-            "noMissingItems": "No missing items detected.",
-            "potentialInconsistencies": "Potential Inconsistencies",
-            "generating": "Generating summary...",
-            "hint": "Click Generate to produce a summary."
+            "noMissingItems": "Aucun élément manquant détecté.",
+            "potentialInconsistencies": "Incohérences potentielles",
+            "generating": "Génération du résumé...",
+            "hint": "Cliquez sur Générer pour produire un résumé."
           }
         }
       },
-      "globalStats": "Global Placement Analytics",
+      "globalStats": "Statistiques globales de placement",
       "departments": {
-        "title": "Departments",
-        "description": "Manage your university's departments and assign department heads.",
-        "backToDashboard": "Back to dashboard",
-        "empty": "No departments created yet.",
-        "addDepartment": "Add Department",
-        "university": "University",
-        "selectUniversity": "Select a university",
-        "selectUniversityFirst": "Select a university to continue.",
-        "name": "Department name",
-        "namePlaceholder": "e.g. Computer Science",
-        "headName": "Head name (optional)",
-        "headNamePlaceholder": "e.g. Dr. Ahmed Benali",
-        "assignHead": "Assign Head",
-        "manageSkills": "Skills",
-        "assignHeadTitle": "Assign Department Head",
-        "assignHeadDescription": "Enter the future department head details. If the user does not exist, an account will be created automatically.",
-        "selectUser": "Select user",
-        "noUsersAvailable": "No users available to assign.",
-        "passwordResetHint": "A password-reset link will be sent so the department head can activate access.",
-        "save": "Save",
-        "cancel": "Cancel",
-        "createSuccess": "Department created successfully.",
-        "updateSuccess": "Department updated successfully.",
-        "assignSuccess": "Department head assigned successfully.",
-        "removeHead": "Remove Head",
-        "removeHeadTitle": "Remove Department Head",
-        "removeHeadDescription": "This will unassign {headName} from {name}. The user account will be kept.",
-        "removeHeadSuccess": "Department head removed successfully.",
-        "deleteDepartment": "Delete Department",
-        "deleteDepartmentTitle": "Delete Department",
-        "deleteDepartmentDescription": "Delete {name}? This action cannot be undone.",
-        "deleteSuccess": "Department deleted successfully.",
-        "editDepartment": "Edit",
+        "title": "Départements",
+        "description": "Gérez les départements de votre université et assignez les chefs de département.",
+        "backToDashboard": "Retour au tableau de bord",
+        "empty": "Aucun département créé pour le moment.",
+        "addDepartment": "Ajouter un département",
+        "university": "Université",
+        "selectUniversity": "Sélectionner une université",
+        "selectUniversityFirst": "Sélectionnez une université pour continuer.",
+        "name": "Nom du département",
+        "namePlaceholder": "ex. Informatique",
+        "headName": "Nom du responsable (optionnel)",
+        "headNamePlaceholder": "ex. Dr. Ahmed Benali",
+        "assignHead": "Assigner un responsable",
+        "manageSkills": "Compétences",
+        "assignHeadTitle": "Assigner un chef de département",
+        "assignHeadDescription": "Saisissez les détails du futur chef de département. Si l'utilisateur n'existe pas, un compte sera créé automatiquement.",
+        "selectUser": "Sélectionner un utilisateur",
+        "noUsersAvailable": "Aucun utilisateur disponible à assigner.",
+        "passwordResetHint": "Un lien de réinitialisation du mot de passe sera envoyé pour que le chef de département puisse activer son accès.",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "createSuccess": "Département créé avec succès.",
+        "updateSuccess": "Département mis à jour avec succès.",
+        "assignSuccess": "Chef de département assigné avec succès.",
+        "removeHead": "Retirer le responsable",
+        "removeHeadTitle": "Retirer le chef de département",
+        "removeHeadDescription": "Cela retirera {headName} de {name}. Le compte utilisateur sera conservé.",
+        "removeHeadSuccess": "Chef de département retiré avec succès.",
+        "deleteDepartment": "Supprimer le département",
+        "deleteDepartmentTitle": "Supprimer le département",
+        "deleteDepartmentDescription": "Supprimer {name} ? Cette action est irréversible.",
+        "deleteSuccess": "Département supprimé avec succès.",
+        "editDepartment": "Modifier",
         "error": "Quelque chose s'est mal passe. Veuillez reessayer.",
         "skills": {
-          "title": "Skills for {name}",
-          "description": "Select the skills relevant to this department. Students will see these as recommended.",
-          "save": "Save Skills",
-          "cancel": "Cancel",
-          "skillsSelected": "skills selected",
-          "searchPlaceholder": "Search skills...",
-          "saveSuccess": "Department skills updated.",
-          "saveError": "Could not update skills."
+          "title": "Compétences pour {name}",
+          "description": "Sélectionnez les compétences pertinentes pour ce département. Les étudiants les verront comme recommandées.",
+          "save": "Enregistrer les compétences",
+          "cancel": "Annuler",
+          "skillsSelected": "compétences sélectionnées",
+          "searchPlaceholder": "Rechercher des compétences...",
+          "saveSuccess": "Compétences du département mises à jour.",
+          "saveError": "Impossible de mettre à jour les compétences."
         },
         "bulkCreate": {
-          "title": "Bulk Create Departments",
-          "description": "Create multiple departments and assign heads at once. Each head will receive a welcome email with a password-reset link.",
-          "departmentName": "Department name",
-          "departmentNamePlaceholder": "e.g. Computer Science",
-          "headEmail": "Head email",
-          "headEmailPlaceholder": "e.g. head@university.dz",
-          "headName": "Head name",
-          "headNamePlaceholder": "e.g. Dr. Ahmed Benali",
-          "addRow": "Add row",
-          "removeRow": "Remove row",
-          "submit": "Create All",
-          "submitting": "Creating...",
-          "successMessage": "{count} department(s) created successfully.",
-          "partialSuccess": "{created} created, {failed} failed.",
-          "rowError": "{name}: {error}",
-          "selectUniversityFirst": "Select a university to continue.",
+          "title": "Création en lot de départements",
+          "description": "Créez plusieurs départements et assignez des responsables en une fois. Chaque responsable recevra un e-mail de bienvenue avec un lien de réinitialisation du mot de passe.",
+          "departmentName": "Nom du département",
+          "departmentNamePlaceholder": "ex. Informatique",
+          "headEmail": "E-mail du responsable",
+          "headEmailPlaceholder": "ex. responsable@universite.dz",
+          "headName": "Nom du responsable",
+          "headNamePlaceholder": "ex. Dr. Ahmed Benali",
+          "addRow": "Ajouter une ligne",
+          "removeRow": "Supprimer la ligne",
+          "submit": "Tout créer",
+          "submitting": "Création...",
+          "successMessage": "{count} département(s) créé(s) avec succès.",
+          "partialSuccess": "{created} créé(s), {failed} échoué(s).",
+          "rowError": "{name} : {error}",
+          "selectUniversityFirst": "Sélectionnez une université pour continuer.",
           "error": "Quelque chose s'est mal passe. Veuillez reessayer."
         }
       },
       "deptValidations": {
-        "title": "Department Validations",
-        "description": "Review and validate placements for students in your department.",
-        "empty": "No placements pending validation in your department.",
-        "backToDashboard": "Back to dashboard",
-        "companyAcceptedOn": "Company accepted on"
+        "title": "Validations du département",
+        "description": "Examinez et validez les placements des étudiants de votre département.",
+        "empty": "Aucun placement en attente de validation dans votre département.",
+        "backToDashboard": "Retour au tableau de bord",
+        "companyAcceptedOn": "Accepté par l'entreprise le"
       },
       "universities": {
         "kicker": "Administration",
-        "title": "University Validation",
-        "description": "Review and approve pending university registrations.",
-        "noUniversities": "No universities found.",
-        "statusFilter": "Filter by status",
+        "title": "Validation des universités",
+        "description": "Examinez et approuvez les inscriptions universitaires en attente.",
+        "noUniversities": "Aucune université trouvée.",
+        "statusFilter": "Filtrer par statut",
         "searchLabel": "Rechercher des universites",
         "searchPlaceholder": "Rechercher par nom ou abreviation...",
         "loadingMore": "Chargement de plus d'universites...",
-        "allStatuses": "All statuses",
+        "allStatuses": "Tous les statuts",
         "status": {
-          "pending": "Pending",
-          "approved": "Approved",
-          "rejected": "Rejected"
+          "pending": "En attente",
+          "approved": "Approuvée",
+          "rejected": "Rejetée"
         },
-        "approve": "Approve",
-        "reject": "Reject",
+        "approve": "Approuver",
+        "reject": "Rejeter",
         "edit": "Modifier",
         "delete": "Supprimer",
-        "approveSuccess": "University approved successfully.",
-        "rejectSuccess": "University rejected.",
-        "updateSuccess": "University updated successfully.",
-        "deleteSuccess": "University deleted successfully.",
-        "approveError": "Failed to approve university.",
-        "rejectError": "Failed to reject university.",
-        "updateError": "Failed to update university.",
-        "deleteError": "Failed to delete university.",
+        "approveSuccess": "Université approuvée avec succès.",
+        "rejectSuccess": "Université rejetée.",
+        "updateSuccess": "Université mise à jour avec succès.",
+        "deleteSuccess": "Université supprimée avec succès.",
+        "approveError": "Échec de l'approbation de l'université.",
+        "rejectError": "Échec du rejet de l'université.",
+        "updateError": "Échec de la mise à jour de l'université.",
+        "deleteError": "Échec de la suppression de l'université.",
         "editDialog": {
           "title": "Modifier l'université",
           "description": "Mettez à jour les informations du profil de l'université.",
@@ -1566,12 +1566,12 @@
           "save": "Enregistrer les modifications"
         },
         "rejectDialog": {
-          "title": "Reject University",
-          "description": "Provide a reason for rejecting this university application.",
-          "reasonLabel": "Rejection reason",
-          "reasonPlaceholder": "Enter the reason for rejection...",
-          "cancel": "Cancel",
-          "confirm": "Reject University"
+          "title": "Rejeter l'université",
+          "description": "Indiquez la raison du rejet de cette demande universitaire.",
+          "reasonLabel": "Motif du rejet",
+          "reasonPlaceholder": "Saisissez la raison du rejet...",
+          "cancel": "Annuler",
+          "confirm": "Rejeter l'université"
         },
         "deleteDialog": {
           "title": "Supprimer l'université",
@@ -1582,11 +1582,11 @@
           "confirm": "Supprimer l'université"
         },
         "card": {
-          "domains": "Domains",
-          "noDomains": "No domains registered",
-          "location": "Location",
-          "department": "Department",
-          "registeredAt": "Registered"
+          "domains": "Domaines",
+          "noDomains": "Aucun domaine enregistré",
+          "location": "Localisation",
+          "department": "Département",
+          "registeredAt": "Inscrite le"
         }
       },
       "companies": {
@@ -1650,246 +1650,246 @@
         }
       },
       "pending": {
-        "kicker": "University Status",
-        "title": "Application Under Review",
-        "subtitle": "Your university registration is being reviewed by a super administrator. You will be notified once a decision is made.",
-        "statusLabel": "Status",
-        "statusValue": "Pending Review",
-        "whatNext": "What happens next?",
-        "step1": "A super administrator reviews your application",
-        "step2": "Your email domains are verified and approved",
-        "step3": "You get full access to the admin dashboard"
+        "kicker": "Statut de l'université",
+        "title": "Candidature en cours d'examen",
+        "subtitle": "L'inscription de votre université est en cours d'examen par un super administrateur. Vous serez notifié une fois la décision prise.",
+        "statusLabel": "Statut",
+        "statusValue": "En cours d'examen",
+        "whatNext": "Que se passe-t-il ensuite ?",
+        "step1": "Un super administrateur examine votre candidature",
+        "step2": "Vos domaines e-mail sont vérifiés et approuvés",
+        "step3": "Vous obtenez un accès complet au tableau de bord admin"
       },
       "rejected": {
-        "kicker": "University Status",
-        "title": "Application Rejected",
-        "subtitle": "Unfortunately, your university registration was not approved.",
-        "reasonLabel": "Reason",
-        "contactSupport": "If you believe this is an error, please contact support.",
-        "reapply": "Re-apply"
+        "kicker": "Statut de l'université",
+        "title": "Candidature rejetée",
+        "subtitle": "Malheureusement, l'inscription de votre université n'a pas été approuvée.",
+        "reasonLabel": "Motif",
+        "contactSupport": "Si vous pensez qu'il s'agit d'une erreur, veuillez contacter le support.",
+        "reapply": "Resoumettre"
       }
     },
     "superAdmin": {
       "users": {
         "kicker": "Administration",
-        "title": "User Management",
-        "description": "Manage all platform users, roles, and access.",
-        "searchPlaceholder": "Search by email...",
-        "filterByRole": "Filter by role",
-        "allRoles": "All roles",
-        "createUser": "Create User",
-        "noUsers": "No users found.",
+        "title": "Gestion des utilisateurs",
+        "description": "Gérez tous les utilisateurs, rôles et accès de la plateforme.",
+        "searchPlaceholder": "Rechercher par e-mail...",
+        "filterByRole": "Filtrer par rôle",
+        "allRoles": "Tous les rôles",
+        "createUser": "Créer un utilisateur",
+        "noUsers": "Aucun utilisateur trouvé.",
         "roles": {
-          "student": "Student",
-          "company_admin": "Company Admin",
-          "dept_head": "Department Head",
-          "university_admin": "University Admin",
-          "super_admin": "Super Admin"
+          "student": "Étudiant",
+          "company_admin": "Admin entreprise",
+          "dept_head": "Chef de département",
+          "university_admin": "Admin universitaire",
+          "super_admin": "Super admin"
         },
         "status": {
-          "active": "Active",
-          "banned": "Banned"
+          "active": "Actif",
+          "banned": "Banni"
         },
         "table": {
-          "user": "User",
-          "role": "Role",
-          "status": "Status",
-          "created": "Created",
+          "user": "Utilisateur",
+          "role": "Rôle",
+          "status": "Statut",
+          "created": "Créé le",
           "actions": "Actions"
         },
         "pagination": {
-          "showing": "Showing {from}-{to} of {total}"
+          "showing": "Affichage {from}-{to} sur {total}"
         },
         "actions": {
-          "view": "View Details",
-          "setRole": "Change Role",
-          "setPassword": "Set Password",
-          "ban": "Ban User",
-          "unban": "Unban User",
-          "delete": "Delete User"
+          "view": "Voir les détails",
+          "setRole": "Changer le rôle",
+          "setPassword": "Définir le mot de passe",
+          "ban": "Bannir l'utilisateur",
+          "unban": "Débannir l'utilisateur",
+          "delete": "Supprimer l'utilisateur"
         },
         "fields": {
-          "name": "Name",
-          "email": "Email",
+          "name": "Nom",
+          "email": "E-mail",
           "password": "Mot de passe",
-          "role": "Role"
+          "role": "Rôle"
         },
         "dialogs": {
-          "cancel": "Cancel",
+          "cancel": "Annuler",
           "create": {
-            "title": "Create User",
-            "description": "Create a new platform user with a specific role.",
-            "submit": "Create"
+            "title": "Créer un utilisateur",
+            "description": "Créez un nouvel utilisateur avec un rôle spécifique.",
+            "submit": "Créer"
           },
           "ban": {
-            "title": "Ban User",
-            "description": "Ban {email} from the platform.",
-            "reason": "Reason",
-            "reasonPlaceholder": "Optional reason for banning...",
-            "duration": "Duration",
+            "title": "Bannir l'utilisateur",
+            "description": "Bannir {email} de la plateforme.",
+            "reason": "Motif",
+            "reasonPlaceholder": "Motif optionnel du bannissement...",
+            "duration": "Durée",
             "durations": {
               "permanent": "Permanent",
-              "1h": "1 hour",
-              "24h": "24 hours",
-              "7d": "7 days",
-              "30d": "30 days"
+              "1h": "1 heure",
+              "24h": "24 heures",
+              "7d": "7 jours",
+              "30d": "30 jours"
             },
-            "submit": "Ban User"
+            "submit": "Bannir l'utilisateur"
           },
           "setRole": {
-            "title": "Change Role",
-            "description": "Change the role for {email}.",
-            "submit": "Update Role"
+            "title": "Changer le rôle",
+            "description": "Changer le rôle de {email}.",
+            "submit": "Mettre à jour le rôle"
           },
           "setPassword": {
-            "title": "Set Password",
-            "description": "Set a new password for {email}.",
-            "newPassword": "New Password",
-            "submit": "Update Password"
+            "title": "Définir le mot de passe",
+            "description": "Définir un nouveau mot de passe pour {email}.",
+            "newPassword": "Nouveau mot de passe",
+            "submit": "Mettre à jour le mot de passe"
           },
           "delete": {
-            "title": "Delete User",
-            "description": "Are you sure you want to permanently delete {email}? This action cannot be undone.",
-            "submit": "Delete"
+            "title": "Supprimer l'utilisateur",
+            "description": "Êtes-vous sûr de vouloir supprimer définitivement {email} ? Cette action est irréversible.",
+            "submit": "Supprimer"
           }
         }
       },
       "userDetail": {
-        "backToUsers": "Back to users",
-        "kicker": "User Detail",
-        "notFound": "User not found.",
-        "unnamed": "Unnamed User",
+        "backToUsers": "Retour aux utilisateurs",
+        "kicker": "Détail de l'utilisateur",
+        "notFound": "Utilisateur introuvable.",
+        "unnamed": "Utilisateur sans nom",
         "roles": {
-          "student": "Student",
-          "company_admin": "Company Admin",
-          "dept_head": "Department Head",
-          "university_admin": "University Admin",
-          "super_admin": "Super Admin"
+          "student": "Étudiant",
+          "company_admin": "Admin entreprise",
+          "dept_head": "Chef de département",
+          "university_admin": "Admin universitaire",
+          "super_admin": "Super admin"
         },
         "status": {
-          "active": "Active",
-          "banned": "Banned"
+          "active": "Actif",
+          "banned": "Banni"
         },
         "sessions": {
-          "title": "Active Sessions",
-          "ip": "IP Address",
-          "userAgent": "User Agent",
-          "created": "Created",
-          "expires": "Expires",
-          "none": "No active sessions."
+          "title": "Sessions actives",
+          "ip": "Adresse IP",
+          "userAgent": "Agent utilisateur",
+          "created": "Créée le",
+          "expires": "Expire le",
+          "none": "Aucune session active."
         },
         "actions": {
           "title": "Actions",
-          "impersonate": "Impersonate",
-          "ban": "Ban",
-          "unban": "Unban",
-          "revokeAll": "Revoke All Sessions"
+          "impersonate": "Usurper l'identité",
+          "ban": "Bannir",
+          "unban": "Débannir",
+          "revokeAll": "Révoquer toutes les sessions"
         }
       },
       "impersonation": {
-        "banner": "You are impersonating {name}",
-        "stop": "Stop"
+        "banner": "Vous usurpez l'identité de {name}",
+        "stop": "Arrêter"
       }
     },
     "settings": {
       "twoFactor": {
         "title": "Authentification a Deux Facteurs",
-        "description": "Add an extra layer of security to your account by requiring a verification code when signing in.",
-        "active": "Active",
-        "inactive": "Inactive",
-        "enable": "Enable 2FA",
-        "disable": "Disable 2FA",
+        "description": "Ajoutez une couche de sécurité supplémentaire à votre compte en exigeant un code de vérification lors de la connexion.",
+        "active": "Actif",
+        "inactive": "Inactif",
+        "enable": "Activer la 2FA",
+        "disable": "Désactiver la 2FA",
         "enableStep": {
-          "title": "Set Up Authenticator",
-          "description": "Scan the QR code with your authenticator app (Google Authenticator, Authy, etc.)",
-          "passwordLabel": "Current password",
-          "passwordPlaceholder": "Enter your password to continue",
-          "continue": "Continue",
-          "scanQr": "Scan this QR code with your authenticator app",
-          "manualEntry": "Or enter this key manually:",
-          "copySecret": "Copy secret"
+          "title": "Configurer l'authentificateur",
+          "description": "Scannez le QR code avec votre application d'authentification (Google Authenticator, Authy, etc.)",
+          "passwordLabel": "Mot de passe actuel",
+          "passwordPlaceholder": "Entrez votre mot de passe pour continuer",
+          "continue": "Continuer",
+          "scanQr": "Scannez ce QR code avec votre application d'authentification",
+          "manualEntry": "Ou entrez cette clé manuellement :",
+          "copySecret": "Copier la clé"
         },
         "verifyStep": {
-          "title": "Verify Setup",
-          "description": "Enter the 6-digit code from your authenticator app to verify setup.",
+          "title": "Vérifier la configuration",
+          "description": "Entrez le code à 6 chiffres de votre application d'authentification pour vérifier la configuration.",
           "codeLabel": "Code de verification",
           "codePlaceholder": "Entrez le code a 6 chiffres",
-          "verify": "Verify & Enable"
+          "verify": "Vérifier et activer"
         },
         "backupCodes": {
-          "title": "Backup Codes",
-          "description": "Save these backup codes in a safe place. Each code can only be used once to sign in if you lose access to your authenticator app.",
-          "copy": "Copy all codes",
-          "download": "Download codes",
-          "copied": "Codes copied to clipboard",
-          "done": "I've saved my backup codes",
-          "warning": "These codes will not be shown again. Make sure to save them now."
+          "title": "Codes de secours",
+          "description": "Enregistrez ces codes de secours dans un endroit sûr. Chaque code ne peut être utilisé qu'une seule fois pour vous connecter si vous perdez l'accès à votre application d'authentification.",
+          "copy": "Copier tous les codes",
+          "download": "Télécharger les codes",
+          "copied": "Codes copiés dans le presse-papiers",
+          "done": "J'ai enregistré mes codes de secours",
+          "warning": "Ces codes ne seront plus affichés. Assurez-vous de les enregistrer maintenant."
         },
         "disableConfirm": {
-          "title": "Disable Two-Factor Authentication",
-          "description": "This will remove the extra security layer from your account. Are you sure?",
-          "passwordLabel": "Current password",
-          "passwordPlaceholder": "Enter your password to confirm",
-          "cancel": "Cancel",
-          "confirm": "Disable 2FA"
+          "title": "Désactiver l'authentification à deux facteurs",
+          "description": "Cela supprimera la couche de sécurité supplémentaire de votre compte. Êtes-vous sûr ?",
+          "passwordLabel": "Mot de passe actuel",
+          "passwordPlaceholder": "Entrez votre mot de passe pour confirmer",
+          "cancel": "Annuler",
+          "confirm": "Désactiver la 2FA"
         },
         "success": {
-          "enabled": "Two-factor authentication enabled successfully.",
-          "disabled": "Two-factor authentication disabled."
+          "enabled": "Authentification à deux facteurs activée avec succès.",
+          "disabled": "Authentification à deux facteurs désactivée."
         },
         "error": {
-          "enableFailed": "Failed to enable 2FA. Please try again.",
-          "disableFailed": "Failed to disable 2FA. Please try again.",
-          "verifyFailed": "Invalid verification code. Please try again.",
-          "passwordRequired": "Password is required."
+          "enableFailed": "Échec de l'activation de la 2FA. Veuillez réessayer.",
+          "disableFailed": "Échec de la désactivation de la 2FA. Veuillez réessayer.",
+          "verifyFailed": "Code de vérification invalide. Veuillez réessayer.",
+          "passwordRequired": "Le mot de passe est requis."
         }
       },
       "sessions": {
-        "title": "Active Sessions",
-        "description": "Manage devices where your account is currently signed in.",
-        "currentDevice": "Current",
-        "lastActive": "Last active:",
-        "revoke": "Sign Out",
-        "revokeOthers": "Sign Out All Other Sessions",
-        "noSessions": "No active sessions found.",
-        "loading": "Loading sessions…",
-        "revokeSuccess": "Session signed out successfully.",
-        "revokeError": "Failed to sign out session. Please try again.",
-        "revokeOthersSuccess": "Signed out {count, plural, one {# session} other {# sessions}} successfully.",
-        "revokeOthersError": "Failed to sign out other sessions. Please try again.",
+        "title": "Sessions actives",
+        "description": "Gérez les appareils sur lesquels votre compte est actuellement connecté.",
+        "currentDevice": "Actuel",
+        "lastActive": "Dernière activité :",
+        "revoke": "Déconnecter",
+        "revokeOthers": "Déconnecter toutes les autres sessions",
+        "noSessions": "Aucune session active trouvée.",
+        "loading": "Chargement des sessions…",
+        "revokeSuccess": "Session déconnectée avec succès.",
+        "revokeError": "Échec de la déconnexion de la session. Veuillez réessayer.",
+        "revokeOthersSuccess": "{count, plural, one {# session déconnectée} other {# sessions déconnectées}} avec succès.",
+        "revokeOthersError": "Échec de la déconnexion des autres sessions. Veuillez réessayer.",
         "revokeDialog": {
-          "title": "Sign Out Session",
-          "description": "This will sign out the selected device. The user on that device will need to log in again.",
-          "cancel": "Cancel",
-          "confirm": "Sign Out"
+          "title": "Déconnecter la session",
+          "description": "Cela déconnectera l'appareil sélectionné. L'utilisateur devra se reconnecter.",
+          "cancel": "Annuler",
+          "confirm": "Déconnecter"
         },
         "revokeAllDialog": {
-          "title": "Sign Out All Other Sessions",
-          "description": "This will sign out {count, plural, one {# other session} other {# other sessions}}. Those devices will need to log in again.",
-          "cancel": "Cancel",
-          "confirm": "Sign Out All"
+          "title": "Déconnecter toutes les autres sessions",
+          "description": "Cela déconnectera {count, plural, one {# autre session} other {# autres sessions}}. Ces appareils devront se reconnecter.",
+          "cancel": "Annuler",
+          "confirm": "Tout déconnecter"
         }
       },
       "deleteAccount": {
-        "title": "Delete Account",
-        "description": "This will permanently delete your account and all associated data. This action cannot be undone.",
-        "warning": "All your data including your profile, applications, conversations, and documents will be permanently deleted. This cannot be reversed.",
-        "passwordLabel": "Current Password",
-        "passwordPlaceholder": "Enter your password to confirm",
-        "confirmLabel": "Type \"{phrase}\" to confirm",
-        "confirmPhrase": "delete my account",
-        "confirm": "Delete My Account Permanently",
-        "deleting": "Deleting account…",
+        "title": "Supprimer le compte",
+        "description": "Cela supprimera définitivement votre compte et toutes les données associées. Cette action est irréversible.",
+        "warning": "Toutes vos données, y compris votre profil, candidatures, conversations et documents, seront définitivement supprimées. Cette action est irréversible.",
+        "passwordLabel": "Mot de passe actuel",
+        "passwordPlaceholder": "Entrez votre mot de passe pour confirmer",
+        "confirmLabel": "Tapez « {phrase} » pour confirmer",
+        "confirmPhrase": "supprimer mon compte",
+        "confirm": "Supprimer mon compte définitivement",
+        "deleting": "Suppression du compte…",
         "error": {
-          "passwordRequired": "Password is required.",
-          "confirmRequired": "Please type the confirmation phrase.",
-          "deleteFailed": "Failed to delete account. Please check your password and try again."
+          "passwordRequired": "Le mot de passe est requis.",
+          "confirmRequired": "Veuillez taper la phrase de confirmation.",
+          "deleteFailed": "Échec de la suppression du compte. Vérifiez votre mot de passe et réessayez."
         }
       },
       "skillsManager": {
-        "minRequired": "Select at least 1 skill.",
-        "saveSuccess": "Skills updated.",
-        "saveError": "Could not save skills."
+        "minRequired": "Sélectionnez au moins 1 compétence.",
+        "saveSuccess": "Compétences mises à jour.",
+        "saveError": "Impossible d'enregistrer les compétences."
       },
       "languageManager": {
         "title": "Langues",
@@ -1902,388 +1902,388 @@
       }
     },
     "departments": {
-      "pageTitle": "Departments Management",
-      "title": "Departments Management",
-      "description": "Create and manage university departments and assign heads.",
-      "empty": "No departments found. Start by creating one.",
-      "addDepartment": "Add Department",
-      "assignHead": "Assign Head",
-      "assignHeadDescription": "Enter the email of the user to assign as Department Head:",
-      "backToDashboard": "Back to dashboard",
-      "name": "Department Name",
-      "namePlaceholder": "e.g. Computer Science",
-      "headName": "Head Name (Optional)",
-      "headNamePlaceholder": "e.g. Dr. Smith",
-      "save": "Create Department",
-      "success": "Department created",
-      "error": "Failed to create department",
-      "manageSkills": "Skills",
+      "pageTitle": "Gestion des départements",
+      "title": "Gestion des départements",
+      "description": "Créez et gérez les départements universitaires et assignez les responsables.",
+      "empty": "Aucun département trouvé. Commencez par en créer un.",
+      "addDepartment": "Ajouter un département",
+      "assignHead": "Assigner un responsable",
+      "assignHeadDescription": "Saisissez l'e-mail de l'utilisateur à assigner comme chef de département :",
+      "backToDashboard": "Retour au tableau de bord",
+      "name": "Nom du département",
+      "namePlaceholder": "ex. Informatique",
+      "headName": "Nom du responsable (optionnel)",
+      "headNamePlaceholder": "ex. Dr. Ahmed",
+      "save": "Créer le département",
+      "success": "Département créé",
+      "error": "Échec de la création du département",
+      "manageSkills": "Compétences",
       "skills": {
-        "title": "Skills for {name}",
-        "description": "Select the skills relevant to this department. Students will see these as recommended.",
-        "save": "Save Skills",
-        "cancel": "Cancel",
-        "skillsSelected": "skills selected",
-        "searchPlaceholder": "Search skills...",
-        "saveSuccess": "Department skills updated.",
-        "saveError": "Could not update skills."
+        "title": "Compétences pour {name}",
+        "description": "Sélectionnez les compétences pertinentes pour ce département. Les étudiants les verront comme recommandées.",
+        "save": "Enregistrer les compétences",
+        "cancel": "Annuler",
+        "skillsSelected": "compétences sélectionnées",
+        "searchPlaceholder": "Rechercher des compétences...",
+        "saveSuccess": "Compétences du département mises à jour.",
+        "saveError": "Impossible de mettre à jour les compétences."
       }
     }
   },
   "companyPublic": {
-    "kicker": "Company Profile",
-    "website": "Website",
-    "trustIndex": "Trust Index",
-    "openOffers": "Open Offers",
-    "noOffers": "No active published offers at the moment.",
-    "positions": "positions"
+    "kicker": "Profil de l'entreprise",
+    "website": "Site web",
+    "trustIndex": "Indice de confiance",
+    "openOffers": "Offres ouvertes",
+    "noOffers": "Aucune offre publiée active pour le moment.",
+    "positions": "postes"
   },
   "howItWorks": {
-    "label": "How It Works",
-    "headline": "Streamlined Workflow for Everyone",
-    "description": "Whether you're a student seeking opportunities, a company looking for talent, or an administrator managing placements—Stag provides a seamless experience tailored to your role.",
+    "label": "Comment ça marche",
+    "headline": "Un workflow simplifié pour tous",
+    "description": "Que vous soyez un étudiant à la recherche d'opportunités, une entreprise à la recherche de talents ou un administrateur gérant les placements — Stag offre une expérience fluide adaptée à votre rôle.",
     "student": {
-      "title": "Student Journey",
+      "title": "Parcours étudiant",
       "subtitle": "Pour les Étudiants",
       "steps": {
         "register": {
-          "step": "Step 01",
-          "title": "Create Your Account",
-          "description": "Register with your university email and verify your student status securely."
+          "step": "Étape 01",
+          "title": "Créez votre compte",
+          "description": "Inscrivez-vous avec votre e-mail universitaire et vérifiez votre statut étudiant en toute sécurité."
         },
         "profile": {
-          "step": "Step 02",
-          "title": "Build Your Digital CV",
-          "description": "Add your skills, experience, and connect your GitHub or portfolio links."
+          "step": "Étape 02",
+          "title": "Créez votre CV numérique",
+          "description": "Ajoutez vos compétences, expériences et connectez vos liens GitHub ou portfolio."
         },
         "search": {
-          "step": "Step 03",
-          "title": "Discover Opportunities",
-          "description": "Use smart filters to find internships by location, tech stack, or company type."
+          "step": "Étape 03",
+          "title": "Découvrez les opportunités",
+          "description": "Utilisez des filtres intelligents pour trouver des stages par localisation, stack technique ou type d'entreprise."
         },
         "apply": {
-          "step": "Step 04",
-          "title": "Apply with One Click",
-          "description": "Send your profile directly to companies and track your applications."
+          "step": "Étape 04",
+          "title": "Postulez en un clic",
+          "description": "Envoyez votre profil directement aux entreprises et suivez vos candidatures."
         }
       }
     },
     "company": {
-      "title": "Recruiter Portal",
-      "subtitle": "For Companies",
+      "title": "Portail recruteur",
+      "subtitle": "Pour les entreprises",
       "steps": {
         "profile": {
-          "step": "Step 01",
-          "title": "Company Profile",
-          "description": "Set up your company page with logo, description, and office locations."
+          "step": "Étape 01",
+          "title": "Profil de l'entreprise",
+          "description": "Configurez votre page entreprise avec logo, description et adresses de bureaux."
         },
         "offers": {
-          "step": "Step 02",
-          "title": "Publish Offers",
-          "description": "Create, modify, and manage internship positions with detailed requirements."
+          "step": "Étape 02",
+          "title": "Publiez des offres",
+          "description": "Créez, modifiez et gérez des postes de stage avec des exigences détaillées."
         },
         "candidates": {
-          "step": "Step 03",
-          "title": "Review Candidates",
-          "description": "Access a dashboard of applicants and filter by skills or experience."
+          "step": "Étape 03",
+          "title": "Examinez les candidats",
+          "description": "Accédez à un tableau de bord des candidats et filtrez par compétences ou expérience."
         },
         "accept": {
-          "step": "Step 04",
-          "title": "Accept & Proceed",
-          "description": "Accept candidates and trigger the administrative workflow automatically."
+          "step": "Étape 04",
+          "title": "Acceptez et poursuivez",
+          "description": "Acceptez les candidats et déclenchez automatiquement le workflow administratif."
         }
       }
     },
     "admin": {
-      "title": "Admin Control",
-      "subtitle": "For Administration",
+      "title": "Contrôle admin",
+      "subtitle": "Pour l'administration",
       "steps": {
         "validate": {
-          "step": "Step 01",
-          "title": "Validate Placements",
-          "description": "Review and approve internship matchings submitted by companies."
+          "step": "Étape 01",
+          "title": "Validez les placements",
+          "description": "Examinez et approuvez les correspondances de stage soumises par les entreprises."
         },
         "documents": {
-          "step": "Step 02",
-          "title": "Generate Documents",
-          "description": "Auto-generate Convention de Stage PDFs with all required data pre-filled."
+          "step": "Étape 02",
+          "title": "Générez les documents",
+          "description": "Générez automatiquement les PDF de Convention de Stage avec toutes les données pré-remplies."
         },
         "statistics": {
-          "step": "Step 03",
-          "title": "Track Statistics",
-          "description": "Access global analytics on placement rates and student outcomes."
+          "step": "Étape 03",
+          "title": "Suivez les statistiques",
+          "description": "Accédez aux statistiques globales sur les taux de placement et les résultats des étudiants."
         }
       }
     },
     "cta": {
-      "text": "Ready to transform your internship experience?",
-      "button": "Get Started Free",
-      "aria": "Get started with Stag for free"
+      "text": "Prêt à transformer votre expérience de stage ?",
+      "button": "Commencer gratuitement",
+      "aria": "Commencer avec Stag gratuitement"
     }
   },
   "verify": {
-    "title": "Document Verification",
-    "description": "Enter the verification code printed on your Stag document to confirm its authenticity.",
+    "title": "Vérification de document",
+    "description": "Entrez le code de vérification imprimé sur votre document Stag pour confirmer son authenticité.",
     "placeholder": "INTX-XXXX-XXXX",
-    "submit": "Verify Document",
-    "checking": "Verifying...",
+    "submit": "Vérifier le document",
+    "checking": "Vérification...",
     "valid": {
-      "title": "Document Verified",
-      "subtitle": "This document is authentic and was issued by Stag.",
-      "type": "Document Type",
-      "typeAgreement": "Internship Agreement",
-      "typeCertificate": "Internship Certificate",
-      "student": "Student",
-      "company": "Company",
-      "university": "University",
-      "offer": "Internship Title",
-      "period": "Period",
-      "periodTo": "to",
-      "generatedOn": "Generated On",
-      "status": "Status",
-      "statusGenerated": "Generated",
-      "statusSigned": "Signed",
-      "statusPending": "Pending"
+      "title": "Document vérifié",
+      "subtitle": "Ce document est authentique et a été délivré par Stag.",
+      "type": "Type de document",
+      "typeAgreement": "Convention de stage",
+      "typeCertificate": "Certificat de stage",
+      "student": "Étudiant",
+      "company": "Entreprise",
+      "university": "Université",
+      "offer": "Titre du stage",
+      "period": "Période",
+      "periodTo": "au",
+      "generatedOn": "Généré le",
+      "status": "Statut",
+      "statusGenerated": "Généré",
+      "statusSigned": "Signé",
+      "statusPending": "En attente"
     },
     "invalid": {
-      "title": "Document Not Found",
-      "subtitle": "No document was found with this verification code. Please check the code and try again.",
-      "tryAgain": "Try Another Code"
+      "title": "Document introuvable",
+      "subtitle": "Aucun document n'a été trouvé avec ce code de vérification. Veuillez vérifier le code et réessayer.",
+      "tryAgain": "Essayer un autre code"
     }
   },
   "pages": {
     "discover": {
       "metadata": {
-        "title": "Discover — Stag",
-        "description": "Explore how Stag connects students with internship opportunities through intelligent matching."
+        "title": "Découvrir — Stag",
+        "description": "Découvrez comment Stag connecte les étudiants avec des opportunités de stage grâce à une correspondance intelligente."
       },
       "hero": {
-        "kicker": "Platform Overview",
-        "headline": "Discover What Stag Can Do",
-        "headlineHighlight": "Can Do",
-        "description": "A comprehensive platform that digitizes the entire internship lifecycle—from discovery to official Convention de Stage."
+        "kicker": "Aperçu de la plateforme",
+        "headline": "Découvrez ce que Stag peut faire",
+        "headlineHighlight": "peut faire",
+        "description": "Une plateforme complète qui numérise l'ensemble du cycle de stage — de la découverte à la Convention de Stage officielle."
       },
       "features": {
-        "label": "Core Features",
-        "headline": "Everything You Need",
+        "label": "Fonctionnalités principales",
+        "headline": "Tout ce dont vous avez besoin",
         "items": {
           "matching": {
             "num": "01",
-            "title": "Skill-Based Matching",
-            "desc": "Our algorithm scores candidates against offers using skills, language, location, and profile completeness."
+            "title": "Correspondance par compétences",
+            "desc": "Notre algorithme évalue les candidats par rapport aux offres en utilisant les compétences, la langue, la localisation et la complétude du profil."
           },
           "search": {
             "num": "02",
-            "title": "Smart Search & Filters",
-            "desc": "Find the perfect internship with filters for location, type, work mode, skills, and more."
+            "title": "Recherche et filtres intelligents",
+            "desc": "Trouvez le stage idéal avec des filtres par localisation, type, mode de travail, compétences et plus encore."
           },
           "assistant": {
             "num": "03",
-            "title": "AI-Powered Assistant",
-            "desc": "Get help drafting cover letters, analyzing candidates, and navigating the platform with AI."
+            "title": "Assistant propulsé par l'IA",
+            "desc": "Obtenez de l'aide pour rédiger des lettres de motivation, analyser des candidats et naviguer sur la plateforme avec l'IA."
           },
           "cv": {
             "num": "04",
-            "title": "Digital CV Builder",
-            "desc": "Build a professional profile with skills, experience, GitHub, and portfolio links."
+            "title": "Créateur de CV numérique",
+            "desc": "Créez un profil professionnel avec compétences, expérience, GitHub et liens portfolio."
           },
           "documents": {
             "num": "05",
-            "title": "Automated Documents",
-            "desc": "Convention de Stage and certificates generated automatically with QR verification codes."
+            "title": "Documents automatisés",
+            "desc": "Convention de Stage et certificats générés automatiquement avec des codes de vérification QR."
           },
           "tracking": {
             "num": "06",
-            "title": "Real-Time Tracking",
-            "desc": "Follow every application from submission to placement with live status updates."
+            "title": "Suivi en temps réel",
+            "desc": "Suivez chaque candidature de la soumission au placement avec des mises à jour de statut en direct."
           }
         }
       },
       "matching": {
-        "label": "How Matching Works",
-        "headline": "Intelligent Scoring",
-        "description": "Our matching algorithm evaluates candidates across four dimensions to find the best fit.",
+        "label": "Comment fonctionne la correspondance",
+        "headline": "Notation intelligente",
+        "description": "Notre algorithme de correspondance évalue les candidats selon quatre dimensions pour trouver la meilleure adéquation.",
         "skills": {
-          "label": "Skills",
+          "label": "Compétences",
           "value": "55%",
-          "desc": "Technical skills overlap between student profile and offer requirements."
+          "desc": "Chevauchement des compétences techniques entre le profil étudiant et les exigences de l'offre."
         },
         "language": {
-          "label": "Language",
+          "label": "Langue",
           "value": "20%",
-          "desc": "Language compatibility between student and company."
+          "desc": "Compatibilité linguistique entre l'étudiant et l'entreprise."
         },
         "location": {
-          "label": "Location",
+          "label": "Localisation",
           "value": "15%",
-          "desc": "Geographic proximity and work mode preferences."
+          "desc": "Proximité géographique et préférences de mode de travail."
         },
         "profile": {
-          "label": "Profile",
+          "label": "Profil",
           "value": "10%",
-          "desc": "Profile completeness and additional qualifications."
+          "desc": "Complétude du profil et qualifications supplémentaires."
         }
       },
       "types": {
-        "label": "Internship Types",
-        "headline": "Four Pathways",
+        "label": "Types de stage",
+        "headline": "Quatre parcours",
         "pfe": {
           "title": "PFE",
-          "fullTitle": "Final Year Project",
-          "desc": "End-of-studies project integrating academic research with industry practice."
+          "fullTitle": "Projet de fin d'études",
+          "desc": "Projet de fin d'études intégrant la recherche académique à la pratique industrielle."
         },
         "immersion": {
           "title": "Immersion",
-          "fullTitle": "Immersion Internship",
-          "desc": "Full integration into a company environment for hands-on professional experience."
+          "fullTitle": "Stage d'immersion",
+          "desc": "Intégration complète dans un environnement d'entreprise pour une expérience professionnelle pratique."
         },
         "summer": {
-          "title": "Summer",
-          "fullTitle": "Summer Internship",
-          "desc": "Seasonal opportunities during university breaks for additional experience."
+          "title": "Été",
+          "fullTitle": "Stage d'été",
+          "desc": "Opportunités saisonnières pendant les vacances universitaires pour une expérience supplémentaire."
         },
         "practical": {
-          "title": "Practical",
-          "fullTitle": "Practical Training",
-          "desc": "Structured practical work aligned with academic curriculum requirements."
+          "title": "Pratique",
+          "fullTitle": "Formation pratique",
+          "desc": "Travail pratique structuré aligné sur les exigences du programme académique."
         }
       },
       "cta": {
-        "headline": "Ready to explore?",
-        "description": "Join thousands of students and companies already using Stag.",
-        "button": "Get Started Free"
+        "headline": "Prêt à explorer ?",
+        "description": "Rejoignez des milliers d'étudiants et d'entreprises qui utilisent déjà Stag.",
+        "button": "Commencer gratuitement"
       }
     },
     "forStudents": {
       "metadata": {
-        "title": "For Students — Stag",
-        "description": "Build your digital CV, find matching internships, and track your applications—all in one place."
+        "title": "Pour les étudiants — Stag",
+        "description": "Créez votre CV numérique, trouvez des stages correspondant à vos compétences et suivez vos candidatures — tout en un seul endroit."
       },
       "hero": {
         "kicker": "Pour les Étudiants",
-        "headline": "Your Career Journey Starts Here",
-        "headlineHighlight": "Starts Here",
-        "description": "Build your digital CV, discover internships matched to your skills, and track every application from submission to placement."
+        "headline": "Votre parcours professionnel commence ici",
+        "headlineHighlight": "commence ici",
+        "description": "Créez votre CV numérique, découvrez des stages adaptés à vos compétences et suivez chaque candidature de la soumission au placement."
       },
       "benefits": {
-        "label": "Why Stag",
-        "headline": "Built for Your Success",
+        "label": "Pourquoi Stag",
+        "headline": "Conçu pour votre réussite",
         "cv": {
-          "title": "Digital CV",
-          "desc": "Create a professional profile with your skills, experience, GitHub, and portfolio. Recruiters find you."
+          "title": "CV numérique",
+          "desc": "Créez un profil professionnel avec vos compétences, expérience, GitHub et portfolio. Les recruteurs vous trouvent."
         },
         "matching": {
-          "title": "Smart Matching",
-          "desc": "Our algorithm finds internships that match your exact skill set. No more scrolling through irrelevant listings."
+          "title": "Correspondance intelligente",
+          "desc": "Notre algorithme trouve les stages qui correspondent exactement à vos compétences. Fini le défilement d'annonces non pertinentes."
         },
         "apply": {
-          "title": "One-Click Apply",
-          "desc": "Send your profile directly to companies. AI helps you draft cover letters that stand out."
+          "title": "Candidature en un clic",
+          "desc": "Envoyez votre profil directement aux entreprises. L'IA vous aide à rédiger des lettres de motivation qui se démarquent."
         },
         "tracking": {
-          "title": "Live Tracking",
-          "desc": "Follow every application in real-time. Know exactly where you stand at every stage."
+          "title": "Suivi en direct",
+          "desc": "Suivez chaque candidature en temps réel. Sachez exactement où vous en êtes à chaque étape."
         },
         "assistant": {
-          "title": "AI Copilot",
-          "desc": "Get personalized guidance on applications, interview prep, and career strategy from your AI assistant."
+          "title": "Copilote IA",
+          "desc": "Obtenez des conseils personnalisés sur les candidatures, la préparation aux entretiens et la stratégie de carrière de votre assistant IA."
         },
         "documents": {
-          "title": "Auto Documents",
-          "desc": "Your Convention de Stage and completion certificates are generated automatically when validated."
+          "title": "Documents automatiques",
+          "desc": "Votre Convention de Stage et vos certificats de fin de stage sont générés automatiquement une fois validés."
         }
       },
       "journey": {
-        "label": "Your Journey",
-        "headline": "From Sign-Up to Placement",
+        "label": "Votre parcours",
+        "headline": "De l'inscription au placement",
         "step1": {
           "num": "01",
-          "title": "Create Your Account",
-          "desc": "Register with your university email and verify your student status."
+          "title": "Créez votre compte",
+          "desc": "Inscrivez-vous avec votre e-mail universitaire et vérifiez votre statut étudiant."
         },
         "step2": {
           "num": "02",
-          "title": "Build Your Profile",
-          "desc": "Add skills, link your GitHub, upload your portfolio. Make yourself discoverable."
+          "title": "Créez votre profil",
+          "desc": "Ajoutez vos compétences, liez votre GitHub, téléversez votre portfolio. Rendez-vous visible."
         },
         "step3": {
           "num": "03",
-          "title": "Discover & Apply",
-          "desc": "Search with smart filters or let our matching engine find opportunities for you."
+          "title": "Découvrez et postulez",
+          "desc": "Recherchez avec des filtres intelligents ou laissez notre moteur de correspondance trouver des opportunités pour vous."
         },
         "step4": {
           "num": "04",
-          "title": "Get Placed",
-          "desc": "Once accepted, your university validates the placement and documents are generated."
+          "title": "Obtenez votre placement",
+          "desc": "Une fois accepté, votre université valide le placement et les documents sont générés."
         }
       },
       "cta": {
-        "headline": "Start your journey today",
-        "description": "It's free for students. Always.",
-        "button": "Create Your Account",
+        "headline": "Commencez votre parcours aujourd'hui",
+        "description": "C'est gratuit pour les étudiants. Toujours.",
+        "button": "Créer votre compte",
         "free": "Gratuit pour les Etudiants"
       }
     },
     "forCompanies": {
       "metadata": {
-        "title": "For Companies — Stag",
-        "description": "Find and recruit the best student talent with AI-powered screening and automated compliance."
+        "title": "Pour les entreprises — Stag",
+        "description": "Trouvez et recrutez les meilleurs talents étudiants grâce au tri par IA et à la conformité automatisée."
       },
       "hero": {
-        "kicker": "For Companies",
-        "headline": "Find Tomorrow's Talent Today",
-        "headlineHighlight": "Tomorrow's Talent",
-        "description": "Publish internship offers, screen candidates with AI, and let the platform handle compliance and documents automatically."
+        "kicker": "Pour les entreprises",
+        "headline": "Trouvez les talents de demain aujourd'hui",
+        "headlineHighlight": "talents de demain",
+        "description": "Publiez des offres de stage, triez les candidats avec l'IA et laissez la plateforme gérer automatiquement la conformité et les documents."
       },
       "benefits": {
-        "label": "Why Stag",
-        "headline": "Recruit Smarter",
+        "label": "Pourquoi Stag",
+        "headline": "Recrutez plus intelligemment",
         "pipeline": {
-          "title": "Talent Pipeline",
-          "desc": "Manage all candidates in one place. Filter by skills, experience, and match score to find the best fit."
+          "title": "Pipeline de talents",
+          "desc": "Gérez tous les candidats en un seul endroit. Filtrez par compétences, expérience et score de correspondance pour trouver la meilleure adéquation."
         },
         "ai": {
-          "title": "AI Screening",
-          "desc": "Let AI summarize candidates, highlight strengths, and draft communication—saving hours of manual review."
+          "title": "Tri par IA",
+          "desc": "Laissez l'IA résumer les candidats, mettre en avant les points forts et rédiger des communications — économisant des heures d'examen manuel."
         },
         "trust": {
-          "title": "Trust Index",
-          "desc": "Build your company's reputation on the platform through response rates, completion rates, and feedback scores."
+          "title": "Indice de confiance",
+          "desc": "Construisez la réputation de votre entreprise sur la plateforme grâce aux taux de réponse, taux de complétion et scores de retour."
         },
         "compliance": {
-          "title": "Auto Compliance",
-          "desc": "Once you accept a candidate, the university validates and all official documents are generated automatically."
+          "title": "Conformité automatique",
+          "desc": "Une fois que vous acceptez un candidat, l'université valide et tous les documents officiels sont générés automatiquement."
         }
       },
       "workflow": {
-        "label": "How It Works",
-        "headline": "Four Simple Steps",
+        "label": "Comment ça marche",
+        "headline": "Quatre étapes simples",
         "step1": {
           "num": "01",
-          "title": "Set Up Your Company",
-          "desc": "Create your company profile with logo, description, and office details."
+          "title": "Configurez votre entreprise",
+          "desc": "Créez votre profil d'entreprise avec logo, description et détails des bureaux."
         },
         "step2": {
           "num": "02",
-          "title": "Publish Offers",
-          "desc": "Create internship positions with skill requirements, duration, and work mode."
+          "title": "Publiez des offres",
+          "desc": "Créez des postes de stage avec des exigences de compétences, durée et mode de travail."
         },
         "step3": {
           "num": "03",
-          "title": "Review & Accept",
-          "desc": "Screen applicants, use AI summaries, and accept the best candidates."
+          "title": "Examinez et acceptez",
+          "desc": "Triez les candidats, utilisez les résumés IA et acceptez les meilleurs candidats."
         },
         "step4": {
           "num": "04",
-          "title": "Automated Workflow",
-          "desc": "The rest happens automatically—validation, documents, and tracking."
+          "title": "Workflow automatisé",
+          "desc": "Le reste se fait automatiquement — validation, documents et suivi."
         }
       },
       "stats": {
-        "label": "By The Numbers",
+        "label": "En chiffres",
         "students": {
-          "value": "2,500+",
-          "label": "Active Students"
+          "value": "2 500+",
+          "label": "Étudiants actifs"
         },
         "placement": {
           "value": "96%",
@@ -2291,61 +2291,61 @@
         },
         "universities": {
           "value": "45",
-          "label": "Partner Universities"
+          "label": "Universités partenaires"
         },
         "avgTime": {
           "value": "< 48h",
-          "label": "Avg. Response Time"
+          "label": "Temps de réponse moy."
         }
       },
       "cta": {
-        "headline": "Ready to find talent?",
-        "description": "Join 350+ companies already recruiting on Stag.",
-        "button": "Register Your Company"
+        "headline": "Prêt à trouver des talents ?",
+        "description": "Rejoignez plus de 350 entreprises qui recrutent déjà sur Stag.",
+        "button": "Inscrire votre entreprise"
       }
     },
     "about": {
       "metadata": {
-        "title": "About — Stag",
-        "description": "Learn about Stag's mission to digitize the internship lifecycle and strengthen the University-Enterprise link."
+        "title": "À propos — Stag",
+        "description": "Découvrez la mission de Stag : numériser le cycle de stage et renforcer le lien Université-Entreprise."
       },
       "hero": {
-        "kicker": "About Stag",
-        "headline": "Bridging University & Enterprise",
-        "headlineHighlight": "University & Enterprise",
-        "description": "Within the framework of MESRS strategy to strengthen the University-Enterprise link, Stag digitizes the entire internship lifecycle from discovery to official Convention de Stage."
+        "kicker": "À propos de Stag",
+        "headline": "Le pont entre l'Université et l'Entreprise",
+        "headlineHighlight": "l'Université et l'Entreprise",
+        "description": "Dans le cadre de la stratégie du MESRS pour renforcer le lien Université-Entreprise, Stag numérise l'ensemble du cycle de stage, de la découverte à la Convention de Stage officielle."
       },
       "mission": {
-        "label": "Our Mission",
-        "headline": "Why We Built Stag",
+        "label": "Notre mission",
+        "headline": "Pourquoi nous avons créé Stag",
         "paragraphs": {
-          "p1": "The internship process in Algeria has long been fragmented—students search manually, companies manage paper applications, and universities handle piles of administrative documents.",
-          "p2": "Stag was built to solve this. A single platform where students discover opportunities matched to their skills, companies manage talent pipelines efficiently, and administrators generate official documents with one click.",
-          "p3": "Aligned with the MESRS strategy to modernize higher education, Stag digitizes every step: from the initial search to the final Convention de Stage and completion certificate."
+          "p1": "Le processus de stage en Algérie est depuis longtemps fragmenté — les étudiants cherchent manuellement, les entreprises gèrent des candidatures papier et les universités traitent des piles de documents administratifs.",
+          "p2": "Stag a été conçu pour résoudre ce problème. Une plateforme unique où les étudiants découvrent des opportunités adaptées à leurs compétences, les entreprises gèrent efficacement leurs pipelines de talents et les administrateurs génèrent des documents officiels en un clic.",
+          "p3": "Aligné sur la stratégie du MESRS pour moderniser l'enseignement supérieur, Stag numérise chaque étape : de la recherche initiale à la Convention de Stage finale et au certificat de fin de stage."
         }
       },
       "values": {
-        "label": "Our Values",
-        "headline": "What Guides Us",
+        "label": "Nos valeurs",
+        "headline": "Ce qui nous guide",
         "innovation": {
           "title": "Innovation",
-          "desc": "AI-powered matching, automated documents, and intelligent assistants that make the process effortless."
+          "desc": "Correspondance par IA, documents automatisés et assistants intelligents qui rendent le processus sans effort."
         },
         "accessibility": {
-          "title": "Accessibility",
-          "desc": "Free for students, available in three languages, and designed for every device and connection speed."
+          "title": "Accessibilité",
+          "desc": "Gratuit pour les étudiants, disponible en trois langues et conçu pour tous les appareils et vitesses de connexion."
         },
         "transparency": {
-          "title": "Transparency",
-          "desc": "Real-time tracking, trust indices, and verification codes so every step is visible and verifiable."
+          "title": "Transparence",
+          "desc": "Suivi en temps réel, indices de confiance et codes de vérification pour que chaque étape soit visible et vérifiable."
         },
         "reliability": {
-          "title": "Reliability",
-          "desc": "Built on modern infrastructure with automated compliance, ensuring every document meets official standards."
+          "title": "Fiabilité",
+          "desc": "Construit sur une infrastructure moderne avec conformité automatisée, garantissant que chaque document répond aux normes officielles."
         }
       },
       "stats": {
-        "label": "Platform Impact",
+        "label": "Impact de la plateforme",
         "students": {
           "value": "2,500+",
           "label": "Etudiants Connectes"
@@ -2364,37 +2364,37 @@
         }
       },
       "cta": {
-        "headline": "Be part of the future",
-        "description": "Whether you're a student, company, or university—Stag is for you.",
+        "headline": "Faites partie de l'avenir",
+        "description": "Que vous soyez étudiant, entreprise ou université — Stag est fait pour vous.",
         "button": "Commencer"
       }
     }
   },
   "footer": {
-    "description": "Connecting the brightest students with world-class opportunities. The future of internships starts here.",
+    "description": "Connecter les étudiants les plus brillants avec des opportunités de classe mondiale. L'avenir des stages commence ici.",
     "sections": {
-      "platform": "Platform",
-      "company": "Company",
-      "newsletter": "Stay Updated"
+      "platform": "Plateforme",
+      "company": "Entreprise",
+      "newsletter": "Restez informé"
     },
     "links": {
       "discover": "Découvrir",
       "forStudents": "Pour les Étudiants",
-      "forCompanies": "For Companies",
-      "aboutUs": "About Us",
+      "forCompanies": "Pour les Entreprises",
+      "aboutUs": "À Propos",
       "signIn": "Se Connecter",
       "getStarted": "Commencer"
     },
     "newsletter": {
-      "description": "Subscribe to our newsletter for the latest internship opportunities and career tips.",
-      "emailPlaceholder": "Enter your email",
-      "subscribe": "Subscribe"
+      "description": "Abonnez-vous à notre newsletter pour les dernières opportunités de stage et conseils de carrière.",
+      "emailPlaceholder": "Entrez votre e-mail",
+      "subscribe": "S'abonner"
     },
     "legal": {
-      "copyright": "(c) {year} Stag.io. All rights reserved.",
+      "copyright": "(c) {year} Stag.io. Tous droits réservés.",
       "privacyPolicy": "Politique de Confidentialite",
       "termsOfService": "Conditions d'Utilisation",
-      "cookiePolicy": "Cookie Policy"
+      "cookiePolicy": "Politique de Cookies"
     },
     "social": {
       "twitter": "Twitter",
