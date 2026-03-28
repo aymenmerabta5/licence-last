@@ -51,8 +51,11 @@ export function CompanyValidationContent({
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-20">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground/40" />
+      <div className="flex flex-col items-center justify-center py-20 gap-3">
+        <Loader2 className="h-5 w-5 animate-spin text-primary" />
+        <span className="text-xs uppercase tracking-[0.1em] text-muted-foreground">
+          Loading companies
+        </span>
       </div>
     )
   }
@@ -63,12 +66,19 @@ export function CompanyValidationContent({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, ease }}
-        className="flex flex-col items-center justify-center border border-dashed border-border py-20 px-6 text-center"
+        className="border border-dashed border-border/60 p-12 text-center space-y-4"
       >
-        <Building2 className="mb-4 h-8 w-8 text-muted-foreground/30 font-light" />
-        <p className="font-serif text-lg tracking-tight text-heading">
-          {t("noCompanies")}
-        </p>
+        <div className="mx-auto flex h-14 w-14 items-center justify-center border border-border/50 bg-muted/30">
+          <Building2 className="h-6 w-6 text-muted-foreground/40" />
+        </div>
+        <div className="space-y-2">
+          <p className="font-serif text-lg text-heading">
+            {t("noCompanies")}
+          </p>
+          <p className="text-sm font-light text-muted-foreground">
+            No companies match the current filter.
+          </p>
+        </div>
       </motion.div>
     )
   }
@@ -105,8 +115,11 @@ export function CompanyValidationContent({
       {hasMore ? <div ref={sentinelRef} className="h-4" /> : null}
 
       {isFetchingNextPage ? (
-        <div className="flex items-center justify-center py-6">
-          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground/40" />
+        <div className="flex items-center justify-center gap-2 py-6">
+          <Loader2 className="h-4 w-4 animate-spin text-primary" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+            Loading more
+          </span>
         </div>
       ) : null}
     </div>

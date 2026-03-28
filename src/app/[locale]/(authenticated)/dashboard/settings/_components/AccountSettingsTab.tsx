@@ -6,15 +6,7 @@ import { ChangePasswordDialog } from "@/app/[locale]/(authenticated)/dashboard/s
 import { DeleteAccountDialog } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/DeleteAccountDialog"
 import { SessionManagement } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement"
 import { TwoFactorSettings } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/TwoFactorSettings"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 
 interface AccountSettingsTabProps {
   me:
@@ -33,64 +25,58 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
+    <div className="space-y-8">
       {/* Security Baseline */}
-      <Card className="border-border/60 bg-card rounded-[2.5rem] overflow-hidden shadow-sm ring-1 ring-border/5">
-        <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 bg-transparent">
-          <div
-            className="absolute -top-12 -end-8 flex items-center opacity-[0.02] dark:opacity-[0.05] pointer-events-none scale-[2] -rotate-12"
-            aria-hidden="true"
-          >
-            <Shield className="h-64 w-64 text-primary" />
-          </div>
+      <div className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden">
+        <div className="flex items-center gap-2.5 px-6 py-4 border-b border-border/40 bg-muted/20 dark:bg-muted/10">
+          <Shield className="h-4 w-4 text-primary" />
+          <h2 className="font-serif text-lg text-heading">
+            Security Baseline
+          </h2>
+        </div>
 
-          <div className="relative z-10 flex items-center gap-4 mb-3">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-[inset_0_2px_4px_rgba(255,255,255,0.3)]">
-              <Shield className="h-6 w-6" />
-            </span>
-            <CardTitle className="font-serif text-3xl sm:text-4xl text-heading tracking-tight">
-              Security Baseline
-            </CardTitle>
-          </div>
-          <CardDescription className="relative z-10 text-base font-medium text-muted-foreground/80 sm:ps-16 max-w-xl">
+        <div className="px-6 py-4">
+          <p className="text-sm font-light text-muted-foreground">
             Key authentication settings. Maintain robust credentials to protect
             your digital perimeter.
-          </CardDescription>
-        </CardHeader>
+          </p>
+        </div>
 
-        <CardContent className="px-8 pb-8 pt-4 sm:px-10 sm:pb-10 sm:pt-6 space-y-0 divide-y divide-border/15">
+        <div className="divide-y divide-border/20">
           {/* Email row */}
-          <div className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6 first:pt-0 rounded-xl transition-colors duration-300 hover:bg-muted/40 -mx-2 px-2">
-            <div className="flex items-start gap-3.5">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-muted mt-0.5 transition-colors duration-300 group-hover:bg-primary/[0.08]">
-                <Mail className="h-[18px] w-[18px] text-muted-foreground" />
-              </span>
-              <div className="space-y-1">
-                <h4 className="font-bold text-sm">Primary Email</h4>
-                <p className="text-[11px] text-muted-foreground leading-relaxed">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-5">
+            <div className="flex items-start gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center border border-border/50 bg-muted/30 mt-0.5">
+                <Mail className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div className="space-y-0.5">
+                <h4 className="text-sm font-medium text-heading">
+                  Primary Email
+                </h4>
+                <p className="text-[11px] text-muted-foreground">
                   Used for login and official notifications.
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3 ps-13 sm:ps-0">
+            <div className="flex items-center gap-3 ps-11 sm:ps-0">
               <span className="text-sm font-medium truncate max-w-[200px]">
                 {me?.user.email ?? ""}
               </span>
-              <Badge className="bg-primary/8 text-primary border-none font-bold uppercase tracking-widest text-[9px] px-2.5 py-1 shrink-0">
+              <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] border border-primary/30 bg-primary/10 text-primary">
                 {me?.user.role ?? "user"}
-              </Badge>
+              </span>
             </div>
           </div>
 
           {/* Password row */}
-          <div className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6 rounded-xl transition-colors duration-300 hover:bg-muted/40 -mx-2 px-2">
-            <div className="flex items-start gap-3.5">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-muted mt-0.5 transition-colors duration-300 group-hover:bg-primary/[0.08]">
-                <KeyRound className="h-[18px] w-[18px] text-muted-foreground" />
-              </span>
-              <div className="space-y-1">
-                <h4 className="font-bold text-sm">Password</h4>
-                <p className="text-[11px] text-muted-foreground leading-relaxed">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-5">
+            <div className="flex items-start gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center border border-border/50 bg-muted/30 mt-0.5">
+                <KeyRound className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div className="space-y-0.5">
+                <h4 className="text-sm font-medium text-heading">Password</h4>
+                <p className="text-[11px] text-muted-foreground">
                   Update your password. Other active sessions will be revoked.
                 </p>
               </div>
@@ -99,14 +85,14 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
               type="button"
               variant="editorial-outline"
               size="editorial-sm"
-              className="rounded-xl border-border/40 hover:border-heading ms-13 sm:ms-0"
+              className="ms-11 sm:ms-0"
               onClick={() => setPasswordDialogOpen(true)}
             >
               Update
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Two-Factor Auth */}
       <TwoFactorSettings
@@ -117,35 +103,33 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
       <SessionManagement />
 
       {/* Danger Zone */}
-      <Card className="border-destructive/15 bg-destructive/[0.02] rounded-[2.5rem] overflow-hidden shadow-sm relative group">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-destructive)_0%,transparent_50%)] opacity-[0.03] transition-opacity duration-500 group-hover:opacity-[0.06]" />
-
-        <div className="relative z-10 px-8 py-8 sm:px-12 sm:py-10 flex flex-col sm:flex-row sm:items-center justify-between gap-8">
-          <div className="flex items-start gap-5">
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-destructive/10 text-destructive/80 shadow-inner ring-1 ring-destructive/15 transition-all duration-300 group-hover:ring-destructive/30 group-hover:bg-destructive/15">
-              <AlertTriangle className="h-6 w-6" />
-            </span>
-            <div className="space-y-1.5 max-w-sm pt-0.5">
-              <h4 className="font-serif text-2xl sm:text-3xl tracking-tight text-destructive/90">
+      <div className="border border-destructive/20 dark:border-destructive/15 overflow-hidden">
+        <div className="h-0.5 bg-destructive/40" />
+        <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div className="flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-destructive/20 bg-destructive/5 dark:bg-destructive/10">
+              <AlertTriangle className="h-4 w-4 text-destructive" />
+            </div>
+            <div className="space-y-1 min-w-0">
+              <h3 className="font-serif text-lg tracking-tight text-heading">
                 Danger Zone
-              </h4>
-              <p className="text-sm text-muted-foreground/80 leading-relaxed font-medium">
-                Permanently delete your account and all associated data.
-                This action cannot be undone.
+              </h3>
+              <p className="text-sm font-light text-muted-foreground">
+                Permanently delete your account and all associated data. This
+                action cannot be undone.
               </p>
             </div>
           </div>
           <Button
             type="button"
             variant="destructive"
-            size="editorial-sm"
-            className="rounded-xl h-12 px-8 shadow-lg shadow-destructive/20 hover:shadow-destructive/40 transition-all sm:w-auto w-full font-bold uppercase tracking-widest text-[11px]"
             onClick={() => setDeleteDialogOpen(true)}
+            className="shrink-0"
           >
             Delete Account
           </Button>
         </div>
-      </Card>
+      </div>
 
       <ChangePasswordDialog
         open={passwordDialogOpen}

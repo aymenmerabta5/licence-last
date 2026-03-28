@@ -62,8 +62,8 @@ export function ExperienceSection({
         <div className="border border-dashed border-border/30 p-8 sm:p-10 relative overflow-hidden">
           <div className="absolute top-0 end-0 w-24 h-24 bg-primary/[0.02] blur-[50px] rounded-full" />
           <div className="relative text-center space-y-3 max-w-sm mx-auto">
-            <div className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/5">
-              <Briefcase className="h-5 w-5 text-primary/30" />
+            <div className="flex h-12 w-12 items-center justify-center border border-border/50 bg-muted/30">
+              <Briefcase className="h-5 w-5 text-muted-foreground/40" />
             </div>
             <p className="text-sm text-muted-foreground/50 font-light leading-relaxed">
               {labels.emptyMessage}

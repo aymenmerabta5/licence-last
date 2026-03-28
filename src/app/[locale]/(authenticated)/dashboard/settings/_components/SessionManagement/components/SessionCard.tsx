@@ -3,7 +3,6 @@
 import { Clock, Globe, Monitor, Smartphone, Tablet } from "lucide-react"
 import { useTranslations } from "next-intl"
 import type { EnrichedSession } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SessionManagement/types"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
 interface SessionCardProps {
@@ -44,31 +43,32 @@ export function SessionCard({
   const DeviceIcon = DEVICE_ICONS[session.parsed.device]
 
   return (
-    <div className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 my-2.5 rounded-[1.5rem] transition-all duration-300 hover:bg-muted/40 hover:shadow-sm border border-transparent hover:border-border/10">
-      <div className="flex items-start gap-5">
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-muted shadow-inner group-hover:bg-primary/[0.08] group-hover:scale-105 transition-all duration-500">
-          <DeviceIcon className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-        </span>
-        <div className="space-y-1.5 pt-0.5">
-          <div className="flex items-center gap-3">
-            <h4 className="font-serif text-lg tracking-tight text-heading">
+    <div className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4 transition-colors hover:bg-primary/[0.02]">
+      <div className="flex items-start gap-3">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center border border-border/50 bg-muted/30 group-hover:border-primary/20 transition-colors mt-0.5">
+          <DeviceIcon className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+        </div>
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <h4 className="text-sm font-medium text-heading">
               {session.parsed.display}
             </h4>
             {session.isCurrent && (
-              <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-bold uppercase tracking-widest text-[9px] px-2.5 py-0.5 rounded-sm">
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.1em] border border-emerald-400/60 bg-emerald-50 text-emerald-700 dark:border-emerald-500/40 dark:bg-emerald-950/40 dark:text-emerald-300">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400" />
                 {t("currentDevice")}
-              </Badge>
+              </span>
             )}
           </div>
-          <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground/80">
+          <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
             {session.ipAddress && (
-              <span className="flex items-center gap-1.5">
-                <Globe className="h-3.5 w-3.5" />
+              <span className="flex items-center gap-1">
+                <Globe className="h-3 w-3" />
                 {session.ipAddress}
               </span>
             )}
-            <span className="flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5" />
+            <span className="flex items-center gap-1">
+              <Clock className="h-3 w-3" />
               {t("lastActive")} {formatRelativeTime(session.updatedAt)}
             </span>
           </div>
@@ -79,8 +79,8 @@ export function SessionCard({
         <Button
           type="button"
           variant="destructive"
-          size="editorial-sm"
-          className="rounded-xl h-10 px-5 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-md shadow-destructive/20 hover:shadow-destructive/40 ms-17 sm:ms-0 shrink-0 font-bold text-xs"
+          size="sm"
+          className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity ms-11 sm:ms-0"
           onClick={onRevoke}
           disabled={isRevoking}
         >

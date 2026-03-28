@@ -73,6 +73,9 @@ function extractDetailsFromRecord(record: Record<string, unknown>): ErrorDetails
   if (typeof record.status === "number") {
     details.status = record.status
   }
+  if (typeof record.statusCode === "number") {
+    details.status ??= record.statusCode
+  }
   if (isRecord(record.error) && typeof record.error.message === "string") {
     details.message ??= record.error.message
   } else if (typeof record.error === "string") {
@@ -82,7 +85,7 @@ function extractDetailsFromRecord(record: Record<string, unknown>): ErrorDetails
     details.meta = toTranslationValues(record.meta)
   }
 
-  for (const key of ["data", "shape"] as const) {
+  for (const key of ["data", "shape", "body"] as const) {
     const nested = record[key]
     if (!isRecord(nested)) continue
 
@@ -200,6 +203,10 @@ export function resolveLocalizedError(
         return translated
       }
     }
+  }
+
+  if (details.message) {
+    return details.message
   }
 
   return t(fallbackKey, fallbackValues)

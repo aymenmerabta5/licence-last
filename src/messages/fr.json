@@ -361,6 +361,7 @@
       "DEPARTMENT_NOT_FOUND": "Departement introuvable.",
       "DEPARTMENT_SCOPE_FORBIDDEN": "Ce departement n'appartient pas a votre universite.",
       "UNIVERSITY_NOT_FOUND": "Universite introuvable.",
+      "UNIVERSITY_EMAIL_DOMAIN_IS_NOT_APPROVED_YET_PLEASE_REQUEST_APPROVAL_OR_USE_A_UNIVERSITY_EMAIL": "Le domaine e-mail universitaire n'est pas encore approuve. Veuillez demander son approbation ou utiliser une adresse e-mail universitaire.",
       "USER_MANAGEMENT_ACCESS_REQUIRED": "La gestion des utilisateurs requiert un role administrateur.",
       "USER_NOT_FOUND": "Utilisateur introuvable.",
       "SELF_ACTION_FORBIDDEN": "Vous ne pouvez pas effectuer cette action sur votre propre compte.",

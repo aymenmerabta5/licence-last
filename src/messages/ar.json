@@ -361,6 +361,7 @@
       "DEPARTMENT_NOT_FOUND": "القسم غير موجود.",
       "DEPARTMENT_SCOPE_FORBIDDEN": "هذا القسم لا يتبع جامعتك.",
       "UNIVERSITY_NOT_FOUND": "الجامعة غير موجودة.",
+      "UNIVERSITY_EMAIL_DOMAIN_IS_NOT_APPROVED_YET_PLEASE_REQUEST_APPROVAL_OR_USE_A_UNIVERSITY_EMAIL": "نطاق البريد الإلكتروني الجامعي غير معتمد بعد. يرجى طلب اعتماده أو استخدام بريد إلكتروني جامعي.",
       "USER_MANAGEMENT_ACCESS_REQUIRED": "إدارة المستخدمين تتطلب دور مسؤول.",
       "USER_NOT_FOUND": "المستخدم غير موجود.",
       "SELF_ACTION_FORBIDDEN": "لا يمكنك تنفيذ هذا الإجراء على حسابك الخاص.",

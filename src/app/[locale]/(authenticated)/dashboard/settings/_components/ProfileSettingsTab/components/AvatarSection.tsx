@@ -26,7 +26,7 @@ export function AvatarSection({
   const isBusy = isUploading || isDeleting
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-8 p-6 sm:p-10 rounded-[2rem] bg-secondary/[0.02] border border-border/20 shadow-inner">
+    <div className="border border-border/60 bg-card/30 dark:bg-card/50 p-6 sm:p-8">
       <input
         ref={inputRef}
         type="file"
@@ -36,83 +36,81 @@ export function AvatarSection({
         aria-label="Upload profile photo"
       />
 
-      <div className="relative group shrink-0">
-        {/* Editorial glow effect */}
-        <div className="absolute -inset-8 rounded-full bg-[radial-gradient(ellipse_at_center,_var(--color-primary)_0%,transparent_70%)] opacity-0 group-hover:opacity-[0.08] blur-2xl transition-opacity duration-[1500ms]" />
+      <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8">
+        {/* Avatar */}
+        <div className="relative group shrink-0">
+          <div className="h-28 w-28 sm:h-32 sm:w-32 border-2 border-primary/20 bg-background flex items-center justify-center text-primary text-4xl sm:text-5xl font-serif overflow-hidden">
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt="Profile"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 112px, 128px"
+              />
+            ) : (
+              avatarInitial
+            )}
 
-        <div className="relative h-32 w-32 sm:h-40 sm:w-40 rounded-[2rem] sm:rounded-[2.5rem] bg-background flex items-center justify-center text-primary text-5xl sm:text-6xl font-serif font-bold overflow-hidden shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)] ring-1 ring-border/30 transition-all duration-700 ease-out group-hover:ring-primary/40 group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] -rotate-2 group-hover:rotate-0 scale-95 group-hover:scale-100 dark:shadow-[inset_0_2px_10px_rgba(255,255,255,0.02)]">
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt="Profile"
-              fill
-              className="object-cover scale-105 group-hover:scale-100 transition-transform duration-700"
-              sizes="(max-width: 640px) 128px, 160px"
-            />
-          ) : (
-            <span className="bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary/80 to-primary/40">
-              {avatarInitial}
-            </span>
-          )}
-
-          {/* Hover overlay */}
-          <button
-            type="button"
-            disabled={isBusy}
-            onClick={() => inputRef.current?.click()}
-            className="absolute inset-0 flex items-center justify-center bg-background/0 group-hover:bg-background/40 backdrop-blur-[0px] group-hover:backdrop-blur-sm transition-all duration-500 cursor-pointer disabled:cursor-not-allowed"
-            aria-label="Upload profile photo"
-          >
-            <Camera className="h-8 w-8 text-primary opacity-0 group-hover:opacity-100 transition-all duration-500 scale-75 group-hover:scale-100 drop-shadow-lg" />
-          </button>
-        </div>
-
-        {/* Upload spinner indicator */}
-        {isBusy && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-[2rem] sm:rounded-[2.5rem] bg-background/80 backdrop-blur-md z-10">
-            <Loader2 className="h-8 w-8 animate-[spin_3s_linear_infinite] text-primary" />
+            {/* Hover overlay */}
+            <button
+              type="button"
+              disabled={isBusy}
+              onClick={() => inputRef.current?.click()}
+              className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/50 transition-all cursor-pointer disabled:cursor-not-allowed"
+              aria-label="Upload profile photo"
+            >
+              <Camera className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+            </button>
           </div>
-        )}
-      </div>
 
-      <div className="space-y-4 flex flex-col items-start border-s-0 sm:border-s-2 border-border/20 sm:ps-8">
-        <div>
-          <h4 className="font-serif text-2xl tracking-tight text-heading">
-            Identity Visual
-          </h4>
-          <p className="text-sm text-muted-foreground/80 mt-1 max-w-xs leading-relaxed font-medium">
-            We recommend a professional headshot. <br />
-            <span className="text-[10px] font-mono tracking-widest uppercase opacity-60 mt-2 block">
-              JPG/PNG/WEBP &middot; 5MB MAX
-            </span>
-          </p>
+          {isBusy && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+              <Loader2 className="h-6 w-6 text-white animate-spin" />
+            </div>
+          )}
         </div>
 
-        <div className="flex flex-wrap gap-3 mt-2">
-          <Button
-            type="button"
-            variant="default"
-            size="editorial-sm"
-            className="h-10 px-6 text-xs gap-2 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all"
-            disabled={isBusy}
-            onClick={() => inputRef.current?.click()}
-          >
-            <ImagePlus className="h-4 w-4" />
-            Upload Photo
-          </Button>
-          <Button
-            type="button"
-            variant="editorial-outline"
-            size="editorial-sm"
-            className="h-10 px-5 text-xs gap-2 rounded-xl text-destructive hover:bg-destructive/5 hover:text-destructive hover:border-destructive/30"
-            disabled={isBusy || !imageUrl}
-            onClick={() => {
-              void onDelete()
-            }}
-          >
-            <Trash2 className="h-4 w-4" />
-            Remove
-          </Button>
+        {/* Upload instructions */}
+        <div className="space-y-3 min-w-0">
+          <div className="space-y-1">
+            <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
+              Identity Visual
+            </h3>
+            <p className="text-[11px] text-muted-foreground/60 leading-relaxed">
+              We recommend a professional headshot.
+            </p>
+            <p className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground/40">
+              JPG/PNG/WEBP &middot; 5MB MAX
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              variant="editorial"
+              size="editorial-sm"
+              disabled={isBusy}
+              onClick={() => inputRef.current?.click()}
+              className="gap-1.5"
+            >
+              <ImagePlus className="h-3.5 w-3.5" />
+              Upload Photo
+            </Button>
+            <Button
+              type="button"
+              variant="editorial-outline"
+              size="editorial-sm"
+              disabled={isBusy || !imageUrl}
+              onClick={() => {
+                void onDelete()
+              }}
+              className="gap-1.5 text-destructive hover:text-destructive hover:border-destructive/40"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Remove
+            </Button>
+          </div>
         </div>
       </div>
     </div>

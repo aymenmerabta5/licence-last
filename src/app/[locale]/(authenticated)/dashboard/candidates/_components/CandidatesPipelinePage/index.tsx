@@ -28,7 +28,7 @@ export function CandidatesPipelinePage({
   ).length
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8">
+    <div className="mx-auto max-w-5xl space-y-8 pb-16">
       <CandidatesHeader t={t} totalCandidates={totalCandidates} />
 
       <StatsOverview

@@ -13,17 +13,24 @@ import Image from "next/image"
 import { useTranslations } from "next-intl"
 import type { CompanyListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/types"
 import { CompanyCardActionPanel } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyCardActionPanel"
-import { Badge } from "@/components/ui/badge"
 import { getWilayaName } from "@/lib/wilayas"
 
 const STATUS_STYLES: Record<string, string> = {
   pending:
-    "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-500",
+    "bg-amber-50 text-amber-700 border-amber-400/60 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-500/40",
   approved:
-    "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-500",
-  rejected: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-500",
+    "bg-emerald-50 text-emerald-700 border-emerald-400/60 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-500/40",
+  rejected:
+    "bg-rose-50 text-rose-700 border-rose-400/60 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-500/40",
   suspended:
-    "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-500",
+    "bg-orange-50 text-orange-700 border-orange-400/60 dark:bg-orange-950/40 dark:text-orange-300 dark:border-orange-500/40",
+}
+
+const STATUS_DOT: Record<string, string> = {
+  pending: "bg-amber-500 dark:bg-amber-400",
+  approved: "bg-emerald-500 dark:bg-emerald-400",
+  rejected: "bg-rose-500 dark:bg-rose-400",
+  suspended: "bg-orange-500 dark:bg-orange-400",
 }
 
 interface CompanyCardProps {
@@ -67,13 +74,16 @@ export function CompanyCard({
             {/* Header */}
             <div>
               <div className="flex items-center gap-3 mb-3">
-                <Badge
-                  className={`shrink-0 px-2 py-0.5 rounded-sm font-semibold uppercase tracking-widest text-[10px] border-none ${
+                <span
+                  className={`inline-flex items-center gap-1.5 shrink-0 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] border ${
                     STATUS_STYLES[company.status] ?? STATUS_STYLES.pending
                   }`}
                 >
+                  <span
+                    className={`inline-block h-1.5 w-1.5 rounded-full ${STATUS_DOT[company.status] ?? STATUS_DOT.pending}`}
+                  />
                   {t(`status.${company.status}`)}
-                </Badge>
+                </span>
               </div>
 
               <div className="flex items-center gap-4">

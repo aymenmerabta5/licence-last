@@ -62,8 +62,6 @@ export function StatsCard({
           </div>
         </div>
 
-        {/* Decorative giant icon */}
-        <Icon className="absolute -bottom-4 -right-4 h-24 w-24 text-foreground/5 group-hover:text-background/5 transition-colors duration-500 pointer-events-none scale-150 group-hover:scale-[1.75]" />
       </div>
     </motion.div>
   )

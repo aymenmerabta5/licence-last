@@ -22,43 +22,44 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.15, ease }}
-      className="border-y-2 border-foreground dark:border-foreground/15"
+      className="grid grid-cols-3 gap-4"
     >
-      <div className="grid grid-cols-3">
-        {stats.map((stat, i) => {
-          const Icon = stat.icon
-          const isHighlight = stat.value === "100%"
+      {stats.map((stat, i) => {
+        const Icon = stat.icon
+        const isHighlight = stat.value === "100%"
 
-          return (
+        return (
+          <div
+            key={i}
+            className="border border-border/60 bg-card/30 dark:bg-card/50 p-5"
+          >
+            <div className="flex items-start justify-between">
+              <span className="text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+                {stat.title}
+              </span>
+              <Icon
+                className={cn(
+                  "h-4 w-4",
+                  isHighlight
+                    ? "text-primary"
+                    : "text-muted-foreground/50",
+                )}
+              />
+            </div>
             <div
-              key={i}
               className={cn(
-                "py-7 px-5 text-center relative group transition-colors",
-                "hover:bg-primary/[0.02]",
-                i < stats.length - 1 && "border-e border-border/40",
+                "mt-2 font-serif text-3xl tracking-tight",
+                isHighlight ? "text-primary" : "text-heading",
               )}
             >
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <Icon className="h-3.5 w-3.5 text-primary" />
-                <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
-                  {stat.title}
-                </span>
-              </div>
-              <h3
-                className={cn(
-                  "font-serif text-4xl font-bold leading-none tracking-tight",
-                  isHighlight ? "text-primary" : "text-heading",
-                )}
-              >
-                {stat.value}
-              </h3>
-              <p className="text-[10px] text-muted-foreground/40 font-medium mt-2">
-                {stat.description}
-              </p>
+              {stat.value}
             </div>
-          )
-        })}
-      </div>
+            <p className="text-[10px] text-muted-foreground/50 font-medium mt-1">
+              {stat.description}
+            </p>
+          </div>
+        )
+      })}
     </motion.div>
   )
 }

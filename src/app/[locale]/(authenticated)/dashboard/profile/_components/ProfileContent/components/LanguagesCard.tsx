@@ -36,19 +36,15 @@ export function LanguagesCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.35, duration: 0.6, ease }}
     >
-      <div className="flex items-center gap-2 mb-5">
-        <div className="h-px flex-1 bg-border/30" />
-        <div className="flex items-center gap-1.5 shrink-0">
-          <Languages className="h-3 w-3 text-primary" />
-          <h2 className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
-            {labels.languages}
-          </h2>
-        </div>
-        <div className="h-px flex-1 bg-border/30" />
-      </div>
-
       {languages.length > 0 ? (
-        <div className="border border-border/40 p-5">
+        <div className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden">
+          <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-border/40 bg-muted/20 dark:bg-muted/10">
+            <Languages className="h-4 w-4 text-primary" />
+            <h2 className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+              {labels.languages}
+            </h2>
+          </div>
+          <div className="p-5">
           <div className="flex flex-wrap gap-2">
             {languages.map((language) => (
               <Badge
@@ -61,13 +57,14 @@ export function LanguagesCard({
               </Badge>
             ))}
           </div>
+          </div>
         </div>
       ) : (
-        <div className="border border-dashed border-border/30 p-8">
+        <div className="border border-dashed border-border/40 p-8">
           {canEdit ? (
             <div className="text-center space-y-3">
-              <div className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/5">
-                <Languages className="h-5 w-5 text-primary/30" />
+              <div className="flex h-12 w-12 items-center justify-center border border-border/50 bg-muted/30">
+                <Languages className="h-5 w-5 text-muted-foreground/40" />
               </div>
               <p className="text-xs text-muted-foreground/50 font-medium max-w-[200px] mx-auto leading-relaxed">
                 {labels.emptyMessage}

@@ -23,11 +23,11 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20 min-h-[50vh]">
-        <div className="relative">
-          <Loader2 className="h-10 w-10 animate-spin text-primary" />
-          <div className="absolute inset-0 border-2 border-foreground animate-ping opacity-20" />
-        </div>
+      <div className="flex flex-col items-center justify-center py-20 min-h-[50vh] gap-3">
+        <Loader2 className="h-5 w-5 animate-spin text-primary" />
+        <span className="text-xs uppercase tracking-[0.1em] text-muted-foreground">
+          Loading dashboard
+        </span>
       </div>
     )
   }

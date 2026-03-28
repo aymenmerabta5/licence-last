@@ -37,16 +37,15 @@ export function SocialLinks({ profile, labels }: SocialLinksProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4, duration: 0.6, ease }}
     >
-      {/* Section header */}
-      <div className="flex items-center gap-2 mb-5">
-        <div className="h-px flex-1 bg-border/30" />
-        <h2 className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50 shrink-0 [[dir=rtl]_&]:tracking-normal">
-          {labels.links}
-        </h2>
-        <div className="h-px flex-1 bg-border/30" />
-      </div>
+      <div className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-border/40 bg-muted/20 dark:bg-muted/10">
+          <ExternalLink className="h-4 w-4 text-primary" />
+          <h2 className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+            {labels.links}
+          </h2>
+        </div>
 
-      <div className="space-y-2">
+      <div className="divide-y divide-border/20">
         {links.map((link, i) => {
           const Icon = link.icon
           const isActive = !!link.href
@@ -89,6 +88,7 @@ export function SocialLinks({ profile, labels }: SocialLinksProps) {
             </motion.div>
           )
         })}
+      </div>
       </div>
     </motion.section>
   )

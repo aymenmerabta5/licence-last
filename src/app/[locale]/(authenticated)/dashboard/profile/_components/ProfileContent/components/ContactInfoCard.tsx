@@ -7,6 +7,7 @@ import {
   MapPin,
   Phone,
   ShieldCheck,
+  User,
 } from "lucide-react"
 import * as motion from "motion/react-client"
 import type {
@@ -76,19 +77,18 @@ export function ContactInfoCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: 0.6, ease }}
-      className="space-y-0"
+      className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden"
     >
       {/* Section header */}
-      <div className="flex items-center gap-2 mb-5">
-        <div className="h-px flex-1 bg-border/30" />
-        <h2 className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50 shrink-0 [[dir=rtl]_&]:tracking-normal">
+      <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-border/40 bg-muted/20 dark:bg-muted/10">
+        <User className="h-4 w-4 text-primary" />
+        <h2 className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
           {labels.personalInfo}
         </h2>
-        <div className="h-px flex-1 bg-border/30" />
       </div>
 
       {/* Contact rows */}
-      <div className="border border-border/40 divide-y divide-border/20">
+      <div className="divide-y divide-border/20">
         {rows.map((row, idx) => {
           const Icon = row.icon
           const hasValue = !!row.value
@@ -101,17 +101,17 @@ export function ContactInfoCard({
               transition={{ delay: 0.25 + idx * 0.04, duration: 0.4, ease }}
               className="flex items-center gap-3.5 px-5 py-4 transition-colors hover:bg-primary/[0.02] group"
             >
-              <div className="p-1.5 rounded-md bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-200">
-                <Icon className="h-3.5 w-3.5" />
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center border border-border/50 bg-muted/30 group-hover:border-primary/30 group-hover:bg-primary/5 transition-colors">
+                <Icon className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40 font-bold mb-0.5 [[dir=rtl]_&]:tracking-normal">
+                <p className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground/50 font-bold mb-0.5">
                   {row.label}
                 </p>
                 <p
                   className={
                     hasValue
-                      ? "text-sm font-bold text-heading truncate"
+                      ? "text-sm font-medium text-heading truncate"
                       : "text-sm text-muted-foreground/40 font-medium italic truncate"
                   }
                 >

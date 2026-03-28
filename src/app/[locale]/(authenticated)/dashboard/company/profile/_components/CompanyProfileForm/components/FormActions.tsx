@@ -1,7 +1,8 @@
+"use client"
+
 import { Loader2, Save } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
 import { Button } from "@/components/ui/button"
 import { ease } from "@/lib/animations"
 
@@ -18,9 +19,7 @@ export function FormActions({ form }: FormActionsProps) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease, delay: 0.4 }}
-      className="pt-4"
     >
-      <div className="h-px bg-border/30 mb-8" />
       <form.Subscribe
         selector={(state: { isSubmitting: boolean }) =>
           [state.isSubmitting] as const
@@ -31,7 +30,7 @@ export function FormActions({ form }: FormActionsProps) {
             type="submit"
             variant="editorial"
             size="editorial"
-            className="w-full h-12 gap-2"
+            className="w-full h-11 gap-2"
             disabled={isSubmitting}
           >
             {isSubmitting ? (

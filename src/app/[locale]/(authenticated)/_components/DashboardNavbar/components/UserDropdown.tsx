@@ -45,7 +45,7 @@ export function UserDropdown({
         render={
           <Button
             variant="ghost"
-            className="group h-auto min-w-0 items-center gap-2.5 rounded-full px-2 py-1 hover:bg-secondary/80"
+            className="group h-auto min-w-0 items-center gap-2.5 rounded-full px-3 py-2 hover:bg-secondary/90"
           />
         }
       >
@@ -56,20 +56,20 @@ export function UserDropdown({
           <UserRoleBadge
             role={effectiveRole}
             label={roleLabel}
-            className="text-[9px]"
+            className="text-[8px] tracking-[0.1em] shrink-0"
           />
         </div>
         <div
           data-testid="user-dropdown-compact-badge"
-          className="flex xl:hidden"
+          className="hidden sm:flex xl:hidden"
         >
           <UserRoleBadge
             role={effectiveRole}
             label={roleLabel}
-            className="text-[9px]"
+            className="text-[8px] tracking-[0.1em]"
           />
         </div>
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-border/30 bg-background text-lg font-serif text-heading transition-colors group-hover:border-primary/50">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center border border-border/30 bg-background text-sm font-serif text-heading transition-colors group-hover:border-primary/50">
           {user.name?.charAt(0) || "U"}
         </div>
       </DropdownMenuTrigger>

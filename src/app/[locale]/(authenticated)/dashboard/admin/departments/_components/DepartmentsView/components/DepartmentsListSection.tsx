@@ -31,8 +31,11 @@ export function DepartmentsListSection({
 }: DepartmentsListSectionProps) {
   if (isLoading) {
     return (
-      <div className="flex justify-center py-16">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      <div className="flex flex-col items-center justify-center py-20 gap-3">
+        <Loader2 className="h-5 w-5 animate-spin text-primary" />
+        <span className="text-xs uppercase tracking-[0.1em] text-muted-foreground">
+          Loading departments
+        </span>
       </div>
     )
   }
@@ -42,10 +45,17 @@ export function DepartmentsListSection({
       <motion.div
         {...reveal}
         transition={revealWithDelay(0.16)}
-        className="space-y-2 border border-dashed border-border p-12 text-center"
+        className="border border-dashed border-border/60 p-12 text-center space-y-4"
       >
-        <FolderTree className="mx-auto h-12 w-12 text-muted-foreground/30" />
-        <p className="text-sm text-muted-foreground">{emptyLabel}</p>
+        <div className="mx-auto flex h-14 w-14 items-center justify-center border border-border/50 bg-muted/30">
+          <FolderTree className="h-6 w-6 text-muted-foreground/40" />
+        </div>
+        <div className="space-y-1">
+          <p className="font-serif text-lg text-heading">No departments</p>
+          <p className="text-sm font-light text-muted-foreground">
+            {emptyLabel}
+          </p>
+        </div>
       </motion.div>
     )
   }

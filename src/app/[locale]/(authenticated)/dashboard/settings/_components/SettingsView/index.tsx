@@ -6,7 +6,6 @@ import * as motion from "motion/react-client"
 import { AccountSettingsTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/AccountSettingsTab"
 import { ProfileSettingsTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab"
 import { NotificationsTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/NotificationsTab"
-import { PreferencesTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/PreferencesTab"
 import { SettingsHeader } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/SettingsHeader"
 import { SettingsTabs } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/SettingsTabs"
 import { useSettingsData } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/hooks/useSettingsData"
@@ -53,7 +52,6 @@ export function SettingsView() {
                 <NotificationsTab email={me?.user.email ?? ""} />
               )}
 
-              {activeTab === "preferences" && <PreferencesTab />}
             </motion.div>
           </AnimatePresence>
         </div>

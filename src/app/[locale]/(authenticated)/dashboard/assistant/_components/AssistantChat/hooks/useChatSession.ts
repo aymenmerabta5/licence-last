@@ -101,6 +101,7 @@ export function useChatSession() {
   } = useConversationActions({
     t,
     activeConversationId,
+    activeConversationModel: selectedConversation?.model ?? defaultModelId,
     selectedConversationId,
     conversations,
     defaultModelId,

@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Building2,
   FileText,
@@ -9,7 +11,6 @@ import {
 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
 import { SelectField, TextAreaField, TextField } from "@/components/form-fields"
 import { ease } from "@/lib/animations"
 import { errorMessage } from "@/lib/schemas/auth"
@@ -20,24 +21,34 @@ interface ProfileFieldsSectionProps {
   form: any
 }
 
-function SectionDivider({
-  icon: Icon,
-  label,
-}: {
+interface EditorialSectionProps {
   icon: React.ElementType
-  label: string
-}) {
+  title: string
+  delay: number
+  children: React.ReactNode
+}
+
+function EditorialSection({
+  icon: Icon,
+  title,
+  delay,
+  children,
+}: EditorialSectionProps) {
   return (
-    <div className="flex items-center gap-2 pt-2">
-      <div className="h-px flex-1 bg-border/30" />
-      <div className="flex items-center gap-1.5 shrink-0">
-        <Icon className="h-3 w-3 text-primary" />
-        <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
-          {label}
-        </span>
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease, delay }}
+      className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden"
+    >
+      {/* Section header */}
+      <div className="flex items-center gap-2.5 px-6 py-4 border-b border-border/40 bg-muted/20 dark:bg-muted/10">
+        <Icon className="h-4 w-4 text-primary" />
+        <h2 className="font-serif text-base text-heading">{title}</h2>
       </div>
-      <div className="h-px flex-1 bg-border/30" />
-    </div>
+      {/* Section body */}
+      <div className="p-6 space-y-5">{children}</div>
+    </motion.div>
   )
 }
 
@@ -45,18 +56,13 @@ export function ProfileFieldsSection({ form }: ProfileFieldsSectionProps) {
   const t = useTranslations("dashboard.company.profile")
 
   return (
-    <div className="space-y-8">
-      {/* About section */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease, delay: 0.15 }}
-        className="space-y-5"
+    <div className="space-y-6">
+      {/* ── About ──────────────────────────────────────── */}
+      <EditorialSection
+        icon={FileText}
+        title={t("descriptionLabel") ?? "About"}
+        delay={0.1}
       >
-        <SectionDivider
-          icon={FileText}
-          label={t("descriptionLabel") ?? "About"}
-        />
         <form.Field name="description">
           {(field: {
             state: { value: string; meta: { errors: unknown[] } }
@@ -99,17 +105,14 @@ export function ProfileFieldsSection({ form }: ProfileFieldsSectionProps) {
             />
           )}
         </form.Field>
-      </motion.div>
+      </EditorialSection>
 
-      {/* Contact section */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease, delay: 0.25 }}
-        className="space-y-5"
+      {/* ── Contact ────────────────────────────────────── */}
+      <EditorialSection
+        icon={User}
+        title={t("contactLabel") ?? "Contact"}
+        delay={0.2}
       >
-        <SectionDivider icon={User} label={t("contactLabel") ?? "Contact"} />
-
         <form.Field name="representativeName">
           {(field: {
             state: { value: string; meta: { errors: unknown[] } }
@@ -172,20 +175,14 @@ export function ProfileFieldsSection({ form }: ProfileFieldsSectionProps) {
             )}
           </form.Field>
         </div>
-      </motion.div>
+      </EditorialSection>
 
-      {/* Location section */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease, delay: 0.35 }}
-        className="space-y-5"
+      {/* ── Location ───────────────────────────────────── */}
+      <EditorialSection
+        icon={Building2}
+        title={t("locationLabel") ?? "Location"}
+        delay={0.3}
       >
-        <SectionDivider
-          icon={Building2}
-          label={t("locationLabel") ?? "Location"}
-        />
-
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <form.Field name="wilayaCode">
             {(field: {
@@ -229,7 +226,7 @@ export function ProfileFieldsSection({ form }: ProfileFieldsSectionProps) {
             )}
           </form.Field>
         </div>
-      </motion.div>
+      </EditorialSection>
     </div>
   )
 }

@@ -361,6 +361,7 @@
       "DEPARTMENT_NOT_FOUND": "Department not found.",
       "DEPARTMENT_SCOPE_FORBIDDEN": "Department does not belong to your university.",
       "UNIVERSITY_NOT_FOUND": "University not found.",
+      "UNIVERSITY_EMAIL_DOMAIN_IS_NOT_APPROVED_YET_PLEASE_REQUEST_APPROVAL_OR_USE_A_UNIVERSITY_EMAIL": "University email domain is not approved yet. Please request approval or use a university email.",
       "USER_MANAGEMENT_ACCESS_REQUIRED": "User management requires an admin role.",
       "USER_NOT_FOUND": "User not found.",
       "SELF_ACTION_FORBIDDEN": "You cannot perform this action on your own account.",

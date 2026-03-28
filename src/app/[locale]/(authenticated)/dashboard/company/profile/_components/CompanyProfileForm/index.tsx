@@ -5,7 +5,6 @@ import { DeleteCompanySection } from "@/app/[locale]/(authenticated)/dashboard/c
 import { FormActions } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/FormActions"
 import { LogoUploadSection } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/LogoUploadSection"
 import { ProfileFieldsSection } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/ProfileFieldsSection"
-
 import { useCompanyProfileForm } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/hooks/useCompanyProfileForm"
 import type { CompanyProfileFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/types"
 import { ServerError } from "@/components/ServerError"
@@ -34,7 +33,7 @@ export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
         e.preventDefault()
         form.handleSubmit()
       }}
-      className="space-y-8"
+      className="space-y-6"
     >
       <ServerError message={serverError} />
       <SuccessMessage message={successMessage} />
@@ -49,14 +48,14 @@ export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
 
       <FormActions form={form} />
 
-      {initialData.canDeleteCompany ? (
+      {initialData.canDeleteCompany && (
         <DeleteCompanySection
           companyName={initialData.companyName}
           onConfirmDelete={handleDeleteCompany}
           isDeleting={isDeletingCompany}
           errorMessage={deleteCompanyError}
         />
-      ) : null}
+      )}
     </motion.form>
   )
 }

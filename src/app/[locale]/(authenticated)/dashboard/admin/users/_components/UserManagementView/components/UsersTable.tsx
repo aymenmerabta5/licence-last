@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
+import { ChevronLeft, ChevronRight, Loader2, Users } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { UserRow } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/UserRow"
 import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
@@ -50,8 +50,11 @@ export function UsersTable({
 
   if (isLoading) {
     return (
-      <div className="flex justify-center py-16">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      <div className="flex flex-col items-center justify-center py-20 gap-3">
+        <Loader2 className="h-5 w-5 animate-spin text-primary" />
+        <span className="text-xs uppercase tracking-[0.1em] text-muted-foreground">
+          Loading users
+        </span>
       </div>
     )
   }
@@ -83,9 +86,21 @@ export function UsersTable({
               <TableRow>
                 <td
                   colSpan={5}
-                  className="text-center py-12 text-sm text-muted-foreground"
+                  className="py-16"
                 >
-                  {t("noUsers")}
+                  <div className="flex flex-col items-center gap-4 text-center">
+                    <div className="flex h-14 w-14 items-center justify-center border border-border/50 bg-muted/30">
+                      <Users className="h-6 w-6 text-muted-foreground/40" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="font-serif text-lg text-heading">
+                        {t("noUsers")}
+                      </p>
+                      <p className="text-sm font-light text-muted-foreground">
+                        No users match the current filters.
+                      </p>
+                    </div>
+                  </div>
                 </td>
               </TableRow>
             ) : (

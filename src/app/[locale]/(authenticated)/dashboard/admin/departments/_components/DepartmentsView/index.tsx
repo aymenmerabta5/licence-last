@@ -61,7 +61,7 @@ export function DepartmentsView() {
     }
   }
   return (
-    <div className="mx-auto max-w-5xl space-y-8">
+    <div className="mx-auto max-w-5xl space-y-8 pb-16">
       <DepartmentsHeader />
       <motion.div {...reveal} transition={revealWithDelay(0.08)}>
         <CreateDepartmentForm

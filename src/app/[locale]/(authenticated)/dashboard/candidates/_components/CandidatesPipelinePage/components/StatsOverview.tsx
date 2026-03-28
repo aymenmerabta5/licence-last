@@ -1,5 +1,5 @@
+import { Briefcase, Radio, Users } from "lucide-react"
 import type { CandidatesDashboardTranslations } from "@/app/[locale]/(authenticated)/dashboard/candidates/_components/CandidatesPipelinePage/types"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface StatsOverviewProps {
   offersCount: number
@@ -15,43 +15,59 @@ export function StatsOverview({
   t,
 }: StatsOverviewProps) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            {t("candidates.stats.totalOffers")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="font-serif text-3xl text-heading">{offersCount}</div>
-        </CardContent>
-      </Card>
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <StatCard
+        icon={Briefcase}
+        label={t("candidates.stats.totalOffers")}
+        value={offersCount}
+      />
+      <StatCard
+        icon={Radio}
+        label={t("candidates.stats.activeOffers")}
+        value={activeOffersCount}
+        iconClass="text-emerald-500 dark:text-emerald-400"
+      />
+      <StatCard
+        icon={Users}
+        label={t("candidates.stats.totalCandidates")}
+        value={totalCandidates}
+        valueClass="text-primary"
+        iconClass="text-primary"
+      />
+    </div>
+  )
+}
 
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            {t("candidates.stats.activeOffers")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="font-serif text-3xl text-heading">
-            {activeOffersCount}
-          </div>
-        </CardContent>
-      </Card>
+interface StatCardProps {
+  icon: React.ElementType
+  label: string
+  value: number
+  valueClass?: string
+  iconClass?: string
+}
 
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            {t("candidates.stats.totalCandidates")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="font-serif text-3xl text-primary">
-            {totalCandidates}
-          </div>
-        </CardContent>
-      </Card>
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+  valueClass,
+  iconClass,
+}: StatCardProps) {
+  return (
+    <div className="border border-border/60 bg-card/30 dark:bg-card/50 p-5">
+      <div className="flex items-start justify-between">
+        <span className="text-xs font-medium uppercase tracking-[0.08em] text-muted-foreground">
+          {label}
+        </span>
+        <Icon
+          className={`h-4 w-4 ${iconClass ?? "text-muted-foreground/50"}`}
+        />
+      </div>
+      <div
+        className={`mt-2 font-serif text-3xl tracking-tight ${valueClass ?? "text-heading"}`}
+      >
+        {value}
+      </div>
     </div>
   )
 }

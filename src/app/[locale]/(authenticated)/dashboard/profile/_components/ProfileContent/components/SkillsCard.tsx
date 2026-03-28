@@ -40,20 +40,15 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3, duration: 0.6, ease }}
     >
-      {/* Section header */}
-      <div className="flex items-center gap-2 mb-5">
-        <div className="h-px flex-1 bg-border/30" />
-        <div className="flex items-center gap-1.5 shrink-0">
-          <Award className="h-3 w-3 text-primary" />
-          <h2 className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
-            {labels.skills}
-          </h2>
-        </div>
-        <div className="h-px flex-1 bg-border/30" />
-      </div>
-
       {hasSkills ? (
-        <div className="border border-border/40 p-5 space-y-5">
+        <div className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden">
+          <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-border/40 bg-muted/20 dark:bg-muted/10">
+            <Award className="h-4 w-4 text-primary" />
+            <h2 className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+              {labels.skills}
+            </h2>
+          </div>
+          <div className="p-5 space-y-5">
           {/* Skill count */}
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-wider [[dir=rtl]_&]:tracking-normal">
@@ -102,9 +97,10 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
               </div>
             </div>
           ))}
+          </div>
         </div>
       ) : (
-        <div className="border border-dashed border-border/30 p-8">
+        <div className="border border-dashed border-border/40 p-8">
           {canEdit ? (
             <EmptyState
               icon={Award}
@@ -135,8 +131,8 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <div className="text-center space-y-3">
-      <div className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/5">
-        <Icon className="h-5 w-5 text-primary/30" />
+      <div className="flex h-12 w-12 items-center justify-center border border-border/50 bg-muted/30">
+        <Icon className="h-5 w-5 text-muted-foreground/40" />
       </div>
       <p className="text-xs text-muted-foreground/50 font-medium max-w-[200px] mx-auto leading-relaxed">
         {message}

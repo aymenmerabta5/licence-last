@@ -19,24 +19,28 @@ export function AdminStatsView() {
   const { resolveReport, isPending: isResolvingReport } = useResolveReport()
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 pb-16">
       <AdminStatsHeader />
       <AdminStatsOverview stats={stats ?? null} isLoading={isLoading} />
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
         <div className="lg:col-span-7">
-          <CompanyTrustCard
-            trustIndices={trustIndices}
-            isLoading={isTrustLoading}
-          />
+          <div className="border border-border/60 bg-card/30 dark:bg-card/50 p-6">
+            <CompanyTrustCard
+              trustIndices={trustIndices}
+              isLoading={isTrustLoading}
+            />
+          </div>
         </div>
         <div className="lg:col-span-5">
-          <OpenReportsCard
-            reports={reports}
-            isLoading={isReportsLoading}
-            onResolve={resolveReport}
-            isResolving={isResolvingReport}
-          />
+          <div className="border border-border/60 bg-card/30 dark:bg-card/50 p-6">
+            <OpenReportsCard
+              reports={reports}
+              isLoading={isReportsLoading}
+              onResolve={resolveReport}
+              isResolving={isResolvingReport}
+            />
+          </div>
         </div>
       </div>
     </div>

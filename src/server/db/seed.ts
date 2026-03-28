@@ -2,6 +2,16 @@ import { randomBytes, randomUUID, scryptSync } from "node:crypto"
 import postgres from "postgres"
 
 const logger = console
+const DEFAULT_SEED_UNIVERSITY_ADMIN_NAME = "Seed University Admin"
+const DEFAULT_SEED_UNIVERSITY_ADMIN_UNIVERSITY_NAME =
+  "University Of Constantine 2"
+const DEFAULT_SEED_ADMIN_NAME = "Seed Super Admin"
+const BETTER_AUTH_SCRYPT_CONFIG = {
+  N: 16384,
+  r: 16,
+  p: 1,
+  dkLen: 64,
+}
 
 /**
  * Parse a comma-separated string of domains into an array of normalized domains.
@@ -590,14 +600,6 @@ async function seedDepartmentSkills(db: SeedDb) {
   }
 }
 
-const DEFAULT_SEED_ADMIN_NAME = "Seed Super Admin"
-const BETTER_AUTH_SCRYPT_CONFIG = {
-  N: 16384,
-  r: 16,
-  p: 1,
-  dkLen: 64,
-}
-
 interface SeedAdminCredentials {
   email: string
   password: string
@@ -605,9 +607,8 @@ interface SeedAdminCredentials {
 }
 
 function getSeedAdminCredentials(): SeedAdminCredentials | null {
-  const email =
-    process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase() || "admin@stag.dz"
-  const password = process.env.SEED_ADMIN_PASSWORD?.trim() || "password123"
+  const email = process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase()
+  const password = process.env.SEED_ADMIN_PASSWORD?.trim()
 
   if (!email || !password) {
     logger.warn({
@@ -623,6 +624,27 @@ function getSeedAdminCredentials(): SeedAdminCredentials | null {
     email,
     password,
     name: DEFAULT_SEED_ADMIN_NAME,
+  }
+}
+
+function getSeedUniversityAdminCredentials(): SeedAdminCredentials | null {
+  const email = process.env.SEED_UNIVERSITY_ADMIN_EMAIL?.trim().toLowerCase()
+  const password = process.env.SEED_UNIVERSITY_ADMIN_PASSWORD?.trim()
+
+  if (!email || !password) {
+    logger.warn({
+      event: "university_admin_seed_skipped",
+      reason: "incomplete seed university admin credentials",
+      hasEmail: Boolean(email),
+      hasPassword: Boolean(password),
+    })
+    return null
+  }
+
+  return {
+    email,
+    password,
+    name: DEFAULT_SEED_UNIVERSITY_ADMIN_NAME,
   }
 }
 
@@ -642,6 +664,162 @@ function hashSeedPassword(password: string): string {
   )
 
   return `${salt}:${key.toString("hex")}`
+}
+
+async function ensureCredentialAccount(
+  db: SeedDb,
+  userId: string,
+  email: string,
+  password: string,
+  events: {
+    linked: string
+    repaired: string
+  },
+) {
+  const credentialAccountRows = await db<
+    { id: string; password: string | null }[]
+  >`
+    select id, password
+    from "account"
+    where "user_id" = ${userId}
+      and "provider_id" = ${"credential"}
+    limit 1
+  `
+
+  const credentialAccount = credentialAccountRows[0]
+
+  if (!credentialAccount) {
+    await db`
+      insert into "account" (
+        "id",
+        "account_id",
+        "provider_id",
+        "user_id",
+        "password",
+        "updated_at"
+      )
+      values (
+        ${randomUUID()},
+        ${userId},
+        ${"credential"},
+        ${userId},
+        ${hashSeedPassword(password)},
+        ${new Date()}
+      )
+    `
+    logger.info({
+      event: events.linked,
+      email,
+    })
+    return
+  }
+
+  if (!credentialAccount.password) {
+    await db`
+      update "account"
+      set
+        "password" = ${hashSeedPassword(password)},
+        "updated_at" = ${new Date()}
+      where "id" = ${credentialAccount.id}
+    `
+    logger.info({
+      event: events.repaired,
+      email,
+    })
+  }
+}
+
+async function seedLinkedUniversityAdmin(db: SeedDb) {
+  const credentials = getSeedUniversityAdminCredentials()
+  if (!credentials) {
+    return
+  }
+
+  const targetUniversityName =
+    process.env.SEED_UNIVERSITY_ADMIN_UNIVERSITY_NAME?.trim() ||
+    DEFAULT_SEED_UNIVERSITY_ADMIN_UNIVERSITY_NAME
+
+  const universityRows = await db<{ id: string }[]>`
+    select id
+    from "university"
+    where "name" = ${targetUniversityName}
+    limit 1
+  `
+
+  const universityId = universityRows[0]?.id
+
+  if (!universityId) {
+    logger.warn({
+      event: "university_admin_seed_skipped",
+      reason: "target university not found",
+      email: credentials.email,
+      universityName: targetUniversityName,
+    })
+    return
+  }
+
+  const userRows = await db<{ id: string }[]>`
+    select id
+    from "user"
+    where "email" = ${credentials.email}
+    limit 1
+  `
+
+  const existingUserId = userRows[0]?.id
+  const userId = existingUserId ?? randomUUID()
+
+  if (!existingUserId) {
+    await db`
+      insert into "user" (
+        "id",
+        "email",
+        "email_verified",
+        "role",
+        "university_id",
+        "department_id",
+        "onboarding_completed",
+        "name"
+      )
+      values (
+        ${userId},
+        ${credentials.email},
+        ${true},
+        ${"university_admin"},
+        ${universityId},
+        ${null},
+        ${true},
+        ${credentials.name}
+      )
+    `
+    logger.info({
+      event: "university_admin_seeded",
+      email: credentials.email,
+      role: "university_admin",
+      universityName: targetUniversityName,
+    })
+  } else {
+    await db`
+      update "user"
+      set
+        "role" = ${"university_admin"},
+        "university_id" = ${universityId},
+        "department_id" = ${null},
+        "email_verified" = ${true},
+        "onboarding_completed" = ${true}
+      where "id" = ${userId}
+    `
+    logger.info({
+      event: "university_admin_ensured",
+      email: credentials.email,
+      role: "university_admin",
+      universityName: targetUniversityName,
+    })
+  }
+
+  await ensureCredentialAccount(db, userId, credentials.email, credentials.password, {
+    linked: "university_admin_credential_linked",
+    repaired: "university_admin_credential_repaired",
+  })
 }
 
 async function seedSuperAdmin(db: SeedDb) {
@@ -700,57 +878,10 @@ async function seedSuperAdmin(db: SeedDb) {
     })
   }
 
-  const credentialAccountRows = await db<
-    { id: string; password: string | null }[]
-  >`
-    select id, password
-    from "account"
-    where "user_id" = ${userId}
-      and "provider_id" = ${"credential"}
-    limit 1
-  `
-
-  const credentialAccount = credentialAccountRows[0]
-
-  if (!credentialAccount) {
-    await db`
-      insert into "account" (
-        "id",
-        "account_id",
-        "provider_id",
-        "user_id",
-        "password",
-        "updated_at"
-      )
-      values (
-        ${randomUUID()},
-        ${userId},
-        ${"credential"},
-        ${userId},
-        ${hashSeedPassword(credentials.password)},
-        ${new Date()}
-      )
-    `
-    logger.info({
-      event: "admin_credential_linked",
-      email: credentials.email,
-    })
-    return
-  }
-
-  if (!credentialAccount.password) {
-    await db`
-      update "account"
-      set
-        "password" = ${hashSeedPassword(credentials.password)},
-        "updated_at" = ${new Date()}
-      where "id" = ${credentialAccount.id}
-    `
-    logger.info({
-      event: "admin_credential_repaired",
-      email: credentials.email,
-    })
-  }
+  await ensureCredentialAccount(db, userId, credentials.email, credentials.password, {
+    linked: "admin_credential_linked",
+    repaired: "admin_credential_repaired",
+  })
 }
 
 async function main() {
@@ -779,6 +910,7 @@ async function main() {
     await seedDepartments(db)
     await seedSkillTags(db)
     await seedDepartmentSkills(db)
+    await seedLinkedUniversityAdmin(db)
     await seedSuperAdmin(db)
   } finally {
     await db.end({ timeout: 5 })

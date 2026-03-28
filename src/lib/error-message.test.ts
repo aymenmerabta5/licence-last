@@ -51,11 +51,23 @@ describe("getErrorMessage", () => {
   test("should return fallback for empty object", () => {
     expect(getErrorMessage({})).toBe("An error occurred")
   })
+
+  test("should extract message from Better Auth response body", () => {
+    expect(
+      getErrorMessage({
+        body: {
+          message: "University email domain is not approved yet.",
+        },
+      }),
+    ).toBe("University email domain is not approved yet.")
+  })
 })
 
 describe("resolveLocalizedError", () => {
   const translations: Record<string, string> = {
     "errors.codes.ACCOUNT_SUSPENDED": "Compte suspendu.",
+    "errors.codes.UNIVERSITY_EMAIL_DOMAIN_IS_NOT_APPROVED_YET_PLEASE_REQUEST_APPROVAL_OR_USE_A_UNIVERSITY_EMAIL":
+      "Le domaine e-mail universitaire n'est pas encore approuve.",
     "auth.login.error": "Identifiants invalides.",
     "errors.auth.captchaRequired": "Veuillez completer le CAPTCHA.",
     "errors.auth.rateLimitExceeded": "Trop de tentatives. Veuillez reessayer plus tard.",
@@ -109,7 +121,7 @@ describe("resolveLocalizedError", () => {
     expect(message).toBe("Trop de tentatives. Veuillez reessayer plus tard.")
   })
 
-  test("should use the translated fallback when no code mapping is available", () => {
+  test("should fall back to the backend message when no mapping is available", () => {
     const message = resolveLocalizedError(
       { message: "Invalid credentials" },
       {
@@ -118,6 +130,47 @@ describe("resolveLocalizedError", () => {
       },
     )
 
-    expect(message).toBe("Identifiants invalides.")
+    expect(message).toBe("Invalid credentials")
+  })
+
+  test("should resolve a translated message from Better Auth body.code", () => {
+    const message = resolveLocalizedError(
+      {
+        body: {
+          code: "UNIVERSITY_EMAIL_DOMAIN_IS_NOT_APPROVED_YET_PLEASE_REQUEST_APPROVAL_OR_USE_A_UNIVERSITY_EMAIL",
+          message:
+            "University email domain is not approved yet. Please request approval or use a university email.",
+        },
+        statusCode: 400,
+      },
+      {
+        t,
+        fallbackKey: "errors.common.unexpected",
+      },
+    )
+
+    expect(message).toBe(
+      "Le domaine e-mail universitaire n'est pas encore approuve.",
+    )
+  })
+
+  test("should fall back to Better Auth body.message when unmapped", () => {
+    const message = resolveLocalizedError(
+      {
+        body: {
+          message:
+            "University email domain is not approved yet. Please request approval or use a university email.",
+        },
+        statusCode: 400,
+      },
+      {
+        t,
+        fallbackKey: "errors.common.unexpected",
+      },
+    )
+
+    expect(message).toBe(
+      "University email domain is not approved yet. Please request approval or use a university email.",
+    )
   })
 })

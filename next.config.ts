@@ -101,7 +101,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: getStorageImageRemotePatterns(),
   },
-  allowedDevOrigins: ["http://localhost:3000", "http://xendate"],
+  allowedDevOrigins: ["http://localhost:3000"],
 }
 
 export default withNextIntl(nextConfig)

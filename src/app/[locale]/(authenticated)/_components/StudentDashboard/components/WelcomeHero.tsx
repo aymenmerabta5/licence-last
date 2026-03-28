@@ -1,37 +1,12 @@
 "use client"
 
-import { useReducedMotion } from "motion/react"
+import { Route } from "next"
 import * as motion from "motion/react-client"
-import { useLocale, useTranslations } from "next-intl"
-import { ProfileStrengthColumn } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/ProfileStrengthColumn"
-import { getTransition } from "@/lib/animations"
-
-interface MetadataItemProps {
-  label: string
-  delay: number
-  prefersReducedMotion: boolean
-  children: React.ReactNode
-}
-
-function MetadataItem({
-  label,
-  delay,
-  prefersReducedMotion,
-  children,
-}: MetadataItemProps) {
-  return (
-    <motion.div
-      initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay, duration: 0.8 }}
-    >
-      <span className="block text-foreground font-bold mb-1 opacity-60">
-        {label}
-      </span>
-      {children}
-    </motion.div>
-  )
-}
+import { useTranslations } from "next-intl"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Link } from "@/i18n/routing"
+import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
 interface WelcomeHeroProps {
   userName: string | null
@@ -45,128 +20,112 @@ export function WelcomeHero({
   profileUserId,
 }: WelcomeHeroProps) {
   const t = useTranslations("dashboard.student.welcomeHero")
-  const locale = useLocale()
-  const prefersReducedMotion = useReducedMotion() ?? false
-  const fadeUp = prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 10 }
   const firstName = userName?.split(" ")[0]
   const displayName = firstName ?? t("defaultName")
   const now = new Date()
 
-  // Format dates cleanly for the editorial column
-  const monthDay = new Intl.DateTimeFormat(locale, {
-    month: "short",
-    day: "2-digit",
-  }).format(now)
-
-  const year = now.getFullYear().toString()
-
   return (
-    <motion.div
-      initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={getTransition(
-        { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
-        prefersReducedMotion,
-      )}
-      className="relative w-full"
-    >
-      {/* Top subtle decorative edge matching the newspaper feel */}
-      <div className="absolute top-0 end-0 w-1/3 h-[1px] bg-gradient-to-l from-primary/30 to-transparent -translate-y-px [[dir=rtl]_&]:bg-gradient-to-r" />
+    <header className="space-y-4">
+      <motion.div
+        {...reveal}
+        transition={{ duration: 0.6, ease }}
+        className="h-0.5 bg-primary"
+      />
 
-      <div className="relative border-t-2 md:border-t-4 border-foreground/90 pt-8 pb-10 lg:py-16 grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-14 group">
-        {/* Column 1: Editorial Metadata (span 2) */}
-        <div className="md:col-span-3 lg:col-span-2 flex flex-row md:flex-col justify-between gap-6 uppercase font-sans tracking-widest text-[10px] md:text-xs text-muted-foreground md:border-e border-border/40 md:pe-4">
-          <MetadataItem
-            label="Vol."
-            delay={0.2}
-            prefersReducedMotion={prefersReducedMotion}
-          >
-            <span className="font-serif text-xl md:text-2xl text-foreground font-medium tracking-normal">
-              01
-            </span>
-          </MetadataItem>
+      <div className="space-y-3">
+        <motion.div {...reveal} transition={revealWithDelay(0.05)}>
+          <Badge variant="editorial-muted">Student</Badge>
+        </motion.div>
 
-          <MetadataItem
-            label="Date"
-            delay={0.3}
-            prefersReducedMotion={prefersReducedMotion}
-          >
-            <span className="text-foreground tracking-widest">
-              {monthDay}, {year}
-            </span>
-          </MetadataItem>
-
-          <MetadataItem
-            label="Status"
-            delay={0.4}
-            prefersReducedMotion={prefersReducedMotion}
-          >
-            <span className="text-foreground font-medium flex items-center gap-2">
-              <span
-                className={`w-1.5 h-1.5 rounded-full block ${profileCompleteness === 100 ? "bg-green-500/80 shadow-[0_0_8px_rgba(34,197,94,0.6)]" : "bg-primary/80 animate-pulse"}`}
-              />
-              {profileCompleteness === 100 ? "Ready" : "In Progress"}
-            </span>
-          </MetadataItem>
-        </div>
-
-        {/* Column 2: Main Editorial Headline (span 7.5 relative to grid size contextually) */}
-        <div className="md:col-span-9 lg:col-span-7 flex flex-col justify-center relative">
-          <div className="absolute -top-10 -start-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none" />
-
-          <h1 className="font-serif text-[clamp(2.5rem,6.5vw,5.5rem)] leading-[0.9] tracking-tighter text-foreground mb-8">
-            <motion.span
-              initial={fadeUp}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-              className="block text-muted-foreground text-xl md:text-2xl lg:text-3xl font-sans tracking-tight mb-4 md:mb-6 font-light italic"
-            >
+        <motion.div
+          {...reveal}
+          transition={revealWithDelay(0.1)}
+          className="flex flex-col md:flex-row md:items-end justify-between gap-6"
+        >
+          <div className="space-y-3">
+            <p className="text-sm italic text-muted-foreground">
               {t("headlinePrefix")}
-            </motion.span>
+            </p>
+            <h1 className="font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-heading">
+              {t("headlineAccent")}{" "}
+              <span className="text-primary italic">{displayName}.</span>
+            </h1>
+            <p className="text-sm font-light text-muted-foreground max-w-xl">
+              {profileCompleteness < 100
+                ? t("profileIncomplete")
+                : "Your portfolio represents your highest professional standards. Continue curating your edge."}
+            </p>
+          </div>
 
-            <div className="flex flex-wrap items-baseline gap-x-3 md:gap-x-4">
-              <motion.span
-                initial={
-                  prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }
-                }
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.8 }}
-                className="hover:italic hover:text-primary transition-all duration-500 selection:bg-primary selection:text-white inline-block"
-              >
-                {t("headlineAccent")}
-              </motion.span>
-              <motion.span
-                initial={
-                  prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }
-                }
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-                className="text-primary italic inline-block"
-              >
-                {displayName}.
-              </motion.span>
-            </div>
-          </h1>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 1 }}
-            className="text-foreground/75 text-base md:text-lg lg:text-xl font-light leading-relaxed max-w-xl font-sans"
+          {/* Profile strength + date */}
+          <motion.div
+            {...reveal}
+            transition={revealWithDelay(0.15)}
+            className="shrink-0 border-s border-border/40 ps-6 hidden md:flex flex-col gap-4"
           >
-            {profileCompleteness < 100
-              ? t("profileIncomplete")
-              : "Your portfolio represents your highest professional standards. Continue curating your edge."}
-          </motion.p>
-        </div>
+            <div className="text-end space-y-1">
+              <span className="font-serif text-3xl text-primary leading-none block">
+                {now.getDate().toString().padStart(2, "0")}
+              </span>
+              <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground block">
+                {now.toLocaleString("en-US", { month: "short" })} '
+                {now.getFullYear().toString().slice(-2)}
+              </span>
+            </div>
 
-        {/* Column 3: Profile Strength & CTAs (span 3) */}
-        <ProfileStrengthColumn
-          profileCompleteness={profileCompleteness}
-          profileUserId={profileUserId}
-          prefersReducedMotion={prefersReducedMotion}
-        />
+            <div className="h-px bg-border/40" />
+
+            {/* Profile strength mini gauge */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                  {t("profileStrength")}
+                </span>
+                <span className="font-serif text-lg text-heading tabular-nums">
+                  {profileCompleteness}
+                  <span className="text-xs text-primary">%</span>
+                </span>
+              </div>
+              <div className="h-1 w-32 bg-border/30 overflow-hidden">
+                <motion.div
+                  className="h-full bg-primary"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${profileCompleteness}%` }}
+                  transition={{ duration: 1.2, delay: 0.5, ease }}
+                />
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Action buttons */}
+        <motion.div
+          {...reveal}
+          transition={revealWithDelay(0.2)}
+          className="flex flex-wrap gap-3 pt-2"
+        >
+          {profileCompleteness < 100 && (
+            <Button
+              nativeButton={false}
+              render={
+                <Link href={`/profile/${profileUserId}` as Route}>
+                  {t("completeProfile")}
+                </Link>
+              }
+              variant="editorial"
+              size="editorial"
+            />
+          )}
+          <Button
+            nativeButton={false}
+            render={
+              <Link href="/dashboard/explore">{t("exploreInternships")}</Link>
+            }
+            variant="editorial-outline"
+            size="editorial"
+          />
+        </motion.div>
       </div>
-    </motion.div>
+    </header>
   )
 }

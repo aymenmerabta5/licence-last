@@ -1,11 +1,12 @@
 "use client"
 
-import { Loader2, RefreshCw } from "lucide-react"
+import { FileText, Loader2, RefreshCw } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { useDashboard } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import { PlacementCertificateCard } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/PlacementCertificateCard"
 import { useCompanyDocuments } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/hooks/useCompanyDocuments"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
@@ -24,33 +25,71 @@ export function CompanyDocumentsView() {
   } = useCompanyDocuments()
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
-      <motion.div {...reveal} transition={{ duration: 0.6, ease }}>
-        <h1 className="font-serif text-3xl tracking-tight text-heading">
-          {t("title")}
-        </h1>
-        <p className="mt-1 text-sm font-light text-muted-foreground">
-          {t("subtitle")}
-        </p>
-      </motion.div>
+    <div className="mx-auto max-w-5xl space-y-8 pb-16">
+      {/* Editorial masthead */}
+      <header className="space-y-4">
+        <motion.div
+          {...reveal}
+          transition={{ duration: 0.6, ease }}
+          className="h-0.5 bg-primary"
+        />
 
+        <div className="space-y-3">
+          <motion.div {...reveal} transition={revealWithDelay(0.05)}>
+            <Badge variant="editorial-muted">{t("title")}</Badge>
+          </motion.div>
+
+          <motion.div
+            {...reveal}
+            transition={revealWithDelay(0.1)}
+            className="space-y-2"
+          >
+            <h1 className="font-serif text-[clamp(1.8rem,3.2vw,2.4rem)] leading-[1.1] tracking-tight text-heading">
+              {t("title")}
+            </h1>
+            <p className="text-sm font-light text-muted-foreground max-w-lg">
+              {t("subtitle")}
+            </p>
+          </motion.div>
+
+          {!isLoading && !isError && placements.length > 0 && (
+            <motion.div
+              {...reveal}
+              transition={revealWithDelay(0.15)}
+              className="flex items-center gap-2 text-xs text-muted-foreground border-t border-border/50 pt-4"
+            >
+              <FileText className="h-3.5 w-3.5" />
+              <span>
+                {placements.length}{" "}
+                {placements.length === 1 ? "placement" : "placements"}
+              </span>
+            </motion.div>
+          )}
+        </div>
+      </header>
+
+      {/* Loading */}
       {isLoading && (
-        <div className="flex justify-center py-16">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <div className="flex flex-col items-center justify-center py-20 gap-3">
+          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+          <span className="text-xs uppercase tracking-[0.1em] text-muted-foreground">
+            Loading documents
+          </span>
         </div>
       )}
 
+      {/* Error */}
       {!isLoading && isError && (
         <motion.div
           {...reveal}
           transition={revealWithDelay(0.1)}
-          className="space-y-4 border border-dashed border-border px-6 py-10 text-center"
+          className="border border-destructive/30 bg-destructive/5 p-8 text-center space-y-4"
         >
           <p className="text-sm text-muted-foreground">{t("loadError")}</p>
           <Button
             type="button"
             variant="editorial-outline"
-            size="sm"
+            size="editorial-sm"
             className="gap-1.5"
             onClick={() => refetch()}
           >
@@ -60,18 +99,30 @@ export function CompanyDocumentsView() {
         </motion.div>
       )}
 
+      {/* Empty */}
       {!isLoading && !isError && placements.length === 0 && (
         <motion.div
           {...reveal}
           transition={revealWithDelay(0.1)}
-          className="border border-dashed border-border px-6 py-12 text-center text-sm text-muted-foreground"
+          className="border border-dashed border-border/60 p-12 text-center space-y-4"
         >
-          {t("empty")}
+          <div className="mx-auto flex h-14 w-14 items-center justify-center border border-border/50 bg-muted/30">
+            <FileText className="h-6 w-6 text-muted-foreground/40" />
+          </div>
+          <div className="space-y-2">
+            <p className="font-serif text-lg text-heading">
+              No documents yet
+            </p>
+            <p className="text-sm font-light text-muted-foreground max-w-sm mx-auto">
+              {t("empty")}
+            </p>
+          </div>
         </motion.div>
       )}
 
+      {/* Placement cards */}
       {!isLoading && !isError && placements.length > 0 && (
-        <div className="space-y-4">
+        <div className="space-y-5">
           {placements.map((placement, index) => (
             <motion.div
               key={placement.placementId}

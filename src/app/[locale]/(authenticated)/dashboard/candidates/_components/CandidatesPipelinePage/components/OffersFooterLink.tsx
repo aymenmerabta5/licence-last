@@ -8,13 +8,13 @@ interface OffersFooterLinkProps {
 
 export function OffersFooterLink({ t }: OffersFooterLinkProps) {
   return (
-    <div className="border-t border-border pt-4">
+    <div className="border-t border-border/50 pt-5">
       <Link
         href="/dashboard/company/offers"
-        className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
+        className="group inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-primary"
       >
         {t("candidates.viewAllOffers")}
-        <ArrowRight className="h-4 w-4" />
+        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
       </Link>
     </div>
   )

@@ -108,6 +108,9 @@ APP_IMAGE=ghcr.io/$GITHUB_REPO:latest
 RUN_SEED=true
 SEED_ADMIN_EMAIL=
 SEED_ADMIN_PASSWORD=
+SEED_UNIVERSITY_ADMIN_EMAIL=
+SEED_UNIVERSITY_ADMIN_PASSWORD=
+SEED_UNIVERSITY_ADMIN_UNIVERSITY_NAME=University Of Constantine 2
 
 # ─── Optional Services ─────────────────────────────
 # RESEND_API_KEY=
@@ -130,6 +133,10 @@ EOF
   echo "║  At minimum, set:                            ║"
   echo "║    - SEED_ADMIN_EMAIL                        ║"
   echo "║    - SEED_ADMIN_PASSWORD                     ║"
+  echo "║                                              ║"
+  echo "║  Optional linked university admin:           ║"
+  echo "║    - SEED_UNIVERSITY_ADMIN_EMAIL             ║"
+  echo "║    - SEED_UNIVERSITY_ADMIN_PASSWORD          ║"
   echo "╚══════════════════════════════════════════════╝"
   echo ""
   echo "Run:  nano $APP_DIR/.env"

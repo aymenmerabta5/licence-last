@@ -11,15 +11,38 @@ import { orpc } from "@/server/orpc/client"
 
 interface ConversationListItem {
   id: string
+  model: string
+  updatedAt: Date
 }
 
 interface ConversationModel {
   id: string
 }
 
+interface ConversationDetailData {
+  conversation: {
+    id: string
+    title: string | null
+    model: string
+    createdAt: Date
+    updatedAt: Date
+    createdByUserId: string
+  }
+}
+
+interface ConversationListData {
+  conversations: ConversationListItem[]
+}
+
+interface UpdateConversationModelContext {
+  previousConversationListData: ConversationListData | undefined
+  previousConversationDetailData: ConversationDetailData | undefined
+}
+
 interface UseConversationActionsOptions {
   t: (key: string) => string
   activeConversationId: string | null
+  activeConversationModel: string | null
   selectedConversationId: string | null
   conversations: ConversationListItem[]
   defaultModelId: string | null
@@ -60,9 +83,31 @@ export function resolveSelectionAfterDelete({
   return remaining[0]?.id ?? null
 }
 
+export function applyOptimisticConversationModelUpdate<
+  T extends { model: string; updatedAt: Date },
+>(
+  conversation: T,
+  model: string,
+  updatedAt: Date,
+): T {
+  return {
+    ...conversation,
+    model,
+    updatedAt,
+  }
+}
+
+export function shouldSkipConversationModelUpdate(
+  currentModel: string | null,
+  nextModel: string | null,
+) {
+  return !nextModel || currentModel === nextModel
+}
+
 export function useConversationActions({
   t,
   activeConversationId,
+  activeConversationModel,
   selectedConversationId,
   conversations,
   defaultModelId,
@@ -99,12 +144,105 @@ export function useConversationActions({
 
   const updateModelMutation = useMutation(
     orpc.assistant.updateConversationModel.mutationOptions({
+      onMutate: async (variables): Promise<UpdateConversationModelContext> => {
+        const conversationDetailQueryKey =
+          orpc.assistant.getConversation.queryOptions({
+            input: { conversationId: variables.conversationId },
+          }).queryKey
+
+        await queryClient.cancelQueries({
+          queryKey: listConversationsQueryKey,
+        })
+        await queryClient.cancelQueries({
+          queryKey: conversationDetailQueryKey,
+        })
+
+        const previousConversationListData =
+          queryClient.getQueryData<ConversationListData>(
+            listConversationsQueryKey,
+          )
+        const previousConversationDetailData =
+          queryClient.getQueryData<ConversationDetailData>(
+            conversationDetailQueryKey,
+          )
+        const updatedAt = new Date()
+
+        queryClient.setQueryData<ConversationListData>(
+          listConversationsQueryKey,
+          (current) => {
+            if (!current) return current
+
+            return {
+              ...current,
+              conversations: current.conversations.map((conversation) =>
+                conversation.id === variables.conversationId
+                  ? applyOptimisticConversationModelUpdate(
+                      conversation,
+                      variables.model,
+                      updatedAt,
+                    )
+                  : conversation,
+              ),
+            }
+          },
+        )
+
+        queryClient.setQueryData<ConversationDetailData>(
+          conversationDetailQueryKey,
+          (current) => {
+            if (!current) return current
+            if (current.conversation.id !== variables.conversationId) {
+              return current
+            }
+
+            return {
+              ...current,
+              conversation: applyOptimisticConversationModelUpdate(
+                current.conversation,
+                variables.model,
+                updatedAt,
+              ),
+            }
+          },
+        )
+
+        return {
+          previousConversationListData,
+          previousConversationDetailData,
+        }
+      },
       onSuccess: async (_data, variables) => {
         await invalidateConversationList()
         await invalidateConversationDetail(variables.conversationId)
-        toast.success(t("modelUpdateSuccess"))
       },
-      onError: () => {
+      onError: (_error, variables, context) => {
+        const conversationDetailQueryKey =
+          orpc.assistant.getConversation.queryOptions({
+            input: { conversationId: variables.conversationId },
+          }).queryKey
+
+        if (context?.previousConversationListData) {
+          queryClient.setQueryData(
+            listConversationsQueryKey,
+            context.previousConversationListData,
+          )
+        } else {
+          queryClient.removeQueries({
+            queryKey: listConversationsQueryKey,
+            exact: true,
+          })
+        }
+        if (context?.previousConversationDetailData) {
+          queryClient.setQueryData(
+            conversationDetailQueryKey,
+            context.previousConversationDetailData,
+          )
+        } else {
+          queryClient.removeQueries({
+            queryKey: conversationDetailQueryKey,
+            exact: true,
+          })
+        }
         toast.error(t("modelUpdateError"))
       },
     }),
@@ -179,7 +317,14 @@ export function useConversationActions({
   }
 
   const handleUpdateModel = (model: string | null) => {
-    if (!activeConversationId || !model) return
+    if (
+      !model ||
+      !activeConversationId ||
+      shouldSkipConversationModelUpdate(activeConversationModel, model)
+    ) {
+      return
+    }
+
     updateModelMutation.mutate({
       conversationId: activeConversationId,
       model,

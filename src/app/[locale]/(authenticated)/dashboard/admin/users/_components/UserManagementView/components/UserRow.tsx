@@ -12,7 +12,6 @@ import {
 import { useTranslations } from "next-intl"
 import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
 import { UserRoleBadge } from "@/components/UserRoleBadge"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -75,19 +74,15 @@ export function UserRow({
       </TableCell>
       <TableCell className="py-4">
         {user.banned ? (
-          <Badge
-            variant="destructive"
-            className="text-[9px] uppercase tracking-wider font-semibold rounded-sm px-2 py-0.5"
-          >
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] border border-rose-400/60 bg-rose-50 text-rose-700 dark:border-rose-500/40 dark:bg-rose-950/40 dark:text-rose-300">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-rose-500 dark:bg-rose-400" />
             {t("status.banned")}
-          </Badge>
+          </span>
         ) : (
-          <Badge
-            variant="outline"
-            className="text-[9px] uppercase tracking-wider font-semibold rounded-sm px-2 py-0.5 text-emerald-600 border-emerald-200 bg-emerald-50 dark:bg-emerald-950/20"
-          >
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] border border-emerald-400/60 bg-emerald-50 text-emerald-700 dark:border-emerald-500/40 dark:bg-emerald-950/40 dark:text-emerald-300">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400" />
             {t("status.active")}
-          </Badge>
+          </span>
         )}
       </TableCell>
       <TableCell className="py-4 text-[11px] text-muted-foreground font-medium">
@@ -100,7 +95,7 @@ export function UserRow({
           >
             <MoreHorizontal className="h-4 w-4" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="min-w-[180px]">
             {canViewDetails && (
               <DropdownMenuItem
                 render={

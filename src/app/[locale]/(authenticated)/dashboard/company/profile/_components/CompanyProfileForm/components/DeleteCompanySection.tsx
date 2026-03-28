@@ -1,10 +1,12 @@
 "use client"
 
 import { AlertTriangle } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { NameConfirmationAlertDialog } from "@/components/dialogs/NameConfirmationAlertDialog"
 import { Button } from "@/components/ui/button"
+import { ease } from "@/lib/animations"
 
 interface DeleteCompanySectionProps {
   companyName: string
@@ -27,22 +29,34 @@ export function DeleteCompanySection({
   }
 
   return (
-    <section className="rounded-xl border border-red-300/40 bg-red-50/40 dark:bg-red-950/15 dark:border-red-900/40 p-5 sm:p-6 space-y-4">
-      <div className="flex items-start gap-3">
-        <span className="mt-0.5 rounded-lg bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300 p-2">
-          <AlertTriangle className="h-4 w-4" />
-        </span>
-        <div className="space-y-1">
-          <h3 className="font-serif text-xl tracking-tight text-heading">
-            {t("title")}
-          </h3>
-          <p className="text-sm text-muted-foreground">{t("description")}</p>
-        </div>
-      </div>
+    <motion.section
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease, delay: 0.45 }}
+      className="border border-destructive/20 dark:border-destructive/15 overflow-hidden"
+    >
+      {/* Danger accent line */}
+      <div className="h-0.5 bg-destructive/40" />
 
-      <Button type="button" variant="destructive" onClick={() => setOpen(true)}>
-        {t("openDialog")}
-      </Button>
+      <div className="p-6 space-y-4">
+        <div className="flex items-start gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-destructive/20 bg-destructive/5 dark:bg-destructive/10">
+            <AlertTriangle className="h-4 w-4 text-destructive" />
+          </div>
+          <div className="space-y-1 min-w-0">
+            <h3 className="font-serif text-lg tracking-tight text-heading">
+              {t("title")}
+            </h3>
+            <p className="text-sm font-light text-muted-foreground">
+              {t("description")}
+            </p>
+          </div>
+        </div>
+
+        <Button type="button" variant="destructive" onClick={() => setOpen(true)}>
+          {t("openDialog")}
+        </Button>
+      </div>
 
       <NameConfirmationAlertDialog
         open={open}
@@ -63,6 +77,6 @@ export function DeleteCompanySection({
           void onConfirmDelete()
         }}
       />
-    </section>
+    </motion.section>
   )
 }

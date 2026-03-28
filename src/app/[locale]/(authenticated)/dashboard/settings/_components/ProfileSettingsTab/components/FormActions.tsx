@@ -13,16 +13,15 @@ interface FormActionsProps {
 
 export function FormActions({ form, isBusy, onReset }: FormActionsProps) {
   return (
-    <div className="pt-8 pb-4 border-t border-border/20 flex flex-col sm:flex-row items-center justify-between gap-6">
+    <div className="pt-6 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between gap-4">
       <p className="text-xs text-muted-foreground/60 font-medium">
         Unsaved changes will be lost if you leave this page.
       </p>
-      <div className="flex items-center gap-4 w-full sm:w-auto">
+      <div className="flex items-center gap-3 w-full sm:w-auto">
         <Button
           type="button"
-          variant="ghost"
+          variant="editorial-ghost"
           size="editorial-sm"
-          className="rounded-xl px-6 hover:bg-secondary/30 h-11 w-full sm:w-auto"
           onClick={onReset}
           disabled={isBusy}
         >
@@ -37,19 +36,16 @@ export function FormActions({ form, isBusy, onReset }: FormActionsProps) {
             <Button
               type="submit"
               variant="editorial"
-              size="editorial-sm"
-              className="rounded-xl px-8 h-11 shadow-[0_8px_20px_-8px_var(--color-primary)] hover:shadow-[0_12px_24px_-8px_var(--color-primary)] hover:-translate-y-0.5 transition-all duration-300 gap-2.5 w-full sm:w-auto text-sm font-bold active:translate-y-0"
+              size="editorial"
               disabled={isBusy || isSubmitting}
-              aria-label="Save profile changes"
+              className="gap-2 w-full sm:w-auto"
             >
               {isSubmitting ? (
-                <Loader2 className="h-4 w-4 animate-[spin_2s_linear_infinite]" />
+                <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <>
-                  <Check className="h-4 w-4 stroke-[3]" />
-                  Commit Changes
-                </>
+                <Check className="h-4 w-4" />
               )}
+              Save Changes
             </Button>
           )}
         </form.Subscribe>

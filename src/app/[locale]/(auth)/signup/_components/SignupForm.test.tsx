@@ -451,6 +451,48 @@ describe("StudentSignupForm", () => {
         ).toBeDefined()
       })
     })
+
+    test("should show Better Auth body errors on failed registration", async () => {
+      mockSignUp.mockResolvedValueOnce({
+        error: {
+          body: {
+            code: "UNIVERSITY_EMAIL_DOMAIN_IS_NOT_APPROVED_YET_PLEASE_REQUEST_APPROVAL_OR_USE_A_UNIVERSITY_EMAIL",
+            message:
+              "University email domain is not approved yet. Please request approval or use a university email.",
+          },
+          statusCode: 400,
+        },
+      })
+
+      render(<StudentSignupForm onBack={() => {}} />)
+
+      const nameInput = screen.getByLabelText("Full Name")
+      const emailInput = screen.getByLabelText("Email")
+      const passwordInput = screen.getByLabelText("Password")
+      const confirmInput = screen.getByLabelText("Confirm Password")
+      const termsCheckbox = screen.getAllByRole("checkbox")[0]
+
+      fireEvent.change(nameInput, { target: { value: "John Doe" } })
+      fireEvent.change(emailInput, {
+        target: { value: "student@unknown.edu" },
+      })
+      fireEvent.change(passwordInput, { target: { value: "password123" } })
+      fireEvent.change(confirmInput, { target: { value: "password123" } })
+      fireEvent.click(termsCheckbox)
+
+      const form = document.querySelector("form")
+      if (form) {
+        fireEvent.submit(form)
+      }
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            "University email domain is not approved yet. Please request approval or use a university email.",
+          ),
+        ).toBeDefined()
+      })
+    })
   })
 
   describe("loading state", () => {

@@ -76,7 +76,7 @@ cp .env.example .env
 
 # Set up database
 bun run db:push        # Push schema to database
-bun run db:seed        # Seed initial data (44 skill tags, universities, optional admin)
+bun run db:seed        # Seed initial data (skills, universities, optional admin accounts)
 
 # Start development
 bun run dev
@@ -114,7 +114,7 @@ Feature flag defaults:
 - `FEATURE_LANGUAGE_REQUIREMENTS=false` + `NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS=false`
 - `FEATURE_NOTIF_PREFERENCES=false` + `NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES=false`
 
-See [`.env.example`](.env.example) for the full list, including production Docker variables (`POSTGRES_*`, `GITHUB_REPO`, `DOMAIN_NAME`, `RUN_SEED`, `SEED_ADMIN_*`).
+See [`.env.example`](.env.example) for the full list, including production Docker variables (`POSTGRES_*`, `GITHUB_REPO`, `DOMAIN_NAME`, `RUN_SEED`, `SEED_ADMIN_*`, `SEED_UNIVERSITY_ADMIN_*`).
 
 ## Scripts
 

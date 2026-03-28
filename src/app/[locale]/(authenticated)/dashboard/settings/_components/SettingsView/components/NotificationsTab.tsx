@@ -2,14 +2,6 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Bell, Mail } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { isNotificationPreferencesEnabledOnClient } from "@/lib/feature-flags-client"
 import { cn } from "@/lib/utils"
@@ -67,107 +59,101 @@ export function NotificationsTab({ email }: NotificationsTabProps) {
   }
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-6 duration-700">
-      <Card className="border-border/60 bg-card rounded-[2.5rem] overflow-hidden shadow-sm flex flex-col">
-        <CardHeader className="relative overflow-hidden px-8 pt-10 pb-8 sm:px-12 sm:pt-12 sm:pb-10 bg-transparent">
-          <div
-            className="absolute -top-12 -end-8 flex items-center opacity-[0.02] dark:opacity-[0.05] pointer-events-none scale-[2] rotate-12"
-            aria-hidden="true"
-          >
-            <Bell className="h-64 w-64 text-primary" />
-          </div>
+    <div className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden">
+      {/* Section header */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-border/40 bg-muted/20 dark:bg-muted/10">
+        <div className="flex items-center gap-2.5">
+          <Bell className="h-4 w-4 text-primary" />
+          <h2 className="font-serif text-lg text-heading">
+            Alerts & Communications
+          </h2>
+        </div>
+        {showSoonState && (
+          <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] border border-primary/30 bg-primary/10 text-primary">
+            Soon
+          </span>
+        )}
+      </div>
 
-          <div className="relative z-10 flex items-center gap-4 mb-3">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-[inset_0_2px_4px_rgba(255,255,255,0.3)]">
-              <Bell className="h-6 w-6" />
-            </span>
-            <div className="flex items-center gap-3">
-              <CardTitle className="font-serif text-3xl sm:text-4xl text-heading tracking-tight">
-                Alerts & Comms
-              </CardTitle>
-              {showSoonState && (
-                <Badge className="bg-primary/10 text-primary border border-primary/20 font-mono font-bold uppercase tracking-widest text-[9px] px-2 py-0.5 rounded-sm">
-                  Soon
-                </Badge>
-              )}
+      <div className="px-6 py-4 border-b border-border/20">
+        <p className="text-sm font-light text-muted-foreground">
+          Configure the delivery of notifications. Decide what requires your
+          immediate attention.
+        </p>
+      </div>
+
+      <div className="p-6 space-y-4">
+        {showSoonState ? (
+          <div className="flex items-start gap-3 border border-border/40 bg-muted/10 p-4">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center border border-border/50 bg-muted/30">
+              <Mail className="h-4 w-4 text-muted-foreground" />
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-heading">
+                Email notifications are active
+              </p>
+              <p className="text-[12px] text-muted-foreground leading-relaxed">
+                Important updates such as application status changes and new
+                messages are delivered to{" "}
+                <span className="font-medium text-foreground">{email}</span>.
+                Granular notification preferences will be available soon.
+              </p>
             </div>
           </div>
-          <CardDescription className="relative z-10 text-base font-medium text-muted-foreground/80 sm:ps-16 max-w-xl">
-            Configure the systemic delivery of information. Decide what requires
-            your immediate attention.
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent className="px-8 pb-8 pt-4 sm:px-12 sm:pb-12 sm:pt-6 space-y-6">
-          {showSoonState ? (
-            <div className="flex items-start gap-3.5 rounded-2xl bg-muted/60 border border-border/15 p-5">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted mt-0.5">
-                <Mail className="h-4 w-4 text-muted-foreground" />
-              </span>
+        ) : (
+          <>
+            <label
+              className={cn(
+                "flex items-start gap-3 border border-border/40 p-4 cursor-pointer hover:bg-primary/[0.02] transition-colors",
+                updatePreferencesMutation.isPending && "opacity-70",
+              )}
+            >
+              <Checkbox
+                checked={preferences.inAppEnabled}
+                onCheckedChange={(checked) =>
+                  setPreference("inAppEnabled", checked === true)
+                }
+                aria-label="Toggle in-app notifications"
+                disabled={updatePreferencesMutation.isPending}
+              />
               <div className="space-y-1">
-                <p className="text-sm font-medium">
-                  Email notifications are active
+                <p className="text-sm font-medium text-heading">
+                  In-app notifications
                 </p>
                 <p className="text-[12px] text-muted-foreground leading-relaxed">
-                  Important updates such as application status changes and new
-                  messages are delivered to{" "}
-                  <span className="font-medium text-foreground">{email}</span>.
-                  Granular notification preferences will be available soon.
+                  Show notification cards inside the dashboard for application,
+                  interview, and message updates.
                 </p>
               </div>
-            </div>
-          ) : (
-            <>
-              <label
-                className={cn(
-                  "flex items-start gap-3.5 rounded-2xl border border-border/20 p-4",
-                  updatePreferencesMutation.isPending && "opacity-70",
-                )}
-              >
-                <Checkbox
-                  checked={preferences.inAppEnabled}
-                  onCheckedChange={(checked) =>
-                    setPreference("inAppEnabled", checked === true)
-                  }
-                  aria-label="Toggle in-app notifications"
-                  disabled={updatePreferencesMutation.isPending}
-                />
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">In-app notifications</p>
-                  <p className="text-[12px] text-muted-foreground leading-relaxed">
-                    Show notification cards inside the dashboard for
-                    application, interview, and message updates.
-                  </p>
-                </div>
-              </label>
+            </label>
 
-              <label
-                className={cn(
-                  "flex items-start gap-3.5 rounded-2xl border border-border/20 p-4",
-                  updatePreferencesMutation.isPending && "opacity-70",
-                )}
-              >
-                <Checkbox
-                  checked={preferences.emailEnabled}
-                  onCheckedChange={(checked) =>
-                    setPreference("emailEnabled", checked === true)
-                  }
-                  aria-label="Toggle email notifications"
-                  disabled={updatePreferencesMutation.isPending}
-                />
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">Email notifications</p>
-                  <p className="text-[12px] text-muted-foreground leading-relaxed">
-                    Send updates and reminders to{" "}
-                    <span className="font-medium text-foreground">{email}</span>
-                    .
-                  </p>
-                </div>
-              </label>
-            </>
-          )}
-        </CardContent>
-      </Card>
+            <label
+              className={cn(
+                "flex items-start gap-3 border border-border/40 p-4 cursor-pointer hover:bg-primary/[0.02] transition-colors",
+                updatePreferencesMutation.isPending && "opacity-70",
+              )}
+            >
+              <Checkbox
+                checked={preferences.emailEnabled}
+                onCheckedChange={(checked) =>
+                  setPreference("emailEnabled", checked === true)
+                }
+                aria-label="Toggle email notifications"
+                disabled={updatePreferencesMutation.isPending}
+              />
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-heading">
+                  Email notifications
+                </p>
+                <p className="text-[12px] text-muted-foreground leading-relaxed">
+                  Send updates and reminders to{" "}
+                  <span className="font-medium text-foreground">{email}</span>.
+                </p>
+              </div>
+            </label>
+          </>
+        )}
+      </div>
     </div>
   )
 }
