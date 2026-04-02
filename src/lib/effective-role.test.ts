@@ -1,50 +1,33 @@
 import { describe, expect, test } from "bun:test"
 
-import {
-  deriveEffectiveUserRole,
-  isDepartmentHeadMembershipRole,
-} from "@/lib/effective-role"
+import { getEffectiveRole, isDepartmentHead } from "@/lib/effective-role"
 
 describe("src/lib/effective-role", () => {
-  test("should derive dept_head when university admin has department_head membership", () => {
-    expect(
-      deriveEffectiveUserRole({
-        userRole: "university_admin",
-        universityMembershipRole: "department_head",
-      }),
-    ).toBe("dept_head")
+  test("should return university_admin for university_admin role", () => {
+    expect(getEffectiveRole({ role: "university_admin" })).toBe(
+      "university_admin",
+    )
   })
 
-  test("should keep university_admin when no department_head membership exists", () => {
-    expect(
-      deriveEffectiveUserRole({
-        userRole: "university_admin",
-        universityMembershipRole: null,
-      }),
-    ).toBe("university_admin")
+  test("should map legacy dept_head to university_admin", () => {
+    expect(getEffectiveRole({ role: "dept_head" })).toBe("university_admin")
   })
 
-  test("should keep company_admin unchanged", () => {
-    expect(
-      deriveEffectiveUserRole({
-        userRole: "company_admin",
-        universityMembershipRole: "department_head",
-      }),
-    ).toBe("company_admin")
+  test("should return primary roles unchanged", () => {
+    expect(getEffectiveRole({ role: "student" })).toBe("student")
+    expect(getEffectiveRole({ role: "company_admin" })).toBe("company_admin")
+    expect(getEffectiveRole({ role: "super_admin" })).toBe("super_admin")
   })
 
-  test("should preserve legacy dept_head rows as dept_head", () => {
-    expect(
-      deriveEffectiveUserRole({
-        userRole: "dept_head",
-        universityMembershipRole: null,
-      }),
-    ).toBe("dept_head")
+  test("should default to student for unknown roles", () => {
+    expect(getEffectiveRole({ role: null })).toBe("student")
+    expect(getEffectiveRole({ role: undefined })).toBe("student")
+    expect(getEffectiveRole({ role: "unknown" })).toBe("student")
   })
 
   test("should identify department_head membership role", () => {
-    expect(isDepartmentHeadMembershipRole("department_head")).toBe(true)
-    expect(isDepartmentHeadMembershipRole(null)).toBe(false)
-    expect(isDepartmentHeadMembershipRole("owner")).toBe(false)
+    expect(isDepartmentHead("department_head")).toBe(true)
+    expect(isDepartmentHead(null)).toBe(false)
+    expect(isDepartmentHead("owner")).toBe(false)
   })
 })

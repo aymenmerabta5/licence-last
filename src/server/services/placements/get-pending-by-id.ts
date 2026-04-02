@@ -25,7 +25,7 @@ export async function getPendingApplicationById(
 ): Promise<PendingApplication | null> {
   const { role, universityId, departmentId } = viewer
 
-  if (role === "dept_head" && !departmentId) {
+  if (role === "department_head" && !departmentId) {
     return null
   }
 
@@ -39,7 +39,7 @@ export async function getPendingApplicationById(
     isNotNull(application.companyActionAt),
   ]
 
-  if (role === "dept_head") {
+  if (role === "department_head") {
     conditions.push(eq(studentProfile.departmentId, departmentId!))
   } else if (role !== "super_admin") {
     conditions.push(eq(user.universityId, universityId!))

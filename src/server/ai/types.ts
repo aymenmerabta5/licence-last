@@ -54,7 +54,6 @@ export type AssistantRole =
   | "student"
   | "company_admin"
   | "university_admin"
-  | "dept_head"
   | "super_admin"
 
 // Auth context resolved for data-retrieval tools

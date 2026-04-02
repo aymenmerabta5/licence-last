@@ -12,6 +12,7 @@ import {
 export function useSidebar(
   role: string,
   companyMembershipRole?: string | null,
+  universityMembershipRole?: string | null,
 ) {
   const pathname = usePathname()
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -35,9 +36,16 @@ export function useSidebar(
         ) {
           return false
         }
+        if (
+          role === "university_admin" &&
+          item.universityMembershipRoles &&
+          !item.universityMembershipRoles.includes(universityMembershipRole ?? "")
+        ) {
+          return false
+        }
         return item.roles.includes(role)
       }),
-    [companyMembershipRole, interviewsEnabled, role, savedOffersEnabled],
+    [companyMembershipRole, universityMembershipRole, interviewsEnabled, role, savedOffersEnabled],
   )
 
   return { isCollapsed, setIsCollapsed, filteredItems, pathname, logout }

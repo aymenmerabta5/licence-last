@@ -78,9 +78,9 @@ interface ListPendingParams {
 }
 
 export interface ListPendingViewer {
-  role: "university_admin" | "dept_head" | "super_admin"
+  role: "university_admin" | "department_head" | "super_admin"
   universityId: string | null
-  /** Required when role is "dept_head" */
+  /** Required when role is "department_head" */
   departmentId?: string | null
 }
 
@@ -96,7 +96,7 @@ export async function listPendingApplications(
   const { role, universityId, departmentId } = viewer
 
   // Dept heads must have a departmentId, admins must have a universityId.
-  if (role === "dept_head" && !departmentId) {
+  if (role === "department_head" && !departmentId) {
     return { applications: [], nextCursor: undefined, hasMore: false }
   }
   if (role === "university_admin" && !universityId) {
@@ -109,7 +109,7 @@ export async function listPendingApplications(
     isNotNull(application.companyActionAt),
   ]
 
-  if (role === "dept_head") {
+  if (role === "department_head") {
     // Dept head sees only students in their department
     conditions.push(eq(studentProfile.departmentId, departmentId!))
   } else if (role !== "super_admin") {

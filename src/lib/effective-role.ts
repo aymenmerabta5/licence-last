@@ -6,62 +6,33 @@ export type PrimaryUserRole =
 
 export type UniversityMembershipRole = "department_head"
 
-export type EffectiveUserRole = PrimaryUserRole | "dept_head"
-
-export function isDepartmentHeadMembershipRole(
+/**
+ * Check if a university membership role is "department_head".
+ */
+export function isDepartmentHead(
   role: string | null | undefined,
 ): role is UniversityMembershipRole {
   return role === "department_head"
 }
 
-export function deriveEffectiveUserRole(args: {
-  userRole: string | null | undefined
-  universityMembershipRole?: string | null
-}): EffectiveUserRole | null {
-  if (
-    args.userRole === "university_admin" &&
-    isDepartmentHeadMembershipRole(args.universityMembershipRole)
-  ) {
-    return "dept_head"
-  }
-
-  if (args.userRole === "dept_head") {
-    return "dept_head"
-  }
-
-  if (
-    args.userRole === "student" ||
-    args.userRole === "company_admin" ||
-    args.userRole === "university_admin" ||
-    args.userRole === "super_admin"
-  ) {
-    return args.userRole
-  }
-
-  return null
-}
-
-export type AuthRole = PrimaryUserRole | "dept_head"
-export type EffectiveRole = EffectiveUserRole
-
+/**
+ * Resolve primary user role. Legacy `dept_head` DB values map to `university_admin`.
+ * This never returns `"dept_head"` — department heads are identified via membership.
+ */
 export function getEffectiveRole(args: {
   role: string | null | undefined
-  universityMembershipRole?: string | null
-}): EffectiveRole {
-  return (
-    deriveEffectiveUserRole({
-      userRole: args.role,
-      universityMembershipRole: args.universityMembershipRole,
-    }) ?? "student"
-  )
-}
+}): PrimaryUserRole {
+  if (
+    args.role === "student" ||
+    args.role === "company_admin" ||
+    args.role === "university_admin" ||
+    args.role === "super_admin"
+  ) {
+    return args.role
+  }
 
-export function isTrueUniversityAdmin(
-  role: string | null | undefined,
-  universityMembershipRole: string | null | undefined,
-): boolean {
-  return (
-    role === "university_admin" &&
-    !isDepartmentHeadMembershipRole(universityMembershipRole)
-  )
+  // Legacy dept_head rows in DB get treated as university_admin
+  if (args.role === "dept_head") return "university_admin"
+
+  return "student"
 }

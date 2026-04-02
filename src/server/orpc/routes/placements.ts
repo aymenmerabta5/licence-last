@@ -173,7 +173,7 @@ export const deptHeadListPendingProcedure = deptHeadProcedureGenerous
   )
   .handler(async ({ input, context }) =>
     listPendingApplications(input ?? {}, {
-      role: "dept_head",
+      role: "department_head",
       universityId: context.universityId,
       departmentId: context.departmentId,
     }),
@@ -187,7 +187,7 @@ export const deptHeadGetPendingByIdProcedure = deptHeadProcedureGenerous
   )
   .handler(async ({ input, context }) => ({
     application: await getPendingApplicationById(input.applicationId, {
-      role: "dept_head",
+      role: "department_head",
       universityId: context.universityId,
       departmentId: context.departmentId,
     }),
@@ -220,7 +220,7 @@ export const deptHeadValidateProcedure = deptHeadProcedureStandard
       return await validatePlacement({
         applicationId: input.applicationId,
         adminUserId: context.user.id,
-        adminRole: "dept_head",
+        adminRole: "department_head",
         adminUniversityId: context.universityId,
         adminDepartmentId: context.departmentId,
         startDate,
@@ -266,7 +266,7 @@ export const deptHeadRejectProcedure = deptHeadProcedureStandard
       return await rejectPlacement({
         applicationId: input.applicationId,
         adminUserId: context.user.id,
-        adminRole: "dept_head",
+        adminRole: "department_head",
         adminUniversityId: context.universityId,
         adminDepartmentId: context.departmentId,
         reason: input.reason,

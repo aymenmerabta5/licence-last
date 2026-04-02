@@ -11,13 +11,11 @@ type AuthRole =
   | "university_admin"
   | "super_admin"
 
-type EffectiveRole = AuthRole | "dept_head"
-
 interface DashboardUser {
   id: string
   email: string
   role: AuthRole
-  effectiveRole: EffectiveRole
+  effectiveRole: AuthRole
   universityMembershipRole?: "department_head" | null
   universityDepartmentId?: string | null
   name: string | null
@@ -47,7 +45,6 @@ export async function requireDashboardUser() {
   return (await requireRole([
     "student",
     "company_admin",
-    "dept_head",
     "university_admin",
     "super_admin",
   ])) as DashboardUser
@@ -109,6 +106,38 @@ export async function requireCompanyOwner(): Promise<CompanyOwnerContext> {
     user,
     company,
     membership,
+  }
+}
+
+export interface DepartmentHeadContext {
+  user: DashboardUser & {
+    role: "university_admin"
+    effectiveRole: "university_admin"
+    universityMembershipRole: "department_head"
+    universityDepartmentId: string
+  }
+}
+
+export async function requireDepartmentHead(): Promise<DepartmentHeadContext> {
+  const user = (await requireRole(["university_admin"])) as DashboardUser & {
+    role: "university_admin"
+    effectiveRole: "university_admin"
+  }
+
+  if (!user.onboardingCompleted) {
+    return localeRedirect("/onboarding/university")
+  }
+
+  if (user.universityMembershipRole !== "department_head") {
+    return localeRedirect("/dashboard")
+  }
+
+  if (!user.universityDepartmentId) {
+    return localeRedirect("/dashboard")
+  }
+
+  return {
+    user: user as DepartmentHeadContext["user"],
   }
 }
 

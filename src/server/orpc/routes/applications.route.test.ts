@@ -347,7 +347,7 @@ describe("src/server/orpc/routes/applications", () => {
       context: {
         user: {
           id: "head-1",
-          role: "dept_head",
+          role: "university_admin",
           universityId: "uni-1",
           departmentId: "dep-1",
         },
@@ -454,8 +454,8 @@ describe("src/server/orpc/routes/applications", () => {
         context: {
           user: {
             id: "head-1",
-            role: "dept_head",
-            universityId: "uni-1",
+            role: "university_admin",
+            universityId: "uni-2",
             departmentId: "dep-2",
           },
         },

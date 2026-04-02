@@ -1,6 +1,6 @@
 import "server-only"
 
-import { deriveEffectiveUserRole } from "@/lib/effective-role"
+import { getEffectiveRole } from "@/lib/effective-role"
 
 interface CompanySummary {
   id: string
@@ -92,12 +92,7 @@ export async function getMe(
     rawRole === "university_admin" || rawRole === "dept_head"
       ? await resolvedDependencies.getUniversityMembership(user.id)
       : null
-  const visibleRole =
-    deriveEffectiveUserRole({
-      userRole: rawRole,
-      universityMembershipRole:
-        universityMembership?.role ?? (rawRole === "dept_head" ? "department_head" : null),
-    }) ?? "student"
+  const visibleRole = getEffectiveRole({ role: rawRole })
 
   let companyData = null
   if (visibleRole === "company_admin") {
@@ -115,8 +110,7 @@ export async function getMe(
   let universityData = null
   if (
     visibleRole === "student" ||
-    visibleRole === "university_admin" ||
-    visibleRole === "dept_head"
+    visibleRole === "university_admin"
   ) {
     const uni = await resolvedDependencies.getUniversityByUserId(user.id)
     if (uni) {

@@ -160,7 +160,7 @@ describe("src/server/services/placements/get-pending-by-id", () => {
   test("should return null without querying when dept head has no department scope", async () => {
     const { getPendingApplicationById } = await importGetPendingApplicationById()
     const result = await getPendingApplicationById("app-1", {
-      role: "dept_head",
+      role: "department_head",
       universityId: "u-1",
       departmentId: null,
     })

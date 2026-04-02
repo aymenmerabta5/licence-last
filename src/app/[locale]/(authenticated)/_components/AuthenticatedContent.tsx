@@ -24,7 +24,6 @@ export async function AuthenticatedContent({
   const user = await requireRole([
     "student",
     "company_admin",
-    "dept_head",
     "university_admin",
     "super_admin",
   ])

@@ -206,7 +206,7 @@ Operational contracts:
 
 ### Auth & Roles
 
-5 roles enforced via middleware chain: `student`, `company_admin`, `dept_head`, `university_admin`, `super_admin`
+4 primary roles enforced via middleware chain: `student`, `company_admin`, `university_admin`, `super_admin`. Department heads are `university_admin` users with a `department_head` membership in the `university_member` table.
 
 - Email verification required on signup
 - 2FA support: TOTP, OTP (email), backup codes

@@ -30,7 +30,6 @@ const FORBIDDEN_EXISTING_ROLES = new Set([
   "student",
   "super_admin",
   "university_admin",
-  "dept_head",
 ])
 
 function isUniqueViolation(error: unknown): boolean {

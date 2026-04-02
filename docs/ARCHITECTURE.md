@@ -61,8 +61,8 @@
 |------|-------------|-------------|
 | `student` | University-affiliated user | Browse offers, apply, track applications |
 | `company_admin` | Company recruiter | Create offers, manage pipeline, AI assistant |
-| `dept_head` | Department head | Validate placements for their department |
 | `university_admin` | University administrator | Validate placements, manage departments, view stats |
+| `university_admin` + `department_head` membership | Department head | Validate placements scoped to their department |
 | `super_admin` | Platform operator | Full control: users, companies, universities, departments |
 
 ---
@@ -306,7 +306,7 @@ src/
 ### Entity-Relationship Overview
 
 ```
-University ──1:N──> Department ──1:N──> User (dept_head via departmentId)
+University ──1:N──> Department ──1:1──> UniversityMember (department_head via departmentId)
      |                                    |
      ├──1:N──> User (students via universityId)
      |                |
@@ -340,7 +340,7 @@ TwoFactor (user 2FA secrets)
 
 | Enum | Values |
 |------|--------|
-| `userRole` | student, company_admin, dept_head, university_admin, super_admin |
+| `userRole` | student, company_admin, university_admin, super_admin (dept_head deprecated) |
 | `companyStatus` | pending, approved, rejected, suspended |
 | `universityStatus` | pending, approved, rejected |
 | `universityDomainStatus` | pending, approved, rejected, disabled |
@@ -427,11 +427,11 @@ oRPC router handling ALL client-server communication with auth middleware.
 ```
 publicProcedure              -- No auth required
 ├── authedProcedure          -- Valid session required
-│   ├── adminProcedure       -- university_admin, dept_head, or super_admin
+│   ├── adminProcedure       -- university_admin or super_admin
 │   ├── superAdminProcedure  -- super_admin only
 │   ├── companyAdminProcedure -- company_admin + injects companyMembership
 │   ├── studentProcedure     -- student role + injects studentProfile
-│   └── deptHeadProcedure    -- dept_head + injects departmentId + universityId
+│   └── deptHeadProcedure    -- university_admin + department_head membership + injects departmentId + universityId
 ```
 
 **Rate-Limited Procedure Variants (20)**:
@@ -499,7 +499,8 @@ Student signup flow:
 
 ```typescript
 // src/lib/auth-guards.ts
-// Available roles: "student" | "company_admin" | "dept_head" | "university_admin" | "super_admin"
+// Available roles: "student" | "company_admin" | "university_admin" | "super_admin"
+// Department heads: university_admin with department_head membership in university_member table
 const user = await requireRole(["company_admin", "super_admin"])
 // Redirects to login (no session) or home (wrong role)
 ```
@@ -811,14 +812,14 @@ University departments with designated heads who can validate placements for the
 
 **Schema**: `department` (id, universityId, name, headName, createdAt, updatedAt), `departmentSkill` (departmentId, skillTagId)
 
-**User fields**: `departmentId` on `user` table links dept_head users to their department.
+**Department heads**: Identified via `university_member` table with `role = 'department_head'` and a `departmentId` link.
 
 **Services** (`src/server/services/departments/`, 10 files):
 - `create.ts` — Create department under a university (duplicate name check)
 - `list.ts` — List departments by university (with skill counts via SQL subquery)
 - `update.ts` — Update department details (partial update, trims inputs)
-- `delete.ts` — Delete department (transactional: demotes all dept_heads to student role, then deletes record)
-- `assign-head.ts` — Assign dept_head role by user ID (bidirectional: updates user role/department + department headName)
+- `delete.ts` — Delete department (transactional cleanup)
+- `assign-head.ts` — Assign department head by user ID (sets university_admin role + department_head membership)
 - `assign-head-by-email.ts` — Assign head by email (auto-creates user if not found, triggers password reset, queues welcome email)
 - `unassign-head.ts` — Remove head from department (transactional: demotes user to student, clears headName)
 - `bulk-create-with-heads.ts` — Bulk create departments with heads from CSV/form (per-row error handling, partial success pattern, max 50 rows)

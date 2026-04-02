@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import { DeptHeadPlacementDetail } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/[applicationId]/_components/DeptHeadPlacementDetail"
 import { Skeleton } from "@/components/ui/skeleton"
-import { requireRole } from "@/lib/auth-guards"
+import { requireDepartmentHead } from "@/lib/dashboard-access"
 
 interface DeptHeadPlacementDetailPageProps {
   params: Promise<{ applicationId: string }>
@@ -31,7 +31,7 @@ function PlacementDetailFallback() {
 export default async function DeptHeadPlacementDetailPage({
   params,
 }: DeptHeadPlacementDetailPageProps) {
-  await requireRole(["dept_head"])
+  await requireDepartmentHead()
   const { applicationId } = await params
 
   return (

@@ -31,12 +31,15 @@ export function UserDropdown({
   isLoggingOut,
 }: UserDropdownProps) {
   const t = useTranslations("dashboard.navbar")
-  const { companyMembershipRole } = useDashboard()
+  const { companyMembershipRole, universityMembershipRole } = useDashboard()
   const effectiveRole = user.effectiveRole ?? user.role ?? "student"
   const roleKey =
     effectiveRole === "company_admin" && companyMembershipRole === "recruiter"
       ? "recruiter"
-      : effectiveRole
+      : effectiveRole === "university_admin" &&
+          universityMembershipRole === "department_head"
+        ? "department_head"
+        : effectiveRole
   const roleLabel = t(`roles.${roleKey}` as any)
 
   return (

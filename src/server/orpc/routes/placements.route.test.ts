@@ -428,7 +428,7 @@ describe("src/server/orpc/routes/placements", () => {
       context: {
         user: {
           id: "dept-head-1",
-          role: "dept_head",
+          role: "department_head",
           universityId: "uni-1",
           departmentId: "dep-1",
         },
@@ -448,7 +448,7 @@ describe("src/server/orpc/routes/placements", () => {
       context: {
         user: {
           id: "dept-head-1",
-          role: "dept_head",
+          role: "department_head",
         },
         universityId: "uni-1",
         departmentId: "dep-1",
@@ -457,7 +457,7 @@ describe("src/server/orpc/routes/placements", () => {
 
     expect(result).toEqual({ application: { id: "app-1" } })
     expect(getPendingApplicationByIdMock).toHaveBeenCalledWith("app-1", {
-      role: "dept_head",
+      role: "department_head",
       universityId: "uni-1",
       departmentId: "dep-1",
     })

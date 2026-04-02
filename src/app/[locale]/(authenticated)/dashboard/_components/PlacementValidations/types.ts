@@ -1,7 +1,7 @@
 import type { RefObject } from "react"
 import type { PendingApplication } from "@/server/services/placements/list-pending"
 
-export type PlacementValidationRole = "admin" | "dept_head"
+export type PlacementValidationRole = "admin" | "department_head"
 
 export interface ValidationSummary {
   summaryBullets: string[]

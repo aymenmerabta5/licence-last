@@ -26,6 +26,7 @@ export interface NavItem {
   icon: React.ComponentType<{ className?: string }>
   roles: string[]
   companyMembershipRoles?: string[]
+  universityMembershipRoles?: string[]
 }
 
 export const navItems: NavItem[] = [
@@ -36,7 +37,7 @@ export const navItems: NavItem[] = [
     roles: [
       "student",
       "company_admin",
-      "dept_head",
+
       "university_admin",
       "super_admin",
     ],
@@ -131,7 +132,8 @@ export const navItems: NavItem[] = [
     labelKey: "deptValidations",
     href: "/dashboard/dept-validations",
     icon: ClipboardCheck,
-    roles: ["dept_head"],
+    roles: ["university_admin"],
+    universityMembershipRoles: ["department_head"],
   },
   {
     labelKey: "validatePlacements",
@@ -176,7 +178,7 @@ export const navItems: NavItem[] = [
     roles: [
       "student",
       "company_admin",
-      "dept_head",
+
       "university_admin",
       "super_admin",
     ],

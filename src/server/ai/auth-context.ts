@@ -4,7 +4,6 @@ import { eq } from "drizzle-orm"
 import { getEffectiveRole } from "@/lib/effective-role"
 import type { AssistantRole, ToolAuthContext } from "@/server/ai/types"
 import { db } from "@/server/db"
-import { user } from "@/server/db/schema/auth"
 import { companyMember } from "@/server/db/schema/companies"
 import { universityMember } from "@/server/db/schema/university-memberships"
 
@@ -12,7 +11,6 @@ const VALID_ROLES = new Set<AssistantRole>([
   "student",
   "company_admin",
   "university_admin",
-  "dept_head",
   "super_admin",
 ])
 
@@ -54,8 +52,7 @@ export async function resolveToolAuthContext(session: {
     ctx.companyId = membership?.companyId ?? null
   }
 
-  let universityMembershipRole: "department_head" | null = null
-  if (rawRole === "university_admin") {
+  if (rawRole === "university_admin" || rawRole === "dept_head") {
     const memberships = await db
       .select({
         departmentId: universityMember.departmentId,
@@ -73,28 +70,9 @@ export async function resolveToolAuthContext(session: {
     const membership = memberships[0]
     ctx.departmentId = membership?.departmentId ?? null
     ctx.universityId = membership?.universityId ?? ctx.universityId
-    universityMembershipRole = membership?.role ?? null
   }
 
-  if (rawRole === "dept_head") {
-    const [row] = await db
-      .select({
-        departmentId: user.departmentId,
-        universityId: user.universityId,
-      })
-      .from(user)
-      .where(eq(user.id, session.user.id))
-      .limit(1)
-
-    ctx.departmentId = row?.departmentId ?? null
-    ctx.universityId = row?.universityId ?? ctx.universityId
-    universityMembershipRole = "department_head"
-  }
-
-  const resolvedRole = getEffectiveRole({
-    role: rawRole,
-    universityMembershipRole,
-  })
+  const resolvedRole = getEffectiveRole({ role: rawRole })
 
   if (!VALID_ROLES.has(resolvedRole)) {
     return null

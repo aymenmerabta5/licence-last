@@ -166,10 +166,9 @@ function canIssueAgreement(
     )
   }
 
-  if (issuer.role === "dept_head") {
+  if (issuer.role === "university_admin" && issuer.departmentId != null) {
     return (
       issuer.universityId != null &&
-      issuer.departmentId != null &&
       issuer.universityId === studentUniversityId &&
       issuer.departmentId === studentDepartmentId
     )

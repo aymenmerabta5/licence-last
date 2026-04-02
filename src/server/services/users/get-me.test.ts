@@ -237,8 +237,8 @@ describe("src/server/services/users/get-me", () => {
       },
     )
 
-    expect(result.user.role).toBe("dept_head")
-    expect(result.user.effectiveRole).toBe("dept_head")
+    expect(result.user.role).toBe("university_admin")
+    expect(result.user.effectiveRole).toBe("university_admin")
     expect(result.user.rawRole).toBe("university_admin")
     expect(result.user.universityMembershipRole).toBe("department_head")
     expect(result.user.universityDepartmentId).toBe("dept-7")

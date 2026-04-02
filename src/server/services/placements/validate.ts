@@ -19,9 +19,9 @@ import { createNotification } from "@/server/services/notifications/create"
 export interface ValidatePlacementInput {
   applicationId: string
   adminUserId: string
-  adminRole: "university_admin" | "dept_head" | "super_admin"
+  adminRole: "university_admin" | "department_head" | "super_admin"
   adminUniversityId: string | null
-  /** Required when adminRole is "dept_head" — scopes validation to their department */
+  /** Required when adminRole is "department_head" — scopes validation to their department */
   adminDepartmentId?: string | null
   startDate: Date
   endDate: Date
@@ -87,7 +87,7 @@ export async function validatePlacement(
   // Scoping: dept_head can only validate students in their department,
   // admin can only validate students in their university,
   // super_admin can validate any.
-  if (adminRole === "dept_head") {
+  if (adminRole === "department_head") {
     if (!adminDepartmentId) {
       throw new ServiceError(
         "ADMIN_DEPARTMENT_NOT_SET",

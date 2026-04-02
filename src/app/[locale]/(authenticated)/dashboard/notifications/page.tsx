@@ -5,7 +5,6 @@ export default async function NotificationsPage() {
   const user = await requireRole([
     "student",
     "company_admin",
-    "dept_head",
     "university_admin",
     "super_admin",
   ])

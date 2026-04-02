@@ -119,7 +119,7 @@ describe("assignDepartmentHeadByEmail", () => {
       [{ name: "University of Algiers" }],
       [{ id: "user-1", name: "Existing Head" }],
       [{ id: "dept-1", name: "Computer Science", universityId: "uni-1" }],
-      [{ id: "user-1", role: "dept_head", name: "Existing Head" }],
+      [{ id: "user-1", role: "university_admin", name: "Existing Head" }],
     )
 
     const { assignDepartmentHeadByEmail } = await loadAssignHeadByEmailModule()
@@ -147,7 +147,7 @@ describe("assignDepartmentHeadByEmail", () => {
       [{ name: "University of Algiers" }],
       [],
       [{ id: "dept-1", name: "Computer Science", universityId: "uni-1" }],
-      [{ id: "new-user-id", role: "dept_head", name: "Dr. New Head" }],
+      [{ id: "new-user-id", role: "university_admin", name: "Dr. New Head" }],
     )
 
     const { assignDepartmentHeadByEmail } = await loadAssignHeadByEmailModule()

@@ -132,10 +132,9 @@ export function createDataRetrievalTools(authCtx: ToolAuthContext): ToolSet {
     })
   }
 
-  // ── Admin tools (university_admin, dept_head, super_admin) ────────
+  // ── Admin tools (university_admin, super_admin) ────────
   const isAdmin =
     authCtx.role === "university_admin" ||
-    authCtx.role === "dept_head" ||
     authCtx.role === "super_admin"
 
   if (isAdmin) {
@@ -173,11 +172,12 @@ export function createDataRetrievalTools(authCtx: ToolAuthContext): ToolSet {
       inputSchema: z.object({}),
       execute: async () => {
         try {
+          const viewerRole =
+            authCtx.role === "university_admin" && authCtx.departmentId
+              ? ("department_head" as const)
+              : (authCtx.role as "university_admin" | "super_admin")
           const viewer = {
-            role: authCtx.role as
-              | "university_admin"
-              | "dept_head"
-              | "super_admin",
+            role: viewerRole,
             universityId: authCtx.universityId,
             departmentId: authCtx.departmentId,
           }

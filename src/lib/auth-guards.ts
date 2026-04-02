@@ -2,15 +2,15 @@ import "server-only"
 
 import { headers } from "next/headers"
 
-import type { EffectiveUserRole } from "@/lib/effective-role"
-import { deriveEffectiveUserRole } from "@/lib/effective-role"
+import type { PrimaryUserRole } from "@/lib/effective-role"
+import { getEffectiveRole } from "@/lib/effective-role"
 import { localeRedirect } from "@/lib/navigation"
 import {
   approvalDeniedReasonToRedirectPath,
   checkAdminApproval,
 } from "@/server/auth/approval-gate"
 
-type UserRole = EffectiveUserRole
+type UserRole = PrimaryUserRole
 interface RequireRoleOptions {
   allowUnapproved?: boolean
 }
@@ -81,35 +81,17 @@ const DEFAULT_REQUIRE_ROLE_DEPENDENCIES: RequireRoleDependencies = {
   },
 }
 
-function buildLegacyMembership(
-  user: SessionUser,
-): UniversityMembershipSummary | null {
-  if (user.role !== "dept_head" || !user.universityId) {
-    return null
-  }
-
-  return {
-    role: "department_head",
-    departmentId: user.departmentId ?? null,
-    universityId: user.universityId,
-  }
-}
-
 async function resolveSessionUser(
   user: SessionUser,
   dependencies: RequireRoleDependencies,
 ) {
   const rawRole = user.role
   const membership =
-    rawRole === "university_admin"
+    rawRole === "university_admin" || rawRole === "dept_head"
       ? await dependencies.getUniversityMembership(user.id)
-      : buildLegacyMembership(user)
+      : null
 
-  const effectiveRole =
-    deriveEffectiveUserRole({
-      userRole: rawRole,
-      universityMembershipRole: membership?.role ?? null,
-    }) ?? "student"
+  const effectiveRole = getEffectiveRole({ role: rawRole })
 
   return {
     ...user,
@@ -160,10 +142,7 @@ export async function requireRole(
     const approval = await checkAdminApproval(
       {
         ...derivedUser,
-        role:
-          derivedUser.rawRole === "dept_head"
-            ? "university_admin"
-            : derivedUser.rawRole,
+        role: derivedUser.rawRole,
       },
       {
         getCompanyStatusByUserId: resolvedDependencies.getCompanyStatusByUserId,

@@ -12,8 +12,7 @@ export function resolvePersona({
   if (
     intent === "admin_validation_summary" ||
     role === "university_admin" ||
-    role === "super_admin" ||
-    role === "dept_head"
+    role === "super_admin"
   ) {
     return "Stag Admin Copilot"
   }

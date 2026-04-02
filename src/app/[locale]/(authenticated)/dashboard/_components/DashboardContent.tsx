@@ -121,6 +121,9 @@ export async function DashboardContent({
   ])
 
   const effectiveRole = user.effectiveRole ?? user.role ?? "student"
+  const isDeptHead =
+    effectiveRole === "university_admin" &&
+    user.universityMembershipRole === "department_head"
 
   // Redirects for incomplete onboarding
   if (effectiveRole === "student" && !user.onboardingCompleted) {
@@ -132,8 +135,9 @@ export async function DashboardContent({
   const roleSubtitleKey = {
     student: "student.subtitle",
     company_admin: "recruiter.subtitle",
-    dept_head: "deptHeadDashboard.subtitle",
-    university_admin: "admin.subtitle",
+    university_admin: isDeptHead
+      ? "deptHeadDashboard.subtitle"
+      : "admin.subtitle",
     super_admin: "admin.subtitle",
   } as const
 
@@ -153,7 +157,9 @@ export async function DashboardContent({
                 ? "recruiter"
                 : effectiveRole === "super_admin"
                   ? "university_admin"
-                  : effectiveRole
+                  : isDeptHead
+                    ? "department_head"
+                    : effectiveRole
             }`,
           )}{" "}
           Dashboard
@@ -182,10 +188,10 @@ export async function DashboardContent({
       {effectiveRole === "company_admin" && (
         <RecruiterDashboard user={{ ...user, role: effectiveRole as string }} />
       )}
-      {effectiveRole === "dept_head" && (
+      {isDeptHead && (
         <DeptHeadDashboard user={{ ...user, role: effectiveRole as string }} />
       )}
-      {(effectiveRole === "university_admin" || effectiveRole === "super_admin") && (
+      {(effectiveRole === "university_admin" && !isDeptHead || effectiveRole === "super_admin") && (
         <AdminDashboard user={{ ...user, role: effectiveRole as string }} />
       )}
     </div>

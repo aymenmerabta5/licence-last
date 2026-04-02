@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import { DeptHeadValidationsView } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/_components/DeptHeadValidationsView"
 import { Skeleton } from "@/components/ui/skeleton"
-import { requireRole } from "@/lib/auth-guards"
+import { requireDepartmentHead } from "@/lib/dashboard-access"
 
 function DeptValidationsFallback() {
   return (
@@ -25,7 +25,7 @@ function DeptValidationsFallback() {
 }
 
 export default async function DeptValidationsPage() {
-  await requireRole(["dept_head"])
+  await requireDepartmentHead()
 
   return (
     <Suspense fallback={<DeptValidationsFallback />}>

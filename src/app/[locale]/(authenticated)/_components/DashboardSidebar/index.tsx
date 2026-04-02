@@ -10,12 +10,14 @@ import { cn } from "@/lib/utils"
 export function DashboardSidebar({
   role = "student",
   companyMembershipRole = null,
+  universityMembershipRole = null,
 }: {
   role?: string
   companyMembershipRole?: string | null
+  universityMembershipRole?: string | null
 }) {
   const { isCollapsed, setIsCollapsed, filteredItems, pathname, logout } =
-    useSidebar(role, companyMembershipRole)
+    useSidebar(role, companyMembershipRole, universityMembershipRole)
 
   return (
     <motion.aside

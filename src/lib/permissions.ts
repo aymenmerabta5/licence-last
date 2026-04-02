@@ -47,7 +47,7 @@ export const universityAdmin = ac.newRole({
   session: ["list"],
 })
 
-/** dept_head — department head, same as admin (read-only) */
+/** DEPRECATED: dept_head role no longer assigned. Department heads use university_admin + membership. */
 export const deptHead = ac.newRole({
   user: ["list"],
   session: ["list"],

@@ -4,7 +4,7 @@ import { ORPCError, os } from "@orpc/server"
 import { eq } from "drizzle-orm"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
-import { deriveEffectiveUserRole } from "@/lib/effective-role"
+import { getEffectiveRole } from "@/lib/effective-role"
 import { checkAdminApproval } from "@/server/auth/approval-gate"
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
@@ -27,38 +27,13 @@ interface SessionUser {
   [key: string]: unknown
 }
 
-function buildLegacyMembership(user: SessionUser) {
-  if (user.role !== "dept_head" || !user.universityId) {
-    return null
-  }
-
-  return {
-    userId: user.id,
-    universityId: user.universityId,
-    role: "department_head" as const,
-    departmentId: user.departmentId ?? null,
-    createdAt: new Date(0),
-    updatedAt: new Date(0),
-  }
-}
-
-async function resolveUniversityMembership(user: SessionUser) {
-  if (user.role === "university_admin") {
-    return getUniversityMembership(user.id)
-  }
-
-  return buildLegacyMembership(user)
-}
-
 async function resolveContextUser(user: SessionUser) {
-  const universityMembership = await resolveUniversityMembership(user)
-  const effectiveRole =
-    deriveEffectiveUserRole({
-      userRole: user.role,
-      universityMembershipRole: universityMembership?.role ?? null,
-    }) ??
-    user.role ??
-    "student"
+  const universityMembership =
+    user.role === "university_admin" || user.role === "dept_head"
+      ? await getUniversityMembership(user.id)
+      : null
+
+  const effectiveRole = getEffectiveRole({ role: user.role })
 
   return {
     user: {
@@ -137,10 +112,7 @@ async function assertApprovedAdminAccess(user: {
   try {
     const approval = await checkAdminApproval({
       ...user,
-      role:
-        user.rawRole === "dept_head"
-          ? "university_admin"
-          : (user.rawRole ?? user.role),
+      role: user.rawRole ?? user.role,
     })
 
     if (approval.ok) {
@@ -187,12 +159,11 @@ export const adminProcedure = authedProcedure.use(async ({ context, next }) => {
   return next({ context })
 })
 
-/** University-scoped access — allows university admins, department heads, and super admins. */
+/** University-scoped access — allows university admins and super admins. */
 export const universityProcedure = authedProcedure.use(
   async ({ context, next }) => {
     if (
       context.user.role !== "university_admin" &&
-      context.user.role !== "dept_head" &&
       context.user.role !== "super_admin"
     ) {
       throwCodedORPCError("FORBIDDEN", "UNIVERSITY_ACCESS_REQUIRED", {
@@ -281,10 +252,10 @@ export const studentProcedure = authedProcedure.use(
   },
 )
 
-/** Department head — requires department_head membership and a current department assignment. */
-export const deptHeadProcedure = authedProcedure.use(
+/** Department head — requires university_admin + department_head membership + department assignment. */
+export const deptHeadProcedure = universityProcedure.use(
   async ({ context, next }) => {
-    if (context.user.role !== "dept_head") {
+    if (context.user.universityMembershipRole !== "department_head") {
       throwCodedORPCError("FORBIDDEN", "DEPARTMENT_HEAD_ACCESS_REQUIRED", {
         message: "Department head access required",
       })

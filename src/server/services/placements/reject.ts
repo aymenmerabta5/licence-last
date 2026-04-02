@@ -18,9 +18,9 @@ import { createNotification } from "@/server/services/notifications/create"
 export interface RejectPlacementInput {
   applicationId: string
   adminUserId: string
-  adminRole: "university_admin" | "dept_head" | "super_admin"
+  adminRole: "university_admin" | "department_head" | "super_admin"
   adminUniversityId: string | null
-  /** Required when adminRole is "dept_head" */
+  /** Required when adminRole is "department_head" */
   adminDepartmentId?: string | null
   reason?: string
 }
@@ -68,7 +68,7 @@ export async function rejectPlacement(input: RejectPlacementInput) {
   }
 
   // Scoping: dept_head → department, admin → university, super_admin → any
-  if (adminRole === "dept_head") {
+  if (adminRole === "department_head") {
     if (!adminDepartmentId) {
       throw new ServiceError(
         "ADMIN_DEPARTMENT_NOT_SET",

@@ -202,7 +202,7 @@ describe("requireRole", () => {
     expect(mockGetSession).toHaveBeenCalledWith({ headers: customHeaders })
   })
 
-  test("should reject department-head membership when only university_admin is allowed", async () => {
+  test("should allow department-head user when university_admin is allowed (they are university_admin)", async () => {
     mockGetSession.mockResolvedValue({
       user: {
         id: "user-3",
@@ -219,7 +219,7 @@ describe("requireRole", () => {
       departmentId: "dept-1",
     })
 
-    await requireRole(
+    const result = await requireRole(
       ["university_admin"],
       {},
       {
@@ -232,10 +232,11 @@ describe("requireRole", () => {
       },
     )
 
-    expect(mockLocaleRedirect).toHaveBeenCalledWith("/")
+    expect(result.role).toBe("university_admin")
+    expect(result.universityMembershipRole).toBe("department_head")
   })
 
-  test("should allow department-head membership when dept_head is allowed", async () => {
+  test("should resolve department-head membership role on university_admin user", async () => {
     mockGetSession.mockResolvedValue({
       user: {
         id: "user-3a",
@@ -253,7 +254,7 @@ describe("requireRole", () => {
     })
 
     const result = await requireRole(
-      ["dept_head"],
+      ["university_admin"],
       {},
       {
         getSession: mockGetSession,
@@ -266,8 +267,8 @@ describe("requireRole", () => {
     )
 
     expect(result.id).toBe("user-3a")
-    expect(result.role).toBe("dept_head")
-    expect(result.effectiveRole).toBe("dept_head")
+    expect(result.role).toBe("university_admin")
+    expect(result.effectiveRole).toBe("university_admin")
     expect(result.rawRole).toBe("university_admin")
     expect(result.universityMembershipRole).toBe("department_head")
     expect(result.universityDepartmentId).toBe("dept-1")

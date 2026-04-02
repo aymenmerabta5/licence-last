@@ -89,6 +89,7 @@ export function DashboardClientProvider({
               <DashboardSidebar
                 role={effectiveRole}
                 companyMembershipRole={companyMembershipRole}
+                universityMembershipRole={universityMembershipRole}
               />
             </Suspense>
           </div>

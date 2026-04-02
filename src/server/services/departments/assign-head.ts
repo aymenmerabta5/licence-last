@@ -11,7 +11,7 @@ import { ServiceError } from "@/server/services/errors"
 const log = createModuleLogger("services/departments/assign-head")
 
 const ROLE_BLOCKLIST = new Set(["company_admin", "super_admin"])
-const ELIGIBLE_ROLES = new Set(["university_admin", "dept_head"])
+const ELIGIBLE_ROLES = new Set(["university_admin"])
 
 /**
  * Assign a user as department head for a department.

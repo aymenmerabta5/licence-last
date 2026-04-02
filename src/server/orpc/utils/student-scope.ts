@@ -54,19 +54,9 @@ export function canAccessApplicationTimeline(
     return true
   }
 
-  if (
+  return (
     viewer.role === "university_admin" &&
     viewer.universityId != null &&
     viewer.universityId === target.universityId
-  ) {
-    return true
-  }
-
-  return (
-    viewer.role === "dept_head" &&
-    viewer.universityId != null &&
-    viewer.departmentId != null &&
-    viewer.universityId === target.universityId &&
-    viewer.departmentId === target.departmentId
   )
 }

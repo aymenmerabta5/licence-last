@@ -111,8 +111,7 @@ export const generateAgreementProcedure = adminProcedureStandard
   )
   .handler(async ({ input, context }) => {
     if (
-      context.user.role !== "university_admin" &&
-      context.user.role !== "dept_head"
+      context.user.role !== "university_admin"
     ) {
       throwCodedORPCError("FORBIDDEN", "PLACEMENT_FORBIDDEN", {
         message: "You do not have access to this placement",

@@ -2,7 +2,7 @@ import "server-only"
 
 import { eq } from "drizzle-orm"
 
-import { deriveEffectiveUserRole } from "@/lib/effective-role"
+import { getEffectiveRole } from "@/lib/effective-role"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { getUniversityMembership } from "@/server/services/universities/membership"
@@ -45,13 +45,7 @@ export async function getUserById(
       ? await getUniversityMembership(userId)
       : null
 
-  const effectiveRole =
-    deriveEffectiveUserRole({
-      userRole: row.role,
-      universityMembershipRole:
-        membership?.role ??
-        (row.role === "dept_head" ? "department_head" : null),
-    }) ?? row.role
+  const effectiveRole = getEffectiveRole({ role: row.role })
 
   return {
     ...row,

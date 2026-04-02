@@ -3,7 +3,7 @@ import { pgEnum } from "drizzle-orm/pg-core"
 export const userRoleEnum = pgEnum("user_role", [
   "student",
   "company_admin",
-  "dept_head",
+  "dept_head", // DEPRECATED: legacy value kept for PG enum compat, never assigned to new users
   "university_admin",
   "super_admin",
 ])
