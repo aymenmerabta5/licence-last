@@ -85,6 +85,9 @@ jobs:
         run: bun run test:ci
 
   e2e:
+    # Temporarily disabled in GitHub Actions while the Playwright/E2E
+    # environment issue is investigated.
+    if: false
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -145,7 +148,6 @@ jobs:
       contents: read
     needs:
       - test
-      - e2e
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/stag
       BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci!!
