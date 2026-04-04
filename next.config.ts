@@ -44,6 +44,19 @@ function getStorageImageRemotePatterns(): ImageRemotePattern[] {
     .map(toRemotePattern)
     .filter((pattern): pattern is ImageRemotePattern => pattern !== null)
 
+  patterns.push(
+    {
+      protocol: "https",
+      hostname: "*.amazonaws.com",
+      pathname: "/**",
+    },
+    {
+      protocol: "https",
+      hostname: "*.r2.cloudflarestorage.com",
+      pathname: "/**",
+    },
+  )
+
   return Array.from(
     new Map(
       patterns.map((pattern) => [

@@ -1,4 +1,5 @@
 import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
+import { Suspense } from "react"
 
 interface MockRoleUser {
   id: string
@@ -70,45 +71,58 @@ describe("status redirects", () => {
   })
 
   test("redirects approved company users from the pending page to the canonical dashboard", async () => {
-    const { default: CompanyPendingPage } = await loadModule(
+    const { default: CompanyPendingPage, CompanyPendingPageContent } =
+      await loadModule(
       "@/app/[locale]/status/company/pending/page",
-    )
+      )
     getCompanyStatusByUserIdMock.mockResolvedValueOnce({ status: "approved" })
 
-    const result = await CompanyPendingPage()
+    const page = CompanyPendingPage()
+    const result = await CompanyPendingPageContent()
 
+    expect(page).not.toBeInstanceOf(Promise)
+    expect(page.type).toBe(Suspense)
     expect(localeRedirectMock).toHaveBeenCalledWith("/dashboard")
     expect(result).toBeDefined()
   })
 
   test("redirects approved company users from the rejected page to the canonical dashboard", async () => {
-    const { default: CompanyRejectedPage } = await loadModule(
+    const { default: CompanyRejectedPage, CompanyRejectedPageContent } =
+      await loadModule(
       "@/app/[locale]/status/company/rejected/page",
-    )
+      )
     getCompanyStatusByUserIdMock.mockResolvedValueOnce({ status: "approved" })
 
-    const result = await CompanyRejectedPage()
+    const page = CompanyRejectedPage()
+    const result = await CompanyRejectedPageContent()
 
+    expect(page).not.toBeInstanceOf(Promise)
+    expect(page.type).toBe(Suspense)
     expect(localeRedirectMock).toHaveBeenCalledWith("/dashboard")
     expect(result).toBeDefined()
   })
 
   test("redirects approved company users from the suspended page to the canonical dashboard", async () => {
-    const { default: CompanySuspendedPage } = await loadModule(
+    const { default: CompanySuspendedPage, CompanySuspendedPageContent } =
+      await loadModule(
       "@/app/[locale]/status/company/suspended/page",
-    )
+      )
     getCompanyStatusByUserIdMock.mockResolvedValueOnce({ status: "approved" })
 
-    const result = await CompanySuspendedPage()
+    const page = CompanySuspendedPage()
+    const result = await CompanySuspendedPageContent()
 
+    expect(page).not.toBeInstanceOf(Promise)
+    expect(page.type).toBe(Suspense)
     expect(localeRedirectMock).toHaveBeenCalledWith("/dashboard")
     expect(result).toBeDefined()
   })
 
   test("redirects approved university users from the pending page to the canonical dashboard", async () => {
-    const { default: UniversityPendingPage } = await loadModule(
+    const { default: UniversityPendingPage, UniversityPendingPageContent } =
+      await loadModule(
       "@/app/[locale]/status/university/pending/page",
-    )
+      )
     requireRoleMock.mockResolvedValueOnce({
       id: "user-1",
       role: "university_admin",
@@ -117,16 +131,20 @@ describe("status redirects", () => {
       status: "approved",
     })
 
-    const result = await UniversityPendingPage()
+    const page = UniversityPendingPage()
+    const result = await UniversityPendingPageContent()
 
+    expect(page).not.toBeInstanceOf(Promise)
+    expect(page.type).toBe(Suspense)
     expect(localeRedirectMock).toHaveBeenCalledWith("/dashboard")
     expect(result).toBeDefined()
   })
 
   test("redirects approved university users from the rejected page to the canonical dashboard", async () => {
-    const { default: UniversityRejectedPage } = await loadModule(
+    const { default: UniversityRejectedPage, UniversityRejectedPageContent } =
+      await loadModule(
       "@/app/[locale]/status/university/rejected/page",
-    )
+      )
     requireRoleMock.mockResolvedValueOnce({
       id: "user-1",
       role: "university_admin",
@@ -135,8 +153,11 @@ describe("status redirects", () => {
       status: "approved",
     })
 
-    const result = await UniversityRejectedPage()
+    const page = UniversityRejectedPage()
+    const result = await UniversityRejectedPageContent()
 
+    expect(page).not.toBeInstanceOf(Promise)
+    expect(page.type).toBe(Suspense)
     expect(localeRedirectMock).toHaveBeenCalledWith("/dashboard")
     expect(result).toBeDefined()
   })

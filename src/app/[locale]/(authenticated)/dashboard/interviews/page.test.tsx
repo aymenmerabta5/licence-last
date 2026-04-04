@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 import { render, screen } from "@testing-library/react"
+import { Suspense } from "react"
 
 const requireRoleMock = mock(async () => ({ role: "student" }))
 const isFeatureEnabledMock = mock(() => true)
@@ -34,7 +35,7 @@ mock.module(
   }),
 )
 
-const { default: InterviewsPage } = await import(
+const { default: InterviewsPage, InterviewsPageContent } = await import(
   "@/app/[locale]/(authenticated)/dashboard/interviews/page"
 )
 
@@ -48,11 +49,19 @@ describe("dashboard/interviews/page", () => {
     isFeatureEnabledMock.mockImplementation(() => true)
   })
 
+  test("keeps the page shell synchronous so auth work can suspend under a boundary", () => {
+    const page = InterviewsPage()
+
+    expect(page).not.toBeInstanceOf(Promise)
+    expect(requireRoleMock).not.toHaveBeenCalled()
+    expect(page.type).toBe(Suspense)
+  })
+
   test("redirects students when interviews feature is disabled", async () => {
     isFeatureEnabledMock.mockImplementation(() => false)
     requireRoleMock.mockImplementation(async () => ({ role: "student" }))
 
-    const result = await InterviewsPage()
+    const result = await InterviewsPageContent()
 
     expect(localeRedirectMock).toHaveBeenCalledWith("/dashboard/applications")
     expect(result).toBeDefined()
@@ -62,7 +71,7 @@ describe("dashboard/interviews/page", () => {
     isFeatureEnabledMock.mockImplementation(() => false)
     requireRoleMock.mockImplementation(async () => ({ role: "company_admin" }))
 
-    const result = await InterviewsPage()
+    const result = await InterviewsPageContent()
 
     expect(localeRedirectMock).toHaveBeenCalledWith("/dashboard/company/offers")
     expect(result).toBeDefined()
@@ -72,7 +81,7 @@ describe("dashboard/interviews/page", () => {
     isFeatureEnabledMock.mockImplementation(() => true)
     requireRoleMock.mockImplementation(async () => ({ role: "company_admin" }))
 
-    render(await InterviewsPage())
+    render(await InterviewsPageContent())
 
     const view = screen.getByTestId("interviews-view")
     expect(view.textContent).toBe("company_admin")

@@ -1,8 +1,13 @@
 name: CD
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
     branches:
+      - main
       - master
   workflow_dispatch:
 
@@ -16,14 +21,22 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     permissions:
       contents: read
       packages: write
     outputs:
       image_ref: ${{ steps.image.outputs.ref }}
     steps:
-      - name: Checkout
+      - name: Checkout dispatched revision
+        if: github.event_name == 'workflow_dispatch'
         uses: actions/checkout@v6.0.2
+
+      - name: Checkout CI-passed revision
+        if: github.event_name == 'workflow_run'
+        uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -55,6 +68,22 @@ jobs:
           build-args: |
             NEXT_PUBLIC_BETTER_AUTH_URL=${{ secrets.NEXT_PUBLIC_BETTER_AUTH_URL }}
             NEXT_PUBLIC_TURNSTILE_SITE_KEY=${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
+            NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES=${{ vars.NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES || 'true' }}
+            NEXT_PUBLIC_FEATURE_SAVED_OFFERS=${{ vars.NEXT_PUBLIC_FEATURE_SAVED_OFFERS || 'true' }}
+            NEXT_PUBLIC_FEATURE_INTERVIEWS=${{ vars.NEXT_PUBLIC_FEATURE_INTERVIEWS || 'true' }}
+            NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS=${{ vars.NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS || 'true' }}
+            FEATURE_COMPANY_ASSISTANT=${{ vars.FEATURE_COMPANY_ASSISTANT || 'false' }}
+            NEXT_PUBLIC_FEATURE_COMPANY_ASSISTANT=${{ vars.NEXT_PUBLIC_FEATURE_COMPANY_ASSISTANT || 'false' }}
+            AI_API_KEY=build-ai-api-key
+            RESEND_API_KEY=build-resend-api-key
+            EMAIL_FROM=build@local.test
+            S3_BUCKET=build-bucket
+            S3_ACCESS_KEY_ID=build-access-key
+            S3_SECRET_ACCESS_KEY=build-secret-key
+            S3_PUBLIC_URL=${{ secrets.S3_PUBLIC_URL }}
+            NEXT_PUBLIC_S3_URL=${{ secrets.NEXT_PUBLIC_S3_URL }}
+            S3_ENDPOINT=${{ secrets.S3_ENDPOINT }}
+            NEXT_PUBLIC_S3_ENDPOINT=${{ secrets.NEXT_PUBLIC_S3_ENDPOINT }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -65,12 +94,20 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     permissions:
       contents: read
       packages: read
     steps:
-      - name: Checkout
+      - name: Checkout dispatched revision
+        if: github.event_name == 'workflow_dispatch'
         uses: actions/checkout@v6.0.2
+
+      - name: Checkout CI-passed revision
+        if: github.event_name == 'workflow_run'
+        uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Sync deployment config
         uses: appleboy/scp-action@v1
@@ -137,7 +174,7 @@ jobs:
             echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
 
             docker compose --env-file .env -f docker-compose.prod.yml pull app
-            docker compose --env-file .env -f docker-compose.prod.yml up -d --force-recreate --wait --remove-orphans app caddy
+            docker compose --env-file .env -f docker-compose.prod.yml up -d --force-recreate --wait --remove-orphans app redis caddy
 
             DOMAIN_NAME="$(awk -F= '/^DOMAIN_NAME=/{print $2}' .env | tail -n 1)"
             if [ -z "$DOMAIN_NAME" ]; then

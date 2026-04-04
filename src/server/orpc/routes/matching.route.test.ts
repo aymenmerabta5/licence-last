@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 
 function createProcedureMock() {
   return {
@@ -25,6 +25,7 @@ const getOfferAccessContextMock = mock(async () => ({
 const canAccessMatchScoreMock = mock(async () => true)
 const getExplainableMatchScoreMock = mock(async () => ({ score: 82 }))
 const captureReadinessSnapshotMock = mock(async () => ({ success: true }))
+const dbLimitQueue: unknown[][] = []
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   universityProcedureAssistant: createProcedureMock(),
@@ -49,13 +50,16 @@ mock.module("@/server/db", () => ({
     select: () => ({
       from: () => ({
         where: () => ({
-          limit: async () => [],
+          limit: async () => dbLimitQueue.shift() ?? [],
         }),
       }),
     }),
   },
 }))
 mock.module("@/server/db/schema/companies", () => ({
+  company: {
+    id: "company-id-column",
+  },
   companyMember: {
     companyId: "company-id-column",
     userId: "user-id-column",
@@ -63,11 +67,16 @@ mock.module("@/server/db/schema/companies", () => ({
 }))
 
 describe("src/server/orpc/routes/matching", () => {
+  afterAll(() => {
+    mock.restore()
+  })
+
   beforeEach(() => {
     getOfferAccessContextMock.mockClear()
     canAccessMatchScoreMock.mockClear()
     getExplainableMatchScoreMock.mockClear()
     captureReadinessSnapshotMock.mockClear()
+    dbLimitQueue.length = 0
   })
 
   test("getScoreProcedure delegates after access check", async () => {
@@ -98,6 +107,34 @@ describe("src/server/orpc/routes/matching", () => {
       code: "FORBIDDEN",
       message: "You do not have access to this match score",
     })
+  })
+
+  test("getScoreProcedure denies company admins without an application relationship", async () => {
+    dbLimitQueue.push([{ companyId: "company-1" }], [])
+    canAccessMatchScoreMock.mockResolvedValueOnce(false)
+
+    const { getScoreProcedure } = await import("@/server/orpc/routes/matching")
+
+    await expect(
+      callProcedure(getScoreProcedure, {
+        input: { studentUserId: "student-1", offerId: "offer-1" },
+        context: { user: { id: "company-admin-1", role: "company_admin" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "You do not have access to this match score",
+    })
+
+    expect(canAccessMatchScoreMock).toHaveBeenCalledWith(
+      { id: "company-admin-1", role: "company_admin" },
+      {
+        studentUserId: "student-1",
+        offerCompanyId: "company-1",
+        isOfferVisibleToStudent: true,
+        viewerCompanyId: "company-1",
+        hasApplicationRelationship: false,
+      },
+    )
   })
 
   test("captureReadinessSnapshotProcedure delegates to readiness service", async () => {

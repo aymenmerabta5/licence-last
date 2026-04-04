@@ -1,10 +1,12 @@
 "use client"
 
 import { Loader2, Send } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useEffect, useMemo, useRef } from "react"
 import { ConversationMessages } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/ConversationMessages"
 import { ConversationThreadHeader } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/ConversationThreadHeader"
 import type {
+  MessageConversationStarter,
   MessagesRole,
   MessageThread,
   ThreadMessage,
@@ -17,6 +19,7 @@ interface ConversationPaneProps {
   role: MessagesRole
   currentUserId: string
   selectedThread: MessageThread | null
+  selectedStarter: MessageConversationStarter | null
   messages: ThreadMessage[]
   isLoading: boolean
   errorMessage: string | null
@@ -29,23 +32,30 @@ interface ConversationPaneProps {
 
 function getThreadTitle(
   thread: MessageThread | null,
+  starter: MessageConversationStarter | null,
   role: MessagesRole,
+  fallbackConversation: string,
+  fallbackCompanyName: string,
+  fallbackStudentName: string,
 ): string {
-  if (!thread) {
-    return "Conversation"
+  const conversation = thread ?? starter
+
+  if (!conversation) {
+    return fallbackConversation
   }
 
   if (role === "student") {
-    return thread.companyName?.trim() || "Company"
+    return conversation.companyName?.trim() || fallbackCompanyName
   }
 
-  return thread.studentName?.trim() || "Student"
+  return conversation.studentName?.trim() || fallbackStudentName
 }
 
 export function ConversationPane({
   role,
   currentUserId,
   selectedThread,
+  selectedStarter,
   messages,
   isLoading,
   errorMessage,
@@ -55,15 +65,25 @@ export function ConversationPane({
   sendPending,
   sendErrorMessage,
 }: ConversationPaneProps) {
+  const t = useTranslations("dashboard.messages")
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
+  const canCompose = Boolean(selectedThread || selectedStarter)
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [])
 
   const threadTitle = useMemo(
-    () => getThreadTitle(selectedThread, role),
-    [selectedThread, role],
+    () =>
+      getThreadTitle(
+        selectedThread,
+        selectedStarter,
+        role,
+        t("placeholderTitle"),
+        t("fallbackCompanyName"),
+        t("fallbackStudentName"),
+      ),
+    [role, selectedStarter, selectedThread, t],
   )
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -85,12 +105,15 @@ export function ConversationPane({
       <ConversationThreadHeader
         role={role}
         selectedThread={selectedThread}
+        selectedStarter={selectedStarter}
         threadTitle={threadTitle}
       />
 
       <div className="flex flex-1 flex-col px-4 py-3 sm:px-5 sm:py-4">
         <ConversationMessages
+          role={role}
           selectedThread={selectedThread}
+          selectedStarter={selectedStarter}
           messages={messages}
           isLoading={isLoading}
           errorMessage={errorMessage}
@@ -108,30 +131,34 @@ export function ConversationPane({
             onKeyDown={handleTextareaKeyDown}
             placeholder={
               selectedThread
-                ? "Write a message..."
-                : "Select a thread first to send a message."
+                ? t("composerPlaceholderThread")
+                : selectedStarter
+                  ? role === "student"
+                    ? t("composerPlaceholderStarterStudent")
+                    : t("composerPlaceholderStarterCompany")
+                  : t("composerPlaceholderEmpty")
             }
-            disabled={!selectedThread || sendPending}
+            disabled={!canCompose || sendPending}
             className="min-h-[84px] resize-none rounded-none bg-background/70"
           />
 
           <div className="mt-2 flex items-center justify-between gap-3">
             <p className="text-[10px] text-muted-foreground">
-              Press Enter to send, Shift+Enter for a new line.
+              {t("composerHint")}
             </p>
             <Button
               type="submit"
               variant="editorial"
               size="editorial-sm"
               className="gap-2"
-              disabled={!selectedThread || !draft.trim() || sendPending}
+              disabled={!canCompose || !draft.trim() || sendPending}
             >
               {sendPending ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
                 <Send className="h-3.5 w-3.5" />
               )}
-              Send
+              {t("send")}
             </Button>
           </div>
 

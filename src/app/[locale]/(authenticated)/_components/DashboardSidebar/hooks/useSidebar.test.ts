@@ -5,6 +5,7 @@ const usePathnameMock = mock(() => "/dashboard")
 const logoutMock = mock(async () => {})
 const isSavedOffersEnabledOnClientMock = mock(() => true)
 const isInterviewsEnabledOnClientMock = mock(() => true)
+const isCompanyAssistantEnabledOnClientMock = mock(() => false)
 
 mock.module("@/i18n/routing", () => ({
   Link: ({ children }: { children?: unknown }) => children,
@@ -21,6 +22,7 @@ mock.module("@/hooks/useLogout", () => ({
 mock.module("@/lib/feature-flags-client", () => ({
   isSavedOffersEnabledOnClient: isSavedOffersEnabledOnClientMock,
   isInterviewsEnabledOnClient: isInterviewsEnabledOnClientMock,
+  isCompanyAssistantEnabledOnClient: isCompanyAssistantEnabledOnClientMock,
 }))
 
 const { useSidebar } = await import(
@@ -33,9 +35,11 @@ describe("useSidebar", () => {
     logoutMock.mockClear()
     isSavedOffersEnabledOnClientMock.mockClear()
     isInterviewsEnabledOnClientMock.mockClear()
+    isCompanyAssistantEnabledOnClientMock.mockClear()
 
     isSavedOffersEnabledOnClientMock.mockImplementation(() => true)
     isInterviewsEnabledOnClientMock.mockImplementation(() => true)
+    isCompanyAssistantEnabledOnClientMock.mockImplementation(() => false)
   })
 
   test("hides saved offers nav item when the flag is off", () => {
@@ -76,5 +80,26 @@ describe("useSidebar", () => {
 
     expect(labelKeys).toContain("companyProfile")
     expect(labelKeys).toContain("teamMembers")
+  })
+
+  test("shows assistant nav item only when the client flag is on", () => {
+    isCompanyAssistantEnabledOnClientMock.mockImplementation(() => true)
+
+    const { result } = renderHook(() => useSidebar("company_admin", "owner"))
+    const labelKeys = result.current.filteredItems.map((item) => item.labelKey)
+
+    expect(labelKeys).toContain("assistant")
+  })
+
+  test("hides university-admin-only routes from department heads", () => {
+    const { result } = renderHook(() =>
+      useSidebar("university_admin", undefined, "department_head"),
+    )
+    const labelKeys = result.current.filteredItems.map((item) => item.labelKey)
+
+    expect(labelKeys).toContain("deptValidations")
+    expect(labelKeys).not.toContain("validatePlacements")
+    expect(labelKeys).not.toContain("departments")
+    expect(labelKeys).not.toContain("userManagement")
   })
 })

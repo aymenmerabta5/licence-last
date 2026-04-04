@@ -2,7 +2,7 @@ import { Suspense } from "react"
 
 import { PlacementDetailClient } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/[applicationId]/_components/PlacementDetail"
 import { Skeleton } from "@/components/ui/skeleton"
-import { requireRole } from "@/lib/auth-guards"
+import { requirePlacementValidationAdmin } from "@/lib/dashboard-access"
 
 interface PlacementDetailPageProps {
   params: Promise<{ applicationId: string }>
@@ -29,15 +29,21 @@ function PlacementDetailFallback() {
   )
 }
 
-export default async function PlacementDetailPage({
+async function PlacementDetailPageContent({
   params,
 }: PlacementDetailPageProps) {
-  await requireRole(["university_admin"])
+  await requirePlacementValidationAdmin()
   const { applicationId } = await params
 
+  return <PlacementDetailClient applicationId={applicationId} />
+}
+
+export default function PlacementDetailPage({
+  params,
+}: PlacementDetailPageProps) {
   return (
     <Suspense fallback={<PlacementDetailFallback />}>
-      <PlacementDetailClient applicationId={applicationId} />
+      <PlacementDetailPageContent params={params} />
     </Suspense>
   )
 }

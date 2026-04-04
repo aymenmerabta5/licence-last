@@ -187,6 +187,35 @@ describe("src/server/services/interviews/confirm", () => {
     expect(txUpdate).not.toHaveBeenCalled()
   })
 
+  test("should throw when the selected slot is already in the past", async () => {
+    txSelectResults.push([
+      {
+        id: "interview-1",
+        studentUserId: "student-1",
+        companyId: "company-1",
+        offerId: "offer-1",
+        status: "pending_confirmation",
+      },
+    ])
+    txSelectResults.push([
+      {
+        id: "slot-1",
+        startsAt: new Date("2000-04-10T09:00:00.000Z"),
+        endsAt: new Date("2000-04-10T10:00:00.000Z"),
+      },
+    ])
+
+    const { confirmInterviewSlot } = await import(
+      "@/server/services/interviews/confirm?fresh=4b" as string
+    )
+
+    await expect(
+      confirmInterviewSlot("interview-1", "slot-1", "student-1"),
+    ).rejects.toThrow("Interview slot is no longer available")
+
+    expect(txUpdate).not.toHaveBeenCalled()
+  })
+
   test("should confirm selected slot and return schedule", async () => {
     const startsAt = new Date("2030-04-10T09:00:00.000Z")
     const endsAt = new Date("2030-04-10T10:00:00.000Z")

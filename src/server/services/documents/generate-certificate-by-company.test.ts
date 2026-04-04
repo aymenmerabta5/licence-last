@@ -20,7 +20,8 @@ const selectBuilder = {
   where: () => selectBuilder,
   limit: selectLimitMock,
 }
-const updateWhereMock = mock(async () => undefined)
+const updateReturningMock = mock(async () => [{ id: "doc-1", meta: {} }])
+const updateWhereMock = mock(() => ({ returning: updateReturningMock }))
 const updateSetMock = mock(() => ({
   where: updateWhereMock,
 }))
@@ -67,9 +68,11 @@ describe("src/server/services/documents/generate-certificate-by-company", () => 
     selectLimitMock.mockClear()
     updateSetMock.mockClear()
     updateWhereMock.mockClear()
+    updateReturningMock.mockClear()
     generateCertificateMock.mockClear()
     createNotificationMock.mockClear()
     sendCertificateEmailMock.mockClear()
+    updateReturningMock.mockResolvedValue([{ id: "doc-1", meta: {} }])
   })
 
   test("throws typed not-found error when placement is missing", async () => {
@@ -215,6 +218,51 @@ describe("src/server/services/documents/generate-certificate-by-company", () => 
         issuedAt: expect.any(String),
       }),
     })
+  })
+
+  test("does not emit duplicate side effects when another request claims issuer metadata first", async () => {
+    selectResultsQueue.push(
+      [
+        {
+          placementId: "placement-1",
+          startDate: new Date("2024-01-01"),
+          endDate: new Date("2024-02-01"),
+          applicationStatus: "admin_validated",
+          offerTitle: "Frontend Internship",
+          internshipType: "pfe",
+          companyId: "company-1",
+          companyName: "Acme",
+          studentUserId: "student-1",
+          studentName: "Student",
+          studentEmail: "student@example.com",
+        },
+      ],
+      [
+        {
+          id: "doc-1",
+          verificationCode: "INTX-ABCD-EF12",
+          meta: {},
+        },
+      ],
+    )
+    updateReturningMock.mockResolvedValueOnce([])
+
+    const { generateCertificateByCompany } =
+      await loadGenerateCertificateByCompanyModule()
+
+    const result = await generateCertificateByCompany({
+      placementId: "placement-1",
+      companyId: "company-1",
+      issuedByUserId: "owner-2",
+      issuedByMembershipRole: "owner",
+      locale: "en",
+    } as never)
+
+    expect(result.success).toBe(true)
+    expect(result.documentId).toBe("doc-1")
+    expect(updateSetMock).toHaveBeenCalledTimes(1)
+    expect(createNotificationMock).not.toHaveBeenCalled()
+    expect(sendCertificateEmailMock).not.toHaveBeenCalled()
   })
 
   test("preserves existing issuer metadata on repeated company issuance", async () => {

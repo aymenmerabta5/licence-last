@@ -12,6 +12,7 @@ import { FormHeader } from "@/components/FormHeader"
 import { ServerError } from "@/components/ServerError"
 import { SubmitButton } from "@/components/SubmitButton"
 import { TurnstileWidget } from "@/components/TurnstileWidget"
+import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
 
 export function SignupForm({ role, onBack }: SignupFormProps) {
@@ -53,13 +54,19 @@ export function SignupForm({ role, onBack }: SignupFormProps) {
     agreeToTerms: (
       <>
         {t("agreeToTerms")}{" "}
-        <span className="font-medium text-heading underline underline-offset-4 decoration-border hover:decoration-primary transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer">
+        <Link
+          href="/terms"
+          className="font-medium text-heading underline underline-offset-4 decoration-border hover:decoration-primary transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        >
           {t("terms")}
-        </span>{" "}
+        </Link>{" "}
         {t("and")}{" "}
-        <span className="font-medium text-heading underline underline-offset-4 decoration-border hover:decoration-primary transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer">
+        <Link
+          href="/privacy"
+          className="font-medium text-heading underline underline-offset-4 decoration-border hover:decoration-primary transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        >
           {t("privacy")}
-        </span>
+        </Link>
       </>
     ),
   }

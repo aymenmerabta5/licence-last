@@ -49,26 +49,34 @@ export async function updateStudentProject(
     )
   }
 
+  const changes: Partial<typeof existing> = {}
+
+  if (input.name !== undefined) {
+    changes.name = input.name.trim()
+  }
+  if (input.summary !== undefined) {
+    changes.summary = input.summary.trim()
+  }
+  if (input.projectUrl !== undefined) {
+    changes.projectUrl = input.projectUrl?.trim()
+      ? input.projectUrl.trim()
+      : null
+  }
+  if (input.repositoryUrl !== undefined) {
+    changes.repositoryUrl = input.repositoryUrl?.trim()
+      ? input.repositoryUrl.trim()
+      : null
+  }
+  if (input.startDate !== undefined) {
+    changes.startDate = nextStartDate
+  }
+  if (input.endDate !== undefined) {
+    changes.endDate = nextEndDate
+  }
+
   await db
     .update(studentProject)
-    .set({
-      name: input.name?.trim() ?? existing.name,
-      summary: input.summary?.trim() ?? existing.summary,
-      projectUrl:
-        input.projectUrl !== undefined
-          ? input.projectUrl?.trim()
-            ? input.projectUrl.trim()
-            : null
-          : existing.projectUrl,
-      repositoryUrl:
-        input.repositoryUrl !== undefined
-          ? input.repositoryUrl?.trim()
-            ? input.repositoryUrl.trim()
-            : null
-          : existing.repositoryUrl,
-      startDate: nextStartDate,
-      endDate: nextEndDate,
-    })
+    .set(changes)
     .where(eq(studentProject.id, projectId))
 
   return { projectId }

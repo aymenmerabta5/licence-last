@@ -62,20 +62,20 @@
   },
   "stats": {
     "students": {
-      "value": "2,500+",
-      "label": "Etudiants Connectes"
+      "value": "3",
+      "label": "Langues prises en charge"
     },
     "companies": {
-      "value": "350+",
-      "label": "Entreprises Partenaires"
+      "value": "4",
+      "label": "Roles principaux"
     },
     "universities": {
-      "value": "45",
-      "label": "Universites"
+      "value": "2",
+      "label": "Types de documents"
     },
     "placementRate": {
-      "value": "96%",
-      "label": "Taux de Placement"
+      "value": "1",
+      "label": "Workflow partage"
     }
   },
   "language": {
@@ -645,6 +645,127 @@
       "aiSummary": {
         "title": "Résumé IA",
         "suggestedNextActions": "Actions suggérées"
+      },
+      "viewAll": "Voir tout",
+      "relativeNow": "à l'instant",
+      "relativeMinutesShort": "{count}m",
+      "relativeHoursShort": "{count}h",
+      "relativeDaysShort": "{count}j",
+      "feed": {
+        "titles": {
+          "new_application": "Nouvelle candidature",
+          "application_stage_changed": "Étape de candidature mise à jour",
+          "application_refused": "Candidature refusée",
+          "placement_pending_validation": "Placement en attente de validation",
+          "placement_validated": "Placement validé",
+          "placement_rejected": "Placement rejeté",
+          "new_message": "Nouveau message",
+          "interview_proposed": "Entretien proposé",
+          "interview_confirmed": "Entretien confirmé",
+          "interview_cancelled": "Entretien annulé",
+          "agreement_generated": "Convention générée",
+          "certificate_generated": "Attestation générée",
+          "company_approved": "Entreprise approuvée",
+          "company_rejected": "Entreprise rejetée",
+          "company_suspended": "Entreprise suspendue",
+          "company_reactivated": "Entreprise réactivée",
+          "university_approved": "Université approuvée"
+        },
+        "stageLabels": {
+          "applied": "Candidature",
+          "screening": "Présélection",
+          "interview": "Entretien",
+          "offer": "Offre",
+          "accepted": "Acceptée",
+          "rejected": "Refusée"
+        },
+        "messages": {
+          "new_application": {
+            "withOfferTitle": "Un étudiant a postulé à {offerTitle}.",
+            "default": "Une nouvelle candidature étudiante a été reçue."
+          },
+          "application_stage_changed": {
+            "withOfferAndStage": "{offerTitle} est passé à l'étape {stage}.",
+            "withStage": "Le pipeline est passé à l'étape {stage}.",
+            "withOfferTitle": "Le statut de la candidature a changé pour {offerTitle}.",
+            "default": "Le statut de la candidature a changé."
+          },
+          "application_refused": {
+            "withOfferAndReason": "{offerTitle} a été refusée : {reason}",
+            "withOfferTitle": "{offerTitle} a été refusée.",
+            "withReason": "Une candidature a été refusée : {reason}",
+            "default": "Une candidature a été refusée."
+          },
+          "placement_pending_validation": {
+            "withOfferAndCompany": "{offerTitle} chez {companyName} attend une validation.",
+            "default": "Un placement attend une validation."
+          },
+          "placement_validated": {
+            "withOfferTitle": "Le placement pour {offerTitle} est maintenant validé.",
+            "default": "Un placement a été validé."
+          },
+          "placement_rejected": {
+            "withOfferAndReason": "{offerTitle} a été rejeté : {reason}",
+            "withOfferTitle": "{offerTitle} a été rejeté.",
+            "withReason": "Un placement a été rejeté : {reason}",
+            "default": "Un placement a été rejeté."
+          },
+          "new_message": {
+            "withOfferTitle": "Vous avez reçu un nouveau message au sujet de {offerTitle}.",
+            "default": "Vous avez reçu un nouveau message."
+          },
+          "interview_proposed": {
+            "withOfferTitle": "Vous avez été invité à un entretien pour {offerTitle}.",
+            "default": "Vous avez été invité à un entretien."
+          },
+          "interview_confirmed": {
+            "withOfferTitle": "Un créneau d'entretien a été confirmé pour {offerTitle}.",
+            "default": "Un étudiant a confirmé un créneau d'entretien."
+          },
+          "interview_cancelled": {
+            "withOfferTitle": "Votre entretien pour {offerTitle} a été annulé.",
+            "default": "Un entretien a été annulé."
+          },
+          "agreement_generated": {
+            "withOfferAndCompany": "La convention pour {offerTitle} chez {companyName} est prête.",
+            "withOfferTitle": "La convention pour {offerTitle} est prête.",
+            "default": "Une convention de stage est prête."
+          },
+          "certificate_generated": {
+            "withOfferAndCompany": "L'attestation pour {offerTitle} chez {companyName} est prête.",
+            "withOfferTitle": "L'attestation pour {offerTitle} est prête.",
+            "default": "Une attestation est prête."
+          },
+          "company_approved": {
+            "withCompanyName": "{companyName} a été approuvée.",
+            "default": "Entreprise approuvée."
+          },
+          "company_rejected": {
+            "withCompanyName": "{companyName} n'a pas été approuvée.",
+            "default": "Entreprise non approuvée."
+          },
+          "company_suspended": {
+            "withCompanyName": "{companyName} a été suspendue.",
+            "default": "Entreprise suspendue."
+          },
+          "company_reactivated": {
+            "withCompanyName": "{companyName} a été réactivée.",
+            "default": "Entreprise réactivée."
+          },
+          "university_approved": {
+            "withUniversityName": "{universityName} a été approuvée.",
+            "default": "Université approuvée."
+          }
+        }
+      },
+      "fallbackSummary": {
+        "unreadStatus": "{unread} non lues sur {total} notifications.",
+        "typeCount": "{type} : {count}",
+        "actions": {
+          "reviewUnread": "Consultez les notifications non lues et marquez comme traitées celles qui le sont.",
+          "prioritizeMessages": "Traitez d'abord les messages et les mises à jour d'entretien.",
+          "upToDate": "Vous êtes à jour. Continuez à surveiller la nouvelle activité."
+        }
       }
     },
     "company": {
@@ -898,6 +1019,43 @@
             "summarize": "Résumer ce candidat",
             "refusalNote": "Rédiger une courte note de refus"
           }
+        },
+        "pipelineHeading": "Pipeline des candidats",
+        "candidateCountLabel": "Candidats"
+      },
+      "matching": {
+        "computing": "Calcul de la correspondance",
+        "scoreLabel": "Score de compatibilite"
+      },
+      "team": {
+        "kicker": "Espace entreprise",
+        "title": "Membres de l equipe",
+        "subtitle": "Les proprietaires gerent l acces. Les recruteurs travaillent sur les offres et les candidats.",
+        "inviteKicker": "Inviter un recruteur",
+        "inviteDescription": "Ajoutez un collegue qui peut gerer les offres et les candidats.",
+        "namePlaceholder": "Nom complet (optionnel)",
+        "inviteButton": "Inviter le membre",
+        "inviting": "Invitation...",
+        "empty": "Aucun membre pour le moment.",
+        "unnamedMember": "Membre sans nom",
+        "you": "Vous",
+        "joined": "Ajoute le {date}",
+        "unknownDate": "Date inconnue",
+        "remove": "Retirer",
+        "ownerOnlyNotice": "Seuls les proprietaires peuvent inviter ou retirer des membres.",
+        "loading": "Chargement des membres...",
+        "nameLabel": "Nom complet",
+        "emailLabel": "E-mail professionnel",
+        "emailPlaceholder": "nom@entreprise.com",
+        "roles": {
+          "owner": "Propriétaire",
+          "recruiter": "Recruteur"
+        },
+        "removeDialog": {
+          "title": "Retirer le membre",
+          "description": "Retirer {name} de l'espace entreprise ?",
+          "cancel": "Annuler",
+          "confirm": "Retirer le membre"
         }
       }
     },
@@ -1140,7 +1298,9 @@
         "placeholder": "ex. Stage d'été à distance à Alger, React + Node",
         "parseFilters": "Analyser les filtres",
         "apply": "Appliquer"
-      }
+      },
+      "savedOffersDescription": "Gardez vos offres favorites a portee de main et revenez-y quand vous etes pret a postuler.",
+      "savedOffersAction": "Voir les offres sauvegardees"
     },
     "studentCompanies": {
       "kicker": "Annuaire des entreprises",
@@ -1668,6 +1828,11 @@
         "reasonLabel": "Motif",
         "contactSupport": "Si vous pensez qu'il s'agit d'une erreur, veuillez contacter le support.",
         "reapply": "Resoumettre"
+      },
+      "statsHeader": {
+        "badge": "Vue admin",
+        "title": "Performance de la plateforme",
+        "description": "Suivez les validations, l engagement, les placements et la sante operationnelle du reseau Stag."
       }
     },
     "superAdmin": {
@@ -1929,6 +2094,136 @@
         "saveSuccess": "Compétences du département mises à jour.",
         "saveError": "Impossible de mettre à jour les compétences."
       }
+    },
+    "messages": {
+      "kickerStudent": "Boite etudiante",
+      "kickerCompany": "Boite entreprise",
+      "title": "Messages",
+      "subtitleStudent": "Discutez avec les entreprises auxquelles vous avez deja postule.",
+      "subtitleCompany": "Restez en contact avec les candidats de vos offres.",
+      "threadsCount": "{count, plural, one {{count} fil} other {{count} fils}}",
+      "threadsLabel": "Fils",
+      "emptyStudent": "Aucune conversation pour le moment. Postulez a une offre pour activer la messagerie.",
+      "emptyCompany": "Aucune conversation pour le moment. Les candidats sans fil apparaitront ici.",
+      "pickStarter": "Choisissez un point de depart pour ouvrir votre premiere conversation.",
+      "unreadAria": "{count} messages non lus",
+      "threadUnread": "Messages non lus",
+      "threadOpen": "Fil ouvert",
+      "startersLabel": "Demarrer une conversation",
+      "startersDescriptionStudent": "Offres candidates sans fil de messages",
+      "startersDescriptionCompany": "Candidats que vous pouvez contacter pour la premiere fois",
+      "startConversationAction": "Demarrer la conversation",
+      "placeholderTitle": "Conversation",
+      "placeholderSubtitle": "Selectionnez un fil ou un point de depart pour commencer.",
+      "composerPlaceholderThread": "Ecrivez un message...",
+      "composerPlaceholderStarterStudent": "Presentez-vous a l entreprise...",
+      "composerPlaceholderStarterCompany": "Partagez les prochaines etapes avec l etudiant...",
+      "composerPlaceholderEmpty": "Selectionnez d abord un fil ou un point de depart.",
+      "composerHint": "Entree pour envoyer, Maj+Entree pour une nouvelle ligne.",
+      "send": "Envoyer",
+      "emptySelection": "Choisissez un fil ou un point de depart pour ouvrir la conversation.",
+      "starterPreviewStudent": "Votre premier message ouvrira une nouvelle conversation avec {name} au sujet de {offerTitle}.",
+      "starterPreviewCompany": "Votre premier message ouvrira une nouvelle conversation avec {name} au sujet de {offerTitle}.",
+      "emptyThread": "Aucun message pour le moment. Lancez la conversation.",
+      "fallbackCompanyName": "Entreprise",
+      "fallbackStudentName": "Etudiant",
+      "fallbackSenderName": "Expediteur",
+      "messageEmptyError": "Le message ne peut pas etre vide.",
+      "missingStudentError": "Identifiant etudiant manquant pour cette conversation.",
+      "threadsLoadError": "Impossible de charger les fils de messages.",
+      "starterLoadError": "Impossible de charger les conversations disponibles.",
+      "conversationLoadError": "Impossible de charger la conversation.",
+      "sendError": "Impossible d envoyer le message."
+    },
+    "interviews": {
+      "roleStudent": "Etudiant",
+      "roleCompany": "Entreprise",
+      "roleDashboard": "tableau",
+      "title": "Entretiens",
+      "subtitleCompany": "Planifiez et gerez les sessions d entretien avec les candidats.",
+      "subtitleStudent": "Consultez et confirmez les invitations d entretien des entreprises.",
+      "totalCountLabel": "Total",
+      "pendingCountLabel": "En attente",
+      "confirmedCountLabel": "Confirmes",
+      "timezoneNote": "Toutes les heures sont affichees dans votre fuseau local.",
+      "tabs": {
+        "schedule": "Planifier",
+        "all": "Tous les entretiens"
+      },
+      "form": {
+        "title": "Planifier un entretien",
+        "subtitle": "Choisissez une candidature et proposez des horaires",
+        "stepSelectCandidate": "Choisir le candidat",
+        "stepTimeSlots": "Proposer des horaires",
+        "stepAddContext": "Ajouter du contexte",
+        "optional": "optionnel",
+        "offerLabel": "Offre",
+        "offerPlaceholder": "Selectionnez une offre",
+        "offerLoading": "Chargement des offres...",
+        "noOffers": "Aucune offre trouvee pour cette entreprise.",
+        "applicationLabel": "Candidature",
+        "applicationPlaceholder": "Selectionnez une candidature",
+        "applicationLoading": "Chargement des candidatures...",
+        "selectOfferFirst": "Selectionnez d abord une offre",
+        "noApplications": "Aucune candidature eligible pour cette offre.",
+        "notePlaceholder": "Partagez le contexte pour l etudiant : format, preparation, tenue...",
+        "submit": "Envoyer la proposition"
+      },
+      "slots": {
+        "title": "Creneaux",
+        "add": "Ajouter un creneau",
+        "slot": "Creneau {number}",
+        "removeAria": "Supprimer le creneau {number}",
+        "startsAt": "Debut",
+        "endsAt": "Fin",
+        "location": "Lieu",
+        "locationPlaceholder": "Salle, campus, etc.",
+        "meetingUrl": "Lien de reunion"
+      },
+      "companySection": {
+        "loading": "Chargement des entretiens",
+        "loadErrorTitle": "Impossible de charger les entretiens",
+        "emptyTitle": "Aucun entretien propose",
+        "emptyDescription": "Utilisez le formulaire pour creer votre premiere proposition.",
+        "title": "Entretiens proposes",
+        "total": "{count} au total",
+        "linkLabel": "Lien",
+        "confirmedLabel": "Confirme"
+      },
+      "studentSection": {
+        "loading": "Chargement des entretiens",
+        "loadErrorTitle": "Impossible de charger les entretiens",
+        "emptyTitle": "Aucun entretien pour le moment",
+        "emptyDescription": "Les invitations des entreprises apparaitront ici. Gardez vos candidatures actives et revenez bientot.",
+        "actionRequired": "Action requise",
+        "pastAndConfirmed": "Passes et confirmes",
+        "yourInterviews": "Vos entretiens",
+        "chooseSlot": "Choisissez un creneau qui vous convient :",
+        "joinMeeting": "Rejoindre la reunion",
+        "confirmedLabel": "Confirme",
+        "confirming": "Confirmation...",
+        "confirm": "Confirmer"
+      },
+      "status": {
+        "pending_confirmation": "En attente de confirmation",
+        "confirmed": "Confirme",
+        "cancelled": "Annule"
+      },
+      "unknownStage": "Etape inconnue",
+      "stageLabels": {
+        "applied": "Postule",
+        "screening": "Selection",
+        "interview": "Entretien",
+        "offer": "Offre",
+        "accepted": "Accepte",
+        "rejected": "Rejete"
+      },
+      "fallbackStudent": "Etudiant",
+      "disabled": {
+        "title": "Entretiens indisponibles",
+        "description": "Les entretiens sont actuellement désactivés par les paramètres de la plateforme.",
+        "help": "Contactez votre administrateur pour réactiver cette fonctionnalité."
+      }
     }
   },
   "companyPublic": {
@@ -1991,7 +2286,7 @@
         "accept": {
           "step": "Étape 04",
           "title": "Acceptez et poursuivez",
-          "description": "Acceptez les candidats et déclenchez automatiquement le workflow administratif."
+          "description": "Acceptez les candidats puis poursuivez le workflow administratif via la plateforme."
         }
       }
     },
@@ -2081,7 +2376,7 @@
           "assistant": {
             "num": "03",
             "title": "Assistant propulsé par l'IA",
-            "desc": "Obtenez de l'aide pour rédiger des lettres de motivation, analyser des candidats et naviguer sur la plateforme avec l'IA."
+            "desc": "Utilisez des outils assistes par l IA pour la redaction, la relecture et l orientation sur la plateforme lorsque ces parcours sont actives."
           },
           "cv": {
             "num": "04",
@@ -2091,7 +2386,7 @@
           "documents": {
             "num": "05",
             "title": "Documents automatisés",
-            "desc": "Convention de Stage et certificats générés automatiquement avec des codes de vérification QR."
+            "desc": "Generez conventions de stage et certificats a partir de donnees verifiees, avec verification par code QR."
           },
           "tracking": {
             "num": "06",
@@ -2179,7 +2474,7 @@
         },
         "apply": {
           "title": "Candidature en un clic",
-          "desc": "Envoyez votre profil directement aux entreprises. L'IA vous aide à rédiger des lettres de motivation qui se démarquent."
+          "desc": "Envoyez votre profil directement aux entreprises et utilisez une aide a la redaction integree lorsqu elle est disponible."
         },
         "tracking": {
           "title": "Suivi en direct",
@@ -2187,11 +2482,11 @@
         },
         "assistant": {
           "title": "Copilote IA",
-          "desc": "Obtenez des conseils personnalisés sur les candidatures, la préparation aux entretiens et la stratégie de carrière de votre assistant IA."
+          "desc": "Obtenez de l aide pour vos questions de candidature, la preparation aux entretiens et les prochaines etapes via les fonctionnalites d assistant disponibles sur la plateforme."
         },
         "documents": {
           "title": "Documents automatiques",
-          "desc": "Votre Convention de Stage et vos certificats de fin de stage sont générés automatiquement une fois validés."
+          "desc": "Les conventions et certificats de fin sont generes a partir de donnees de placement validees."
         }
       },
       "journey": {
@@ -2215,7 +2510,7 @@
         "step4": {
           "num": "04",
           "title": "Obtenez votre placement",
-          "desc": "Une fois accepté, votre université valide le placement et les documents sont générés."
+          "desc": "Une fois accepte, votre universite valide le placement et la plateforme prepare les documents de suivi."
         }
       },
       "cta": {
@@ -2228,24 +2523,24 @@
     "forCompanies": {
       "metadata": {
         "title": "Pour les entreprises — Stag",
-        "description": "Trouvez et recrutez les meilleurs talents étudiants grâce au tri par IA et à la conformité automatisée."
+        "description": "Trouvez des talents etudiants, examinez les candidatures et coordonnez les workflows de stage depuis un seul espace."
       },
       "hero": {
         "kicker": "Pour les entreprises",
         "headline": "Trouvez les talents de demain aujourd'hui",
         "headlineHighlight": "talents de demain",
-        "description": "Publiez des offres de stage, triez les candidats avec l'IA et laissez la plateforme gérer automatiquement la conformité et les documents."
+        "description": "Publiez des offres de stage, examinez les candidatures avec les outils integres et coordonnez validation et documents via la plateforme."
       },
       "benefits": {
         "label": "Pourquoi Stag",
         "headline": "Recrutez plus intelligemment",
         "pipeline": {
           "title": "Pipeline de talents",
-          "desc": "Gérez tous les candidats en un seul endroit. Filtrez par compétences, expérience et score de correspondance pour trouver la meilleure adéquation."
+          "desc": "Gerez les candidats au meme endroit, examinez competences et experience et utilisez les signaux de correspondance pour prioriser les suivis."
         },
         "ai": {
           "title": "Tri par IA",
-          "desc": "Laissez l'IA résumer les candidats, mettre en avant les points forts et rédiger des communications — économisant des heures d'examen manuel."
+          "desc": "Utilisez des resumes et outils de redaction assistes par l IA pour accelerer la revue lorsque ces fonctionnalites sont activees pour votre espace."
         },
         "trust": {
           "title": "Indice de confiance",
@@ -2253,7 +2548,7 @@
         },
         "compliance": {
           "title": "Conformité automatique",
-          "desc": "Une fois que vous acceptez un candidat, l'université valide et tous les documents officiels sont générés automatiquement."
+          "desc": "Une fois un candidat accepte, la plateforme aide a coordonner la validation universitaire et la generation des documents."
         }
       },
       "workflow": {
@@ -2272,36 +2567,36 @@
         "step3": {
           "num": "03",
           "title": "Examinez et acceptez",
-          "desc": "Triez les candidats, utilisez les résumés IA et acceptez les meilleurs candidats."
+          "desc": "Examinez les candidatures, utilisez resumes et signaux de correspondance, puis retenez les meilleurs profils."
         },
         "step4": {
           "num": "04",
-          "title": "Workflow automatisé",
-          "desc": "Le reste se fait automatiquement — validation, documents et suivi."
+          "title": "Workflow coordonne",
+          "desc": "Apres acceptation, validation, documents et suivi de statut se poursuivent dans le workflow de la plateforme."
         }
       },
       "stats": {
         "label": "En chiffres",
         "students": {
-          "value": "2 500+",
-          "label": "Étudiants actifs"
+          "value": "4",
+          "label": "Etapes du workflow"
         },
         "placement": {
-          "value": "96%",
-          "label": "Taux de Placement"
+          "value": "3",
+          "label": "Langues prises en charge"
         },
         "universities": {
-          "value": "45",
-          "label": "Universités partenaires"
+          "value": "2",
+          "label": "Types de documents"
         },
         "avgTime": {
-          "value": "< 48h",
-          "label": "Temps de réponse moy."
+          "value": "1",
+          "label": "Pipeline partage"
         }
       },
       "cta": {
         "headline": "Prêt à trouver des talents ?",
-        "description": "Rejoignez plus de 350 entreprises qui recrutent déjà sur Stag.",
+        "description": "Creez un espace entreprise verifie et commencez a publier des offres sur Stag.",
         "button": "Inscrire votre entreprise"
       }
     },
@@ -2330,7 +2625,7 @@
         "headline": "Ce qui nous guide",
         "innovation": {
           "title": "Innovation",
-          "desc": "Correspondance par IA, documents automatisés et assistants intelligents qui rendent le processus sans effort."
+          "desc": "Des outils de matching, de workflow documentaire et d assistance concus pour reduire la charge administrative sans masquer les etapes d approbation."
         },
         "accessibility": {
           "title": "Accessibilité",
@@ -2342,32 +2637,116 @@
         },
         "reliability": {
           "title": "Fiabilité",
-          "desc": "Construit sur une infrastructure moderne avec conformité automatisée, garantissant que chaque document répond aux normes officielles."
+          "desc": "Une infrastructure moderne, des traces verifiables et des etapes de revue pour que les documents officiels refletent des donnees approuvees."
         }
       },
       "stats": {
         "label": "Impact de la plateforme",
         "students": {
-          "value": "2,500+",
-          "label": "Etudiants Connectes"
+          "value": "3",
+          "label": "Langues prises en charge"
         },
         "companies": {
-          "value": "350+",
-          "label": "Entreprises Partenaires"
+          "value": "4",
+          "label": "Roles principaux"
         },
         "universities": {
-          "value": "45",
-          "label": "Universites"
+          "value": "2",
+          "label": "Types de documents"
         },
         "placement": {
-          "value": "96%",
-          "label": "Taux de Placement"
+          "value": "1",
+          "label": "Workflow partage"
         }
       },
       "cta": {
         "headline": "Faites partie de l'avenir",
         "description": "Que vous soyez étudiant, entreprise ou université — Stag est fait pour vous.",
         "button": "Commencer"
+      }
+    },
+    "privacy": {
+      "metadata": {
+        "title": "Politique de confidentialite - Stag",
+        "description": "Comprenez quelles donnees Stag conserve, pourquoi elles sont utilisees et comment nous contacter pour vos demandes de confidentialite."
+      },
+      "kicker": "Juridique",
+      "title": "Politique de confidentialite",
+      "updatedAt": "Mise a jour le 4 avril 2026",
+      "intro": "Stag.io est exploite par l equipe plateforme joignable a support@stag.io. Cette notice decrit le traitement des comptes, des dossiers de stage, des messages, des documents et des integrations d assistant lorsque celles-ci sont activees.",
+      "sections": {
+        "collection": {
+          "title": "Ce que nous collectons",
+          "body": "Nous collectons les donnees de compte, les informations de profil, les candidatures, les entretiens, les placements, les documents televerses, les messages et les journaux techniques strictement necessaires au fonctionnement du service. Lorsqu un administrateur entreprise connecte un outil externe, Arcade gere la delegation GitHub ou Gmail pour ce compte."
+        },
+        "usage": {
+          "title": "Comment nous les utilisons",
+          "body": "Ces donnees servent a authentifier les utilisateurs via Better Auth, coordonner les candidatures et validations, generer des documents, envoyer des e-mails operationnels, proteger les formulaires avec Cloudflare Turnstile quand il est active et acheminer les demandes d assistant via un fournisseur compatible OpenAI lorsque la fonctionnalite est activee. Les fichiers televerses sont stockes dans un stockage objet compatible S3."
+        },
+        "retention": {
+          "title": "Duree de conservation",
+          "body": "Nous conservons les enregistrements operationnels tant que les comptes et workflows de stage restent actifs, puis uniquement le temps necessaire a l audit, au support, a la prevention de la fraude ou a la verification documentaire. Les cookies de session expirent automatiquement et les acces aux outils connectes peuvent etre revoques depuis le flux du fournisseur relie."
+        },
+        "contact": {
+          "title": "Contact",
+          "body": "Les demandes relatives a la confidentialite et aux donnees Stag.io peuvent etre adressees a support@stag.io. Indiquez l e-mail du compte, le code de document ou les details entreprise/universite utiles pour identifier les bons enregistrements."
+        }
+      }
+    },
+    "terms": {
+      "metadata": {
+        "title": "Conditions d utilisation - Stag",
+        "description": "Consultez les conditions qui encadrent l acces a Stag pour les etudiants, entreprises, universites et administrateurs."
+      },
+      "kicker": "Juridique",
+      "title": "Conditions d utilisation",
+      "updatedAt": "Mise a jour le 4 avril 2026",
+      "intro": "Ces conditions regissent l utilisation de Stag par les etudiants, entreprises, universites et administrateurs. En creant un compte ou en utilisant la plateforme, vous acceptez de l utiliser de maniere responsable et de fournir des informations exactes.",
+      "sections": {
+        "accounts": {
+          "title": "Comptes et acces",
+          "body": "Vous etes responsable de la securite de vos identifiants et de l exactitude des informations rattachees a votre compte. L acces peut etre limite, suspendu ou retire si la verification echoue ou si les regles de la plateforme sont enfreintes."
+        },
+        "conduct": {
+          "title": "Usage acceptable",
+          "body": "Ne publiez pas d offres frauduleuses, n usurpez pas l identite d autres utilisateurs, n extrayez pas de donnees protegees, n abusez pas de la messagerie et ne tentez pas de contourner les controles de role, d approbation ou de securite. L activite peut etre examinee lorsqu un abus ou une violation est signale."
+        },
+        "documents": {
+          "title": "Documents et enregistrements",
+          "body": "Les conventions, certificats et enregistrements de verification generes refletent les donnees de workflow stockees sur la plateforme. Les utilisateurs sont responsables de la relecture des informations soumises avant validation ou emission."
+        },
+        "support": {
+          "title": "Support et evolutions",
+          "body": "Nous pouvons faire evoluer la plateforme, les politiques ou les exigences operationnelles a mesure que le service change. Les modifications importantes seront refl?tees sur cette page. Les notifications formelles, demandes juridiques et demandes de support peuvent etre envoyees a support@stag.io."
+        }
+      }
+    },
+    "cookies": {
+      "metadata": {
+        "title": "Politique de cookies - Stag",
+        "description": "Comprenez comment Stag utilise les cookies et stockages similaires pour les sessions, les preferences et la mesure operationnelle."
+      },
+      "kicker": "Juridique",
+      "title": "Politique de cookies",
+      "updatedAt": "Mise a jour le 4 avril 2026",
+      "intro": "Stag utilise des cookies et stockages similaires pour l authentification, la securite, les preferences d interface et, si besoin, la protection contre les abus. Le service n embarque pas de traceurs publicitaires par defaut.",
+      "sections": {
+        "essential": {
+          "title": "Cookies essentiels",
+          "body": "Les cookies essentiels proviennent de Better Auth et des flux de connexion associes. Sans eux, les pages protegees, les controles de role et les fonctions de securite du compte ne peuvent pas fonctionner."
+        },
+        "preferences": {
+          "title": "Stockage des preferences",
+          "body": "La plateforme memorise des choix d interface tels que l etat de la barre laterale ainsi que certaines preferences de langue ou de presentation afin que le tableau de bord s ouvre dans l etat attendu."
+        },
+        "analytics": {
+          "title": "Securite et prevention des abus",
+          "body": "Lorsqu ils sont actives, Cloudflare Turnstile et les journaux operationnels cote serveur aident a detecter les abus automatises, diagnostiquer les pannes et suivre la fiabilite. Ces signaux servent a proteger le service et non a profiler a des fins publicitaires."
+        },
+        "contact": {
+          "title": "Gestion des cookies",
+          "body": "Vous pouvez supprimer les cookies dans votre navigateur a tout moment. Si vous avez besoin d aide pour comprendre quelles valeurs stockees affectent l acces a votre compte, contactez support@stag.io."
+        }
       }
     }
   },
@@ -2376,7 +2755,7 @@
     "sections": {
       "platform": "Plateforme",
       "company": "Entreprise",
-      "newsletter": "Restez informé"
+      "newsletter": "Contact"
     },
     "links": {
       "discover": "Découvrir",
@@ -2387,9 +2766,9 @@
       "getStarted": "Commencer"
     },
     "newsletter": {
-      "description": "Abonnez-vous à notre newsletter pour les dernières opportunités de stage et conseils de carrière.",
+      "description": "Envoyez-nous votre e-mail si vous souhaitez recevoir des nouvelles du lancement ou une reponse de l equipe Stag.",
       "emailPlaceholder": "Entrez votre e-mail",
-      "subscribe": "S'abonner"
+      "subscribe": "Nous ecrire"
     },
     "legal": {
       "copyright": "(c) {year} Stag.io. Tous droits réservés.",

@@ -12,6 +12,7 @@ const txForUpdate = mock(() => ({ limit: txLimit }))
 const txWhereWithLock = mock(() => ({ for: txForUpdate }))
 const txJoinApplication = mock(() => ({ where: txWhereWithLock }))
 const txFromApplication = mock(() => ({ innerJoin: txJoinApplication }))
+const txFromWithLock = mock(() => ({ where: txWhereWithLock }))
 
 const txWhere = mock(() => ({ limit: txLimit }))
 const txFrom = mock(() => ({ where: txWhere }))
@@ -24,6 +25,10 @@ const txSelect = mock(() => {
 
   if (txSelectCallIdx === 1) {
     return { from: txFromApplication }
+  }
+
+  if (txSelectCallIdx === 2) {
+    return { from: txFromWithLock }
   }
 
   return { from: txFrom }
@@ -44,6 +49,12 @@ mock.module("@/server/db", () => ({
   },
 }))
 
+const createNotificationMock = mock(async () => ({ id: "notification-1" }))
+
+mock.module("@/server/services/notifications/create", () => ({
+  createNotification: createNotificationMock,
+}))
+
 describe("src/server/services/interviews/propose", () => {
   beforeEach(() => {
     txSelectResults.length = 0
@@ -54,15 +65,18 @@ describe("src/server/services/interviews/propose", () => {
     txWhereWithLock.mockClear()
     txJoinApplication.mockClear()
     txFromApplication.mockClear()
+    txFromWithLock.mockClear()
     txWhere.mockClear()
     txFrom.mockClear()
     txInsertValues.mockClear()
     txInsert.mockClear()
     txSelect.mockClear()
     mockTransaction.mockClear()
+    createNotificationMock.mockClear()
 
     txFromApplication.mockReturnValue({ innerJoin: txJoinApplication })
     txJoinApplication.mockReturnValue({ where: txWhereWithLock })
+    txFromWithLock.mockReturnValue({ where: txWhereWithLock })
     txWhereWithLock.mockReturnValue({ for: txForUpdate })
     txForUpdate.mockReturnValue({ limit: txLimit })
 
@@ -71,6 +85,7 @@ describe("src/server/services/interviews/propose", () => {
 
     txInsert.mockReturnValue({ values: txInsertValues })
     txInsertValues.mockResolvedValue(undefined)
+    createNotificationMock.mockResolvedValue({ id: "notification-1" })
 
     mockTransaction.mockImplementation(async (callback) => callback(tx))
   })
@@ -112,6 +127,28 @@ describe("src/server/services/interviews/propose", () => {
         "actor-1",
       ),
     ).rejects.toThrow("Each slot start time must be before end time")
+
+    expect(mockTransaction).not.toHaveBeenCalled()
+  })
+
+  test("should throw when a slot is already in the past", async () => {
+    const startsAt = new Date("2000-04-10T09:00:00.000Z")
+    const endsAt = new Date("2000-04-10T10:00:00.000Z")
+
+    const { proposeInterviewSlots } = await import(
+      "@/server/services/interviews/propose?fresh=2a" as string
+    )
+
+    await expect(
+      proposeInterviewSlots(
+        {
+          applicationId: "application-1",
+          slots: [{ startsAt, endsAt }],
+        },
+        "company-1",
+        "actor-1",
+      ),
+    ).rejects.toThrow("Interview slots must be scheduled in the future")
 
     expect(mockTransaction).not.toHaveBeenCalled()
   })
@@ -256,6 +293,7 @@ describe("src/server/services/interviews/propose", () => {
         companyId: "company-1",
       },
     ])
+    txSelectResults.push([{ status: "published" }])
 
     const { proposeInterviewSlots } = await import(
       "@/server/services/interviews/propose?fresh=7" as string
@@ -280,6 +318,40 @@ describe("src/server/services/interviews/propose", () => {
     )
   })
 
+  test("should throw when the offer is already closed", async () => {
+    txSelectResults.push([
+      {
+        id: "application-1",
+        status: "applied",
+        pipelineStage: "interview",
+        offerId: "offer-1",
+        studentUserId: "student-1",
+        companyId: "company-1",
+      },
+    ])
+    txSelectResults.push([{ status: "closed" }])
+
+    const { proposeInterviewSlots } = await import(
+      "@/server/services/interviews/propose?fresh=7b" as string
+    )
+
+    await expect(
+      proposeInterviewSlots(
+        {
+          applicationId: "application-1",
+          slots: [
+            {
+              startsAt: new Date("2030-04-10T09:00:00.000Z"),
+              endsAt: new Date("2030-04-10T10:00:00.000Z"),
+            },
+          ],
+        },
+        "company-1",
+        "actor-1",
+      ),
+    ).rejects.toThrow("Interview cannot be proposed for a closed offer")
+  })
+
   test("should throw when interview already exists for the application", async () => {
     txSelectResults.push([
       {
@@ -291,6 +363,7 @@ describe("src/server/services/interviews/propose", () => {
         companyId: "company-1",
       },
     ])
+    txSelectResults.push([{ status: "published" }])
     txSelectResults.push([{ id: "interview-1" }])
 
     const { proposeInterviewSlots } = await import(
@@ -332,6 +405,7 @@ describe("src/server/services/interviews/propose", () => {
         companyId: "company-1",
       },
     ])
+    txSelectResults.push([{ status: "published" }])
     txSelectResults.push([])
 
     const { proposeInterviewSlots } = await import(
@@ -364,8 +438,9 @@ describe("src/server/services/interviews/propose", () => {
     expect(result.studentUserId).toBe("student-1")
     expect(typeof result.interviewId).toBe("string")
     expect(mockTransaction).toHaveBeenCalledTimes(1)
-    expect(txSelect).toHaveBeenCalledTimes(2)
+    expect(txSelect).toHaveBeenCalledTimes(3)
     expect(txInsert).toHaveBeenCalledTimes(2)
+    expect(createNotificationMock).toHaveBeenCalledTimes(1)
 
     const txInsertValueCalls = txInsertValues.mock
       .calls as unknown as unknown[][]
@@ -418,5 +493,15 @@ describe("src/server/services/interviews/propose", () => {
       meetingUrl: null,
     })
     expect(typeof slotInsertPayload[1]?.id).toBe("string")
+
+    expect(createNotificationMock).toHaveBeenCalledWith({
+      userId: "student-1",
+      type: "interview_proposed",
+      payload: {
+        interviewId: result.interviewId,
+        applicationId: "application-1",
+        slotCount: 2,
+      },
+    })
   })
 })

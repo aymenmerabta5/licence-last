@@ -2,6 +2,7 @@
 
 import { CalendarPlus, Loader2, Send } from "lucide-react"
 import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
 import { CompanySlotsEditor } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/CompanySlotsEditor"
 import type {
   CompanyApplicationOption,
@@ -62,13 +63,14 @@ export function CompanyProposeForm({
   onRemoveSlot,
   onSubmit,
 }: CompanyProposeFormProps) {
+  const t = useTranslations("dashboard.interviews")
+
   return (
     <motion.div
       {...reveal}
       transition={{ duration: 0.6, ease }}
       className="border border-border bg-card/30 dark:bg-card/50"
     >
-      {/* Form header */}
       <div className="border-b border-border/50 px-6 py-5">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center border border-primary/30 bg-primary/10">
@@ -76,24 +78,22 @@ export function CompanyProposeForm({
           </div>
           <div>
             <h2 className="font-serif text-lg text-heading">
-              Schedule Interview
+              {t("form.title")}
             </h2>
             <p className="text-xs font-light text-muted-foreground">
-              Pick an application and propose time slots
+              {t("form.subtitle")}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Form body */}
       <form
-        className="p-6 space-y-6"
+        className="space-y-6 p-6"
         onSubmit={(event) => {
           event.preventDefault()
           void onSubmit()
         }}
       >
-        {/* Step 1: Select offer & application */}
         <motion.div
           {...reveal}
           transition={revealWithDelay(0.1)}
@@ -103,7 +103,7 @@ export function CompanyProposeForm({
             <span className="flex h-5 w-5 items-center justify-center border border-border text-[10px]">
               1
             </span>
-            Select candidate
+            {t("form.stepSelectCandidate")}
           </div>
 
           <div className="space-y-3">
@@ -112,17 +112,22 @@ export function CompanyProposeForm({
                 htmlFor="interview-offer"
                 className="text-xs text-muted-foreground"
               >
-                Offer
+                {t("form.offerLabel")}
               </Label>
               <Select
                 value={selectedOfferId}
                 onValueChange={(value) => value && onOfferChange(value)}
-                items={offers.map((o) => ({ value: o.id, label: o.title }))}
+                items={offers.map((offer) => ({
+                  value: offer.id,
+                  label: offer.title,
+                }))}
               >
                 <SelectTrigger id="interview-offer" className="w-full">
                   <SelectValue
                     placeholder={
-                      isOffersLoading ? "Loading offers..." : "Select an offer"
+                      isOffersLoading
+                        ? t("form.offerLoading")
+                        : t("form.offerPlaceholder")
                     }
                   />
                 </SelectTrigger>
@@ -136,7 +141,7 @@ export function CompanyProposeForm({
               </Select>
               {!isOffersLoading && offers.length === 0 && (
                 <p className="text-[11px] text-muted-foreground/70">
-                  No offers found for this company.
+                  {t("form.noOffers")}
                 </p>
               )}
             </div>
@@ -146,7 +151,7 @@ export function CompanyProposeForm({
                 htmlFor="interview-application"
                 className="text-xs text-muted-foreground"
               >
-                Application
+                {t("form.applicationLabel")}
               </Label>
               <Select
                 value={applicationId}
@@ -154,30 +159,30 @@ export function CompanyProposeForm({
                   value && onApplicationIdChange(value)
                 }
                 disabled={!selectedOfferId}
-                items={applications.map((a) => ({
-                  value: a.id,
-                  label: `${a.studentName} — ${formatPipelineStage(a.pipelineStage)}`,
+                items={applications.map((application) => ({
+                  value: application.id,
+                  label: `${application.studentName} - ${formatPipelineStage(
+                    application.pipelineStage,
+                    t,
+                  )}`,
                 }))}
               >
-                <SelectTrigger
-                  id="interview-application"
-                  className="w-full"
-                >
+                <SelectTrigger id="interview-application" className="w-full">
                   <SelectValue
                     placeholder={
                       selectedOfferId
                         ? isApplicationsLoading
-                          ? "Loading applications..."
-                          : "Select an application"
-                        : "Select an offer first"
+                          ? t("form.applicationLoading")
+                          : t("form.applicationPlaceholder")
+                        : t("form.selectOfferFirst")
                     }
                   />
                 </SelectTrigger>
                 <SelectContent>
                   {applications.map((application) => (
                     <SelectItem key={application.id} value={application.id}>
-                      {application.studentName} —{" "}
-                      {formatPipelineStage(application.pipelineStage)}
+                      {application.studentName} -{" "}
+                      {formatPipelineStage(application.pipelineStage, t)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -186,7 +191,7 @@ export function CompanyProposeForm({
                 !isApplicationsLoading &&
                 applications.length === 0 && (
                   <p className="text-[11px] text-muted-foreground/70">
-                    No eligible applications for this offer.
+                    {t("form.noApplications")}
                   </p>
                 )}
             </div>
@@ -195,7 +200,6 @@ export function CompanyProposeForm({
 
         <div className="h-px bg-border/50" />
 
-        {/* Step 2: Time slots */}
         <motion.div
           {...reveal}
           transition={revealWithDelay(0.15)}
@@ -205,7 +209,7 @@ export function CompanyProposeForm({
             <span className="flex h-5 w-5 items-center justify-center border border-border text-[10px]">
               2
             </span>
-            Propose time slots
+            {t("form.stepTimeSlots")}
           </div>
 
           <CompanySlotsEditor
@@ -218,7 +222,6 @@ export function CompanyProposeForm({
 
         <div className="h-px bg-border/50" />
 
-        {/* Step 3: Note */}
         <motion.div
           {...reveal}
           transition={revealWithDelay(0.2)}
@@ -228,9 +231,9 @@ export function CompanyProposeForm({
             <span className="flex h-5 w-5 items-center justify-center border border-border text-[10px]">
               3
             </span>
-            Add context
+            {t("form.stepAddContext")}
             <span className="font-normal normal-case tracking-normal">
-              (optional)
+              ({t("form.optional")})
             </span>
           </div>
 
@@ -238,27 +241,26 @@ export function CompanyProposeForm({
             id="interview-note"
             value={note}
             maxLength={1000}
-            placeholder="Share context for the student — interview format, what to prepare, dress code..."
+            placeholder={t("form.notePlaceholder")}
             className="min-h-[80px] resize-y"
             onChange={(event) => onNoteChange(event.target.value)}
           />
         </motion.div>
 
-        {/* Submit */}
         <motion.div {...reveal} transition={revealWithDelay(0.25)}>
           <Button
             type="submit"
             variant="editorial"
             size="editorial"
             disabled={!canSubmit || isSubmitting}
-            className="gap-2 w-full sm:w-auto"
+            className="w-full gap-2 sm:w-auto"
           >
             {isSubmitting ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <Send className="h-3.5 w-3.5" />
             )}
-            Send proposal
+            {t("form.submit")}
           </Button>
         </motion.div>
       </form>

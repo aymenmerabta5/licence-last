@@ -24,11 +24,11 @@ Stag manages the complete internship lifecycle:
    (RSC + CC)     /     |     \
                 Auth   oRPC   Assistant
                 |       |        |
-         Better Auth 136 procs  Poe AI
+         Better Auth    oRPC   AI Gateway
                 \       |      /
              +-----------------------+
              |    Services Layer     |
-             |    (18 domains)       |
+             |   Business Logic      |
              +-----------+-----------+
                          |
            +-------------+-------------+
@@ -47,7 +47,7 @@ Stag manages the complete internship lifecycle:
 | API | oRPC (type-safe RPC) + TanStack Query |
 | Database | PostgreSQL + Drizzle ORM |
 | Auth | Better Auth (2FA, multi-session, role-based) |
-| AI | Poe (OpenAI-compatible) + Arcade (GitHub, Gmail) |
+| AI | Gateway-first provider routing (OpenAI-compatible) + Arcade |
 | Email | Resend + React Email |
 | Storage | S3-compatible (AWS S3 / Cloudflare R2) |
 | i18n | next-intl (English, French, Arabic with full RTL) |
@@ -93,15 +93,17 @@ Open [http://localhost:3000](http://localhost:3000).
 | `DATABASE_URL` | PostgreSQL connection string |
 | `BETTER_AUTH_SECRET` | Auth encryption key (min 32 chars) |
 | `NEXT_PUBLIC_BETTER_AUTH_URL` | Public app URL (e.g., `http://localhost:3000`) |
+| `AI_API_KEY` | Primary AI provider key for cover-letter drafting, search copilot, offer copilot, assistant chat, and validation summaries |
+| `RESEND_API_KEY`, `EMAIL_FROM` | Transactional email for signup verification, password reset, and 2FA OTP |
+| `S3_BUCKET`, `S3_ENDPOINT`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_PUBLIC_URL` | Production file storage for company verification docs, avatars, logos, and resumes |
 
 **Optional:**
 
 | Variable | Description |
 |----------|-------------|
-| `POE_API_KEY`, `POE_MODEL`, `POE_BASE_URL` | AI assistant provider |
-| `ARCADE_API_KEY` | External AI tools (GitHub, Gmail) |
-| `RESEND_API_KEY`, `EMAIL_FROM` | Email service |
-| `S3_BUCKET`, `S3_ENDPOINT`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` | File storage |
+| `AI_PROVIDER`, `AI_API_KEY`, `AI_MODEL`, `AI_ALLOWED_MODELS`, `AI_BASE_URL` | Primary gateway-first AI provider configuration |
+| `POE_API_KEY`, `POE_MODEL`, `POE_BASE_URL`, `POE_ALLOWED_MODELS` | Legacy Poe-compatible AI fallback. In production, set this only as an alternative to `AI_API_KEY`, not in place of product AI access entirely |
+| `ARCADE_API_KEY` | External AI tools (GitHub, Gmail). Required only when the company assistant is enabled |
 | `S3_BUCKET_NAME`, `NEXT_PUBLIC_S3_ENDPOINT`, `NEXT_PUBLIC_S3_URL`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | Alternate S3-compatible naming |
 | `REDIS_URL`, `REDIS_RATE_LIMIT_ENABLED` | Redis for rate limiting |
 | `FEATURE_*`, `NEXT_PUBLIC_FEATURE_*` | Server/client feature flags |
@@ -110,9 +112,10 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Feature flag defaults:
 - `FEATURE_SAVED_OFFERS=true` + `NEXT_PUBLIC_FEATURE_SAVED_OFFERS=true`
-- `FEATURE_INTERVIEWS=false` + `NEXT_PUBLIC_FEATURE_INTERVIEWS=false`
-- `FEATURE_LANGUAGE_REQUIREMENTS=false` + `NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS=false`
-- `FEATURE_NOTIF_PREFERENCES=false` + `NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES=false`
+- `FEATURE_INTERVIEWS=true` + `NEXT_PUBLIC_FEATURE_INTERVIEWS=true`
+- `FEATURE_LANGUAGE_REQUIREMENTS=true` + `NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS=true`
+- `FEATURE_NOTIF_PREFERENCES=true` + `NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES=true`
+- `FEATURE_COMPANY_ASSISTANT=false` + `NEXT_PUBLIC_FEATURE_COMPANY_ASSISTANT=false` unless Arcade-backed assistant access is explicitly enabled and an AI provider key is configured
 
 See [`.env.example`](.env.example) for the full list, including production Docker variables (`POSTGRES_*`, `GITHUB_REPO`, `DOMAIN_NAME`, `RUN_SEED`, `SEED_ADMIN_*`, `SEED_UNIVERSITY_ADMIN_*`).
 
@@ -137,14 +140,9 @@ bun run mcp:dev        # MCP development server (uses .env.development)
 # Testing
 bun test               # All tests
 bun test:watch         # Watch mode
-bun test:unit          # Unit/core tests (lib + service/data/core server modules)
-bun test:orpc-routes   # oRPC controller route and smoke tests
-bun test:api:app-routes # App Router API route tests only
-bun test:api           # API route tests + oRPC route suite
-bun test:pages         # App Router page/component tests (src/app/[locale])
-bun test:coverage      # Segmented coverage run; writes reports to coverage/*.txt
+bun test:coverage      # Coverage run
 bun test:e2e           # Playwright E2E (loads .env.e2e; if a dev server is already running, reuse can keep it on your dev DB)
-bun test:ci            # CI pipeline (unit + api + pages)
+bun test:ci            # CI/unit + integration test pipeline
 bun run check:all      # Full pre-release checks (lint, typecheck, tests, build)
 
 # Database
@@ -159,44 +157,43 @@ bun run db:reset       # Reset database
 
 ## Project Structure
 
-```
+``` 
 src/
 ├── app/
 │   ├── [locale]/              # i18n routes (en, fr, ar)
 │   │   ├── (auth)/            # Login, signup, reset-password
-│   │   ├── (authenticated)/   # Dashboard (role-based)
-│   │   │   └── dashboard/     # 47 pages across student/company/admin/dept-head
+│   │   ├── (authenticated)/   # Role-based dashboards
 │   │   └── onboarding/        # Setup wizards per role
 │   └── api/
 │       ├── auth/[...all]/     # Better Auth endpoints
-│       ├── rpc/[...rest]/     # oRPC (136 procedures, CSRF protected)
+│       ├── rpc/[...rest]/     # oRPC endpoints
 │       ├── assistant/         # AI chat streaming + auth status
 │       ├── openapi/           # OpenAPI spec + Swagger UI
 │       └── health/            # Dependency-aware readiness check
-├── components/                # Shared UI (28 shadcn/ui primitives + custom)
-├── hooks/                     # Shared hooks (useDebounce, useInfiniteScroll, useCopilot, etc.)
+├── components/                # Shared UI and app components
+├── hooks/                     # Shared hooks
 ├── lib/                       # Schemas, utils, constants, animations
 ├── server/
-│   ├── db/                    # Drizzle schema (19 modules) + migrations + seed
-│   ├── orpc/                  # Controller layer (18 route modules, 20 rate-limit variants)
-│   ├── services/              # Model layer (18 business domains)
-│   ├── ai/                    # AI model config, tools, prompts, personas
+│   ├── db/                    # Drizzle schema, migrations, seed
+│   ├── orpc/                  # Controller layer
+│   ├── services/              # Business logic
+│   ├── ai/                    # AI model config, tools, prompts
 │   ├── openapi/               # OpenAPI spec generation
-│   ├── pdfs/                  # PDF templates (agreements, certificates)
+│   ├── pdfs/                  # PDF templates
 │   ├── email/                 # Resend + React Email templates
-│   ├── storage/               # AWS SDK S3-compatible client wrapper
+│   ├── storage/               # S3-compatible storage wrapper
 │   ├── caching/               # Redis client + rate limiter
-│   └── logging/               # Pino structured logging (auto-redacts PII)
+│   └── logging/               # Pino structured logging
 ├── i18n/                      # next-intl config
-└── messages/                  # Translation files (~1,200 lines each)
+└── messages/                  # Translation files
 ```
 
 ## Architecture
 
 The project follows an **MVC pattern**:
 
-- **Model** (`server/services/`) — 18 domains of pure business logic with `import "server-only"`
-- **Controller** (`server/orpc/`) — 136 oRPC procedures across 19 namespaces with auth middleware and rate limiting
+- **Model** (`server/services/`) — pure business logic with `import "server-only"`
+- **Controller** (`server/orpc/`) — oRPC procedures with auth middleware and rate limiting
 - **View** — React Server Components + Client Components with feature folder pattern
 
 Operational contracts:
@@ -220,16 +217,16 @@ Operational contracts:
 
 Public verification system for internship documents:
 - Each generated agreement/certificate gets a unique verification code + QR code
-- Public verification page at `/verify` — anyone can verify a document's authenticity
+- Public verification page under locale routes (for example `/en/verify`) — anyone can verify a document's authenticity
 - No authentication required for verification
 
 ### AI Assistant
 
-Role-based copilot powered by Poe (OpenAI-compatible):
+Role-based copilot with gateway-first provider routing and Poe compatibility:
 
-- **3 personas**: Student, Company, Admin (context-injected per role)
-- **9 internal tools**: offer drafting, candidate summarization, cover letter generation, search parsing, notification summaries, and more
-- **Arcade integration**: GitHub and Gmail external tools for company admins
+- Role-aware assistant responses for student, company, and admin contexts
+- Server-side tools for drafting, summarization, and workflow assistance
+- Arcade integration for external tools such as GitHub and Gmail
 - Context minimization with PII redaction
 
 ### Matching System
@@ -276,22 +273,22 @@ nano .env  # Set APP_IMAGE, auth, database, and domain values
 RUN_SEED=true docker compose -f docker-compose.prod.yml up -d
 ```
 
-**Auto-deploy pipeline**: Push to `master` triggers CI (lint, typecheck, unit/api/pages tests, coverage guard, build, E2E), then CD builds and pushes a Docker image to GHCR, updates `APP_IMAGE` on the VPS to the exact image digest it just built, and recreates `app` + `caddy` over SSH.
+**Auto-deploy pipeline**: A successful CI run on `main` or `master` triggers CD. CI runs lint, typecheck, tests, Playwright E2E, and build; CD then builds and pushes a Docker image to GHCR, updates `APP_IMAGE` on the VPS to the exact image digest it just built, and recreates `app` + `caddy` over SSH.
 
 Memory budget for a 2GB server: PostgreSQL 384MB, Next.js 512MB, Redis 64MB, Caddy 64MB, Backup 64MB.
 
-See [docs/DEPLOYMENT_INCHALLAH.md](docs/DEPLOYMENT_INCHALLAH.md) for the full guide.
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the full guide.
 
 ## Documentation
 
 | Document | Description |
 |----------|-------------|
-| [ARCHITECTURE.md](ARCHITECTURE.md) | Full system architecture snapshot (kept in sync with `docs/ARCHITECTURE.md`) |
-| [DEPLOYMENT_INCHALLAH.md](docs/DEPLOYMENT_INCHALLAH.md) | Server setup, Docker Compose, Caddy, and GitHub Actions deploy guide |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Full system architecture snapshot |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Server setup, Docker Compose, Caddy, and GitHub Actions deploy guide |
 | [CLAUDE.md](CLAUDE.md) | Project conventions and patterns for Claude Code |
 | [AGENTS.md](AGENTS.md) | Agent instructions and codebase reference |
 
-> **Note:** When adding features, sync `README.md`, `AGENTS.md`, `CLAUDE.md`, `ARCHITECTURE.md`, and `docs/ARCHITECTURE.md`. See the "Documentation Sync Policy" sections for the checklist.
+> **Note:** When adding features, keep `README.md`, `AGENTS.md`, `CLAUDE.md`, and the docs under `docs/` in sync.
 
 ## License
 

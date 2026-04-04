@@ -3,6 +3,30 @@ import { cleanup, render, screen } from "@testing-library/react"
 import type { MessageThread } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
 import { createMotionReactClientMock } from "@/test/mocks/motion-react-client"
 
+mock.module("next-intl", () => ({
+  useTranslations: () => (key: string, values?: { count?: number }) => {
+    if (key === "unreadAria") {
+      return `${values?.count ?? 0} unread messages`
+    }
+    if (key === "threadUnread") {
+      return "Unread messages"
+    }
+    if (key === "threadOpen") {
+      return "Open thread"
+    }
+    if (key === "threadsLabel") {
+      return "Threads"
+    }
+    if (key === "fallbackCompanyName") {
+      return "Company"
+    }
+    if (key === "fallbackStudentName") {
+      return "Student"
+    }
+    return key
+  },
+}))
+
 mock.module("motion/react-client", createMotionReactClientMock)
 
 const { ThreadListPane } = await import(
@@ -50,10 +74,14 @@ describe("ThreadListPane", () => {
       <ThreadListPane
         role="student"
         threads={threads}
+        starters={[]}
         selectedThreadId={null}
+        selectedStarterId={null}
         isLoading={false}
         errorMessage={null}
+        starterErrorMessage={null}
         onSelectThread={() => {}}
+        onSelectStarter={() => {}}
       />,
     )
 

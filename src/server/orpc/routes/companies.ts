@@ -21,7 +21,7 @@ import { user } from "@/server/db/schema/auth"
 import { companyMember } from "@/server/db/schema/companies"
 import CompanyApprovedEmail from "@/server/email/templates/CompanyApprovedEmail"
 import CompanyRejectedEmail from "@/server/email/templates/CompanyRejectedEmail"
-import { isAdminRole } from "@/server/orpc/middleware"
+import { isAdminRole } from "@/server/orpc/authz"
 import * as rateLimitedProcedures from "@/server/orpc/rate-limited-procedures"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import { approveCompany } from "@/server/services/companies/approve"
@@ -79,6 +79,30 @@ function assertCompanyOwner(context: {
   }
 }
 
+function toPublicCompany(company: {
+  id: string
+  name: string
+  slug: string
+  status: string
+  description: string | null
+  logoUrl: string | null
+  websiteUrl: string | null
+  wilayaCode: number | null
+  createdAt: Date
+}) {
+  return {
+    id: company.id,
+    name: company.name,
+    slug: company.slug,
+    status: company.status,
+    description: company.description,
+    logoUrl: company.logoUrl,
+    websiteUrl: company.websiteUrl,
+    wilayaCode: company.wilayaCode,
+    createdAt: company.createdAt,
+  }
+}
+
 /* â”€â”€ Reads â”€â”€ */
 
 export const listCompaniesProcedure = authedProcedureGenerous
@@ -93,17 +117,29 @@ export const listCompaniesProcedure = authedProcedureGenerous
       .optional(),
   )
   .handler(async ({ input, context }) => {
-    const isAdmin = isAdminRole(context.user.role)
+    const isAdmin = isAdminRole(
+      context.user.role,
+      context.user.universityMembershipRole,
+    )
     const effectiveStatus = isAdmin ? input?.status : "approved"
     const effectiveSearch =
       context.user.role === "super_admin" ? input?.search : undefined
 
-    return listCompanies({
+    const result = await listCompanies({
       status: effectiveStatus,
       search: effectiveSearch,
       limit: input?.limit,
       offset: input?.offset,
     })
+
+    if (isAdmin) {
+      return result
+    }
+
+    return {
+      ...result,
+      companies: result.companies.map(toPublicCompany),
+    }
   })
 
 export const listPublicDirectoryProcedure = studentProcedureGenerous
@@ -116,7 +152,10 @@ export const getCompanyByIdProcedure = authedProcedureGenerous
     const company = await getCompanyById(input.companyId)
     if (!company) return null
 
-    const isAdmin = isAdminRole(context.user.role)
+    const isAdmin = isAdminRole(
+      context.user.role,
+      context.user.universityMembershipRole,
+    )
 
     let isOwner = false
     if (context.user.role === "company_admin") {
@@ -137,19 +176,7 @@ export const getCompanyByIdProcedure = authedProcedureGenerous
     }
 
     // Regular users see only public fields (strip sensitive data)
-    return {
-      id: company.id,
-      name: company.name,
-      slug: company.slug,
-      status: company.status,
-      description: company.description,
-      logoUrl: company.logoUrl,
-      websiteUrl: company.websiteUrl,
-      wilayaCode: company.wilayaCode,
-      createdAt: company.createdAt,
-      // Sensitive fields omitted: phone, contactEmail, address,
-      // representativeName, rejectionReason
-    }
+    return toPublicCompany(company)
   })
 
 export const getCompanyTrustIndexProcedure = authedProcedureGenerous
@@ -301,6 +328,12 @@ function revalidateAfterCompanyDeletion(
   revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
   revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
+  for (const affectedUserId of affectedUserIds) {
+    revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${affectedUserId}`), "max")
+  }
+}
+
+function revalidateCompanyMembershipCaches(affectedUserIds: string[]) {
   for (const affectedUserId of affectedUserIds) {
     revalidateTag(CACHE_TAGS.COMPANY_PROFILE(`user-${affectedUserId}`), "max")
   }
@@ -494,37 +527,48 @@ export const updateCompanyProcedure = companyOwnerProcedureStandard
 export const approveCompanyProcedure = superAdminProcedureStandard
   .input(z.object({ companyId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
-    const result = await approveCompany(input.companyId, context.user.id)
+    try {
+      const result = await approveCompany(input.companyId, context.user.id)
 
-    // Invalidate company cache when approved
-    revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
-    revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
+      // Invalidate company cache when approved
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
+      revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
-    // Notify company members (in-app + email)
-    const members = await db
-      .select({ userId: companyMember.userId, email: user.email })
-      .from(companyMember)
-      .innerJoin(user, eq(companyMember.userId, user.id))
-      .where(eq(companyMember.companyId, input.companyId))
+      // Notify company members (in-app + email)
+      const members = await db
+        .select({ userId: companyMember.userId, email: user.email })
+        .from(companyMember)
+        .innerJoin(user, eq(companyMember.userId, user.id))
+        .where(eq(companyMember.companyId, input.companyId))
+      revalidateCompanyMembershipCaches(members.map((member) => member.userId))
 
-    const dashboardUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/dashboard`
-    await Promise.all(
-      members.map((member) =>
-        emitNotification({
-          userId: member.userId,
-          type: "company_approved",
-          payload: { companyId: input.companyId, companyName: result.name },
-          email: {
-            to: member.email,
-            subject: `${result.name} has been approved - Stag`,
-            component: CompanyApprovedEmail,
-            props: { companyName: result.name, dashboardUrl },
-          },
-        }),
-      ),
-    )
+      const dashboardUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/dashboard`
+      await Promise.all(
+        members.map((member) =>
+          emitNotification({
+            userId: member.userId,
+            type: "company_approved",
+            payload: { companyId: input.companyId, companyName: result.name },
+            email: {
+              to: member.email,
+              subject: `${result.name} has been approved - Stag`,
+              component: CompanyApprovedEmail,
+              props: { companyName: result.name, dashboardUrl },
+            },
+          }),
+        ),
+      )
 
-    return result
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          COMPANY_NOT_FOUND: "NOT_FOUND",
+          COMPANY_INVALID_STATUS_TRANSITION: "BAD_REQUEST",
+        },
+        fallbackMessage: "Failed to approve company",
+      })
+    }
   })
 
 export const rejectCompanyProcedure = superAdminProcedureStandard
@@ -535,44 +579,55 @@ export const rejectCompanyProcedure = superAdminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    const result = await rejectCompany(
-      input.companyId,
-      input.reason,
-      context.user.id,
-    )
+    try {
+      const result = await rejectCompany(
+        input.companyId,
+        input.reason,
+        context.user.id,
+      )
 
-    // Invalidate company cache when rejected
-    revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
-    revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
+      // Invalidate company cache when rejected
+      revalidateTag(CACHE_TAGS.COMPANY_PROFILE(input.companyId), "max")
+      revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
-    // Notify company members (in-app + email)
-    const members = await db
-      .select({ userId: companyMember.userId, email: user.email })
-      .from(companyMember)
-      .innerJoin(user, eq(companyMember.userId, user.id))
-      .where(eq(companyMember.companyId, input.companyId))
+      // Notify company members (in-app + email)
+      const members = await db
+        .select({ userId: companyMember.userId, email: user.email })
+        .from(companyMember)
+        .innerJoin(user, eq(companyMember.userId, user.id))
+        .where(eq(companyMember.companyId, input.companyId))
+      revalidateCompanyMembershipCaches(members.map((member) => member.userId))
 
-    await Promise.all(
-      members.map((member) =>
-        emitNotification({
-          userId: member.userId,
-          type: "company_rejected",
-          payload: {
-            companyId: input.companyId,
-            companyName: result.name,
-            reason: input.reason,
-          },
-          email: {
-            to: member.email,
-            subject: `Update on your ${result.name} application - Stag`,
-            component: CompanyRejectedEmail,
-            props: { companyName: result.name, reason: input.reason },
-          },
-        }),
-      ),
-    )
+      await Promise.all(
+        members.map((member) =>
+          emitNotification({
+            userId: member.userId,
+            type: "company_rejected",
+            payload: {
+              companyId: input.companyId,
+              companyName: result.name,
+              reason: input.reason,
+            },
+            email: {
+              to: member.email,
+              subject: `Update on your ${result.name} application - Stag`,
+              component: CompanyRejectedEmail,
+              props: { companyName: result.name, reason: input.reason },
+            },
+          }),
+        ),
+      )
 
-    return result
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          COMPANY_NOT_FOUND: "NOT_FOUND",
+          COMPANY_INVALID_STATUS_TRANSITION: "BAD_REQUEST",
+        },
+        fallbackMessage: "Failed to reject company",
+      })
+    }
   })
 
 export const suspendCompanyProcedure = superAdminProcedureStandard
@@ -591,6 +646,7 @@ export const suspendCompanyProcedure = superAdminProcedureStandard
         .select({ userId: companyMember.userId })
         .from(companyMember)
         .where(eq(companyMember.companyId, input.companyId))
+      revalidateCompanyMembershipCaches(members.map((member) => member.userId))
 
       await Promise.all(
         members.map((member) =>
@@ -630,6 +686,7 @@ export const reactivateCompanyProcedure = superAdminProcedureStandard
         .select({ userId: companyMember.userId })
         .from(companyMember)
         .where(eq(companyMember.companyId, input.companyId))
+      revalidateCompanyMembershipCaches(members.map((member) => member.userId))
 
       await Promise.all(
         members.map((member) =>

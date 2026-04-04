@@ -1,10 +1,18 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, mock, test } from "bun:test"
 
-import {
+mock.module("@/server/orpc/client", () => ({
+  orpc: {
+    assistant: {},
+  },
+}))
+
+const {
   applyOptimisticConversationModelUpdate,
   resolveSelectionAfterDelete,
   shouldSkipConversationModelUpdate,
-} from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/hooks/useConversationActions"
+} = await import(
+  "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/hooks/useConversationActions"
+)
 
 const FIXTURE_UPDATED_AT = new Date("2026-03-28T10:00:00.000Z")
 

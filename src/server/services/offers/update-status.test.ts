@@ -1,25 +1,54 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSelect = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockFrom = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSelectWhere = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockLimit = mock((): any => [])
+const txSelectResults: unknown[][] = []
+let txSelectCallIdx = 0
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockUpdate = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSet = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockUpdateWhere = mock((): any => Promise.resolve())
+function getCurrentSelectResults() {
+  return txSelectResults[txSelectCallIdx - 1] ?? []
+}
+
+const txLimit = mock(() => Promise.resolve(getCurrentSelectResults()))
+const txForUpdate = mock(() => ({ limit: txLimit }))
+const txWhereWithLock = mock(() => ({ for: txForUpdate }))
+const txFromWithLock = mock(() => ({ where: txWhereWithLock }))
+
+const txWhere = mock(() => Promise.resolve(getCurrentSelectResults()))
+const txFrom = mock(() => ({ where: txWhere }))
+
+const txSelect = mock(() => {
+  txSelectCallIdx += 1
+
+  if (txSelectCallIdx === 1) {
+    return { from: txFromWithLock }
+  }
+
+  return { from: txFrom }
+})
+
+const txUpdateReturningResults: unknown[][] = []
+let txUpdateReturningCallIdx = 0
+
+const txUpdateReturning = mock(() =>
+  Promise.resolve(
+    txUpdateReturningResults[txUpdateReturningCallIdx++] ?? [],
+  ),
+)
+const txUpdateWhere = mock(() => ({ returning: txUpdateReturning }))
+const txSet = mock(() => ({ where: txUpdateWhere }))
+const txUpdate = mock(() => ({ set: txSet }))
+
+const tx = {
+  select: txSelect,
+  update: txUpdate,
+}
+
+const mockTransaction = mock(
+  async (callback: (trx: typeof tx) => Promise<unknown>) => callback(tx),
+)
 
 mock.module("@/server/db", () => ({
   db: {
-    select: mockSelect,
-    update: mockUpdate,
+    transaction: mockTransaction,
   },
 }))
 
@@ -38,25 +67,45 @@ mock.module("@/server/logging", () => ({
 
 describe("src/server/services/offers/update-status", () => {
   beforeEach(() => {
-    mockSelect.mockClear()
-    mockFrom.mockClear()
-    mockSelectWhere.mockClear()
-    mockLimit.mockClear()
-    mockUpdate.mockClear()
-    mockSet.mockClear()
-    mockUpdateWhere.mockClear()
+    txSelectResults.length = 0
+    txSelectCallIdx = 0
+    txUpdateReturningResults.length = 0
+    txUpdateReturningCallIdx = 0
 
-    mockSelect.mockReturnValue({ from: mockFrom })
-    mockFrom.mockReturnValue({ where: mockSelectWhere })
-    mockSelectWhere.mockReturnValue({ limit: mockLimit })
+    txLimit.mockClear()
+    txForUpdate.mockClear()
+    txWhereWithLock.mockClear()
+    txFromWithLock.mockClear()
+    txWhere.mockClear()
+    txFrom.mockClear()
+    txSelect.mockClear()
+    txUpdate.mockClear()
+    txSet.mockClear()
+    txUpdateWhere.mockClear()
+    txUpdateReturning.mockClear()
+    mockTransaction.mockClear()
+    createNotificationMock.mockClear()
 
-    mockUpdate.mockReturnValue({ set: mockSet })
-    mockSet.mockReturnValue({ where: mockUpdateWhere })
-    mockUpdateWhere.mockResolvedValue(undefined)
+    txFromWithLock.mockReturnValue({ where: txWhereWithLock })
+    txWhereWithLock.mockReturnValue({ for: txForUpdate })
+    txForUpdate.mockReturnValue({ limit: txLimit })
+    txFrom.mockReturnValue({ where: txWhere })
+    txWhere.mockImplementation(() => Promise.resolve(getCurrentSelectResults()))
+
+    txUpdate.mockReturnValue({ set: txSet })
+    txSet.mockReturnValue({ where: txUpdateWhere })
+    txUpdateWhere.mockReturnValue({ returning: txUpdateReturning })
+    txUpdateReturning.mockImplementation(() =>
+      Promise.resolve(
+        txUpdateReturningResults[txUpdateReturningCallIdx++] ?? [],
+      ),
+    )
+    createNotificationMock.mockResolvedValue({})
+    mockTransaction.mockImplementation(async (callback) => callback(tx))
   })
 
   test("should publish a draft offer", async () => {
-    mockLimit.mockResolvedValue([
+    txSelectResults.push([
       {
         id: "offer-1",
         companyId: "company-1",
@@ -66,6 +115,7 @@ describe("src/server/services/offers/update-status", () => {
         expectedEndDate: null,
       },
     ])
+    txUpdateReturningResults.push([{ id: "offer-1" }])
 
     const { updateOfferStatus } = await import(
       "@/server/services/offers/update-status"
@@ -74,11 +124,11 @@ describe("src/server/services/offers/update-status", () => {
     const result = await updateOfferStatus("offer-1", "company-1", "publish")
 
     expect(result).toEqual({ offerId: "offer-1", newStatus: "published" })
-    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(txUpdate).toHaveBeenCalledTimes(1)
   })
 
   test("should close a published offer", async () => {
-    mockLimit.mockResolvedValue([
+    txSelectResults.push([
       {
         id: "offer-1",
         companyId: "company-1",
@@ -88,15 +138,8 @@ describe("src/server/services/offers/update-status", () => {
         expectedEndDate: null,
       },
     ])
-
-    // Second db.select().from().where() for affected interviews (no .limit())
-    let selectWhereCallCount = 0
-    mockSelectWhere.mockImplementation(() => {
-      selectWhereCallCount++
-      if (selectWhereCallCount === 1) return { limit: mockLimit }
-      // Return affected interviews for the second query
-      return Promise.resolve([{ id: "int-1", studentUserId: "student-1" }])
-    })
+    txSelectResults.push([{ id: "int-1", studentUserId: "student-1" }])
+    txUpdateReturningResults.push([{ id: "offer-1" }])
 
     const { updateOfferStatus } = await import(
       "@/server/services/offers/update-status"
@@ -105,11 +148,20 @@ describe("src/server/services/offers/update-status", () => {
     const result = await updateOfferStatus("offer-1", "company-1", "close")
 
     expect(result).toEqual({ offerId: "offer-1", newStatus: "closed" })
-    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(txUpdate).toHaveBeenCalledTimes(2)
+    expect(createNotificationMock).toHaveBeenCalledWith({
+      userId: "student-1",
+      type: "interview_cancelled",
+      payload: {
+        interviewId: "int-1",
+        offerId: "offer-1",
+        reason: "offer_closed",
+      },
+    })
   })
 
   test("should reject publishing a non-draft offer", async () => {
-    mockLimit.mockResolvedValue([
+    txSelectResults.push([
       {
         id: "offer-1",
         companyId: "company-1",
@@ -130,7 +182,7 @@ describe("src/server/services/offers/update-status", () => {
   })
 
   test("should reject closing a non-published offer", async () => {
-    mockLimit.mockResolvedValue([
+    txSelectResults.push([
       {
         id: "offer-1",
         companyId: "company-1",
@@ -151,7 +203,7 @@ describe("src/server/services/offers/update-status", () => {
   })
 
   test("should throw when offer not found", async () => {
-    mockLimit.mockResolvedValue([])
+    txSelectResults.push([])
 
     const { updateOfferStatus } = await import(
       "@/server/services/offers/update-status"
@@ -163,7 +215,7 @@ describe("src/server/services/offers/update-status", () => {
   })
 
   test("should reject publishing when expected period is incomplete", async () => {
-    mockLimit.mockResolvedValue([
+    txSelectResults.push([
       {
         id: "offer-1",
         companyId: "company-1",
@@ -184,7 +236,7 @@ describe("src/server/services/offers/update-status", () => {
   })
 
   test("should reject publishing when expected period is invalid", async () => {
-    mockLimit.mockResolvedValue([
+    txSelectResults.push([
       {
         id: "offer-1",
         companyId: "company-1",
@@ -205,7 +257,7 @@ describe("src/server/services/offers/update-status", () => {
   })
 
   test("should reject publishing when deadline is after expected start", async () => {
-    mockLimit.mockResolvedValue([
+    txSelectResults.push([
       {
         id: "offer-1",
         companyId: "company-1",
@@ -226,7 +278,7 @@ describe("src/server/services/offers/update-status", () => {
   })
 
   test("should reject publishing when deadline is in the past", async () => {
-    mockLimit.mockResolvedValue([
+    txSelectResults.push([
       {
         id: "offer-1",
         companyId: "company-1",

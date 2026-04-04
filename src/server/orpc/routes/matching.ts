@@ -1,7 +1,7 @@
 import "server-only"
 
 import { ORPCError } from "@orpc/server"
-import { eq } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import {
   captureReadinessSnapshotSchema,
   getMatchingScoreSchema,
@@ -9,6 +9,7 @@ import {
   getSkillGapSchema,
 } from "@/lib/schemas/matching"
 import { db } from "@/server/db"
+import { application } from "@/server/db/schema/applications"
 import { companyMember } from "@/server/db/schema/companies"
 import {
   authedProcedureGenerous,
@@ -37,6 +38,7 @@ async function assertMatchAccess(
   }
 
   let viewerCompanyId: string | undefined
+  let hasApplicationRelationship: boolean | undefined
   if (context.user.role === "company_admin") {
     const memberships = await db
       .select({ companyId: companyMember.companyId })
@@ -50,6 +52,19 @@ async function assertMatchAccess(
     }
     const membership = memberships[0]
     viewerCompanyId = membership?.companyId
+
+    const [relationship] = await db
+      .select({ id: application.id })
+      .from(application)
+      .where(
+        and(
+          eq(application.offerId, input.offerId),
+          eq(application.studentUserId, input.studentUserId),
+        ),
+      )
+      .limit(1)
+
+    hasApplicationRelationship = Boolean(relationship)
   }
 
   const canAccess = await canAccessMatchScore(
@@ -59,6 +74,7 @@ async function assertMatchAccess(
       offerCompanyId: offerAccessContext.companyId,
       isOfferVisibleToStudent: offerAccessContext.status === "published",
       viewerCompanyId,
+      hasApplicationRelationship,
     },
   )
 

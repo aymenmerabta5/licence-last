@@ -27,6 +27,7 @@ export interface NavItem {
   roles: string[]
   companyMembershipRoles?: string[]
   universityMembershipRoles?: string[]
+  hideForUniversityMembershipRoles?: string[]
 }
 
 export const navItems: NavItem[] = [
@@ -140,12 +141,14 @@ export const navItems: NavItem[] = [
     href: "/dashboard/admin/validations",
     icon: CheckCircle2,
     roles: ["university_admin"],
+    hideForUniversityMembershipRoles: ["department_head"],
   },
   {
     labelKey: "departments",
     href: "/dashboard/admin/departments",
     icon: FolderTree,
     roles: ["university_admin"],
+    hideForUniversityMembershipRoles: ["department_head"],
   },
   {
     labelKey: "statistics",
@@ -170,6 +173,7 @@ export const navItems: NavItem[] = [
     href: "/dashboard/admin/users",
     icon: UsersRound,
     roles: ["university_admin", "super_admin"],
+    hideForUniversityMembershipRoles: ["department_head"],
   },
   {
     labelKey: "settings",

@@ -5,7 +5,9 @@ import { useMemo, useState } from "react"
 import { toast } from "sonner"
 import { CompanyTeamHeader } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/components/CompanyTeamHeader"
 import { InviteMemberForm } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/components/InviteMemberForm"
+import type { MemberItem } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/components/MembersList"
 import { MembersList } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/components/MembersList"
+import { RemoveMemberDialog } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/components/RemoveMemberDialog"
 import { useCompanyTeamData } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/hooks/useCompanyTeamData"
 import { resolveLocalizedError } from "@/lib/error-message"
 
@@ -17,6 +19,7 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
   const t = useTranslations()
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
+  const [memberToRemove, setMemberToRemove] = useState<MemberItem | null>(null)
   const { members, isLoading, isError, error, inviteMutation, removeMutation } =
     useCompanyTeamData()
 
@@ -64,13 +67,13 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
 
       {!isLoading && !isError && !canManageMembers && (
         <div className="border border-border/50 bg-card/20 p-4 text-sm text-muted-foreground">
-          Only company owners can invite or remove team members.
+          {t("dashboard.company.team.ownerOnlyNotice")}
         </div>
       )}
 
       {isLoading && (
         <p className="text-sm text-muted-foreground">
-          Loading company members...
+          {t("dashboard.company.team.loading")}
         </p>
       )}
 
@@ -84,27 +87,41 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
       )}
 
       {!isLoading && !isError && (
-        <MembersList
-          members={members}
-          currentUserId={currentUserId}
-          canManageMembers={canManageMembers}
-          isRemoving={removeMutation.isPending}
-          onRemove={(member) => {
-            void removeMutation
-              .mutateAsync({ userId: member.userId })
-              .then(() => {
-                toast.success(t("errors.common.companyMemberRemoved"))
-              })
-              .catch((removeError) => {
-                toast.error(
-                  resolveLocalizedError(removeError, {
-                    t,
-                    fallbackKey: "errors.common.companyMemberRemoveFailed",
-                  }),
-                )
-              })
-          }}
-        />
+        <>
+          <MembersList
+            members={members}
+            currentUserId={currentUserId}
+            canManageMembers={canManageMembers}
+            isRemoving={removeMutation.isPending}
+            onRemove={setMemberToRemove}
+          />
+          <RemoveMemberDialog
+            member={memberToRemove}
+            open={memberToRemove !== null}
+            isPending={removeMutation.isPending}
+            onOpenChange={(open) => {
+              if (!open) {
+                setMemberToRemove(null)
+              }
+            }}
+            onConfirm={(member) => {
+              void removeMutation
+                .mutateAsync({ userId: member.userId })
+                .then(() => {
+                  setMemberToRemove(null)
+                  toast.success(t("errors.common.companyMemberRemoved"))
+                })
+                .catch((removeError) => {
+                  toast.error(
+                    resolveLocalizedError(removeError, {
+                      t,
+                      fallbackKey: "errors.common.companyMemberRemoveFailed",
+                    }),
+                  )
+                })
+            }}
+          />
+        </>
       )}
     </div>
   )

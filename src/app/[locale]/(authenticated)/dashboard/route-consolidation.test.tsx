@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
 import { cleanup, render, screen } from "@testing-library/react"
+import { Suspense } from "react"
 
 const requireRoleMock = mock(async () => ({
   id: "student-1",
@@ -98,12 +99,18 @@ describe("dashboard route consolidation", () => {
   })
 
   test("redirects legacy student landing page to the canonical dashboard", async () => {
-    const { default: StudentDashboardPage } = await loadModule(
+    const {
+      default: StudentDashboardPage,
+      StudentDashboardPageContent,
+    } = await loadModule(
       "@/app/[locale]/(authenticated)/dashboard/student/page",
     )
 
-    const result = await StudentDashboardPage()
+    const page = StudentDashboardPage()
+    const result = await StudentDashboardPageContent()
 
+    expect(page).not.toBeInstanceOf(Promise)
+    expect(page.type).toBe(Suspense)
     expect(localeRedirectMock).toHaveBeenCalledWith("/dashboard")
     expect(result).toBeDefined()
   })
@@ -131,18 +138,24 @@ describe("dashboard route consolidation", () => {
   })
 
   test("renders the canonical explore page for onboarded students", async () => {
-    const { default: ExplorePage } = await loadModule(
+    const { default: ExplorePage, ExplorePageContent } = await loadModule(
       "@/app/[locale]/(authenticated)/dashboard/explore/page",
     )
 
-    render(await ExplorePage())
+    const page = ExplorePage()
+
+    expect(page).not.toBeInstanceOf(Promise)
+    expect(page.type).toBe(Suspense)
+    expect(requireRoleMock).not.toHaveBeenCalled()
+
+    render(await ExplorePageContent())
 
     expect(screen.getByTestId("explore-client").textContent).toBe("explore")
     expect(localeRedirectMock).not.toHaveBeenCalled()
   })
 
   test("redirects non-onboarded students away from the canonical explore page", async () => {
-    const { default: ExplorePage } = await loadModule(
+    const { default: ExplorePage, ExplorePageContent } = await loadModule(
       "@/app/[locale]/(authenticated)/dashboard/explore/page",
     )
     requireRoleMock.mockResolvedValueOnce({
@@ -151,18 +164,28 @@ describe("dashboard route consolidation", () => {
       onboardingCompleted: false,
     })
 
-    const result = await ExplorePage()
+    const page = ExplorePage()
+    const result = await ExplorePageContent()
 
+    expect(page).not.toBeInstanceOf(Promise)
+    expect(page.type).toBe(Suspense)
     expect(localeRedirectMock).toHaveBeenCalledWith("/onboarding/student")
     expect(result).toBeDefined()
   })
 
   test("renders the canonical applications page for onboarded students", async () => {
-    const { default: ApplicationsPage } = await loadModule(
+    const { default: ApplicationsPage, ApplicationsPageContent } =
+      await loadModule(
       "@/app/[locale]/(authenticated)/dashboard/applications/page",
-    )
+      )
 
-    render(await ApplicationsPage())
+    const page = ApplicationsPage()
+
+    expect(page).not.toBeInstanceOf(Promise)
+    expect(page.type).toBe(Suspense)
+    expect(requireRoleMock).not.toHaveBeenCalled()
+
+    render(await ApplicationsPageContent())
 
     expect(screen.getByTestId("applications-view").textContent).toBe(
       "applications",
@@ -171,17 +194,21 @@ describe("dashboard route consolidation", () => {
   })
 
   test("redirects non-onboarded students away from the canonical applications page", async () => {
-    const { default: ApplicationsPage } = await loadModule(
+    const { default: ApplicationsPage, ApplicationsPageContent } =
+      await loadModule(
       "@/app/[locale]/(authenticated)/dashboard/applications/page",
-    )
+      )
     requireRoleMock.mockResolvedValueOnce({
       id: "student-1",
       role: "student",
       onboardingCompleted: false,
     })
 
-    const result = await ApplicationsPage()
+    const page = ApplicationsPage()
+    const result = await ApplicationsPageContent()
 
+    expect(page).not.toBeInstanceOf(Promise)
+    expect(page.type).toBe(Suspense)
     expect(localeRedirectMock).toHaveBeenCalledWith("/onboarding/student")
     expect(result).toBeDefined()
   })

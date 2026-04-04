@@ -1,6 +1,19 @@
 import { describe, expect, mock, test } from "bun:test"
 import { render, screen } from "@testing-library/react"
 
+mock.module("next-intl", () => ({
+  useTranslations: () =>
+    (key: string, values?: { number?: number }) => {
+      if (key === "form.applicationLabel") {
+        return "Application"
+      }
+      if (key === "slots.slot") {
+        return `Slot ${values?.number ?? ""}`.trim()
+      }
+      return key
+    },
+}))
+
 import { CompanyProposeForm } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/CompanyProposeForm"
 import type { ProposedSlotDraft } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 

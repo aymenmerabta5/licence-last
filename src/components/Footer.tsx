@@ -1,9 +1,15 @@
 "use client"
 
-import { ArrowRight, Github, Instagram, Linkedin, Twitter } from "lucide-react"
+import {
+  ArrowRight,
+  BookOpen,
+  Compass,
+  Github,
+  ShieldCheck,
+} from "lucide-react"
 
 import { useTranslations } from "next-intl"
-import type { ReactNode } from "react"
+import { useState, type ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,6 +18,7 @@ import { Link } from "@/i18n/routing"
 
 export function Footer() {
   const t = useTranslations("footer")
+  const [newsletterEmail, setNewsletterEmail] = useState("")
   const year = new Date().getFullYear()
   const copyrightText = t("legal.copyright", { year })
 
@@ -33,25 +40,26 @@ export function Footer() {
               {t("description")}
             </p>
             <div className="flex items-center gap-4 mt-2">
-              <SocialLink
-                href="#"
-                icon={<Twitter className="size-5" />}
-                label={t("social.twitter")}
-              />
-              <SocialLink
-                href="#"
+              <FooterIconLink
+                external
+                href="https://github.com/aymenmerabta5/licence-last"
                 icon={<Github className="size-5" />}
                 label={t("social.github")}
               />
-              <SocialLink
-                href="#"
-                icon={<Linkedin className="size-5" />}
-                label={t("social.linkedin")}
+              <FooterIconLink
+                href="/about"
+                icon={<BookOpen className="size-5" />}
+                label={t("links.aboutUs")}
               />
-              <SocialLink
-                href="#"
-                icon={<Instagram className="size-5" />}
-                label={t("social.instagram")}
+              <FooterIconLink
+                href="/discover"
+                icon={<Compass className="size-5" />}
+                label={t("links.discover")}
+              />
+              <FooterIconLink
+                href="/privacy"
+                icon={<ShieldCheck className="size-5" />}
+                label={t("legal.privacyPolicy")}
               />
             </div>
           </div>
@@ -96,12 +104,29 @@ export function Footer() {
             </p>
             <form
               className="flex flex-col gap-2 mt-2"
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={(e) => {
+                e.preventDefault()
+
+                const email = newsletterEmail.trim()
+                if (!email) {
+                  return
+                }
+
+                const subject = encodeURIComponent("Platform updates request")
+                const body = encodeURIComponent(
+                  `Please contact ${email} about Stag product updates and launch announcements.`,
+                )
+
+                window.location.href = `mailto:support@stag.io?subject=${subject}&body=${body}`
+              }}
             >
               <div className="flex gap-2">
                 <Input
                   placeholder={t("newsletter.emailPlaceholder")}
                   type="email"
+                  required
+                  value={newsletterEmail}
+                  onChange={(event) => setNewsletterEmail(event.target.value)}
                   aria-label={t("newsletter.emailPlaceholder")}
                   className="rounded-none border-t-0 border-x-0 border-b-2 border-border bg-transparent px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors"
                 />
@@ -119,13 +144,22 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-muted-foreground">
           <p>{copyrightText}</p>
           <div className="flex items-center gap-8">
-            <Link href="/" className="hover:text-foreground transition-colors">
+            <Link
+              href="/privacy"
+              className="hover:text-foreground transition-colors"
+            >
               {t("legal.privacyPolicy")}
             </Link>
-            <Link href="/" className="hover:text-foreground transition-colors">
+            <Link
+              href="/terms"
+              className="hover:text-foreground transition-colors"
+            >
               {t("legal.termsOfService")}
             </Link>
-            <Link href="/" className="hover:text-foreground transition-colors">
+            <Link
+              href="/cookies"
+              className="hover:text-foreground transition-colors"
+            >
               {t("legal.cookiePolicy")}
             </Link>
           </div>
@@ -149,24 +183,41 @@ function FooterLink({ href, children }: { href: string; children: ReactNode }) {
   )
 }
 
-function SocialLink({
+function FooterIconLink({
   href,
+  external = false,
   icon,
   label,
 }: {
   href: string
+  external?: boolean
   icon: ReactNode
   label: string
 }) {
+  const className =
+    "p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors border border-transparent hover:border-border"
+
+  if (external) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+        aria-label={label}
+      >
+        {icon}
+      </a>
+    )
+  }
+
   return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors border border-transparent hover:border-border"
+    <Link
+      href={href as Parameters<typeof Link>[0]["href"]}
+      className={className}
       aria-label={label}
     >
       {icon}
-    </a>
+    </Link>
   )
 }

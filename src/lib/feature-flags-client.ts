@@ -13,3 +13,7 @@ export function isNotificationPreferencesEnabledOnClient() {
 export function isLanguageRequirementsEnabledOnClient() {
   return process.env.NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS !== "false"
 }
+
+export function isCompanyAssistantEnabledOnClient() {
+  return process.env.NEXT_PUBLIC_FEATURE_COMPANY_ASSISTANT === "true"
+}

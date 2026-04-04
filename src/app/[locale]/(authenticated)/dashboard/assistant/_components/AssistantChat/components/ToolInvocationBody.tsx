@@ -39,6 +39,8 @@ export function ToolInvocationBody({
 }: ToolInvocationBodyProps) {
   const t = useTranslations("dashboard.assistant")
   const isAuthRequired = isAuthorizationRequiredOutput(output)
+  const toolOutputError =
+    isRecord(output) && typeof output.error === "string" ? output.error : null
 
   return (
     <motion.div
@@ -103,6 +105,10 @@ export function ToolInvocationBody({
           <p className="text-sm text-destructive">{errorText}</p>
         ) : null}
 
+        {state === "output-available" && toolOutputError ? (
+          <p className="text-sm text-destructive">{toolOutputError}</p>
+        ) : null}
+
         <div className="flex items-center justify-between">
           <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
             {showRaw ? "Raw Data" : "Summary"}
@@ -143,7 +149,8 @@ export function ToolInvocationBody({
         {!showRaw &&
         state === "output-available" &&
         !isAuthRequired &&
-        output ? (
+        output &&
+        !toolOutputError ? (
           <div className="text-sm text-muted-foreground">
             {isRecord(output) && typeof output.result === "string" ? (
               <p>{output.result}</p>

@@ -2,6 +2,7 @@
 
 import { CalendarCheck, CalendarClock, CalendarDays } from "lucide-react"
 import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
 import type { InterviewsRole } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 import { Badge } from "@/components/ui/badge"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
@@ -15,12 +16,9 @@ interface InterviewsHeaderProps {
   }
 }
 
-const ROLE_LABELS: Record<InterviewsRole, string> = {
-  student: "Student",
-  company_admin: "Company",
-}
-
 export function InterviewsHeader({ role, counts }: InterviewsHeaderProps) {
+  const t = useTranslations("dashboard.interviews")
+
   return (
     <header className="space-y-6">
       <motion.div
@@ -31,7 +29,10 @@ export function InterviewsHeader({ role, counts }: InterviewsHeaderProps) {
 
       <div className="space-y-4">
         <motion.div {...reveal} transition={revealWithDelay(0.05)}>
-          <Badge variant="editorial-muted">{ROLE_LABELS[role]} dashboard</Badge>
+          <Badge variant="editorial-muted">
+            {role === "student" ? t("roleStudent") : t("roleCompany")}{" "}
+            {t("roleDashboard")}
+          </Badge>
         </motion.div>
 
         <motion.div
@@ -40,12 +41,12 @@ export function InterviewsHeader({ role, counts }: InterviewsHeaderProps) {
           className="space-y-2"
         >
           <h1 className="font-serif text-[clamp(1.8rem,3.2vw,2.4rem)] leading-[1.1] tracking-tight text-heading">
-            Interviews
+            {t("title")}
           </h1>
-          <p className="text-sm font-light text-muted-foreground max-w-lg">
+          <p className="max-w-lg text-sm font-light text-muted-foreground">
             {role === "company_admin"
-              ? "Schedule and manage interview sessions with candidates."
-              : "View and confirm interview invitations from companies."}
+              ? t("subtitleCompany")
+              : t("subtitleStudent")}
           </p>
         </motion.div>
 
@@ -61,7 +62,7 @@ export function InterviewsHeader({ role, counts }: InterviewsHeaderProps) {
                 {counts.total}
               </span>
               <span className="text-xs uppercase tracking-[0.1em] text-muted-foreground">
-                Total
+                {t("totalCountLabel")}
               </span>
             </div>
 
@@ -73,7 +74,7 @@ export function InterviewsHeader({ role, counts }: InterviewsHeaderProps) {
                 {counts.pending}
               </span>
               <span className="text-xs uppercase tracking-[0.1em] text-muted-foreground">
-                Pending
+                {t("pendingCountLabel")}
               </span>
             </div>
 
@@ -85,7 +86,7 @@ export function InterviewsHeader({ role, counts }: InterviewsHeaderProps) {
                 {counts.confirmed}
               </span>
               <span className="text-xs uppercase tracking-[0.1em] text-muted-foreground">
-                Confirmed
+                {t("confirmedCountLabel")}
               </span>
             </div>
           </motion.div>
@@ -94,10 +95,10 @@ export function InterviewsHeader({ role, counts }: InterviewsHeaderProps) {
         <motion.div
           {...reveal}
           transition={revealWithDelay(0.2)}
-          className="flex items-center gap-2 text-xs text-muted-foreground border-t border-border/50 pt-4"
+          className="flex items-center gap-2 border-t border-border/50 pt-4 text-xs text-muted-foreground"
         >
           <CalendarDays className="h-3.5 w-3.5" />
-          <span>All times are shown in your local timezone.</span>
+          <span>{t("timezoneNote")}</span>
         </motion.div>
       </div>
     </header>

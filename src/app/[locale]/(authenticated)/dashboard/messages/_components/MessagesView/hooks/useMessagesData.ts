@@ -1,8 +1,10 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
 import { useEffect, useMemo, useRef } from "react"
 import type {
+  MessageConversationStarter,
   MessagesRole,
   MessageThread,
   ThreadMessagesResponse,
@@ -14,8 +16,18 @@ interface UseMessagesDataParams {
   selectedThreadId: string | null
 }
 
+type SendMessageTarget =
+  | {
+      kind: "thread"
+      thread: MessageThread
+    }
+  | {
+      kind: "starter"
+      starter: MessageConversationStarter
+    }
+
 interface SendMessageParams {
-  thread: MessageThread
+  target: SendMessageTarget
   body: string
 }
 
@@ -54,16 +66,36 @@ async function fetchThreadMessages(
   })) as ThreadMessagesResponse
 }
 
+async function fetchConversationStarters(
+  role: MessagesRole,
+): Promise<MessageConversationStarter[]> {
+  if (role === "student") {
+    return (await orpcClient.messages.listStartersByStudent({
+      limit: 12,
+    })) as MessageConversationStarter[]
+  }
+
+  return (await orpcClient.messages.listStartersByCompany({
+    limit: 24,
+  })) as MessageConversationStarter[]
+}
+
 export function useMessagesData({
   role,
   selectedThreadId,
 }: UseMessagesDataParams) {
+  const t = useTranslations("dashboard.messages")
   const queryClient = useQueryClient()
   const markedThreadIdRef = useRef<string | null>(null)
 
   const threadsQuery = useQuery({
     queryKey: ["messages", "threads", role],
     queryFn: () => fetchThreads(role),
+  })
+
+  const startersQuery = useQuery({
+    queryKey: ["messages", "starters", role],
+    queryFn: () => fetchConversationStarters(role),
   })
 
   const threadMessagesQuery = useQuery({
@@ -79,37 +111,57 @@ export function useMessagesData({
   })
 
   const sendMessageMutation = useMutation({
-    mutationFn: async ({ thread, body }: SendMessageParams) => {
+    mutationFn: async ({ target, body }: SendMessageParams) => {
       const normalizedBody = body.trim()
       if (!normalizedBody) {
-        throw new Error("Message cannot be empty.")
+        throw new Error(t("messageEmptyError"))
       }
+
+      const offerId =
+        target.kind === "thread" ? target.thread.offerId : target.starter.offerId
 
       if (role === "student") {
         return orpcClient.messages.sendByStudent({
-          offerId: thread.offerId,
+          offerId,
           body: normalizedBody,
         })
       }
 
-      if (!thread.studentUserId) {
-        throw new Error("Missing student identifier for this thread.")
+      const studentUserId =
+        target.kind === "thread"
+          ? target.thread.studentUserId
+          : target.starter.studentUserId
+
+      if (!studentUserId) {
+        throw new Error(t("missingStudentError"))
       }
 
       return orpcClient.messages.sendByCompany({
-        offerId: thread.offerId,
-        studentUserId: thread.studentUserId,
+        offerId,
+        studentUserId,
         body: normalizedBody,
       })
     },
     onSuccess: async (_, variables) => {
+      const threadId =
+        variables.target.kind === "thread"
+          ? variables.target.thread.id
+          : undefined
+
       await Promise.all([
         queryClient.invalidateQueries({
           queryKey: ["messages", "threads", role],
         }),
         queryClient.invalidateQueries({
-          queryKey: ["messages", "thread", variables.thread.id],
+          queryKey: ["messages", "starters", role],
         }),
+        ...(threadId
+          ? [
+              queryClient.invalidateQueries({
+                queryKey: ["messages", "thread", threadId],
+              }),
+            ]
+          : []),
       ])
     },
   })
@@ -143,25 +195,31 @@ export function useMessagesData({
   }, [selectedThreadId, threadMessagesQuery.isSuccess, markThreadRead])
 
   const threads = useMemo(() => threadsQuery.data ?? [], [threadsQuery.data])
+  const starters = useMemo(
+    () => startersQuery.data ?? [],
+    [startersQuery.data],
+  )
 
   return {
     threads,
+    starters,
     threadsLoading: threadsQuery.isLoading,
     threadsErrorMessage: threadsQuery.error
-      ? toErrorMessage(threadsQuery.error, "Failed to load message threads.")
+      ? toErrorMessage(threadsQuery.error, t("threadsLoadError"))
+      : null,
+    startersLoading: startersQuery.isLoading,
+    startersErrorMessage: startersQuery.error
+      ? toErrorMessage(startersQuery.error, t("starterLoadError"))
       : null,
     threadMessages: threadMessagesQuery.data?.messages ?? [],
     threadMessagesLoading: threadMessagesQuery.isLoading,
     threadMessagesErrorMessage: threadMessagesQuery.error
-      ? toErrorMessage(
-          threadMessagesQuery.error,
-          "Failed to load conversation.",
-        )
+      ? toErrorMessage(threadMessagesQuery.error, t("conversationLoadError"))
       : null,
     sendMessage: sendMessageMutation.mutateAsync,
     sendPending: sendMessageMutation.isPending,
     sendErrorMessage: sendMessageMutation.error
-      ? toErrorMessage(sendMessageMutation.error, "Failed to send message.")
+      ? toErrorMessage(sendMessageMutation.error, t("sendError"))
       : null,
   }
 }

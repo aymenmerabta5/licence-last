@@ -118,6 +118,15 @@ export async function inviteCompanyMember(
       .limit(1)
 
     if (existingMembership?.companyId === input.companyId) {
+      // Allow re-invites to resend the access email if the original
+      // onboarding/reset delivery failed or the link expired.
+      await auth.api.requestPasswordReset({
+        body: {
+          email: normalizedEmail,
+          redirectTo: "/reset-password/verify",
+        },
+      })
+
       return {
         userId: existingUser.id,
         email: normalizedEmail,

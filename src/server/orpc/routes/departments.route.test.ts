@@ -22,7 +22,20 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
 
 const createDepartmentMock = mock(async () => ({ departmentId: "dept-1" }))
 const assignDepartmentHeadMock = mock(async () => ({ success: true }))
+
+interface DepartmentListItem {
+  id: string
+  name: string
+  headUserId: string | null
+  headUserName: string | null
+  headUserEmail: string | null
+  createdAt: Date
+  skillCount: number
+}
+
+const listDepartmentsMock = mock(async (): Promise<DepartmentListItem[]> => [])
 const updateDepartmentMock = mock(async () => ({ success: true }))
+const syncDepartmentSkillsMock = mock(async () => ({ success: true }))
 
 const dbLimitMock = mock(async () => [{ universityId: "uni-1" }])
 const dbWhereMock = mock(() => ({ limit: dbLimitMock }))
@@ -33,6 +46,7 @@ mock.module("@/server/orpc/rate-limited-procedures", () => ({
   authedProcedureGenerous: createProcedureMock(),
   adminProcedureStandard: createProcedureMock(),
   universityProcedureAssistant: createProcedureMock(),
+  universityProcedureStandard: createProcedureMock(),
 }))
 
 mock.module("@/server/services/departments/create", () => ({
@@ -54,10 +68,10 @@ mock.module("@/server/services/departments/get-skills", () => ({
   getDepartmentSkillIds: mock(async () => []),
 }))
 mock.module("@/server/services/departments/list", () => ({
-  listDepartments: mock(async () => []),
+  listDepartments: listDepartmentsMock,
 }))
 mock.module("@/server/services/departments/sync-skills", () => ({
-  syncDepartmentSkills: mock(async () => ({ success: true })),
+  syncDepartmentSkills: syncDepartmentSkillsMock,
 }))
 mock.module("@/server/services/departments/unassign-head", () => ({
   unassignDepartmentHead: mock(async () => ({ success: true })),
@@ -76,7 +90,9 @@ describe("src/server/orpc/routes/departments", () => {
   beforeEach(() => {
     createDepartmentMock.mockClear()
     assignDepartmentHeadMock.mockClear()
+    listDepartmentsMock.mockClear()
     updateDepartmentMock.mockClear()
+    syncDepartmentSkillsMock.mockClear()
     dbSelectMock.mockClear()
     dbFromMock.mockClear()
     dbWhereMock.mockClear()
@@ -170,6 +186,41 @@ describe("src/server/orpc/routes/departments", () => {
     expect(assignDepartmentHeadMock).toHaveBeenCalledWith("dept-1", "user-1")
   })
 
+  test("listDepartmentsProcedure strips department-head contact details for students", async () => {
+    listDepartmentsMock.mockResolvedValueOnce([
+      {
+        id: "dept-1",
+        name: "Computer Science",
+        headUserId: "head-1",
+        headUserName: "Dr. Head",
+        headUserEmail: "head@example.com",
+        createdAt: new Date("2026-01-01"),
+        skillCount: 12,
+      },
+    ])
+
+    const { listDepartmentsProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
+
+    const result = await callProcedure(listDepartmentsProcedure, {
+      input: { universityId: "uni-1" },
+      context: { user: { role: "student", universityId: "uni-1" } },
+    })
+
+    expect(result).toEqual([
+      {
+        id: "dept-1",
+        name: "Computer Science",
+        headUserId: null,
+        headUserName: null,
+        headUserEmail: null,
+        createdAt: new Date("2026-01-01"),
+        skillCount: 12,
+      },
+    ])
+  })
+
   test("updateDepartmentProcedure enforces department scope", async () => {
     const { updateDepartmentProcedure } = await import(
       "@/server/orpc/routes/departments"
@@ -186,5 +237,31 @@ describe("src/server/orpc/routes/departments", () => {
     })
 
     expect(updateDepartmentMock).not.toHaveBeenCalled()
+  })
+
+  test("syncDepartmentSkillsProcedure maps invalid skill ids to a bad request", async () => {
+    syncDepartmentSkillsMock.mockRejectedValueOnce(
+      new ServiceError(
+        "INVALID_SKILL_TAG_IDS",
+        "Invalid skill tag IDs: stale-skill",
+      ),
+    )
+
+    const { syncDepartmentSkillsProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
+
+    await expect(
+      callProcedure(syncDepartmentSkillsProcedure, {
+        input: {
+          departmentId: "dept-1",
+          skillTagIds: ["stale-skill"],
+        },
+        context: { user: { role: "university_admin", universityId: "uni-1" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "Invalid skill tag IDs: stale-skill",
+    })
   })
 })

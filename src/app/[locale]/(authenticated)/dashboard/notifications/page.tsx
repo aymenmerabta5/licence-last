@@ -1,7 +1,8 @@
+import { Suspense } from "react"
 import { NotificationsView } from "@/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView"
 import { requireRole } from "@/lib/auth-guards"
 
-export default async function NotificationsPage() {
+async function NotificationsPageContent() {
   const user = await requireRole([
     "student",
     "company_admin",
@@ -16,5 +17,13 @@ export default async function NotificationsPage() {
         viewerId={user.id}
       />
     </div>
+  )
+}
+
+export default function NotificationsPage() {
+  return (
+    <Suspense fallback={null}>
+      <NotificationsPageContent />
+    </Suspense>
   )
 }

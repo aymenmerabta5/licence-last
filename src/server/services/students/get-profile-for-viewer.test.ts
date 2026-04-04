@@ -74,6 +74,7 @@ describe("src/server/services/students/get-profile-for-viewer", () => {
       portfolioUrl: null,
       studentNumber: "SN-1",
       department: "CS",
+      departmentId: "dept-1",
       level: "L3",
       address: "Addr",
     }
@@ -121,6 +122,7 @@ describe("src/server/services/students/get-profile-for-viewer", () => {
       portfolioUrl: null,
       studentNumber: "SN-1",
       department: "CS",
+      departmentId: "dept-1",
       level: "L3",
       address: "Addr",
     }
@@ -151,7 +153,7 @@ describe("src/server/services/students/get-profile-for-viewer", () => {
       id: "user-1",
       name: "Target",
       email: "target@example.com",
-      role: "company_admin",
+      role: "student",
       image: null,
       universityId: null,
       createdAt: now,
@@ -170,5 +172,98 @@ describe("src/server/services/students/get-profile-for-viewer", () => {
     expect(result?.user.email).toBeNull()
     expect(result?.profile).toBeNull()
     expect(result?.skills).toEqual([])
+  })
+
+  test("should return null when the target user is not a student", async () => {
+    const now = new Date()
+    const mockUser = {
+      id: "user-1",
+      name: "Company Admin",
+      email: "company@example.com",
+      role: "company_admin",
+      image: null,
+      universityId: null,
+      createdAt: now,
+    }
+
+    mockSelectResults.push([mockUser])
+
+    const { getStudentProfileForViewer } = await import(
+      "@/server/services/students/get-profile-for-viewer?test=non-student-target" as string
+    )
+    const result = await getStudentProfileForViewer({
+      viewer: { id: "viewer-2", role: "super_admin" },
+      targetUserId: "user-1",
+    })
+
+    expect(result).toBeNull()
+  })
+
+  test("should only expose private fields to department heads for their own department", async () => {
+    const now = new Date()
+    const mockUser = {
+      id: "user-1",
+      name: "Target",
+      email: "target@example.com",
+      role: "student",
+      image: null,
+      universityId: "uni-1",
+      createdAt: now,
+    }
+
+    const profileRow = {
+      bio: "Hello",
+      phone: "0555",
+      wilayaCode: 25,
+      githubUrl: "https://github.com/x",
+      portfolioUrl: null,
+      studentNumber: "SN-1",
+      department: "CS",
+      departmentId: "dept-1",
+      level: "L3",
+      address: "Addr",
+    }
+
+    mockSelectResults.push([mockUser], [profileRow])
+    mockJoinWhere.mockResolvedValue([])
+    mockLanguagesWhere.mockResolvedValue([])
+
+    const { getStudentProfileForViewer } = await import(
+      "@/server/services/students/get-profile-for-viewer?test=dept-head-private" as string
+    )
+
+    const allowed = await getStudentProfileForViewer({
+      viewer: {
+        id: "viewer-1",
+        role: "university_admin",
+        universityId: "uni-1",
+        departmentId: "dept-1",
+        universityMembershipRole: "department_head",
+      },
+      targetUserId: "user-1",
+    })
+
+    expect(allowed?.user.email).toBe("target@example.com")
+    expect(allowed?.profile?.phone).toBe("0555")
+
+    selectCallIdx = 0
+    mockSelectResults.length = 0
+    mockSelectResults.push([mockUser], [profileRow])
+
+    const denied = await getStudentProfileForViewer({
+      viewer: {
+        id: "viewer-1",
+        role: "university_admin",
+        universityId: "uni-1",
+        departmentId: "dept-2",
+        universityMembershipRole: "department_head",
+      },
+      targetUserId: "user-1",
+    })
+
+    expect(denied?.user.email).toBeNull()
+    expect(denied?.profile?.phone).toBeNull()
+    expect(denied?.profile?.studentNumber).toBeNull()
+    expect(denied?.profile?.address).toBeNull()
   })
 })

@@ -20,8 +20,18 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
   return (procedure as (input: unknown) => Promise<T>)(args)
 }
 
-const applyToOfferMock = mock(async () => ({ applicationId: "app-1" }))
-const withdrawApplicationMock = mock(async () => ({ applicationId: "app-1" }))
+const applyToOfferMock = mock(async () => ({
+  applicationId: "app-1",
+  companyId: "company-1",
+}))
+const generateCoverLetterMock = mock(async () => ({
+  coverLetter: "Generated cover letter",
+}))
+const withdrawApplicationMock = mock(async () => ({
+  applicationId: "app-1",
+  newStatus: "withdrawn",
+  companyId: "company-1",
+}))
 const listApplicationsByOfferMock = mock(async () => ({ applications: [] }))
 const updatePipelineStageMock = mock(async () => ({ applicationId: "app-1" }))
 const listApplicationTimelineMock = mock(async (): Promise<unknown[]> => [])
@@ -46,6 +56,7 @@ mock.module("@/server/orpc/rate-limited-procedures", () => ({
   adminProcedureStandard: createProcedureMock(),
   adminProcedureAssistant: createProcedureMock(),
   universityProcedureAssistant: createProcedureMock(),
+  universityProcedureStandard: createProcedureMock(),
   superAdminProcedureGenerous: createProcedureMock(),
   superAdminProcedureStandard: createProcedureMock(),
   companyAdminProcedureGenerous: createProcedureMock(),
@@ -79,6 +90,9 @@ mock.module("@/server/services/offers/get", () => ({
 }))
 mock.module("@/server/services/applications/apply", () => ({
   applyToOffer: applyToOfferMock,
+}))
+mock.module("@/server/services/applications/generate-cover-letter", () => ({
+  generateCoverLetter: generateCoverLetterMock,
 }))
 mock.module("@/server/services/applications/list-by-student", () => ({
   listApplicationsByStudent: mock(async () => ({ applications: [] })),
@@ -126,6 +140,7 @@ describe("src/server/orpc/routes/applications", () => {
 
   beforeEach(() => {
     applyToOfferMock.mockClear()
+    generateCoverLetterMock.mockClear()
     withdrawApplicationMock.mockClear()
     listApplicationsByOfferMock.mockClear()
     updatePipelineStageMock.mockClear()
@@ -136,7 +151,7 @@ describe("src/server/orpc/routes/applications", () => {
     dbLimitQueue.length = 0
   })
 
-  test("applyToOfferProcedure revalidates student tags", async () => {
+  test("applyToOfferProcedure revalidates student and company offer tags", async () => {
     const { applyToOfferProcedure } = await import(
       "@/server/orpc/routes/applications"
     )
@@ -146,9 +161,16 @@ describe("src/server/orpc/routes/applications", () => {
       context: { user: { id: "user-1" } },
     })
 
-    expect(result).toEqual({ applicationId: "app-1" })
+    expect(result).toEqual({
+      applicationId: "app-1",
+      companyId: "company-1",
+    })
     expect(applyToOfferMock).toHaveBeenCalledWith("offer-1", "user-1", "hello")
-    expect(revalidateTagMock).toHaveBeenCalledTimes(2)
+    expect(revalidateTagMock).toHaveBeenCalledTimes(3)
+    expect(revalidateTagMock).toHaveBeenCalledWith(
+      "company-offers-company-1",
+      "max",
+    )
   })
 
   test("applyToOfferProcedure maps typed application errors", async () => {
@@ -517,6 +539,46 @@ describe("src/server/orpc/routes/applications", () => {
     ).rejects.toMatchObject({
       code: "INTERNAL_SERVER_ERROR",
       message: "Multiple company memberships found for user",
+    })
+  })
+
+  test("withdrawApplicationProcedure revalidates student and company offer tags", async () => {
+    const { withdrawApplicationProcedure } = await import(
+      `@/server/orpc/routes/applications?test=${Date.now()}`
+    )
+
+    const result = await callProcedure(withdrawApplicationProcedure, {
+      input: { applicationId: "app-1" },
+      context: { user: { id: "user-1" } },
+    })
+
+    expect(result).toEqual({
+      applicationId: "app-1",
+      newStatus: "withdrawn",
+      companyId: "company-1",
+    })
+  })
+
+  test("generateCoverLetterProcedure maps AI outages to service unavailable", async () => {
+    generateCoverLetterMock.mockRejectedValueOnce(new Error("model timed out"))
+
+    const { generateCoverLetterProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
+
+    await expect(
+      callProcedure(generateCoverLetterProcedure, {
+        input: {
+          offerTitle: "Frontend Intern",
+          offerDescription: "A real internship",
+          skills: ["React"],
+          companyName: "Acme",
+        },
+        context: {},
+      }),
+    ).rejects.toMatchObject({
+      code: "SERVICE_UNAVAILABLE",
+      message: "AI service is temporarily unavailable. Please try again shortly.",
     })
   })
 })

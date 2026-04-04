@@ -105,30 +105,34 @@ describe("sanitizer", () => {
   })
 
   describe("errorToText", () => {
-    test("returns string as-is", () => {
-      expect(errorToText("Error message")).toBe("Error message")
-    })
-
-    test("returns Error message", () => {
-      expect(errorToText(new Error("Something went wrong"))).toBe(
-        "Something went wrong",
+    test("returns a safe generic message for string errors", () => {
+      expect(errorToText("upstream provider exploded")).toBe(
+        "The assistant is temporarily unavailable. Please try again.",
       )
     })
 
-    test("returns stringified object for other types", () => {
-      expect(errorToText({ foo: "bar" })).toBe('{"foo":"bar"}')
+    test("returns a safe generic message for Error instances", () => {
+      expect(errorToText(new Error("Something went wrong"))).toBe(
+        "The assistant is temporarily unavailable. Please try again.",
+      )
     })
 
-    test("returns Unknown error for null", () => {
-      expect(errorToText(null)).toBe("Unknown error")
+    test("returns a safe generic message for other error shapes", () => {
+      expect(errorToText({ foo: "bar" })).toBe(
+        "The assistant is temporarily unavailable. Please try again.",
+      )
     })
 
-    test("returns Unknown error for undefined", () => {
-      expect(errorToText(undefined)).toBe("Unknown error")
+    test("returns a safe generic message for null", () => {
+      expect(errorToText(null)).toBe(
+        "The assistant is temporarily unavailable. Please try again.",
+      )
     })
 
-    test("returns Unknown error for empty string", () => {
-      expect(errorToText("")).toBe("")
+    test("returns a safe generic message for undefined", () => {
+      expect(errorToText(undefined)).toBe(
+        "The assistant is temporarily unavailable. Please try again.",
+      )
     })
   })
 

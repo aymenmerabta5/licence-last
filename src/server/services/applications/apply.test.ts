@@ -47,8 +47,8 @@ const dbMock = {
   select: makeSelect,
   insert: mockInsert,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  transaction: async (fn: (tx: any) => Promise<void>) => {
-    await fn({
+  transaction: async <T>(fn: (tx: any) => Promise<T>) => {
+    return fn({
       select: makeSelect,
       insert: mockInsert,
     })

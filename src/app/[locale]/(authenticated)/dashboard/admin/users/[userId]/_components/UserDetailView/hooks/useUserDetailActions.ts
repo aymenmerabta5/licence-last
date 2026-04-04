@@ -32,8 +32,8 @@ export function useUserDetailActions() {
   }
 
   const revokeSession = useMutation({
-    mutationFn: (sessionToken: string) =>
-      orpcClient.adminUsers.revokeSession({ sessionToken }),
+    mutationFn: (data: { userId: string; sessionId: string }) =>
+      orpcClient.adminUsers.revokeSession(data),
     onSuccess: async () => {
       toast.success(t("errors.common.sessionRevoked"))
       await invalidate()

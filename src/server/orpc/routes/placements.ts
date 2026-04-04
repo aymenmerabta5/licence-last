@@ -14,6 +14,7 @@ import {
   parseInputDate,
   validatePlacementDateRange,
 } from "@/server/orpc/utils/date"
+import { throwAIOrpcError } from "@/server/orpc/utils/ai-error"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import { getPendingApplicationById } from "@/server/services/placements/get-pending-by-id"
 import { listPendingApplications } from "@/server/services/placements/list-pending"
@@ -30,8 +31,14 @@ const PLACEMENT_ERROR_MAP = {
   PLACEMENT_ALREADY_EXISTS: "CONFLICT",
 } as const
 
-function assertUniversityAdminRole(role: string | null | undefined): void {
-  if (role !== "university_admin") {
+function assertUniversityAdminRole(user: {
+  role: string | null | undefined
+  universityMembershipRole?: string | null
+}): void {
+  if (
+    user.role !== "university_admin" ||
+    user.universityMembershipRole === "department_head"
+  ) {
     throw new ORPCError("FORBIDDEN", {
       message: "University admin access required",
     })
@@ -60,7 +67,7 @@ export const listPendingProcedure = adminProcedureGenerous
       .optional(),
   )
   .handler(async ({ input, context }) => {
-    assertUniversityAdminRole(context.user.effectiveRole ?? context.user.role)
+    assertUniversityAdminRole(context.user)
 
     return listPendingApplications(input ?? {}, {
       role: "university_admin",
@@ -75,7 +82,7 @@ export const getPendingByIdProcedure = adminProcedureGenerous
     }),
   )
   .handler(async ({ input, context }) => {
-    assertUniversityAdminRole(context.user.effectiveRole ?? context.user.role)
+    assertUniversityAdminRole(context.user)
 
     return {
       application: await getPendingApplicationById(input.applicationId, {
@@ -96,7 +103,7 @@ export const validateProcedure = adminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    assertUniversityAdminRole(context.user.effectiveRole ?? context.user.role)
+    assertUniversityAdminRole(context.user)
 
     // Validate dates first; these throw user-facing messages.
     let startDate: Date
@@ -139,7 +146,7 @@ export const rejectProcedure = adminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    assertUniversityAdminRole(context.user.effectiveRole ?? context.user.role)
+    assertUniversityAdminRole(context.user)
 
     try {
       return await rejectPlacement({
@@ -246,10 +253,14 @@ export const generateValidationSummaryProcedure = universityProcedureAssistant
   .handler(async ({ input, context }) => {
     assertNotSuperAdmin(context.user.effectiveRole ?? context.user.role)
 
-    const { generateValidationSummary } = await import(
-      "@/server/services/placements/generate-validation-summary"
-    )
-    return generateValidationSummary(input)
+    try {
+      const { generateValidationSummary } = await import(
+        "@/server/services/placements/generate-validation-summary"
+      )
+      return await generateValidationSummary(input)
+    } catch (error) {
+      throwAIOrpcError(error)
+    }
   })
 
 /* Dept head: reject placement */

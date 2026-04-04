@@ -20,6 +20,8 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
 
 const listMessageThreadsByCompanyMock = mock(async () => ({ threads: [] }))
 const listMessageThreadsByStudentMock = mock(async () => ({ threads: [] }))
+const listMessageStartersByCompanyMock = mock(async () => [])
+const listMessageStartersByStudentMock = mock(async () => [])
 const listThreadMessagesMock = mock(async () => ({ messages: [] }))
 const sendOfferMessageByCompanyMock = mock(async () => ({ messageId: "m1" }))
 const sendOfferMessageByStudentMock = mock(async () => ({ messageId: "m2" }))
@@ -66,6 +68,12 @@ mock.module("@/server/services/messages/list-threads-by-company", () => ({
 mock.module("@/server/services/messages/list-threads-by-student", () => ({
   listMessageThreadsByStudent: listMessageThreadsByStudentMock,
 }))
+mock.module("@/server/services/messages/list-starters-by-company", () => ({
+  listMessageStartersByCompany: listMessageStartersByCompanyMock,
+}))
+mock.module("@/server/services/messages/list-starters-by-student", () => ({
+  listMessageStartersByStudent: listMessageStartersByStudentMock,
+}))
 mock.module("@/server/services/messages/list-thread-messages", () => ({
   listThreadMessages: listThreadMessagesMock,
 }))
@@ -84,6 +92,8 @@ describe("src/server/orpc/routes/messages", () => {
     membershipRows = []
     listMessageThreadsByCompanyMock.mockClear()
     listMessageThreadsByStudentMock.mockClear()
+    listMessageStartersByCompanyMock.mockClear()
+    listMessageStartersByStudentMock.mockClear()
     listThreadMessagesMock.mockClear()
     sendOfferMessageByCompanyMock.mockClear()
     sendOfferMessageByStudentMock.mockClear()
@@ -126,6 +136,42 @@ describe("src/server/orpc/routes/messages", () => {
     expect(listThreadMessagesMock).toHaveBeenCalledWith("thread-1", {
       userId: "student-1",
       role: "student",
+    })
+  })
+
+  test("listMessageStartersByCompanyProcedure delegates with membership company id", async () => {
+    const { listMessageStartersByCompanyProcedure } = await import(
+      "@/server/orpc/routes/messages"
+    )
+
+    const result = await callProcedure(listMessageStartersByCompanyProcedure, {
+      input: { limit: 6 },
+      context: {
+        companyMembership: { companyId: "company-1" },
+      },
+    })
+
+    expect(result).toEqual([])
+    expect(listMessageStartersByCompanyMock).toHaveBeenCalledWith("company-1", {
+      limit: 6,
+    })
+  })
+
+  test("listMessageStartersByStudentProcedure delegates with student id", async () => {
+    const { listMessageStartersByStudentProcedure } = await import(
+      "@/server/orpc/routes/messages"
+    )
+
+    const result = await callProcedure(listMessageStartersByStudentProcedure, {
+      input: { limit: 4 },
+      context: {
+        user: { id: "student-1" },
+      },
+    })
+
+    expect(result).toEqual([])
+    expect(listMessageStartersByStudentMock).toHaveBeenCalledWith("student-1", {
+      limit: 4,
     })
   })
 

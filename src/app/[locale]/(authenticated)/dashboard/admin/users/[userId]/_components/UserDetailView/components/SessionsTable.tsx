@@ -14,7 +14,7 @@ import {
 
 interface SessionItem {
   id: string
-  token: string
+  tokenPrefix: string | null
   ipAddress?: string | null
   userAgent?: string | null
   createdAt: string | Date
@@ -24,7 +24,7 @@ interface SessionItem {
 interface SessionsTableProps {
   sessions: SessionItem[]
   isLoading: boolean
-  onRevoke: (token: string) => void
+  onRevoke: (sessionId: string) => void
   isRevoking: boolean
 }
 
@@ -113,7 +113,7 @@ export function SessionsTable({
                       size="icon-xs"
                       className="text-muted-foreground hover:text-destructive"
                       disabled={isRevoking}
-                      onClick={() => onRevoke(s.token)}
+                      onClick={() => onRevoke(s.id)}
                     >
                       <X className="h-3.5 w-3.5" />
                     </Button>

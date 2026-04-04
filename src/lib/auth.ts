@@ -11,6 +11,7 @@ import {
   twoFactor,
 } from "better-auth/plugins"
 import { and, eq, inArray } from "drizzle-orm"
+import type { ComponentType } from "react"
 import { env } from "@/env"
 import { domainCandidates, getEmailDomain } from "@/lib/auth-utils"
 import {
@@ -53,6 +54,33 @@ const CAPTCHA_ENABLED =
   process.env.E2E_DISABLE_CAPTCHA !== "1"
 const AUTH_RATE_LIMIT_ENABLED =
   process.env.NODE_ENV === "production" && !E2E_RATE_LIMIT_DISABLED
+
+interface AuthEmailOptions {
+  from?: string
+  replyTo?: string
+  cc?: string | string[]
+  bcc?: string | string[]
+}
+
+async function sendRequiredAuthEmail<T>(
+  to: string | string[],
+  subject: string,
+  EmailComponent: ComponentType<T>,
+  componentProps: T,
+  options?: AuthEmailOptions,
+) {
+  const result = await sendEmail(
+    to,
+    subject,
+    EmailComponent,
+    componentProps,
+    options,
+  )
+
+  if (!result.success) {
+    throw new Error(result.error ?? `Failed to send auth email: ${subject}`)
+  }
+}
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
@@ -224,7 +252,7 @@ export const auth = betterAuth({
     sendOnSignIn: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
-      await sendEmail(
+      await sendRequiredAuthEmail(
         user.email,
         "Verify your email address",
         VerifyEmailEmail,
@@ -237,20 +265,26 @@ export const auth = betterAuth({
     requireEmailVerification: true,
     minPasswordLength: 8,
     maxPasswordLength: 128,
+    revokeSessionsOnPasswordReset: true,
     sendResetPassword: async ({ user, url }) => {
       const welcomeData = pendingWelcomeEmails.get(user.email)
       if (welcomeData) {
         pendingWelcomeEmails.delete(user.email)
-        await sendEmail(
+        await sendRequiredAuthEmail(
           user.email,
           "Welcome to Stag — Set Your Password",
           DeptHeadWelcomeEmail,
           { ...welcomeData, link: url },
         )
       } else {
-        await sendEmail(user.email, "Reset your password", ResetPasswordEmail, {
-          link: url,
-        })
+        await sendRequiredAuthEmail(
+          user.email,
+          "Reset your password",
+          ResetPasswordEmail,
+          {
+            link: url,
+          },
+        )
       }
     },
   },
@@ -279,7 +313,7 @@ export const auth = betterAuth({
       issuer: "Stag",
       otpOptions: {
         async sendOTP({ user, otp }) {
-          await sendEmail(
+          await sendRequiredAuthEmail(
             user.email,
             "Your Stag verification code",
             TwoFactorOtpEmail,

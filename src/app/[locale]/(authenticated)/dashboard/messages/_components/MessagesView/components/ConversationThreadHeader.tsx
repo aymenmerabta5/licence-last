@@ -1,4 +1,6 @@
+import { useTranslations } from "next-intl"
 import type {
+  MessageConversationStarter,
   MessagesRole,
   MessageThread,
 } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
@@ -7,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 interface ConversationThreadHeaderProps {
   role: MessagesRole
   selectedThread: MessageThread | null
+  selectedStarter: MessageConversationStarter | null
   threadTitle: string
 }
 
@@ -21,30 +24,35 @@ function getInitials(value: string | null | undefined): string {
 }
 
 function getThreadImage(
-  thread: MessageThread | null,
+  conversation: MessageThread | MessageConversationStarter | null,
   role: MessagesRole,
 ): string | undefined {
-  if (!thread) {
+  if (!conversation) {
     return undefined
   }
 
   if (role === "student") {
-    return thread.companyLogoUrl ?? undefined
+    return conversation.companyLogoUrl ?? undefined
   }
 
-  return thread.studentImage ?? undefined
+  return conversation.studentImage ?? undefined
 }
 
 export function ConversationThreadHeader({
   role,
   selectedThread,
+  selectedStarter,
   threadTitle,
 }: ConversationThreadHeaderProps) {
+  const t = useTranslations("dashboard.messages")
+
+  const selectedConversation = selectedThread ?? selectedStarter
+
   return (
     <div className="border-b border-border/60 px-4 py-3 sm:px-5">
       <div className="flex items-center gap-3">
         <Avatar size="sm">
-          <AvatarImage src={getThreadImage(selectedThread, role)} alt="" />
+          <AvatarImage src={getThreadImage(selectedConversation, role)} alt="" />
           <AvatarFallback>{getInitials(threadTitle)}</AvatarFallback>
         </Avatar>
         <div className="min-w-0">
@@ -53,7 +61,8 @@ export function ConversationThreadHeader({
           </p>
           <p className="truncate text-xs text-muted-foreground">
             {selectedThread?.offerTitle ??
-              "Select a thread to start messaging."}
+              selectedStarter?.offerTitle ??
+              t("placeholderSubtitle")}
           </p>
         </div>
       </div>

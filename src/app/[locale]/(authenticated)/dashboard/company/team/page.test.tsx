@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
-import { cleanup, render, screen } from "@testing-library/react"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { Suspense } from "react"
 
 const requireCompanyOwnerMock = mock(async () => ({
   user: {
@@ -37,10 +37,6 @@ async function loadCompanyTeamPage() {
 }
 
 describe("dashboard/company/team/page", () => {
-  afterEach(() => {
-    cleanup()
-  })
-
   beforeEach(() => {
     applyPageMocks()
     requireCompanyOwnerMock.mockClear()
@@ -53,10 +49,12 @@ describe("dashboard/company/team/page", () => {
     })
   })
 
-  test("renders the team view for company owners", async () => {
+  test("keeps the page shell synchronous so ownership checks can suspend under a boundary", async () => {
     const { default: CompanyTeamPage } = await loadCompanyTeamPage()
-    render(await CompanyTeamPage())
+    const page = CompanyTeamPage()
 
-    expect(screen.getByTestId("company-team-view").textContent).toBe("user-1")
+    expect(page).not.toBeInstanceOf(Promise)
+    expect(requireCompanyOwnerMock).not.toHaveBeenCalled()
+    expect(page.type).toBe(Suspense)
   })
 })

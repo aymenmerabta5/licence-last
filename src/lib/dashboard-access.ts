@@ -154,5 +154,30 @@ export async function requireApprovedUniversityAdmin() {
     return localeRedirect("/onboarding/university")
   }
 
+  if (user.universityMembershipRole === "department_head") {
+    return localeRedirect("/dashboard")
+  }
+
+  return { user }
+}
+
+export async function requirePlacementValidationAdmin() {
+  const user = (await requireRole(["university_admin"])) as DashboardUser & {
+    role: AuthRole
+    effectiveRole: AuthRole
+  }
+
+  if (user.role !== "university_admin") {
+    return localeRedirect("/dashboard")
+  }
+
+  if (!user.onboardingCompleted) {
+    return localeRedirect("/onboarding/university")
+  }
+
+  if (user.universityMembershipRole === "department_head") {
+    return localeRedirect("/dashboard")
+  }
+
   return { user }
 }

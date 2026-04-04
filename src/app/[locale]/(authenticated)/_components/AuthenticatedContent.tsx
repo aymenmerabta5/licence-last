@@ -1,8 +1,9 @@
 import { headers } from "next/headers"
+import { connection } from "next/server"
 import { DashboardClientProvider } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
-import { auth } from "@/lib/auth"
 import { requireRole } from "@/lib/auth-guards"
 import { localeRedirect } from "@/lib/navigation"
+import { getFreshAuthSession } from "@/server/auth/get-fresh-session"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 import { getCompanyMembership } from "@/server/services/companies/membership"
 import { getUniversityStatusByUserId } from "@/server/services/universities/get-status"
@@ -21,6 +22,8 @@ interface AuthenticatedContentProps {
 export async function AuthenticatedContent({
   children,
 }: AuthenticatedContentProps) {
+  await connection()
+
   const user = await requireRole([
     "student",
     "company_admin",
@@ -65,7 +68,7 @@ export async function AuthenticatedContent({
   }
 
   // Check if current session is impersonated
-  const session = await auth.api.getSession({ headers: await headers() })
+  const session = await getFreshAuthSession(await headers())
   const impersonatedBy =
     (session?.session as { impersonatedBy?: string } | null)?.impersonatedBy ??
     null

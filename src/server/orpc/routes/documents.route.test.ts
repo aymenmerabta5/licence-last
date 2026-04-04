@@ -85,6 +85,7 @@ const verifyDocumentMock = mock(async () => ({ valid: true }))
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   adminProcedureStandard: createProcedureMock(),
+  universityProcedureStandard: createProcedureMock(),
   universityProcedureAssistant: createProcedureMock(),
   companyAdminProcedureGenerous: createProcedureMock(),
   companyAdminProcedureStandard: createProcedureMock(),
@@ -163,6 +164,38 @@ describe("src/server/orpc/routes/documents", () => {
         role: "university_admin",
         universityId: "uni-1",
         departmentId: null,
+        universityMembershipRole: null,
+      },
+    })
+  })
+
+  test("generateAgreementProcedure forwards department-head university scope", async () => {
+    const { generateAgreementProcedure } = await import(
+      "@/server/orpc/routes/documents"
+    )
+
+    await callProcedure(generateAgreementProcedure, {
+      input: { placementId: "placement-2", locale: "fr" },
+      context: {
+        user: {
+          id: "head-1",
+          role: "university_admin",
+          universityId: "uni-1",
+          departmentId: "dep-1",
+          universityMembershipRole: "department_head",
+        },
+      },
+    })
+
+    expect(generateAgreementMock).toHaveBeenCalledWith({
+      placementId: "placement-2",
+      locale: "fr",
+      issuer: {
+        userId: "head-1",
+        role: "university_admin",
+        universityId: "uni-1",
+        departmentId: "dep-1",
+        universityMembershipRole: "department_head",
       },
     })
   })

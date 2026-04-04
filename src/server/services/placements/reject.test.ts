@@ -20,7 +20,9 @@ const mockFromJoin = mock(() => ({ innerJoin: mockJoin1 }))
 const mockUpdate = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSet = mock(() => ({}) as any)
-const mockUpdateWhere = mock(() => Promise.resolve())
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockUpdateWhere = mock(() => ({}) as any)
+const mockUpdateReturning = mock(() => Promise.resolve([{ id: "app-1" }]))
 
 // Notifications + companyMembers
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -93,6 +95,7 @@ describe("src/server/services/placements/reject", () => {
     mockUpdate.mockClear()
     mockSet.mockClear()
     mockUpdateWhere.mockClear()
+    mockUpdateReturning.mockClear()
 
     mockInsert.mockClear()
     mockValues.mockClear()
@@ -111,7 +114,8 @@ describe("src/server/services/placements/reject", () => {
 
     mockUpdate.mockReturnValue({ set: mockSet })
     mockSet.mockReturnValue({ where: mockUpdateWhere })
-    mockUpdateWhere.mockResolvedValue(undefined)
+    mockUpdateWhere.mockReturnValue({ returning: mockUpdateReturning })
+    mockUpdateReturning.mockResolvedValue([{ id: "app-1" }])
 
     mockInsert.mockReturnValue({ values: mockValues })
     mockValues.mockResolvedValue(undefined)
@@ -151,5 +155,36 @@ describe("src/server/services/placements/reject", () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(mockInsert).not.toHaveBeenCalled()
     expect(createNotificationMock).toHaveBeenCalledTimes(2)
+  })
+
+  test("should throw when application changes before rejection update", async () => {
+    mockSelectResults.push([
+      {
+        id: "app-1",
+        status: "company_accepted",
+        studentUserId: "stu-1",
+        offerId: "offer-1",
+        offerTitle: "Offer",
+        companyId: "company-1",
+        companyName: "Acme",
+        studentDepartmentId: null,
+      },
+    ])
+    mockUpdateReturning.mockResolvedValueOnce([])
+
+    const { rejectPlacement } = await importRejectPlacement()
+
+    await expect(
+      rejectPlacement({
+        applicationId: "app-1",
+        adminUserId: "admin-1",
+        adminRole: "super_admin",
+        adminUniversityId: null,
+        reason: "No papers",
+      }),
+    ).rejects.toThrow(
+      "Only company-accepted applications can be rejected by admin",
+    )
+    expect(createNotificationMock).not.toHaveBeenCalled()
   })
 })

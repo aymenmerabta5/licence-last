@@ -17,7 +17,7 @@ import {
 } from "@/lib/schemas/enums"
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
-import { isAdminRole } from "@/server/orpc/middleware"
+import { isAdminRole } from "@/server/orpc/authz"
 import {
   authedProcedureGenerous,
   authedProcedureStrict,
@@ -28,6 +28,7 @@ import {
   studentProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
 import { parseInputDate } from "@/server/orpc/utils/date"
+import { throwAIOrpcError } from "@/server/orpc/utils/ai-error"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import { checkOfferSaved } from "@/server/services/offers/check-saved"
 import { createOffer } from "@/server/services/offers/create"
@@ -129,7 +130,10 @@ export const getOfferByIdProcedure = authedProcedureGenerous
       return memberships[0] ?? null
     }
 
-    const isAdmin = isAdminRole(context.user.role)
+    const isAdmin = isAdminRole(
+      context.user.role,
+      context.user.universityMembershipRole,
+    )
 
     // Student-facing visibility requires an approved company.
     // Company admins can still access their own offers.
@@ -300,27 +304,36 @@ export const createOfferProcedure = companyAdminProcedureStandard
       }
     }
 
-    const result = await createOffer({
-      companyId: context.companyMembership.companyId,
-      ...restInput,
-      ...(applicationDeadlineAt !== undefined ? { applicationDeadlineAt } : {}),
-      ...(expectedStartDate !== undefined ? { expectedStartDate } : {}),
-      ...(expectedEndDate !== undefined ? { expectedEndDate } : {}),
-      ...(isLanguageRequirementsEnabled
-        ? { languageRequirements: languageRequirements ?? [] }
-        : {}),
-    })
+    try {
+      const result = await createOffer({
+        companyId: context.companyMembership.companyId,
+        ...restInput,
+        ...(applicationDeadlineAt !== undefined ? { applicationDeadlineAt } : {}),
+        ...(expectedStartDate !== undefined ? { expectedStartDate } : {}),
+        ...(expectedEndDate !== undefined ? { expectedEndDate } : {}),
+        ...(isLanguageRequirementsEnabled
+          ? { languageRequirements: languageRequirements ?? [] }
+          : {}),
+      })
 
-    // Invalidate company offers cache and public offer search
-    revalidateTag(
-      CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId),
-      { expire: 0 },
-    )
-    revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
-    revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
-    revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
+      // Invalidate company offers cache and public offer search
+      revalidateTag(
+        CACHE_TAGS.COMPANY_OFFERS(context.companyMembership.companyId),
+        { expire: 0 },
+      )
+      revalidateTag(CACHE_TAGS.OFFER_SEARCH, { expire: 0 })
+      revalidateTag(CACHE_TAGS.OFFERS_PUBLIC, { expire: 0 })
+      revalidateTag(CACHE_TAGS.COMPANIES_DIRECTORY, { expire: 0 })
 
-    return result
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          INVALID_SKILL_TAG_IDS: "BAD_REQUEST",
+        },
+        fallbackMessage: "Failed to create offer",
+      })
+    }
   })
 
 export const updateOfferProcedure = companyAdminProcedureStandard
@@ -449,6 +462,7 @@ export const updateOfferProcedure = companyAdminProcedureStandard
         codeMap: {
           OFFER_NOT_FOUND: "NOT_FOUND",
           OFFER_CLOSED: "BAD_REQUEST",
+          INVALID_SKILL_TAG_IDS: "BAD_REQUEST",
         },
         fallbackMessage: "Failed to update offer",
       })
@@ -479,6 +493,7 @@ export const deleteOfferProcedure = companyAdminProcedureStandard
       createServiceORPCError(error, {
         codeMap: {
           OFFER_NOT_FOUND: "NOT_FOUND",
+          OFFER_PUBLISHED_DELETE_FORBIDDEN: "BAD_REQUEST",
         },
         fallbackMessage: "Failed to delete offer",
       })
@@ -562,19 +577,27 @@ export const generateOfferDraftProcedure = companyAdminProcedureAssistant
     }),
   )
   .handler(async ({ input }) => {
-    const { generateOfferDraft } = await import(
-      "@/server/services/offers/generate-draft"
-    )
-    return generateOfferDraft(input)
+    try {
+      const { generateOfferDraft } = await import(
+        "@/server/services/offers/generate-draft"
+      )
+      return await generateOfferDraft(input)
+    } catch (error) {
+      throwAIOrpcError(error)
+    }
   })
 
 export const improveOfferDescriptionProcedure = companyAdminProcedureAssistant
   .input(offerFormContextSchema)
   .handler(async ({ input }) => {
-    const { improveOfferDescription } = await import(
-      "@/server/services/offers/improve-description"
-    )
-    return improveOfferDescription(input)
+    try {
+      const { improveOfferDescription } = await import(
+        "@/server/services/offers/improve-description"
+      )
+      return await improveOfferDescription(input)
+    } catch (error) {
+      throwAIOrpcError(error)
+    }
   })
 
 export const suggestOfferSkillsProcedure = companyAdminProcedureAssistant
@@ -589,10 +612,14 @@ export const suggestOfferSkillsProcedure = companyAdminProcedureAssistant
       .extend({ availableSkillTags: availableSkillTagsSchema }),
   )
   .handler(async ({ input }) => {
-    const { suggestOfferSkills } = await import(
-      "@/server/services/offers/suggest-skills"
-    )
-    return suggestOfferSkills(input)
+    try {
+      const { suggestOfferSkills } = await import(
+        "@/server/services/offers/suggest-skills"
+      )
+      return await suggestOfferSkills(input)
+    } catch (error) {
+      throwAIOrpcError(error)
+    }
   })
 
 /* ── AI Search Parsing ── */
@@ -608,8 +635,12 @@ export const parseSearchQueryProcedure = authedProcedureStrict
     }),
   )
   .handler(async ({ input }) => {
-    const { parseSearchQuery } = await import(
-      "@/server/services/offers/parse-search"
-    )
-    return parseSearchQuery(input)
+    try {
+      const { parseSearchQuery } = await import(
+        "@/server/services/offers/parse-search"
+      )
+      return await parseSearchQuery(input)
+    } catch (error) {
+      throwAIOrpcError(error)
+    }
   })

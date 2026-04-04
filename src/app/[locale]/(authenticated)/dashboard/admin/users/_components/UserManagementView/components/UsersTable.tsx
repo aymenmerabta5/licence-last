@@ -25,6 +25,7 @@ interface UsersTableProps {
   onSetRole: (user: AdminUser) => void
   onSetPassword: (user: AdminUser) => void
   onDelete: (user: AdminUser) => void
+  canModerateUsers: boolean
   canViewDetails: boolean
   canSetRole: boolean
   canSetPassword: boolean
@@ -42,6 +43,7 @@ export function UsersTable({
   onSetRole,
   onSetPassword,
   onDelete,
+  canModerateUsers,
   canViewDetails,
   canSetRole,
   canSetPassword,
@@ -113,6 +115,7 @@ export function UsersTable({
                   onSetRole={onSetRole}
                   onSetPassword={onSetPassword}
                   onDelete={onDelete}
+                  canModerateUsers={canModerateUsers}
                   canViewDetails={canViewDetails}
                   canSetRole={canSetRole}
                   canSetPassword={canSetPassword}

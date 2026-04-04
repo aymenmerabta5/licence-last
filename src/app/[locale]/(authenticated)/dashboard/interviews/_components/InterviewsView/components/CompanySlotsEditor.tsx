@@ -2,6 +2,7 @@
 
 import { Clock, Link2, MapPin, Plus, Trash2 } from "lucide-react"
 import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
 import type { ProposedSlotDraft } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -24,17 +25,17 @@ export function CompanySlotsEditor({
   onAddSlot,
   onRemoveSlot,
 }: CompanySlotsEditorProps) {
+  const t = useTranslations("dashboard.interviews")
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Clock className="h-4 w-4 text-primary" />
           <Label className="text-xs font-bold uppercase tracking-[0.1em]">
-            Time Slots
+            {t("slots.title")}
           </Label>
-          <span className="text-xs text-muted-foreground">
-            ({slots.length})
-          </span>
+          <span className="text-xs text-muted-foreground">({slots.length})</span>
         </div>
         <Button
           type="button"
@@ -44,12 +45,11 @@ export function CompanySlotsEditor({
           onClick={onAddSlot}
         >
           <Plus className="h-3.5 w-3.5" />
-          Add slot
+          {t("slots.add")}
         </Button>
       </div>
 
       <div className="relative space-y-3">
-        {/* Timeline line */}
         {slots.length > 1 && (
           <div className="absolute start-3 top-4 bottom-4 w-px bg-border" />
         )}
@@ -61,27 +61,26 @@ export function CompanySlotsEditor({
             transition={revealWithDelay(index * 0.05)}
             className="relative"
           >
-            {/* Timeline dot */}
             {slots.length > 1 && (
-              <div className="absolute start-1.5 top-4 h-3 w-3 rounded-full border-2 border-primary bg-background z-10" />
+              <div className="absolute start-1.5 top-4 z-10 h-3 w-3 rounded-full border-2 border-primary bg-background" />
             )}
 
             <div
               className={
                 slots.length > 1
-                  ? "ms-8 border border-border/60 bg-card/50 p-4 space-y-3"
-                  : "border border-border/60 bg-card/50 p-4 space-y-3"
+                  ? "ms-8 space-y-3 border border-border/60 bg-card/50 p-4"
+                  : "space-y-3 border border-border/60 bg-card/50 p-4"
               }
             >
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">
-                  Slot {index + 1}
+                  {t("slots.slot", { number: index + 1 })}
                 </span>
                 <Button
                   type="button"
                   size="icon-xs"
                   variant="ghost"
-                  aria-label={`Remove slot ${index + 1}`}
+                  aria-label={t("slots.removeAria", { number: index + 1 })}
                   disabled={slots.length === 1}
                   onClick={() => onRemoveSlot(slot.id)}
                   className="text-muted-foreground hover:text-destructive"
@@ -96,7 +95,7 @@ export function CompanySlotsEditor({
                     htmlFor={`slot-start-${slot.id}`}
                     className="text-[11px] text-muted-foreground"
                   >
-                    Starts at
+                    {t("slots.startsAt")}
                   </Label>
                   <Input
                     id={`slot-start-${slot.id}`}
@@ -112,7 +111,7 @@ export function CompanySlotsEditor({
                     htmlFor={`slot-end-${slot.id}`}
                     className="text-[11px] text-muted-foreground"
                   >
-                    Ends at
+                    {t("slots.endsAt")}
                   </Label>
                   <Input
                     id={`slot-end-${slot.id}`}
@@ -129,15 +128,15 @@ export function CompanySlotsEditor({
                 <div className="space-y-1.5">
                   <Label
                     htmlFor={`slot-location-${slot.id}`}
-                    className="text-[11px] text-muted-foreground inline-flex items-center gap-1"
+                    className="inline-flex items-center gap-1 text-[11px] text-muted-foreground"
                   >
                     <MapPin className="h-3 w-3" />
-                    Location
+                    {t("slots.location")}
                   </Label>
                   <Input
                     id={`slot-location-${slot.id}`}
                     value={slot.location}
-                    placeholder="Office room, campus, etc."
+                    placeholder={t("slots.locationPlaceholder")}
                     onChange={(event) =>
                       onSlotChange(slot.id, "location", event.target.value)
                     }
@@ -146,10 +145,10 @@ export function CompanySlotsEditor({
                 <div className="space-y-1.5">
                   <Label
                     htmlFor={`slot-link-${slot.id}`}
-                    className="text-[11px] text-muted-foreground inline-flex items-center gap-1"
+                    className="inline-flex items-center gap-1 text-[11px] text-muted-foreground"
                   >
                     <Link2 className="h-3 w-3" />
-                    Meeting URL
+                    {t("slots.meetingUrl")}
                   </Label>
                   <Input
                     id={`slot-link-${slot.id}`}
@@ -164,8 +163,8 @@ export function CompanySlotsEditor({
               </div>
 
               {slot.startsAt && slot.endsAt && (
-                <p className="text-[11px] text-muted-foreground/70 border-t border-border/30 pt-2">
-                  {formatDateTime(slot.startsAt)} — {formatDateTime(slot.endsAt)}
+                <p className="border-t border-border/30 pt-2 text-[11px] text-muted-foreground/70">
+                  {formatDateTime(slot.startsAt)} - {formatDateTime(slot.endsAt)}
                 </p>
               )}
             </div>

@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
 
 import { Button } from "@/components/ui/button"
@@ -7,7 +8,7 @@ import { requireRole } from "@/lib/auth-guards"
 import { localeRedirect } from "@/lib/navigation"
 import { getUniversityStatusByUserId } from "@/server/services/universities/get-status"
 
-export default async function UniversityRejectedPage() {
+export async function UniversityRejectedPageContent() {
   const user = await requireRole(["university_admin"], {
     allowUnapproved: true,
   })
@@ -65,5 +66,13 @@ export default async function UniversityRejectedPage() {
         render={<a href="mailto:support@stag.io">{t("reapply")}</a>}
       />
     </div>
+  )
+}
+
+export default function UniversityRejectedPage() {
+  return (
+    <Suspense fallback={null}>
+      <UniversityRejectedPageContent />
+    </Suspense>
   )
 }

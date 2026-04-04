@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { ServiceError } from "@/server/services/errors"
 
 function createProcedureMock() {
   return {
@@ -243,6 +244,13 @@ describe("src/server/orpc/routes/students", () => {
   })
 
   test("getPublicStudentProfileProcedure allows company admins with application relationship", async () => {
+    dbLimitQueue.push([
+      {
+        role: "student",
+        universityId: "uni-1",
+        departmentId: "dep-1",
+      },
+    ])
     // First query: companyMember lookup
     dbLimitQueue.push([{ companyId: "company-1" }])
     // Second query: application relationship check (via innerJoin)
@@ -259,12 +267,25 @@ describe("src/server/orpc/routes/students", () => {
 
     expect(result).toEqual({ userId: "student-1" })
     expect(getPublicStudentProfileMock).toHaveBeenCalledWith(
-      { id: "company-admin-1", role: "company_admin" },
+      {
+        id: "company-admin-1",
+        role: "company_admin",
+        universityId: undefined,
+        departmentId: undefined,
+        universityMembershipRole: undefined,
+      },
       "student-1",
     )
   })
 
   test("getPublicStudentProfileProcedure rejects company admins without application relationship", async () => {
+    dbLimitQueue.push([
+      {
+        role: "student",
+        universityId: "uni-1",
+        departmentId: "dep-1",
+      },
+    ])
     // First query: companyMember lookup
     dbLimitQueue.push([{ companyId: "company-1" }])
     // Second query: no application relationship (via innerJoin)
@@ -282,6 +303,69 @@ describe("src/server/orpc/routes/students", () => {
     ).rejects.toMatchObject({
       code: "FORBIDDEN",
       message: "You do not have access to this profile",
+    })
+
+    expect(getPublicStudentProfileMock).not.toHaveBeenCalled()
+  })
+
+  test("getPublicStudentProfileProcedure rejects cross-university university admins", async () => {
+    dbLimitQueue.push([
+      {
+        role: "student",
+        universityId: "uni-2",
+        departmentId: "dep-1",
+      },
+    ])
+
+    const { getPublicStudentProfileProcedure } = await import(
+      "@/server/orpc/routes/students"
+    )
+
+    await expect(
+      callProcedure(getPublicStudentProfileProcedure, {
+        input: { userId: "student-1" },
+        context: {
+          user: {
+            id: "admin-1",
+            role: "university_admin",
+            universityId: "uni-1",
+          },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "You do not have access to this profile",
+    })
+
+    expect(getPublicStudentProfileMock).not.toHaveBeenCalled()
+  })
+
+  test("getPublicStudentProfileProcedure rejects non-student targets", async () => {
+    dbLimitQueue.push([
+      {
+        role: "company_admin",
+        universityId: null,
+        departmentId: null,
+      },
+    ])
+
+    const { getPublicStudentProfileProcedure } = await import(
+      "@/server/orpc/routes/students"
+    )
+
+    await expect(
+      callProcedure(getPublicStudentProfileProcedure, {
+        input: { userId: "company-admin-2" },
+        context: {
+          user: {
+            id: "super-admin-1",
+            role: "super_admin",
+          },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "NOT_FOUND",
+      message: "Student not found",
     })
 
     expect(getPublicStudentProfileMock).not.toHaveBeenCalled()
@@ -377,6 +461,55 @@ describe("src/server/orpc/routes/students", () => {
     ).rejects.toMatchObject({
       code: "BAD_REQUEST",
       message: "At least one language is required",
+    })
+  })
+
+  test("upsertStudentProfileProcedure maps invalid skill ids to a bad request", async () => {
+    upsertStudentProfileMock.mockRejectedValueOnce(
+      new ServiceError(
+        "INVALID_SKILL_TAG_IDS",
+        "Invalid skill tag IDs: stale-skill",
+      ),
+    )
+
+    const { upsertStudentProfileProcedure } = await import(
+      "@/server/orpc/routes/students"
+    )
+
+    await expect(
+      callProcedure(upsertStudentProfileProcedure, {
+        input: {
+          bio: "Bio",
+          skillTagIds: ["stale-skill"],
+        },
+        context: { user: { id: "student-1" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "Invalid skill tag IDs: stale-skill",
+    })
+  })
+
+  test("upsertStudentSkillsProcedure maps invalid skill ids to a bad request", async () => {
+    upsertStudentSkillsMock.mockRejectedValueOnce(
+      new ServiceError(
+        "INVALID_SKILL_TAG_IDS",
+        "Invalid skill tag IDs: stale-skill",
+      ),
+    )
+
+    const { upsertStudentSkillsProcedure } = await import(
+      "@/server/orpc/routes/students"
+    )
+
+    await expect(
+      callProcedure(upsertStudentSkillsProcedure, {
+        input: { skillTagIds: ["stale-skill"] },
+        context: { user: { id: "student-1" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "Invalid skill tag IDs: stale-skill",
     })
   })
 })

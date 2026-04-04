@@ -3,18 +3,13 @@ import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 const BASE_URL = "https://stag.example.com"
 const generateOpenAPISpecMock = mock(async () => ({ openapi: "3.1.0" }))
 
-mock.module("@/env", () => ({
-  env: {
-    NEXT_PUBLIC_BETTER_AUTH_URL: BASE_URL,
-  },
-}))
-
 mock.module("@/server/openapi/generator", () => ({
   generateOpenAPISpec: generateOpenAPISpecMock,
 }))
 
 describe("src/app/api/openapi/spec/route", () => {
   const originalNodeEnv = process.env.NODE_ENV
+  const originalPublicUrl = process.env.NEXT_PUBLIC_BETTER_AUTH_URL
   const setNodeEnv = (value: string) => {
     Object.defineProperty(process.env, "NODE_ENV", {
       value,
@@ -25,11 +20,13 @@ describe("src/app/api/openapi/spec/route", () => {
 
   beforeEach(() => {
     setNodeEnv("test")
+    process.env.NEXT_PUBLIC_BETTER_AUTH_URL = BASE_URL
     generateOpenAPISpecMock.mockClear()
   })
 
   afterAll(() => {
     setNodeEnv(originalNodeEnv ?? "test")
+    process.env.NEXT_PUBLIC_BETTER_AUTH_URL = originalPublicUrl
   })
 
   test("returns generated spec and CORS in non-production", async () => {

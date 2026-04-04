@@ -55,10 +55,10 @@ interface RequireRoleDependencies {
 const DEFAULT_REQUIRE_ROLE_DEPENDENCIES: RequireRoleDependencies = {
   getHeaders: headers,
   getSession: async ({ headers: requestHeaders }) => {
-    const { auth } = await import("@/lib/auth")
-    return auth.api.getSession({
-      headers: requestHeaders,
-    }) as Promise<SessionResult | null>
+    const { getFreshAuthSession } = await import(
+      "@/server/auth/get-fresh-session"
+    )
+    return getFreshAuthSession(requestHeaders) as Promise<SessionResult | null>
   },
   localeRedirect,
   getCompanyStatusByUserId: async (userId) => {
@@ -91,17 +91,29 @@ async function resolveSessionUser(
       ? await dependencies.getUniversityMembership(user.id)
       : null
 
-  const effectiveRole = getEffectiveRole({ role: rawRole })
+  const legacyDeptHeadWithoutMembership =
+    rawRole === "dept_head" && membership == null
+  const effectiveRole = legacyDeptHeadWithoutMembership
+    ? "student"
+    : getEffectiveRole({ role: rawRole })
+  const approvalRole = rawRole === "dept_head" ? "university_admin" : rawRole
 
   return {
     ...user,
     role: effectiveRole,
     effectiveRole,
     rawRole,
-    universityId: membership?.universityId ?? user.universityId ?? null,
-    departmentId: membership?.departmentId ?? user.departmentId ?? null,
+    approvalRole,
+    universityId: legacyDeptHeadWithoutMembership
+      ? null
+      : membership?.universityId ?? user.universityId ?? null,
+    departmentId: legacyDeptHeadWithoutMembership
+      ? null
+      : membership?.departmentId ?? user.departmentId ?? null,
     universityMembershipRole: membership?.role ?? null,
-    universityDepartmentId: membership?.departmentId ?? user.departmentId ?? null,
+    universityDepartmentId: legacyDeptHeadWithoutMembership
+      ? null
+      : membership?.departmentId ?? user.departmentId ?? null,
   }
 }
 
@@ -142,7 +154,9 @@ export async function requireRole(
     const approval = await checkAdminApproval(
       {
         ...derivedUser,
-        role: derivedUser.rawRole,
+        role:
+          (derivedUser as { approvalRole?: string | null }).approvalRole ??
+          derivedUser.rawRole,
       },
       {
         getCompanyStatusByUserId: resolvedDependencies.getCompanyStatusByUserId,

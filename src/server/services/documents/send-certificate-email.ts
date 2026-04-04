@@ -38,6 +38,18 @@ function formatDate(date: Date, locale?: string): string {
   return formatter.format(date)
 }
 
+function getCertificateEmailSubject(locale?: string) {
+  if (locale === "fr") {
+    return "Votre attestation de stage est prete - Stag"
+  }
+
+  if (locale === "ar") {
+    return "شهادة التدريب الخاصة بك جاهزة - Stag"
+  }
+
+  return "Your internship certificate is ready - Stag"
+}
+
 export async function sendCertificateEmail(input: SendCertificateEmailInput) {
   const preferences = await getNotificationPreferences(input.userId)
   if (!preferences.emailEnabled) {
@@ -62,7 +74,7 @@ export async function sendCertificateEmail(input: SendCertificateEmailInput) {
 
   return sendEmail(
     input.to,
-    "Your internship certificate is ready - Stag",
+    getCertificateEmailSubject(input.locale),
     CertificateGeneratedEmail,
     {
       studentName: input.studentName,

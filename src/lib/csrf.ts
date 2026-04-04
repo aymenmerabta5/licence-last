@@ -1,6 +1,30 @@
 import "server-only"
 
-import { env } from "@/env"
+import { getPublicAppUrl } from "@/lib/public-url"
+
+function getAllowedOrigins(): Set<string> {
+  const origins = new Set<string>([new URL(getPublicAppUrl()).origin])
+  const trustedOrigins = process.env.BETTER_AUTH_TRUSTED_ORIGINS
+
+  if (!trustedOrigins) {
+    return origins
+  }
+
+  for (const candidate of trustedOrigins.split(",")) {
+    const value = candidate.trim()
+    if (!value) {
+      continue
+    }
+
+    try {
+      origins.add(new URL(value).origin)
+    } catch {
+      // Ignore malformed trusted-origin entries instead of blocking valid ones.
+    }
+  }
+
+  return origins
+}
 
 /**
  * Validate that the request Origin header matches the configured app origin.
@@ -13,5 +37,5 @@ export function isValidOrigin(request: Request): boolean {
   const origin = request.headers.get("origin")
   if (!origin) return false
 
-  return origin === new URL(env.NEXT_PUBLIC_BETTER_AUTH_URL).origin
+  return getAllowedOrigins().has(origin)
 }

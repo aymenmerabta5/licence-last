@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useMemo } from "react"
 import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
+import { useEffect, useMemo } from "react"
 import { CompanyInterviewsSection } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/CompanyInterviewsSection"
 import { CompanyProposeForm } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/CompanyProposeForm"
 import { FeatureDisabledCard } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/FeatureDisabledCard"
@@ -18,6 +19,7 @@ interface InterviewsViewProps {
 }
 
 export function InterviewsView({ role }: InterviewsViewProps) {
+  const t = useTranslations("dashboard.interviews")
   const state = useInterviewsState()
   const data = useInterviewsData({
     role,
@@ -65,14 +67,15 @@ export function InterviewsView({ role }: InterviewsViewProps) {
     return {
       total: interviews.length,
       pending: interviews.filter(
-        (i) => i.status === "pending_confirmation",
+        (interview) => interview.status === "pending_confirmation",
       ).length,
-      confirmed: interviews.filter((i) => i.status === "confirmed").length,
+      confirmed: interviews.filter((interview) => interview.status === "confirmed")
+        .length,
     }
-  }, [role, data.studentInterviews, data.companyInterviews])
+  }, [data.companyInterviews, data.studentInterviews, role])
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 pb-16">
+    <div className="mx-auto max-w-5xl space-y-8 pb-16">
       <InterviewsHeader role={role} counts={counts} />
 
       {data.isFeatureDisabled ? (
@@ -86,15 +89,12 @@ export function InterviewsView({ role }: InterviewsViewProps) {
           onConfirmSlot={data.confirmSlot}
         />
       ) : (
-        <motion.div
-          {...reveal}
-          transition={revealWithDelay(0.15)}
-        >
+        <motion.div {...reveal} transition={revealWithDelay(0.15)}>
           <Tabs defaultValue="schedule">
             <TabsList variant="line" className="mb-6">
-              <TabsTrigger value="schedule">Schedule New</TabsTrigger>
+              <TabsTrigger value="schedule">{t("tabs.schedule")}</TabsTrigger>
               <TabsTrigger value="history">
-                All Interviews
+                {t("tabs.all")}
                 {counts.total > 0 && (
                   <span className="ms-1.5 inline-flex h-5 min-w-5 items-center justify-center bg-muted px-1 text-[10px] font-bold text-muted-foreground">
                     {counts.total}
@@ -104,7 +104,7 @@ export function InterviewsView({ role }: InterviewsViewProps) {
             </TabsList>
 
             <TabsContent value="schedule">
-              <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-6 items-start">
+              <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[1.2fr_1fr]">
                 <CompanyProposeForm
                   offers={data.companyOffers}
                   applications={data.companyApplications}

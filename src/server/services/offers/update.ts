@@ -73,22 +73,39 @@ export async function updateOffer(
       ? undefined
       : normalizeLanguageEntries(data.languageRequirements)
 
+  const offerChanges = {
+    title: data.title,
+    description: data.description,
+    internshipType: data.internshipType,
+    workMode: data.workMode,
+    wilayaCode: data.wilayaCode,
+    durationWeeks: data.durationWeeks,
+    maxPositions: data.maxPositions,
+    applicationDeadlineAt: data.applicationDeadlineAt,
+    expectedStartDate: data.expectedStartDate,
+    expectedEndDate: data.expectedEndDate,
+    updatedAt: new Date(),
+  }
+
   await db.transaction(async (tx) => {
-    await tx
+    const [updatedOffer] = await tx
       .update(internshipOffer)
-      .set({
-        title: data.title,
-        description: data.description,
-        internshipType: data.internshipType,
-        workMode: data.workMode,
-        wilayaCode: data.wilayaCode,
-        durationWeeks: data.durationWeeks,
-        maxPositions: data.maxPositions,
-        applicationDeadlineAt: data.applicationDeadlineAt,
-        expectedStartDate: data.expectedStartDate,
-        expectedEndDate: data.expectedEndDate,
-      })
-      .where(eq(internshipOffer.id, offerId))
+      .set(offerChanges)
+      .where(
+        and(
+          eq(internshipOffer.id, offerId),
+          eq(internshipOffer.companyId, companyId),
+          eq(internshipOffer.status, existing.status),
+        ),
+      )
+      .returning({ id: internshipOffer.id })
+
+    if (!updatedOffer) {
+      throw new ServiceError(
+        "OFFER_STATE_CONFLICT",
+        "Offer status changed while it was being updated",
+      )
+    }
 
     if (data.skillTagIds !== undefined) {
       await tx

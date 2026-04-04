@@ -10,7 +10,8 @@ const selectBuilder = {
   limit: selectLimitMock,
 }
 
-const updateWhereMock = mock(async () => undefined)
+const updateReturningMock = mock(async () => [{ id: "app-1" }])
+const updateWhereMock = mock(() => ({ returning: updateReturningMock }))
 const updateSetMock = mock(() => ({ where: updateWhereMock }))
 const insertValuesMock = mock(async () => undefined)
 const insertMock = mock(() => ({ values: insertValuesMock }))
@@ -71,9 +72,11 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
     selectLimitMock.mockClear()
     updateSetMock.mockClear()
     updateWhereMock.mockClear()
+    updateReturningMock.mockClear()
     insertMock.mockClear()
     insertValuesMock.mockClear()
     createNotificationMock.mockClear()
+    updateReturningMock.mockResolvedValue([{ id: "app-1" }])
   })
 
   test("rejects when the application does not exist", async () => {
@@ -274,6 +277,28 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
 
     expect(updateSetMock).toHaveBeenCalledTimes(1)
     expect(insertValuesMock).toHaveBeenCalledTimes(1)
+    expect(createNotificationMock).not.toHaveBeenCalled()
+  })
+
+  test("rejects when the pipeline stage changes concurrently", async () => {
+    queueApplicationRow()
+    updateReturningMock.mockResolvedValueOnce([])
+
+    const { updateApplicationPipelineStage } = await loadPipelineModule()
+
+    await expect(
+      updateApplicationPipelineStage({
+        applicationId: "app-1",
+        actorUserId: "company-user-1",
+        companyId: "company-1",
+        toStage: "interview",
+      }),
+    ).rejects.toMatchObject({
+      code: "APPLICATION_INVALID_STATE",
+      message: "Application was changed by another action. Refresh and try again.",
+    })
+
+    expect(insertValuesMock).not.toHaveBeenCalled()
     expect(createNotificationMock).not.toHaveBeenCalled()
   })
 })

@@ -1,13 +1,27 @@
 import Arcade from "@arcadeai/arcadejs"
-import { eq } from "drizzle-orm"
 import { headers } from "next/headers"
-
-import { env } from "@/env"
-import { auth } from "@/lib/auth"
 import { isValidOrigin } from "@/lib/csrf"
+import { getFreshAuthSession } from "@/server/auth/get-fresh-session"
 import { checkRateLimit } from "@/server/ai/rate-limit"
-import { db } from "@/server/db"
-import { company, companyMember } from "@/server/db/schema/companies"
+import { getCompanyStatusByUserId } from "@/server/services/companies/get-status"
+
+const ALLOWED_ARCADE_TOOL_NAME = /^(github|gmail)([._]|$)/i
+
+function isCompanyAssistantEnabled() {
+  const hasAiProviderConfig = Boolean(
+    process.env.AI_API_KEY || process.env.POE_API_KEY,
+  )
+  const featureFlagDefault =
+    process.env.ARCADE_API_KEY && hasAiProviderConfig ? "true" : "false"
+  const featureFlag =
+    process.env.FEATURE_COMPANY_ASSISTANT ?? featureFlagDefault
+
+  return (
+    featureFlag === "true" &&
+    Boolean(process.env.ARCADE_API_KEY) &&
+    hasAiProviderConfig
+  )
+}
 
 export async function POST(req: Request) {
   if (!isValidOrigin(req)) {
@@ -25,9 +39,13 @@ export async function POST(req: Request) {
     return new Response("toolName is required", { status: 400 })
   }
 
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const toolName = body.toolName.trim()
+
+  if (!ALLOWED_ARCADE_TOOL_NAME.test(toolName)) {
+    return new Response("Forbidden", { status: 403 })
+  }
+
+  const session = await getFreshAuthSession(await headers())
 
   if (!session) {
     return new Response("Unauthorized", { status: 401 })
@@ -41,17 +59,13 @@ export async function POST(req: Request) {
     return new Response("Forbidden", { status: 403 })
   }
 
-  if (session.user.onboardingCompleted) {
-    const [membership] = await db
-      .select({ status: company.status })
-      .from(companyMember)
-      .innerJoin(company, eq(companyMember.companyId, company.id))
-      .where(eq(companyMember.userId, session.user.id))
-      .limit(1)
+  if (!isCompanyAssistantEnabled()) {
+    return new Response("Assistant integrations are disabled.", { status: 503 })
+  }
 
-    if (!membership || membership.status !== "approved") {
-      return new Response("Forbidden", { status: 403 })
-    }
+  const company = await getCompanyStatusByUserId(session.user.id)
+  if (!company || company.status !== "approved") {
+    return new Response("Forbidden", { status: 403 })
   }
 
   const rl = await checkRateLimit({
@@ -70,12 +84,12 @@ export async function POST(req: Request) {
   }
 
   const arcade = new Arcade({
-    apiKey: env.ARCADE_API_KEY,
+    apiKey: process.env.ARCADE_API_KEY!,
   })
 
   try {
     const authResponse = await arcade.tools.authorize({
-      tool_name: body.toolName,
+      tool_name: toolName,
       user_id: session.user.id,
     })
 

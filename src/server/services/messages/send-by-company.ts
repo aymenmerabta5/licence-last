@@ -6,7 +6,11 @@ import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { offerMessage, offerMessageThread } from "@/server/db/schema/messages"
+import { createModuleLogger } from "@/server/logging"
 import { MessageServiceError } from "@/server/services/messages/errors"
+import { createNotification } from "@/server/services/notifications/create"
+
+const log = createModuleLogger("services/messages/send-by-company")
 
 interface SendOfferMessageByCompanyInput {
   offerId: string
@@ -31,6 +35,7 @@ export async function sendOfferMessageByCompany(
     .select({
       id: internshipOffer.id,
       companyId: internshipOffer.companyId,
+      title: internshipOffer.title,
     })
     .from(internshipOffer)
     .where(eq(internshipOffer.id, input.offerId))
@@ -67,7 +72,7 @@ export async function sendOfferMessageByCompany(
 
   const now = new Date()
 
-  return db.transaction(async (tx) => {
+  const result = await db.transaction(async (tx) => {
     const [thread] = await tx
       .insert(offerMessageThread)
       .values({
@@ -103,4 +108,26 @@ export async function sendOfferMessageByCompany(
       messageId,
     }
   })
+
+  try {
+    await createNotification({
+      userId: input.studentUserId,
+      type: "new_message",
+      payload: {
+        offerId: input.offerId,
+        offerTitle: offer.title,
+        threadId: result.threadId,
+        messageId: result.messageId,
+        senderRole: "company",
+        senderUserId,
+      },
+    })
+  } catch (error) {
+    log.warn(
+      { error, offerId: input.offerId, threadId: result.threadId },
+      "Failed to dispatch student notification for company message",
+    )
+  }
+
+  return result
 }

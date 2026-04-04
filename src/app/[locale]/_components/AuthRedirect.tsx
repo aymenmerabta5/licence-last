@@ -1,8 +1,8 @@
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
-import { auth } from "@/lib/auth"
 import { getPostLoginRedirectPath } from "@/lib/post-login-redirect"
+import { getFreshAuthSession } from "@/server/auth/get-fresh-session"
 import { getMe } from "@/server/services/users/get-me"
 
 interface AuthRedirectProps {
@@ -16,9 +16,13 @@ interface AuthRedirectProps {
  */
 export async function AuthRedirect({ locale }: AuthRedirectProps) {
   const headersList = await headers()
-  const session = await auth.api.getSession({ headers: headersList })
+  const session = await getFreshAuthSession(headersList)
 
   if (session) {
+    if (session.user.banned) {
+      return null
+    }
+
     const me = await getMe({
       id: session.user.id,
       email: session.user.email,

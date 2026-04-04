@@ -1,6 +1,7 @@
 "use client"
 
 import { AlertCircle } from "lucide-react"
+import { getRootFallbackSettings } from "@/lib/root-fallback-copy"
 
 export default function GlobalError({
   error,
@@ -9,8 +10,12 @@ export default function GlobalError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  const { locale, direction, copy } = getRootFallbackSettings(
+    typeof document === "undefined" ? undefined : document.documentElement.lang,
+  )
+
   return (
-    <html lang="en">
+    <html lang={locale} dir={direction} suppressHydrationWarning>
       <head>
         <style>{`
           :root { --bg: #faf6f1; --fg: #1a1a1a; --muted: #6b6b6b; --primary: #e8734a; }
@@ -31,14 +36,18 @@ export default function GlobalError({
       <body>
         <div className="container">
           <AlertCircle size={48} color="#e8734a" />
-          <h1>Something went wrong</h1>
-          {error.digest && <p className="digest">Error ID: {error.digest}</p>}
+          <h1>{copy.title}</h1>
+          {error.digest && (
+            <p className="digest">
+              {copy.errorId}: {error.digest}
+            </p>
+          )}
           <div className="actions">
             <button type="button" onClick={reset}>
-              Try again
+              {copy.retry}
             </button>
             {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- Root error boundary: Next.js router may be broken, must use plain <a> */}
-            <a href="/">Return home</a>
+            <a href={`/${locale}`}>{copy.returnHome}</a>
           </div>
         </div>
       </body>

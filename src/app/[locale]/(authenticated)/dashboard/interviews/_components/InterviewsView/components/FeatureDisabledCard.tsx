@@ -1,4 +1,5 @@
 import { ShieldAlert } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import {
   Card,
@@ -13,20 +14,22 @@ interface FeatureDisabledCardProps {
 }
 
 export function FeatureDisabledCard({
-  message = "Interviews are currently disabled by platform settings.",
+  message,
 }: FeatureDisabledCardProps) {
+  const t = useTranslations("dashboard.interviews")
+
   return (
     <Card className="border-dashed border-border/60">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <ShieldAlert className="h-4 w-4 text-destructive" />
-          Interviews unavailable
+          {t("disabled.title")}
         </CardTitle>
-        <CardDescription>{message}</CardDescription>
+        <CardDescription>{message ?? t("disabled.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground">
-          Please contact your administrator to re-enable this feature.
+          {t("disabled.help")}
         </p>
       </CardContent>
     </Card>

@@ -1,11 +1,8 @@
 import "server-only"
 
-import { eq } from "drizzle-orm"
 import { z } from "zod"
 
 import { primaryUserRoleSchema } from "@/lib/schemas/enums"
-import { db } from "@/server/db"
-import { user } from "@/server/db/schema/auth"
 import {
   adminProcedureGenerous,
   adminProcedureStandard,
@@ -45,53 +42,6 @@ function assertUserManagementRole(role: string | null | undefined) {
     throwCodedORPCError("FORBIDDEN", "USER_MANAGEMENT_ACCESS_REQUIRED", {
       message:
         "User management access requires super admin or university admin role",
-    })
-  }
-}
-
-async function assertUniversityScopedTarget(args: {
-  targetUserId: string
-  actingUserId: string
-  actingUniversityId: string
-  forbidSelf?: boolean
-}) {
-  const {
-    targetUserId,
-    actingUserId,
-    actingUniversityId,
-    forbidSelf = false,
-  } = args
-  const [targetUser] = await db
-    .select({
-      id: user.id,
-      role: user.role,
-      universityId: user.universityId,
-    })
-    .from(user)
-    .where(eq(user.id, targetUserId))
-    .limit(1)
-
-  if (!targetUser) {
-    throwCodedORPCError("NOT_FOUND", "USER_NOT_FOUND", {
-      message: "User not found",
-    })
-  }
-
-  if (forbidSelf && targetUser.id === actingUserId) {
-    throwCodedORPCError("BAD_REQUEST", "SELF_ACTION_FORBIDDEN", {
-      message: "You cannot perform this action on your own account",
-    })
-  }
-
-  if (targetUser.role === "super_admin") {
-    throwCodedORPCError("FORBIDDEN", "SUPER_ADMIN_TARGET_FORBIDDEN", {
-      message: "Super admin accounts cannot be managed by university admins",
-    })
-  }
-
-  if (targetUser.universityId !== actingUniversityId) {
-    throwCodedORPCError("FORBIDDEN", "UNIVERSITY_TARGET_SCOPE_FORBIDDEN", {
-      message: "Target user does not belong to your university",
     })
   }
 }
@@ -146,24 +96,11 @@ export const banUserProcedure = adminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    assertUserManagementRole(context.user.role)
-
-    if (context.user.role === "super_admin") {
-      return banUser(input)
-    }
-
-    if (!context.user.universityId) {
-      throwCodedORPCError("BAD_REQUEST", "ADMIN_MUST_BELONG_TO_UNIVERSITY", {
-        message: "University admin must belong to a university",
+    if (context.user.role !== "super_admin") {
+      throwCodedORPCError("FORBIDDEN", "SUPER_ADMIN_ACCESS_REQUIRED", {
+        message: "Super admin access required",
       })
     }
-
-    await assertUniversityScopedTarget({
-      targetUserId: input.userId,
-      actingUserId: context.user.id,
-      actingUniversityId: context.user.universityId,
-      forbidSelf: true,
-    })
 
     return banUser(input)
   })
@@ -171,23 +108,11 @@ export const banUserProcedure = adminProcedureStandard
 export const unbanUserProcedure = adminProcedureStandard
   .input(z.object({ userId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
-    assertUserManagementRole(context.user.role)
-
-    if (context.user.role === "super_admin") {
-      return unbanUser(input.userId)
-    }
-
-    if (!context.user.universityId) {
-      throwCodedORPCError("BAD_REQUEST", "ADMIN_MUST_BELONG_TO_UNIVERSITY", {
-        message: "University admin must belong to a university",
+    if (context.user.role !== "super_admin") {
+      throwCodedORPCError("FORBIDDEN", "SUPER_ADMIN_ACCESS_REQUIRED", {
+        message: "Super admin access required",
       })
     }
-
-    await assertUniversityScopedTarget({
-      targetUserId: input.userId,
-      actingUserId: context.user.id,
-      actingUniversityId: context.user.universityId,
-    })
 
     return unbanUser(input.userId)
   })
@@ -195,24 +120,11 @@ export const unbanUserProcedure = adminProcedureStandard
 export const removeUserProcedure = adminProcedureStandard
   .input(z.object({ userId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
-    assertUserManagementRole(context.user.role)
-
-    if (context.user.role === "super_admin") {
-      return removeUser(input.userId)
-    }
-
-    if (!context.user.universityId) {
-      throwCodedORPCError("BAD_REQUEST", "ADMIN_MUST_BELONG_TO_UNIVERSITY", {
-        message: "University admin must belong to a university",
+    if (context.user.role !== "super_admin") {
+      throwCodedORPCError("FORBIDDEN", "SUPER_ADMIN_ACCESS_REQUIRED", {
+        message: "Super admin access required",
       })
     }
-
-    await assertUniversityScopedTarget({
-      targetUserId: input.userId,
-      actingUserId: context.user.id,
-      actingUniversityId: context.user.universityId,
-      forbidSelf: true,
-    })
 
     return removeUser(input.userId)
   })
@@ -244,11 +156,59 @@ export const updateUserProcedure = superAdminProcedureStandard
 
 export const listUserSessionsProcedure = superAdminProcedureGenerous
   .input(z.object({ userId: z.string().min(1) }))
-  .handler(async ({ input }) => listUserSessions(input.userId))
+  .handler(async ({ input }) => {
+    const result = await listUserSessions(input.userId)
+    const sessions = Array.isArray(result)
+      ? result
+      : Array.isArray((result as { sessions?: unknown[] } | null)?.sessions)
+        ? ((result as { sessions?: unknown[] }).sessions ?? [])
+        : []
+
+    return sessions.map((session) => {
+      const record =
+        session && typeof session === "object"
+          ? (session as Record<string, unknown>)
+          : {}
+      const token =
+        typeof record.token === "string" && record.token.length > 0
+          ? record.token
+          : null
+
+      return {
+        id: typeof record.id === "string" ? record.id : "",
+        tokenPrefix: token ? token.slice(-4) : null,
+        ipAddress:
+          typeof record.ipAddress === "string" ? record.ipAddress : null,
+        userAgent:
+          typeof record.userAgent === "string" ? record.userAgent : null,
+        createdAt: record.createdAt,
+        expiresAt: record.expiresAt,
+        impersonatedBy:
+          typeof record.impersonatedBy === "string"
+            ? record.impersonatedBy
+            : null,
+      }
+    })
+  })
 
 export const revokeSessionProcedure = superAdminProcedureStandard
-  .input(z.object({ sessionToken: z.string().min(1) }))
-  .handler(async ({ input }) => revokeSession(input.sessionToken))
+  .input(
+    z.object({
+      userId: z.string().min(1),
+      sessionId: z.string().min(1),
+    }),
+  )
+  .handler(async ({ input }) => {
+    const result = await revokeSession(input.userId, input.sessionId)
+
+    if (!result) {
+      throwCodedORPCError("NOT_FOUND", "SESSION_NOT_FOUND", {
+        message: "Session not found",
+      })
+    }
+
+    return result
+  })
 
 export const revokeAllSessionsProcedure = superAdminProcedureStandard
   .input(z.object({ userId: z.string().min(1) }))

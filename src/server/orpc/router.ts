@@ -92,6 +92,8 @@ import {
   getSkillGapProcedure,
 } from "@/server/orpc/routes/matching"
 import {
+  listMessageStartersByCompanyProcedure,
+  listMessageStartersByStudentProcedure,
   listMessageThreadsByCompanyProcedure,
   listMessageThreadsByStudentProcedure,
   listThreadMessagesProcedure,
@@ -309,6 +311,8 @@ export const appRouter = {
   messages: {
     listByCompany: listMessageThreadsByCompanyProcedure,
     listByStudent: listMessageThreadsByStudentProcedure,
+    listStartersByCompany: listMessageStartersByCompanyProcedure,
+    listStartersByStudent: listMessageStartersByStudentProcedure,
     listThreadMessages: listThreadMessagesProcedure,
     sendByCompany: sendOfferMessageByCompanyProcedure,
     sendByStudent: sendOfferMessageByStudentProcedure,

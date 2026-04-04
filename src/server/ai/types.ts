@@ -63,6 +63,7 @@ export interface ToolAuthContext {
   companyId: string | null
   universityId: string | null
   departmentId: string | null
+  universityMembershipRole: "department_head" | null
 }
 
 // Rate limit result

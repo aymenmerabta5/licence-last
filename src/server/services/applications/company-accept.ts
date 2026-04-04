@@ -70,7 +70,7 @@ export async function companyAcceptApplication(
 
   const now = new Date()
 
-  await db
+  const [updatedApplication] = await db
     .update(application)
     .set({
       status: "company_accepted",
@@ -79,30 +79,52 @@ export async function companyAcceptApplication(
       companyActionByUserId: actionByUserId,
       companyActionAt: now,
     })
-    .where(eq(application.id, applicationId))
+    .where(and(eq(application.id, applicationId), eq(application.status, app.status)))
+    .returning({ id: application.id })
 
-  await appendTimelineEvent({
-    applicationId,
-    actorUserId: actionByUserId,
-    eventType: "application_status_changed",
-    fromStage: app.pipelineStage,
-    toStage: "offer",
-    fromStatus: app.status,
-    toStatus: "company_accepted",
-    payload: { reason: "company_accepted" },
-  })
+  if (!updatedApplication) {
+    throw new ApplicationServiceError(
+      "APPLICATION_INVALID_STATE",
+      "Application was changed by another action. Refresh and try again.",
+    )
+  }
 
-  await createNotification({
-    userId: app.studentUserId,
-    type: "application_stage_changed",
-    payload: {
+  try {
+    await appendTimelineEvent({
       applicationId,
-      offerId: app.offerId,
-      offerTitle: app.offerTitle,
-      stage: "offer",
-      status: "company_accepted",
-    },
-  })
+      actorUserId: actionByUserId,
+      eventType: "application_status_changed",
+      fromStage: app.pipelineStage,
+      toStage: "offer",
+      fromStatus: app.status,
+      toStatus: "company_accepted",
+      payload: { reason: "company_accepted" },
+    })
+  } catch (error) {
+    log.error(
+      { err: error, applicationId },
+      "Failed to append acceptance timeline event",
+    )
+  }
+
+  try {
+    await createNotification({
+      userId: app.studentUserId,
+      type: "application_stage_changed",
+      payload: {
+        applicationId,
+        offerId: app.offerId,
+        offerTitle: app.offerTitle,
+        stage: "offer",
+        status: "company_accepted",
+      },
+    })
+  } catch (error) {
+    log.error(
+      { err: error, applicationId },
+      "Failed to notify student about accepted application",
+    )
+  }
 
   if (!app.studentUniversityId) {
     return { success: true, applicationId }
@@ -147,13 +169,20 @@ export async function companyAcceptApplication(
 
   if (validators.length > 0) {
     await Promise.all(
-      validators.map((validator) =>
-        createNotification({
-          userId: validator.id,
-          type: "placement_pending_validation",
-          payload: notificationPayload,
-        }),
-      ),
+      validators.map(async (validator) => {
+        try {
+          await createNotification({
+            userId: validator.id,
+            type: "placement_pending_validation",
+            payload: notificationPayload,
+          })
+        } catch (error) {
+          log.error(
+            { err: error, applicationId, validatorUserId: validator.id },
+            "Failed to notify validator about pending placement",
+          )
+        }
+      }),
     )
   }
 

@@ -8,6 +8,7 @@ import { Link } from "@/i18n/routing"
 interface OfferCardActionsProps {
   offerId: string
   status: string
+  canManageStatus: boolean
   isActionLoading: boolean
   onPublish: () => void
   onClose: () => void
@@ -17,6 +18,7 @@ interface OfferCardActionsProps {
 export function OfferCardActions({
   offerId,
   status,
+  canManageStatus,
   isActionLoading,
   onPublish,
   onClose,
@@ -45,7 +47,7 @@ export function OfferCardActions({
             </Link>
           )}
 
-          {status === "draft" && (
+          {status === "draft" && canManageStatus && (
             <>
               <button
                 type="button"
@@ -66,7 +68,7 @@ export function OfferCardActions({
             </>
           )}
 
-          {status === "published" && (
+          {status === "published" && canManageStatus && (
             <button
               type="button"
               onClick={onClose}

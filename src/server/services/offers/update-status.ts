@@ -59,90 +59,114 @@ function validatePublishTiming(existing: {
 
 /**
  * Transition an offer's status.
- * Valid transitions: draft → published, published → closed.
+ * Valid transitions: draft -> published, published -> closed.
  */
 export async function updateOfferStatus(
   offerId: string,
   companyId: string,
   action: "publish" | "close",
 ) {
-  const [existing] = await db
-    .select({
-      id: internshipOffer.id,
-      companyId: internshipOffer.companyId,
-      status: internshipOffer.status,
-      applicationDeadlineAt: internshipOffer.applicationDeadlineAt,
-      expectedStartDate: internshipOffer.expectedStartDate,
-      expectedEndDate: internshipOffer.expectedEndDate,
-    })
-    .from(internshipOffer)
-    .where(
-      and(
-        eq(internshipOffer.id, offerId),
-        eq(internshipOffer.companyId, companyId),
-      ),
-    )
-    .limit(1)
-
-  if (!existing) {
-    throw new ServiceError(
-      "OFFER_NOT_FOUND",
-      "Offer not found or access denied",
-    )
-  }
-
-  log.info(
-    { offerId, companyId, action, currentStatus: existing.status },
-    "Updating offer status",
-  )
-
-  if (action === "publish") {
-    if (existing.status !== "draft") {
-      throw new ServiceError(
-        "OFFER_INVALID_PUBLISH_STATUS",
-        "Only draft offers can be published",
-      )
-    }
-
-    validatePublishTiming(existing)
-
-    await db
-      .update(internshipOffer)
-      .set({ status: "published", publishedAt: new Date() })
-      .where(eq(internshipOffer.id, offerId))
-
-    log.info({ offerId, event: "offer_published" }, "Offer published")
-    return { offerId, newStatus: "published" as const }
-  }
-
-  if (action === "close") {
-    if (existing.status !== "published") {
-      throw new ServiceError(
-        "OFFER_INVALID_CLOSE_STATUS",
-        "Only published offers can be closed",
-      )
-    }
-    await db
-      .update(internshipOffer)
-      .set({ status: "closed", closesAt: new Date() })
-      .where(eq(internshipOffer.id, offerId))
-
-    // Find students with active interviews before cancelling
-    const affectedInterviews = await db
+  const result = await db.transaction(async (tx) => {
+    const [existing] = await tx
       .select({
-        id: interview.id,
-        studentUserId: interview.studentUserId,
+        id: internshipOffer.id,
+        companyId: internshipOffer.companyId,
+        status: internshipOffer.status,
+        applicationDeadlineAt: internshipOffer.applicationDeadlineAt,
+        expectedStartDate: internshipOffer.expectedStartDate,
+        expectedEndDate: internshipOffer.expectedEndDate,
       })
-      .from(interview)
+      .from(internshipOffer)
       .where(
-        and(eq(interview.offerId, offerId), ne(interview.status, "cancelled")),
+        and(
+          eq(internshipOffer.id, offerId),
+          eq(internshipOffer.companyId, companyId),
+        ),
       )
+      .for("update")
+      .limit(1)
 
-    // Cancel pending interviews when offer closes
-    if (affectedInterviews.length > 0) {
-      await db
-        .update(interview)
-        .set({ status: "cancelled" })
+    if (!existing) {
+      throw new ServiceError(
+        "OFFER_NOT_FOUND",
+        "Offer not found or access denied",
+      )
+    }
+
+    log.info(
+      { offerId, companyId, action, currentStatus: existing.status },
+      "Updating offer status",
+    )
+
+    if (action === "publish") {
+      if (existing.status !== "draft") {
+        throw new ServiceError(
+          "OFFER_INVALID_PUBLISH_STATUS",
+          "Only draft offers can be published",
+        )
+      }
+
+      validatePublishTiming(existing)
+
+      const [publishedOffer] = await tx
+        .update(internshipOffer)
+        .set({ status: "published", publishedAt: new Date() })
+        .where(
+          and(
+            eq(internshipOffer.id, offerId),
+            eq(internshipOffer.companyId, companyId),
+            eq(internshipOffer.status, "draft"),
+          ),
+        )
+        .returning({ id: internshipOffer.id })
+
+      if (!publishedOffer) {
+        throw new ServiceError(
+          "OFFER_STATE_CONFLICT",
+          "Offer status changed while it was being published",
+        )
+      }
+
+      return {
+        offerId,
+        newStatus: "published" as const,
+        affectedInterviews: [],
+      }
+    }
+
+    if (action === "close") {
+      if (existing.status !== "published") {
+        throw new ServiceError(
+          "OFFER_INVALID_CLOSE_STATUS",
+          "Only published offers can be closed",
+        )
+      }
+
+      const [closedOffer] = await tx
+        .update(internshipOffer)
+        .set({ status: "closed", closesAt: new Date() })
+        .where(
+          and(
+            eq(internshipOffer.id, offerId),
+            eq(internshipOffer.companyId, companyId),
+            eq(internshipOffer.status, "published"),
+          ),
+        )
+        .returning({ id: internshipOffer.id })
+
+      if (!closedOffer) {
+        throw new ServiceError(
+          "OFFER_STATE_CONFLICT",
+          "Offer status changed while it was being closed",
+        )
+      }
+
+      const affectedInterviews = await tx
+        .select({
+          id: interview.id,
+          studentUserId: interview.studentUserId,
+        })
+        .from(interview)
         .where(
           and(
             eq(interview.offerId, offerId),
@@ -150,43 +174,67 @@ export async function updateOfferStatus(
           ),
         )
 
-      // Notify affected students
-      try {
-        const notificationResults = await Promise.allSettled(
-          affectedInterviews.map((row) =>
-            createNotification({
-              userId: row.studentUserId,
-              type: "interview_cancelled",
-              payload: {
-                interviewId: row.id,
-                offerId,
-                reason: "offer_closed",
-              },
-            }),
-          ),
-        )
-
-        const failedCount = notificationResults.filter(
-          (item) => item.status === "rejected",
-        ).length
-
-        if (failedCount > 0) {
-          log.warn(
-            { offerId, failedCount, total: affectedInterviews.length },
-            "Failed to notify some students about interview cancellation",
+      if (affectedInterviews.length > 0) {
+        await tx
+          .update(interview)
+          .set({ status: "cancelled" })
+          .where(
+            and(
+              eq(interview.offerId, offerId),
+              ne(interview.status, "cancelled"),
+            ),
           )
-        }
-      } catch (error) {
-        log.warn(
-          { error, offerId },
-          "Failed to dispatch interview cancellation notifications",
-        )
+      }
+
+      return {
+        offerId,
+        newStatus: "closed" as const,
+        affectedInterviews,
       }
     }
 
-    log.info({ offerId, event: "offer_closed" }, "Offer closed")
-    return { offerId, newStatus: "closed" as const }
+    throw new ServiceError("OFFER_INVALID_ACTION", `Invalid action: ${action}`)
+  })
+
+  if (result.newStatus === "published") {
+    log.info({ offerId, event: "offer_published" }, "Offer published")
+    return { offerId, newStatus: "published" as const }
   }
 
-  throw new ServiceError("OFFER_INVALID_ACTION", `Invalid action: ${action}`)
+  if (result.affectedInterviews.length > 0) {
+    try {
+      const notificationResults = await Promise.allSettled(
+        result.affectedInterviews.map((row) =>
+          createNotification({
+            userId: row.studentUserId,
+            type: "interview_cancelled",
+            payload: {
+              interviewId: row.id,
+              offerId,
+              reason: "offer_closed",
+            },
+          }),
+        ),
+      )
+
+      const failedCount = notificationResults.filter(
+        (item) => item.status === "rejected",
+      ).length
+
+      if (failedCount > 0) {
+        log.warn(
+          { offerId, failedCount, total: result.affectedInterviews.length },
+          "Failed to notify some students about interview cancellation",
+        )
+      }
+    } catch (error) {
+      log.warn(
+        { error, offerId },
+        "Failed to dispatch interview cancellation notifications",
+      )
+    }
+  }
+
+  log.info({ offerId, event: "offer_closed" }, "Offer closed")
+  return { offerId, newStatus: "closed" as const }
 }

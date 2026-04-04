@@ -1,6 +1,9 @@
 import { Loader2 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import type { RefObject } from "react"
 import type {
+  MessageConversationStarter,
+  MessagesRole,
   MessageThread,
   ThreadMessage,
 } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
@@ -8,7 +11,9 @@ import { formatDateTime } from "@/lib/date"
 import { cn } from "@/lib/utils"
 
 interface ConversationMessagesProps {
+  role: MessagesRole
   selectedThread: MessageThread | null
+  selectedStarter: MessageConversationStarter | null
   messages: ThreadMessage[]
   isLoading: boolean
   errorMessage: string | null
@@ -17,18 +22,22 @@ interface ConversationMessagesProps {
 }
 
 export function ConversationMessages({
+  role,
   selectedThread,
+  selectedStarter,
   messages,
   isLoading,
   errorMessage,
   currentUserId,
   messagesEndRef,
 }: ConversationMessagesProps) {
+  const t = useTranslations("dashboard.messages")
+
   return (
     <div className="flex-1 space-y-3 overflow-y-auto pe-1">
-      {!selectedThread && (
+      {!selectedThread && !selectedStarter && (
         <div className="flex h-full min-h-[16rem] items-center justify-center text-center text-sm text-muted-foreground">
-          Choose a thread to open the conversation.
+          {t("emptySelection")}
         </div>
       )}
 
@@ -44,12 +53,28 @@ export function ConversationMessages({
         </div>
       )}
 
+      {!selectedThread && selectedStarter && (
+        <div className="flex h-full min-h-[16rem] items-center justify-center text-center text-sm text-muted-foreground">
+          {role === "student"
+            ? t("starterPreviewStudent", {
+                name:
+                  selectedStarter.companyName ?? t("fallbackCompanyName"),
+                offerTitle: selectedStarter.offerTitle,
+              })
+            : t("starterPreviewCompany", {
+                name:
+                  selectedStarter.studentName ?? t("fallbackStudentName"),
+                offerTitle: selectedStarter.offerTitle,
+              })}
+        </div>
+      )}
+
       {selectedThread &&
         !isLoading &&
         !errorMessage &&
         messages.length === 0 && (
           <div className="py-10 text-center text-sm text-muted-foreground">
-            No messages yet. Start the conversation.
+            {t("emptyThread")}
           </div>
         )}
 
@@ -73,12 +98,12 @@ export function ConversationMessages({
                       ? "border-primary/50 bg-primary/10 text-foreground"
                       : "border-border/80 bg-background/70 text-foreground",
                   )}
-                >
-                  {!isOwnMessage && (
-                    <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                      {message.senderName || "Sender"}
-                    </p>
-                  )}
+                  >
+                    {!isOwnMessage && (
+                      <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                        {message.senderName || t("fallbackSenderName")}
+                      </p>
+                    )}
                   <p className="whitespace-pre-wrap break-words leading-relaxed">
                     {message.body}
                   </p>

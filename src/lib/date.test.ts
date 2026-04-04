@@ -20,11 +20,8 @@ import {
   toDateTimeLocalInputValue,
 } from "@/lib/date"
 
-// Fixed date for deterministic tests
 const JAN_15_2024 = new Date(2024, 0, 15, 14, 30, 0)
 const JAN_16_2024 = new Date(2024, 0, 16, 16, 0, 0)
-
-// ─── Date Formatting ───────────────────────────────────────────────────────
 
 describe("formatDate", () => {
   test("should format Date object in medium style", () => {
@@ -33,6 +30,10 @@ describe("formatDate", () => {
 
   test("should format ISO string", () => {
     expect(formatDate("2024-06-01T00:00:00.000Z")).toMatch(/Jun/)
+  })
+
+  test("should support localized output when locale is provided", () => {
+    expect(formatDate(JAN_15_2024, "fr")).toMatch(/janv|janvier/i)
   })
 })
 
@@ -47,8 +48,6 @@ describe("formatDateFull", () => {
     expect(formatDateFull(JAN_15_2024)).toBe("Monday, January 15, 2024")
   })
 })
-
-// ─── Time Formatting ───────────────────────────────────────────────────────
 
 describe("formatTimeString", () => {
   test("should format as HH:mm with zero padding", () => {
@@ -78,8 +77,6 @@ describe("formatTime12h", () => {
   })
 })
 
-// ─── Date+Time Formatting ──────────────────────────────────────────────────
-
 describe("formatDateTime", () => {
   test("should include both date and time", () => {
     const result = formatDateTime(JAN_15_2024)
@@ -107,6 +104,7 @@ describe("formatSchedule", () => {
     const start = new Date(2024, 0, 15, 14, 0)
     const end = new Date(2024, 0, 15, 16, 0)
     const result = formatSchedule(start, end)
+
     expect(result).toContain("•")
     expect(result).toMatch(/Jan 15, 2024/)
   })
@@ -117,31 +115,34 @@ describe("formatSchedule", () => {
   })
 })
 
-// ─── Relative Time ─────────────────────────────────────────────────────────
-
 describe("formatRelativeTime", () => {
   test("should return 'now' for very recent time", () => {
-    const recent = new Date(Date.now() - 30_000) // 30 seconds ago
+    const recent = new Date(Date.now() - 30_000)
     expect(formatRelativeTime(recent)).toBe("now")
   })
 
   test("should return minutes for < 60 minutes", () => {
-    const mins = new Date(Date.now() - 5 * 60_000) // 5 minutes ago
+    const mins = new Date(Date.now() - 5 * 60_000)
     expect(formatRelativeTime(mins)).toBe("5m")
   })
 
   test("should return hours for < 24 hours", () => {
-    const hours = new Date(Date.now() - 3 * 3600_000) // 3 hours ago
+    const hours = new Date(Date.now() - 3 * 3600_000)
     expect(formatRelativeTime(hours)).toBe("3h")
   })
 
   test("should return days for < 7 days", () => {
-    const days = new Date(Date.now() - 2 * 86400_000) // 2 days ago
+    const days = new Date(Date.now() - 2 * 86400_000)
     expect(formatRelativeTime(days)).toBe("2d")
   })
 
+  test("should return localized compact values when locale is provided", () => {
+    const mins = new Date(Date.now() - 5 * 60_000)
+    expect(formatRelativeTime(mins, "fr")).toBe("5 min")
+  })
+
   test("should return formatted date for >= 7 days", () => {
-    const old = new Date(Date.now() - 14 * 86400_000) // 14 days ago
+    const old = new Date(Date.now() - 14 * 86400_000)
     const result = formatRelativeTime(old)
     expect(result).not.toMatch(/^\d+[mhd]$/)
   })
@@ -183,14 +184,17 @@ describe("formatRelativeTimeLong", () => {
     expect(formatRelativeTimeLong(days)).toBe("3 days ago")
   })
 
+  test("should return localized 'active now' copy when locale is provided", () => {
+    const recent = new Date(Date.now() - 30_000)
+    expect(formatRelativeTimeLong(recent, "fr")).toBe("Actif maintenant")
+  })
+
   test("should return formatted date for >= 7 days", () => {
     const old = new Date(Date.now() - 14 * 86400_000)
     const result = formatRelativeTimeLong(old)
     expect(result).not.toContain("ago")
   })
 })
-
-// ─── Date Header ───────────────────────────────────────────────────────────
 
 describe("formatDateHeader", () => {
   test("should return 'Today' for today's date", () => {
@@ -203,14 +207,18 @@ describe("formatDateHeader", () => {
     expect(formatDateHeader(yesterday)).toBe("Yesterday")
   })
 
+  test("should localize header labels when locale is provided", () => {
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+    expect(formatDateHeader(yesterday, "fr")).toBe("Hier")
+  })
+
   test("should return formatted date for older dates", () => {
     const old = new Date(2024, 0, 1)
     const result = formatDateHeader(old)
     expect(result).toMatch(/January/)
   })
 })
-
-// ─── DateTime-local Input Utilities ────────────────────────────────────────
 
 describe("toDateTimeLocalInputValue", () => {
   test("should format date as YYYY-MM-DDTHH:mm", () => {

@@ -81,6 +81,8 @@ const POE_FALLBACK_ALLOWED_MODELS = ["GPT-5.2", "GPT-4o", "GPT-4o-mini"]
 const GATEWAY_FALLBACK_ALLOWED_MODELS = ["openai/gpt-4o-mini", "openai/gpt-4o"]
 
 type AIProvider = "gateway" | "poe"
+const AI_PROVIDER_CONFIG_ERROR =
+  "AI provider is not configured. Set AI_API_KEY (gateway-first recommended) or POE_API_KEY before using AI features."
 
 function resolveProvider(): AIProvider {
   if (env.AI_PROVIDER) return env.AI_PROVIDER
@@ -161,6 +163,16 @@ export function getAIProvider(): AIProvider {
   return activeProvider
 }
 
+export function hasAIProviderConfig(): boolean {
+  return Boolean(resolveApiKey(activeProvider))
+}
+
+function assertAIProviderConfig() {
+  if (!hasAIProviderConfig()) {
+    throw new Error(AI_PROVIDER_CONFIG_ERROR)
+  }
+}
+
 export function getDefaultModelId(): string {
   const allowed = getAllowedModelIds()
   const preferred = resolveModelRaw(activeProvider)
@@ -184,6 +196,7 @@ export function isAllowedModelId(modelId: string): boolean {
 }
 
 export function getAIModel(modelId?: string) {
+  assertAIProviderConfig()
   const requested = modelId ?? getDefaultModelId()
   const model = isAllowedModelId(requested) ? requested : getDefaultModelId()
   return aiProvider.chat(model)

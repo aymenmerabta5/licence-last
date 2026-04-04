@@ -27,6 +27,39 @@ interface SessionAuthApi {
 }
 
 type AuthApiGlobal = typeof globalThis & { __authApi?: SessionAuthApi }
+interface AdminSessionRecord {
+  id: string
+  token?: string
+}
+
+function normalizeAdminSessions(result: unknown): AdminSessionRecord[] {
+  const rawSessions = Array.isArray(result)
+    ? result
+    : result &&
+        typeof result === "object" &&
+        Array.isArray((result as { sessions?: unknown[] }).sessions)
+      ? (result as { sessions: unknown[] }).sessions
+      : []
+
+  return rawSessions.flatMap((session) => {
+    if (!session || typeof session !== "object") {
+      return []
+    }
+
+    const record = session as Record<string, unknown>
+    const id = typeof record.id === "string" ? record.id : null
+    if (!id) {
+      return []
+    }
+
+    return [
+      {
+        id,
+        token: typeof record.token === "string" ? record.token : undefined,
+      },
+    ]
+  })
+}
 
 const getAuthApi = () => (globalThis as AuthApiGlobal).__authApi ?? auth.api
 type SessionDeps = { authApi?: SessionAuthApi; getHeaders?: typeof headers }
@@ -43,14 +76,24 @@ export async function listUserSessions(userId: string, deps: SessionDeps = {}) {
 }
 
 export async function revokeSession(
-  sessionToken: string,
+  userId: string,
+  sessionId: string,
   deps: SessionDeps = {},
 ) {
   const api = deps.authApi ?? getAuthApi()
   const getHeaders = deps.getHeaders ?? headers
+  const listedSessions = await listUserSessions(userId, deps)
+  const session = normalizeAdminSessions(listedSessions).find(
+    (entry) => entry.id === sessionId,
+  )
+
+  if (typeof session?.token !== "string" || session.token.length === 0) {
+    return null
+  }
+
   const result = await api.revokeUserSession({
     headers: await getHeaders(),
-    body: { sessionToken },
+    body: { sessionToken: session.token },
   })
 
   return result

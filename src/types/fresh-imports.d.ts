@@ -67,11 +67,19 @@ declare module "@/server/services/admin/session-management?fresh=2" {
   export * from "@/server/services/admin/session-management"
 }
 
+declare module "@/server/services/admin/session-management?fresh=2b" {
+  export * from "@/server/services/admin/session-management"
+}
+
 declare module "@/server/services/admin/session-management?fresh=3" {
   export * from "@/server/services/admin/session-management"
 }
 
 declare module "@/server/services/admin/session-management?fresh=4" {
+  export * from "@/server/services/admin/session-management"
+}
+
+declare module "@/server/services/admin/session-management?fresh=5" {
   export * from "@/server/services/admin/session-management"
 }
 
@@ -124,6 +132,14 @@ declare module "@/server/services/applications/apply?fresh=3" {
 }
 
 declare module "@/server/services/applications/apply?fresh=4" {
+  export * from "@/server/services/applications/apply"
+}
+
+declare module "@/server/services/applications/apply?fresh=5" {
+  export * from "@/server/services/applications/apply"
+}
+
+declare module "@/server/services/applications/apply?fresh=6" {
   export * from "@/server/services/applications/apply"
 }
 

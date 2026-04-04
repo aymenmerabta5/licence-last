@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
 
 import { CandidatesPipelinePage } from "@/app/[locale]/(authenticated)/dashboard/candidates/_components/CandidatesPipelinePage"
@@ -5,7 +6,7 @@ import { requireApprovedCompanyAdmin } from "@/lib/dashboard-access"
 import { localeRedirect } from "@/lib/navigation"
 import { listOffersByCompany } from "@/server/services/offers/list-by-company"
 
-export default async function CandidatesPage() {
+async function CandidatesPageContent() {
   const { company } = await requireApprovedCompanyAdmin()
 
   if (!company) {
@@ -18,4 +19,12 @@ export default async function CandidatesPage() {
   ])
 
   return <CandidatesPipelinePage offers={offers} t={t} />
+}
+
+export default function CandidatesPage() {
+  return (
+    <Suspense fallback={null}>
+      <CandidatesPageContent />
+    </Suspense>
+  )
 }

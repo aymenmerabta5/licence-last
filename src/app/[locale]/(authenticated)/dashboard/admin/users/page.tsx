@@ -25,12 +25,16 @@ function UserManagementFallback() {
   )
 }
 
-export default async function UserManagementPage() {
+async function UserManagementPageContent() {
   await requireApprovedUniversityAdmin()
 
+  return <UserManagementView />
+}
+
+export default function UserManagementPage() {
   return (
     <Suspense fallback={<UserManagementFallback />}>
-      <UserManagementView />
+      <UserManagementPageContent />
     </Suspense>
   )
 }

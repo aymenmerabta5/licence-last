@@ -24,12 +24,16 @@ function DeptValidationsFallback() {
   )
 }
 
-export default async function DeptValidationsPage() {
+async function DeptValidationsPageContent() {
   await requireDepartmentHead()
 
+  return <DeptHeadValidationsView />
+}
+
+export default function DeptValidationsPage() {
   return (
     <Suspense fallback={<DeptValidationsFallback />}>
-      <DeptHeadValidationsView />
+      <DeptValidationsPageContent />
     </Suspense>
   )
 }

@@ -2,6 +2,28 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 import { fireEvent, render, screen } from "@testing-library/react"
 import * as React from "react"
 
+mock.module("next-intl", () => ({
+  useTranslations: () =>
+    (key: string, values?: Record<string, string | number>) => {
+      const translations: Record<string, string> = {
+        title: "Notifications",
+        markAllRead: "Mark all read",
+        empty: "No notifications yet.",
+        viewAll: "View all",
+        relativeNow: "just now",
+        relativeMinutesShort: "{count}m",
+        relativeHoursShort: "{count}h",
+        relativeDaysShort: "{count}d",
+      }
+
+      let text = translations[key] ?? key
+      for (const [name, value] of Object.entries(values ?? {})) {
+        text = text.replace(`{${name}}`, String(value))
+      }
+      return text
+    },
+}))
+
 const invalidateQueriesMock = mock(() => {})
 const markAllReadMutateMock = mock((_input?: unknown) => {})
 const markReadMutateMock = mock((_input?: unknown) => {})
@@ -54,6 +76,8 @@ mock.module("@tanstack/react-query", () => ({
 mock.module("lucide-react", () => ({
   Bell: () => <span>Bell</span>,
   CheckCheck: () => <span>CheckCheck</span>,
+  Loader2: () => <span>Loader2</span>,
+  ShieldAlert: () => <span>ShieldAlert</span>,
 }))
 
 mock.module("@/components/ui/dropdown-menu", () => ({

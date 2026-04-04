@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
 import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -5,7 +6,7 @@ import { requireRole } from "@/lib/auth-guards"
 import { localeRedirect } from "@/lib/navigation"
 import { getUniversityStatusByUserId } from "@/server/services/universities/get-status"
 
-export default async function UniversityPendingPage() {
+export async function UniversityPendingPageContent() {
   const user = await requireRole(["university_admin"], {
     allowUnapproved: true,
   })
@@ -57,5 +58,13 @@ export default async function UniversityPendingPage() {
         </ol>
       </div>
     </div>
+  )
+}
+
+export default function UniversityPendingPage() {
+  return (
+    <Suspense fallback={null}>
+      <UniversityPendingPageContent />
+    </Suspense>
   )
 }

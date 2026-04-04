@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { Loader2, Zap } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
 import { orpc } from "@/server/orpc/client"
 
@@ -25,6 +26,7 @@ function getBarColor(score: number) {
 }
 
 export function MatchPreview({ offerId, studentUserId }: MatchPreviewProps) {
+  const t = useTranslations("dashboard.company.matching")
   const query = useQuery(
     orpc.matching.getScore.queryOptions({
       input: { offerId, studentUserId },
@@ -35,7 +37,7 @@ export function MatchPreview({ offerId, studentUserId }: MatchPreviewProps) {
     return (
       <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground/40 py-1">
         <Loader2 className="h-3 w-3 animate-spin" />
-        Scoring...
+        {t("computing")}
       </div>
     )
   }
@@ -50,7 +52,7 @@ export function MatchPreview({ offerId, studentUserId }: MatchPreviewProps) {
         <div className="flex items-center gap-1.5">
           <Zap className="h-3 w-3 text-primary/50" />
           <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/50">
-            Fit Score
+            {t("scoreLabel")}
           </span>
         </div>
         <span

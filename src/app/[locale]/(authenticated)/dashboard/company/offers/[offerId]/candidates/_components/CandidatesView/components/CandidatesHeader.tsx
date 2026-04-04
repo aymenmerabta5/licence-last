@@ -46,7 +46,7 @@ export function CandidatesHeader({
               </span>
             </div>
             <h1 className="font-serif text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.08] tracking-tight text-heading">
-              Pipeline
+              {t("pipelineHeading")}
             </h1>
             {offerTitle && (
               <p className="text-sm text-muted-foreground font-light max-w-lg">
@@ -58,7 +58,7 @@ export function CandidatesHeader({
           {totalCandidates !== undefined && totalCandidates > 0 && (
             <div className="border-s-2 border-primary/20 ps-4 shrink-0">
               <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
-                Candidates
+                {t("candidateCountLabel")}
               </span>
               <p className="font-serif text-3xl font-bold text-heading leading-none tabular-nums mt-0.5">
                 {totalCandidates}

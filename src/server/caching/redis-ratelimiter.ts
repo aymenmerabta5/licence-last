@@ -52,8 +52,16 @@ export function resetRateLimiter(): void {
 }
 
 /**
+ * Check if strict Redis backend availability is required.
+ * In-memory fallback keeps rate limiting active when Redis is unavailable.
+ */
+export function isRateLimitingRequired(): boolean {
+  return false
+}
+
+/**
  * Check if rate limiting is active.
  */
 export function isRateLimitingEnabled(): boolean {
-  return env.REDIS_RATE_LIMIT_ENABLED === "true" && isRedisAvailable()
+  return env.REDIS_RATE_LIMIT_ENABLED === "true"
 }

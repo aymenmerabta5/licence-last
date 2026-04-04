@@ -1,6 +1,6 @@
 import "server-only"
 
-import { and, desc, eq, type SQL } from "drizzle-orm"
+import { and, desc, eq, inArray, type SQL } from "drizzle-orm"
 import { db } from "@/server/db"
 import { createModuleLogger } from "@/server/logging"
 import { ServiceError } from "@/server/services/errors"
@@ -198,20 +198,6 @@ export async function resolveCompanyReport(input: {
   status: "resolved" | "dismissed"
   resolutionNote?: string
 }) {
-  const [existing] = await db
-    .select({ id: companyReport.id, status: companyReport.status })
-    .from(companyReport)
-    .where(eq(companyReport.id, input.reportId))
-    .limit(1)
-
-  if (!existing) {
-    throw new Error("Report not found")
-  }
-
-  if (existing.status === "resolved" || existing.status === "dismissed") {
-    throw new Error("Report is already closed")
-  }
-
   log.info(
     {
       reportId: input.reportId,
@@ -221,7 +207,7 @@ export async function resolveCompanyReport(input: {
     "Resolving company report",
   )
 
-  await db
+  const [updated] = await db
     .update(companyReport)
     .set({
       status: input.status,
@@ -231,7 +217,27 @@ export async function resolveCompanyReport(input: {
         ? input.resolutionNote.trim()
         : null,
     })
-    .where(eq(companyReport.id, input.reportId))
+    .where(
+      and(
+        eq(companyReport.id, input.reportId),
+        inArray(companyReport.status, ["open", "reviewing"]),
+      ),
+    )
+    .returning({ id: companyReport.id })
+
+  if (!updated) {
+    const [existing] = await db
+      .select({ id: companyReport.id, status: companyReport.status })
+      .from(companyReport)
+      .where(eq(companyReport.id, input.reportId))
+      .limit(1)
+
+    if (!existing) {
+      throw new Error("Report not found")
+    }
+
+    throw new Error("Report is already closed")
+  }
 
   log.info(
     { reportId: input.reportId, event: "report_resolved" },

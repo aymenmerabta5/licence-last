@@ -133,11 +133,16 @@ export function createDataRetrievalTools(authCtx: ToolAuthContext): ToolSet {
   }
 
   // ── Admin tools (university_admin, super_admin) ────────
-  const isAdmin =
+  const hasUniversityWideStatsAccess =
+    authCtx.role === "super_admin" ||
+    (authCtx.role === "university_admin" &&
+      authCtx.universityMembershipRole !== "department_head")
+
+  const canReadPlacementQueue =
     authCtx.role === "university_admin" ||
     authCtx.role === "super_admin"
 
-  if (isAdmin) {
+  if (hasUniversityWideStatsAccess) {
     tools.get_platform_stats = tool({
       description:
         "Get platform or university statistics: student counts, placement rates, application breakdowns. " +
@@ -164,7 +169,9 @@ export function createDataRetrievalTools(authCtx: ToolAuthContext): ToolSet {
         }
       },
     })
+  }
 
+  if (canReadPlacementQueue) {
     tools.get_pending_placements = tool({
       description:
         "Get applications awaiting admin validation (company-accepted, pending your review). " +
@@ -173,7 +180,7 @@ export function createDataRetrievalTools(authCtx: ToolAuthContext): ToolSet {
       execute: async () => {
         try {
           const viewerRole =
-            authCtx.role === "university_admin" && authCtx.departmentId
+            authCtx.universityMembershipRole === "department_head"
               ? ("department_head" as const)
               : (authCtx.role as "university_admin" | "super_admin")
           const viewer = {

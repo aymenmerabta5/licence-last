@@ -32,24 +32,67 @@ const mockWhere3 = mock<() => Promise<any[]>>(() => {
 })
 const mockFrom3 = mock(() => ({ where: mockWhere3 }))
 
+// Transaction select mocks
+// Call 1: offer lock (for update + limit)
+// Call 2: validated placements count (no limit)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const txSelectResults: any[][] = []
+let txSelectCallIdx = 0
+
+const txLimit1 = mock(() => {
+  const results = txSelectResults[txSelectCallIdx - 1] ?? []
+  return Promise.resolve(results)
+})
+const txFor1 = mock(() => ({ limit: txLimit1 }))
+const txWhere1 = mock(() => ({ for: txFor1 }))
+const txFrom1 = mock(() => ({ where: txWhere1 }))
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const txWhere2 = mock<() => Promise<any[]>>(() => {
+  const results = txSelectResults[txSelectCallIdx - 1] ?? []
+  return Promise.resolve(results)
+})
+const txInnerJoin2 = mock(() => ({ where: txWhere2 }))
+const txFrom2 = mock(() => ({ innerJoin: txInnerJoin2 }))
+
 // Transaction mocks
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const txInsert = mock(() => ({}) as any)
+let txValuesCallIdx = 0
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const txValues = mock((): any => Promise.resolve())
+const txValues = mock((): any => {
+  txValuesCallIdx += 1
+  if (txValuesCallIdx === 1) {
+    return { onConflictDoNothing: txOnConflictDoNothing }
+  }
+  return Promise.resolve()
+})
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const txOnConflictDoNothing = mock(() => ({}) as any)
+const txPlacementReturning = mock(() => Promise.resolve([{ id: "placement-1" }]))
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const txUpdate = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const txSet = mock(() => ({}) as any)
-const txWhere = mock(() => Promise.resolve())
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const txWhere = mock(() => ({}) as any)
+const txUpdateReturning = mock(() => Promise.resolve([{ id: "app-1" }]))
 
 interface Tx {
+  select: () => { from: typeof txFrom1 | typeof txFrom2 }
   insert: typeof txInsert
   update: typeof txUpdate
 }
 
 const mockTransaction = mock(async (fn: (tx: Tx) => Promise<void>) => {
   await fn({
+    select: () => {
+      txSelectCallIdx += 1
+      if (txSelectCallIdx === 1) {
+        return { from: txFrom1 }
+      }
+      return { from: txFrom2 }
+    },
     insert: txInsert,
     update: txUpdate,
   })
@@ -105,7 +148,9 @@ describe("src/server/services/placements/validate", () => {
     applyValidatePlacementMocks()
 
     selectCallIdx = 0
+    txSelectCallIdx = 0
     mockSelectResults.length = 0
+    txSelectResults.length = 0
 
     mockLimit1.mockClear()
     mockWhere1.mockClear()
@@ -122,12 +167,24 @@ describe("src/server/services/placements/validate", () => {
     mockWhere3.mockClear()
     mockFrom3.mockClear()
 
+    txLimit1.mockClear()
+    txFor1.mockClear()
+    txWhere1.mockClear()
+    txFrom1.mockClear()
+    txWhere2.mockClear()
+    txInnerJoin2.mockClear()
+    txFrom2.mockClear()
+
     txInsert.mockClear()
     txValues.mockClear()
+    txOnConflictDoNothing.mockClear()
+    txPlacementReturning.mockClear()
     txUpdate.mockClear()
     txSet.mockClear()
     txWhere.mockClear()
+    txUpdateReturning.mockClear()
     mockTransaction.mockClear()
+    txValuesCallIdx = 0
 
     mockInsert.mockClear()
     mockValues.mockClear()
@@ -146,11 +203,20 @@ describe("src/server/services/placements/validate", () => {
 
     mockFrom3.mockReturnValue({ where: mockWhere3 })
 
+    txFrom1.mockReturnValue({ where: txWhere1 })
+    txWhere1.mockReturnValue({ for: txFor1 })
+    txFor1.mockReturnValue({ limit: txLimit1 })
+
+    txFrom2.mockReturnValue({ innerJoin: txInnerJoin2 })
+    txInnerJoin2.mockReturnValue({ where: txWhere2 })
+
     txInsert.mockReturnValue({ values: txValues })
-    txValues.mockResolvedValue(undefined)
+    txOnConflictDoNothing.mockReturnValue({ returning: txPlacementReturning })
+    txPlacementReturning.mockResolvedValue([{ id: "placement-1" }])
     txUpdate.mockReturnValue({ set: txSet })
     txSet.mockReturnValue({ where: txWhere })
-    txWhere.mockResolvedValue(undefined)
+    txWhere.mockReturnValue({ returning: txUpdateReturning })
+    txUpdateReturning.mockResolvedValue([{ id: "app-1" }])
 
     mockInsert.mockReturnValue({ values: mockValues })
     mockValues.mockResolvedValue(undefined)
@@ -217,6 +283,8 @@ describe("src/server/services/placements/validate", () => {
     ])
     mockSelectResults.push([])
     mockSelectResults.push([{ userId: "member-1" }])
+    txSelectResults.push([{ id: "offer-1", maxPositions: 2 }])
+    txSelectResults.push([{ value: 0 }])
 
     const { validatePlacement } = await importValidatePlacement()
     const result = await validatePlacement({
@@ -232,5 +300,86 @@ describe("src/server/services/placements/validate", () => {
     expect(mockTransaction).toHaveBeenCalledTimes(1)
     expect(mockInsert).not.toHaveBeenCalled()
     expect(createNotificationMock).toHaveBeenCalledTimes(2)
+  })
+
+  test("should throw when the offer has reached max validated placements", async () => {
+    mockSelectResults.push([
+      {
+        id: "app-1",
+        status: "company_accepted",
+        studentUserId: "stu-1",
+        offerId: "offer-1",
+        offerTitle: "Offer",
+        offerInternshipType: "pfe",
+        companyId: "company-1",
+        companyName: "Acme",
+        companyAddress: null,
+        companyPhone: null,
+        companyRepresentativeName: null,
+        studentName: "Student",
+        studentEmail: "s@example.com",
+        universityId: null,
+        studentDepartmentId: null,
+      },
+    ])
+    mockSelectResults.push([])
+    txSelectResults.push([{ id: "offer-1", maxPositions: 1 }])
+    txSelectResults.push([{ value: 1 }])
+
+    const { validatePlacement } = await importValidatePlacement()
+
+    await expect(
+      validatePlacement({
+        applicationId: "app-1",
+        adminUserId: "admin-1",
+        adminRole: "super_admin",
+        adminUniversityId: null,
+        startDate: new Date("2030-01-01"),
+        endDate: new Date("2030-02-01"),
+      }),
+    ).rejects.toThrow("All positions have been filled")
+
+    expect(txInsert).not.toHaveBeenCalled()
+    expect(createNotificationMock).not.toHaveBeenCalled()
+  })
+
+  test("should throw when placement is inserted concurrently", async () => {
+    mockSelectResults.push([
+      {
+        id: "app-1",
+        status: "company_accepted",
+        studentUserId: "stu-1",
+        offerId: "offer-1",
+        offerTitle: "Offer",
+        offerInternshipType: "pfe",
+        companyId: "company-1",
+        companyName: "Acme",
+        companyAddress: null,
+        companyPhone: null,
+        companyRepresentativeName: null,
+        studentName: "Student",
+        studentEmail: "s@example.com",
+        universityId: null,
+        studentDepartmentId: null,
+      },
+    ])
+    mockSelectResults.push([])
+    txSelectResults.push([{ id: "offer-1", maxPositions: 2 }])
+    txSelectResults.push([{ value: 0 }])
+    txPlacementReturning.mockResolvedValueOnce([])
+
+    const { validatePlacement } = await importValidatePlacement()
+
+    await expect(
+      validatePlacement({
+        applicationId: "app-1",
+        adminUserId: "admin-1",
+        adminRole: "super_admin",
+        adminUniversityId: null,
+        startDate: new Date("2030-01-01"),
+        endDate: new Date("2030-02-01"),
+      }),
+    ).rejects.toThrow("Placement already exists for this application")
+    expect(createNotificationMock).not.toHaveBeenCalled()
   })
 })

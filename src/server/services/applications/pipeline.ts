@@ -1,6 +1,6 @@
 import "server-only"
 
-import { desc, eq } from "drizzle-orm"
+import { and, desc, eq } from "drizzle-orm"
 
 import {
   canTransitionStage,
@@ -13,7 +13,10 @@ import {
 } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
+import { createModuleLogger } from "@/server/logging"
 import { createNotification } from "@/server/services/notifications/create"
+
+const log = createModuleLogger("services/applications/pipeline")
 
 export async function appendTimelineEvent(input: {
   applicationId: string
@@ -131,35 +134,67 @@ export async function updateApplicationPipelineStage(input: {
     )
   }
 
-  await db
+  const [updatedApplication] = await db
     .update(application)
     .set({
       pipelineStage: input.toStage,
       pipelineStageUpdatedAt: new Date(),
     })
-    .where(eq(application.id, input.applicationId))
+    .where(
+      and(
+        eq(application.id, input.applicationId),
+        eq(application.status, row.status),
+        eq(application.pipelineStage, fromStage),
+      ),
+    )
+    .returning({ id: application.id })
 
-  await appendTimelineEvent({
-    applicationId: input.applicationId,
-    actorUserId: input.actorUserId,
-    eventType: "pipeline_stage_changed",
-    fromStage,
-    toStage: input.toStage,
-    fromStatus: row.status,
-    toStatus: row.status,
-    payload: normalizedNote ? { note: normalizedNote } : {},
-  })
+  if (!updatedApplication) {
+    throw new ApplicationServiceError(
+      "APPLICATION_INVALID_STATE",
+      "Application was changed by another action. Refresh and try again.",
+    )
+  }
+
+  try {
+    await appendTimelineEvent({
+      applicationId: input.applicationId,
+      actorUserId: input.actorUserId,
+      eventType: "pipeline_stage_changed",
+      fromStage,
+      toStage: input.toStage,
+      fromStatus: row.status,
+      toStatus: row.status,
+      payload: normalizedNote ? { note: normalizedNote } : {},
+    })
+  } catch (error) {
+    log.error(
+      { err: error, applicationId: input.applicationId },
+      "Failed to append pipeline stage timeline event",
+    )
+  }
 
   if (row.studentUserId !== input.actorUserId) {
-    await createNotification({
-      userId: row.studentUserId,
-      type: "application_stage_changed",
-      payload: {
-        applicationId: input.applicationId,
-        stage: input.toStage,
-        note: normalizedNote,
-      },
-    })
+    try {
+      await createNotification({
+        userId: row.studentUserId,
+        type: "application_stage_changed",
+        payload: {
+          applicationId: input.applicationId,
+          stage: input.toStage,
+          note: normalizedNote,
+        },
+      })
+    } catch (error) {
+      log.error(
+        {
+          err: error,
+          applicationId: input.applicationId,
+          userId: row.studentUserId,
+        },
+        "Failed to notify student about pipeline stage change",
+      )
+    }
   }
 
   return {

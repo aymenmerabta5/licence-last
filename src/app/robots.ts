@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next"
 
-import { env } from "@/env"
+import { getPublicAppUrl } from "@/lib/public-url"
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -11,6 +11,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/*/dashboard/", "/*/onboarding/", "/api/", "/_next/"],
       },
     ],
-    sitemap: `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/sitemap.xml`,
+    sitemap: `${getPublicAppUrl()}/sitemap.xml`,
   }
 }

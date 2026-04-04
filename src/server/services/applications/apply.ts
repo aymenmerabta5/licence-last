@@ -28,9 +28,7 @@ export async function applyToOffer(
 ) {
   const applicationId = crypto.randomUUID()
   log.info({ offerId, studentUserId, applicationId }, "Applying to offer")
-
-  // Wrap all validation + insert in a transaction to prevent TOCTOU races
-  await db.transaction(async (tx) => {
+  const transactionResult = await db.transaction(async (tx) => {
     // 1. Lock the offer row and validate it exists and is published
     const [offer] = await tx
       .select()
@@ -120,6 +118,8 @@ export async function applyToOffer(
       pipelineStage: "applied",
       pipelineStageUpdatedAt: new Date(),
     })
+
+    return { companyId: offer.companyId }
   })
 
   // 5. Post-transaction hooks are best-effort; application creation must remain successful.
@@ -200,5 +200,5 @@ export async function applyToOffer(
     { applicationId, offerId, event: "application_created" },
     "Application created successfully",
   )
-  return { applicationId }
+  return { applicationId, companyId: transactionResult.companyId }
 }

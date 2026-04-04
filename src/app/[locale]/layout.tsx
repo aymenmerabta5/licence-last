@@ -8,11 +8,12 @@ import {
 import { ThemeProvider } from "next-themes"
 import type { ReactNode } from "react"
 
+import { DocumentLocaleSync } from "@/app/[locale]/_components/DocumentLocaleSync"
 import { MotionProvider } from "@/components/providers/MotionProvider"
 import { QueryProvider } from "@/components/providers/QueryProvider"
 import { Toaster } from "@/components/ui/sonner"
-import { env } from "@/env"
 import { routing } from "@/i18n/routing"
+import { getPublicAppUrl } from "@/lib/public-url"
 
 type Params = Promise<{ locale: string }>
 
@@ -33,7 +34,7 @@ export async function generateMetadata({
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: "metadata" })
 
-  const baseUrl = env.NEXT_PUBLIC_BETTER_AUTH_URL
+  const baseUrl = getPublicAppUrl()
 
   return {
     metadataBase: new URL(baseUrl),
@@ -74,12 +75,18 @@ export default async function LocaleLayout({
   setRequestLocale(locale)
   const messages = await getMessages({ locale })
   const isRTL = locale === "ar"
+  const direction = isRTL ? "rtl" : "ltr"
   const rtlFontVars = isRTL
     ? "[--font-sans:var(--font-arabic),var(--font-dm-sans)] [--font-serif:var(--font-arabic),var(--font-dm-serif)]"
     : ""
 
   return (
-    <div dir={isRTL ? "rtl" : "ltr"} className={rtlFontVars}>
+    <div dir={direction} className={rtlFontVars}>
+      <DocumentLocaleSync
+        locale={locale}
+        direction={direction}
+        isRTL={isRTL}
+      />
       <ThemeProvider
         attribute="class"
         defaultTheme="light"

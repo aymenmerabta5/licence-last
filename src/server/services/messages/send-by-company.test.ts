@@ -38,12 +38,17 @@ const tx = {
 const mockTransaction = mock(
   async (callback: (trx: typeof tx) => Promise<unknown>) => callback(tx),
 )
+const createNotificationMock = mock(async () => ({ id: "notification-1" }))
 
 mock.module("@/server/db", () => ({
   db: {
     select: dbSelect,
     transaction: mockTransaction,
   },
+}))
+
+mock.module("@/server/services/notifications/create", () => ({
+  createNotification: createNotificationMock,
 }))
 
 describe("src/server/services/messages/send-by-company", () => {
@@ -62,6 +67,7 @@ describe("src/server/services/messages/send-by-company", () => {
     txReturning.mockClear()
     txValuesForMessage.mockClear()
     mockTransaction.mockClear()
+    createNotificationMock.mockClear()
 
     dbFrom.mockReturnValue({ where: dbWhere })
     dbWhere.mockReturnValue({ limit: dbLimit })
@@ -158,7 +164,13 @@ describe("src/server/services/messages/send-by-company", () => {
   })
 
   test("should create thread and message with trimmed body", async () => {
-    dbSelectResults.push([{ id: "offer-1", companyId: "company-1" }])
+    dbSelectResults.push([
+      {
+        id: "offer-1",
+        companyId: "company-1",
+        title: "Platform Engineer Intern",
+      },
+    ])
     dbSelectResults.push([{ id: "application-1" }])
 
     const { sendOfferMessageByCompany } = await import(
@@ -179,6 +191,7 @@ describe("src/server/services/messages/send-by-company", () => {
     expect(typeof result.messageId).toBe("string")
     expect(mockTransaction).toHaveBeenCalledTimes(1)
     expect(txInsert).toHaveBeenCalledTimes(2)
+    expect(createNotificationMock).toHaveBeenCalledTimes(1)
 
     const threadValueCalls = txValuesForThread.mock
       .calls as unknown as unknown[][]
@@ -205,5 +218,34 @@ describe("src/server/services/messages/send-by-company", () => {
     expect(messageValues.offerId).toBe("offer-1")
     expect(messageValues.senderUserId).toBe("sender-1")
     expect(messageValues.body).toBe("Hello from company")
+
+    const notificationCalls = createNotificationMock.mock
+      .calls as unknown as unknown[][]
+    const notificationCallRaw = notificationCalls[0]?.[0]
+    expect(notificationCallRaw).toBeDefined()
+
+    const notificationCall = notificationCallRaw as unknown as {
+      userId: string
+      type: string
+      payload: {
+        offerId: string
+        offerTitle: string
+        threadId: string
+        messageId: string
+        senderRole: string
+        senderUserId: string
+      }
+    }
+
+    expect(notificationCall.userId).toBe("student-1")
+    expect(notificationCall.type).toBe("new_message")
+    expect(notificationCall.payload.offerId).toBe("offer-1")
+    expect(notificationCall.payload.offerTitle).toBe(
+      "Platform Engineer Intern",
+    )
+    expect(notificationCall.payload.threadId).toBe("thread-1")
+    expect(notificationCall.payload.messageId).toBe(result.messageId)
+    expect(notificationCall.payload.senderRole).toBe("company")
+    expect(notificationCall.payload.senderUserId).toBe("sender-1")
   })
 })

@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl"
 import type { InterviewStatus } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 import { getInterviewStatusLabel } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/utils"
 import { cn } from "@/lib/utils"
@@ -22,6 +23,8 @@ const STATUS_DOT: Record<InterviewStatus, string> = {
 }
 
 export function InterviewStatusBadge({ status }: InterviewStatusBadgeProps) {
+  const t = useTranslations("dashboard.interviews")
+
   return (
     <span
       className={cn(
@@ -30,9 +33,12 @@ export function InterviewStatusBadge({ status }: InterviewStatusBadgeProps) {
       )}
     >
       <span
-        className={cn("inline-block h-1.5 w-1.5 rounded-full", STATUS_DOT[status])}
+        className={cn(
+          "inline-block h-1.5 w-1.5 rounded-full",
+          STATUS_DOT[status],
+        )}
       />
-      {getInterviewStatusLabel(status)}
+      {getInterviewStatusLabel(status, t)}
     </span>
   )
 }

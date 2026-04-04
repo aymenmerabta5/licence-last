@@ -7,7 +7,7 @@ Single-server deployment using Docker Compose, Caddy (auto-HTTPS), and GitHub Ac
 ```
 Internet → Caddy :80/:443 → Next.js App :3000
                                  ├── PostgreSQL :5432 (internal-only)
-                                 └── Redis :6379 (internal-only)
+                                 └── Redis :6379 (internal-only, optional)
             GitHub Actions updates APP_IMAGE on the VPS
             Backup runs daily pg_dump
 ```
@@ -68,7 +68,46 @@ POSTGRES_DB=stag
 
 APP_IMAGE=ghcr.io/your-username/your-repo:latest
 DOMAIN_NAME=your-domain.com
+
+AI_API_KEY=your-ai-provider-key
+RESEND_API_KEY=your-resend-api-key
+EMAIL_FROM=no-reply@your-domain.com
+
+S3_BUCKET=your-bucket-name
+S3_ENDPOINT=https://your-storage-endpoint
+S3_ACCESS_KEY_ID=your-storage-access-key
+S3_SECRET_ACCESS_KEY=your-storage-secret-key
+S3_PUBLIC_URL=https://cdn.your-domain.com
 ```
+
+Optional Redis variables:
+```env
+REDIS_URL=redis://redis:6379
+REDIS_RATE_LIMIT_ENABLED=true
+```
+
+If Redis is omitted or temporarily unavailable, the app stays online and falls back to an in-memory rate limiter. Health checks report `degraded` instead of failing the deploy.
+
+Optional feature flags:
+```env
+FEATURE_NOTIF_PREFERENCES=true
+FEATURE_SAVED_OFFERS=true
+FEATURE_INTERVIEWS=true
+FEATURE_LANGUAGE_REQUIREMENTS=true
+FEATURE_COMPANY_ASSISTANT=false
+NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES=true
+NEXT_PUBLIC_FEATURE_SAVED_OFFERS=true
+NEXT_PUBLIC_FEATURE_INTERVIEWS=true
+NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS=true
+NEXT_PUBLIC_FEATURE_COMPANY_ASSISTANT=false
+```
+
+Keep the server-side `FEATURE_*` flags and client-side `NEXT_PUBLIC_FEATURE_*` flags aligned. The `NEXT_PUBLIC_*` flags are baked into the browser bundle at build time, so any client-visible change must be rebuilt with matching GitHub Actions repository variables before deploying.
+
+Production startup now fails fast when any of these product dependencies are missing:
+- AI provider access for shipped AI workflows (`AI_API_KEY`, or `POE_API_KEY` as the legacy alternative)
+- Transactional email for auth-critical flows (`RESEND_API_KEY`, `EMAIL_FROM`)
+- S3-compatible object storage for uploads and verification documents
 
 ### 6. Point DNS
 
@@ -94,11 +133,11 @@ Verify:
 
 Fully automatic. The pipeline:
 
-1. Push code to `master`
-2. CI runs (lint, typecheck, tests, build, e2e)
+1. Push code to `main` or `master`
+2. CI runs (lint, typecheck, tests, Playwright E2E, build)
 3. CD builds Docker image and pushes to GHCR
 4. CD updates `APP_IMAGE` in `/root/stag/.env` to the exact digest it just built
-5. CD pulls that exact image and recreates `app` + `caddy`
+5. CD pulls that exact image and recreates `app`, `redis`, and `caddy` without blocking app startup on Redis health
 6. Entrypoint runs any pending database migrations
 7. App starts serving traffic
 
@@ -218,3 +257,5 @@ Add these to your repository settings (Settings > Secrets and variables > Action
 | `DEPLOY_SSH_KEY` | Private SSH deploy key |
 
 `GITHUB_TOKEN` is provided automatically and has `packages:write` permission.
+
+The Docker image build in CI intentionally uses non-production placeholder build args for AI, email, and storage validation because `.env*` files are excluded from the Docker context. Your runtime `/root/stag/.env` must still provide real production values for `AI_API_KEY` (or `POE_API_KEY`), `RESEND_API_KEY`, `EMAIL_FROM`, and the required S3 settings before deployment.

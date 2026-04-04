@@ -1,7 +1,10 @@
 import { Loader2, MessageCircleMore } from "lucide-react"
 import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
 
+import { ConversationStarterList } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/ConversationStarterList"
 import type {
+  MessageConversationStarter,
   MessagesRole,
   MessageThread,
 } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
@@ -14,10 +17,14 @@ import { cn } from "@/lib/utils"
 interface ThreadListPaneProps {
   role: MessagesRole
   threads: MessageThread[]
+  starters: MessageConversationStarter[]
   selectedThreadId: string | null
+  selectedStarterId: string | null
   isLoading: boolean
   errorMessage: string | null
+  starterErrorMessage: string | null
   onSelectThread: (threadId: string) => void
+  onSelectStarter: (starterId: string) => void
 }
 
 function getInitials(value: string): string {
@@ -33,12 +40,14 @@ function getInitials(value: string): string {
 function getThreadDisplayName(
   thread: MessageThread,
   role: MessagesRole,
+  fallbackCompanyName: string,
+  fallbackStudentName: string,
 ): string {
   if (role === "student") {
-    return thread.companyName?.trim() || "Company"
+    return thread.companyName?.trim() || fallbackCompanyName
   }
 
-  return thread.studentName?.trim() || "Student"
+  return thread.studentName?.trim() || fallbackStudentName
 }
 
 function getThreadImage(
@@ -63,16 +72,24 @@ function formatUnreadCount(unreadCount: number): string {
 export function ThreadListPane({
   role,
   threads,
+  starters,
   selectedThreadId,
+  selectedStarterId,
   isLoading,
   errorMessage,
+  starterErrorMessage,
   onSelectThread,
+  onSelectStarter,
 }: ThreadListPaneProps) {
+  const t = useTranslations("dashboard.messages")
+  const fallbackCompanyName = t("fallbackCompanyName")
+  const fallbackStudentName = t("fallbackStudentName")
+
   return (
     <Card className="rounded-none border-border/60 bg-card/60 backdrop-blur supports-[backdrop-filter]:bg-card/40 min-h-[34rem]">
       <div className="border-b border-border/60 px-4 py-3 sm:px-5">
         <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-          Threads
+          {t("threadsLabel")}
         </p>
       </div>
 
@@ -91,14 +108,23 @@ export function ThreadListPane({
 
         {!isLoading && !errorMessage && threads.length === 0 && (
           <div className="px-4 py-12 text-center text-sm text-muted-foreground">
-            No conversations yet.
+            {starters.length === 0
+              ? role === "student"
+                ? t("emptyStudent")
+                : t("emptyCompany")
+              : t("pickStarter")}
           </div>
         )}
 
         {!isLoading && !errorMessage && threads.length > 0 && (
           <div className="space-y-1">
             {threads.map((thread, index) => {
-              const displayName = getThreadDisplayName(thread, role)
+              const displayName = getThreadDisplayName(
+                thread,
+                role,
+                fallbackCompanyName,
+                fallbackStudentName,
+              )
               const isActive = thread.id === selectedThreadId
 
               return (
@@ -132,7 +158,9 @@ export function ThreadListPane({
                         <div className="flex shrink-0 items-center gap-1.5">
                           {thread.hasUnread && thread.unreadCount > 0 && (
                             <span
-                              aria-label={`${thread.unreadCount} unread messages`}
+                              aria-label={t("unreadAria", {
+                                count: thread.unreadCount,
+                              })}
                               className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground"
                             >
                               {formatUnreadCount(thread.unreadCount)}
@@ -151,7 +179,9 @@ export function ThreadListPane({
                       <div className="mt-2 flex items-center gap-1 text-[11px] text-muted-foreground/80">
                         <MessageCircleMore className="h-3 w-3" />
                         <span>
-                          {thread.hasUnread ? "Unread messages" : "Open thread"}
+                          {thread.hasUnread
+                            ? t("threadUnread")
+                            : t("threadOpen")}
                         </span>
                         {thread.hasUnread && (
                           <span className="h-1.5 w-1.5 rounded-full bg-primary" />
@@ -162,6 +192,21 @@ export function ThreadListPane({
                 </motion.button>
               )
             })}
+          </div>
+        )}
+
+        {!isLoading && !errorMessage && (
+          <ConversationStarterList
+            role={role}
+            starters={starters}
+            selectedStarterId={selectedStarterId}
+            onSelectStarter={onSelectStarter}
+          />
+        )}
+
+        {!isLoading && !errorMessage && starterErrorMessage && (
+          <div className="px-3 py-3 text-xs text-destructive">
+            {starterErrorMessage}
           </div>
         )}
       </div>

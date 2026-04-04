@@ -6,7 +6,6 @@ import { CompanyOffersSection } from "@/app/[locale]/company/[slug]/_components/
 import { getWilayaName } from "@/lib/wilayas"
 import { orpcClient } from "@/server/orpc/client"
 import { getPublicCompanyBySlug } from "@/server/services/companies/get-public-by-slug"
-import { getCompanyTrustIndex } from "@/server/services/companies/trust-index"
 import { listPublicOffersByCompany } from "@/server/services/offers/list-public-by-company"
 
 type Params = Promise<{ slug: string }>
@@ -32,10 +31,9 @@ export default async function CompanyPublicProfilePage({
     notFound()
   }
 
-  const [t, companyFromRpc, trustData, offers] = await Promise.all([
+  const [t, companyFromRpc, offers] = await Promise.all([
     getTranslations("companyPublic"),
     orpcClient.companies.getById({ companyId: company.id }).catch(() => null),
-    getCompanyTrustIndex(company.id).catch(() => null),
     listPublicOffersByCompany(company.id),
   ])
   const companyData = companyFromRpc ?? company
@@ -87,14 +85,6 @@ export default async function CompanyPublicProfilePage({
               >
                 {t("website")}
               </a>
-            ) : null}
-            {trustData ? (
-              <p>
-                {t("trustIndex")}:{" "}
-                <span className="font-semibold text-foreground">
-                  {trustData.trustScore}/100 ({trustData.tier})
-                </span>
-              </p>
             ) : null}
           </div>
         </header>

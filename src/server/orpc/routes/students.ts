@@ -22,6 +22,7 @@ import {
   authedProcedureGenerous,
   studentProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
+import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import { getStudentProfile } from "@/server/services/students/get-profile"
 import { getPublicStudentProfile } from "@/server/services/students/get-public-profile"
 import { upsertStudentLanguages } from "@/server/services/students/upsert-languages"
@@ -90,6 +91,7 @@ export const getStudentProfileProcedure = authedProcedureGenerous
             role: context.user.role,
             universityId: context.user.universityId,
             departmentId: context.user.departmentId,
+            universityMembershipRole: context.user.universityMembershipRole,
           },
           {
             userId: targetUserId,
@@ -127,6 +129,23 @@ export const getPublicStudentProfileProcedure = authedProcedureGenerous
       })
     }
 
+    const [targetUser] = await db
+      .select({
+        role: user.role,
+        universityId: user.universityId,
+        departmentId: studentProfile.departmentId,
+      })
+      .from(user)
+      .leftJoin(studentProfile, eq(user.id, studentProfile.userId))
+      .where(eq(user.id, input.userId))
+      .limit(1)
+
+    if (!targetUser || targetUser.role !== "student") {
+      throw new ORPCError("NOT_FOUND", {
+        message: "Student not found",
+      })
+    }
+
     // Company admins can only view profiles of students who have a relationship
     // (application) with one of the company's offers.
     if (isCompanyAdmin) {
@@ -161,10 +180,46 @@ export const getPublicStudentProfileProcedure = authedProcedureGenerous
       }
     }
 
-    return getPublicStudentProfile(
-      { id: context.user.id, role: context.user.role },
+    if (
+      context.user.role === "university_admin" &&
+      !canAccessPrivateStudentProfile(
+        {
+          id: context.user.id,
+          role: context.user.role,
+          universityId: context.user.universityId,
+          departmentId: context.user.departmentId,
+          universityMembershipRole: context.user.universityMembershipRole,
+        },
+        {
+          userId: input.userId,
+          universityId: targetUser.universityId,
+          departmentId: targetUser.departmentId,
+        },
+      )
+    ) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "You do not have access to this profile",
+      })
+    }
+
+    const result = await getPublicStudentProfile(
+      {
+        id: context.user.id,
+        role: context.user.role,
+        universityId: context.user.universityId,
+        departmentId: context.user.departmentId,
+        universityMembershipRole: context.user.universityMembershipRole,
+      },
       input.userId,
     )
+
+    if (!result) {
+      throw new ORPCError("NOT_FOUND", {
+        message: "Student not found",
+      })
+    }
+
+    return result
   })
 
 /* Mutations */
@@ -219,18 +274,27 @@ export const upsertStudentProfileProcedure = studentProcedureStandard
       }
     }
 
-    const result = await upsertStudentProfile(
-      data,
-      skillTagIds,
-      context.user.id,
-      isLanguageRequirementsEnabled ? (languages ?? []) : undefined,
-    )
+    try {
+      const result = await upsertStudentProfile(
+        data,
+        skillTagIds,
+        context.user.id,
+        isLanguageRequirementsEnabled ? (languages ?? []) : undefined,
+      )
 
-    revalidateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id), "max")
-    revalidateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id), "max")
-    revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), "max")
+      revalidateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id), "max")
+      revalidateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id), "max")
+      revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), "max")
 
-    return result
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          INVALID_SKILL_TAG_IDS: "BAD_REQUEST",
+        },
+        fallbackMessage: "Failed to update student profile",
+      })
+    }
   })
 
 export const upsertStudentProfileDetailsProcedure = studentProcedureStandard
@@ -269,13 +333,25 @@ export const upsertStudentSkillsProcedure = studentProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    const result = await upsertStudentSkills(input.skillTagIds, context.user.id)
+    try {
+      const result = await upsertStudentSkills(
+        input.skillTagIds,
+        context.user.id,
+      )
 
-    revalidateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id), "max")
-    revalidateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id), "max")
-    revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), "max")
+      revalidateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id), "max")
+      revalidateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id), "max")
+      revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), "max")
 
-    return result
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          INVALID_SKILL_TAG_IDS: "BAD_REQUEST",
+        },
+        fallbackMessage: "Failed to update student skills",
+      })
+    }
   })
 
 export const upsertStudentLanguagesProcedure = studentProcedureStandard

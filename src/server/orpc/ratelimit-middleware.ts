@@ -1,7 +1,6 @@
 import "server-only"
 
 import { createRatelimitMiddleware } from "@orpc/experimental-ratelimit"
-import { ORPCError } from "@orpc/server"
 import { headers } from "next/headers"
 
 import { env } from "@/env"
@@ -24,6 +23,7 @@ const IN_MEMORY_SWEEP_INTERVAL_MS = 5000
 const DEFAULT_IN_MEMORY_MAX_KEYS = 10000
 let inMemoryMaxKeys = DEFAULT_IN_MEMORY_MAX_KEYS
 let lastInMemorySweepAt = 0
+let hasLoggedRedisFallback = false
 
 function sweepInMemoryStore(now: number): void {
   if (now - lastInMemorySweepAt < IN_MEMORY_SWEEP_INTERVAL_MS) {
@@ -104,6 +104,7 @@ export function __resetInMemoryRateLimiterForTests(): void {
   inMemoryStore.clear()
   inMemoryMaxKeys = DEFAULT_IN_MEMORY_MAX_KEYS
   lastInMemorySweepAt = 0
+  hasLoggedRedisFallback = false
 }
 
 export function __setInMemoryRateLimiterMaxKeysForTests(maxKeys: number): void {
@@ -177,6 +178,46 @@ function createInMemoryLimiter(config: RateLimitConfig) {
   }
 }
 
+function logRedisFallbackOnce(isRedisRateLimitingEnabled: boolean): void {
+  if (hasLoggedRedisFallback || process.env.NODE_ENV !== "production") {
+    return
+  }
+
+  if (isRedisRateLimitingEnabled) {
+    log.warn(
+      "Redis unavailable while rate limiting is enabled - using in-memory fallback",
+    )
+  } else {
+    log.warn("Redis unavailable - using in-memory rate limiter fallback")
+  }
+
+  hasLoggedRedisFallback = true
+}
+
+function createResilientLimiter(config: RateLimitConfig) {
+  const fallbackLimiter = createInMemoryLimiter(config)
+
+  return {
+    async limit(key: string) {
+      const redisLimiter = getRateLimiter()
+      const isRedisRateLimitingEnabled = env.REDIS_RATE_LIMIT_ENABLED === "true"
+
+      if (!redisLimiter) {
+        logRedisFallbackOnce(isRedisRateLimitingEnabled)
+        return fallbackLimiter.limit(key)
+      }
+
+      try {
+        return await redisLimiter.limit(key)
+      } catch (error) {
+        log.warn({ err: error }, "Redis rate limiter failed - using in-memory fallback")
+        logRedisFallbackOnce(isRedisRateLimitingEnabled)
+        return fallbackLimiter.limit(key)
+      }
+    },
+  }
+}
+
 /**
  * Create a rate limit middleware with custom configuration.
  *
@@ -214,47 +255,7 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
     } as any)
   }
 
-  const limiter = getRateLimiter()
-  const isRedisRateLimitingEnabled = env.REDIS_RATE_LIMIT_ENABLED === "true"
-
-  // If Redis is unavailable, fail closed in production when Redis-backed
-  // rate limiting is explicitly enabled.
-  if (!limiter) {
-    if (process.env.NODE_ENV === "production" && isRedisRateLimitingEnabled) {
-      log.error(
-        "Redis unavailable while rate limiting is enabled - failing closed",
-      )
-      return createRatelimitMiddleware({
-        limiter: () => createInMemoryLimiter(config),
-        key: async () => {
-          throw new ORPCError("INTERNAL_SERVER_ERROR", {
-            message: "Rate limiter backend unavailable",
-          })
-        },
-      })
-    }
-
-    if (process.env.NODE_ENV === "production") {
-      log.warn("Redis unavailable - using in-memory rate limiter fallback")
-    }
-    return createRatelimitMiddleware({
-      limiter: () => createInMemoryLimiter(config),
-      key: async ({ context }) => {
-        const headersList = await headers()
-        const ip = extractClientIp(headersList)
-        const userId = (context as ContextWithUser).user?.id
-        const keyGenerator = config.keyGenerator || defaultKeyGenerator
-        const fullKey = config.keyPrefix
-          ? `${config.keyPrefix}:${keyGenerator({ userId, ip })}`
-          : keyGenerator({ userId, ip })
-
-        if (!checkInMemoryLimit(fullKey, config.maxRequests, config.windowMs)) {
-          throw new Error("Rate limit exceeded")
-        }
-        return fullKey
-      },
-    })
-  }
+  const limiter = createResilientLimiter(config)
 
   return createRatelimitMiddleware({
     limiter: () => limiter,

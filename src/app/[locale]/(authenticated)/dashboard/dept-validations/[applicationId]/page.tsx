@@ -28,15 +28,21 @@ function PlacementDetailFallback() {
   )
 }
 
-export default async function DeptHeadPlacementDetailPage({
+async function DeptHeadPlacementDetailPageContent({
   params,
 }: DeptHeadPlacementDetailPageProps) {
   await requireDepartmentHead()
   const { applicationId } = await params
 
+  return <DeptHeadPlacementDetail applicationId={applicationId} />
+}
+
+export default function DeptHeadPlacementDetailPage({
+  params,
+}: DeptHeadPlacementDetailPageProps) {
   return (
     <Suspense fallback={<PlacementDetailFallback />}>
-      <DeptHeadPlacementDetail applicationId={applicationId} />
+      <DeptHeadPlacementDetailPageContent params={params} />
     </Suspense>
   )
 }

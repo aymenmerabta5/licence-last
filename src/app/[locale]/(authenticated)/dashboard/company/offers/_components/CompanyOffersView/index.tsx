@@ -23,7 +23,11 @@ import {
 import { useCompanyOffers } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/hooks/useCompanyOffers"
 import type { OfferStatusFilter } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/types"
 
-export function CompanyOffersView() {
+export function CompanyOffersView({
+  canManageStatus,
+}: {
+  canManageStatus: boolean
+}) {
   const t = useTranslations("dashboard.company.offers")
   const {
     offers,
@@ -99,6 +103,7 @@ export function CompanyOffersView() {
                 key={offer.id}
                 offer={offer}
                 index={index}
+                canManageStatus={canManageStatus}
                 isActionLoading={actionLoading === offer.id}
                 onPublish={() => handlePublish(offer.id)}
                 onClose={() =>

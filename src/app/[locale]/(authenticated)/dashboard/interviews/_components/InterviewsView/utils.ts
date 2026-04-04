@@ -5,14 +5,17 @@ import type {
 import { formatDateTime } from "@/lib/date"
 import { getErrorDetails } from "@/lib/error-message"
 
-const INTERVIEW_STATUS_LABELS: Record<InterviewStatus, string> = {
-  pending_confirmation: "Pending confirmation",
-  confirmed: "Confirmed",
-  cancelled: "Cancelled",
-}
+type TranslationFn = (key: string) => string
 
-export function getInterviewStatusLabel(status: InterviewStatus): string {
-  return INTERVIEW_STATUS_LABELS[status]
+export function getInterviewStatusLabel(
+  status: InterviewStatus,
+  t?: TranslationFn,
+): string {
+  if (t) {
+    return t(`status.${status}`)
+  }
+
+  return status.replaceAll("_", " ")
 }
 
 export function isInterviewsFeatureDisabledError(error: unknown): boolean {
@@ -32,8 +35,14 @@ export function formatInterviewSlot(slot: InterviewSlotView): string {
   return `${formatDateTime(slot.startsAt)} to ${formatDateTime(slot.endsAt)}`
 }
 
-export function formatPipelineStage(value: string): string {
-  if (!value) return "Unknown stage"
-  const sentence = value.replaceAll("_", " ")
-  return sentence.charAt(0).toUpperCase() + sentence.slice(1)
+export function formatPipelineStage(value: string, t?: TranslationFn): string {
+  if (!value) {
+    return t ? t("unknownStage") : "Unknown stage"
+  }
+
+  if (t) {
+    return t(`stageLabels.${value}`)
+  }
+
+  return value.replaceAll("_", " ")
 }

@@ -22,7 +22,7 @@ function UserDetailFallback() {
   )
 }
 
-export default async function UserDetailPage({
+async function UserDetailPageContent({
   params,
 }: {
   params: Promise<{ userId: string }>
@@ -30,9 +30,17 @@ export default async function UserDetailPage({
   await requireRole(["super_admin"])
   const { userId } = await params
 
+  return <UserDetailView userId={userId} />
+}
+
+export default function UserDetailPage({
+  params,
+}: {
+  params: Promise<{ userId: string }>
+}) {
   return (
     <Suspense fallback={<UserDetailFallback />}>
-      <UserDetailView userId={userId} />
+      <UserDetailPageContent params={params} />
     </Suspense>
   )
 }

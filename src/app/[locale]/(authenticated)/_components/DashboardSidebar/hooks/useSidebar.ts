@@ -5,6 +5,7 @@ import { navItems } from "@/app/[locale]/(authenticated)/_components/DashboardSi
 import { useLogout } from "@/hooks/useLogout"
 import { usePathname } from "@/i18n/routing"
 import {
+  isCompanyAssistantEnabledOnClient,
   isInterviewsEnabledOnClient,
   isSavedOffersEnabledOnClient,
 } from "@/lib/feature-flags-client"
@@ -19,6 +20,7 @@ export function useSidebar(
   const { logout } = useLogout()
   const savedOffersEnabled = isSavedOffersEnabledOnClient()
   const interviewsEnabled = isInterviewsEnabledOnClient()
+  const companyAssistantEnabled = isCompanyAssistantEnabledOnClient()
 
   const filteredItems = useMemo(
     () =>
@@ -27,6 +29,9 @@ export function useSidebar(
           return false
         }
         if (item.labelKey === "interviews" && !interviewsEnabled) {
+          return false
+        }
+        if (item.labelKey === "assistant" && !companyAssistantEnabled) {
           return false
         }
         if (
@@ -43,9 +48,24 @@ export function useSidebar(
         ) {
           return false
         }
+        if (
+          role === "university_admin" &&
+          item.hideForUniversityMembershipRoles?.includes(
+            universityMembershipRole ?? "",
+          )
+        ) {
+          return false
+        }
         return item.roles.includes(role)
       }),
-    [companyMembershipRole, universityMembershipRole, interviewsEnabled, role, savedOffersEnabled],
+    [
+      companyAssistantEnabled,
+      companyMembershipRole,
+      universityMembershipRole,
+      interviewsEnabled,
+      role,
+      savedOffersEnabled,
+    ],
   )
 
   return { isCollapsed, setIsCollapsed, filteredItems, pathname, logout }

@@ -42,6 +42,7 @@ mock.module("@/server/orpc/rate-limited-procedures", () => ({
   adminProcedureStandard: createProcedureMock(),
   adminProcedureAssistant: createProcedureMock(),
   universityProcedureAssistant: createProcedureMock(),
+  universityProcedureStandard: createProcedureMock(),
   deptHeadProcedureGenerous: createProcedureMock(),
   deptHeadProcedureStandard: createProcedureMock(),
 }))
@@ -102,6 +103,7 @@ describe("src/server/orpc/routes/placements", () => {
       adminProcedureStandard: createProcedureMock(),
       adminProcedureAssistant: createProcedureMock(),
       universityProcedureAssistant: createProcedureMock(),
+      universityProcedureStandard: createProcedureMock(),
       assistantProcedureLimited: createProcedureMock(),
       companyAdminProcedureAssistant: createProcedureMock(),
       companyAdminProcedureGenerous: createProcedureMock(),
@@ -437,6 +439,34 @@ describe("src/server/orpc/routes/placements", () => {
 
     expect(result).toEqual({ summary: "ok" })
     expect(generateValidationSummaryMock).toHaveBeenCalledTimes(1)
+  })
+
+  test("generateValidationSummaryProcedure maps AI errors to service unavailable", async () => {
+    generateValidationSummaryMock.mockRejectedValueOnce(
+      new Error("provider unavailable"),
+    )
+    const { generateValidationSummaryProcedure } = await importPlacementsRoute()
+
+    await expect(
+      callProcedure(generateValidationSummaryProcedure, {
+        input: {
+          application: {
+            id: "app-1",
+            studentName: "Student One",
+          },
+        },
+        context: {
+          user: {
+            id: "admin-1",
+            role: "university_admin",
+            universityId: "uni-1",
+          },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "SERVICE_UNAVAILABLE",
+      message: "AI service is temporarily unavailable. Please try again shortly.",
+    })
   })
 
   test("deptHeadGetPendingByIdProcedure delegates for department scope", async () => {

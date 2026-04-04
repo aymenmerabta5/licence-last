@@ -18,6 +18,8 @@ import {
   isMessageServiceError,
   MessageServiceError,
 } from "@/server/services/messages/errors"
+import { listMessageStartersByCompany } from "@/server/services/messages/list-starters-by-company"
+import { listMessageStartersByStudent } from "@/server/services/messages/list-starters-by-student"
 import { listThreadMessages } from "@/server/services/messages/list-thread-messages"
 import { listMessageThreadsByCompany } from "@/server/services/messages/list-threads-by-company"
 import { listMessageThreadsByStudent } from "@/server/services/messages/list-threads-by-student"
@@ -83,6 +85,31 @@ export const listMessageThreadsByStudentProcedure = studentProcedureGenerous
   )
   .handler(async ({ input, context }) =>
     listMessageThreadsByStudent(context.user.id, input ?? {}),
+  )
+
+export const listMessageStartersByCompanyProcedure =
+  companyAdminProcedureGenerous
+    .input(
+      z
+        .object({
+          limit: z.coerce.number().int().min(1).max(100).optional(),
+        })
+        .optional(),
+    )
+    .handler(async ({ input, context }) =>
+      listMessageStartersByCompany(context.companyMembership.companyId, input ?? {}),
+    )
+
+export const listMessageStartersByStudentProcedure = studentProcedureGenerous
+  .input(
+    z
+      .object({
+        limit: z.coerce.number().int().min(1).max(100).optional(),
+      })
+      .optional(),
+  )
+  .handler(async ({ input, context }) =>
+    listMessageStartersByStudent(context.user.id, input ?? {}),
   )
 
 export const listThreadMessagesProcedure = authedProcedureGenerous

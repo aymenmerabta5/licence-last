@@ -3,9 +3,9 @@ import "server-only"
 import { ORPCError, os } from "@orpc/server"
 import { eq } from "drizzle-orm"
 import { headers } from "next/headers"
-import { auth } from "@/lib/auth"
 import { getEffectiveRole } from "@/lib/effective-role"
 import { checkAdminApproval } from "@/server/auth/approval-gate"
+import { getFreshAuthSession } from "@/server/auth/get-fresh-session"
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
 import { studentProfile } from "@/server/db/schema/students"
@@ -33,7 +33,13 @@ async function resolveContextUser(user: SessionUser) {
       ? await getUniversityMembership(user.id)
       : null
 
-  const effectiveRole = getEffectiveRole({ role: user.role })
+  const legacyDeptHeadWithoutMembership =
+    user.role === "dept_head" && universityMembership == null
+  const effectiveRole = legacyDeptHeadWithoutMembership
+    ? "student"
+    : getEffectiveRole({ role: user.role })
+  const approvalRole =
+    user.role === "dept_head" ? "university_admin" : user.role
 
   return {
     user: {
@@ -41,13 +47,17 @@ async function resolveContextUser(user: SessionUser) {
       role: effectiveRole,
       effectiveRole,
       rawRole: user.role ?? null,
-      universityId:
-        universityMembership?.universityId ?? user.universityId ?? null,
-      departmentId:
-        universityMembership?.departmentId ?? user.departmentId ?? null,
+      approvalRole,
+      universityId: legacyDeptHeadWithoutMembership
+        ? null
+        : universityMembership?.universityId ?? user.universityId ?? null,
+      departmentId: legacyDeptHeadWithoutMembership
+        ? null
+        : universityMembership?.departmentId ?? user.departmentId ?? null,
       universityMembershipRole: universityMembership?.role ?? null,
-      universityDepartmentId:
-        universityMembership?.departmentId ?? user.departmentId ?? null,
+      universityDepartmentId: legacyDeptHeadWithoutMembership
+        ? null
+        : universityMembership?.departmentId ?? user.departmentId ?? null,
     },
     universityMembership,
   }
@@ -56,8 +66,25 @@ async function resolveContextUser(user: SessionUser) {
 /**
  * Check if a user role has admin privileges (university_admin or super_admin).
  */
-export function isAdminRole(role: string | null | undefined): boolean {
-  return role === "university_admin" || role === "super_admin"
+export function isAdminRole(
+  role: string | null | undefined,
+  universityMembershipRole?: string | null,
+): boolean {
+  return (
+    role === "super_admin" ||
+    (role === "university_admin" &&
+      universityMembershipRole !== "department_head")
+  )
+}
+
+export function hasUniversityScopedAccess(args: {
+  role: string | null | undefined
+  universityMembershipRole?: string | null
+}): boolean {
+  return (
+    isAdminRole(args.role, args.universityMembershipRole) ||
+    args.universityMembershipRole === "department_head"
+  )
 }
 
 /** Public — no auth required. */
@@ -65,9 +92,7 @@ export const publicProcedure = os
 
 /** Authenticated session — requires a valid session. */
 export const authedSessionProcedure = os.use(async ({ next }) => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const session = await getFreshAuthSession(await headers())
 
   if (!session) {
     throw new ORPCError("UNAUTHORIZED")
@@ -107,12 +132,13 @@ async function assertApprovedAdminAccess(user: {
   id: string
   role?: string | null
   rawRole?: string | null
+  approvalRole?: string | null
   onboardingCompleted?: boolean | null
 }) {
   try {
     const approval = await checkAdminApproval({
       ...user,
-      role: user.rawRole ?? user.role,
+      role: user.approvalRole ?? user.rawRole ?? user.role,
     })
 
     if (approval.ok) {
@@ -151,7 +177,12 @@ export const authedProcedure = authedSessionProcedure.use(
 
 /** Admin — requires true university admin or super_admin role. */
 export const adminProcedure = authedProcedure.use(async ({ context, next }) => {
-  if (!isAdminRole(context.user.role)) {
+  if (
+    !isAdminRole(
+      context.user.role,
+      context.user.universityMembershipRole,
+    )
+  ) {
     throwCodedORPCError("FORBIDDEN", "ADMIN_ACCESS_REQUIRED", {
       message: "Admin access required",
     })
@@ -163,8 +194,10 @@ export const adminProcedure = authedProcedure.use(async ({ context, next }) => {
 export const universityProcedure = authedProcedure.use(
   async ({ context, next }) => {
     if (
-      context.user.role !== "university_admin" &&
-      context.user.role !== "super_admin"
+      !hasUniversityScopedAccess({
+        role: context.user.role,
+        universityMembershipRole: context.user.universityMembershipRole,
+      })
     ) {
       throwCodedORPCError("FORBIDDEN", "UNIVERSITY_ACCESS_REQUIRED", {
         message: "University access required",

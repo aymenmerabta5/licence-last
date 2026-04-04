@@ -90,6 +90,7 @@ export function UserManagementView() {
           onSetRole={dialogState.setRoleTarget}
           onSetPassword={dialogState.setPwTarget}
           onDelete={dialogState.setDeleteTarget}
+          canModerateUsers={isSuperAdmin}
           canViewDetails={isSuperAdmin}
           canSetRole={isSuperAdmin}
           canSetPassword={isSuperAdmin}

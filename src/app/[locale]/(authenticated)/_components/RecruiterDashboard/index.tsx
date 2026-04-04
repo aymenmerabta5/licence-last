@@ -16,9 +16,13 @@ interface RecruiterDashboardProps {
     email: string
     role: string
   }
+  assistantEnabled: boolean
 }
 
-export function RecruiterDashboard({ user: _user }: RecruiterDashboardProps) {
+export function RecruiterDashboard({
+  user: _user,
+  assistantEnabled,
+}: RecruiterDashboardProps) {
   const {
     activeOffers,
     draftOffers,
@@ -61,7 +65,7 @@ export function RecruiterDashboard({ user: _user }: RecruiterDashboardProps) {
 
         <div className="lg:col-span-5 space-y-10">
           <TrustGauge trustData={trustData} isLoading={isTrustLoading} />
-          <RecruiterQuickActions />
+          <RecruiterQuickActions assistantEnabled={assistantEnabled} />
         </div>
       </div>
     </div>

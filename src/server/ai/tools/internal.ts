@@ -5,10 +5,13 @@ import { z } from "zod"
 
 import { WILAYAS } from "@/lib/wilayas"
 import { getAIModel } from "@/server/ai/model"
+import { createModuleLogger } from "@/server/logging"
 
 interface CreateInternalToolsParams {
   contextJson: string
 }
+
+const log = createModuleLogger("ai/tools/internal")
 
 async function safeGenerateOutput<T>({
   schema,
@@ -18,7 +21,7 @@ async function safeGenerateOutput<T>({
   schema: z.ZodType<T>
   prompt: string
   system?: string
-}): Promise<T | { error: string; detail: string }> {
+}): Promise<T | { error: string }> {
   try {
     const result = await generateText({
       model: getAIModel(),
@@ -28,9 +31,9 @@ async function safeGenerateOutput<T>({
     })
     return result.output as T
   } catch (e) {
+    log.warn({ err: e }, "Internal assistant tool failed")
     return {
-      error: "Failed to generate.",
-      detail: e instanceof Error ? e.message : "unknown",
+      error: "The assistant couldn't complete this action. Please try again.",
     }
   }
 }

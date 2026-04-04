@@ -10,11 +10,10 @@ import {
   findLatestToolOutput,
   getStringArray,
 } from "@/lib/ai/tool-output"
-
-type NotificationsSummary = {
-  summaryBullets: string[]
-  suggestedNextActions: string[]
-}
+import {
+  buildNotificationsFallbackSummary,
+  type NotificationsSummary,
+} from "@/lib/notifications"
 
 interface Notification {
   id: string
@@ -22,40 +21,6 @@ interface Notification {
   createdAt: string | Date
   readAt: string | Date | null
   payload: unknown
-}
-
-function buildFallbackSummary(
-  notifications: Notification[],
-): NotificationsSummary {
-  const total = notifications.length
-  const unread = notifications.filter((item) => item.readAt === null).length
-
-  const typeCounts = notifications.reduce<Record<string, number>>(
-    (acc, item) => {
-      acc[item.type] = (acc[item.type] ?? 0) + 1
-      return acc
-    },
-    {},
-  )
-
-  const topTypes = Object.entries(typeCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(([type, count]) => `${type.replaceAll("_", " ")}: ${count}`)
-
-  return {
-    summaryBullets: [
-      `${unread} unread out of ${total} notifications.`,
-      ...topTypes,
-    ],
-    suggestedNextActions:
-      unread > 0
-        ? [
-            "Review unread notifications and mark handled items as read.",
-            "Prioritize messages and interview updates first.",
-          ]
-        : ["You are up to date. Keep monitoring new activity."],
-  }
 }
 
 export function useNotificationsSummary() {
@@ -87,7 +52,7 @@ export function useNotificationsSummary() {
         findLatestToolOutput(messages, "notifications_summarize"),
       )
       if (!out) {
-        setAiSummary(buildFallbackSummary(lastNotificationsRef.current))
+        setAiSummary(buildNotificationsFallbackSummary(lastNotificationsRef.current, t))
         return
       }
 
@@ -100,7 +65,7 @@ export function useNotificationsSummary() {
 
   const summarize = (role: string, notifications: Notification[]) => {
     aiActiveRef.current = true
-    setAiSummary(buildFallbackSummary(notifications))
+    setAiSummary(buildNotificationsFallbackSummary(notifications, t))
     setAiMessages([])
     lastNotificationsRef.current = notifications
 

@@ -1,7 +1,7 @@
 import "server-only"
 
 import { renderToBuffer } from "@react-pdf/renderer"
-import { and, eq } from "drizzle-orm"
+import { and, eq, isNull } from "drizzle-orm"
 import { createElement } from "react"
 import { env } from "@/env"
 import { db } from "@/server/db"
@@ -29,6 +29,7 @@ export interface AgreementIssuerContext {
   role: string | null
   universityId: string | null
   departmentId: string | null
+  universityMembershipRole?: string | null
 }
 
 export interface GenerateAgreementInput {
@@ -160,21 +161,21 @@ function canIssueAgreement(
   studentUniversityId: string | null,
   studentDepartmentId: string | null,
 ): boolean {
-  if (issuer.role === "university_admin") {
+  if (
+    issuer.role !== "university_admin" ||
+    issuer.universityId == null ||
+    issuer.universityId !== studentUniversityId
+  ) {
+    return false
+  }
+
+  if (issuer.universityMembershipRole === "department_head") {
     return (
-      issuer.universityId != null && issuer.universityId === studentUniversityId
+      issuer.departmentId != null && issuer.departmentId === studentDepartmentId
     )
   }
 
-  if (issuer.role === "university_admin" && issuer.departmentId != null) {
-    return (
-      issuer.universityId != null &&
-      issuer.universityId === studentUniversityId &&
-      issuer.departmentId === studentDepartmentId
-    )
-  }
-
-  return false
+  return true
 }
 
 async function loadAgreementContext(
@@ -392,7 +393,9 @@ export async function generateAgreement(
   let shouldSendAgreementEmail = false
 
   if (documentRecord) {
-    await db
+    shouldSendAgreementEmail = documentRecord.status !== "generated"
+
+    const [updatedDocument] = await db
       .update(placementDocument)
       .set({
         status: "generated",
@@ -401,8 +404,60 @@ export async function generateAgreement(
         snapshotData,
         meta: issuedMeta,
       })
-      .where(eq(placementDocument.id, documentRecord.id))
-    shouldSendAgreementEmail = documentRecord.status !== "generated"
+      .where(
+        and(
+          eq(placementDocument.id, documentRecord.id),
+          eq(placementDocument.status, documentRecord.status),
+          existingVerificationCode
+            ? eq(placementDocument.verificationCode, existingVerificationCode)
+            : isNull(placementDocument.verificationCode),
+        ),
+      )
+      .returning()
+
+    if (!updatedDocument) {
+      const [resolvedDoc] = await db
+        .select()
+        .from(placementDocument)
+        .where(
+          and(
+            eq(placementDocument.placementId, placementId),
+            eq(placementDocument.type, "agreement"),
+          ),
+        )
+        .limit(1)
+
+      if (!resolvedDoc) {
+        throw new DocumentServiceError(
+          "DOCUMENT_CONFLICT_RESOLUTION_FAILED",
+          "Failed to resolve generated agreement document",
+        )
+      }
+
+      const resolvedMeta = toMetaRecord(resolvedDoc.meta)
+      const resolvedVerificationCode =
+        pickString(resolvedDoc.verificationCode) ?? verificationCode
+      const resolvedSnapshot = toAgreementSnapshot(resolvedDoc.snapshotData)
+
+      if (resolvedDoc.status === "generated" && resolvedVerificationCode) {
+        return {
+          success: true,
+          documentId: resolvedDoc.id,
+          buffer: await renderAgreementBuffer({
+            data: resolvedSnapshot ?? context.data,
+            locale: pickString(resolvedMeta.locale) ?? issuedLocale,
+            verificationCode: resolvedVerificationCode,
+          }),
+        }
+      }
+
+      throw new DocumentServiceError(
+        "DOCUMENT_CONFLICT_RESOLUTION_FAILED",
+        "Failed to resolve generated agreement document",
+      )
+    }
+
+    documentRecord = updatedDocument
   } else {
     const [insertedDoc] = await db
       .insert(placementDocument)
@@ -508,16 +563,29 @@ export async function generateAgreement(
   }
 
   if (shouldSendAgreementEmail) {
-    await createNotification({
-      userId: context.row.studentUserId,
-      type: "agreement_generated",
-      payload: {
-        placementId,
-        documentId: documentRecord.id,
-        companyName: context.row.companyName,
-        offerTitle: context.row.offerTitle,
-      },
-    })
+    try {
+      await createNotification({
+        userId: context.row.studentUserId,
+        type: "agreement_generated",
+        payload: {
+          placementId,
+          documentId: documentRecord.id,
+          companyName: context.row.companyName,
+          offerTitle: context.row.offerTitle,
+        },
+      })
+    } catch (error) {
+      logger.error(
+        {
+          err: error,
+          event: "agreement_notification_failed",
+          placementId,
+          documentId: documentRecord.id,
+          studentUserId: context.row.studentUserId,
+        },
+        "Failed to create agreement generated notification",
+      )
+    }
 
     void sendAgreementEmail({
       userId: context.row.studentUserId,

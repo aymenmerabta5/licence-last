@@ -62,7 +62,17 @@ describe("src/server/services/notifications/update-preferences", () => {
     })
 
     expect(result).toEqual({ inAppEnabled: false, emailEnabled: true })
-    expect(mockGetNotificationPreferences).toHaveBeenCalledTimes(1)
+    expect(mockGetNotificationPreferences).not.toHaveBeenCalled()
     expect(mockInsert).toHaveBeenCalledTimes(1)
+  })
+
+  test("does not read current preferences before a partial update", async () => {
+    const { updateNotificationPreferences } = await importUpdatePreferences()
+
+    await updateNotificationPreferences("user-1", {
+      inAppEnabled: false,
+    })
+
+    expect(mockGetNotificationPreferences).not.toHaveBeenCalled()
   })
 })

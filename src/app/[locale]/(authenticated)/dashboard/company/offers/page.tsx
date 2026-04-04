@@ -3,6 +3,7 @@ import { Suspense } from "react"
 import { CompanyOffersView } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView"
 import { Skeleton } from "@/components/ui/skeleton"
 import { requireApprovedCompanyAdmin } from "@/lib/dashboard-access"
+import { getCompanyMembership } from "@/server/services/companies/membership"
 
 function CompanyOffersFallback() {
   return (
@@ -29,12 +30,17 @@ function CompanyOffersFallback() {
   )
 }
 
-export default async function CompanyOffersPage() {
-  await requireApprovedCompanyAdmin()
+async function CompanyOffersPageContent() {
+  const { user } = await requireApprovedCompanyAdmin()
+  const membership = await getCompanyMembership(user.id)
 
+  return <CompanyOffersView canManageStatus={membership?.role === "owner"} />
+}
+
+export default function CompanyOffersPage() {
   return (
     <Suspense fallback={<CompanyOffersFallback />}>
-      <CompanyOffersView />
+      <CompanyOffersPageContent />
     </Suspense>
   )
 }

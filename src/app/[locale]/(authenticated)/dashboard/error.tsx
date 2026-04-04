@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 
 export default function DashboardError({
-  error,
+  error: _error,
   reset,
 }: {
   error: Error
@@ -24,10 +24,9 @@ export default function DashboardError({
           {t("error.title", { defaultMessage: "Something went wrong" })}
         </h2>
         <p className="text-muted-foreground text-sm max-w-md">
-          {error.message ||
-            t("error.description", {
-              defaultMessage: "An unexpected error occurred. Please try again.",
-            })}
+          {t("error.description", {
+            defaultMessage: "An unexpected error occurred. Please try again.",
+          })}
         </p>
       </div>
       <Button variant="outline" onClick={reset}>

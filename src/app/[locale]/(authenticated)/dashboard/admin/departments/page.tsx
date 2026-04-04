@@ -25,12 +25,16 @@ function DepartmentsFallback() {
   )
 }
 
-export default async function DepartmentsPage() {
+async function DepartmentsPageContent() {
   await requireApprovedUniversityAdmin()
 
+  return <DepartmentsView />
+}
+
+export default function DepartmentsPage() {
   return (
     <Suspense fallback={<DepartmentsFallback />}>
-      <DepartmentsView />
+      <DepartmentsPageContent />
     </Suspense>
   )
 }

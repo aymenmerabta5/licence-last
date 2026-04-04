@@ -1,6 +1,5 @@
 import "server-only"
 
-import { eq } from "drizzle-orm"
 import { db } from "@/server/db"
 import { createModuleLogger } from "@/server/logging"
 
@@ -24,19 +23,25 @@ function normaliseOptionalString(
   value: string | undefined,
 ): string | null | undefined {
   if (value === undefined) return undefined
-  return value.trim() ? value : null
+  return value.trim() ? value.trim() : null
 }
 
 function normaliseOptionalUrl(
   value: string | undefined,
 ): string | null | undefined {
   if (value === undefined) return undefined
-  return value.trim() ? value : null
+  return value.trim() ? value.trim() : null
+}
+
+function pickDefinedFields<T extends Record<string, unknown>>(fields: T) {
+  return Object.fromEntries(
+    Object.entries(fields).filter(([, value]) => value !== undefined),
+  ) as Partial<T>
 }
 
 /**
  * Create or update a student profile WITHOUT touching skills.
- * Missing (undefined) fields are preserved from the existing profile.
+ * Missing (undefined) fields are preserved by updating only provided fields.
  */
 export async function upsertStudentProfileDetails(
   input: StudentProfileDetailsInput,
@@ -44,67 +49,34 @@ export async function upsertStudentProfileDetails(
 ) {
   log.info({ userId }, "Upserting student profile details")
 
-  const [existing] = await db
-    .select()
-    .from(studentProfile)
-    .where(eq(studentProfile.userId, userId))
-    .limit(1)
-
-  const next = {
-    userId,
-    bio:
-      normaliseOptionalString(input.bio) ??
-      (input.bio === undefined ? (existing?.bio ?? null) : null),
-    phone:
-      normaliseOptionalString(input.phone) ??
-      (input.phone === undefined ? (existing?.phone ?? null) : null),
-    githubUrl:
-      normaliseOptionalUrl(input.githubUrl) ??
-      (input.githubUrl === undefined ? (existing?.githubUrl ?? null) : null),
-    portfolioUrl:
-      normaliseOptionalUrl(input.portfolioUrl) ??
-      (input.portfolioUrl === undefined
-        ? (existing?.portfolioUrl ?? null)
-        : null),
-    studentNumber:
-      normaliseOptionalString(input.studentNumber) ??
-      (input.studentNumber === undefined
-        ? (existing?.studentNumber ?? null)
-        : null),
-    department:
-      normaliseOptionalString(input.department) ??
-      (input.department === undefined ? (existing?.department ?? null) : null),
-    level:
-      normaliseOptionalString(input.level) ??
-      (input.level === undefined ? (existing?.level ?? null) : null),
+  const profileChanges = pickDefinedFields({
+    bio: normaliseOptionalString(input.bio),
+    phone: normaliseOptionalString(input.phone),
+    githubUrl: normaliseOptionalUrl(input.githubUrl),
+    portfolioUrl: normaliseOptionalUrl(input.portfolioUrl),
+    studentNumber: normaliseOptionalString(input.studentNumber),
+    department: normaliseOptionalString(input.department),
+    level: normaliseOptionalString(input.level),
     wilayaCode:
       input.wilayaCode === undefined
-        ? (existing?.wilayaCode ?? null)
+        ? undefined
         : input.wilayaCode === 0
           ? null
           : input.wilayaCode,
-    address:
-      normaliseOptionalString(input.address) ??
-      (input.address === undefined ? (existing?.address ?? null) : null),
-  }
+    address: normaliseOptionalString(input.address),
+  })
 
-  await db
-    .insert(studentProfile)
-    .values(next)
-    .onConflictDoUpdate({
-      target: studentProfile.userId,
-      set: {
-        bio: next.bio,
-        phone: next.phone,
-        githubUrl: next.githubUrl,
-        portfolioUrl: next.portfolioUrl,
-        studentNumber: next.studentNumber,
-        department: next.department,
-        level: next.level,
-        wilayaCode: next.wilayaCode,
-        address: next.address,
-      },
-    })
+  if (Object.keys(profileChanges).length > 0) {
+    await db
+      .insert(studentProfile)
+      .values({ userId, ...profileChanges })
+      .onConflictDoUpdate({
+        target: studentProfile.userId,
+        set: profileChanges,
+      })
+  } else {
+    await db.insert(studentProfile).values({ userId }).onConflictDoNothing()
+  }
 
   log.info(
     { userId, event: "student_profile_details_upserted" },

@@ -9,11 +9,15 @@ import { db } from "@/server/db"
 import { studentLanguage } from "@/server/db/schema/languages"
 import { skillTag } from "@/server/db/schema/skills"
 import { studentProfile, studentSkill } from "@/server/db/schema/students"
+import { canAccessPrivateStudentProfile } from "@/server/orpc/utils/student-scope"
 import { getUserById } from "@/server/services/users/get-by-id"
 
 export interface ViewerIdentity {
   id: string
   role?: string | null
+  universityId?: string | null
+  departmentId?: string | null
+  universityMembershipRole?: string | null
 }
 
 export interface ViewerSafeUser {
@@ -34,6 +38,7 @@ export interface ViewerSafeStudentProfile {
   portfolioUrl: string | null
   studentNumber: string | null
   department: string | null
+  departmentId?: string | null
   level: string | null
   address: string | null
 }
@@ -57,11 +62,21 @@ export interface StudentProfileForViewerResult {
   languages: ViewerSafeStudentLanguage[]
 }
 
-function canViewPrivateFields(viewer: ViewerIdentity, targetUserId: string) {
-  const isOwner = viewer.id === targetUserId
-  const isAdmin =
-    viewer.role === "university_admin" || viewer.role === "super_admin"
-  return isOwner || isAdmin
+function canViewPrivateFields(
+  viewer: ViewerIdentity,
+  target: {
+    userId: string
+    universityId: string | null
+    departmentId: string | null
+  },
+) {
+  return canAccessPrivateStudentProfile(
+    {
+      ...viewer,
+      role: viewer.role ?? null,
+    },
+    target,
+  )
 }
 
 /**
@@ -80,8 +95,7 @@ export async function getStudentProfileForViewer({
 
   const targetUser = await getUserById(targetUserId)
   if (!targetUser) return null
-
-  const canViewPrivate = canViewPrivateFields(viewer, targetUserId)
+  if (targetUser.role !== "student") return null
 
   const [profileRow] = await db
     .select({
@@ -92,12 +106,19 @@ export async function getStudentProfileForViewer({
       portfolioUrl: studentProfile.portfolioUrl,
       studentNumber: studentProfile.studentNumber,
       department: studentProfile.department,
+      departmentId: studentProfile.departmentId,
       level: studentProfile.level,
       address: studentProfile.address,
     })
     .from(studentProfile)
     .where(eq(studentProfile.userId, targetUserId))
     .limit(1)
+
+  const canViewPrivate = canViewPrivateFields(viewer, {
+    userId: targetUserId,
+    universityId: targetUser.universityId,
+    departmentId: profileRow?.departmentId ?? null,
+  })
 
   if (!profileRow) {
     return {

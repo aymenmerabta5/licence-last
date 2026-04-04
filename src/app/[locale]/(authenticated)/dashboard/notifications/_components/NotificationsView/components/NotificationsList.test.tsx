@@ -1,15 +1,35 @@
-import { afterAll, describe, expect, mock, test } from "bun:test"
-import { fireEvent, render, screen } from "@testing-library/react"
+import { afterAll, afterEach, describe, expect, mock, test } from "bun:test"
+import { cleanup, fireEvent, render, screen } from "@testing-library/react"
 import type { RefObject } from "react"
 import { createMotionReactClientMock } from "@/test/mocks/motion-react-client"
 
+mock.module("lucide-react", () => ({
+  Loader2: () => <span>Loader2</span>,
+}))
+
 mock.module("next-intl", () => ({
-  useTranslations: () => (key: string) => {
-    if (key === "empty") {
-      return "No notifications yet."
-    }
-    return key
-  },
+  useTranslations: () =>
+    (key: string, values?: Record<string, string | number>) => {
+      const translations: Record<string, string> = {
+        empty: "No notifications yet.",
+        "feed.titles.new_application": "New application",
+        "feed.messages.new_application.withOfferTitle":
+          "A student applied for {offerTitle}.",
+        "feed.titles.application_stage_changed": "Application stage updated",
+        "feed.stageLabels.interview": "Interview",
+        "feed.messages.application_stage_changed.withOfferAndStage":
+          "{offerTitle} moved to {stage}.",
+        "feed.titles.company_approved": "Company approved",
+        "feed.messages.company_approved.withCompanyName":
+          "{companyName} has been approved.",
+      }
+
+      let text = translations[key] ?? key
+      for (const [name, value] of Object.entries(values ?? {})) {
+        text = text.replace(`{${name}}`, String(value))
+      }
+      return text
+    },
 }))
 
 mock.module("motion/react-client", createMotionReactClientMock)
@@ -21,6 +41,10 @@ const { NotificationsList } = await import(
 describe("src/app/[locale]/(authenticated)/dashboard/notifications/_components/NotificationsView/components/NotificationsList", () => {
   afterAll(() => {
     mock.restore()
+  })
+
+  afterEach(() => {
+    cleanup()
   })
 
   const sentinelRef = { current: null } as RefObject<HTMLDivElement | null>

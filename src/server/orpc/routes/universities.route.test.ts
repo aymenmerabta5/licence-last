@@ -206,6 +206,29 @@ describe("src/server/orpc/routes/universities", () => {
     )
   })
 
+  test("createUniversityProcedure blocks creating a second university for the same admin", async () => {
+    const { createUniversityProcedure } = await import(
+      "@/server/orpc/routes/universities"
+    )
+
+    await expect(
+      callProcedure(createUniversityProcedure, {
+        input: { name: "USTHB", domains: ["usthb.dz"] },
+        context: {
+          user: {
+            id: "admin-1",
+            role: "university_admin",
+            universityId: "uni-existing",
+          },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "University admin is already linked to a university",
+    })
+    expect(createUniversityMock).not.toHaveBeenCalled()
+  })
+
   test("approveUniversityProcedure triggers cache invalidation and notifications", async () => {
     const { approveUniversityProcedure } = await import(
       "@/server/orpc/routes/universities"

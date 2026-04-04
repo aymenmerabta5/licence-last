@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { Suspense } from "react"
 
 interface MockSession {
   user: {
     id: string
     onboardingCompleted: boolean
+    role?: string
   }
 }
 
@@ -12,7 +14,9 @@ interface MockStatus {
 }
 
 const headersMock = mock(async () => new Headers())
-const getSessionMock = mock<() => Promise<MockSession | null>>(async () => null)
+const getFreshAuthSessionMock = mock<
+  () => Promise<MockSession | null>
+>(async () => null)
 const localeRedirectMock = mock(
   async (path: string) => `redirect:${path}` as never,
 )
@@ -29,12 +33,8 @@ mock.module("next/headers", () => ({
   headers: headersMock,
 }))
 
-mock.module("@/lib/auth", () => ({
-  auth: {
-    api: {
-      getSession: getSessionMock,
-    },
-  },
+mock.module("@/server/auth/get-fresh-session", () => ({
+  getFreshAuthSession: getFreshAuthSessionMock,
 }))
 
 mock.module("@/lib/navigation", () => ({
@@ -71,49 +71,97 @@ async function loadModule(path: string) {
 describe("onboarding redirects", () => {
   beforeEach(() => {
     headersMock.mockClear()
-    getSessionMock.mockClear()
+    getFreshAuthSessionMock.mockClear()
     localeRedirectMock.mockClear()
     getCompanyStatusByUserIdMock.mockClear()
     getUniversityStatusByUserIdMock.mockClear()
   })
 
   test("redirects approved companies to the canonical dashboard", async () => {
-    const { default: CompanyOnboardingPage } = await loadModule(
+    const { default: CompanyOnboardingPage, CompanyOnboardingPageContent } =
+      await loadModule(
       "@/app/[locale]/onboarding/company/page",
-    )
-    getSessionMock.mockResolvedValueOnce({
+      )
+    getFreshAuthSessionMock.mockResolvedValueOnce({
       user: {
         id: "company-user",
         onboardingCompleted: true,
+        role: "company_admin",
       },
     })
     getCompanyStatusByUserIdMock.mockResolvedValueOnce({
       status: "approved",
     })
 
-    const result = await CompanyOnboardingPage()
+    const page = CompanyOnboardingPage()
+    const result = await CompanyOnboardingPageContent()
 
+    expect(page).not.toBeInstanceOf(Promise)
+    expect(page.type).toBe(Suspense)
     expect(localeRedirectMock).toHaveBeenCalledWith("/dashboard")
     expect(result).toBeDefined()
   })
 
+  test("redirects company admins away from the student onboarding form", async () => {
+    const { StudentOnboardingPageContent } = await loadModule(
+      "@/app/[locale]/onboarding/student/page",
+    )
+    getFreshAuthSessionMock.mockResolvedValueOnce({
+      user: {
+        id: "company-user",
+        onboardingCompleted: false,
+        role: "company_admin",
+      },
+    })
+
+    const result = await StudentOnboardingPageContent()
+
+    expect(localeRedirectMock).toHaveBeenCalledWith("/onboarding/company")
+    expect(result).toBeDefined()
+  })
+
   test("redirects approved universities to the canonical dashboard", async () => {
-    const { default: UniversityOnboardingPage } = await loadModule(
+    const {
+      default: UniversityOnboardingPage,
+      UniversityOnboardingPageContent,
+    } = await loadModule(
       "@/app/[locale]/onboarding/university/page",
     )
-    getSessionMock.mockResolvedValueOnce({
+    getFreshAuthSessionMock.mockResolvedValueOnce({
       user: {
         id: "university-user",
         onboardingCompleted: true,
+        role: "university_admin",
       },
     })
     getUniversityStatusByUserIdMock.mockResolvedValueOnce({
       status: "approved",
     })
 
-    const result = await UniversityOnboardingPage()
+    const page = UniversityOnboardingPage()
+    const result = await UniversityOnboardingPageContent()
 
+    expect(page).not.toBeInstanceOf(Promise)
+    expect(page.type).toBe(Suspense)
     expect(localeRedirectMock).toHaveBeenCalledWith("/dashboard")
+    expect(result).toBeDefined()
+  })
+
+  test("redirects students away from the university onboarding form", async () => {
+    const { UniversityOnboardingPageContent } = await loadModule(
+      "@/app/[locale]/onboarding/university/page",
+    )
+    getFreshAuthSessionMock.mockResolvedValueOnce({
+      user: {
+        id: "student-user",
+        onboardingCompleted: false,
+        role: "student",
+      },
+    })
+
+    const result = await UniversityOnboardingPageContent()
+
+    expect(localeRedirectMock).toHaveBeenCalledWith("/onboarding/student")
     expect(result).toBeDefined()
   })
 })

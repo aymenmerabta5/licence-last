@@ -100,7 +100,7 @@ describe("src/server/services/companies/invite-member", () => {
     })
   })
 
-  test("returns alreadyMember for existing same-company membership", async () => {
+  test("returns alreadyMember for existing same-company membership and resends access email", async () => {
     selectResponses = [
       [{ id: "company-1", name: "Acme" }],
       [
@@ -131,6 +131,12 @@ describe("src/server/services/companies/invite-member", () => {
       role: "recruiter",
     })
     expect(mockCreateUser).not.toHaveBeenCalled()
+    expect(mockRequestPasswordReset).toHaveBeenCalledWith({
+      body: {
+        email: "member@example.com",
+        redirectTo: "/reset-password/verify",
+      },
+    })
   })
 
   test("attaches an existing company_admin account without rewriting role", async () => {

@@ -1,11 +1,11 @@
-import { env } from "@/env"
+import { getPublicAppUrl } from "@/lib/public-url"
 
 export async function GET() {
   if (process.env.NODE_ENV === "production") {
     return new Response("Not Found", { status: 404 })
   }
 
-  const specUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/api/openapi/spec`
+  const specUrl = `${getPublicAppUrl()}/api/openapi/spec`
 
   const html = `<!DOCTYPE html>
 <html lang="en">

@@ -1,6 +1,6 @@
 export interface UserSession {
   id: string
-  token: string
+  tokenPrefix: string | null
   ipAddress: string | null
   userAgent: string | null
   createdAt: string | Date

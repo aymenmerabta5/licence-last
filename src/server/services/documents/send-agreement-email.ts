@@ -38,6 +38,18 @@ function formatDate(date: Date, locale?: string): string {
   return formatter.format(date)
 }
 
+function getAgreementEmailSubject(locale?: string) {
+  if (locale === "fr") {
+    return "Votre convention de stage est prete - Stag"
+  }
+
+  if (locale === "ar") {
+    return "اتفاقية التدريب الخاصة بك جاهزة - Stag"
+  }
+
+  return "Your internship agreement is ready - Stag"
+}
+
 export async function sendAgreementEmail(input: SendAgreementEmailInput) {
   const preferences = await getNotificationPreferences(input.userId)
   if (!preferences.emailEnabled) {
@@ -62,7 +74,7 @@ export async function sendAgreementEmail(input: SendAgreementEmailInput) {
 
   return sendEmail(
     input.to,
-    "Your internship agreement is ready - Stag",
+    getAgreementEmailSubject(input.locale),
     AgreementGeneratedEmail,
     {
       studentName: input.studentName,

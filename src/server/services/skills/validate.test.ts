@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { ServiceError } from "@/server/services/errors"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockWhereResult: any[] = []
@@ -27,7 +28,10 @@ mock.module("@/server/services/skills/validate", () => ({
     const existingIds = new Set(existing.map((s: { id: string }) => s.id))
     const missingIds = ids.filter((id: string) => !existingIds.has(id))
     if (missingIds.length > 0) {
-      throw new Error(`Invalid skill tag IDs: ${missingIds.join(", ")}`)
+      throw new ServiceError(
+        "INVALID_SKILL_TAG_IDS",
+        `Invalid skill tag IDs: ${missingIds.join(", ")}`,
+      )
     }
   },
 }))
@@ -62,9 +66,13 @@ describe("src/server/services/skills/validate", () => {
       "@/server/services/skills/validate"
     )
 
-    await expect(validateSkillTagIds(["skill-1", "skill-2"])).rejects.toThrow(
-      "Invalid skill tag IDs: skill-2",
-    )
+    await expect(
+      validateSkillTagIds(["skill-1", "skill-2"]),
+    ).rejects.toMatchObject({
+      name: "ServiceError",
+      code: "INVALID_SKILL_TAG_IDS",
+      message: "Invalid skill tag IDs: skill-2",
+    } satisfies Partial<ServiceError>)
   })
 
   test("should throw listing all missing IDs", async () => {
@@ -74,9 +82,11 @@ describe("src/server/services/skills/validate", () => {
       "@/server/services/skills/validate"
     )
 
-    await expect(validateSkillTagIds(["a", "b", "c"])).rejects.toThrow(
-      "Invalid skill tag IDs: a, b, c",
-    )
+    await expect(validateSkillTagIds(["a", "b", "c"])).rejects.toMatchObject({
+      name: "ServiceError",
+      code: "INVALID_SKILL_TAG_IDS",
+      message: "Invalid skill tag IDs: a, b, c",
+    } satisfies Partial<ServiceError>)
   })
 
   test("should not query when given empty array", async () => {

@@ -1,10 +1,11 @@
+import { Suspense } from "react"
 import { OfferForm } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm"
 import { requireApprovedCompanyAdmin } from "@/lib/dashboard-access"
 import type { LanguageCode } from "@/lib/constants/languages"
 import { localeRedirect } from "@/lib/navigation"
 import { getOfferById } from "@/server/services/offers/get"
 
-export default async function EditOfferPage({
+async function EditOfferPageContent({
   params,
 }: {
   params: Promise<{ offerId: string }>
@@ -51,5 +52,17 @@ export default async function EditOfferPage({
         }}
       />
     </div>
+  )
+}
+
+export default function EditOfferPage({
+  params,
+}: {
+  params: Promise<{ offerId: string }>
+}) {
+  return (
+    <Suspense fallback={null}>
+      <EditOfferPageContent params={params} />
+    </Suspense>
   )
 }

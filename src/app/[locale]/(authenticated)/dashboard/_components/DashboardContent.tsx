@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server"
 import { Suspense } from "react"
 import type { StudentDashboardData } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 
+import { isFeatureEnabled } from "@/lib/feature-flags"
 import { requireDashboardUser } from "@/lib/dashboard-access"
 import { localeRedirect } from "@/lib/navigation"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
@@ -23,6 +24,7 @@ interface DashboardContentProps {
   }>
   recruiterComponent: React.ComponentType<{
     user: { id: string; name: string | null; email: string; role: string }
+    assistantEnabled: boolean
   }>
   adminComponent: React.ComponentType<{
     user: { id: string; name: string | null; email: string; role: string }
@@ -145,6 +147,7 @@ export async function DashboardContent({
     roleSubtitleKey[effectiveRole as keyof typeof roleSubtitleKey] ||
       "student.subtitle",
   )
+  const assistantEnabled = isFeatureEnabled("COMPANY_ASSISTANT")
 
   return (
     <div className="max-w-7xl mx-auto space-y-10">
@@ -186,7 +189,10 @@ export async function DashboardContent({
       )}
 
       {effectiveRole === "company_admin" && (
-        <RecruiterDashboard user={{ ...user, role: effectiveRole as string }} />
+        <RecruiterDashboard
+          user={{ ...user, role: effectiveRole as string }}
+          assistantEnabled={assistantEnabled}
+        />
       )}
       {isDeptHead && (
         <DeptHeadDashboard user={{ ...user, role: effectiveRole as string }} />

@@ -1,9 +1,11 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
+import { formatDate } from "@/lib/date"
 import { cn } from "@/lib/utils"
 
-interface MemberItem {
+export interface MemberItem {
   userId: string
   email: string
   name: string | null
@@ -19,16 +21,12 @@ interface MembersListProps {
   onRemove: (member: MemberItem) => void
 }
 
-function formatJoinedAt(value: Date | string) {
+function formatJoinedAt(value: Date | string, unknownDateLabel: string) {
   const date = value instanceof Date ? value : new Date(value)
   if (Number.isNaN(date.getTime())) {
-    return "Unknown date"
+    return unknownDateLabel
   }
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  })
+  return formatDate(date)
 }
 
 export function MembersList({
@@ -38,10 +36,12 @@ export function MembersList({
   isRemoving,
   onRemove,
 }: MembersListProps) {
+  const t = useTranslations("dashboard.company.team")
+
   if (members.length === 0) {
     return (
       <div className="border border-dashed border-border p-8 text-sm text-muted-foreground text-center">
-        No company members yet.
+        {t("empty")}
       </div>
     )
   }
@@ -61,7 +61,7 @@ export function MembersList({
             <div className="min-w-0 space-y-1.5">
               <div className="flex flex-wrap items-center gap-2">
                 <p className="font-medium text-sm text-heading truncate">
-                  {member.name ?? "Unnamed member"}
+                  {member.name ?? t("unnamedMember")}
                 </p>
                 <span
                   className={cn(
@@ -71,18 +71,20 @@ export function MembersList({
                       : "border-border text-muted-foreground",
                   )}
                 >
-                  {member.role}
+                  {t(`roles.${member.role}`)}
                 </span>
                 {isCurrentUser && (
                   <span className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-                    You
+                    {t("you")}
                   </span>
                 )}
               </div>
 
               <p className="text-xs text-muted-foreground">{member.email}</p>
               <p className="text-[11px] text-muted-foreground/80">
-                Joined {formatJoinedAt(member.joinedAt)}
+                {t("joined", {
+                  date: formatJoinedAt(member.joinedAt, t("unknownDate")),
+                })}
               </p>
             </div>
 
@@ -94,7 +96,7 @@ export function MembersList({
                 disabled={isRemoving}
                 onClick={() => onRemove(member)}
               >
-                Remove
+                {t("remove")}
               </Button>
             )}
           </div>

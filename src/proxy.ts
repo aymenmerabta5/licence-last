@@ -45,24 +45,12 @@ export function isAuthPath(pathname: string): boolean {
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (pathname === "/") {
-    return NextResponse.redirect(new URL("/en", request.url))
-  }
-
   const locale = pathname.match(/^\/(en|fr|ar)(?=\/|$)/)?.[1] ?? "en"
 
   if (isProtectedPath(pathname)) {
     const sessionCookie = getSessionCookie(request)
     if (!sessionCookie) {
       return NextResponse.redirect(new URL(`/${locale}/login`, request.url))
-    }
-  }
-
-  // Redirect authenticated users away from auth pages
-  if (isAuthPath(pathname)) {
-    const sessionCookie = getSessionCookie(request)
-    if (sessionCookie) {
-      return NextResponse.redirect(new URL(`/${locale}`, request.url))
     }
   }
 

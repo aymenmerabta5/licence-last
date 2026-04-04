@@ -37,6 +37,7 @@ const STATUS_CONFIG: Record<
 interface OfferCardProps {
   offer: OfferItem
   index: number
+  canManageStatus: boolean
   isActionLoading: boolean
   onPublish: () => void
   onClose: () => void
@@ -46,6 +47,7 @@ interface OfferCardProps {
 export function OfferCard({
   offer,
   index,
+  canManageStatus,
   isActionLoading,
   onPublish,
   onClose,
@@ -101,6 +103,7 @@ export function OfferCard({
         <OfferCardActions
           offerId={offer.id}
           status={offer.status}
+          canManageStatus={canManageStatus}
           isActionLoading={isActionLoading}
           onPublish={onPublish}
           onClose={onClose}

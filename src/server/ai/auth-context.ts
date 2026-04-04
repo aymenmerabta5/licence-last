@@ -35,6 +35,7 @@ export async function resolveToolAuthContext(session: {
     companyId: null,
     universityId: session.user.universityId ?? null,
     departmentId: null,
+    universityMembershipRole: null,
   }
 
   if (rawRole === "company_admin") {
@@ -70,6 +71,8 @@ export async function resolveToolAuthContext(session: {
     const membership = memberships[0]
     ctx.departmentId = membership?.departmentId ?? null
     ctx.universityId = membership?.universityId ?? ctx.universityId
+    ctx.universityMembershipRole =
+      membership?.role === "department_head" ? membership.role : null
   }
 
   const resolvedRole = getEffectiveRole({ role: rawRole })

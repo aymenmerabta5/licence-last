@@ -16,9 +16,9 @@ mock.module("@/lib/csrf", () => ({
 }))
 
 // Mock auth
-const mockGetSession =
+const mockGetFreshAuthSession =
   mock<
-    () => Promise<{
+    (headers: Headers) => Promise<{
       user: {
         id: string
         role: string
@@ -27,13 +27,8 @@ const mockGetSession =
     } | null>
   >()
 
-mock.module("@/lib/auth", () => ({
-  auth: {
-    api: {
-      getSession: mockGetSession,
-    },
-  },
-  pendingWelcomeEmails: new Map(),
+mock.module("@/server/auth/get-fresh-session", () => ({
+  getFreshAuthSession: mockGetFreshAuthSession,
 }))
 
 // Mock rate limit
@@ -55,43 +50,27 @@ mock.module("@arcadeai/arcadejs", () => ({
   },
 }))
 
-// Mock env
-mock.module("@/env", () => ({
-  env: {
-    ARCADE_API_KEY: "test-api-key",
-  },
-}))
+const mockGetCompanyStatusByUserId =
+  mock<() => Promise<{ status: string } | null>>()
 
-// Mock DB chain used by approval gate
-const mockDbLimit = mock<() => Promise<Array<{ status: string }>>>()
-const mockDbWhere = mock(() => ({ limit: mockDbLimit }))
-const mockDbInnerJoin = mock(() => ({ where: mockDbWhere }))
-const mockDbFrom = mock(() => ({
-  innerJoin: mockDbInnerJoin,
-  where: mockDbWhere,
-}))
-const mockDbSelect = mock(() => ({ from: mockDbFrom }))
-
-mock.module("@/server/db", () => ({
-  db: {
-    select: mockDbSelect,
-  },
+mock.module("@/server/services/companies/get-status", () => ({
+  getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
 }))
 
 describe("src/app/api/assistant/auth/status/route", () => {
   beforeEach(() => {
-    mockGetSession.mockClear()
+    mockGetFreshAuthSession.mockClear()
     mockCheckRateLimit.mockClear()
     mockAuthorize.mockClear()
-    mockDbSelect.mockClear()
-    mockDbFrom.mockClear()
-    mockDbInnerJoin.mockClear()
-    mockDbWhere.mockClear()
-    mockDbLimit.mockClear()
+    mockGetCompanyStatusByUserId.mockClear()
     mockHeadersData = {}
+    process.env.ARCADE_API_KEY = "test-api-key"
+    process.env.AI_API_KEY = "test-ai-key"
+    delete process.env.POE_API_KEY
+    process.env.FEATURE_COMPANY_ASSISTANT = "true"
 
     // Default successful mocks
-    mockGetSession.mockResolvedValue({
+    mockGetFreshAuthSession.mockResolvedValue({
       user: { id: "user-1", role: "company_admin" },
     })
     mockCheckRateLimit.mockResolvedValue({ ok: true, retryAfterMs: 0 })
@@ -99,7 +78,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
       status: "completed",
       url: "http://auth.url",
     })
-    mockDbLimit.mockResolvedValue([{ status: "approved" }])
+    mockGetCompanyStatusByUserId.mockResolvedValue({ status: "approved" })
   })
 
   describe("request validation", () => {
@@ -195,7 +174,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
 
   describe("authentication", () => {
     test("no session returns 401", async () => {
-      mockGetSession.mockResolvedValue(null)
+      mockGetFreshAuthSession.mockResolvedValue(null)
 
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
@@ -216,8 +195,46 @@ describe("src/app/api/assistant/auth/status/route", () => {
   })
 
   describe("authorization", () => {
+    test("allows Gmail underscore tool names used by Arcade integrations", async () => {
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
+
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "Gmail_SendEmail" }),
+        },
+      )
+
+      const response = await POST(request)
+      expect(response.status).toBe(200)
+      expect(mockAuthorize).toHaveBeenCalled()
+    })
+
+    test("missing AI provider key disables the assistant integration", async () => {
+      delete process.env.AI_API_KEY
+      delete process.env.POE_API_KEY
+
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
+
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "gmail.send" }),
+        },
+      )
+
+      const response = await POST(request)
+      expect(response.status).toBe(503)
+      const body = await response.text()
+      expect(body).toBe("Assistant integrations are disabled.")
+    })
+
     test("student role returns 403", async () => {
-      mockGetSession.mockResolvedValue({
+      mockGetFreshAuthSession.mockResolvedValue({
         user: { id: "user-1", role: "student" },
       })
 
@@ -239,7 +256,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
     })
 
     test("university_admin role returns 403", async () => {
-      mockGetSession.mockResolvedValue({
+      mockGetFreshAuthSession.mockResolvedValue({
         user: { id: "user-1", role: "university_admin" },
       })
 
@@ -261,7 +278,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
     })
 
     test("super_admin role returns 403", async () => {
-      mockGetSession.mockResolvedValue({
+      mockGetFreshAuthSession.mockResolvedValue({
         user: { id: "user-1", role: "super_admin" },
       })
 
@@ -283,14 +300,14 @@ describe("src/app/api/assistant/auth/status/route", () => {
     })
 
     test("pending company_admin returns 403", async () => {
-      mockGetSession.mockResolvedValue({
+      mockGetFreshAuthSession.mockResolvedValue({
         user: {
           id: "user-1",
           role: "company_admin",
           onboardingCompleted: true,
         },
       })
-      mockDbLimit.mockResolvedValue([{ status: "pending" }])
+      mockGetCompanyStatusByUserId.mockResolvedValue({ status: "pending" })
 
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 
@@ -307,6 +324,43 @@ describe("src/app/api/assistant/auth/status/route", () => {
       expect(response.status).toBe(403)
       const body = await response.text()
       expect(body).toBe("Forbidden")
+    })
+
+    test("company_admin without a company returns 403", async () => {
+      mockGetCompanyStatusByUserId.mockResolvedValue(null)
+
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
+
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "gmail.send" }),
+        },
+      )
+
+      const response = await POST(request)
+      expect(response.status).toBe(403)
+      const body = await response.text()
+      expect(body).toBe("Forbidden")
+    })
+
+    test("tool names outside the GitHub and Gmail allowlist return 403", async () => {
+      const { POST } = await import("@/app/api/assistant/auth/status/route")
+
+      const request = new Request(
+        "http://localhost:3000/api/assistant/auth/status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ toolName: "slack.send_message" }),
+        },
+      )
+
+      const response = await POST(request)
+      expect(response.status).toBe(403)
+      expect(mockAuthorize).not.toHaveBeenCalled()
     })
   })
 
@@ -336,7 +390,7 @@ describe("src/app/api/assistant/auth/status/route", () => {
     })
 
     test("rate limit check uses correct key format", async () => {
-      mockGetSession.mockResolvedValue({
+      mockGetFreshAuthSession.mockResolvedValue({
         user: { id: "user-123", role: "company_admin" },
       })
 

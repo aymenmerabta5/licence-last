@@ -1,5 +1,5 @@
 import * as motion from "motion/react-client"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
@@ -8,17 +8,18 @@ import { isSavedOffersEnabledOnClient } from "@/lib/feature-flags-client"
 
 export function ExploreHeader() {
   const t = useTranslations("dashboard.explore")
+  const locale = useLocale()
   const savedOffersEnabled = isSavedOffersEnabledOnClient()
 
   const now = new Date()
-  const dateStr = now
-    .toLocaleDateString("en-US", {
+  const dateStr = new Intl.DateTimeFormat(locale, {
       weekday: "long",
       month: "long",
       day: "numeric",
       year: "numeric",
     })
-    .toUpperCase()
+    .format(now)
+    .toLocaleUpperCase(locale)
 
   return (
     <motion.div {...reveal} transition={{ duration: 0.6, ease }}>
@@ -50,7 +51,7 @@ export function ExploreHeader() {
           {savedOffersEnabled && (
             <div className="mt-4 flex items-center justify-between gap-3">
               <p className="text-xs text-muted-foreground">
-                Track your favorite opportunities in saved offers.
+                {t("savedOffersDescription")}
               </p>
               <Button
                 variant="editorial-outline"
@@ -58,7 +59,7 @@ export function ExploreHeader() {
                 nativeButton={false}
                 render={<Link href="/dashboard/student/saved-offers" />}
               >
-                Saved offers
+                {t("savedOffersAction")}
               </Button>
             </div>
           )}

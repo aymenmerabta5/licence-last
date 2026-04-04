@@ -7,6 +7,7 @@ import { createModuleLogger } from "@/server/logging"
 const log = createModuleLogger("services/applications/withdraw")
 
 import { application } from "@/server/db/schema/applications"
+import { internshipOffer } from "@/server/db/schema/internships"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 
@@ -19,8 +20,16 @@ export async function withdrawApplication(
   studentUserId: string,
 ) {
   const [app] = await db
-    .select()
+    .select({
+      id: application.id,
+      studentUserId: application.studentUserId,
+      status: application.status,
+      pipelineStage: application.pipelineStage,
+      offerId: application.offerId,
+      companyId: internshipOffer.companyId,
+    })
     .from(application)
+    .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
     .where(
       and(
         eq(application.id, applicationId),
@@ -45,29 +54,48 @@ export async function withdrawApplication(
     )
   }
 
-  await db
+  const [updatedApplication] = await db
     .update(application)
     .set({
       status: "withdrawn",
       pipelineStage: "rejected",
       pipelineStageUpdatedAt: new Date(),
     })
-    .where(eq(application.id, applicationId))
+    .where(and(eq(application.id, applicationId), eq(application.status, app.status)))
+    .returning({ id: application.id })
 
-  await appendTimelineEvent({
-    applicationId,
-    actorUserId: studentUserId,
-    eventType: "application_status_changed",
-    fromStage: app.pipelineStage,
-    toStage: "rejected",
-    fromStatus: app.status,
-    toStatus: "withdrawn",
-    payload: { reason: "withdrawn_by_student" },
-  })
+  if (!updatedApplication) {
+    throw new ApplicationServiceError(
+      "APPLICATION_INVALID_STATE",
+      "Application was changed by another action. Refresh and try again.",
+    )
+  }
+
+  try {
+    await appendTimelineEvent({
+      applicationId,
+      actorUserId: studentUserId,
+      eventType: "application_status_changed",
+      fromStage: app.pipelineStage,
+      toStage: "rejected",
+      fromStatus: app.status,
+      toStatus: "withdrawn",
+      payload: { reason: "withdrawn_by_student" },
+    })
+  } catch (error) {
+    log.error(
+      { err: error, applicationId },
+      "Failed to append withdrawal timeline event",
+    )
+  }
 
   log.info(
     { applicationId, event: "application_withdrawn" },
     "Application withdrawn",
   )
-  return { applicationId, newStatus: "withdrawn" as const }
+  return {
+    applicationId,
+    newStatus: "withdrawn" as const,
+    companyId: app.companyId,
+  }
 }

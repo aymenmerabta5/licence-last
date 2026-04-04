@@ -11,18 +11,18 @@ import {
 } from "ai"
 import { headers } from "next/headers"
 import { asRecord, getStringProp } from "@/lib/ai/tool-output"
-import { auth } from "@/lib/auth"
 import { ASSISTANT_RATE_LIMIT } from "@/lib/constants/rate-limits"
+import { isFeatureEnabled } from "@/lib/feature-flags"
 import { isRoleAllowedForIntent } from "@/server/ai/access"
 import { resolveToolAuthContext } from "@/server/ai/auth-context"
 import { generateConversationTitle } from "@/server/ai/auto-title"
+import { loadArcadeToolsOrFallback } from "@/server/ai/arcade-fallback"
 import { assistantContextToJson } from "@/server/ai/context"
 import { getAIModel } from "@/server/ai/model"
 import { persistUserMessage, resolvePersistence } from "@/server/ai/persistence"
 import { buildSystemPrompt, resolvePersona } from "@/server/ai/prompts"
 import { checkRateLimit } from "@/server/ai/rate-limit"
 import { errorToText, sanitizeUIMessagesForModel } from "@/server/ai/sanitizer"
-import { getArcadeTools } from "@/server/ai/tools/arcade"
 import { createDataRetrievalTools } from "@/server/ai/tools/data-retrieval"
 import {
   getLatestUserText,
@@ -32,7 +32,9 @@ import {
 import { createInternalTools } from "@/server/ai/tools/internal"
 import { ASSISTANT_INTENTS, type AssistantIntent } from "@/server/ai/types"
 import { checkAdminApproval } from "@/server/auth/approval-gate"
+import { getFreshAuthSession } from "@/server/auth/get-fresh-session"
 import { getAssistantConversationByIdForCompany } from "@/server/services/assistant/get"
+import { getCompanyStatusByUserId } from "@/server/services/companies/get-status"
 import { appendAssistantMessage } from "@/server/services/assistant/messages"
 import { extractTextFromParts } from "@/server/services/assistant/utils"
 import { isServiceError } from "@/server/services/errors"
@@ -80,9 +82,7 @@ export async function handleChatRequest(req: Request): Promise<Response> {
   }
 
   // Authenticate
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const session = await getFreshAuthSession(await headers())
 
   if (!session) {
     return new Response("Unauthorized", { status: 401 })
@@ -117,6 +117,26 @@ export async function handleChatRequest(req: Request): Promise<Response> {
   const allowedForIntent = isRoleAllowedForIntent({ role, intent })
   if (!allowedForIntent) {
     return new Response("Forbidden", { status: 403 })
+  }
+
+  if (role === "company_admin" && intent === null) {
+    if (!isFeatureEnabled("COMPANY_ASSISTANT")) {
+      return new Response("Assistant is unavailable for this deployment.", {
+        status: 503,
+      })
+    }
+
+    try {
+      const company = await getCompanyStatusByUserId(session.user.id)
+      if (!company || company.status !== "approved") {
+        return new Response("Forbidden", { status: 403 })
+      }
+    } catch (error) {
+      if (isServiceError(error) && error.code === "COMPANY_MEMBERSHIP_CONFLICT") {
+        return new Response("Forbidden", { status: 403 })
+      }
+      throw error
+    }
   }
 
   const conversationId =
@@ -220,9 +240,12 @@ export async function handleChatRequest(req: Request): Promise<Response> {
   const wantsEmailAction = shouldForceGmailTool(latestUserText)
 
   const arcadeEnabled =
-    role === "company_admin" && !shouldForceTool && intent === null
+    role === "company_admin" &&
+    isFeatureEnabled("COMPANY_ASSISTANT") &&
+    !shouldForceTool &&
+    intent === null
   const arcadeTools = arcadeEnabled
-    ? await getArcadeTools({
+    ? await loadArcadeToolsOrFallback({
         userId: session.user.id,
         config: {
           allowedToolkits: wantsEmailAction ? ["gmail"] : ["github", "gmail"],
@@ -230,10 +253,11 @@ export async function handleChatRequest(req: Request): Promise<Response> {
         },
       })
     : {}
+  const hasArcadeTools = Object.keys(arcadeTools).length > 0
 
   // Resolve Gmail tool if needed
   const forcedArcadeToolName =
-    arcadeEnabled && !shouldForceTool && wantsEmailAction
+    hasArcadeTools && !shouldForceTool && wantsEmailAction
       ? resolveGmailToolName(arcadeTools, wantsEmailAction)
       : null
 
@@ -241,7 +265,7 @@ export async function handleChatRequest(req: Request): Promise<Response> {
   const persona = resolvePersona({ intent, role })
   const system = buildSystemPrompt({
     persona,
-    arcadeEnabled,
+    arcadeEnabled: hasArcadeTools,
     contextJson: contextJson || null,
     hasDataTools,
   })
@@ -298,10 +322,10 @@ export async function handleChatRequest(req: Request): Promise<Response> {
         toolChoice:
           shouldForceTool && intent
             ? ({ type: "tool", toolName: intent } as const)
-            : forcedArcadeToolName
-              ? ({ type: "tool", toolName: forcedArcadeToolName } as const)
-              : undefined,
-        stopWhen: stepCountIs(arcadeEnabled ? 12 : hasDataTools ? 8 : 5),
+              : forcedArcadeToolName
+                ? ({ type: "tool", toolName: forcedArcadeToolName } as const)
+                : undefined,
+        stopWhen: stepCountIs(hasArcadeTools ? 12 : hasDataTools ? 8 : 5),
       })
 
       for await (const chunk of result.toUIMessageStream()) {

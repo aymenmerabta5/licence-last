@@ -19,12 +19,12 @@ import { listDocumentsByStudent } from "@/server/services/documents/list-by-stud
 import { verifyDocument } from "@/server/services/documents/verify"
 
 const {
-  adminProcedureStandard,
   companyAdminProcedureGenerous,
   companyAdminProcedureStandard,
   publicProcedureStandard,
   studentProcedureGenerous,
   studentProcedureStandard,
+  universityProcedureStandard,
 } = rateLimitedProcedures
 
 const companyOwnerProcedureStandard =
@@ -80,6 +80,7 @@ function toAgreementIssuerContext(context: {
     role?: string | null
     universityId?: string | null
     departmentId?: string | null
+    universityMembershipRole?: string | null
   }
 }): AgreementIssuerContext {
   return {
@@ -87,6 +88,7 @@ function toAgreementIssuerContext(context: {
     role: context.user.role ?? null,
     universityId: context.user.universityId ?? null,
     departmentId: context.user.departmentId ?? null,
+    universityMembershipRole: context.user.universityMembershipRole ?? null,
   }
 }
 
@@ -102,7 +104,7 @@ function assertCompanyOwner(context: {
 
 /* Generate Agreement PDF */
 
-export const generateAgreementProcedure = adminProcedureStandard
+export const generateAgreementProcedure = universityProcedureStandard
   .input(
     z.object({
       placementId: z.string().min(1),
@@ -110,9 +112,7 @@ export const generateAgreementProcedure = adminProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    if (
-      context.user.role !== "university_admin"
-    ) {
+    if (context.user.role !== "university_admin") {
       throwCodedORPCError("FORBIDDEN", "PLACEMENT_FORBIDDEN", {
         message: "You do not have access to this placement",
       })

@@ -8,6 +8,10 @@ const optionalUrl = z.preprocess((value) => {
 
   return value
 }, z.string().url().optional())
+const hasConfiguredAiProvider =
+  Boolean(process.env.AI_API_KEY) || Boolean(process.env.POE_API_KEY)
+const assistantEnabledByDefault =
+  process.env.ARCADE_API_KEY && hasConfiguredAiProvider ? "true" : "false"
 
 export const env = createEnv({
   server: {
@@ -56,6 +60,9 @@ export const env = createEnv({
     FEATURE_SAVED_OFFERS: z.enum(["true", "false"]).default("true"),
     FEATURE_INTERVIEWS: z.enum(["true", "false"]).default("true"),
     FEATURE_LANGUAGE_REQUIREMENTS: z.enum(["true", "false"]).default("true"),
+    FEATURE_COMPANY_ASSISTANT: z
+      .enum(["true", "false"])
+      .default(assistantEnabledByDefault),
 
     // Logging
     LOG_LEVEL: z
@@ -79,6 +86,9 @@ export const env = createEnv({
     NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS: z
       .enum(["true", "false"])
       .default("true"),
+    NEXT_PUBLIC_FEATURE_COMPANY_ASSISTANT: z
+      .enum(["true", "false"])
+      .default(assistantEnabledByDefault),
   },
 
   experimental__runtimeEnv: {
@@ -95,5 +105,45 @@ export const env = createEnv({
     NEXT_PUBLIC_FEATURE_INTERVIEWS: process.env.NEXT_PUBLIC_FEATURE_INTERVIEWS,
     NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS:
       process.env.NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS,
+    NEXT_PUBLIC_FEATURE_COMPANY_ASSISTANT:
+      process.env.NEXT_PUBLIC_FEATURE_COMPANY_ASSISTANT,
   },
 })
+
+const hasProductionEmailConfig = Boolean(env.RESEND_API_KEY && env.EMAIL_FROM)
+const hasProductionStorageConfig = Boolean(
+  (env.S3_BUCKET ?? env.S3_BUCKET_NAME) &&
+    (env.S3_ENDPOINT ?? env.NEXT_PUBLIC_S3_ENDPOINT) &&
+    (env.S3_ACCESS_KEY_ID ?? env.AWS_ACCESS_KEY_ID) &&
+    (env.S3_SECRET_ACCESS_KEY ?? env.AWS_SECRET_ACCESS_KEY) &&
+    (env.S3_PUBLIC_URL ?? env.NEXT_PUBLIC_S3_URL),
+)
+const hasProductionAIConfig = Boolean(env.AI_API_KEY || env.POE_API_KEY)
+
+if (env.NODE_ENV === "production" && !hasProductionEmailConfig) {
+  throw new Error(
+    "Transactional email is required in production. Set RESEND_API_KEY and EMAIL_FROM before starting the app.",
+  )
+}
+
+if (env.NODE_ENV === "production" && !hasProductionStorageConfig) {
+  throw new Error(
+    "S3-compatible object storage is required in production. Set S3_PUBLIC_URL and either the S3_* or AWS_* storage variables before starting the app.",
+  )
+}
+
+if (env.NODE_ENV === "production" && !hasProductionAIConfig) {
+  throw new Error(
+    "AI provider credentials are required in production. Set AI_API_KEY (gateway-first recommended) or POE_API_KEY before starting the app.",
+  )
+}
+
+if (
+  env.NODE_ENV === "production" &&
+  env.FEATURE_COMPANY_ASSISTANT === "true" &&
+  !env.ARCADE_API_KEY
+) {
+  throw new Error(
+    "ARCADE_API_KEY is required when the company assistant is enabled in production.",
+  )
+}

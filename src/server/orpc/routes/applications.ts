@@ -37,6 +37,7 @@ import {
   getListByOfferStatus,
   getWithdrawStatus,
 } from "@/server/orpc/routes/applications.error-mapping"
+import { throwAIOrpcError } from "@/server/orpc/utils/ai-error"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import { applyToOffer } from "@/server/services/applications/apply"
 import { companyAcceptApplication } from "@/server/services/applications/company-accept"
@@ -78,6 +79,7 @@ export const applyToOfferProcedure = studentProcedureStandard
 
       revalidateTag(CACHE_TAGS.STUDENT_APPLICATIONS(context.user.id), "max")
       revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), "max")
+      revalidateTag(CACHE_TAGS.COMPANY_OFFERS(result.companyId), "max")
 
       return result
     } catch (error) {
@@ -111,6 +113,7 @@ export const withdrawApplicationProcedure = studentProcedureStandard
 
       revalidateTag(CACHE_TAGS.STUDENT_APPLICATIONS(context.user.id), "max")
       revalidateTag(CACHE_TAGS.STUDENT_STATS(context.user.id), "max")
+      revalidateTag(CACHE_TAGS.COMPANY_OFFERS(result.companyId), "max")
 
       return result
     } catch (error) {
@@ -279,10 +282,14 @@ export const generateCoverLetterProcedure = assistantProcedureLimited
     }),
   )
   .handler(async ({ input }) => {
-    const { generateCoverLetter } = await import(
-      "@/server/services/applications/generate-cover-letter"
-    )
-    return generateCoverLetter(input)
+    try {
+      const { generateCoverLetter } = await import(
+        "@/server/services/applications/generate-cover-letter"
+      )
+      return await generateCoverLetter(input)
+    } catch (error) {
+      throwAIOrpcError(error)
+    }
   })
 
 export const getTimelineProcedure = authedProcedureGenerous
@@ -329,6 +336,7 @@ export const getTimelineProcedure = authedProcedureGenerous
         universityId: context.user.universityId,
         departmentId: context.user.departmentId,
         companyId: viewerCompanyId,
+        universityMembershipRole: context.user.universityMembershipRole,
       },
       {
         userId: row.studentUserId,

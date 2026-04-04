@@ -21,6 +21,11 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
 }
 
 const updateOfferMock = mock(async () => ({ offerId: "offer-1" }))
+const createOfferMock = mock(async () => ({ offerId: "offer-1" }))
+const generateOfferDraftMock = mock(async () => ({
+  title: "Draft title",
+  description: "Draft description",
+}))
 const deleteOfferMock = mock(async () => ({
   offerId: "offer-1",
   deleted: true,
@@ -52,6 +57,7 @@ mock.module("@/server/orpc/rate-limited-procedures", () => ({
   adminProcedureStandard: createProcedureMock(),
   adminProcedureAssistant: createProcedureMock(),
   universityProcedureAssistant: createProcedureMock(),
+  universityProcedureStandard: createProcedureMock(),
   superAdminProcedureGenerous: createProcedureMock(),
   superAdminProcedureStandard: createProcedureMock(),
   assistantProcedureLimited: createProcedureMock(),
@@ -85,7 +91,10 @@ mock.module("@/server/services/offers/list-by-company", () => ({
   listOffersByCompany: mock(async () => []),
 }))
 mock.module("@/server/services/offers/create", () => ({
-  createOffer: mock(async () => ({ offerId: "offer-1" })),
+  createOffer: createOfferMock,
+}))
+mock.module("@/server/services/offers/generate-draft", () => ({
+  generateOfferDraft: generateOfferDraftMock,
 }))
 mock.module("@/server/services/offers/update", () => ({
   updateOffer: updateOfferMock,
@@ -124,6 +133,8 @@ mock.module("@/server/db", () => ({
 describe("src/server/orpc/routes/offers", () => {
   beforeEach(() => {
     updateOfferMock.mockClear()
+    createOfferMock.mockClear()
+    generateOfferDraftMock.mockClear()
     deleteOfferMock.mockClear()
     listSavedOffersMock.mockClear()
     checkOfferSavedMock.mockClear()
@@ -185,6 +196,26 @@ describe("src/server/orpc/routes/offers", () => {
     })
   })
 
+  test("deleteOfferProcedure rejects deleting published offers", async () => {
+    deleteOfferMock.mockRejectedValueOnce(
+      new ServiceError(
+        "OFFER_PUBLISHED_DELETE_FORBIDDEN",
+        "Published offers must be closed instead of deleted",
+      ),
+    )
+    const { deleteOfferProcedure } = await import("@/server/orpc/routes/offers")
+
+    await expect(
+      callProcedure(deleteOfferProcedure, {
+        input: { offerId: "offer-1" },
+        context: { companyMembership: { companyId: "company-1" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "Published offers must be closed instead of deleted",
+    })
+  })
+
   test("listSavedOffersProcedure delegates with user and input", async () => {
     const { listSavedOffersProcedure } = await import(
       "@/server/orpc/routes/offers"
@@ -238,6 +269,63 @@ describe("src/server/orpc/routes/offers", () => {
     ).rejects.toMatchObject({
       code: "BAD_REQUEST",
       message: "At least one language requirement is required",
+    })
+  })
+
+  test("createOfferProcedure maps invalid skill ids to a bad request", async () => {
+    createOfferMock.mockRejectedValueOnce(
+      new ServiceError(
+        "INVALID_SKILL_TAG_IDS",
+        "Invalid skill tag IDs: stale-skill",
+      ),
+    )
+
+    const { createOfferProcedure } = await import("@/server/orpc/routes/offers")
+
+    await expect(
+      callProcedure(createOfferProcedure, {
+        input: {
+          title: "Frontend intern",
+          description: "A long enough description for validation",
+          internshipType: "pfe",
+          skillTagIds: ["stale-skill"],
+          languageRequirements: [
+            {
+              languageCode: "en",
+              minimumProficiency: "b2",
+              isRequired: true,
+              weight: 1,
+            },
+          ],
+        },
+        context: { companyMembership: { companyId: "company-1" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "Invalid skill tag IDs: stale-skill",
+    })
+  })
+
+  test("generateOfferDraftProcedure maps AI rate limits to a safe user error", async () => {
+    generateOfferDraftMock.mockRejectedValueOnce(
+      Object.assign(new Error("upstream rate limit"), { statusCode: 429 }),
+    )
+
+    const { generateOfferDraftProcedure } = await import(
+      "@/server/orpc/routes/offers"
+    )
+
+    await expect(
+      callProcedure(generateOfferDraftProcedure, {
+        input: {
+          prompt: "help",
+          availableSkillTags: [],
+        },
+        context: {},
+      }),
+    ).rejects.toMatchObject({
+      code: "TOO_MANY_REQUESTS",
+      message: "AI service is temporarily rate limited. Please try again shortly.",
     })
   })
 })

@@ -12,6 +12,7 @@ import {
   Search,
 } from "lucide-react"
 import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
 import { InterviewStatusBadge } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewStatusBadge"
 import type {
   ConfirmSlotInput,
@@ -38,12 +39,14 @@ export function StudentInterviewsSection({
   confirmingSlotId,
   onConfirmSlot,
 }: StudentInterviewsSectionProps) {
+  const t = useTranslations("dashboard.interviews")
+
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 gap-3">
+      <div className="flex flex-col items-center justify-center gap-3 py-20">
         <Loader2 className="h-5 w-5 animate-spin text-primary" />
         <span className="text-xs uppercase tracking-[0.1em] text-muted-foreground">
-          Loading interviews
+          {t("studentSection.loading")}
         </span>
       </div>
     )
@@ -54,10 +57,10 @@ export function StudentInterviewsSection({
       <motion.div
         {...reveal}
         transition={{ duration: 0.6, ease }}
-        className="border border-destructive/30 bg-destructive/5 p-6 space-y-2"
+        className="space-y-2 border border-destructive/30 bg-destructive/5 p-6"
       >
         <p className="text-sm font-medium text-destructive">
-          Could not load interviews
+          {t("studentSection.loadErrorTitle")}
         </p>
         <p className="text-xs text-muted-foreground">{errorMessage}</p>
       </motion.div>
@@ -69,18 +72,17 @@ export function StudentInterviewsSection({
       <motion.div
         {...reveal}
         transition={{ duration: 0.6, ease }}
-        className="border border-dashed border-border/60 p-12 text-center space-y-4"
+        className="space-y-4 border border-dashed border-border/60 p-12 text-center"
       >
         <div className="mx-auto flex h-14 w-14 items-center justify-center border border-border/50 bg-muted/30">
           <Search className="h-6 w-6 text-muted-foreground/50" />
         </div>
         <div className="space-y-2">
           <p className="font-serif text-xl text-heading">
-            No interviews yet
+            {t("studentSection.emptyTitle")}
           </p>
-          <p className="text-sm font-light text-muted-foreground max-w-sm mx-auto">
-            Interview invitations from companies will appear here. Keep your
-            applications active and check back soon.
+          <p className="mx-auto max-w-sm text-sm font-light text-muted-foreground">
+            {t("studentSection.emptyDescription")}
           </p>
         </div>
       </motion.div>
@@ -88,21 +90,20 @@ export function StudentInterviewsSection({
   }
 
   const pendingInterviews = interviews.filter(
-    (i) => i.status === "pending_confirmation",
+    (interview) => interview.status === "pending_confirmation",
   )
   const otherInterviews = interviews.filter(
-    (i) => i.status !== "pending_confirmation",
+    (interview) => interview.status !== "pending_confirmation",
   )
 
   return (
     <section className="space-y-8">
-      {/* Pending interviews — action required */}
       {pendingInterviews.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-amber-500 dark:bg-amber-400 animate-pulse" />
+            <div className="h-2 w-2 animate-pulse rounded-full bg-amber-500 dark:bg-amber-400" />
             <h2 className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground">
-              Action Required
+              {t("studentSection.actionRequired")}
             </h2>
             <span className="text-xs text-muted-foreground">
               ({pendingInterviews.length})
@@ -121,11 +122,12 @@ export function StudentInterviewsSection({
         </div>
       )}
 
-      {/* Confirmed / cancelled */}
       {otherInterviews.length > 0 && (
         <div className="space-y-4">
           <h2 className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground">
-            {pendingInterviews.length > 0 ? "Past & Confirmed" : "Your Interviews"}
+            {pendingInterviews.length > 0
+              ? t("studentSection.pastAndConfirmed")
+              : t("studentSection.yourInterviews")}
           </h2>
 
           {otherInterviews.map((interview, index) => (
@@ -156,6 +158,7 @@ function InterviewCard({
   confirmingSlotId,
   onConfirmSlot,
 }: InterviewCardProps) {
+  const t = useTranslations("dashboard.interviews")
   const isPending = interview.status === "pending_confirmation"
 
   return (
@@ -163,18 +166,16 @@ function InterviewCard({
       {...reveal}
       transition={revealWithDelay(index * 0.06)}
       className={cn(
-        "border overflow-hidden transition-colors",
+        "overflow-hidden border transition-colors",
         isPending
-          ? "border-amber-500/30 dark:border-amber-500/20 bg-amber-500/[0.02] dark:bg-amber-500/[0.04]"
+          ? "border-amber-500/30 bg-amber-500/[0.02] dark:border-amber-500/20 dark:bg-amber-500/[0.04]"
           : "border-border/60 bg-card/30 dark:bg-card/50",
       )}
     >
-      {/* Accent line for pending */}
       {isPending && <div className="h-0.5 bg-amber-500 dark:bg-amber-400" />}
 
-      {/* Card header */}
       <div className="flex items-start justify-between gap-4 p-5 pb-0">
-        <div className="flex items-start gap-3 min-w-0">
+        <div className="flex min-w-0 items-start gap-3">
           <Avatar size="lg">
             {interview.companyLogoUrl && (
               <AvatarImage
@@ -187,10 +188,10 @@ function InterviewCard({
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0">
-            <h3 className="font-serif text-base text-heading truncate">
+            <h3 className="truncate font-serif text-base text-heading">
               {interview.offerTitle}
             </h3>
-            <p className="text-xs font-light text-muted-foreground truncate">
+            <p className="truncate text-xs font-light text-muted-foreground">
               {interview.companyName}
             </p>
           </div>
@@ -198,21 +199,19 @@ function InterviewCard({
         <InterviewStatusBadge status={interview.status} />
       </div>
 
-      {/* Note from company */}
       {interview.note && (
         <div className="px-5 pt-3">
-          <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/30 dark:bg-muted/20 p-3">
-            <MessageSquare className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+          <div className="flex items-start gap-2 bg-muted/30 p-3 text-xs text-muted-foreground dark:bg-muted/20">
+            <MessageSquare className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             <p className="font-light leading-relaxed">{interview.note}</p>
           </div>
         </div>
       )}
 
-      {/* Slots */}
-      <div className="p-5 space-y-2">
+      <div className="space-y-2 p-5">
         {isPending && (
-          <p className="text-[11px] font-medium text-muted-foreground mb-3">
-            Choose a time slot that works for you:
+          <p className="mb-3 text-[11px] font-medium text-muted-foreground">
+            {t("studentSection.chooseSlot")}
           </p>
         )}
 
@@ -232,7 +231,7 @@ function InterviewCard({
                     : "border border-border/40",
               )}
             >
-              <div className="flex items-center gap-2 min-w-0">
+              <div className="flex min-w-0 items-center gap-2">
                 <CalendarDays
                   className={cn(
                     "h-3.5 w-3.5 shrink-0",
@@ -244,7 +243,7 @@ function InterviewCard({
                 <div className="min-w-0">
                   <span
                     className={cn(
-                      "text-xs block truncate",
+                      "block truncate text-xs",
                       isConfirmedSlot
                         ? "font-medium text-foreground"
                         : "text-muted-foreground",
@@ -252,7 +251,7 @@ function InterviewCard({
                   >
                     {formatSchedule(slot.startsAt, slot.endsAt)}
                   </span>
-                  <div className="flex items-center gap-3 mt-0.5">
+                  <div className="mt-0.5 flex items-center gap-3">
                     {slot.location && (
                       <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/70">
                         <MapPin className="h-2.5 w-2.5" />
@@ -267,7 +266,7 @@ function InterviewCard({
                         className="inline-flex items-center gap-1 text-[10px] text-primary hover:underline"
                       >
                         <LinkIcon className="h-2.5 w-2.5" />
-                        Join meeting
+                        {t("studentSection.joinMeeting")}
                       </a>
                     )}
                   </div>
@@ -278,7 +277,7 @@ function InterviewCard({
                 {isConfirmedSlot && (
                   <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-600 dark:text-emerald-400">
                     <CheckCircle2 className="h-3.5 w-3.5" />
-                    Confirmed
+                    {t("studentSection.confirmedLabel")}
                   </span>
                 )}
 
@@ -301,7 +300,9 @@ function InterviewCard({
                     ) : (
                       <CalendarCheck2 className="h-3 w-3" />
                     )}
-                    {isConfirming ? "Confirming..." : "Confirm"}
+                    {isConfirming
+                      ? t("studentSection.confirming")
+                      : t("studentSection.confirm")}
                   </Button>
                 )}
               </div>

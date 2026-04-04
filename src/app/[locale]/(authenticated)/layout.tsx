@@ -1,4 +1,5 @@
 import { Suspense } from "react"
+import { connection } from "next/server"
 
 import { AuthenticatedContent } from "@/app/[locale]/(authenticated)/_components/AuthenticatedContent"
 import { DashboardShellSkeleton } from "@/app/[locale]/(authenticated)/_components/DashboardShellSkeleton"
@@ -12,6 +13,8 @@ export default async function AuthenticatedLayout({
 }: {
   children: React.ReactNode
 }) {
+  await connection()
+
   return (
     <Suspense fallback={<DashboardShellSkeleton />}>
       <AuthenticatedContent>{children}</AuthenticatedContent>

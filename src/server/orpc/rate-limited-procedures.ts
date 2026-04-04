@@ -123,6 +123,10 @@ export const universityProcedureAssistant = universityProcedure.use(
   createAssistantRateLimitMiddleware("university-assistant"),
 )
 
+export const universityProcedureStandard = universityProcedure.use(
+  createStandardRateLimitMiddleware("university-standard"),
+)
+
 /**
  * Super admin procedure with generous rate limiting (300 req/min)
  * Super admins get highest limits

@@ -44,6 +44,13 @@ export async function proposeInterviewSlots(
         "Each slot start time must be before end time",
       )
     }
+
+    if (slot.startsAt <= new Date()) {
+      throw new InterviewServiceError(
+        "INTERVIEW_SLOT_INVALID",
+        "Interview slots must be scheduled in the future",
+      )
+    }
   }
 
   const interviewId = crypto.randomUUID()
@@ -82,6 +89,22 @@ export async function proposeInterviewSlots(
       throw new InterviewServiceError(
         "INTERVIEW_INVALID_APPLICATION_STATE",
         "Interview cannot be proposed for this application status",
+      )
+    }
+
+    const [offerRow] = await tx
+      .select({
+        status: internshipOffer.status,
+      })
+      .from(internshipOffer)
+      .where(eq(internshipOffer.id, applicationRow.offerId))
+      .for("update")
+      .limit(1)
+
+    if (!offerRow || offerRow.status !== "published") {
+      throw new InterviewServiceError(
+        "INTERVIEW_INVALID_APPLICATION_STATE",
+        "Interview cannot be proposed for a closed offer",
       )
     }
 

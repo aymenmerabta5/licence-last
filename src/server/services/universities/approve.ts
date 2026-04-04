@@ -1,8 +1,9 @@
 import "server-only"
 
-import { eq } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import { db } from "@/server/db"
 import { createModuleLogger } from "@/server/logging"
+import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/universities/approve")
 
@@ -27,18 +28,36 @@ export async function approveUniversity(
         approvedByUserId,
         rejectionReason: null,
       })
-      .where(eq(university.id, universityId))
+      .where(and(eq(university.id, universityId), eq(university.status, "pending")))
       .returning({ id: university.id, name: university.name })
 
     if (!updated) {
-      throw new Error("University not found")
+      const [existing] = await tx
+        .select({ id: university.id, status: university.status })
+        .from(university)
+        .where(eq(university.id, universityId))
+        .limit(1)
+
+      if (!existing) {
+        throw new ServiceError("UNIVERSITY_NOT_FOUND", "University not found")
+      }
+
+      throw new ServiceError(
+        "UNIVERSITY_INVALID_STATUS_TRANSITION",
+        "Only pending universities can be approved",
+      )
     }
 
     // Approve all pending domains
     await tx
       .update(universityDomain)
       .set({ status: "approved" })
-      .where(eq(universityDomain.universityId, universityId))
+      .where(
+        and(
+          eq(universityDomain.universityId, universityId),
+          eq(universityDomain.status, "pending"),
+        ),
+      )
 
     log.info(
       { universityId: updated.id, event: "university_approved" },

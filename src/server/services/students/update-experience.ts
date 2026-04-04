@@ -52,21 +52,32 @@ export async function updateStudentExperience(
     )
   }
 
+  const changes: Partial<typeof existing> = {}
+
+  if (input.title !== undefined) {
+    changes.title = input.title.trim()
+  }
+  if (input.organization !== undefined) {
+    changes.organization = input.organization.trim()
+  }
+  if (input.description !== undefined) {
+    changes.description = input.description?.trim()
+      ? input.description.trim()
+      : null
+  }
+  if (input.startDate !== undefined) {
+    changes.startDate = nextStartDate
+  }
+  if (input.isCurrent !== undefined) {
+    changes.isCurrent = nextIsCurrent
+  }
+  if (input.endDate !== undefined || input.isCurrent !== undefined) {
+    changes.endDate = nextIsCurrent ? null : nextEndDate
+  }
+
   await db
     .update(studentExperience)
-    .set({
-      title: input.title?.trim() ?? existing.title,
-      organization: input.organization?.trim() ?? existing.organization,
-      description:
-        input.description !== undefined
-          ? input.description?.trim()
-            ? input.description.trim()
-            : null
-          : existing.description,
-      startDate: nextStartDate,
-      endDate: nextIsCurrent ? null : nextEndDate,
-      isCurrent: nextIsCurrent,
-    })
+    .set(changes)
     .where(eq(studentExperience.id, experienceId))
 
   return { experienceId }

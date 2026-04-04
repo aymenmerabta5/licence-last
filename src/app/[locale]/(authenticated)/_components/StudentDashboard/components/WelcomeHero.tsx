@@ -2,7 +2,7 @@
 
 import { Route } from "next"
 import * as motion from "motion/react-client"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
@@ -20,6 +20,7 @@ export function WelcomeHero({
   profileUserId,
 }: WelcomeHeroProps) {
   const t = useTranslations("dashboard.student.welcomeHero")
+  const locale = useLocale()
   const firstName = userName?.split(" ")[0]
   const displayName = firstName ?? t("defaultName")
   const now = new Date()
@@ -53,7 +54,7 @@ export function WelcomeHero({
             <p className="text-sm font-light text-muted-foreground max-w-xl">
               {profileCompleteness < 100
                 ? t("profileIncomplete")
-                : "Your portfolio represents your highest professional standards. Continue curating your edge."}
+                : t("profileComplete")}
             </p>
           </div>
 
@@ -68,7 +69,9 @@ export function WelcomeHero({
                 {now.getDate().toString().padStart(2, "0")}
               </span>
               <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground block">
-                {now.toLocaleString("en-US", { month: "short" })} '
+                {new Intl.DateTimeFormat(locale, { month: "short" })
+                  .format(now)
+                  .toLocaleUpperCase(locale)} '
                 {now.getFullYear().toString().slice(-2)}
               </span>
             </div>

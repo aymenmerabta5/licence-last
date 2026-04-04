@@ -30,6 +30,7 @@ interface UserRowProps {
   onSetRole: (user: AdminUser) => void
   onSetPassword: (user: AdminUser) => void
   onDelete: (user: AdminUser) => void
+  canModerateUsers: boolean
   canViewDetails: boolean
   canSetRole: boolean
   canSetPassword: boolean
@@ -42,12 +43,14 @@ export function UserRow({
   onSetRole,
   onSetPassword,
   onDelete,
+  canModerateUsers,
   canViewDetails,
   canSetRole,
   canSetPassword,
 }: UserRowProps) {
   const t = useTranslations("dashboard.superAdmin.users")
-  const hasAdminOnlyActions = canViewDetails || canSetRole || canSetPassword
+  const hasAdminOnlyActions =
+    canViewDetails || canSetRole || canSetPassword || canModerateUsers
 
   return (
     <TableRow className="group hover:bg-primary/[0.02] border-b border-border/50 transition-colors">
@@ -121,25 +124,29 @@ export function UserRow({
               </DropdownMenuItem>
             )}
             {hasAdminOnlyActions && <DropdownMenuSeparator />}
-            {user.banned ? (
-              <DropdownMenuItem onClick={() => onUnban(user.id)}>
-                <ShieldOff className="h-4 w-4 me-2" />
-                {t("actions.unban")}
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem onClick={() => onBan(user)}>
-                <ShieldBan className="h-4 w-4 me-2" />
-                {t("actions.ban")}
-              </DropdownMenuItem>
+            {canModerateUsers && (
+              <>
+                {user.banned ? (
+                  <DropdownMenuItem onClick={() => onUnban(user.id)}>
+                    <ShieldOff className="h-4 w-4 me-2" />
+                    {t("actions.unban")}
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem onClick={() => onBan(user)}>
+                    <ShieldBan className="h-4 w-4 me-2" />
+                    {t("actions.ban")}
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => onDelete(user)}
+                  className="text-destructive focus:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4 me-2" />
+                  {t("actions.delete")}
+                </DropdownMenuItem>
+              </>
             )}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => onDelete(user)}
-              className="text-destructive focus:text-destructive"
-            >
-              <Trash2 className="h-4 w-4 me-2" />
-              {t("actions.delete")}
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>

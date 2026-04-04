@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next"
 
-import { env } from "@/env"
 import { routing } from "@/i18n/routing"
+import { getPublicAppUrl } from "@/lib/public-url"
 
 const publicRoutes: {
   path: string
@@ -15,7 +15,7 @@ const publicRoutes: {
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = env.NEXT_PUBLIC_BETTER_AUTH_URL
+  const baseUrl = getPublicAppUrl()
 
   return publicRoutes.flatMap((route) =>
     routing.locales.map((locale) => ({

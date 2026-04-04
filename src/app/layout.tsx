@@ -1,7 +1,7 @@
 import "./globals.css"
 
 import { DM_Sans, DM_Serif_Display, Noto_Sans_Arabic } from "next/font/google"
-import { Suspense, type ReactNode } from "react"
+import type { ReactNode } from "react"
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -26,9 +26,10 @@ const notoSansArabic = Noto_Sans_Arabic({
 
 /**
  * Root layout must own <html>/<body> for Next.js runtime error handling.
- * Locale-specific providers still live under app/[locale]/layout.tsx.
+ * Keep this shell static so cacheComponents prerendering can succeed.
+ * Locale-specific providers and document syncing live under app/[locale]/layout.tsx.
  */
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: ReactNode
@@ -38,7 +39,7 @@ export default async function RootLayout({
       <body
         className={`${dmSans.variable} ${dmSerif.variable} ${notoSansArabic.variable} font-sans antialiased`}
       >
-        <Suspense>{children}</Suspense>
+        {children}
       </body>
     </html>
   )

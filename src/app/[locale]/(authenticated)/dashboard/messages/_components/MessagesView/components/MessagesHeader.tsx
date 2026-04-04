@@ -1,4 +1,5 @@
 import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
 import type { MessagesRole } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
 import { ease, reveal } from "@/lib/animations"
 
@@ -7,16 +8,13 @@ interface MessagesHeaderProps {
   threadCount: number
 }
 
-function pluralizeThread(count: number): string {
-  return `${count} thread${count === 1 ? "" : "s"}`
-}
-
 export function MessagesHeader({ role, threadCount }: MessagesHeaderProps) {
-  const kicker = role === "student" ? "Student Inbox" : "Company Inbox"
+  const t = useTranslations("dashboard.messages")
+  const kicker = role === "student" ? t("kickerStudent") : t("kickerCompany")
   const subtitle =
     role === "student"
-      ? "Discuss offers with companies you already applied to."
-      : "Stay in touch with applicants from your offers."
+      ? t("subtitleStudent")
+      : t("subtitleCompany")
 
   return (
     <motion.div
@@ -31,11 +29,11 @@ export function MessagesHeader({ role, threadCount }: MessagesHeaderProps) {
             {kicker}
           </p>
           <h1 className="font-serif text-[clamp(1.75rem,3.5vw,2.5rem)] leading-[1.08] tracking-tight text-heading">
-            Messages
+            {t("title")}
           </h1>
           <p className="text-sm font-light text-muted-foreground">{subtitle}</p>
           <p className="pt-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/70">
-            {pluralizeThread(threadCount)}
+            {t("threadsCount", { count: threadCount })}
           </p>
         </div>
       </div>

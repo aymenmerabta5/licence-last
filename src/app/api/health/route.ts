@@ -1,7 +1,3 @@
-import { isRedisAvailable, pingRedis } from "@/server/caching/redis"
-import { isRateLimitingEnabled } from "@/server/caching/redis-ratelimiter"
-import * as dbModule from "@/server/db"
-
 type CheckStatus = "up" | "down" | "not_configured" | "disabled"
 type HealthStatus = "ok" | "degraded" | "error"
 
@@ -19,6 +15,15 @@ interface HealthPayload extends PublicHealthPayload {
 }
 
 export async function GET() {
+  const [{ isRedisAvailable, pingRedis }, rateLimiterModule, dbModule] =
+    await Promise.all([
+      import("@/server/caching/redis"),
+      import("@/server/caching/redis-ratelimiter"),
+      import("@/server/db"),
+    ])
+
+  const { isRateLimitingEnabled, isRateLimitingRequired } = rateLimiterModule
+
   const pingDatabase =
     typeof dbModule.pingDatabase === "function"
       ? dbModule.pingDatabase
@@ -31,6 +36,7 @@ export async function GET() {
 
   const redisConfigured = isRedisAvailable()
   const rateLimiterEnabled = isRateLimitingEnabled()
+  const rateLimiterRequired = isRateLimitingRequired()
 
   const databaseStatus: CheckStatus = databaseUp ? "up" : "down"
   const redisStatus: CheckStatus = !redisConfigured
@@ -40,15 +46,19 @@ export async function GET() {
       : "down"
   const rateLimiterStatus: CheckStatus = !rateLimiterEnabled
     ? "disabled"
-    : redisUp
-      ? "up"
-      : "down"
+    : rateLimiterRequired && !redisUp
+      ? "down"
+      : "up"
 
   const status: HealthStatus = !databaseUp
     ? "error"
-    : redisConfigured && !redisUp
-      ? "degraded"
-      : "ok"
+    : rateLimiterRequired && !redisUp
+      ? "error"
+      : rateLimiterEnabled && (!redisConfigured || !redisUp)
+        ? "degraded"
+        : redisConfigured && !redisUp
+          ? "degraded"
+          : "ok"
   const timestamp = Date.now()
   const responseStatus = status === "error" ? 503 : 200
 

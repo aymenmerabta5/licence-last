@@ -3,7 +3,12 @@
 import { ArrowRight, LayoutDashboard, LogOut, Menu } from "lucide-react"
 
 import { useLocale, useTranslations } from "next-intl"
-import { useCallback, useMemo, useState } from "react"
+import {
+  useCallback,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from "react"
 
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
@@ -23,13 +28,19 @@ import { Link, useRouter } from "@/i18n/routing"
 import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
 
+const subscribeHydration = () => () => {}
+const getHydratedSnapshot = () => true
+const getServerHydratedSnapshot = () => false
+
 export function Navbar() {
   const t = useTranslations("nav")
   const locale = useLocale()
-  const router = useRouter()
-  const { data: session, isPending } = authClient.useSession()
-
   const [mobileOpen, setMobileOpen] = useState(false)
+  const mounted = useSyncExternalStore(
+    subscribeHydration,
+    getHydratedSnapshot,
+    getServerHydratedSnapshot,
+  )
 
   const navItems = useMemo(
     () => [
@@ -40,21 +51,6 @@ export function Navbar() {
     ],
     [t],
   )
-
-  const user = session?.user
-  const userInitial = (user?.name || user?.email || "U")
-    .slice(0, 1)
-    .toUpperCase()
-
-  const handleLogout = useCallback(async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.replace("/")
-        },
-      },
-    })
-  }, [router])
 
   const sheetSide = locale === "ar" ? "left" : "right"
 
@@ -101,82 +97,10 @@ export function Navbar() {
             <LanguageSwitcher />
           </div>
           <ThemeToggle />
-
-          {isPending ? (
-            <div
-              className="h-10 w-28 border border-border/40 bg-secondary/[0.08]"
-              aria-hidden="true"
-            />
-          ) : user ? (
-            <div className="flex items-center gap-2">
-              <Button
-                variant="editorial"
-                size="editorial"
-                className="hidden sm:inline-flex"
-                nativeButton={false}
-                render={<Link href="/dashboard" />}
-                aria-label={t("aria.dashboard")}
-              >
-                {t("dashboard")}
-              </Button>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={
-                    <Button
-                      variant="ghost"
-                      size="icon-lg"
-                      className="group rounded-full p-1 hover:bg-secondary/80"
-                    />
-                  }
-                  aria-label={t("aria.accountMenu")}
-                >
-                  <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[13px] shrink-0 group-hover:bg-primary group-hover:text-white transition-all ring-2 ring-transparent group-hover:ring-primary/20">
-                    {userInitial}
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  sideOffset={10}
-                  className="w-64"
-                >
-                  <DropdownMenuGroup>
-                    <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-1">
-                      {user?.name ?? user?.email ?? "Account"}
-                    </DropdownMenuLabel>
-                    <DropdownMenuItem
-                      className="rounded-lg h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
-                      onClick={() => router.push("/dashboard")}
-                    >
-                      <LayoutDashboard className="h-4 w-4 me-2" />
-                      {t("dashboard")}
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
-
-                  <DropdownMenuSeparator className="my-1.5 opacity-50" />
-
-                  <DropdownMenuGroup>
-                    <DropdownMenuItem
-                      variant="destructive"
-                      className="rounded-lg h-9 cursor-pointer transition-colors"
-                      onClick={handleLogout}
-                    >
-                      <LogOut className="h-4 w-4 me-2" /> {t("logout")}
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+          {mounted ? (
+            <NavbarSessionControls />
           ) : (
-            <Button
-              variant="editorial"
-              size="editorial"
-              nativeButton={false}
-              render={<Link href="/login" />}
-              aria-label={t("aria.getStarted")}
-            >
-              {t("getStarted")}
-            </Button>
+            <NavbarSessionControlsFallback />
           )}
         </div>
       </nav>
@@ -222,64 +146,12 @@ export function Navbar() {
 
             <Separator className="bg-border/50" />
 
-            {user ? (
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                    {userInitial}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-bold text-heading truncate">
-                      {user?.name ?? "Account"}
-                    </p>
-                    <p className="text-[11px] text-muted-foreground truncate">
-                      {user?.email}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-3">
-                  <Button
-                    variant="editorial"
-                    size="editorial"
-                    className="w-full"
-                    nativeButton={false}
-                    render={
-                      <Link
-                        href="/dashboard"
-                        onClick={() => setMobileOpen(false)}
-                      />
-                    }
-                  >
-                    {t("dashboard")}
-                  </Button>
-                  <Button
-                    variant="editorial-outline"
-                    size="editorial"
-                    className="w-full"
-                    onClick={() => {
-                      setMobileOpen(false)
-                      void handleLogout()
-                    }}
-                  >
-                    {t("logout")}
-                  </Button>
-                </div>
-              </div>
+            {mounted ? (
+              <NavbarMobileSessionControls
+                onNavigate={() => setMobileOpen(false)}
+              />
             ) : (
-              <div className="grid grid-cols-1 gap-3">
-                <Button
-                  variant="editorial"
-                  size="editorial"
-                  className="w-full"
-                  nativeButton={false}
-                  render={
-                    <Link href="/login" onClick={() => setMobileOpen(false)} />
-                  }
-                >
-                  {t("getStarted")}
-                </Button>
-              </div>
+              <NavbarMobileSessionControlsFallback />
             )}
 
             <Separator className="bg-border/50" />
@@ -292,5 +164,204 @@ export function Navbar() {
         </SheetContent>
       </Sheet>
     </>
+  )
+}
+
+function NavbarSessionControls() {
+  const t = useTranslations("nav")
+  const router = useRouter()
+  const { data: session, isPending } = authClient.useSession()
+  const user = session?.user
+  const userInitial = (user?.name || user?.email || "U")
+    .slice(0, 1)
+    .toUpperCase()
+
+  const handleLogout = useCallback(async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.replace("/")
+        },
+      },
+    })
+  }, [router])
+
+  if (isPending) {
+    return <NavbarSessionControlsFallback />
+  }
+
+  if (!user) {
+    return (
+      <Button
+        variant="editorial"
+        size="editorial"
+        nativeButton={false}
+        render={<Link href="/login" />}
+        aria-label={t("aria.getStarted")}
+      >
+        {t("getStarted")}
+      </Button>
+    )
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <Button
+        variant="editorial"
+        size="editorial"
+        className="hidden sm:inline-flex"
+        nativeButton={false}
+        render={<Link href="/dashboard" />}
+        aria-label={t("aria.dashboard")}
+      >
+        {t("dashboard")}
+      </Button>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="icon-lg"
+              className="group rounded-full p-1 hover:bg-secondary/80"
+            />
+          }
+          aria-label={t("aria.accountMenu")}
+        >
+          <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[13px] shrink-0 group-hover:bg-primary group-hover:text-white transition-all ring-2 ring-transparent group-hover:ring-primary/20">
+            {userInitial}
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" sideOffset={10} className="w-64">
+          <DropdownMenuGroup>
+            <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-1">
+              {user.name ?? user.email ?? "Account"}
+            </DropdownMenuLabel>
+            <DropdownMenuItem
+              className="rounded-lg h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
+              onClick={() => router.push("/dashboard")}
+            >
+              <LayoutDashboard className="h-4 w-4 me-2" />
+              {t("dashboard")}
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+
+          <DropdownMenuSeparator className="my-1.5 opacity-50" />
+
+          <DropdownMenuGroup>
+            <DropdownMenuItem
+              variant="destructive"
+              className="rounded-lg h-9 cursor-pointer transition-colors"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-4 w-4 me-2" /> {t("logout")}
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  )
+}
+
+function NavbarSessionControlsFallback() {
+  return (
+    <div
+      className="h-10 w-28 border border-border/40 bg-secondary/[0.08]"
+      aria-hidden="true"
+    />
+  )
+}
+
+function NavbarMobileSessionControls({
+  onNavigate,
+}: {
+  onNavigate: () => void
+}) {
+  const t = useTranslations("nav")
+  const router = useRouter()
+  const { data: session, isPending } = authClient.useSession()
+  const user = session?.user
+  const userInitial = (user?.name || user?.email || "U")
+    .slice(0, 1)
+    .toUpperCase()
+
+  const handleLogout = useCallback(async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.replace("/")
+        },
+      },
+    })
+  }, [router])
+
+  if (isPending) {
+    return <NavbarMobileSessionControlsFallback />
+  }
+
+  if (!user) {
+    return (
+      <div className="grid grid-cols-1 gap-3">
+        <Button
+          variant="editorial"
+          size="editorial"
+          className="w-full"
+          nativeButton={false}
+          render={<Link href="/login" onClick={onNavigate} />}
+        >
+          {t("getStarted")}
+        </Button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+          {userInitial}
+        </div>
+        <div className="min-w-0">
+          <p className="text-sm font-bold text-heading truncate">
+            {user.name ?? "Account"}
+          </p>
+          <p className="text-[11px] text-muted-foreground truncate">
+            {user.email}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-3">
+        <Button
+          variant="editorial"
+          size="editorial"
+          className="w-full"
+          nativeButton={false}
+          render={<Link href="/dashboard" onClick={onNavigate} />}
+        >
+          {t("dashboard")}
+        </Button>
+        <Button
+          variant="editorial-outline"
+          size="editorial"
+          className="w-full"
+          onClick={() => {
+            onNavigate()
+            void handleLogout()
+          }}
+        >
+          {t("logout")}
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+function NavbarMobileSessionControlsFallback() {
+  return (
+    <div
+      className="h-10 w-full border border-border/40 bg-secondary/[0.08]"
+      aria-hidden="true"
+    />
   )
 }

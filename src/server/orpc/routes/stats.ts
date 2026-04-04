@@ -15,7 +15,10 @@ export const getAdminStatsProcedure = superAdminProcedureGenerous.handler(
 
 export const getUniversityDashboardStatsProcedure =
   adminProcedureGenerous.handler(async ({ context }) => {
-    if (context.user.role !== "university_admin") {
+    if (
+      context.user.role !== "university_admin" ||
+      context.user.universityMembershipRole === "department_head"
+    ) {
       throw new ORPCError("FORBIDDEN", {
         message: "University admin access required",
       })

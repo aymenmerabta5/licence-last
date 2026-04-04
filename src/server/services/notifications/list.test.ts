@@ -76,5 +76,42 @@ describe("src/server/services/notifications/list", () => {
     expect(result.notifications).toHaveLength(1)
     expect(result.unreadCount).toBe(2)
     expect(result.hasMore).toBe(false)
+    expect(mockOrderBy.mock.calls[0]).toHaveLength(2)
+  })
+
+  test("should expose a nextCursor when another page exists", async () => {
+    mockRows = [
+      {
+        id: "n-3",
+        type: "new_message",
+        payload: {},
+        readAt: null,
+        createdAt: new Date("2025-01-03T00:00:00.000Z"),
+      },
+      {
+        id: "n-2",
+        type: "new_message",
+        payload: {},
+        readAt: null,
+        createdAt: new Date("2025-01-02T00:00:00.000Z"),
+      },
+      {
+        id: "n-1",
+        type: "new_message",
+        payload: {},
+        readAt: null,
+        createdAt: new Date("2025-01-01T00:00:00.000Z"),
+      },
+    ]
+
+    const { listNotifications } = await importListNotifications()
+    const result = await listNotifications("u-1", { limit: 2 })
+
+    expect(result.notifications).toHaveLength(2)
+    expect(result.hasMore).toBe(true)
+    expect(result.nextCursor).toEqual({
+      createdAt: "2025-01-02T00:00:00.000Z",
+      id: "n-2",
+    })
   })
 })

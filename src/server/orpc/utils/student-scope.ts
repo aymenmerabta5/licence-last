@@ -12,6 +12,7 @@ export interface StudentScopeViewer {
   universityId?: string | null
   departmentId?: string | null
   companyId?: string | null
+  universityMembershipRole?: string | null
 }
 
 export function canAccessPrivateStudentProfile(
@@ -24,6 +25,16 @@ export function canAccessPrivateStudentProfile(
 
   if (viewer.role === "super_admin") {
     return true
+  }
+
+  const isDepartmentHead = viewer.universityMembershipRole === "department_head"
+  if (isDepartmentHead) {
+    return (
+      viewer.universityId != null &&
+      viewer.universityId === target.universityId &&
+      viewer.departmentId != null &&
+      viewer.departmentId === target.departmentId
+    )
   }
 
   return (
@@ -52,6 +63,16 @@ export function canAccessApplicationTimeline(
     viewer.companyId === companyId
   ) {
     return true
+  }
+
+  const isDepartmentHead = viewer.universityMembershipRole === "department_head"
+  if (isDepartmentHead) {
+    return (
+      viewer.universityId != null &&
+      viewer.universityId === target.universityId &&
+      viewer.departmentId != null &&
+      viewer.departmentId === target.departmentId
+    )
   }
 
   return (

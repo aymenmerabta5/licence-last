@@ -43,8 +43,8 @@ export const superAdmin = ac.newRole({
 
 /** university_admin — scoped university user management */
 export const universityAdmin = ac.newRole({
-  user: ["list", "ban", "delete"],
-  session: ["list"],
+  user: [],
+  session: [],
 })
 
 /** DEPRECATED: dept_head role no longer assigned. Department heads use university_admin + membership. */

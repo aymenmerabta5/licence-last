@@ -490,6 +490,55 @@ describe("src/server/orpc/routes/companies", () => {
     })
   })
 
+  test("listCompaniesProcedure strips sensitive fields for non-admin users", async () => {
+    listCompaniesMock.mockResolvedValueOnce({
+      companies: [
+        {
+          id: "company-1",
+          name: "Acme",
+          slug: "acme",
+          status: "approved",
+          description: "Public profile",
+          logoUrl: "https://example.com/logo.png",
+          websiteUrl: "https://acme.test",
+          wilayaCode: 16,
+          createdAt: new Date("2026-01-01T00:00:00.000Z"),
+          phone: "+213555000000",
+          contactEmail: "private@acme.test",
+          representativeName: "Private Person",
+          address: "Secret HQ",
+          verificationDocumentKey: "secret-doc",
+          rejectionReason: "internal",
+        },
+      ],
+      hasMore: false,
+    })
+
+    const { listCompaniesProcedure } = await importCompaniesRoute()
+
+    const result = await callProcedure(listCompaniesProcedure, {
+      input: {},
+      context: { user: { id: "student-1", role: "student" } },
+    })
+
+    expect(result).toEqual({
+      companies: [
+        {
+          id: "company-1",
+          name: "Acme",
+          slug: "acme",
+          status: "approved",
+          description: "Public profile",
+          logoUrl: "https://example.com/logo.png",
+          websiteUrl: "https://acme.test",
+          wilayaCode: 16,
+          createdAt: new Date("2026-01-01T00:00:00.000Z"),
+        },
+      ],
+      hasMore: false,
+    })
+  })
+
   test("listPublicDirectoryProcedure delegates for students", async () => {
     listPublicDirectoryCompaniesMock.mockResolvedValueOnce({
       companies: [{ id: "company-1", name: "Acme" }],

@@ -1,6 +1,6 @@
 import "server-only"
 
-import { and, count, desc, eq, isNull, lt, or, sql } from "drizzle-orm"
+import { and, count, desc, eq, isNull, lt, or } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { notification } from "@/server/db/schema/notifications"
@@ -55,11 +55,7 @@ export async function listNotifications(
     })
     .from(notification)
     .where(and(...conditions))
-    .orderBy(
-      desc(sql`${notification.readAt} IS NULL`),
-      desc(notification.createdAt),
-      desc(notification.id),
-    )
+    .orderBy(desc(notification.createdAt), desc(notification.id))
     .limit(limit + 1)
 
   const hasMore = rows.length > limit

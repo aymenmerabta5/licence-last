@@ -9,10 +9,8 @@ export {
 } from "@/server/services/assistant/utils"
 
 export function errorToText(error: unknown) {
-  if (error == null) return "Unknown error"
-  if (typeof error === "string") return error
-  if (error instanceof Error) return error.message
-  return JSON.stringify(error)
+  void error
+  return "The assistant is temporarily unavailable. Please try again."
 }
 
 export function sanitizeUIMessagesForModel(

@@ -4,6 +4,7 @@ const pingDatabaseMock = mock(async () => true)
 const isRedisAvailableMock = mock(() => false)
 const pingRedisMock = mock(async () => false)
 const isRateLimitingEnabledMock = mock(() => false)
+const isRateLimitingRequiredMock = mock(() => false)
 
 mock.module("@/server/db", () => ({
   db: {
@@ -23,6 +24,7 @@ mock.module("@/server/caching/redis", () => ({
 
 mock.module("@/server/caching/redis-ratelimiter", () => ({
   isRateLimitingEnabled: isRateLimitingEnabledMock,
+  isRateLimitingRequired: isRateLimitingRequiredMock,
 }))
 
 describe("src/app/api/health/route", () => {
@@ -41,6 +43,7 @@ describe("src/app/api/health/route", () => {
     isRedisAvailableMock.mockClear()
     pingRedisMock.mockClear()
     isRateLimitingEnabledMock.mockClear()
+    isRateLimitingRequiredMock.mockClear()
   })
 
   afterAll(() => {
@@ -51,6 +54,7 @@ describe("src/app/api/health/route", () => {
     pingDatabaseMock.mockResolvedValueOnce(true)
     isRedisAvailableMock.mockReturnValueOnce(false)
     isRateLimitingEnabledMock.mockReturnValueOnce(false)
+    isRateLimitingRequiredMock.mockReturnValueOnce(false)
 
     const { GET } = await import("@/app/api/health/route")
     const response = await GET()
@@ -74,6 +78,7 @@ describe("src/app/api/health/route", () => {
     isRedisAvailableMock.mockReturnValueOnce(true).mockReturnValueOnce(true)
     pingRedisMock.mockResolvedValueOnce(false)
     isRateLimitingEnabledMock.mockReturnValueOnce(true)
+    isRateLimitingRequiredMock.mockReturnValueOnce(false)
 
     const { GET } = await import("@/app/api/health/route")
     const response = await GET()
@@ -82,7 +87,7 @@ describe("src/app/api/health/route", () => {
     expect(response.status).toBe(200)
     expect(body.status).toBe("degraded")
     expect(body.checks.redis.status).toBe("down")
-    expect(body.checks.rateLimiter.status).toBe("down")
+    expect(body.checks.rateLimiter.status).toBe("up")
   })
 
   test("returns 503 when database is unhealthy", async () => {
@@ -90,6 +95,7 @@ describe("src/app/api/health/route", () => {
     isRedisAvailableMock.mockReturnValueOnce(true).mockReturnValueOnce(true)
     pingRedisMock.mockResolvedValueOnce(true)
     isRateLimitingEnabledMock.mockReturnValueOnce(true)
+    isRateLimitingRequiredMock.mockReturnValueOnce(true)
 
     const { GET } = await import("@/app/api/health/route")
     const response = await GET()
@@ -106,6 +112,23 @@ describe("src/app/api/health/route", () => {
     isRedisAvailableMock.mockReturnValueOnce(true).mockReturnValueOnce(true)
     pingRedisMock.mockResolvedValueOnce(false)
     isRateLimitingEnabledMock.mockReturnValueOnce(true)
+    isRateLimitingRequiredMock.mockReturnValueOnce(false)
+
+    const { GET } = await import("@/app/api/health/route")
+    const response = await GET()
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.status).toBe("degraded")
+    expect(body.checks).toBeUndefined()
+  })
+
+  test("returns 200 and degraded in production when rate limiting falls back without Redis", async () => {
+    setNodeEnv("production")
+    pingDatabaseMock.mockResolvedValueOnce(true)
+    isRedisAvailableMock.mockReturnValueOnce(false)
+    isRateLimitingEnabledMock.mockReturnValueOnce(true)
+    isRateLimitingRequiredMock.mockReturnValueOnce(false)
 
     const { GET } = await import("@/app/api/health/route")
     const response = await GET()

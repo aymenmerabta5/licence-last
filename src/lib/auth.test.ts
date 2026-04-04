@@ -29,6 +29,9 @@ interface AuthConfig {
       }
     }
   }
+  emailAndPassword?: {
+    revokeSessionsOnPasswordReset?: boolean
+  }
 }
 
 interface MockAuthInstance {
@@ -101,11 +104,26 @@ function applyAuthModuleMocks() {
 
   mock.module("@/lib/permissions", () => ({
     ac: {},
-    companyAdmin: {},
-    deptHead: {},
-    student: {},
-    superAdmin: {},
-    universityAdmin: {},
+    companyAdmin: { statements: { user: [], session: [] } },
+    deptHead: { statements: { user: ["list"], session: ["list"] } },
+    student: { statements: { user: [], session: [] } },
+    superAdmin: {
+      statements: {
+        user: [
+          "create",
+          "list",
+          "set-role",
+          "ban",
+          "impersonate",
+          "delete",
+          "set-password",
+          "get",
+          "update",
+        ],
+        session: ["list", "revoke", "delete"],
+      },
+    },
+    universityAdmin: { statements: { user: [], session: [] } },
   }))
 
   mock.module("@/server/email/sendEmail", () => ({
@@ -217,5 +235,14 @@ describe("src/lib/auth self-signup role protections", () => {
     expect(result.data.role).toBe("company_admin")
     expect(getEmailDomainMock).not.toHaveBeenCalled()
     expect(selectMock).not.toHaveBeenCalled()
+  })
+
+  test("revokes existing sessions when a password reset succeeds", async () => {
+    const { auth } = await import("@/lib/auth")
+
+    expect(
+      (auth as unknown as MockAuthInstance).__config.emailAndPassword
+        ?.revokeSessionsOnPasswordReset,
+    ).toBe(true)
   })
 })

@@ -17,9 +17,9 @@ mock.module("@/lib/csrf", () => ({
 }))
 
 // Mock auth
-const mockGetSession =
+const mockGetFreshAuthSession =
   mock<
-    () => Promise<{
+    (headers: Headers) => Promise<{
       user: {
         id: string
         role: string
@@ -29,13 +29,8 @@ const mockGetSession =
     } | null>
   >()
 
-mock.module("@/lib/auth", () => ({
-  auth: {
-    api: {
-      getSession: mockGetSession,
-    },
-  },
-  pendingWelcomeEmails: new Map(),
+mock.module("@/server/auth/get-fresh-session", () => ({
+  getFreshAuthSession: mockGetFreshAuthSession,
 }))
 
 // Mock approval gate
@@ -152,6 +147,13 @@ mock.module("@/server/services/assistant/messages", () => ({
   appendAssistantMessage: mock(() => Promise.resolve()),
 }))
 
+const mockGetCompanyStatusByUserId =
+  mock<() => Promise<{ status: string } | null>>()
+
+mock.module("@/server/services/companies/get-status", () => ({
+  getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
+}))
+
 mock.module("@/server/services/assistant/utils", () => ({
   extractTextFromParts: (parts: unknown[]) =>
     parts.map((p: unknown) => (p as { text?: string }).text || "").join(""),
@@ -167,6 +169,10 @@ mock.module("@/lib/ai/tool-output", () => ({
   asRecord: (val: unknown) => val as Record<string, unknown>,
   getStringProp: (rec: Record<string, unknown>, key: string) =>
     (rec?.[key] as string) || undefined,
+}))
+
+mock.module("@/lib/feature-flags", () => ({
+  isFeatureEnabled: () => true,
 }))
 
 // Mock sanitizer
@@ -215,12 +221,13 @@ mock.module("@/server/ai/auto-title", () => ({
 
 describe("src/app/api/assistant/chat/route", () => {
   beforeEach(() => {
-    mockGetSession.mockClear()
+    mockGetFreshAuthSession.mockClear()
     mockCheckRateLimit.mockClear()
     mockIsRoleAllowedForIntent.mockClear()
     mockResolvePersistence.mockClear()
     mockGetAssistantConversationByIdForCompany.mockClear()
     mockCheckAdminApproval.mockClear()
+    mockGetCompanyStatusByUserId.mockClear()
     mockDbSelect.mockClear()
     mockDbFrom.mockClear()
     mockDbWhere.mockClear()
@@ -228,7 +235,7 @@ describe("src/app/api/assistant/chat/route", () => {
     mockHeadersData = {}
 
     // Default successful mocks
-    mockGetSession.mockResolvedValue({
+    mockGetFreshAuthSession.mockResolvedValue({
       user: { id: "user-1", role: "company_admin" },
     })
     mockCheckAdminApproval.mockResolvedValue({ ok: true })
@@ -239,6 +246,7 @@ describe("src/app/api/assistant/chat/route", () => {
       companyId: "company-1",
       modelId: null,
     })
+    mockGetCompanyStatusByUserId.mockResolvedValue({ status: "approved" })
     mockGetAssistantConversationByIdForCompany.mockResolvedValue({
       title: null,
     })
@@ -351,7 +359,7 @@ describe("src/app/api/assistant/chat/route", () => {
 
   describe("authentication", () => {
     test("no session returns 401", async () => {
-      mockGetSession.mockResolvedValue(null)
+      mockGetFreshAuthSession.mockResolvedValue(null)
 
       const { POST } = await import("@/app/api/assistant/chat/route")
 
@@ -406,7 +414,7 @@ describe("src/app/api/assistant/chat/route", () => {
     })
 
     test("pending company_admin returns 403 before RBAC intent checks", async () => {
-      mockGetSession.mockResolvedValue({
+      mockGetFreshAuthSession.mockResolvedValue({
         user: {
           id: "user-1",
           role: "company_admin",
@@ -417,6 +425,39 @@ describe("src/app/api/assistant/chat/route", () => {
         ok: false,
         reason: "company_pending",
       })
+
+      const { POST } = await import("@/app/api/assistant/chat/route")
+
+      const request = new Request("http://localhost:3000/api/assistant/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [
+            {
+              id: "msg-1",
+              role: "user",
+              content: "Hello",
+              parts: [{ type: "text", text: "Hello" }],
+            },
+          ],
+        }),
+      })
+
+      const response = await POST(request)
+      expect(response.status).toBe(403)
+      const body = await response.text()
+      expect(body).toBe("Forbidden")
+    })
+
+    test("company_admin without an approved company cannot use free-form assistant chat", async () => {
+      mockGetFreshAuthSession.mockResolvedValue({
+        user: {
+          id: "user-1",
+          role: "company_admin",
+          onboardingCompleted: false,
+        },
+      })
+      mockGetCompanyStatusByUserId.mockResolvedValue(null)
 
       const { POST } = await import("@/app/api/assistant/chat/route")
 
@@ -530,7 +571,7 @@ describe("src/app/api/assistant/chat/route", () => {
     })
 
     test("rate limit check uses correct key format", async () => {
-      mockGetSession.mockResolvedValue({
+      mockGetFreshAuthSession.mockResolvedValue({
         user: { id: "user-456", role: "company_admin" },
       })
 

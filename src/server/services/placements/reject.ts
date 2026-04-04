@@ -1,6 +1,6 @@
 import "server-only"
 
-import { eq } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import { db } from "@/server/db"
 import { createModuleLogger } from "@/server/logging"
 
@@ -106,7 +106,7 @@ export async function rejectPlacement(input: RejectPlacementInput) {
 
   const now = new Date()
 
-  await db
+  const [updatedApplication] = await db
     .update(application)
     .set({
       status: "admin_rejected",
@@ -116,33 +116,54 @@ export async function rejectPlacement(input: RejectPlacementInput) {
       adminActionAt: now,
       adminNote: reason ?? null,
     })
-    .where(eq(application.id, applicationId))
+    .where(and(eq(application.id, applicationId), eq(application.status, app.status)))
+    .returning({ id: application.id })
 
-  // Notify student
-  await createNotification({
-    userId: app.studentUserId,
-    type: "placement_rejected",
-    payload: {
+  if (!updatedApplication) {
+    throw new ServiceError(
+      "APPLICATION_NOT_COMPANY_ACCEPTED",
+      "Only company-accepted applications can be rejected by admin",
+    )
+  }
+
+  try {
+    await createNotification({
+      userId: app.studentUserId,
+      type: "placement_rejected",
+      payload: {
+        applicationId,
+        offerId: app.offerId,
+        offerTitle: app.offerTitle,
+        companyName: app.companyName,
+        reason: reason ?? null,
+        stage: "rejected",
+        status: "admin_rejected",
+      },
+    })
+  } catch (error) {
+    log.error(
+      { err: error, applicationId },
+      "Failed to notify student about rejected placement",
+    )
+  }
+
+  try {
+    await appendTimelineEvent({
       applicationId,
-      offerId: app.offerId,
-      offerTitle: app.offerTitle,
-      companyName: app.companyName,
-      reason: reason ?? null,
-      stage: "rejected",
-      status: "admin_rejected",
-    },
-  })
-
-  await appendTimelineEvent({
-    applicationId,
-    actorUserId: adminUserId,
-    eventType: "application_status_changed",
-    fromStage: app.pipelineStage,
-    toStage: "rejected",
-    fromStatus: app.status,
-    toStatus: "admin_rejected",
-    payload: { reason: reason ?? null },
-  })
+      actorUserId: adminUserId,
+      eventType: "application_status_changed",
+      fromStage: app.pipelineStage,
+      toStage: "rejected",
+      fromStatus: app.status,
+      toStatus: "admin_rejected",
+      payload: { reason: reason ?? null },
+    })
+  } catch (error) {
+    log.error(
+      { err: error, applicationId },
+      "Failed to append placement rejection timeline event",
+    )
+  }
 
   // Get company members to notify
   const companyMembers = await db
@@ -153,19 +174,26 @@ export async function rejectPlacement(input: RejectPlacementInput) {
   // Notify company members
   if (companyMembers.length > 0) {
     await Promise.all(
-      companyMembers.map((member) =>
-        createNotification({
-          userId: member.userId,
-          type: "placement_rejected",
-          payload: {
-            applicationId,
-            offerId: app.offerId,
-            offerTitle: app.offerTitle,
-            studentUserId: app.studentUserId,
-            reason: reason ?? null,
-          },
-        }),
-      ),
+      companyMembers.map(async (member) => {
+        try {
+          await createNotification({
+            userId: member.userId,
+            type: "placement_rejected",
+            payload: {
+              applicationId,
+              offerId: app.offerId,
+              offerTitle: app.offerTitle,
+              studentUserId: app.studentUserId,
+              reason: reason ?? null,
+            },
+          })
+        } catch (error) {
+          log.error(
+            { err: error, applicationId, userId: member.userId },
+            "Failed to notify company member about rejected placement",
+          )
+        }
+      }),
     )
   }
 

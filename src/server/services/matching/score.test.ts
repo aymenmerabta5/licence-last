@@ -504,6 +504,7 @@ describe("canAccessMatchScore", () => {
     offerCompanyId: "company-1",
     isOfferVisibleToStudent: true,
     viewerCompanyId: "company-1",
+    hasApplicationRelationship: false,
   }
 
   test("allows super_admin regardless of params", async () => {
@@ -513,14 +514,14 @@ describe("canAccessMatchScore", () => {
     ).toBe(true)
   })
 
-  test("allows university_admin regardless of params", async () => {
+  test("denies university_admin access without an offer or student relationship", async () => {
     const { canAccessMatchScore } = await importScoreModule()
     expect(
       canAccessMatchScore(
         { id: "uadmin-1", role: "university_admin" },
         baseParams,
       ),
-    ).toBe(true)
+    ).toBe(false)
   })
 
   test("allows student viewing own score for visible offer", async () => {
@@ -547,24 +548,38 @@ describe("canAccessMatchScore", () => {
     ).toBe(false)
   })
 
-  test("allows company_admin for their own company's offer", async () => {
+  test("allows company_admin for their own company's offer when an application relationship exists", async () => {
+    const { canAccessMatchScore } = await importScoreModule()
+    expect(
+      canAccessMatchScore(
+        { id: "cadmin-1", role: "company_admin" },
+        { ...baseParams, hasApplicationRelationship: true },
+      ),
+    ).toBe(true)
+  })
+
+  test("allows company_admin even when offer is hidden from students if an application relationship exists", async () => {
+    const { canAccessMatchScore } = await importScoreModule()
+    expect(
+      canAccessMatchScore(
+        { id: "cadmin-1", role: "company_admin" },
+        {
+          ...baseParams,
+          isOfferVisibleToStudent: false,
+          hasApplicationRelationship: true,
+        },
+      ),
+    ).toBe(true)
+  })
+
+  test("denies company_admin without an application relationship", async () => {
     const { canAccessMatchScore } = await importScoreModule()
     expect(
       canAccessMatchScore(
         { id: "cadmin-1", role: "company_admin" },
         baseParams,
       ),
-    ).toBe(true)
-  })
-
-  test("allows company_admin even when offer is hidden from students", async () => {
-    const { canAccessMatchScore } = await importScoreModule()
-    expect(
-      canAccessMatchScore(
-        { id: "cadmin-1", role: "company_admin" },
-        { ...baseParams, isOfferVisibleToStudent: false },
-      ),
-    ).toBe(true)
+    ).toBe(false)
   })
 
   test("denies company_admin for another company's offer", async () => {

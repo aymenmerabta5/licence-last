@@ -274,6 +274,35 @@ describe("requireRole", () => {
     expect(result.universityDepartmentId).toBe("dept-1")
   })
 
+  test("should not promote legacy dept_head without membership into university_admin access", async () => {
+    mockGetSession.mockResolvedValue({
+      user: {
+        id: "legacy-head",
+        role: "dept_head",
+        name: "Legacy Head",
+        email: "legacy@example.com",
+        universityId: "uni-1",
+      },
+      session: {},
+    })
+    mockGetUniversityMembership.mockResolvedValue(null)
+
+    await requireRole(
+      ["university_admin"],
+      {},
+      {
+        getSession: mockGetSession,
+        getHeaders: mockHeaders,
+        localeRedirect: mockLocaleRedirect,
+        getCompanyStatusByUserId: mockGetCompanyStatusByUserId,
+        getUniversityStatusByUserId: mockGetUniversityStatusByUserId,
+        getUniversityMembership: mockGetUniversityMembership,
+      },
+    )
+
+    expect(mockLocaleRedirect).toHaveBeenCalledWith("/")
+  })
+
   test("should redirect pending company_admin to company pending status", async () => {
     mockGetSession.mockResolvedValue({
       user: {

@@ -289,15 +289,18 @@ export function canAccessMatchScore(
     offerCompanyId: string
     isOfferVisibleToStudent: boolean
     viewerCompanyId?: string
+    hasApplicationRelationship?: boolean
   },
 ) {
-  if (viewer.role === "university_admin" || viewer.role === "super_admin")
-    return true
+  if (viewer.role === "super_admin") return true
   if (viewer.role === "student") {
     return viewer.id === params.studentUserId && params.isOfferVisibleToStudent
   }
   if (viewer.role === "company_admin") {
-    return params.viewerCompanyId === params.offerCompanyId
+    return (
+      params.viewerCompanyId === params.offerCompanyId &&
+      params.hasApplicationRelationship === true
+    )
   }
   return false
 }

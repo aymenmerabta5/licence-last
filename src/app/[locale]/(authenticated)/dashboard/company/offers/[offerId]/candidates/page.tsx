@@ -25,13 +25,17 @@ function CandidatesPageFallback() {
   )
 }
 
-export default async function CandidatesPage({ params }: CandidatesPageProps) {
+async function CandidatesPageContent({ params }: CandidatesPageProps) {
   await requireApprovedCompanyAdmin()
   const { offerId } = await params
 
+  return <CandidatesView offerId={offerId} />
+}
+
+export default function CandidatesPage({ params }: CandidatesPageProps) {
   return (
     <Suspense fallback={<CandidatesPageFallback />}>
-      <CandidatesView offerId={offerId} />
+      <CandidatesPageContent params={params} />
     </Suspense>
   )
 }

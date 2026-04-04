@@ -24,7 +24,11 @@ interface ActionItem {
   primary?: boolean
 }
 
-export function RecruiterQuickActions() {
+export function RecruiterQuickActions({
+  assistantEnabled,
+}: {
+  assistantEnabled: boolean
+}) {
   const t = useTranslations("dashboard.recruiter")
   const tNav = useTranslations("dashboard.nav")
 
@@ -54,13 +58,16 @@ export function RecruiterQuickActions() {
       href: "/dashboard/company/documents",
       icon: FileText,
     },
-    {
+  ]
+
+  if (assistantEnabled) {
+    actions.push({
       title: "AI Assistant",
       description: "Recruiting help",
       href: "/dashboard/assistant",
       icon: Bot,
-    },
-  ]
+    })
+  }
 
   return (
     <motion.div

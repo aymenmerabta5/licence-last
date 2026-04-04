@@ -30,11 +30,21 @@ interface DepartmentAdminContext {
   user: {
     role: string | null | undefined
     universityId?: string | null
+    universityMembershipRole?: string | null
   }
 }
 
-function assertDepartmentAdminRole(role: string | null | undefined) {
-  if (role !== "university_admin" && role !== "super_admin") {
+function assertDepartmentAdminRole(args: {
+  role: string | null | undefined
+  universityMembershipRole?: string | null
+}) {
+  if (
+    args.role !== "super_admin" &&
+    !(
+      args.role === "university_admin" &&
+      args.universityMembershipRole !== "department_head"
+    )
+  ) {
     throwCodedORPCError("FORBIDDEN", "DEPARTMENT_ADMIN_ACCESS_REQUIRED", {
       message: "Only university admins can manage departments",
     })
@@ -46,7 +56,10 @@ function resolveTargetUniversityId(args: {
   inputUniversityId?: string
 }) {
   const { context, inputUniversityId } = args
-  assertDepartmentAdminRole(context.user.role)
+  assertDepartmentAdminRole({
+    role: context.user.role,
+    universityMembershipRole: context.user.universityMembershipRole,
+  })
 
   if (context.user.role === "super_admin") {
     const universityId = inputUniversityId ?? context.user.universityId ?? null
@@ -78,7 +91,10 @@ async function assertCanManageDepartment(
   departmentId: string,
   context: DepartmentAdminContext,
 ) {
-  assertDepartmentAdminRole(context.user.role)
+  assertDepartmentAdminRole({
+    role: context.user.role,
+    universityMembershipRole: context.user.universityMembershipRole,
+  })
 
   const [dept] = await db
     .select({ universityId: department.universityId })
@@ -104,7 +120,26 @@ async function assertCanManageDepartment(
 
 export const listDepartmentsProcedure = authedProcedureGenerous
   .input(z.object({ universityId: z.string().min(1) }))
-  .handler(async ({ input }) => listDepartments(input.universityId))
+  .handler(async ({ input, context }) => {
+    const departments = await listDepartments(input.universityId)
+
+    const canViewHeadContactDetails =
+      context.user.role === "super_admin" ||
+      (context.user.role === "university_admin" &&
+        context.user.universityMembershipRole !== "department_head" &&
+        context.user.universityId === input.universityId)
+
+    if (canViewHeadContactDetails) {
+      return departments
+    }
+
+    return departments.map((department) => ({
+      ...department,
+      headUserId: null,
+      headUserName: null,
+      headUserEmail: null,
+    }))
+  })
 
 export const createDepartmentProcedure = adminProcedureStandard
   .input(
@@ -270,7 +305,16 @@ export const syncDepartmentSkillsProcedure = adminProcedureStandard
   )
   .handler(async ({ input, context }) => {
     await assertCanManageDepartment(input.departmentId, context)
-    return syncDepartmentSkills(input.departmentId, input.skillTagIds)
+    try {
+      return await syncDepartmentSkills(input.departmentId, input.skillTagIds)
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          INVALID_SKILL_TAG_IDS: "BAD_REQUEST",
+        },
+        fallbackMessage: "Failed to sync department skills",
+      })
+    }
   })
 
 export const getDepartmentSkillsProcedure = authedProcedureGenerous

@@ -13,26 +13,35 @@ export async function updateNotificationPreferences(
   userId: string,
   input: UpdateNotificationPreferencesInput,
 ) {
-  const current = await getNotificationPreferences(userId)
-  const next = {
-    inAppEnabled: input.inAppEnabled ?? current.inAppEnabled,
-    emailEnabled: input.emailEnabled ?? current.emailEnabled,
+  if (input.inAppEnabled === undefined && input.emailEnabled === undefined) {
+    return getNotificationPreferences(userId)
+  }
+
+  const insertValues = {
+    userId,
+    ...(input.inAppEnabled !== undefined
+      ? { inAppEnabled: input.inAppEnabled }
+      : {}),
+    ...(input.emailEnabled !== undefined
+      ? { emailEnabled: input.emailEnabled }
+      : {}),
+  }
+  const nextUpdate = {
+    ...(input.inAppEnabled !== undefined
+      ? { inAppEnabled: input.inAppEnabled }
+      : {}),
+    ...(input.emailEnabled !== undefined
+      ? { emailEnabled: input.emailEnabled }
+      : {}),
+    updatedAt: new Date(),
   }
 
   const [preferences] = await db
     .insert(notificationPreference)
-    .values({
-      userId,
-      inAppEnabled: next.inAppEnabled,
-      emailEnabled: next.emailEnabled,
-    })
+    .values(insertValues)
     .onConflictDoUpdate({
       target: notificationPreference.userId,
-      set: {
-        inAppEnabled: next.inAppEnabled,
-        emailEnabled: next.emailEnabled,
-        updatedAt: new Date(),
-      },
+      set: nextUpdate,
     })
     .returning({
       inAppEnabled: notificationPreference.inAppEnabled,

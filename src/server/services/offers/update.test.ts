@@ -18,7 +18,9 @@ const mockTxUpdate = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockTxSet = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockTxUpdateWhere = mock((): any => Promise.resolve())
+const mockTxUpdateWhere = mock(() => ({ returning: mockTxUpdateReturning }))
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockTxUpdateReturning = mock((): any => Promise.resolve([{ id: "offer-1" }]))
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockDelete = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -71,6 +73,7 @@ describe("src/server/services/offers/update", () => {
     mockTxUpdate.mockClear()
     mockTxSet.mockClear()
     mockTxUpdateWhere.mockClear()
+    mockTxUpdateReturning.mockClear()
     mockDelete.mockClear()
     mockDeleteWhere.mockClear()
     mockTransaction.mockClear()
@@ -84,7 +87,8 @@ describe("src/server/services/offers/update", () => {
     mockValues.mockResolvedValue(undefined)
     mockTxUpdate.mockReturnValue({ set: mockTxSet })
     mockTxSet.mockReturnValue({ where: mockTxUpdateWhere })
-    mockTxUpdateWhere.mockResolvedValue(undefined)
+    mockTxUpdateWhere.mockReturnValue({ returning: mockTxUpdateReturning })
+    mockTxUpdateReturning.mockResolvedValue([{ id: "offer-1" }])
     mockDelete.mockReturnValue({ where: mockDeleteWhere })
     mockDeleteWhere.mockResolvedValue(undefined)
     mockValidateSkillTagIds.mockResolvedValue(undefined)

@@ -19,6 +19,26 @@ interface StudentLanguageInput {
   proficiency: ProficiencyLevel
 }
 
+function normaliseOptionalString(
+  value: string | undefined,
+): string | null | undefined {
+  if (value === undefined) return undefined
+  return value.trim() ? value.trim() : null
+}
+
+function normaliseOptionalUrl(
+  value: string | undefined,
+): string | null | undefined {
+  if (value === undefined) return undefined
+  return value.trim() ? value.trim() : null
+}
+
+function pickDefinedFields<T extends Record<string, unknown>>(fields: T) {
+  return Object.fromEntries(
+    Object.entries(fields).filter(([, value]) => value !== undefined),
+  ) as Partial<T>
+}
+
 export async function upsertStudentProfile(
   data: {
     bio?: string
@@ -55,84 +75,41 @@ export async function upsertStudentProfile(
   const normalizedLanguages =
     languages === undefined ? undefined : normalizeLanguageEntries(languages)
 
+  const profileChanges = pickDefinedFields({
+    bio: normaliseOptionalString(data.bio),
+    phone: normaliseOptionalString(data.phone),
+    githubUrl: normaliseOptionalUrl(data.githubUrl),
+    portfolioUrl: normaliseOptionalUrl(data.portfolioUrl),
+    studentNumber: normaliseOptionalString(data.studentNumber),
+    department: normaliseOptionalString(data.department),
+    departmentId:
+      data.departmentId === undefined
+        ? undefined
+        : data.departmentId.trim()
+          ? data.departmentId.trim()
+          : null,
+    level: normaliseOptionalString(data.level),
+    wilayaCode:
+      data.wilayaCode === undefined
+        ? undefined
+        : data.wilayaCode === 0
+          ? null
+          : data.wilayaCode,
+    address: normaliseOptionalString(data.address),
+  })
+
   await db.transaction(async (tx) => {
-    const [existing] = await tx
-      .select()
-      .from(studentProfile)
-      .where(eq(studentProfile.userId, userId))
-      .limit(1)
-
-    const nextProfile = {
-      userId,
-      bio: data.bio !== undefined ? data.bio || null : (existing?.bio ?? null),
-      phone:
-        data.phone !== undefined
-          ? data.phone || null
-          : (existing?.phone ?? null),
-      githubUrl:
-        data.githubUrl !== undefined
-          ? data.githubUrl || null
-          : (existing?.githubUrl ?? null),
-      portfolioUrl:
-        data.portfolioUrl !== undefined
-          ? data.portfolioUrl || null
-          : (existing?.portfolioUrl ?? null),
-      studentNumber:
-        data.studentNumber !== undefined
-          ? data.studentNumber || null
-          : (existing?.studentNumber ?? null),
-      department:
-        data.department !== undefined
-          ? data.department || null
-          : (existing?.department ?? null),
-      departmentId:
-        data.departmentId !== undefined
-          ? data.departmentId || null
-          : (existing?.departmentId ?? null),
-      level:
-        data.level !== undefined
-          ? data.level || null
-          : (existing?.level ?? null),
-      wilayaCode:
-        data.wilayaCode !== undefined
-          ? data.wilayaCode || null
-          : (existing?.wilayaCode ?? null),
-      address:
-        data.address !== undefined
-          ? data.address || null
-          : (existing?.address ?? null),
+    if (Object.keys(profileChanges).length > 0) {
+      await tx
+        .insert(studentProfile)
+        .values({ userId, ...profileChanges })
+        .onConflictDoUpdate({
+          target: studentProfile.userId,
+          set: profileChanges,
+        })
+    } else {
+      await tx.insert(studentProfile).values({ userId }).onConflictDoNothing()
     }
-
-    await tx
-      .insert(studentProfile)
-      .values({
-        userId: nextProfile.userId,
-        bio: nextProfile.bio,
-        phone: nextProfile.phone,
-        githubUrl: nextProfile.githubUrl,
-        portfolioUrl: nextProfile.portfolioUrl,
-        studentNumber: nextProfile.studentNumber,
-        department: nextProfile.department,
-        departmentId: nextProfile.departmentId,
-        level: nextProfile.level,
-        wilayaCode: nextProfile.wilayaCode,
-        address: nextProfile.address,
-      })
-      .onConflictDoUpdate({
-        target: studentProfile.userId,
-        set: {
-          bio: nextProfile.bio,
-          phone: nextProfile.phone,
-          githubUrl: nextProfile.githubUrl,
-          portfolioUrl: nextProfile.portfolioUrl,
-          studentNumber: nextProfile.studentNumber,
-          department: nextProfile.department,
-          departmentId: nextProfile.departmentId,
-          level: nextProfile.level,
-          wilayaCode: nextProfile.wilayaCode,
-          address: nextProfile.address,
-        },
-      })
 
     await tx.delete(studentSkill).where(eq(studentSkill.userId, userId))
 
@@ -159,13 +136,19 @@ export async function upsertStudentProfile(
       }
     }
 
-    // Sync user.departmentId from studentProfile for backward compat
     await tx
       .update(user)
-      .set({
-        onboardingCompleted: true,
-        departmentId: nextProfile.departmentId,
-      })
+      .set(
+        pickDefinedFields({
+          onboardingCompleted: true,
+          departmentId:
+            data.departmentId === undefined
+              ? undefined
+              : data.departmentId.trim()
+                ? data.departmentId.trim()
+                : null,
+        }),
+      )
       .where(eq(user.id, userId))
   })
 

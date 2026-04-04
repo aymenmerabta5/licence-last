@@ -1,9 +1,10 @@
+import { Suspense } from "react"
 import { SavedOffersView } from "@/app/[locale]/(authenticated)/dashboard/student/saved-offers/_components/SavedOffersView"
 import { requireOnboardedStudent } from "@/lib/dashboard-access"
 import { isFeatureEnabled } from "@/lib/feature-flags"
 import { localeRedirect } from "@/lib/navigation"
 
-export default async function SavedOffersPage() {
+async function SavedOffersPageContent() {
   await requireOnboardedStudent()
 
   if (!isFeatureEnabled("SAVED_OFFERS")) {
@@ -11,4 +12,12 @@ export default async function SavedOffersPage() {
   }
 
   return <SavedOffersView />
+}
+
+export default function SavedOffersPage() {
+  return (
+    <Suspense fallback={null}>
+      <SavedOffersPageContent />
+    </Suspense>
+  )
 }

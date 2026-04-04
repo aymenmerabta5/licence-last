@@ -99,7 +99,9 @@ export function UserDetailView({ userId }: UserDetailViewProps) {
         <SessionsTable
           sessions={sessions}
           isLoading={sessionsLoading}
-          onRevoke={(token) => actions.revokeSession.mutate(token)}
+          onRevoke={(sessionId) =>
+            actions.revokeSession.mutate({ userId, sessionId })
+          }
           isRevoking={actions.revokeSession.isPending}
         />
       </motion.div>

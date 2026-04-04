@@ -3,14 +3,6 @@ import { and, eq } from "drizzle-orm"
 import { ProfileContent } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent"
 import { requireRole } from "@/lib/auth-guards"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
-import { db } from "@/server/db"
-import { application } from "@/server/db/schema/applications"
-import { companyMember } from "@/server/db/schema/companies"
-import { internshipOffer } from "@/server/db/schema/internships"
-import { getStudentCv } from "@/server/services/students/get-cv"
-import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
-import { getPublicStudentProfile } from "@/server/services/students/get-public-profile"
-import { getUniversityById } from "@/server/services/universities/get"
 
 interface ProfileDataProps {
   userId: string
@@ -34,6 +26,14 @@ export async function ProfileData({ userId }: ProfileDataProps) {
   // Company admins can only view profiles of students who applied to their offers,
   // unless they are viewing their own profile.
   if (viewer.role === "company_admin" && !isSelf) {
+    const [{ db }, { companyMember }, { application }, { internshipOffer }] =
+      await Promise.all([
+        import("@/server/db"),
+        import("@/server/db/schema/companies"),
+        import("@/server/db/schema/applications"),
+        import("@/server/db/schema/internships"),
+      ])
+
     const [membership] = await db
       .select({ companyId: companyMember.companyId })
       .from(companyMember)
@@ -57,19 +57,48 @@ export async function ProfileData({ userId }: ProfileDataProps) {
     if (!hasRelationship) notFound()
   }
 
+  const { getPublicStudentProfile } = await import(
+    "@/server/services/students/get-public-profile"
+  )
   const result = await getPublicStudentProfile(
-    { id: viewer.id, role: viewer.role },
+    {
+      id: viewer.id,
+      role: viewer.role,
+      universityId: viewer.universityId,
+      departmentId: viewer.departmentId,
+      universityMembershipRole: viewer.universityMembershipRole,
+    },
     userId,
   )
 
   if (!result) notFound()
 
+  const universityId = result.user.universityId
   const [university, ownerStats, cvData] = await Promise.all([
-    result.user.universityId
-      ? getUniversityById(result.user.universityId)
+    universityId
+      ? (async () => {
+          const { getUniversityById } = await import(
+            "@/server/services/universities/get"
+          )
+          return getUniversityById(universityId)
+        })()
       : null,
-    isOwner ? getStudentDashboardStats(viewer.id) : null,
-    result.user.role === "student" ? getStudentCv(userId) : null,
+    isOwner
+      ? (async () => {
+          const { getStudentDashboardStats } = await import(
+            "@/server/services/students/get-dashboard-stats"
+          )
+          return getStudentDashboardStats(viewer.id)
+        })()
+      : null,
+    isOwner
+      ? (async () => {
+          const { getStudentCv } = await import(
+            "@/server/services/students/get-cv"
+          )
+          return getStudentCv(userId)
+        })()
+      : null,
   ])
 
   const profileCompleteness = isOwner

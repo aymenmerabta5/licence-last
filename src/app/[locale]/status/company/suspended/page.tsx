@@ -1,4 +1,5 @@
-import { getTranslations } from "next-intl/server"
+import { Suspense } from "react"
+import { getLocale, getTranslations } from "next-intl/server"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -9,7 +10,7 @@ import { localeRedirect } from "@/lib/navigation"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 import { getCompanyStatusByUserId } from "@/server/services/companies/get-status"
 
-export default async function CompanySuspendedPage() {
+export async function CompanySuspendedPageContent() {
   const user = await requireRole(["company_admin"], { allowUnapproved: true })
   const companyStatus = await getCompanyStatusByUserId(user.id)
 
@@ -35,7 +36,8 @@ export default async function CompanySuspendedPage() {
     companyStatus.rejectionReason?.trim() ||
     "-"
 
-  const [t, tp, tr] = await Promise.all([
+  const [locale, t, tp, tr] = await Promise.all([
+    getLocale(),
     getTranslations("dashboard.company.suspended"),
     getTranslations("dashboard.company.pending"),
     getTranslations("dashboard.company.rejected"),
@@ -44,22 +46,22 @@ export default async function CompanySuspendedPage() {
   return (
     <div className="space-y-10">
       <header className="space-y-3">
-        <p className="text-[10px] uppercase tracking-[0.35em] font-bold text-orange-600 [[dir=rtl]_&]:tracking-normal">
+        <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-orange-600 [[dir=rtl]_&]:tracking-normal">
           {t("pageTitle")}
         </p>
         <h1 className="font-serif text-[clamp(2.25rem,4vw,3rem)] leading-tight tracking-tight text-heading">
           {t("title")}
         </h1>
-        <p className="text-muted-foreground text-sm leading-relaxed font-light max-w-2xl">
+        <p className="max-w-2xl text-sm font-light leading-relaxed text-muted-foreground">
           {t("subtitle")}
         </p>
       </header>
 
       <Separator className="bg-border/60" />
 
-      <Card className="rounded-none border border-border/60 bg-background/40 p-6 shadow-none space-y-5">
+      <Card className="space-y-5 rounded-none border border-border/60 bg-background/40 p-6 shadow-none">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground [[dir=rtl]_&]:tracking-normal">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground [[dir=rtl]_&]:tracking-normal">
             {tr("reason")}
           </p>
           <p className="mt-2 text-sm leading-relaxed text-foreground/80">
@@ -67,9 +69,9 @@ export default async function CompanySuspendedPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground [[dir=rtl]_&]:tracking-normal">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground [[dir=rtl]_&]:tracking-normal">
               {tp("companyName")}
             </p>
             <p className="mt-2 text-sm leading-relaxed text-foreground/80">
@@ -78,17 +80,17 @@ export default async function CompanySuspendedPage() {
           </div>
 
           <div className="sm:text-end">
-            <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground [[dir=rtl]_&]:tracking-normal">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground [[dir=rtl]_&]:tracking-normal">
               {tp("submittedOn")}
             </p>
             <p className="mt-2 font-serif text-lg text-heading">
-              {company?.createdAt ? formatDateLong(company.createdAt) : "-"}
+              {company?.createdAt ? formatDateLong(company.createdAt, locale) : "-"}
             </p>
           </div>
         </div>
       </Card>
 
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <Button
           variant="editorial-outline"
           size="editorial"
@@ -104,5 +106,13 @@ export default async function CompanySuspendedPage() {
         </Button>
       </div>
     </div>
+  )
+}
+
+export default function CompanySuspendedPage() {
+  return (
+    <Suspense fallback={null}>
+      <CompanySuspendedPageContent />
+    </Suspense>
   )
 }

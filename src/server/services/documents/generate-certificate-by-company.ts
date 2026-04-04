@@ -1,6 +1,6 @@
 import "server-only"
 
-import { and, eq } from "drizzle-orm"
+import { and, eq, sql } from "drizzle-orm"
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { user } from "@/server/db/schema/auth"
@@ -148,62 +148,113 @@ export async function generateCertificateByCompany(
     pickString(meta.issuedByUserId) != null &&
     pickString(meta.issuedByRole) != null
 
+  let resolvedDoc = doc
+
   if (!hasImmutableIssuer) {
-    await db
+    const claimedMeta = {
+      ...meta,
+      issuedByUserId,
+      issuedByRole: "company_admin",
+      issuedByMembershipRole,
+      issuedAt: new Date().toISOString(),
+    }
+
+    const [claimedDoc] = await db
       .update(placementDocument)
       .set({
-        meta: {
-          ...meta,
-          issuedByUserId,
-          issuedByRole: "company_admin",
-          issuedByMembershipRole,
-          issuedAt: new Date().toISOString(),
-        },
+        meta: claimedMeta,
       })
-      .where(eq(placementDocument.id, doc.id))
+      .where(
+        and(
+          eq(placementDocument.id, doc.id),
+          sql`coalesce(${placementDocument.meta} ->> 'issuedAt', '') = ''`,
+          sql`coalesce(${placementDocument.meta} ->> 'issuedByUserId', '') = ''`,
+          sql`coalesce(${placementDocument.meta} ->> 'issuedByRole', '') = ''`,
+        ),
+      )
+      .returning({
+        id: placementDocument.id,
+        verificationCode: placementDocument.verificationCode,
+        meta: placementDocument.meta,
+      })
 
-    await createNotification({
-      userId: placementRow.studentUserId,
-      type: "certificate_generated",
-      payload: {
-        placementId: placementRow.placementId,
-        documentId: doc.id,
-        companyName: placementRow.companyName,
-        offerTitle: placementRow.offerTitle,
-      },
-    })
+    if (claimedDoc) {
+      resolvedDoc = claimedDoc
+    } else {
+      const [currentDoc] = await db
+        .select({
+          id: placementDocument.id,
+          verificationCode: placementDocument.verificationCode,
+          meta: placementDocument.meta,
+        })
+        .from(placementDocument)
+        .where(eq(placementDocument.id, doc.id))
+        .limit(1)
 
-    if (doc.verificationCode) {
-      void sendCertificateEmail({
-        userId: placementRow.studentUserId,
-        to: placementRow.studentEmail,
-        studentName: placementRow.studentName ?? "Student",
-        companyName: placementRow.companyName,
-        offerTitle: placementRow.offerTitle,
-        internshipType: placementRow.internshipType,
-        startDate: placementRow.startDate,
-        endDate: placementRow.endDate,
-        verificationCode: doc.verificationCode,
-        locale,
-      }).catch((error) => {
+      if (currentDoc) {
+        resolvedDoc = currentDoc
+      }
+    }
+
+    if (claimedDoc) {
+      try {
+        await createNotification({
+          userId: placementRow.studentUserId,
+          type: "certificate_generated",
+          payload: {
+            placementId: placementRow.placementId,
+            documentId: claimedDoc.id,
+            companyName: placementRow.companyName,
+            offerTitle: placementRow.offerTitle,
+          },
+        })
+      } catch (error) {
         logger.error(
           {
             err: error,
-            event: "certificate_email_failed",
+            event: "certificate_notification_failed",
             placementId,
-            studentEmail: placementRow.studentEmail,
+            documentId: claimedDoc.id,
+            studentUserId: placementRow.studentUserId,
           },
-          "Failed to send certificate generated email",
+          "Failed to create certificate generated notification",
         )
-      })
+      }
+
+      if (claimedDoc.verificationCode) {
+        void sendCertificateEmail({
+          userId: placementRow.studentUserId,
+          to: placementRow.studentEmail,
+          studentName: placementRow.studentName ?? "Student",
+          companyName: placementRow.companyName,
+          offerTitle: placementRow.offerTitle,
+          internshipType: placementRow.internshipType,
+          startDate: placementRow.startDate,
+          endDate: placementRow.endDate,
+          verificationCode: claimedDoc.verificationCode,
+          locale,
+        }).catch((error) => {
+          logger.error(
+            {
+              err: error,
+              event: "certificate_email_failed",
+              placementId,
+              studentEmail: placementRow.studentEmail,
+            },
+            "Failed to send certificate generated email",
+          )
+        })
+      }
     }
   }
 
+  const resolvedMeta = toMetaRecord(resolvedDoc.meta)
+
   return {
     success: true,
-    documentId: doc.id,
+    documentId: resolvedDoc.id,
     fileName:
-      pickString(meta.fileName) ??
+      pickString(resolvedMeta.fileName) ??
       `certificate_${placementRow.placementId}.pdf`,
     buffer: result.buffer,
   }

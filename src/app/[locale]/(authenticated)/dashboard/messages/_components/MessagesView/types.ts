@@ -16,6 +16,18 @@ export interface MessageThread {
   studentImage?: string | null
 }
 
+export interface MessageConversationStarter {
+  id: string
+  offerId: string
+  offerTitle: string
+  companyId?: string
+  companyName?: string | null
+  companyLogoUrl?: string | null
+  studentUserId?: string
+  studentName?: string | null
+  studentImage?: string | null
+}
+
 export interface MessageThreadDetails {
   id: string
   offerId: string

@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Bell, CheckCheck } from "lucide-react"
+import { useTranslations } from "next-intl"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,15 +18,20 @@ import { formatNotification } from "@/lib/notifications"
 import { notificationsQueryKeys } from "@/lib/notifications-query"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
-function formatRelative(date: Date) {
+type NotificationTranslationFn = (
+  key: string,
+  values?: Record<string, string | number>,
+) => string
+
+function formatRelative(date: Date, t: NotificationTranslationFn) {
   const diffMs = Date.now() - date.getTime()
   const diffMin = Math.floor(diffMs / 60000)
-  if (diffMin < 1) return "just now"
-  if (diffMin < 60) return `${diffMin}m`
+  if (diffMin < 1) return t("relativeNow")
+  if (diffMin < 60) return t("relativeMinutesShort", { count: diffMin })
   const diffH = Math.floor(diffMin / 60)
-  if (diffH < 24) return `${diffH}h`
+  if (diffH < 24) return t("relativeHoursShort", { count: diffH })
   const diffD = Math.floor(diffH / 24)
-  return `${diffD}d`
+  return t("relativeDaysShort", { count: diffD })
 }
 
 interface NotificationBellProps {
@@ -33,6 +39,7 @@ interface NotificationBellProps {
 }
 
 export function NotificationBell({ viewerId }: NotificationBellProps) {
+  const t = useTranslations("dashboard.notifications")
   const queryClient = useQueryClient()
 
   const { data } = useQuery({
@@ -94,7 +101,7 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
         <DropdownMenuGroup>
           <div className="flex items-center justify-between px-2 py-1">
             <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
-              Notifications
+              {t("title")}
             </DropdownMenuLabel>
             <Button
               variant="ghost"
@@ -104,7 +111,7 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
               className="h-auto gap-1.5 px-1 py-1 text-[11px] text-muted-foreground hover:bg-transparent hover:text-primary"
             >
               <CheckCheck className="h-3.5 w-3.5" />
-              Mark all read
+              {t("markAllRead")}
             </Button>
           </div>
         </DropdownMenuGroup>
@@ -113,7 +120,7 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
 
         {notifications.length === 0 ? (
           <div className="px-3 py-8 text-center text-xs text-muted-foreground">
-            No notifications yet.
+            {t("empty")}
           </div>
         ) : (
           <div className="max-h-96 overflow-auto">
@@ -121,7 +128,7 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
               const formatted = formatNotification({
                 type: n.type,
                 payload: n.payload,
-              })
+              }, t)
 
               return (
                 <DropdownMenuItem
@@ -138,7 +145,7 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
                         {formatted.title}
                       </p>
                       <span className="text-[10px] text-muted-foreground shrink-0">
-                        {formatRelative(new Date(n.createdAt))}
+                        {formatRelative(new Date(n.createdAt), t)}
                       </span>
                     </div>
                     {formatted.message && (
@@ -162,7 +169,7 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
             href={"/dashboard/notifications" as "/dashboard"}
             className="w-full text-xs"
           >
-            View all
+            {t("viewAll")}
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

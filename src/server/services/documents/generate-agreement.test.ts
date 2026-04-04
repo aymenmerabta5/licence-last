@@ -27,7 +27,8 @@ const insertValuesMock = mock(() => ({
   returning: insertReturningMock,
 }))
 
-const updateWhereMock = mock(async () => undefined)
+const updateReturningMock = mock(async () => [{ id: "doc-pending" }])
+const updateWhereMock = mock(() => ({ returning: updateReturningMock }))
 const updateSetMock = mock(() => ({ where: updateWhereMock }))
 
 function applyGenerateAgreementMocks() {
@@ -102,9 +103,11 @@ describe("src/server/services/documents/generate-agreement", () => {
     insertValuesMock.mockClear()
     updateSetMock.mockClear()
     updateWhereMock.mockClear()
+    updateReturningMock.mockClear()
 
     renderToBufferMock.mockResolvedValue(new Uint8Array([1]))
     generateVerificationCodeMock.mockReturnValue("INTX-ABCD-EF12")
+    updateReturningMock.mockResolvedValue([{ id: "doc-pending" }])
   })
 
   test("throws typed error when placement does not exist", async () => {
@@ -203,6 +206,24 @@ describe("src/server/services/documents/generate-agreement", () => {
           issuedByUserId: "admin-1",
           issuedByRole: "university_admin",
         }),
+      }),
+    )
+    expect(createNotificationMock).toHaveBeenCalledWith({
+      userId: "student-1",
+      type: "agreement_generated",
+      payload: {
+        placementId: "placement-1",
+        documentId: "doc-pending",
+        companyName: "Acme",
+        offerTitle: "Frontend Internship",
+      },
+    })
+    expect(sendAgreementEmailMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: "student-1",
+        to: "student@example.com",
+        companyName: "Acme",
+        offerTitle: "Frontend Internship",
       }),
     )
   })
@@ -312,15 +333,83 @@ describe("src/server/services/documents/generate-agreement", () => {
         locale: "en",
         issuer: {
           userId: "head-1",
-          role: "dept_head",
+          role: "university_admin",
           universityId: "uni-1",
           departmentId: "dep-2",
+          universityMembershipRole: "department_head",
         },
       } as never),
     ).rejects.toMatchObject({
       code: "PLACEMENT_FORBIDDEN",
       message: "You do not have access to this placement",
     })
+  })
+
+  test("allows same-department department head issuer", async () => {
+    selectResultsQueue.push(
+      [
+        {
+          id: "placement-1",
+          applicationId: "app-1",
+          startDate: new Date("2030-01-01"),
+          endDate: new Date("2030-02-01"),
+        },
+      ],
+      [
+        {
+          applicationId: "app-1",
+          offerTitle: "Frontend Internship",
+          internshipType: "pfe",
+          workMode: "remote",
+          durationWeeks: 8,
+          companyName: "Acme",
+          companyAddress: null,
+          companyPhone: null,
+          companyRepresentativeName: null,
+          companyContactEmail: null,
+          studentName: "Student",
+          studentEmail: "student@example.com",
+          studentUserId: "student-1",
+          studentUniversityId: "uni-1",
+          studentDepartmentId: "dep-1",
+          studentPhone: null,
+          studentNumber: null,
+          studentDepartment: null,
+          studentAddress: null,
+          universityName: "University One",
+          universityDepartmentName: null,
+          universityAddress: null,
+          universityPhone: null,
+        },
+      ],
+      [
+        {
+          id: "doc-pending",
+          placementId: "placement-1",
+          type: "agreement",
+          status: "pending",
+          verificationCode: null,
+          meta: null,
+        },
+      ],
+    )
+
+    const { generateAgreement } = await importGenerateAgreement()
+
+    const result = await generateAgreement({
+      placementId: "placement-1",
+      locale: "en",
+      issuer: {
+        userId: "head-1",
+        role: "university_admin",
+        universityId: "uni-1",
+        departmentId: "dep-1",
+        universityMembershipRole: "department_head",
+      },
+    } as never)
+
+    expect(result.success).toBe(true)
+    expect(result.documentId).toBe("doc-pending")
   })
 
   test("rejects super admin as normal agreement issuer", async () => {

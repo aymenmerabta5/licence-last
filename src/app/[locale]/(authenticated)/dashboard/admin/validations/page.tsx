@@ -2,7 +2,7 @@ import { Suspense } from "react"
 
 import { AdminValidationsView } from "@/app/[locale]/(authenticated)/dashboard/admin/validations/_components/AdminValidationsView"
 import { Skeleton } from "@/components/ui/skeleton"
-import { requireRole } from "@/lib/auth-guards"
+import { requirePlacementValidationAdmin } from "@/lib/dashboard-access"
 
 function AdminValidationsFallback() {
   return (
@@ -25,12 +25,16 @@ function AdminValidationsFallback() {
   )
 }
 
-export default async function AdminValidationsPage() {
-  await requireRole(["university_admin"])
+async function AdminValidationsPageContent() {
+  await requirePlacementValidationAdmin()
 
+  return <AdminValidationsView />
+}
+
+export default function AdminValidationsPage() {
   return (
     <Suspense fallback={<AdminValidationsFallback />}>
-      <AdminValidationsView />
+      <AdminValidationsPageContent />
     </Suspense>
   )
 }

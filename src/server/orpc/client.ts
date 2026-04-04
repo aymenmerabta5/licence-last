@@ -2,14 +2,18 @@ import { createORPCClient } from "@orpc/client"
 import { RPCLink } from "@orpc/client/fetch"
 import type { RouterClient } from "@orpc/server"
 import { createTanstackQueryUtils } from "@orpc/tanstack-query"
-import { env } from "@/env"
 import type { AppRouter } from "@/server/orpc/router"
 
+function getRpcBaseUrl() {
+  if (typeof window !== "undefined") {
+    return window.location.origin
+  }
+
+  return process.env.NEXT_PUBLIC_BETTER_AUTH_URL ?? "http://localhost:3000"
+}
+
 const link = new RPCLink({
-  url:
-    typeof window !== "undefined"
-      ? `${window.location.origin}/api/rpc`
-      : `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/api/rpc`,
+  url: `${getRpcBaseUrl()}/api/rpc`,
   headers: async () => {
     if (typeof window !== "undefined") {
       return {}

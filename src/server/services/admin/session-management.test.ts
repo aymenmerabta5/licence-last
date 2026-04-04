@@ -1,6 +1,14 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-const mockListUserSessions = mock(() => Promise.resolve({ sessions: [] }))
+interface MockSessionRecord {
+  id: string
+  token: string
+}
+
+const mockListUserSessions = mock(
+  (): Promise<{ sessions: MockSessionRecord[] }> =>
+    Promise.resolve({ sessions: [] }),
+)
 const mockRevokeUserSession = mock(() => Promise.resolve({ success: true }))
 const mockRevokeUserSessions = mock(() => Promise.resolve({ success: true }))
 const mockHeaders = mock(() => Promise.resolve(new Headers()))
@@ -36,14 +44,19 @@ describe("listUserSessions", () => {
 
 describe("revokeSession", () => {
   beforeEach(() => {
+    mockListUserSessions.mockClear()
     mockRevokeUserSession.mockClear()
   })
 
-  test("should call auth.api.revokeUserSession with token", async () => {
+  test("should resolve the session token by user and session id before revoking", async () => {
     const { revokeSession } = await import(
       "@/server/services/admin/session-management?fresh=2"
     )
-    await revokeSession("session-token-abc", {
+    mockListUserSessions.mockResolvedValueOnce({
+      sessions: [{ id: "session-1", token: "session-token-abc" }],
+    })
+
+    await revokeSession("user-1", "session-1", {
       authApi: {
         listUserSessions: mockListUserSessions,
         revokeUserSession: mockRevokeUserSession,
@@ -51,10 +64,37 @@ describe("revokeSession", () => {
       },
       getHeaders: mockHeaders,
     })
+
+    expect(mockListUserSessions).toHaveBeenCalledWith({
+      body: { userId: "user-1" },
+      headers: expect.any(Headers),
+    })
+
     const call = (mockRevokeUserSession.mock.calls as unknown[][])[0][0] as {
       body: { sessionToken?: string }
     }
     expect(call.body.sessionToken).toBe("session-token-abc")
+  })
+
+  test("should return null when the session id does not belong to the user", async () => {
+    const { revokeSession } = await import(
+      "@/server/services/admin/session-management?fresh=5"
+    )
+    mockListUserSessions.mockResolvedValueOnce({
+      sessions: [{ id: "session-1", token: "session-token-abc" }],
+    })
+
+    const result = await revokeSession("user-1", "missing-session", {
+      authApi: {
+        listUserSessions: mockListUserSessions,
+        revokeUserSession: mockRevokeUserSession,
+        revokeUserSessions: mockRevokeUserSessions,
+      },
+      getHeaders: mockHeaders,
+    })
+
+    expect(result).toBeNull()
+    expect(mockRevokeUserSession).not.toHaveBeenCalled()
   })
 })
 

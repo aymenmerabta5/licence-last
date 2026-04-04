@@ -1,6 +1,6 @@
 import "server-only"
 
-import { eq } from "drizzle-orm"
+import { and, count, eq } from "drizzle-orm"
 import { db } from "@/server/db"
 import { createModuleLogger } from "@/server/logging"
 
@@ -138,18 +138,53 @@ export async function validatePlacement(
 
   // Create placement and update application in a transaction
   await db.transaction(async (tx) => {
-    // Create placement
-    await tx.insert(placement).values({
-      id: placementId,
-      applicationId,
-      validatedByUserId: adminUserId,
-      validatedAt: now,
-      startDate,
-      endDate,
-    })
+    const [lockedOffer] = await tx
+      .select({
+        id: internshipOffer.id,
+        maxPositions: internshipOffer.maxPositions,
+      })
+      .from(internshipOffer)
+      .where(eq(internshipOffer.id, app.offerId))
+      .for("update")
+      .limit(1)
 
-    // Update application status
-    await tx
+    if (!lockedOffer) {
+      throw new ServiceError("OFFER_NOT_FOUND", "Offer not found")
+    }
+
+    const [validatedPlacementsCount] = await tx
+      .select({ value: count() })
+      .from(placement)
+      .innerJoin(application, eq(placement.applicationId, application.id))
+      .where(eq(application.offerId, app.offerId))
+
+    if ((validatedPlacementsCount?.value ?? 0) >= lockedOffer.maxPositions) {
+      throw new ServiceError("OFFER_FULL", "All positions have been filled")
+    }
+
+    const [insertedPlacement] = await tx
+      .insert(placement)
+      .values({
+        id: placementId,
+        applicationId,
+        validatedByUserId: adminUserId,
+        validatedAt: now,
+        startDate,
+        endDate,
+      })
+      .onConflictDoNothing({
+        target: [placement.applicationId],
+      })
+      .returning({ id: placement.id })
+
+    if (!insertedPlacement) {
+      throw new ServiceError(
+        "PLACEMENT_ALREADY_EXISTS",
+        "Placement already exists for this application",
+      )
+    }
+
+    const [updatedApplication] = await tx
       .update(application)
       .set({
         status: "admin_validated",
@@ -158,7 +193,15 @@ export async function validatePlacement(
         adminActionByUserId: adminUserId,
         adminActionAt: now,
       })
-      .where(eq(application.id, applicationId))
+      .where(and(eq(application.id, applicationId), eq(application.status, app.status)))
+      .returning({ id: application.id })
+
+    if (!updatedApplication) {
+      throw new ServiceError(
+        "APPLICATION_NOT_COMPANY_ACCEPTED",
+        "Only company-accepted applications can be validated",
+      )
+    }
 
     // Create pending document record
     await tx.insert(placementDocument).values({
@@ -169,36 +212,49 @@ export async function validatePlacement(
     })
   })
 
-  // Notify student
-  await createNotification({
-    userId: app.studentUserId,
-    type: "placement_validated",
-    payload: {
-      placementId,
-      applicationId,
-      offerId: app.offerId,
-      offerTitle: app.offerTitle,
-      companyName: app.companyName,
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
-      stage: "accepted",
-      status: "admin_validated",
-    },
-  })
+  try {
+    await createNotification({
+      userId: app.studentUserId,
+      type: "placement_validated",
+      payload: {
+        placementId,
+        applicationId,
+        offerId: app.offerId,
+        offerTitle: app.offerTitle,
+        companyName: app.companyName,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        stage: "accepted",
+        status: "admin_validated",
+      },
+    })
+  } catch (error) {
+    log.error(
+      { err: error, applicationId, placementId },
+      "Failed to notify student about validated placement",
+    )
+  }
 
-  await appendTimelineEvent({
-    applicationId,
-    actorUserId: adminUserId,
-    eventType: "application_status_changed",
-    fromStage: app.pipelineStage,
-    toStage: "accepted",
-    fromStatus: app.status,
-    toStatus: "admin_validated",
-    payload: {
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
-    },
-  })
+  try {
+    await appendTimelineEvent({
+      applicationId,
+      actorUserId: adminUserId,
+      eventType: "application_status_changed",
+      fromStage: app.pipelineStage,
+      toStage: "accepted",
+      fromStatus: app.status,
+      toStatus: "admin_validated",
+      payload: {
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+      },
+    })
+  } catch (error) {
+    log.error(
+      { err: error, applicationId, placementId },
+      "Failed to append placement validation timeline event",
+    )
+  }
 
   // Get company members to notify
   const companyMembers = await db
@@ -209,22 +265,29 @@ export async function validatePlacement(
   // Notify company members
   if (companyMembers.length > 0) {
     await Promise.all(
-      companyMembers.map((member) =>
-        createNotification({
-          userId: member.userId,
-          type: "placement_validated",
-          payload: {
-            placementId,
-            applicationId,
-            offerId: app.offerId,
-            offerTitle: app.offerTitle,
-            studentUserId: app.studentUserId,
-            studentName: app.studentName,
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-          },
-        }),
-      ),
+      companyMembers.map(async (member) => {
+        try {
+          await createNotification({
+            userId: member.userId,
+            type: "placement_validated",
+            payload: {
+              placementId,
+              applicationId,
+              offerId: app.offerId,
+              offerTitle: app.offerTitle,
+              studentUserId: app.studentUserId,
+              studentName: app.studentName,
+              startDate: startDate.toISOString(),
+              endDate: endDate.toISOString(),
+            },
+          })
+        } catch (error) {
+          log.error(
+            { err: error, applicationId, placementId, userId: member.userId },
+            "Failed to notify company member about validated placement",
+          )
+        }
+      }),
     )
   }
 

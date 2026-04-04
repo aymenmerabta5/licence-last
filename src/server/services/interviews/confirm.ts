@@ -80,6 +80,13 @@ export async function confirmInterviewSlot(
       )
     }
 
+    if (slot.startsAt <= new Date()) {
+      throw new InterviewServiceError(
+        "INTERVIEW_FORBIDDEN",
+        "Interview slot is no longer available",
+      )
+    }
+
     await tx
       .update(interview)
       .set({

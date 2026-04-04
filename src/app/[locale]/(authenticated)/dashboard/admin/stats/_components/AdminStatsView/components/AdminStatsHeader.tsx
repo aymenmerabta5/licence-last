@@ -1,15 +1,18 @@
 "use client"
 
 import * as motion from "motion/react-client"
+import { useLocale, useTranslations } from "next-intl"
 import { Badge } from "@/components/ui/badge"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
 export function AdminStatsHeader() {
-  const currentDate = new Date().toLocaleDateString("en-US", {
+  const t = useTranslations("dashboard.admin.statsHeader")
+  const locale = useLocale()
+  const currentDate = new Intl.DateTimeFormat(locale, {
     month: "long",
     day: "numeric",
     year: "numeric",
-  })
+  }).format(new Date())
 
   return (
     <header className="space-y-4">
@@ -21,7 +24,7 @@ export function AdminStatsHeader() {
 
       <div className="space-y-3">
         <motion.div {...reveal} transition={revealWithDelay(0.05)}>
-          <Badge variant="editorial-muted">Admin Analytics</Badge>
+          <Badge variant="editorial-muted">{t("badge")}</Badge>
         </motion.div>
 
         <motion.div
@@ -31,11 +34,10 @@ export function AdminStatsHeader() {
         >
           <div className="space-y-2">
             <h1 className="font-serif text-[clamp(2rem,4vw,3rem)] leading-none tracking-tight text-heading">
-              Platform Statistics
+              {t("title")}
             </h1>
             <p className="text-sm font-light tracking-wide text-muted-foreground max-w-2xl">
-              Snapshot of placements, activity, and overall health across the
-              Stag platform.
+              {t("description")}
             </p>
           </div>
 

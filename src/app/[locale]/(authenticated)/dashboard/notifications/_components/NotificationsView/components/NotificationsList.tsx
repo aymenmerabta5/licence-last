@@ -52,7 +52,7 @@ export function NotificationsList({
             const formatted = formatNotification({
               type: n.type,
               payload: n.payload,
-            })
+            }, t)
 
             return (
               <motion.button
