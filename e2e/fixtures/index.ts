@@ -42,14 +42,22 @@ export {
 } from "./factories"
 
 export {
+  createFreshCompanyAdminUser,
+  createFreshStudentUser,
   resetE2EDatabase,
+  restoreUserPassword,
   seedApplicationFixture,
   seedBaseReferenceData,
+  seedGeneratedDocument,
   seedOfferFixture,
+  seedPasswordResetToken,
+  seedPlacementFixture,
   seedTestUsers,
   syncE2EDatabaseSchema,
   type SeedBaseReferenceData,
   type SeededApplicationFixture,
+  type SeededDocumentFixture,
   type SeededOfferFixture,
+  type SeededPlacementFixture,
   type SeededTestUsers,
 } from "./seed"

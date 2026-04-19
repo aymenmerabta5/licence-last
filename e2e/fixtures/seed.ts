@@ -7,6 +7,15 @@ import { eq } from "drizzle-orm"
 import postgres from "postgres"
 
 import { getMaintenancePostgresOptions } from "../../src/server/db/postgres-options"
+
+function createNeonCompatibleClient(databaseUrl: string) {
+  return postgres(databaseUrl, {
+    ...getMaintenancePostgresOptions(),
+    connectTimeout: 30,
+    idleTimeout: 0,
+    max: 1,
+  })
+}
 import { account, user } from "../../src/server/db/schema/auth"
 import { company, companyMember } from "../../src/server/db/schema/companies"
 import { department } from "../../src/server/db/schema/departments"
@@ -69,6 +78,26 @@ interface SeedApplicationFixtureOptions extends SeedOfferFixtureOptions {
   coverLetter?: string
 }
 
+export interface SeededPlacementFixture extends SeededApplicationFixture {
+  placementId: string
+}
+
+export interface SeededDocumentFixture {
+  documentId: string
+  placementId: string
+  type: "agreement" | "certificate"
+  status: "pending" | "generated" | "failed"
+  verificationCode: string | null
+}
+
+interface SeedPlacementFixtureOptions {
+  applicationOptions?: SeedApplicationFixtureOptions
+  startDate?: Date
+  endDate?: Date
+  seedAgreement?: boolean
+  seedCertificate?: boolean
+}
+
 export interface SeedBaseReferenceData {
   universityId: string
   departmentId: string
@@ -110,10 +139,7 @@ async function withE2EDatabase<T>(
   run: (sql: ReturnType<typeof postgres>) => Promise<T>,
   databaseUrl?: string,
 ): Promise<T> {
-  const sql = postgres(
-    resolveDatabaseUrl(databaseUrl),
-    getMaintenancePostgresOptions(),
-  )
+  const sql = createNeonCompatibleClient(resolveDatabaseUrl(databaseUrl))
 
   try {
     return await run(sql)
@@ -162,48 +188,69 @@ export function syncE2EDatabaseSchema(databaseUrl?: string): void {
   })
 }
 
+async function seedWithRetry(
+  databaseUrl: string,
+  maxAttempts = 3,
+): Promise<SeedBaseReferenceData> {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const client = createNeonCompatibleClient(databaseUrl)
+    const db = drizzle(client, { schema })
+    try {
+      return await seedBaseReferenceDataCore(db)
+    } catch (error) {
+      console.warn(`Seed attempt ${attempt}/${maxAttempts} failed:`, error)
+      if (attempt === maxAttempts) throw error
+      const delay = attempt * 2000
+      console.info(`Retrying in ${delay}ms...`)
+      await new Promise((r) => setTimeout(r, delay))
+    } finally {
+      await client.end({ timeout: 5 }).catch(() => {})
+    }
+  }
+  throw new Error("Seed failed after all retry attempts")
+}
+
 export async function seedBaseReferenceData(
   databaseUrl?: string,
 ): Promise<SeedBaseReferenceData> {
   const targetDatabaseUrl = resolveDatabaseUrl(databaseUrl)
-  const client = postgres(targetDatabaseUrl, getMaintenancePostgresOptions())
-  const db = drizzle(client, { schema })
+  return seedWithRetry(targetDatabaseUrl)
+}
 
-  try {
-    const universityId = randomUUID()
-    const departmentId = randomUUID()
+async function seedBaseReferenceDataCore(
+  db: ReturnType<typeof drizzle>,
+): Promise<SeedBaseReferenceData> {
+  const universityId = randomUUID()
+  const departmentId = randomUUID()
 
-    await db.insert(university).values({
-      id: universityId,
-      name: "Test University",
-    })
+  await db.insert(university).values({
+    id: universityId,
+    name: "Test University",
+  })
 
-    await db.insert(universityDomain).values({
+  await db.insert(universityDomain).values({
+    id: randomUUID(),
+    universityId,
+    domain: "example.com",
+    status: "approved",
+  })
+
+  for (const tag of SKILL_TAGS) {
+    await db.insert(schema.skillTag).values({
       id: randomUUID(),
-      universityId,
-      domain: "example.com",
-      status: "approved",
+      ...tag,
     })
+  }
 
-    for (const tag of SKILL_TAGS) {
-      await db.insert(schema.skillTag).values({
-        id: randomUUID(),
-        ...tag,
-      })
-    }
+  await db.insert(department).values({
+    id: departmentId,
+    universityId,
+    name: "Computer Science",
+  })
 
-    await db.insert(department).values({
-      id: departmentId,
-      universityId,
-      name: "Computer Science",
-    })
-
-    return {
-      universityId,
-      departmentId,
-    }
-  } finally {
-    await client.end({ timeout: 5 })
+  return {
+    universityId,
+    departmentId,
   }
 }
 
@@ -384,6 +431,97 @@ export async function seedTestUsers(
   }
 }
 
+export async function seedPasswordResetToken(options: {
+  databaseUrl?: string
+  email: string
+  token?: string
+  expiresInMs?: number
+}): Promise<string> {
+  const token = options.token ?? `e2e-reset-${Date.now().toString(36)}-${randomUUID()}`
+  const expiresInMs = options.expiresInMs ?? 60 * 60 * 1000
+
+  await withE2EDatabase(async (sql) => {
+    await sql`
+      INSERT INTO verification (id, identifier, value, expires_at)
+      VALUES (${randomUUID()}, ${options.email}, ${token}, ${new Date(Date.now() + expiresInMs)})
+    `
+  }, options.databaseUrl)
+
+  return token
+}
+
+export async function restoreUserPassword(options: {
+  email: string
+  password: string
+  databaseUrl?: string
+}): Promise<void> {
+  const passwordHash = await hashPassword(options.password)
+
+  await withE2EDatabase(async (sql) => {
+    const [found] = await sql<{ id: string }[]>`
+      SELECT id FROM "user" WHERE email = ${options.email} LIMIT 1
+    `
+    if (!found) return
+    await sql`
+      UPDATE account SET password = ${passwordHash}, updated_at = NOW()
+      WHERE user_id = ${found.id} AND provider_id = 'credential'
+    `
+  }, options.databaseUrl)
+}
+
+export async function createFreshStudentUser(options?: {
+  databaseUrl?: string
+}): Promise<{ email: string; password: string; userId: string }> {
+  const suffix = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
+  const email = `fresh-student.${suffix}@example.com`
+  const password = "FreshStudent123!"
+  const userId = randomUUID()
+
+  return withE2EDatabase(async (sql) => {
+    const [uni] = await sql<{ id: string }[]>`
+      SELECT id FROM university LIMIT 1
+    `
+    const passwordHash = await hashPassword(password)
+
+    await sql`
+      INSERT INTO "user" (id, email, name, role, email_verified, onboarding_completed, university_id, created_at, updated_at)
+      VALUES (${userId}, ${email}, 'Fresh Student', 'student', true, false, ${uni?.id ?? null}, NOW(), NOW())
+    `
+
+    await sql`
+      INSERT INTO account (id, account_id, provider_id, user_id, password, created_at, updated_at)
+      VALUES (${randomUUID()}, ${userId}, 'credential', ${userId}, ${passwordHash}, NOW(), NOW())
+    `
+
+    return { email, password, userId }
+  }, options?.databaseUrl)
+}
+
+export async function createFreshCompanyAdminUser(options?: {
+  databaseUrl?: string
+}): Promise<{ email: string; password: string; userId: string }> {
+  const suffix = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
+  const email = `fresh-company.${suffix}@example.com`
+  const password = "FreshCompany123!"
+  const userId = randomUUID()
+
+  return withE2EDatabase(async (sql) => {
+    const passwordHash = await hashPassword(password)
+
+    await sql`
+      INSERT INTO "user" (id, email, name, role, email_verified, onboarding_completed, created_at, updated_at)
+      VALUES (${userId}, ${email}, 'Fresh Company Admin', 'company_admin', true, false, NOW(), NOW())
+    `
+
+    await sql`
+      INSERT INTO account (id, account_id, provider_id, user_id, password, created_at, updated_at)
+      VALUES (${randomUUID()}, ${userId}, 'credential', ${userId}, ${passwordHash}, NOW(), NOW())
+    `
+
+    return { email, password, userId }
+  }, options?.databaseUrl)
+}
+
 function createFixtureToken(): string {
   return `e2e-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
 }
@@ -551,6 +689,124 @@ export async function seedApplicationFixture(
       applicationId,
       status,
       pipelineStage,
+    }
+  })
+}
+
+export async function seedPlacementFixture(
+  options: SeedPlacementFixtureOptions = {},
+): Promise<SeededPlacementFixture> {
+  const applicationFixture = await seedApplicationFixture({
+    status: "company_accepted",
+    pipelineStage: "offer",
+    includeCompanyAction: true,
+    ...options.applicationOptions,
+  })
+
+  const now = new Date()
+  const startDate = options.startDate ?? new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000)
+  const endDate = options.endDate ?? new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+
+  return withE2EDatabase(async (sql) => {
+    const placementId = generateId()
+
+    await sql`
+      INSERT INTO placement (id, application_id, validated_by_user_id, validated_at, start_date, end_date, created_at, updated_at)
+      VALUES (${placementId}, ${applicationFixture.applicationId}, ${applicationFixture.adminUserId}, ${now}, ${startDate}, ${endDate}, ${now}, ${now})
+    `
+
+    await sql`
+      UPDATE application SET status = 'admin_validated', pipeline_stage = 'accepted', updated_at = ${now}
+      WHERE id = ${applicationFixture.applicationId}
+    `
+
+    if (options.seedAgreement !== false) {
+      const agreementDocId = generateId()
+      await sql`
+        INSERT INTO "document" (id, placement_id, type, status, created_at)
+        VALUES (${agreementDocId}, ${placementId}, 'agreement', 'pending', ${now})
+      `
+    }
+
+    if (options.seedCertificate) {
+      const certDocId = generateId()
+      await sql`
+        INSERT INTO "document" (id, placement_id, type, status, created_at)
+        VALUES (${certDocId}, ${placementId}, 'certificate', 'pending', ${now})
+      `
+    }
+
+    return {
+      ...applicationFixture,
+      placementId,
+    }
+  })
+}
+
+export async function seedGeneratedDocument(options: {
+  placementId: string
+  type: "agreement" | "certificate"
+  verificationCode?: string
+  status?: "generated" | "pending" | "failed"
+}): Promise<SeededDocumentFixture> {
+  const documentId = generateId()
+  const code = options.verificationCode ?? `INTX-${randomUUID().slice(0, 4).toUpperCase()}-${randomUUID().slice(0, 4).toUpperCase()}`
+  const status = options.status ?? "generated"
+  const snapshotData = JSON.stringify({
+    studentName: "Test Student",
+    studentEmail: "test.student@example.com",
+    companyName: "Test Company",
+    offerTitle: "Test Offer",
+    internshipType: "pfe",
+    startDate: "2024-01-01",
+    endDate: "2024-06-30",
+    universityName: "Test University",
+  })
+  const meta = JSON.stringify({ generatedAt: new Date().toISOString(), fileName: `${options.type}.pdf` })
+
+  return withE2EDatabase(async (sql) => {
+    const [existing] = await sql<{ id: string }[]>`
+      SELECT id FROM "document" WHERE placement_id = ${options.placementId} AND type = ${options.type} LIMIT 1
+    `
+
+    if (existing) {
+      await sql`
+        UPDATE "document" SET
+          status = ${status},
+          verification_code = ${code},
+          snapshot_data = ${snapshotData},
+          meta = ${meta}
+        WHERE id = ${existing.id}
+      `
+      return {
+        documentId: existing.id,
+        placementId: options.placementId,
+        type: options.type,
+        status,
+        verificationCode: code,
+      }
+    }
+
+    await sql`
+      INSERT INTO "document" (id, placement_id, type, status, verification_code, snapshot_data, meta, created_at)
+      VALUES (
+        ${documentId},
+        ${options.placementId},
+        ${options.type},
+        ${status},
+        ${code},
+        ${snapshotData},
+        ${meta},
+        ${new Date()}
+      )
+    `
+
+    return {
+      documentId,
+      placementId: options.placementId,
+      type: options.type,
+      status,
+      verificationCode: code,
     }
   })
 }

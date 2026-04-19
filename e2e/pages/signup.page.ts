@@ -39,6 +39,9 @@ export class SignupPage {
   }
 
   async goToLoginPage(): Promise<void> {
-    await this.page.locator('a[href="/en/login"]').first().click()
+    await this.page
+      .getByRole("link", { name: /sign in|log in|login/i })
+      .first()
+      .click()
   }
 }

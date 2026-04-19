@@ -26,6 +26,19 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
       dependencies: ["setup"],
     },
+    {
+      name: "visual",
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1280, height: 720 },
+        launchOptions: {
+          args: ["--disable-animations"],
+        },
+      },
+      dependencies: ["setup"],
+      snapshotPathTemplate:
+        "e2e/__snapshots__/visual/{testFileDir}/{testFileName}-{arg}{ext}",
+    },
   ],
   webServer: {
     command: "bun run dev",
@@ -38,6 +51,8 @@ export default defineConfig({
       E2E_DISABLE_CAPTCHA: "1",
       NEXT_PUBLIC_E2E_DISABLE_CAPTCHA: "true",
       E2E_DISABLE_CACHE: "1",
+      RESEND_API_KEY: process.env.RESEND_API_KEY ?? "re_e2e_broken_test_key",
+      EMAIL_FROM: process.env.EMAIL_FROM ?? "noreply@stag.test",
     },
   },
 })

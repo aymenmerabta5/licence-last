@@ -7,13 +7,12 @@ import {
   loginAsStudent,
   loginAsSuperAdmin,
 } from "../fixtures/auth"
-
 async function expectDashboardPageReady(
   page: Page,
   pathPattern: RegExp,
 ): Promise<void> {
   await expect(page).toHaveURL(pathPattern)
-  await expect(page.locator("main")).toBeVisible()
+  await expect(page.locator("main").first()).toBeVisible()
   await expect(page.locator("h1").first()).toBeVisible({ timeout: 15000 })
 }
 
@@ -22,7 +21,7 @@ async function expectRedirectToRoleHome(
   roleHomePattern: RegExp,
 ): Promise<void> {
   await expect(page).toHaveURL(roleHomePattern)
-  await expect(page.locator("main")).toBeVisible()
+  await expect(page.locator("main").first()).toBeVisible()
 }
 
 test.describe("Dashboard Smoke Coverage", () => {

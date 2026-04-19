@@ -57,13 +57,15 @@
 
 ### Core User Roles
 
-| Role | Description | Capabilities |
-|------|-------------|-------------|
-| `student` | University-affiliated user | Browse offers, apply, track applications |
-| `company_admin` | Company recruiter | Create offers, manage pipeline, AI assistant |
-| `university_admin` | University administrator | Validate placements, manage departments, view stats |
-| `university_admin` + `department_head` membership | Department head | Validate placements scoped to their department |
-| `super_admin` | Platform operator | Full control: users, companies, universities, departments |
+
+| Role                                              | Description                | Capabilities                                              |
+| ------------------------------------------------- | -------------------------- | --------------------------------------------------------- |
+| `student`                                         | University-affiliated user | Browse offers, apply, track applications                  |
+| `company_admin`                                   | Company recruiter          | Create offers, manage pipeline, AI assistant              |
+| `university_admin`                                | University administrator   | Validate placements, manage departments, view stats       |
+| `university_admin` + `department_head` membership | Department head            | Validate placements scoped to their department            |
+| `super_admin`                                     | Platform operator          | Full control: users, companies, universities, departments |
+
 
 ---
 
@@ -71,74 +73,88 @@
 
 ### Core Framework
 
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| Runtime | Bun | 1.x |
-| Framework | Next.js | 16.1.6 |
-| React | React | 19.2.3 |
-| Language | TypeScript | 5.x (strict) |
+
+| Layer     | Technology | Version      |
+| --------- | ---------- | ------------ |
+| Runtime   | Bun        | 1.x          |
+| Framework | Next.js    | 16.1.6       |
+| React     | React      | 19.2.3       |
+| Language  | TypeScript | 5.x (strict) |
+
 
 ### Frontend
 
-| Category | Technology | Version |
-|----------|-----------|---------|
-| Styling | Tailwind CSS | 4.x (`@theme inline`) |
-| Components | shadcn/ui | 3.8.3 (base-nova) |
-| Animation | motion | 12.33.0 |
-| Icons | lucide-react | 0.563.0 |
-| Fonts | DM Sans, DM Serif Display, Noto Sans Arabic | Google Fonts |
-| Charts | recharts | 2.15.4 |
-| Toasts | sonner | 2.0.7 |
-| Drawers | vaul | 1.1.2 |
+
+| Category   | Technology                                  | Version               |
+| ---------- | ------------------------------------------- | --------------------- |
+| Styling    | Tailwind CSS                                | 4.x (`@theme inline`) |
+| Components | shadcn/ui                                   | 3.8.3 (base-nova)     |
+| Animation  | motion                                      | 12.33.0               |
+| Icons      | lucide-react                                | 0.563.0               |
+| Fonts      | DM Sans, DM Serif Display, Noto Sans Arabic | Google Fonts          |
+| Charts     | recharts                                    | 2.15.4                |
+| Toasts     | sonner                                      | 2.0.7                 |
+| Drawers    | vaul                                        | 1.1.2                 |
+
 
 ### State & Data
 
-| Category | Technology | Version |
-|----------|-----------|---------|
+
+| Category     | Technology            | Version |
+| ------------ | --------------------- | ------- |
 | Server State | @tanstack/react-query | 5.90.20 |
-| Forms | @tanstack/react-form | 1.28.0 |
-| Validation | zod | 4.3.6 |
-| ORM | drizzle-orm | 0.45.1 |
-| Database | PostgreSQL | 16 |
-| Driver | postgres | 3.4.5 |
+| Forms        | @tanstack/react-form  | 1.28.0  |
+| Validation   | zod                   | 4.3.6   |
+| ORM          | drizzle-orm           | 0.45.1  |
+| Database     | PostgreSQL            | 16      |
+| Driver       | postgres              | 3.4.5   |
+
 
 ### Backend & API
 
-| Category | Technology | Version |
-|----------|-----------|---------|
-| RPC Framework | @orpc/server + @orpc/client | 1.13.4 |
-| Query Integration | @orpc/tanstack-query | 1.13.4 |
-| Rate Limiting | @orpc/experimental-ratelimit | 1.13.5 |
-| Authentication | better-auth | 1.4.18 |
+
+| Category          | Technology                   | Version |
+| ----------------- | ---------------------------- | ------- |
+| RPC Framework     | @orpc/server + @orpc/client  | 1.13.4  |
+| Query Integration | @orpc/tanstack-query         | 1.13.4  |
+| Rate Limiting     | @orpc/experimental-ratelimit | 1.13.5  |
+| Authentication    | better-auth                  | 1.4.18  |
+
 
 ### AI & External Services
 
-| Category | Technology | Version |
-|----------|-----------|---------|
-| AI SDK | ai (Vercel) | 6.0.78 |
-| LLM Provider | @ai-sdk/openai (gateway + Poe-compatible) | 3.0.26 |
-| Tool Integration | @arcadeai/arcadejs | 2.2.0 |
-| Email | resend + @react-email | 6.9.1 |
-| PDF | @react-pdf/renderer | 4.3.2 |
+
+| Category         | Technology                                | Version |
+| ---------------- | ----------------------------------------- | ------- |
+| AI SDK           | ai (Vercel)                               | 6.0.78  |
+| LLM Provider     | @ai-sdk/openai (gateway + Poe-compatible) | 3.0.26  |
+| Tool Integration | @arcadeai/arcadejs                        | 2.2.0   |
+| Email            | resend + @react-email                     | 6.9.1   |
+| PDF              | @react-pdf/renderer                       | 4.3.2   |
+
 
 ### i18n & Theming
 
-| Category | Technology |
-|----------|-----------|
-| Internationalization | next-intl 4.8.2 |
-| Theming | next-themes 0.4.6 |
+
+| Category             | Technology        |
+| -------------------- | ----------------- |
+| Internationalization | next-intl 4.8.2   |
+| Theming              | next-themes 0.4.6 |
+
 
 ### Infrastructure
 
-| Category | Technology |
-|----------|-----------|
-| Container | Docker (multi-stage) |
-| Orchestration | Docker Compose |
-| Reverse Proxy | Caddy 2 (auto-HTTPS) |
-| Auto-Deploy | GitHub Actions over SSH |
-| CI/CD | GitHub Actions |
-| Registry | GitHub Container Registry (ghcr.io) |
-| Logging | Pino 10.x (structured JSON) |
+
+| Category      | Technology                          |
+| ------------- | ----------------------------------- |
+| Container     | Docker (multi-stage)                |
+| Orchestration | Docker Compose                      |
+| Reverse Proxy | Caddy 2 (auto-HTTPS)                |
+| Auto-Deploy   | GitHub Actions over SSH             |
+| CI/CD         | GitHub Actions                      |
+| Registry      | GitHub Container Registry (ghcr.io) |
+| Logging       | Pino 10.x (structured JSON)         |
+
 
 ---
 
@@ -338,24 +354,26 @@ TwoFactor (user 2FA secrets)
 
 ### Database Enums (16 total)
 
-| Enum | Values |
-|------|--------|
-| `userRole` | student, company_admin, university_admin, super_admin (dept_head deprecated) |
-| `companyStatus` | pending, approved, rejected, suspended |
-| `universityStatus` | pending, approved, rejected |
-| `universityDomainStatus` | pending, approved, rejected, disabled |
-| `companyMemberRole` | owner, recruiter |
-| `offerStatus` | draft, published, closed |
-| `workMode` | on_site, hybrid, remote |
-| `internshipType` | pfe, immersion, summer, practical |
-| `applicationStatus` | applied, company_accepted, company_refused, admin_validated, admin_rejected, withdrawn |
-| `applicationPipelineStage` | applied, screening, interview, offer, accepted, rejected |
-| `documentType` | agreement, certificate |
-| `documentStatus` | pending, generated, failed |
-| `proficiencyLevel` | a1, a2, b1, b2, c1, c2, native |
-| `companyReportStatus` | open, reviewing, resolved, dismissed |
-| `companyReportSeverity` | low, medium, high, critical |
-| `assistantMessageRole` | system, user, assistant |
+
+| Enum                       | Values                                                                                 |
+| -------------------------- | -------------------------------------------------------------------------------------- |
+| `userRole`                 | student, company_admin, university_admin, super_admin (dept_head deprecated)           |
+| `companyStatus`            | pending, approved, rejected, suspended                                                 |
+| `universityStatus`         | pending, approved, rejected                                                            |
+| `universityDomainStatus`   | pending, approved, rejected, disabled                                                  |
+| `companyMemberRole`        | owner, recruiter                                                                       |
+| `offerStatus`              | draft, published, closed                                                               |
+| `workMode`                 | on_site, hybrid, remote                                                                |
+| `internshipType`           | pfe, immersion, summer, practical                                                      |
+| `applicationStatus`        | applied, company_accepted, company_refused, admin_validated, admin_rejected, withdrawn |
+| `applicationPipelineStage` | applied, screening, interview, offer, accepted, rejected                               |
+| `documentType`             | agreement, certificate                                                                 |
+| `documentStatus`           | pending, generated, failed                                                             |
+| `proficiencyLevel`         | a1, a2, b1, b2, c1, c2, native                                                         |
+| `companyReportStatus`      | open, reviewing, resolved, dismissed                                                   |
+| `companyReportSeverity`    | low, medium, high, critical                                                            |
+| `assistantMessageRole`     | system, user, assistant                                                                |
+
 
 ### Key Tables
 
@@ -398,32 +416,35 @@ Pure business logic functions. Every file starts with `import "server-only"`.
 
 **18 Service Domains**:
 
-| Domain | Files | Key Functions |
-|--------|-------|--------------|
-| `admin/` | 17 | user lifecycle, role changes, bans, session revocation, password reset |
-| `applications/` | 16 | apply/withdraw, pipeline transitions, timelines, offer search helpers |
-| `assistant/` | 8 | conversation CRUD, message append/list, model/title updates |
-| `companies/` | 25 | CRUD, approval/suspension, trust index, reports, quality feedback |
-| `departments/` | 17 | CRUD, head assignment by id/email, skill sync, bulk import |
-| `documents/` | 15 | agreement/certificate generation, verification, listings, downloads |
-| `interviews/` | 5 | propose slots, confirm slot, list for company/student |
-| `matching/` | 7 | score, skill gap, readiness history and snapshots |
-| `messages/` | 7 | company/student threads, send message, mark read |
-| `notifications/` | 10 | listing/mark-read plus preference get/update |
-| `offers/` | 30 | CRUD, saved offers, AI draft/improve/suggest helpers |
-| `placements/` | 7 | pending list, validate/reject, AI validation summary |
-| `skills/` | 5 | list/prioritized skill tags and validation helpers |
-| `stats/` | 4 | admin and university dashboard aggregates |
-| `students/` | 24 | student profile CRUD and CV experience/project/resume ops |
-| `universities/` | 12 | CRUD, approval/rejection, status checks |
-| `uploads/` | 2 | S3 image/file upload helpers |
-| `users/` | 10 | me/profile/session management |
+
+| Domain           | Files | Key Functions                                                          |
+| ---------------- | ----- | ---------------------------------------------------------------------- |
+| `admin/`         | 17    | user lifecycle, role changes, bans, session revocation, password reset |
+| `applications/`  | 16    | apply/withdraw, pipeline transitions, timelines, offer search helpers  |
+| `assistant/`     | 8     | conversation CRUD, message append/list, model/title updates            |
+| `companies/`     | 25    | CRUD, approval/suspension, trust index, reports, quality feedback      |
+| `departments/`   | 17    | CRUD, head assignment by id/email, skill sync, bulk import             |
+| `documents/`     | 15    | agreement/certificate generation, verification, listings, downloads    |
+| `interviews/`    | 5     | propose slots, confirm slot, list for company/student                  |
+| `matching/`      | 7     | score, skill gap, readiness history and snapshots                      |
+| `messages/`      | 7     | company/student threads, send message, mark read                       |
+| `notifications/` | 10    | listing/mark-read plus preference get/update                           |
+| `offers/`        | 30    | CRUD, saved offers, AI draft/improve/suggest helpers                   |
+| `placements/`    | 7     | pending list, validate/reject, AI validation summary                   |
+| `skills/`        | 5     | list/prioritized skill tags and validation helpers                     |
+| `stats/`         | 4     | admin and university dashboard aggregates                              |
+| `students/`      | 24    | student profile CRUD and CV experience/project/resume ops              |
+| `universities/`  | 12    | CRUD, approval/rejection, status checks                                |
+| `uploads/`       | 2     | S3 image/file upload helpers                                           |
+| `users/`         | 10    | me/profile/session management                                          |
+
 
 ### Controller Layer (`src/server/orpc/`)
 
 oRPC router handling ALL client-server communication with auth middleware.
 
 **Middleware Chain**:
+
 ```
 publicProcedure              -- No auth required
 ├── authedProcedure          -- Valid session required
@@ -436,28 +457,30 @@ publicProcedure              -- No auth required
 
 **Rate-Limited Procedure Variants (20)**:
 
-| Procedure | Limit | Use Case |
-|-----------|-------|----------|
-| publicProcedureStrict | 5/min | Auth endpoints |
-| publicProcedureStandard | 100/min | Public reads |
-| authedProcedureStandard | 100/min | General API |
+
+| Procedure                      | Limit   | Use Case                    |
+| ------------------------------ | ------- | --------------------------- |
+| publicProcedureStrict          | 5/min   | Auth endpoints              |
+| publicProcedureStandard        | 100/min | Public reads                |
+| authedProcedureStandard        | 100/min | General API                 |
 | authedSessionProcedureStandard | 100/min | Session bootstrap endpoints |
-| authedProcedureGenerous | 300/min | Listings/search |
-| authedSessionProcedureGenerous | 300/min | Session bootstrap reads |
-| authedProcedureStrict | 5/min | Sensitive ops |
-| adminProcedureStandard | 100/min | Admin ops |
-| adminProcedureGenerous | 300/min | Bulk admin |
-| adminProcedureAssistant | 20/min | Admin/dept-head AI calls |
-| superAdminProcedureStandard | 100/min | Super admin ops |
-| superAdminProcedureGenerous | 300/min | Bulk super admin |
-| deptHeadProcedureStandard | 100/min | Dept head ops |
-| deptHeadProcedureGenerous | 300/min | Dept head reads |
-| companyAdminProcedureStandard | 100/min | Company ops |
-| companyAdminProcedureGenerous | 300/min | Company reads |
-| companyAdminProcedureAssistant | 20/min | AI assistant |
-| studentProcedureStandard | 100/min | Student mutations |
-| studentProcedureGenerous | 300/min | Student reads |
-| assistantProcedureLimited | 20/min | AI calls |
+| authedProcedureGenerous        | 300/min | Listings/search             |
+| authedSessionProcedureGenerous | 300/min | Session bootstrap reads     |
+| authedProcedureStrict          | 5/min   | Sensitive ops               |
+| adminProcedureStandard         | 100/min | Admin ops                   |
+| adminProcedureGenerous         | 300/min | Bulk admin                  |
+| adminProcedureAssistant        | 20/min  | Admin/dept-head AI calls    |
+| superAdminProcedureStandard    | 100/min | Super admin ops             |
+| superAdminProcedureGenerous    | 300/min | Bulk super admin            |
+| deptHeadProcedureStandard      | 100/min | Dept head ops               |
+| deptHeadProcedureGenerous      | 300/min | Dept head reads             |
+| companyAdminProcedureStandard  | 100/min | Company ops                 |
+| companyAdminProcedureGenerous  | 300/min | Company reads               |
+| companyAdminProcedureAssistant | 20/min  | AI assistant                |
+| studentProcedureStandard       | 100/min | Student mutations           |
+| studentProcedureGenerous       | 300/min | Student reads               |
+| assistantProcedureLimited      | 20/min  | AI calls                    |
+
 
 **131 Total Procedures across 18 Route Modules (19 Router Namespaces)**:
 users (7), companies (15), skills (2), students (4), offers (15), applications (10), matching (4), placements (4), deptHead (3), departments (9), documents (7), notifications (5), interviews (4), messages (6), studentCv (9), stats (2), adminUsers (11), universities (5), assistant (9)
@@ -490,6 +513,7 @@ users (7), companies (15), skills (2), students (4), offers (15), applications (
 ### University Email Domain Validation
 
 Student signup flow:
+
 1. Extract domain from email (e.g., `student@cs.univ-constantine2.dz`)
 2. Generate candidates: `["cs.univ-constantine2.dz", "univ-constantine2.dz"]`
 3. Match against `universityDomain` table (status = "approved")
@@ -517,15 +541,17 @@ const user = await requireRole(["company_admin", "super_admin"])
 
 ### HTTP Endpoints
 
-| Method | Path | Purpose |
-|--------|------|---------|
-| ALL | `/api/auth/[...all]` | Better Auth (login, signup, 2FA, sessions) |
-| ALL | `/api/rpc/[...rest]` | oRPC (131 procedures, CSRF protected) |
-| POST | `/api/assistant/chat` | AI streaming (60s timeout) |
-| POST | `/api/assistant/auth/status` | Arcade tool auth check |
-| GET | `/api/openapi/spec` | OpenAPI JSON specification |
-| GET | `/api/openapi` | Swagger UI |
-| GET | `/api/health` | Readiness payload with dependency checks (`database`, `redis`, `rateLimiter`) |
+
+| Method | Path                         | Purpose                                                                       |
+| ------ | ---------------------------- | ----------------------------------------------------------------------------- |
+| ALL    | `/api/auth/[...all]`         | Better Auth (login, signup, 2FA, sessions)                                    |
+| ALL    | `/api/rpc/[...rest]`         | oRPC (131 procedures, CSRF protected)                                         |
+| POST   | `/api/assistant/chat`        | AI streaming (60s timeout)                                                    |
+| POST   | `/api/assistant/auth/status` | Arcade tool auth check                                                        |
+| GET    | `/api/openapi/spec`          | OpenAPI JSON specification                                                    |
+| GET    | `/api/openapi`               | Swagger UI                                                                    |
+| GET    | `/api/health`                | Readiness payload with dependency checks (`database`, `redis`, `rateLimiter`) |
+
 
 ### CSRF Protection
 
@@ -562,6 +588,7 @@ SSR requests forward cookies via `next/headers` for auth.
 **Onboarding**: Company, student, university setup wizards
 
 **Dashboard** (`(authenticated)/dashboard/`):
+
 - **Company**: Offers CRUD, candidates pipeline, profile, pending/rejected states
 - **Student**: Search, applications, offer detail, profile
 - **Admin**: Command center, pending/rejected validations, users, universities, departments, stats
@@ -598,26 +625,30 @@ FeatureName/
 
 ### Key Feature Folders
 
-| Feature | Location | Key Components |
-|---------|----------|---------------|
-| DashboardSidebar | `(authenticated)/_components/` | Navigation, role-based menu |
-| DashboardNavbar | `(authenticated)/_components/` | Search, user dropdown, notifications |
-| ProfileContent | `student/profile/_components/` | Profile header, stats, skills, education |
-| OfferForm | `company/offers/_components/` | Multi-section offer editor |
-| AssistantChat | `assistant/_components/` | Chat interface, tool output |
-| TwoFactorSettings | `settings/_components/` | 2FA setup flow |
+
+| Feature           | Location                       | Key Components                           |
+| ----------------- | ------------------------------ | ---------------------------------------- |
+| DashboardSidebar  | `(authenticated)/_components/` | Navigation, role-based menu              |
+| DashboardNavbar   | `(authenticated)/_components/` | Search, user dropdown, notifications     |
+| ProfileContent    | `student/profile/_components/` | Profile header, stats, skills, education |
+| OfferForm         | `company/offers/_components/`  | Multi-section offer editor               |
+| AssistantChat     | `assistant/_components/`       | Chat interface, tool output              |
+| TwoFactorSettings | `settings/_components/`        | 2FA setup flow                           |
+
 
 ### Shared Infrastructure
 
-| Module | Exports |
-|--------|---------|
-| `src/lib/constants/pipeline.ts` | STATUS_COLORS, STAGE_COLUMNS, STAGE_LABELS |
-| `src/lib/constants/internship.ts` | INTERNSHIP_TYPE_LABELS, INTERNSHIP_TYPE_COLORS |
-| `src/lib/animations.ts` | reveal, ease, fadeIn, slideUp, revealWithDelay, reduced-motion helpers |
-| `src/hooks/useInfiniteScroll.ts` | IntersectionObserver + fetchNextPage |
-| `src/hooks/useDebounce.ts` | Debounced value |
-| `src/hooks/useLogout.ts` | Logout + redirect |
-| `src/hooks/useCopilot.ts` | AI chat transport + tool output parsing |
+
+| Module                            | Exports                                                                |
+| --------------------------------- | ---------------------------------------------------------------------- |
+| `src/lib/constants/pipeline.ts`   | STATUS_COLORS, STAGE_COLUMNS, STAGE_LABELS                             |
+| `src/lib/constants/internship.ts` | INTERNSHIP_TYPE_LABELS, INTERNSHIP_TYPE_COLORS                         |
+| `src/lib/animations.ts`           | reveal, ease, fadeIn, slideUp, revealWithDelay, reduced-motion helpers |
+| `src/hooks/useInfiniteScroll.ts`  | IntersectionObserver + fetchNextPage                                   |
+| `src/hooks/useDebounce.ts`        | Debounced value                                                        |
+| `src/hooks/useLogout.ts`          | Logout + redirect                                                      |
+| `src/hooks/useCopilot.ts`         | AI chat transport + tool output parsing                                |
+
 
 ---
 
@@ -625,11 +656,13 @@ FeatureName/
 
 ### Supported Locales
 
-| Locale | Language | Direction | Font |
-|--------|----------|-----------|------|
-| `en` | English | LTR | DM Sans |
-| `fr` | French | LTR | DM Sans |
-| `ar` | Arabic | RTL | Noto Sans Arabic |
+
+| Locale | Language | Direction | Font             |
+| ------ | -------- | --------- | ---------------- |
+| `en`   | English  | LTR       | DM Sans          |
+| `fr`   | French   | LTR       | DM Sans          |
+| `ar`   | Arabic   | RTL       | Noto Sans Arabic |
+
 
 ### RTL Implementation
 
@@ -687,7 +720,7 @@ src/messages/{en,fr,ar}.json
 
 - **Tailwind transitions**: UI state changes (hover, focus, theme)
 - **motion (Framer Motion successor)**: Orchestrated reveals, staggers, marquee
-- **Never**: Custom CSS `@keyframes` or global `.ed-*` utilities
+- **Never**: Custom CSS `@keyframes` or global `.ed-`* utilities
 - Always import from `src/lib/animations.ts` -- never define reveal/ease locally
 
 ### shadcn/ui Components (40+)
@@ -722,25 +755,29 @@ Persistence (assistantConversation + assistantMessage)
 
 ### Personas
 
-| Persona | Triggered By |
-|---------|-------------|
-| Stag Company Copilot | company_admin (default) |
-| Stag Student Copilot | student role or student_* intents |
-| Stag Admin Copilot | admin/super_admin or admin_* intents |
+
+| Persona              | Triggered By                         |
+| -------------------- | ------------------------------------ |
+| Stag Company Copilot | company_admin (default)              |
+| Stag Student Copilot | student role or student_* intents    |
+| Stag Admin Copilot   | admin/super_admin or admin_* intents |
+
 
 ### Internal Tools (9)
 
-| Tool | Role | Purpose |
-|------|------|---------|
-| offer_generate_draft | company_admin | Generate offer from form context |
-| offer_improve_description | company_admin | Rewrite offer description |
-| offer_suggest_skill_tags | company_admin | Suggest relevant skills |
-| candidate_summarize | company_admin | Neutral candidate summary |
-| candidate_draft_refusal_note | company_admin | Professional refusal note |
-| admin_validation_summary | admin | Placement validation checklist |
-| student_search_parse | student | Parse search query to filters |
-| student_cover_letter_draft | student | Draft/refine cover letter |
-| notifications_summarize | all roles | Summarize notification feed |
+
+| Tool                         | Role          | Purpose                          |
+| ---------------------------- | ------------- | -------------------------------- |
+| offer_generate_draft         | company_admin | Generate offer from form context |
+| offer_improve_description    | company_admin | Rewrite offer description        |
+| offer_suggest_skill_tags     | company_admin | Suggest relevant skills          |
+| candidate_summarize          | company_admin | Neutral candidate summary        |
+| candidate_draft_refusal_note | company_admin | Professional refusal note        |
+| admin_validation_summary     | admin         | Placement validation checklist   |
+| student_search_parse         | student       | Parse search query to filters    |
+| student_cover_letter_draft   | student       | Draft/refine cover letter        |
+| notifications_summarize      | all roles     | Summarize notification feed      |
+
 
 ### Arcade Tools (External)
 
@@ -763,18 +800,22 @@ Persistence (assistantConversation + assistantMessage)
 ### Match Scoring Algorithm (v1.0.0)
 
 **Weights**:
-| Factor | Weight | Source |
-|--------|--------|--------|
-| Skills | 55% | Student skills vs. offer requirements |
-| Language | 20% | CEFR proficiency levels |
-| Location | 15% | Wilaya match + work mode |
-| Profile | 10% | Completeness signals (bio, phone, github, etc.) |
+
+
+| Factor   | Weight | Source                                          |
+| -------- | ------ | ----------------------------------------------- |
+| Skills   | 55%    | Student skills vs. offer requirements           |
+| Language | 20%    | CEFR proficiency levels                         |
+| Location | 15%    | Wilaya match + work mode                        |
+| Profile  | 10%    | Completeness signals (bio, phone, github, etc.) |
+
 
 **Output**: 0-100 score + detailed breakdown + missing skills + fairness notes
 
 ### Skill Gap Roadmap
 
 Generated from match score:
+
 - `readyPercent`: Overall match percentage
 - `missingSkills`: Array of gaps
 - `recommendedLearningOrder`: Skills grouped by category, largest first
@@ -788,6 +829,7 @@ Generated from match score:
 ### Trust Index (Company Scoring)
 
 **Formula**:
+
 ```
 score = (responseRate x 0.3) + (completionRate x 0.3) + (feedbackScore x 0.3) - reportPenalty + 10
 ```
@@ -795,6 +837,7 @@ score = (responseRate x 0.3) + (completionRate x 0.3) + (feedbackScore x 0.3) - 
 **Tiers**: Excellent (80+), Good (65-79), Watch (45-64), Low (<45)
 
 **Factors**:
+
 - Response rate: % of applications responded to
 - Completion rate: % of accepted applications that reach validation
 - Feedback score: Average rating (70%) + recommend rate (30%)
@@ -815,6 +858,7 @@ University departments with designated heads who can validate placements for the
 **Department heads**: Identified via `university_member` table with `role = 'department_head'` and a `departmentId` link.
 
 **Services** (`src/server/services/departments/`, 10 files):
+
 - `create.ts` — Create department under a university (duplicate name check)
 - `list.ts` — List departments by university (with skill counts via SQL subquery)
 - `update.ts` — Update department details (partial update, trims inputs)
@@ -827,6 +871,7 @@ University departments with designated heads who can validate placements for the
 - `get-skills.ts` — Get department skill tag IDs
 
 **oRPC** (`departments` namespace, 9 procedures):
+
 - `list` (authedProcedureGenerous) — List departments for a university
 - `create` (adminProcedureStandard) — Create department
 - `update` (adminProcedureStandard) — Update department details
@@ -849,12 +894,14 @@ Feature folder with orchestrator pattern, hooks layer, and pure UI components in
 Public document verification using unique codes and QR codes.
 
 **Flow**:
+
 1. Document generated (agreement/certificate) with unique verification code
 2. QR code embedded in the PDF pointing to `/verify/[code]`
 3. Anyone can verify by visiting the URL or entering the code at `/verify`
 4. No authentication required for verification
 
 **Services** (`src/server/services/documents/`):
+
 - `generate-agreement.ts`, `generate-certificate.ts` — PDF generation
 - `verification-code.ts` — Unique code generation
 - `qr-utils.ts` — QR code generation for documents
@@ -885,13 +932,15 @@ Internet --> Caddy :80/:443 --> Next.js App :3000
 
 ### Services
 
-| Service | Image | Memory | Purpose |
-|---------|-------|--------|---------|
-| PostgreSQL | postgres:16-alpine | 384 MB | Primary database |
-| Redis | redis:7-alpine | 64 MB | Rate limiting |
-| Next.js App | `${APP_IMAGE}` | 512 MB | Application |
-| Caddy | caddy:2-alpine | 64 MB | Reverse proxy + auto-HTTPS |
-| Backup | postgres-backup-local | 64 MB | Daily pg_dump |
+
+| Service     | Image                 | Memory | Purpose                    |
+| ----------- | --------------------- | ------ | -------------------------- |
+| PostgreSQL  | postgres:16-alpine    | 384 MB | Primary database           |
+| Redis       | redis:7-alpine        | 64 MB  | Rate limiting              |
+| Next.js App | `${APP_IMAGE}`        | 512 MB | Application                |
+| Caddy       | caddy:2-alpine        | 64 MB  | Reverse proxy + auto-HTTPS |
+| Backup      | postgres-backup-local | 64 MB  | Daily pg_dump              |
+
 
 ### CI/CD Pipeline
 
@@ -932,6 +981,7 @@ Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
 ### Logging
 
 Pino structured JSON logging with automatic redaction:
+
 - Redacted fields: authorization, cookie, password, token, api_key, secret
 - Module-scoped loggers: `createModuleLogger("email/sendEmail")`
 - Configurable level via `LOG_LEVEL` env var
@@ -939,16 +989,18 @@ Pino structured JSON logging with automatic redaction:
 ### Environment Variables
 
 **Required**:
+
 - `DATABASE_URL` -- PostgreSQL connection
 - `BETTER_AUTH_SECRET` -- Auth encryption (min 32 chars)
 - `NEXT_PUBLIC_BETTER_AUTH_URL` -- Base URL
 
 **Optional but important**:
+
 - `RESEND_API_KEY` -- Email service
 - `REDIS_URL` + `REDIS_RATE_LIMIT_ENABLED` -- Rate limiting
 - `AI_API_KEY` (or `POE_API_KEY` legacy fallback) -- AI provider
 - `ARCADE_API_KEY` -- External tool integration
-- `S3_*` -- File storage (bucket, endpoint, keys)
+- `S3_`* -- File storage (bucket, endpoint, keys)
 
 ---
 
@@ -980,6 +1032,7 @@ bun run check:all     # Full pre-release checks (lint, typecheck, tests, build)
 ### Co-location Pattern
 
 Test files live next to their source:
+
 ```
 src/lib/utils.ts         --> src/lib/utils.test.ts
 src/lib/schemas/auth.ts  --> src/lib/schemas/auth.test.ts
@@ -1016,9 +1069,12 @@ src/server/services/...  --> src/server/services/...test.ts
 
 When adding or modifying features, **update all relevant documentation files** to keep them in sync:
 
-| File | Purpose | What to update |
-|------|---------|----------------|
-| `CLAUDE.md` | Project context for Claude | Service domains, procedure counts, directory tree, patterns |
-| `AGENTS.md` | Coding guidelines for AI agents | Service lists, route procedure tables, feature folder references |
-| `docs/ARCHITECTURE.md` | Full system architecture | Data model, service tables, procedure counts, file counts |
-| `README.md` | Project overview | High-level capabilities, architecture summary |
+
+| File                   | Purpose                         | What to update                                                   |
+| ---------------------- | ------------------------------- | ---------------------------------------------------------------- |
+| `CLAUDE.md`            | Project context for Claude      | Service domains, procedure counts, directory tree, patterns      |
+| `AGENTS.md`            | Coding guidelines for AI agents | Service lists, route procedure tables, feature folder references |
+| `docs/ARCHITECTURE.md` | Full system architecture        | Data model, service tables, procedure counts, file counts        |
+| `README.md`            | Project overview                | High-level capabilities, architecture summary                    |
+
+

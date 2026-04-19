@@ -30,6 +30,9 @@ setup("setup test database", async () => {
   console.info("Syncing database schema...")
   syncE2EDatabaseSchema(databaseUrl)
 
+  console.info("Waiting for Neon connection to stabilize...")
+  await new Promise((resolve) => setTimeout(resolve, 3000))
+
   console.info("Seeding base reference data...")
   const baseReferenceData = await seedBaseReferenceData(databaseUrl)
 

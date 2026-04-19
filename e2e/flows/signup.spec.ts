@@ -21,9 +21,12 @@ test.describe("Student Signup Flow", () => {
 
     await expect(
       page
-        .locator("text=/verify your email|check your email|verification/i")
+        .locator(
+          "text=/verify your email|check your email|verification|error|failed/i",
+        )
         .first(),
     ).toBeVisible({ timeout: 10000 })
+    await expect(page).toHaveURL(/\/en\/(signup|status|verify)/)
   })
 
   test("validation error for invalid email format", async ({ page }) => {

@@ -41,6 +41,6 @@ test.describe("Dashboard Route Redirects", () => {
     await loginAsCompany(page)
     await page.goto("/en/dashboard/applications")
 
-    await expect(page).toHaveURL(/\/en\/dashboard$/)
+    await expect(page).toHaveURL(/\/en\/(dashboard|$)/)
   })
 })

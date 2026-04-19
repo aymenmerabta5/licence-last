@@ -20,7 +20,12 @@ const link = new RPCLink({
     }
     // Forward cookies during SSR
     const { headers } = await import("next/headers")
-    return await headers()
+    const forwarded = await headers()
+    const origin = new URL(getRpcBaseUrl()).origin
+    return {
+      ...Object.fromEntries(forwarded.entries()),
+      origin,
+    }
   },
 })
 

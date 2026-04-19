@@ -5,16 +5,14 @@ import { useLocale } from "next-intl"
 import { useTheme } from "next-themes"
 import { type Ref, useImperativeHandle, useRef } from "react"
 
-import { env } from "@/env"
-
 export interface CaptchaHandle {
   reset: () => void
 }
 
 export function isTurnstileEnabledOnClient() {
   return (
-    Boolean(env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) &&
-    env.NEXT_PUBLIC_E2E_DISABLE_CAPTCHA !== "true"
+    Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) &&
+    process.env.NEXT_PUBLIC_E2E_DISABLE_CAPTCHA !== "true"
   )
 }
 
@@ -31,7 +29,7 @@ export function TurnstileWidget({
   onExpire,
   onError,
 }: TurnstileWidgetProps) {
-  const siteKey = env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
   const locale = useLocale()
   const { resolvedTheme } = useTheme()
   const internalRef = useRef<TurnstileInstance>(null)
