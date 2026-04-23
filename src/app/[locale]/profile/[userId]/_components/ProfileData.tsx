@@ -21,7 +21,6 @@ export async function ProfileData({ userId }: ProfileDataProps) {
   ])
   const isSelf = viewer.id === userId
   const isOwner = isSelf && viewer.role === "student"
-  if (viewer.role === "student" && !isSelf) notFound()
 
   const { getPublicStudentProfile } = await import(
     "@/server/services/students/get-public-profile"
