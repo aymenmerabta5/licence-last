@@ -56,6 +56,19 @@ export function UserRow({
   const roleLabelKey =
     displayRole === "department_head" ? "dept_head" : (displayRole ?? "student")
 
+  const affiliation = (() => {
+    if (user.universityMembershipRole === "department_head") {
+      if (user.departmentName && user.universityName) {
+        return `${user.departmentName} @ ${user.universityName}`
+      }
+      return user.departmentName ?? user.universityName ?? null
+    }
+    if (user.role === "university_admin" && user.universityName) {
+      return user.universityName
+    }
+    return null
+  })()
+
   return (
     <TableRow className="group hover:bg-primary/[0.02] border-b border-border/50 transition-colors">
       <TableCell className="py-4">
@@ -74,10 +87,17 @@ export function UserRow({
         </div>
       </TableCell>
       <TableCell className="py-4">
-        <UserRoleBadge
-          role={displayRole}
-          label={t(`roles.${roleLabelKey}`)}
-        />
+        <div className="flex flex-col gap-0.5">
+          <UserRoleBadge
+            role={displayRole}
+            label={t(`roles.${roleLabelKey}`)}
+          />
+          {affiliation && (
+            <span className="text-[10px] text-muted-foreground truncate max-w-[200px]">
+              {affiliation}
+            </span>
+          )}
+        </div>
       </TableCell>
       <TableCell className="py-4">
         {user.banned ? (

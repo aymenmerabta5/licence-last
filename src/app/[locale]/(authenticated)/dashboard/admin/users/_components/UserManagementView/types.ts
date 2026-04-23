@@ -4,6 +4,8 @@ export interface AdminUser {
   email: string
   role?: string
   universityMembershipRole?: string | null
+  universityName?: string | null
+  departmentName?: string | null
   banned?: boolean | null
   banReason?: string | null
   banExpires?: number | null

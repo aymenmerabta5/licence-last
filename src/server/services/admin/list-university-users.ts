@@ -5,6 +5,7 @@ import { and, asc, count, desc, eq, ilike, ne } from "drizzle-orm"
 import type { PrimaryUserRole } from "@/lib/effective-role"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
+import { department } from "@/server/db/schema/departments"
 import { universityMember } from "@/server/db/schema/university-memberships"
 
 interface ListUniversityUsersParams {
@@ -136,9 +137,11 @@ export async function listUniversityUsers(params: ListUniversityUsersParams) {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       universityMembershipRole: universityMember.role,
+      departmentName: department.name,
     })
     .from(user)
     .leftJoin(universityMember, eq(user.id, universityMember.userId))
+    .leftJoin(department, eq(universityMember.departmentId, department.id))
     .where(whereClause)
     .orderBy(sortDirection === "asc" ? asc(sortColumn) : desc(sortColumn))
     .limit(params.limit ?? 20)

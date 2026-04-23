@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const mockListUsers = mock(() => Promise.resolve({ users: [], total: 0 }))
 const mockHeaders = mock(() => Promise.resolve(new Headers()))
+const noOpAugment = mock(async () => new Map())
 
 mock.module("@/lib/auth", () => ({
   auth: { api: {} },
@@ -11,6 +12,7 @@ mock.module("@/lib/auth", () => ({
 describe("listUsers", () => {
   beforeEach(() => {
     mockListUsers.mockClear()
+    noOpAugment.mockClear()
   })
 
   test("should use default limit and offset", async () => {
@@ -19,7 +21,11 @@ describe("listUsers", () => {
     )
     await listUsers(
       {},
-      { authApi: { listUsers: mockListUsers }, getHeaders: mockHeaders },
+      {
+        authApi: { listUsers: mockListUsers },
+        getHeaders: mockHeaders,
+        augmentUsers: noOpAugment,
+      },
     )
 
     const call = (mockListUsers.mock.calls as unknown[][])[0][0] as {
@@ -35,7 +41,11 @@ describe("listUsers", () => {
     )
     await listUsers(
       { limit: 50, offset: 10 },
-      { authApi: { listUsers: mockListUsers }, getHeaders: mockHeaders },
+      {
+        authApi: { listUsers: mockListUsers },
+        getHeaders: mockHeaders,
+        augmentUsers: noOpAugment,
+      },
     )
 
     const call = (mockListUsers.mock.calls as unknown[][])[0][0] as {
@@ -51,7 +61,11 @@ describe("listUsers", () => {
     )
     await listUsers(
       { searchValue: "test@", searchField: "email" },
-      { authApi: { listUsers: mockListUsers }, getHeaders: mockHeaders },
+      {
+        authApi: { listUsers: mockListUsers },
+        getHeaders: mockHeaders,
+        augmentUsers: noOpAugment,
+      },
     )
 
     const call = (mockListUsers.mock.calls as unknown[][])[0][0] as {
@@ -72,7 +86,11 @@ describe("listUsers", () => {
     )
     await listUsers(
       { sortBy: "name", sortDirection: "desc" },
-      { authApi: { listUsers: mockListUsers }, getHeaders: mockHeaders },
+      {
+        authApi: { listUsers: mockListUsers },
+        getHeaders: mockHeaders,
+        augmentUsers: noOpAugment,
+      },
     )
 
     const call = (mockListUsers.mock.calls as unknown[][])[0][0] as {
@@ -88,7 +106,11 @@ describe("listUsers", () => {
     )
     await listUsers(
       { filterField: "role", filterValue: "student", filterOperator: "eq" },
-      { authApi: { listUsers: mockListUsers }, getHeaders: mockHeaders },
+      {
+        authApi: { listUsers: mockListUsers },
+        getHeaders: mockHeaders,
+        augmentUsers: noOpAugment,
+      },
     )
 
     const call = (mockListUsers.mock.calls as unknown[][])[0][0] as {
