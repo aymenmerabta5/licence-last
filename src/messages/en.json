@@ -539,7 +539,8 @@
         "recruiter": "Recruiter",
         "university_admin": "University Admin",
         "super_admin": "Super Admin",
-        "dept_head": "Dept. Head"
+        "dept_head": "Dept. Head",
+        "department_head": "Department Head"
       },
       "accountSettings": "Account Settings",
       "viewProfile": "View Profile",
@@ -1101,6 +1102,7 @@
       "student": "Student",
       "recruiter": "Recruiter",
       "dept_head": "Department Head",
+      "department_head": "Department Head",
       "university_admin": "Administrator"
     },
     "student": {

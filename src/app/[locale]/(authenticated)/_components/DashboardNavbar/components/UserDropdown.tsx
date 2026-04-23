@@ -60,7 +60,7 @@ export function UserDropdown({
             {user.name || "User Name"}
           </p>
           <UserRoleBadge
-            role={effectiveRole}
+            role={roleKey}
             label={roleLabel}
             className="text-[8px] tracking-[0.1em] shrink-0"
           />
@@ -70,7 +70,7 @@ export function UserDropdown({
           className="hidden sm:flex xl:hidden"
         >
           <UserRoleBadge
-            role={effectiveRole}
+            role={roleKey}
             label={roleLabel}
             className="text-[8px] tracking-[0.1em]"
           />

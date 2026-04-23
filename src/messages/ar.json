@@ -539,7 +539,8 @@
         "recruiter": "مسؤول توظيف",
         "university_admin": "مشرف جامعة",
         "super_admin": "مشرف عام",
-        "dept_head": "رئيس قسم"
+        "dept_head": "رئيس قسم",
+        "department_head": "رئيس قسم"
       },
       "accountSettings": "إعدادات الحساب",
       "viewProfile": "عرض الملف الشخصي",
@@ -1065,6 +1066,7 @@
       "student": "طالب",
       "recruiter": "مسؤول توظيف",
       "dept_head": "رئيس قسم",
+      "department_head": "رئيس قسم",
       "university_admin": "مسؤول جامعة"
     },
     "student": {
