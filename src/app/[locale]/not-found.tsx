@@ -137,6 +137,7 @@ export default async function NotFoundPage() {
               variant="editorial"
               size="editorial"
               render={<Link href="/" />}
+              nativeButton={false}
               aria-label={t("returnHome")}
               className="group"
             >

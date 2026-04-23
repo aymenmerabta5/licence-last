@@ -1643,6 +1643,8 @@
         "deleteDepartmentDescription": "هل تريد حذف {name}؟ لا يمكن التراجع عن هذا الإجراء.",
         "deleteSuccess": "تم حذف القسم بنجاح.",
         "editDepartment": "يحرر",
+        "editDepartmentTitle": "تعديل القسم",
+        "editDepartmentDescription": "قم بتحديث اسم القسم أدناه.",
         "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
         "skills": {
           "title": "مهارات {name}",

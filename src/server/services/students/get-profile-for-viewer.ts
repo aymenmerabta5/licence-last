@@ -95,7 +95,6 @@ export async function getStudentProfileForViewer({
 
   const targetUser = await getUserById(targetUserId)
   if (!targetUser) return null
-  if (targetUser.role !== "student") return null
 
   const [profileRow] = await db
     .select({

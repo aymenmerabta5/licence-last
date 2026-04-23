@@ -1643,6 +1643,8 @@
         "deleteDepartmentDescription": "Supprimer {name} ? Cette action est irréversible.",
         "deleteSuccess": "Département supprimé avec succès.",
         "editDepartment": "Modifier",
+        "editDepartmentTitle": "Modifier le département",
+        "editDepartmentDescription": "Mettez à jour le nom du département ci-dessous.",
         "error": "Quelque chose s'est mal passe. Veuillez reessayer.",
         "skills": {
           "title": "Compétences pour {name}",

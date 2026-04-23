@@ -32,6 +32,12 @@ export async function AuthenticatedContent({
   ])
   let companyMembershipRole: string | null = null
 
+  // Check if current session is impersonated
+  const session = await getFreshAuthSession(await headers())
+  const impersonatedBy =
+    (session?.session as { impersonatedBy?: string } | null)?.impersonatedBy ??
+    null
+
   // ── Block unapproved company_admin ──
   if (user.role === "company_admin") {
     if (!user.onboardingCompleted) {
@@ -51,6 +57,19 @@ export async function AuthenticatedContent({
     if (company.status === "suspended") {
       return localeRedirect("/status/company/suspended")
     }
+
+    return (
+      <DashboardClientProvider
+        user={user}
+        impersonatedBy={impersonatedBy}
+        companyMembershipRole={companyMembershipRole}
+        companySlug={company.slug}
+        universityMembershipRole={user.universityMembershipRole ?? null}
+        universityDepartmentId={user.universityDepartmentId ?? null}
+      >
+        {children}
+      </DashboardClientProvider>
+    )
   }
 
   // ── Block unapproved university-side accounts ──
@@ -66,12 +85,6 @@ export async function AuthenticatedContent({
       return localeRedirect("/status/university/rejected")
     }
   }
-
-  // Check if current session is impersonated
-  const session = await getFreshAuthSession(await headers())
-  const impersonatedBy =
-    (session?.session as { impersonatedBy?: string } | null)?.impersonatedBy ??
-    null
 
   return (
     <DashboardClientProvider
