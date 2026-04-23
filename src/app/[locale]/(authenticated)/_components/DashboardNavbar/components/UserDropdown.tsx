@@ -33,6 +33,7 @@ export function UserDropdown({
   const t = useTranslations("dashboard.navbar")
   const { companyMembershipRole, universityMembershipRole } = useDashboard()
   const effectiveRole = user.effectiveRole ?? user.role ?? "student"
+  const isStudent = effectiveRole === "student"
   const roleKey =
     effectiveRole === "company_admin" && companyMembershipRole === "recruiter"
       ? "recruiter"
@@ -85,13 +86,15 @@ export function UserDropdown({
           <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-1">
             {t("accountSettings")}
           </DropdownMenuLabel>
-          <Link href={profileHref}>
-            <DropdownMenuItem className="rounded-lg h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">
-              <User className="h-4 w-4 me-2" /> {t("viewProfile")}
-            </DropdownMenuItem>
-          </Link>
+          {isStudent && (
+            <Link href={profileHref}>
+              <DropdownMenuItem className="h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">
+                <User className="h-4 w-4 me-2" /> {t("viewProfile")}
+              </DropdownMenuItem>
+            </Link>
+          )}
           <Link href="/dashboard/settings">
-            <DropdownMenuItem className="rounded-lg h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">
+            <DropdownMenuItem className="h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">
               <User className="h-4 w-4 me-2" /> {t("profileSettings")}
             </DropdownMenuItem>
           </Link>
@@ -102,7 +105,7 @@ export function UserDropdown({
         <DropdownMenuGroup>
           <DropdownMenuItem
             variant="destructive"
-            className="rounded-lg h-9 cursor-pointer transition-colors"
+            className="h-9 cursor-pointer transition-colors"
             disabled={isLoggingOut}
             onClick={onLogout}
           >

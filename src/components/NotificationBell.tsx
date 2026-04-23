@@ -133,7 +133,7 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
               return (
                 <DropdownMenuItem
                   key={n.id}
-                  className="rounded-lg cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors items-start gap-2"
+                  className="cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors items-start gap-2"
                   onSelect={(e) => {
                     e.preventDefault()
                     markReadMutation.mutate({ notificationId: n.id })
@@ -164,7 +164,7 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
         )}
 
         <DropdownMenuSeparator className="my-1 opacity-50" />
-        <DropdownMenuItem className="rounded-lg cursor-pointer transition-colors">
+        <DropdownMenuItem className="cursor-pointer transition-colors">
           <Link
             href={"/dashboard/notifications" as "/dashboard"}
             className="w-full text-xs"

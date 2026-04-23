@@ -30,7 +30,7 @@ const getHydratedSnapshot = () => true
 const getServerHydratedSnapshot = () => false
 
 const triggerClassName = cn(
-  "h-9 gap-2 border-border/30 bg-transparent px-3 select-none",
+  "h-9 gap-2 border-border/30 bg-transparent px-3 select-none rounded-none",
   "text-xs font-medium tracking-wide text-foreground/55 transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
   "hover:border-primary hover:text-foreground/80",
   "aria-expanded:border-primary aria-expanded:text-foreground",

@@ -238,7 +238,7 @@ function NavbarSessionControls() {
               {user.name ?? user.email ?? "Account"}
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="rounded-lg h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
+              className="h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
               onClick={() => router.push("/dashboard")}
             >
               <LayoutDashboard className="h-4 w-4 me-2" />
@@ -251,7 +251,7 @@ function NavbarSessionControls() {
           <DropdownMenuGroup>
             <DropdownMenuItem
               variant="destructive"
-              className="rounded-lg h-9 cursor-pointer transition-colors"
+              className="h-9 cursor-pointer transition-colors"
               onClick={handleLogout}
             >
               <LogOut className="h-4 w-4 me-2" /> {t("logout")}
