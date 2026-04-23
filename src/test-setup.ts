@@ -1,5 +1,7 @@
 import { Window } from "happy-dom"
 
+process.env.NODE_ENV ??= "test"
+
 // Ensure required client env vars exist for modules importing `src/env.ts` in tests.
 if (!process.env.NEXT_PUBLIC_BETTER_AUTH_URL) {
   process.env.NEXT_PUBLIC_BETTER_AUTH_URL = "http://localhost:3000"
@@ -8,7 +10,7 @@ if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL = "postgresql://localhost:5432/test"
 }
 if (!process.env.BETTER_AUTH_SECRET) {
-  process.env.BETTER_AUTH_SECRET = "test-secret-key-for-testing"
+  process.env.BETTER_AUTH_SECRET = "test-secret-key-that-is-long-enough-for-testing-now"
 }
 if (!process.env.POE_API_KEY) {
   process.env.POE_API_KEY = "test-poe-api-key"

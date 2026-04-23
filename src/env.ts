@@ -14,6 +14,7 @@ const assistantEnabledByDefault =
   process.env.ARCADE_API_KEY && hasConfiguredAiProvider ? "true" : "false"
 
 export const env = createEnv({
+  isServer: typeof window === "undefined" || process.env.NODE_ENV === "test",
   server: {
     NODE_ENV: z
       .enum(["development", "production", "test"])

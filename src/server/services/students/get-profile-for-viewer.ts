@@ -94,7 +94,7 @@ export async function getStudentProfileForViewer({
   cacheTag(CACHE_TAGS.PUBLIC_PROFILE(targetUserId))
 
   const targetUser = await getUserById(targetUserId)
-  if (!targetUser) return null
+  if (!targetUser || targetUser.role !== "student") return null
 
   const [profileRow] = await db
     .select({
