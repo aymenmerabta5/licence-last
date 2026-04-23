@@ -1,14 +1,13 @@
 "use client"
 
-import { Languages } from "lucide-react"
+import { Globe, Languages } from "lucide-react"
 import * as motion from "motion/react-client"
-import { useLocale, useTranslations } from "next-intl"
+import { useTranslations } from "next-intl"
 import type { StudentLanguage } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
-import { getLanguageLabel, toSupportedLocale } from "@/lib/constants/languages"
 
 interface LanguagesCardProps {
   languages: StudentLanguage[]
@@ -26,64 +25,70 @@ export function LanguagesCard({
   canEdit,
   labels,
 }: LanguagesCardProps) {
-  const locale = useLocale()
+  const t = useTranslations("dashboard.student.profile")
   const tProficiency = useTranslations("onboarding.student.proficiencyLevels")
-  const languageLocale = toSupportedLocale(locale)
+  const hasLanguages = languages.length > 0
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.35, duration: 0.6, ease }}
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.5, duration: 0.8, ease }}
+      className="relative group"
     >
-      {languages.length > 0 ? (
-        <div className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden">
-          <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-border/40 bg-muted/20 dark:bg-muted/10">
-            <Languages className="h-4 w-4 text-primary" />
-            <h2 className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+      {hasLanguages ? (
+        <div className="relative rounded-[2.5rem] border border-slate-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-500 hover:shadow-[0_30px_70px_rgba(0,0,0,0.06)]">
+          <div className="px-8 py-7 border-b border-slate-50 bg-slate-50/30 flex items-center gap-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/5">
+              <Globe className="h-5 w-5 text-primary" />
+            </div>
+            <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-800">
               {labels.languages}
             </h2>
           </div>
-          <div className="p-5">
-          <div className="flex flex-wrap gap-2">
-            {languages.map((language) => (
-              <Badge
-                key={language.languageCode}
-                variant="secondary"
-                className="bg-secondary/30 text-foreground text-[10px] uppercase font-bold tracking-wider rounded-full px-3 py-1.5 border-none"
+
+          <div className="p-8 space-y-5">
+            {languages.map((lang, idx) => (
+              <motion.div
+                key={lang.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 + idx * 0.1 }}
+                className="flex items-center justify-between p-4 rounded-3xl bg-slate-50 border border-slate-100 group/item hover:bg-white hover:border-primary/20 transition-all duration-300"
               >
-                {getLanguageLabel(language.languageCode, languageLocale)} ·{" "}
-                {tProficiency(language.proficiency as "a1")}
-              </Badge>
+                <div className="flex items-center gap-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-slate-200 text-xs font-black uppercase text-slate-400 group-hover/item:text-primary transition-colors">
+                    {lang.languageCode}
+                  </div>
+                  <span className="text-[14px] font-bold text-slate-700">
+                    {new Intl.DisplayNames([lang.languageCode], { type: "language" }).of(lang.languageCode)}
+                  </span>
+                </div>
+                <Badge variant="secondary" className="bg-white text-primary border-slate-200 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full">
+                  {tProficiency(lang.proficiency as "a1")}
+                </Badge>
+              </motion.div>
             ))}
-          </div>
+
+            {canEdit && (
+              <div className="pt-4">
+                <Link href="/dashboard/settings">
+                  <button className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400 hover:text-primary transition-colors">
+                    + {labels.addLanguages}
+                  </button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       ) : (
-        <div className="border border-dashed border-border/40 p-8">
-          {canEdit ? (
-            <div className="text-center space-y-3">
-              <div className="flex h-12 w-12 items-center justify-center border border-border/50 bg-muted/30">
-                <Languages className="h-5 w-5 text-muted-foreground/40" />
-              </div>
-              <p className="text-xs text-muted-foreground/50 font-medium max-w-[200px] mx-auto leading-relaxed">
-                {labels.emptyMessage}
-              </p>
-              <Link href="/dashboard/settings">
-                <Button
-                  variant="editorial-outline"
-                  size="sm"
-                  className="border-border/40 hover:border-primary mt-1 h-8 px-4 text-xs"
-                >
-                  {labels.addLanguages}
-                </Button>
-              </Link>
-            </div>
-          ) : (
-            <p className="text-xs text-muted-foreground/40 font-medium text-center">
-              {labels.noLanguagesListed}
-            </p>
-          )}
+        <div className="rounded-[2.5rem] border-2 border-dashed border-slate-100 p-12 bg-white/50">
+          <div className="text-center space-y-6">
+             <Languages className="h-10 w-10 mx-auto text-slate-200" />
+             <p className="text-[11px] text-slate-300 font-black uppercase tracking-[0.25em]">
+               {labels.noLanguagesListed}
+             </p>
+          </div>
         </div>
       )}
     </motion.section>

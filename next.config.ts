@@ -55,6 +55,11 @@ function getStorageImageRemotePatterns(): ImageRemotePattern[] {
       hostname: "*.r2.cloudflarestorage.com",
       pathname: "/**",
     },
+    {
+      protocol: "https",
+      hostname: "*.r2.dev",
+      pathname: "/**",
+    },
   )
 
   return Array.from(

@@ -1,10 +1,9 @@
 "use client"
 
-import { ExternalLink, Github, Globe } from "lucide-react"
+import { Github, Globe, Link as LinkIcon } from "lucide-react"
 import * as motion from "motion/react-client"
 import type { StudentProfile } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { ease } from "@/lib/animations"
-import { cn } from "@/lib/utils"
 
 interface SocialLinksProps {
   profile?: StudentProfile | null
@@ -18,77 +17,62 @@ interface SocialLinksProps {
 export function SocialLinks({ profile, labels }: SocialLinksProps) {
   const links = [
     {
-      key: "github",
-      href: profile?.githubUrl,
-      icon: Github,
       label: labels.github,
+      value: profile?.githubUrl,
+      icon: Github,
+      href: profile?.githubUrl,
     },
     {
-      key: "portfolio",
-      href: profile?.portfolioUrl,
-      icon: Globe,
       label: labels.portfolio,
+      value: profile?.portfolioUrl,
+      icon: Globe,
+      href: profile?.portfolioUrl,
     },
-  ]
+  ].filter((l) => !!l.value)
+
+  if (links.length === 0) return null
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.4, duration: 0.6, ease }}
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.6, duration: 0.8, ease }}
+      className="relative"
     >
-      <div className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-border/40 bg-muted/20 dark:bg-muted/10">
-          <ExternalLink className="h-4 w-4 text-primary" />
-          <h2 className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+      <div className="rounded-[2.5rem] border border-slate-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.03)] overflow-hidden">
+        <div className="px-8 py-7 border-b border-slate-50 bg-slate-50/30 flex items-center gap-4">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/5">
+            <LinkIcon className="h-5 w-5 text-primary" />
+          </div>
+          <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-800">
             {labels.links}
           </h2>
         </div>
 
-      <div className="divide-y divide-border/20">
-        {links.map((link, i) => {
-          const Icon = link.icon
-          const isActive = !!link.href
-
-          if (isActive) {
-            return (
-              <motion.a
-                key={link.key}
-                href={link.href!}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.45 + i * 0.06, duration: 0.4, ease }}
-                className="flex items-center gap-3 px-5 py-3.5 border border-border/40 group transition-all duration-200 hover:border-primary/40 hover:bg-primary/[0.02]"
-              >
-                <Icon className="h-4 w-4 text-heading group-hover:text-primary transition-colors" />
-                <span className="text-sm font-bold text-heading flex-1 group-hover:text-primary transition-colors">
-                  {link.label}
-                </span>
-                <ExternalLink className="h-3 w-3 text-muted-foreground/30 group-hover:text-primary/50 transition-colors" />
-              </motion.a>
-            )
-          }
-
-          return (
-            <motion.div
-              key={link.key}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.45 + i * 0.06, duration: 0.4, ease }}
-              className={cn(
-                "flex items-center gap-3 px-5 py-3.5 border border-dashed border-border/25",
-              )}
+        <div className="p-8 space-y-4">
+          {links.map((link, i) => (
+            <motion.a
+              key={i}
+              href={link.href!}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ x: 5 }}
+              className="flex items-center gap-6 p-4 rounded-3xl hover:bg-slate-50 transition-all group/link"
             >
-              <Icon className="h-4 w-4 text-muted-foreground/20" />
-              <span className="text-sm font-medium text-muted-foreground/30 flex-1">
-                {link.label}
-              </span>
-            </motion.div>
-          )
-        })}
-      </div>
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-100 border border-slate-200 group-hover/link:border-primary/20 group-hover/link:bg-white transition-all duration-300">
+                <link.icon className="h-6 w-6 text-slate-400 group-hover/link:text-primary transition-colors" />
+              </div>
+              <div className="space-y-1 overflow-hidden">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em]">
+                  {link.label}
+                </p>
+                <p className="text-[15px] font-bold text-slate-700 truncate group-hover/link:text-primary transition-colors">
+                  {link.value?.replace(/^https?:\/\//, "")}
+                </p>
+              </div>
+            </motion.a>
+          ))}
+        </div>
       </div>
     </motion.section>
   )

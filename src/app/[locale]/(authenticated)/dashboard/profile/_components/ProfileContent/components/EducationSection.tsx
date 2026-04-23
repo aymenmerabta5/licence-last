@@ -1,18 +1,16 @@
 "use client"
 
-import { BookOpen, GraduationCap, MapPin } from "lucide-react"
+import { GraduationCap, MapPin, Plus } from "lucide-react"
 import * as motion from "motion/react-client"
-import type {
-  StudentProfile,
-  StudentUniversity,
-} from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
+import { useLocale } from "next-intl"
+import type { StudentProfile } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
 
 interface EducationSectionProps {
   profile?: StudentProfile | null
-  university?: StudentUniversity | null
+  university?: { name: string; location: string } | null
   canEdit: boolean
   labels: {
     education: string
@@ -28,98 +26,94 @@ export function EducationSection({
   canEdit,
   labels,
 }: EducationSectionProps) {
+  const locale = useLocale()
   const hasEducation = !!university
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.3, duration: 0.6, ease }}
+      transition={{ delay: 0.4, duration: 0.8, ease }}
+      className="space-y-8"
     >
-      {/* Section header with accent */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="h-5 w-0.5 bg-primary" />
-        <h2 className="font-serif text-2xl font-bold text-heading tracking-tight">
-          {labels.education}
-        </h2>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-6">
+          <div className="h-12 w-2 rounded-full bg-primary/40" />
+          <h2 className="font-serif text-5xl font-bold text-slate-900 tracking-tight">
+            {labels.education}
+          </h2>
+        </div>
       </div>
 
       {hasEducation ? (
-        <div className="relative ps-8">
-          {/* Timeline line */}
-          <div className="absolute start-0 top-0 bottom-0 w-px bg-border/40" />
+        <div className="relative">
+          {/* Timeline Line */}
+          <div className="absolute top-0 bottom-0 left-[39px] w-0.5 bg-slate-100" />
 
-          {/* Timeline dot */}
-          <div className="absolute start-0 top-3 -translate-x-1/2 h-3 w-3 rounded-full border-2 border-primary bg-background" />
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="relative pl-24 group"
+          >
+            {/* Timeline Marker */}
+            <div className="absolute left-[30px] top-4 h-5 w-5 rounded-full border-4 border-white bg-primary shadow-lg group-hover:scale-125 transition-transform" />
 
-          <div className="border border-border/40 p-6 relative group transition-all hover:border-primary/20">
-            {/* Hover accent */}
-            <div className="absolute top-0 start-0 h-0.5 w-0 bg-primary group-hover:w-full transition-all duration-500" />
+            <div className="rounded-[2.5rem] border border-slate-100 bg-white p-10 sm:p-14 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_30px_70px_rgba(0,0,0,0.06)] transition-all duration-500">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-8">
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
+                      <GraduationCap className="h-4 w-4" />
+                      {labels.university}
+                    </div>
+                    <h3 className="text-3xl font-bold text-slate-800 leading-tight">
+                      {university.name}
+                    </h3>
+                  </div>
 
-            <div className="flex items-start gap-5">
-              <div className="h-12 w-12 rounded-lg bg-primary/5 flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
-                <BookOpen className="h-5 w-5 text-primary" />
-              </div>
+                  <div className="flex flex-wrap gap-6">
+                    <div className="flex items-center gap-2.5 text-slate-400 font-medium">
+                      <MapPin className="h-5 w-5 text-slate-300" />
+                      <span className="text-sm">{university.location}</span>
+                    </div>
+                  </div>
 
-              <div className="flex-1 space-y-2 min-w-0">
-                <div>
-                  <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-primary mb-1 [[dir=rtl]_&]:tracking-normal">
-                    {labels.university}
-                  </p>
-                  <h3 className="text-base font-bold text-heading leading-tight">
-                    {university.name}
-                    {university.abbreviation && (
-                      <span className="text-muted-foreground/50 font-normal ms-2 text-sm">
-                        ({university.abbreviation})
-                      </span>
-                    )}
-                  </h3>
+                  {profile?.department && (
+                    <div className="pt-4 border-t border-slate-50">
+                       <div className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1">
+                         Department
+                       </div>
+                       <p className="text-lg font-bold text-slate-600">
+                         {profile.department} {profile.level && `— ${profile.level}`}
+                       </p>
+                    </div>
+                  )}
                 </div>
 
-                {(profile?.department || profile?.level) && (
-                  <div className="flex items-center gap-1.5">
-                    <GraduationCap className="h-3.5 w-3.5 text-muted-foreground/40" />
-                    <p className="text-sm text-muted-foreground font-medium">
-                      {[profile.department, profile.level]
-                        .filter(Boolean)
-                        .join(" — ")}
-                    </p>
-                  </div>
-                )}
-
-                {university.city && (
-                  <div className="flex items-center gap-1.5">
-                    <MapPin className="h-3 w-3 text-muted-foreground/30" />
-                    <p className="text-xs text-muted-foreground/60 font-medium">
-                      {university.city}
-                    </p>
-                  </div>
+                {canEdit && (
+                  <Link href="/dashboard/settings">
+                    <Button variant="outline" size="sm" className="rounded-full border-slate-200 text-slate-400 hover:text-primary transition-colors">
+                      Edit
+                    </Button>
+                  </Link>
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       ) : (
-        <div className="border border-dashed border-border/30 p-8 sm:p-10">
-          <div className="text-center space-y-3 max-w-sm mx-auto">
-            <div className="flex h-12 w-12 items-center justify-center border border-border/50 bg-muted/30">
-              <BookOpen className="h-5 w-5 text-muted-foreground/40" />
-            </div>
-            <p className="text-sm text-muted-foreground/50 font-light leading-relaxed">
-              {labels.emptyMessage}
-            </p>
-            {canEdit && (
-              <Link href="/dashboard/settings" className="inline-block mt-2">
-                <Button
-                  variant="editorial-outline"
-                  size="sm"
-                  className="border-border/40 hover:border-primary h-9 px-5"
-                >
-                  {labels.addEducation}
+        <div className="rounded-[2.5rem] border-2 border-dashed border-slate-100 bg-white/50 p-16 text-center space-y-8">
+           <GraduationCap className="h-16 w-16 mx-auto text-slate-100" />
+           <p className="text-lg text-slate-300 font-medium max-w-xs mx-auto">
+             {labels.emptyMessage}
+           </p>
+           {canEdit && (
+              <Link href="/dashboard/settings">
+                <Button className="rounded-full h-14 px-10 bg-primary text-xs font-black uppercase tracking-widest">
+                   {labels.addEducation}
                 </Button>
               </Link>
-            )}
-          </div>
+           )}
         </div>
       )}
     </motion.section>

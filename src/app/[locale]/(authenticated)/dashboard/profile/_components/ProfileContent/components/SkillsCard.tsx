@@ -1,6 +1,6 @@
 "use client"
 
-import { Award } from "lucide-react"
+import { Award, Zap } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import type { StudentSkill } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
@@ -36,71 +36,83 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.3, duration: 0.6, ease }}
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.4, duration: 0.8, ease }}
+      className="relative group"
     >
       {hasSkills ? (
-        <div className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden">
-          <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-border/40 bg-muted/20 dark:bg-muted/10">
-            <Award className="h-4 w-4 text-primary" />
-            <h2 className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-              {labels.skills}
-            </h2>
-          </div>
-          <div className="p-5 space-y-5">
-          {/* Skill count */}
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-wider [[dir=rtl]_&]:tracking-normal">
-              {t("skillCount", { count: skills.length })}
-            </span>
-            {canEdit && (
-              <Link href="/dashboard/settings">
-                <button
-                  type="button"
-                  className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary hover:text-primary/80 transition-colors [[dir=rtl]_&]:tracking-normal"
-                >
-                  + {t("addMoreSkills")}
-                </button>
-              </Link>
-            )}
+        <div className="relative rounded-[2.5rem] border border-slate-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-500 hover:shadow-[0_30px_70px_rgba(0,0,0,0.06)]">
+          <div className="flex items-center justify-between px-8 py-7 border-b border-slate-50 bg-slate-50/30">
+            <div className="flex items-center gap-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/5">
+                <Zap className="h-5 w-5 text-primary" />
+              </div>
+              <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-800">
+                {labels.skills}
+              </h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-primary" />
+              <span className="text-[11px] font-bold text-primary uppercase tracking-widest">
+                {skills.length}
+              </span>
+            </div>
           </div>
 
-          {/* Grouped skills */}
-          {grouped.map(([category, categorySkills], groupIdx) => (
-            <div key={category} className="space-y-2.5">
-              {grouped.length > 1 && (
-                <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/30 [[dir=rtl]_&]:tracking-normal">
-                  {category}
-                </p>
-              )}
-              <div className="flex flex-wrap gap-2">
-                {categorySkills.map((skill, skillIdx) => (
-                  <motion.div
-                    key={skill.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      delay: 0.35 + groupIdx * 0.08 + skillIdx * 0.03,
-                      duration: 0.3,
-                      ease,
-                    }}
-                  >
-                    <Badge
-                      variant="secondary"
-                      className="bg-primary/5 text-primary text-[10px] uppercase font-bold tracking-wider rounded-full px-3 py-1.5 border-none hover:bg-primary/10 transition-colors"
-                    >
-                      {skill.name}
-                    </Badge>
-                  </motion.div>
-                ))}
+          <div className="p-8 space-y-8">
+            {grouped.map(([category, categorySkills], groupIdx) => (
+              <div key={category} className="space-y-4">
+                {grouped.length > 1 && (
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">
+                    {category}
+                  </p>
+                )}
+                <div className="flex flex-wrap gap-3.5">
+                  {categorySkills.map((skill, skillIdx) => {
+                    return (
+                      <motion.div
+                        key={skill.id}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{
+                          delay: 0.5 + groupIdx * 0.1 + skillIdx * 0.04,
+                          duration: 0.4,
+                          type: "spring",
+                          stiffness: 200,
+                        }}
+                        whileHover={{ y: -3, scale: 1.05 }}
+                      >
+                        <Badge
+                          variant="outline"
+                          className="bg-slate-50 text-slate-700 border-slate-100 text-[11px] font-bold uppercase tracking-wide rounded-xl px-5 py-2.5 transition-all hover:bg-primary hover:text-white hover:border-primary hover:shadow-[0_8px_20px_rgba(var(--primary-rgb),0.2)]"
+                        >
+                          {skill.name}
+                        </Badge>
+                      </motion.div>
+                    )
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+
+            {canEdit && (
+              <div className="pt-6 border-t border-slate-50">
+                <Link href="/dashboard/settings">
+                  <button
+                    type="button"
+                    className="group/btn flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.25em] text-slate-400 transition-all hover:text-primary hover:gap-5"
+                  >
+                    <span>+ {t("addMoreSkills")}</span>
+                    <motion.span animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>→</motion.span>
+                  </button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       ) : (
-        <div className="border border-dashed border-border/40 p-8">
+        <div className="rounded-[2.5rem] border-2 border-dashed border-slate-100 p-12 bg-white/50 backdrop-blur-sm">
           {canEdit ? (
             <EmptyState
               icon={Award}
@@ -108,7 +120,7 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
               buttonText={labels.addSkills}
             />
           ) : (
-            <p className="text-xs text-muted-foreground/40 font-medium text-center">
+            <p className="text-[11px] text-slate-300 font-black uppercase tracking-[0.25em] text-center">
               {t("noSkillsListed")}
             </p>
           )}
@@ -130,18 +142,16 @@ export function EmptyState({
   buttonText,
 }: EmptyStateProps) {
   return (
-    <div className="text-center space-y-3">
-      <div className="flex h-12 w-12 items-center justify-center border border-border/50 bg-muted/30">
-        <Icon className="h-5 w-5 text-muted-foreground/40" />
+    <div className="text-center space-y-8">
+      <div className="flex h-24 w-24 mx-auto items-center justify-center rounded-[2.5rem] bg-slate-50 border border-slate-100 shadow-inner">
+        <Icon className="h-12 w-12 text-slate-200" />
       </div>
-      <p className="text-xs text-muted-foreground/50 font-medium max-w-[200px] mx-auto leading-relaxed">
+      <p className="text-base text-slate-400 font-medium tracking-wide leading-relaxed">
         {message}
       </p>
-      <Link href="/dashboard/settings">
+      <Link href="/dashboard/settings" className="inline-block pt-4">
         <Button
-          variant="editorial-outline"
-          size="sm"
-          className="border-border/40 hover:border-primary mt-1 h-8 px-4 text-xs"
+          className="rounded-full h-14 px-10 text-[11px] font-black uppercase tracking-[0.25em] bg-primary shadow-[0_15px_40px_rgba(var(--primary-rgb),0.2)] transition-all hover:scale-105"
         >
           {buttonText}
         </Button>
