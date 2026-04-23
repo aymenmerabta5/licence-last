@@ -136,6 +136,7 @@ import {
   validateProcedure,
 } from "@/server/orpc/routes/placements"
 import {
+  createSkillProcedure,
   listSkillTagsPrioritizedProcedure,
   listSkillTagsProcedure,
 } from "@/server/orpc/routes/skills"
@@ -163,12 +164,16 @@ import {
   upsertStudentSkillsProcedure,
 } from "@/server/orpc/routes/students"
 import {
+  addUniversityDomainProcedure,
   approveUniversityProcedure,
   createUniversityProcedure,
   deleteUniversityProcedure,
   getUniversityByIdProcedure,
+  listMyUniversityDomainsProcedure,
   listUniversitiesProcedure,
   rejectUniversityProcedure,
+  removeUniversityDomainProcedure,
+  updateMyUniversityProcedure,
   updateUniversityProcedure,
 } from "@/server/orpc/routes/universities"
 import {
@@ -218,6 +223,7 @@ export const appRouter = {
   skills: {
     list: listSkillTagsProcedure,
     listPrioritized: listSkillTagsPrioritizedProcedure,
+    create: createSkillProcedure,
   },
   students: {
     getProfile: getStudentProfileProcedure,
@@ -351,9 +357,13 @@ export const appRouter = {
     getById: getUniversityByIdProcedure,
     create: createUniversityProcedure,
     update: updateUniversityProcedure,
+    updateMyUniversity: updateMyUniversityProcedure,
     delete: deleteUniversityProcedure,
     approve: approveUniversityProcedure,
     reject: rejectUniversityProcedure,
+    listMyDomains: listMyUniversityDomainsProcedure,
+    addDomain: addUniversityDomainProcedure,
+    removeDomain: removeUniversityDomainProcedure,
   },
   assistant: {
     listModels: listAssistantModelsProcedure,

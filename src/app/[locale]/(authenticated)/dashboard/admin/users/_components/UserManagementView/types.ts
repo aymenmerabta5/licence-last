@@ -3,6 +3,7 @@ export interface AdminUser {
   name: string | null
   email: string
   role?: string
+  universityMembershipRole?: string | null
   banned?: boolean | null
   banReason?: string | null
   banExpires?: number | null

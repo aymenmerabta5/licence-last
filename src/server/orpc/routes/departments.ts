@@ -121,6 +121,15 @@ async function assertCanManageDepartment(
 export const listDepartmentsProcedure = authedProcedureGenerous
   .input(z.object({ universityId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
+    if (
+      context.user.role !== "super_admin" &&
+      context.user.universityId !== input.universityId
+    ) {
+      throwCodedORPCError("FORBIDDEN", "DEPARTMENT_SCOPE_FORBIDDEN", {
+        message: "You can only view departments for your own university",
+      })
+    }
+
     const departments = await listDepartments(input.universityId)
 
     const canViewHeadContactDetails =

@@ -176,6 +176,13 @@ export const navItems: NavItem[] = [
     hideForUniversityMembershipRoles: ["department_head"],
   },
   {
+    labelKey: "universityProfile",
+    href: "/dashboard/university/profile",
+    icon: Landmark,
+    roles: ["university_admin"],
+    hideForUniversityMembershipRoles: ["department_head"],
+  },
+  {
     labelKey: "settings",
     href: "/dashboard/settings",
     icon: Settings,

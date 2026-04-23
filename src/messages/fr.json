@@ -526,6 +526,7 @@
       "departments": "Départements",
       "statistics": "Statistiques",
       "userManagement": "Gestion des utilisateurs",
+      "universityProfile": "Profil Universit\u00e9",
       "companies": "Entreprises",
       "universities": "Universités",
       "settings": "Paramètres",
@@ -1646,35 +1647,20 @@
         "editDepartmentTitle": "Modifier le département",
         "editDepartmentDescription": "Mettez à jour le nom du département ci-dessous.",
         "error": "Quelque chose s'est mal passe. Veuillez reessayer.",
-        "skills": {
-          "title": "Compétences pour {name}",
-          "description": "Sélectionnez les compétences pertinentes pour ce département. Les étudiants les verront comme recommandées.",
-          "save": "Enregistrer les compétences",
-          "cancel": "Annuler",
-          "skillsSelected": "compétences sélectionnées",
-          "searchPlaceholder": "Rechercher des compétences...",
-          "saveSuccess": "Compétences du département mises à jour.",
-          "saveError": "Impossible de mettre à jour les compétences."
-        },
-        "bulkCreate": {
-          "title": "Création en lot de départements",
-          "description": "Créez plusieurs départements et assignez des responsables en une fois. Chaque responsable recevra un e-mail de bienvenue avec un lien de réinitialisation du mot de passe.",
-          "departmentName": "Nom du département",
-          "departmentNamePlaceholder": "ex. Informatique",
-          "headEmail": "E-mail du responsable",
-          "headEmailPlaceholder": "ex. responsable@universite.dz",
-          "headName": "Nom du responsable",
-          "headNamePlaceholder": "ex. Dr. Ahmed Benali",
-          "addRow": "Ajouter une ligne",
-          "removeRow": "Supprimer la ligne",
-          "submit": "Tout créer",
-          "submitting": "Création...",
-          "successMessage": "{count} département(s) créé(s) avec succès.",
-          "partialSuccess": "{created} créé(s), {failed} échoué(s).",
-          "rowError": "{name} : {error}",
-          "selectUniversityFirst": "Sélectionnez une université pour continuer.",
-          "error": "Quelque chose s'est mal passe. Veuillez reessayer."
-        }
+      "skills": {
+        "title": "Comp\u00e9tences pour {name}",
+        "description": "S\u00e9lectionnez les comp\u00e9tences pertinentes pour ce d\u00e9partement. Les \u00e9tudiants les verront comme recommand\u00e9es.",
+        "save": "Enregistrer les comp\u00e9tences",
+        "cancel": "Annuler",
+        "skillsSelected": "comp\u00e9tences s\u00e9lectionn\u00e9es",
+        "searchPlaceholder": "Rechercher des comp\u00e9tences...",
+        "saveSuccess": "Comp\u00e9tences du d\u00e9partement mises \u00e0 jour.",
+        "saveError": "Impossible de mettre \u00e0 jour les comp\u00e9tences.",
+        "skillNotFound": "'{query}' introuvable.",
+        "createSkill": "Cr\u00e9er '{name}'",
+        "createSkillSuccess": "'{name}' cr\u00e9\u00e9 et s\u00e9lectionn\u00e9.",
+        "createSkillError": "Impossible de cr\u00e9er la comp\u00e9tence."
+      }
       },
       "deptValidations": {
         "title": "Validations du département",
@@ -1955,9 +1941,40 @@
         }
       },
       "impersonation": {
-        "banner": "Vous usurpez l'identité de {name}",
-        "stop": "Arrêter"
+        "banner": "Vous usurpez l'identit\u00e9 de {name}",
+        "stop": "Arr\u00eater"
       }
+    },
+    "universityProfile": {
+      "loading": "Chargement du profil universitaire...",
+      "notFound": "Universit\u00e9 introuvable.",
+      "kicker": "Universit\u00e9",
+      "description": "G\u00e9rez le profil public de votre universit\u00e9 et ses domaines d'email.",
+      "profileTitle": "Informations de l'universit\u00e9",
+      "domainsTitle": "Domaines d'email",
+      "name": "Nom de l'universit\u00e9",
+      "namePlaceholder": "Universit\u00e9 des Sciences et Technologies",
+      "abbreviation": "Abr\u00e9viation",
+      "abbreviationPlaceholder": "USTHB",
+      "phone": "Num\u00e9ro de t\u00e9l\u00e9phone",
+      "phonePlaceholder": "+213 21 XX XX XX",
+      "wilayaCode": "Wilaya",
+      "wilayaPlaceholder": "S\u00e9lectionnez votre wilaya",
+      "city": "Ville",
+      "cityPlaceholder": "Alger",
+      "address": "Adresse",
+      "addressPlaceholder": "Adresse du campus universitaire",
+      "saveProfile": "Enregistrer les modifications",
+      "updateSuccess": "Profil universitaire mis \u00e0 jour.",
+      "updateError": "\u00c9chec de la mise \u00e0 jour du profil.",
+      "newDomain": "Nouveau domaine",
+      "domainPlaceholder": "univ-exemple.dz",
+      "addDomain": "Ajouter un domaine",
+      "addDomainSuccess": "Domaine ajout\u00e9. Il sera examin\u00e9 pour approbation.",
+      "addDomainError": "\u00c9chec de l'ajout du domaine.",
+      "removeDomain": "Supprimer le domaine",
+      "removeDomainSuccess": "Domaine supprim\u00e9.",
+      "removeDomainError": "\u00c9chec de la suppression du domaine."
     },
     "settings": {
       "twoFactor": {

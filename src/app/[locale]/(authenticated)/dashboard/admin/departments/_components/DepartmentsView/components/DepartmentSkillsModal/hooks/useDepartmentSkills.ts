@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useCallback, useMemo, useState } from "react"
 
 import { useSkillGrouping } from "@/hooks"
-import { orpc } from "@/server/orpc/client"
+import { orpc, orpcClient } from "@/server/orpc/client"
 
 const DEPARTMENTS_LIST_QUERY_PATH = orpc.departments.list.queryOptions({
   input: { universityId: "__all__" },
@@ -14,6 +14,9 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
   const queryClient = useQueryClient()
   const departmentSkillsQueryKey = orpc.departments.getSkills.queryOptions({
     input: { departmentId },
+  }).queryKey
+  const allSkillsQueryKey = orpc.skills.list.queryOptions({
+    input: { limit: 500 },
   }).queryKey
 
   // Fetch all skills (admin picks from the full pool)
@@ -54,6 +57,12 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
     return allSkills.filter((s) => s.name.toLowerCase().includes(q))
   }, [allSkills, query])
 
+  const hasExactMatch = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    if (!q) return true
+    return allSkills.some((s) => s.name.toLowerCase() === q)
+  }, [allSkills, query])
+
   const { groups, categoryOrder, categoryLabels } =
     useSkillGrouping(filteredSkills)
 
@@ -72,6 +81,16 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
       },
     }),
   )
+
+  const createSkillMutation = useMutation({
+    mutationFn: (name: string) =>
+      orpcClient.skills.create({ name, category: "other" }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: allSkillsQueryKey,
+      })
+    },
+  })
 
   const isDirty = useMemo(() => {
     if (!currentSkillIds || draftOverride === null) return false
@@ -118,8 +137,11 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
     groups,
     categoryOrder,
     categoryLabels,
+    hasExactMatch,
     toggleSkill,
     save,
     resetState,
+    createSkill: createSkillMutation.mutateAsync,
+    isCreatingSkill: createSkillMutation.isPending,
   }
 }

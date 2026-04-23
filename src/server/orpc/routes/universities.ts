@@ -12,11 +12,12 @@ import { user } from "@/server/db/schema/auth"
 import UniversityApprovedEmail from "@/server/email/templates/UniversityApprovedEmail"
 import { isAdminRole } from "@/server/orpc/authz"
 import {
+  adminProcedureStandard,
   authedProcedureGenerous,
   authedProcedureStandard,
   superAdminProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
-import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+import { createServiceORPCError, throwCodedORPCError } from "@/server/orpc/utils/service-error"
 import { emitNotification } from "@/server/services/notifications/emit"
 import { approveUniversity } from "@/server/services/universities/approve"
 import { createUniversity } from "@/server/services/universities/create"
@@ -25,6 +26,9 @@ import { getUniversityById } from "@/server/services/universities/get"
 import { listUniversities } from "@/server/services/universities/list"
 import { rejectUniversity } from "@/server/services/universities/reject"
 import { updateUniversity } from "@/server/services/universities/update"
+import { addUniversityDomain } from "@/server/services/universities/add-domain"
+import { listUniversityDomains } from "@/server/services/universities/list-domains"
+import { removeUniversityDomain } from "@/server/services/universities/remove-domain"
 
 /* ── Reads ── */
 
@@ -283,6 +287,170 @@ export const rejectUniversityProcedure = superAdminProcedureStandard
           UNIVERSITY_INVALID_STATUS_TRANSITION: "BAD_REQUEST",
         },
         fallbackMessage: "Failed to reject university",
+      })
+    }
+  })
+
+/* ── University Self-Management ── */
+
+export const updateMyUniversityProcedure = adminProcedureStandard
+  .input(
+    z.object({
+      name: z.string().min(2).optional(),
+      abbreviation: z.string().nullable().optional(),
+      phone: z.string().nullable().optional(),
+      wilayaCode: z
+        .union([z.coerce.number().int().min(1).max(58), z.null()])
+        .optional(),
+      city: z.string().nullable().optional(),
+      address: z.string().nullable().optional(),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    const universityId =
+      context.user.role === "super_admin"
+        ? undefined
+        : (context.user.universityId ?? undefined)
+
+    if (context.user.role !== "super_admin" && !universityId) {
+      throwCodedORPCError("BAD_REQUEST", "ADMIN_MUST_BELONG_TO_UNIVERSITY", {
+        message: "You must be associated with a university to update it",
+      })
+    }
+
+    try {
+      const targetId = universityId ?? context.user.universityId
+      if (!targetId) {
+        throwCodedORPCError("BAD_REQUEST", "NO_UNIVERSITY_ASSIGNED", {
+          message: "No university assigned",
+        })
+      }
+
+      const result = await updateUniversity(targetId, {
+        name: input.name,
+        abbreviation: input.abbreviation,
+        phone: input.phone,
+        wilayaCode: input.wilayaCode,
+        city: input.city,
+        address: input.address,
+      })
+
+      revalidateTag(CACHE_TAGS.UNIVERSITIES, "max")
+      revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-${targetId}`, "max")
+      revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-user-${context.user.id}`, "max")
+
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          UNIVERSITY_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to update university",
+      })
+    }
+  })
+
+export const listMyUniversityDomainsProcedure = adminProcedureStandard.handler(
+  async ({ context }) => {
+    const universityId =
+      context.user.role === "super_admin"
+        ? undefined
+        : (context.user.universityId ?? undefined)
+
+    if (context.user.role !== "super_admin" && !universityId) {
+      throwCodedORPCError("BAD_REQUEST", "ADMIN_MUST_BELONG_TO_UNIVERSITY", {
+        message: "You must be associated with a university",
+      })
+    }
+
+    const targetId = universityId ?? context.user.universityId
+    if (!targetId) {
+      throwCodedORPCError("BAD_REQUEST", "NO_UNIVERSITY_ASSIGNED", {
+        message: "No university assigned",
+      })
+    }
+
+    return listUniversityDomains(targetId)
+  },
+)
+
+export const addUniversityDomainProcedure = adminProcedureStandard
+  .input(
+    z.object({
+      domain: z.string().min(3).email().or(z.string().min(3)),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    const universityId =
+      context.user.role === "super_admin"
+        ? undefined
+        : (context.user.universityId ?? undefined)
+
+    if (context.user.role !== "super_admin" && !universityId) {
+      throwCodedORPCError("BAD_REQUEST", "ADMIN_MUST_BELONG_TO_UNIVERSITY", {
+        message: "You must be associated with a university",
+      })
+    }
+
+    const targetId = universityId ?? context.user.universityId
+    if (!targetId) {
+      throwCodedORPCError("BAD_REQUEST", "NO_UNIVERSITY_ASSIGNED", {
+        message: "No university assigned",
+      })
+    }
+
+    // Normalize domain: if email was passed, extract the domain part
+    const normalizedDomain = input.domain.includes("@")
+      ? input.domain.split("@")[1]!
+      : input.domain.toLowerCase().trim()
+
+    try {
+      const result = await addUniversityDomain(targetId, normalizedDomain)
+      revalidateTag(CACHE_TAGS.UNIVERSITIES, "max")
+      revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-${targetId}`, "max")
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          DOMAIN_ALREADY_EXISTS: "CONFLICT",
+        },
+        fallbackMessage: "Failed to add domain",
+      })
+    }
+  })
+
+export const removeUniversityDomainProcedure = adminProcedureStandard
+  .input(z.object({ domainId: z.string().min(1) }))
+  .handler(async ({ input, context }) => {
+    const universityId =
+      context.user.role === "super_admin"
+        ? undefined
+        : (context.user.universityId ?? undefined)
+
+    if (context.user.role !== "super_admin" && !universityId) {
+      throwCodedORPCError("BAD_REQUEST", "ADMIN_MUST_BELONG_TO_UNIVERSITY", {
+        message: "You must be associated with a university",
+      })
+    }
+
+    const targetId = universityId ?? context.user.universityId
+    if (!targetId) {
+      throwCodedORPCError("BAD_REQUEST", "NO_UNIVERSITY_ASSIGNED", {
+        message: "No university assigned",
+      })
+    }
+
+    try {
+      const result = await removeUniversityDomain(targetId, input.domainId)
+      revalidateTag(CACHE_TAGS.UNIVERSITIES, "max")
+      revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-${targetId}`, "max")
+      return result
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          DOMAIN_NOT_FOUND: "NOT_FOUND",
+        },
+        fallbackMessage: "Failed to remove domain",
       })
     }
   })

@@ -221,6 +221,34 @@ describe("src/server/orpc/routes/departments", () => {
     ])
   })
 
+  test("listDepartmentsProcedure rejects cross-university requests for non-admins", async () => {
+    const { listDepartmentsProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
+
+    await expect(
+      callProcedure(listDepartmentsProcedure, {
+        input: { universityId: "uni-2" },
+        context: { user: { role: "student", universityId: "uni-1" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      data: { code: "DEPARTMENT_SCOPE_FORBIDDEN" },
+    })
+
+    await expect(
+      callProcedure(listDepartmentsProcedure, {
+        input: { universityId: "uni-2" },
+        context: { user: { role: "university_admin", universityId: "uni-1" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      data: { code: "DEPARTMENT_SCOPE_FORBIDDEN" },
+    })
+
+    expect(listDepartmentsMock).not.toHaveBeenCalled()
+  })
+
   test("updateDepartmentProcedure enforces department scope", async () => {
     const { updateDepartmentProcedure } = await import(
       "@/server/orpc/routes/departments"

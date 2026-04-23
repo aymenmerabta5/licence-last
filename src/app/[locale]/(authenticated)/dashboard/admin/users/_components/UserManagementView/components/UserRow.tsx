@@ -52,6 +52,10 @@ export function UserRow({
   const hasAdminOnlyActions =
     canViewDetails || canSetRole || canSetPassword || canModerateUsers
 
+  const displayRole = user.universityMembershipRole ?? user.role
+  const roleLabelKey =
+    displayRole === "department_head" ? "dept_head" : (displayRole ?? "student")
+
   return (
     <TableRow className="group hover:bg-primary/[0.02] border-b border-border/50 transition-colors">
       <TableCell className="py-4">
@@ -71,8 +75,8 @@ export function UserRow({
       </TableCell>
       <TableCell className="py-4">
         <UserRoleBadge
-          role={user.role}
-          label={t(`roles.${user.role ?? "student"}`)}
+          role={displayRole}
+          label={t(`roles.${roleLabelKey}`)}
         />
       </TableCell>
       <TableCell className="py-4">

@@ -53,6 +53,7 @@ function applyUniversitiesRouteMocks() {
     authedProcedureGenerous: createProcedureMock(),
     authedProcedureStandard: createProcedureMock(),
     superAdminProcedureStandard: createProcedureMock(),
+    adminProcedureStandard: createProcedureMock(),
   }))
 
   mock.module("@/server/orpc/middleware", () => ({

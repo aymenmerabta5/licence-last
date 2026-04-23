@@ -20,10 +20,12 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
 
 const listSkillTagsMock = mock(async () => ({ items: [] }))
 const listSkillTagsPrioritizedMock = mock(async () => ({ items: [] }))
+const createSkillMock = mock(async () => ({ id: "skill-1", name: "Test", slug: "test", created: true }))
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   universityProcedureAssistant: createProcedureMock(),
   publicProcedureStandard: createProcedureMock(),
+  adminProcedureStandard: createProcedureMock(),
 }))
 
 mock.module("@/server/services/skills/list", () => ({
@@ -32,11 +34,15 @@ mock.module("@/server/services/skills/list", () => ({
 mock.module("@/server/services/skills/list-prioritized", () => ({
   listSkillTagsPrioritized: listSkillTagsPrioritizedMock,
 }))
+mock.module("@/server/services/skills/create", () => ({
+  createSkill: createSkillMock,
+}))
 
 describe("src/server/orpc/routes/skills", () => {
   beforeEach(() => {
     listSkillTagsMock.mockClear()
     listSkillTagsPrioritizedMock.mockClear()
+    createSkillMock.mockClear()
   })
 
   test("listSkillTagsProcedure delegates with optional filters", async () => {
@@ -67,5 +73,23 @@ describe("src/server/orpc/routes/skills", () => {
 
     expect(result).toEqual({ items: [] })
     expect(listSkillTagsPrioritizedMock).toHaveBeenCalledWith("dep-1")
+  })
+
+  test("createSkillProcedure delegates with name and category", async () => {
+    const { createSkillProcedure } = await import(
+      "@/server/orpc/routes/skills"
+    )
+
+    const result = await callProcedure(createSkillProcedure, {
+      input: { name: "Rust", category: "language" },
+    })
+
+    expect(result).toEqual({
+      id: "skill-1",
+      name: "Test",
+      slug: "test",
+      created: true,
+    })
+    expect(createSkillMock).toHaveBeenCalledWith("Rust", "language")
   })
 })

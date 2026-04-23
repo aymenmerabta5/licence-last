@@ -5,6 +5,7 @@ import { and, asc, count, desc, eq, ilike, ne } from "drizzle-orm"
 import type { PrimaryUserRole } from "@/lib/effective-role"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
+import { universityMember } from "@/server/db/schema/university-memberships"
 
 interface ListUniversityUsersParams {
   universityId: string
@@ -118,8 +119,26 @@ export async function listUniversityUsers(params: ListUniversityUsersParams) {
     .where(whereClause)
 
   const users = await db
-    .select()
+    .select({
+      id: user.id,
+      email: user.email,
+      emailVerified: user.emailVerified,
+      role: user.role,
+      universityId: user.universityId,
+      departmentId: user.departmentId,
+      onboardingCompleted: user.onboardingCompleted,
+      name: user.name,
+      image: user.image,
+      twoFactorEnabled: user.twoFactorEnabled,
+      banned: user.banned,
+      banReason: user.banReason,
+      banExpires: user.banExpires,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      universityMembershipRole: universityMember.role,
+    })
     .from(user)
+    .leftJoin(universityMember, eq(user.id, universityMember.userId))
     .where(whereClause)
     .orderBy(sortDirection === "asc" ? asc(sortColumn) : desc(sortColumn))
     .limit(params.limit ?? 20)

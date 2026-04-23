@@ -1,6 +1,6 @@
 "use client"
 
-import { Loader2, Search } from "lucide-react"
+import { Loader2, Plus, Search } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 import { useDepartmentSkills } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/hooks/useDepartmentSkills"
@@ -41,9 +41,12 @@ export function DepartmentSkillsModal({
     groups,
     categoryOrder,
     categoryLabels,
+    hasExactMatch,
     toggleSkill,
     save,
     resetState,
+    createSkill,
+    isCreatingSkill,
   } = useDepartmentSkills(departmentId, open)
 
   const handleOpenChange = (next: boolean) => {
@@ -58,6 +61,22 @@ export function DepartmentSkillsModal({
     toast.success(t("saveSuccess"))
     handleOpenChange(false)
   }
+
+  const handleCreateSkill = async () => {
+    if (!query.trim()) return
+    try {
+      const newSkill = await createSkill(query.trim())
+      toast.success(t("createSkillSuccess", { name: newSkill.name }))
+      toggleSkill(newSkill.id)
+      setQuery("")
+    } catch {
+      toast.error(t("createSkillError"))
+    }
+  }
+
+  const queryTrimmed = query.trim()
+  const showCreateOption =
+    queryTrimmed.length > 0 && !isLoading && !hasExactMatch
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -92,6 +111,29 @@ export function DepartmentSkillsModal({
             isLoading={isLoading}
             onToggle={toggleSkill}
           />
+
+          {showCreateOption && (
+            <div className="flex items-center justify-between border border-dashed border-border/60 bg-muted/20 dark:bg-muted/10 px-4 py-3">
+              <p className="text-sm text-muted-foreground">
+                {t("skillNotFound", { query: queryTrimmed })}
+              </p>
+              <Button
+                type="button"
+                variant="editorial-outline"
+                size="editorial-sm"
+                onClick={handleCreateSkill}
+                disabled={isCreatingSkill}
+                className="gap-2"
+              >
+                {isCreatingSkill ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Plus className="h-3.5 w-3.5" />
+                )}
+                {t("createSkill", { name: queryTrimmed })}
+              </Button>
+            </div>
+          )}
         </div>
 
         <DialogFooter className="flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
