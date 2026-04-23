@@ -28,17 +28,21 @@ export function SidebarNav({ items, pathname, isCollapsed }: SidebarNavProps) {
           <Link key={item.href} href={item.href as "/dashboard"}>
             <span
               className={cn(
-                "flex items-center gap-4 py-3 transition-all duration-500 group relative",
-                isCollapsed ? "justify-center" : "px-6",
+                "flex items-center gap-4 py-2.5 transition-all duration-500 group relative border-s-2",
+                isCollapsed
+                  ? "justify-center px-2 mx-1 rounded-xl"
+                  : "px-5 mx-1.5 rounded-lg",
                 isActive
-                  ? "text-heading"
-                  : "text-muted-foreground hover:text-heading",
+                  ? "border-primary bg-primary/[0.06] text-heading"
+                  : "border-transparent text-muted-foreground hover:text-heading hover:bg-muted/30",
               )}
             >
               <Icon
                 className={cn(
                   "h-[18px] w-[18px] shrink-0 transition-all duration-500",
-                  isActive ? "text-primary" : "group-hover:-translate-y-[1px]",
+                  isActive
+                    ? "text-primary scale-105"
+                    : "group-hover:-translate-y-[1px]",
                 )}
               />
 
@@ -49,8 +53,8 @@ export function SidebarNav({ items, pathname, isCollapsed }: SidebarNavProps) {
                   className={cn(
                     "text-sm tracking-wide transition-all duration-500",
                     isActive
-                      ? "font-serif text-[15px] italic font-bold"
-                      : "font-sans font-medium hover:translate-x-1",
+                      ? "font-serif text-[15px] font-semibold"
+                      : "font-sans font-medium group-hover:translate-x-1",
                   )}
                 >
                   {t(item.labelKey)}

@@ -1,5 +1,4 @@
 import { headers } from "next/headers"
-import { connection } from "next/server"
 import { DashboardClientProvider } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import { requireRole } from "@/lib/auth-guards"
 import { localeRedirect } from "@/lib/navigation"
@@ -22,7 +21,6 @@ interface AuthenticatedContentProps {
 export async function AuthenticatedContent({
   children,
 }: AuthenticatedContentProps) {
-  await connection()
 
   const user = await requireRole([
     "student",

@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import { connection } from "next/server"
 
 import { AuthenticatedContent } from "@/app/[locale]/(authenticated)/_components/AuthenticatedContent"
 import { DashboardShellSkeleton } from "@/app/[locale]/(authenticated)/_components/DashboardShellSkeleton"
@@ -8,13 +7,11 @@ import { DashboardShellSkeleton } from "@/app/[locale]/(authenticated)/_componen
  * Authenticated layout with cacheComponents support.
  * Uses Suspense boundary to handle dynamic auth checks.
  */
-export default async function AuthenticatedLayout({
+export default function AuthenticatedLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  await connection()
-
   return (
     <Suspense fallback={<DashboardShellSkeleton />}>
       <AuthenticatedContent>{children}</AuthenticatedContent>

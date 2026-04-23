@@ -5,6 +5,7 @@ import {
   getTranslations,
   setRequestLocale,
 } from "next-intl/server"
+import { cacheLife } from "next/cache"
 import { ThemeProvider } from "next-themes"
 import type { ReactNode } from "react"
 
@@ -67,13 +68,19 @@ export async function generateMetadata({
   }
 }
 
+async function getMessagesCached(locale: string) {
+  "use cache"
+  cacheLife("hours")
+  return getMessages({ locale })
+}
+
 export default async function LocaleLayout({
   children,
   params,
 }: LocaleLayoutProps) {
   const { locale } = await params
   setRequestLocale(locale)
-  const messages = await getMessages({ locale })
+  const messages = await getMessagesCached(locale)
   const isRTL = locale === "ar"
   const direction = isRTL ? "rtl" : "ltr"
   const rtlFontVars = isRTL
