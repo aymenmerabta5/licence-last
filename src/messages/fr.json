@@ -1866,7 +1866,9 @@
           "name": "Nom",
           "email": "E-mail",
           "password": "Mot de passe",
-          "role": "Rôle"
+          "role": "Rôle",
+          "university": "Université",
+          "selectUniversity": "Sélectionner une université"
         },
         "dialogs": {
           "cancel": "Annuler",

@@ -1,5 +1,6 @@
 "use client"
 
+import { useQuery } from "@tanstack/react-query"
 import { BanUserDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/BanUserDialog"
 import { CreateUserDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/CreateUserDialog"
 import { DeleteUserDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/DeleteUserDialog"
@@ -7,6 +8,7 @@ import { SetPasswordDialog } from "@/app/[locale]/(authenticated)/dashboard/admi
 import { SetRoleDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/SetRoleDialog"
 import type { UserActions } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/hooks/useUserActions"
 import type { UserDialogState } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/hooks/useUserDialogState"
+import { orpc } from "@/server/orpc/client"
 
 interface UserManagementDialogsProps {
   isSuperAdmin: boolean
@@ -19,6 +21,15 @@ export function UserManagementDialogs({
   dialogState,
   actions,
 }: UserManagementDialogsProps) {
+  const { data: universitiesResult } = useQuery(
+    orpc.universities.list.queryOptions({ input: { status: "approved" } }),
+  )
+  const universities =
+    universitiesResult?.universities.map((u) => ({
+      id: u.id,
+      name: u.name,
+    })) ?? []
+
   return (
     <>
       {isSuperAdmin && (
@@ -31,6 +42,7 @@ export function UserManagementDialogs({
             })
           }}
           isPending={actions.createUser.isPending}
+          universities={universities}
         />
       )}
 

@@ -37,6 +37,7 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
       password: string
       name: string
       role: "student" | "company_admin" | "university_admin" | "super_admin"
+      universityId?: string
     }) => orpcClient.adminUsers.create(data),
     onSuccess: async () => {
       toast.success(t("errors.common.userCreated"))

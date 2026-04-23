@@ -1885,7 +1885,9 @@
           "name": "Name",
           "email": "Email",
           "password": "Password",
-          "role": "Role"
+          "role": "Role",
+          "university": "University",
+          "selectUniversity": "Select a university"
         },
         "dialogs": {
           "cancel": "Cancel",

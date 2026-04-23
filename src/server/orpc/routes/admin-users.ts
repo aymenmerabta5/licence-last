@@ -69,12 +69,26 @@ export const listUsersProcedure = adminProcedureGenerous
 
 export const createUserProcedure = superAdminProcedureStandard
   .input(
-    z.object({
-      email: z.email(),
-      password: z.string().min(8).max(128),
-      name: z.string().min(2).max(120),
-      role: primaryUserRoleSchema,
-    }),
+    z
+      .object({
+        email: z.email(),
+        password: z.string().min(8).max(128),
+        name: z.string().min(2).max(120),
+        role: primaryUserRoleSchema,
+        universityId: z.string().min(1).optional(),
+      })
+      .refine(
+        (data) => {
+          if (data.role === "student" || data.role === "university_admin") {
+            return !!data.universityId
+          }
+          return true
+        },
+        {
+          message: "University is required for this role",
+          path: ["universityId"],
+        },
+      ),
   )
   .handler(async ({ input }) => createUser(input))
 

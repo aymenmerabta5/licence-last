@@ -22,6 +22,11 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+interface UniversityOption {
+  id: string
+  name: string
+}
+
 interface CreateUserDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -30,8 +35,10 @@ interface CreateUserDialogProps {
     password: string
     name: string
     role: "student" | "company_admin" | "university_admin" | "super_admin"
+    universityId?: string
   }) => void
   isPending: boolean
+  universities?: UniversityOption[]
 }
 
 const roles = [
@@ -41,25 +48,38 @@ const roles = [
   "super_admin",
 ] as const
 
+const rolesRequiringUniversity = new Set<string>(["student", "university_admin"])
+
 export function CreateUserDialog({
   open,
   onOpenChange,
   onSubmit,
   isPending,
+  universities = [],
 }: CreateUserDialogProps) {
   const t = useTranslations("dashboard.superAdmin.users")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [name, setName] = useState("")
   const [role, setRole] = useState<(typeof roles)[number]>("student")
+  const [universityId, setUniversityId] = useState("")
+
+  const requiresUniversity = rolesRequiringUniversity.has(role)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit({ email, password, name, role })
+    onSubmit({
+      email,
+      password,
+      name,
+      role,
+      ...(requiresUniversity && universityId ? { universityId } : {}),
+    })
     setEmail("")
     setPassword("")
     setName("")
     setRole("student")
+    setUniversityId("")
   }
 
   return (
@@ -109,7 +129,11 @@ export function CreateUserDialog({
             <Label>{t("fields.role")}</Label>
             <Select
               value={role}
-              onValueChange={(v) => v && setRole(v as typeof role)}
+              onValueChange={(v) => {
+                if (!v) return
+                setRole(v as typeof role)
+                setUniversityId("")
+              }}
               items={roles.map((r) => ({ value: r, label: t(`roles.${r}`) }))}
             >
               <SelectTrigger>
@@ -124,6 +148,30 @@ export function CreateUserDialog({
               </SelectContent>
             </Select>
           </div>
+          {requiresUniversity && (
+            <div className="space-y-2">
+              <Label>{t("fields.university")}</Label>
+              <Select
+                value={universityId}
+                onValueChange={(v) => v && setUniversityId(v)}
+                items={universities.map((u) => ({
+                  value: u.id,
+                  label: u.name,
+                }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={t("fields.selectUniversity")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {universities.map((u) => (
+                    <SelectItem key={u.id} value={u.id}>
+                      {u.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <DialogFooter>
             <Button
               type="button"
@@ -132,7 +180,10 @@ export function CreateUserDialog({
             >
               {t("dialogs.cancel")}
             </Button>
-            <Button type="submit" disabled={isPending}>
+            <Button
+              type="submit"
+              disabled={isPending || (requiresUniversity && !universityId)}
+            >
               {isPending && <Loader2 className="h-4 w-4 me-2 animate-spin" />}
               {t("dialogs.create.submit")}
             </Button>

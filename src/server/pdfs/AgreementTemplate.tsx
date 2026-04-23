@@ -25,142 +25,147 @@ Font.register({
 const styles = StyleSheet.create({
   page: {
     fontFamily: "DejaVu Sans",
-    fontSize: 11,
-    paddingTop: 50,
-    paddingHorizontal: 50,
-    // Reserve space for fixed verification + footer blocks.
-    paddingBottom: 165,
-    lineHeight: 1.5,
+    fontSize: 9,
+    padding: 28,
+    lineHeight: 1.35,
+    backgroundColor: "#ffffff",
   },
   header: {
-    marginBottom: 30,
-    textAlign: "center",
+    alignItems: "center",
+    marginBottom: 14,
   },
   title: {
     fontFamily: "DejaVu Sans Bold",
     fontSize: 18,
-    marginBottom: 10,
     textTransform: "uppercase",
+    letterSpacing: 1.5,
+    color: "#1a1a2e",
   },
   subtitle: {
-    fontSize: 12,
-    color: "#666666",
+    fontSize: 10,
+    color: "#555555",
+    marginTop: 3,
   },
-  section: {
-    marginBottom: 20,
+  partiesRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 14,
   },
-  sectionTitle: {
+  partyColumn: {
+    width: "31%",
+    borderTopWidth: 2,
+    borderTopColor: "#1a1a2e",
+    paddingTop: 6,
+  },
+  partyTitle: {
     fontFamily: "DejaVu Sans Bold",
-    fontSize: 12,
-    marginBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#cccccc",
-    paddingBottom: 4,
+    fontSize: 10,
+    marginBottom: 6,
+    textTransform: "uppercase",
+    color: "#1a1a2e",
   },
   row: {
     flexDirection: "row",
-    marginBottom: 4,
+    marginBottom: 2,
   },
   label: {
-    width: "35%",
+    width: "40%",
     color: "#555555",
+    fontSize: 8,
   },
   value: {
-    width: "65%",
+    width: "60%",
     fontFamily: "DejaVu Sans Bold",
+    fontSize: 8,
   },
-  grid: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  gridColumn: {
-    width: "48%",
-  },
-  gridColumnTitle: {
-    fontFamily: "DejaVu Sans Bold",
-    fontSize: 11,
-    marginBottom: 8,
-    backgroundColor: "#f5f5f5",
-    padding: 6,
-  },
-  datesSection: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginTop: 15,
-    marginBottom: 20,
-    padding: 10,
-    backgroundColor: "#f9f9f9",
-  },
-  dateBox: {
-    textAlign: "center",
-  },
-  dateLabel: {
-    fontSize: 10,
-    color: "#666666",
-    marginBottom: 4,
-  },
-  dateValue: {
-    fontFamily: "DejaVu Sans Bold",
-    fontSize: 12,
-  },
-  signaturesSection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 40,
-    paddingTop: 20,
-  },
-  signatureBox: {
-    width: "30%",
-    textAlign: "center",
-  },
-  signatureLabel: {
-    fontFamily: "DejaVu Sans Bold",
-    fontSize: 10,
-    marginBottom: 40,
-  },
-  signatureLine: {
-    borderTopWidth: 1,
-    borderTopColor: "#000000",
-    paddingTop: 4,
-    fontSize: 9,
-    color: "#666666",
-  },
-  verificationBar: {
-    position: "absolute",
-    bottom: 78,
-    left: 50,
-    right: 50,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
+  section: {
+    marginBottom: 12,
     borderTopWidth: 1,
     borderTopColor: "#dddddd",
     paddingTop: 8,
   },
-  qrCode: {
-    width: 60,
-    height: 60,
+  sectionTitle: {
+    fontFamily: "DejaVu Sans Bold",
+    fontSize: 10,
+    marginBottom: 6,
+    textTransform: "uppercase",
+    color: "#1a1a2e",
   },
-  verificationText: {
+  datesBar: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 12,
+    backgroundColor: "#f7f7f9",
+    paddingVertical: 8,
+    paddingHorizontal: 24,
+  },
+  dateBlock: {
+    alignItems: "center",
+    marginHorizontal: 24,
+  },
+  dateLabel: {
     fontSize: 8,
     color: "#666666",
+    marginBottom: 2,
+  },
+  dateValue: {
+    fontFamily: "DejaVu Sans Bold",
+    fontSize: 10,
+    color: "#1a1a2e",
+  },
+  signaturesRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 4,
+  },
+  sigBox: {
+    width: "30%",
+    alignItems: "center",
+  },
+  sigLabel: {
+    fontFamily: "DejaVu Sans Bold",
+    fontSize: 9,
+    marginBottom: 28,
+    textTransform: "uppercase",
+    color: "#333333",
+  },
+  sigLine: {
+    width: "100%",
+    borderTopWidth: 1,
+    borderTopColor: "#000000",
+    paddingTop: 3,
+    fontSize: 8,
+    color: "#555555",
+    textAlign: "center",
+  },
+  verificationBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: "#eeeeee",
+    paddingTop: 6,
+    gap: 8,
+  },
+  qrCode: {
+    width: 40,
+    height: 40,
   },
   verificationCode: {
     fontFamily: "DejaVu Sans Bold",
-    fontSize: 10,
+    fontSize: 9,
     color: "#333333",
-    marginBottom: 2,
+  },
+  verificationUrl: {
+    fontSize: 7,
+    color: "#888888",
+    marginTop: 1,
   },
   footer: {
-    position: "absolute",
-    bottom: 16,
-    left: 50,
-    right: 50,
+    marginTop: 4,
     textAlign: "center",
-    fontSize: 8,
-    lineHeight: 1.3,
+    fontSize: 7,
     color: "#999999",
   },
 })
@@ -219,10 +224,26 @@ export function ConventionDeStageTemplate({
 
   const internshipTypeLabels: Record<string, string> = {
     pfe: locale === "fr" ? "Projet de Fin d'Études" : "Final Year Project",
-    immersion: locale === "fr" ? "Stage d'Immersion" : "Immersion Internship",
+    immersion:
+      locale === "fr" ? "Stage d'Immersion" : "Immersion Internship",
     summer: locale === "fr" ? "Stage d'Été" : "Summer Internship",
     practical: locale === "fr" ? "Stage Pratique" : "Practical Training",
   }
+
+  const workModeLabel =
+    data.workMode === "remote"
+      ? locale === "fr"
+        ? "À distance"
+        : "Remote"
+      : data.workMode === "hybrid"
+        ? locale === "fr"
+          ? "Hybride"
+          : "Hybrid"
+        : data.workMode === "onsite"
+          ? locale === "fr"
+            ? "Sur site"
+            : "On-site"
+          : data.workMode ?? ""
 
   const title =
     locale === "fr"
@@ -233,7 +254,7 @@ export function ConventionDeStageTemplate({
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size="A4" orientation="landscape" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>{title}</Text>
@@ -242,27 +263,27 @@ export function ConventionDeStageTemplate({
           </Text>
         </View>
 
-        {/* Three-column grid for parties */}
-        <View style={styles.grid}>
-          {/* Student Column */}
-          <View style={styles.gridColumn}>
-            <Text style={styles.gridColumnTitle}>
-              {locale === "fr" ? "STAGIAIRE" : "TRAINEE"}
+        {/* Parties */}
+        <View style={styles.partiesRow}>
+          {/* Student */}
+          <View style={styles.partyColumn}>
+            <Text style={styles.partyTitle}>
+              {locale === "fr" ? "Stagiaire" : "Trainee"}
             </Text>
             <View style={styles.row}>
               <Text style={styles.label}>
-                {locale === "fr" ? "Nom:" : "Name:"}
+                {locale === "fr" ? "Nom :" : "Name :"}
               </Text>
               <Text style={styles.value}>{data.studentName}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>Email:</Text>
+              <Text style={styles.label}>Email :</Text>
               <Text style={styles.value}>{data.studentEmail}</Text>
             </View>
             {data.studentPhone && (
               <View style={styles.row}>
                 <Text style={styles.label}>
-                  {locale === "fr" ? "Tél:" : "Phone:"}
+                  {locale === "fr" ? "Tél :" : "Phone :"}
                 </Text>
                 <Text style={styles.value}>{data.studentPhone}</Text>
               </View>
@@ -270,7 +291,7 @@ export function ConventionDeStageTemplate({
             {data.studentNumber && (
               <View style={styles.row}>
                 <Text style={styles.label}>
-                  {locale === "fr" ? "Matricule:" : "Student ID:"}
+                  {locale === "fr" ? "Matricule :" : "Student ID :"}
                 </Text>
                 <Text style={styles.value}>{data.studentNumber}</Text>
               </View>
@@ -278,28 +299,36 @@ export function ConventionDeStageTemplate({
             {data.studentDepartment && (
               <View style={styles.row}>
                 <Text style={styles.label}>
-                  {locale === "fr" ? "Département:" : "Department:"}
+                  {locale === "fr" ? "Dépt :" : "Dept :"}
                 </Text>
                 <Text style={styles.value}>{data.studentDepartment}</Text>
               </View>
             )}
+            {data.studentAddress && (
+              <View style={styles.row}>
+                <Text style={styles.label}>
+                  {locale === "fr" ? "Adr :" : "Addr :"}
+                </Text>
+                <Text style={styles.value}>{data.studentAddress}</Text>
+              </View>
+            )}
           </View>
 
-          {/* Company Column */}
-          <View style={styles.gridColumn}>
-            <Text style={styles.gridColumnTitle}>
-              {locale === "fr" ? "ENTREPRISE" : "COMPANY"}
+          {/* Company */}
+          <View style={styles.partyColumn}>
+            <Text style={styles.partyTitle}>
+              {locale === "fr" ? "Entreprise" : "Company"}
             </Text>
             <View style={styles.row}>
               <Text style={styles.label}>
-                {locale === "fr" ? "Nom:" : "Name:"}
+                {locale === "fr" ? "Nom :" : "Name :"}
               </Text>
               <Text style={styles.value}>{data.companyName}</Text>
             </View>
             {data.companyAddress && (
               <View style={styles.row}>
                 <Text style={styles.label}>
-                  {locale === "fr" ? "Adresse:" : "Address:"}
+                  {locale === "fr" ? "Adr :" : "Addr :"}
                 </Text>
                 <Text style={styles.value}>{data.companyAddress}</Text>
               </View>
@@ -307,7 +336,7 @@ export function ConventionDeStageTemplate({
             {data.companyPhone && (
               <View style={styles.row}>
                 <Text style={styles.label}>
-                  {locale === "fr" ? "Tél:" : "Phone:"}
+                  {locale === "fr" ? "Tél :" : "Phone :"}
                 </Text>
                 <Text style={styles.value}>{data.companyPhone}</Text>
               </View>
@@ -315,76 +344,66 @@ export function ConventionDeStageTemplate({
             {data.companyRepresentativeName && (
               <View style={styles.row}>
                 <Text style={styles.label}>
-                  {locale === "fr" ? "Représentant:" : "Representative:"}
+                  {locale === "fr" ? "Repr :" : "Rep :"}
                 </Text>
                 <Text style={styles.value}>
                   {data.companyRepresentativeName}
                 </Text>
               </View>
             )}
+            {data.companyContactEmail && (
+              <View style={styles.row}>
+                <Text style={styles.label}>Email :</Text>
+                <Text style={styles.value}>{data.companyContactEmail}</Text>
+              </View>
+            )}
+          </View>
+
+          {/* University */}
+          <View style={styles.partyColumn}>
+            <Text style={styles.partyTitle}>
+              {locale === "fr" ? "Université" : "University"}
+            </Text>
+            {(data.universityName || data.universityDepartmentName) && (
+              <View style={styles.row}>
+                <Text style={styles.label}>
+                  {locale === "fr" ? "Nom :" : "Name :"}
+                </Text>
+                <Text style={styles.value}>
+                  {data.universityDepartmentName
+                    ? `${data.universityName} — ${data.universityDepartmentName}`
+                    : (data.universityName ?? "")}
+                </Text>
+              </View>
+            )}
+            {data.universityAddress && (
+              <View style={styles.row}>
+                <Text style={styles.label}>
+                  {locale === "fr" ? "Adr :" : "Addr :"}
+                </Text>
+                <Text style={styles.value}>{data.universityAddress}</Text>
+              </View>
+            )}
+            {data.universityPhone && (
+              <View style={styles.row}>
+                <Text style={styles.label}>
+                  {locale === "fr" ? "Tél :" : "Phone :"}
+                </Text>
+                <Text style={styles.value}>{data.universityPhone}</Text>
+              </View>
+            )}
           </View>
         </View>
 
-        {/* Internship Details */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
-            {locale === "fr" ? "DÉTAILS DU STAGE" : "INTERNSHIP DETAILS"}
-          </Text>
-          <View style={styles.row}>
-            <Text style={styles.label}>
-              {locale === "fr" ? "Sujet:" : "Subject:"}
-            </Text>
-            <Text style={styles.value}>{data.offerTitle}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>
-              {locale === "fr" ? "Type:" : "Type:"}
-            </Text>
-            <Text style={styles.value}>
-              {internshipTypeLabels[data.internshipType] || data.internshipType}
-            </Text>
-          </View>
-          {data.workMode && (
-            <View style={styles.row}>
-              <Text style={styles.label}>
-                {locale === "fr" ? "Mode de travail:" : "Work Mode:"}
-              </Text>
-              <Text style={styles.value}>
-                {data.workMode === "remote"
-                  ? locale === "fr"
-                    ? "À distance"
-                    : "Remote"
-                  : data.workMode === "hybrid"
-                    ? locale === "fr"
-                      ? "Hybride"
-                      : "Hybrid"
-                    : locale === "fr"
-                      ? "Sur site"
-                      : "On-site"}
-              </Text>
-            </View>
-          )}
-          {data.durationWeeks && (
-            <View style={styles.row}>
-              <Text style={styles.label}>
-                {locale === "fr" ? "Durée:" : "Duration:"}
-              </Text>
-              <Text style={styles.value}>
-                {data.durationWeeks} {locale === "fr" ? "semaines" : "weeks"}
-              </Text>
-            </View>
-          )}
-        </View>
-
-        {/* Dates Section */}
-        <View style={styles.datesSection}>
-          <View style={styles.dateBox}>
+        {/* Dates bar */}
+        <View style={styles.datesBar}>
+          <View style={styles.dateBlock}>
             <Text style={styles.dateLabel}>
               {locale === "fr" ? "Date de début" : "Start Date"}
             </Text>
             <Text style={styles.dateValue}>{formatDate(data.startDate)}</Text>
           </View>
-          <View style={styles.dateBox}>
+          <View style={styles.dateBlock}>
             <Text style={styles.dateLabel}>
               {locale === "fr" ? "Date de fin" : "End Date"}
             </Text>
@@ -392,27 +411,68 @@ export function ConventionDeStageTemplate({
           </View>
         </View>
 
-        {/* Signatures */}
-        <View style={styles.signaturesSection}>
-          <View style={styles.signatureBox}>
-            <Text style={styles.signatureLabel}>
-              {locale === "fr" ? "LE STAGIAIRE" : "THE TRAINEE"}
+        {/* Internship Details */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>
+            {locale === "fr" ? "Détails du stage" : "Internship details"}
+          </Text>
+          <View style={[styles.row, { marginBottom: 4 }]}>
+            <Text style={[styles.label, { width: "15%" }]}>
+              {locale === "fr" ? "Sujet :" : "Subject :"}
             </Text>
-            <Text style={styles.signatureLine}>{data.studentName}</Text>
+            <Text style={[styles.value, { width: "85%" }]}>
+              {data.offerTitle}
+            </Text>
           </View>
-          <View style={styles.signatureBox}>
-            <Text style={styles.signatureLabel}>
-              {locale === "fr" ? "L'ENTREPRISE" : "THE COMPANY"}
+          <View style={styles.row}>
+            <Text style={[styles.label, { width: "15%" }]}>
+              {locale === "fr" ? "Type :" : "Type :"}
             </Text>
-            <Text style={styles.signatureLine}>
+            <Text style={[styles.value, { width: "30%" }]}>
+              {internshipTypeLabels[data.internshipType] || data.internshipType}
+            </Text>
+            <Text style={[styles.label, { width: "15%", paddingLeft: 16 }]}>
+              {locale === "fr" ? "Durée :" : "Duration :"}
+            </Text>
+            <Text style={[styles.value, { width: "40%" }]}>
+              {data.durationWeeks
+                ? `${data.durationWeeks} ${locale === "fr" ? "semaines" : "weeks"}`
+                : "—"}
+            </Text>
+          </View>
+          {data.workMode && (
+            <View style={styles.row}>
+              <Text style={[styles.label, { width: "15%" }]}>
+                {locale === "fr" ? "Mode :" : "Mode :"}
+              </Text>
+              <Text style={[styles.value, { width: "30%" }]}>
+                {workModeLabel}
+              </Text>
+            </View>
+          )}
+        </View>
+
+        {/* Signatures */}
+        <View style={styles.signaturesRow}>
+          <View style={styles.sigBox}>
+            <Text style={styles.sigLabel}>
+              {locale === "fr" ? "Le stagiaire" : "The trainee"}
+            </Text>
+            <Text style={styles.sigLine}>{data.studentName}</Text>
+          </View>
+          <View style={styles.sigBox}>
+            <Text style={styles.sigLabel}>
+              {locale === "fr" ? "L'entreprise" : "The company"}
+            </Text>
+            <Text style={styles.sigLine}>
               {data.companyRepresentativeName || data.companyName}
             </Text>
           </View>
-          <View style={styles.signatureBox}>
-            <Text style={styles.signatureLabel}>
-              {locale === "fr" ? "L'UNIVERSITÉ" : "THE UNIVERSITY"}
+          <View style={styles.sigBox}>
+            <Text style={styles.sigLabel}>
+              {locale === "fr" ? "L'université" : "The university"}
             </Text>
-            <Text style={styles.signatureLine}>{data.universityName}</Text>
+            <Text style={styles.sigLine}>{data.universityName}</Text>
           </View>
         </View>
 
@@ -425,13 +485,7 @@ export function ConventionDeStageTemplate({
             )}
             <View>
               <Text style={styles.verificationCode}>{verificationCode}</Text>
-              <Text style={styles.verificationText}>
-                {locale === "fr"
-                  ? "Vérifiez ce document sur stag.io/verify"
-                  : locale === "ar"
-                    ? "تحقق من هذه الوثيقة على stag.io/verify"
-                    : "Verify this document at stag.io/verify"}
-              </Text>
+              <Text style={styles.verificationUrl}>stag.io/verify</Text>
             </View>
           </View>
         )}
@@ -440,13 +494,8 @@ export function ConventionDeStageTemplate({
         <View style={styles.footer}>
           <Text>
             {locale === "fr"
-              ? `Cette convention est générée automatiquement par le système Stag.`
-              : `This agreement is automatically generated by the Stag system.`}
-          </Text>
-          <Text>
-            {locale === "fr"
-              ? `Date de génération: ${formatDate(new Date())}`
-              : `Generated on: ${formatDate(new Date())}`}
+              ? `Cette convention est générée automatiquement par le système Stag — ${formatDate(new Date())}`
+              : `This agreement is automatically generated by the Stag system — ${formatDate(new Date())}`}
           </Text>
         </View>
       </Page>

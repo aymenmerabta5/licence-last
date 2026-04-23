@@ -1885,7 +1885,9 @@
           "name": "اسم",
           "email": "بريد إلكتروني",
           "password": "كلمة المرور",
-          "role": "دور"
+          "role": "دور",
+          "university": "الجامعة",
+          "selectUniversity": "اختر جامعة"
         },
         "dialogs": {
           "cancel": "يلغي",
