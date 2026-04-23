@@ -51,7 +51,7 @@ export function UserDropdown({
         render={
           <Button
             variant="ghost"
-            className="group h-auto min-w-0 items-center gap-2.5 rounded-full px-3 py-2 hover:bg-secondary/90"
+            className="group h-auto min-w-0 items-center gap-2.5 rounded-none px-3 py-2 hover:bg-secondary/90"
           />
         }
       >
