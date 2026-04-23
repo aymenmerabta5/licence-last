@@ -13,39 +13,39 @@ export async function listDepartments(universityId: string) {
       id: department.id,
       name: department.name,
       headUserId: sql<string | null>`(
-        select ${user.id}
+        select "user"."id"
         from ${universityMember}
         inner join ${user}
-          on ${user.id} = ${universityMember.userId}
-        where ${universityMember.departmentId} = ${department.id}
-          and ${universityMember.role} = 'department_head'
-        order by ${universityMember.updatedAt} desc
+          on "user"."id" = "university_member"."user_id"
+        where "university_member"."department_id" = "department"."id"
+          and "university_member"."role" = 'department_head'
+        order by "university_member"."updated_at" desc
         limit 1
       )`.as("head_user_id"),
       headUserName: sql<string | null>`(
-        select ${user.name}
+        select "user"."name"
         from ${universityMember}
         inner join ${user}
-          on ${user.id} = ${universityMember.userId}
-        where ${universityMember.departmentId} = ${department.id}
-          and ${universityMember.role} = 'department_head'
-        order by ${universityMember.updatedAt} desc
+          on "user"."id" = "university_member"."user_id"
+        where "university_member"."department_id" = "department"."id"
+          and "university_member"."role" = 'department_head'
+        order by "university_member"."updated_at" desc
         limit 1
       )`.as("head_user_name"),
       headUserEmail: sql<string | null>`(
-        select ${user.email}
+        select "user"."email"
         from ${universityMember}
         inner join ${user}
-          on ${user.id} = ${universityMember.userId}
-        where ${universityMember.departmentId} = ${department.id}
-          and ${universityMember.role} = 'department_head'
-        order by ${universityMember.updatedAt} desc
+          on "user"."id" = "university_member"."user_id"
+        where "university_member"."department_id" = "department"."id"
+          and "university_member"."role" = 'department_head'
+        order by "university_member"."updated_at" desc
         limit 1
       )`.as("head_user_email"),
       createdAt: department.createdAt,
       skillCount: sql<number>`(
         select count(*)::int from ${departmentSkill}
-        where ${departmentSkill.departmentId} = ${department.id}
+        where "department_skill"."department_id" = "department"."id"
       )`.as("skill_count"),
     })
     .from(department)

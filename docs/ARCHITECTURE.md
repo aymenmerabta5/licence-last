@@ -42,7 +42,7 @@
              (RSC + CC)     /     |     \
                           Auth   oRPC   Assistant
                           |       |        |
-                   Better Auth 131 procs  AI SDK Gateway/Poe
+                    Better Auth 146 procs  AI SDK Gateway/Poe
                           \       |      /
                        ┌──────────────────────┐
                        │   Services Layer     │
@@ -263,7 +263,7 @@ src/
 │   │   ├── middleware.ts             # Auth procedure chain (7 types)
 │   │   ├── rate-limited-procedures.ts  # 20 variants
 │   │   ├── ratelimit-middleware.ts
-│   │   ├── router.ts                 # Combined router (131 procedures / 19 namespaces)
+│   │   ├── router.ts                 # Combined router (146 procedures / 19 namespaces)
 │   │   ├── client.ts                 # orpcClient + orpc (TanStack)
 │   │   └── routes/                   # 18 route modules
 │   ├── services/                     # Business logic (18 domains)
@@ -447,15 +447,24 @@ oRPC router handling ALL client-server communication with auth middleware.
 
 ```
 publicProcedure              -- No auth required
-├── authedProcedure          -- Valid session required
-│   ├── adminProcedure       -- university_admin or super_admin
-│   ├── superAdminProcedure  -- super_admin only
-│   ├── companyAdminProcedure -- company_admin + injects companyMembership
-│   ├── studentProcedure     -- student role + injects studentProfile
-│   └── deptHeadProcedure    -- university_admin + department_head membership + injects departmentId + universityId
+└── authedSessionProcedure   -- Valid session required (bypasses approval gate)
+    └── authedProcedure      -- Valid session + approval gate
+        ├── adminProcedure   -- university_admin or super_admin
+        │   └── [rate-limited variants]
+        ├── superAdminProcedure -- super_admin only
+        │   └── [rate-limited variants]
+        ├── universityProcedure -- university_admin + dept heads
+        │   └── deptHeadProcedure -- university_admin + department_head membership
+        │       └── [rate-limited variants]
+        ├── companyAdminProcedure -- company_admin + injects companyMembership
+        │   ├── companyOwnerProcedure -- company_admin + owner role
+        │   └── [rate-limited variants]
+        ├── studentProcedure -- student role + injects studentProfile
+        │   └── [rate-limited variants]
+        └── [rate-limited variants]
 ```
 
-**Rate-Limited Procedure Variants (20)**:
+**Rate-Limited Procedure Variants (25)**:
 
 
 | Procedure                      | Limit   | Use Case                    |
@@ -472,18 +481,22 @@ publicProcedure              -- No auth required
 | adminProcedureAssistant        | 20/min  | Admin/dept-head AI calls    |
 | superAdminProcedureStandard    | 100/min | Super admin ops             |
 | superAdminProcedureGenerous    | 300/min | Bulk super admin            |
+| universityProcedureStandard    | 100/min | University ops              |
+| universityProcedureAssistant   | 20/min  | University AI calls         |
 | deptHeadProcedureStandard      | 100/min | Dept head ops               |
 | deptHeadProcedureGenerous      | 300/min | Dept head reads             |
 | companyAdminProcedureStandard  | 100/min | Company ops                 |
 | companyAdminProcedureGenerous  | 300/min | Company reads               |
 | companyAdminProcedureAssistant | 20/min  | AI assistant                |
+| companyOwnerProcedureStandard  | 100/min | Owner ops                   |
+| companyOwnerProcedureGenerous  | 300/min | Owner reads                 |
 | studentProcedureStandard       | 100/min | Student mutations           |
 | studentProcedureGenerous       | 300/min | Student reads               |
 | assistantProcedureLimited      | 20/min  | AI calls                    |
 
 
-**131 Total Procedures across 18 Route Modules (19 Router Namespaces)**:
-users (7), companies (15), skills (2), students (4), offers (15), applications (10), matching (4), placements (4), deptHead (3), departments (9), documents (7), notifications (5), interviews (4), messages (6), studentCv (9), stats (2), adminUsers (11), universities (5), assistant (9)
+**146 Total Procedures across 18 Route Modules (19 Router Namespaces)**:
+users (7), companies (22), skills (2), students (6), offers (15), applications (10), matching (4), placements (5), deptHead (4), departments (9), documents (7), notifications (5), interviews (4), messages (8), studentCv (9), stats (2), adminUsers (11), universities (7), assistant (9)
 
 ### View Layer
 
@@ -545,7 +558,7 @@ const user = await requireRole(["company_admin", "super_admin"])
 | Method | Path                         | Purpose                                                                       |
 | ------ | ---------------------------- | ----------------------------------------------------------------------------- |
 | ALL    | `/api/auth/[...all]`         | Better Auth (login, signup, 2FA, sessions)                                    |
-| ALL    | `/api/rpc/[...rest]`         | oRPC (131 procedures, CSRF protected)                                         |
+| ALL    | `/api/rpc/[...rest]`         | oRPC (146 procedures, CSRF protected)                                         |
 | POST   | `/api/assistant/chat`        | AI streaming (60s timeout)                                                    |
 | POST   | `/api/assistant/auth/status` | Arcade tool auth check                                                        |
 | GET    | `/api/openapi/spec`          | OpenAPI JSON specification                                                    |

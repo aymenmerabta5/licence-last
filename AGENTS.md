@@ -62,8 +62,8 @@ export async function createCompany(data: CreateCompanyInput, userId: string) {
 
 ### oRPC (`src/server/orpc/`)
 - All client-server communication goes through oRPC
-- Auth procedures: `publicProcedure`, `authedProcedure`, `adminProcedure`, `companyAdminProcedure`, `studentProcedure`, `deptHeadProcedure`, `superAdminProcedure`
-- Rate-limited variants exist for all procedure types
+- Auth procedures: `publicProcedure`, `authedSessionProcedure`, `authedProcedure`, `adminProcedure`, `universityProcedure`, `superAdminProcedure`, `companyAdminProcedure`, `companyOwnerProcedure`, `studentProcedure`, `deptHeadProcedure`
+- Rate-limited variants exist for all procedure types (25 total)
 
 **Client patterns:**
 ```typescript
