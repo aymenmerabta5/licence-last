@@ -169,7 +169,7 @@ export function ProfileContent({
       {stats.length > 0 && <ProfileStats stats={stats} />}
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-16">
         {/* Sidebar Column */}
         <div className="lg:col-span-4 space-y-10">
           <ContactInfoCard

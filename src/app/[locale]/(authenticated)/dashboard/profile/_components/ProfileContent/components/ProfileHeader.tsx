@@ -1,6 +1,6 @@
 "use client"
 
-import { Calendar, Check as CheckIcon, Copy } from "lucide-react"
+import { Calendar, Check as CheckIcon, Copy, Settings, ShieldCheck, Sparkles } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
@@ -46,91 +46,90 @@ export function ProfileHeader({
   }
 
   return (
-    <header className="space-y-4">
+    <header className="relative">
       <motion.div
         {...reveal}
-        transition={{ duration: 0.6, ease }}
-        className="h-0.5 bg-primary"
-      />
+        transition={{ duration: 0.8, ease }}
+        className="relative overflow-hidden rounded-[3rem] bg-white border border-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.04)]"
+      >
+        {/* Subtle Background Accent */}
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/[0.02] -skew-x-12 translate-x-1/4" />
+        
+        <div className="relative px-8 pb-14 pt-14 sm:px-16 sm:pb-20 sm:pt-24">
+          <div className="flex flex-col lg:flex-row items-center lg:items-center gap-14">
+            {/* Avatar with Circular Editorial Frame */}
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              className="relative shrink-0"
+            >
+              <div className="h-48 w-48 sm:h-60 sm:w-60 rounded-full p-2 bg-gradient-to-tr from-primary/20 via-transparent to-primary/10 shadow-inner relative">
+                <div className="h-full w-full rounded-full overflow-hidden bg-slate-100 flex items-center justify-center border-4 border-white shadow-2xl">
+                {user.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={user.image}
+                    alt={user.name || t("profileImageAlt")}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <span className="text-slate-800 text-7xl font-serif tracking-tighter">{initials}</span>
+                )}
+                </div>
+              </div>
+              <div className="absolute bottom-2 right-6 h-14 w-14 bg-primary text-white rounded-full flex items-center justify-center shadow-xl border-4 border-white">
+                <ShieldCheck className="h-7 w-7" />
+              </div>
+            </motion.div>
 
-      <div className="space-y-3">
-        {/* Kicker row */}
-        <motion.div
-          {...reveal}
-          transition={revealWithDelay(0.05)}
-          className="flex items-center justify-between"
-        >
-          <Badge variant="editorial-muted">{t("kicker")}</Badge>
-          <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground hidden sm:block">
-            {t("memberSince", { date: memberSince })}
-          </span>
-        </motion.div>
+            {/* Content Area */}
+            <div className="flex-1 text-center lg:text-start space-y-8">
+              <div className="space-y-4">
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4">
+                  <Badge className="bg-primary/10 text-primary hover:bg-primary/20 border-none px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em]">
+                    <Sparkles className="h-3 w-3 me-2" />
+                    {roleLabel}
+                  </Badge>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em] flex items-center gap-2">
+                    <Calendar className="h-3.5 w-3.5" />
+                    {t("memberSince", { date: memberSince })}
+                  </span>
+                </div>
+                
+                <h1 className="font-serif text-[clamp(2.8rem,8vw,5rem)] font-bold tracking-tight text-slate-900 leading-[0.9] drop-shadow-sm">
+                  {user.name || t("anonymousUser")}
+                </h1>
+              </div>
 
-        {/* Main layout: Avatar + Name */}
-        <motion.div
-          {...reveal}
-          transition={revealWithDelay(0.1)}
-          className="flex flex-col sm:flex-row sm:items-end gap-6"
-        >
-          {/* Portrait — square editorial */}
-          <div className="relative shrink-0">
-            <div className="h-24 w-24 sm:h-28 sm:w-28 border-2 border-primary/20 bg-primary flex items-center justify-center text-white text-3xl sm:text-4xl font-serif overflow-hidden">
-              {user.image ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={user.image}
-                  alt={user.name || t("profileImageAlt")}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                initials
-              )}
-            </div>
-          </div>
+              {/* Action Suite */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-5 pt-2">
+                <Button
+                  onClick={handleCopy}
+                  variant="outline"
+                  className="bg-white hover:bg-slate-50 text-slate-600 border-slate-200 rounded-full h-14 px-10 text-xs font-black uppercase tracking-[0.2em] transition-all shadow-sm"
+                >
+                  {copied ? (
+                    <CheckIcon className="h-4 w-4 me-3 text-emerald-500" />
+                  ) : (
+                    <Copy className="h-4 w-4 me-3 text-slate-400" />
+                  )}
+                  {copied ? t("copied") : t("copyProfile")}
+                </Button>
 
-          {/* Name + meta */}
-          <div className="flex-1 space-y-3">
-            <div>
-              <h1 className="font-serif text-[clamp(1.8rem,3.5vw,2.8rem)] leading-[1.05] tracking-tight text-heading">
-                {user.name || t("anonymousUser")}
-              </h1>
-
-              <div className="flex flex-wrap items-center gap-2 mt-2">
-                <Badge variant="editorial">{roleLabel}</Badge>
-                <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground uppercase tracking-[0.1em] font-medium sm:hidden">
-                  <Calendar className="h-3 w-3" />
-                  {t("since", { date: memberSince })}
-                </span>
+                {canEdit && (
+                  <Link href="/dashboard/settings">
+                    <Button
+                      className="bg-primary hover:bg-primary/90 text-white rounded-full h-14 px-12 text-xs font-black uppercase tracking-[0.2em] shadow-[0_15px_40px_rgba(var(--primary-rgb),0.25)] transition-all hover:-translate-y-1 active:translate-y-0"
+                    >
+                      <Settings className="h-4 w-4 me-3" />
+                      {t("edit")}
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
-
-            {/* Actions */}
-            <div className="flex flex-wrap gap-2">
-              <Button
-                type="button"
-                variant="editorial-outline"
-                size="editorial-sm"
-                onClick={handleCopy}
-              >
-                {copied ? (
-                  <CheckIcon className="h-3.5 w-3.5 me-1.5 text-emerald-500" />
-                ) : (
-                  <Copy className="h-3.5 w-3.5 me-1.5" />
-                )}
-                {copied ? t("copied") : t("copyProfile")}
-              </Button>
-
-              {canEdit && (
-                <Link href="/dashboard/settings">
-                  <Button variant="editorial" size="editorial-sm">
-                    {t("edit")}
-                  </Button>
-                </Link>
-              )}
-            </div>
           </div>
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
     </header>
   )
 }
