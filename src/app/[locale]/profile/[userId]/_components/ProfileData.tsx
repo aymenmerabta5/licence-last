@@ -23,40 +23,6 @@ export async function ProfileData({ userId }: ProfileDataProps) {
   const isOwner = isSelf && viewer.role === "student"
   if (viewer.role === "student" && !isSelf) notFound()
 
-  // Company admins can only view profiles of students who applied to their offers,
-  // unless they are viewing their own profile.
-  if (viewer.role === "company_admin" && !isSelf) {
-    const [{ db }, { companyMember }, { application }, { internshipOffer }] =
-      await Promise.all([
-        import("@/server/db"),
-        import("@/server/db/schema/companies"),
-        import("@/server/db/schema/applications"),
-        import("@/server/db/schema/internships"),
-      ])
-
-    const [membership] = await db
-      .select({ companyId: companyMember.companyId })
-      .from(companyMember)
-      .where(eq(companyMember.userId, viewer.id))
-      .limit(1)
-
-    if (!membership) notFound()
-
-    const [hasRelationship] = await db
-      .select({ id: application.id })
-      .from(application)
-      .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
-      .where(
-        and(
-          eq(application.studentUserId, userId),
-          eq(internshipOffer.companyId, membership.companyId),
-        ),
-      )
-      .limit(1)
-
-    if (!hasRelationship) notFound()
-  }
-
   const { getPublicStudentProfile } = await import(
     "@/server/services/students/get-public-profile"
   )
@@ -72,6 +38,47 @@ export async function ProfileData({ userId }: ProfileDataProps) {
   )
 
   if (!result) notFound()
+
+  // Relationship check for company admins viewing students
+  if (
+    viewer.role === "company_admin" &&
+    !isSelf &&
+    result.user.role === "student"
+  ) {
+    const [{ db }, { companyMember }, { application }, { internshipOffer }] =
+      await Promise.all([
+        import("@/server/db"),
+        import("@/server/db/schema/companies"),
+        import("@/server/db/schema/applications"),
+        import("@/server/db/schema/internships"),
+      ])
+
+    const [membership] = await db
+      .select({ companyId: companyMember.companyId })
+      .from(companyMember)
+      .where(eq(companyMember.userId, viewer.id))
+      .limit(1)
+
+    if (!membership) {
+      notFound()
+    }
+
+    const [hasRelationship] = await db
+      .select({ id: application.id })
+      .from(application)
+      .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
+      .where(
+        and(
+          eq(application.studentUserId, userId),
+          eq(internshipOffer.companyId, membership.companyId),
+        ),
+      )
+      .limit(1)
+
+    if (!hasRelationship) {
+      notFound()
+    }
+  }
 
   const universityId = result.user.universityId
   const [university, ownerStats, cvData] = await Promise.all([

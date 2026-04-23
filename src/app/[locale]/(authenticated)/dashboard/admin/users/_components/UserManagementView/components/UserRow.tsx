@@ -92,63 +92,67 @@ export function UserRow({
         {new Date(user.createdAt).toLocaleDateString()}
       </TableCell>
       <TableCell className="py-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={<Button variant="ghost" size="icon" className="h-8 w-8" />}
-          >
-            <MoreHorizontal className="h-4 w-4" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-[180px]">
-            {canViewDetails && (
-              <DropdownMenuItem
-                render={
-                  <Link
-                    href={`/dashboard/admin/users/${user.id}` as "/dashboard"}
-                  />
-                }
-              >
-                <Eye className="h-4 w-4 me-2" />
-                {t("actions.view")}
-              </DropdownMenuItem>
-            )}
-            {canSetRole && (
-              <DropdownMenuItem onClick={() => onSetRole(user)}>
-                <ShieldCheck className="h-4 w-4 me-2" />
-                {t("actions.setRole")}
-              </DropdownMenuItem>
-            )}
-            {canSetPassword && (
-              <DropdownMenuItem onClick={() => onSetPassword(user)}>
-                <KeyRound className="h-4 w-4 me-2" />
-                {t("actions.setPassword")}
-              </DropdownMenuItem>
-            )}
-            {hasAdminOnlyActions && <DropdownMenuSeparator />}
-            {canModerateUsers && (
-              <>
-                {user.banned ? (
-                  <DropdownMenuItem onClick={() => onUnban(user.id)}>
-                    <ShieldOff className="h-4 w-4 me-2" />
-                    {t("actions.unban")}
-                  </DropdownMenuItem>
-                ) : (
-                  <DropdownMenuItem onClick={() => onBan(user)}>
-                    <ShieldBan className="h-4 w-4 me-2" />
-                    {t("actions.ban")}
-                  </DropdownMenuItem>
-                )}
-                <DropdownMenuSeparator />
+        {hasAdminOnlyActions && (
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={<Button variant="ghost" size="icon" className="h-8 w-8" />}
+            >
+              <MoreHorizontal className="h-4 w-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[180px]">
+              {canViewDetails && (
                 <DropdownMenuItem
-                  onClick={() => onDelete(user)}
-                  className="text-destructive focus:text-destructive"
+                  render={
+                    <Link
+                      href={`/dashboard/admin/users/${user.id}` as "/dashboard"}
+                    />
+                  }
                 >
-                  <Trash2 className="h-4 w-4 me-2" />
-                  {t("actions.delete")}
+                  <Eye className="h-4 w-4 me-2" />
+                  {t("actions.view")}
                 </DropdownMenuItem>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+              )}
+              {canSetRole && (
+                <DropdownMenuItem onClick={() => onSetRole(user)}>
+                  <ShieldCheck className="h-4 w-4 me-2" />
+                  {t("actions.setRole")}
+                </DropdownMenuItem>
+              )}
+              {canSetPassword && (
+                <DropdownMenuItem onClick={() => onSetPassword(user)}>
+                  <KeyRound className="h-4 w-4 me-2" />
+                  {t("actions.setPassword")}
+                </DropdownMenuItem>
+              )}
+              {(canViewDetails || canSetRole || canSetPassword) && canModerateUsers && (
+                <DropdownMenuSeparator />
+              )}
+              {canModerateUsers && (
+                <>
+                  {user.banned ? (
+                    <DropdownMenuItem onClick={() => onUnban(user.id)}>
+                      <ShieldOff className="h-4 w-4 me-2" />
+                      {t("actions.unban")}
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem onClick={() => onBan(user)}>
+                      <ShieldBan className="h-4 w-4 me-2" />
+                      {t("actions.ban")}
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => onDelete(user)}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4 me-2" />
+                    {t("actions.delete")}
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </TableCell>
     </TableRow>
   )

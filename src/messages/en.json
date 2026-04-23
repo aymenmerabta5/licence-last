@@ -1643,6 +1643,8 @@
         "deleteDepartmentDescription": "Delete {name}? This action cannot be undone.",
         "deleteSuccess": "Department deleted successfully.",
         "editDepartment": "Edit",
+        "editDepartmentTitle": "Edit Department",
+        "editDepartmentDescription": "Update the department name below.",
         "error": "Something went wrong. Please try again.",
         "skills": {
           "title": "Skills for {name}",

@@ -11,12 +11,14 @@ const DashboardContext = createContext<{
   companyMembershipRole: string | null
   universityMembershipRole: string | null
   universityDepartmentId: string | null
+  companySlug: string | null
 }>({
   isSidebarOpen: false,
   setIsSidebarOpen: () => {},
   companyMembershipRole: null,
   universityMembershipRole: null,
   universityDepartmentId: null,
+  companySlug: null,
 })
 
 export const useDashboard = () => useContext(DashboardContext)
@@ -40,6 +42,7 @@ export function DashboardClientProvider({
   companyMembershipRole = null,
   universityMembershipRole = null,
   universityDepartmentId = null,
+  companySlug = null,
 }: {
   children: React.ReactNode
   user: {
@@ -53,6 +56,7 @@ export function DashboardClientProvider({
   companyMembershipRole?: string | null
   universityMembershipRole?: string | null
   universityDepartmentId?: string | null
+  companySlug?: string | null
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const effectiveRole = user.effectiveRole ?? user.role ?? "student"
@@ -65,6 +69,7 @@ export function DashboardClientProvider({
         companyMembershipRole,
         universityMembershipRole,
         universityDepartmentId,
+        companySlug,
       }}
     >
       {impersonatedBy && (

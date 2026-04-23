@@ -9,12 +9,12 @@ import { DeleteDepartmentDialog } from "@/app/[locale]/(authenticated)/dashboard
 import { DepartmentSkillsModal } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal"
 import { DepartmentsHeader } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentsHeader"
 import { DepartmentsListSection } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentsListSection"
+import { EditDepartmentDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/EditDepartmentDialog"
 import { RemoveHeadDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/RemoveHeadDialog"
 import { useAssignHeadDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/hooks/useAssignHeadDialog"
 import { useDepartmentsActions } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/hooks/useDepartmentsActions"
 import { useDepartmentsData } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/hooks/useDepartmentsData"
 import { useDepartmentsViewState } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/hooks/useDepartmentsViewState"
-import type { DepartmentItem } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/types"
 import { reveal, revealWithDelay } from "@/lib/animations"
 
 export function DepartmentsView() {
@@ -35,11 +35,10 @@ export function DepartmentsView() {
   const emptyLabel = hasUniversityContext
     ? t("empty")
     : t("selectUniversityFirst")
-  const handleEditDepartment = async (department: DepartmentItem) => {
-    const nextName = window.prompt(t("name"), department.name)?.trim()
-    if (!nextName || nextName === department.name) return
+  const handleEditDepartment = async (departmentId: string, name: string) => {
     try {
-      await actions.updateDepartment(department.id, { name: nextName })
+      await actions.updateDepartment(departmentId, { name })
+      viewState.setEditTarget(null)
     } catch {
       // Error feedback is handled by the mutation hook.
     }
@@ -84,7 +83,7 @@ export function DepartmentsView() {
         isLoading={isLoading}
         hasUniversityContext={hasUniversityContext}
         emptyLabel={emptyLabel}
-        onEditDepartment={handleEditDepartment}
+        onEditDepartment={viewState.setEditTarget}
         onAssignHead={assignHeadDialog.open}
         onRemoveHead={viewState.setRemoveHeadTarget}
         onDeleteDepartment={viewState.setDeleteTarget}
@@ -98,6 +97,13 @@ export function DepartmentsView() {
           onOpenChange={viewState.handleSkillsModalChange}
         />
       )}
+      <EditDepartmentDialog
+        open={Boolean(viewState.editTarget)}
+        onOpenChange={viewState.handleEditOpenChange}
+        department={viewState.editTarget}
+        onConfirm={handleEditDepartment}
+        isPending={actions.isUpdating}
+      />
       <AssignHeadDialog
         open={Boolean(assignHeadDialog.department)}
         departmentName={assignHeadDialog.department?.name ?? null}
@@ -124,3 +130,4 @@ export function DepartmentsView() {
     </div>
   )
 }
+

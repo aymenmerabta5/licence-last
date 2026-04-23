@@ -42,6 +42,8 @@ export function UserDropdown({
         : effectiveRole
   const roleLabel = t(`roles.${roleKey}` as any)
 
+  const profileHref = `/profile/${user.id}` as Route
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -83,7 +85,7 @@ export function UserDropdown({
           <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-1">
             {t("accountSettings")}
           </DropdownMenuLabel>
-          <Link href={`/profile/${user.id}` as Route}>
+          <Link href={profileHref}>
             <DropdownMenuItem className="rounded-lg h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">
               <User className="h-4 w-4 me-2" /> {t("viewProfile")}
             </DropdownMenuItem>

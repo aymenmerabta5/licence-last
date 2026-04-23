@@ -17,6 +17,7 @@ export function useDepartmentsViewState({
   const [removeHeadTarget, setRemoveHeadTarget] =
     useState<DepartmentItem | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<DepartmentItem | null>(null)
+  const [editTarget, setEditTarget] = useState<DepartmentItem | null>(null)
 
   const skillsModalDept = useMemo(
     () =>
@@ -43,6 +44,12 @@ export function useDepartmentsViewState({
     }
   }
 
+  const handleEditOpenChange = (open: boolean) => {
+    if (!open) {
+      setEditTarget(null)
+    }
+  }
+
   return {
     skillsModalDeptId,
     setSkillsModalDeptId,
@@ -51,8 +58,11 @@ export function useDepartmentsViewState({
     setRemoveHeadTarget,
     deleteTarget,
     setDeleteTarget,
+    editTarget,
+    setEditTarget,
     handleSkillsModalChange,
     handleRemoveHeadOpenChange,
     handleDeleteOpenChange,
+    handleEditOpenChange,
   }
 }
