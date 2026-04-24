@@ -2355,8 +2355,8 @@
     },
     "cta": {
       "text": "Ready to transform your internship experience?",
-      "button": "Get Started Free",
-      "aria": "Get started with Stag for free"
+      "button": "Get Started",
+      "aria": "Get started with Stag"
     }
   },
   "verify": {
@@ -2489,7 +2489,7 @@
       "cta": {
         "headline": "Ready to explore?",
         "description": "Join thousands of students and companies already using Stag.",
-        "button": "Get Started Free"
+        "button": "Get Started"
       }
     },
     "forStudents": {
