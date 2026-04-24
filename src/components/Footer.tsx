@@ -125,10 +125,10 @@ export function Footer() {
                 setError("")
                 
                 toast.success("Thank you!", {
-                  description: "Your subscription has been received successfully.",
+                  description: "Your email has been received.",
                   position: "bottom-center",
-                  duration: 2000,
-                  
+                  duration: 3000,
+
                 })
 
                 setNewsletterEmail("")
