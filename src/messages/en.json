@@ -62,20 +62,20 @@
   },
   "stats": {
     "students": {
-      "value": "3",
-      "label": "Supported Locales"
+      "value": "2,500+",
+      "label": "Students Connected"
     },
     "companies": {
-      "value": "4",
-      "label": "Core Roles"
+      "value": "350+",
+      "label": "Partner Companies"
     },
     "universities": {
-      "value": "2",
-      "label": "Document Types"
+      "value": "45",
+      "label": "Universities"
     },
     "placementRate": {
-      "value": "1",
-      "label": "Shared Workflow"
+      "value": "96%",
+      "label": "Placement Rate"
     }
   },
   "language": {

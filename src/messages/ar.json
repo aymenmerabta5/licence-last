@@ -62,20 +62,20 @@
   },
   "stats": {
     "students": {
-      "value": "3",
-      "label": "???? ??????"
+      "value": "2,500+",
+      "label": "طالب متصل"
     },
     "companies": {
-      "value": "4",
-      "label": "????? ??????"
+      "value": "350+",
+      "label": "شركة شريكة"
     },
     "universities": {
-      "value": "2",
-      "label": "????? ???????"
+      "value": "45",
+      "label": "جامعة"
     },
     "placementRate": {
-      "value": "1",
-      "label": "???? ????"
+      "value": "96%",
+      "label": "معدل التوظيف"
     }
   },
   "language": {

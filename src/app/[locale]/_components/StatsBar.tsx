@@ -6,10 +6,10 @@ export function StatsBar() {
   const t = useTranslations("stats")
 
   const stats = [
-    { value: t("placementRate.value"), label: t("placementRate.label") },
-    { value: t("universities.value"), label: t("universities.label") },
     { value: t("students.value"), label: t("students.label") },
     { value: t("companies.value"), label: t("companies.label") },
+    { value: t("universities.value"), label: t("universities.label") },
+    { value: t("placementRate.value"), label: t("placementRate.label") },
   ]
 
   return (

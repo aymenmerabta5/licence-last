@@ -62,20 +62,20 @@
   },
   "stats": {
     "students": {
-      "value": "3",
-      "label": "Langues prises en charge"
+      "value": "2,500+",
+      "label": "Étudiants Connectés"
     },
     "companies": {
-      "value": "4",
-      "label": "Roles principaux"
+      "value": "350+",
+      "label": "Entreprises Partenaires"
     },
     "universities": {
-      "value": "2",
-      "label": "Types de documents"
+      "value": "45",
+      "label": "Universités"
     },
     "placementRate": {
-      "value": "1",
-      "label": "Workflow partage"
+      "value": "96%",
+      "label": "Taux de Placement"
     }
   },
   "language": {
