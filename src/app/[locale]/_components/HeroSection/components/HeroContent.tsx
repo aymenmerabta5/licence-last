@@ -43,8 +43,8 @@ export function HeroContent({
         )}
         className="font-serif text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
         style={{
-          fontSize: "clamp(3rem, 6vw, 5.5rem)",
-          lineHeight: 1.02,
+          fontSize: "clamp(2rem, 8vw, 5.5rem)",
+          lineHeight: 1.05,
           letterSpacing: "-0.02em",
           textWrap: "balance",
         }}
@@ -78,7 +78,7 @@ export function HeroContent({
           { duration: 0.7, ease: "easeOut", delay: 0.24 },
           prefersReducedMotion,
         )}
-        className="mt-10 grid grid-cols-2 gap-8 border-t border-border pt-8 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-8 border-t border-border pt-6 sm:pt-8 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
       >
         <p className="text-sm leading-relaxed font-light text-muted-foreground transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
           {descriptionPrimary}
@@ -94,7 +94,7 @@ export function HeroContent({
           { duration: 0.7, ease: "easeOut", delay: 0.36 },
           prefersReducedMotion,
         )}
-        className="mt-10 flex items-center gap-6"
+        className="mt-6 sm:mt-10 flex flex-wrap items-center gap-4 sm:gap-6"
       >
         <Button
           variant="editorial-link"

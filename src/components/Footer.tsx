@@ -15,10 +15,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Link } from "@/i18n/routing"
+import { toast } from "sonner"
 
 export function Footer() {
   const t = useTranslations("footer")
   const [newsletterEmail, setNewsletterEmail] = useState("")
+  const [error, setError] = useState("")
   const year = new Date().getFullYear()
   const copyrightText = t("legal.copyright", { year })
 
@@ -102,22 +104,34 @@ export function Footer() {
             <p className="text-muted-foreground text-sm">
               {t("newsletter.description")}
             </p>
+
             <form
               className="flex flex-col gap-2 mt-2"
               onSubmit={(e) => {
                 e.preventDefault()
-
                 const email = newsletterEmail.trim()
+
                 if (!email) {
+                  setError("Please enter your email address.")
                   return
                 }
 
-                const subject = encodeURIComponent("Platform updates request")
-                const body = encodeURIComponent(
-                  `Please contact ${email} about Stag product updates and launch announcements.`,
-                )
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                if (!emailRegex.test(email)) {
+                  setError("Please enter a valid email address.")
+                  return
+                }
 
-                window.location.href = `mailto:support@stag.io?subject=${subject}&body=${body}`
+                setError("")
+                
+                toast.success("Thank you!", {
+                  description: "Your email has been received.",
+                  position: "bottom-center",
+                  duration: 3000,
+
+                })
+
+                setNewsletterEmail("")
               }}
             >
               <div className="flex gap-2">
@@ -126,12 +140,18 @@ export function Footer() {
                   type="email"
                   required
                   value={newsletterEmail}
-                  onChange={(event) => setNewsletterEmail(event.target.value)}
+                  onChange={(event) => {
+                    setNewsletterEmail(event.target.value)
+                    if (error) setError("")
+                  }}
                   aria-label={t("newsletter.emailPlaceholder")}
                   className="rounded-none border-t-0 border-x-0 border-b-2 border-border bg-transparent px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors"
                 />
               </div>
-              <Button variant="editorial" className="w-full mt-2 group">
+              {error && (
+                <p className="text-xs text-red-500 mt-1">{error}</p>
+              )}
+              <Button type="submit" variant="editorial" className="w-full mt-2 group">
                 {t("newsletter.subscribe")}{" "}
                 <ArrowRight className="ms-2 h-4 w-4 group-hover:translate-x-1 [[dir=rtl]_&]:group-hover:-translate-x-1 transition-transform" />
               </Button>

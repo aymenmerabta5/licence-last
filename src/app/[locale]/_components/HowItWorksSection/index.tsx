@@ -5,6 +5,7 @@ import { buildUserTypes } from "@/app/[locale]/_components/HowItWorksSection/bui
 import { UserTypeColumn } from "@/app/[locale]/_components/HowItWorksSection/components/UserTypeColumn"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { Link } from "@/i18n/routing"
 import { reveal } from "@/lib/animations"
 
 export function HowItWorksSection() {
@@ -12,7 +13,7 @@ export function HowItWorksSection() {
   const userTypes = buildUserTypes(t)
 
   return (
-    <section className="relative px-8 lg:px-16 py-24 overflow-hidden">
+    <section className="relative px-5 sm:px-8 lg:px-16 py-14 sm:py-24 overflow-hidden">
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div className="absolute -start-8 top-1/4 font-serif text-[20rem] font-bold leading-none text-foreground/[0.02] dark:text-foreground/[0.015] select-none">
           ∞
@@ -21,7 +22,7 @@ export function HowItWorksSection() {
       </div>
 
       <div className="relative mx-auto max-w-6xl">
-        <div className="mb-16 max-w-2xl">
+        <div className="mb-10 sm:mb-16 max-w-2xl">
           <motion.div
             {...reveal}
             transition={{ duration: 0.7, ease: "easeOut" }}
@@ -38,9 +39,10 @@ export function HowItWorksSection() {
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
             className="font-serif text-heading transition-colors duration-500"
             style={{
-              fontSize: "clamp(2.5rem, 5vw, 4rem)",
-              lineHeight: 1.1,
+              fontSize: "clamp(2rem, 7vw, 4rem)",
+              lineHeight: 1.15,
               letterSpacing: "-0.02em",
+              textWrap: "balance",
             }}
           >
             {t("headline")}
@@ -55,7 +57,7 @@ export function HowItWorksSection() {
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 sm:gap-12 lg:gap-8">
           {userTypes.map((userType, index) => (
             <UserTypeColumn key={index} columnIndex={index} {...userType} />
           ))}
@@ -72,11 +74,11 @@ export function HowItWorksSection() {
           <Button
             variant="editorial"
             size="editorial"
-            className="group"
+            nativeButton={false}
+            render={<Link href="/login" />}
             aria-label={t("cta.aria")}
           >
             {t("cta.button")}
-            <ArrowRight className="ms-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 [[dir=rtl]_&]:group-hover:-translate-x-1" />
           </Button>
         </motion.div>
       </div>

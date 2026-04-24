@@ -21,7 +21,7 @@ export function HeroSection() {
   )
 
   return (
-    <section id="discover" className="relative px-8 pt-16 pb-20 lg:px-16">
+    <section id="discover" className="relative px-5 sm:px-8 pt-10 sm:pt-16 pb-14 sm:pb-20 lg:px-16">
       <div
         className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100"
         aria-hidden="true"
@@ -30,7 +30,7 @@ export function HeroSection() {
         <div className="absolute -bottom-32 start-1/2 h-[30rem] w-[30rem] -translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto grid max-w-6xl items-start gap-12 lg:grid-cols-12">
+      <div className="relative mx-auto grid max-w-6xl items-start gap-8 sm:gap-12 lg:grid-cols-12">
         <HeroContent
           volumeLabel={t("hero.volume")}
           headline={headline}
