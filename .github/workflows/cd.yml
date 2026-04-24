@@ -30,11 +30,11 @@ jobs:
     steps:
       - name: Checkout dispatched revision
         if: github.event_name == 'workflow_dispatch'
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v4
 
       - name: Checkout CI-passed revision
         if: github.event_name == 'workflow_run'
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
@@ -101,11 +101,11 @@ jobs:
     steps:
       - name: Checkout dispatched revision
         if: github.event_name == 'workflow_dispatch'
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v4
 
       - name: Checkout CI-passed revision
         if: github.event_name == 'workflow_run'
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
