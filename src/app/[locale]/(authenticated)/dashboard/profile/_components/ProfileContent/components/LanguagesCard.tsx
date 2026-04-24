@@ -50,7 +50,7 @@ export function LanguagesCard({
           <div className="p-8 space-y-5">
             {languages.map((lang, idx) => (
               <motion.div
-                key={lang.id}
+                key={lang.languageCode}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 + idx * 0.1 }}

@@ -1,5 +1,6 @@
 import { Window } from "happy-dom"
 
+// @ts-expect-error read-only property in some environments
 process.env.NODE_ENV ??= "test"
 
 // Ensure required client env vars exist for modules importing `src/env.ts` in tests.

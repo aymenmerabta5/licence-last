@@ -10,7 +10,7 @@ import { ease } from "@/lib/animations"
 
 interface EducationSectionProps {
   profile?: StudentProfile | null
-  university?: { name: string; location: string } | null
+  university?: { name: string; city: string | null } | null
   canEdit: boolean
   labels: {
     education: string
@@ -74,7 +74,7 @@ export function EducationSection({
                   <div className="flex flex-wrap gap-6">
                     <div className="flex items-center gap-2.5 text-slate-400 font-medium">
                       <MapPin className="h-5 w-5 text-slate-300" />
-                      <span className="text-sm">{university.location}</span>
+                      <span className="text-sm">{university.city}</span>
                     </div>
                   </div>
 

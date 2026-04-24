@@ -1,4 +1,5 @@
 import { AuthPanel } from "@/app/[locale]/(auth)/_components/AuthPanel"
+import { BackButton } from "@/app/[locale]/(auth)/_components/BackButton"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
 
@@ -21,9 +22,12 @@ export default function AuthLayout({
         {/* Top Bar */}
         <header className="flex items-center justify-between px-6 py-5 lg:px-10 lg:py-6">
           {/* Mobile brand (hidden on desktop — panel has logo) */}
-          <span className="lg:hidden font-serif text-xl tracking-tight text-heading transition-colors duration-500 ease-in-out">
-            Stag<span className="text-primary">.</span>io
-          </span>
+          <div className="flex items-center gap-1 lg:hidden">
+            <BackButton />
+            <span className="font-serif text-xl tracking-tight text-heading transition-colors duration-500 ease-in-out">
+              Stag<span className="text-primary">.</span>io
+            </span>
+          </div>
 
           {/* Spacer for desktop alignment */}
           <div className="hidden lg:block" />

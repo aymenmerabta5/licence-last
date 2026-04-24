@@ -64,7 +64,7 @@ export function ExperienceSection({
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
                         <Briefcase className="h-4 w-4" />
-                        {exp.company}
+                        {exp.organization}
                       </div>
                       <h3 className="text-3xl font-bold text-slate-800 leading-tight">
                         {exp.title}
@@ -72,7 +72,7 @@ export function ExperienceSection({
                     </div>
                     <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-2xl bg-slate-50 border border-slate-100 text-slate-400 font-bold text-[11px] uppercase tracking-widest whitespace-nowrap">
                        <Calendar className="h-3.5 w-3.5 text-slate-300" />
-                       {exp.startDate} — {exp.endDate || "Present"}
+                       {exp.startDate.getFullYear()} — {exp.endDate ? exp.endDate.getFullYear() : "Present"}
                     </div>
                   </div>
 
@@ -80,13 +80,6 @@ export function ExperienceSection({
                     <p className="text-lg text-slate-500 leading-relaxed font-light">
                       {exp.description}
                     </p>
-                  )}
-
-                  {exp.location && (
-                    <div className="flex items-center gap-2.5 text-slate-400 font-medium pt-2">
-                      <MapPin className="h-5 w-5 text-slate-200" />
-                      <span className="text-sm">{exp.location}</span>
-                    </div>
                   )}
                 </div>
               </div>
