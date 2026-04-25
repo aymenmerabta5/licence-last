@@ -11,6 +11,10 @@ import {
 } from "react"
 
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
+import {
+  NAVBAR_AVATAR_BADGE_CLASS,
+  NAVBAR_ICON_CONTROL_CLASS,
+} from "@/components/navbar-control-styles"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { Button } from "@/components/ui/button"
 import {
@@ -65,10 +69,10 @@ export function Navbar() {
             variant="ghost"
             size="icon-lg"
             onClick={() => setMobileOpen(true)}
-            className="md:hidden rounded-full text-foreground/70 hover:bg-secondary/80 hover:text-foreground"
+            className={`md:hidden ${NAVBAR_ICON_CONTROL_CLASS}`}
             aria-label={t("aria.openMenu")}
           >
-            <Menu className="h-5 w-5 text-foreground/70" aria-hidden="true" />
+            <Menu className="h-5 w-5 text-current" aria-hidden="true" />
           </Button>
 
           <Link
@@ -223,12 +227,12 @@ function NavbarSessionControls() {
             <Button
               variant="ghost"
               size="icon-lg"
-              className="group rounded-full p-1 hover:bg-secondary/80"
+              className={`${NAVBAR_ICON_CONTROL_CLASS} p-1`}
             />
           }
           aria-label={t("aria.accountMenu")}
         >
-          <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[13px] shrink-0 group-hover:bg-primary group-hover:text-white transition-all ring-2 ring-transparent group-hover:ring-primary/20">
+          <div className={`${NAVBAR_AVATAR_BADGE_CLASS} h-9 w-9 text-[13px] font-bold`}>
             {userInitial}
           </div>
         </DropdownMenuTrigger>

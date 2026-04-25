@@ -16,6 +16,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { NAVBAR_TEXT_CONTROL_CLASS } from "@/components/navbar-control-styles"
 import { Button } from "@/components/ui/button"
 import { usePathname, useRouter } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
@@ -30,10 +31,8 @@ const getHydratedSnapshot = () => true
 const getServerHydratedSnapshot = () => false
 
 const triggerClassName = cn(
-  "h-9 gap-2 border-border/30 bg-transparent px-3 select-none rounded-none",
-  "text-xs font-medium tracking-wide text-foreground/55 transition-colors duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
-  "hover:border-primary hover:text-foreground/80",
-  "aria-expanded:border-primary aria-expanded:text-foreground",
+  NAVBAR_TEXT_CONTROL_CLASS,
+  "h-9 gap-2 px-3 select-none text-xs font-medium tracking-wide",
 )
 
 function getLocaleLabel(
@@ -58,12 +57,15 @@ function LanguageSwitcherFallback() {
       aria-label={t("aria")}
       className={triggerClassName}
     >
-      <Globe className="h-3.5 w-3.5 text-foreground/40" aria-hidden="true" />
+      <Globe
+        className="h-3.5 w-3.5 text-current opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+        aria-hidden="true"
+      />
       <span className="min-w-8 text-start">
         {getLocaleLabel(t, locale)}
       </span>
       <ChevronDownIcon
-        className="h-3.5 w-3.5 text-foreground/35"
+        className="h-3.5 w-3.5 text-current opacity-60 transition-opacity duration-300 group-hover:opacity-100"
         aria-hidden="true"
       />
     </Button>
@@ -126,10 +128,13 @@ function LanguageSwitcherContent() {
         disabled={isPending}
         aria-label={t("aria")}
       >
-        <Globe className="h-3.5 w-3.5 text-foreground/40" aria-hidden="true" />
+        <Globe
+          className="h-3.5 w-3.5 text-current opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+          aria-hidden="true"
+        />
         <span className="min-w-8 text-start">{getLocaleLabel(t, locale)}</span>
         <ChevronDownIcon
-          className="h-3.5 w-3.5 text-foreground/35"
+          className="h-3.5 w-3.5 text-current opacity-60 transition-opacity duration-300 group-hover:opacity-100"
           aria-hidden="true"
         />
       </DropdownMenuTrigger>
