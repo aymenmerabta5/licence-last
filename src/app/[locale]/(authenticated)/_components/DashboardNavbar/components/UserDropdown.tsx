@@ -51,7 +51,7 @@ export function UserDropdown({
         render={
           <Button
             variant="ghost"
-            className="group h-auto min-w-0 items-center gap-2.5 rounded-none px-3 py-2 hover:bg-secondary/90"
+            className="group h-auto min-w-0 items-center gap-2.5 rounded-none px-3 py-2 hover:bg-muted/60"
           />
         }
       >
@@ -75,7 +75,7 @@ export function UserDropdown({
             className="text-[8px] tracking-[0.1em]"
           />
         </div>
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center border border-border/30 bg-background text-sm font-serif text-heading transition-colors group-hover:border-primary/50">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center border border-border/60 bg-muted text-sm font-serif text-heading transition-colors group-hover:border-primary/50">
           {user.name?.charAt(0) || "U"}
         </div>
       </DropdownMenuTrigger>

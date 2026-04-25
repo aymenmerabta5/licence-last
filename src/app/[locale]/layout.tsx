@@ -89,11 +89,7 @@ export default async function LocaleLayout({
 
   return (
     <div dir={direction} className={rtlFontVars}>
-      <DocumentLocaleSync
-        locale={locale}
-        direction={direction}
-        isRTL={isRTL}
-      />
+      <DocumentLocaleSync locale={locale} direction={direction} isRTL={isRTL} />
       <ThemeProvider
         attribute="class"
         defaultTheme="light"
