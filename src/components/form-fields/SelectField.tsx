@@ -44,7 +44,7 @@ export function SelectField({
   disabled,
   className,
 }: SelectFieldProps) {
-  const stringValue = String(value ?? "")
+  const stringValue = value === 0 && placeholder ? "" : String(value ?? "")
 
   return (
     <div className="space-y-2">
