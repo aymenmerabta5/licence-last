@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl"
 import type { OnboardingFormApi } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/types"
 import { FormSection, SelectField, TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
-import { WILAYAS } from "@/lib/wilayas"
+import { WILAYA_OPTIONS } from "@/lib/wilayas"
 
 interface StudentLocationSectionProps {
   form: OnboardingFormApi
@@ -21,10 +21,7 @@ export function StudentLocationSection({ form }: StudentLocationSectionProps) {
             label={t("wilaya")}
             placeholder={t("wilayaPlaceholder")}
             icon={MapPin}
-            options={WILAYAS.map((name, index) => ({
-              value: index + 1,
-              label: `${String(index + 1).padStart(2, "0")} - ${name}`,
-            }))}
+            options={WILAYA_OPTIONS}
             value={field.state.value}
             onChange={(value) => field.handleChange(Number(value))}
             onBlur={field.handleBlur}
