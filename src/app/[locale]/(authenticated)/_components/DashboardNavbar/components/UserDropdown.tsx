@@ -15,6 +15,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  NAVBAR_AVATAR_BADGE_CLASS,
+  NAVBAR_TEXT_CONTROL_CLASS,
+} from "@/components/navbar-control-styles"
 import { UserRoleBadge } from "@/components/UserRoleBadge"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
@@ -51,7 +55,7 @@ export function UserDropdown({
         render={
           <Button
             variant="ghost"
-            className="group h-auto min-w-0 items-center gap-2.5 rounded-none px-3 py-2 hover:bg-muted/60"
+            className={`${NAVBAR_TEXT_CONTROL_CLASS} h-auto items-center gap-2.5 px-3 py-2`}
           />
         }
       >
@@ -75,7 +79,7 @@ export function UserDropdown({
             className="text-[8px] tracking-[0.1em]"
           />
         </div>
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center border border-border/60 bg-muted text-sm font-serif text-heading transition-colors group-hover:border-primary/50">
+        <div className={NAVBAR_AVATAR_BADGE_CLASS}>
           {user.name?.charAt(0) || "U"}
         </div>
       </DropdownMenuTrigger>

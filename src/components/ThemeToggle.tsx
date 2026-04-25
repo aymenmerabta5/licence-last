@@ -5,6 +5,7 @@ import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { useTheme } from "next-themes"
 import { useSyncExternalStore } from "react"
+import { NAVBAR_ICON_CONTROL_CLASS } from "@/components/navbar-control-styles"
 import { Button } from "@/components/ui/button"
 
 const emptySubscribe = () => () => {}
@@ -23,7 +24,7 @@ export function ThemeToggle() {
       <Button
         variant="ghost"
         size="icon-lg"
-        className="rounded-full opacity-0"
+        className={`${NAVBAR_ICON_CONTROL_CLASS} opacity-0`}
       >
         <Sun className="h-4 w-4" />
       </Button>
@@ -37,7 +38,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon-lg"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="group relative overflow-hidden rounded-full hover:bg-secondary/80"
+      className={NAVBAR_ICON_CONTROL_CLASS}
       aria-label={isDark ? t("toLight") : t("toDark")}
     >
       <motion.div
@@ -50,7 +51,7 @@ export function ThemeToggle() {
         className="absolute inset-0 flex items-center justify-center"
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
-        <Moon className="h-5 w-5 text-primary" />
+        <Moon className="h-5 w-5 text-current opacity-80" />
       </motion.div>
 
       <motion.div
@@ -63,7 +64,7 @@ export function ThemeToggle() {
         className="absolute inset-0 flex items-center justify-center"
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
-        <Sun className="h-5 w-5 text-orange-500" />
+        <Sun className="h-5 w-5 text-current opacity-80" />
       </motion.div>
     </Button>
   )

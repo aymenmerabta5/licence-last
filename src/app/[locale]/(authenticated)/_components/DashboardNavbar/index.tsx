@@ -6,6 +6,7 @@ import { useSyncExternalStore } from "react"
 import { useDashboard } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import { UserDropdown } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/components/UserDropdown"
 import type { NavbarUser } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
+import { NAVBAR_ICON_CONTROL_CLASS } from "@/components/navbar-control-styles"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { useLogout } from "@/hooks/useLogout"
@@ -50,10 +51,10 @@ export function DashboardNavbar({ user }: { user: NavbarUser }) {
         <button
           type="button"
           onClick={() => setIsSidebarOpen(true)}
-          className="lg:hidden p-2 -ms-2 text-muted-foreground hover:text-foreground transition-colors"
+          className={`${NAVBAR_ICON_CONTROL_CLASS} lg:hidden -ms-2 inline-flex size-9 items-center justify-center`}
           aria-label="Toggle menu"
         >
-          <Menu className="h-5 w-5" />
+          <Menu className="h-5 w-5 text-current" />
         </button>
 
         {/* Clean minimalist breadcrumb */}

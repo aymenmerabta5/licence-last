@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { NAVBAR_ICON_CONTROL_CLASS } from "@/components/navbar-control-styles"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { formatNotification } from "@/lib/notifications"
@@ -85,11 +86,11 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
           <Button
             variant="ghost"
             size="icon-lg"
-            className="group relative rounded-full hover:bg-secondary/80"
+            className={NAVBAR_ICON_CONTROL_CLASS}
           />
         }
       >
-        <Bell className="h-5 w-5 text-foreground/60 group-hover:text-primary transition-colors" />
+        <Bell className="h-5 w-5 text-current opacity-80 transition-[color,opacity] duration-300 group-hover:opacity-100" />
         {unreadCount > 0 && (
           <span className="absolute -top-0.5 -end-0.5 min-w-5 h-5 px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold inline-flex items-center justify-center ring-2 ring-background">
             {unreadCount > 99 ? "99+" : unreadCount}
