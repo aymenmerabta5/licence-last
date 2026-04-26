@@ -5,9 +5,16 @@ const optionalUrl = z.preprocess((value) => {
   if (typeof value === "string" && value.trim() === "") {
     return undefined
   }
-
   return value
 }, z.string().url().optional())
+
+const optionalString = z.preprocess((value) => {
+  if (typeof value === "string" && value.trim() === "") {
+    return undefined
+  }
+  return value
+}, z.string().min(1).optional())
+
 const hasConfiguredAiProvider =
   Boolean(process.env.AI_API_KEY) || Boolean(process.env.POE_API_KEY)
 const assistantEnabledByDefault =
@@ -26,29 +33,34 @@ export const env = createEnv({
 
     // AI provider routing (gateway-first with Poe compatibility)
     AI_PROVIDER: z.enum(["gateway", "poe"]).optional(),
-    AI_API_KEY: z.string().min(1).optional(),
-    AI_MODEL: z.string().min(1).optional(),
-    AI_ALLOWED_MODELS: z.string().min(1).optional(),
-    AI_BASE_URL: z.string().url().optional(),
+    AI_API_KEY: optionalString,
+    AI_MODEL: optionalString,
+    AI_ALLOWED_MODELS: optionalString,
+    AI_BASE_URL: optionalUrl,
 
     // Legacy Poe compatibility (safe fallback during migration)
-    POE_API_KEY: z.string().min(1).optional(),
-    POE_MODEL: z.string().min(1).optional(),
-    POE_ALLOWED_MODELS: z.string().min(1).optional(),
-    POE_BASE_URL: z.string().url().optional(),
-    ARCADE_API_KEY: z.string().min(1).optional(),
+    POE_API_KEY: optionalString,
+    POE_MODEL: optionalString,
+    POE_ALLOWED_MODELS: optionalString,
+    POE_BASE_URL: optionalUrl,
+    ARCADE_API_KEY: optionalString,
 
-    RESEND_API_KEY: z.string().min(1).optional(),
-    EMAIL_FROM: z.string().min(3).optional(),
-    S3_BUCKET: z.string().min(1).optional(),
-    S3_ENDPOINT: z.url().optional(),
-    S3_ACCESS_KEY_ID: z.string().min(1).optional(),
-    S3_SECRET_ACCESS_KEY: z.string().min(1).optional(),
+    RESEND_API_KEY: optionalString,
+    EMAIL_FROM: z.preprocess((value) => {
+      if (typeof value === "string" && value.trim() === "") {
+        return undefined
+      }
+      return value
+    }, z.string().min(3).optional()),
+    S3_BUCKET: optionalString,
+    S3_ENDPOINT: optionalUrl,
+    S3_ACCESS_KEY_ID: optionalString,
+    S3_SECRET_ACCESS_KEY: optionalString,
     S3_REGION: z.string().default("auto"),
-    S3_PUBLIC_URL: z.url().optional(),
-    S3_BUCKET_NAME: z.string().min(1).optional(),
-    AWS_ACCESS_KEY_ID: z.string().min(1).optional(),
-    AWS_SECRET_ACCESS_KEY: z.string().min(1).optional(),
+    S3_PUBLIC_URL: optionalUrl,
+    S3_BUCKET_NAME: optionalString,
+    AWS_ACCESS_KEY_ID: optionalString,
+    AWS_SECRET_ACCESS_KEY: optionalString,
 
     // Redis (for rate limiting)
     REDIS_URL: optionalUrl,
@@ -71,13 +83,12 @@ export const env = createEnv({
       .default("info"),
 
     // Cloudflare Turnstile (CAPTCHA)
-    TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
+    TURNSTILE_SECRET_KEY: optionalString,
   },
   client: {
     NEXT_PUBLIC_BETTER_AUTH_URL: z.string().url(),
-    NEXT_PUBLIC_S3_ENDPOINT: z.url().optional(),
-    NEXT_PUBLIC_S3_URL: z.string().url().optional(),
-    NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().min(1).optional(),
+    NEXT_PUBLIC_S3_URL: optionalUrl,
+    NEXT_PUBLIC_TURNSTILE_SITE_KEY: optionalString,
     NEXT_PUBLIC_E2E_DISABLE_CAPTCHA: z.enum(["true", "false"]).optional(),
     NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES: z
       .enum(["true", "false"])
@@ -94,7 +105,6 @@ export const env = createEnv({
 
   experimental__runtimeEnv: {
     NEXT_PUBLIC_BETTER_AUTH_URL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
-    NEXT_PUBLIC_S3_ENDPOINT: process.env.NEXT_PUBLIC_S3_ENDPOINT,
     NEXT_PUBLIC_S3_URL: process.env.NEXT_PUBLIC_S3_URL,
     NEXT_PUBLIC_TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
     NEXT_PUBLIC_E2E_DISABLE_CAPTCHA:
@@ -114,7 +124,7 @@ export const env = createEnv({
 const hasProductionEmailConfig = Boolean(env.RESEND_API_KEY && env.EMAIL_FROM)
 const hasProductionStorageConfig = Boolean(
   (env.S3_BUCKET ?? env.S3_BUCKET_NAME) &&
-    (env.S3_ENDPOINT ?? env.NEXT_PUBLIC_S3_ENDPOINT) &&
+    env.S3_ENDPOINT &&
     (env.S3_ACCESS_KEY_ID ?? env.AWS_ACCESS_KEY_ID) &&
     (env.S3_SECRET_ACCESS_KEY ?? env.AWS_SECRET_ACCESS_KEY) &&
     (env.S3_PUBLIC_URL ?? env.NEXT_PUBLIC_S3_URL),

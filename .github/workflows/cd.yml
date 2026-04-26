@@ -83,7 +83,6 @@ jobs:
             S3_PUBLIC_URL=${{ secrets.S3_PUBLIC_URL }}
             NEXT_PUBLIC_S3_URL=${{ secrets.NEXT_PUBLIC_S3_URL }}
             S3_ENDPOINT=${{ secrets.S3_ENDPOINT }}
-            NEXT_PUBLIC_S3_ENDPOINT=${{ secrets.NEXT_PUBLIC_S3_ENDPOINT }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

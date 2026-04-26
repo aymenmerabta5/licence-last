@@ -37,7 +37,6 @@ function getStorageImageRemotePatterns(): ImageRemotePattern[] {
     process.env.S3_PUBLIC_URL,
     process.env.NEXT_PUBLIC_S3_URL,
     process.env.S3_ENDPOINT,
-    process.env.NEXT_PUBLIC_S3_ENDPOINT,
   ]
 
   const patterns = candidates

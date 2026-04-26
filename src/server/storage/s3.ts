@@ -13,14 +13,14 @@ const log = createModuleLogger("storage/s3")
 
 function getConfig() {
   const bucket = env.S3_BUCKET ?? env.S3_BUCKET_NAME
-  const endpoint = env.S3_ENDPOINT ?? env.NEXT_PUBLIC_S3_ENDPOINT
+  const endpoint = env.S3_ENDPOINT
   const accessKeyId = env.S3_ACCESS_KEY_ID ?? env.AWS_ACCESS_KEY_ID
   const secretAccessKey = env.S3_SECRET_ACCESS_KEY ?? env.AWS_SECRET_ACCESS_KEY
   const publicUrl = env.S3_PUBLIC_URL ?? env.NEXT_PUBLIC_S3_URL
 
   if (!bucket || !endpoint || !accessKeyId || !secretAccessKey || !publicUrl) {
     throw new Error(
-      "S3 is not configured. Set S3_PUBLIC_URL (or NEXT_PUBLIC_S3_URL) and either (S3_BUCKET, S3_ENDPOINT, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY) or (S3_BUCKET_NAME, NEXT_PUBLIC_S3_ENDPOINT, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY).",
+      "S3 is not configured. Set S3_PUBLIC_URL (or NEXT_PUBLIC_S3_URL) and either (S3_BUCKET, S3_ENDPOINT, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY) or (S3_BUCKET_NAME, S3_ENDPOINT, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY).",
     )
   }
 
