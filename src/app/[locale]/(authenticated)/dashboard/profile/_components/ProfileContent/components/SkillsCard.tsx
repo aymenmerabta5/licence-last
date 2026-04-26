@@ -104,7 +104,12 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
                     className="group/btn flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.25em] text-slate-400 transition-all hover:text-primary hover:gap-5"
                   >
                     <span>+ {t("addMoreSkills")}</span>
-                    <motion.span animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>→</motion.span>
+                    <motion.span
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ repeat: Infinity, duration: 1.5 }}
+                    >
+                      →
+                    </motion.span>
                   </button>
                 </Link>
               </div>
@@ -150,9 +155,7 @@ export function EmptyState({
         {message}
       </p>
       <Link href="/dashboard/settings" className="inline-block pt-4">
-        <Button
-          className="rounded-full h-14 px-10 text-[11px] font-black uppercase tracking-[0.25em] bg-primary shadow-[0_15px_40px_rgba(var(--primary-rgb),0.2)] transition-all hover:scale-105"
-        >
+        <Button className="rounded-full h-14 px-10 text-[11px] font-black uppercase tracking-[0.25em] bg-primary shadow-[0_15px_40px_rgba(var(--primary-rgb),0.2)] transition-all hover:scale-105">
           {buttonText}
         </Button>
       </Link>

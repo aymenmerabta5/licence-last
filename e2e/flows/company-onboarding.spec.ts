@@ -1,7 +1,6 @@
 import { expect, test } from "@playwright/test"
-
-import { createFreshCompanyAdminUser } from "../fixtures/seed"
 import { loginAsCompany } from "../fixtures/auth"
+import { createFreshCompanyAdminUser } from "../fixtures/seed"
 import { LoginPage } from "../pages/login.page"
 
 test.describe("Company Onboarding", () => {

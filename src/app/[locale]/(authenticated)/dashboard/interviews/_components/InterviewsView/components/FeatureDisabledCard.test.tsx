@@ -11,7 +11,8 @@ mock.module("next-intl", () => ({
       "disabled.title": "Interviews unavailable",
       "disabled.description":
         "Interviews are currently disabled by platform settings.",
-      "disabled.help": "Please contact your administrator to re-enable this feature.",
+      "disabled.help":
+        "Please contact your administrator to re-enable this feature.",
     }
 
     return translations[key] ?? key

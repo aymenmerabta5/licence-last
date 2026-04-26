@@ -193,7 +193,12 @@ export async function validatePlacement(
         adminActionByUserId: adminUserId,
         adminActionAt: now,
       })
-      .where(and(eq(application.id, applicationId), eq(application.status, app.status)))
+      .where(
+        and(
+          eq(application.id, applicationId),
+          eq(application.status, app.status),
+        ),
+      )
       .returning({ id: application.id })
 
     if (!updatedApplication) {

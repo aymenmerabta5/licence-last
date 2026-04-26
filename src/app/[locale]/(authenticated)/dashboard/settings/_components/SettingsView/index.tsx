@@ -51,7 +51,6 @@ export function SettingsView() {
               {activeTab === "notifications" && (
                 <NotificationsTab email={me?.user.email ?? ""} />
               )}
-
             </motion.div>
           </AnimatePresence>
         </div>

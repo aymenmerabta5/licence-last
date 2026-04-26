@@ -3,6 +3,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Bell, CheckCheck } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { NAVBAR_ICON_CONTROL_CLASS } from "@/components/navbar-control-styles"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { NAVBAR_ICON_CONTROL_CLASS } from "@/components/navbar-control-styles"
-import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { formatNotification } from "@/lib/notifications"
 import { notificationsQueryKeys } from "@/lib/notifications-query"
@@ -126,10 +126,13 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
         ) : (
           <div className="max-h-96 overflow-auto">
             {notifications.map((n) => {
-              const formatted = formatNotification({
-                type: n.type,
-                payload: n.payload,
-              }, t)
+              const formatted = formatNotification(
+                {
+                  type: n.type,
+                  payload: n.payload,
+                },
+                t,
+              )
 
               return (
                 <DropdownMenuItem

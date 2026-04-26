@@ -3,14 +3,12 @@ import type { PlacementDocumentStatus } from "@/app/[locale]/(authenticated)/das
 export type DocumentStatus = PlacementDocumentStatus | "notGenerated"
 
 export const STATUS_STYLES: Record<DocumentStatus, string> = {
-  notGenerated:
-    "bg-muted text-muted-foreground border-border",
+  notGenerated: "bg-muted text-muted-foreground border-border",
   pending:
     "bg-amber-500/10 text-amber-700 border-amber-500/20 dark:text-amber-300 dark:bg-amber-950/30 dark:border-amber-500/30",
   generated:
     "bg-emerald-500/10 text-emerald-700 border-emerald-500/20 dark:text-emerald-300 dark:bg-emerald-950/30 dark:border-emerald-500/30",
-  failed:
-    "bg-destructive/10 text-destructive border-destructive/20",
+  failed: "bg-destructive/10 text-destructive border-destructive/20",
 }
 
 type DocumentActionVariant = "editorial" | "editorial-outline"

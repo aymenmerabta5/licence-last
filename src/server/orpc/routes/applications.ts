@@ -4,8 +4,8 @@ import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
 import { z } from "zod"
-import { LANGUAGE_CODES } from "@/lib/constants/languages"
 import { CACHE_TAGS } from "@/lib/cache"
+import { LANGUAGE_CODES } from "@/lib/constants/languages"
 import {
   applicationStatusSchema,
   pipelineStageSchema,
@@ -21,7 +21,6 @@ import { user } from "@/server/db/schema/auth"
 import { companyMember } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { studentProfile } from "@/server/db/schema/students"
-import { canAccessApplicationTimeline } from "@/server/orpc/utils/student-scope"
 import {
   assistantProcedureLimited,
   authedProcedureGenerous,
@@ -39,6 +38,7 @@ import {
 } from "@/server/orpc/routes/applications.error-mapping"
 import { throwAIOrpcError } from "@/server/orpc/utils/ai-error"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+import { canAccessApplicationTimeline } from "@/server/orpc/utils/student-scope"
 import { applyToOffer } from "@/server/services/applications/apply"
 import { companyAcceptApplication } from "@/server/services/applications/company-accept"
 import { companyRefuseApplication } from "@/server/services/applications/company-refuse"
@@ -136,7 +136,10 @@ export const listByOfferProcedure = companyAdminProcedureGenerous
       status: applicationStatusSchema.optional(),
       pipelineStage: pipelineStageSchema.optional(),
       skillTagIds: z.array(z.string()).max(20).optional(),
-      languageCodes: z.array(z.enum(LANGUAGE_CODES)).max(LANGUAGE_CODES.length).optional(),
+      languageCodes: z
+        .array(z.enum(LANGUAGE_CODES))
+        .max(LANGUAGE_CODES.length)
+        .optional(),
       cursor: z.object({ createdAt: z.string(), id: z.string() }).optional(),
       limit: z.coerce.number().int().min(1).max(50).optional(),
     }),

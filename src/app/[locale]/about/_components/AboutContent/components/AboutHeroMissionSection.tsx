@@ -1,7 +1,7 @@
 import * as motion from "motion/react-client"
+import type { AboutSectionProps } from "@/app/[locale]/about/_components/AboutContent/types"
 import { Separator } from "@/components/ui/separator"
 import { ease, reveal } from "@/lib/animations"
-import type { AboutSectionProps } from "@/app/[locale]/about/_components/AboutContent/types"
 
 export function AboutHeroMissionSection({ t }: AboutSectionProps) {
   const headline = t("hero.headline")

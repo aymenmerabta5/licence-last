@@ -25,9 +25,7 @@ test.describe("Pipeline Stage Transitions", () => {
       timeout: 15000,
     })
 
-    const stageSelect = page.locator(
-      `#pipeline-stage-${fixture.applicationId}`,
-    )
+    const stageSelect = page.locator(`#pipeline-stage-${fixture.applicationId}`)
     if (await stageSelect.isVisible({ timeout: 5000 }).catch(() => false)) {
       await stageSelect.click()
       const screeningOption = page

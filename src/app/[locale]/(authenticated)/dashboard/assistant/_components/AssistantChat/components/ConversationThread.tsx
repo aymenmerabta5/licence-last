@@ -18,7 +18,10 @@ interface ConversationThreadProps {
   messageCreatedAtById: Record<string, string | Date | undefined>
   isNoteDialogOpen: boolean
   onNoteDialogOpenChange: (open: boolean) => void
-  onAppendNote: (note: string, onSuccess?: (savedText: string) => void) => Promise<void>
+  onAppendNote: (
+    note: string,
+    onSuccess?: (savedText: string) => void,
+  ) => Promise<void>
 }
 
 function TypingIndicator() {

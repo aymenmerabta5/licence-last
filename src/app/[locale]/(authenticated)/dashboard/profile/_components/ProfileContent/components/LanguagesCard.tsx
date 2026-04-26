@@ -5,7 +5,6 @@ import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import type { StudentLanguage } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
 
@@ -25,7 +24,6 @@ export function LanguagesCard({
   canEdit,
   labels,
 }: LanguagesCardProps) {
-  const t = useTranslations("dashboard.student.profile")
   const tProficiency = useTranslations("onboarding.student.proficiencyLevels")
   const hasLanguages = languages.length > 0
 
@@ -50,7 +48,7 @@ export function LanguagesCard({
           <div className="p-8 space-y-5">
             {languages.map((lang, idx) => (
               <motion.div
-                key={lang.languageCode}
+                key={`${lang.languageCode}-${idx}`}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 + idx * 0.1 }}
@@ -61,10 +59,15 @@ export function LanguagesCard({
                     {lang.languageCode}
                   </div>
                   <span className="text-[14px] font-bold text-slate-700">
-                    {new Intl.DisplayNames([lang.languageCode], { type: "language" }).of(lang.languageCode)}
+                    {new Intl.DisplayNames([lang.languageCode], {
+                      type: "language",
+                    }).of(lang.languageCode)}
                   </span>
                 </div>
-                <Badge variant="secondary" className="bg-white text-primary border-slate-200 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full">
+                <Badge
+                  variant="secondary"
+                  className="bg-white text-primary border-slate-200 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full"
+                >
                   {tProficiency(lang.proficiency as "a1")}
                 </Badge>
               </motion.div>
@@ -73,7 +76,10 @@ export function LanguagesCard({
             {canEdit && (
               <div className="pt-4">
                 <Link href="/dashboard/settings">
-                  <button className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400 hover:text-primary transition-colors">
+                  <button
+                    type="button"
+                    className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400 hover:text-primary transition-colors"
+                  >
                     + {labels.addLanguages}
                   </button>
                 </Link>
@@ -84,10 +90,10 @@ export function LanguagesCard({
       ) : (
         <div className="rounded-[2.5rem] border-2 border-dashed border-slate-100 p-12 bg-white/50">
           <div className="text-center space-y-6">
-             <Languages className="h-10 w-10 mx-auto text-slate-200" />
-             <p className="text-[11px] text-slate-300 font-black uppercase tracking-[0.25em]">
-               {labels.noLanguagesListed}
-             </p>
+            <Languages className="h-10 w-10 mx-auto text-slate-200" />
+            <p className="text-[11px] text-slate-300 font-black uppercase tracking-[0.25em]">
+              {labels.noLanguagesListed}
+            </p>
           </div>
         </div>
       )}

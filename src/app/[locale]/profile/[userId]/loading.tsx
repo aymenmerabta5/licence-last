@@ -50,7 +50,10 @@ export default function PublicProfileLoading() {
               <Skeleton className="h-px w-full rounded-none" />
               <div className="divide-y divide-border/20 border border-border/40">
                 {Array.from({ length: 4 }).map((_, index) => (
-                  <div key={index} className="flex items-center gap-3.5 px-5 py-4">
+                  <div
+                    key={index}
+                    className="flex items-center gap-3.5 px-5 py-4"
+                  >
                     <Skeleton className="h-8 w-8 rounded-md" />
                     <div className="flex-1 space-y-1.5">
                       <Skeleton className="h-2 w-12" />

@@ -11,8 +11,8 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { useTranslations } from "next-intl"
-import type { CompanyListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/types"
 import { CompanyCardActionPanel } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyCardActionPanel"
+import type { CompanyListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/types"
 import { getWilayaName } from "@/lib/wilayas"
 
 const STATUS_STYLES: Record<string, string> = {

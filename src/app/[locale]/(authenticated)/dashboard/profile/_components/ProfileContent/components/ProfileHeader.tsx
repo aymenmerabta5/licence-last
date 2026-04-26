@@ -1,6 +1,13 @@
 "use client"
 
-import { Calendar, Check as CheckIcon, Copy, Settings, ShieldCheck, Sparkles } from "lucide-react"
+import {
+  Calendar,
+  Check as CheckIcon,
+  Copy,
+  Settings,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react"
 import * as motion from "motion/react-client"
 import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
@@ -10,7 +17,7 @@ import { getInitials } from "@/app/[locale]/(authenticated)/dashboard/profile/_c
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
-import { ease, reveal, revealWithDelay } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface ProfileHeaderProps {
   user: ProfileUser
@@ -54,7 +61,7 @@ export function ProfileHeader({
       >
         {/* Subtle Background Accent */}
         <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/[0.02] -skew-x-12 translate-x-1/4" />
-        
+
         <div className="relative px-8 pb-14 pt-14 sm:px-16 sm:pb-20 sm:pt-24">
           <div className="flex flex-col lg:flex-row items-center lg:items-center gap-14">
             {/* Avatar with Circular Editorial Frame */}
@@ -64,16 +71,18 @@ export function ProfileHeader({
             >
               <div className="h-48 w-48 sm:h-60 sm:w-60 rounded-full p-2 bg-gradient-to-tr from-primary/20 via-transparent to-primary/10 shadow-inner relative">
                 <div className="h-full w-full rounded-full overflow-hidden bg-slate-100 flex items-center justify-center border-4 border-white shadow-2xl">
-                {user.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={user.image}
-                    alt={user.name || t("profileImageAlt")}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <span className="text-slate-800 text-7xl font-serif tracking-tighter">{initials}</span>
-                )}
+                  {user.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={user.image}
+                      alt={user.name || t("profileImageAlt")}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-slate-800 text-7xl font-serif tracking-tighter">
+                      {initials}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="absolute bottom-2 right-6 h-14 w-14 bg-primary text-white rounded-full flex items-center justify-center shadow-xl border-4 border-white">
@@ -94,7 +103,7 @@ export function ProfileHeader({
                     {t("memberSince", { date: memberSince })}
                   </span>
                 </div>
-                
+
                 <h1 className="font-serif text-[clamp(2.8rem,8vw,5rem)] font-bold tracking-tight text-slate-900 leading-[0.9] drop-shadow-sm">
                   {user.name || t("anonymousUser")}
                 </h1>
@@ -117,9 +126,7 @@ export function ProfileHeader({
 
                 {canEdit && (
                   <Link href="/dashboard/settings">
-                    <Button
-                      className="bg-primary hover:bg-primary/90 text-white rounded-full h-14 px-12 text-xs font-black uppercase tracking-[0.2em] shadow-[0_15px_40px_rgba(var(--primary-rgb),0.25)] transition-all hover:-translate-y-1 active:translate-y-0"
-                    >
+                    <Button className="bg-primary hover:bg-primary/90 text-white rounded-full h-14 px-12 text-xs font-black uppercase tracking-[0.2em] shadow-[0_15px_40px_rgba(var(--primary-rgb),0.25)] transition-all hover:-translate-y-1 active:translate-y-0">
                       <Settings className="h-4 w-4 me-3" />
                       {t("edit")}
                     </Button>

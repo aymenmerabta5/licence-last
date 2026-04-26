@@ -2,12 +2,12 @@
 
 import { ArrowLeft, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
-import { Link } from "@/i18n/routing"
 import { ValidationCard } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/ValidationCard"
 import { ValidationEmptyState } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/ValidationEmptyState"
 import { ValidationLoadingState } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/ValidationLoadingState"
 import type { ValidationListPageProps } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/types"
 import { Badge } from "@/components/ui/badge"
+import { Link } from "@/i18n/routing"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
 export function ValidationListPage({

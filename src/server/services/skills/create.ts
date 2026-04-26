@@ -31,10 +31,7 @@ function generateSlug(name: string): string {
  * Auto-generates a unique slug from the name.
  * Returns the existing skill if the exact name already exists (case-insensitive).
  */
-export async function createSkill(
-  name: string,
-  category?: string | null,
-) {
+export async function createSkill(name: string, category?: string | null) {
   const trimmed = name.trim()
   if (trimmed.length < 1) {
     throw new ServiceError("SKILL_NAME_REQUIRED", "Skill name is required")
@@ -87,5 +84,9 @@ export async function createSkill(
 
   log.info({ skillId: inserted.id, name: trimmed, slug }, "Skill tag created")
 
-  return { ...inserted, category: category?.trim() || null, created: true as const }
+  return {
+    ...inserted,
+    category: category?.trim() || null,
+    created: true as const,
+  }
 }

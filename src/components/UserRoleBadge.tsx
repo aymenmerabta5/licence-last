@@ -20,11 +20,7 @@ interface UserRoleBadgeProps {
   className?: string
 }
 
-export function UserRoleBadge({
-  role,
-  label,
-  className,
-}: UserRoleBadgeProps) {
+export function UserRoleBadge({ role, label, className }: UserRoleBadgeProps) {
   return (
     <Badge
       variant="outline"

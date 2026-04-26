@@ -17,12 +17,12 @@ import { user } from "@/server/db/schema/auth"
 import { companyMember } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { studentProfile } from "@/server/db/schema/students"
-import { canAccessPrivateStudentProfile } from "@/server/orpc/utils/student-scope"
 import {
   authedProcedureGenerous,
   studentProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+import { canAccessPrivateStudentProfile } from "@/server/orpc/utils/student-scope"
 import { getStudentProfile } from "@/server/services/students/get-profile"
 import { getPublicStudentProfile } from "@/server/services/students/get-public-profile"
 import { upsertStudentLanguages } from "@/server/services/students/upsert-languages"
@@ -367,7 +367,10 @@ export const upsertStudentLanguagesProcedure = studentProcedureStandard
       })
     }
 
-    const result = await upsertStudentLanguages(input.languages, context.user.id)
+    const result = await upsertStudentLanguages(
+      input.languages,
+      context.user.id,
+    )
 
     revalidateTag(CACHE_TAGS.STUDENT_PROFILE(context.user.id), "max")
     revalidateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id), "max")

@@ -99,11 +99,7 @@ export function DeptHeadDashboard({ user }: DeptHeadDashboardProps) {
             className="pt-2"
           >
             <Link href={"/dashboard/dept-validations" as "/dashboard"}>
-              <Button
-                variant="editorial"
-                size="editorial"
-                className="gap-2"
-              >
+              <Button variant="editorial" size="editorial" className="gap-2">
                 {t("openQueue")}
                 <ArrowRight className="h-3.5 w-3.5" />
               </Button>

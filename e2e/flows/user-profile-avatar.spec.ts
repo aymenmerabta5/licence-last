@@ -24,7 +24,7 @@ test.describe("User Profile & Settings", () => {
       timeout: 15000,
     })
 
-    const profileBtn = page.locator('button', { hasText: /^Profile$/i })
+    const profileBtn = page.locator("button", { hasText: /^Profile$/i })
     if (await profileBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
       await profileBtn.click()
       await page.waitForTimeout(500)
@@ -41,7 +41,7 @@ test.describe("User Profile & Settings", () => {
       timeout: 15000,
     })
 
-    const securityBtn = page.locator('button', { hasText: /^Security$/i })
+    const securityBtn = page.locator("button", { hasText: /^Security$/i })
     if (await securityBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
       await securityBtn.click()
       await page.waitForTimeout(500)

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
-import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
+import { Suspense } from "react"
 
 import { CompanyOffersSection } from "@/app/[locale]/company/[slug]/_components/CompanyOffersSection"
 import { getWilayaName } from "@/lib/wilayas"

@@ -32,7 +32,10 @@ export function WilayaFilter({
         }
         items={[
           { value: "all", label: t("wilayaPlaceholder") },
-          ...WILAYA_OPTIONS.map((w) => ({ value: w.value.toString(), label: w.label })),
+          ...WILAYA_OPTIONS.map((w) => ({
+            value: w.value.toString(),
+            label: w.label,
+          })),
         ]}
       >
         <SelectTrigger className="rounded-none border-foreground/10 h-9 text-sm">

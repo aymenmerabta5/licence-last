@@ -12,7 +12,6 @@ import {
   or,
   sql,
 } from "drizzle-orm"
-import { internshipOfferLanguageRequirement } from "@/server/db/schema/languages"
 import { cacheLife, cacheTag } from "next/cache"
 import { CACHE_TAGS } from "@/lib/cache"
 import { company } from "@/server/db/schema/companies"
@@ -20,6 +19,7 @@ import {
   internshipOffer,
   internshipOfferSkill,
 } from "@/server/db/schema/internships"
+import { internshipOfferLanguageRequirement } from "@/server/db/schema/languages"
 import { skillTag } from "@/server/db/schema/skills"
 
 interface SearchParams {

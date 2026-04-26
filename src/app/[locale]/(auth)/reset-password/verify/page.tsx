@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
-import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
+import { Suspense } from "react"
 
 import { ResetPasswordVerifySkeleton } from "@/app/[locale]/(auth)/_components/AuthLoadingSkeletons"
 import { ResetPasswordVerifyForm } from "@/app/[locale]/(auth)/reset-password/verify/_components/ResetPasswordVerifyForm"

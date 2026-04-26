@@ -44,7 +44,9 @@ export function useSidebar(
         if (
           role === "university_admin" &&
           item.universityMembershipRoles &&
-          !item.universityMembershipRoles.includes(universityMembershipRole ?? "")
+          !item.universityMembershipRoles.includes(
+            universityMembershipRole ?? "",
+          )
         ) {
           return false
         }

@@ -1,5 +1,5 @@
-import { render } from "@react-email/render"
 import { describe, expect, test } from "bun:test"
+import { render } from "@react-email/render"
 
 import CompanyApprovedEmail from "@/server/email/templates/CompanyApprovedEmail"
 import CompanyRejectedEmail from "@/server/email/templates/CompanyRejectedEmail"

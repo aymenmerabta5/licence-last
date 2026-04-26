@@ -10,7 +10,8 @@ export function MarqueeRibbon() {
   const items = t.raw("items") as string[]
   const cloneCount = 4
   const shift = `${100 / cloneCount}%`
-  const xKeyframes: string[] = locale === "ar" ? [`-${shift}`, "0%"] : ["0%", `-${shift}`]
+  const xKeyframes: string[] =
+    locale === "ar" ? [`-${shift}`, "0%"] : ["0%", `-${shift}`]
 
   return (
     <div

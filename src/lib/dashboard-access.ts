@@ -5,11 +5,7 @@ import { localeRedirect } from "@/lib/navigation"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 import { getCompanyMembership } from "@/server/services/companies/membership"
 
-type AuthRole =
-  | "student"
-  | "company_admin"
-  | "university_admin"
-  | "super_admin"
+type AuthRole = "student" | "company_admin" | "university_admin" | "super_admin"
 
 interface DashboardUser {
   id: string
@@ -23,7 +19,9 @@ interface DashboardUser {
   [key: string]: unknown
 }
 
-type ApprovedCompany = NonNullable<Awaited<ReturnType<typeof getCompanyByUserId>>>
+type ApprovedCompany = NonNullable<
+  Awaited<ReturnType<typeof getCompanyByUserId>>
+>
 type CompanyMembership = NonNullable<
   Awaited<ReturnType<typeof getCompanyMembership>>
 >
@@ -33,7 +31,10 @@ export interface OnboardedStudentContext {
 }
 
 export interface ApprovedCompanyContext {
-  user: DashboardUser & { role: "company_admin"; effectiveRole: "company_admin" }
+  user: DashboardUser & {
+    role: "company_admin"
+    effectiveRole: "company_admin"
+  }
   company: ApprovedCompany
 }
 

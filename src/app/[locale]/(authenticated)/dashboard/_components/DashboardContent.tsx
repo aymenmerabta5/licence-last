@@ -1,9 +1,8 @@
 import { getTranslations } from "next-intl/server"
 import { Suspense } from "react"
 import type { StudentDashboardData } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
-
-import { isFeatureEnabled } from "@/lib/feature-flags"
 import { requireDashboardUser } from "@/lib/dashboard-access"
+import { isFeatureEnabled } from "@/lib/feature-flags"
 import { localeRedirect } from "@/lib/navigation"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 import { listApplicationsByStudent } from "@/server/services/applications/list-by-student"
@@ -197,7 +196,8 @@ export async function DashboardContent({
       {isDeptHead && (
         <DeptHeadDashboard user={{ ...user, role: effectiveRole as string }} />
       )}
-      {(effectiveRole === "university_admin" && !isDeptHead || effectiveRole === "super_admin") && (
+      {((effectiveRole === "university_admin" && !isDeptHead) ||
+        effectiveRole === "super_admin") && (
         <AdminDashboard user={{ ...user, role: effectiveRole as string }} />
       )}
     </div>

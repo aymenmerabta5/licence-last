@@ -48,7 +48,10 @@ const roles = [
   "super_admin",
 ] as const
 
-const rolesRequiringUniversity = new Set<string>(["student", "university_admin"])
+const rolesRequiringUniversity = new Set<string>([
+  "student",
+  "university_admin",
+])
 
 export function CreateUserDialog({
   open,

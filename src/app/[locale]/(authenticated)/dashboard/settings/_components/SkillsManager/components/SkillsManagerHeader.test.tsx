@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, mock, test } from "bun:test"
-import { cleanup, screen, render } from "@testing-library/react"
+import { cleanup, render, screen } from "@testing-library/react"
 
 import { SkillsManagerHeader } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager/components/SkillsManagerHeader"
 

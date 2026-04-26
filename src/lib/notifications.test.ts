@@ -18,8 +18,7 @@ const t: NotificationTranslationFn = (key, values) => {
       "Consultez les notifications non lues.",
     "fallbackSummary.actions.prioritizeMessages":
       "Traitez les messages d'abord.",
-    "fallbackSummary.actions.upToDate":
-      "Vous êtes à jour.",
+    "fallbackSummary.actions.upToDate": "Vous êtes à jour.",
   }
 
   let text = translations[key] ?? key

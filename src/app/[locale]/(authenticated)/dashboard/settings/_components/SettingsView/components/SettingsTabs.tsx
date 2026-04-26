@@ -30,12 +30,11 @@ export function SettingsTabs({ activeTab, onTabChange }: SettingsTabsProps) {
   return (
     <nav className="lg:col-span-3" aria-label="Settings sections">
       {/* ── Mobile: Horizontal scrollable tabs ── */}
-      <Tabs
-        value={activeTab}
-        onValueChange={onTabChange}
-        className="lg:hidden"
-      >
-        <TabsList variant="line" className="w-full justify-start gap-1 overflow-x-auto pb-2">
+      <Tabs value={activeTab} onValueChange={onTabChange} className="lg:hidden">
+        <TabsList
+          variant="line"
+          className="w-full justify-start gap-1 overflow-x-auto pb-2"
+        >
           {TABS.map((tab) => {
             const Icon = tab.icon
             return (

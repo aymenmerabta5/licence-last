@@ -1,9 +1,9 @@
 import type { LucideIcon } from "lucide-react"
 import { Building2, Megaphone, UserCheck, Zap } from "lucide-react"
 import * as motion from "motion/react-client"
+import type { ForCompaniesSectionProps } from "@/app/[locale]/for-companies/_components/ForCompaniesContent/types"
 import { Separator } from "@/components/ui/separator"
 import { ease, reveal } from "@/lib/animations"
-import type { ForCompaniesSectionProps } from "@/app/[locale]/for-companies/_components/ForCompaniesContent/types"
 
 const WORKFLOW: Array<{ key: string; icon: LucideIcon }> = [
   { key: "step1", icon: Building2 },

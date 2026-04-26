@@ -20,7 +20,12 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
 
 const listSkillTagsMock = mock(async () => ({ items: [] }))
 const listSkillTagsPrioritizedMock = mock(async () => ({ items: [] }))
-const createSkillMock = mock(async () => ({ id: "skill-1", name: "Test", slug: "test", created: true }))
+const createSkillMock = mock(async () => ({
+  id: "skill-1",
+  name: "Test",
+  slug: "test",
+  created: true,
+}))
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   universityProcedureAssistant: createProcedureMock(),
@@ -76,9 +81,7 @@ describe("src/server/orpc/routes/skills", () => {
   })
 
   test("createSkillProcedure delegates with name and category", async () => {
-    const { createSkillProcedure } = await import(
-      "@/server/orpc/routes/skills"
-    )
+    const { createSkillProcedure } = await import("@/server/orpc/routes/skills")
 
     const result = await callProcedure(createSkillProcedure, {
       input: { name: "Rust", category: "language" },

@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { getTranslations, setRequestLocale } from "next-intl/server"
-import { AboutContent } from "@/app/[locale]/about/_components/AboutContent"
 import { MarqueeRibbon } from "@/app/[locale]/_components/MarqueeRibbon"
+import { AboutContent } from "@/app/[locale]/about/_components/AboutContent"
 import { Footer } from "@/components/Footer"
 import { Navbar } from "@/components/Navbar"
 

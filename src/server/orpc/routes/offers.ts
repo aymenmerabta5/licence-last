@@ -27,8 +27,8 @@ import {
   studentProcedureGenerous,
   studentProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
-import { parseInputDate } from "@/server/orpc/utils/date"
 import { throwAIOrpcError } from "@/server/orpc/utils/ai-error"
+import { parseInputDate } from "@/server/orpc/utils/date"
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import { checkOfferSaved } from "@/server/services/offers/check-saved"
 import { createOffer } from "@/server/services/offers/create"
@@ -308,7 +308,9 @@ export const createOfferProcedure = companyAdminProcedureStandard
       const result = await createOffer({
         companyId: context.companyMembership.companyId,
         ...restInput,
-        ...(applicationDeadlineAt !== undefined ? { applicationDeadlineAt } : {}),
+        ...(applicationDeadlineAt !== undefined
+          ? { applicationDeadlineAt }
+          : {}),
         ...(expectedStartDate !== undefined ? { expectedStartDate } : {}),
         ...(expectedEndDate !== undefined ? { expectedEndDate } : {}),
         ...(isLanguageRequirementsEnabled

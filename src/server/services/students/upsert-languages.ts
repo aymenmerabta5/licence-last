@@ -1,7 +1,10 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-import { hasDuplicateLanguageCodes, normalizeLanguageEntries } from "@/lib/constants/languages"
+import {
+  hasDuplicateLanguageCodes,
+  normalizeLanguageEntries,
+} from "@/lib/constants/languages"
 import type { ProficiencyLevel } from "@/lib/schemas/enums"
 import { db } from "@/server/db"
 import { studentLanguage } from "@/server/db/schema/languages"

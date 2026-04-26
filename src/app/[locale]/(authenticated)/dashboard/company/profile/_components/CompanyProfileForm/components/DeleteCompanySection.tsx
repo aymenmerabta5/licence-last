@@ -53,7 +53,11 @@ export function DeleteCompanySection({
           </div>
         </div>
 
-        <Button type="button" variant="destructive" onClick={() => setOpen(true)}>
+        <Button
+          type="button"
+          variant="destructive"
+          onClick={() => setOpen(true)}
+        >
           {t("openDialog")}
         </Button>
       </div>

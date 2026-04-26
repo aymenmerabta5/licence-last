@@ -13,10 +13,16 @@ export async function upsertStudentSkills(
   skillTagIds: string[],
   userId: string,
 ) {
-  log.info({ userId, skillCount: skillTagIds.length }, "Upserting student skills")
+  log.info(
+    { userId, skillCount: skillTagIds.length },
+    "Upserting student skills",
+  )
 
   if (skillTagIds.length < 1) {
-    throw new ServiceError("SKILL_MIN_REQUIRED", "At least one skill is required")
+    throw new ServiceError(
+      "SKILL_MIN_REQUIRED",
+      "At least one skill is required",
+    )
   }
 
   if (skillTagIds.length > 10) {
@@ -39,6 +45,9 @@ export async function upsertStudentSkills(
     )
   })
 
-  log.info({ userId, event: "student_skills_upserted" }, "Student skills updated")
+  log.info(
+    { userId, event: "student_skills_upserted" },
+    "Student skills updated",
+  )
   return { userId }
 }

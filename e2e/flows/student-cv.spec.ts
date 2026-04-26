@@ -19,7 +19,9 @@ test.describe("Student CV — Experience", () => {
 
     await page.getByRole("button", { name: "Save", exact: true }).click()
 
-    await expect(page.getByText("Software Intern")).toBeVisible({ timeout: 10000 })
+    await expect(page.getByText("Software Intern")).toBeVisible({
+      timeout: 10000,
+    })
     await expect(page.getByText("Test Corp")).toBeVisible()
   })
 
@@ -30,7 +32,9 @@ test.describe("Student CV — Experience", () => {
 
     await page.getByRole("button", { name: "Cancel" }).first().click()
 
-    await expect(page.getByText("Should Not Persist")).not.toBeVisible({ timeout: 5000 })
+    await expect(page.getByText("Should Not Persist")).not.toBeVisible({
+      timeout: 5000,
+    })
   })
 
   test("save button is disabled without required fields", async ({ page }) => {
@@ -54,11 +58,16 @@ test.describe("Student CV — Projects", () => {
     await addButtons.nth(1).click()
 
     await page.fill('input[placeholder="Project name"]', "E2E Test Project")
-    await page.fill('textarea[placeholder="Project summary"]', "A project for E2E testing")
+    await page.fill(
+      'textarea[placeholder="Project summary"]',
+      "A project for E2E testing",
+    )
 
     await page.getByRole("button", { name: "Save", exact: true }).click()
 
-    await expect(page.getByText("E2E Test Project")).toBeVisible({ timeout: 10000 })
+    await expect(page.getByText("E2E Test Project")).toBeVisible({
+      timeout: 10000,
+    })
   })
 
   test("can cancel project creation", async ({ page }) => {
@@ -69,7 +78,9 @@ test.describe("Student CV — Projects", () => {
 
     await page.getByRole("button", { name: "Cancel" }).first().click()
 
-    await expect(page.getByText("Should Not Persist")).not.toBeVisible({ timeout: 5000 })
+    await expect(page.getByText("Should Not Persist")).not.toBeVisible({
+      timeout: 5000,
+    })
   })
 
   test("save button is disabled without required fields", async ({ page }) => {

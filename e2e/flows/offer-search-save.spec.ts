@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-import { loginAsStudent, loginAsCompany } from "../fixtures/auth"
+import { loginAsStudent } from "../fixtures/auth"
 import { seedOfferFixture } from "../fixtures/seed"
 
 test.describe("Offer Search & Save/Unsave", () => {
@@ -24,7 +24,7 @@ test.describe("Offer Search & Save/Unsave", () => {
     })
 
     const saveButton = page
-      .locator('button', { hasText: /save|bookmark/i })
+      .locator("button", { hasText: /save|bookmark/i })
       .first()
     if (await saveButton.isVisible({ timeout: 5000 }).catch(() => false)) {
       await saveButton.click()

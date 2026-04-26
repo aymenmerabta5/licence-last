@@ -63,7 +63,7 @@ function main() {
     const result = spawnSync(BUN_BIN, ["test", relative], {
       cwd: ROOT,
       stdio: "inherit",
-      shell: false,
+      shell: process.platform === "win32",
     })
 
     if (result.error) {

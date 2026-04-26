@@ -11,18 +11,22 @@ interface MockDashboardUser {
   universityDepartmentId: string | null
 }
 
-const requireRoleMock = mock(async (): Promise<MockDashboardUser> => ({
-  id: "user-1",
-  email: "admin@uni.test",
-  role: "university_admin",
-  effectiveRole: "university_admin",
-  name: "Admin",
-  onboardingCompleted: true,
-  universityMembershipRole: null,
-  universityDepartmentId: null,
-}))
+const requireRoleMock = mock(
+  async (): Promise<MockDashboardUser> => ({
+    id: "user-1",
+    email: "admin@uni.test",
+    role: "university_admin",
+    effectiveRole: "university_admin",
+    name: "Admin",
+    onboardingCompleted: true,
+    universityMembershipRole: null,
+    universityDepartmentId: null,
+  }),
+)
 
-const localeRedirectMock = mock(async (path: string) => `redirect:${path}` as never)
+const localeRedirectMock = mock(
+  async (path: string) => `redirect:${path}` as never,
+)
 
 mock.module("@/lib/auth-guards", () => ({
   requireRole: requireRoleMock,

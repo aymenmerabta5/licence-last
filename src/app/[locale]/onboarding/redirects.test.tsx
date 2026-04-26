@@ -14,9 +14,9 @@ interface MockStatus {
 }
 
 const headersMock = mock(async () => new Headers())
-const getFreshAuthSessionMock = mock<
-  () => Promise<MockSession | null>
->(async () => null)
+const getFreshAuthSessionMock = mock<() => Promise<MockSession | null>>(
+  async () => null,
+)
 const localeRedirectMock = mock(
   async (path: string) => `redirect:${path}` as never,
 )
@@ -79,9 +79,7 @@ describe("onboarding redirects", () => {
 
   test("redirects approved companies to the canonical dashboard", async () => {
     const { default: CompanyOnboardingPage, CompanyOnboardingPageContent } =
-      await loadModule(
-      "@/app/[locale]/onboarding/company/page",
-      )
+      await loadModule("@/app/[locale]/onboarding/company/page")
     getFreshAuthSessionMock.mockResolvedValueOnce({
       user: {
         id: "company-user",
@@ -124,9 +122,7 @@ describe("onboarding redirects", () => {
     const {
       default: UniversityOnboardingPage,
       UniversityOnboardingPageContent,
-    } = await loadModule(
-      "@/app/[locale]/onboarding/university/page",
-    )
+    } = await loadModule("@/app/[locale]/onboarding/university/page")
     getFreshAuthSessionMock.mockResolvedValueOnce({
       user: {
         id: "university-user",

@@ -3,12 +3,12 @@ import {
   DecorativePanel,
   MobileHeroBanner,
 } from "@/app/[locale]/onboarding/_components/DecorativePanel"
+import { OnboardingContent } from "@/app/[locale]/onboarding/_components/OnboardingContent"
 import {
   DecorativePanelSkeleton,
   MobileHeroBannerSkeleton,
   OnboardingFormSkeleton,
 } from "@/app/[locale]/onboarding/_components/OnboardingLoadingSkeletons"
-import { OnboardingContent } from "@/app/[locale]/onboarding/_components/OnboardingContent"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { ThemeToggle } from "@/components/ThemeToggle"
 
@@ -69,7 +69,9 @@ export default function OnboardingLayout({
 
               {/* The form area */}
               <div className="relative bg-transparent z-10">
-                <Suspense fallback={<OnboardingFormSkeleton sections={[3, 3, 3]} />}>
+                <Suspense
+                  fallback={<OnboardingFormSkeleton sections={[3, 3, 3]} />}
+                >
                   <OnboardingContent>{children}</OnboardingContent>
                 </Suspense>
               </div>

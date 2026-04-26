@@ -240,9 +240,7 @@ describe("src/server/services/messages/send-by-company", () => {
     expect(notificationCall.userId).toBe("student-1")
     expect(notificationCall.type).toBe("new_message")
     expect(notificationCall.payload.offerId).toBe("offer-1")
-    expect(notificationCall.payload.offerTitle).toBe(
-      "Platform Engineer Intern",
-    )
+    expect(notificationCall.payload.offerTitle).toBe("Platform Engineer Intern")
     expect(notificationCall.payload.threadId).toBe("thread-1")
     expect(notificationCall.payload.messageId).toBe(result.messageId)
     expect(notificationCall.payload.senderRole).toBe("company")

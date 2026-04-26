@@ -66,63 +66,60 @@ export function UsersTable({
       <div className="border border-border/80 bg-background shadow-[4px_4px_0_0_oklch(var(--border))]">
         <div className="overflow-x-auto">
           <Table className="min-w-[700px]">
-          <TableHeader>
-            <TableRow className="hover:bg-transparent border-b-border/80">
-              <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
-                {t("table.user")}
-              </TableHead>
-              <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
-                {t("table.role")}
-              </TableHead>
-              <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
-                {t("table.status")}
-              </TableHead>
-              <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
-                {t("table.created")}
-              </TableHead>
-              <TableHead className="w-[50px] h-12" />
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users.length === 0 ? (
-              <TableRow>
-                <td
-                  colSpan={5}
-                  className="py-16"
-                >
-                  <div className="flex flex-col items-center gap-4 text-center">
-                    <div className="flex h-14 w-14 items-center justify-center border border-border/50 bg-muted/30">
-                      <Users className="h-6 w-6 text-muted-foreground/40" />
-                    </div>
-                    <div className="space-y-1">
-                      <p className="font-serif text-lg text-heading">
-                        {t("noUsers")}
-                      </p>
-                      <p className="text-sm font-light text-muted-foreground">
-                        No users match the current filters.
-                      </p>
-                    </div>
-                  </div>
-                </td>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent border-b-border/80">
+                <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
+                  {t("table.user")}
+                </TableHead>
+                <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
+                  {t("table.role")}
+                </TableHead>
+                <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
+                  {t("table.status")}
+                </TableHead>
+                <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
+                  {t("table.created")}
+                </TableHead>
+                <TableHead className="w-[50px] h-12" />
               </TableRow>
-            ) : (
-              users.map((u) => (
-                <UserRow
-                  key={u.id}
-                  user={u}
-                  onBan={onBan}
-                  onUnban={onUnban}
-                  onSetRole={onSetRole}
-                  onSetPassword={onSetPassword}
-                  onDelete={onDelete}
-                  canModerateUsers={canModerateUsers}
-                  canViewDetails={canViewDetails}
-                  canSetRole={canSetRole}
-                  canSetPassword={canSetPassword}
-                />
-              ))
-            )}
-          </TableBody>
+            </TableHeader>
+            <TableBody>
+              {users.length === 0 ? (
+                <TableRow>
+                  <td colSpan={5} className="py-16">
+                    <div className="flex flex-col items-center gap-4 text-center">
+                      <div className="flex h-14 w-14 items-center justify-center border border-border/50 bg-muted/30">
+                        <Users className="h-6 w-6 text-muted-foreground/40" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="font-serif text-lg text-heading">
+                          {t("noUsers")}
+                        </p>
+                        <p className="text-sm font-light text-muted-foreground">
+                          No users match the current filters.
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                </TableRow>
+              ) : (
+                users.map((u) => (
+                  <UserRow
+                    key={u.id}
+                    user={u}
+                    onBan={onBan}
+                    onUnban={onUnban}
+                    onSetRole={onSetRole}
+                    onSetPassword={onSetPassword}
+                    onDelete={onDelete}
+                    canModerateUsers={canModerateUsers}
+                    canViewDetails={canViewDetails}
+                    canSetRole={canSetRole}
+                    canSetPassword={canSetPassword}
+                  />
+                ))
+              )}
+            </TableBody>
           </Table>
         </div>
       </div>

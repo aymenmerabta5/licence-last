@@ -1,9 +1,9 @@
 import { ArrowRight } from "lucide-react"
 import * as motion from "motion/react-client"
+import type { ForStudentsSectionProps } from "@/app/[locale]/for-students/_components/ForStudentsContent/types"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { reveal } from "@/lib/animations"
-import type { ForStudentsSectionProps } from "@/app/[locale]/for-students/_components/ForStudentsContent/types"
 
 export function ForStudentsCtaSection({ t }: ForStudentsSectionProps) {
   return (

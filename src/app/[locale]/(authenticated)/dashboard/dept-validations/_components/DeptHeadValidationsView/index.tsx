@@ -21,7 +21,9 @@ export function DeptHeadValidationsView() {
       description={t("description")}
       kicker={t("title")}
       emptyLabel={t("empty")}
-      detailHref={(applicationId) => `/dashboard/dept-validations/${applicationId}`}
+      detailHref={(applicationId) =>
+        `/dashboard/dept-validations/${applicationId}`
+      }
       listNamespace="dashboard.admin.deptValidations"
       maxWidthClass="max-w-5xl"
     />

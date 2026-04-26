@@ -3,8 +3,8 @@
 import { NotebookPen, Pencil, Plus } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
-import { formatConversationTitle } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/utils"
 import { RenameConversationDialog } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/RenameConversationDialog"
+import { formatConversationTitle } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/utils"
 import { Button } from "@/components/ui/button"
 import {
   Select,

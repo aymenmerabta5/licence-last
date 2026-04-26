@@ -61,7 +61,6 @@ export function StatsCard({
             <div className="h-px w-full bg-border group-hover:bg-background/20 mt-4 transition-colors" />
           </div>
         </div>
-
       </div>
     </motion.div>
   )

@@ -5,8 +5,8 @@ import { RefreshCw, Sparkles, User } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useMemo } from "react"
 import { MarkdownMessage } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/MarkdownMessage"
+import { MessageToolInvocations } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/MessageToolInvocations"
 import { NoteBubble } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/NoteBubble"
-import { ToolInvocationView } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ToolInvocationView"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -69,7 +69,12 @@ export function MessageBubble({
     .join("")
 
   if (isNote) {
-    return <NoteBubble textContent={textContent} relativeTimestamp={relativeTimestamp} />
+    return (
+      <NoteBubble
+        textContent={textContent}
+        relativeTimestamp={relativeTimestamp}
+      />
+    )
   }
 
   return (
@@ -126,43 +131,13 @@ export function MessageBubble({
           )}
 
           {/* Tool invocations */}
-          {message.parts.map((part, idx) => {
-            if (
-              isRecord(part) &&
-              (part.type === "dynamic-tool" ||
-                (typeof part.type === "string" &&
-                  part.type.startsWith("tool-")))
-            ) {
-              const toolName =
-                part.type === "dynamic-tool"
-                  ? typeof part.toolName === "string"
-                    ? part.toolName
-                    : null
-                  : typeof part.type === "string"
-                    ? part.type.slice("tool-".length)
-                    : null
-
-              const authStatus = toolName
-                ? (authByTool[toolName] ?? null)
-                : null
-              const toolCallId =
-                isRecord(part) &&
-                typeof (part as Record<string, unknown>).toolCallId === "string"
-                  ? ((part as Record<string, unknown>).toolCallId as string)
-                  : `tool-${idx}`
-
-              return (
-                <ToolInvocationView
-                  key={toolCallId}
-                  part={part}
-                  authStatus={authStatus}
-                  onCheckAuth={onCheckAuth}
-                  onRetry={() => onRegenerateFrom(message.id)}
-                />
-              )
-            }
-            return null
-          })}
+          <MessageToolInvocations
+            parts={message.parts}
+            authByTool={authByTool}
+            onCheckAuth={onCheckAuth}
+            onRegenerateFrom={onRegenerateFrom}
+            messageId={message.id}
+          />
 
           {/* Regenerate button */}
           {showRegenerate && isAssistant && (

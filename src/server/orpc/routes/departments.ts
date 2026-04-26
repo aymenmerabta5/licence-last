@@ -64,9 +64,13 @@ function resolveTargetUniversityId(args: {
   if (context.user.role === "super_admin") {
     const universityId = inputUniversityId ?? context.user.universityId ?? null
     if (!universityId) {
-      throwCodedORPCError("BAD_REQUEST", "UNIVERSITY_REQUIRED_FOR_SUPER_ADMIN_ACTIONS", {
-        message: "University is required for super admin actions",
-      })
+      throwCodedORPCError(
+        "BAD_REQUEST",
+        "UNIVERSITY_REQUIRED_FOR_SUPER_ADMIN_ACTIONS",
+        {
+          message: "University is required for super admin actions",
+        },
+      )
     }
     return universityId
   }

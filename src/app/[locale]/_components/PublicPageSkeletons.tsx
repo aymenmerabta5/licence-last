@@ -20,7 +20,9 @@ function PublicNavbarSkeleton() {
 }
 
 function RibbonSkeleton() {
-  return <Skeleton className="h-12 w-full rounded-none border-y border-border/50" />
+  return (
+    <Skeleton className="h-12 w-full rounded-none border-y border-border/50" />
+  )
 }
 
 function PublicFooterSkeleton() {

@@ -58,7 +58,10 @@ export function SelectField({
         value={stringValue}
         onValueChange={(v) => v && onChange(String(v))}
         disabled={disabled}
-        items={options.map((o) => ({ value: String(o.value), label: String(o.label) }))}
+        items={options.map((o) => ({
+          value: String(o.value),
+          label: String(o.label),
+        }))}
       >
         <InputGroup className={`rounded-none h-11 ${className ?? ""}`}>
           {Icon && (

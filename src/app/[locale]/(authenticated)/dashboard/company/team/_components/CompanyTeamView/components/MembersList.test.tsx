@@ -2,8 +2,8 @@ import { describe, expect, mock, test } from "bun:test"
 import { render, screen } from "@testing-library/react"
 
 mock.module("next-intl", () => ({
-  useTranslations: () =>
-    (key: string, values?: Record<string, string | number>) => {
+  useTranslations:
+    () => (key: string, values?: Record<string, string | number>) => {
       const translations: Record<string, string> = {
         unnamedMember: "Unnamed member",
         "roles.owner": "Owner",

@@ -52,7 +52,10 @@ export function ConversationThreadHeader({
     <div className="border-b border-border/60 px-4 py-3 sm:px-5">
       <div className="flex items-center gap-3">
         <Avatar size="sm">
-          <AvatarImage src={getThreadImage(selectedConversation, role)} alt="" />
+          <AvatarImage
+            src={getThreadImage(selectedConversation, role)}
+            alt=""
+          />
           <AvatarFallback>{getInitials(threadTitle)}</AvatarFallback>
         </Avatar>
         <div className="min-w-0">

@@ -1,5 +1,5 @@
-import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
+import { Suspense } from "react"
 
 import { CandidatesPipelinePage } from "@/app/[locale]/(authenticated)/dashboard/candidates/_components/CandidatesPipelinePage"
 import { requireApprovedCompanyAdmin } from "@/lib/dashboard-access"

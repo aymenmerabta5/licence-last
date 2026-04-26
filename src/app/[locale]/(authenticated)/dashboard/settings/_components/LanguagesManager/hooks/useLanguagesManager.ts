@@ -36,9 +36,9 @@ export function useLanguagesManager() {
     [profileData?.languages],
   )
 
-  const [draftLanguages, setDraftLanguages] = useState<StudentLanguageValue[] | null>(
-    null,
-  )
+  const [draftLanguages, setDraftLanguages] = useState<
+    StudentLanguageValue[] | null
+  >(null)
   const [saveError, setSaveError] = useState("")
 
   const languages = draftLanguages ?? initialLanguages
@@ -60,10 +60,7 @@ export function useLanguagesManager() {
     draftLanguages !== null &&
     JSON.stringify(draftLanguages) !== JSON.stringify(initialLanguages)
 
-  function updateLanguage(
-    index: number,
-    patch: Partial<StudentLanguageValue>,
-  ) {
+  function updateLanguage(index: number, patch: Partial<StudentLanguageValue>) {
     setSaveError("")
     setDraftLanguages((previous) => {
       const base = previous ?? initialLanguages
@@ -80,7 +77,10 @@ export function useLanguagesManager() {
 
   function addLanguage(language: StudentLanguageValue) {
     setSaveError("")
-    setDraftLanguages((previous) => [...(previous ?? initialLanguages), language])
+    setDraftLanguages((previous) => [
+      ...(previous ?? initialLanguages),
+      language,
+    ])
   }
 
   function removeLanguage(index: number) {

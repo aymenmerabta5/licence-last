@@ -1,5 +1,5 @@
-import { createElement } from "react"
 import type { ComponentType, ReactNode } from "react"
+import { createElement } from "react"
 
 interface MotionMockProps extends Record<string, unknown> {
   children?: ReactNode

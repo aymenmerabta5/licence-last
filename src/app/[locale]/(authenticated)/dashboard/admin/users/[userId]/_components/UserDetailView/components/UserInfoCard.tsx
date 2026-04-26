@@ -25,9 +25,7 @@ export function UserInfoCard({ user }: UserInfoCardProps) {
 
   const displayRole = user.universityMembershipRole ?? user.role
   const roleLabelKey =
-    displayRole === "department_head"
-      ? "dept_head"
-      : (displayRole ?? "student")
+    displayRole === "department_head" ? "dept_head" : (displayRole ?? "student")
 
   const affiliation = (() => {
     if (user.universityMembershipRole === "department_head") {
@@ -122,9 +120,7 @@ function MetaItem({
   return (
     <div className="space-y-1">
       <dt className="text-[10px] uppercase tracking-[0.1em] text-muted-foreground inline-flex items-center gap-1">
-        <Icon
-          className={`h-3 w-3 ${destructive ? "text-destructive" : ""}`}
-        />
+        <Icon className={`h-3 w-3 ${destructive ? "text-destructive" : ""}`} />
         {label}
       </dt>
       <dd

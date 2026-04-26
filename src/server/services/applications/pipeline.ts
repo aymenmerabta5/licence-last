@@ -12,8 +12,8 @@ import {
   applicationTimelineEvent,
 } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
-import { ApplicationServiceError } from "@/server/services/applications/errors"
 import { createModuleLogger } from "@/server/logging"
+import { ApplicationServiceError } from "@/server/services/applications/errors"
 import { createNotification } from "@/server/services/notifications/create"
 
 const log = createModuleLogger("services/applications/pipeline")

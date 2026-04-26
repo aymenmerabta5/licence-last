@@ -21,7 +21,6 @@ interface AuthenticatedContentProps {
 export async function AuthenticatedContent({
   children,
 }: AuthenticatedContentProps) {
-
   const user = await requireRole([
     "student",
     "company_admin",

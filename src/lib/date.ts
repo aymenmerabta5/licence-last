@@ -297,7 +297,10 @@ export function formatSchedule(
  * Format relative timestamp for compact display (e.g., "now", "5m", "2h", "3d")
  * Used in conversation lists, activity feeds, etc.
  */
-export function formatRelativeTime(date: Date | string, locale?: string): string {
+export function formatRelativeTime(
+  date: Date | string,
+  locale?: string,
+): string {
   const resolvedLocale = resolveLocale(locale)
   const labels = getCompactRelativeLabels(resolvedLocale)
   const now = new Date()
@@ -308,7 +311,8 @@ export function formatRelativeTime(date: Date | string, locale?: string): string
   const days = Math.floor(diff / (1000 * 60 * 60 * 24))
 
   if (minutes < 1) return labels.now
-  if (minutes < 60) return `${formatNumber(minutes, resolvedLocale)}${labels.minute}`
+  if (minutes < 60)
+    return `${formatNumber(minutes, resolvedLocale)}${labels.minute}`
   if (hours < 24) return `${formatNumber(hours, resolvedLocale)}${labels.hour}`
   if (days < 7) return `${formatNumber(days, resolvedLocale)}${labels.day}`
 

@@ -1,11 +1,11 @@
 "use client"
 
-import dynamic from "next/dynamic"
 import {
   isServer,
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query"
+import dynamic from "next/dynamic"
 
 const ReactQueryDevtools = dynamic(
   () =>

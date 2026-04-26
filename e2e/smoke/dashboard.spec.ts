@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test"
+import { expect, type Page, test } from "@playwright/test"
 
 import {
   loginAsAdmin,
@@ -7,6 +7,7 @@ import {
   loginAsStudent,
   loginAsSuperAdmin,
 } from "../fixtures/auth"
+
 async function expectDashboardPageReady(
   page: Page,
   pathPattern: RegExp,

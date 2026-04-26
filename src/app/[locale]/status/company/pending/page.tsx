@@ -1,5 +1,5 @@
-import { Suspense } from "react"
 import { getLocale, getTranslations } from "next-intl/server"
+import { Suspense } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -58,7 +58,9 @@ export async function CompanyPendingPageContent() {
             {t("submittedOn")}
           </p>
           <p className="mt-2 font-serif text-xl text-heading">
-            {company?.createdAt ? formatDateLong(company.createdAt, locale) : "-"}
+            {company?.createdAt
+              ? formatDateLong(company.createdAt, locale)
+              : "-"}
           </p>
         </Card>
 

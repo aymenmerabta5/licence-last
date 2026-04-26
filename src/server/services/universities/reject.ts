@@ -24,7 +24,9 @@ export async function rejectUniversity(
       status: "rejected",
       rejectionReason: reason,
     })
-    .where(and(eq(university.id, universityId), eq(university.status, "pending")))
+    .where(
+      and(eq(university.id, universityId), eq(university.status, "pending")),
+    )
     .returning({ id: university.id, name: university.name })
 
   if (!updated) {

@@ -35,7 +35,9 @@ export function CompanySlotsEditor({
           <Label className="text-xs font-bold uppercase tracking-[0.1em]">
             {t("slots.title")}
           </Label>
-          <span className="text-xs text-muted-foreground">({slots.length})</span>
+          <span className="text-xs text-muted-foreground">
+            ({slots.length})
+          </span>
         </div>
         <Button
           type="button"
@@ -164,7 +166,8 @@ export function CompanySlotsEditor({
 
               {slot.startsAt && slot.endsAt && (
                 <p className="border-t border-border/30 pt-2 text-[11px] text-muted-foreground/70">
-                  {formatDateTime(slot.startsAt)} - {formatDateTime(slot.endsAt)}
+                  {formatDateTime(slot.startsAt)} -{" "}
+                  {formatDateTime(slot.endsAt)}
                 </p>
               )}
             </div>

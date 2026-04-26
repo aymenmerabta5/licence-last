@@ -7,7 +7,13 @@ import {
   mock,
   test,
 } from "bun:test"
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react"
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react"
 import type { ReactNode } from "react"
 import { createMotionReactClientMock } from "@/test/mocks/motion-react-client"
 

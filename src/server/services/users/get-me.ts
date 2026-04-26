@@ -86,8 +86,7 @@ export async function getMe(
     ...dependencies,
   }
   const freshUser = await resolvedDependencies.getUserById(user.id)
-  const rawRole =
-    freshUser?.role ?? user.role ?? "student"
+  const rawRole = freshUser?.role ?? user.role ?? "student"
   const universityMembership =
     rawRole === "university_admin" || rawRole === "dept_head"
       ? await resolvedDependencies.getUniversityMembership(user.id)
@@ -108,10 +107,7 @@ export async function getMe(
   }
 
   let universityData = null
-  if (
-    visibleRole === "student" ||
-    visibleRole === "university_admin"
-  ) {
+  if (visibleRole === "student" || visibleRole === "university_admin") {
     const uni = await resolvedDependencies.getUniversityByUserId(user.id)
     if (uni) {
       universityData = {

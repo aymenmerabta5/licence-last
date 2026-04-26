@@ -16,13 +16,7 @@ function HeaderSkeleton({
   )
 }
 
-function CardStack({
-  count,
-  height,
-}: {
-  count: number
-  height: string
-}) {
+function CardStack({ count, height }: { count: number; height: string }) {
   return (
     <div className="space-y-4">
       {Array.from({ length: count }).map((_, index) => (
@@ -57,7 +51,10 @@ export function DashboardOverviewSkeleton() {
 
 export function AssistantPageSkeleton() {
   return (
-    <div className="flex min-h-[500px] flex-col" style={{ height: "calc(100vh - 12rem)" }}>
+    <div
+      className="flex min-h-[500px] flex-col"
+      style={{ height: "calc(100vh - 12rem)" }}
+    >
       <div className="space-y-3 border-b border-border/50 pb-5">
         <HeaderSkeleton width="w-64" />
       </div>
@@ -79,7 +76,10 @@ export function PipelinePageSkeleton() {
       <HeaderSkeleton compact width="w-72" />
       <div className="grid gap-4 xl:grid-cols-4">
         {Array.from({ length: 4 }).map((_, index) => (
-          <div key={index} className="space-y-4 rounded-[1.5rem] border border-border/50 p-4">
+          <div
+            key={index}
+            className="space-y-4 rounded-[1.5rem] border border-border/50 p-4"
+          >
             <Skeleton className="h-6 w-28" />
             <Skeleton className="h-28 rounded-[1rem]" />
             <Skeleton className="h-28 rounded-[1rem]" />

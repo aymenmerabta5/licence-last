@@ -55,7 +55,9 @@ export function OfferCard({
 }: OfferCardProps) {
   const locale = useLocale()
   const t = useTranslations("dashboard.company.offers")
-  const tProficiency = useTranslations("dashboard.company.offers.form.proficiencyLevels")
+  const tProficiency = useTranslations(
+    "dashboard.company.offers.form.proficiencyLevels",
+  )
   const config = STATUS_CONFIG[offer.status] ?? STATUS_CONFIG.draft
   const languageLocale = toSupportedLocale(locale)
 

@@ -5,7 +5,12 @@ import { Route } from "next"
 import { useTranslations } from "next-intl"
 import { useDashboard } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import type { NavbarUser } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
-
+import {
+  NAVBAR_AVATAR_BADGE_CLASS,
+  NAVBAR_TEXT_CONTROL_CLASS,
+} from "@/components/navbar-control-styles"
+import { UserRoleBadge } from "@/components/UserRoleBadge"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,12 +20,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  NAVBAR_AVATAR_BADGE_CLASS,
-  NAVBAR_TEXT_CONTROL_CLASS,
-} from "@/components/navbar-control-styles"
-import { UserRoleBadge } from "@/components/UserRoleBadge"
-import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 
 interface UserDropdownProps {

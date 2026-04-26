@@ -1,6 +1,6 @@
 import {
-  getDocumentDirection,
   type DocumentLocale,
+  getDocumentDirection,
   resolveDocumentLocale,
 } from "@/lib/document-locale"
 

@@ -13,9 +13,7 @@ export function CompanyTeamHeader() {
       <h1 className="font-serif text-3xl tracking-tight text-heading">
         {t("title")}
       </h1>
-      <p className="text-sm text-muted-foreground">
-        {t("subtitle")}
-      </p>
+      <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
     </header>
   )
 }

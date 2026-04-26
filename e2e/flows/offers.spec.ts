@@ -20,11 +20,12 @@ test.describe("Offer CRUD & Publishing", () => {
     await expect(page.locator("#offer-title")).toBeVisible({ timeout: 15000 })
 
     await page.fill("#offer-title", "E2E Test Offer")
-    await page.fill("#offer-description", "An internship offer created by E2E tests")
+    await page.fill(
+      "#offer-description",
+      "An internship offer created by E2E tests",
+    )
 
-    const skillButton = page
-      .locator('button:has-text("React")')
-      .first()
+    const skillButton = page.locator('button:has-text("React")').first()
     await expect(skillButton).toBeVisible({ timeout: 10000 })
     await skillButton.click()
 
@@ -41,12 +42,10 @@ test.describe("Offer CRUD & Publishing", () => {
     const offer = await seedOfferFixture({ titlePrefix: "Listed Offer" })
 
     await loginAsCompany(page)
-    await page.goto(
-      `/en/dashboard/company/offers/${offer.offerId}/candidates`,
-    )
+    await page.goto(`/en/dashboard/company/offers/${offer.offerId}/candidates`)
 
-    await expect(
-      page.getByText(offer.offerTitle).first(),
-    ).toBeVisible({ timeout: 15000 })
+    await expect(page.getByText(offer.offerTitle).first()).toBeVisible({
+      timeout: 15000,
+    })
   })
 })

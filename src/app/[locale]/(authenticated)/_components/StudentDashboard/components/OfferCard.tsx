@@ -1,4 +1,4 @@
-import { Calendar, Hexagon, Building2 } from "lucide-react"
+import { Building2, Calendar, Hexagon } from "lucide-react"
 import { useLocale } from "next-intl"
 import type { OfferRow } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 import { relativeTime } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/utils"

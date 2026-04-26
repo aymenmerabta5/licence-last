@@ -62,7 +62,7 @@ function main() {
     const result = spawnSync(BUN_BIN, ["test", "--coverage", relative], {
       cwd: ROOT,
       encoding: "utf8",
-      shell: false,
+      shell: process.platform === "win32",
       env: process.env,
     })
 

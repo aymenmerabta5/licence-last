@@ -2,6 +2,7 @@
 
 import { Check, Loader2, X } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type { CandidateApp } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
 import { SelectField } from "@/components/form-fields"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
@@ -11,7 +12,6 @@ import {
   STAGE_COLUMNS,
   STAGE_LABELS,
 } from "@/lib/constants/pipeline"
-import type { CandidateApp } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
 
 interface CandidateCardActionsProps {
   app: CandidateApp

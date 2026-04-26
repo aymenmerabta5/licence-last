@@ -3,8 +3,8 @@ import { fireEvent, render, screen } from "@testing-library/react"
 import * as React from "react"
 
 mock.module("next-intl", () => ({
-  useTranslations: () =>
-    (key: string, values?: Record<string, string | number>) => {
+  useTranslations:
+    () => (key: string, values?: Record<string, string | number>) => {
       const translations: Record<string, string> = {
         title: "Notifications",
         markAllRead: "Mark all read",

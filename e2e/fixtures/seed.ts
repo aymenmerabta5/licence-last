@@ -2,8 +2,8 @@ import { execSync } from "node:child_process"
 import { randomUUID } from "node:crypto"
 
 import { hashPassword } from "better-auth/crypto"
-import { drizzle } from "drizzle-orm/postgres-js"
 import { eq } from "drizzle-orm"
+import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 
 import { getMaintenancePostgresOptions } from "../../src/server/db/postgres-options"
@@ -16,10 +16,11 @@ function createNeonCompatibleClient(databaseUrl: string) {
     max: 1,
   })
 }
+
+import * as schema from "../../src/server/db/schema"
 import { account, user } from "../../src/server/db/schema/auth"
 import { company, companyMember } from "../../src/server/db/schema/companies"
 import { department } from "../../src/server/db/schema/departments"
-import * as schema from "../../src/server/db/schema"
 import { studentProfile } from "../../src/server/db/schema/students"
 import {
   university,
@@ -437,7 +438,8 @@ export async function seedPasswordResetToken(options: {
   token?: string
   expiresInMs?: number
 }): Promise<string> {
-  const token = options.token ?? `e2e-reset-${Date.now().toString(36)}-${randomUUID()}`
+  const token =
+    options.token ?? `e2e-reset-${Date.now().toString(36)}-${randomUUID()}`
   const expiresInMs = options.expiresInMs ?? 60 * 60 * 1000
 
   await withE2EDatabase(async (sql) => {
@@ -704,8 +706,10 @@ export async function seedPlacementFixture(
   })
 
   const now = new Date()
-  const startDate = options.startDate ?? new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000)
-  const endDate = options.endDate ?? new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+  const startDate =
+    options.startDate ?? new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000)
+  const endDate =
+    options.endDate ?? new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
 
   return withE2EDatabase(async (sql) => {
     const placementId = generateId()
@@ -750,7 +754,9 @@ export async function seedGeneratedDocument(options: {
   status?: "generated" | "pending" | "failed"
 }): Promise<SeededDocumentFixture> {
   const documentId = generateId()
-  const code = options.verificationCode ?? `INTX-${randomUUID().slice(0, 4).toUpperCase()}-${randomUUID().slice(0, 4).toUpperCase()}`
+  const code =
+    options.verificationCode ??
+    `INTX-${randomUUID().slice(0, 4).toUpperCase()}-${randomUUID().slice(0, 4).toUpperCase()}`
   const status = options.status ?? "generated"
   const snapshotData = JSON.stringify({
     studentName: "Test Student",
@@ -762,7 +768,10 @@ export async function seedGeneratedDocument(options: {
     endDate: "2024-06-30",
     universityName: "Test University",
   })
-  const meta = JSON.stringify({ generatedAt: new Date().toISOString(), fileName: `${options.type}.pdf` })
+  const meta = JSON.stringify({
+    generatedAt: new Date().toISOString(),
+    fileName: `${options.type}.pdf`,
+  })
 
   return withE2EDatabase(async (sql) => {
     const [existing] = await sql<{ id: string }[]>`

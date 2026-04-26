@@ -1,9 +1,9 @@
-import Image from "next/image"
 import { BriefcaseBusiness, Globe, MapPin } from "lucide-react"
+import Image from "next/image"
 import { useTranslations } from "next-intl"
+import type { CompanyDirectoryItem } from "@/app/[locale]/(authenticated)/dashboard/student/companies/_components/CompaniesDirectoryView/types"
 import { Link } from "@/i18n/routing"
 import { getWilayaName } from "@/lib/wilayas"
-import type { CompanyDirectoryItem } from "@/app/[locale]/(authenticated)/dashboard/student/companies/_components/CompaniesDirectoryView/types"
 
 interface CompanyDirectoryCardProps {
   company: CompanyDirectoryItem

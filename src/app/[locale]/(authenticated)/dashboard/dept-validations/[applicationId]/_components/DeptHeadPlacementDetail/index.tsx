@@ -48,7 +48,9 @@ export function DeptHeadPlacementDetail({
             isSummarizing={actions.isSummarizing}
             summaryError={actions.summaryError}
             onGenerate={() =>
-              actions.generateAiSummary(buildValidationSummaryInput(application))
+              actions.generateAiSummary(
+                buildValidationSummaryInput(application),
+              )
             }
           />
 

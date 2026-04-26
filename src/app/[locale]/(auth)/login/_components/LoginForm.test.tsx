@@ -51,9 +51,10 @@ const TRANSLATIONS: Record<string, string> = {
 }
 
 mock.module("next-intl", () => ({
-  useTranslations: () => Object.assign((key: string) => TRANSLATIONS[key] || key, {
-    has: (key: string) => key in TRANSLATIONS,
-  }),
+  useTranslations: () =>
+    Object.assign((key: string) => TRANSLATIONS[key] || key, {
+      has: (key: string) => key in TRANSLATIONS,
+    }),
 }))
 
 // Mock auth validation

@@ -1,11 +1,11 @@
 import type { LucideIcon } from "lucide-react"
 import { ArrowRight, Bot, FileCheck, ShieldCheck, Users } from "lucide-react"
 import * as motion from "motion/react-client"
+import type { ForCompaniesSectionProps } from "@/app/[locale]/for-companies/_components/ForCompaniesContent/types"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Link } from "@/i18n/routing"
 import { ease, reveal } from "@/lib/animations"
-import type { ForCompaniesSectionProps } from "@/app/[locale]/for-companies/_components/ForCompaniesContent/types"
 
 const BENEFITS: Array<{ key: string; icon: LucideIcon }> = [
   { key: "pipeline", icon: Users },

@@ -325,7 +325,8 @@ describe("src/server/orpc/routes/offers", () => {
       }),
     ).rejects.toMatchObject({
       code: "TOO_MANY_REQUESTS",
-      message: "AI service is temporarily rate limited. Please try again shortly.",
+      message:
+        "AI service is temporarily rate limited. Please try again shortly.",
     })
   })
 })

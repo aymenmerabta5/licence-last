@@ -20,7 +20,7 @@ test.describe("Notifications", () => {
       page.getByRole("heading", { name: "Notifications" }).last(),
     ).toBeVisible({ timeout: 15000 })
 
-    const markAllBtn = page.locator('button', { hasText: /Mark all read/i })
+    const markAllBtn = page.locator("button", { hasText: /Mark all read/i })
     await expect(markAllBtn).toBeVisible({ timeout: 5000 })
   })
 })

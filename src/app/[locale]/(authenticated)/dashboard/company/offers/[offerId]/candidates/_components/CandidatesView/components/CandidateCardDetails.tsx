@@ -1,8 +1,8 @@
 "use client"
 
 import { useLocale, useTranslations } from "next-intl"
-import { getLanguageLabel, toSupportedLocale } from "@/lib/constants/languages"
 import type { CandidateApp } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
+import { getLanguageLabel, toSupportedLocale } from "@/lib/constants/languages"
 
 interface CandidateCardDetailsProps {
   app: CandidateApp

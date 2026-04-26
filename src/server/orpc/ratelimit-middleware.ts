@@ -210,7 +210,10 @@ function createResilientLimiter(config: RateLimitConfig) {
       try {
         return await redisLimiter.limit(key)
       } catch (error) {
-        log.warn({ err: error }, "Redis rate limiter failed - using in-memory fallback")
+        log.warn(
+          { err: error },
+          "Redis rate limiter failed - using in-memory fallback",
+        )
         logRedisFallbackOnce(isRedisRateLimitingEnabled)
         return fallbackLimiter.limit(key)
       }

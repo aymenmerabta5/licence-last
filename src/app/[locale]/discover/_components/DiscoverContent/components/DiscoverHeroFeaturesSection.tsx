@@ -8,6 +8,7 @@ import {
   Sparkles,
 } from "lucide-react"
 import * as motion from "motion/react-client"
+import type { DiscoverSectionProps } from "@/app/[locale]/discover/_components/DiscoverContent/types"
 import {
   Card,
   CardAction,
@@ -18,7 +19,6 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { ease, reveal } from "@/lib/animations"
-import type { DiscoverSectionProps } from "@/app/[locale]/discover/_components/DiscoverContent/types"
 
 const FEATURES: Array<{ key: string; icon: LucideIcon }> = [
   { key: "matching", icon: Sparkles },

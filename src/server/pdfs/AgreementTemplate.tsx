@@ -224,8 +224,7 @@ export function ConventionDeStageTemplate({
 
   const internshipTypeLabels: Record<string, string> = {
     pfe: locale === "fr" ? "Projet de Fin d'Études" : "Final Year Project",
-    immersion:
-      locale === "fr" ? "Stage d'Immersion" : "Immersion Internship",
+    immersion: locale === "fr" ? "Stage d'Immersion" : "Immersion Internship",
     summer: locale === "fr" ? "Stage d'Été" : "Summer Internship",
     practical: locale === "fr" ? "Stage Pratique" : "Practical Training",
   }
@@ -243,7 +242,7 @@ export function ConventionDeStageTemplate({
           ? locale === "fr"
             ? "Sur site"
             : "On-site"
-          : data.workMode ?? ""
+          : (data.workMode ?? "")
 
   const title =
     locale === "fr"

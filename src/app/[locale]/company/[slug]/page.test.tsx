@@ -18,13 +18,9 @@ mock.module("next-intl/server", () => ({
 }))
 
 mock.module("@/i18n/routing", () => ({
-  Link: ({
-    children,
-    href,
-  }: {
-    children: React.ReactNode
-    href: string
-  }) => <a href={href}>{children}</a>,
+  Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
+    <a href={href}>{children}</a>
+  ),
   useRouter: () => ({
     push: mock(() => {}),
     replace: mock(() => {}),

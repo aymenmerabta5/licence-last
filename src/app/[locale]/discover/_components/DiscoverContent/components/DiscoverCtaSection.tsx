@@ -1,10 +1,10 @@
 import { ArrowRight } from "lucide-react"
 import * as motion from "motion/react-client"
+import type { DiscoverSectionProps } from "@/app/[locale]/discover/_components/DiscoverContent/types"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Link } from "@/i18n/routing"
 import { reveal } from "@/lib/animations"
-import type { DiscoverSectionProps } from "@/app/[locale]/discover/_components/DiscoverContent/types"
 
 export function DiscoverCtaSection({ t }: DiscoverSectionProps) {
   return (

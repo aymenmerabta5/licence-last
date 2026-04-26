@@ -1,11 +1,11 @@
 import type { Metadata } from "next"
+import { cacheLife } from "next/cache"
 import { NextIntlClientProvider } from "next-intl"
 import {
   getMessages,
   getTranslations,
   setRequestLocale,
 } from "next-intl/server"
-import { cacheLife } from "next/cache"
 import { ThemeProvider } from "next-themes"
 import type { ReactNode } from "react"
 

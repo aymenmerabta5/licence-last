@@ -72,9 +72,7 @@ export function CompanyValidationContent({
           <Building2 className="h-6 w-6 text-muted-foreground/40" />
         </div>
         <div className="space-y-2">
-          <p className="font-serif text-lg text-heading">
-            {t("noCompanies")}
-          </p>
+          <p className="font-serif text-lg text-heading">{t("noCompanies")}</p>
           <p className="text-sm font-light text-muted-foreground">
             No companies match the current filter.
           </p>

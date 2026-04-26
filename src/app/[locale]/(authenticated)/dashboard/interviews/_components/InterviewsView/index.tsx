@@ -69,8 +69,9 @@ export function InterviewsView({ role }: InterviewsViewProps) {
       pending: interviews.filter(
         (interview) => interview.status === "pending_confirmation",
       ).length,
-      confirmed: interviews.filter((interview) => interview.status === "confirmed")
-        .length,
+      confirmed: interviews.filter(
+        (interview) => interview.status === "confirmed",
+      ).length,
     }
   }, [data.companyInterviews, data.studentInterviews, role])
 

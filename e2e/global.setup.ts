@@ -1,10 +1,9 @@
 import { test as setup } from "@playwright/test"
-
+import { TEST_CREDENTIALS } from "./fixtures/credentials"
 import {
   assertSafeE2EDatabaseResetTarget,
   resolveE2EDatabaseUrl,
 } from "./fixtures/database"
-import { TEST_CREDENTIALS } from "./fixtures/credentials"
 import {
   resetE2EDatabase,
   seedBaseReferenceData,

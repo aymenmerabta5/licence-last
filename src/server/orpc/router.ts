@@ -47,8 +47,8 @@ import {
   listCompaniesProcedure,
   listCompanyMembersProcedure,
   listCompanyReportsProcedure,
-  listPublicDirectoryProcedure,
   listCompanyTrustIndicesProcedure,
+  listPublicDirectoryProcedure,
   reactivateCompanyProcedure,
   rejectCompanyProcedure,
   removeCompanyMemberProcedure,
@@ -125,8 +125,8 @@ import {
   updateOfferStatusProcedure,
 } from "@/server/orpc/routes/offers"
 import {
-  deptHeadListPendingProcedure,
   deptHeadGetPendingByIdProcedure,
+  deptHeadListPendingProcedure,
   deptHeadRejectProcedure,
   deptHeadValidateProcedure,
   generateValidationSummaryProcedure,

@@ -40,13 +40,13 @@ export function MobileHeroBannerSkeleton() {
   )
 }
 
-export function OnboardingFormSkeleton({
-  sections,
-}: {
-  sections: number[]
-}) {
+export function OnboardingFormSkeleton({ sections }: { sections: number[] }) {
   return (
-    <div aria-busy="true" aria-live="polite" className="space-y-12 lg:space-y-16">
+    <div
+      aria-busy="true"
+      aria-live="polite"
+      className="space-y-12 lg:space-y-16"
+    >
       <div className="space-y-3">
         <Skeleton className="h-10 w-64" />
         <Skeleton className="h-4 w-full max-w-xl" />

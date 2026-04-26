@@ -9,10 +9,10 @@ import {
 import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
-import type { CandidateFiltersState } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
 import { useCandidateStageMutation } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/hooks/useCandidateStageMutation"
 import type {
   AcceptModalState,
+  CandidateFiltersState,
   RefuseModalState,
 } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll"

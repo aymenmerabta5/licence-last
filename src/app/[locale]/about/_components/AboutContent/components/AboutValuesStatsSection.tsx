@@ -1,9 +1,9 @@
 import type { LucideIcon } from "lucide-react"
 import { Eye, Globe, Lightbulb, Shield } from "lucide-react"
 import * as motion from "motion/react-client"
+import type { AboutSectionProps } from "@/app/[locale]/about/_components/AboutContent/types"
 import { Separator } from "@/components/ui/separator"
 import { ease, reveal } from "@/lib/animations"
-import type { AboutSectionProps } from "@/app/[locale]/about/_components/AboutContent/types"
 
 const VALUES: Array<{ key: string; icon: LucideIcon }> = [
   { key: "innovation", icon: Lightbulb },

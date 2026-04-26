@@ -57,13 +57,11 @@ export function ConversationMessages({
         <div className="flex h-full min-h-[16rem] items-center justify-center text-center text-sm text-muted-foreground">
           {role === "student"
             ? t("starterPreviewStudent", {
-                name:
-                  selectedStarter.companyName ?? t("fallbackCompanyName"),
+                name: selectedStarter.companyName ?? t("fallbackCompanyName"),
                 offerTitle: selectedStarter.offerTitle,
               })
             : t("starterPreviewCompany", {
-                name:
-                  selectedStarter.studentName ?? t("fallbackStudentName"),
+                name: selectedStarter.studentName ?? t("fallbackStudentName"),
                 offerTitle: selectedStarter.offerTitle,
               })}
         </div>
@@ -98,12 +96,12 @@ export function ConversationMessages({
                       ? "border-primary/50 bg-primary/10 text-foreground"
                       : "border-border/80 bg-background/70 text-foreground",
                   )}
-                  >
-                    {!isOwnMessage && (
-                      <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                        {message.senderName || t("fallbackSenderName")}
-                      </p>
-                    )}
+                >
+                  {!isOwnMessage && (
+                    <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                      {message.senderName || t("fallbackSenderName")}
+                    </p>
+                  )}
                   <p className="whitespace-pre-wrap break-words leading-relaxed">
                     {message.body}
                   </p>

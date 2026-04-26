@@ -1,8 +1,8 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { LanguagesFilter } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/LanguagesFilter"
 import { SkillsFilter } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/SkillsFilter"
+import { Button } from "@/components/ui/button"
 
 interface CandidatesFiltersProps {
   skills: Array<{ id: string; name: string; category: string | null }>

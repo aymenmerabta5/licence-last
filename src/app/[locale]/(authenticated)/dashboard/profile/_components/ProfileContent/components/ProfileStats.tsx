@@ -27,7 +27,7 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
       {stats.map((stat, i) => {
         const Icon = stat.icon
         const isHighlight = stat.value.includes("%")
-        const percentage = isHighlight ? parseInt(stat.value) : 0
+        const percentage = isHighlight ? parseInt(stat.value, 10) : 0
 
         return (
           <motion.div
@@ -37,10 +37,12 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
             transition={{ delay: 0.3 + i * 0.1, duration: 0.6, ease }}
             className="group relative"
           >
-            <div className={cn(
-              "relative h-full rounded-[2.5rem] border border-slate-100 bg-white p-10 transition-all duration-500",
-              "hover:border-primary/20 hover:shadow-[0_30px_60px_rgba(0,0,0,0.05)] hover:-translate-y-1"
-            )}>
+            <div
+              className={cn(
+                "relative h-full rounded-[2.5rem] border border-slate-100 bg-white p-10 transition-all duration-500",
+                "hover:border-primary/20 hover:shadow-[0_30px_60px_rgba(0,0,0,0.05)] hover:-translate-y-1",
+              )}
+            >
               <div className="flex items-center justify-between mb-8">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
                   <Icon className="h-7 w-7" />
@@ -61,7 +63,11 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${percentage}%` }}
-                        transition={{ duration: 1.5, delay: 0.5, ease: "circOut" }}
+                        transition={{
+                          duration: 1.5,
+                          delay: 0.5,
+                          ease: "circOut",
+                        }}
                         className="h-full bg-primary rounded-full shadow-[0_4px_10px_rgba(var(--primary-rgb),0.2)]"
                       />
                     </div>

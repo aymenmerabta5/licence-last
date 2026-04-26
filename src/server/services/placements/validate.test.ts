@@ -69,7 +69,9 @@ const txValues = mock((): any => {
 })
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const txOnConflictDoNothing = mock(() => ({}) as any)
-const txPlacementReturning = mock(() => Promise.resolve([{ id: "placement-1" }]))
+const txPlacementReturning = mock(() =>
+  Promise.resolve([{ id: "placement-1" }]),
+)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const txUpdate = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

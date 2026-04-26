@@ -72,9 +72,7 @@ describe("status redirects", () => {
 
   test("redirects approved company users from the pending page to the canonical dashboard", async () => {
     const { default: CompanyPendingPage, CompanyPendingPageContent } =
-      await loadModule(
-      "@/app/[locale]/status/company/pending/page",
-      )
+      await loadModule("@/app/[locale]/status/company/pending/page")
     getCompanyStatusByUserIdMock.mockResolvedValueOnce({ status: "approved" })
 
     const page = CompanyPendingPage()
@@ -88,9 +86,7 @@ describe("status redirects", () => {
 
   test("redirects approved company users from the rejected page to the canonical dashboard", async () => {
     const { default: CompanyRejectedPage, CompanyRejectedPageContent } =
-      await loadModule(
-      "@/app/[locale]/status/company/rejected/page",
-      )
+      await loadModule("@/app/[locale]/status/company/rejected/page")
     getCompanyStatusByUserIdMock.mockResolvedValueOnce({ status: "approved" })
 
     const page = CompanyRejectedPage()
@@ -104,9 +100,7 @@ describe("status redirects", () => {
 
   test("redirects approved company users from the suspended page to the canonical dashboard", async () => {
     const { default: CompanySuspendedPage, CompanySuspendedPageContent } =
-      await loadModule(
-      "@/app/[locale]/status/company/suspended/page",
-      )
+      await loadModule("@/app/[locale]/status/company/suspended/page")
     getCompanyStatusByUserIdMock.mockResolvedValueOnce({ status: "approved" })
 
     const page = CompanySuspendedPage()
@@ -120,9 +114,7 @@ describe("status redirects", () => {
 
   test("redirects approved university users from the pending page to the canonical dashboard", async () => {
     const { default: UniversityPendingPage, UniversityPendingPageContent } =
-      await loadModule(
-      "@/app/[locale]/status/university/pending/page",
-      )
+      await loadModule("@/app/[locale]/status/university/pending/page")
     requireRoleMock.mockResolvedValueOnce({
       id: "user-1",
       role: "university_admin",
@@ -142,9 +134,7 @@ describe("status redirects", () => {
 
   test("redirects approved university users from the rejected page to the canonical dashboard", async () => {
     const { default: UniversityRejectedPage, UniversityRejectedPageContent } =
-      await loadModule(
-      "@/app/[locale]/status/university/rejected/page",
-      )
+      await loadModule("@/app/[locale]/status/university/rejected/page")
     requireRoleMock.mockResolvedValueOnce({
       id: "user-1",
       role: "university_admin",

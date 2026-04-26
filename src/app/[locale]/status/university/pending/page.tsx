@@ -1,5 +1,5 @@
-import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
+import { Suspense } from "react"
 import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { requireRole } from "@/lib/auth-guards"

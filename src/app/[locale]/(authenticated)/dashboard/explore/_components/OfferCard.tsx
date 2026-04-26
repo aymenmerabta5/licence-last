@@ -4,11 +4,8 @@ import { ArrowRight, Building2, Clock, MapPin, Users } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 
 import { Link } from "@/i18n/routing"
-import {
-  getLanguageLabel,
-  toSupportedLocale,
-} from "@/lib/constants/languages"
 import { INTERNSHIP_TYPE_COLORS } from "@/lib/constants/internship"
+import { getLanguageLabel, toSupportedLocale } from "@/lib/constants/languages"
 import { cn } from "@/lib/utils"
 import { getWilayaName } from "@/lib/wilayas"
 
@@ -49,7 +46,9 @@ const TYPE_ACCENT: Record<string, string> = {
 export function OfferCard({ offer }: OfferCardProps) {
   const locale = useLocale()
   const t = useTranslations("dashboard.explore")
-  const tProficiency = useTranslations("dashboard.company.offers.form.proficiencyLevels")
+  const tProficiency = useTranslations(
+    "dashboard.company.offers.form.proficiencyLevels",
+  )
 
   const initial = offer.companyName.charAt(0).toUpperCase()
   const hiddenSkillCount = Math.max(0, offer.skills.length - MAX_VISIBLE_SKILLS)
@@ -170,8 +169,8 @@ export function OfferCard({ offer }: OfferCardProps) {
                     key={requirement.languageCode}
                     className="inline-flex items-center px-1.5 py-0.5 text-[9px] bg-secondary/30 border border-border/40 text-foreground/70 font-medium"
                   >
-                    {getLanguageLabel(requirement.languageCode, languageLocale)} ·{" "}
-                    {tProficiency(requirement.minimumProficiency as "a1")}
+                    {getLanguageLabel(requirement.languageCode, languageLocale)}{" "}
+                    · {tProficiency(requirement.minimumProficiency as "a1")}
                   </span>
                 ))}
               {hiddenLanguageCount > 0 && (

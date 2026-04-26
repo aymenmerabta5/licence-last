@@ -1,9 +1,9 @@
 import { describe, expect, mock, test } from "bun:test"
 
 import {
+  canTransitionStage,
   STAGE_COLUMNS,
   STAGE_TRANSITIONS,
-  canTransitionStage,
 } from "@/lib/constants/pipeline"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

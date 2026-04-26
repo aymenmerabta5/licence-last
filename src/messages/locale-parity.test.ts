@@ -4,10 +4,9 @@ import { readFileSync } from "node:fs"
 type Locale = "ar" | "en" | "fr"
 
 function readLocale(locale: Locale) {
-  return JSON.parse(readFileSync(`src/messages/${locale}.json`, "utf8")) as Record<
-    string,
-    unknown
-  >
+  return JSON.parse(
+    readFileSync(`src/messages/${locale}.json`, "utf8"),
+  ) as Record<string, unknown>
 }
 
 function flattenMessages(

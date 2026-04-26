@@ -3,12 +3,9 @@
 import { ChevronDownIcon, Globe } from "lucide-react"
 
 import { useLocale, useTranslations } from "next-intl"
-import {
-  Suspense,
-  useEffect,
-  useSyncExternalStore,
-  useTransition,
-} from "react"
+import { Suspense, useEffect, useSyncExternalStore, useTransition } from "react"
+import { NAVBAR_TEXT_CONTROL_CLASS } from "@/components/navbar-control-styles"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,8 +13,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { NAVBAR_TEXT_CONTROL_CLASS } from "@/components/navbar-control-styles"
-import { Button } from "@/components/ui/button"
 import { usePathname, useRouter } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 
@@ -57,13 +52,8 @@ function LanguageSwitcherFallback() {
       aria-label={t("aria")}
       className={triggerClassName}
     >
-      <Globe
-        className="h-3.5 w-3.5 text-current opacity-70 transition-opacity duration-300 group-hover:opacity-100"
-        aria-hidden="true"
-      />
-      <span className="min-w-8 text-start">
-        {getLocaleLabel(t, locale)}
-      </span>
+      <Globe className="h-3.5 w-3.5 text-foreground/40" aria-hidden="true" />
+      <span className="min-w-8 text-start">{getLocaleLabel(t, locale)}</span>
       <ChevronDownIcon
         className="h-3.5 w-3.5 text-current opacity-60 transition-opacity duration-300 group-hover:opacity-100"
         aria-hidden="true"
@@ -124,7 +114,9 @@ function LanguageSwitcherContent() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={<Button variant="outline" size="sm" className={triggerClassName} />}
+        render={
+          <Button variant="outline" size="sm" className={triggerClassName} />
+        }
         disabled={isPending}
         aria-label={t("aria")}
       >

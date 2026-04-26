@@ -1,12 +1,12 @@
 "use client"
 
-import { TimelineModal } from "@/components/TimelineModal"
 import { AcceptModal } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/AcceptModal"
 import { RefuseModal } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/RefuseModal"
 import type {
   AcceptModalState,
   RefuseModalState,
 } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
+import { TimelineModal } from "@/components/TimelineModal"
 
 interface TimelineEvent {
   id: string

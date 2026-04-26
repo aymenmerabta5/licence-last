@@ -139,8 +139,7 @@ export function createDataRetrievalTools(authCtx: ToolAuthContext): ToolSet {
       authCtx.universityMembershipRole !== "department_head")
 
   const canReadPlacementQueue =
-    authCtx.role === "university_admin" ||
-    authCtx.role === "super_admin"
+    authCtx.role === "university_admin" || authCtx.role === "super_admin"
 
   if (hasUniversityWideStatsAccess) {
     tools.get_platform_stats = tool({

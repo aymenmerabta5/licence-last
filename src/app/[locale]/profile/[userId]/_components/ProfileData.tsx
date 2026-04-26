@@ -1,5 +1,5 @@
-import { notFound } from "next/navigation"
 import { and, eq } from "drizzle-orm"
+import { notFound } from "next/navigation"
 import { ProfileContent } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent"
 import { requireRole } from "@/lib/auth-guards"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"

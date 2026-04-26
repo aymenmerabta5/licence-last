@@ -1,6 +1,6 @@
 "use client"
 
-import { ClipboardCheck, University, UserRound, ArrowRight } from "lucide-react"
+import { ArrowRight, ClipboardCheck, University, UserRound } from "lucide-react"
 import * as motion from "motion/react-client"
 import type {
   DeptHeadDashboardLabels,

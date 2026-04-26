@@ -84,7 +84,14 @@ export async function listApplicationsByOffer(
   companyId: string,
   params: ListParams = {},
 ): Promise<ListApplicationsByOfferResult> {
-  const { status, pipelineStage, skillTagIds, languageCodes, cursor, limit = 20 } = params
+  const {
+    status,
+    pipelineStage,
+    skillTagIds,
+    languageCodes,
+    cursor,
+    limit = 20,
+  } = params
 
   const [offer] = await db
     .select({ id: internshipOffer.id, companyId: internshipOffer.companyId })

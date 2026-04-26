@@ -85,11 +85,7 @@ export function resolveSelectionAfterDelete({
 
 export function applyOptimisticConversationModelUpdate<
   T extends { model: string; updatedAt: Date },
->(
-  conversation: T,
-  model: string,
-  updatedAt: Date,
-): T {
+>(conversation: T, model: string, updatedAt: Date): T {
   return {
     ...conversation,
     model,

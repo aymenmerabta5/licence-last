@@ -4,7 +4,9 @@ import { useCallback, useState } from "react"
 
 export function useMessagesState() {
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null)
-  const [selectedStarterId, setSelectedStarterId] = useState<string | null>(null)
+  const [selectedStarterId, setSelectedStarterId] = useState<string | null>(
+    null,
+  )
   const [draft, setDraft] = useState("")
 
   const selectThread = useCallback((threadId: string | null) => {

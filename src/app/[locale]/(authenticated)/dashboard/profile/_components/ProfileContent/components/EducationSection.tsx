@@ -1,8 +1,7 @@
 "use client"
 
-import { GraduationCap, MapPin, Plus } from "lucide-react"
+import { GraduationCap, MapPin } from "lucide-react"
 import * as motion from "motion/react-client"
-import { useLocale } from "next-intl"
 import type { StudentProfile } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
@@ -26,7 +25,6 @@ export function EducationSection({
   canEdit,
   labels,
 }: EducationSectionProps) {
-  const locale = useLocale()
   const hasEducation = !!university
 
   return (
@@ -71,28 +69,35 @@ export function EducationSection({
                     </h3>
                   </div>
 
-                  <div className="flex flex-wrap gap-6">
-                    <div className="flex items-center gap-2.5 text-slate-400 font-medium">
-                      <MapPin className="h-5 w-5 text-slate-300" />
-                      <span className="text-sm">{university.city}</span>
+                  {university.city && (
+                    <div className="flex flex-wrap gap-6">
+                      <div className="flex items-center gap-2.5 text-slate-400 font-medium">
+                        <MapPin className="h-5 w-5 text-slate-300" />
+                        <span className="text-sm">{university.city}</span>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {profile?.department && (
                     <div className="pt-4 border-t border-slate-50">
-                       <div className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1">
-                         Department
-                       </div>
-                       <p className="text-lg font-bold text-slate-600">
-                         {profile.department} {profile.level && `— ${profile.level}`}
-                       </p>
+                      <div className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1">
+                        Department
+                      </div>
+                      <p className="text-lg font-bold text-slate-600">
+                        {profile.department}{" "}
+                        {profile.level && `— ${profile.level}`}
+                      </p>
                     </div>
                   )}
                 </div>
 
                 {canEdit && (
                   <Link href="/dashboard/settings">
-                    <Button variant="outline" size="sm" className="rounded-full border-slate-200 text-slate-400 hover:text-primary transition-colors">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-full border-slate-200 text-slate-400 hover:text-primary transition-colors"
+                    >
                       Edit
                     </Button>
                   </Link>
@@ -103,17 +108,17 @@ export function EducationSection({
         </div>
       ) : (
         <div className="rounded-[2.5rem] border-2 border-dashed border-slate-100 bg-white/50 p-16 text-center space-y-8">
-           <GraduationCap className="h-16 w-16 mx-auto text-slate-100" />
-           <p className="text-lg text-slate-300 font-medium max-w-xs mx-auto">
-             {labels.emptyMessage}
-           </p>
-           {canEdit && (
-              <Link href="/dashboard/settings">
-                <Button className="rounded-full h-14 px-10 bg-primary text-xs font-black uppercase tracking-widest">
-                   {labels.addEducation}
-                </Button>
-              </Link>
-           )}
+          <GraduationCap className="h-16 w-16 mx-auto text-slate-100" />
+          <p className="text-lg text-slate-300 font-medium max-w-xs mx-auto">
+            {labels.emptyMessage}
+          </p>
+          {canEdit && (
+            <Link href="/dashboard/settings">
+              <Button className="rounded-full h-14 px-10 bg-primary text-xs font-black uppercase tracking-widest">
+                {labels.addEducation}
+              </Button>
+            </Link>
+          )}
         </div>
       )}
     </motion.section>

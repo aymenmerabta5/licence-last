@@ -52,7 +52,9 @@ export function useNotificationsSummary() {
         findLatestToolOutput(messages, "notifications_summarize"),
       )
       if (!out) {
-        setAiSummary(buildNotificationsFallbackSummary(lastNotificationsRef.current, t))
+        setAiSummary(
+          buildNotificationsFallbackSummary(lastNotificationsRef.current, t),
+        )
         return
       }
 

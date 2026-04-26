@@ -6,8 +6,8 @@ import type {
   SignupRole,
 } from "@/app/[locale]/(auth)/signup/_components/SignupForm/types"
 import {
-  isTurnstileEnabledOnClient,
   type CaptchaHandle,
+  isTurnstileEnabledOnClient,
 } from "@/components/TurnstileWidget"
 import { authClient } from "@/lib/auth-client"
 import {

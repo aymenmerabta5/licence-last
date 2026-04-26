@@ -40,8 +40,10 @@ function normalizeUserSessions(input: unknown): UserSession[] {
         id: record.id,
         tokenPrefix:
           typeof record.tokenPrefix === "string" ? record.tokenPrefix : null,
-        ipAddress: typeof record.ipAddress === "string" ? record.ipAddress : null,
-        userAgent: typeof record.userAgent === "string" ? record.userAgent : null,
+        ipAddress:
+          typeof record.ipAddress === "string" ? record.ipAddress : null,
+        userAgent:
+          typeof record.userAgent === "string" ? record.userAgent : null,
         createdAt,
         expiresAt,
         impersonatedBy:

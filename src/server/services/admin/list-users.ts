@@ -6,8 +6,8 @@ import { auth } from "@/lib/auth"
 import { db } from "@/server/db"
 import { user as userTable } from "@/server/db/schema/auth"
 import { department } from "@/server/db/schema/departments"
-import { universityMember } from "@/server/db/schema/university-memberships"
 import { university } from "@/server/db/schema/universities"
+import { universityMember } from "@/server/db/schema/university-memberships"
 
 interface ListUsersParams {
   limit?: number
@@ -74,7 +74,12 @@ async function augmentUsersWithAffiliations(users: Array<{ id: string }>) {
     .leftJoin(universityMember, eq(userTable.id, universityMember.userId))
     .leftJoin(university, eq(userTable.universityId, university.id))
     .leftJoin(department, eq(universityMember.departmentId, department.id))
-    .where(inArray(userTable.id, users.map((u) => u.id)))
+    .where(
+      inArray(
+        userTable.id,
+        users.map((u) => u.id),
+      ),
+    )
 
   return new Map(rows.map((r) => [r.userId, r]))
 }

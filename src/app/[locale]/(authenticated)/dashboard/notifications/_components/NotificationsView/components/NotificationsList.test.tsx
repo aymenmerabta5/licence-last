@@ -8,8 +8,8 @@ mock.module("lucide-react", () => ({
 }))
 
 mock.module("next-intl", () => ({
-  useTranslations: () =>
-    (key: string, values?: Record<string, string | number>) => {
+  useTranslations:
+    () => (key: string, values?: Record<string, string | number>) => {
       const translations: Record<string, string> = {
         empty: "No notifications yet.",
         "feed.titles.new_application": "New application",

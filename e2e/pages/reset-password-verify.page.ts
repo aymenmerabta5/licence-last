@@ -27,20 +27,18 @@ export class ResetPasswordVerifyPage {
   }
 
   async goToLoginPage(): Promise<void> {
-    await this.page
-      .getByRole("link", { name: /back to sign in/i })
-      .click()
+    await this.page.getByRole("link", { name: /back to sign in/i }).click()
   }
 
   async waitForSuccessMessage(): Promise<void> {
-    await expect(
-      this.page.getByText(/your password was updated/i),
-    ).toBeVisible({ timeout: 15000 })
+    await expect(this.page.getByText(/your password was updated/i)).toBeVisible(
+      { timeout: 15000 },
+    )
   }
 
   async waitForInvalidTokenError(): Promise<void> {
-    await expect(
-      this.page.getByText(/invalid or has expired/i),
-    ).toBeVisible({ timeout: 15000 })
+    await expect(this.page.getByText(/invalid or has expired/i)).toBeVisible({
+      timeout: 15000,
+    })
   }
 }

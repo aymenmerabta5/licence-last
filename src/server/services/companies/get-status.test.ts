@@ -20,7 +20,9 @@ describe("src/server/services/companies/get-status", () => {
 
   async function importGetCompanyStatus() {
     importCounter += 1
-    return import(`@/server/services/companies/get-status?test=${importCounter}`)
+    return import(
+      `@/server/services/companies/get-status?test=${importCounter}`
+    )
   }
 
   afterAll(() => {

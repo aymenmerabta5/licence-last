@@ -38,7 +38,9 @@ mock.module("@/components/ImpersonationBanner", () => ({
   ),
 }))
 
-const { StatusContent } = await import("@/app/[locale]/status/_components/StatusContent")
+const { StatusContent } = await import(
+  "@/app/[locale]/status/_components/StatusContent"
+)
 
 describe("StatusContent", () => {
   afterEach(() => {

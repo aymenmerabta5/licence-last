@@ -1,6 +1,10 @@
 import type { FilterState } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient"
 
-type MultiValueFilterKey = "internshipTypes" | "workModes" | "skillTagIds" | "languageCodes"
+type MultiValueFilterKey =
+  | "internshipTypes"
+  | "workModes"
+  | "skillTagIds"
+  | "languageCodes"
 
 export function toggleMultiValueFilter(
   filters: FilterState,

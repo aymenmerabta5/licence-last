@@ -4,12 +4,12 @@ import { Briefcase, Calendar, GraduationCap, Mail } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { useMemo } from "react"
 import { PlacementDocumentPanel } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/PlacementDocumentPanel"
+import type { CompanyPlacementDocumentSummary } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/types"
 import {
   getCertificateActionState,
   getReadonlyDocumentActionState,
   STATUS_STYLES,
 } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/utils"
-import type { CompanyPlacementDocumentSummary } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/types"
 import { Badge } from "@/components/ui/badge"
 import { INTERNSHIP_TYPE_LABELS } from "@/lib/constants/internship"
 
@@ -138,9 +138,7 @@ export function PlacementCertificateCard({
         {agreementDoc && agreementAction && (
           <PlacementDocumentPanel
             title={t("agreement")}
-            statusLabel={t(
-              `status.${agreementDoc.status}` as "status.pending",
-            )}
+            statusLabel={t(`status.${agreementDoc.status}` as "status.pending")}
             statusClassName={STATUS_STYLES[agreementDoc.status]}
             verificationCodeLabel={t("placement.verificationCode")}
             verificationCode={agreementDoc.verificationCode}
@@ -184,10 +182,7 @@ export function PlacementCertificateCard({
           }
           isActionDisabled={certificateAction.isActionDisabled}
           onAction={() => {
-            if (
-              certificateAction.actionKind === "download" &&
-              certificateDoc
-            ) {
+            if (certificateAction.actionKind === "download" && certificateDoc) {
               onDownloadDocument(certificateDoc.id)
             }
             if (certificateAction.actionKind === "generate") {

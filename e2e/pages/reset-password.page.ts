@@ -20,9 +20,7 @@ export class ResetPasswordPage {
   }
 
   async goToLoginPage(): Promise<void> {
-    await this.page
-      .getByRole("link", { name: /back to sign in/i })
-      .click()
+    await this.page.getByRole("link", { name: /back to sign in/i }).click()
   }
 
   async waitForSuccessMessage(): Promise<void> {
@@ -32,9 +30,9 @@ export class ResetPasswordPage {
   }
 
   async waitForServerError(): Promise<void> {
-    await expect(
-      this.page.locator("div.text-destructive").first(),
-    ).toBeVisible({ timeout: 15000 })
+    await expect(this.page.locator("div.text-destructive").first()).toBeVisible(
+      { timeout: 15000 },
+    )
   }
 
   async waitForAnyResult(): Promise<void> {

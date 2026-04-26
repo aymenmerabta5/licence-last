@@ -182,12 +182,13 @@ describe("src/server/orpc/routes/admin-users", () => {
       "@/server/orpc/routes/admin-users"
     )
 
-    const result = await callProcedure<
-      Array<Record<string, unknown>>
-    >(listUserSessionsProcedure, {
-      input: { userId: "user-1" },
-      context: { user: { role: "super_admin" } },
-    })
+    const result = await callProcedure<Array<Record<string, unknown>>>(
+      listUserSessionsProcedure,
+      {
+        input: { userId: "user-1" },
+        context: { user: { role: "super_admin" } },
+      },
+    )
 
     expect(listUserSessionsMock).toHaveBeenCalledWith("user-1")
     expect(result).toEqual([

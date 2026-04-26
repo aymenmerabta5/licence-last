@@ -578,7 +578,8 @@ describe("src/server/orpc/routes/applications", () => {
       }),
     ).rejects.toMatchObject({
       code: "SERVICE_UNAVAILABLE",
-      message: "AI service is temporarily unavailable. Please try again shortly.",
+      message:
+        "AI service is temporarily unavailable. Please try again shortly.",
     })
   })
 })

@@ -1,9 +1,9 @@
 import type { LucideIcon } from "lucide-react"
 import { Briefcase, GraduationCap, Sun, Wrench } from "lucide-react"
 import * as motion from "motion/react-client"
+import type { DiscoverSectionProps } from "@/app/[locale]/discover/_components/DiscoverContent/types"
 import { Separator } from "@/components/ui/separator"
 import { ease, reveal } from "@/lib/animations"
-import type { DiscoverSectionProps } from "@/app/[locale]/discover/_components/DiscoverContent/types"
 
 const MATCH_WEIGHTS = [
   { key: "skills", width: "55%", color: "bg-primary" },

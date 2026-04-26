@@ -2,11 +2,11 @@
 
 import { Building2, Loader2, MapPin, Phone, Save } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { useUniversityProfileForm } from "@/app/[locale]/(authenticated)/dashboard/university/profile/_components/UniversityProfileView/hooks/useUniversityProfileForm"
 import { TextField } from "@/components/form-fields"
 import { Button } from "@/components/ui/button"
 import { errorMessage } from "@/lib/schemas/auth"
 import { university } from "@/server/db/schema/universities"
-import { useUniversityProfileForm } from "@/app/[locale]/(authenticated)/dashboard/university/profile/_components/UniversityProfileView/hooks/useUniversityProfileForm"
 
 type University = typeof university.$inferSelect
 

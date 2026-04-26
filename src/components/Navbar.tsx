@@ -3,12 +3,7 @@
 import { ArrowRight, LayoutDashboard, LogOut, Menu } from "lucide-react"
 
 import { useLocale, useTranslations } from "next-intl"
-import {
-  useCallback,
-  useMemo,
-  useState,
-  useSyncExternalStore,
-} from "react"
+import { useCallback, useMemo, useState, useSyncExternalStore } from "react"
 
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import {

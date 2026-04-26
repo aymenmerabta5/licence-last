@@ -6,10 +6,7 @@ import { useMemo, useState } from "react"
 import { FilterSection } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/SearchFilters/components/FilterSection"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
-import {
-  LANGUAGE_CATALOG,
-  toSupportedLocale,
-} from "@/lib/constants/languages"
+import { LANGUAGE_CATALOG, toSupportedLocale } from "@/lib/constants/languages"
 import { cn } from "@/lib/utils"
 
 interface LanguagesFilterProps {
@@ -37,8 +34,12 @@ export function LanguagesFilter({
         )
       : LANGUAGE_CATALOG
 
-    const selected = matched.filter((language) => selectedSet.has(language.code))
-    const unselected = matched.filter((language) => !selectedSet.has(language.code))
+    const selected = matched.filter((language) =>
+      selectedSet.has(language.code),
+    )
+    const unselected = matched.filter(
+      (language) => !selectedSet.has(language.code),
+    )
 
     return { selected, unselected }
   }, [languageLocale, lowerQuery, selectedSet])

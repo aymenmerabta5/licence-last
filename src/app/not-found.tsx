@@ -1,7 +1,7 @@
-import { Suspense } from "react"
 import { headers } from "next/headers"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
+import { Suspense } from "react"
 import {
   DOCUMENT_LOCALE_HEADER,
   resolveDocumentLocale,

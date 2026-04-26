@@ -14,7 +14,9 @@ interface OfferBodyProps {
 export function OfferBody({ offer }: OfferBodyProps) {
   const locale = useLocale()
   const t = useTranslations("dashboard.offerDetail")
-  const tProficiency = useTranslations("dashboard.company.offers.form.proficiencyLevels")
+  const tProficiency = useTranslations(
+    "dashboard.company.offers.form.proficiencyLevels",
+  )
   const languageLocale = toSupportedLocale(locale)
 
   return (

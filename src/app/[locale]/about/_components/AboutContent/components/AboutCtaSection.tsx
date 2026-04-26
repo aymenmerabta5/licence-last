@@ -1,9 +1,9 @@
 import { ArrowRight } from "lucide-react"
 import * as motion from "motion/react-client"
+import type { AboutSectionProps } from "@/app/[locale]/about/_components/AboutContent/types"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { reveal } from "@/lib/animations"
-import type { AboutSectionProps } from "@/app/[locale]/about/_components/AboutContent/types"
 
 export function AboutCtaSection({ t }: AboutSectionProps) {
   return (

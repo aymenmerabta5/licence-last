@@ -12,9 +12,9 @@ test.describe("Company Accept/Refuse Application", () => {
       `/en/dashboard/company/offers/${fixture.offerId}/candidates`,
     )
 
-    await expect(
-      page.getByText(fixture.offerTitle).first(),
-    ).toBeVisible({ timeout: 15000 })
+    await expect(page.getByText(fixture.offerTitle).first()).toBeVisible({
+      timeout: 15000,
+    })
   })
 
   test("can move candidate pipeline stage", async ({ page }) => {
@@ -25,13 +25,11 @@ test.describe("Company Accept/Refuse Application", () => {
       `/en/dashboard/company/offers/${fixture.offerId}/candidates`,
     )
 
-    await expect(
-      page.getByText(fixture.offerTitle).first(),
-    ).toBeVisible({ timeout: 15000 })
+    await expect(page.getByText(fixture.offerTitle).first()).toBeVisible({
+      timeout: 15000,
+    })
 
-    const stageSelect = page.locator(
-      `#pipeline-stage-${fixture.applicationId}`,
-    )
+    const stageSelect = page.locator(`#pipeline-stage-${fixture.applicationId}`)
     if (await stageSelect.isVisible({ timeout: 5000 }).catch(() => false)) {
       await stageSelect.click()
       const screeningOption = page

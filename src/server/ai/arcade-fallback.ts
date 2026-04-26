@@ -1,9 +1,8 @@
 import "server-only"
 
 import type { ToolSet } from "ai"
-
-import { logger } from "@/server/logging"
 import { getArcadeTools } from "@/server/ai/tools/arcade"
+import { logger } from "@/server/logging"
 
 export async function loadArcadeToolsOrFallback(args: {
   userId: string

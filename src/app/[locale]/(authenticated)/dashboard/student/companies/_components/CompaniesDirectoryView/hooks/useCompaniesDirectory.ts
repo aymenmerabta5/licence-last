@@ -2,12 +2,12 @@
 
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
-import { useDebounce, useInfiniteScroll } from "@/hooks"
-import { orpc, orpcClient } from "@/server/orpc/client"
 import type {
   CompanyDirectoryCursor,
   CompanyDirectoryItem,
 } from "@/app/[locale]/(authenticated)/dashboard/student/companies/_components/CompaniesDirectoryView/types"
+import { useDebounce, useInfiniteScroll } from "@/hooks"
+import { orpc, orpcClient } from "@/server/orpc/client"
 
 const PAGE_SIZE = 12
 

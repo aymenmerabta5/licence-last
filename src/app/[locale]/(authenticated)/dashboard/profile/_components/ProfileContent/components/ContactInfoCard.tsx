@@ -1,6 +1,14 @@
 "use client"
 
-import { Mail, MapPin, Phone, User, Hash, GraduationCap, Info } from "lucide-react"
+import {
+  GraduationCap,
+  Hash,
+  Info,
+  Mail,
+  MapPin,
+  Phone,
+  User,
+} from "lucide-react"
 import * as motion from "motion/react-client"
 import type { ProfileContentProps } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { ease } from "@/lib/animations"
@@ -68,10 +76,10 @@ export function ContactInfoCard({
       <div className="relative overflow-hidden rounded-[2.5rem] border border-slate-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.03)] transition-all duration-500 hover:shadow-[0_30px_70px_rgba(0,0,0,0.06)]">
         <div className="px-8 py-7 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
           <div className="flex items-center gap-4">
-             <div className="h-6 w-1.5 rounded-full bg-primary" />
-             <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-800">
-               {labels.personalInfo}
-             </h2>
+            <div className="h-6 w-1.5 rounded-full bg-primary" />
+            <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-800">
+              {labels.personalInfo}
+            </h2>
           </div>
           <Info className="h-4 w-4 text-slate-300" />
         </div>

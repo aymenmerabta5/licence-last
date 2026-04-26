@@ -65,9 +65,7 @@ export function ProfileSettingsTabForm({
       >
         <form.Subscribe selector={(state) => [state.values.name] as const}>
           {([name]) => {
-            const avatarInitial = (
-              name.trim().charAt(0) || "A"
-            ).toUpperCase()
+            const avatarInitial = (name.trim().charAt(0) || "A").toUpperCase()
             return (
               <AvatarSection
                 avatarInitial={avatarInitial}

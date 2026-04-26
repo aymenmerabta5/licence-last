@@ -45,12 +45,12 @@ export function BioSection({ profile, canEdit, labels }: BioSectionProps) {
           <div className="relative rounded-[3rem] border border-slate-100 bg-white p-12 sm:p-20 overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.04)]">
             {/* Soft Background Accent */}
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary/[0.02] blur-[120px] rounded-full -translate-y-1/2 translate-x-1/3" />
-            
+
             <div className="relative">
               {/* Large styled quote */}
               <Quote className="h-20 w-20 text-primary/5 mb-10 -ms-4" />
 
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 transition={{ duration: 1 }}
@@ -58,7 +58,7 @@ export function BioSection({ profile, canEdit, labels }: BioSectionProps) {
               >
                 {profile.bio}
               </motion.p>
-              
+
               {/* Decorative line */}
               <div className="mt-16 h-2 w-32 bg-primary/10 rounded-full" />
             </div>
@@ -67,7 +67,7 @@ export function BioSection({ profile, canEdit, labels }: BioSectionProps) {
       ) : (
         <div className="rounded-[3rem] border-2 border-dashed border-slate-100 bg-white p-20 sm:p-32 relative overflow-hidden group shadow-sm">
           <div className="relative text-center space-y-10 max-w-sm mx-auto">
-            <motion.div 
+            <motion.div
               animate={{ y: [0, -15, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="flex h-28 w-28 mx-auto items-center justify-center rounded-[2.5rem] bg-slate-50 border border-slate-100 shadow-inner"
@@ -81,9 +81,7 @@ export function BioSection({ profile, canEdit, labels }: BioSectionProps) {
             </div>
             {canEdit && (
               <Link href="/dashboard/settings" className="inline-block pt-6">
-                <Button
-                  className="rounded-full h-16 px-12 text-xs font-black uppercase tracking-[0.25em] bg-primary shadow-[0_20px_50px_rgba(var(--primary-rgb),0.3)] transition-all hover:scale-105 active:scale-95"
-                >
+                <Button className="rounded-full h-16 px-12 text-xs font-black uppercase tracking-[0.25em] bg-primary shadow-[0_20px_50px_rgba(var(--primary-rgb),0.3)] transition-all hover:scale-105 active:scale-95">
                   <Edit3 className="h-4 w-4 me-3" /> {labels.writeBio}
                 </Button>
               </Link>

@@ -20,7 +20,9 @@ const mockTxSet = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockTxUpdateWhere = mock(() => ({ returning: mockTxUpdateReturning }))
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockTxUpdateReturning = mock((): any => Promise.resolve([{ id: "offer-1" }]))
+const mockTxUpdateReturning = mock((): any =>
+  Promise.resolve([{ id: "offer-1" }]),
+)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockDelete = mock(() => ({}) as any)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

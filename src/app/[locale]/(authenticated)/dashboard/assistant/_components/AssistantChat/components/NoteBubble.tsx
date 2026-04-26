@@ -8,7 +8,10 @@ interface NoteBubbleProps {
   relativeTimestamp: string | null
 }
 
-export function NoteBubble({ textContent, relativeTimestamp }: NoteBubbleProps) {
+export function NoteBubble({
+  textContent,
+  relativeTimestamp,
+}: NoteBubbleProps) {
   const t = useTranslations("dashboard.assistant")
 
   return (

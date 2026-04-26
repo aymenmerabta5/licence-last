@@ -8,12 +8,12 @@ import * as rateLimitedProcedures from "@/server/orpc/rate-limited-procedures"
 import { throwCodedORPCError } from "@/server/orpc/utils/service-error"
 import { downloadDocument } from "@/server/services/documents/download"
 import { downloadDocumentByCompany } from "@/server/services/documents/download-by-company"
+import { isDocumentServiceError } from "@/server/services/documents/errors"
 import {
-  generateAgreement,
   type AgreementIssuerContext,
+  generateAgreement,
 } from "@/server/services/documents/generate-agreement"
 import { generateCertificateByCompany } from "@/server/services/documents/generate-certificate-by-company"
-import { isDocumentServiceError } from "@/server/services/documents/errors"
 import { listDocumentsByCompany } from "@/server/services/documents/list-by-company"
 import { listDocumentsByStudent } from "@/server/services/documents/list-by-student"
 import { verifyDocument } from "@/server/services/documents/verify"

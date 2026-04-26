@@ -118,7 +118,9 @@ export function useMessagesData({
       }
 
       const offerId =
-        target.kind === "thread" ? target.thread.offerId : target.starter.offerId
+        target.kind === "thread"
+          ? target.thread.offerId
+          : target.starter.offerId
 
       if (role === "student") {
         return orpcClient.messages.sendByStudent({
@@ -195,10 +197,7 @@ export function useMessagesData({
   }, [selectedThreadId, threadMessagesQuery.isSuccess, markThreadRead])
 
   const threads = useMemo(() => threadsQuery.data ?? [], [threadsQuery.data])
-  const starters = useMemo(
-    () => startersQuery.data ?? [],
-    [startersQuery.data],
-  )
+  const starters = useMemo(() => startersQuery.data ?? [], [startersQuery.data])
 
   return {
     threads,

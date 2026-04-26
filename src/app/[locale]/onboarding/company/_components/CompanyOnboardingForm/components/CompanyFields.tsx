@@ -3,9 +3,9 @@
 import { Building2, FileBadge2, FileText, Globe } from "lucide-react"
 import { useTranslations } from "next-intl"
 import type { CompanyOnboardingFormApi } from "@/app/[locale]/onboarding/company/_components/CompanyOnboardingForm/hooks/useCompanyOnboarding"
+import { TextAreaField, TextField } from "@/components/form-fields"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { TextAreaField, TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 
 interface CompanyFieldsProps {

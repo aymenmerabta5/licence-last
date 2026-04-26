@@ -31,9 +31,12 @@ mock.module("@/components/Navbar", () => ({
   Navbar: () => <div>Navbar</div>,
 }))
 
-mock.module("@/app/[locale]/verify/[code]/_components/VerificationResult", () => ({
-  VerificationResult: () => null,
-}))
+mock.module(
+  "@/app/[locale]/verify/[code]/_components/VerificationResult",
+  () => ({
+    VerificationResult: () => null,
+  }),
+)
 
 mock.module(
   "@/app/[locale]/verify/[code]/_components/VerificationResultSkeleton",

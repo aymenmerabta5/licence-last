@@ -8,7 +8,9 @@ describe("src/server/orpc/utils/ai-error", () => {
       mod.throwAIOrpcError(
         Object.assign(new Error("rate limited"), { statusCode: 429 }),
       ),
-    ).toThrow("AI service is temporarily rate limited. Please try again shortly.")
+    ).toThrow(
+      "AI service is temporarily rate limited. Please try again shortly.",
+    )
   })
 
   test("maps transient AI failures to service unavailable", async () => {

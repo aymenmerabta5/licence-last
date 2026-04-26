@@ -1,14 +1,7 @@
 import { expect, test } from "@playwright/test"
 
-import {
-  loginAsCompany,
-  loginAsStudent,
-  logout,
-} from "../fixtures/auth"
-import {
-  seedGeneratedDocument,
-  seedPlacementFixture,
-} from "../fixtures/seed"
+import { loginAsCompany, loginAsStudent } from "../fixtures/auth"
+import { seedGeneratedDocument, seedPlacementFixture } from "../fixtures/seed"
 
 test.describe("Document Generation & Verification", () => {
   test("student can view placement documents", async ({ page }) => {
@@ -22,7 +15,9 @@ test.describe("Document Generation & Verification", () => {
     await loginAsStudent(page)
     await page.goto("/en/dashboard/student/documents")
 
-    await expect(page.getByRole("heading", { name: "My Documents" })).toBeVisible({
+    await expect(
+      page.getByRole("heading", { name: "My Documents" }),
+    ).toBeVisible({
       timeout: 15000,
     })
 
@@ -42,13 +37,13 @@ test.describe("Document Generation & Verification", () => {
     await loginAsStudent(page)
     await page.goto("/en/dashboard/student/documents")
 
-    await expect(page.getByRole("heading", { name: "My Documents" })).toBeVisible({
+    await expect(
+      page.getByRole("heading", { name: "My Documents" }),
+    ).toBeVisible({
       timeout: 15000,
     })
 
-    const downloadBtn = page
-      .locator('button', { hasText: /download/i })
-      .first()
+    const downloadBtn = page.locator("button", { hasText: /download/i }).first()
     await expect(downloadBtn).toBeVisible({ timeout: 10000 })
 
     const [download] = await Promise.all([
@@ -88,15 +83,15 @@ test.describe("Document Generation & Verification", () => {
       timeout: 15000,
     })
 
-    await expect(
-      page.getByText("Test Student").first(),
-    ).toBeVisible({ timeout: 10000 })
+    await expect(page.getByText("Test Student").first()).toBeVisible({
+      timeout: 10000,
+    })
 
     const generateBtn = page
-      .locator('button', { hasText: /generate certificate/i })
+      .locator("button", { hasText: /generate certificate/i })
       .first()
     if (await generateBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
-      const [response] = await Promise.all([
+      const [_response] = await Promise.all([
         page
           .waitForResponse(
             (r) => r.url().includes("documents") && r.status() < 500,
@@ -152,7 +147,7 @@ test.describe("Document Generation & Verification", () => {
     await expect(input).toBeVisible()
     await input.fill("INTX-FAKE-TEST")
 
-    const submitBtn = page.locator('button', { hasText: /verify document/i })
+    const submitBtn = page.locator("button", { hasText: /verify document/i })
     await submitBtn.click()
 
     await expect(page).toHaveURL(/\/en\/verify\/INTX-FAKE-TEST/, {

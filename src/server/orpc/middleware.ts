@@ -9,9 +9,9 @@ import { getFreshAuthSession } from "@/server/auth/get-fresh-session"
 import { db } from "@/server/db"
 import { companyMember } from "@/server/db/schema/companies"
 import { studentProfile } from "@/server/db/schema/students"
+import { throwCodedORPCError } from "@/server/orpc/utils/service-error"
 import { isServiceError } from "@/server/services/errors"
 import { getUniversityMembership } from "@/server/services/universities/membership"
-import { throwCodedORPCError } from "@/server/orpc/utils/service-error"
 
 interface SessionUser {
   id: string
@@ -50,14 +50,14 @@ async function resolveContextUser(user: SessionUser) {
       approvalRole,
       universityId: legacyDeptHeadWithoutMembership
         ? null
-        : universityMembership?.universityId ?? user.universityId ?? null,
+        : (universityMembership?.universityId ?? user.universityId ?? null),
       departmentId: legacyDeptHeadWithoutMembership
         ? null
-        : universityMembership?.departmentId ?? user.departmentId ?? null,
+        : (universityMembership?.departmentId ?? user.departmentId ?? null),
       universityMembershipRole: universityMembership?.role ?? null,
       universityDepartmentId: legacyDeptHeadWithoutMembership
         ? null
-        : universityMembership?.departmentId ?? user.departmentId ?? null,
+        : (universityMembership?.departmentId ?? user.departmentId ?? null),
     },
     universityMembership,
   }
@@ -118,9 +118,13 @@ export const authedSessionProcedure = os.use(async ({ next }) => {
       isServiceError(error) &&
       error.code === "UNIVERSITY_MEMBERSHIP_CONFLICT"
     ) {
-      throwCodedORPCError("INTERNAL_SERVER_ERROR", "UNIVERSITY_MEMBERSHIP_CONFLICT", {
-        message: "Multiple university memberships found for user",
-      })
+      throwCodedORPCError(
+        "INTERNAL_SERVER_ERROR",
+        "UNIVERSITY_MEMBERSHIP_CONFLICT",
+        {
+          message: "Multiple university memberships found for user",
+        },
+      )
     }
 
     throw error
@@ -153,14 +157,22 @@ async function assertApprovedAdminAccess(user: {
           ? "Company account is not approved by super admin yet"
           : "University account is not approved by super admin yet"
 
-    throwCodedORPCError("FORBIDDEN", `ADMIN_APPROVAL_${approval.reason.toUpperCase()}`, {
-      message,
-    })
+    throwCodedORPCError(
+      "FORBIDDEN",
+      `ADMIN_APPROVAL_${approval.reason.toUpperCase()}`,
+      {
+        message,
+      },
+    )
   } catch (error) {
     if (isServiceError(error) && error.code === "COMPANY_MEMBERSHIP_CONFLICT") {
-      throwCodedORPCError("INTERNAL_SERVER_ERROR", "COMPANY_MEMBERSHIP_CONFLICT", {
-        message: "Multiple company memberships found for user",
-      })
+      throwCodedORPCError(
+        "INTERNAL_SERVER_ERROR",
+        "COMPANY_MEMBERSHIP_CONFLICT",
+        {
+          message: "Multiple company memberships found for user",
+        },
+      )
     }
 
     throw error
@@ -177,12 +189,7 @@ export const authedProcedure = authedSessionProcedure.use(
 
 /** Admin — requires true university admin or super_admin role. */
 export const adminProcedure = authedProcedure.use(async ({ context, next }) => {
-  if (
-    !isAdminRole(
-      context.user.role,
-      context.user.universityMembershipRole,
-    )
-  ) {
+  if (!isAdminRole(context.user.role, context.user.universityMembershipRole)) {
     throwCodedORPCError("FORBIDDEN", "ADMIN_ACCESS_REQUIRED", {
       message: "Admin access required",
     })
@@ -236,9 +243,13 @@ export const companyAdminProcedure = authedProcedure.use(
       .limit(2)
 
     if (memberships.length > 1) {
-      throwCodedORPCError("INTERNAL_SERVER_ERROR", "COMPANY_MEMBERSHIP_CONFLICT", {
-        message: "Multiple company memberships found for user",
-      })
+      throwCodedORPCError(
+        "INTERNAL_SERVER_ERROR",
+        "COMPANY_MEMBERSHIP_CONFLICT",
+        {
+          message: "Multiple company memberships found for user",
+        },
+      )
     }
 
     const membership = memberships[0]

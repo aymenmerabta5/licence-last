@@ -29,9 +29,7 @@ const txUpdateReturningResults: unknown[][] = []
 let txUpdateReturningCallIdx = 0
 
 const txUpdateReturning = mock(() =>
-  Promise.resolve(
-    txUpdateReturningResults[txUpdateReturningCallIdx++] ?? [],
-  ),
+  Promise.resolve(txUpdateReturningResults[txUpdateReturningCallIdx++] ?? []),
 )
 const txUpdateWhere = mock(() => ({ returning: txUpdateReturning }))
 const txSet = mock(() => ({ where: txUpdateWhere }))

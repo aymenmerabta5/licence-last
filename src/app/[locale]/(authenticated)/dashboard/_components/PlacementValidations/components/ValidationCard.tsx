@@ -2,12 +2,12 @@
 
 import { Calendar, ChevronRight, GraduationCap } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type { ValidationListItem } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/types"
 import { Link } from "@/i18n/routing"
 import {
   INTERNSHIP_TYPE_COLORS,
   INTERNSHIP_TYPE_LABELS,
 } from "@/lib/constants/internship"
-import type { ValidationListItem } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/types"
 
 function formatCardDate(date: Date | string | null): string {
   if (!date) return "N/A"

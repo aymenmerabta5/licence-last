@@ -32,7 +32,9 @@ test.describe("Dashboard Route Redirects", () => {
     await loginAsStudent(page)
     await page.goto(`/en/dashboard/student/offers/${offer.offerId}`)
 
-    await expect(page).toHaveURL(new RegExp(`/en/dashboard/explore/${offer.offerId}$`))
+    await expect(page).toHaveURL(
+      new RegExp(`/en/dashboard/explore/${offer.offerId}$`),
+    )
   })
 
   test("company is redirected away from the canonical student applications page", async ({

@@ -17,18 +17,21 @@ import {
   authedProcedureStandard,
   superAdminProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
-import { createServiceORPCError, throwCodedORPCError } from "@/server/orpc/utils/service-error"
+import {
+  createServiceORPCError,
+  throwCodedORPCError,
+} from "@/server/orpc/utils/service-error"
 import { emitNotification } from "@/server/services/notifications/emit"
+import { addUniversityDomain } from "@/server/services/universities/add-domain"
 import { approveUniversity } from "@/server/services/universities/approve"
 import { createUniversity } from "@/server/services/universities/create"
 import { deleteUniversity } from "@/server/services/universities/delete"
 import { getUniversityById } from "@/server/services/universities/get"
 import { listUniversities } from "@/server/services/universities/list"
-import { rejectUniversity } from "@/server/services/universities/reject"
-import { updateUniversity } from "@/server/services/universities/update"
-import { addUniversityDomain } from "@/server/services/universities/add-domain"
 import { listUniversityDomains } from "@/server/services/universities/list-domains"
+import { rejectUniversity } from "@/server/services/universities/reject"
 import { removeUniversityDomain } from "@/server/services/universities/remove-domain"
+import { updateUniversity } from "@/server/services/universities/update"
 
 /* ── Reads ── */
 
@@ -67,10 +70,7 @@ export const getUniversityByIdProcedure = authedProcedureGenerous
     if (!uni) return null
     // Non-admin users can only see approved universities
     if (
-      !isAdminRole(
-        context.user.role,
-        context.user.universityMembershipRole,
-      ) &&
+      !isAdminRole(context.user.role, context.user.universityMembershipRole) &&
       uni.status !== "approved"
     ) {
       return null
@@ -206,7 +206,10 @@ export const approveUniversityProcedure = superAdminProcedureStandard
   .input(z.object({ universityId: z.string().min(1) }))
   .handler(async ({ input, context }) => {
     try {
-      const result = await approveUniversity(input.universityId, context.user.id)
+      const result = await approveUniversity(
+        input.universityId,
+        context.user.id,
+      )
 
       // Invalidate university caches so status page updates immediately
       revalidateTag(CACHE_TAGS.UNIVERSITIES, "max")

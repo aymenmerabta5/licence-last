@@ -1,9 +1,9 @@
 import type { LucideIcon } from "lucide-react"
 import { CheckCircle2, Palette, Search, UserPlus } from "lucide-react"
 import * as motion from "motion/react-client"
+import type { ForStudentsSectionProps } from "@/app/[locale]/for-students/_components/ForStudentsContent/types"
 import { Separator } from "@/components/ui/separator"
 import { ease, reveal } from "@/lib/animations"
-import type { ForStudentsSectionProps } from "@/app/[locale]/for-students/_components/ForStudentsContent/types"
 
 const JOURNEY: Array<{ key: string; icon: LucideIcon }> = [
   { key: "step1", icon: UserPlus },

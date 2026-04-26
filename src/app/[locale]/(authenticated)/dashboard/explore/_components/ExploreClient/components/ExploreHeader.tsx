@@ -13,11 +13,11 @@ export function ExploreHeader() {
 
   const now = new Date()
   const dateStr = new Intl.DateTimeFormat(locale, {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    })
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  })
     .format(now)
     .toLocaleUpperCase(locale)
 

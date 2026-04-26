@@ -1,6 +1,7 @@
 "use client"
 
 import { Plus } from "lucide-react"
+import { LanguageRow } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/LanguagesManager/components/LanguageRow"
 import { Button } from "@/components/ui/button"
 import {
   DEFAULT_STUDENT_LANGUAGE_CODE,
@@ -9,7 +10,6 @@ import {
   type LanguageCode,
   type SupportedLocale,
 } from "@/lib/constants/languages"
-import { LanguageRow } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/LanguagesManager/components/LanguageRow"
 import type { ProficiencyLevel } from "@/lib/schemas/enums"
 
 interface LanguageEntry {
@@ -32,10 +32,7 @@ interface LanguagesManagerListProps {
     languageCode: (typeof LANGUAGE_CATALOG)[number]["code"]
     proficiency: ProficiencyLevel
   }) => void
-  onUpdateLanguage: (
-    index: number,
-    patch: Partial<LanguageEntry>,
-  ) => void
+  onUpdateLanguage: (index: number, patch: Partial<LanguageEntry>) => void
   onRemoveLanguage: (index: number) => void
 }
 

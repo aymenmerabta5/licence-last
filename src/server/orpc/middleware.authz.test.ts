@@ -1,9 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import {
-  hasUniversityScopedAccess,
-  isAdminRole,
-} from "@/server/orpc/authz"
+import { hasUniversityScopedAccess, isAdminRole } from "@/server/orpc/authz"
 
 describe("src/server/orpc/middleware authz helpers", () => {
   test("isAdminRole excludes department heads from full admin access", () => {

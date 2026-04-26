@@ -99,12 +99,8 @@ describe("dashboard route consolidation", () => {
   })
 
   test("redirects legacy student landing page to the canonical dashboard", async () => {
-    const {
-      default: StudentDashboardPage,
-      StudentDashboardPageContent,
-    } = await loadModule(
-      "@/app/[locale]/(authenticated)/dashboard/student/page",
-    )
+    const { default: StudentDashboardPage, StudentDashboardPageContent } =
+      await loadModule("@/app/[locale]/(authenticated)/dashboard/student/page")
 
     const page = StudentDashboardPage()
     const result = await StudentDashboardPageContent()
@@ -176,7 +172,7 @@ describe("dashboard route consolidation", () => {
   test("renders the canonical applications page for onboarded students", async () => {
     const { default: ApplicationsPage, ApplicationsPageContent } =
       await loadModule(
-      "@/app/[locale]/(authenticated)/dashboard/applications/page",
+        "@/app/[locale]/(authenticated)/dashboard/applications/page",
       )
 
     const page = ApplicationsPage()
@@ -196,7 +192,7 @@ describe("dashboard route consolidation", () => {
   test("redirects non-onboarded students away from the canonical applications page", async () => {
     const { default: ApplicationsPage, ApplicationsPageContent } =
       await loadModule(
-      "@/app/[locale]/(authenticated)/dashboard/applications/page",
+        "@/app/[locale]/(authenticated)/dashboard/applications/page",
       )
     requireRoleMock.mockResolvedValueOnce({
       id: "student-1",

@@ -14,9 +14,7 @@ let importCounter = 0
 
 async function loadFreshSessionModule() {
   importCounter += 1
-  return import(
-    `@/server/auth/get-fresh-session?test=${importCounter}`
-  )
+  return import(`@/server/auth/get-fresh-session?test=${importCounter}`)
 }
 
 describe("src/server/auth/get-fresh-session", () => {

@@ -3,8 +3,8 @@
 import { useForm } from "@tanstack/react-form"
 import { useTranslations } from "next-intl"
 import { useEffect, useMemo } from "react"
-import { createUniversityUpdateSchema } from "@/lib/schemas/university"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
+import { createUniversityUpdateSchema } from "@/lib/schemas/university"
 import { university } from "@/server/db/schema/universities"
 
 type University = typeof university.$inferSelect
@@ -62,9 +62,7 @@ export function useUniversityProfileForm({
         name: value.name.trim(),
         abbreviation: value.abbreviation.trim() || null,
         phone: value.phone.trim() || null,
-        wilayaCode: value.wilayaCode.trim()
-          ? Number(value.wilayaCode)
-          : null,
+        wilayaCode: value.wilayaCode.trim() ? Number(value.wilayaCode) : null,
         city: value.city.trim() || null,
         address: value.address.trim() || null,
       })

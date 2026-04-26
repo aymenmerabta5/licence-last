@@ -106,14 +106,14 @@ async function resolveSessionUser(
     approvalRole,
     universityId: legacyDeptHeadWithoutMembership
       ? null
-      : membership?.universityId ?? user.universityId ?? null,
+      : (membership?.universityId ?? user.universityId ?? null),
     departmentId: legacyDeptHeadWithoutMembership
       ? null
-      : membership?.departmentId ?? user.departmentId ?? null,
+      : (membership?.departmentId ?? user.departmentId ?? null),
     universityMembershipRole: membership?.role ?? null,
     universityDepartmentId: legacyDeptHeadWithoutMembership
       ? null
-      : membership?.departmentId ?? user.departmentId ?? null,
+      : (membership?.departmentId ?? user.departmentId ?? null),
   }
 }
 
@@ -140,7 +140,10 @@ export async function requireRole(
     return resolvedDependencies.localeRedirect("/login")
   }
 
-  const derivedUser = await resolveSessionUser(session.user, resolvedDependencies)
+  const derivedUser = await resolveSessionUser(
+    session.user,
+    resolvedDependencies,
+  )
 
   if (derivedUser.banned) {
     return resolvedDependencies.localeRedirect("/")

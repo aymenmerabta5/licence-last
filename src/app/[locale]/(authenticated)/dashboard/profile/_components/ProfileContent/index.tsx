@@ -73,8 +73,15 @@ export function ProfileContent({
 }: ProfileContentProps) {
   const t = useTranslations("dashboard")
   const tProficiency = useTranslations("onboarding.student.proficiencyLevels")
-  const { canEdit, profile, stats, university, skills, languages, experiences } =
-    useProfileData(viewer, user, (key, values) => t(key, values), studentData)
+  const {
+    canEdit,
+    profile,
+    stats,
+    university,
+    skills,
+    languages,
+    experiences,
+  } = useProfileData(viewer, user, (key, values) => t(key, values), studentData)
 
   const roleLabels: Record<string, string> = {
     student: t("student.profile.roles.student"),
@@ -96,13 +103,13 @@ export function ProfileContent({
     languages,
     university,
     {
-    anonymousUser: t("student.profile.anonymousUser"),
-    skillsLabel: t("student.profile.skillsLabel"),
-    languagesLabel: t("student.profile.languagesLabel"),
-    githubLabel: t("student.profile.githubLabel"),
-    portfolioLabel: t("student.profile.portfolioLabel"),
-    formatLanguage: (languageCode, proficiency) =>
-      `${languageCode.toUpperCase()} (${tProficiency(proficiency as "a1")})`,
+      anonymousUser: t("student.profile.anonymousUser"),
+      skillsLabel: t("student.profile.skillsLabel"),
+      languagesLabel: t("student.profile.languagesLabel"),
+      githubLabel: t("student.profile.githubLabel"),
+      portfolioLabel: t("student.profile.portfolioLabel"),
+      formatLanguage: (languageCode, proficiency) =>
+        `${languageCode.toUpperCase()} (${tProficiency(proficiency as "a1")})`,
     },
   )
 

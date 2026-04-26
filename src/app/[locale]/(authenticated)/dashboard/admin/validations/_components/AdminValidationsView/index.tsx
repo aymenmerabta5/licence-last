@@ -21,7 +21,9 @@ export function AdminValidationsView() {
       description={t("description")}
       kicker="Validation Center"
       emptyLabel={t("empty")}
-      detailHref={(applicationId) => `/dashboard/admin/validations/${applicationId}`}
+      detailHref={(applicationId) =>
+        `/dashboard/admin/validations/${applicationId}`
+      }
       listNamespace="dashboard.admin.validations"
     />
   )

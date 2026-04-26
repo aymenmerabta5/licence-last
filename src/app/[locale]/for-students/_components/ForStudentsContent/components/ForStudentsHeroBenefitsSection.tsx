@@ -9,11 +9,11 @@ import {
   Sparkles,
 } from "lucide-react"
 import * as motion from "motion/react-client"
+import type { ForStudentsSectionProps } from "@/app/[locale]/for-students/_components/ForStudentsContent/types"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Link } from "@/i18n/routing"
 import { ease, reveal } from "@/lib/animations"
-import type { ForStudentsSectionProps } from "@/app/[locale]/for-students/_components/ForStudentsContent/types"
 
 const BENEFITS: Array<{ key: string; icon: LucideIcon }> = [
   { key: "cv", icon: FileText },

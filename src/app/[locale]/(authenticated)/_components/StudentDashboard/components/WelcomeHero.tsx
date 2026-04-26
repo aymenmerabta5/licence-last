@@ -1,7 +1,7 @@
 "use client"
 
-import { Route } from "next"
 import * as motion from "motion/react-client"
+import { Route } from "next"
 import { useLocale, useTranslations } from "next-intl"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -71,8 +71,8 @@ export function WelcomeHero({
               <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground block">
                 {new Intl.DateTimeFormat(locale, { month: "short" })
                   .format(now)
-                  .toLocaleUpperCase(locale)} '
-                {now.getFullYear().toString().slice(-2)}
+                  .toLocaleUpperCase(locale)}{" "}
+                '{now.getFullYear().toString().slice(-2)}
               </span>
             </div>
 

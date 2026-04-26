@@ -4,8 +4,8 @@ import { useForm } from "@tanstack/react-form"
 import { useTranslations } from "next-intl"
 import { useMemo, useRef, useState } from "react"
 import {
-  isTurnstileEnabledOnClient,
   type CaptchaHandle,
+  isTurnstileEnabledOnClient,
 } from "@/components/TurnstileWidget"
 import { authClient } from "@/lib/auth-client"
 import {

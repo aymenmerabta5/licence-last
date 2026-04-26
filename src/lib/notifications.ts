@@ -89,14 +89,15 @@ function formatNotificationTitle(
   return TITLE_BY_TYPE[type] ?? humanizeToken(type)
 }
 
-function formatStageLabel(value: string, t?: NotificationTranslationFn): string {
+function formatStageLabel(
+  value: string,
+  t?: NotificationTranslationFn,
+): string {
   const normalized = value.trim().toLowerCase()
 
   if (
     t &&
-    STAGE_COLUMNS.includes(
-      normalized as (typeof STAGE_COLUMNS)[number],
-    )
+    STAGE_COLUMNS.includes(normalized as (typeof STAGE_COLUMNS)[number])
   ) {
     return t(`feed.stageLabels.${normalized}`)
   }

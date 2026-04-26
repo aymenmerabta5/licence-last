@@ -63,18 +63,21 @@ export function TwoFactorStep({
         transition={{ duration: 0.6, ease, delay: 0.05 }}
         className="border-b border-border/60"
       >
-        <Tabs value={method} onValueChange={(value) => onMethodChange(value as TwoFactorMethod)}>
+        <Tabs
+          value={method}
+          onValueChange={(value) => onMethodChange(value as TwoFactorMethod)}
+        >
           <TabsList variant="line" className="w-full">
-          {methods.map(({ key, Icon }) => (
-            <TabsTrigger
-              key={key}
-              value={key}
-              className="relative h-auto flex-1 rounded-none px-0 pb-3 text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground/60 transition-colors duration-200 hover:text-muted-foreground data-active:text-heading after:bg-primary group-data-[variant=line]/tabs-list:after:bottom-[-1px] group-data-[variant=line]/tabs-list:after:h-0.5"
-            >
-              <Icon className="h-3.5 w-3.5" />
-              <span>{t(key)}</span>
-            </TabsTrigger>
-          ))}
+            {methods.map(({ key, Icon }) => (
+              <TabsTrigger
+                key={key}
+                value={key}
+                className="relative h-auto flex-1 rounded-none px-0 pb-3 text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground/60 transition-colors duration-200 hover:text-muted-foreground data-active:text-heading after:bg-primary group-data-[variant=line]/tabs-list:after:bottom-[-1px] group-data-[variant=line]/tabs-list:after:h-0.5"
+              >
+                <Icon className="h-3.5 w-3.5" />
+                <span>{t(key)}</span>
+              </TabsTrigger>
+            ))}
           </TabsList>
         </Tabs>
       </motion.div>

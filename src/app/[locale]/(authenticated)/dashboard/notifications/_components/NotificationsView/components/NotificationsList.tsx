@@ -49,10 +49,13 @@ export function NotificationsList({
       {notifications.length > 0 && (
         <div className="space-y-2">
           {notifications.map((n, i) => {
-            const formatted = formatNotification({
-              type: n.type,
-              payload: n.payload,
-            }, t)
+            const formatted = formatNotification(
+              {
+                type: n.type,
+                payload: n.payload,
+              },
+              t,
+            )
 
             return (
               <motion.button

@@ -13,9 +13,7 @@ interface FeatureDisabledCardProps {
   message?: string
 }
 
-export function FeatureDisabledCard({
-  message,
-}: FeatureDisabledCardProps) {
+export function FeatureDisabledCard({ message }: FeatureDisabledCardProps) {
   const t = useTranslations("dashboard.interviews")
 
   return (
@@ -25,12 +23,12 @@ export function FeatureDisabledCard({
           <ShieldAlert className="h-4 w-4 text-destructive" />
           {t("disabled.title")}
         </CardTitle>
-        <CardDescription>{message ?? t("disabled.description")}</CardDescription>
+        <CardDescription>
+          {message ?? t("disabled.description")}
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground">
-          {t("disabled.help")}
-        </p>
+        <p className="text-sm text-muted-foreground">{t("disabled.help")}</p>
       </CardContent>
     </Card>
   )

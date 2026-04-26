@@ -1,7 +1,6 @@
 import { Window } from "happy-dom"
 
-// @ts-expect-error read-only property in some environments
-process.env.NODE_ENV ??= "test"
+;(process.env as Record<string, string | undefined>).NODE_ENV ??= "test"
 
 // Ensure required client env vars exist for modules importing `src/env.ts` in tests.
 if (!process.env.NEXT_PUBLIC_BETTER_AUTH_URL) {
@@ -11,7 +10,8 @@ if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL = "postgresql://localhost:5432/test"
 }
 if (!process.env.BETTER_AUTH_SECRET) {
-  process.env.BETTER_AUTH_SECRET = "test-secret-key-that-is-long-enough-for-testing-now"
+  process.env.BETTER_AUTH_SECRET =
+    "test-secret-key-that-is-long-enough-for-testing-now"
 }
 if (!process.env.POE_API_KEY) {
   process.env.POE_API_KEY = "test-poe-api-key"

@@ -1,9 +1,9 @@
 "use client"
 
 import { ArrowLeft } from "lucide-react"
-import { Link } from "@/i18n/routing"
-import { Badge } from "@/components/ui/badge"
 import type { ValidationHeaderProps } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/types"
+import { Badge } from "@/components/ui/badge"
+import { Link } from "@/i18n/routing"
 
 export function ValidationHeader({
   isLoading,

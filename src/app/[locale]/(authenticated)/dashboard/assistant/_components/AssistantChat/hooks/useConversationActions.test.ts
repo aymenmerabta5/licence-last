@@ -97,9 +97,7 @@ describe("resolveSelectionAfterDelete", () => {
 
 describe("shouldSkipConversationModelUpdate", () => {
   test("returns true when selecting the current model", () => {
-    expect(
-      shouldSkipConversationModelUpdate("gpt-5.4", "gpt-5.4"),
-    ).toBeTrue()
+    expect(shouldSkipConversationModelUpdate("gpt-5.4", "gpt-5.4")).toBeTrue()
   })
 
   test("returns true when no next model is provided", () => {
@@ -107,8 +105,6 @@ describe("shouldSkipConversationModelUpdate", () => {
   })
 
   test("returns false when selecting a different model", () => {
-    expect(
-      shouldSkipConversationModelUpdate("gpt-5.4", "gpt-5.3"),
-    ).toBeFalse()
+    expect(shouldSkipConversationModelUpdate("gpt-5.4", "gpt-5.3")).toBeFalse()
   })
 })

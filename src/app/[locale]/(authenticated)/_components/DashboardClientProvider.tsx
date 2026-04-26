@@ -1,6 +1,6 @@
 "use client"
 
-import { Suspense, createContext, useContext, useState } from "react"
+import { createContext, Suspense, useContext, useState } from "react"
 import { DashboardNavbar } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar"
 import { DashboardSidebar } from "@/app/[locale]/(authenticated)/_components/DashboardSidebar"
 import { ImpersonationBanner } from "@/components/ImpersonationBanner"

@@ -1,6 +1,6 @@
 "use client"
 
-import { Briefcase, Calendar, MapPin, Plus } from "lucide-react"
+import { Briefcase, Calendar } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useLocale } from "next-intl"
 import type { StudentExperience } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
@@ -25,6 +25,10 @@ export function ExperienceSection({
 }: ExperienceSectionProps) {
   const locale = useLocale()
   const hasExperience = experiences.length > 0
+  const dateFormatter = new Intl.DateTimeFormat(locale, {
+    month: "short",
+    year: "numeric",
+  })
 
   return (
     <motion.section
@@ -71,8 +75,11 @@ export function ExperienceSection({
                       </h3>
                     </div>
                     <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-2xl bg-slate-50 border border-slate-100 text-slate-400 font-bold text-[11px] uppercase tracking-widest whitespace-nowrap">
-                       <Calendar className="h-3.5 w-3.5 text-slate-300" />
-                       {exp.startDate.getFullYear()} — {exp.endDate ? exp.endDate.getFullYear() : "Present"}
+                      <Calendar className="h-3.5 w-3.5 text-slate-300" />
+                      {dateFormatter.format(exp.startDate)} —{" "}
+                      {exp.endDate
+                        ? dateFormatter.format(exp.endDate)
+                        : "Present"}
                     </div>
                   </div>
 
@@ -85,31 +92,39 @@ export function ExperienceSection({
               </div>
             </motion.div>
           ))}
-          
+
           {canEdit && (
             <div className="pl-24">
-               <Link href="/dashboard/settings">
-                 <button className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.25em] text-slate-300 hover:text-primary transition-all">
-                    <span>+ {labels.addExperience}</span>
-                    <motion.span animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>→</motion.span>
-                 </button>
-               </Link>
+              <Link href="/dashboard/settings">
+                <button
+                  type="button"
+                  className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.25em] text-slate-300 hover:text-primary transition-all"
+                >
+                  <span>+ {labels.addExperience}</span>
+                  <motion.span
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                  >
+                    →
+                  </motion.span>
+                </button>
+              </Link>
             </div>
           )}
         </div>
       ) : (
         <div className="rounded-[2.5rem] border-2 border-dashed border-slate-100 bg-white/50 p-16 text-center space-y-8">
-           <Briefcase className="h-16 w-16 mx-auto text-slate-100" />
-           <p className="text-lg text-slate-300 font-medium max-w-xs mx-auto">
-             {labels.emptyMessage}
-           </p>
-           {canEdit && (
-              <Link href="/dashboard/settings">
-                <Button className="rounded-full h-14 px-10 bg-primary text-xs font-black uppercase tracking-widest">
-                   {labels.addExperience}
-                </Button>
-              </Link>
-           )}
+          <Briefcase className="h-16 w-16 mx-auto text-slate-100" />
+          <p className="text-lg text-slate-300 font-medium max-w-xs mx-auto">
+            {labels.emptyMessage}
+          </p>
+          {canEdit && (
+            <Link href="/dashboard/settings">
+              <Button className="rounded-full h-14 px-10 bg-primary text-xs font-black uppercase tracking-widest">
+                {labels.addExperience}
+              </Button>
+            </Link>
+          )}
         </div>
       )}
     </motion.section>

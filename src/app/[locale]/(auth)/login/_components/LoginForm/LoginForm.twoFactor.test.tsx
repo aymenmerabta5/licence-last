@@ -31,7 +31,8 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     "auth.login.error": "An error occurred. Please try again.",
     "auth.login.twoFactor.error": "Verification failed. Please try again.",
     "auth.login.twoFactor.invalidCode": "Invalid code. Please try again.",
-    "errors.auth.rateLimitExceeded": "Too many attempts. Please try again later.",
+    "errors.auth.rateLimitExceeded":
+      "Too many attempts. Please try again later.",
   },
   "auth.login": {
     title: "Welcome Back",

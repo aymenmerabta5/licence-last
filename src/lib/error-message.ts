@@ -2,10 +2,7 @@ interface TranslationValues {
   [key: string]: string | number | Date
 }
 
-type TranslationFn = ((
-  key: string,
-  values?: TranslationValues,
-) => string) & {
+type TranslationFn = ((key: string, values?: TranslationValues) => string) & {
   has?: (key: string) => boolean
 }
 
@@ -61,7 +58,9 @@ function toTranslationValues(value: unknown): TranslationValues | undefined {
   return Object.fromEntries(entries) as TranslationValues
 }
 
-function extractDetailsFromRecord(record: Record<string, unknown>): ErrorDetails {
+function extractDetailsFromRecord(
+  record: Record<string, unknown>,
+): ErrorDetails {
   const details: ErrorDetails = {}
 
   if (typeof record.code === "string") {
@@ -148,7 +147,9 @@ export function getErrorMessage(
 
 export function getErrorDetails(err: unknown): ErrorDetails {
   if (err instanceof Error) {
-    const details = extractDetailsFromRecord(err as unknown as Record<string, unknown>)
+    const details = extractDetailsFromRecord(
+      err as unknown as Record<string, unknown>,
+    )
     return {
       ...details,
       message: details.message ?? err.message,

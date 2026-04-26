@@ -3,8 +3,8 @@ import "server-only"
 import { cacheLife, cacheTag } from "next/cache"
 import { CACHE_TAGS } from "@/lib/cache"
 import {
-  listApplicationsByStudentUncached,
   type ListStudentApplicationsParams,
+  listApplicationsByStudentUncached,
 } from "@/server/services/applications/list-by-student-base"
 
 function isE2ECacheDisabled(): boolean {

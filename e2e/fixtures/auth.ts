@@ -1,7 +1,6 @@
 import type { Page } from "@playwright/test"
-
-import { TEST_CREDENTIALS, type TestCredential } from "./credentials"
 import { LoginPage } from "../pages/login.page"
+import { TEST_CREDENTIALS, type TestCredential } from "./credentials"
 
 export type UserRole =
   | "student"

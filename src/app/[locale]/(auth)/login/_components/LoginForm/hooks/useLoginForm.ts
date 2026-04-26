@@ -9,8 +9,8 @@ import {
   verifyTwoFactorCode,
 } from "@/app/[locale]/(auth)/login/_components/LoginForm/hooks/twoFactorUtils"
 import {
-  isTurnstileEnabledOnClient,
   type CaptchaHandle,
+  isTurnstileEnabledOnClient,
 } from "@/components/TurnstileWidget"
 import { useRouter } from "@/i18n/routing"
 import { authClient } from "@/lib/auth-client"

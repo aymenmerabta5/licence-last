@@ -816,10 +816,16 @@ async function seedLinkedUniversityAdmin(db: SeedDb) {
     })
   }
 
-  await ensureCredentialAccount(db, userId, credentials.email, credentials.password, {
-    linked: "university_admin_credential_linked",
-    repaired: "university_admin_credential_repaired",
-  })
+  await ensureCredentialAccount(
+    db,
+    userId,
+    credentials.email,
+    credentials.password,
+    {
+      linked: "university_admin_credential_linked",
+      repaired: "university_admin_credential_repaired",
+    },
+  )
 }
 
 async function seedSuperAdmin(db: SeedDb) {
@@ -878,10 +884,16 @@ async function seedSuperAdmin(db: SeedDb) {
     })
   }
 
-  await ensureCredentialAccount(db, userId, credentials.email, credentials.password, {
-    linked: "admin_credential_linked",
-    repaired: "admin_credential_repaired",
-  })
+  await ensureCredentialAccount(
+    db,
+    userId,
+    credentials.email,
+    credentials.password,
+    {
+      linked: "admin_credential_linked",
+      repaired: "admin_credential_repaired",
+    },
+  )
 }
 
 async function main() {

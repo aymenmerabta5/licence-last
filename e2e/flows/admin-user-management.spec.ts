@@ -20,7 +20,7 @@ test.describe("Admin User Management", () => {
       page.getByRole("heading", { name: "User Management" }),
     ).toBeVisible({ timeout: 15000 })
 
-    const createBtn = page.locator('button', { hasText: /Create User/ })
+    const createBtn = page.locator("button", { hasText: /Create User/ })
     if (await createBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
       await createBtn.click()
       await expect(page.getByText("Create User").first()).toBeVisible({
@@ -41,12 +41,19 @@ test.describe("Admin User Management", () => {
     const rowCount = await userRows.count()
     if (rowCount > 0) {
       await page.waitForTimeout(2000)
-      const dropdown = page.locator('button[aria-label*="menu"], button[aria-label*="Menu"], button[aria-label*="options"], button[aria-label*="Options"]').first()
-        .or(page.locator('tr button').last())
+      const dropdown = page
+        .locator(
+          'button[aria-label*="menu"], button[aria-label*="Menu"], button[aria-label*="options"], button[aria-label*="Options"]',
+        )
+        .first()
+        .or(page.locator("tr button").last())
       if (await dropdown.isVisible({ timeout: 3000 }).catch(() => false)) {
         await dropdown.click()
         await page.waitForTimeout(500)
-        const viewDetails = page.locator('button, a').filter({ hasText: /View Details/ }).first()
+        const viewDetails = page
+          .locator("button, a")
+          .filter({ hasText: /View Details/ })
+          .first()
         if (await viewDetails.isVisible({ timeout: 2000 }).catch(() => false)) {
           await viewDetails.click()
           await page.waitForTimeout(2000)

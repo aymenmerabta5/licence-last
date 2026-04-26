@@ -61,7 +61,12 @@ export async function withdrawApplication(
       pipelineStage: "rejected",
       pipelineStageUpdatedAt: new Date(),
     })
-    .where(and(eq(application.id, applicationId), eq(application.status, app.status)))
+    .where(
+      and(
+        eq(application.id, applicationId),
+        eq(application.status, app.status),
+      ),
+    )
     .returning({ id: application.id })
 
   if (!updatedApplication) {

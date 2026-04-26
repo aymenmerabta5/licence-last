@@ -1,15 +1,16 @@
 "use client"
 
-import { useMemo, useState } from "react"
-
 import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { useMemo, useState } from "react"
 
 import { CompanyOffersEmptyState } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/CompanyOffersEmptyState"
 import { CompanyOffersFilters } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/CompanyOffersFilters"
 import { CompanyOffersHeader } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/CompanyOffersHeader"
 import { OfferCard } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/OfferCard"
 import { TrustBanner } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/TrustBanner"
+import { useCompanyOffers } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/hooks/useCompanyOffers"
+import type { OfferStatusFilter } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/types"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,8 +21,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { useCompanyOffers } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/hooks/useCompanyOffers"
-import type { OfferStatusFilter } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/types"
 
 export function CompanyOffersView({
   canManageStatus,

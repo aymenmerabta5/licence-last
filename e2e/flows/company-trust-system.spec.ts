@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test"
 
 import { loginAsStudent } from "../fixtures/auth"
-import { seedPlacementFixture, seedGeneratedDocument } from "../fixtures/seed"
+import { seedGeneratedDocument, seedPlacementFixture } from "../fixtures/seed"
 
 test.describe("Company Trust System", () => {
   test("can view documents page with placement feedback", async ({ page }) => {

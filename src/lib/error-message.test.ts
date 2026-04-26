@@ -1,9 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import {
-  getErrorMessage,
-  resolveLocalizedError,
-} from "@/lib/error-message"
+import { getErrorMessage, resolveLocalizedError } from "@/lib/error-message"
 
 describe("getErrorMessage", () => {
   test("should extract message from Error instance", () => {
@@ -70,14 +67,14 @@ describe("resolveLocalizedError", () => {
       "Le domaine e-mail universitaire n'est pas encore approuve.",
     "auth.login.error": "Identifiants invalides.",
     "errors.auth.captchaRequired": "Veuillez completer le CAPTCHA.",
-    "errors.auth.rateLimitExceeded": "Trop de tentatives. Veuillez reessayer plus tard.",
+    "errors.auth.rateLimitExceeded":
+      "Trop de tentatives. Veuillez reessayer plus tard.",
     "errors.common.unexpected": "Une erreur inattendue est survenue.",
   }
 
-  const t = Object.assign(
-    (key: string) => translations[key] ?? key,
-    { has: (key: string) => key in translations },
-  )
+  const t = Object.assign((key: string) => translations[key] ?? key, {
+    has: (key: string) => key in translations,
+  })
 
   test("should resolve a translated message from error data.code", () => {
     const message = resolveLocalizedError(

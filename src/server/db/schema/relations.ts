@@ -10,7 +10,6 @@ import {
 import { user } from "@/server/db/schema/auth"
 import { company, companyMember } from "@/server/db/schema/companies"
 import { department, departmentSkill } from "@/server/db/schema/departments"
-import { universityMember } from "@/server/db/schema/university-members"
 import {
   internshipOffer,
   internshipOfferSkill,
@@ -41,6 +40,7 @@ import {
 import { studentProfile, studentSkill } from "@/server/db/schema/students"
 import { companyQualityFeedback, companyReport } from "@/server/db/schema/trust"
 import { university, universityDomain } from "@/server/db/schema/universities"
+import { universityMember } from "@/server/db/schema/university-members"
 
 // ── Auth ──────────────────────────────────────────────
 
@@ -231,21 +231,23 @@ export const companyMemberRelations = relations(companyMember, ({ one }) => ({
   }),
 }))
 
-export const universityMemberRelations = relations(universityMember, ({ one }) => ({
-  university: one(university, {
-    fields: [universityMember.universityId],
-    references: [university.id],
+export const universityMemberRelations = relations(
+  universityMember,
+  ({ one }) => ({
+    university: one(university, {
+      fields: [universityMember.universityId],
+      references: [university.id],
+    }),
+    user: one(user, {
+      fields: [universityMember.userId],
+      references: [user.id],
+    }),
+    department: one(department, {
+      fields: [universityMember.departmentId],
+      references: [department.id],
+    }),
   }),
-  user: one(user, {
-    fields: [universityMember.userId],
-    references: [user.id],
-  }),
-  department: one(department, {
-    fields: [universityMember.departmentId],
-    references: [department.id],
-  }),
-}))
-
+)
 
 // ── Assistant (Company Copilot) ────────────────────────
 

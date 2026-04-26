@@ -14,9 +14,9 @@ import { asRecord, getStringProp } from "@/lib/ai/tool-output"
 import { ASSISTANT_RATE_LIMIT } from "@/lib/constants/rate-limits"
 import { isFeatureEnabled } from "@/lib/feature-flags"
 import { isRoleAllowedForIntent } from "@/server/ai/access"
+import { loadArcadeToolsOrFallback } from "@/server/ai/arcade-fallback"
 import { resolveToolAuthContext } from "@/server/ai/auth-context"
 import { generateConversationTitle } from "@/server/ai/auto-title"
-import { loadArcadeToolsOrFallback } from "@/server/ai/arcade-fallback"
 import { assistantContextToJson } from "@/server/ai/context"
 import { getAIModel } from "@/server/ai/model"
 import { persistUserMessage, resolvePersistence } from "@/server/ai/persistence"
@@ -34,9 +34,9 @@ import { ASSISTANT_INTENTS, type AssistantIntent } from "@/server/ai/types"
 import { checkAdminApproval } from "@/server/auth/approval-gate"
 import { getFreshAuthSession } from "@/server/auth/get-fresh-session"
 import { getAssistantConversationByIdForCompany } from "@/server/services/assistant/get"
-import { getCompanyStatusByUserId } from "@/server/services/companies/get-status"
 import { appendAssistantMessage } from "@/server/services/assistant/messages"
 import { extractTextFromParts } from "@/server/services/assistant/utils"
+import { getCompanyStatusByUserId } from "@/server/services/companies/get-status"
 import { isServiceError } from "@/server/services/errors"
 
 // Constants
@@ -132,7 +132,10 @@ export async function handleChatRequest(req: Request): Promise<Response> {
         return new Response("Forbidden", { status: 403 })
       }
     } catch (error) {
-      if (isServiceError(error) && error.code === "COMPANY_MEMBERSHIP_CONFLICT") {
+      if (
+        isServiceError(error) &&
+        error.code === "COMPANY_MEMBERSHIP_CONFLICT"
+      ) {
         return new Response("Forbidden", { status: 403 })
       }
       throw error
@@ -322,9 +325,9 @@ export async function handleChatRequest(req: Request): Promise<Response> {
         toolChoice:
           shouldForceTool && intent
             ? ({ type: "tool", toolName: intent } as const)
-              : forcedArcadeToolName
-                ? ({ type: "tool", toolName: forcedArcadeToolName } as const)
-                : undefined,
+            : forcedArcadeToolName
+              ? ({ type: "tool", toolName: forcedArcadeToolName } as const)
+              : undefined,
         stopWhen: stepCountIs(hasArcadeTools ? 12 : hasDataTools ? 8 : 5),
       })
 

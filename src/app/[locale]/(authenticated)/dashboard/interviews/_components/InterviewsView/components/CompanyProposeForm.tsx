@@ -155,9 +155,7 @@ export function CompanyProposeForm({
               </Label>
               <Select
                 value={applicationId}
-                onValueChange={(value) =>
-                  value && onApplicationIdChange(value)
-                }
+                onValueChange={(value) => value && onApplicationIdChange(value)}
                 disabled={!selectedOfferId}
                 items={applications.map((application) => ({
                   value: application.id,

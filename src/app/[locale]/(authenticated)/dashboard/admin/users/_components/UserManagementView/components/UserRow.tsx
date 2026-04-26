@@ -119,7 +119,9 @@ export function UserRow({
         {hasAdminOnlyActions && (
           <DropdownMenu>
             <DropdownMenuTrigger
-              render={<Button variant="ghost" size="icon" className="h-8 w-8" />}
+              render={
+                <Button variant="ghost" size="icon" className="h-8 w-8" />
+              }
             >
               <MoreHorizontal className="h-4 w-4" />
             </DropdownMenuTrigger>
@@ -148,9 +150,8 @@ export function UserRow({
                   {t("actions.setPassword")}
                 </DropdownMenuItem>
               )}
-              {(canViewDetails || canSetRole || canSetPassword) && canModerateUsers && (
-                <DropdownMenuSeparator />
-              )}
+              {(canViewDetails || canSetRole || canSetPassword) &&
+                canModerateUsers && <DropdownMenuSeparator />}
               {canModerateUsers && (
                 <>
                   {user.banned ? (

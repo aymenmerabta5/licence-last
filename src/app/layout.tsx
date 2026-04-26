@@ -29,11 +29,7 @@ const notoSansArabic = Noto_Sans_Arabic({
  * Keep this shell static so cacheComponents prerendering can succeed.
  * Locale-specific providers and document syncing live under app/[locale]/layout.tsx.
  */
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
       <body

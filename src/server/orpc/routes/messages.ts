@@ -97,7 +97,10 @@ export const listMessageStartersByCompanyProcedure =
         .optional(),
     )
     .handler(async ({ input, context }) =>
-      listMessageStartersByCompany(context.companyMembership.companyId, input ?? {}),
+      listMessageStartersByCompany(
+        context.companyMembership.companyId,
+        input ?? {},
+      ),
     )
 
 export const listMessageStartersByStudentProcedure = studentProcedureGenerous

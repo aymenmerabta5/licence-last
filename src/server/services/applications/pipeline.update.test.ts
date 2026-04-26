@@ -295,7 +295,8 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
       }),
     ).rejects.toMatchObject({
       code: "APPLICATION_INVALID_STATE",
-      message: "Application was changed by another action. Refresh and try again.",
+      message:
+        "Application was changed by another action. Refresh and try again.",
     })
 
     expect(insertValuesMock).not.toHaveBeenCalled()

@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight, Search, FileText } from "lucide-react"
+import { ArrowRight, FileText, Search } from "lucide-react"
 import { ApplicationCard } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/ApplicationCard"
 import type { ApplicationRow } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 import { Button } from "@/components/ui/button"

@@ -1,5 +1,5 @@
-import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
+import { Suspense } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"

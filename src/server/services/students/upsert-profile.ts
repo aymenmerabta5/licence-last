@@ -6,12 +6,12 @@ import { createModuleLogger } from "@/server/logging"
 
 const log = createModuleLogger("services/students/upsert-profile")
 
-import { ServiceError } from "@/server/services/errors"
 import { normalizeLanguageEntries } from "@/lib/constants/languages"
 import type { ProficiencyLevel } from "@/lib/schemas/enums"
 import { user } from "@/server/db/schema/auth"
 import { studentLanguage } from "@/server/db/schema/languages"
 import { studentProfile, studentSkill } from "@/server/db/schema/students"
+import { ServiceError } from "@/server/services/errors"
 import { validateSkillTagIds } from "@/server/services/skills/validate"
 
 interface StudentLanguageInput {

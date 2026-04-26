@@ -35,7 +35,9 @@ test.describe("Login Flow", () => {
     await expect(page).toHaveURL(/\/en\/signup$/)
   })
 
-  test("authenticated user is redirected from login to dashboard", async ({ page }) => {
+  test("authenticated user is redirected from login to dashboard", async ({
+    page,
+  }) => {
     await loginAsStudent(page)
 
     await page.goto("/en")

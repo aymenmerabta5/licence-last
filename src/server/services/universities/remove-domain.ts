@@ -37,9 +37,7 @@ export async function removeUniversityDomain(
     )
   }
 
-  await db
-    .delete(universityDomain)
-    .where(eq(universityDomain.id, domainId))
+  await db.delete(universityDomain).where(eq(universityDomain.id, domainId))
 
   log.info({ universityId, domainId }, "University domain removed")
 

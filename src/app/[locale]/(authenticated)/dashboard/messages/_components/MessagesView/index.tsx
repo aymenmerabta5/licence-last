@@ -45,7 +45,10 @@ export function MessagesView({ role, currentUserId }: MessagesViewProps) {
   })
 
   useEffect(() => {
-    if (pendingThreadId && threads.some((thread) => thread.id === pendingThreadId)) {
+    if (
+      pendingThreadId &&
+      threads.some((thread) => thread.id === pendingThreadId)
+    ) {
       setPendingThreadId(null)
     }
   }, [pendingThreadId, threads])

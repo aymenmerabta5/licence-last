@@ -15,7 +15,7 @@ test.describe("Student Apply to Offer", () => {
     })
 
     const applyButton = page
-      .locator('button', { hasText: /apply now/i })
+      .locator("button", { hasText: /apply now/i })
       .first()
     if (await applyButton.isVisible({ timeout: 5000 }).catch(() => false)) {
       await applyButton.click()
@@ -24,7 +24,7 @@ test.describe("Student Apply to Offer", () => {
       await page.waitForTimeout(500)
 
       const submitButton = page
-        .locator('button', { hasText: /submit application/i })
+        .locator("button", { hasText: /submit application/i })
         .first()
       await submitButton.click()
 
@@ -35,7 +35,7 @@ test.describe("Student Apply to Offer", () => {
   })
 
   test("student can withdraw an application", async ({ page }) => {
-    const fixture = await seedOfferFixture({ titlePrefix: "Withdraw Offer" })
+    const _fixture = await seedOfferFixture({ titlePrefix: "Withdraw Offer" })
 
     await loginAsStudent(page)
     await page.goto("/en/dashboard/applications")
@@ -45,7 +45,7 @@ test.describe("Student Apply to Offer", () => {
     })
 
     const withdrawButton = page
-      .locator('button', { hasText: /withdraw/i })
+      .locator("button", { hasText: /withdraw/i })
       .first()
     if (await withdrawButton.isVisible({ timeout: 5000 }).catch(() => false)) {
       await withdrawButton.click()

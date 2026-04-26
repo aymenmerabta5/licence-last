@@ -1,10 +1,7 @@
 import { expect, test } from "@playwright/test"
 
 import { TEST_CREDENTIALS } from "../fixtures/credentials"
-import {
-  restoreUserPassword,
-  seedPasswordResetToken,
-} from "../fixtures/seed"
+import { restoreUserPassword, seedPasswordResetToken } from "../fixtures/seed"
 import { LoginPage } from "../pages/login.page"
 import { ResetPasswordPage } from "../pages/reset-password.page"
 import { ResetPasswordVerifyPage } from "../pages/reset-password-verify.page"
@@ -25,9 +22,7 @@ test.describe("Forgot Password Flow", () => {
     ).toBeVisible()
   })
 
-  test("shows validation error for empty email on submit", async ({
-    page,
-  }) => {
+  test("shows validation error for empty email on submit", async ({ page }) => {
     const resetPage = new ResetPasswordPage(page)
 
     await resetPage.goto()
@@ -38,9 +33,7 @@ test.describe("Forgot Password Flow", () => {
     ).toBeVisible()
   })
 
-  test("shows validation error for invalid email format", async ({
-    page,
-  }) => {
+  test("shows validation error for invalid email format", async ({ page }) => {
     const resetPage = new ResetPasswordPage(page)
 
     await resetPage.goto()
@@ -63,9 +56,7 @@ test.describe("Forgot Password Flow", () => {
     await expect(page).toHaveURL(/\/en\/reset-password/)
   })
 
-  test("shows success for non-existing email (security)", async ({
-    page,
-  }) => {
+  test("shows success for non-existing email (security)", async ({ page }) => {
     const resetPage = new ResetPasswordPage(page)
 
     await resetPage.goto()
@@ -108,14 +99,12 @@ test.describe("Reset Password Verify Flow", () => {
     ).toBeDisabled()
   })
 
-  test("shows error with INVALID_TOKEN query parameter", async ({
-    page,
-  }) => {
+  test("shows error with INVALID_TOKEN query parameter", async ({ page }) => {
     await page.goto("/en/reset-password/verify?error=INVALID_TOKEN")
 
-    await expect(
-      page.getByText(/invalid or has expired/i),
-    ).toBeVisible({ timeout: 15000 })
+    await expect(page.getByText(/invalid or has expired/i)).toBeVisible({
+      timeout: 15000,
+    })
   })
 
   test("shows error when submitting with invalid token", async ({ page }) => {
@@ -127,7 +116,9 @@ test.describe("Reset Password Verify Flow", () => {
     await verifyPage.submit()
 
     await expect(
-      page.getByText(/invalid or has expired|could not reset password/i).first(),
+      page
+        .getByText(/invalid or has expired|could not reset password/i)
+        .first(),
     ).toBeVisible({ timeout: 15000 })
   })
 
@@ -140,9 +131,7 @@ test.describe("Reset Password Verify Flow", () => {
     await verifyPage.goto(token)
     await verifyPage.submit()
 
-    await expect(
-      page.getByText(/password is required/i).first(),
-    ).toBeVisible()
+    await expect(page.getByText(/password is required/i).first()).toBeVisible()
   })
 
   test("shows validation error for password too short", async ({ page }) => {
@@ -156,14 +145,10 @@ test.describe("Reset Password Verify Flow", () => {
     await verifyPage.fillConfirmPassword("short")
     await verifyPage.submit()
 
-    await expect(
-      page.getByText(/at least 8 characters/i).first(),
-    ).toBeVisible()
+    await expect(page.getByText(/at least 8 characters/i).first()).toBeVisible()
   })
 
-  test("shows validation error for mismatched passwords", async ({
-    page,
-  }) => {
+  test("shows validation error for mismatched passwords", async ({ page }) => {
     const token = await seedPasswordResetToken({
       email: TEST_CREDENTIALS.student.email,
     })
@@ -174,9 +159,7 @@ test.describe("Reset Password Verify Flow", () => {
     await verifyPage.fillConfirmPassword("DifferentPassword456!")
     await verifyPage.submit()
 
-    await expect(
-      page.getByText(/passwords do not match/i),
-    ).toBeVisible()
+    await expect(page.getByText(/passwords do not match/i)).toBeVisible()
   })
 
   test("successfully resets password with valid token", async ({ page }) => {

@@ -271,9 +271,7 @@ export function InternshipCertificateTemplate({
 
                 <View style={styles.detailItemBorder}>
                   <Text style={styles.detailLabel}>{typeLabel}</Text>
-                  <Text style={styles.detailValue}>
-                    {data.internshipType}
-                  </Text>
+                  <Text style={styles.detailValue}>{data.internshipType}</Text>
                 </View>
               </View>
 

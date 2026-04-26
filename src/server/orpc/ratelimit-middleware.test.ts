@@ -1,16 +1,14 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 let mockRedisRateLimitEnabled: "true" | "false" = "false"
-let mockLimiter:
-  | {
-      limit: (key: string) => Promise<{
-        success: boolean
-        limit: number
-        remaining: number
-        reset: number
-      }>
-    }
-  | null = null
+let mockLimiter: {
+  limit: (key: string) => Promise<{
+    success: boolean
+    limit: number
+    remaining: number
+    reset: number
+  }>
+} | null = null
 
 mock.module("@orpc/experimental-ratelimit", () => ({
   createRatelimitMiddleware: (config: unknown) => config,
@@ -147,15 +145,15 @@ describe("ratelimit middleware fallback policy", () => {
       limiter: () => { limit: (key: string) => Promise<{ success: boolean }> }
     }
 
-    await middleware.limiter().limit(
-      await middleware.key({ context: { user: { id: "u1" } } }),
-    )
-    await middleware.limiter().limit(
-      await middleware.key({ context: { user: { id: "u2" } } }),
-    )
-    await middleware.limiter().limit(
-      await middleware.key({ context: { user: { id: "u3" } } }),
-    )
+    await middleware
+      .limiter()
+      .limit(await middleware.key({ context: { user: { id: "u1" } } }))
+    await middleware
+      .limiter()
+      .limit(await middleware.key({ context: { user: { id: "u2" } } }))
+    await middleware
+      .limiter()
+      .limit(await middleware.key({ context: { user: { id: "u3" } } }))
 
     expect(__getInMemoryRateLimiterSizeForTests()).toBe(2)
   })
@@ -179,15 +177,15 @@ describe("ratelimit middleware fallback policy", () => {
       limiter: () => { limit: (key: string) => Promise<{ success: boolean }> }
     }
 
-    await middleware.limiter().limit(
-      await middleware.key({ context: { user: { id: "u1" } } }),
-    )
+    await middleware
+      .limiter()
+      .limit(await middleware.key({ context: { user: { id: "u1" } } }))
     expect(__getInMemoryRateLimiterSizeForTests()).toBe(1)
 
     await new Promise((resolve) => setTimeout(resolve, 10))
-    await middleware.limiter().limit(
-      await middleware.key({ context: { user: { id: "u2" } } }),
-    )
+    await middleware
+      .limiter()
+      .limit(await middleware.key({ context: { user: { id: "u2" } } }))
     __forceSweepInMemoryRateLimiterForTests(Date.now() + 6000)
 
     expect(__getInMemoryRateLimiterSizeForTests()).toBe(0)

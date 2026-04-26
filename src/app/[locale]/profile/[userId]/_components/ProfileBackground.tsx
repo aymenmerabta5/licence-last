@@ -22,10 +22,10 @@ export function ProfileBackground() {
         transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
         className="absolute bottom-[-10%] left-[-5%] w-[50%] h-[50%] bg-primary/3 blur-[80px] rounded-full"
       />
-      
+
       {/* Subtle Grid / Texture Overlay */}
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] contrast-100 brightness-100 mix-blend-multiply" />
-      
+
       {/* Horizontal Line Accent */}
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/10 to-transparent" />
     </div>

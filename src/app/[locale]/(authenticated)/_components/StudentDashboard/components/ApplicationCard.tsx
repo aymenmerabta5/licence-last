@@ -1,4 +1,4 @@
-import { Calendar, Building, ChevronRight } from "lucide-react"
+import { Building, Calendar, ChevronRight } from "lucide-react"
 import { useLocale } from "next-intl"
 import { StatusBadge } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/StatusBadge"
 import type { ApplicationRow } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"

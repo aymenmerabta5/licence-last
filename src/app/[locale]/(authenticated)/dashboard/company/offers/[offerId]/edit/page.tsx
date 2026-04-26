@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import { OfferForm } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm"
-import { requireApprovedCompanyAdmin } from "@/lib/dashboard-access"
 import type { LanguageCode } from "@/lib/constants/languages"
+import { requireApprovedCompanyAdmin } from "@/lib/dashboard-access"
 import { localeRedirect } from "@/lib/navigation"
 import { getOfferById } from "@/server/services/offers/get"
 

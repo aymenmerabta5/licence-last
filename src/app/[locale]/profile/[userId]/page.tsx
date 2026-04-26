@@ -25,7 +25,10 @@ function ProfileFallback() {
       {/* Stats grid skeleton */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[0, 1, 2].map((i) => (
-          <div key={i} className="rounded-xl border border-border/50 bg-card/40 p-5 space-y-3">
+          <div
+            key={i}
+            className="rounded-xl border border-border/50 bg-card/40 p-5 space-y-3"
+          >
             <div className="flex justify-between">
               <Skeleton className="h-3 w-16" />
               <Skeleton className="h-4 w-4" />

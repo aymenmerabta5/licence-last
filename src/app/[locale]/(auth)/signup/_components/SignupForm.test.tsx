@@ -42,14 +42,16 @@ const TRANSLATIONS: Record<string, string> = {
   verifyDescription: "Check your email to complete registration",
   backToLogin: "Back to login",
   back: "Back",
-  "errors.auth.emailAlreadyExists": "An account with this email already exists.",
+  "errors.auth.emailAlreadyExists":
+    "An account with this email already exists.",
   "errors.auth.captchaRequired": "Please complete the CAPTCHA challenge.",
 }
 
 mock.module("next-intl", () => ({
-  useTranslations: () => Object.assign((key: string) => TRANSLATIONS[key] || key, {
-    has: (key: string) => key in TRANSLATIONS,
-  }),
+  useTranslations: () =>
+    Object.assign((key: string) => TRANSLATIONS[key] || key, {
+      has: (key: string) => key in TRANSLATIONS,
+    }),
 }))
 
 // Mock auth validation

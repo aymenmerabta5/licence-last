@@ -27,7 +27,8 @@ export function mapZodErrors<T>(
   for (const issue of result.error.issues) {
     const fullPath =
       issue.path.length > 0 ? issue.path.map(String).join(".") : undefined
-    const rootPath = issue.path[0] !== undefined ? String(issue.path[0]) : undefined
+    const rootPath =
+      issue.path[0] !== undefined ? String(issue.path[0]) : undefined
 
     if (fullPath && !fieldErrors[fullPath]) {
       fieldErrors[fullPath] = issue.message

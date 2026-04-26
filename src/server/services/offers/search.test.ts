@@ -38,13 +38,13 @@ function applySearchOffersMocks() {
   mock.module("@/server/db", () => ({
     db: {
       select: () => {
-      selectCallIdx++
-      if (selectCallIdx === 1) return { from: mockFromOffers }
-      if (selectCallIdx === 2) return { from: mockFromSkills }
-      return { from: mockFromLanguages }
+        selectCallIdx++
+        if (selectCallIdx === 1) return { from: mockFromOffers }
+        if (selectCallIdx === 2) return { from: mockFromSkills }
+        return { from: mockFromLanguages }
+      },
     },
-  },
-}))
+  }))
 }
 
 let searchOffersImportCounter = 0

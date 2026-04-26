@@ -3,7 +3,7 @@
 import { Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useLocale } from "next-intl"
-
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -12,7 +12,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
 
 interface TimelineEvent {
   id: string
@@ -44,10 +43,7 @@ export function TimelineModal({
         }
       }}
     >
-      <DialogContent
-        size="lg"
-        className="space-y-4"
-      >
+      <DialogContent size="lg" className="space-y-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}

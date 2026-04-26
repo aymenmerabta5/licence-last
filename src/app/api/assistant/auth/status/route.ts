@@ -1,8 +1,8 @@
 import Arcade from "@arcadeai/arcadejs"
 import { headers } from "next/headers"
 import { isValidOrigin } from "@/lib/csrf"
-import { getFreshAuthSession } from "@/server/auth/get-fresh-session"
 import { checkRateLimit } from "@/server/ai/rate-limit"
+import { getFreshAuthSession } from "@/server/auth/get-fresh-session"
 import { getCompanyStatusByUserId } from "@/server/services/companies/get-status"
 
 const ALLOWED_ARCADE_TOOL_NAME = /^(github|gmail)([._]|$)/i

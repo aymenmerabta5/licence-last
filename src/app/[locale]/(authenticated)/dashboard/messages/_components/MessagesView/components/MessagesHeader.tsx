@@ -12,9 +12,7 @@ export function MessagesHeader({ role, threadCount }: MessagesHeaderProps) {
   const t = useTranslations("dashboard.messages")
   const kicker = role === "student" ? t("kickerStudent") : t("kickerCompany")
   const subtitle =
-    role === "student"
-      ? t("subtitleStudent")
-      : t("subtitleCompany")
+    role === "student" ? t("subtitleStudent") : t("subtitleCompany")
 
   return (
     <motion.div
