@@ -33,7 +33,7 @@ export function AdminDashboard({ user }: AdminDashboardProps) {
   }
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-8 sm:space-y-12">
       <DashboardHero isSuperAdmin={isSuperAdmin} />
 
       {/* Platform stats bar — super_admin only */}
