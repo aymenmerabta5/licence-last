@@ -19,13 +19,13 @@ export function AdminStatsView() {
   const { resolveReport, isPending: isResolvingReport } = useResolveReport()
 
   return (
-    <div className="space-y-10 pb-16">
+    <div className="space-y-6 sm:space-y-10 pb-10 sm:pb-16">
       <AdminStatsHeader />
       <AdminStatsOverview stats={stats ?? null} isLoading={isLoading} />
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+      <div className="grid grid-cols-1 gap-5 sm:gap-8 lg:grid-cols-12">
         <div className="lg:col-span-7">
-          <div className="border border-border/60 bg-card/30 dark:bg-card/50 p-6">
+          <div className="border border-border/60 bg-card/30 dark:bg-card/50 p-4 sm:p-6">
             <CompanyTrustCard
               trustIndices={trustIndices}
               isLoading={isTrustLoading}
@@ -33,7 +33,7 @@ export function AdminStatsView() {
           </div>
         </div>
         <div className="lg:col-span-5">
-          <div className="border border-border/60 bg-card/30 dark:bg-card/50 p-6">
+          <div className="border border-border/60 bg-card/30 dark:bg-card/50 p-4 sm:p-6">
             <OpenReportsCard
               reports={reports}
               isLoading={isReportsLoading}

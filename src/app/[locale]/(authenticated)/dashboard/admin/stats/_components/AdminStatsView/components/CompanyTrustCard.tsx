@@ -41,16 +41,16 @@ export function CompanyTrustCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.4, ease }}
-      className="space-y-4"
+      className="space-y-3 sm:space-y-4"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Shield className="h-3.5 w-3.5 text-primary" />
-          <h2 className="font-serif text-xl font-bold text-heading tracking-tight">
+          <h2 className="font-serif text-lg sm:text-xl font-bold text-heading tracking-tight">
             Trust Leaderboard
           </h2>
         </div>
-        <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/40">
+        <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/40">
           Top {trustIndices.length} companies
         </span>
       </div>
@@ -72,7 +72,7 @@ export function CompanyTrustCard({
         </div>
       )}
 
-      <div className="space-y-1.5">
+      <div className="space-y-1 max-h-[24rem] overflow-y-auto pe-1 md:max-h-none">
         {trustIndices.slice(0, 8).map((row, i) => {
           const tierStyle = TIER_STYLES[row.tier] ?? TIER_STYLES.watch
           const barColor = TIER_BAR[row.tier] ?? TIER_BAR.watch
@@ -83,7 +83,7 @@ export function CompanyTrustCard({
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 + i * 0.06, duration: 0.4, ease }}
-              className="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-secondary/30 transition-colors group"
+              className="flex items-center gap-2.5 sm:gap-3 py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg hover:bg-secondary/30 transition-colors group"
             >
               {/* Rank */}
               <span className="text-[11px] font-bold text-muted-foreground/30 w-5 text-end tabular-nums shrink-0">
@@ -93,12 +93,12 @@ export function CompanyTrustCard({
               {/* Company info */}
               <div className="flex-1 min-w-0 space-y-1.5">
                 <div className="flex items-center gap-2">
-                  <p className="text-xs font-bold text-heading truncate">
+                  <p className="text-[11px] sm:text-xs font-bold text-heading truncate">
                     {row.companyName}
                   </p>
                   <span
                     className={cn(
-                      "text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shrink-0",
+                      "text-[8px] sm:text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shrink-0",
                       tierStyle.bg,
                       tierStyle.text,
                     )}
@@ -123,7 +123,7 @@ export function CompanyTrustCard({
               </div>
 
               {/* Score */}
-              <span className="font-serif text-sm font-bold text-heading tabular-nums w-8 text-end shrink-0">
+              <span className="font-serif text-xs sm:text-sm font-bold text-heading tabular-nums w-8 text-end shrink-0">
                 {row.trustScore}
               </span>
             </motion.div>
