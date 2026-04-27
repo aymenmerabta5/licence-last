@@ -1,27 +1,10 @@
 "use client"
 
-import {
-  Eye,
-  KeyRound,
-  MoreHorizontal,
-  ShieldBan,
-  ShieldCheck,
-  ShieldOff,
-  Trash2,
-} from "lucide-react"
 import { useTranslations } from "next-intl"
 import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
+import { UserActionsMenu } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/UserActionsMenu"
 import { UserRoleBadge } from "@/components/UserRoleBadge"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { TableCell, TableRow } from "@/components/ui/table"
-import { Link } from "@/i18n/routing"
 
 interface UserRowProps {
   user: AdminUser
@@ -49,8 +32,6 @@ export function UserRow({
   canSetPassword,
 }: UserRowProps) {
   const t = useTranslations("dashboard.superAdmin.users")
-  const hasAdminOnlyActions =
-    canViewDetails || canSetRole || canSetPassword || canModerateUsers
 
   const displayRole = user.universityMembershipRole ?? user.role
   const roleLabelKey =
@@ -116,68 +97,18 @@ export function UserRow({
         {new Date(user.createdAt).toLocaleDateString()}
       </TableCell>
       <TableCell className="py-4">
-        {hasAdminOnlyActions && (
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
-                <Button variant="ghost" size="icon" className="h-8 w-8" />
-              }
-            >
-              <MoreHorizontal className="h-4 w-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-[180px]">
-              {canViewDetails && (
-                <DropdownMenuItem
-                  render={
-                    <Link
-                      href={`/dashboard/admin/users/${user.id}` as "/dashboard"}
-                    />
-                  }
-                >
-                  <Eye className="h-4 w-4 me-2" />
-                  {t("actions.view")}
-                </DropdownMenuItem>
-              )}
-              {canSetRole && (
-                <DropdownMenuItem onClick={() => onSetRole(user)}>
-                  <ShieldCheck className="h-4 w-4 me-2" />
-                  {t("actions.setRole")}
-                </DropdownMenuItem>
-              )}
-              {canSetPassword && (
-                <DropdownMenuItem onClick={() => onSetPassword(user)}>
-                  <KeyRound className="h-4 w-4 me-2" />
-                  {t("actions.setPassword")}
-                </DropdownMenuItem>
-              )}
-              {(canViewDetails || canSetRole || canSetPassword) &&
-                canModerateUsers && <DropdownMenuSeparator />}
-              {canModerateUsers && (
-                <>
-                  {user.banned ? (
-                    <DropdownMenuItem onClick={() => onUnban(user.id)}>
-                      <ShieldOff className="h-4 w-4 me-2" />
-                      {t("actions.unban")}
-                    </DropdownMenuItem>
-                  ) : (
-                    <DropdownMenuItem onClick={() => onBan(user)}>
-                      <ShieldBan className="h-4 w-4 me-2" />
-                      {t("actions.ban")}
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => onDelete(user)}
-                    className="text-destructive focus:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4 me-2" />
-                    {t("actions.delete")}
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+        <UserActionsMenu
+          user={user}
+          onBan={onBan}
+          onUnban={onUnban}
+          onSetRole={onSetRole}
+          onSetPassword={onSetPassword}
+          onDelete={onDelete}
+          canModerateUsers={canModerateUsers}
+          canViewDetails={canViewDetails}
+          canSetRole={canSetRole}
+          canSetPassword={canSetPassword}
+        />
       </TableCell>
     </TableRow>
   )

@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight, Loader2, Users } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { MobileUserCard } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/MobileUserCard"
 import { UserRow } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/UserRow"
 import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
 import { Button } from "@/components/ui/button"
@@ -63,9 +64,43 @@ export function UsersTable({
 
   return (
     <div className="space-y-4">
-      <div className="border border-border/80 bg-background shadow-[4px_4px_0_0_oklch(var(--border))]">
-        <div className="overflow-x-auto">
-          <Table className="min-w-[700px]">
+      {users.length === 0 ? (
+        <div className="border border-border/80 bg-background px-4 py-16 shadow-[4px_4px_0_0_oklch(var(--border))] sm:px-6">
+          <div className="flex flex-col items-center gap-4 text-center">
+            <div className="flex h-14 w-14 items-center justify-center border border-border/50 bg-muted/30">
+              <Users className="h-6 w-6 text-muted-foreground/40" />
+            </div>
+            <div className="space-y-1">
+              <p className="font-serif text-lg text-heading">{t("noUsers")}</p>
+              <p className="text-sm font-light text-muted-foreground">
+                No users match the current filters.
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="space-y-3 md:hidden">
+            {users.map((u) => (
+              <MobileUserCard
+                key={u.id}
+                user={u}
+                onBan={onBan}
+                onUnban={onUnban}
+                onSetRole={onSetRole}
+                onSetPassword={onSetPassword}
+                onDelete={onDelete}
+                canModerateUsers={canModerateUsers}
+                canViewDetails={canViewDetails}
+                canSetRole={canSetRole}
+                canSetPassword={canSetPassword}
+              />
+            ))}
+          </div>
+
+          <div className="hidden border border-border/80 bg-background shadow-[4px_4px_0_0_oklch(var(--border))] md:block">
+            <div className="overflow-x-auto">
+              <Table className="min-w-[700px]">
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b-border/80">
                 <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
@@ -84,49 +119,31 @@ export function UsersTable({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.length === 0 ? (
-                <TableRow>
-                  <td colSpan={5} className="py-16">
-                    <div className="flex flex-col items-center gap-4 text-center">
-                      <div className="flex h-14 w-14 items-center justify-center border border-border/50 bg-muted/30">
-                        <Users className="h-6 w-6 text-muted-foreground/40" />
-                      </div>
-                      <div className="space-y-1">
-                        <p className="font-serif text-lg text-heading">
-                          {t("noUsers")}
-                        </p>
-                        <p className="text-sm font-light text-muted-foreground">
-                          No users match the current filters.
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                </TableRow>
-              ) : (
-                users.map((u) => (
-                  <UserRow
-                    key={u.id}
-                    user={u}
-                    onBan={onBan}
-                    onUnban={onUnban}
-                    onSetRole={onSetRole}
-                    onSetPassword={onSetPassword}
-                    onDelete={onDelete}
-                    canModerateUsers={canModerateUsers}
-                    canViewDetails={canViewDetails}
-                    canSetRole={canSetRole}
-                    canSetPassword={canSetPassword}
-                  />
-                ))
-              )}
+              {users.map((u) => (
+                <UserRow
+                  key={u.id}
+                  user={u}
+                  onBan={onBan}
+                  onUnban={onUnban}
+                  onSetRole={onSetRole}
+                  onSetPassword={onSetPassword}
+                  onDelete={onDelete}
+                  canModerateUsers={canModerateUsers}
+                  canViewDetails={canViewDetails}
+                  canSetRole={canSetRole}
+                  canSetPassword={canSetPassword}
+                />
+              ))}
             </TableBody>
-          </Table>
-        </div>
-      </div>
+              </Table>
+            </div>
+          </div>
+        </>
+      )}
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between text-[11px] uppercase tracking-wider text-muted-foreground font-medium pt-2">
-          <span>
+        <div className="flex flex-col items-center justify-between gap-3 pt-2 text-center text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground sm:flex-row sm:text-[11px] sm:tracking-wider sm:text-start">
+          <span className="leading-relaxed">
             {t("pagination.showing", {
               from: page * 20 + 1,
               to: Math.min((page + 1) * 20, total),
