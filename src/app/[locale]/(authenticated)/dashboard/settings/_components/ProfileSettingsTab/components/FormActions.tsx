@@ -13,17 +13,18 @@ interface FormActionsProps {
 
 export function FormActions({ form, isBusy, onReset }: FormActionsProps) {
   return (
-    <div className="pt-6 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p className="text-xs text-muted-foreground/60 font-medium">
+    <div className="flex flex-col gap-4 border-t border-border/40 pt-6 sm:flex-row sm:items-center sm:justify-between">
+      <p className="w-full text-center text-xs font-medium text-muted-foreground/60 sm:w-auto sm:text-start">
         Unsaved changes will be lost if you leave this page.
       </p>
-      <div className="flex items-center gap-3 w-full sm:w-auto">
+      <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
         <Button
           type="button"
           variant="editorial-ghost"
           size="editorial-sm"
           onClick={onReset}
           disabled={isBusy}
+          className="w-full sm:w-auto"
         >
           Discard
         </Button>
@@ -38,7 +39,7 @@ export function FormActions({ form, isBusy, onReset }: FormActionsProps) {
               variant="editorial"
               size="editorial"
               disabled={isBusy || isSubmitting}
-              className="gap-2 w-full sm:w-auto"
+              className="w-full gap-2 sm:w-auto"
             >
               {isSubmitting ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
