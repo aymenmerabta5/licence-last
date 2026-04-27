@@ -101,17 +101,17 @@ export function OpenReportsCard({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.45, ease }}
-        className="space-y-4"
+        className="space-y-3 sm:space-y-4"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ShieldAlert className="h-3.5 w-3.5 text-primary" />
-            <h2 className="font-serif text-xl font-bold text-heading tracking-tight">
+            <h2 className="font-serif text-lg sm:text-xl font-bold text-heading tracking-tight">
               Open Reports
             </h2>
           </div>
           {reports.length > 0 && (
-            <span className="text-[9px] font-bold uppercase tracking-widest text-rose-500 bg-rose-500/10 px-2.5 py-0.5 rounded-full">
+            <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-widest text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded-full">
               {reports.length} open
             </span>
           )}
@@ -127,7 +127,7 @@ export function OpenReportsCard({
         )}
 
         {!isLoading && reports.length === 0 && (
-          <div className="py-10 text-center space-y-2">
+          <div className="py-8 sm:py-10 text-center space-y-2">
             <div className="inline-flex items-center justify-center p-3 rounded-xl bg-emerald-500/5">
               <AlertTriangle className="h-5 w-5 text-emerald-500/40" />
             </div>
@@ -140,7 +140,7 @@ export function OpenReportsCard({
           </div>
         )}
 
-        <div className="space-y-2">
+        <div className="space-y-2 max-h-[24rem] overflow-y-auto pe-1 md:max-h-none">
           {reports.map((report, i) => {
             const severity =
               SEVERITY_STYLES[report.severity] ?? SEVERITY_STYLES.medium
@@ -152,7 +152,7 @@ export function OpenReportsCard({
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5 + i * 0.06, duration: 0.4, ease }}
                 className={cn(
-                  "border-s-3 p-4 rounded-e-lg bg-background transition-colors hover:bg-secondary/20",
+                  "border-s-3 p-3 sm:p-4 rounded-e-lg bg-background transition-colors hover:bg-secondary/20",
                   severity.border,
                 )}
               >
@@ -172,7 +172,7 @@ export function OpenReportsCard({
                         {report.category}
                       </span>
                     </div>
-                    <p className="text-xs text-foreground/80 leading-relaxed line-clamp-2">
+                    <p className="text-[11px] sm:text-xs text-foreground/80 leading-relaxed line-clamp-3 sm:line-clamp-2">
                       {report.description}
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -180,6 +180,7 @@ export function OpenReportsCard({
                         type="button"
                         size="sm"
                         variant="editorial-outline"
+                        className="h-8 px-3 text-[11px]"
                         disabled={isResolving}
                         onClick={() => openDialog(report, "resolved")}
                       >
@@ -189,7 +190,7 @@ export function OpenReportsCard({
                         type="button"
                         size="sm"
                         variant="ghost"
-                        className="text-muted-foreground hover:text-foreground"
+                        className="h-8 px-3 text-[11px] text-muted-foreground hover:text-foreground"
                         disabled={isResolving}
                         onClick={() => openDialog(report, "dismissed")}
                       >

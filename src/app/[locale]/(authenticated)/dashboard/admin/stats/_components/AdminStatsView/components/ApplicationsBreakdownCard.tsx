@@ -42,22 +42,22 @@ export function ApplicationsBreakdownCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.35, ease }}
-      className="space-y-5"
+      className="space-y-4 sm:space-y-5 border border-border/60 bg-card/30 dark:bg-card/50 p-4 sm:p-6"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <BarChart3 className="h-3.5 w-3.5 text-primary" />
-          <h2 className="font-serif text-xl font-bold text-heading tracking-tight">
+          <h2 className="font-serif text-lg sm:text-xl font-bold text-heading tracking-tight">
             Application Flow
           </h2>
         </div>
-        <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/40">
+        <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/40">
           {totalApplications.toLocaleString()} total
         </span>
       </div>
 
       {/* Proportional bar */}
-      <div className="flex h-3 rounded-full overflow-hidden bg-secondary/30">
+      <div className="flex h-2.5 sm:h-3 rounded-full overflow-hidden bg-secondary/30">
         {entries.map(([status, count], i) => (
           <motion.div
             key={status}
@@ -81,7 +81,7 @@ export function ApplicationsBreakdownCard({
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap gap-x-5 gap-y-2.5">
+      <div className="flex flex-wrap gap-x-3 gap-y-2 sm:gap-x-5 sm:gap-y-2.5">
         {entries.map(([status, count]) => (
           <div key={status} className="flex items-center gap-2">
             <span
@@ -90,10 +90,10 @@ export function ApplicationsBreakdownCard({
                 STATUS_DOT_COLORS[status] ?? "bg-zinc-300",
               )}
             />
-            <span className="text-[11px] font-medium text-muted-foreground capitalize">
+            <span className="text-[10px] sm:text-[11px] font-medium text-muted-foreground capitalize">
               {status.replace(/_/g, " ")}
             </span>
-            <span className="text-[11px] font-bold text-heading tabular-nums">
+            <span className="text-[10px] sm:text-[11px] font-bold text-heading tabular-nums">
               {count.toLocaleString()}
             </span>
           </div>
@@ -101,22 +101,19 @@ export function ApplicationsBreakdownCard({
       </div>
 
       {/* Grid breakdown */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 border-y border-border/40">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-px border-y border-border/40 bg-border/40">
         {entries.map(([status, count], i) => (
           <motion.div
             key={status}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 + i * 0.05, duration: 0.4, ease }}
-            className={cn(
-              "py-5 px-4 text-center transition-colors hover:bg-primary/[0.02]",
-              i < entries.length - 1 && "border-e border-border/40",
-            )}
+            className="bg-background py-4 px-3 sm:py-5 sm:px-4 text-center transition-colors hover:bg-primary/[0.02]"
           >
-            <p className="font-serif text-2xl font-bold text-heading leading-none">
+            <p className="font-serif text-xl sm:text-2xl font-bold text-heading leading-none">
               {count}
             </p>
-            <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground/50 mt-2 [[dir=rtl]_&]:tracking-normal">
+            <p className="mt-1.5 sm:mt-2 text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
               {status.replace(/_/g, " ")}
             </p>
           </motion.div>

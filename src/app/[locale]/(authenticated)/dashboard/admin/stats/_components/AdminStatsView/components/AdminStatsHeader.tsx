@@ -15,14 +15,14 @@ export function AdminStatsHeader() {
   }).format(new Date())
 
   return (
-    <header className="space-y-4">
+    <header className="space-y-3 sm:space-y-4">
       <motion.div
         {...reveal}
         transition={{ duration: 0.6, ease }}
         className="h-0.5 bg-primary"
       />
 
-      <div className="space-y-3">
+      <div className="space-y-2.5 sm:space-y-3">
         <motion.div {...reveal} transition={revealWithDelay(0.05)}>
           <Badge variant="editorial-muted">{t("badge")}</Badge>
         </motion.div>
@@ -30,13 +30,13 @@ export function AdminStatsHeader() {
         <motion.div
           {...reveal}
           transition={revealWithDelay(0.1)}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-6"
+          className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6"
         >
           <div className="space-y-2">
-            <h1 className="font-serif text-[clamp(2rem,4vw,3rem)] leading-none tracking-tight text-heading">
+            <h1 className="font-serif text-[clamp(1.85rem,8vw,3rem)] leading-none tracking-tight text-heading">
               {t("title")}
             </h1>
-            <p className="text-sm font-light tracking-wide text-muted-foreground max-w-2xl">
+            <p className="max-w-2xl text-[13px] sm:text-sm font-light tracking-wide text-muted-foreground">
               {t("description")}
             </p>
           </div>

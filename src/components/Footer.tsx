@@ -27,21 +27,21 @@ export function Footer() {
   return (
     <footer
       id="about"
-      className="bg-background text-foreground border-t border-border py-14 lg:py-14 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+      className="bg-background text-foreground border-t border-border py-10 sm:py-12 lg:py-14 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
     >
-      <div className="mx-auto max-w-7xl px-8 lg:px-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-8">
           {/* Brand Column */}
-          <div className="lg:col-span-4 flex flex-col gap-6">
+          <div className="lg:col-span-4 flex flex-col gap-4 sm:gap-6">
             <Link href="/" className="flex items-center gap-2">
-              <span className="font-serif text-3xl tracking-tight text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
+              <span className="font-serif text-2xl sm:text-3xl tracking-tight text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
                 Stag<span className="text-primary">.</span>io
               </span>
             </Link>
-            <p className="text-muted-foreground max-w-sm leading-relaxed text-lg">
+            <p className="max-w-sm text-sm sm:text-base lg:text-lg leading-relaxed text-muted-foreground">
               {t("description")}
             </p>
-            <div className="flex items-center gap-4 mt-2">
+            <div className="mt-1 sm:mt-2 flex flex-wrap items-center gap-3 sm:gap-4">
               <FooterIconLink
                 external
                 href="https://github.com/aymenmerabta5/licence-last"
@@ -70,11 +70,11 @@ export function Footer() {
           <div className="hidden lg:block lg:col-span-1" />
 
           {/* Links Columns */}
-          <div className="lg:col-span-2 flex flex-col gap-4">
+          <div className="lg:col-span-2 flex flex-col gap-3 sm:gap-4">
             <h4 className="font-bold uppercase tracking-[0.15em] text-sm text-foreground">
               {t("sections.platform")}
             </h4>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2.5 sm:gap-3">
               <FooterLink href="/discover">{t("links.discover")}</FooterLink>
               <FooterLink href="/for-students">
                 {t("links.forStudents")}
@@ -85,11 +85,11 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="lg:col-span-2 flex flex-col gap-4">
+          <div className="lg:col-span-2 flex flex-col gap-3 sm:gap-4">
             <h4 className="font-bold uppercase tracking-[0.15em] text-sm text-foreground">
               {t("sections.company")}
             </h4>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2.5 sm:gap-3">
               <FooterLink href="/about">{t("links.aboutUs")}</FooterLink>
               <FooterLink href="/login">{t("links.signIn")}</FooterLink>
               <FooterLink href="/signup">{t("links.getStarted")}</FooterLink>
@@ -97,7 +97,7 @@ export function Footer() {
           </div>
 
           {/* Newsletter Column */}
-          <div className="lg:col-span-3 flex flex-col gap-4">
+          <div className="lg:col-span-3 flex flex-col gap-3 sm:gap-4">
             <h4 className="font-bold uppercase tracking-[0.15em] text-sm text-foreground">
               {t("sections.newsletter")}
             </h4>
@@ -106,7 +106,7 @@ export function Footer() {
             </p>
 
             <form
-              className="flex flex-col gap-2 mt-2"
+              className="mt-1 sm:mt-2 flex flex-col gap-2"
               onSubmit={(e) => {
                 e.preventDefault()
                 const email = newsletterEmail.trim()
@@ -151,7 +151,11 @@ export function Footer() {
               {error && (
                 <p className="text-xs text-red-500 mt-1">{error}</p>
               )}
-              <Button type="submit" variant="editorial" className="w-full mt-2 group">
+              <Button
+                type="submit"
+                variant="editorial"
+                className="mt-1 sm:mt-2 w-full group"
+              >
                 {t("newsletter.subscribe")}{" "}
                 <ArrowRight className="ms-2 h-4 w-4 group-hover:translate-x-1 [[dir=rtl]_&]:group-hover:-translate-x-1 transition-transform" />
               </Button>
@@ -159,11 +163,11 @@ export function Footer() {
           </div>
         </div>
 
-        <Separator className="my-12 bg-border/40" />
+        <Separator className="my-8 sm:my-12 bg-border/40" />
 
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-muted-foreground">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 text-xs sm:text-sm text-center md:text-start text-muted-foreground">
           <p>{copyrightText}</p>
-          <div className="flex items-center gap-8">
+          <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-5 gap-y-2 sm:gap-8">
             <Link
               href="/privacy"
               className="hover:text-foreground transition-colors"
@@ -193,7 +197,7 @@ function FooterLink({ href, children }: { href: string; children: ReactNode }) {
   return (
     <Link
       href={href as Parameters<typeof Link>[0]["href"]}
-      className="text-muted-foreground hover:text-primary transition-colors w-fit group flex items-center gap-2"
+      className="w-fit group flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
     >
       <span className="relative">
         {children}
@@ -215,7 +219,7 @@ function FooterIconLink({
   label: string
 }) {
   const className =
-    "p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors border border-transparent hover:border-border"
+    "p-2 sm:p-2.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors border border-transparent hover:border-border"
 
   if (external) {
     return (

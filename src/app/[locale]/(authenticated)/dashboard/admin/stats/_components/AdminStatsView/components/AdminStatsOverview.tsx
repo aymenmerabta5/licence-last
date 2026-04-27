@@ -90,8 +90,8 @@ export function AdminStatsOverview({
   const cards = buildCards(stats)
 
   return (
-    <>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="space-y-5 sm:space-y-6">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
         {cards.map((card, index) => (
           <StatsCard
             key={card.title}
@@ -101,6 +101,12 @@ export function AdminStatsOverview({
             icon={card.icon}
             trend={card.trend}
             index={index}
+            compact
+            className={
+              index === cards.length - 1 && cards.length % 2 !== 0
+                ? "col-span-2 lg:col-span-1"
+                : undefined
+            }
           />
         ))}
       </div>
@@ -108,6 +114,6 @@ export function AdminStatsOverview({
       <ApplicationsBreakdownCard
         applicationsByStatus={stats.applicationsByStatus}
       />
-    </>
+    </div>
   )
 }
