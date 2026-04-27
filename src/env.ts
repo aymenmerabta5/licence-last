@@ -31,7 +31,6 @@ export const env = createEnv({
       .min(32, "Auth secret must be at least 32 characters"),
 
     // AI provider configuration (OpenAI-compatible, provider-agnostic)
-    AI_PROVIDER: z.enum(["gateway", "poe"]).optional(),
     AI_API_KEY: optionalString,
     AI_MODEL: optionalString,
     AI_ALLOWED_MODELS: optionalString,

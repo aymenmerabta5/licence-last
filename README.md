@@ -101,7 +101,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Variable | Description |
 |----------|-------------|
-| `AI_PROVIDER`, `AI_API_KEY`, `AI_MODEL`, `AI_ALLOWED_MODELS`, `AI_BASE_URL` | AI provider configuration (OpenAI-compatible endpoint) |
+| `AI_API_KEY`, `AI_MODEL`, `AI_ALLOWED_MODELS`, `AI_BASE_URL` | AI provider configuration (OpenAI-compatible endpoint) |
 | `ARCADE_API_KEY` | External AI tools (GitHub, Gmail). Required only when the company assistant is enabled |
 | `S3_BUCKET_NAME`, `NEXT_PUBLIC_S3_ENDPOINT`, `NEXT_PUBLIC_S3_URL`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | Alternate S3-compatible naming |
 | `REDIS_URL`, `REDIS_RATE_LIMIT_ENABLED` | Redis for rate limiting |

@@ -18,7 +18,6 @@ describe("src/server/ai/model", () => {
   test("throws a clear error when no AI provider key is configured", async () => {
     mock.module("@/env", () => ({
       env: {
-        AI_PROVIDER: undefined,
         AI_API_KEY: undefined,
         AI_MODEL: undefined,
         AI_ALLOWED_MODELS: undefined,
@@ -36,7 +35,6 @@ describe("src/server/ai/model", () => {
   test("returns a model when an AI provider key is configured", async () => {
     mock.module("@/env", () => ({
       env: {
-        AI_PROVIDER: "gateway",
         AI_API_KEY: "key-123",
         AI_MODEL: "openai/gpt-4o-mini",
         AI_ALLOWED_MODELS: undefined,
