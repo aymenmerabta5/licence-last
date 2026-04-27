@@ -15,8 +15,7 @@ const optionalString = z.preprocess((value) => {
   return value
 }, z.string().min(1).optional())
 
-const hasConfiguredAiProvider =
-  Boolean(process.env.AI_API_KEY) || Boolean(process.env.POE_API_KEY)
+const hasConfiguredAiProvider = Boolean(process.env.AI_API_KEY)
 const assistantEnabledByDefault =
   process.env.ARCADE_API_KEY && hasConfiguredAiProvider ? "true" : "false"
 
@@ -31,18 +30,12 @@ export const env = createEnv({
       .string()
       .min(32, "Auth secret must be at least 32 characters"),
 
-    // AI provider routing (gateway-first with Poe compatibility)
+    // AI provider configuration (OpenAI-compatible, provider-agnostic)
     AI_PROVIDER: z.enum(["gateway", "poe"]).optional(),
     AI_API_KEY: optionalString,
     AI_MODEL: optionalString,
     AI_ALLOWED_MODELS: optionalString,
     AI_BASE_URL: optionalUrl,
-
-    // Legacy Poe compatibility (safe fallback during migration)
-    POE_API_KEY: optionalString,
-    POE_MODEL: optionalString,
-    POE_ALLOWED_MODELS: optionalString,
-    POE_BASE_URL: optionalUrl,
     ARCADE_API_KEY: optionalString,
 
     RESEND_API_KEY: optionalString,
@@ -129,7 +122,7 @@ const hasProductionStorageConfig = Boolean(
     (env.S3_SECRET_ACCESS_KEY ?? env.AWS_SECRET_ACCESS_KEY) &&
     (env.S3_PUBLIC_URL ?? env.NEXT_PUBLIC_S3_URL),
 )
-const hasProductionAIConfig = Boolean(env.AI_API_KEY || env.POE_API_KEY)
+const hasProductionAIConfig = Boolean(env.AI_API_KEY)
 
 if (env.NODE_ENV === "production" && !hasProductionEmailConfig) {
   throw new Error(
@@ -145,7 +138,7 @@ if (env.NODE_ENV === "production" && !hasProductionStorageConfig) {
 
 if (env.NODE_ENV === "production" && !hasProductionAIConfig) {
   throw new Error(
-    "AI provider credentials are required in production. Set AI_API_KEY (gateway-first recommended) or POE_API_KEY before starting the app.",
+    "AI provider credentials are required in production. Set AI_API_KEY before starting the app.",
   )
 }
 

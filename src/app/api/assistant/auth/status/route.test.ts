@@ -66,7 +66,6 @@ describe("src/app/api/assistant/auth/status/route", () => {
     mockHeadersData = {}
     process.env.ARCADE_API_KEY = "test-api-key"
     process.env.AI_API_KEY = "test-ai-key"
-    delete process.env.POE_API_KEY
     process.env.FEATURE_COMPANY_ASSISTANT = "true"
 
     // Default successful mocks
@@ -214,7 +213,6 @@ describe("src/app/api/assistant/auth/status/route", () => {
 
     test("missing AI provider key disables the assistant integration", async () => {
       delete process.env.AI_API_KEY
-      delete process.env.POE_API_KEY
 
       const { POST } = await import("@/app/api/assistant/auth/status/route")
 

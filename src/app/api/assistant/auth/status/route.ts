@@ -8,9 +8,7 @@ import { getCompanyStatusByUserId } from "@/server/services/companies/get-status
 const ALLOWED_ARCADE_TOOL_NAME = /^(github|gmail)([._]|$)/i
 
 function isCompanyAssistantEnabled() {
-  const hasAiProviderConfig = Boolean(
-    process.env.AI_API_KEY || process.env.POE_API_KEY,
-  )
+  const hasAiProviderConfig = Boolean(process.env.AI_API_KEY)
   const featureFlagDefault =
     process.env.ARCADE_API_KEY && hasAiProviderConfig ? "true" : "false"
   const featureFlag =

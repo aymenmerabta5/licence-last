@@ -35,10 +35,6 @@ ARG AI_PROVIDER=
 ARG AI_MODEL=
 ARG AI_ALLOWED_MODELS=
 ARG AI_BASE_URL=
-ARG POE_API_KEY=
-ARG POE_MODEL=
-ARG POE_ALLOWED_MODELS=
-ARG POE_BASE_URL=
 ARG RESEND_API_KEY=
 ARG EMAIL_FROM=
 ARG S3_BUCKET=
@@ -58,14 +54,15 @@ RUN set -e && \
     export NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS="$NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS" && \
     export FEATURE_COMPANY_ASSISTANT="$FEATURE_COMPANY_ASSISTANT" && \
     export NEXT_PUBLIC_FEATURE_COMPANY_ASSISTANT="$NEXT_PUBLIC_FEATURE_COMPANY_ASSISTANT" && \
-    export RESEND_API_KEY="$RESEND_API_KEY" && \
-    export EMAIL_FROM="$EMAIL_FROM" && \
-    export S3_BUCKET="$S3_BUCKET" && \
-    export S3_ACCESS_KEY_ID="$S3_ACCESS_KEY_ID" && \
-    export S3_SECRET_ACCESS_KEY="$S3_SECRET_ACCESS_KEY" && \
+    export RESEND_API_KEY="${RESEND_API_KEY:-build-resend-key-not-for-production-use}" && \
+    export EMAIL_FROM="${EMAIL_FROM:-build@example.com}" && \
+    export S3_BUCKET="${S3_BUCKET:-build-bucket}" && \
+    export S3_ACCESS_KEY_ID="${S3_ACCESS_KEY_ID:-build-access-key}" && \
+    export S3_SECRET_ACCESS_KEY="${S3_SECRET_ACCESS_KEY:-build-secret-key}" && \
     export S3_PUBLIC_URL="${S3_PUBLIC_URL:-https://build.test}" && \
     export S3_ENDPOINT="${S3_ENDPOINT:-https://build.test}" && \
     export NEXT_PUBLIC_S3_URL="${NEXT_PUBLIC_S3_URL:-https://build.test}" && \
+    export AI_API_KEY="${AI_API_KEY:-build-ai-key-not-for-production-use}" && \
     bun run build
 
 # --- Production runner ---

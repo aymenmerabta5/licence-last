@@ -13,8 +13,8 @@ if (!process.env.BETTER_AUTH_SECRET) {
   process.env.BETTER_AUTH_SECRET =
     "test-secret-key-that-is-long-enough-for-testing-now"
 }
-if (!process.env.POE_API_KEY) {
-  process.env.POE_API_KEY = "test-poe-api-key"
+if (!process.env.AI_API_KEY) {
+  process.env.AI_API_KEY = "test-ai-api-key"
 }
 if (!process.env.ARCADE_API_KEY) {
   process.env.ARCADE_API_KEY = "test-arcade-api-key"

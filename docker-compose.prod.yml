@@ -96,14 +96,10 @@ services:
       SEED_UNIVERSITY_ADMIN_UNIVERSITY_NAME: ${SEED_UNIVERSITY_ADMIN_UNIVERSITY_NAME:-}
       # Optional services
       AI_PROVIDER: ${AI_PROVIDER:-gateway}
-      AI_API_KEY: ${AI_API_KEY:?Set AI_API_KEY in .env for AI-backed product features}
+      AI_API_KEY: ${AI_API_KEY:-}
       AI_MODEL: ${AI_MODEL:-}
       AI_ALLOWED_MODELS: ${AI_ALLOWED_MODELS:-}
       AI_BASE_URL: ${AI_BASE_URL:-}
-      POE_API_KEY: ${POE_API_KEY:-}
-      POE_MODEL: ${POE_MODEL:-}
-      POE_ALLOWED_MODELS: ${POE_ALLOWED_MODELS:-}
-      POE_BASE_URL: ${POE_BASE_URL:-}
       ARCADE_API_KEY: ${ARCADE_API_KEY:-}
       RESEND_API_KEY: ${RESEND_API_KEY:?Set RESEND_API_KEY in .env}
       EMAIL_FROM: ${EMAIL_FROM:?Set EMAIL_FROM in .env}

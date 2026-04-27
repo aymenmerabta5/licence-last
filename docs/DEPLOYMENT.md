@@ -105,7 +105,7 @@ NEXT_PUBLIC_FEATURE_COMPANY_ASSISTANT=false
 Keep the server-side `FEATURE_*` flags and client-side `NEXT_PUBLIC_FEATURE_*` flags aligned. The `NEXT_PUBLIC_*` flags are baked into the browser bundle at build time, so any client-visible change must be rebuilt with matching GitHub Actions repository variables before deploying.
 
 Production startup now fails fast when any of these product dependencies are missing:
-- AI provider access for shipped AI workflows (`AI_API_KEY`, or `POE_API_KEY` as the legacy alternative)
+- AI provider access for shipped AI workflows (`AI_API_KEY`)
 - Transactional email for auth-critical flows (`RESEND_API_KEY`, `EMAIL_FROM`)
 - S3-compatible object storage for uploads and verification documents
 
@@ -258,4 +258,4 @@ Add these to your repository settings (Settings > Secrets and variables > Action
 
 `GITHUB_TOKEN` is provided automatically and has `packages:write` permission.
 
-The Docker image build in CI intentionally uses non-production placeholder build args for AI, email, and storage validation because `.env*` files are excluded from the Docker context. Your runtime `/root/stag/.env` must still provide real production values for `AI_API_KEY` (or `POE_API_KEY`), `RESEND_API_KEY`, `EMAIL_FROM`, and the required S3 settings before deployment.
+The Docker image build in CI intentionally uses non-production placeholder build args for AI, email, and storage validation because `.env*` files are excluded from the Docker context. Your runtime `/root/stag/.env` must still provide real production values for `AI_API_KEY`, `RESEND_API_KEY`, `EMAIL_FROM`, and the required S3 settings before deployment.

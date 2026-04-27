@@ -5,10 +5,10 @@ import { createOpenAI } from "@ai-sdk/openai"
 import { env } from "@/env"
 
 /**
- * Poe's OpenAI-compatible streaming API can omit `choices[].index` in SSE chunks.
+ * Some OpenAI-compatible providers (e.g. Poe) omit `choices[].index` in SSE chunks.
  * This fetch wrapper patches each SSE line to add the missing field.
  */
-async function poeFetch(
+async function sseCompatFetch(
   input: RequestInfo | URL,
   init?: RequestInit,
 ): Promise<Response> {
@@ -74,67 +74,52 @@ function patchSSELine(line: string): string {
   return line
 }
 
-const DEFAULT_POE_BASE_URL = "https://api.poe.com/v1"
-const DEFAULT_GATEWAY_BASE_URL = "https://ai-gateway.vercel.sh/v1"
-
+const GENERIC_FALLBACK_ALLOWED_MODELS = ["openai/gpt-4o-mini", "openai/gpt-4o"]
 const POE_FALLBACK_ALLOWED_MODELS = ["GPT-5.2", "GPT-4o", "GPT-4o-mini"]
-const GATEWAY_FALLBACK_ALLOWED_MODELS = ["openai/gpt-4o-mini", "openai/gpt-4o"]
 
-type AIProvider = "gateway" | "poe"
 const AI_PROVIDER_CONFIG_ERROR =
-  "AI provider is not configured. Set AI_API_KEY (gateway-first recommended) or POE_API_KEY before using AI features."
+  "AI provider is not configured. Set AI_API_KEY and AI_BASE_URL before using AI features."
 
-function resolveProvider(): AIProvider {
-  if (env.AI_PROVIDER) return env.AI_PROVIDER
+const baseURL = env.AI_BASE_URL
+const isPoeEndpoint = baseURL?.includes("api.poe.com") ?? false
 
-  if (
-    env.AI_API_KEY ||
-    env.AI_BASE_URL ||
-    env.AI_MODEL ||
-    env.AI_ALLOWED_MODELS
-  ) {
-    return "gateway"
-  }
+const fallbackAllowedModels = isPoeEndpoint
+  ? [...POE_FALLBACK_ALLOWED_MODELS]
+  : [...GENERIC_FALLBACK_ALLOWED_MODELS]
 
-  return "poe"
+const aiProvider = createOpenAI({
+  apiKey: env.AI_API_KEY,
+  baseURL,
+  fetch: isPoeEndpoint ? (sseCompatFetch as typeof globalThis.fetch) : undefined,
+})
+
+export function hasAIProviderConfig(): boolean {
+  return Boolean(env.AI_API_KEY)
 }
 
-function resolveApiKey(provider: AIProvider): string | undefined {
-  if (provider === "gateway") {
-    return env.AI_API_KEY ?? env.POE_API_KEY
+function assertAIProviderConfig() {
+  if (!hasAIProviderConfig()) {
+    throw new Error(AI_PROVIDER_CONFIG_ERROR)
   }
-
-  return env.POE_API_KEY ?? env.AI_API_KEY
 }
 
-function resolveBaseURL(provider: AIProvider): string {
-  if (provider === "gateway") {
-    return env.AI_BASE_URL ?? DEFAULT_GATEWAY_BASE_URL
+export function getDefaultModelId(): string {
+  const allowed = getAllowedModelIds()
+  const preferred = env.AI_MODEL
+
+  if (preferred && allowed.includes(preferred)) {
+    return preferred
   }
 
-  return env.POE_BASE_URL ?? DEFAULT_POE_BASE_URL
+  return allowed[0] ?? fallbackAllowedModels[0]
 }
 
-function resolveFallbackAllowedModels(provider: AIProvider): string[] {
-  return provider === "gateway"
-    ? [...GATEWAY_FALLBACK_ALLOWED_MODELS]
-    : [...POE_FALLBACK_ALLOWED_MODELS]
+export function getAllowedModelIds(): string[] {
+  return parseAllowedModels(env.AI_ALLOWED_MODELS, fallbackAllowedModels)
 }
 
-function resolveModelRaw(provider: AIProvider): string | undefined {
-  if (provider === "gateway") {
-    return env.AI_MODEL ?? env.POE_MODEL
-  }
-
-  return env.POE_MODEL ?? env.AI_MODEL
-}
-
-function resolveAllowedModelsRaw(provider: AIProvider): string | undefined {
-  if (provider === "gateway") {
-    return env.AI_ALLOWED_MODELS ?? env.POE_ALLOWED_MODELS
-  }
-
-  return env.POE_ALLOWED_MODELS ?? env.AI_ALLOWED_MODELS
+export function isAllowedModelId(modelId: string): boolean {
+  return getAllowedModelIds().includes(modelId)
 }
 
 function parseAllowedModels(
@@ -149,61 +134,9 @@ function parseAllowedModels(
   return list.length > 0 ? list : [...fallback]
 }
 
-const activeProvider = resolveProvider()
-const aiProvider = createOpenAI({
-  apiKey: resolveApiKey(activeProvider),
-  baseURL: resolveBaseURL(activeProvider),
-  fetch:
-    activeProvider === "poe"
-      ? (poeFetch as typeof globalThis.fetch)
-      : undefined,
-})
-
-export function getAIProvider(): AIProvider {
-  return activeProvider
-}
-
-export function hasAIProviderConfig(): boolean {
-  return Boolean(resolveApiKey(activeProvider))
-}
-
-function assertAIProviderConfig() {
-  if (!hasAIProviderConfig()) {
-    throw new Error(AI_PROVIDER_CONFIG_ERROR)
-  }
-}
-
-export function getDefaultModelId(): string {
-  const allowed = getAllowedModelIds()
-  const preferred = resolveModelRaw(activeProvider)
-
-  if (preferred && allowed.includes(preferred)) {
-    return preferred
-  }
-
-  return allowed[0] ?? resolveFallbackAllowedModels(activeProvider)[0]
-}
-
-export function getAllowedModelIds(): string[] {
-  return parseAllowedModels(
-    resolveAllowedModelsRaw(activeProvider),
-    resolveFallbackAllowedModels(activeProvider),
-  )
-}
-
-export function isAllowedModelId(modelId: string): boolean {
-  return getAllowedModelIds().includes(modelId)
-}
-
 export function getAIModel(modelId?: string) {
   assertAIProviderConfig()
   const requested = modelId ?? getDefaultModelId()
   const model = isAllowedModelId(requested) ? requested : getDefaultModelId()
   return aiProvider.chat(model)
 }
-
-// Backward-compatible exports during migration.
-export const getDefaultPoeModelId = getDefaultModelId
-export const getAllowedPoeModelIds = getAllowedModelIds
-export const isAllowedPoeModelId = isAllowedModelId
-export const getPoeModel = getAIModel

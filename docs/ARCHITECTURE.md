@@ -1011,7 +1011,7 @@ Pino structured JSON logging with automatic redaction:
 
 - `RESEND_API_KEY` -- Email service
 - `REDIS_URL` + `REDIS_RATE_LIMIT_ENABLED` -- Rate limiting
-- `AI_API_KEY` (or `POE_API_KEY` legacy fallback) -- AI provider
+- `AI_API_KEY` -- AI provider
 - `ARCADE_API_KEY` -- External tool integration
 - `S3_`* -- File storage (bucket, endpoint, keys)
 

@@ -1,4 +1,3 @@
-import { ArrowRight } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { buildUserTypes } from "@/app/[locale]/_components/HowItWorksSection/buildUserTypes"

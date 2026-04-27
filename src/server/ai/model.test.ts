@@ -23,10 +23,6 @@ describe("src/server/ai/model", () => {
         AI_MODEL: undefined,
         AI_ALLOWED_MODELS: undefined,
         AI_BASE_URL: undefined,
-        POE_API_KEY: undefined,
-        POE_MODEL: undefined,
-        POE_ALLOWED_MODELS: undefined,
-        POE_BASE_URL: undefined,
       },
     }))
 
@@ -45,10 +41,6 @@ describe("src/server/ai/model", () => {
         AI_MODEL: "openai/gpt-4o-mini",
         AI_ALLOWED_MODELS: undefined,
         AI_BASE_URL: undefined,
-        POE_API_KEY: undefined,
-        POE_MODEL: undefined,
-        POE_ALLOWED_MODELS: undefined,
-        POE_BASE_URL: undefined,
       },
     }))
 

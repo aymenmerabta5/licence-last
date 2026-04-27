@@ -2,7 +2,7 @@ import "server-only"
 
 import { env } from "@/env"
 
-const hasAiProviderConfig = Boolean(env.AI_API_KEY || env.POE_API_KEY)
+const hasAiProviderConfig = Boolean(env.AI_API_KEY)
 
 export const FEATURE_FLAGS = {
   NOTIF_PREFERENCES: env.FEATURE_NOTIF_PREFERENCES === "true",
