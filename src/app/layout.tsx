@@ -1,6 +1,7 @@
 import "./globals.css"
 
 import { DM_Sans, DM_Serif_Display, Noto_Sans_Arabic } from "next/font/google"
+import { ThemeProvider } from "next-themes"
 import type { ReactNode } from "react"
 
 const dmSans = DM_Sans({
@@ -27,6 +28,7 @@ const notoSansArabic = Noto_Sans_Arabic({
 /**
  * Root layout must own <html>/<body> for Next.js runtime error handling.
  * Keep this shell static so cacheComponents prerendering can succeed.
+ * ThemeProvider lives here so it stays mounted across locale navigations.
  * Locale-specific providers and document syncing live under app/[locale]/layout.tsx.
  */
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -35,7 +37,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body
         className={`${dmSans.variable} ${dmSerif.variable} ${notoSansArabic.variable} font-sans antialiased`}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )

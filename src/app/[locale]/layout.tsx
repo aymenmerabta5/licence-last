@@ -6,7 +6,6 @@ import {
   getTranslations,
   setRequestLocale,
 } from "next-intl/server"
-import { ThemeProvider } from "next-themes"
 import type { ReactNode } from "react"
 
 import { DocumentLocaleSync } from "@/app/[locale]/_components/DocumentLocaleSync"
@@ -90,20 +89,14 @@ export default async function LocaleLayout({
   return (
     <div dir={direction} className={rtlFontVars}>
       <DocumentLocaleSync locale={locale} direction={direction} isRTL={isRTL} />
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="light"
-        enableSystem={false}
-      >
-        <MotionProvider>
-          <QueryProvider>
-            <NextIntlClientProvider locale={locale} messages={messages}>
-              {children}
-            </NextIntlClientProvider>
-          </QueryProvider>
-        </MotionProvider>
-        <Toaster richColors />
-      </ThemeProvider>
+      <MotionProvider>
+        <QueryProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            {children}
+          </NextIntlClientProvider>
+        </QueryProvider>
+      </MotionProvider>
+      <Toaster richColors />
     </div>
   )
 }
