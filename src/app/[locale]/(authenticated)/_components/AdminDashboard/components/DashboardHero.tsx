@@ -12,14 +12,14 @@ export function DashboardHero({ isSuperAdmin }: DashboardHeroProps) {
   const now = new Date()
 
   return (
-    <header className="space-y-4">
+    <header className="space-y-3 sm:space-y-4">
       <motion.div
         {...reveal}
         transition={{ duration: 0.6, ease }}
         className="h-0.5 bg-primary"
       />
 
-      <div className="space-y-3">
+      <div className="space-y-2.5 sm:space-y-3">
         <motion.div {...reveal} transition={revealWithDelay(0.05)}>
           <Badge variant="editorial-muted">
             {isSuperAdmin ? "System" : "University"}
@@ -29,18 +29,18 @@ export function DashboardHero({ isSuperAdmin }: DashboardHeroProps) {
         <motion.div
           {...reveal}
           transition={revealWithDelay(0.1)}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-6"
+          className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6"
         >
-          <div className="space-y-3">
-            <p className="text-sm italic text-muted-foreground">
+          <div className="space-y-2 sm:space-y-3">
+            <p className="text-[13px] sm:text-sm italic text-muted-foreground">
               {isSuperAdmin ? "Global Operations" : "Institutional Oversight"}
             </p>
-            <h1 className="font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-heading max-w-2xl">
+            <h1 className="max-w-2xl font-serif text-[clamp(1.9rem,8vw,3rem)] leading-[1.05] tracking-tight text-heading">
               {isSuperAdmin
                 ? "Your ecosystem at a glance."
                 : "Track, coordinate, and steer your university."}
             </h1>
-            <p className="text-sm font-light text-muted-foreground max-w-xl">
+            <p className="max-w-xl text-[13px] sm:text-sm font-light text-muted-foreground">
               {isSuperAdmin
                 ? "Monitor platform health, validate placements, and track institutional progress across the Stag network."
                 : "Follow key student and department indicators to run your university internship operations from one place."}
