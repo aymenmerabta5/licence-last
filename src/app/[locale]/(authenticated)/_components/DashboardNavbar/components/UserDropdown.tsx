@@ -83,7 +83,7 @@ export function UserDropdown({
         </div>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-72">
+      <DropdownMenuContent align="end" sideOffset={4} className="w-56 sm:w-72">
         {/* Profile Links */}
         <DropdownMenuGroup>
           <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-1">

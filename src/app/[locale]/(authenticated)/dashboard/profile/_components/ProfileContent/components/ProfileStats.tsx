@@ -53,7 +53,7 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
               </div>
 
               <div className="space-y-4">
-                <div className="font-serif text-6xl font-bold tracking-tight text-slate-900 group-hover:text-primary transition-colors duration-500">
+                <div className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 group-hover:text-primary transition-colors duration-500">
                   {stat.value}
                 </div>
 

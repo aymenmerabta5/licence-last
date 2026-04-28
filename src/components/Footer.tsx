@@ -29,7 +29,7 @@ export function Footer() {
       id="about"
       className="bg-background text-foreground border-t border-border py-10 sm:py-12 lg:py-14 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
     >
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-16">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-8">
           {/* Brand Column */}
           <div className="lg:col-span-4 flex flex-col gap-4 sm:gap-6">

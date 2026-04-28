@@ -37,7 +37,7 @@ export function EducationSection({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
           <div className="h-12 w-2 rounded-full bg-primary/40" />
-          <h2 className="font-serif text-5xl font-bold text-slate-900 tracking-tight">
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
             {labels.education}
           </h2>
         </div>
@@ -51,7 +51,7 @@ export function EducationSection({
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="relative pl-24 group"
+            className="relative ps-4 sm:ps-12 md:ps-24 group"
           >
             {/* Timeline Marker */}
             <div className="absolute left-[30px] top-4 h-5 w-5 rounded-full border-4 border-white bg-primary shadow-lg group-hover:scale-125 transition-transform" />

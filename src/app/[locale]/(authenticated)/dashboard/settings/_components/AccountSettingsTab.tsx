@@ -57,7 +57,7 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
               </div>
             </div>
             <div className="flex items-center gap-3 ps-11 sm:ps-0">
-              <span className="text-sm font-medium truncate max-w-[200px]">
+              <span className="text-sm font-medium truncate max-w-full sm:max-w-[200px]">
                 {me?.user.email ?? ""}
               </span>
               <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] border border-primary/30 bg-primary/10 text-primary">

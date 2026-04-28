@@ -25,7 +25,7 @@ export const useDashboard = () => useContext(DashboardContext)
 
 function DashboardSidebarFallback() {
   return (
-    <aside className="h-screen w-20 lg:w-[260px] border-e border-border bg-background" />
+    <aside className="h-screen w-20 md:w-72 lg:w-[260px] border-e border-border bg-background" />
   )
 }
 

@@ -105,7 +105,7 @@ export function TrustGauge({ trustData, isLoading }: TrustGaugeProps) {
 
       {/* Factor breakdown */}
       <div className="border border-background/20 bg-background/5 relative z-10 mt-auto">
-        <div className="grid grid-cols-3 divide-x divide-background/20">
+        <div className="grid grid-cols-1 sm:grid-cols-3 divide-x divide-background/20">
           {factors.map((factor) => (
             <div key={factor.label} className="text-center p-4">
               <p className="font-serif text-2xl font-normal text-background leading-none tabular-nums mb-2">

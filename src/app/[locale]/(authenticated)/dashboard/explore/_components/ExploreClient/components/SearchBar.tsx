@@ -59,7 +59,7 @@ export function SearchBar({
               </span>
             )}
           </SheetTrigger>
-          <SheetContent side="left" className="w-80">
+          <SheetContent side="left" className="w-80 sm:w-96 max-w-[90vw]">
             <SheetHeader>
               <SheetTitle className="font-serif">{t("filters")}</SheetTitle>
             </SheetHeader>

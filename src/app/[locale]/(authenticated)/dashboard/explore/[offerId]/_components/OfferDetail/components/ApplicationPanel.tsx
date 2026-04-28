@@ -52,7 +52,7 @@ export function ApplicationPanel({
     <motion.section
       {...reveal}
       transition={{ duration: 0.5, ease, delay: 0.2 }}
-      className="space-y-6 mt-16 p-8 border-[3px] border-border bg-card relative"
+      className="space-y-6 mt-16 p-4 md:p-8 border-[3px] border-border bg-card relative"
     >
       <div className="absolute top-0 start-0 w-3 h-3 border-t-[3px] border-s-[3px] border-primary -translate-x-[3px] rtl:translate-x-[3px] -translate-y-[3px]" />
       <div className="absolute top-0 end-0 w-3 h-3 border-t-[3px] border-e-[3px] border-primary translate-x-[3px] rtl:-translate-x-[3px] -translate-y-[3px]" />

@@ -16,7 +16,7 @@ function CandidatesPageFallback() {
         <Skeleton className="h-10 w-64" />
       </div>
 
-      <div className="grid grid-flow-col auto-cols-[minmax(280px,1fr)] gap-4 min-w-[1760px] overflow-hidden">
+      <div className="grid grid-flow-row md:grid-flow-col grid-cols-1 md:auto-cols-[minmax(280px,1fr)] gap-4 min-w-0 md:min-w-[1760px] overflow-y-auto md:overflow-x-auto md:overflow-y-hidden">
         <Skeleton className="h-[70vh]" />
         <Skeleton className="h-[70vh]" />
         <Skeleton className="h-[70vh]" />

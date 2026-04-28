@@ -33,7 +33,7 @@ export default function PublicProfileLoading() {
         </div>
 
         <div className="border-y-2 border-foreground/10">
-          <div className="grid grid-cols-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3">
             {Array.from({ length: 3 }).map((_, index) => (
               <div key={index} className="space-y-3 px-5 py-7 text-center">
                 <Skeleton className="mx-auto h-3 w-16" />

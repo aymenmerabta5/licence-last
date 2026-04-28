@@ -11,7 +11,7 @@ export function AboutHeroMissionSection({ t }: AboutSectionProps) {
 
   return (
     <>
-      <section className="relative px-8 lg:px-16 pt-20 pb-24">
+      <section className="relative px-4 sm:px-6 lg:px-16 pt-20 pb-24">
         <div
           className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100"
           aria-hidden="true"
@@ -72,7 +72,7 @@ export function AboutHeroMissionSection({ t }: AboutSectionProps) {
         </div>
       </section>
 
-      <section className="border-t border-border px-8 lg:px-16 py-20">
+      <section className="border-t border-border px-4 sm:px-6 lg:px-16 py-20">
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-12">
           <div className="lg:col-span-4">
             <motion.div

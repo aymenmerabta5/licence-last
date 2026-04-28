@@ -55,7 +55,7 @@ export function PendingQueueOverview({
                   {labels.pendingLabel}
                 </p>
               </div>
-              <p className="font-serif text-6xl leading-none text-foreground group-hover/stats:text-background py-4">
+              <p className="font-serif text-4xl md:text-5xl lg:text-6xl leading-none text-foreground group-hover/stats:text-background py-4">
                 {pendingCount}
               </p>
             </div>

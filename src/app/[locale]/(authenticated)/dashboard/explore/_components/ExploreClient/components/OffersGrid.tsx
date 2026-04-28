@@ -70,7 +70,7 @@ export function OffersGrid({
           <motion.div
             {...reveal}
             transition={{ duration: 0.6, ease, delay: 0.1 }}
-            className="border border-border/40 p-16 text-center space-y-4"
+            className="border border-border/40 p-8 md:p-16 text-center space-y-4"
           >
             <div className="inline-flex items-center justify-center p-4 bg-primary/5">
               <Newspaper className="h-8 w-8 text-muted-foreground/20" />

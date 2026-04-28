@@ -57,7 +57,7 @@ export function MatchingPanel({
           {/* Score display */}
           <div className="space-y-3">
             <div className="flex items-baseline justify-between">
-              <p className="font-serif text-6xl text-heading tabular-nums leading-none tracking-tighter">
+              <p className="font-serif text-4xl md:text-5xl lg:text-6xl text-heading tabular-nums leading-none tracking-tighter">
                 {matchScoreQuery.data.score}
                 <span className="text-2xl text-muted-foreground/60 font-serif font-light hidden sm:inline-block ms-1">
                   /100

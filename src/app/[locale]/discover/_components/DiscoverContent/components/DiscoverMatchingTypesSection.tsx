@@ -22,7 +22,7 @@ const TYPES: Array<{ key: string; icon: LucideIcon }> = [
 export function DiscoverMatchingTypesSection({ t }: DiscoverSectionProps) {
   return (
     <>
-      <section className="border-t border-border px-8 lg:px-16 py-20">
+      <section className="border-t border-border px-4 sm:px-6 lg:px-16 py-20">
         <div className="mx-auto grid max-w-6xl items-start gap-12 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <motion.div
@@ -93,7 +93,7 @@ export function DiscoverMatchingTypesSection({ t }: DiscoverSectionProps) {
         </div>
       </section>
 
-      <section className="border-t border-border px-8 lg:px-16 py-20">
+      <section className="border-t border-border px-4 sm:px-6 lg:px-16 py-20">
         <div className="mx-auto max-w-6xl">
           <motion.div
             {...reveal}

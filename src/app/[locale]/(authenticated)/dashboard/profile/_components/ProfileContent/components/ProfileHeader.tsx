@@ -79,7 +79,7 @@ export function ProfileHeader({
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <span className="text-slate-800 text-7xl font-serif tracking-tighter">
+                    <span className="text-slate-800 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif tracking-tighter">
                       {initials}
                     </span>
                   )}

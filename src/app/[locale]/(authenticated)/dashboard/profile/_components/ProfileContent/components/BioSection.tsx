@@ -31,7 +31,7 @@ export function BioSection({ profile, canEdit, labels }: BioSectionProps) {
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-6">
           <div className="h-12 w-2 rounded-full bg-primary" />
-          <h2 className="font-serif text-5xl font-bold text-slate-900 tracking-tight">
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
             {labels.bio}
           </h2>
         </div>
@@ -54,7 +54,7 @@ export function BioSection({ profile, canEdit, labels }: BioSectionProps) {
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 transition={{ duration: 1 }}
-                className="text-2xl sm:text-3xl text-slate-700 leading-[1.8] font-light whitespace-pre-line first-letter:float-start first-letter:font-serif first-letter:text-[6.5rem] first-letter:font-bold first-letter:text-primary first-letter:leading-[0.8] first-letter:me-6 first-letter:mt-4 first-letter:drop-shadow-lg"
+                className="text-2xl sm:text-3xl text-slate-700 leading-[1.8] font-light whitespace-pre-line first-letter:float-start first-letter:font-serif first-letter:text-[3rem] sm:first-letter:text-[4.5rem] md:first-letter:text-[6.5rem] first-letter:font-bold first-letter:text-primary first-letter:leading-[0.8] first-letter:me-6 first-letter:mt-4 first-letter:drop-shadow-lg"
               >
                 {profile.bio}
               </motion.p>

@@ -7,7 +7,7 @@ import { reveal } from "@/lib/animations"
 
 export function ForStudentsCtaSection({ t }: ForStudentsSectionProps) {
   return (
-    <section className="border-t border-border px-8 lg:px-16 py-20">
+    <section className="border-t border-border px-4 sm:px-6 lg:px-16 py-20">
       <motion.div
         {...reveal}
         transition={{ duration: 0.7, ease: "easeOut" }}

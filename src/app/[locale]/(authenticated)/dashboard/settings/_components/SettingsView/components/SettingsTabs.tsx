@@ -41,7 +41,7 @@ export function SettingsTabs({ activeTab, onTabChange }: SettingsTabsProps) {
               <TabsTrigger
                 key={tab.id}
                 value={tab.id}
-                className="shrink-0 whitespace-nowrap gap-1.5"
+                className="gap-1.5"
               >
                 <Icon className="h-3.5 w-3.5" />
                 {tab.label}

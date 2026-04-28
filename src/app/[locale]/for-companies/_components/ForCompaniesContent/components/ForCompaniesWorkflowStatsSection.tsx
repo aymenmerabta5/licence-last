@@ -19,7 +19,7 @@ export function ForCompaniesWorkflowStatsSection({
 }: ForCompaniesSectionProps) {
   return (
     <>
-      <section className="border-t border-border px-8 lg:px-16 py-20">
+      <section className="border-t border-border px-4 sm:px-6 lg:px-16 py-20">
         <div className="mx-auto max-w-6xl">
           <motion.div
             {...reveal}
@@ -77,7 +77,7 @@ export function ForCompaniesWorkflowStatsSection({
         </div>
       </section>
 
-      <section className="border-t border-border px-8 lg:px-16 py-20">
+      <section className="border-t border-border px-4 sm:px-6 lg:px-16 py-20">
         <motion.div
           {...reveal}
           transition={{ duration: 0.7, ease: "easeOut" }}

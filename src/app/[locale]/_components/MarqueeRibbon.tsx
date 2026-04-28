@@ -15,7 +15,7 @@ export function MarqueeRibbon() {
 
   return (
     <div
-      className="relative isolate w-full max-w-full min-w-0 overflow-x-clip overflow-y-hidden [contain:paint] bg-secondary py-3 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+      className="relative isolate w-full max-w-full min-w-0 overflow-hidden [contain:paint] bg-secondary py-3 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
       aria-label={t("aria")}
     >
       <div className="w-full max-w-full min-w-0 overflow-x-hidden">
