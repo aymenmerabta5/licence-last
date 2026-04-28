@@ -25,6 +25,32 @@ bun run db:seed          # Seed database
 
 ---
 
+## Git Hooks (Husky)
+
+A **pre-commit hook** is configured via Husky to automatically run `bun run check:all` before every commit. If any check fails (lint, typecheck, tests, or build), the commit is blocked.
+
+The hook lives in `.husky/pre-commit`:
+```bash
+bun run check:all
+```
+
+**First-time setup** (after cloning):
+```bash
+bun install   # Installs dependencies + runs prepare script
+```
+
+If hooks are not active, enable Husky manually:
+```bash
+bun run prepare
+```
+
+**Bypass in emergencies** (not recommended for CI):
+```bash
+git commit --no-verify -m "..."
+```
+
+---
+
 ## Core Stack
 
 - **Framework**: Next.js 16 (App Router), React 19, TypeScript strict
