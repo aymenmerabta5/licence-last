@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm"
 
 import { auth, pendingWelcomeEmails } from "@/lib/auth"
 import { db } from "@/server/db"
+import { ServiceError } from "@/server/services/errors"
 import { user } from "@/server/db/schema/auth"
 import { department } from "@/server/db/schema/departments"
 import { university } from "@/server/db/schema/universities"
@@ -25,7 +26,7 @@ export async function assignDepartmentHeadByEmail({
   const normalizedEmail = headEmail.trim().toLowerCase()
 
   if (!normalizedEmail) {
-    throw new Error("Head email is required")
+    throw new ServiceError("HEAD_EMAIL_REQUIRED", "Head email is required")
   }
 
   const [dept] = await db
@@ -39,7 +40,7 @@ export async function assignDepartmentHeadByEmail({
     .limit(1)
 
   if (!dept) {
-    throw new Error("Department not found")
+    throw new ServiceError("DEPARTMENT_NOT_FOUND", "Department not found")
   }
 
   const [uni] = await db
@@ -49,7 +50,7 @@ export async function assignDepartmentHeadByEmail({
     .limit(1)
 
   if (!uni) {
-    throw new Error("University not found")
+    throw new ServiceError("UNIVERSITY_NOT_FOUND", "University not found")
   }
 
   const [existingUser] = await db

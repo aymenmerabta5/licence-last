@@ -57,7 +57,7 @@ describe("src/server/services/users/session-management", () => {
 
     expect(result).toEqual([])
     expect(mockListSessions).toHaveBeenCalledTimes(1)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const call = (mockListSessions.mock.calls as any)[0][0]
     expect(call.headers).toBeInstanceOf(Headers)
   })
@@ -79,7 +79,7 @@ describe("src/server/services/users/session-management", () => {
     const result = await revokeMySession("session-1")
 
     expect(result).toEqual({ status: true })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const call = (mockRevokeSession.mock.calls as any)[0][0]
     expect(call.body.token).toBe("token-1")
   })

@@ -3,6 +3,7 @@
 import { Check, Search, X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
+import type { OfferFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferForm"
 import { FormSection } from "@/components/form-fields"
 import {
   InputGroup,
@@ -21,8 +22,7 @@ interface SkillTag {
 }
 
 interface SkillsSectionProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: any
+  form: OfferFormApi
   skillTags: SkillTag[]
 }
 
@@ -50,8 +50,7 @@ export function SkillsSection({ form, skillTags }: SkillsSectionProps) {
       <p className="text-xs text-muted-foreground">{t("skillsHint")}</p>
 
       <form.Field name="skillTagIds">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {(field: any) => {
+        {(field) => {
           const selectedIds: string[] = field.state.value
           const isAtMax = selectedIds.length >= MAX_SKILLS
 

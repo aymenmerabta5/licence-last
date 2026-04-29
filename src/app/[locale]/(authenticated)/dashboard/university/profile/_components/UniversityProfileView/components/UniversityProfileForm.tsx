@@ -6,7 +6,7 @@ import { useUniversityProfileForm } from "@/app/[locale]/(authenticated)/dashboa
 import { TextField } from "@/components/form-fields"
 import { Button } from "@/components/ui/button"
 import { errorMessage } from "@/lib/schemas/auth"
-import { university } from "@/server/db/schema/universities"
+import type { university } from "@/server/db/schema/universities"
 
 type University = typeof university.$inferSelect
 

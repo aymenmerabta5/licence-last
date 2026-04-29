@@ -30,6 +30,8 @@ function formatDateInputValue(value: Date | string | null | undefined): string {
   return `${year}-${month}-${day}`
 }
 
+export type OfferFormApi = ReturnType<typeof useOfferForm>["form"]
+
 export function useOfferForm(
   mode: OfferFormProps["mode"],
   initialData: OfferFormProps["initialData"],

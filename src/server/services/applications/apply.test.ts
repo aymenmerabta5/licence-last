@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
 let selectCallIdx = 0
 
@@ -18,16 +17,14 @@ const mockFromWithForAndLimit = mock(() => ({
 const mockWhereWithLimit = mock(() => ({ limit: mockLimit }))
 const mockFromWithLimit = mock(() => ({ where: mockWhereWithLimit }))
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockWhereNoLimit = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)
 })
 const mockFromNoLimit = mock(() => ({ where: mockWhereNoLimit }))
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockInsert = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockValues = mock((): any => Promise.resolve())
 
 // tx calls: 1=offer(for+limit), 2=company status(limit), 3=count(noLimit), 4=existing(limit)
@@ -46,7 +43,7 @@ function makeSelect() {
 const dbMock = {
   select: makeSelect,
   insert: mockInsert,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   transaction: async <T>(fn: (tx: any) => Promise<T>) => {
     return fn({
       select: makeSelect,

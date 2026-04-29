@@ -1,11 +1,10 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
 let selectCallIdx = 0
 
 // Calls with where => Promise
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockWhere = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)
@@ -13,7 +12,7 @@ const mockWhere = mock<() => Promise<any[]>>(() => {
 const mockFromWhere = mock(() => ({ where: mockWhere }))
 
 // Call with innerJoin => Promise
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockInnerJoin = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)
@@ -21,7 +20,7 @@ const mockInnerJoin = mock<() => Promise<any[]>>(() => {
 const mockFromInnerJoin = mock(() => ({ innerJoin: mockInnerJoin }))
 
 // Call with groupBy => Promise
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockGroupBy = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)

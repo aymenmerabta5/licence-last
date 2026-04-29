@@ -25,7 +25,6 @@ const tx = {
   delete: txDeleteMock,
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const transactionMock = mock(async (fn: (trx: any) => Promise<any>) => fn(tx))
 
 mock.module("@/server/db", () => ({

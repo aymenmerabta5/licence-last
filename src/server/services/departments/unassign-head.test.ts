@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const selectLimitQueue: unknown[][] = []
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockLimit = mock((): any =>
   Promise.resolve(selectLimitQueue.shift() ?? []),
 )

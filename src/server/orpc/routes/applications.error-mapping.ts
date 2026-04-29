@@ -1,7 +1,7 @@
 import "server-only"
 
 import { ORPCError } from "@orpc/server"
-import { ApplicationServiceError } from "@/server/services/applications/errors"
+import type { ApplicationServiceError } from "@/server/services/applications/errors"
 
 /**
  * Error mapping utilities for application procedures.

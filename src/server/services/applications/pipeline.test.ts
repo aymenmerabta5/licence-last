@@ -4,11 +4,8 @@ import {
   canTransitionStage,
   STAGE_COLUMNS,
   STAGE_TRANSITIONS,
-} from "@/lib/constants/pipeline"
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockValues = mock((): any => Promise.resolve())
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+} from "@/lib/constants/pipeline"
+const mockValues = mock((): any => Promise.resolve())
 const mockInsert = mock((): any => ({ values: mockValues }))
 
 mock.module("@/server/db", () => ({

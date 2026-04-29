@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
 let selectCallIdx = 0
 
@@ -13,16 +12,15 @@ const mockInnerJoin = mock(() => ({ where: mockWhere }))
 const mockWhere = mock(() => ({ limit: mockLimit }))
 const mockFrom = mock(() => ({ innerJoin: mockInnerJoin }))
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockUpdate = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockSet = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockUpdateWhere = mock(() => ({}) as any)
 const mockUpdateReturning = mock(() => Promise.resolve([{ id: "app-1" }]))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockInsert = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockValues = mock((): any => Promise.resolve())
 
 mock.module("@/server/db", () => ({

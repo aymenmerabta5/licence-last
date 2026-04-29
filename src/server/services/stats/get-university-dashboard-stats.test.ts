@@ -1,10 +1,8 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
 let selectCallIdx = 0
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockWhere = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)

@@ -108,6 +108,24 @@ mock.module(
   }),
 )
 
+mock.module("@/server/services/companies/get", () => ({
+  getCompanyById: mock(async () => ({
+    id: "company-1",
+    name: "Acme Inc",
+    slug: "acme",
+    logoUrl: null,
+    description: "Editorial internships for product designers.",
+    websiteUrl: "https://acme.test",
+    wilayaCode: 16,
+    status: "approved",
+    representativeName: "John Doe",
+    contactEmail: "contact@acme.test",
+    phone: null,
+    address: null,
+    createdAt: new Date(),
+  })),
+}))
+
 const { default: CompanyPublicProfilePage } = await import(
   "@/app/[locale]/company/[slug]/page"
 )

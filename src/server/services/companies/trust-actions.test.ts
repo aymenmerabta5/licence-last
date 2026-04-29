@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockPlacementRows: any[] = []
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 let mockUpsertRows: any[] = []
 
 const mockSelectLimit = mock(() => Promise.resolve(mockPlacementRows))

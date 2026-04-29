@@ -2,7 +2,7 @@
 
 import { Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
-import { useLocale } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -33,6 +33,7 @@ export function TimelineModal({
   onClose,
 }: TimelineModalProps) {
   const locale = useLocale()
+  const t = useTranslations("dashboard.timeline")
 
   return (
     <Dialog
@@ -50,22 +51,22 @@ export function TimelineModal({
           className="space-y-4"
         >
           <DialogHeader>
-            <DialogTitle>Application Timeline</DialogTitle>
+            <DialogTitle>{t("title")}</DialogTitle>
             <DialogDescription className="sr-only">
-              Timeline of application stage updates and related events.
+              {t("description")}
             </DialogDescription>
           </DialogHeader>
 
           {isLoading && (
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              Loading timeline...
+              {t("loading")}
             </div>
           )}
 
           {!isLoading && events.length === 0 && (
             <p className="text-sm text-muted-foreground">
-              No timeline events yet.
+              {t("empty")}
             </p>
           )}
 
@@ -89,7 +90,7 @@ export function TimelineModal({
 
           <DialogFooter>
             <Button variant="outline" onClick={onClose}>
-              Close
+              {t("close")}
             </Button>
           </DialogFooter>
         </motion.div>

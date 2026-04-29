@@ -3,8 +3,13 @@
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
 import { useInfiniteScroll } from "@/hooks"
+import type { InferRouterOutputs } from "@orpc/server"
 import { orpcClient } from "@/server/orpc/client"
-import type { ListPendingApplicationsResult } from "@/server/services/placements/list-pending"
+import type { AppRouter } from "@/server/orpc/router"
+
+type ListPendingApplicationsResult = InferRouterOutputs<
+  AppRouter
+>["deptHead"]["listPending"]
 
 export function useDeptHeadData() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =

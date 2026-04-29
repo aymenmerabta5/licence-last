@@ -1,6 +1,4 @@
-import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 let mockLimitResult: any[] = []
 
 const mockLimit = mock(() => Promise.resolve(mockLimitResult))

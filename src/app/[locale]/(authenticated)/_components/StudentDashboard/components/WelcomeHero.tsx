@@ -1,7 +1,7 @@
 "use client"
 
 import * as motion from "motion/react-client"
-import { Route } from "next"
+import type { Route } from "next"
 import { useLocale, useTranslations } from "next-intl"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"

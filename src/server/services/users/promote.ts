@@ -3,6 +3,7 @@ import "server-only"
 import { eq } from "drizzle-orm"
 import { db } from "@/server/db"
 import { createModuleLogger } from "@/server/logging"
+import { ServiceError } from "@/server/services/errors"
 
 const log = createModuleLogger("services/users/promote")
 
@@ -23,7 +24,7 @@ export async function promoteUser(userId: string, newRole: UserRole) {
     .returning({ id: user.id, email: user.email, role: user.role })
 
   if (!updated) {
-    throw new Error("User not found")
+    throw new ServiceError("USER_NOT_FOUND", "User not found")
   }
 
   log.info(

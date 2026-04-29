@@ -1,15 +1,13 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockLimit = mock<() => Promise<any[]>>(() => Promise.resolve([]))
 const mockOrderBy = mock(() => ({ limit: mockLimit }))
 const mockWhere = mock(() => ({ orderBy: mockOrderBy }))
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockJoin2 = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockJoin1 = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockFrom = mock(() => ({}) as any)
 
 mock.module("@/server/db", () => ({

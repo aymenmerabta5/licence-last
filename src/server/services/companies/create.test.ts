@@ -6,7 +6,7 @@ const mockWhere = mock(() => Promise.resolve())
 const mockSet = mock(() => ({ where: mockWhere }))
 const mockUpdate = mock(() => ({ set: mockSet }))
 const mockTransaction = mock(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   async (fn: (tx: any) => Promise<void>) => {
     await fn({
       insert: mockInsert,

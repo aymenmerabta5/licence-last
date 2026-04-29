@@ -7,8 +7,13 @@ import { useState } from "react"
 import { toast } from "sonner"
 import type { PipelineStage } from "@/lib/constants/pipeline"
 import { canTransitionStage } from "@/lib/constants/pipeline"
+import type { InferRouterOutputs } from "@orpc/server"
 import { orpcClient } from "@/server/orpc/client"
-import type { ListApplicationsByOfferResult } from "@/server/services/applications/list-by-offer"
+import type { AppRouter } from "@/server/orpc/router"
+
+type ListApplicationsByOfferResult = InferRouterOutputs<
+  AppRouter
+>["applications"]["listByOffer"]
 
 interface UseCandidateStageMutationParams {
   applicationsQueryKey: readonly unknown[]

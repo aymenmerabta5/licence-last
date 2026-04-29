@@ -2,13 +2,14 @@
 
 import { Briefcase, MapPin } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type { OfferFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferForm"
+import type { InternshipType, WorkMode } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
 import { SelectField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYAS } from "@/lib/wilayas"
 
 interface DetailsTypeLocationFieldsProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: any
+  form: OfferFormApi
 }
 
 const INTERNSHIP_TYPE_OPTIONS = [
@@ -29,8 +30,9 @@ const WILAYA_OPTIONS = WILAYAS.map((name, index) => ({
   label: `${String(index + 1).padStart(2, "0")} - ${name}`,
 }))
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getFieldError(field: any): string | undefined {
+function getFieldError(field: {
+  state: { meta: { errors: unknown[] } }
+}): string | undefined {
   return field.state.meta.errors.length > 0
     ? errorMessage(field.state.meta.errors[0])
     : undefined
@@ -44,8 +46,7 @@ export function DetailsTypeLocationFields({
   return (
     <>
       <form.Field name="internshipType">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {(field: any) => (
+        {(field) => (
           <SelectField
             id="offer-type"
             label={t("internshipType")}
@@ -53,7 +54,7 @@ export function DetailsTypeLocationFields({
             placeholder={t("internshipTypePlaceholder")}
             options={INTERNSHIP_TYPE_OPTIONS}
             value={field.state.value}
-            onChange={field.handleChange}
+            onChange={(value) => field.handleChange(value as InternshipType | "")}
             onBlur={field.handleBlur}
             error={getFieldError(field)}
           />
@@ -61,8 +62,7 @@ export function DetailsTypeLocationFields({
       </form.Field>
 
       <form.Field name="workMode">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {(field: any) => (
+        {(field) => (
           <SelectField
             id="offer-work-mode"
             label={t("workMode")}
@@ -70,15 +70,14 @@ export function DetailsTypeLocationFields({
             placeholder={t("workModePlaceholder")}
             options={WORK_MODE_OPTIONS}
             value={field.state.value}
-            onChange={field.handleChange}
+            onChange={(value) => field.handleChange(value as WorkMode | "")}
             onBlur={field.handleBlur}
           />
         )}
       </form.Field>
 
       <form.Field name="wilayaCode">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {(field: any) => (
+        {(field) => (
           <SelectField
             id="offer-wilaya"
             label={t("wilaya")}

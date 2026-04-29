@@ -32,6 +32,8 @@ export function CheckboxField({
             onChange={(e) => onChange(e.target.checked)}
             onBlur={onBlur}
             className="peer h-4 w-4 appearance-none border border-border bg-transparent checked:bg-primary checked:border-primary focus-visible:ring-2 focus-visible:ring-ring/50 transition-colors cursor-pointer"
+            aria-invalid={!!error}
+            aria-describedby={error ? `${id}-error` : undefined}
           />
           <svg
             className="absolute h-3 w-3 text-primary-foreground pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity"
@@ -52,7 +54,7 @@ export function CheckboxField({
         </span>
       </label>
       {error && (
-        <p className="text-destructive text-[11px] tracking-wide" role="alert">
+        <p id={`${id}-error`} className="text-destructive text-[11px] tracking-wide" role="alert">
           {error}
         </p>
       )}

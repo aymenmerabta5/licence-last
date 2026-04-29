@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 // Mock results for executed queries (not subquery builders)
 // Index 0: Main query results (offer + company + count)
 // Index 1: Skills query results
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockQueryResults: any[][] = []
 let queryResultIdx = 0
 let selectCallCount = 0
@@ -20,7 +20,7 @@ const mockInnerJoinCompany = mock(() => ({ leftJoin: mockLeftJoinSubquery }))
 const mockFromWithJoins = mock(() => ({ innerJoin: mockInnerJoinCompany }))
 
 // Mock for skills query execution
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockSkillsWhere = mock<() => Promise<any[]>>(() => {
   const results = mockQueryResults[queryResultIdx++] ?? []
   return Promise.resolve(results)
@@ -29,7 +29,7 @@ const mockSkillsJoin = mock(() => ({ where: mockSkillsWhere }))
 const mockFromSkills = mock(() => ({ innerJoin: mockSkillsJoin }))
 
 // Mock for language requirements query execution
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockLanguagesWhere = mock<() => Promise<any[]>>(() => {
   const results = mockQueryResults[queryResultIdx++] ?? []
   return Promise.resolve(results)

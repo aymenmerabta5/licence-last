@@ -19,8 +19,13 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll"
 import type { LanguageCode } from "@/lib/constants/languages"
 import type { PipelineStage } from "@/lib/constants/pipeline"
 import { STAGE_COLUMNS } from "@/lib/constants/pipeline"
+import type { InferRouterOutputs } from "@orpc/server"
 import { orpc, orpcClient } from "@/server/orpc/client"
-import type { ListApplicationsByOfferResult } from "@/server/services/applications/list-by-offer"
+import type { AppRouter } from "@/server/orpc/router"
+
+type ListApplicationsByOfferResult = InferRouterOutputs<
+  AppRouter
+>["applications"]["listByOffer"]
 
 const EMPTY_FILTERS: CandidateFiltersState = {
   skillTagIds: [],

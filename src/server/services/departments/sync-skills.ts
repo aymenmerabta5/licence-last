@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm"
 import { db } from "@/server/db"
 import { departmentSkill } from "@/server/db/schema/departments"
 import { createModuleLogger } from "@/server/logging"
+import { ServiceError } from "@/server/services/errors"
 import { validateSkillTagIds } from "@/server/services/skills/validate"
 
 const log = createModuleLogger("services/departments/sync-skills")
@@ -13,7 +14,10 @@ export async function syncDepartmentSkills(
   skillTagIds: string[],
 ) {
   if (skillTagIds.length > 200) {
-    throw new Error("A maximum of 200 skills per department is allowed")
+    throw new ServiceError(
+      "SKILL_LIMIT_EXCEEDED",
+      "A maximum of 200 skills per department is allowed",
+    )
   }
 
   if (skillTagIds.length > 0) {

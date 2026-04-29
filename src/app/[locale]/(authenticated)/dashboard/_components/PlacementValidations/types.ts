@@ -1,5 +1,11 @@
 import type { RefObject } from "react"
-import type { PendingApplication } from "@/server/services/placements/list-pending"
+import type { InferRouterOutputs } from "@orpc/server"
+import type { AppRouter } from "@/server/orpc/router"
+
+type ListPendingApplicationsResult = InferRouterOutputs<
+  AppRouter
+>["placements"]["listPending"]
+type PendingApplication = ListPendingApplicationsResult["applications"][number]
 
 export type PlacementValidationRole = "admin" | "department_head"
 

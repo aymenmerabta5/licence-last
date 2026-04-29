@@ -10,7 +10,7 @@ function ProfileFallback() {
     <div className="space-y-10">
       {/* Hero header skeleton */}
       <div className="h-64 sm:h-72 w-full rounded-2xl bg-muted/30 animate-pulse relative overflow-hidden">
-        <div className="absolute bottom-8 left-6 sm:left-10 flex flex-col sm:flex-row items-center sm:items-end gap-6">
+        <div className="absolute bottom-8 start-6 sm:start-10 flex flex-col sm:flex-row items-center sm:items-end gap-6">
           <div className="h-28 w-28 sm:h-32 sm:w-32 rounded-2xl bg-muted/40 shrink-0" />
           <div className="space-y-4 pb-1 flex-1">
             <Skeleton className="h-10 w-64 bg-muted/40" />

@@ -3,7 +3,9 @@
 import { Plus } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { useMemo } from "react"
+import type { OfferFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferForm"
 import { LanguageRequirementRow } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/LanguageRequirementRow"
+import type { OfferLanguageRequirementValue } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
 import { FormSection } from "@/components/form-fields"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,8 +19,7 @@ import {
 import { errorMessage } from "@/lib/schemas/auth"
 
 interface LanguageRequirementsSectionProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: any
+  form: OfferFormApi
 }
 
 interface LanguageRequirementValue {
@@ -26,14 +27,6 @@ interface LanguageRequirementValue {
   minimumProficiency: string
   isRequired: boolean
   weight: number
-}
-
-interface LanguageRequirementsField {
-  state: {
-    value: LanguageRequirementValue[]
-    meta: { errors: unknown[] }
-  }
-  handleChange: (value: LanguageRequirementValue[]) => void
 }
 
 const PROFICIENCY_LEVELS = [
@@ -98,7 +91,7 @@ export function LanguageRequirementsSection({
       </p>
 
       <form.Field name="languageRequirements">
-        {(field: LanguageRequirementsField) => {
+        {(field) => {
           const selectedLanguageCodes = field.state.value.map(
             (requirement) => requirement.languageCode,
           )
@@ -147,7 +140,7 @@ export function LanguageRequirementsSection({
                     field.handleChange(
                       updateRequirement(field.state.value, currentIndex, {
                         languageCode,
-                      }),
+                      }) as OfferLanguageRequirementValue[],
                     )
                   }}
                   onMinimumProficiencyChange={(
@@ -157,21 +150,21 @@ export function LanguageRequirementsSection({
                     field.handleChange(
                       updateRequirement(field.state.value, currentIndex, {
                         minimumProficiency,
-                      }),
+                      }) as OfferLanguageRequirementValue[],
                     )
                   }}
                   onWeightChange={(currentIndex, weight) => {
                     field.handleChange(
                       updateRequirement(field.state.value, currentIndex, {
                         weight,
-                      }),
+                      }) as OfferLanguageRequirementValue[],
                     )
                   }}
                   onRequiredChange={(currentIndex, isRequired) => {
                     field.handleChange(
                       updateRequirement(field.state.value, currentIndex, {
                         isRequired,
-                      }),
+                      }) as OfferLanguageRequirementValue[],
                     )
                   }}
                   onRemove={removeLanguageRequirement}

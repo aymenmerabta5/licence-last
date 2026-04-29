@@ -3,7 +3,7 @@
 import { AlertCircle, ArrowLeft, ArrowRight, Loader2, Mail } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { type RefObject } from "react"
+import type { RefObject } from "react"
 import type { ResetPasswordFormApi } from "@/app/[locale]/(auth)/reset-password/_components/ResetPasswordForm/hooks/useResetPassword"
 import {
   type CaptchaHandle,

@@ -1,6 +1,6 @@
 "use client"
 
-import { LucideIcon } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 import * as motion from "motion/react-client"
 import { cn } from "@/lib/utils"
 

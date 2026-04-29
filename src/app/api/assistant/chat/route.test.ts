@@ -52,7 +52,7 @@ mock.module("@/server/auth/approval-gate", () => ({
 }))
 
 // Mock DB chain used by auth-context
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 let mockDbLimitResult: any[] = []
 const mockDbLimit = mock(() => Promise.resolve(mockDbLimitResult))
 const mockDbWhere = mock(() => ({ limit: mockDbLimit }))

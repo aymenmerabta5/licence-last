@@ -111,7 +111,7 @@ function applyGlobalModuleMocks() {
     revalidateTag: () => {},
     revalidatePath: () => {},
     updateTag: () => {},
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     unstable_cache: (fn: (...args: any[]) => any) => fn,
   }))
 

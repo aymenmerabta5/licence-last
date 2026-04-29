@@ -47,10 +47,12 @@ export function TextAreaField({
           placeholder={placeholder}
           rows={rows}
           className={`w-full rounded-none border border-input bg-transparent ${Icon ? "ps-10" : "ps-3"} pe-3 py-2.5 text-sm placeholder:text-muted-foreground/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 resize-none ${className ?? ""}`}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${id}-error` : undefined}
         />
       </div>
       {error && (
-        <p className="text-destructive text-[11px] tracking-wide" role="alert">
+        <p id={`${id}-error`} className="text-destructive text-[11px] tracking-wide" role="alert">
           {error}
         </p>
       )}

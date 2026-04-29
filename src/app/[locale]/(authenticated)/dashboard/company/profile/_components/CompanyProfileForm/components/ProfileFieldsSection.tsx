@@ -11,14 +11,14 @@ import {
 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+import type { CompanyProfileFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/hooks/useCompanyProfileForm"
 import { SelectField, TextAreaField, TextField } from "@/components/form-fields"
 import { ease } from "@/lib/animations"
 import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYA_OPTIONS } from "@/lib/wilayas"
 
 interface ProfileFieldsSectionProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: any
+  form: CompanyProfileFormApi
 }
 
 interface EditorialSectionProps {

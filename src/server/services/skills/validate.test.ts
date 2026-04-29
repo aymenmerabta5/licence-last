@@ -1,14 +1,12 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 import { ServiceError } from "@/server/services/errors"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockWhereResult: any[] = []
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 const mockWhere = mock((_filter: any): any => Promise.resolve(mockWhereResult))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+
 const mockFrom = mock((_table: any): any => ({ where: mockWhere }))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+
 const mockSelect = mock((_columns: any): any => ({ from: mockFrom }))
 
 mock.module("@/server/db", () => ({

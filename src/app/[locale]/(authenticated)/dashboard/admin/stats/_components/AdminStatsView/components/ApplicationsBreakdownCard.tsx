@@ -62,15 +62,14 @@ export function ApplicationsBreakdownCard({
           <motion.div
             key={status}
             className={cn(
-              "h-full",
+              "h-full origin-left",
               STATUS_COLORS[status] ?? "bg-zinc-300",
               i === 0 && "rounded-s-full",
               i === entries.length - 1 && "rounded-e-full",
             )}
-            initial={{ width: 0 }}
-            animate={{
-              width: `${(count / totalApplications) * 100}%`,
-            }}
+            style={{ width: `${(count / totalApplications) * 100}%` }}
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
             transition={{
               duration: 0.8,
               delay: 0.5 + i * 0.08,

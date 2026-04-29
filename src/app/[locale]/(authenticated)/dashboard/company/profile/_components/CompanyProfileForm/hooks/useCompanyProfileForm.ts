@@ -12,6 +12,8 @@ import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { createCompanyProfileSchema } from "@/lib/schemas/offer"
 import { orpcClient } from "@/server/orpc/client"
 
+export type CompanyProfileFormApi = ReturnType<typeof useCompanyProfileForm>["form"]
+
 export function useCompanyProfileForm(
   initialData: CompanyProfileFormProps["initialData"],
 ) {

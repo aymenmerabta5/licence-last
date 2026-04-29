@@ -89,7 +89,6 @@ export function OfferHeader({
                 {offer.companyName}
               </span>
               {offer.companyLogoUrl ? (
-                /* eslint-disable-next-line @next/next/no-img-element */
                 <img
                   src={offer.companyLogoUrl}
                   alt={offer.companyName}

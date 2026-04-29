@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 // --- listAssistantMessages / getLatestAssistantMessage mocks ---
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 let selectQueryResult: any[] = []
 
 const mockSelectLimit = mock(() => Promise.resolve(selectQueryResult))
@@ -16,7 +16,7 @@ const mockSelectFrom = mock(() => ({ innerJoin: mockSelectInnerJoin }))
 const mockSelect = mock(() => ({ from: mockSelectFrom }))
 
 // --- appendAssistantMessage mocks ---
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 let verifyConversationResult: any[] = []
 
 const mockVerifyLimit = mock(() => Promise.resolve(verifyConversationResult))
@@ -30,7 +30,6 @@ const mockTxUpdateWhere = mock(() => Promise.resolve())
 const mockTxUpdateSet = mock(() => ({ where: mockTxUpdateWhere }))
 const mockTxUpdate = mock(() => ({ set: mockTxUpdateSet }))
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockTransaction = mock(async (fn: (tx: any) => Promise<void>) => {
   await fn({
     insert: mockTxInsert,
@@ -82,10 +81,10 @@ describe("src/server/services/assistant/messages — listAssistantMessages", () 
     mockSelectFrom.mockReturnValue({ innerJoin: mockSelectInnerJoin })
     mockSelectInnerJoin.mockReturnValue({ where: mockSelectWhere })
     mockSelectWhere.mockReturnValue({ orderBy: mockSelectOrderBy })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     mockSelectOrderBy.mockImplementation((() => {
       const p = Promise.resolve(selectQueryResult)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       ;(p as any).limit = mockSelectLimit
       return p
     }) as any)
@@ -153,7 +152,7 @@ describe("src/server/services/assistant/messages — getLatestAssistantMessage",
     mockSelectFrom.mockReturnValue({ innerJoin: mockSelectInnerJoin })
     mockSelectInnerJoin.mockReturnValue({ where: mockSelectWhere })
     mockSelectWhere.mockReturnValue({ orderBy: mockSelectOrderBy })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     mockSelectOrderBy.mockReturnValue({ limit: mockSelectLimit } as any)
     mockSelectLimit.mockImplementation(() => Promise.resolve(selectQueryResult))
 

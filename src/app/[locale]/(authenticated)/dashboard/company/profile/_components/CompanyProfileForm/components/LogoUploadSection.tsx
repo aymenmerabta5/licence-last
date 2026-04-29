@@ -28,7 +28,6 @@ export function LogoUploadSection({
         {/* Logo display with upload overlay */}
         <div className="relative group shrink-0">
           {logoUrl ? (
-            /* eslint-disable-next-line @next/next/no-img-element */
             <img
               src={logoUrl}
               alt="Company logo"

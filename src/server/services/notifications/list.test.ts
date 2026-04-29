@@ -1,18 +1,17 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockRows: any[] = []
 let selectCallIdx = 0
 
 // query 1
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockLimit = mock<() => Promise<any[]>>(() => Promise.resolve(mockRows))
 const mockOrderBy = mock(() => ({ limit: mockLimit }))
 const mockWhere = mock(() => ({ orderBy: mockOrderBy }))
 const mockFrom = mock(() => ({ where: mockWhere }))
 
 // query 2 (unread count)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockUnreadWhere = mock<() => Promise<any[]>>(() =>
   Promise.resolve([{ value: 2 }]),
 )

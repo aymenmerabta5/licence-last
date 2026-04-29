@@ -16,7 +16,7 @@ import {
 } from "@/server/orpc/utils/service-error"
 import { confirmInterviewSlot } from "@/server/services/interviews/confirm"
 import {
-  InterviewServiceError,
+  type InterviewServiceError,
   isInterviewServiceError,
 } from "@/server/services/interviews/errors"
 import { listInterviewsForCompany } from "@/server/services/interviews/list-for-company"

@@ -6,6 +6,7 @@ import type {
   CopilotResult,
   OfferCopilotIntent,
 } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
+import type { OfferFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferForm"
 import { isInternshipType, isWorkMode } from "@/lib/schemas/enums"
 import { orpcClient } from "@/server/orpc/client"
 
@@ -38,8 +39,7 @@ function resolveSkillIds(
 }
 
 export function useOfferCopilot(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: any,
+  form: OfferFormApi,
   skillTags: SkillTag[],
 ) {
   const [aiPrompt, setAiPrompt] = useState("")

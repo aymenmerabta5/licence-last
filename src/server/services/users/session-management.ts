@@ -2,6 +2,7 @@ import "server-only"
 
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
+import { ServiceError } from "@/server/services/errors"
 
 /**
  * List all sessions for the authenticated user.
@@ -27,7 +28,10 @@ export async function revokeMySession(sessionId: string) {
 
   const target = sessions.find((s) => s.id === sessionId)
   if (!target) {
-    throw new Error("Session not found or does not belong to you")
+    throw new ServiceError(
+      "SESSION_NOT_FOUND",
+      "Session not found or does not belong to you",
+    )
   }
 
   return auth.api.revokeSession({

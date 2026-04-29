@@ -108,7 +108,7 @@ export function EditUniversityDialog({
           }}
           className="space-y-4 py-2"
         >
-          <EditUniversityFields form={form} />
+          <EditUniversityFields form={form as ReturnType<typeof useForm>} />
 
           <div className="flex gap-2 justify-end pt-2">
             <Button

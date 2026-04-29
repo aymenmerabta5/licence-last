@@ -1,10 +1,9 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let queryResult: any[] = []
 
 const mockWhere = mock(() => Promise.resolve(queryResult))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockOffset = mock((): any => Promise.resolve(queryResult))
 const mockLimit = mock(() => ({ offset: mockOffset }))
 const mockOrderBy = mock(() => ({ limit: mockLimit }))
@@ -37,7 +36,7 @@ describe("src/server/services/universities/list", () => {
 
   test("should return universities with default pagination", async () => {
     queryResult = [{ id: "uni-1", name: "Uni A" }]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     mockOffset.mockResolvedValue(queryResult as any)
 
     const { listUniversities } = await import(
@@ -55,7 +54,7 @@ describe("src/server/services/universities/list", () => {
       { id: "uni-2", name: "B" },
       { id: "uni-3", name: "C" },
     ]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     mockOffset.mockResolvedValue(queryResult as any)
 
     const { listUniversities } = await import(
@@ -100,7 +99,7 @@ describe("src/server/services/universities/list", () => {
   })
 
   test("should cap limit at 200", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     mockOffset.mockResolvedValue([] as any)
 
     const { listUniversities } = await import(

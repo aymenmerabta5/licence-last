@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
 let selectCallIdx = 0
 
@@ -14,7 +13,7 @@ const mockWhere1 = mock(() => ({ limit: mockLimit1 }))
 const mockFrom1 = mock(() => ({ where: mockWhere1 }))
 
 // Call 2: offer skills (where => Promise)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockWhere2 = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)
@@ -22,23 +21,23 @@ const mockWhere2 = mock<() => Promise<any[]>>(() => {
 const mockFrom2 = mock(() => ({ where: mockWhere2 }))
 
 // Call 3: applications rows (where -> orderBy -> limit)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockLimit3 = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)
 })
 const mockOrderBy3 = mock(() => ({ limit: mockLimit3 }))
 const mockWhere3 = mock(() => ({ orderBy: mockOrderBy3 }))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockLeftJoinU = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockLeftJoinP = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockInnerJoin3 = mock(() => ({}) as any)
 const mockFrom3 = mock(() => ({ innerJoin: mockInnerJoin3 }))
 
 // Call 4: student skills join (innerJoin -> where => Promise)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockWhere4 = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)

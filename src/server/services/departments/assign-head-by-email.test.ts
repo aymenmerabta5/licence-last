@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const selectLimitQueue: unknown[][] = []
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockLimit = mock((): any =>
   Promise.resolve(selectLimitQueue.shift() ?? []),
 )
@@ -136,7 +135,7 @@ describe("assignDepartmentHeadByEmail", () => {
     })
     expect(mockCreateUser).not.toHaveBeenCalled()
     expect(mockRequestPasswordReset).toHaveBeenCalledTimes(1)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const resetCall = (mockRequestPasswordReset.mock.calls as any)[0][0]
     expect(resetCall.body.redirectTo).toBe("/reset-password/verify")
   })
@@ -158,7 +157,7 @@ describe("assignDepartmentHeadByEmail", () => {
 
     expect(result.userId).toBe("new-user-id")
     expect(mockCreateUser).toHaveBeenCalledTimes(1)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const call = (mockCreateUser.mock.calls as any)[0][0]
     expect(call.body.name).toBe("New Head")
     expect(call.body.role).toBe("university_admin")

@@ -61,7 +61,7 @@ export default function OnboardingLayout({
             <div className="relative">
               {/* Editorial flourish */}
               <div
-                className="hidden lg:block absolute -top-16 -left-16 text-muted-foreground/10 font-serif text-[180px] leading-none select-none pointer-events-none"
+                className="hidden lg:block absolute -top-16 -start-16 text-muted-foreground/10 font-serif text-[180px] leading-none select-none pointer-events-none"
                 aria-hidden="true"
               >
                 &ldquo;

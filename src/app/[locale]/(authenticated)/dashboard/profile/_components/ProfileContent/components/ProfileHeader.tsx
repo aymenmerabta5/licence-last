@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease, reveal } from "@/lib/animations"
+import Image from "next/image"
 
 interface ProfileHeaderProps {
   user: ProfileUser
@@ -60,7 +61,7 @@ export function ProfileHeader({
         className="relative overflow-hidden rounded-[3rem] bg-white border border-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.04)]"
       >
         {/* Subtle Background Accent */}
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/[0.02] -skew-x-12 translate-x-1/4" />
+        <div className="absolute top-0 end-0 w-1/2 h-full bg-primary/[0.02] -skew-x-12 translate-x-1/4" />
 
         <div className="relative px-8 pb-14 pt-14 sm:px-16 sm:pb-20 sm:pt-24">
           <div className="flex flex-col lg:flex-row items-center lg:items-center gap-14">
@@ -72,11 +73,11 @@ export function ProfileHeader({
               <div className="h-48 w-48 sm:h-60 sm:w-60 rounded-full p-2 bg-gradient-to-tr from-primary/20 via-transparent to-primary/10 shadow-inner relative">
                 <div className="h-full w-full rounded-full overflow-hidden bg-slate-100 flex items-center justify-center border-4 border-white shadow-2xl">
                   {user.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={user.image}
                       alt={user.name || t("profileImageAlt")}
-                      className="h-full w-full object-cover"
+                      fill
+                      className="object-cover"
                     />
                   ) : (
                     <span className="text-slate-800 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif tracking-tighter">
@@ -85,7 +86,7 @@ export function ProfileHeader({
                   )}
                 </div>
               </div>
-              <div className="absolute bottom-2 right-6 h-14 w-14 bg-primary text-white rounded-full flex items-center justify-center shadow-xl border-4 border-white">
+              <div className="absolute bottom-2 end-6 h-14 w-14 bg-primary text-white rounded-full flex items-center justify-center shadow-xl border-4 border-white">
                 <ShieldCheck className="h-7 w-7" />
               </div>
             </motion.div>

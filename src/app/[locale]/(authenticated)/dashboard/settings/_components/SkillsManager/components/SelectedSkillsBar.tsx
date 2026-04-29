@@ -1,6 +1,7 @@
 "use client"
 
 import { X } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { Label } from "@/components/ui/label"
 
 interface Skill {
@@ -23,16 +24,18 @@ export function SelectedSkillsBar({
   allSkills,
   onToggle,
 }: SelectedSkillsBarProps) {
+  const t = useTranslations("dashboard.settings")
+
   return (
     <div className="space-y-2.5">
       <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-        Your skills
+        {t("yourSkills")}
       </Label>
 
       {selectedIds.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border/40 bg-secondary/5 px-4 py-3">
           <p className="text-xs text-muted-foreground/60">
-            No skills selected yet. Browse categories below to add skills.
+            {t("noSkillsSelected")}
           </p>
         </div>
       ) : (

@@ -1,6 +1,4 @@
-import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 const mockSelectResults: any[][] = []
 let selectCallIdx = 0
 
@@ -8,20 +6,13 @@ const mockLimit1 = mock(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)
 })
-const mockWhere1 = mock(() => ({ limit: mockLimit1 }))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockLeftJoinUniversity = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockLeftJoinProfile = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockInnerJoinUser = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockInnerJoinCompany = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockWhere1 = mock(() => ({ limit: mockLimit1 }))
+const mockLeftJoinUniversity = mock(() => ({}) as any)
+const mockLeftJoinProfile = mock(() => ({}) as any)
+const mockInnerJoinUser = mock(() => ({}) as any)
+const mockInnerJoinCompany = mock(() => ({}) as any)
 const mockInnerJoinOffer = mock(() => ({}) as any)
-const mockFrom1 = mock(() => ({ innerJoin: mockInnerJoinOffer }))
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockFrom1 = mock(() => ({ innerJoin: mockInnerJoinOffer }))
 const mockWhere2 = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)

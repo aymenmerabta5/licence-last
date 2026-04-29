@@ -1,31 +1,17 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSelect = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockFrom = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockSelectWhere = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockLimit = mock((): any => [])
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockInsert = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockValues = mock((): any => Promise.resolve())
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockTxUpdate = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockTxSet = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockTxUpdateWhere = mock(() => ({ returning: mockTxUpdateReturning }))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+import { beforeEach, describe, expect, mock, test } from "bun:test"
+const mockSelect = mock(() => ({}) as any)
+const mockFrom = mock(() => ({}) as any)
+const mockSelectWhere = mock(() => ({}) as any)
+const mockLimit = mock((): any => [])
+const mockInsert = mock(() => ({}) as any)
+const mockValues = mock((): any => Promise.resolve())
+const mockTxUpdate = mock(() => ({}) as any)
+const mockTxSet = mock(() => ({}) as any)
+const mockTxUpdateWhere = mock(() => ({ returning: mockTxUpdateReturning }))
 const mockTxUpdateReturning = mock((): any =>
   Promise.resolve([{ id: "offer-1" }]),
-)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockDelete = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+)
+const mockDelete = mock(() => ({}) as any)
 const mockDeleteWhere = mock((): any => Promise.resolve())
 
 const mockTx = {

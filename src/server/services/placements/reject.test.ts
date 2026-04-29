@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
 let selectCallIdx = 0
 
@@ -16,21 +15,19 @@ const mockJoin2 = mock(() => ({ innerJoin: mockJoin3 }))
 const mockJoin1 = mock(() => ({ innerJoin: mockJoin2 }))
 const mockFromJoin = mock(() => ({ innerJoin: mockJoin1 }))
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockUpdate = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockSet = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockUpdateWhere = mock(() => ({}) as any)
 const mockUpdateReturning = mock(() => Promise.resolve([{ id: "app-1" }]))
 
 // Notifications + companyMembers
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockInsert = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockValues = mock((): any => Promise.resolve())
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockMembersWhere = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)

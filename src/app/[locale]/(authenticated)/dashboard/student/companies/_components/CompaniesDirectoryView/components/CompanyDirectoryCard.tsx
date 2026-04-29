@@ -24,7 +24,6 @@ export function CompanyDirectoryCard({ company }: CompanyDirectoryCardProps) {
               alt={company.name}
               width={48}
               height={48}
-              unoptimized
               className="h-12 w-12 border border-border/60 object-cover"
             />
           ) : (

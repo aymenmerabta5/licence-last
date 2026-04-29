@@ -1,13 +1,12 @@
 "use client"
 
 import { Mail, User } from "lucide-react"
-
+import type { ProfileSettingsFormApi } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/hooks/useProfileSettings"
 import { TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 
 interface PersonalInfoSectionProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: any
+  form: ProfileSettingsFormApi
   email: string
   isBusy: boolean
 }
@@ -20,8 +19,7 @@ export function PersonalInfoSection({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <form.Field name="name">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {(field: any) => (
+        {(field) => (
           <TextField
             id="settings-full-name"
             label="Full Name"

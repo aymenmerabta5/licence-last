@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { ChangePasswordForm } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ChangePasswordDialog/components/ChangePasswordForm"
 
 import { useChangePassword } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ChangePasswordDialog/hooks/useChangePassword"
@@ -20,6 +21,7 @@ export function ChangePasswordDialog({
   open,
   onOpenChange,
 }: ChangePasswordDialogProps) {
+  const t = useTranslations("dashboard.settings.changePassword")
   const { form, serverError, isSuccess, reset } = useChangePassword()
 
   function handleOpenChange(next: boolean) {
@@ -31,9 +33,9 @@ export function ChangePasswordDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-serif">Change Password</DialogTitle>
+          <DialogTitle className="font-serif">{t("title")}</DialogTitle>
           <DialogDescription>
-            Enter your current password and choose a new one.
+            {t("description")}
           </DialogDescription>
         </DialogHeader>
 

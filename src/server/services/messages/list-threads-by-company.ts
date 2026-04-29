@@ -1,6 +1,6 @@
 import "server-only"
 
-import { and, desc, eq, sql } from "drizzle-orm"
+import { and, desc, eq, inArray, sql } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
@@ -61,27 +61,6 @@ export async function listMessageThreadsByCompany(
       studentImage: user.image,
       lastMessageAt: offerMessageThread.lastMessageAt,
       createdAt: offerMessageThread.createdAt,
-      lastMessageId: sql<string | null>`(
-        select ${offerMessage.id}
-        from ${offerMessage}
-        where ${offerMessage.threadId} = ${offerMessageThread.id}
-        order by ${offerMessage.createdAt} desc, ${offerMessage.id} desc
-        limit 1
-      )`,
-      lastMessageSenderUserId: sql<string | null>`(
-        select ${offerMessage.senderUserId}
-        from ${offerMessage}
-        where ${offerMessage.threadId} = ${offerMessageThread.id}
-        order by ${offerMessage.createdAt} desc, ${offerMessage.id} desc
-        limit 1
-      )`,
-      lastReadMessageId: sql<string | null>`(
-        select ${offerMessageReadState.lastReadMessageId}
-        from ${offerMessageReadState}
-        where ${offerMessageReadState.threadId} = ${offerMessageThread.id}
-          and ${offerMessageReadState.userId} = ${viewerUserId}
-        limit 1
-      )`,
     })
     .from(offerMessageThread)
     .innerJoin(
@@ -96,23 +75,80 @@ export async function listMessageThreadsByCompany(
     )
     .limit(limit)
 
-  return rows.map(
-    ({
-      lastMessageId,
-      lastMessageSenderUserId,
-      lastReadMessageId,
-      ...thread
-    }) => {
-      const hasUnread =
-        lastMessageId != null &&
-        lastMessageSenderUserId !== viewerUserId &&
-        lastReadMessageId !== lastMessageId
+  const threadIds = rows.map((r) => r.id)
 
-      return {
-        ...thread,
-        hasUnread,
-        unreadCount: hasUnread ? 1 : 0,
-      }
-    },
-  )
+  const [lastMessagesResult, readStates] =
+    threadIds.length > 0
+      ? await Promise.all([
+          db.execute<{
+            id: string
+            sender_user_id: string
+            thread_id: string
+          }>(
+            sql`
+              WITH ranked_messages AS (
+                SELECT
+                  ${offerMessage.id} AS id,
+                  ${offerMessage.senderUserId} AS sender_user_id,
+                  ${offerMessage.threadId} AS thread_id,
+                  ROW_NUMBER() OVER (
+                    PARTITION BY ${offerMessage.threadId}
+                    ORDER BY ${desc(offerMessage.createdAt)}, ${desc(offerMessage.id)}
+                  ) AS rn
+                FROM ${offerMessage}
+                WHERE ${inArray(offerMessage.threadId, threadIds)}
+              )
+              SELECT id, sender_user_id, thread_id
+              FROM ranked_messages
+              WHERE rn = 1
+            `,
+          ),
+          db
+            .select({
+              threadId: offerMessageReadState.threadId,
+              lastReadMessageId: offerMessageReadState.lastReadMessageId,
+            })
+            .from(offerMessageReadState)
+            .where(
+              and(
+                inArray(offerMessageReadState.threadId, threadIds),
+                eq(offerMessageReadState.userId, viewerUserId),
+              ),
+            ),
+        ])
+      : [[], []]
+
+  const lastMessageByThread = new Map<
+    string,
+    { id: string; senderUserId: string }
+  >()
+  for (const msg of lastMessagesResult) {
+    lastMessageByThread.set(msg.thread_id, {
+      id: msg.id,
+      senderUserId: msg.sender_user_id,
+    })
+  }
+
+  const readStateByThread = new Map<string, string | null>()
+  for (const rs of readStates) {
+    readStateByThread.set(rs.threadId, rs.lastReadMessageId)
+  }
+
+  return rows.map((thread) => {
+    const lastMessage = lastMessageByThread.get(thread.id)
+    const lastReadMessageId = readStateByThread.get(thread.id) ?? null
+    const lastMessageId = lastMessage?.id ?? null
+    const lastMessageSenderUserId = lastMessage?.senderUserId ?? null
+
+    const hasUnread =
+      lastMessageId != null &&
+      lastMessageSenderUserId !== viewerUserId &&
+      lastReadMessageId !== lastMessageId
+
+    return {
+      ...thread,
+      hasUnread,
+      unreadCount: hasUnread ? 1 : 0,
+    }
+  })
 }

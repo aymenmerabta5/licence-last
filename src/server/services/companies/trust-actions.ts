@@ -84,15 +84,21 @@ export async function submitCompanyQualityFeedback(input: {
     .limit(1)
 
   if (!placementRow) {
-    throw new Error("Placement not found")
+    throw new ServiceError("PLACEMENT_NOT_FOUND", "Placement not found")
   }
 
   if (placementRow.studentUserId !== input.studentUserId) {
-    throw new Error("You can only submit feedback for your own placement")
+    throw new ServiceError(
+      "FEEDBACK_UNAUTHORIZED",
+      "You can only submit feedback for your own placement",
+    )
   }
 
   if (placementRow.applicationStatus !== "admin_validated") {
-    throw new Error("Feedback can only be submitted for validated placements")
+    throw new ServiceError(
+      "FEEDBACK_INVALID_STATUS",
+      "Feedback can only be submitted for validated placements",
+    )
   }
 
   log.info(
@@ -233,10 +239,10 @@ export async function resolveCompanyReport(input: {
       .limit(1)
 
     if (!existing) {
-      throw new Error("Report not found")
+      throw new ServiceError("REPORT_NOT_FOUND", "Report not found")
     }
 
-    throw new Error("Report is already closed")
+    throw new ServiceError("REPORT_ALREADY_CLOSED", "Report is already closed")
   }
 
   log.info(

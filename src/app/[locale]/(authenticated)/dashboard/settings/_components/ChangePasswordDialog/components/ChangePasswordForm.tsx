@@ -1,6 +1,7 @@
 "use client"
 
 import { Loader2 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import type { useChangePassword } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ChangePasswordDialog/hooks/useChangePassword"
 import { PasswordField } from "@/components/form-fields/PasswordField"
 import { ServerError } from "@/components/ServerError"
@@ -19,6 +20,8 @@ export function ChangePasswordForm({
   serverError,
   isSuccess,
 }: ChangePasswordFormProps) {
+  const t = useTranslations("dashboard.settings.changePassword")
+
   return (
     <form
       onSubmit={(e) => {
@@ -29,7 +32,7 @@ export function ChangePasswordForm({
     >
       <ServerError message={serverError} />
       <SuccessMessage
-        message={isSuccess ? "Password changed successfully." : ""}
+        message={isSuccess ? t("success") : ""}
       />
 
       {!isSuccess && (
@@ -38,8 +41,8 @@ export function ChangePasswordForm({
             {(field) => (
               <PasswordField
                 id="currentPassword"
-                label="Current Password"
-                placeholder="Enter your current password"
+                label={t("currentPassword")}
+                placeholder={t("currentPasswordPlaceholder")}
                 value={field.state.value}
                 onChange={(v) => field.handleChange(v)}
                 onBlur={field.handleBlur}
@@ -57,8 +60,8 @@ export function ChangePasswordForm({
             {(field) => (
               <PasswordField
                 id="newPassword"
-                label="New Password"
-                placeholder="At least 8 characters"
+                label={t("newPassword")}
+                placeholder={t("newPasswordPlaceholder")}
                 value={field.state.value}
                 onChange={(v) => field.handleChange(v)}
                 onBlur={field.handleBlur}
@@ -67,7 +70,7 @@ export function ChangePasswordForm({
                     ? errorMessage(field.state.meta.errors[0])
                     : undefined
                 }
-                hint="Minimum 8 characters"
+                hint={t("passwordHint")}
               />
             )}
           </form.Field>
@@ -76,8 +79,8 @@ export function ChangePasswordForm({
             {(field) => (
               <PasswordField
                 id="confirmNewPassword"
-                label="Confirm New Password"
-                placeholder="Re-enter new password"
+                label={t("confirmPassword")}
+                placeholder={t("confirmPasswordPlaceholder")}
                 value={field.state.value}
                 onChange={(v) => field.handleChange(v)}
                 onBlur={field.handleBlur}
@@ -101,10 +104,10 @@ export function ChangePasswordForm({
                 {isSubmitting ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin me-2" />
-                    Changing...
+                    {t("changing")}
                   </>
                 ) : (
-                  "Change Password"
+                  t("submit")
                 )}
               </Button>
             )}

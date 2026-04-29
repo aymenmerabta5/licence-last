@@ -3,12 +3,12 @@
 import { Loader2, Save } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+import type { CompanyProfileFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/hooks/useCompanyProfileForm"
 import { Button } from "@/components/ui/button"
 import { ease } from "@/lib/animations"
 
 interface FormActionsProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: any
+  form: CompanyProfileFormApi
 }
 
 export function FormActions({ form }: FormActionsProps) {
@@ -21,11 +21,9 @@ export function FormActions({ form }: FormActionsProps) {
       transition={{ duration: 0.5, ease, delay: 0.4 }}
     >
       <form.Subscribe
-        selector={(state: { isSubmitting: boolean }) =>
-          [state.isSubmitting] as const
-        }
+        selector={(state) => [state.isSubmitting] as const}
       >
-        {([isSubmitting]: [boolean]) => (
+        {([isSubmitting]) => (
           <Button
             type="submit"
             variant="editorial"

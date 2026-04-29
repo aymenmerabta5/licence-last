@@ -1,10 +1,9 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockDelete = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockWhere = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockReturning = mock<() => Promise<any[]>>(() => Promise.resolve([]))
 
 function applyUnsaveOfferMocks() {

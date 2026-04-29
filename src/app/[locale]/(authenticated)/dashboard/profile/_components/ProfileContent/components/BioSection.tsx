@@ -44,7 +44,7 @@ export function BioSection({ profile, canEdit, labels }: BioSectionProps) {
         <div className="relative group">
           <div className="relative rounded-[3rem] border border-slate-100 bg-white p-12 sm:p-20 overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.04)]">
             {/* Soft Background Accent */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/[0.02] blur-[120px] rounded-full -translate-y-1/2 translate-x-1/3" />
+            <div className="absolute top-0 end-0 w-96 h-96 bg-primary/[0.02] blur-[120px] rounded-full -translate-y-1/2 translate-x-1/3" />
 
             <div className="relative">
               {/* Large styled quote */}

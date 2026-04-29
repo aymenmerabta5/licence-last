@@ -10,12 +10,12 @@ import {
   User,
 } from "lucide-react"
 import * as motion from "motion/react-client"
-import type { ProfileContentProps } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
+import type { ProfileContentProps, StudentProfile } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { ease } from "@/lib/animations"
 
 interface ContactInfoCardProps {
   user: ProfileContentProps["user"]
-  profile: any
+  profile: StudentProfile | null | undefined
   roleLabel: string
   labels: {
     personalInfo: string
@@ -40,7 +40,7 @@ export function ContactInfoCard({
     { label: labels.role, value: roleLabel, icon: User },
     {
       label: labels.location,
-      value: profile?.location || labels.notSetYet,
+      value: profile?.address || labels.notSetYet,
       icon: MapPin,
     },
     {

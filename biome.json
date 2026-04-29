@@ -46,7 +46,7 @@
       },
       "style": {
         "noNonNullAssertion": "off",
-        "useImportType": "off",
+        "useImportType": "error",
         "useShorthandFunctionType": "off",
         "useTemplate": "off"
       },
@@ -70,7 +70,7 @@
         "noArrayIndexKey": "off",
         "noDocumentCookie": "off",
         "noDoubleEquals": "warn",
-        "noExplicitAny": "off",
+        "noExplicitAny": "error",
         "noThenProperty": "warn",
         "useIterableCallbackReturn": "off"
       },

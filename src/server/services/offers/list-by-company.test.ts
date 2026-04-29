@@ -1,31 +1,27 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelect = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockFrom = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockSelectWhere = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockOrderBy = mock((): any => [])
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSkillFrom = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockInnerJoin = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockSkillWhere = mock((): any => [])
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockLanguageFrom = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockLanguageWhere = mock((): any => [])
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockCountsFrom = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockCountsWhere = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockGroupBy = mock((): any => [])
 
 function applyListByCompanyMocks() {

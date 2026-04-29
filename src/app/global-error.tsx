@@ -46,7 +46,6 @@ export default function GlobalError({
             <button type="button" onClick={reset}>
               {copy.retry}
             </button>
-            {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- Root error boundary: Next.js router may be broken, must use plain <a> */}
             <a href={`/${locale}`}>{copy.returnHome}</a>
           </div>
         </div>

@@ -1,21 +1,23 @@
 "use client"
 
 import { Check, Loader2 } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import type { ProfileSettingsFormApi } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/hooks/useProfileSettings"
 import { Button } from "@/components/ui/button"
 
 interface FormActionsProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: any
+  form: ProfileSettingsFormApi
   isBusy: boolean
   onReset: () => void
 }
 
 export function FormActions({ form, isBusy, onReset }: FormActionsProps) {
+  const t = useTranslations("dashboard.settings")
+
   return (
     <div className="flex flex-col gap-4 border-t border-border/40 pt-6 sm:flex-row sm:items-center sm:justify-between">
       <p className="w-full text-center text-xs font-medium text-muted-foreground/60 sm:w-auto sm:text-start">
-        Unsaved changes will be lost if you leave this page.
+        {t("unsavedChanges")}
       </p>
       <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
         <Button
@@ -26,14 +28,12 @@ export function FormActions({ form, isBusy, onReset }: FormActionsProps) {
           disabled={isBusy}
           className="w-full sm:w-auto"
         >
-          Discard
+          {t("discard")}
         </Button>
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <form.Subscribe
-          selector={(state: any) => [state.isSubmitting] as const}
+          selector={(state) => [state.isSubmitting] as const}
         >
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {([isSubmitting]: any) => (
+          {([isSubmitting]) => (
             <Button
               type="submit"
               variant="editorial"
@@ -46,7 +46,7 @@ export function FormActions({ form, isBusy, onReset }: FormActionsProps) {
               ) : (
                 <Check className="h-4 w-4" />
               )}
-              Save Changes
+              {t("saveChanges")}
             </Button>
           )}
         </form.Subscribe>

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const mockValues = mock(() => Promise.resolve())
 const mockInsert = mock(() => ({ values: mockValues }))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockFindFirst = mock(() => Promise.resolve(null as any))
 let moduleImportCounter = 0
 

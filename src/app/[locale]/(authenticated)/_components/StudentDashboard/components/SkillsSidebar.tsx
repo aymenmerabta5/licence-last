@@ -1,7 +1,7 @@
 "use client"
 
 import { ExternalLink, TerminalSquare } from "lucide-react"
-import { Route } from "next"
+import type { Route } from "next"
 import type { SkillTag } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"

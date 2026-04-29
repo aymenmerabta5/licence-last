@@ -1,16 +1,11 @@
 "use client"
 
-import {
-  ArrowRight,
-  BookOpen,
-  Compass,
-  Github,
-  ShieldCheck,
-} from "lucide-react"
-
+import { ArrowRight, BookOpen, Compass, Github, ShieldCheck } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { type ReactNode, useState } from "react"
+import { useState } from "react"
 
+import { FooterIconLink } from "@/components/Footer/components/FooterIconLink"
+import { FooterLink } from "@/components/Footer/components/FooterLink"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
@@ -112,23 +107,22 @@ export function Footer() {
                 const email = newsletterEmail.trim()
 
                 if (!email) {
-                  setError("Please enter your email address.")
+                  setError(t("newsletter.errorEmpty"))
                   return
                 }
 
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
                 if (!emailRegex.test(email)) {
-                  setError("Please enter a valid email address.")
+                  setError(t("newsletter.errorInvalid"))
                   return
                 }
 
                 setError("")
-                
-                toast.success("Thank you!", {
-                  description: "Your email has been received.",
+
+                toast.success(t("newsletter.successTitle"), {
+                  description: t("newsletter.successDescription"),
                   position: "bottom-center",
                   duration: 3000,
-
                 })
 
                 setNewsletterEmail("")
@@ -190,58 +184,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  )
-}
-
-function FooterLink({ href, children }: { href: string; children: ReactNode }) {
-  return (
-    <Link
-      href={href as Parameters<typeof Link>[0]["href"]}
-      className="w-fit group flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-    >
-      <span className="relative">
-        {children}
-        <span className="absolute -bottom-1 start-0 w-0 h-px bg-primary transition-all group-hover:w-full" />
-      </span>
-    </Link>
-  )
-}
-
-function FooterIconLink({
-  href,
-  external = false,
-  icon,
-  label,
-}: {
-  href: string
-  external?: boolean
-  icon: ReactNode
-  label: string
-}) {
-  const className =
-    "p-2 sm:p-2.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors border border-transparent hover:border-border"
-
-  if (external) {
-    return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={className}
-        aria-label={label}
-      >
-        {icon}
-      </a>
-    )
-  }
-
-  return (
-    <Link
-      href={href as Parameters<typeof Link>[0]["href"]}
-      className={className}
-      aria-label={label}
-    >
-      {icon}
-    </Link>
   )
 }

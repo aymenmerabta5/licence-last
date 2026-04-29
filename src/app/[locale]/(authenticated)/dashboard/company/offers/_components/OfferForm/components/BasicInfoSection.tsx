@@ -2,12 +2,12 @@
 
 import { Briefcase, FileText } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type { OfferFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferForm"
 import { FormSection, TextAreaField, TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 
 interface BasicInfoSectionProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: any
+  form: OfferFormApi
 }
 
 export function BasicInfoSection({ form }: BasicInfoSectionProps) {
@@ -17,8 +17,7 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
     <FormSection title={t("basicInfo")} delay={0.1}>
       {/* Title */}
       <form.Field name="title">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {(field: any) => (
+        {(field) => (
           <TextField
             id="offer-title"
             label={t("title")}
@@ -38,8 +37,7 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
 
       {/* Description */}
       <form.Field name="description">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {(field: any) => (
+        {(field) => (
           <TextAreaField
             id="offer-description"
             label={t("description")}

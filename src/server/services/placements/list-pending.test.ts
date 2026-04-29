@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
 let selectCallIdx = 0
 
@@ -11,20 +10,20 @@ const mockLimit1 = mock(() => {
 })
 const mockOrderBy1 = mock(() => ({ limit: mockLimit1 }))
 const mockWhere1 = mock(() => ({ orderBy: mockOrderBy1 }))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockLeftJoinUniversity = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockLeftJoinProfile = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockInnerJoinUser = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockInnerJoinCompany = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockInnerJoinOffer = mock(() => ({}) as any)
 const mockFrom1 = mock(() => ({ innerJoin: mockInnerJoinOffer }))
 
 // Call 2: batched student skills query (innerJoin -> where => Promise)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockWhere2 = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)

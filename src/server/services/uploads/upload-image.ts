@@ -3,9 +3,8 @@ import "server-only"
 import { randomUUID } from "node:crypto"
 
 import { createModuleLogger } from "@/server/logging"
+import { ServiceError } from "@/server/services/errors"
 import { uploadFile } from "@/server/storage/s3"
-
-const log = createModuleLogger("services/uploads/upload-image")
 
 import {
   ALLOWED_IMAGE_TYPES,
@@ -13,6 +12,8 @@ import {
   MAX_IMAGE_SIZE,
   validateMagicBytes,
 } from "@/lib/image-validation"
+
+const log = createModuleLogger("services/uploads/upload-image")
 
 /** Sanitize folder to prevent path traversal. Only allow alphanumeric, hyphens, underscores. */
 function sanitizeFolder(folder: string): string {
@@ -30,17 +31,26 @@ export async function uploadImageToS3({
   folder = "uploads",
 }: UploadImageParams): Promise<{ url: string; key: string }> {
   if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
-    throw new Error("Invalid file type. Allowed: JPEG, PNG, WebP")
+    throw new ServiceError(
+      "INVALID_FILE_TYPE",
+      "Invalid file type. Allowed: JPEG, PNG, WebP",
+    )
   }
 
   if (file.size > MAX_IMAGE_SIZE) {
-    throw new Error("File too large. Maximum size is 5MB")
+    throw new ServiceError(
+      "FILE_TOO_LARGE",
+      "File too large. Maximum size is 5MB",
+    )
   }
 
   const buffer = Buffer.from(await file.arrayBuffer())
 
   if (!validateMagicBytes(buffer, file.type)) {
-    throw new Error("File content does not match declared type")
+    throw new ServiceError(
+      "FILE_CONTENT_MISMATCH",
+      "File content does not match declared type",
+    )
   }
 
   const folderStr = sanitizeFolder(folder)

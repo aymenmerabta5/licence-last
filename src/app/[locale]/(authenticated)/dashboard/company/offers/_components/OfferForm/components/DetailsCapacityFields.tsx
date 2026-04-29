@@ -2,16 +2,17 @@
 
 import { Clock, Users } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type { OfferFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferForm"
 import { TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 
 interface DetailsCapacityFieldsProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: any
+  form: OfferFormApi
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getFieldError(field: any): string | undefined {
+function getFieldError(field: {
+  state: { meta: { errors: unknown[] } }
+}): string | undefined {
   return field.state.meta.errors.length > 0
     ? errorMessage(field.state.meta.errors[0])
     : undefined
@@ -23,8 +24,7 @@ export function DetailsCapacityFields({ form }: DetailsCapacityFieldsProps) {
   return (
     <>
       <form.Field name="durationWeeks">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {(field: any) => (
+        {(field) => (
           <TextField
             id="offer-duration"
             label={t("durationWeeks")}
@@ -40,8 +40,7 @@ export function DetailsCapacityFields({ form }: DetailsCapacityFieldsProps) {
       </form.Field>
 
       <form.Field name="maxPositions">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {(field: any) => (
+        {(field) => (
           <TextField
             id="offer-positions"
             label={t("maxPositions")}

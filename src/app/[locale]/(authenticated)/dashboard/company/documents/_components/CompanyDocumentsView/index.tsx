@@ -60,8 +60,7 @@ export function CompanyDocumentsView() {
             >
               <FileText className="h-3.5 w-3.5" />
               <span>
-                {placements.length}{" "}
-                {placements.length === 1 ? "placement" : "placements"}
+                {t("placementCount", { count: placements.length })}
               </span>
             </motion.div>
           )}
@@ -73,7 +72,7 @@ export function CompanyDocumentsView() {
         <div className="flex flex-col items-center justify-center py-20 gap-3">
           <Loader2 className="h-5 w-5 animate-spin text-primary" />
           <span className="text-xs uppercase tracking-[0.1em] text-muted-foreground">
-            Loading documents
+            {t("loading")}
           </span>
         </div>
       )}
@@ -110,7 +109,7 @@ export function CompanyDocumentsView() {
             <FileText className="h-6 w-6 text-muted-foreground/40" />
           </div>
           <div className="space-y-2">
-            <p className="font-serif text-lg text-heading">No documents yet</p>
+            <p className="font-serif text-lg text-heading">{t("noDocumentsTitle")}</p>
             <p className="text-sm font-light text-muted-foreground max-w-sm mx-auto">
               {t("empty")}
             </p>

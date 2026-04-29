@@ -10,13 +10,16 @@ import {
   User,
 } from "lucide-react"
 import { motion } from "motion/react"
+import type { InferRouterOutputs } from "@orpc/server"
 import { useLocale, useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Link } from "@/i18n/routing"
 import { ease, reveal } from "@/lib/animations"
-import type { VerifyDocumentResult } from "@/server/services/documents/verify"
+import type { AppRouter } from "@/server/orpc/router"
+
+type VerifyDocumentResult = InferRouterOutputs<AppRouter>["documents"]["verify"]
 
 interface VerificationResultProps {
   result: VerifyDocumentResult

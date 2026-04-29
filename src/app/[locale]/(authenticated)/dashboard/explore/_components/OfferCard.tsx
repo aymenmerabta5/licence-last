@@ -3,6 +3,7 @@
 import { ArrowRight, Building2, Clock, MapPin, Users } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 
+import Image from "next/image"
 import { Link } from "@/i18n/routing"
 import { INTERNSHIP_TYPE_COLORS } from "@/lib/constants/internship"
 import { getLanguageLabel, toSupportedLocale } from "@/lib/constants/languages"
@@ -74,11 +75,12 @@ export function OfferCard({ offer }: OfferCardProps) {
           {/* Company row */}
           <div className="flex items-start gap-3">
             {offer.companyLogoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={offer.companyLogoUrl}
                 alt={offer.companyName}
-                className="h-10 w-10 object-cover border border-border/60 shrink-0"
+                width={40}
+                height={40}
+                className="object-cover border border-border/60 shrink-0"
               />
             ) : (
               <div className="h-10 w-10 border border-border/60 bg-primary/5 flex items-center justify-center text-sm font-serif text-primary shrink-0">

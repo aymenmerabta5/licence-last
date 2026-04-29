@@ -64,10 +64,12 @@ export function TextField({
           min={min}
           max={max}
           disabled={disabled}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${id}-error` : undefined}
         />
       </InputGroup>
       {error && (
-        <p className="text-destructive text-[11px] tracking-wide" role="alert">
+        <p id={`${id}-error`} className="text-destructive text-[11px] tracking-wide" role="alert">
           {error}
         </p>
       )}

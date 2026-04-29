@@ -5,7 +5,11 @@ import { eq } from "drizzle-orm"
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { getExplainableMatchScore } from "@/server/services/matching/score"
+import { getExplainableMatchScoresBatch } from "@/server/services/matching/score-batch"
+import { createModuleLogger } from "@/server/logging"
 import { searchOffers } from "@/server/services/offers/search"
+
+const log = createModuleLogger("services/offers/recommend")
 
 interface RecommendOffersInput {
   studentUserId: string
@@ -107,23 +111,55 @@ export async function recommendOffersForStudent(
     (offer) => !appliedOfferIds.has(offer.id),
   )
 
-  const scored = await mapWithConcurrency(candidates, 10, async (offer) => {
-    let score = 0
-    try {
-      const match = await getExplainableMatchScore(
-        input.studentUserId,
-        offer.id,
-      )
-      score = match.score
-    } catch {
-      score = 0
-    }
+  let scored: Array<RankedOffer & { matchScore: number }>
 
-    return {
-      ...offer,
-      matchScore: score,
-    }
-  })
+  try {
+    const candidateIds = candidates.map((c) => c.id)
+    const batchScores = candidateIds.length > 0
+      ? await getExplainableMatchScoresBatch(input.studentUserId, candidateIds)
+      : new Map()
+
+    scored = candidates.map((offer) => {
+      const match = batchScores.get(offer.id)
+      if (!match) {
+        log.warn(
+          { studentUserId: input.studentUserId, offerId: offer.id },
+          "Match score missing for candidate offer; defaulting to 0",
+        )
+      }
+      return {
+        ...offer,
+        matchScore: match?.score ?? 0,
+      }
+    })
+  } catch (error) {
+    log.warn(
+      { err: error, studentUserId: input.studentUserId },
+      "Batch scoring failed; falling back to individual score calls",
+    )
+
+    scored = await mapWithConcurrency(candidates, 10, async (offer) => {
+      let score = 0
+      try {
+        const match = await getExplainableMatchScore(
+          input.studentUserId,
+          offer.id,
+        )
+        score = match.score
+      } catch (err) {
+        log.error(
+          { err, studentUserId: input.studentUserId, offerId: offer.id },
+          "Failed to compute match score for offer",
+        )
+        score = 0
+      }
+
+      return {
+        ...offer,
+        matchScore: score,
+      }
+    })
+  }
 
   scored.sort((a, b) => {
     if (b.matchScore !== a.matchScore) {

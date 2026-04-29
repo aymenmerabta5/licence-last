@@ -1,6 +1,5 @@
 import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let selectResponses: any[] = []
 
 const mockLimit = mock(async () => selectResponses.shift() ?? [])
@@ -14,7 +13,7 @@ const mockTxUpdateWhere = mock(async () => undefined)
 const mockTxUpdateSet = mock(() => ({ where: mockTxUpdateWhere }))
 const mockTxUpdate = mock(() => ({ set: mockTxUpdateSet }))
 const mockTransaction = mock(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   async (fn: (tx: any) => Promise<void>) => {
     await fn({
       insert: mockTxInsert,

@@ -4,7 +4,7 @@ import { Suspense } from "react"
 
 import { CompanyOffersSection } from "@/app/[locale]/company/[slug]/_components/CompanyOffersSection"
 import { getWilayaName } from "@/lib/wilayas"
-import { orpcClient } from "@/server/orpc/client"
+import { getCompanyById } from "@/server/services/companies/get"
 import { getPublicCompanyBySlug } from "@/server/services/companies/get-public-by-slug"
 import { listPublicOffersByCompany } from "@/server/services/offers/list-public-by-company"
 
@@ -31,12 +31,12 @@ export default async function CompanyPublicProfilePage({
     notFound()
   }
 
-  const [t, companyFromRpc, offers] = await Promise.all([
+  const [t, companyFromService, offers] = await Promise.all([
     getTranslations("companyPublic"),
-    orpcClient.companies.getById({ companyId: company.id }).catch(() => null),
+    getCompanyById(company.id).catch(() => null),
     listPublicOffersByCompany(company.id),
   ])
-  const companyData = companyFromRpc ?? company
+  const companyData = companyFromService ?? company
   const location = getWilayaName(companyData.wilayaCode)
 
   return (
@@ -47,8 +47,7 @@ export default async function CompanyPublicProfilePage({
             {t("kicker")}
           </p>
           <div className="flex items-start gap-4">
-            {companyData.logoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
+            {companyData.logoUrl ? (
               <img
                 src={companyData.logoUrl}
                 alt={companyData.name}

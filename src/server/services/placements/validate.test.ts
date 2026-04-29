@@ -1,6 +1,4 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 const mockSelectResults: any[][] = []
 let selectCallIdx = 0
 
@@ -24,8 +22,7 @@ const mockLimit2 = mock(() => {
 const mockWhere2 = mock(() => ({ limit: mockLimit2 }))
 const mockFrom2 = mock(() => ({ where: mockWhere2 }))
 
-// Call 3: company members (no limit)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// Call 3: company members (no limit)
 const mockWhere3 = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)
@@ -34,8 +31,7 @@ const mockFrom3 = mock(() => ({ where: mockWhere3 }))
 
 // Transaction select mocks
 // Call 1: offer lock (for update + limit)
-// Call 2: validated placements count (no limit)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// Call 2: validated placements count (no limit)
 const txSelectResults: any[][] = []
 let txSelectCallIdx = 0
 
@@ -45,9 +41,7 @@ const txLimit1 = mock(() => {
 })
 const txFor1 = mock(() => ({ limit: txLimit1 }))
 const txWhere1 = mock(() => ({ for: txFor1 }))
-const txFrom1 = mock(() => ({ where: txWhere1 }))
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const txFrom1 = mock(() => ({ where: txWhere1 }))
 const txWhere2 = mock<() => Promise<any[]>>(() => {
   const results = txSelectResults[txSelectCallIdx - 1] ?? []
   return Promise.resolve(results)
@@ -55,28 +49,22 @@ const txWhere2 = mock<() => Promise<any[]>>(() => {
 const txInnerJoin2 = mock(() => ({ where: txWhere2 }))
 const txFrom2 = mock(() => ({ innerJoin: txInnerJoin2 }))
 
-// Transaction mocks
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// Transaction mocks
 const txInsert = mock(() => ({}) as any)
-let txValuesCallIdx = 0
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let txValuesCallIdx = 0
 const txValues = mock((): any => {
   txValuesCallIdx += 1
   if (txValuesCallIdx === 1) {
     return { onConflictDoNothing: txOnConflictDoNothing }
   }
   return Promise.resolve()
-})
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+})
 const txOnConflictDoNothing = mock(() => ({}) as any)
 const txPlacementReturning = mock(() =>
   Promise.resolve([{ id: "placement-1" }]),
-)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const txUpdate = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const txSet = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+)
+const txUpdate = mock(() => ({}) as any)
+const txSet = mock(() => ({}) as any)
 const txWhere = mock(() => ({}) as any)
 const txUpdateReturning = mock(() => Promise.resolve([{ id: "app-1" }]))
 
@@ -100,10 +88,8 @@ const mockTransaction = mock(async (fn: (tx: Tx) => Promise<void>) => {
   })
 })
 
-// Notification inserts
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockInsert = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// Notification inserts
+const mockInsert = mock(() => ({}) as any)
 const mockValues = mock((): any => Promise.resolve())
 
 const createNotificationMock = mock(() =>

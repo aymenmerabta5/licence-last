@@ -532,6 +532,18 @@
       "settings": "الإعدادات",
       "logout": "تسجيل الخروج"
     },
+    "error": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again.",
+      "retry": "Try again"
+    },
+    "timeline": {
+      "title": "Application Timeline",
+      "description": "Timeline of application stage updates and related events.",
+      "loading": "Loading timeline...",
+      "empty": "No timeline events yet.",
+      "close": "Close"
+    },
     "navbar": {
       "roles": {
         "student": "طالب",
@@ -1517,7 +1529,10 @@
         "validatedAt": "تم التحقق من صحتها",
         "verificationCode": "رمز التحقق",
         "notAvailable": "غير متوفر"
-      }
+      },
+      "loading": "Loading documents",
+      "noDocumentsTitle": "No documents yet",
+      "placementCount": "{count, plural, one {# placement} other {# placements}}"
     },
     "admin": {
       "title": "لوحة تحكم المشرف",
@@ -2107,6 +2122,36 @@
         "saving": "جارٍ الحفظ...",
         "saveSuccess": "تم تحديث اللغات.",
         "saveError": "تعذر حفظ اللغات."
+      },
+      "yourSkills": "Your skills",
+      "noSkillsSelected": "No skills selected yet. Browse categories below to add skills.",
+      "unsavedChanges": "Unsaved changes will be lost if you leave this page.",
+      "discard": "Discard",
+      "saveChanges": "Save Changes",
+      "academic": "Academic",
+      "department": "Department",
+      "level": "Level",
+      "location": "Location",
+      "wilaya": "Wilaya",
+      "address": "Address",
+      "webPresence": "Web Presence",
+      "githubUrl": "GitHub URL",
+      "portfolioUrl": "Portfolio / LinkedIn URL",
+      "bio": "Bio",
+      "professionalNarrative": "Professional Narrative",
+      "changePassword": {
+        "title": "Change Password",
+        "description": "Enter your current password and choose a new one.",
+        "currentPassword": "Current Password",
+        "currentPasswordPlaceholder": "Enter your current password",
+        "newPassword": "New Password",
+        "newPasswordPlaceholder": "At least 8 characters",
+        "confirmPassword": "Confirm New Password",
+        "confirmPasswordPlaceholder": "Re-enter new password",
+        "passwordHint": "Minimum 8 characters",
+        "changing": "Changing...",
+        "submit": "Change Password",
+        "success": "Password changed successfully."
       }
     },
     "departments": {
@@ -2399,7 +2444,11 @@
     "newsletter": {
       "description": "???? ????? ?????????? ??? ??? ???? ??????? ??????? ?? ???? ?? ???? Stag.",
       "emailPlaceholder": "أدخل بريدك الإلكتروني",
-      "subscribe": "??????"
+      "subscribe": "??????",
+      "errorEmpty": "يرجى إدخال عنوان بريدك الإلكتروني.",
+      "errorInvalid": "يرجى إدخال عنوان بريد إلكتروني صالح.",
+      "successTitle": "شكراً لك!",
+      "successDescription": "تم استلام بريدك الإلكتروني."
     },
     "legal": {
       "copyright": "© {year} Stag.io. جميع الحقوق محفوظة.",

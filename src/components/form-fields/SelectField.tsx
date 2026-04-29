@@ -73,6 +73,7 @@ export function SelectField({
             id={id}
             onBlur={onBlur}
             aria-invalid={!!error}
+            aria-describedby={error ? `${id}-error` : undefined}
             className="h-full w-full border-0 bg-transparent shadow-none ring-0 hover:border-0 focus-visible:ring-0 focus-visible:border-0"
           >
             <SelectValue placeholder={placeholder} />
@@ -91,7 +92,7 @@ export function SelectField({
         </SelectContent>
       </Select>
       {error && (
-        <p className="text-destructive text-[11px] tracking-wide" role="alert">
+        <p id={`${id}-error`} className="text-destructive text-[11px] tracking-wide" role="alert">
           {error}
         </p>
       )}

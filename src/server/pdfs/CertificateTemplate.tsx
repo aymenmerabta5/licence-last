@@ -300,8 +300,7 @@ export function InternshipCertificateTemplate({
 
               {verificationCode && (
                 <View style={styles.verificationBox}>
-                  {qrCodeDataUrl && (
-                    // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image, not HTML img
+                  {qrCodeDataUrl && (
                     <Image style={styles.qrCode} src={qrCodeDataUrl} />
                   )}
                   <View style={styles.vTextBox}>

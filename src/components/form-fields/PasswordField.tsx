@@ -57,6 +57,8 @@ export function PasswordField({
           onBlur={onBlur}
           placeholder={placeholder}
           autoComplete={autoComplete}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${id}-error` : undefined}
         />
         <InputGroupAddon align="inline-end">
           <InputGroupButton
@@ -73,7 +75,7 @@ export function PasswordField({
         </InputGroupAddon>
       </InputGroup>
       {error ? (
-        <p className="text-destructive text-[11px] tracking-wide" role="alert">
+        <p id={`${id}-error`} className="text-destructive text-[11px] tracking-wide" role="alert">
           {error}
         </p>
       ) : hint ? (

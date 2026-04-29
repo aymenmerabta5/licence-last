@@ -5,6 +5,7 @@ import { cacheLife, cacheTag } from "next/cache"
 
 import { CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
+import { ServiceError } from "@/server/services/errors"
 import { application } from "@/server/db/schema/applications"
 import { company } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
@@ -142,7 +143,7 @@ export async function getCompanyTrustIndex(
     .limit(1)
 
   if (!existingCompany) {
-    throw new Error("Company not found")
+    throw new ServiceError("COMPANY_NOT_FOUND", "Company not found")
   }
 
   const offers = await db

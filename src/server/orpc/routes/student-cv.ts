@@ -14,7 +14,7 @@ import { createStudentExperience } from "@/server/services/students/create-exper
 import { createStudentProject } from "@/server/services/students/create-project"
 import {
   isStudentCvServiceError,
-  StudentCvServiceError,
+  type StudentCvServiceError,
 } from "@/server/services/students/cv-errors"
 import { deleteStudentExperience } from "@/server/services/students/delete-experience"
 import { deleteStudentProject } from "@/server/services/students/delete-project"

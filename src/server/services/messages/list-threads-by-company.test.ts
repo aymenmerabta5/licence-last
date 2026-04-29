@@ -8,6 +8,9 @@ import {
 const dbSelectResults: unknown[][] = []
 let dbSelectCallIdx = 0
 let shouldUseOfferLookupFirst = false
+let dbExecuteRows: unknown[] = []
+
+const dbExecute = mock(() => Promise.resolve(dbExecuteRows))
 
 const offerLimit = mock(() => {
   const results = dbSelectResults[dbSelectCallIdx - 1] ?? []
@@ -21,10 +24,19 @@ const listLimit = mock(() => {
   return Promise.resolve(results)
 })
 const listOrderBy = mock(() => ({ limit: listLimit }))
-const listWhere = mock(() => ({ orderBy: listOrderBy }))
+const listWhere = mock(() => {
+  const result = dbSelectResults[dbSelectCallIdx - 1] ?? []
+  const p = Promise.resolve(result)
+  return {
+    orderBy: listOrderBy,
+    then: p.then.bind(p),
+    catch: p.catch.bind(p),
+    finally: p.finally.bind(p),
+  }
+})
 const listInnerJoin2 = mock(() => ({ where: listWhere }))
 const listInnerJoin1 = mock(() => ({ innerJoin: listInnerJoin2 }))
-const listFrom = mock(() => ({ innerJoin: listInnerJoin1 }))
+const listFrom = mock(() => ({ innerJoin: listInnerJoin1, where: listWhere }))
 
 const dbSelect = mock(() => {
   dbSelectCallIdx += 1
@@ -39,6 +51,7 @@ const dbSelect = mock(() => {
 mock.module("@/server/db", () => ({
   db: {
     select: dbSelect,
+    execute: dbExecute,
   },
 }))
 
@@ -63,8 +76,10 @@ describe("src/server/services/messages/list-threads-by-company", () => {
     dbSelectResults.length = 0
     dbSelectCallIdx = 0
     shouldUseOfferLookupFirst = false
+    dbExecuteRows = []
 
     dbSelect.mockClear()
+    dbExecute.mockClear()
     offerFrom.mockClear()
     offerWhere.mockClear()
     offerLimit.mockClear()
@@ -78,10 +93,9 @@ describe("src/server/services/messages/list-threads-by-company", () => {
     offerFrom.mockReturnValue({ where: offerWhere })
     offerWhere.mockReturnValue({ limit: offerLimit })
 
-    listFrom.mockReturnValue({ innerJoin: listInnerJoin1 })
+    listFrom.mockReturnValue({ innerJoin: listInnerJoin1, where: listWhere })
     listInnerJoin1.mockReturnValue({ innerJoin: listInnerJoin2 })
     listInnerJoin2.mockReturnValue({ where: listWhere })
-    listWhere.mockReturnValue({ orderBy: listOrderBy })
     listOrderBy.mockReturnValue({ limit: listLimit })
   })
 
@@ -136,12 +150,15 @@ describe("src/server/services/messages/list-threads-by-company", () => {
         studentImage: null,
         lastMessageAt: new Date("2030-01-02T00:00:00.000Z"),
         createdAt: new Date("2030-01-01T00:00:00.000Z"),
-        lastMessageId: "message-2",
-        lastMessageSenderUserId: "student-1",
-        lastReadMessageId: "message-1",
       },
     ]
     dbSelectResults.push(rows)
+    dbSelectResults.push([
+      { threadId: "thread-1", lastReadMessageId: "message-1" },
+    ])
+    dbExecuteRows = [
+      { id: "message-2", sender_user_id: "student-1", thread_id: "thread-1" },
+    ]
 
     const { listMessageThreadsByCompany } = await import(
       "@/server/services/messages/list-threads-by-company?fresh=3" as string
@@ -166,7 +183,7 @@ describe("src/server/services/messages/list-threads-by-company", () => {
         unreadCount: 1,
       },
     ])
-    expect(dbSelect).toHaveBeenCalledTimes(1)
+    expect(dbSelect).toHaveBeenCalledTimes(2)
     expect(listLimit).toHaveBeenCalledWith(30)
   })
 
@@ -182,9 +199,6 @@ describe("src/server/services/messages/list-threads-by-company", () => {
         studentImage: null,
         lastMessageAt: new Date("2030-01-02T00:00:00.000Z"),
         createdAt: new Date("2030-01-01T00:00:00.000Z"),
-        lastMessageId: "message-2",
-        lastMessageSenderUserId: "student-1",
-        lastReadMessageId: "message-2",
       },
       {
         id: "thread-2",
@@ -195,13 +209,25 @@ describe("src/server/services/messages/list-threads-by-company", () => {
         studentImage: "https://example.com/student-two.png",
         lastMessageAt: new Date("2030-01-03T00:00:00.000Z"),
         createdAt: new Date("2030-01-01T01:00:00.000Z"),
-        lastMessageId: "message-3",
-        lastMessageSenderUserId: "company-admin-1",
-        lastReadMessageId: null,
       },
     ]
     dbSelectResults.push([{ id: "offer-1", companyId: "company-1" }])
     dbSelectResults.push(rows)
+    dbSelectResults.push([
+      { threadId: "thread-1", lastReadMessageId: "message-2" },
+    ])
+    dbExecuteRows = [
+      {
+        id: "message-2",
+        sender_user_id: "student-1",
+        thread_id: "thread-1",
+      },
+      {
+        id: "message-3",
+        sender_user_id: "company-admin-1",
+        thread_id: "thread-2",
+      },
+    ]
 
     const { listMessageThreadsByCompany } = await import(
       "@/server/services/messages/list-threads-by-company?fresh=4" as string
@@ -242,7 +268,7 @@ describe("src/server/services/messages/list-threads-by-company", () => {
         unreadCount: 0,
       },
     ])
-    expect(dbSelect).toHaveBeenCalledTimes(2)
+    expect(dbSelect).toHaveBeenCalledTimes(3)
     expect(offerLimit).toHaveBeenCalledWith(1)
     expect(listLimit).toHaveBeenCalledWith(2)
   })

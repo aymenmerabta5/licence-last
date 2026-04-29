@@ -51,12 +51,15 @@ export function useOfferMatching(
       ]),
   })
 
+  const captureSnapshotMutateRef = useRef(captureSnapshotMutation.mutate)
+  captureSnapshotMutateRef.current = captureSnapshotMutation.mutate
+
   useEffect(() => {
     if (!hasCapturedRef.current && !captureSnapshotMutation.isPending) {
       hasCapturedRef.current = true
-      captureSnapshotMutation.mutate({ offerId, source: "offer_view" })
+      captureSnapshotMutateRef.current({ offerId, source: "offer_view" })
     }
-  }, [captureSnapshotMutation, offerId])
+  }, [captureSnapshotMutation.isPending, offerId])
 
   const readinessPoints = readinessHistoryQuery.data?.points ?? []
   const latestReadiness = readinessPoints[0]?.readyPercent

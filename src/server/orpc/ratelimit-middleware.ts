@@ -245,7 +245,7 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
           maxRequests: Number.MAX_SAFE_INTEGER,
           windowMs: 60_000,
         }),
-      key: async ({ context }: { context: ContextWithUser }) => {
+      key: async ({ context }) => {
         const headersList = await headers()
         const ip = extractClientIp(headersList)
         const userId = (context as ContextWithUser).user?.id
@@ -254,15 +254,13 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
 
         return config.keyPrefix ? `${config.keyPrefix}:${key}` : key
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
+    })
   }
 
   const limiter = createResilientLimiter(config)
 
   return createRatelimitMiddleware({
-    limiter: () => limiter,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    limiter: () => limiter,
     key: async ({ context }, _input) => {
       const headersList = await headers()
       const ip = extractClientIp(headersList)
@@ -274,12 +272,7 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
 
       return config.keyPrefix ? `${config.keyPrefix}:${key}` : key
     },
-    // Override default maxRequests and window if provided
-    ...({
-      maxRequests: config.maxRequests,
-      window: config.windowMs,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any),
+    // maxRequests and window are configured on the limiter itself
   })
 }
 

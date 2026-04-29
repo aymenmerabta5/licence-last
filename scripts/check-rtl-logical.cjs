@@ -1,16 +1,13 @@
 #!/usr/bin/env node
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const fs = require("node:fs")
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require("node:path")
 
-const UI_ROOT = path.join(process.cwd(), "src", "components", "ui")
-const TARGET_FILES = [
-  path.join(UI_ROOT, "field.tsx"),
-  path.join(UI_ROOT, "sidebar.tsx"),
-  path.join(UI_ROOT, "sheet.tsx"),
-  path.join(UI_ROOT, "drawer.tsx"),
+const SCAN_DIRS = [
+  path.join(process.cwd(), "src", "components"),
+  path.join(process.cwd(), "src", "app", "[locale]"),
 ]
+
+const EXT_REGEX = /\.(tsx|ts|jsx|js)$/
 
 const TOKEN_PATTERNS = [
   /(?:^|\s)(?:[^\s"'`]+:)*text-left(?=$|\s|["'`])/,
@@ -27,17 +24,41 @@ const TOKEN_PATTERNS = [
   /(?:^|\s)(?:[^\s"'`]+:)*-?right-(?:\d+|\[[^\]]+\]|px|full|auto)(?=$|\s|["'`])/,
 ]
 
+const EXCEPTION_PATTERNS = [
+  /data-\[side=(left|right)\]/,
+]
+
 function hasPhysicalDirectionToken(line) {
   return TOKEN_PATTERNS.some((pattern) => pattern.test(line))
 }
 
+function hasException(line) {
+  return EXCEPTION_PATTERNS.some((pattern) => pattern.test(line))
+}
+
+function collectFiles(dir, out) {
+  if (!fs.existsSync(dir)) return
+  const entries = fs.readdirSync(dir, { withFileTypes: true })
+  for (const entry of entries) {
+    const entryPath = path.join(dir, entry.name)
+    if (entry.isDirectory()) {
+      collectFiles(entryPath, out)
+    } else if (entry.isFile() && EXT_REGEX.test(entry.name)) {
+      out.push(entryPath)
+    }
+  }
+}
+
 function main() {
-  if (!fs.existsSync(UI_ROOT)) {
-    console.error(`Missing UI root: ${UI_ROOT}`)
-    process.exit(1)
+  const files = []
+  for (const dir of SCAN_DIRS) {
+    collectFiles(dir, files)
   }
 
-  const files = TARGET_FILES.filter((filePath) => fs.existsSync(filePath))
+  if (files.length === 0) {
+    console.log("RTL logical direction check passed (no files found).")
+    return
+  }
 
   const violations = []
 
@@ -47,7 +68,7 @@ function main() {
 
     for (let index = 0; index < lines.length; index += 1) {
       const line = lines[index]
-      if (!hasPhysicalDirectionToken(line)) {
+      if (!hasPhysicalDirectionToken(line) || hasException(line)) {
         continue
       }
 
@@ -64,7 +85,7 @@ function main() {
     return
   }
 
-  console.error("Found physical-direction Tailwind utilities in shared UI:")
+  console.error("Found physical-direction Tailwind utilities in scanned files:")
   for (const violation of violations) {
     console.error(
       `${violation.filePath}:${violation.lineNumber} ${violation.line}`,

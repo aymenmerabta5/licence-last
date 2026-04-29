@@ -155,8 +155,10 @@ export function useConversationThread({
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       setInput(event.target.value)
       const textarea = event.target
-      textarea.style.height = "auto"
-      textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`
+      requestAnimationFrame(() => {
+        textarea.style.height = "auto"
+        textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`
+      })
     },
     [],
   )

@@ -1,14 +1,14 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import type { OfferFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferForm"
 import { DetailsCapacityFields } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/DetailsCapacityFields"
 import { DetailsTimelineFields } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/DetailsTimelineFields"
 import { DetailsTypeLocationFields } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/components/DetailsTypeLocationFields"
 import { FormSection } from "@/components/form-fields"
 
 interface DetailsSectionProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: any
+  form: OfferFormApi
 }
 
 export function DetailsSection({ form }: DetailsSectionProps) {

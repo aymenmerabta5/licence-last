@@ -45,6 +45,7 @@ export function usePlacementActions(
   const [rejectReason, setRejectReason] = useState("")
   const [actionLoading, setActionLoading] = useState(false)
   const [pdfLoading, setPdfLoading] = useState(false)
+  const [pdfError, setPdfError] = useState<string | null>(null)
 
   const [aiSummary, setAiSummary] = useState<ValidationSummary | null>(null)
 
@@ -70,11 +71,16 @@ export function usePlacementActions(
       onSuccess: async (result) => {
         try {
           setPdfLoading(true)
+          setPdfError(null)
           await orpcClient.documents.generateAgreement({
             placementId: result.placementId,
           })
         } catch (error) {
-          console.error("Failed to generate PDF:", error)
+          setPdfError(
+            error instanceof Error
+              ? error.message
+              : t("agreementGenerationError"),
+          )
           toast.error(t("agreementGenerationError"))
         } finally {
           setPdfLoading(false)
@@ -175,6 +181,7 @@ export function usePlacementActions(
     setRejectReason,
     actionLoading,
     pdfLoading,
+    pdfError,
     handleValidate,
     handleReject,
     aiSummary,

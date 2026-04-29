@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelectResults: any[][] = []
 let selectCallIdx = 0
 
@@ -11,11 +10,10 @@ const mockLimit = mock(() => {
 const mockWhere = mock(() => ({ limit: mockLimit }))
 const mockFrom = mock(() => ({ where: mockWhere }))
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockJoinWhere = mock<() => Promise<any[]>>(() => Promise.resolve([]))
 const mockInnerJoin = mock(() => ({ where: mockJoinWhere }))
 const mockJoinFrom = mock(() => ({ innerJoin: mockInnerJoin }))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockLanguagesWhere = mock<() => Promise<any[]>>(() => Promise.resolve([]))
 const mockLanguagesFrom = mock(() => ({ where: mockLanguagesWhere }))
 

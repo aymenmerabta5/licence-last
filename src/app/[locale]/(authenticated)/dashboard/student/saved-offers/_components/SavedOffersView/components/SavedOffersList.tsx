@@ -52,7 +52,7 @@ export function SavedOffersList({
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-start gap-3 min-w-0">
                 {offer.companyLogoUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
+
                   <img
                     src={offer.companyLogoUrl}
                     alt={offer.companyName}

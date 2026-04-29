@@ -1,7 +1,7 @@
 "use client"
 
 import { User } from "lucide-react"
-import { Route } from "next"
+import type { Route } from "next"
 import { useTranslations } from "next-intl"
 import { useDashboard } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import type { NavbarUser } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar/types"
@@ -44,7 +44,7 @@ export function UserDropdown({
           universityMembershipRole === "department_head"
         ? "department_head"
         : effectiveRole
-  const roleLabel = t(`roles.${roleKey}` as any)
+  const roleLabel = t(`roles.${roleKey}` as string)
 
   const profileHref = `/profile/${user.id}` as Route
 

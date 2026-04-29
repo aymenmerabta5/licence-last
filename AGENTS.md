@@ -11,27 +11,35 @@ bun run dev              # Dev server
 bun run build            # Production build
 bun run typecheck        # Type checking
 bun run lint             # Lint (run before committing)
+bun run lint:architecture # Feature-folder architecture check
+bun run lint:rtl-logical # RTL logical-CSS property check
 bun run check:all        # Full pre-release checks
 
 bun test                 # Run tests
-bun test:watch           # Watch mode
+bun test:watch           # Watch mode (shares process — mocks may leak)
 bun test:ci              # CI pipeline
+bun test:coverage        # Coverage report
+bun test:e2e             # Playwright end-to-end tests
 
 bun run db:generate      # Generate migrations
 bun run db:migrate       # Apply migrations
 bun run db:push          # Push schema (dev)
+bun run db:reset          # Reset database
+bun run db:studio        # Drizzle Studio
 bun run db:seed          # Seed database
+
+bun run mcp:dev          # MCP dev server
 ```
 
 ---
 
 ## Git Hooks (Husky)
 
-A **pre-commit hook** is configured via Husky to automatically run `bun run check:all` before every commit. If any check fails (lint, typecheck, tests, or build), the commit is blocked.
+A **pre-commit hook** is configured via Husky to automatically run `bun run lint && bun run typecheck` before every commit. If any check fails (lint or typecheck), the commit is blocked.
 
 The hook lives in `.husky/pre-commit`:
 ```bash
-bun run check:all
+bun run lint && bun run typecheck
 ```
 
 **First-time setup** (after cloning):
@@ -229,6 +237,7 @@ import { usePathname, useRouter } from "@/i18n/routing"
 - Use Bun test runner (`bun:test`) — no Jest
 - Co-locate tests: `src/lib/*.test.ts`, `src/server/services/**/*.test.ts`
 - Use `describe()` and `test("should...when...")` naming
+- **Watch mode caveat**: `bun test --watch` runs in a single shared process, so `mock.module()` collisions can leak across files. Use `bun test <file> --watch` for individual file watch, or rely on `bun test` / `bun test:ci` for full-suite runs.
 
 ```typescript
 import { describe, test, expect } from "bun:test"

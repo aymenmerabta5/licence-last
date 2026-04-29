@@ -46,7 +46,7 @@ export function EducationSection({
       {hasEducation ? (
         <div className="relative">
           {/* Timeline Line */}
-          <div className="absolute top-0 bottom-0 left-[39px] w-0.5 bg-slate-100" />
+          <div className="absolute top-0 bottom-0 start-[39px] w-0.5 bg-slate-100" />
 
           <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -54,7 +54,7 @@ export function EducationSection({
             className="relative ps-4 sm:ps-12 md:ps-24 group"
           >
             {/* Timeline Marker */}
-            <div className="absolute left-[30px] top-4 h-5 w-5 rounded-full border-4 border-white bg-primary shadow-lg group-hover:scale-125 transition-transform" />
+            <div className="absolute start-[30px] top-4 h-5 w-5 rounded-full border-4 border-white bg-primary shadow-lg group-hover:scale-125 transition-transform" />
 
             <div className="rounded-[2.5rem] border border-slate-100 bg-white p-10 sm:p-14 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_30px_70px_rgba(0,0,0,0.06)] transition-all duration-500">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-8">

@@ -41,7 +41,6 @@ type MatchScoreFixture = {
 
 let selectResultQueue: unknown[] = []
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createQuery(result: any): any {
   const chain = {
     from: mock(() => chain),

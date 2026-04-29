@@ -1,24 +1,38 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 let dbRows: unknown[] = []
+let dbReadStateRows: unknown[] = []
+let dbExecuteRows: unknown[] = []
 
+const dbExecute = mock(() => Promise.resolve(dbExecuteRows))
 const dbLimit = mock(() => Promise.resolve(dbRows))
 const dbOrderBy = mock(() => ({ limit: dbLimit }))
-const dbWhere = mock(() => ({ orderBy: dbOrderBy }))
+const dbWhere = mock(() => {
+  const p = Promise.resolve(dbReadStateRows)
+  return {
+    orderBy: dbOrderBy,
+    then: p.then.bind(p),
+    catch: p.catch.bind(p),
+    finally: p.finally.bind(p),
+  }
+})
 const dbInnerJoin2 = mock(() => ({ where: dbWhere }))
 const dbInnerJoin1 = mock(() => ({ innerJoin: dbInnerJoin2 }))
-const dbFrom = mock(() => ({ innerJoin: dbInnerJoin1 }))
+const dbFrom = mock(() => ({ innerJoin: dbInnerJoin1, where: dbWhere }))
 const dbSelect = mock(() => ({ from: dbFrom }))
 
 mock.module("@/server/db", () => ({
   db: {
     select: dbSelect,
+    execute: dbExecute,
   },
 }))
 
 describe("src/server/services/messages/list-threads-by-student", () => {
   beforeEach(() => {
     dbRows = []
+    dbReadStateRows = []
+    dbExecuteRows = []
 
     dbSelect.mockClear()
     dbFrom.mockClear()
@@ -28,10 +42,9 @@ describe("src/server/services/messages/list-threads-by-student", () => {
     dbOrderBy.mockClear()
     dbLimit.mockClear()
 
-    dbFrom.mockReturnValue({ innerJoin: dbInnerJoin1 })
+    dbFrom.mockReturnValue({ innerJoin: dbInnerJoin1, where: dbWhere })
     dbInnerJoin1.mockReturnValue({ innerJoin: dbInnerJoin2 })
     dbInnerJoin2.mockReturnValue({ where: dbWhere })
-    dbWhere.mockReturnValue({ orderBy: dbOrderBy })
     dbOrderBy.mockReturnValue({ limit: dbLimit })
   })
 
@@ -46,12 +59,13 @@ describe("src/server/services/messages/list-threads-by-student", () => {
         companyLogoUrl: null,
         lastMessageAt: new Date("2030-01-03T00:00:00.000Z"),
         createdAt: new Date("2030-01-01T00:00:00.000Z"),
-        lastMessageId: "message-2",
-        lastMessageSenderUserId: "company-admin-1",
-        lastReadMessageId: "message-1",
       },
     ]
     dbRows = rows
+    dbReadStateRows = [{ threadId: "thread-1", lastReadMessageId: "message-1" }]
+    dbExecuteRows = [
+      { id: "message-2", sender_user_id: "company-admin-1", thread_id: "thread-1" },
+    ]
 
     const { listMessageThreadsByStudent } = await import(
       "@/server/services/messages/list-threads-by-student?fresh=1" as string
@@ -73,7 +87,7 @@ describe("src/server/services/messages/list-threads-by-student", () => {
         unreadCount: 1,
       },
     ])
-    expect(dbSelect).toHaveBeenCalledTimes(1)
+    expect(dbSelect).toHaveBeenCalledTimes(2)
     expect(dbLimit).toHaveBeenCalledWith(30)
   })
 
@@ -88,9 +102,6 @@ describe("src/server/services/messages/list-threads-by-student", () => {
         companyLogoUrl: null,
         lastMessageAt: new Date("2030-01-03T00:00:00.000Z"),
         createdAt: new Date("2030-01-01T00:00:00.000Z"),
-        lastMessageId: "message-2",
-        lastMessageSenderUserId: "company-admin-1",
-        lastReadMessageId: "message-2",
       },
       {
         id: "thread-2",
@@ -101,12 +112,14 @@ describe("src/server/services/messages/list-threads-by-student", () => {
         companyLogoUrl: "https://example.com/aster.png",
         lastMessageAt: new Date("2030-01-04T00:00:00.000Z"),
         createdAt: new Date("2030-01-02T00:00:00.000Z"),
-        lastMessageId: "message-3",
-        lastMessageSenderUserId: "student-1",
-        lastReadMessageId: null,
       },
     ]
     dbRows = rows
+    dbReadStateRows = [{ threadId: "thread-1", lastReadMessageId: "message-2" }]
+    dbExecuteRows = [
+      { id: "message-2", sender_user_id: "company-admin-1", thread_id: "thread-1" },
+      { id: "message-3", sender_user_id: "student-1", thread_id: "thread-2" },
+    ]
 
     const { listMessageThreadsByStudent } = await import(
       "@/server/services/messages/list-threads-by-student?fresh=2" as string
@@ -140,7 +153,7 @@ describe("src/server/services/messages/list-threads-by-student", () => {
         unreadCount: 0,
       },
     ])
-    expect(dbSelect).toHaveBeenCalledTimes(1)
+    expect(dbSelect).toHaveBeenCalledTimes(2)
     expect(dbLimit).toHaveBeenCalledWith(2)
   })
 })

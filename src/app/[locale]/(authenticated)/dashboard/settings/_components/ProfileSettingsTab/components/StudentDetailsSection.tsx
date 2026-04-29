@@ -1,6 +1,8 @@
 "use client"
 
 import { Globe, GraduationCap, MapPin, PenLine } from "lucide-react"
+import { useTranslations } from "next-intl"
+import type { ProfileSettingsFormApi } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/hooks/useProfileSettings"
 import { LanguagesManager } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/LanguagesManager"
 import { SkillsManager } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager"
 import { SelectField, TextAreaField, TextField } from "@/components/form-fields"
@@ -29,8 +31,7 @@ function SectionDivider({
 }
 
 interface StudentDetailsSectionProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: any
+  form: ProfileSettingsFormApi
   isBusy: boolean
 }
 
@@ -38,20 +39,20 @@ export function StudentDetailsSection({
   form,
   isBusy,
 }: StudentDetailsSectionProps) {
+  const t = useTranslations("dashboard.settings")
   const isLanguageRequirementsEnabled = isLanguageRequirementsEnabledOnClient()
 
   return (
     <>
       {/* Academic Info */}
       <div className="space-y-5">
-        <SectionDivider icon={GraduationCap} label="Academic" />
+        <SectionDivider icon={GraduationCap} label={t("academic")} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <form.Field name="department">
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {(field: any) => (
+            {(field) => (
               <TextField
                 id="settings-department"
-                label="Department"
+                label={t("department")}
                 value={field.state.value}
                 onChange={field.handleChange}
                 onBlur={field.handleBlur}
@@ -61,11 +62,10 @@ export function StudentDetailsSection({
           </form.Field>
 
           <form.Field name="level">
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {(field: any) => (
+            {(field) => (
               <TextField
                 id="settings-level"
-                label="Level"
+                label={t("level")}
                 value={field.state.value}
                 onChange={field.handleChange}
                 onBlur={field.handleBlur}
@@ -78,14 +78,13 @@ export function StudentDetailsSection({
 
       {/* Location */}
       <div className="space-y-5">
-        <SectionDivider icon={MapPin} label="Location" />
+        <SectionDivider icon={MapPin} label={t("location")} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <form.Field name="wilayaCode">
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {(field: any) => (
+            {(field) => (
               <SelectField
                 id="settings-wilaya"
-                label="Wilaya"
+                label={t("wilaya")}
                 icon={MapPin}
                 value={field.state.value}
                 onChange={(next) => field.handleChange(Number(next))}
@@ -97,11 +96,10 @@ export function StudentDetailsSection({
           </form.Field>
 
           <form.Field name="address">
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {(field: any) => (
+            {(field) => (
               <TextField
                 id="settings-address"
-                label="Address"
+                label={t("address")}
                 icon={MapPin}
                 value={field.state.value}
                 onChange={field.handleChange}
@@ -115,14 +113,13 @@ export function StudentDetailsSection({
 
       {/* Web Presence */}
       <div className="space-y-5">
-        <SectionDivider icon={Globe} label="Web Presence" />
+        <SectionDivider icon={Globe} label={t("webPresence")} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <form.Field name="githubUrl">
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {(field: any) => (
+            {(field) => (
               <TextField
                 id="settings-github-url"
-                label="GitHub URL"
+                label={t("githubUrl")}
                 type="url"
                 value={field.state.value}
                 onChange={field.handleChange}
@@ -138,11 +135,10 @@ export function StudentDetailsSection({
           </form.Field>
 
           <form.Field name="portfolioUrl">
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {(field: any) => (
+            {(field) => (
               <TextField
                 id="settings-portfolio-url"
-                label="Portfolio / LinkedIn URL"
+                label={t("portfolioUrl")}
                 type="url"
                 value={field.state.value}
                 onChange={field.handleChange}
@@ -161,13 +157,12 @@ export function StudentDetailsSection({
 
       {/* Bio */}
       <div className="space-y-5">
-        <SectionDivider icon={PenLine} label="Bio" />
+        <SectionDivider icon={PenLine} label={t("bio")} />
         <form.Field name="bio">
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {(field: any) => (
+          {(field) => (
             <TextAreaField
               id="settings-bio"
-              label="Professional Narrative"
+              label={t("professionalNarrative")}
               value={field.state.value}
               onChange={field.handleChange}
               onBlur={field.handleBlur}

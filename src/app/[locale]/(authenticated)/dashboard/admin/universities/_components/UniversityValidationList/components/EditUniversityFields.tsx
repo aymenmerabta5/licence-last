@@ -1,5 +1,6 @@
 "use client"
 
+import type { useForm } from "@tanstack/react-form"
 import { Building2, MapPin, Phone } from "lucide-react"
 import { useTranslations } from "next-intl"
 
@@ -7,8 +8,7 @@ import { TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 
 interface EditUniversityFieldsProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: any
+  form: ReturnType<typeof useForm>
 }
 
 export function EditUniversityFields({ form }: EditUniversityFieldsProps) {

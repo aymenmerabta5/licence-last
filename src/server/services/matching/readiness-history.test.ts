@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockListResult: any[] = []
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 let mockSnapshotCheckResult: any[] = []
 
 const mockValues = mock(() => Promise.resolve())
@@ -12,7 +11,7 @@ const mockInsert = mock(() => ({ values: mockValues }))
 const mockLimitList = mock(() => Promise.resolve(mockListResult))
 const mockOrderByList = mock(() => ({ limit: mockLimitList }))
 const mockLimitCheck = mock(() => Promise.resolve(mockSnapshotCheckResult))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockWhere = mock((): any => ({
   orderBy: mockOrderByList,
   limit: mockLimitCheck,

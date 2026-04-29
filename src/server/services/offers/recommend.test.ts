@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockAppliedRows: any[] = []
 
 const searchOffersMock = mock(async () => ({

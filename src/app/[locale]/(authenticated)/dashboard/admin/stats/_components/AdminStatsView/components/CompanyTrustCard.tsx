@@ -110,9 +110,10 @@ export function CompanyTrustCard({
                 {/* Score bar */}
                 <div className="h-1 w-full bg-border/20 rounded-full overflow-hidden">
                   <motion.div
-                    className={cn("h-full rounded-full", barColor)}
-                    initial={{ width: 0 }}
-                    animate={{ width: `${Math.min(row.trustScore, 100)}%` }}
+                    className={cn("h-full rounded-full origin-left", barColor)}
+                    style={{ width: `${Math.min(row.trustScore, 100)}%` }}
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
                     transition={{
                       duration: 0.8,
                       delay: 0.6 + i * 0.06,

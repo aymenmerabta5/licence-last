@@ -1,12 +1,11 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockInsert = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockValues = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockOnConflictDoUpdate = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockReturning = mock<() => Promise<any[]>>(() => Promise.resolve([]))
 const mockGetNotificationPreferences = mock(() =>
   Promise.resolve({ inAppEnabled: true, emailEnabled: true }),

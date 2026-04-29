@@ -34,10 +34,8 @@ export const sendEmail = async <T>(
     const resend = new Resend(env.RESEND_API_KEY)
 
     const emailJSX = React.createElement(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      EmailComponent as any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      componentProps as any,
+      EmailComponent as React.ElementType,
+      componentProps,
     )
 
     const html = await render(emailJSX)

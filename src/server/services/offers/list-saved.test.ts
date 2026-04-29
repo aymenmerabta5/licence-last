@@ -1,28 +1,27 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSelect = mock(() => ({}) as any)
 
 // First query chain
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockSavedFrom = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockSavedInnerJoinOffer = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockSavedInnerJoinCompany = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockSavedWhere = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockSavedOrderBy = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockSavedLimit = mock<() => Promise<any[]>>(() => Promise.resolve([]))
 
 // Second query chain
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockSkillsFrom = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockSkillsInnerJoin = mock(() => ({}) as any)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockSkillsWhere = mock<() => Promise<any[]>>(() => Promise.resolve([]))
 
 function applyListSavedMocks() {

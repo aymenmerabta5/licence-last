@@ -16,7 +16,7 @@ import {
 import { createServiceORPCError } from "@/server/orpc/utils/service-error"
 import {
   isMessageServiceError,
-  MessageServiceError,
+  type MessageServiceError,
 } from "@/server/services/messages/errors"
 import { listMessageStartersByCompany } from "@/server/services/messages/list-starters-by-company"
 import { listMessageStartersByStudent } from "@/server/services/messages/list-starters-by-student"

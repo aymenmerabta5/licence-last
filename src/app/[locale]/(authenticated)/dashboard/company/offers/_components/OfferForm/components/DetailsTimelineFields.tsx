@@ -2,16 +2,17 @@
 
 import { Calendar } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type { OfferFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferForm"
 import { TextField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 
 interface DetailsTimelineFieldsProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: any
+  form: OfferFormApi
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getFieldError(field: any): string | undefined {
+function getFieldError(field: {
+  state: { meta: { errors: unknown[] } }
+}): string | undefined {
   return field.state.meta.errors.length > 0
     ? errorMessage(field.state.meta.errors[0])
     : undefined
@@ -24,8 +25,7 @@ export function DetailsTimelineFields({ form }: DetailsTimelineFieldsProps) {
   return (
     <>
       <form.Field name="applicationDeadlineAt">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {(field: any) => (
+        {(field) => (
           <TextField
             id="offer-application-deadline"
             label={t("applicationDeadline")}
@@ -42,8 +42,7 @@ export function DetailsTimelineFields({ form }: DetailsTimelineFieldsProps) {
       </form.Field>
 
       <form.Field name="expectedStartDate">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {(field: any) => (
+        {(field) => (
           <TextField
             id="offer-expected-start-date"
             label={t("expectedStartDate")}
@@ -59,8 +58,7 @@ export function DetailsTimelineFields({ form }: DetailsTimelineFieldsProps) {
       </form.Field>
 
       <form.Field name="expectedEndDate">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {(field: any) => (
+        {(field) => (
           <TextField
             id="offer-expected-end-date"
             label={t("expectedEndDate")}

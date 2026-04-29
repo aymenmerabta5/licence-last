@@ -8,6 +8,7 @@ import {
   COMPANY_VERIFICATION_DOCUMENT_MAX_SIZE,
 } from "@/lib/constants/uploads"
 import { createModuleLogger } from "@/server/logging"
+import { ServiceError } from "@/server/services/errors"
 import { uploadFile } from "@/server/storage/s3"
 
 const log = createModuleLogger(
@@ -73,16 +74,25 @@ export async function uploadCompanyVerificationDocument({
   userId,
 }: UploadCompanyVerificationDocumentInput): Promise<UploadCompanyVerificationDocumentResult> {
   if (!COMPANY_VERIFICATION_DOCUMENT_ALLOWED_TYPES.has(file.type)) {
-    throw new Error("Verification document must be a PDF, JPEG, or PNG file")
+    throw new ServiceError(
+      "INVALID_FILE_TYPE",
+      "Verification document must be a PDF, JPEG, or PNG file",
+    )
   }
 
   if (file.size > COMPANY_VERIFICATION_DOCUMENT_MAX_SIZE) {
-    throw new Error("Verification document file size cannot exceed 10MB")
+    throw new ServiceError(
+      "FILE_TOO_LARGE",
+      "Verification document file size cannot exceed 10MB",
+    )
   }
 
   const buffer = Buffer.from(await file.arrayBuffer())
   if (!validateMagicBytes(buffer, file.type)) {
-    throw new Error("File content does not match declared document type")
+    throw new ServiceError(
+      "FILE_CONTENT_MISMATCH",
+      "File content does not match declared document type",
+    )
   }
 
   const extension = COMPANY_VERIFICATION_DOCUMENT_EXTENSIONS[file.type] ?? "bin"

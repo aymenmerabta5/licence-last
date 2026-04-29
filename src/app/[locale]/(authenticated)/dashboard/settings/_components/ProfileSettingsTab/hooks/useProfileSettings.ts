@@ -14,6 +14,8 @@ import { resolveLocalizedError } from "@/lib/error-message"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
+export type ProfileSettingsFormApi = ReturnType<typeof useProfileSettings>["form"]
+
 export function useProfileSettings(
   me: MeResult,
   studentProfile: StudentProfileResult | null,

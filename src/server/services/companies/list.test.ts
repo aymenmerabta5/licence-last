@@ -1,10 +1,9 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let queryResult: any[] = []
 
 const mockWhere = mock(() => Promise.resolve(queryResult))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockOffset = mock((): any => {
   // When filtering is applied, `.where(...)` resolves the result.
   return { where: mockWhere }
@@ -40,7 +39,7 @@ describe("src/server/services/companies/list", () => {
 
   test("should return empty list when no companies exist", async () => {
     queryResult = []
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     mockOffset.mockResolvedValue(queryResult as any)
 
     const { listCompanies } = await import(
@@ -57,7 +56,7 @@ describe("src/server/services/companies/list", () => {
       id: `company-${i}`,
       name: `Company ${i}`,
     }))
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     mockOffset.mockResolvedValue(companies as any)
 
     const { listCompanies } = await import(
@@ -74,7 +73,7 @@ describe("src/server/services/companies/list", () => {
       id: `company-${i}`,
       name: `Company ${i}`,
     }))
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     mockOffset.mockResolvedValue(companies as any)
 
     const { listCompanies } = await import(
@@ -87,7 +86,7 @@ describe("src/server/services/companies/list", () => {
   })
 
   test("should cap limit at 200", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     mockOffset.mockResolvedValue([] as any)
 
     const { listCompanies } = await import(
@@ -116,7 +115,7 @@ describe("src/server/services/companies/list", () => {
 
   test("should ignore empty search values", async () => {
     queryResult = [{ id: "company-1", name: "Acme Labs", slug: "acme-labs" }]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     mockOffset.mockResolvedValue(queryResult as any)
 
     const { listCompanies } = await import(

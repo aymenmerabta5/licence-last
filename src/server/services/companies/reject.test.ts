@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockReturningResult: any[] = []
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 let mockSelectResult: any[] = []
 
 const mockReturning = mock(() => Promise.resolve(mockReturningResult))
