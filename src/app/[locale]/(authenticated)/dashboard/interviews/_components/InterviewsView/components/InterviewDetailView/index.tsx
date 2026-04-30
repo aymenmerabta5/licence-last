@@ -13,10 +13,10 @@ import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
 export function InterviewDetailView({ interview: initialInterview }: InterviewDetailViewProps) {
   const t = useTranslations("dashboard.interviews.detail")
-  const data = useInterviewDetailData({ interviewId: initialInterview.id })
+  const data = useInterviewDetailData({ interviewId: initialInterview.id, initialInterview })
   const interview = data.interview ?? initialInterview
 
-  if (data.isLoading && !data.interview) {
+  if (data.isLoading && !data.interview && !initialInterview) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-20">
         <Loader2 className="h-5 w-5 animate-spin text-primary" />
@@ -58,7 +58,7 @@ export function InterviewDetailView({ interview: initialInterview }: InterviewDe
           transition={revealWithDelay(0.1)}
           className="flex items-start gap-3 border border-border/40 bg-muted/20 p-4 dark:bg-muted/10"
         >
-          <MessageSquare className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+          <MessageSquare className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
           <div className="space-y-1">
             <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">
               {t("noteTitle")}

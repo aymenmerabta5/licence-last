@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation"
-import { Suspense } from "react"
 import { InterviewDetailView } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewDetailView"
 import { isFeatureEnabled } from "@/lib/feature-flags"
 import { localeRedirect } from "@/lib/navigation"
@@ -18,16 +17,20 @@ async function InterviewDetailPageContent({ interviewId }: { interviewId: string
   try {
     const interview = await orpcClient.interviews.getById({ interviewId })
     return <InterviewDetailView interview={interview} />
-  } catch {
-    notFound()
+  } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code: string }).code === "NOT_FOUND"
+    ) {
+      notFound()
+    }
+    throw error
   }
 }
 
 export default async function InterviewDetailPage({ params }: { params: Params }) {
   const { interviewId } = await params
-  return (
-    <Suspense fallback={null}>
-      <InterviewDetailPageContent interviewId={interviewId} />
-    </Suspense>
-  )
+  return <InterviewDetailPageContent interviewId={interviewId} />
 }

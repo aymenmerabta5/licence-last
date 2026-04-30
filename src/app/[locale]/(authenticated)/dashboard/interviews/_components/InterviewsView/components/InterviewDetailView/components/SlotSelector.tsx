@@ -36,7 +36,7 @@ export function SlotSelector({ interview, confirmingSlotId, onConfirmSlot }: Slo
   }
 
   return (
-    <div className="space-y-3">
+    <ul className="space-y-3">
       <h2 className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground">
         {t("chooseSlotTitle")}
       </h2>
@@ -47,7 +47,7 @@ export function SlotSelector({ interview, confirmingSlotId, onConfirmSlot }: Slo
         const canConfirm = isPending && !isConfirmed && !isExpired
 
         return (
-          <div
+          <li
             key={slot.id}
             className={cn(
               "flex items-center justify-between gap-3 border px-4 py-3 transition-colors",
@@ -68,6 +68,7 @@ export function SlotSelector({ interview, confirmingSlotId, onConfirmSlot }: Slo
                     ? "text-emerald-500 dark:text-emerald-400"
                     : "text-muted-foreground",
                 )}
+                aria-hidden="true"
               />
               <div className="min-w-0">
                 <span
@@ -81,7 +82,7 @@ export function SlotSelector({ interview, confirmingSlotId, onConfirmSlot }: Slo
                 <div className="mt-0.5 flex flex-wrap items-center gap-3">
                   {slot.location && (
                     <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/70">
-                      <MapPin className="h-3 w-3" />
+                      <MapPin className="h-3 w-3" aria-hidden="true" />
                       {slot.location}
                     </span>
                   )}
@@ -92,7 +93,7 @@ export function SlotSelector({ interview, confirmingSlotId, onConfirmSlot }: Slo
                       rel="noreferrer noopener"
                       className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline"
                     >
-                      <LinkIcon className="h-3 w-3" />
+                      <LinkIcon className="h-3 w-3" aria-hidden="true" />
                       {t("linkLabel")}
                     </a>
                   )}
@@ -108,7 +109,7 @@ export function SlotSelector({ interview, confirmingSlotId, onConfirmSlot }: Slo
             <div className="shrink-0">
               {isConfirmed && (
                 <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-600 dark:text-emerald-400">
-                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
                   {t("confirmedLabel")}
                 </span>
               )}
@@ -122,17 +123,17 @@ export function SlotSelector({ interview, confirmingSlotId, onConfirmSlot }: Slo
                   onClick={() => void onConfirmSlot({ interviewId: interview.id, slotId: slot.id })}
                 >
                   {isConfirming ? (
-                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />
                   ) : (
-                    <CalendarCheck2 className="h-3 w-3" />
+                    <CalendarCheck2 className="h-3 w-3" aria-hidden="true" />
                   )}
-                  {isConfirming ? "..." : t("confirmButton")}
+                  {isConfirming ? t("confirming") : t("confirmButton")}
                 </Button>
               )}
             </div>
-          </div>
+          </li>
         )
       })}
-    </div>
+    </ul>
   )
 }

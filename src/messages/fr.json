@@ -2329,6 +2329,7 @@
         "noSlotsAvailable": "Aucun créneau disponible pour cet entretien.",
         "slotExpired": "Expiré",
         "confirmButton": "Confirmer ce créneau",
+        "confirming": "Confirmation en cours...",
         "confirmedLabel": "Confirmé",
         "linkLabel": "Lien",
         "requestChangeTitle": "Aucun créneau ne convient?",

@@ -23,6 +23,8 @@ export function RequestChangeForm({ offerId, companyName }: RequestChangeFormPro
       <button
         type="button"
         onClick={() => form.setIsExpanded(!form.isExpanded)}
+        aria-expanded={form.isExpanded}
+        aria-controls="request-change-panel"
         className="flex items-center gap-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
       >
         <span>{t("requestChangeTitle")}</span>
@@ -32,30 +34,37 @@ export function RequestChangeForm({ offerId, companyName }: RequestChangeFormPro
       </button>
 
       {form.isExpanded && (
-        <motion.div {...reveal} transition={{ duration: 0.4, ease }} className="space-y-3">
+        <motion.div id="request-change-panel" {...reveal} transition={{ duration: 0.4, ease }} className="space-y-3">
           <p className="text-xs text-muted-foreground">
             {t("requestChangeDescription", { companyName })}
           </p>
-          <Textarea
-            value={form.body}
-            onChange={(e) => form.setBody(e.target.value)}
-            placeholder={t("requestChangePlaceholder")}
-            rows={3}
-            className="resize-none text-sm"
-          />
-          <div className="flex justify-end">
-            <Button
-              type="button"
-              variant="editorial"
-              size="sm"
-              disabled={form.isSubmitting || !form.body.trim()}
-              onClick={() => form.submit()}
-              className="gap-1.5"
-            >
-              <Send className="h-3 w-3" />
-              {t("requestChangeSubmit")}
-            </Button>
-          </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              form.submit()
+            }}
+            className="space-y-3"
+          >
+            <Textarea
+              value={form.body}
+              onChange={(e) => form.setBody(e.target.value)}
+              placeholder={t("requestChangePlaceholder")}
+              rows={3}
+              className="resize-none text-sm"
+            />
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                variant="editorial"
+                size="sm"
+                disabled={form.isSubmitting || !form.body.trim()}
+                className="gap-1.5"
+              >
+                <Send className="h-3 w-3" />
+                {t("requestChangeSubmit")}
+              </Button>
+            </div>
+          </form>
         </motion.div>
       )}
     </div>

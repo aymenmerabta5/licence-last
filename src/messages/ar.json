@@ -2329,6 +2329,7 @@
         "noSlotsAvailable": "لا توجد مواعيد متاحة لهذه المقابلة حاليًا.",
         "slotExpired": "منتهي الصلاحية",
         "confirmButton": "تأكيد هذا الموعد",
+        "confirming": "جاري التأكيد...",
         "confirmedLabel": "مؤكد",
         "linkLabel": "الرابط",
         "requestChangeTitle": "لا يناسبك أي موعد؟",

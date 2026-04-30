@@ -2329,6 +2329,7 @@
         "noSlotsAvailable": "No time slots are currently available for this interview.",
         "slotExpired": "Expired",
         "confirmButton": "Confirm this slot",
+        "confirming": "Confirming...",
         "confirmedLabel": "Confirmed",
         "linkLabel": "Link",
         "requestChangeTitle": "None of these work?",

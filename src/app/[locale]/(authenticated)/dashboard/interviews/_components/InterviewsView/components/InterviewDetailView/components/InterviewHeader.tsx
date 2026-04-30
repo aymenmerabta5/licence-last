@@ -33,7 +33,7 @@ export function InterviewHeader({
             <AvatarImage src={interview.companyLogoUrl} alt={interview.companyName} />
           )}
           <AvatarFallback>
-            <Building2 className="h-5 w-5" />
+            <Building2 className="h-5 w-5" aria-hidden="true" />
           </AvatarFallback>
         </Avatar>
       </div>
