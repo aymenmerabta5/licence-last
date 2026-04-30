@@ -137,6 +137,55 @@ describe("src/server/services/interviews/get-by-id", () => {
     })
   })
 
+  test("should return interview with empty slots when no slots exist", async () => {
+    const createdAt = new Date("2030-04-01T00:00:00.000Z")
+    const updatedAt = new Date("2030-04-01T12:00:00.000Z")
+
+    dbSelectResults.push([
+      {
+        id: "interview-1",
+        applicationId: "application-1",
+        offerId: "offer-1",
+        offerTitle: "Frontend Internship",
+        companyId: "company-1",
+        companyName: "Acme",
+        companyLogoUrl: null,
+        status: "pending_confirmation",
+        confirmedSlotId: null,
+        confirmedAt: null,
+        note: "Choose one slot",
+        createdAt,
+        updatedAt,
+        studentUserId: "student-1",
+      },
+    ])
+    dbSelectResults.push([])
+
+    const { getInterviewById } = await import(
+      "@/server/services/interviews/get-by-id?fresh=4" as string
+    )
+
+    const result = await getInterviewById("interview-1", "student-1")
+
+    expect(dbSelect).toHaveBeenCalledTimes(2)
+    expect(result).toMatchObject({
+      id: "interview-1",
+      applicationId: "application-1",
+      offerId: "offer-1",
+      offerTitle: "Frontend Internship",
+      companyId: "company-1",
+      companyName: "Acme",
+      companyLogoUrl: null,
+      status: "pending_confirmation",
+      confirmedSlotId: null,
+      confirmedAt: null,
+      note: "Choose one slot",
+      createdAt,
+      updatedAt,
+    })
+    expect(result.slots).toEqual([])
+  })
+
   test("should throw INTERVIEW_NOT_FOUND for nonexistent interview", async () => {
     dbSelectResults.push([])
 
