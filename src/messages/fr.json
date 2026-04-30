@@ -2330,6 +2330,7 @@
         "slotExpired": "Expiré",
         "confirmButton": "Confirmer ce créneau",
         "confirmedLabel": "Confirmé",
+        "linkLabel": "Lien",
         "requestChangeTitle": "Aucun créneau ne convient?",
         "requestChangeDescription": "Envoyez un message à {companyName} pour demander d'autres créneaux.",
         "requestChangePlaceholder": "Indiquez les horaires qui vous conviennent mieux...",

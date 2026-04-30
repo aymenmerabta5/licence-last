@@ -44,7 +44,7 @@ export function SlotSelector({ interview, confirmingSlotId, onConfirmSlot }: Slo
         const isConfirmed = interview.confirmedSlotId === slot.id
         const isConfirming = confirmingSlotId === slot.id
         const isExpired = new Date(slot.endsAt) <= new Date()
-        const canConfirm = isPending && !isConfirmed && !isExpired && !isConfirming
+        const canConfirm = isPending && !isConfirmed && !isExpired
 
         return (
           <div
@@ -93,7 +93,7 @@ export function SlotSelector({ interview, confirmingSlotId, onConfirmSlot }: Slo
                       className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline"
                     >
                       <LinkIcon className="h-3 w-3" />
-                      Link
+                      {t("linkLabel")}
                     </a>
                   )}
                   {isExpired && (
@@ -112,7 +112,7 @@ export function SlotSelector({ interview, confirmingSlotId, onConfirmSlot }: Slo
                   {t("confirmedLabel")}
                 </span>
               )}
-              {canConfirm && (
+              {isPending && !isConfirmed && !isExpired && (
                 <Button
                   type="button"
                   variant="editorial-outline"

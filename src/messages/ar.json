@@ -2330,6 +2330,7 @@
         "slotExpired": "منتهي الصلاحية",
         "confirmButton": "تأكيد هذا الموعد",
         "confirmedLabel": "مؤكد",
+        "linkLabel": "الرابط",
         "requestChangeTitle": "لا يناسبك أي موعد؟",
         "requestChangeDescription": "أرسل رسالة إلى {companyName} لطلب مواعيد أخرى.",
         "requestChangePlaceholder": "أخبرهم بالأوقات التي تناسبك بشكل أفضل...",

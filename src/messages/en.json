@@ -2330,6 +2330,7 @@
         "slotExpired": "Expired",
         "confirmButton": "Confirm this slot",
         "confirmedLabel": "Confirmed",
+        "linkLabel": "Link",
         "requestChangeTitle": "None of these work?",
         "requestChangeDescription": "Send a message to {companyName} to request different times.",
         "requestChangePlaceholder": "Let them know what times work better for you...",
