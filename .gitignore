@@ -41,6 +41,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# worktrees
+.worktrees/
+worktrees/
+
 # Drizzle migrations live in src/server/db/migrations (commit these)
 
 **/*/migrations
