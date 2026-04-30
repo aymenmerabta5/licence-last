@@ -311,6 +311,7 @@
       "interviewSlotRequired": "أضف موعد مقابلة كاملاً واحداً على الأقل.",
       "interviewDateTimeInvalid": "يجب أن يحتوي كل موعد على تاريخ ووقت بدء وانتهاء صالحين.",
       "interviewsLoadFailed": "تعذر تحميل المقابلات.",
+      "sendMessageFailed": "تعذر إرسال الرسالة.",
       "savedOffersLoadFailed": "تعذر تحميل العروض المحفوظة.",
       "savedOfferRemoved": "تمت إزالة العرض من قائمة المحفوظات.",
       "savedOfferRemoveFailed": "تعذر إزالة العرض المحفوظ.",
@@ -2319,6 +2320,8 @@
       "detail": {
         "title": "دعوة مقابلة",
         "subtitle": "راجع التفاصيل واختر وقتًا يناسبك.",
+        "loading": "جارٍ تحميل المقابلة...",
+        "loadErrorTitle": "تعذر تحميل المقابلة",
         "companyLabel": "الشركة",
         "offerLabel": "المنصب",
         "noteTitle": "من الشركة",

@@ -311,6 +311,7 @@
       "interviewSlotRequired": "Ajoutez au moins un creneau d'entretien complet.",
       "interviewDateTimeInvalid": "Chaque creneau doit contenir une date et une heure de debut et de fin valides.",
       "interviewsLoadFailed": "Impossible de charger les entretiens.",
+      "sendMessageFailed": "Impossible d'envoyer le message.",
       "savedOffersLoadFailed": "Impossible de charger les offres sauvegardees.",
       "savedOfferRemoved": "Offre retiree de la liste sauvegardee.",
       "savedOfferRemoveFailed": "Impossible de retirer l'offre sauvegardee.",
@@ -2319,6 +2320,8 @@
       "detail": {
         "title": "Invitation à l'entretien",
         "subtitle": "Examinez les détails et choisissez un créneau qui vous convient.",
+        "loading": "Chargement de l'entretien...",
+        "loadErrorTitle": "Impossible de charger l'entretien",
         "companyLabel": "Entreprise",
         "offerLabel": "Poste",
         "noteTitle": "De l'entreprise",

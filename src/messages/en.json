@@ -311,6 +311,7 @@
       "interviewSlotRequired": "Add at least one complete interview slot.",
       "interviewDateTimeInvalid": "Each slot must include a valid start and end date/time.",
       "interviewsLoadFailed": "Could not load interviews.",
+      "sendMessageFailed": "Failed to send message.",
       "savedOffersLoadFailed": "Failed to load saved offers.",
       "savedOfferRemoved": "Offer removed from saved list.",
       "savedOfferRemoveFailed": "Failed to remove saved offer.",
@@ -2319,6 +2320,8 @@
       "detail": {
         "title": "Interview Invitation",
         "subtitle": "Review the details and pick a time that works for you.",
+        "loading": "Loading interview...",
+        "loadErrorTitle": "Could not load interview",
         "companyLabel": "Company",
         "offerLabel": "Position",
         "noteTitle": "From the company",
