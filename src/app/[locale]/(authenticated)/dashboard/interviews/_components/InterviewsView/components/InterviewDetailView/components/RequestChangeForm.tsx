@@ -30,6 +30,7 @@ export function RequestChangeForm({ offerId, companyName }: RequestChangeFormPro
         <span>{t("requestChangeTitle")}</span>
         <ChevronDown
           className={cn("h-3.5 w-3.5 transition-transform", form.isExpanded && "rotate-180")}
+          aria-hidden="true"
         />
       </button>
 
@@ -60,7 +61,7 @@ export function RequestChangeForm({ offerId, companyName }: RequestChangeFormPro
                 disabled={form.isSubmitting || !form.body.trim()}
                 className="gap-1.5"
               >
-                <Send className="h-3 w-3" />
+                <Send className="h-3 w-3" aria-hidden="true" />
                 {t("requestChangeSubmit")}
               </Button>
             </div>

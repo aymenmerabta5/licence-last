@@ -36,10 +36,11 @@ export function SlotSelector({ interview, confirmingSlotId, onConfirmSlot }: Slo
   }
 
   return (
-    <ul className="space-y-3">
+    <div className="space-y-3">
       <h2 className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground">
         {t("chooseSlotTitle")}
       </h2>
+      <ul className="space-y-3">
       {interview.slots.map((slot) => {
         const isConfirmed = interview.confirmedSlotId === slot.id
         const isConfirming = confirmingSlotId === slot.id
@@ -134,6 +135,7 @@ export function SlotSelector({ interview, confirmingSlotId, onConfirmSlot }: Slo
           </li>
         )
       })}
-    </ul>
+      </ul>
+    </div>
   )
 }
