@@ -1240,6 +1240,11 @@
         "languagesLabel": "Langues",
         "githubLabel": "GitHub",
         "portfolioLabel": "Portfolio"
+      },
+      "pendingInterviewCard": {
+        "title": "Invitation a l'entretien",
+        "description": "Vous avez une invitation d'entretien en attente de {companyName} pour {offerTitle}.",
+        "action": "Repondre maintenant"
       }
     },
     "recruiter": {
@@ -2310,6 +2315,24 @@
         "title": "Entretiens indisponibles",
         "description": "Les entretiens sont actuellement désactivés par les paramètres de la plateforme.",
         "help": "Contactez votre administrateur pour réactiver cette fonctionnalité."
+      },
+      "detail": {
+        "title": "Invitation a l'entretien",
+        "subtitle": "Examinez les details et choisissez un creneau qui vous convient.",
+        "companyLabel": "Entreprise",
+        "offerLabel": "Poste",
+        "noteTitle": "De l'entreprise",
+        "chooseSlotTitle": "Choisissez un creneau",
+        "noSlotsAvailable": "Aucun creneau disponible pour cet entretien.",
+        "slotExpired": "Expire",
+        "confirmButton": "Confirmer ce creneau",
+        "confirmedLabel": "Confirme",
+        "requestChangeTitle": "Aucun creneau ne convient?",
+        "requestChangeDescription": "Envoyez un message a {companyName} pour demander d'autres creneaux.",
+        "requestChangePlaceholder": "Indiquez les horaires qui vous conviennent mieux...",
+        "requestChangeSubmit": "Envoyer la demande",
+        "requestChangeSuccess": "Message envoye a {companyName}.",
+        "backToInterviews": "Retour aux entretiens"
       }
     }
   },

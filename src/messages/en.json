@@ -1240,6 +1240,11 @@
         "languagesLabel": "Languages",
         "githubLabel": "GitHub",
         "portfolioLabel": "Portfolio"
+      },
+      "pendingInterviewCard": {
+        "title": "Interview Invitation",
+        "description": "You have a pending interview invitation from {companyName} for {offerTitle}.",
+        "action": "Respond now"
       }
     },
     "recruiter": {
@@ -2310,6 +2315,24 @@
         "title": "Interviews unavailable",
         "description": "Interviews are currently disabled by platform settings.",
         "help": "Please contact your administrator to re-enable this feature."
+      },
+      "detail": {
+        "title": "Interview Invitation",
+        "subtitle": "Review the details and pick a time that works for you.",
+        "companyLabel": "Company",
+        "offerLabel": "Position",
+        "noteTitle": "From the company",
+        "chooseSlotTitle": "Choose a time slot",
+        "noSlotsAvailable": "No time slots are currently available for this interview.",
+        "slotExpired": "Expired",
+        "confirmButton": "Confirm this slot",
+        "confirmedLabel": "Confirmed",
+        "requestChangeTitle": "None of these work?",
+        "requestChangeDescription": "Send a message to {companyName} to request different times.",
+        "requestChangePlaceholder": "Let them know what times work better for you...",
+        "requestChangeSubmit": "Send request",
+        "requestChangeSuccess": "Message sent to {companyName}.",
+        "backToInterviews": "Back to interviews"
       }
     }
   },

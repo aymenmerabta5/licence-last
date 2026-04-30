@@ -1204,6 +1204,11 @@
         "languagesLabel": "اللغات",
         "githubLabel": "جيثب",
         "portfolioLabel": "معرض الأعمال"
+      },
+      "pendingInterviewCard": {
+        "title": "دعوة مقابلة",
+        "description": "لديك دعوة مقابلة معلقة من {companyName} لـ {offerTitle}.",
+        "action": "رد الآن"
       }
     },
     "explore": {
@@ -2310,6 +2315,24 @@
         "title": "المقابلات غير متاحة",
         "description": "تم تعطيل المقابلات حالياً من إعدادات المنصة.",
         "help": "يرجى التواصل مع المسؤول لإعادة تفعيل هذه الميزة."
+      },
+      "detail": {
+        "title": "دعوة مقابلة",
+        "subtitle": "راجع التفاصيل واختر وقتًا يناسبك.",
+        "companyLabel": "الشركة",
+        "offerLabel": "المنصب",
+        "noteTitle": "من الشركة",
+        "chooseSlotTitle": "اختر موعدًا",
+        "noSlotsAvailable": "لا توجد مواعيد متاحة لهذه المقابلة حاليًا.",
+        "slotExpired": "منتهي الصلاحية",
+        "confirmButton": "تأكيد هذا الموعد",
+        "confirmedLabel": "مؤكد",
+        "requestChangeTitle": "لا يناسبك أي موعد؟",
+        "requestChangeDescription": "أرسل رسالة إلى {companyName} لطلب مواعيد أخرى.",
+        "requestChangePlaceholder": "أخبرهم بالأوقات التي تناسبك بشكل أفضل...",
+        "requestChangeSubmit": "إرسال الطلب",
+        "requestChangeSuccess": "تم إرسال الرسالة إلى {companyName}.",
+        "backToInterviews": "العودة إلى المقابلات"
       }
     }
   },
