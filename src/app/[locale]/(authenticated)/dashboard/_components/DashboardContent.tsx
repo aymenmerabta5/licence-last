@@ -6,6 +6,7 @@ import { isFeatureEnabled } from "@/lib/feature-flags"
 import { localeRedirect } from "@/lib/navigation"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 import { listApplicationsByStudent } from "@/server/services/applications/list-by-student"
+import { listInterviewsForStudent } from "@/server/services/interviews/list-for-student"
 import { recommendOffersForStudent } from "@/server/services/offers/recommend"
 import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
 import { getStudentProfile } from "@/server/services/students/get-profile"
@@ -48,12 +49,13 @@ async function StudentDashboardContent({
     data: StudentDashboardData
   }>
 }) {
-  const [stats, recentAppsResult, profile, recommendedResult] =
+  const [stats, recentAppsResult, profile, recommendedResult, pendingInterviews] =
     await Promise.all([
       getStudentDashboardStats(user.id),
       listApplicationsByStudent(user.id, { limit: 5 }),
       getStudentProfile(user.id),
       recommendOffersForStudent({ studentUserId: user.id, limit: 3 }),
+      listInterviewsForStudent(user.id, { status: "pending_confirmation", limit: 1 }),
     ])
 
   const profileCompleteness = calculateProfileCompleteness({
@@ -100,6 +102,14 @@ async function StudentDashboardContent({
     })),
     skills: profile?.skills ?? [],
     profileCompleteness,
+    pendingInterview: pendingInterviews.length > 0
+      ? {
+          id: pendingInterviews[0].id,
+          offerTitle: pendingInterviews[0].offerTitle,
+          companyName: pendingInterviews[0].companyName,
+          companyLogoUrl: pendingInterviews[0].companyLogoUrl,
+        }
+      : null,
   }
 
   return <Component user={user} data={studentData} />

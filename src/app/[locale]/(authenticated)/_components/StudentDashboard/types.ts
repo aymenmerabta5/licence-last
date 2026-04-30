@@ -1,5 +1,12 @@
 import type { LucideIcon } from "lucide-react"
 
+export interface PendingInterview {
+  id: string
+  offerTitle: string
+  companyName: string
+  companyLogoUrl: string | null
+}
+
 export interface ApplicationRow {
   id: string
   status: string
@@ -47,6 +54,7 @@ export interface StudentDashboardData {
   recommendedOffers: OfferRow[]
   skills: SkillTag[]
   profileCompleteness: number
+  pendingInterview: PendingInterview | null
 }
 
 export interface StudentDashboardStat {

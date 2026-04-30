@@ -2,6 +2,7 @@
 
 import { ApplicationsFeed } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/ApplicationsFeed"
 import { EditorialStatsBar } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/EditorialStatsBar"
+import { PendingInterviewCard } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/PendingInterviewCard"
 import { RecommendedOffers } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/RecommendedOffers"
 import { SkillsSidebar } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/SkillsSidebar"
 import { WelcomeHero } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/components/WelcomeHero"
@@ -24,6 +25,9 @@ export function StudentDashboard({ user, data }: StudentDashboardProps) {
 
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
         <div className="space-y-10 lg:col-span-8">
+          {data.pendingInterview && (
+            <PendingInterviewCard interview={data.pendingInterview} />
+          )}
           <ApplicationsFeed
             applications={data.recentApplications}
             labels={applicationsLabels}
