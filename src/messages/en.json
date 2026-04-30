@@ -854,6 +854,7 @@
         "title": "Internship Offers",
         "subtitle": "Create and manage your internship positions",
         "createOffer": "Create Offer",
+        "loading": "Loading offers...",
         "empty": "No offers yet. Create your first internship offer to start attracting talent.",
         "status": {
           "draft": "Draft",
@@ -883,6 +884,12 @@
           "publishSuccess": "Offer published.",
           "closeSuccess": "Offer closed.",
           "deleteSuccess": "Offer deleted."
+        },
+        "errors": {
+          "deadlineInPast": "Application deadline is in the past. Please update it before publishing.",
+          "expectedPeriodIncomplete": "Please set both expected start and end dates.",
+          "expectedPeriodInvalid": "Expected start date must be before expected end date.",
+          "deadlineAfterStart": "Application deadline must be before expected start date."
         },
         "positions": "positions",
         "weeks": "weeks",
@@ -982,6 +989,8 @@
         "backToOffers": "Back to offers",
         "empty": "No applications yet. Your offer is visible to students.",
         "emptyFiltered": "No applications match this filter.",
+        "showMore": "Show more",
+        "showLess": "Show less",
         "viewProfile": "View Profile",
         "accept": "Accept",
         "refuse": "Refuse",
@@ -1150,6 +1159,11 @@
         "manageSkills": "Manage Skills",
         "emptyMessage": "Add your technical skills to stand out to recruiters",
         "addSkills": "Add Skills"
+      },
+      "pendingInterviewCard": {
+        "title": "Interview Pending",
+        "description": "{companyName} invited you to interview for {offerTitle}.",
+        "action": "Confirm Interview"
       },
       "welcomeHero": {
         "brief": "Today's Brief",

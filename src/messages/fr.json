@@ -854,6 +854,7 @@
         "title": "Offres de stage",
         "subtitle": "Créez et gérez vos postes de stage",
         "createOffer": "Créer une offre",
+        "loading": "Chargement des offres...",
         "empty": "Aucune offre pour le moment. Créez votre première offre de stage pour attirer des talents.",
         "status": {
           "draft": "Brouillon",
@@ -883,6 +884,12 @@
           "publishSuccess": "Offre publiée.",
           "closeSuccess": "Offre clôturée.",
           "deleteSuccess": "Offre supprimée."
+        },
+        "errors": {
+          "deadlineInPast": "La date limite de candidature est dépassée. Veuillez la mettre à jour avant de publier.",
+          "expectedPeriodIncomplete": "Veuillez renseigner les dates de début et de fin prévues.",
+          "expectedPeriodInvalid": "La date de début prévue doit être antérieure à la date de fin.",
+          "deadlineAfterStart": "La date limite de candidature doit être antérieure à la date de début prévue."
         },
         "positions": "postes",
         "weeks": "semaines",
@@ -982,6 +989,8 @@
         "backToOffers": "Retour aux offres",
         "empty": "Aucune candidature pour le moment. Votre offre est visible par les étudiants.",
         "emptyFiltered": "Aucune candidature ne correspond à ce filtre.",
+        "showMore": "Voir plus",
+        "showLess": "Voir moins",
         "viewProfile": "Voir le profil",
         "accept": "Accepter",
         "refuse": "Refuser",
@@ -1150,6 +1159,11 @@
         "manageSkills": "Gérer les compétences",
         "emptyMessage": "Ajoutez vos compétences techniques pour vous démarquer auprès des recruteurs",
         "addSkills": "Ajouter des compétences"
+      },
+      "pendingInterviewCard": {
+        "title": "Entretien en attente",
+        "description": "{companyName} vous a invité à un entretien pour {offerTitle}.",
+        "action": "Confirmer l'entretien"
       },
       "welcomeHero": {
         "brief": "Résumé du jour",

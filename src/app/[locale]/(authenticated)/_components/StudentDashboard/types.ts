@@ -41,12 +41,20 @@ export interface StudentDashboardStats {
   interviewsCount: number
 }
 
+export interface PendingInterview {
+  id: string
+  offerTitle: string
+  companyName: string
+  companyLogoUrl: string | null
+}
+
 export interface StudentDashboardData {
   stats: StudentDashboardStats
   recentApplications: ApplicationRow[]
   recommendedOffers: OfferRow[]
   skills: SkillTag[]
   profileCompleteness: number
+  pendingInterview: PendingInterview | null
 }
 
 export interface StudentDashboardStat {
