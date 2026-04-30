@@ -6,7 +6,7 @@ import { db } from "@/server/db"
 import { company } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { interview, interviewSlot } from "@/server/db/schema/interviews"
-import { interviewStatusEnum } from "@/server/db/schema/enums"
+import type { interviewStatusEnum } from "@/server/db/schema/enums"
 import { InterviewServiceError } from "@/server/services/interviews/errors"
 
 type InterviewStatus = (typeof interviewStatusEnum.enumValues)[number]

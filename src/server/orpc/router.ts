@@ -81,6 +81,7 @@ import {
 } from "@/server/orpc/routes/documents"
 import {
   confirmInterviewSlotProcedure,
+  getInterviewByIdProcedure,
   listInterviewsForCompanyProcedure,
   listInterviewsForStudentProcedure,
   proposeInterviewSlotsProcedure,
@@ -313,6 +314,7 @@ export const appRouter = {
     listForStudent: listInterviewsForStudentProcedure,
     proposeSlots: proposeInterviewSlotsProcedure,
     confirmSlot: confirmInterviewSlotProcedure,
+    getById: getInterviewByIdProcedure,
   },
   messages: {
     listByCompany: listMessageThreadsByCompanyProcedure,
