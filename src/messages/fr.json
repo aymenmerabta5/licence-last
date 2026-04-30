@@ -1242,9 +1242,9 @@
         "portfolioLabel": "Portfolio"
       },
       "pendingInterviewCard": {
-        "title": "Invitation a l'entretien",
+        "title": "Invitation à l'entretien",
         "description": "Vous avez une invitation d'entretien en attente de {companyName} pour {offerTitle}.",
-        "action": "Repondre maintenant"
+        "action": "Répondre maintenant"
       }
     },
     "recruiter": {
@@ -2317,21 +2317,21 @@
         "help": "Contactez votre administrateur pour réactiver cette fonctionnalité."
       },
       "detail": {
-        "title": "Invitation a l'entretien",
-        "subtitle": "Examinez les details et choisissez un creneau qui vous convient.",
+        "title": "Invitation à l'entretien",
+        "subtitle": "Examinez les détails et choisissez un créneau qui vous convient.",
         "companyLabel": "Entreprise",
         "offerLabel": "Poste",
         "noteTitle": "De l'entreprise",
-        "chooseSlotTitle": "Choisissez un creneau",
-        "noSlotsAvailable": "Aucun creneau disponible pour cet entretien.",
-        "slotExpired": "Expire",
-        "confirmButton": "Confirmer ce creneau",
-        "confirmedLabel": "Confirme",
-        "requestChangeTitle": "Aucun creneau ne convient?",
-        "requestChangeDescription": "Envoyez un message a {companyName} pour demander d'autres creneaux.",
+        "chooseSlotTitle": "Choisissez un créneau",
+        "noSlotsAvailable": "Aucun créneau disponible pour cet entretien.",
+        "slotExpired": "Expiré",
+        "confirmButton": "Confirmer ce créneau",
+        "confirmedLabel": "Confirmé",
+        "requestChangeTitle": "Aucun créneau ne convient?",
+        "requestChangeDescription": "Envoyez un message à {companyName} pour demander d'autres créneaux.",
         "requestChangePlaceholder": "Indiquez les horaires qui vous conviennent mieux...",
         "requestChangeSubmit": "Envoyer la demande",
-        "requestChangeSuccess": "Message envoye a {companyName}.",
+        "requestChangeSuccess": "Message envoyé à {companyName}.",
         "backToInterviews": "Retour aux entretiens"
       }
     }
