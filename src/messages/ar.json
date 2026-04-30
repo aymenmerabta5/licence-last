@@ -2295,7 +2295,8 @@
         "joinMeeting": "انضم إلى الاجتماع",
         "confirmedLabel": "مؤكد",
         "confirming": "جار التأكيد...",
-        "confirm": "تأكيد"
+        "confirm": "تأكيد",
+        "viewDetails": "عرض التفاصيل"
       },
       "status": {
         "pending_confirmation": "بانتظار التأكيد",

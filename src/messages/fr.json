@@ -2295,7 +2295,8 @@
         "joinMeeting": "Rejoindre la reunion",
         "confirmedLabel": "Confirme",
         "confirming": "Confirmation...",
-        "confirm": "Confirmer"
+        "confirm": "Confirmer",
+        "viewDetails": "Voir les details"
       },
       "status": {
         "pending_confirmation": "En attente de confirmation",

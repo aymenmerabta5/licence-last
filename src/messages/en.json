@@ -2295,7 +2295,8 @@
         "joinMeeting": "Join meeting",
         "confirmedLabel": "Confirmed",
         "confirming": "Confirming...",
-        "confirm": "Confirm"
+        "confirm": "Confirm",
+        "viewDetails": "View details"
       },
       "status": {
         "pending_confirmation": "Pending confirmation",

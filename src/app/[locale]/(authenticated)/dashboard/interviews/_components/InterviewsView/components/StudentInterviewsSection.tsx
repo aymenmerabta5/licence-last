@@ -13,6 +13,7 @@ import {
 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/routing"
 import { InterviewStatusBadge } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewStatusBadge"
 import type {
   ConfirmSlotInput,
@@ -196,7 +197,15 @@ function InterviewCard({
             </p>
           </div>
         </div>
-        <InterviewStatusBadge status={interview.status} />
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <InterviewStatusBadge status={interview.status} />
+          <Link
+            href={`/dashboard/interviews/${interview.id}`}
+            className="text-[10px] text-primary hover:underline"
+          >
+            {t("studentSection.viewDetails")}
+          </Link>
+        </div>
       </div>
 
       {interview.note && (
