@@ -1,9 +1,7 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const mockGenerateText = mock(async () => ({
-  output: {
-    coverLetter: "Dear Hiring Manager, I am excited to apply...",
-  },
+  text: "Dear Hiring Manager, I am excited to apply...",
 }))
 
 const mockOutputObject = mock((opts: { schema: unknown }) => opts.schema)

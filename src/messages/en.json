@@ -311,6 +311,7 @@
       "interviewSlotRequired": "Add at least one complete interview slot.",
       "interviewDateTimeInvalid": "Each slot must include a valid start and end date/time.",
       "interviewsLoadFailed": "Could not load interviews.",
+      "sendMessageFailed": "Failed to send message.",
       "savedOffersLoadFailed": "Failed to load saved offers.",
       "savedOfferRemoved": "Offer removed from saved list.",
       "savedOfferRemoveFailed": "Failed to remove saved offer.",
@@ -2317,7 +2318,8 @@
         "joinMeeting": "Join meeting",
         "confirmedLabel": "Confirmed",
         "confirming": "Confirming...",
-        "confirm": "Confirm"
+        "confirm": "Confirm",
+        "viewDetails": "View details"
       },
       "status": {
         "pending_confirmation": "Pending confirmation",
@@ -2338,6 +2340,28 @@
         "title": "Interviews unavailable",
         "description": "Interviews are currently disabled by platform settings.",
         "help": "Please contact your administrator to re-enable this feature."
+      },
+      "detail": {
+        "title": "Interview Invitation",
+        "subtitle": "Review the details and pick a time that works for you.",
+        "loading": "Loading interview...",
+        "loadErrorTitle": "Could not load interview",
+        "companyLabel": "Company",
+        "offerLabel": "Position",
+        "noteTitle": "From the company",
+        "chooseSlotTitle": "Choose a time slot",
+        "noSlotsAvailable": "No time slots are currently available for this interview.",
+        "slotExpired": "Expired",
+        "confirmButton": "Confirm this slot",
+        "confirming": "Confirming...",
+        "confirmedLabel": "Confirmed",
+        "linkLabel": "Link",
+        "requestChangeTitle": "None of these work?",
+        "requestChangeDescription": "Send a message to {companyName} to request different times.",
+        "requestChangePlaceholder": "Let them know what times work better for you...",
+        "requestChangeSubmit": "Send request",
+        "requestChangeSuccess": "Message sent to {companyName}.",
+        "backToInterviews": "Back to interviews"
       }
     }
   },

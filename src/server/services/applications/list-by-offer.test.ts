@@ -13,7 +13,6 @@ const mockWhere1 = mock(() => ({ limit: mockLimit1 }))
 const mockFrom1 = mock(() => ({ where: mockWhere1 }))
 
 // Call 2: offer skills (where => Promise)
-
 const mockWhere2 = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)
@@ -21,7 +20,6 @@ const mockWhere2 = mock<() => Promise<any[]>>(() => {
 const mockFrom2 = mock(() => ({ where: mockWhere2 }))
 
 // Call 3: applications rows (where -> orderBy -> limit)
-
 const mockLimit3 = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)
@@ -30,27 +28,33 @@ const mockOrderBy3 = mock(() => ({ limit: mockLimit3 }))
 const mockWhere3 = mock(() => ({ orderBy: mockOrderBy3 }))
 
 const mockLeftJoinU = mock(() => ({}) as any)
-
 const mockLeftJoinP = mock(() => ({}) as any)
-
 const mockInnerJoin3 = mock(() => ({}) as any)
 const mockFrom3 = mock(() => ({ innerJoin: mockInnerJoin3 }))
 
-// Call 4: student skills join (innerJoin -> where => Promise)
-
-const mockWhere4 = mock<() => Promise<any[]>>(() => {
+// Call 4: interviews + slots (leftJoin -> where -> orderBy => Promise)
+const mockOrderBy4 = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)
 })
-const mockInnerJoin4 = mock(() => ({ where: mockWhere4 }))
-const mockFrom4 = mock(() => ({ innerJoin: mockInnerJoin4 }))
+const mockWhere4 = mock(() => ({ orderBy: mockOrderBy4 }))
+const mockLeftJoin4 = mock(() => ({ where: mockWhere4 }))
+const mockFrom4 = mock(() => ({ leftJoin: mockLeftJoin4 }))
 
-// Call 5: student languages (where => Promise)
+// Call 5: student skills join (innerJoin -> where => Promise)
 const mockWhere5 = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)
 })
-const mockFrom5 = mock(() => ({ where: mockWhere5 }))
+const mockInnerJoin5 = mock(() => ({ where: mockWhere5 }))
+const mockFrom5 = mock(() => ({ innerJoin: mockInnerJoin5 }))
+
+// Call 6: student languages (where => Promise)
+const mockWhere6 = mock<() => Promise<any[]>>(() => {
+  const results = mockSelectResults[selectCallIdx - 1] ?? []
+  return Promise.resolve(results)
+})
+const mockFrom6 = mock(() => ({ where: mockWhere6 }))
 
 mock.module("@/server/db", () => ({
   db: {
@@ -60,7 +64,8 @@ mock.module("@/server/db", () => ({
       if (selectCallIdx === 2) return { from: mockFrom2 }
       if (selectCallIdx === 3) return { from: mockFrom3 }
       if (selectCallIdx === 4) return { from: mockFrom4 }
-      return { from: mockFrom5 }
+      if (selectCallIdx === 5) return { from: mockFrom5 }
+      return { from: mockFrom6 }
     },
   },
 }))
@@ -84,11 +89,17 @@ describe("src/server/services/applications/list-by-offer", () => {
     mockLeftJoinP.mockClear()
     mockFrom3.mockClear()
 
+    mockOrderBy4.mockClear()
     mockWhere4.mockClear()
-    mockInnerJoin4.mockClear()
+    mockLeftJoin4.mockClear()
     mockFrom4.mockClear()
+
     mockWhere5.mockClear()
+    mockInnerJoin5.mockClear()
     mockFrom5.mockClear()
+
+    mockWhere6.mockClear()
+    mockFrom6.mockClear()
 
     mockFrom1.mockReturnValue({ where: mockWhere1 })
     mockWhere1.mockReturnValue({ limit: mockLimit1 })
@@ -102,9 +113,14 @@ describe("src/server/services/applications/list-by-offer", () => {
     mockWhere3.mockReturnValue({ orderBy: mockOrderBy3 })
     mockOrderBy3.mockReturnValue({ limit: mockLimit3 })
 
-    mockFrom4.mockReturnValue({ innerJoin: mockInnerJoin4 })
-    mockInnerJoin4.mockReturnValue({ where: mockWhere4 })
-    mockFrom5.mockReturnValue({ where: mockWhere5 })
+    mockFrom4.mockReturnValue({ leftJoin: mockLeftJoin4 })
+    mockLeftJoin4.mockReturnValue({ where: mockWhere4 })
+    mockWhere4.mockReturnValue({ orderBy: mockOrderBy4 })
+
+    mockFrom5.mockReturnValue({ innerJoin: mockInnerJoin5 })
+    mockInnerJoin5.mockReturnValue({ where: mockWhere5 })
+
+    mockFrom6.mockReturnValue({ where: mockWhere6 })
   })
 
   test("should compute skillMatchPercentage", async () => {
@@ -135,6 +151,7 @@ describe("src/server/services/applications/list-by-offer", () => {
         profileDepartment: "CS",
       },
     ])
+    mockSelectResults.push([]) // interviews
     mockSelectResults.push([
       {
         userId: "stu-1",
@@ -193,8 +210,9 @@ describe("src/server/services/applications/list-by-offer", () => {
         profileDepartment: null,
       },
     ])
-    mockSelectResults.push([])
-    mockSelectResults.push([])
+    mockSelectResults.push([]) // interviews
+    mockSelectResults.push([]) // student skills
+    mockSelectResults.push([]) // student languages
 
     const { listApplicationsByOffer } = await import(
       "@/server/services/applications/list-by-offer?fresh=2"

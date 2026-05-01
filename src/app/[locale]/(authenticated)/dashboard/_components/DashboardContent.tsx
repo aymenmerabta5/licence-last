@@ -6,9 +6,9 @@ import { isFeatureEnabled } from "@/lib/feature-flags"
 import { localeRedirect } from "@/lib/navigation"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 import { listApplicationsByStudent } from "@/server/services/applications/list-by-student"
+import { listInterviewsForStudent } from "@/server/services/interviews/list-for-student"
 import { recommendOffersForStudent } from "@/server/services/offers/recommend"
 import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
-import { listInterviewsForStudent } from "@/server/services/interviews/list-for-student"
 import { getStudentProfile } from "@/server/services/students/get-profile"
 
 interface DashboardContentProps {

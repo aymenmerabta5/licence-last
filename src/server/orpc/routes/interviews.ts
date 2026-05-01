@@ -19,6 +19,7 @@ import {
   type InterviewServiceError,
   isInterviewServiceError,
 } from "@/server/services/interviews/errors"
+import { getInterviewById } from "@/server/services/interviews/get-by-id"
 import { listInterviewsForCompany } from "@/server/services/interviews/list-for-company"
 import { listInterviewsForStudent } from "@/server/services/interviews/list-for-student"
 import { proposeInterviewSlots } from "@/server/services/interviews/propose"
@@ -194,6 +195,23 @@ export const confirmInterviewSlotProcedure = studentProcedureStandard
       createServiceORPCError(error, {
         codeMap: {},
         fallbackMessage: "Failed to confirm interview slot",
+      })
+    }
+  })
+
+export const getInterviewByIdProcedure = studentProcedureGenerous
+  .input(z.object({ interviewId: z.string().min(1) }))
+  .handler(async ({ input, context }) => {
+    assertInterviewsEnabled()
+    try {
+      return await getInterviewById(input.interviewId, context.user.id)
+    } catch (error) {
+      if (isInterviewServiceError(error)) {
+        createInterviewORPCError(error)
+      }
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "Failed to load interview",
       })
     }
   })

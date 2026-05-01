@@ -3,10 +3,10 @@
 import { Calendar } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { Link } from "@/i18n/routing"
 import type { PendingInterview } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
-import * as motion from "motion/react-client"
+import { Link } from "@/i18n/routing"
 import { reveal, revealWithDelay } from "@/lib/animations"
+import * as motion from "motion/react-client"
 
 interface PendingInterviewCardProps {
   interview: PendingInterview

@@ -311,6 +311,7 @@
       "interviewSlotRequired": "Ajoutez au moins un creneau d'entretien complet.",
       "interviewDateTimeInvalid": "Chaque creneau doit contenir une date et une heure de debut et de fin valides.",
       "interviewsLoadFailed": "Impossible de charger les entretiens.",
+      "sendMessageFailed": "Impossible d'envoyer le message.",
       "savedOffersLoadFailed": "Impossible de charger les offres sauvegardees.",
       "savedOfferRemoved": "Offre retiree de la liste sauvegardee.",
       "savedOfferRemoveFailed": "Impossible de retirer l'offre sauvegardee.",
@@ -2317,7 +2318,8 @@
         "joinMeeting": "Rejoindre la reunion",
         "confirmedLabel": "Confirme",
         "confirming": "Confirmation...",
-        "confirm": "Confirmer"
+        "confirm": "Confirmer",
+        "viewDetails": "Voir les details"
       },
       "status": {
         "pending_confirmation": "En attente de confirmation",
@@ -2338,6 +2340,28 @@
         "title": "Entretiens indisponibles",
         "description": "Les entretiens sont actuellement désactivés par les paramètres de la plateforme.",
         "help": "Contactez votre administrateur pour réactiver cette fonctionnalité."
+      },
+      "detail": {
+        "title": "Invitation à l'entretien",
+        "subtitle": "Examinez les détails et choisissez un créneau qui vous convient.",
+        "loading": "Chargement de l'entretien...",
+        "loadErrorTitle": "Impossible de charger l'entretien",
+        "companyLabel": "Entreprise",
+        "offerLabel": "Poste",
+        "noteTitle": "De l'entreprise",
+        "chooseSlotTitle": "Choisissez un créneau",
+        "noSlotsAvailable": "Aucun créneau disponible pour cet entretien.",
+        "slotExpired": "Expiré",
+        "confirmButton": "Confirmer ce créneau",
+        "confirming": "Confirmation en cours...",
+        "confirmedLabel": "Confirmé",
+        "linkLabel": "Lien",
+        "requestChangeTitle": "Aucun créneau ne convient?",
+        "requestChangeDescription": "Envoyez un message à {companyName} pour demander d'autres créneaux.",
+        "requestChangePlaceholder": "Indiquez les horaires qui vous conviennent mieux...",
+        "requestChangeSubmit": "Envoyer la demande",
+        "requestChangeSuccess": "Message envoyé à {companyName}.",
+        "backToInterviews": "Retour aux entretiens"
       }
     }
   },

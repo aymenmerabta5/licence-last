@@ -1,31 +1,40 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
+const parserMap = new WeakMap<object, ((input: unknown) => unknown) | null>()
+
 function createProcedureMock() {
-  let inputParser: ((input: unknown) => unknown) | null = null
+  function create() {
+    const self = {
+      use() {
+        const next = create()
+        return next
+      },
 
-  return {
-    use() {
-      return this
-    },
+      input(schema: { parse: (value: unknown) => unknown }) {
+        const next = create()
+        parserMap.set(next, (input) => schema.parse(input))
+        return next
+      },
 
-    input(schema: { parse: (value: unknown) => unknown }) {
-      inputParser = (input) => schema.parse(input)
-      return this
-    },
+      handler<T extends (args: Record<string, unknown>) => Promise<unknown>>(
+        fn: T,
+      ) {
+        return async (args: Record<string, unknown>) => {
+          const inputParser = parserMap.get(self) ?? null
+          const parsedInput = inputParser ? inputParser(args.input) : args.input
 
-    handler<T extends (args: Record<string, unknown>) => Promise<unknown>>(
-      fn: T,
-    ) {
-      return async (args: Record<string, unknown>) => {
-        const parsedInput = inputParser ? inputParser(args.input) : args.input
-
-        return fn({
-          ...args,
-          input: parsedInput,
-        })
-      }
-    },
+          return fn({
+            ...args,
+            input: parsedInput,
+          })
+        }
+      },
+    }
+    parserMap.set(self, null)
+    return self
   }
+
+  return create()
 }
 
 async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
@@ -36,6 +45,22 @@ const listInterviewsForCompanyMock = mock(async () => ({ items: [] }))
 const listInterviewsForStudentMock = mock(async () => ({ items: [] }))
 const proposeInterviewSlotsMock = mock(async () => ({ interviewId: "int-1" }))
 const confirmInterviewSlotMock = mock(async () => ({ confirmed: true }))
+const getInterviewByIdMock = mock(async () => ({
+  id: "int-1",
+  applicationId: "app-1",
+  offerId: "offer-1",
+  offerTitle: "Test Offer",
+  companyId: "company-1",
+  companyName: "Test Company",
+  companyLogoUrl: null,
+  status: "pending_confirmation" as const,
+  confirmedSlotId: null,
+  confirmedAt: null,
+  note: null,
+  createdAt: new Date("2026-01-01"),
+  updatedAt: new Date("2026-01-01"),
+  slots: [],
+}))
 const parseInputDateMock = mock((value: string, fieldLabel: string) => {
   const parsed = new Date(value)
   if (Number.isNaN(parsed.getTime())) {
@@ -100,6 +125,9 @@ mock.module("@/server/services/interviews/propose", () => ({
 mock.module("@/server/services/interviews/confirm", () => ({
   confirmInterviewSlot: confirmInterviewSlotMock,
 }))
+mock.module("@/server/services/interviews/get-by-id", () => ({
+  getInterviewById: getInterviewByIdMock,
+}))
 
 describe("src/server/orpc/routes/interviews", () => {
   beforeEach(() => {
@@ -107,6 +135,7 @@ describe("src/server/orpc/routes/interviews", () => {
     listInterviewsForStudentMock.mockClear()
     proposeInterviewSlotsMock.mockClear()
     confirmInterviewSlotMock.mockClear()
+    getInterviewByIdMock.mockClear()
     parseInputDateMock.mockClear()
     isFeatureEnabledMock.mockClear()
     isFeatureEnabledMock.mockImplementation(
@@ -281,6 +310,72 @@ describe("src/server/orpc/routes/interviews", () => {
     ).rejects.toMatchObject({
       code: "FORBIDDEN",
       data: { code: "INTERVIEWS_FEATURE_DISABLED" },
+    })
+  })
+
+  describe("getById", () => {
+    test("returns interview data when found", async () => {
+      const { getInterviewByIdProcedure } = await import(
+        "@/server/orpc/routes/interviews"
+      )
+
+      const result = await callProcedure(getInterviewByIdProcedure, {
+        input: { interviewId: "int-1" },
+        context: { user: { id: "student-1" } },
+      })
+
+      expect(result).toMatchObject({ id: "int-1" })
+      expect(getInterviewByIdMock).toHaveBeenCalledWith("int-1", "student-1")
+    })
+
+    test("returns 404 when interview not found", async () => {
+      getInterviewByIdMock.mockImplementationOnce(async () => {
+        const { InterviewServiceError } = await import(
+          "@/server/services/interviews/errors"
+        )
+        throw new InterviewServiceError(
+          "INTERVIEW_NOT_FOUND",
+          "Interview not found",
+        )
+      })
+
+      const { getInterviewByIdProcedure } = await import(
+        "@/server/orpc/routes/interviews"
+      )
+
+      await expect(
+        callProcedure(getInterviewByIdProcedure, {
+          input: { interviewId: "missing" },
+          context: { user: { id: "student-1" } },
+        }),
+      ).rejects.toMatchObject({
+        code: "NOT_FOUND",
+      })
+    })
+
+    test("returns 403 when forbidden", async () => {
+      getInterviewByIdMock.mockImplementationOnce(async () => {
+        const { InterviewServiceError } = await import(
+          "@/server/services/interviews/errors"
+        )
+        throw new InterviewServiceError(
+          "INTERVIEW_FORBIDDEN",
+          "You do not have access to this interview",
+        )
+      })
+
+      const { getInterviewByIdProcedure } = await import(
+        "@/server/orpc/routes/interviews"
+      )
+
+      await expect(
+        callProcedure(getInterviewByIdProcedure, {
+          input: { interviewId: "int-2" },
+          context: { user: { id: "student-1" } },
+        }),
+      ).rejects.toMatchObject({
+        code: "FORBIDDEN",
+      })
     })
   })
 })

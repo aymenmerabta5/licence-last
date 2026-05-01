@@ -311,6 +311,7 @@
       "interviewSlotRequired": "أضف موعد مقابلة كاملاً واحداً على الأقل.",
       "interviewDateTimeInvalid": "يجب أن يحتوي كل موعد على تاريخ ووقت بدء وانتهاء صالحين.",
       "interviewsLoadFailed": "تعذر تحميل المقابلات.",
+      "sendMessageFailed": "تعذر إرسال الرسالة.",
       "savedOffersLoadFailed": "تعذر تحميل العروض المحفوظة.",
       "savedOfferRemoved": "تمت إزالة العرض من قائمة المحفوظات.",
       "savedOfferRemoveFailed": "تعذر إزالة العرض المحفوظ.",
@@ -2317,7 +2318,8 @@
         "joinMeeting": "انضم إلى الاجتماع",
         "confirmedLabel": "مؤكد",
         "confirming": "جار التأكيد...",
-        "confirm": "تأكيد"
+        "confirm": "تأكيد",
+        "viewDetails": "عرض التفاصيل"
       },
       "status": {
         "pending_confirmation": "بانتظار التأكيد",
@@ -2338,6 +2340,28 @@
         "title": "المقابلات غير متاحة",
         "description": "تم تعطيل المقابلات حالياً من إعدادات المنصة.",
         "help": "يرجى التواصل مع المسؤول لإعادة تفعيل هذه الميزة."
+      },
+      "detail": {
+        "title": "دعوة مقابلة",
+        "subtitle": "راجع التفاصيل واختر وقتًا يناسبك.",
+        "loading": "جارٍ تحميل المقابلة...",
+        "loadErrorTitle": "تعذر تحميل المقابلة",
+        "companyLabel": "الشركة",
+        "offerLabel": "المنصب",
+        "noteTitle": "من الشركة",
+        "chooseSlotTitle": "اختر موعدًا",
+        "noSlotsAvailable": "لا توجد مواعيد متاحة لهذه المقابلة حاليًا.",
+        "slotExpired": "منتهي الصلاحية",
+        "confirmButton": "تأكيد هذا الموعد",
+        "confirming": "جاري التأكيد...",
+        "confirmedLabel": "مؤكد",
+        "linkLabel": "الرابط",
+        "requestChangeTitle": "لا يناسبك أي موعد؟",
+        "requestChangeDescription": "أرسل رسالة إلى {companyName} لطلب مواعيد أخرى.",
+        "requestChangePlaceholder": "أخبرهم بالأوقات التي تناسبك بشكل أفضل...",
+        "requestChangeSubmit": "إرسال الطلب",
+        "requestChangeSuccess": "تم إرسال الرسالة إلى {companyName}.",
+        "backToInterviews": "العودة إلى المقابلات"
       }
     }
   },
