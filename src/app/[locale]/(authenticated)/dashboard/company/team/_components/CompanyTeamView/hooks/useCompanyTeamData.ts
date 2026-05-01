@@ -39,6 +39,7 @@ export function useCompanyTeamData() {
     isLoading: membersQuery.isLoading,
     isError: membersQuery.isError,
     error: membersQuery.error,
+    refetch: membersQuery.refetch,
     inviteMutation,
     removeMutation,
   }

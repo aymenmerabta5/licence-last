@@ -10,7 +10,7 @@ interface CandidatesPageProps {
 
 function CandidatesPageFallback() {
   return (
-    <div className="w-full space-y-8" aria-busy="true" aria-live="polite">
+    <div className="mx-auto max-w-5xl w-full space-y-8 pb-16" aria-busy="true" aria-live="polite">
       <div className="space-y-3">
         <Skeleton className="h-4 w-36" />
         <Skeleton className="h-10 w-64" />

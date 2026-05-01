@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 
+import { CandidateDragLayer } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidateDragLayer"
 import { PipelineStageColumn } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/PipelineStageColumn"
 import type { CandidateApp } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
 import { ease } from "@/lib/animations"
@@ -67,6 +68,7 @@ export function PipelineGrid({
 
   return (
     <DndProvider backend={HTML5Backend}>
+      <CandidateDragLayer />
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

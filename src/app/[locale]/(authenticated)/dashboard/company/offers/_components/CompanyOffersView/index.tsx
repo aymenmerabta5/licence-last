@@ -70,12 +70,15 @@ export function CompanyOffersView({
   const hasOffers = offers.length > 0
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="mx-auto max-w-5xl space-y-8 pb-16">
       <CompanyOffersHeader />
 
       {isLoading && (
-        <div className="flex justify-center py-16">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <div className="flex flex-col items-center justify-center py-20 gap-3">
+          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+          <span className="text-xs uppercase tracking-[0.1em] text-muted-foreground">
+            {t("loading")}
+          </span>
         </div>
       )}
 

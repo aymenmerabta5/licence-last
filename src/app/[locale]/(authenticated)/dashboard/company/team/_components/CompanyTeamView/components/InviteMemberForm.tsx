@@ -71,7 +71,12 @@ export function InviteMemberForm({
       </div>
 
       <div className="flex justify-end">
-        <Button type="submit" size="sm" disabled={isPending}>
+        <Button
+          type="submit"
+          variant="editorial"
+          size="editorial-sm"
+          disabled={isPending}
+        >
           {isPending ? t("inviting") : t("inviteButton")}
         </Button>
       </div>

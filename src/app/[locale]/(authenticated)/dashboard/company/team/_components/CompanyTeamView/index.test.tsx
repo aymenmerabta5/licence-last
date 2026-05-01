@@ -6,6 +6,8 @@ const removeMutateAsyncMock = mock(async () => ({}))
 
 mock.module("lucide-react", () => ({
   Loader2: () => <span>Loader2</span>,
+  RefreshCw: () => <span>RefreshCw</span>,
+  Users: () => <span>Users</span>,
 }))
 
 mock.module("next-intl", () => ({

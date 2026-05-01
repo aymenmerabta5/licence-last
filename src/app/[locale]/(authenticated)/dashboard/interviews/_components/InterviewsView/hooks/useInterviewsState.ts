@@ -16,6 +16,19 @@ function createEmptySlot(): ProposedSlotDraft {
   }
 }
 
+function isSlotTimeValid(slot: ProposedSlotDraft): boolean {
+  if (!slot.startsAt || !slot.endsAt) return false
+  return new Date(slot.startsAt) < new Date(slot.endsAt)
+}
+
+function addOneHour(value: string): string {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ""
+  date.setHours(date.getHours() + 1)
+  // Slice to "YYYY-MM-DDTHH:mm" format required by datetime-local
+  return date.toISOString().slice(0, 16)
+}
+
 export function useInterviewsState() {
   const [selectedOfferId, setSelectedOfferId] = useState("")
   const [applicationId, setApplicationId] = useState("")
@@ -23,11 +36,7 @@ export function useInterviewsState() {
   const [slots, setSlots] = useState<ProposedSlotDraft[]>([createEmptySlot()])
 
   const hasValidSlot = useMemo(
-    () =>
-      slots.some(
-        (slot) =>
-          slot.startsAt.trim().length > 0 && slot.endsAt.trim().length > 0,
-      ),
+    () => slots.some((slot) => isSlotTimeValid(slot)),
     [slots],
   )
 
@@ -38,9 +47,23 @@ export function useInterviewsState() {
 
   const updateSlot = (slotId: string, field: SlotField, value: string) => {
     setSlots((current) =>
-      current.map((slot) =>
-        slot.id === slotId ? { ...slot, [field]: value } : slot,
-      ),
+      current.map((slot) => {
+        if (slot.id !== slotId) return slot
+
+        const next = { ...slot, [field]: value }
+
+        // Auto-populate end time to 1 hour after start when start changes
+        // and end is empty or currently invalid
+        if (
+          field === "startsAt" &&
+          value &&
+          (!slot.endsAt || new Date(value) >= new Date(slot.endsAt))
+        ) {
+          next.endsAt = addOneHour(value)
+        }
+
+        return next
+      }),
     )
   }
 

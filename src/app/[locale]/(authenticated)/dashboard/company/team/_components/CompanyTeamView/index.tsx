@@ -1,5 +1,7 @@
 "use client"
 
+import { Loader2, RefreshCw, Users } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
@@ -9,7 +11,9 @@ import type { MemberItem } from "@/app/[locale]/(authenticated)/dashboard/compan
 import { MembersList } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/components/MembersList"
 import { RemoveMemberDialog } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/components/RemoveMemberDialog"
 import { useCompanyTeamData } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/hooks/useCompanyTeamData"
+import { Button } from "@/components/ui/button"
 import { resolveLocalizedError } from "@/lib/error-message"
+import { reveal, revealWithDelay } from "@/lib/animations"
 
 interface CompanyTeamViewProps {
   currentUserId: string
@@ -20,7 +24,7 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
   const [memberToRemove, setMemberToRemove] = useState<MemberItem | null>(null)
-  const { members, isLoading, isError, error, inviteMutation, removeMutation } =
+  const { members, isLoading, isError, error, inviteMutation, removeMutation, refetch } =
     useCompanyTeamData()
 
   const currentMember = useMemo(
@@ -30,7 +34,7 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
   const canManageMembers = currentMember?.role === "owner"
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-16">
+    <div className="mx-auto max-w-5xl space-y-8 pb-16">
       <CompanyTeamHeader />
 
       {canManageMembers && (
@@ -66,27 +70,67 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
       )}
 
       {!isLoading && !isError && !canManageMembers && (
-        <div className="border border-border/50 bg-card/20 p-4 text-sm text-muted-foreground">
+        <motion.div
+          {...reveal}
+          transition={revealWithDelay(0.1)}
+          className="border border-border/50 bg-card/20 p-4 text-sm text-muted-foreground"
+        >
           {t("dashboard.company.team.ownerOnlyNotice")}
-        </div>
+        </motion.div>
       )}
 
       {isLoading && (
-        <p className="text-sm text-muted-foreground">
-          {t("dashboard.company.team.loading")}
-        </p>
-      )}
-
-      {isError && (
-        <div className="border border-destructive/20 text-destructive p-4 text-sm">
-          {resolveLocalizedError(error, {
-            t,
-            fallbackKey: "errors.common.companyMembersLoadFailed",
-          })}
+        <div className="flex flex-col items-center justify-center py-20 gap-3">
+          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+          <span className="text-xs uppercase tracking-[0.1em] text-muted-foreground">
+            {t("dashboard.company.team.loading")}
+          </span>
         </div>
       )}
 
-      {!isLoading && !isError && (
+      {isError && (
+        <motion.div
+          {...reveal}
+          transition={revealWithDelay(0.1)}
+          className="border border-destructive/30 bg-destructive/5 p-8 text-center space-y-4"
+        >
+          <p className="text-sm text-muted-foreground">
+            {resolveLocalizedError(error, {
+              t,
+              fallbackKey: "errors.common.companyMembersLoadFailed",
+            })}
+          </p>
+          <Button
+            type="button"
+            variant="editorial-outline"
+            size="editorial-sm"
+            className="gap-1.5"
+            onClick={() => refetch()}
+          >
+            <RefreshCw className="h-3.5 w-3.5" />
+            {t("dashboard.error.retry", { defaultMessage: "Try again" })}
+          </Button>
+        </motion.div>
+      )}
+
+      {!isLoading && !isError && members.length === 0 && (
+        <motion.div
+          {...reveal}
+          transition={revealWithDelay(0.1)}
+          className="border border-dashed border-border/60 p-12 text-center space-y-4"
+        >
+          <div className="mx-auto flex h-14 w-14 items-center justify-center border border-border/50 bg-muted/30">
+            <Users className="h-6 w-6 text-muted-foreground/40" />
+          </div>
+          <div className="space-y-2">
+            <p className="font-serif text-lg text-heading">
+              {t("dashboard.company.team.empty")}
+            </p>
+          </div>
+        </motion.div>
+      )}
+
+      {!isLoading && !isError && members.length > 0 && (
         <>
           <MembersList
             members={members}

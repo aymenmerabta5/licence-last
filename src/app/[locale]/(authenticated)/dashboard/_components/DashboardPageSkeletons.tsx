@@ -120,7 +120,7 @@ export function ListManagementSkeleton() {
 
 export function DocumentsPageSkeleton() {
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
+    <div className="mx-auto max-w-5xl space-y-6 pb-16">
       <HeaderSkeleton compact width="w-56" />
       <CardStack count={3} height="h-40" />
     </div>
@@ -129,12 +129,12 @@ export function DocumentsPageSkeleton() {
 
 export function OffersPageSkeleton() {
   return (
-    <div className="mx-auto max-w-4xl space-y-8">
+    <div className="mx-auto max-w-5xl space-y-8 pb-16">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <HeaderSkeleton compact width="w-48" />
         <Skeleton className="h-11 w-full sm:w-36" />
       </div>
-      <Skeleton className="h-20 rounded-[1.5rem]" />
+      <Skeleton className="h-20" />
       <CardStack count={2} height="h-56" />
     </div>
   )
@@ -142,8 +142,8 @@ export function OffersPageSkeleton() {
 
 export function FormPageSkeleton() {
   return (
-    <div className="mx-auto max-w-5xl space-y-10">
-      <Skeleton className="h-40 rounded-[2rem]" />
+    <div className="mx-auto max-w-5xl space-y-10 pb-16">
+      <Skeleton className="h-40" />
       <CardStack count={3} height="h-44" />
     </div>
   )
@@ -151,9 +151,9 @@ export function FormPageSkeleton() {
 
 export function TeamPageSkeleton() {
   return (
-    <div className="mx-auto max-w-4xl space-y-8 pb-16">
+    <div className="mx-auto max-w-5xl space-y-8 pb-16">
       <HeaderSkeleton compact width="w-64" />
-      <Skeleton className="h-44 rounded-[1.5rem]" />
+      <Skeleton className="h-44" />
       <CardStack count={3} height="h-24" />
     </div>
   )

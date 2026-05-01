@@ -39,6 +39,7 @@ export interface CandidateFiltersState {
 export interface CandidateCardDragItem {
   applicationId: string
   fromStage: PipelineStage
+  app: CandidateApp
 }
 
 export interface AcceptModalState {

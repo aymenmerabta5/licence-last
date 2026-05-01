@@ -1,13 +1,8 @@
 import "server-only"
 
-import { generateText, Output } from "ai"
-import { z } from "zod"
+import { generateText } from "ai"
 
 import { getAIModel } from "@/server/ai/model"
-
-const coverLetterSchema = z.object({
-  coverLetter: z.string().min(1),
-})
 
 interface GenerateCoverLetterInput {
   offerTitle: string
@@ -50,9 +45,8 @@ export async function generateCoverLetter(
 
   const result = await generateText({
     model: getAIModel(),
-    output: Output.object({ schema: coverLetterSchema }),
     prompt,
   })
 
-  return result.output
+  return { coverLetter: result.text.trim() }
 }

@@ -16,7 +16,7 @@ export default function CompanyDashboardError({
 
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center gap-6 px-4 text-center">
-      <div className="flex size-16 items-center justify-center rounded-full bg-destructive/10">
+      <div className="flex size-16 items-center justify-center border border-destructive/20 bg-destructive/10">
         <AlertCircle className="size-8 text-destructive" />
       </div>
       <div className="space-y-2">
@@ -29,7 +29,7 @@ export default function CompanyDashboardError({
           })}
         </p>
       </div>
-      <Button variant="outline" onClick={reset}>
+      <Button variant="editorial-outline" onClick={reset}>
         <RotateCcw className="size-4" />
         {t("error.retry", { defaultMessage: "Try again" })}
       </Button>

@@ -79,11 +79,8 @@ export function OfferCard({
               {offer.title}
             </h3>
             <Badge
-              variant="outline"
-              className={cn(
-                "h-5 shrink-0 px-2 py-0 text-[8px] font-bold uppercase tracking-widest",
-                config.badge,
-              )}
+              variant="secondary"
+              className="rounded-full bg-primary/5 px-2.5 py-0.5 text-[10px] font-medium text-primary/80"
             >
               {t(`status.${offer.status}` as "status.draft")}
             </Badge>

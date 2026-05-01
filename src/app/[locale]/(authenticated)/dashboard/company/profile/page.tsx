@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server"
 import { CompanyProfileForm } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm"
+import { Badge } from "@/components/ui/badge"
 import { requireCompanyOwner } from "@/lib/dashboard-access"
 
 export default async function CompanyProfilePage() {
@@ -9,46 +10,41 @@ export default async function CompanyProfilePage() {
   ])
 
   return (
-    <div className="max-w-3xl mx-auto space-y-10">
+    <div className="mx-auto max-w-5xl space-y-8 pb-16">
       {/* Editorial masthead */}
-      <div className="relative">
+      <header className="space-y-4">
         <div className="h-0.5 bg-primary" />
-        <div className="border border-t-0 border-border/50 p-8 md:p-10 relative overflow-hidden">
-          {/* Dark mode glow */}
-          <div className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100">
-            <div className="absolute -top-20 end-0 h-40 w-40 rounded-full bg-primary/5 blur-3xl" />
-          </div>
 
-          <div className="relative flex items-start gap-6">
-            <div className="space-y-2 min-w-0">
-              <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary in-[[dir=rtl]]:tracking-normal">
-                {t("title")}
-              </span>
-              <h1 className="font-serif text-[clamp(1.75rem,3.5vw,2.5rem)] leading-[1.08] tracking-tight text-heading">
-                {company.name}
-              </h1>
-              <p className="text-sm text-muted-foreground font-light max-w-lg">
-                {t("subtitle")}
-              </p>
-            </div>
+        <div className="space-y-3">
+          <Badge variant="editorial-muted">{t("title")}</Badge>
+
+          <div className="space-y-2">
+            <h1 className="font-serif text-[clamp(1.8rem,3.2vw,2.4rem)] leading-[1.1] tracking-tight text-heading">
+              {company.name}
+            </h1>
+            <p className="text-sm font-light text-muted-foreground max-w-lg">
+              {t("subtitle")}
+            </p>
           </div>
         </div>
-      </div>
+      </header>
 
-      <CompanyProfileForm
-        initialData={{
-          companyName: company.name,
-          canDeleteCompany: membership?.role === "owner",
-          description: company.description ?? "",
-          logoUrl: company.logoUrl ?? "",
-          websiteUrl: company.websiteUrl ?? "",
-          phone: company.phone ?? "",
-          contactEmail: company.contactEmail ?? "",
-          representativeName: company.representativeName ?? "",
-          wilayaCode: company.wilayaCode ?? 0,
-          address: company.address ?? "",
-        }}
-      />
+      <div className="max-w-3xl">
+        <CompanyProfileForm
+          initialData={{
+            companyName: company.name,
+            canDeleteCompany: membership?.role === "owner",
+            description: company.description ?? "",
+            logoUrl: company.logoUrl ?? "",
+            websiteUrl: company.websiteUrl ?? "",
+            phone: company.phone ?? "",
+            contactEmail: company.contactEmail ?? "",
+            representativeName: company.representativeName ?? "",
+            wilayaCode: company.wilayaCode ?? 0,
+            address: company.address ?? "",
+          }}
+        />
+      </div>
     </div>
   )
 }

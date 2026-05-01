@@ -1,8 +1,10 @@
 "use client"
 
-import { Clock, GraduationCap } from "lucide-react"
+import { ChevronDown, ChevronUp, Clock, GraduationCap } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
+import { useEffect, useState } from "react"
 import { useDrag } from "react-dnd"
+import { getEmptyImage } from "react-dnd-html5-backend"
 import { CandidateCardActions } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidateCardActions"
 import { CandidateCardDetails } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidateCardDetails"
 import { MatchPreview } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/MatchPreview"
@@ -40,20 +42,27 @@ export function CandidateCard({
 }: CandidateCardProps) {
   const t = useTranslations("dashboard.company.candidates")
   const locale = useLocale()
-  const [{ isDragging }, dragRef] = useDrag(
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  const [{ isDragging }, dragRef, previewRef] = useDrag(
     () => ({
       type: CANDIDATE_CARD_DND_TYPE,
       item: {
         applicationId: app.id,
         fromStage: app.pipelineStage,
+        app,
       } satisfies CandidateCardDragItem,
       canDrag,
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
     }),
-    [app.id, app.pipelineStage, canDrag],
+    [app, canDrag],
   )
+
+  useEffect(() => {
+    previewRef(getEmptyImage(), { captureDraggingState: true })
+  }, [previewRef])
 
   const initials = (app.student.name || "?")
     .split(" ")
@@ -114,19 +123,60 @@ export function CandidateCard({
         </span>
       </div>
 
-      {/* Match score */}
-      <MatchPreview offerId={offerId} studentUserId={app.student.id} />
+      {/* Skills summary — always visible */}
+      {app.skills.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {app.skills.slice(0, 3).map((skill) => (
+            <span
+              key={skill.id}
+              className="inline-flex items-center rounded-full bg-primary/5 px-2 py-0.5 text-[9px] font-medium text-primary/80"
+            >
+              {skill.name}
+            </span>
+          ))}
+          {app.skills.length > 3 && (
+            <span className="inline-flex items-center rounded-full bg-muted/50 px-2 py-0.5 text-[9px] font-medium text-muted-foreground/60">
+              +{app.skills.length - 3}
+            </span>
+          )}
+        </div>
+      )}
 
-      <CandidateCardDetails app={app} />
-      <CandidateCardActions
-        app={app}
-        actionLoading={actionLoading}
-        isStagePending={isStagePending}
-        onAccept={onAccept}
-        onRefuse={onRefuse}
-        onStageChange={onStageChange}
-        onViewTimeline={onViewTimeline}
-      />
+      {/* Expandable details */}
+      {isExpanded && (
+        <>
+          <MatchPreview offerId={offerId} studentUserId={app.student.id} />
+          <CandidateCardDetails app={app} />
+          <CandidateCardActions
+            app={app}
+            actionLoading={actionLoading}
+            isStagePending={isStagePending}
+            onAccept={onAccept}
+            onRefuse={onRefuse}
+            onStageChange={onStageChange}
+            onViewTimeline={onViewTimeline}
+          />
+        </>
+      )}
+
+      {/* Toggle expand/collapse */}
+      <button
+        type="button"
+        onClick={() => setIsExpanded((prev) => !prev)}
+        className="w-full flex items-center justify-center gap-1 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/40 transition-colors hover:text-primary"
+      >
+        {isExpanded ? (
+          <>
+            {t("showLess")}
+            <ChevronUp className="h-3 w-3" />
+          </>
+        ) : (
+          <>
+            {t("showMore")}
+            <ChevronDown className="h-3 w-3" />
+          </>
+        )}
+      </button>
     </article>
   )
 }

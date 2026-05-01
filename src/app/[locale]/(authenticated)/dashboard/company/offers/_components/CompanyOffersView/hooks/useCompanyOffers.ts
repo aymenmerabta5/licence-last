@@ -47,8 +47,19 @@ export function useCompanyOffers() {
       )
       await queryClient.invalidateQueries({ queryKey })
       toast.success(t("toasts.publishSuccess"))
-    } catch {
-      toast.error(t("form.error"))
+    } catch (error) {
+      const code = (error as { data?: { code?: string } })?.data?.code
+      if (code === "OFFER_DEADLINE_IN_PAST") {
+        toast.error(t("errors.deadlineInPast"))
+      } else if (code === "OFFER_EXPECTED_PERIOD_INCOMPLETE") {
+        toast.error(t("errors.expectedPeriodIncomplete"))
+      } else if (code === "OFFER_EXPECTED_PERIOD_INVALID") {
+        toast.error(t("errors.expectedPeriodInvalid"))
+      } else if (code === "OFFER_DEADLINE_AFTER_START") {
+        toast.error(t("errors.deadlineAfterStart"))
+      } else {
+        toast.error(t("form.error"))
+      }
     } finally {
       setActionLoading(null)
     }

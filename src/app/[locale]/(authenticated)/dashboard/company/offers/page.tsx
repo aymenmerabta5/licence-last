@@ -8,7 +8,7 @@ import { getCompanyMembership } from "@/server/services/companies/membership"
 function CompanyOffersFallback() {
   return (
     <div
-      className="max-w-4xl mx-auto space-y-8"
+      className="mx-auto max-w-5xl space-y-8 pb-16"
       aria-busy="true"
       aria-live="polite"
     >

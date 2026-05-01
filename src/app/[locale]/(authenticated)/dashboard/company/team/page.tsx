@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import { CompanyTeamView } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView"
+import { TeamPageSkeleton } from "@/app/[locale]/(authenticated)/dashboard/_components/DashboardPageSkeletons"
 import { requireCompanyOwner } from "@/lib/dashboard-access"
 
 async function CompanyTeamPageContent() {
@@ -10,7 +11,7 @@ async function CompanyTeamPageContent() {
 
 export default function CompanyTeamPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<TeamPageSkeleton />}>
       <CompanyTeamPageContent />
     </Suspense>
   )

@@ -35,16 +35,6 @@ export function OfferForm({ mode, initialData }: OfferFormProps) {
       }}
       className="space-y-7"
     >
-      {/* Header */}
-      <motion.div {...reveal} transition={{ duration: 0.6, ease }}>
-        <h1 className="font-serif text-3xl text-heading tracking-tight mb-2">
-          {mode === "create" ? t("createTitle") : t("editTitle")}
-        </h1>
-        <p className="text-sm text-muted-foreground font-light">
-          {mode === "create" ? t("createSubtitle") : t("editSubtitle")}
-        </p>
-      </motion.div>
-
       <ServerError message={serverError} />
 
       <CopilotPanel
@@ -94,7 +84,8 @@ export function OfferForm({ mode, initialData }: OfferFormProps) {
         </form.Subscribe>
         <Button
           type="button"
-          variant="outline"
+          variant="editorial-outline"
+          size="editorial"
           className="h-12"
           onClick={() =>
             router.push("/dashboard/company/offers" as "/dashboard")

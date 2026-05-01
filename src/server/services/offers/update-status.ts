@@ -49,11 +49,15 @@ function validatePublishTiming(existing: {
     )
   }
 
-  if (applicationDeadlineAt && applicationDeadlineAt < new Date()) {
-    throw new ServiceError(
-      "OFFER_DEADLINE_IN_PAST",
-      "Application deadline cannot be in the past when publishing",
-    )
+  if (applicationDeadlineAt) {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    if (applicationDeadlineAt < today) {
+      throw new ServiceError(
+        "OFFER_DEADLINE_IN_PAST",
+        "Application deadline cannot be in the past when publishing",
+      )
+    }
   }
 }
 
