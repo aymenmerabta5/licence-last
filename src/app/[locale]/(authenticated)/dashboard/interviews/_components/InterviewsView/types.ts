@@ -74,10 +74,8 @@ export interface UseInterviewsDataResult {
   isOffersLoading: boolean
   isApplicationsLoading: boolean
   confirmingSlotId: string | null
-  isSubmittingProposal: boolean
   isFeatureDisabled: boolean
   confirmSlot: (input: ConfirmSlotInput) => Promise<void>
-  proposeSlots: (input: ProposeSlotsInput) => Promise<boolean>
 }
 
 export interface ProposedSlotDraft {

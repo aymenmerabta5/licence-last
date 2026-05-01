@@ -7,6 +7,7 @@ import { useDrag } from "react-dnd"
 import { getEmptyImage } from "react-dnd-html5-backend"
 import { CandidateCardActions } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidateCardActions"
 import { CandidateCardDetails } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidateCardDetails"
+import { InterviewSlotPreview } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/InterviewSlotPreview"
 import { MatchPreview } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/MatchPreview"
 import {
   CANDIDATE_CARD_DND_TYPE,
@@ -25,6 +26,7 @@ interface CandidateCardProps {
   canDrag: boolean
   onAccept: () => void
   onRefuse: () => void
+  onInterview: () => void
   onStageChange: (toStage: PipelineStage) => void
   onViewTimeline: () => void
 }
@@ -37,6 +39,7 @@ export function CandidateCard({
   canDrag,
   onAccept,
   onRefuse,
+  onInterview,
   onStageChange,
   onViewTimeline,
 }: CandidateCardProps) {
@@ -142,6 +145,15 @@ export function CandidateCard({
         </div>
       )}
 
+      {app.pipelineStage === "interview" && app.interviewPreview && (
+        <InterviewSlotPreview
+          status={app.interviewPreview.status}
+          nextSlotStartsAt={app.interviewPreview.nextSlotStartsAt}
+          nextSlotEndsAt={app.interviewPreview.nextSlotEndsAt}
+          slotCount={app.interviewPreview.slotCount}
+        />
+      )}
+
       {/* Expandable details */}
       {isExpanded && (
         <>
@@ -153,6 +165,7 @@ export function CandidateCard({
             isStagePending={isStagePending}
             onAccept={onAccept}
             onRefuse={onRefuse}
+            onInterview={onInterview}
             onStageChange={onStageChange}
             onViewTimeline={onViewTimeline}
           />

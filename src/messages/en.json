@@ -1044,7 +1044,21 @@
           }
         },
         "pipelineHeading": "Candidate pipeline",
-        "candidateCountLabel": "Candidates"
+        "candidateCountLabel": "Candidates",
+        "interview": "Interview",
+        "interviewPending": "Pending Confirmation",
+        "interviewConfirmed": "Confirmed",
+        "slotCount": "{count, plural, one {{count} slot proposed} other {{count} slots proposed}}",
+        "interviewModal": {
+          "title": "Propose Interview",
+          "note": "Note for candidate (optional)",
+          "notePlaceholder": "Add a personal note...",
+          "cancel": "Cancel",
+          "submit": "Propose Interview",
+          "closeAria": "Close modal"
+        },
+        "interviewProposeSuccess": "Interview proposed successfully.",
+        "interviewProposeError": "Failed to propose interview."
       },
       "matching": {
         "computing": "Computing match",

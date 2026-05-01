@@ -1044,7 +1044,21 @@
           }
         },
         "pipelineHeading": "Pipeline des candidats",
-        "candidateCountLabel": "Candidats"
+        "candidateCountLabel": "Candidats",
+        "interview": "Entretien",
+        "interviewPending": "En attente de confirmation",
+        "interviewConfirmed": "Confirmé",
+        "slotCount": "{count, plural, one {{count} créneau proposé} other {{count} créneaux proposés}}",
+        "interviewModal": {
+          "title": "Proposer un entretien",
+          "note": "Note pour le candidat (optionnel)",
+          "notePlaceholder": "Ajoutez une note personnelle...",
+          "cancel": "Annuler",
+          "submit": "Proposer un entretien",
+          "closeAria": "Fermer la fenêtre"
+        },
+        "interviewProposeSuccess": "Entretien proposé avec succès.",
+        "interviewProposeError": "Échec de la proposition d'entretien."
       },
       "matching": {
         "computing": "Calcul de la correspondance",

@@ -11,6 +11,7 @@ import {
   application,
   applicationTimelineEvent,
 } from "@/server/db/schema/applications"
+import { interview } from "@/server/db/schema/interviews"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { createModuleLogger } from "@/server/logging"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
@@ -110,6 +111,21 @@ export async function updateApplicationPipelineStage(input: {
       "APPLICATION_FORBIDDEN",
       "You do not have access to this application",
     )
+  }
+
+  if (input.toStage === "interview") {
+    const [existingInterview] = await db
+      .select({ id: interview.id })
+      .from(interview)
+      .where(eq(interview.applicationId, input.applicationId))
+      .limit(1)
+
+    if (!existingInterview) {
+      throw new ApplicationServiceError(
+        "APPLICATION_INVALID_STATE",
+        "Schedule interview slots first before moving to interview stage",
+      )
+    }
   }
 
   if (row.status !== "applied") {

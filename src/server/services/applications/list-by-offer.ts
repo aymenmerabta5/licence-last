@@ -1,10 +1,14 @@
 import "server-only"
 
-import { and, desc, eq, inArray, lt, or, sql } from "drizzle-orm"
+import { and, asc, desc, eq, inArray, lt, or, sql } from "drizzle-orm"
 import type { ApplicationStatus, PipelineStage } from "@/lib/schemas/enums"
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { user } from "@/server/db/schema/auth"
+import {
+  interview,
+  interviewSlot,
+} from "@/server/db/schema/interviews"
 import {
   internshipOffer,
   internshipOfferSkill,
@@ -67,6 +71,13 @@ export interface ApplicationWithStudent {
     proficiency: string
   }>
   skillMatchPercentage: number
+  interviewPreview: {
+    id: string
+    status: string
+    nextSlotStartsAt: Date | null
+    nextSlotEndsAt: Date | null
+    slotCount: number
+  } | null
 }
 
 export interface ListApplicationsByOfferResult {
@@ -194,6 +205,50 @@ export async function listApplicationsByOffer(
   const hasMore = rows.length > limit
   const applications = hasMore ? rows.slice(0, limit) : rows
 
+  const applicationIds = applications.map((a) => a.id)
+
+  const interviewsByApp =
+    applicationIds.length > 0
+      ? await db
+          .select({
+            applicationId: interview.applicationId,
+            interviewId: interview.id,
+            interviewStatus: interview.status,
+            slotStartsAt: interviewSlot.startsAt,
+            slotEndsAt: interviewSlot.endsAt,
+          })
+          .from(interview)
+          .leftJoin(interviewSlot, eq(interviewSlot.interviewId, interview.id))
+          .where(inArray(interview.applicationId, applicationIds))
+          .orderBy(asc(interviewSlot.startsAt))
+      : []
+
+  const interviewAgg = new Map<
+    string,
+    {
+      id: string
+      status: string
+      nextSlotStartsAt: Date | null
+      nextSlotEndsAt: Date | null
+      slotCount: number
+    }
+  >()
+
+  for (const row of interviewsByApp) {
+    const existing = interviewAgg.get(row.applicationId)
+    if (!existing) {
+      interviewAgg.set(row.applicationId, {
+        id: row.interviewId,
+        status: row.interviewStatus,
+        nextSlotStartsAt: row.slotStartsAt,
+        nextSlotEndsAt: row.slotEndsAt,
+        slotCount: row.slotStartsAt ? 1 : 0,
+      })
+    } else {
+      if (row.slotStartsAt) existing.slotCount += 1
+    }
+  }
+
   const studentIds = applications.map((a) => a.studentId)
 
   const allStudentSkills =
@@ -298,6 +353,7 @@ export async function listApplicationsByOffer(
         proficiency: language.proficiency,
       })),
       skillMatchPercentage: matchPercentage,
+      interviewPreview: interviewAgg.get(app.id) ?? null,
     }
   })
 

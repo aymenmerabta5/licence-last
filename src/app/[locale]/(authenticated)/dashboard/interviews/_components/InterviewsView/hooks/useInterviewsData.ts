@@ -8,12 +8,10 @@ import {
   getInterviewsErrorMessage,
   mapCompanyApplications,
   mapCompanyOffers,
-  normalizeLocalDateTimeInput,
 } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsData.helpers"
 import type {
   CompanyInterviewView,
   ConfirmSlotInput,
-  ProposeSlotsInput,
   StudentInterviewView,
   UseInterviewsDataParams,
   UseInterviewsDataResult,
@@ -83,94 +81,12 @@ export function useInterviewsData({
     }),
   )
 
-  const proposeSlotsMutation = useMutation(
-    orpc.interviews.proposeSlots.mutationOptions({
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: companyListQueryOptions.queryKey,
-        })
-        toast.success(t("errors.common.interviewProposalSent"))
-      },
-      onError: (error) => {
-        toast.error(
-          resolveLocalizedError(error, {
-            t,
-            fallbackKey: "errors.common.interviewProposalFailed",
-          }),
-        )
-      },
-    }),
-  )
-
   const confirmSlot = async (input: ConfirmSlotInput) => {
     setConfirmingSlotId(input.slotId)
     try {
       await confirmSlotMutation.mutateAsync(input)
     } finally {
       setConfirmingSlotId(null)
-    }
-  }
-
-  const proposeSlots = async (input: ProposeSlotsInput) => {
-    const selectedApplicationId = input.applicationId.trim()
-    if (selectedApplicationId.length === 0) {
-      toast.error(t("errors.common.selectApplication"))
-      return false
-    }
-
-    const hasSelectedApplication = companyApplications.some(
-      (application) => application.id === selectedApplicationId,
-    )
-    if (!hasSelectedApplication) {
-      toast.error(t("errors.common.invalidApplicationSelection"))
-      return false
-    }
-
-    const cleanedSlots = input.slots
-      .map((slot) => ({
-        startsAt: slot.startsAt.trim(),
-        endsAt: slot.endsAt.trim(),
-        location: slot.location.trim(),
-        meetingUrl: slot.meetingUrl.trim(),
-      }))
-      .filter((slot) => slot.startsAt.length > 0 && slot.endsAt.length > 0)
-
-    if (cleanedSlots.length === 0) {
-      toast.error(t("errors.common.interviewSlotRequired"))
-      return false
-    }
-
-    const normalizedSlots: Array<{
-      startsAt: string
-      endsAt: string
-      location?: string
-      meetingUrl?: string
-    }> = []
-    for (const slot of cleanedSlots) {
-      const startsAt = normalizeLocalDateTimeInput(slot.startsAt)
-      const endsAt = normalizeLocalDateTimeInput(slot.endsAt)
-      if (!startsAt || !endsAt) {
-        toast.error(t("errors.common.interviewDateTimeInvalid"))
-        return false
-      }
-
-      normalizedSlots.push({
-        startsAt,
-        endsAt,
-        location: slot.location || undefined,
-        meetingUrl: slot.meetingUrl || undefined,
-      })
-    }
-
-    try {
-      await proposeSlotsMutation.mutateAsync({
-        applicationId: selectedApplicationId,
-        note: input.note.trim() || undefined,
-        slots: normalizedSlots,
-      })
-      return true
-    } catch {
-      return false
     }
   }
 
@@ -191,7 +107,6 @@ export function useInterviewsData({
     studentInterviewsQuery.error,
     companyInterviewsQuery.error,
     confirmSlotMutation.error,
-    proposeSlotsMutation.error,
   ].some((error) => error && isInterviewsFeatureDisabledError(error))
 
   return {
@@ -206,9 +121,7 @@ export function useInterviewsData({
     isOffersLoading: companyOffersQuery.isLoading,
     isApplicationsLoading: applicationsByOfferQuery.isLoading,
     confirmingSlotId,
-    isSubmittingProposal: proposeSlotsMutation.isPending,
     isFeatureDisabled,
     confirmSlot,
-    proposeSlots,
   }
 }

@@ -1,5 +1,6 @@
 "use client"
 
+import { InterviewProposalModal } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/InterviewProposalModal"
 import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { CandidatesDialogs } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidatesDialogs"
@@ -31,6 +32,10 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
     refuseNote,
     setRefuseNote,
     handleRefuse,
+    interviewModal,
+    setInterviewModal,
+    isProposingInterview,
+    handleProposeInterview,
     handleStageChange,
     pendingStageById,
     openedTimelineFor,
@@ -61,7 +66,6 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
         hasActiveFilters={hasActiveFilters}
         tExplore={tExplore}
       />
-
       <PipelineGrid
         applications={applications}
         grouped={grouped}
@@ -70,22 +74,12 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
         offerId={offerId}
         actionLoading={actionLoading}
         pendingStageById={pendingStageById}
-        onAccept={(app) =>
-          setAcceptModal({
-            applicationId: app.id,
-            studentName: app.student.name || "Student",
-          })
-        }
-        onRefuse={(app) =>
-          setRefuseModal({
-            applicationId: app.id,
-            studentName: app.student.name || "Student",
-          })
-        }
+        onAccept={(app) => setAcceptModal({ applicationId: app.id, studentName: app.student.name || "Student" })}
+        onRefuse={(app) => setRefuseModal({ applicationId: app.id, studentName: app.student.name || "Student" })}
+        onInterview={(app) => setInterviewModal({ applicationId: app.id, studentName: app.student.name || "Student", offerTitle: offer?.title || "" })}
         onStageChange={handleStageChange}
         onViewTimeline={setOpenedTimelineFor}
       />
-
       <div ref={sentinelRef} className="h-4" />
 
       {isFetchingNextPage && (
@@ -107,10 +101,17 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
         refuseNote={refuseNote}
         onRefuseNoteChange={setRefuseNote}
         onConfirmRefuse={handleRefuse}
-        onCloseRefuse={() => {
-          setRefuseModal(null)
-          setRefuseNote("")
-        }}
+        onCloseRefuse={() => { setRefuseModal(null); setRefuseNote("") }}
+      />
+
+      <InterviewProposalModal
+        applicationId={interviewModal?.applicationId ?? ""}
+        studentName={interviewModal?.studentName ?? ""}
+        offerTitle={interviewModal?.offerTitle ?? ""}
+        isOpen={!!interviewModal}
+        isSubmitting={isProposingInterview}
+        onClose={() => setInterviewModal(null)}
+        onSubmit={handleProposeInterview}
       />
     </div>
   )

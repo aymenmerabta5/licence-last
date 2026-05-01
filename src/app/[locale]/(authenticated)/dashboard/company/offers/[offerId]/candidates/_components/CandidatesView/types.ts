@@ -29,6 +29,13 @@ export interface CandidateApp {
     proficiency: string
   }>
   skillMatchPercentage: number
+  interviewPreview: {
+    id: string
+    status: string
+    nextSlotStartsAt: string | Date | null
+    nextSlotEndsAt: string | Date | null
+    slotCount: number
+  } | null
 }
 
 export interface CandidateFiltersState {

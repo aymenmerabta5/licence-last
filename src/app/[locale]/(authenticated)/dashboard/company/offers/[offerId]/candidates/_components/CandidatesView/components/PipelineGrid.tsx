@@ -21,6 +21,7 @@ interface PipelineGridProps {
   pendingStageById: Record<string, true>
   onAccept: (app: CandidateApp) => void
   onRefuse: (app: CandidateApp) => void
+  onInterview: (app: CandidateApp) => void
   onStageChange: (appId: string, toStage: PipelineStage) => void
   onViewTimeline: (appId: string) => void
 }
@@ -35,6 +36,7 @@ export function PipelineGrid({
   pendingStageById,
   onAccept,
   onRefuse,
+  onInterview,
   onStageChange,
   onViewTimeline,
 }: PipelineGridProps) {
@@ -91,6 +93,7 @@ export function PipelineGrid({
                 pendingStageById={pendingStageById}
                 onAccept={onAccept}
                 onRefuse={onRefuse}
+                onInterview={onInterview}
                 onStageChange={onStageChange}
                 onViewTimeline={onViewTimeline}
               />

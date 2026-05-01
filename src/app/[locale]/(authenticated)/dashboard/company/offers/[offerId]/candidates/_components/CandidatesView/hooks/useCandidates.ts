@@ -39,6 +39,12 @@ export function useCandidates(offerId: string) {
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [acceptModal, setAcceptModal] = useState<AcceptModalState | null>(null)
   const [refuseModal, setRefuseModal] = useState<RefuseModalState | null>(null)
+  const [interviewModal, setInterviewModal] = useState<{
+    applicationId: string
+    studentName: string
+    offerTitle: string
+  } | null>(null)
+  const [isProposingInterview, setIsProposingInterview] = useState(false)
   const [refuseNote, setRefuseNote] = useState("")
   const [filters, setFilters] = useState<CandidateFiltersState>(EMPTY_FILTERS)
   const [openedTimelineFor, setOpenedTimelineFor] = useState<string | null>(
@@ -131,6 +137,10 @@ export function useCandidates(offerId: string) {
     orpc.applications.companyRefuse.mutationOptions(),
   )
 
+  const proposeSlotsMutation = useMutation(
+    orpc.interviews.proposeSlots.mutationOptions(),
+  )
+
   const handleAccept = async () => {
     if (!acceptModal) return
     setActionLoading(acceptModal.applicationId)
@@ -167,6 +177,49 @@ export function useCandidates(offerId: string) {
     } catch {
       toast.error(t("refuseError"))
     } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const handleProposeInterview = async (payload: {
+    applicationId: string
+    note?: string
+    slots: Array<{
+      startsAt: string
+      endsAt: string
+      location?: string
+      meetingUrl?: string
+    }>
+  }) => {
+    setIsProposingInterview(true)
+    setActionLoading(payload.applicationId)
+    try {
+      // 1. Create interview slots
+      await proposeSlotsMutation.mutateAsync({
+        applicationId: payload.applicationId,
+        slots: payload.slots,
+        note: payload.note,
+      })
+
+      // 2. Move to interview stage
+      await orpcClient.applications.updatePipelineStage({
+        applicationId: payload.applicationId,
+        toStage: "interview",
+      })
+
+      await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+      await refreshTimelineForApplication(payload.applicationId)
+      queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
+      queryClient.invalidateQueries({
+        queryKey: orpc.interviews.listForCompany.queryOptions().queryKey,
+      })
+
+      setInterviewModal(null)
+      toast.success(t("interviewProposeSuccess"))
+    } catch {
+      toast.error(t("interviewProposeError"))
+    } finally {
+      setIsProposingInterview(false)
       setActionLoading(null)
     }
   }
@@ -225,6 +278,10 @@ export function useCandidates(offerId: string) {
     refuseNote,
     setRefuseNote,
     handleRefuse,
+    interviewModal,
+    setInterviewModal,
+    isProposingInterview,
+    handleProposeInterview,
     handleStageChange,
     pendingStageById,
     openedTimelineFor,

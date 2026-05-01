@@ -1044,7 +1044,21 @@
           }
         },
         "pipelineHeading": "???? ????????",
-        "candidateCountLabel": "????????"
+        "candidateCountLabel": "????????",
+        "interview": "مقابلة",
+        "interviewPending": "في انتظار التأكيد",
+        "interviewConfirmed": "مؤكد",
+        "slotCount": "{count} مواعيد مقترحة",
+        "interviewModal": {
+          "title": "اقتراح مقابلة",
+          "note": "ملاحظة للمرشح (اختياري)",
+          "notePlaceholder": "أضف ملاحظة شخصية...",
+          "cancel": "إلغاء",
+          "submit": "اقتراح مقابلة",
+          "closeAria": "إغلاق النافذة"
+        },
+        "interviewProposeSuccess": "تم اقتراح المقابلة بنجاح.",
+        "interviewProposeError": "فشل في اقتراح المقابلة."
       },
       "matching": {
         "computing": "???? ???? ????????",

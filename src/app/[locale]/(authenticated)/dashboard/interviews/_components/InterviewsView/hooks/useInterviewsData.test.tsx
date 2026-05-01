@@ -1,5 +1,5 @@
 import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
-import { act, renderHook, waitFor } from "@testing-library/react"
+import { renderHook, waitFor } from "@testing-library/react"
 
 const listInterviewsForStudentQueryOptionsMock = mock(() => ({
   queryKey: ["interviews", "student"],
@@ -29,7 +29,6 @@ const listByOfferQueryOptionsMock = mock(
   }),
 )
 const confirmSlotMutationFnMock = mock(async () => ({ confirmed: true }))
-const proposeSlotsMutationFnMock = mock(async () => ({ interviewId: "int-1" }))
 const toastSuccessMock = mock(() => {})
 const toastErrorMock = mock(() => {})
 let importCounter = 0
@@ -145,12 +144,6 @@ function applyOrpcClientMock() {
             ...options,
           }),
         },
-        proposeSlots: {
-          mutationOptions: (options: Record<string, unknown>) => ({
-            mutationFn: proposeSlotsMutationFnMock,
-            ...options,
-          }),
-        },
       },
       offers: {
         listByCompany: {
@@ -194,7 +187,6 @@ describe("useInterviewsData", () => {
     listByCompanyQueryOptionsMock.mockClear()
     listByOfferQueryOptionsMock.mockClear()
     confirmSlotMutationFnMock.mockClear()
-    proposeSlotsMutationFnMock.mockClear()
     toastSuccessMock.mockClear()
     toastErrorMock.mockClear()
   })
@@ -224,96 +216,4 @@ describe("useInterviewsData", () => {
     })
   })
 
-  test("converts local datetime slot values to ISO before mutation", async () => {
-    const { useInterviewsData } = await loadUseInterviewsData()
-
-    const { result } = renderHook(
-      () =>
-        useInterviewsData({
-          role: "company_admin",
-          selectedOfferId: "offer-1",
-        }),
-      {
-        wrapper: createWrapper(),
-      },
-    )
-
-    await waitFor(() => {
-      expect(result.current.companyApplications).toHaveLength(1)
-    })
-
-    const localStart = "2026-02-20T10:00"
-    const localEnd = "2026-02-20T11:00"
-    let didSubmit = false
-
-    await act(async () => {
-      didSubmit = await result.current.proposeSlots({
-        applicationId: "app-1",
-        note: "Interview proposal",
-        slots: [
-          {
-            id: "slot-1",
-            startsAt: localStart,
-            endsAt: localEnd,
-            location: "",
-            meetingUrl: "",
-          },
-        ],
-      })
-    })
-
-    expect(didSubmit).toBe(true)
-    expect(proposeSlotsMutationFnMock).toHaveBeenCalledTimes(1)
-    const firstCall = proposeSlotsMutationFnMock.mock.calls[0]
-    if (!firstCall) {
-      throw new Error("Expected proposeSlots mutation to be called")
-    }
-    const payload = (firstCall as unknown as [unknown])[0] as {
-      slots: Array<{ startsAt: string; endsAt: string }>
-    }
-    expect(payload.slots[0]?.startsAt).toBe(new Date(localStart).toISOString())
-    expect(payload.slots[0]?.endsAt).toBe(new Date(localEnd).toISOString())
-  })
-
-  test("blocks proposal when datetime-local value is invalid", async () => {
-    const { useInterviewsData } = await loadUseInterviewsData()
-
-    const { result } = renderHook(
-      () =>
-        useInterviewsData({
-          role: "company_admin",
-          selectedOfferId: "offer-1",
-        }),
-      {
-        wrapper: createWrapper(),
-      },
-    )
-
-    await waitFor(() => {
-      expect(result.current.companyApplications).toHaveLength(1)
-    })
-
-    let didSubmit = true
-    await act(async () => {
-      didSubmit = await result.current.proposeSlots({
-        applicationId: "app-1",
-        note: "",
-        slots: [
-          {
-            id: "slot-1",
-            startsAt: "not-a-date",
-            endsAt: "2026-02-20T11:00",
-            location: "",
-            meetingUrl: "",
-          },
-        ],
-      })
-    })
-
-    expect(didSubmit).toBe(false)
-    expect(proposeSlotsMutationFnMock).not.toHaveBeenCalled()
-    expect(toastErrorMock).toHaveBeenCalledWith(
-      "Each slot must include a valid start and end date/time.",
-    )
-  })
 })

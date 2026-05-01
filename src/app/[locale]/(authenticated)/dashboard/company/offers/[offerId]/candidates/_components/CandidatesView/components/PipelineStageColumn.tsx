@@ -56,6 +56,7 @@ export interface PipelineStageColumnProps {
   pendingStageById: Record<string, true>
   onAccept: (app: CandidateApp) => void
   onRefuse: (app: CandidateApp) => void
+  onInterview: (app: CandidateApp) => void
   onStageChange: (appId: string, toStage: PipelineStage) => void
   onViewTimeline: (appId: string) => void
 }
@@ -68,6 +69,7 @@ export function PipelineStageColumn({
   pendingStageById,
   onAccept,
   onRefuse,
+  onInterview,
   onStageChange,
   onViewTimeline,
 }: PipelineStageColumnProps) {
@@ -145,6 +147,7 @@ export function PipelineStageColumn({
             }
             onAccept={() => onAccept(app)}
             onRefuse={() => onRefuse(app)}
+            onInterview={() => onInterview(app)}
             onStageChange={(toStage) => onStageChange(app.id, toStage)}
             onViewTimeline={() => onViewTimeline(app.id)}
           />

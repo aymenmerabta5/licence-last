@@ -128,6 +128,7 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
       pipelineStage: "offer",
       status: "company_accepted",
     })
+    selectResultsQueue.push([{ id: "interview-1" }])
 
     const { updateApplicationPipelineStage } = await loadPipelineModule()
 
@@ -166,6 +167,25 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
     })
   })
 
+  test("rejects interview stage when no interview exists", async () => {
+    queueApplicationRow({ pipelineStage: "screening" })
+    selectResultsQueue.push([])
+
+    const { updateApplicationPipelineStage } = await loadPipelineModule()
+
+    await expect(
+      updateApplicationPipelineStage({
+        applicationId: "app-1",
+        actorUserId: "company-user-1",
+        companyId: "company-1",
+        toStage: "interview",
+      }),
+    ).rejects.toMatchObject({
+      code: "APPLICATION_INVALID_STATE",
+      message: "Schedule interview slots first before moving to interview stage",
+    })
+  })
+
   test("rejects invalid non-terminal transitions", async () => {
     queueApplicationRow({ pipelineStage: "offer" })
 
@@ -190,6 +210,7 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
 
   test("updates non-terminal stages and appends a timeline event", async () => {
     queueApplicationRow()
+    selectResultsQueue.push([{ id: "interview-1" }])
 
     const { updateApplicationPipelineStage } = await loadPipelineModule()
 
@@ -234,6 +255,7 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
 
   test("normalizes blank notes to an empty timeline payload and null notification note", async () => {
     queueApplicationRow()
+    selectResultsQueue.push([{ id: "interview-1" }])
 
     const { updateApplicationPipelineStage } = await loadPipelineModule()
 
@@ -265,6 +287,7 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
 
   test("skips notifications when the actor is the student", async () => {
     queueApplicationRow({ studentUserId: "student-1" })
+    selectResultsQueue.push([{ id: "interview-1" }])
 
     const { updateApplicationPipelineStage } = await loadPipelineModule()
 
@@ -282,6 +305,7 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
 
   test("rejects when the pipeline stage changes concurrently", async () => {
     queueApplicationRow()
+    selectResultsQueue.push([{ id: "interview-1" }])
     updateReturningMock.mockResolvedValueOnce([])
 
     const { updateApplicationPipelineStage } = await loadPipelineModule()
