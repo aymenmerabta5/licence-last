@@ -55,6 +55,7 @@ export async function validatePlacement(
       offerId: application.offerId,
       offerTitle: internshipOffer.title,
       offerInternshipType: internshipOffer.internshipType,
+      offerStatus: internshipOffer.status,
       companyId: internshipOffer.companyId,
       companyName: company.name,
       companyAddress: company.address,
@@ -75,6 +76,13 @@ export async function validatePlacement(
 
   if (!app) {
     throw new ServiceError("APPLICATION_NOT_FOUND", "Application not found")
+  }
+
+  if (app.offerStatus !== "published") {
+    throw new ServiceError(
+      "OFFER_NOT_PUBLISHED",
+      "This offer is not published and cannot be validated",
+    )
   }
 
   if (app.status !== "company_accepted") {
@@ -118,29 +126,25 @@ export async function validatePlacement(
     }
   }
 
-  // Check if placement already exists
-  const [existingPlacement] = await db
-    .select({ id: placement.id })
-    .from(placement)
-    .where(eq(placement.applicationId, applicationId))
-    .limit(1)
-
-  if (existingPlacement) {
-    throw new ServiceError(
-      "PLACEMENT_ALREADY_EXISTS",
-      "Placement already exists for this application",
-    )
-  }
-
   const now = new Date()
   const placementId = crypto.randomUUID()
   log.info({ applicationId, adminUserId, placementId }, "Validating placement")
 
   // Create placement and update application in a transaction
   await db.transaction(async (tx) => {
+    // Lock the application row to prevent concurrent validations
+    await tx
+      .select({ id: application.id })
+      .from(application)
+      .where(eq(application.id, applicationId))
+      .for("update")
+      .limit(1)
+
+    // Lock the offer and verify it is still published
     const [lockedOffer] = await tx
       .select({
         id: internshipOffer.id,
+        status: internshipOffer.status,
         maxPositions: internshipOffer.maxPositions,
       })
       .from(internshipOffer)
@@ -152,6 +156,27 @@ export async function validatePlacement(
       throw new ServiceError("OFFER_NOT_FOUND", "Offer not found")
     }
 
+    if (lockedOffer.status !== "published") {
+      throw new ServiceError(
+        "OFFER_NOT_PUBLISHED",
+        "This offer is not published and cannot be validated",
+      )
+    }
+
+    // Explicit check for existing placement inside the transaction
+    const [existingPlacement] = await tx
+      .select({ id: placement.id })
+      .from(placement)
+      .where(eq(placement.applicationId, applicationId))
+      .limit(1)
+
+    if (existingPlacement) {
+      throw new ServiceError(
+        "PLACEMENT_ALREADY_EXISTS",
+        "A placement already exists for this application",
+      )
+    }
+
     const [validatedPlacementsCount] = await tx
       .select({ value: count() })
       .from(placement)
@@ -159,7 +184,10 @@ export async function validatePlacement(
       .where(eq(application.offerId, app.offerId))
 
     if ((validatedPlacementsCount?.value ?? 0) >= lockedOffer.maxPositions) {
-      throw new ServiceError("OFFER_FULL", "All positions have been filled")
+      throw new ServiceError(
+        "OFFER_FULL",
+        "This offer has reached its maximum number of positions and cannot accept more placements",
+      )
     }
 
     const [insertedPlacement] = await tx
@@ -180,7 +208,7 @@ export async function validatePlacement(
     if (!insertedPlacement) {
       throw new ServiceError(
         "PLACEMENT_ALREADY_EXISTS",
-        "Placement already exists for this application",
+        "A placement already exists for this application",
       )
     }
 

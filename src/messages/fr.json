@@ -678,6 +678,7 @@
           "interview_proposed": "Entretien proposé",
           "interview_confirmed": "Entretien confirmé",
           "interview_cancelled": "Entretien annulé",
+          "interview_completed": "Entretien terminé",
           "agreement_generated": "Convention générée",
           "certificate_generated": "Attestation générée",
           "company_approved": "Entreprise approuvée",
@@ -740,6 +741,10 @@
           "interview_cancelled": {
             "withOfferTitle": "Votre entretien pour {offerTitle} a été annulé.",
             "default": "Un entretien a été annulé."
+          },
+          "interview_completed": {
+            "withOfferTitle": "Votre entretien pour {offerTitle} a été marqué comme terminé.",
+            "default": "Un entretien a été marqué comme terminé."
           },
           "agreement_generated": {
             "withOfferAndCompany": "La convention pour {offerTitle} chez {companyName} est prête.",
@@ -2326,7 +2331,8 @@
       "status": {
         "pending_confirmation": "En attente de confirmation",
         "confirmed": "Confirme",
-        "cancelled": "Annule"
+        "cancelled": "Annule",
+        "completed": "Termine"
       },
       "unknownStage": "Etape inconnue",
       "stageLabels": {

@@ -1,6 +1,6 @@
 import "server-only"
 
-import { and, eq, isNull } from "drizzle-orm"
+import { and, count, eq } from "drizzle-orm"
 import { db } from "@/server/db"
 import { createModuleLogger } from "@/server/logging"
 
@@ -10,6 +10,7 @@ import { application } from "@/server/db/schema/applications"
 import { user } from "@/server/db/schema/auth"
 import { company } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
+import { placement } from "@/server/db/schema/placements"
 import { studentProfile } from "@/server/db/schema/students"
 import { universityMember } from "@/server/db/schema/university-memberships"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
@@ -20,6 +21,7 @@ export async function companyAcceptApplication(
   applicationId: string,
   companyId: string,
   actionByUserId: string,
+  companyNote?: string,
 ) {
   const [app] = await db
     .select({
@@ -30,6 +32,8 @@ export async function companyAcceptApplication(
       studentUserId: application.studentUserId,
       offerTitle: internshipOffer.title,
       offerCompanyId: internshipOffer.companyId,
+      offerStatus: internshipOffer.status,
+      offerMaxPositions: internshipOffer.maxPositions,
       companyName: company.name,
       studentUniversityId: user.universityId,
       studentDepartmentId: studentProfile.departmentId,
@@ -63,6 +67,45 @@ export async function companyAcceptApplication(
     )
   }
 
+  if (app.offerStatus !== "published") {
+    throw new ApplicationServiceError(
+      "OFFER_NOT_PUBLISHED",
+      "Offer is not published",
+    )
+  }
+
+  const [validatedPlacementsResult] = await db
+    .select({ value: count() })
+    .from(placement)
+    .innerJoin(application, eq(placement.applicationId, application.id))
+    .where(
+      and(
+        eq(application.offerId, app.offerId),
+        eq(application.status, "admin_validated"),
+      ),
+    )
+
+  const [companyAcceptedResult] = await db
+    .select({ value: count() })
+    .from(application)
+    .where(
+      and(
+        eq(application.offerId, app.offerId),
+        eq(application.status, "company_accepted"),
+      ),
+    )
+
+  const totalOccupied =
+    (validatedPlacementsResult?.value ?? 0) +
+    (companyAcceptedResult?.value ?? 0)
+
+  if (totalOccupied >= app.offerMaxPositions) {
+    throw new ApplicationServiceError(
+      "OFFER_FULL",
+      "All positions have been filled",
+    )
+  }
+
   log.info(
     { applicationId, companyId, actionByUserId },
     "Accepting application",
@@ -78,6 +121,7 @@ export async function companyAcceptApplication(
       pipelineStageUpdatedAt: now,
       companyActionByUserId: actionByUserId,
       companyActionAt: now,
+      companyNote: companyNote ?? null,
     })
     .where(
       and(
@@ -103,7 +147,7 @@ export async function companyAcceptApplication(
       toStage: "offer",
       fromStatus: app.status,
       toStatus: "company_accepted",
-      payload: { reason: "company_accepted" },
+      payload: { reason: "company_accepted", companyNote: companyNote ?? null },
     })
   } catch (error) {
     log.error(
@@ -122,6 +166,7 @@ export async function companyAcceptApplication(
         offerTitle: app.offerTitle,
         stage: "offer",
         status: "company_accepted",
+        companyNote: companyNote ?? null,
       },
     })
   } catch (error) {
@@ -129,10 +174,6 @@ export async function companyAcceptApplication(
       { err: error, applicationId },
       "Failed to notify student about accepted application",
     )
-  }
-
-  if (!app.studentUniversityId) {
-    return { success: true, applicationId }
   }
 
   const notificationPayload = {
@@ -144,50 +185,55 @@ export async function companyAcceptApplication(
     companyName: app.companyName,
   }
 
-  let validators: { id: string }[] = []
-  if (app.studentDepartmentId) {
-    validators = await db
-      .select({ id: universityMember.userId })
-      .from(universityMember)
-      .where(
-        and(
-          eq(universityMember.role, "department_head"),
-          eq(universityMember.departmentId, app.studentDepartmentId),
-        ),
-      )
-  }
+  if (app.studentUniversityId) {
+    let validators: { id: string }[] = []
+    if (app.studentDepartmentId) {
+      validators = await db
+        .select({ id: universityMember.userId })
+        .from(universityMember)
+        .where(
+          and(
+            eq(universityMember.role, "department_head"),
+            eq(universityMember.departmentId, app.studentDepartmentId),
+          ),
+        )
+    }
 
-  if (validators.length === 0) {
-    validators = await db
-      .select({ id: user.id })
-      .from(user)
-      .leftJoin(universityMember, eq(universityMember.userId, user.id))
-      .where(
-        and(
-          eq(user.role, "university_admin"),
-          eq(user.onboardingCompleted, true),
-          eq(user.universityId, app.studentUniversityId),
-          isNull(universityMember.userId),
-        ),
-      )
-  }
+    if (validators.length === 0) {
+      validators = await db
+        .select({ id: user.id })
+        .from(user)
+        .where(
+          and(
+            eq(user.role, "university_admin"),
+            eq(user.onboardingCompleted, true),
+            eq(user.universityId, app.studentUniversityId),
+          ),
+        )
+    }
 
-  if (validators.length > 0) {
-    await Promise.all(
-      validators.map(async (validator) => {
-        try {
-          await createNotification({
-            userId: validator.id,
-            type: "placement_pending_validation",
-            payload: notificationPayload,
-          })
-        } catch (error) {
-          log.error(
-            { err: error, applicationId, validatorUserId: validator.id },
-            "Failed to notify validator about pending placement",
-          )
-        }
-      }),
+    if (validators.length > 0) {
+      await Promise.all(
+        validators.map(async (validator) => {
+          try {
+            await createNotification({
+              userId: validator.id,
+              type: "placement_pending_validation",
+              payload: notificationPayload,
+            })
+          } catch (error) {
+            log.error(
+              { err: error, applicationId, validatorUserId: validator.id },
+              "Failed to notify validator about pending placement",
+            )
+          }
+        }),
+      )
+    }
+  } else {
+    log.warn(
+      { applicationId, studentUserId: app.studentUserId },
+      "No university found for student, skipping validator notifications",
     )
   }
 

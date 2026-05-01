@@ -7,9 +7,11 @@ import { createModuleLogger } from "@/server/logging"
 const log = createModuleLogger("services/applications/withdraw")
 
 import { application } from "@/server/db/schema/applications"
+import { companyMember } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
+import { createNotification } from "@/server/services/notifications/create"
 
 /**
  * Withdraw an application.
@@ -26,6 +28,7 @@ export async function withdrawApplication(
       status: application.status,
       pipelineStage: application.pipelineStage,
       offerId: application.offerId,
+      offerTitle: internshipOffer.title,
       companyId: internshipOffer.companyId,
     })
     .from(application)
@@ -91,6 +94,42 @@ export async function withdrawApplication(
     log.error(
       { err: error, applicationId },
       "Failed to append withdrawal timeline event",
+    )
+  }
+
+  try {
+    const companyMembers = await db
+      .select({ userId: companyMember.userId })
+      .from(companyMember)
+      .where(eq(companyMember.companyId, app.companyId))
+
+    if (companyMembers.length > 0) {
+      await Promise.all(
+        companyMembers.map(async (member) => {
+          try {
+            await createNotification({
+              userId: member.userId,
+              type: "application_withdrawn",
+              payload: {
+                applicationId,
+                offerId: app.offerId,
+                offerTitle: app.offerTitle,
+                studentUserId,
+              },
+            })
+          } catch (error) {
+            log.error(
+              { err: error, applicationId, userId: member.userId },
+              "Failed to notify company member about withdrawn application",
+            )
+          }
+        }),
+      )
+    }
+  } catch (error) {
+    log.error(
+      { err: error, applicationId },
+      "Failed to dispatch withdrawal notifications",
     )
   }
 

@@ -40,6 +40,7 @@ const TITLE_BY_TYPE: Record<string, string> = {
   interview_proposed: "Interview proposed",
   interview_confirmed: "Interview confirmed",
   interview_cancelled: "Interview cancelled",
+  interview_completed: "Interview completed",
   agreement_generated: "Agreement generated",
   certificate_generated: "Certificate generated",
   company_approved: "Company approved",
@@ -180,6 +181,11 @@ function formatByType(
           return `Your interview for ${offerTitle} has been cancelled.`
         }
         return "An interview has been cancelled."
+      case "interview_completed":
+        if (offerTitle) {
+          return `Your interview for ${offerTitle} has been marked as completed.`
+        }
+        return "An interview has been marked as completed."
       case "agreement_generated":
         if (offerTitle && companyName) {
           return `${offerTitle} agreement is ready from ${companyName}.`
@@ -307,6 +313,10 @@ function formatByType(
       return offerTitle
         ? t("feed.messages.interview_cancelled.withOfferTitle", { offerTitle })
         : t("feed.messages.interview_cancelled.default")
+    case "interview_completed":
+      return offerTitle
+        ? t("feed.messages.interview_completed.withOfferTitle", { offerTitle })
+        : t("feed.messages.interview_completed.default")
     case "agreement_generated":
       if (offerTitle && companyName) {
         return t("feed.messages.agreement_generated.withOfferAndCompany", {

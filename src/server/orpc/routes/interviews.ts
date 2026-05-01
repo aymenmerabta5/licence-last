@@ -14,6 +14,8 @@ import {
   createServiceORPCError,
   throwCodedORPCError,
 } from "@/server/orpc/utils/service-error"
+import { cancelInterview } from "@/server/services/interviews/cancel"
+import { completeInterview } from "@/server/services/interviews/complete"
 import { confirmInterviewSlot } from "@/server/services/interviews/confirm"
 import {
   type InterviewServiceError,
@@ -71,6 +73,8 @@ function createInterviewORPCError(error: InterviewServiceError) {
       INTERVIEW_NOT_FOUND: "NOT_FOUND",
       INTERVIEW_FORBIDDEN: "FORBIDDEN",
       INTERVIEW_ALREADY_CONFIRMED: "BAD_REQUEST",
+      INTERVIEW_ALREADY_COMPLETED: "BAD_REQUEST",
+      INTERVIEW_INVALID_STATUS: "BAD_REQUEST",
       INTERVIEW_SLOT_NOT_FOUND: "NOT_FOUND",
       INTERVIEW_SLOT_INVALID: "BAD_REQUEST",
       INTERVIEW_INVALID_APPLICATION_STATE: "BAD_REQUEST",
@@ -83,7 +87,7 @@ const listInterviewsInputSchema = z
   .object({
     offerId: z.string().min(1).optional(),
     status: z
-      .enum(["pending_confirmation", "confirmed", "cancelled"])
+      .enum(["pending_confirmation", "confirmed", "cancelled", "completed"])
       .optional(),
     limit: z.coerce.number().int().min(1).max(100).optional(),
   })
@@ -104,7 +108,7 @@ export const listInterviewsForStudentProcedure = studentProcedureGenerous
     z
       .object({
         status: z
-          .enum(["pending_confirmation", "confirmed", "cancelled"])
+          .enum(["pending_confirmation", "confirmed", "cancelled", "completed"])
           .optional(),
         limit: z.coerce.number().int().min(1).max(100).optional(),
       })
@@ -212,6 +216,59 @@ export const getInterviewByIdProcedure = studentProcedureGenerous
       createServiceORPCError(error, {
         codeMap: {},
         fallbackMessage: "Failed to load interview",
+      })
+    }
+  })
+
+export const completeInterviewProcedure = companyAdminProcedureStandard
+  .input(z.object({ interviewId: z.string().min(1) }))
+  .handler(async ({ input, context }) => {
+    assertInterviewsEnabled()
+
+    try {
+      return await completeInterview(
+        input.interviewId,
+        context.companyMembership.companyId,
+        context.user.id,
+      )
+    } catch (error) {
+      if (isInterviewServiceError(error)) {
+        createInterviewORPCError(error)
+      }
+
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "Failed to complete interview",
+      })
+    }
+  })
+
+export const cancelInterviewProcedure = companyAdminProcedureStandard
+  .input(
+    z.object({
+      interviewId: z.string().min(1),
+      reason: z.string().max(500).optional(),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    assertInterviewsEnabled()
+
+    try {
+      return await cancelInterview({
+        interviewId: input.interviewId,
+        companyId: context.companyMembership.companyId,
+        actionByUserId: context.user.id,
+        actorRole: context.user.role,
+        reason: input.reason,
+      })
+    } catch (error) {
+      if (isInterviewServiceError(error)) {
+        createInterviewORPCError(error)
+      }
+
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "Failed to cancel interview",
       })
     }
   })

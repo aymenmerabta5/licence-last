@@ -15,6 +15,17 @@ const mockJoin2 = mock(() => ({ innerJoin: mockJoin3 }))
 const mockJoin1 = mock(() => ({ innerJoin: mockJoin2 }))
 const mockFromWithTwoJoins = mock(() => ({ innerJoin: mockJoin1 }))
 
+// For count queries and admin queries (calls 2+), support both innerJoin and where chains
+const mockCountWhere = mock<() => Promise<any[]>>(() => {
+  const results = mockSelectResults[selectCallIdx - 1] ?? []
+  return Promise.resolve(results)
+})
+const mockCountInnerJoin = mock(() => ({ where: mockCountWhere }))
+const mockFromCounts = mock(() => ({
+  innerJoin: mockCountInnerJoin,
+  where: mockCountWhere,
+}))
+
 const mockAdminsWhere = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)
@@ -41,8 +52,11 @@ mock.module("@/server/db", () => ({
     select: () => {
       selectCallIdx++
       // Call 1: application join query (limit)
-      // Call 2: admins list (no limit)
+      // Call 2: validated placements count (innerJoin + where)
+      // Call 3: company accepted count (where)
+      // Call 4+: admins list (leftJoin + where)
       if (selectCallIdx === 1) return { from: mockFromWithTwoJoins }
+      if (selectCallIdx === 2 || selectCallIdx === 3) return { from: mockFromCounts }
       return { from: mockFromAdmins }
     },
     update: mockUpdate,
@@ -87,6 +101,10 @@ describe("src/server/services/applications/company-accept", () => {
     mockLeftJoinAdmins.mockClear()
     mockFromAdmins.mockClear()
 
+    mockFromCounts.mockClear()
+    mockCountInnerJoin.mockClear()
+    mockCountWhere.mockClear()
+
     mockUpdate.mockClear()
     mockSet.mockClear()
     mockUpdateWhere.mockClear()
@@ -102,6 +120,12 @@ describe("src/server/services/applications/company-accept", () => {
     mockJoin3.mockReturnValue({ leftJoin: mockLeftJoin })
     mockLeftJoin.mockReturnValue({ where: mockWhereWithLimit })
     mockWhereWithLimit.mockReturnValue({ limit: mockLimit })
+
+    mockFromCounts.mockReturnValue({
+      innerJoin: mockCountInnerJoin,
+      where: mockCountWhere,
+    })
+    mockCountInnerJoin.mockReturnValue({ where: mockCountWhere })
 
     mockFromAdmins.mockReturnValue({
       leftJoin: mockLeftJoinAdmins,
@@ -140,11 +164,15 @@ describe("src/server/services/applications/company-accept", () => {
         studentUserId: "student-1",
         offerTitle: "Offer 1",
         offerCompanyId: "company-1",
+        offerStatus: "published",
+        offerMaxPositions: 5,
         companyName: "Acme",
         studentUniversityId: "uni-1",
         studentDepartmentId: null,
       },
     ])
+    mockSelectResults.push([{ value: 0 }])
+    mockSelectResults.push([{ value: 0 }])
     mockSelectResults.push([{ id: "admin-1" }, { id: "admin-2" }])
 
     const { companyAcceptApplication } = await importCompanyAcceptApplication()
@@ -169,11 +197,15 @@ describe("src/server/services/applications/company-accept", () => {
         studentUserId: "student-1",
         offerTitle: "Offer 1",
         offerCompanyId: "company-1",
+        offerStatus: "published",
+        offerMaxPositions: 5,
         companyName: "Acme",
         studentUniversityId: "uni-1",
         studentDepartmentId: null,
       },
     ])
+    mockSelectResults.push([{ value: 0 }])
+    mockSelectResults.push([{ value: 0 }])
     mockUpdateReturning.mockResolvedValueOnce([])
 
     const { companyAcceptApplication } = await importCompanyAcceptApplication()

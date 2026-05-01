@@ -6,6 +6,7 @@ export type ApplicationServiceErrorCode =
   | "OFFER_NOT_FOUND"
   | "OFFER_FORBIDDEN"
   | "OFFER_NOT_OPEN"
+  | "OFFER_NOT_PUBLISHED"
   | "OFFER_DEADLINE_PASSED"
   | "OFFER_FULL"
   | "ALREADY_APPLIED"

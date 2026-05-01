@@ -80,6 +80,8 @@ import {
   verifyDocumentProcedure,
 } from "@/server/orpc/routes/documents"
 import {
+  cancelInterviewProcedure,
+  completeInterviewProcedure,
   confirmInterviewSlotProcedure,
   getInterviewByIdProcedure,
   listInterviewsForCompanyProcedure,
@@ -314,6 +316,8 @@ export const appRouter = {
     listForStudent: listInterviewsForStudentProcedure,
     proposeSlots: proposeInterviewSlotsProcedure,
     confirmSlot: confirmInterviewSlotProcedure,
+    complete: completeInterviewProcedure,
+    cancel: cancelInterviewProcedure,
     getById: getInterviewByIdProcedure,
   },
   messages: {

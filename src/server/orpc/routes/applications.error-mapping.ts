@@ -42,6 +42,8 @@ export function getCompanyActionStatus(code: string): string {
     APPLICATION_NOT_FOUND: "NOT_FOUND",
     APPLICATION_FORBIDDEN: "FORBIDDEN",
     APPLICATION_INVALID_STATE: "BAD_REQUEST",
+    OFFER_NOT_PUBLISHED: "BAD_REQUEST",
+    OFFER_FULL: "CONFLICT",
   }
   return statusMap[code] ?? "BAD_REQUEST"
 }

@@ -1,6 +1,6 @@
 import "server-only"
 
-import { and, eq } from "drizzle-orm"
+import { and, eq, ne } from "drizzle-orm"
 import { db } from "@/server/db"
 import { createModuleLogger } from "@/server/logging"
 
@@ -11,6 +11,7 @@ import { user } from "@/server/db/schema/auth"
 import { company, companyMember } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { studentProfile } from "@/server/db/schema/students"
+import { universityMember } from "@/server/db/schema/university-memberships"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { ServiceError } from "@/server/services/errors"
 import { createNotification } from "@/server/services/notifications/create"
@@ -200,6 +201,69 @@ export async function rejectPlacement(input: RejectPlacementInput) {
         }
       }),
     )
+  }
+
+  // Notify validators (department heads / university admins) so they don't
+  // waste time trying to validate an already-rejected placement.
+  if (app.studentUniversityId) {
+    const validatorPayload = {
+      applicationId,
+      offerId: app.offerId,
+      offerTitle: app.offerTitle,
+      studentUserId: app.studentUserId,
+      companyId: app.companyId,
+      companyName: app.companyName,
+      reason: reason ?? null,
+      stage: "rejected",
+      status: "admin_rejected",
+    }
+
+    let validators: { id: string }[] = []
+    if (app.studentDepartmentId) {
+      validators = await db
+        .select({ id: universityMember.userId })
+        .from(universityMember)
+        .where(
+          and(
+            eq(universityMember.role, "department_head"),
+            eq(universityMember.departmentId, app.studentDepartmentId),
+            ne(universityMember.userId, adminUserId),
+          ),
+        )
+    }
+
+    if (validators.length === 0) {
+      validators = await db
+        .select({ id: user.id })
+        .from(user)
+        .where(
+          and(
+            eq(user.role, "university_admin"),
+            eq(user.onboardingCompleted, true),
+            eq(user.universityId, app.studentUniversityId),
+            ne(user.id, adminUserId),
+          ),
+        )
+    }
+
+    if (validators.length > 0) {
+      await Promise.all(
+        validators.map(async (validator) => {
+          try {
+            await createNotification({
+              userId: validator.id,
+              type: "placement_rejected",
+              payload: validatorPayload,
+            })
+          } catch (error) {
+            log.error(
+              { err: error, applicationId, validatorUserId: validator.id },
+              "Failed to notify validator about rejected placement",
+            )
+          }
+        }),
+      )
+    }
   }
 
   log.info({ applicationId, event: "placement_rejected" }, "Placement rejected")

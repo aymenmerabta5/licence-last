@@ -678,6 +678,7 @@
           "interview_proposed": "تم اقتراح مقابلة",
           "interview_confirmed": "تم تأكيد المقابلة",
           "interview_cancelled": "تم إلغاء المقابلة",
+          "interview_completed": "تم إنجاز المقابلة",
           "agreement_generated": "تم إنشاء الاتفاقية",
           "certificate_generated": "تم إنشاء الشهادة",
           "company_approved": "تمت الموافقة على الشركة",
@@ -740,6 +741,10 @@
           "interview_cancelled": {
             "withOfferTitle": "تم إلغاء مقابلتك الخاصة بـ {offerTitle}.",
             "default": "تم إلغاء مقابلة."
+          },
+          "interview_completed": {
+            "withOfferTitle": "تمت مقابلتك الخاصة بـ {offerTitle}.",
+            "default": "تم إنجاز مقابلة."
           },
           "agreement_generated": {
             "withOfferAndCompany": "أصبحت اتفاقية {offerTitle} لدى {companyName} جاهزة.",
@@ -2326,7 +2331,8 @@
       "status": {
         "pending_confirmation": "بانتظار التأكيد",
         "confirmed": "مؤكد",
-        "cancelled": "ملغى"
+        "cancelled": "ملغى",
+        "completed": "مكتمل"
       },
       "unknownStage": "مرحلة غير معروفة",
       "stageLabels": {

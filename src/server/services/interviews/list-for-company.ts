@@ -9,7 +9,7 @@ import { interview, interviewSlot } from "@/server/db/schema/interviews"
 
 interface ListCompanyInterviewsParams {
   offerId?: string
-  status?: "pending_confirmation" | "confirmed" | "cancelled"
+  status?: "pending_confirmation" | "confirmed" | "cancelled" | "completed"
   limit?: number
 }
 

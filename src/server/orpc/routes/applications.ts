@@ -173,13 +173,19 @@ export const listByOfferProcedure = companyAdminProcedureGenerous
   })
 
 export const companyAcceptProcedure = companyAdminProcedureStandard
-  .input(z.object({ applicationId: z.string().min(1) }))
+  .input(
+    z.object({
+      applicationId: z.string().min(1),
+      note: z.string().max(500).optional(),
+    }),
+  )
   .handler(async ({ input, context }) => {
     try {
       const result = await companyAcceptApplication(
         input.applicationId,
         context.companyMembership.companyId,
         context.user.id,
+        input.note,
       )
 
       revalidateTag(

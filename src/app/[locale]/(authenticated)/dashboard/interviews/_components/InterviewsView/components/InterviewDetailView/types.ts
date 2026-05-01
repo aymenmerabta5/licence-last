@@ -7,9 +7,9 @@ export interface InterviewDetailViewProps {
     companyId: string
     companyName: string
     companyLogoUrl: string | null
-    status: "pending_confirmation" | "confirmed" | "cancelled"
+    status: "pending_confirmation" | "confirmed" | "cancelled" | "completed"
     confirmedSlotId: string | null
-    confirmedAt: Date | string | null
+    confirmedAt: Date | null
     note: string | null
     createdAt: Date | string
     updatedAt: Date | string

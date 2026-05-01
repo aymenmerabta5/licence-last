@@ -678,6 +678,7 @@
           "interview_proposed": "Interview proposed",
           "interview_confirmed": "Interview confirmed",
           "interview_cancelled": "Interview cancelled",
+          "interview_completed": "Interview completed",
           "agreement_generated": "Agreement generated",
           "certificate_generated": "Certificate generated",
           "company_approved": "Company approved",
@@ -740,6 +741,10 @@
           "interview_cancelled": {
             "withOfferTitle": "Your interview for {offerTitle} has been cancelled.",
             "default": "An interview has been cancelled."
+          },
+          "interview_completed": {
+            "withOfferTitle": "Your interview for {offerTitle} has been marked as completed.",
+            "default": "An interview has been marked as completed."
           },
           "agreement_generated": {
             "withOfferAndCompany": "{offerTitle} agreement is ready from {companyName}.",
@@ -2326,7 +2331,8 @@
       "status": {
         "pending_confirmation": "Pending confirmation",
         "confirmed": "Confirmed",
-        "cancelled": "Cancelled"
+        "cancelled": "Cancelled",
+        "completed": "Completed"
       },
       "unknownStage": "Unknown stage",
       "stageLabels": {

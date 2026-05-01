@@ -8,7 +8,7 @@ import { internshipOffer } from "@/server/db/schema/internships"
 import { interview, interviewSlot } from "@/server/db/schema/interviews"
 
 interface ListStudentInterviewsParams {
-  status?: "pending_confirmation" | "confirmed" | "cancelled"
+  status?: "pending_confirmation" | "confirmed" | "cancelled" | "completed"
   limit?: number
 }
 
