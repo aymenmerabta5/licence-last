@@ -17,12 +17,7 @@ export function DisableConfirm({ state }: DisableConfirmProps) {
   const t = useTranslations("dashboard.settings.twoFactor.disableConfirm")
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-1">
-        <h4 className="font-bold text-destructive">{t("title")}</h4>
-        <p className="text-xs text-muted-foreground">{t("description")}</p>
-      </div>
-
+    <div className="space-y-5">
       <div className="space-y-2">
         <Label
           htmlFor="2fa-disable-password"
@@ -36,7 +31,7 @@ export function DisableConfirm({ state }: DisableConfirmProps) {
           value={state.password}
           onChange={(e) => state.setPassword(e.target.value)}
           placeholder={t("passwordPlaceholder")}
-          className="h-11 border-border/40"
+          className="rounded-none"
           autoFocus
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -47,13 +42,15 @@ export function DisableConfirm({ state }: DisableConfirmProps) {
         />
       </div>
 
-      {state.error && <p className="text-xs text-destructive">{state.error}</p>}
+      {state.error && (
+        <p className="text-xs text-destructive">{state.error}</p>
+      )}
 
       <div className="flex gap-2">
         <Button
           type="button"
           variant="destructive"
-          className="h-11"
+          className="rounded-none h-11"
           disabled={state.isLoading}
           onClick={state.confirmDisable}
         >
@@ -65,8 +62,7 @@ export function DisableConfirm({ state }: DisableConfirmProps) {
         </Button>
         <Button
           type="button"
-          variant="outline"
-          className="h-11"
+          variant="editorial-outline"
           onClick={state.cancel}
         >
           {t("cancel")}

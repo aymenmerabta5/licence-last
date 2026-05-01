@@ -5,6 +5,7 @@ import { createMotionReactClientMock } from "@/test/mocks/motion-react-client"
 
 mock.module("lucide-react", () => ({
   Loader2: () => <span>Loader2</span>,
+  Bell: () => <span>Bell</span>,
 }))
 
 mock.module("next-intl", () => ({
@@ -12,6 +13,9 @@ mock.module("next-intl", () => ({
     () => (key: string, values?: Record<string, string | number>) => {
       const translations: Record<string, string> = {
         empty: "No notifications yet.",
+        emptyTitle: "Empty Inbox",
+        loading: "Loading notifications",
+        loadingMore: "Loading more",
         "feed.titles.new_application": "New application",
         "feed.messages.new_application.withOfferTitle":
           "A student applied for {offerTitle}.",

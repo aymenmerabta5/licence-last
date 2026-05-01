@@ -654,6 +654,9 @@
       "markAllReadSuccess": "Toutes les notifications ont été marquées comme lues.",
       "markAllReadError": "Échec du marquage des notifications comme lues.",
       "empty": "Aucune notification pour le moment.",
+      "emptyTitle": "Boîte de réception vide",
+      "loading": "Chargement des notifications",
+      "loadingMore": "Chargement de plus",
       "prompts": {
         "summarize": "Résumer les notifications"
       },

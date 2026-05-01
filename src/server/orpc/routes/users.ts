@@ -22,6 +22,7 @@ import {
 } from "@/server/services/users/session-management"
 import { updateMe } from "@/server/services/users/update-me"
 import { deleteFile } from "@/server/storage/s3"
+import { sanitizeIpAddress } from "@/lib/utils"
 
 const log = createModuleLogger("orpc/routes/users")
 
@@ -168,7 +169,7 @@ export const listMySessionsProcedure = authedSessionProcedureGenerous.handler(
       id: s.id,
       tokenPrefix: s.token.slice(-4),
       userId: s.userId,
-      ipAddress: s.ipAddress,
+      ipAddress: sanitizeIpAddress(s.ipAddress),
       userAgent: s.userAgent,
       createdAt: s.createdAt,
       updatedAt: s.updatedAt,

@@ -26,7 +26,7 @@ export function NotificationsView({ role, viewerId }: NotificationsViewProps) {
   const { aiSummary, aiStatus, aiError, summarize } = useNotificationsSummary()
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-10">
       <NotificationsHeader
         unreadCount={unreadCount}
         canSummarize={aiStatus === "ready" && notifications.length > 0}

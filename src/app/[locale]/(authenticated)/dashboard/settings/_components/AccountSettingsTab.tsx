@@ -1,6 +1,11 @@
 "use client"
 
-import { AlertTriangle, KeyRound, Mail, Shield } from "lucide-react"
+import {
+  AlertTriangle,
+  KeyRound,
+  Mail,
+  Shield,
+} from "lucide-react"
 import { useState } from "react"
 import { ChangePasswordDialog } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ChangePasswordDialog"
 import { DeleteAccountDialog } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/DeleteAccountDialog"
@@ -89,13 +94,13 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
               Update
             </Button>
           </div>
+
+          {/* Two-Factor Auth row */}
+          <TwoFactorSettings
+            isTwoFactorEnabled={me?.user.twoFactorEnabled ?? false}
+          />
         </div>
       </div>
-
-      {/* Two-Factor Auth */}
-      <TwoFactorSettings
-        isTwoFactorEnabled={me?.user.twoFactorEnabled ?? false}
-      />
 
       {/* Active Sessions */}
       <SessionManagement />

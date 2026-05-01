@@ -11,7 +11,7 @@ async function NotificationsPageContent() {
   ])
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-5xl mx-auto pb-20 px-4 md:px-0 space-y-10">
       <NotificationsView
         role={(user.role as string) ?? "student"}
         viewerId={user.id}

@@ -23,6 +23,7 @@ import {
 import { setUserPassword } from "@/server/services/admin/set-password"
 import { setUserRole } from "@/server/services/admin/set-role"
 import { updateUser } from "@/server/services/admin/update-user"
+import { sanitizeIpAddress } from "@/lib/utils"
 
 const listUsersInputSchema = z.object({
   limit: z.number().min(1).max(100).optional().default(20),
@@ -191,8 +192,9 @@ export const listUserSessionsProcedure = superAdminProcedureGenerous
       return {
         id: typeof record.id === "string" ? record.id : "",
         tokenPrefix: token ? token.slice(-4) : null,
-        ipAddress:
+        ipAddress: sanitizeIpAddress(
           typeof record.ipAddress === "string" ? record.ipAddress : null,
+        ),
         userAgent:
           typeof record.userAgent === "string" ? record.userAgent : null,
         createdAt: record.createdAt,

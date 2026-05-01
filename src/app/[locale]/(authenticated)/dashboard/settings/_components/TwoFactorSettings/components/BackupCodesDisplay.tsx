@@ -11,7 +11,10 @@ interface BackupCodesDisplayProps {
   onDone: () => void
 }
 
-export function BackupCodesDisplay({ codes, onDone }: BackupCodesDisplayProps) {
+export function BackupCodesDisplay({
+  codes,
+  onDone,
+}: BackupCodesDisplayProps) {
   const t = useTranslations("dashboard.settings.twoFactor.backupCodes")
 
   function copyAll() {
@@ -31,12 +34,7 @@ export function BackupCodesDisplay({ codes, onDone }: BackupCodesDisplayProps) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-1">
-        <h4 className="font-bold">{t("title")}</h4>
-        <p className="text-xs text-muted-foreground">{t("description")}</p>
-      </div>
-
+    <div className="space-y-5">
       <div className="grid grid-cols-2 gap-2 p-4 border border-border/40 bg-muted/20 font-mono text-sm">
         {codes.map((code, i) => (
           <div
@@ -57,7 +55,7 @@ export function BackupCodesDisplay({ codes, onDone }: BackupCodesDisplayProps) {
         <Button
           type="button"
           variant="editorial-outline"
-          className="rounded-xl h-10"
+          size="editorial-sm"
           onClick={copyAll}
         >
           <Copy className="h-3.5 w-3.5 me-1.5" />
@@ -66,7 +64,7 @@ export function BackupCodesDisplay({ codes, onDone }: BackupCodesDisplayProps) {
         <Button
           type="button"
           variant="editorial-outline"
-          className="rounded-xl h-10"
+          size="editorial-sm"
           onClick={downloadCodes}
         >
           <Download className="h-3.5 w-3.5 me-1.5" />
@@ -75,7 +73,7 @@ export function BackupCodesDisplay({ codes, onDone }: BackupCodesDisplayProps) {
         <Button
           type="button"
           variant="editorial"
-          className="rounded-xl h-10"
+          size="editorial-sm"
           onClick={onDone}
         >
           {t("done")}

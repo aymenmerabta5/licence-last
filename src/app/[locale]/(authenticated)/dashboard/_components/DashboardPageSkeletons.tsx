@@ -239,10 +239,48 @@ export function MessagesPageSkeleton() {
 
 export function NotificationsPageSkeleton() {
   return (
-    <div className="space-y-6">
-      <HeaderSkeleton compact width="w-64" />
-      <Skeleton className="h-36 rounded-[1.5rem]" />
-      <CardStack count={4} height="h-28" />
+    <div className="mx-auto max-w-5xl space-y-10 pb-20 px-4 md:px-0">
+      {/* Header skeleton — matches NotificationsHeader (thin line + title + buttons) */}
+      <div className="space-y-4">
+        <Skeleton className="h-0.5 w-full max-w-xs" />
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+          <div className="space-y-2">
+            <Skeleton className="h-10 w-48 sm:w-64" />
+            <Skeleton className="h-4 w-32" />
+          </div>
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-8 w-28 rounded-sm" />
+            <Skeleton className="h-8 w-32 rounded-sm" />
+          </div>
+        </div>
+      </div>
+
+      {/* AI Summary skeleton */}
+      <div className="border border-border/60 overflow-hidden rounded-sm">
+        <div className="border-b border-border/40 bg-muted/20 px-5 py-3.5 dark:bg-muted/10">
+          <Skeleton className="h-3 w-24" />
+        </div>
+        <div className="px-5 py-4 space-y-2">
+          <Skeleton className="h-4 w-full max-w-md" />
+          <Skeleton className="h-4 w-full max-w-sm" />
+        </div>
+      </div>
+
+      {/* List skeleton */}
+      <div className="border-t border-border">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <div
+            key={index}
+            className="flex items-start justify-between gap-4 border-b border-border/50 px-4 sm:px-6 py-5"
+          >
+            <div className="space-y-2 flex-1">
+              <Skeleton className="h-3 w-32" />
+              <Skeleton className="h-4 w-full max-w-md" />
+            </div>
+            <Skeleton className="h-3 w-16 shrink-0" />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -292,25 +330,107 @@ export function PlacementDetailSkeleton() {
 export function SettingsPageSkeleton() {
   return (
     <div className="mx-auto max-w-7xl space-y-10 pb-24">
-      <Skeleton className="h-48 rounded-[2.5rem] sm:h-52" />
+      {/* Header skeleton — matches SettingsHeader (thin line + title + subtitle) */}
+      <div className="space-y-4">
+        <Skeleton className="h-0.5 w-full max-w-xs" />
+        <div className="space-y-3">
+          <Skeleton className="h-10 w-48 sm:w-64" />
+          <Skeleton className="h-4 w-full max-w-lg" />
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-14">
-        <div className="lg:col-span-3">
-          <div className="space-y-1 rounded-[2rem] border border-border/30 bg-background/60 p-3">
-            <Skeleton className="mb-4 ms-4 mt-3 h-3 w-24" />
-            {Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="flex items-center gap-4 px-4 py-3.5">
-                <Skeleton className="h-10 w-10 shrink-0 rounded-xl" />
-                <div className="flex-1 space-y-2.5">
+        {/* Sidebar skeleton — matches SettingsTabs (3 items) */}
+        <div className="lg:col-span-3 lg:sticky lg:top-24">
+          <div className="border border-border/60 bg-card/30 dark:bg-card/50">
+            <div className="border-b border-border/40 bg-muted/20 px-5 py-3.5 dark:bg-muted/10">
+              <Skeleton className="h-3 w-20" />
+            </div>
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-3 border-b border-border/20 px-5 py-4 last:border-b-0"
+              >
+                <Skeleton className="h-8 w-8 shrink-0 rounded-none" />
+                <div className="flex-1 space-y-1.5">
                   <Skeleton className="h-3.5 w-20" />
-                  <Skeleton className="h-2.5 w-28" />
+                  <Skeleton className="h-2.5 w-24" />
                 </div>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Content skeleton — matches tab content (bordered cards with headers + rows) */}
         <div className="space-y-8 lg:col-span-9">
-          <Skeleton className="h-[500px] rounded-[2.5rem]" />
-          <Skeleton className="h-[300px] rounded-[2.5rem]" />
+          {/* Section header card */}
+          <div className="overflow-hidden border border-border/60">
+            <div className="flex items-center gap-2.5 border-b border-border/40 bg-muted/20 px-6 py-4 dark:bg-muted/10">
+              <Skeleton className="h-4 w-4 shrink-0 rounded-none" />
+              <Skeleton className="h-5 w-32" />
+            </div>
+            <div className="px-6 py-4">
+              <Skeleton className="h-4 w-full max-w-md" />
+            </div>
+          </div>
+
+          {/* Card with rows */}
+          <div className="overflow-hidden border border-border/60">
+            <div className="divide-y divide-border/20">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col justify-between gap-4 px-6 py-5 sm:flex-row sm:items-center"
+                >
+                  <div className="flex items-start gap-3">
+                    <Skeleton className="mt-0.5 h-8 w-8 shrink-0 rounded-none" />
+                    <div className="space-y-1.5">
+                      <Skeleton className="h-3.5 w-24" />
+                      <Skeleton className="h-2.5 w-36" />
+                    </div>
+                  </div>
+                  <Skeleton className="ms-11 h-9 w-24 rounded-none sm:ms-0" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Another card with checkbox-like rows */}
+          <div className="overflow-hidden border border-border/60">
+            <div className="flex items-center gap-2.5 border-b border-border/40 bg-muted/20 px-6 py-4 dark:bg-muted/10">
+              <Skeleton className="h-4 w-4 shrink-0 rounded-none" />
+              <Skeleton className="h-5 w-36" />
+            </div>
+            <div className="space-y-4 p-6">
+              {Array.from({ length: 2 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="flex items-start gap-3 border border-border/40 p-4"
+                >
+                  <Skeleton className="mt-1 h-4 w-4 shrink-0 rounded-sm" />
+                  <div className="flex-1 space-y-1">
+                    <Skeleton className="h-3.5 w-32" />
+                    <Skeleton className="h-3 w-full max-w-sm" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Danger zone card */}
+          <div className="overflow-hidden border border-destructive/20 dark:border-destructive/15">
+            <div className="h-0.5 bg-destructive/40" />
+            <div className="flex flex-col justify-between gap-6 p-6 sm:flex-row sm:items-center">
+              <div className="flex items-start gap-3">
+                <Skeleton className="h-9 w-9 shrink-0 rounded-none" />
+                <div className="min-w-0 space-y-1">
+                  <Skeleton className="h-6 w-28" />
+                  <Skeleton className="h-4 w-full max-w-xs" />
+                </div>
+              </div>
+              <Skeleton className="h-10 w-32 shrink-0 rounded-none" />
+            </div>
+          </div>
         </div>
       </div>
     </div>

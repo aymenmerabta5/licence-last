@@ -20,14 +20,7 @@ export function EnableFlow({ state }: EnableFlowProps) {
 
   if (state.phase === "enabling") {
     return (
-      <div className="space-y-4">
-        <div className="space-y-1">
-          <h4 className="font-bold">{t("enableStep.title")}</h4>
-          <p className="text-xs text-muted-foreground">
-            {t("enableStep.description")}
-          </p>
-        </div>
-
+      <div className="space-y-5">
         <div className="space-y-2">
           <Label
             htmlFor="2fa-password"
@@ -41,7 +34,7 @@ export function EnableFlow({ state }: EnableFlowProps) {
             value={state.password}
             onChange={(e) => state.setPassword(e.target.value)}
             placeholder={t("enableStep.passwordPlaceholder")}
-            className="h-11 border-border/40"
+            className="rounded-none"
             autoFocus
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -60,7 +53,6 @@ export function EnableFlow({ state }: EnableFlowProps) {
           <Button
             type="button"
             variant="editorial"
-            className="rounded-xl h-11"
             disabled={state.isLoading}
             onClick={state.submitPassword}
           >
@@ -73,7 +65,6 @@ export function EnableFlow({ state }: EnableFlowProps) {
           <Button
             type="button"
             variant="editorial-outline"
-            className="rounded-xl h-11"
             onClick={state.cancel}
           >
             {t("disableConfirm.cancel")}
@@ -85,14 +76,7 @@ export function EnableFlow({ state }: EnableFlowProps) {
 
   if (state.phase === "verifying") {
     return (
-      <div className="space-y-6">
-        <div className="space-y-1">
-          <h4 className="font-bold">{t("verifyStep.title")}</h4>
-          <p className="text-xs text-muted-foreground">
-            {t("enableStep.scanQr")}
-          </p>
-        </div>
-
+      <div className="space-y-5">
         {state.totpURI && (
           <div className="flex flex-col items-center gap-4 p-6 border border-border/40 bg-white dark:bg-background">
             <QRCodeSVG value={state.totpURI} size={180} />
@@ -112,7 +96,7 @@ export function EnableFlow({ state }: EnableFlowProps) {
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="shrink-0"
+                className="shrink-0 rounded-none"
                 onClick={() => {
                   navigator.clipboard.writeText(state.secret)
                   toast.success(t("enableStep.copySecret"))
@@ -136,7 +120,7 @@ export function EnableFlow({ state }: EnableFlowProps) {
             value={state.verifyCode}
             onChange={(e) => state.setVerifyCode(e.target.value)}
             placeholder={t("verifyStep.codePlaceholder")}
-            className="h-12 text-center text-lg tracking-[0.3em] font-mono border-border/40"
+            className="rounded-none text-center text-lg tracking-[0.3em] font-mono"
             maxLength={6}
             autoFocus
             autoComplete="one-time-code"
@@ -157,7 +141,6 @@ export function EnableFlow({ state }: EnableFlowProps) {
           <Button
             type="button"
             variant="editorial"
-            className="rounded-xl h-11"
             disabled={state.isLoading || !state.verifyCode.trim()}
             onClick={state.verifyAndEnable}
           >
@@ -170,7 +153,6 @@ export function EnableFlow({ state }: EnableFlowProps) {
           <Button
             type="button"
             variant="editorial-outline"
-            className="rounded-xl h-11"
             onClick={state.cancel}
           >
             {t("disableConfirm.cancel")}
