@@ -43,7 +43,7 @@ export function CompanyDirectoryCard({ company }: CompanyDirectoryCardProps) {
                 variant="outline"
                 className="text-[10px] font-bold uppercase tracking-[0.12em]"
               >
-                <BriefcaseBusiness className="h-3 w-3 mr-1" />
+                <BriefcaseBusiness className="h-3 w-3 me-1" />
                 {t("openOffersCount", { count: company.openOffersCount })}
               </Badge>
             </div>
