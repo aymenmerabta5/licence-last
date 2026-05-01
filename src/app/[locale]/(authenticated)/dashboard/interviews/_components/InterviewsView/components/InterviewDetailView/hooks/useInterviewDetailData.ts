@@ -108,11 +108,9 @@ export function useInterviewDetailData({ interviewId, initialInterview }: UseInt
 
   const confirmSlot = async (input: ConfirmSlotInput) => {
     setConfirmingSlotId(input.slotId)
-    try {
-      await confirmSlotMutation.mutateAsync(input)
-    } finally {
-      setConfirmingSlotId(null)
-    }
+    confirmSlotMutation.mutate(input, {
+      onSettled: () => setConfirmingSlotId(null),
+    })
   }
 
   return {

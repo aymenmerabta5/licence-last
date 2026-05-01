@@ -1,5 +1,6 @@
 import "server-only"
 
+import { eq } from "drizzle-orm"
 import { z } from "zod"
 
 import { primaryUserRoleSchema } from "@/lib/schemas/enums"
@@ -23,6 +24,8 @@ import {
 import { setUserPassword } from "@/server/services/admin/set-password"
 import { setUserRole } from "@/server/services/admin/set-role"
 import { updateUser } from "@/server/services/admin/update-user"
+import { db } from "@/server/db"
+import { company } from "@/server/db/schema/companies"
 import { sanitizeIpAddress } from "@/lib/utils"
 
 const listUsersInputSchema = z.object({
@@ -68,6 +71,12 @@ export const listUsersProcedure = adminProcedureGenerous
     })
   })
 
+const createUserRoleSchema = z.enum([
+  ...primaryUserRoleSchema.options,
+  "recruiter",
+  "department_head",
+])
+
 export const createUserProcedure = superAdminProcedureStandard
   .input(
     z
@@ -75,23 +84,49 @@ export const createUserProcedure = superAdminProcedureStandard
         email: z.email(),
         password: z.string().min(8).max(128),
         name: z.string().min(2).max(120),
-        role: primaryUserRoleSchema,
+        role: createUserRoleSchema,
         universityId: z.string().min(1).optional(),
+        companyId: z.string().min(1).optional(),
       })
       .refine(
         (data) => {
-          if (data.role === "student" || data.role === "university_admin") {
+          if (data.role === "student" || data.role === "department_head") {
             return !!data.universityId
+          }
+          if (data.role === "recruiter") {
+            return !!data.companyId
           }
           return true
         },
         {
-          message: "University is required for this role",
+          message: "Required attachment is missing for this role",
           path: ["universityId"],
         },
-      ),
+      )
   )
-  .handler(async ({ input }) => createUser(input))
+  .handler(async ({ input }) => {
+    if (input.role === "recruiter" && input.companyId) {
+      const [companyRow] = await db
+        .select({ id: company.id })
+        .from(company)
+        .where(eq(company.id, input.companyId))
+        .limit(1)
+      if (!companyRow) {
+        throwCodedORPCError("BAD_REQUEST", "COMPANY_NOT_FOUND", {
+          message: "Company not found",
+        })
+      }
+    }
+
+    return createUser({
+      email: input.email,
+      password: input.password,
+      name: input.name,
+      role: input.role,
+      universityId: input.universityId,
+      companyId: input.companyId,
+    })
+  })
 
 export const setRoleProcedure = superAdminProcedureStandard
   .input(

@@ -91,10 +91,11 @@ export function SessionManagement() {
           if (!open) setRevokeToken(null)
         }}
         mode="single"
-        onConfirm={async () => {
-          if (revokeToken) {
-            await revokeSession(revokeToken)
-            setRevokeToken(null)
+        onConfirm={() => {
+          const token = revokeToken
+          setRevokeToken(null)
+          if (token) {
+            revokeSession(token).catch(() => {})
           }
         }}
         isLoading={isRevoking}
@@ -105,9 +106,9 @@ export function SessionManagement() {
         onOpenChange={setShowRevokeAll}
         mode="all"
         count={otherSessions.length}
-        onConfirm={async () => {
-          await revokeOthers()
+        onConfirm={() => {
           setShowRevokeAll(false)
+          revokeOthers().catch(() => {})
         }}
         isLoading={isRevokingOthers}
       />

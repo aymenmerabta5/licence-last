@@ -155,9 +155,6 @@ export function useCompanyFeedback(): UseCompanyFeedbackResult {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: trustIndicesQueryKey })
       toast.success(t("submitSuccess"))
-      setActivePlacement(null)
-      setValues(DEFAULT_FEEDBACK_VALUES)
-      setErrors({})
     },
   })
 
@@ -168,7 +165,7 @@ export function useCompanyFeedback(): UseCompanyFeedbackResult {
   }
 
   function onOpenChange(open: boolean) {
-    if (!open && !feedbackMutation.isPending) {
+    if (!open) {
       setActivePlacement(null)
       setValues(DEFAULT_FEEDBACK_VALUES)
       setErrors({})
@@ -200,17 +197,11 @@ export function useCompanyFeedback(): UseCompanyFeedbackResult {
       return
     }
 
-    if (typeof feedbackMutation.mutate === "function") {
-      feedbackMutation.mutate(parsed.data)
-      return
-    }
+    setActivePlacement(null)
+    setValues(DEFAULT_FEEDBACK_VALUES)
+    setErrors({})
 
-    if (typeof feedbackMutation.mutateAsync === "function") {
-      void feedbackMutation.mutateAsync(parsed.data)
-      return
-    }
-
-    toast.error(t("submitError"))
+    feedbackMutation.mutate(parsed.data)
   }
 
   return {

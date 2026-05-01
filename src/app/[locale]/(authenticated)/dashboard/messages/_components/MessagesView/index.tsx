@@ -125,14 +125,18 @@ export function MessagesView({ role, currentUserId }: MessagesViewProps) {
       return
     }
 
-    try {
-      const result = await sendMessage({ target, body })
-      resetDraft()
-      if (target.kind === "starter") {
-        setPendingThreadId(result.threadId)
-        selectThread(result.threadId)
-      }
-    } catch {}
+    resetDraft()
+    sendMessage({ target, body }, {
+      onSuccess: (result) => {
+        if (target.kind === "starter") {
+          const threadId = (result as unknown as { threadId?: string }).threadId
+          if (threadId) {
+            setPendingThreadId(threadId)
+            selectThread(threadId)
+          }
+        }
+      },
+    })
   }
 
   return (

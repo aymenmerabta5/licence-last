@@ -26,6 +26,8 @@ const roles = [
   "student",
   "company_admin",
   "university_admin",
+  "department_head",
+  "recruiter",
   "super_admin",
 ] as const
 

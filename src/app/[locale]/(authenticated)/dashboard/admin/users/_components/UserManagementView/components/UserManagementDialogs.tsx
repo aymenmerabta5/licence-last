@@ -1,6 +1,5 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
 import { BanUserDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/BanUserDialog"
 import { CreateUserDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/CreateUserDialog"
 import { DeleteUserDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/DeleteUserDialog"
@@ -8,7 +7,6 @@ import { SetPasswordDialog } from "@/app/[locale]/(authenticated)/dashboard/admi
 import { SetRoleDialog } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/SetRoleDialog"
 import type { UserActions } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/hooks/useUserActions"
 import type { UserDialogState } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/hooks/useUserDialogState"
-import { orpc } from "@/server/orpc/client"
 
 interface UserManagementDialogsProps {
   isSuperAdmin: boolean
@@ -21,15 +19,6 @@ export function UserManagementDialogs({
   dialogState,
   actions,
 }: UserManagementDialogsProps) {
-  const { data: universitiesResult } = useQuery(
-    orpc.universities.list.queryOptions({ input: { status: "approved" } }),
-  )
-  const universities =
-    universitiesResult?.universities.map((u) => ({
-      id: u.id,
-      name: u.name,
-    })) ?? []
-
   return (
     <>
       {isSuperAdmin && (
@@ -37,12 +26,10 @@ export function UserManagementDialogs({
           open={dialogState.createOpen}
           onOpenChange={dialogState.setCreateOpen}
           onSubmit={(data) => {
-            actions.createUser.mutate(data, {
-              onSuccess: () => dialogState.setCreateOpen(false),
-            })
+            dialogState.setCreateOpen(false)
+            actions.createUser.mutate(data)
           }}
           isPending={actions.createUser.isPending}
-          universities={universities}
         />
       )}
 
@@ -51,9 +38,8 @@ export function UserManagementDialogs({
         onOpenChange={(open) => !open && dialogState.setBanTarget(null)}
         user={dialogState.banTarget}
         onSubmit={(data) => {
-          actions.banUser.mutate(data, {
-            onSuccess: () => dialogState.setBanTarget(null),
-          })
+          dialogState.setBanTarget(null)
+          actions.banUser.mutate(data)
         }}
         isPending={actions.banUser.isPending}
       />
@@ -64,13 +50,13 @@ export function UserManagementDialogs({
           onOpenChange={(open) => !open && dialogState.setRoleTarget(null)}
           user={dialogState.roleTarget}
           onSubmit={(data) => {
+            dialogState.setRoleTarget(null)
             actions.setRole.mutate(data, {
               onSuccess: () => {
                 actions.updateUser.mutate({
                   userId: data.userId,
                   role: data.role,
                 })
-                dialogState.setRoleTarget(null)
               },
             })
           }}
@@ -84,9 +70,8 @@ export function UserManagementDialogs({
           onOpenChange={(open) => !open && dialogState.setPwTarget(null)}
           user={dialogState.pwTarget}
           onSubmit={(data) => {
-            actions.setPassword.mutate(data, {
-              onSuccess: () => dialogState.setPwTarget(null),
-            })
+            dialogState.setPwTarget(null)
+            actions.setPassword.mutate(data)
           }}
           isPending={actions.setPassword.isPending}
         />
@@ -97,10 +82,8 @@ export function UserManagementDialogs({
         onOpenChange={(open) => !open && dialogState.setDeleteTarget(null)}
         user={dialogState.deleteTarget}
         onConfirm={(userId) => {
-          actions.removeUser.mutate(
-            { userId },
-            { onSuccess: () => dialogState.setDeleteTarget(null) },
-          )
+          dialogState.setDeleteTarget(null)
+          actions.removeUser.mutate({ userId })
         }}
         isPending={actions.removeUser.isPending}
       />

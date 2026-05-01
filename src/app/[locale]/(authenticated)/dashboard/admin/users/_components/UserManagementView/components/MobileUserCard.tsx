@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl"
 import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
 import { UserActionsMenu } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/UserActionsMenu"
 import { UserRoleBadge } from "@/components/UserRoleBadge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface MobileUserCardProps {
   user: AdminUser
@@ -31,11 +32,17 @@ export function MobileUserCard({
   canSetPassword,
 }: MobileUserCardProps) {
   const t = useTranslations("dashboard.superAdmin.users")
-  const displayRole = user.universityMembershipRole ?? user.role
+  const displayRole =
+    user.companyMemberRole === "recruiter"
+      ? "recruiter"
+      : (user.universityMembershipRole ?? user.role)
   const roleLabelKey =
     displayRole === "department_head" ? "dept_head" : (displayRole ?? "student")
 
   const affiliation = (() => {
+    if (user.companyMemberRole === "recruiter" && user.companyName) {
+      return user.companyName
+    }
     if (user.universityMembershipRole === "department_head") {
       if (user.departmentName && user.universityName) {
         return `${user.departmentName} @ ${user.universityName}`
@@ -43,6 +50,12 @@ export function MobileUserCard({
       return user.departmentName ?? user.universityName ?? null
     }
     if (user.role === "university_admin" && user.universityName) {
+      return user.universityName
+    }
+    if (user.role === "company_admin" && user.companyName) {
+      return user.companyName
+    }
+    if (user.role === "student" && user.universityName) {
       return user.universityName
     }
     return null
@@ -55,9 +68,14 @@ export function MobileUserCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border border-border/50 bg-accent/50 text-xs font-semibold text-foreground">
-            {(user.name?.[0] ?? user.email[0]).toUpperCase()}
-          </div>
+          <Avatar className="h-10 w-10 rounded-sm border border-border/50">
+            {user.image && (
+              <AvatarImage src={user.image} alt={user.name || user.email} />
+            )}
+            <AvatarFallback className="rounded-sm bg-accent/50 text-xs font-semibold text-foreground">
+              {(user.name?.[0] ?? user.email[0]).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
           <div className="min-w-0 space-y-1">
             <p className="truncate text-[13px] font-medium leading-none text-foreground">
               {user.name || "—"}

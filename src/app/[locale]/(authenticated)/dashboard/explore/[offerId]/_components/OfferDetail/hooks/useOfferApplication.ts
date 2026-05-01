@@ -38,10 +38,10 @@ export function useOfferApplication(
         status: "applied",
         createdAt: new Date(),
       })
-      setShowApplyForm(false)
       setSuccessMsg(t("applicationSuccess"))
     },
     onMutate: async (variables) => {
+      setShowApplyForm(false)
       const checkQueryKey = orpc.applications.checkApplication.queryOptions({
         input: { offerId: variables.offerId },
       }).queryKey

@@ -74,22 +74,23 @@ export function OpenReportsCard({
       return
     }
 
+    const report = selectedReport
+    setSelectedReport(null)
+    setResolutionNote("")
+
     try {
       await onResolve({
-        reportId: selectedReport.id,
+        reportId: report.id,
         status: nextStatus,
         resolutionNote: resolutionNote.trim() || undefined,
       })
     } catch {
       return
     }
-
-    setSelectedReport(null)
-    setResolutionNote("")
   }
 
   function handleDialogChange(open: boolean) {
-    if (!open && !isResolving) {
+    if (!open) {
       setSelectedReport(null)
       setResolutionNote("")
     }

@@ -252,44 +252,53 @@ export function useCandidates(offerId: string) {
     },
   })
 
-  const handleAccept = async () => {
+  const handleAccept = () => {
     if (!acceptModal) return
-    setActionLoading(acceptModal.applicationId)
-    try {
-      await acceptMutation.mutateAsync({
-        applicationId: acceptModal.applicationId,
-      })
-      await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
-      await refreshTimelineForApplication(acceptModal.applicationId)
-      queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
-      setAcceptModal(null)
-      toast.success(t("acceptSuccess"))
-    } catch {
-      toast.error(t("acceptError"))
-    } finally {
-      setActionLoading(null)
-    }
+    const { applicationId } = acceptModal
+    setActionLoading(applicationId)
+    setAcceptModal(null)
+    acceptMutation.mutate(
+      { applicationId },
+      {
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+          await refreshTimelineForApplication(applicationId)
+          queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
+          toast.success(t("acceptSuccess"))
+        },
+        onError: () => {
+          toast.error(t("acceptError"))
+        },
+        onSettled: () => {
+          setActionLoading(null)
+        },
+      },
+    )
   }
 
-  const handleRefuse = async () => {
+  const handleRefuse = () => {
     if (!refuseModal) return
-    setActionLoading(refuseModal.applicationId)
-    try {
-      await refuseMutation.mutateAsync({
-        applicationId: refuseModal.applicationId,
-        note: refuseNote || undefined,
-      })
-      await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
-      await refreshTimelineForApplication(refuseModal.applicationId)
-      queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
-      setRefuseModal(null)
-      setRefuseNote("")
-      toast.success(t("refuseSuccess"))
-    } catch {
-      toast.error(t("refuseError"))
-    } finally {
-      setActionLoading(null)
-    }
+    const { applicationId } = refuseModal
+    setActionLoading(applicationId)
+    setRefuseModal(null)
+    setRefuseNote("")
+    refuseMutation.mutate(
+      { applicationId, note: refuseNote || undefined },
+      {
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+          await refreshTimelineForApplication(applicationId)
+          queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
+          toast.success(t("refuseSuccess"))
+        },
+        onError: () => {
+          toast.error(t("refuseError"))
+        },
+        onSettled: () => {
+          setActionLoading(null)
+        },
+      },
+    )
   }
 
   const handleProposeInterview = async (payload: {
@@ -304,35 +313,39 @@ export function useCandidates(offerId: string) {
   }) => {
     setIsProposingInterview(true)
     setActionLoading(payload.applicationId)
-    try {
-      // 1. Create interview slots
-      await proposeSlotsMutation.mutateAsync({
+    setInterviewModal(null)
+
+    proposeSlotsMutation.mutate(
+      {
         applicationId: payload.applicationId,
         slots: payload.slots,
         note: payload.note,
-      })
+      },
+      {
+        onSuccess: async () => {
+          await orpcClient.applications.updatePipelineStage({
+            applicationId: payload.applicationId,
+            toStage: "interview",
+          })
 
-      // 2. Move to interview stage
-      await orpcClient.applications.updatePipelineStage({
-        applicationId: payload.applicationId,
-        toStage: "interview",
-      })
+          await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+          await refreshTimelineForApplication(payload.applicationId)
+          queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
+          queryClient.invalidateQueries({
+            queryKey: orpc.interviews.listForCompany.queryOptions().queryKey,
+          })
 
-      await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
-      await refreshTimelineForApplication(payload.applicationId)
-      queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
-      queryClient.invalidateQueries({
-        queryKey: orpc.interviews.listForCompany.queryOptions().queryKey,
-      })
-
-      setInterviewModal(null)
-      toast.success(t("interviewProposeSuccess"))
-    } catch {
-      toast.error(t("interviewProposeError"))
-    } finally {
-      setIsProposingInterview(false)
-      setActionLoading(null)
-    }
+          toast.success(t("interviewProposeSuccess"))
+        },
+        onError: () => {
+          toast.error(t("interviewProposeError"))
+        },
+        onSettled: () => {
+          setIsProposingInterview(false)
+          setActionLoading(null)
+        },
+      },
+    )
   }
 
   const grouped = useMemo(() => {

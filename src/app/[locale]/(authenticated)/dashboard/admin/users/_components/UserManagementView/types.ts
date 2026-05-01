@@ -6,6 +6,8 @@ export interface AdminUser {
   universityMembershipRole?: string | null
   universityName?: string | null
   departmentName?: string | null
+  companyMemberRole?: string | null
+  companyName?: string | null
   banned?: boolean | null
   banReason?: string | null
   banExpires?: number | null

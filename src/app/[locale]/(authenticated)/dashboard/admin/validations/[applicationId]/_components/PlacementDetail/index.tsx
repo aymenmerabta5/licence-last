@@ -74,7 +74,10 @@ export function PlacementDetailClient({
           rejectReason={actions.rejectReason}
           onRejectReasonChange={actions.setRejectReason}
           actionLoading={actions.actionLoading}
-          onConfirm={actions.handleReject}
+          onConfirm={() => {
+            actions.setRejectModal(false)
+            actions.handleReject()
+          }}
           onClose={() => {
             actions.setRejectModal(false)
             actions.setRejectReason("")

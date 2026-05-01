@@ -149,20 +149,23 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
               }
             }}
             onConfirm={(member) => {
-              void removeMutation
-                .mutateAsync({ userId: member.userId })
-                .then(() => {
-                  setMemberToRemove(null)
-                  toast.success(t("errors.common.companyMemberRemoved"))
-                })
-                .catch((removeError) => {
-                  toast.error(
-                    resolveLocalizedError(removeError, {
-                      t,
-                      fallbackKey: "errors.common.companyMemberRemoveFailed",
-                    }),
-                  )
-                })
+              setMemberToRemove(null)
+              removeMutation.mutate(
+                { userId: member.userId },
+                {
+                  onSuccess: () => {
+                    toast.success(t("errors.common.companyMemberRemoved"))
+                  },
+                  onError: (removeError) => {
+                    toast.error(
+                      resolveLocalizedError(removeError, {
+                        t,
+                        fallbackKey: "errors.common.companyMemberRemoveFailed",
+                      }),
+                    )
+                  },
+                },
+              )
             }}
           />
         </>

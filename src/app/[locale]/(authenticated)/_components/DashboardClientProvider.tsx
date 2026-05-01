@@ -51,6 +51,7 @@ export function DashboardClientProvider({
     email: string
     role: string | null | undefined
     effectiveRole?: string | null
+    image?: string | null
   }
   impersonatedBy?: string | null
   companyMembershipRole?: string | null

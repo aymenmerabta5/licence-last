@@ -252,6 +252,7 @@ export function useDeptHeadPlacementActions(
   }
 
   const handleReject = () => {
+    setRejectModal(false)
     setActionLoading(true)
     rejectMutation.mutate({
       applicationId,

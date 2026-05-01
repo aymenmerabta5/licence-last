@@ -21,11 +21,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { OrganizationSearchField } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/OrganizationSearchField"
 
-interface UniversityOption {
-  id: string
-  name: string
-}
+type CreateUserRole =
+  | "student"
+  | "company_admin"
+  | "university_admin"
+  | "department_head"
+  | "super_admin"
+  | "recruiter"
 
 interface CreateUserDialogProps {
   open: boolean
@@ -34,35 +38,36 @@ interface CreateUserDialogProps {
     email: string
     password: string
     name: string
-    role: "student" | "company_admin" | "university_admin" | "super_admin"
+    role: CreateUserRole
     universityId?: string
+    companyId?: string
   }) => void
   isPending: boolean
-  universities?: UniversityOption[]
 }
 
-const roles = ["student", "company_admin", "university_admin", "super_admin"] as const
-
-const rolesRequiringUniversity = new Set<string>([
+const roles: CreateUserRole[] = [
   "student",
+  "company_admin",
   "university_admin",
-])
-
+  "department_head",
+  "super_admin",
+  "recruiter",
+]
 export function CreateUserDialog({
   open,
   onOpenChange,
   onSubmit,
   isPending,
-  universities = [],
 }: CreateUserDialogProps) {
   const t = useTranslations("dashboard.superAdmin.users")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [name, setName] = useState("")
-  const [role, setRole] = useState<(typeof roles)[number]>("student")
+  const [role, setRole] = useState<CreateUserRole>("student")
   const [universityId, setUniversityId] = useState("")
-
-  const requiresUniversity = rolesRequiringUniversity.has(role)
+  const [companyId, setCompanyId] = useState("")
+  const isUniversitySearch = role === "student" || role === "department_head"
+  const isCompanySearch = role === "recruiter"
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -71,14 +76,22 @@ export function CreateUserDialog({
       password,
       name,
       role,
-      ...(requiresUniversity && universityId ? { universityId } : {}),
+      ...(isUniversitySearch && universityId
+        ? { universityId }
+        : {}),
+      ...(isCompanySearch && companyId ? { companyId } : {}),
     })
     setEmail("")
     setPassword("")
     setName("")
     setRole("student")
     setUniversityId("")
+    setCompanyId("")
   }
+
+  const attachmentMissing =
+    (isUniversitySearch && !universityId) ||
+    (isCompanySearch && !companyId)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -129,8 +142,9 @@ export function CreateUserDialog({
               value={role}
               onValueChange={(v) => {
                 if (!v) return
-                setRole(v as typeof role)
+                setRole(v as CreateUserRole)
                 setUniversityId("")
+                setCompanyId("")
               }}
               items={roles.map((r) => ({ value: r, label: t(`roles.${r}`) }))}
             >
@@ -146,30 +160,20 @@ export function CreateUserDialog({
               </SelectContent>
             </Select>
           </div>
-          {requiresUniversity && (
-            <div className="space-y-2">
-              <Label>{t("fields.university")}</Label>
-              <Select
-                value={universityId}
-                onValueChange={(v) => v && setUniversityId(v)}
-                items={universities.map((u) => ({
-                  value: u.id,
-                  label: u.name,
-                }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t("fields.selectUniversity")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {universities.map((u) => (
-                    <SelectItem key={u.id} value={u.id}>
-                      {u.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
+
+          <OrganizationSearchField
+            role={role}
+            value={isUniversitySearch ? universityId : companyId}
+            onChange={(id) => {
+              if (isUniversitySearch) setUniversityId(id)
+              else setCompanyId(id)
+            }}
+            onClear={() => {
+              setUniversityId("")
+              setCompanyId("")
+            }}
+          />
+
           <DialogFooter>
             <Button
               type="button"
@@ -182,7 +186,7 @@ export function CreateUserDialog({
             <Button
               type="submit"
               className="rounded-none"
-              disabled={isPending || (requiresUniversity && !universityId)}
+              disabled={isPending || attachmentMissing}
             >
               {isPending && <Loader2 className="h-4 w-4 me-2 animate-spin" />}
               {t("dialogs.create.submit")}

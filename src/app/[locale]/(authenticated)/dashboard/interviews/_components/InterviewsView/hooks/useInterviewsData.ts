@@ -121,11 +121,9 @@ export function useInterviewsData({
 
   const confirmSlot = async (input: ConfirmSlotInput) => {
     setConfirmingSlotId(input.slotId)
-    try {
-      await confirmSlotMutation.mutateAsync(input)
-    } finally {
-      setConfirmingSlotId(null)
-    }
+    confirmSlotMutation.mutate(input, {
+      onSettled: () => setConfirmingSlotId(null),
+    })
   }
 
   const studentInterviews = (studentInterviewsQuery.data ??

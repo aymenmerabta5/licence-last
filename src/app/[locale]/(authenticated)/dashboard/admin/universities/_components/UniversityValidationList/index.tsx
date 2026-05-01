@@ -33,25 +33,18 @@ export function UniversityValidationList() {
 
   function handleRejectConfirm(reason: string) {
     if (!state.rejectingId) return
-    rejectUniversity(
-      { universityId: state.rejectingId, reason },
-      { onSuccess: () => state.handleRejectDialogChange(false) },
-    )
+    state.handleRejectDialogChange(false)
+    rejectUniversity({ universityId: state.rejectingId, reason })
   }
 
   function handleEditConfirm(payload: UpdateUniversityPayload) {
-    updateUniversity(payload, {
-      onSuccess: () => state.handleEditDialogChange(false),
-    })
+    state.handleEditDialogChange(false)
+    updateUniversity(payload)
   }
 
   function handleDeleteConfirm(universityId: string) {
-    deleteUniversity(
-      { universityId },
-      {
-        onSuccess: () => state.handleDeleteDialogChange(false),
-      },
-    )
+    state.handleDeleteDialogChange(false)
+    deleteUniversity({ universityId })
   }
 
   return (

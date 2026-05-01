@@ -4,6 +4,7 @@ export interface NavbarUser {
   email: string
   role: string | null | undefined
   effectiveRole?: string | null
+  image?: string | null
 }
 
 export interface DeviceSession {

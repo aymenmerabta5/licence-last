@@ -4,7 +4,6 @@ import type { UIMessage } from "ai"
 import { ChevronDown } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { useState } from "react"
 import { ConversationComposer } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ConversationComposer"
 import { MessageBubble } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/MessageBubble"
 import { SaveNoteDialog } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/SaveNoteDialog"
@@ -60,8 +59,6 @@ export function ConversationThread({
   onAppendNote,
 }: ConversationThreadProps) {
   const t = useTranslations("dashboard.assistant")
-  const [isSavingNote, setIsSavingNote] = useState(false)
-
   const {
     messages,
     setMessages,
@@ -85,23 +82,21 @@ export function ConversationThread({
   } = useConversationThread({ conversationId, initialMessages })
 
   const handleSaveNote = async (noteText: string) => {
-    setIsSavingNote(true)
-    try {
-      await onAppendNote(noteText, (savedText) => {
-        const noteMessage = {
-          id: crypto.randomUUID(),
-          role: "user" as const,
-          parts: [
-            { type: "text", text: savedText },
-            { type: "note-marker" },
-          ] as UIMessage["parts"],
-        }
-        setMessages((prev) => [...prev, noteMessage])
-        scrollToBottom()
-      })
-    } finally {
-      setIsSavingNote(false)
-    }
+    const trimmed = noteText.trim()
+    if (!trimmed) return
+    onNoteDialogOpenChange(false)
+    await onAppendNote(trimmed, (savedText) => {
+      const noteMessage = {
+        id: crypto.randomUUID(),
+        role: "user" as const,
+        parts: [
+          { type: "text", text: savedText },
+          { type: "note-marker" },
+        ] as UIMessage["parts"],
+      }
+      setMessages((prev) => [...prev, noteMessage])
+      scrollToBottom()
+    })
   }
 
   return (
@@ -187,7 +182,6 @@ export function ConversationThread({
         open={isNoteDialogOpen}
         onOpenChange={onNoteDialogOpenChange}
         onSave={handleSaveNote}
-        isSaving={isSavingNote}
       />
     </div>
   )

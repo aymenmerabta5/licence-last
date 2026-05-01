@@ -1221,8 +1221,10 @@
         "unknownRole": "مستخدم",
         "roles": {
           "student": "طالب",
-          "company_admin": "مسؤول توظيف",
-          "dept_head": "رئيس قسم",
+      "company_admin": "مسؤول توظيف",
+      "department_head": "رئيس قسم",
+      "dept_head": "رئيس قسم",
+      "recruiter": "مسؤول توظيف",
           "university_admin": "مسؤول جامعة",
           "super_admin": "مسؤول نظام"
         },
@@ -1911,7 +1913,9 @@
         "roles": {
           "student": "طالب",
           "company_admin": "مدير الشركة",
+          "recruiter": "مسؤول التوظيف",
           "dept_head": "رئيس القسم",
+          "department_head": "رئيس القسم",
           "university_admin": "مدير الجامعة",
           "super_admin": "المشرف الفائق"
         },
@@ -1943,7 +1947,10 @@
           "password": "كلمة المرور",
           "role": "دور",
           "university": "الجامعة",
-          "selectUniversity": "اختر جامعة"
+          "selectUniversity": "اختر جامعة",
+          "company": "الشركة",
+          "selectCompany": "اختر شركة",
+          "noResults": "لا توجد نتائج"
         },
         "dialogs": {
           "cancel": "يلغي",
@@ -1993,7 +2000,9 @@
         "roles": {
           "student": "طالب",
           "company_admin": "مدير الشركة",
+          "recruiter": "مسؤول التوظيف",
           "dept_head": "رئيس القسم",
+          "department_head": "رئيس القسم",
           "university_admin": "مدير الجامعة",
           "super_admin": "المشرف الفائق"
         },

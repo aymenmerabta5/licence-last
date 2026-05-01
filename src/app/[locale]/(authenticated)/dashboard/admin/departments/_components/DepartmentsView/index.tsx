@@ -35,29 +35,23 @@ export function DepartmentsView() {
   const emptyLabel = hasUniversityContext
     ? t("empty")
     : t("selectUniversityFirst")
-  const handleEditDepartment = async (departmentId: string, name: string) => {
-    try {
-      await actions.updateDepartment(departmentId, { name })
-      viewState.setEditTarget(null)
-    } catch {
+  const handleEditDepartment = (departmentId: string, name: string) => {
+    viewState.setEditTarget(null)
+    actions.updateDepartment(departmentId, { name }).catch(() => {
       // Error feedback is handled by the mutation hook.
-    }
+    })
   }
-  const handleRemoveHead = async (departmentId: string) => {
-    try {
-      await actions.unassignHead(departmentId)
-      viewState.setRemoveHeadTarget(null)
-    } catch {
+  const handleRemoveHead = (departmentId: string) => {
+    viewState.setRemoveHeadTarget(null)
+    actions.unassignHead(departmentId).catch(() => {
       // Error feedback is handled by the mutation hook.
-    }
+    })
   }
-  const handleDeleteDepartment = async (departmentId: string) => {
-    try {
-      await actions.removeDepartment(departmentId)
-      viewState.setDeleteTarget(null)
-    } catch {
+  const handleDeleteDepartment = (departmentId: string) => {
+    viewState.setDeleteTarget(null)
+    actions.removeDepartment(departmentId).catch(() => {
       // Error feedback is handled by the mutation hook.
-    }
+    })
   }
   return (
     <div className="mx-auto max-w-5xl space-y-8 pb-16">

@@ -2,7 +2,7 @@ import { describe, expect, mock, test } from "bun:test"
 import { fireEvent, render, screen } from "@testing-library/react"
 import type * as React from "react"
 
-const removeMutateAsyncMock = mock(async () => ({}))
+const removeMutateAsyncMock = mock(async (_variables?: unknown) => ({}))
 
 mock.module("lucide-react", () => ({
   Loader2: () => <span>Loader2</span>,
@@ -92,6 +92,7 @@ mock.module(
       removeMutation: {
         isPending: false,
         mutateAsync: removeMutateAsyncMock,
+        mutate: (variables: unknown) => removeMutateAsyncMock(variables),
       },
     }),
   }),

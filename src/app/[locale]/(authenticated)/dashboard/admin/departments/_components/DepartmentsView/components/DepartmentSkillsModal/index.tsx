@@ -55,11 +55,11 @@ export function DepartmentSkillsModal({
   }
 
   const handleSave = async () => {
-    const isSuccess = await save()
-    if (!isSuccess) return
-
-    toast.success(t("saveSuccess"))
     handleOpenChange(false)
+    const isSuccess = await save()
+    if (isSuccess) {
+      toast.success(t("saveSuccess"))
+    }
   }
 
   const handleCreateSkill = async () => {

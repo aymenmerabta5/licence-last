@@ -10,6 +10,7 @@ import {
   NAVBAR_TEXT_CONTROL_CLASS,
 } from "@/components/navbar-control-styles"
 import { UserRoleBadge } from "@/components/UserRoleBadge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -78,9 +79,14 @@ export function UserDropdown({
             className="text-[8px] tracking-[0.1em]"
           />
         </div>
-        <div className={NAVBAR_AVATAR_BADGE_CLASS}>
-          {user.name?.charAt(0) || "U"}
-        </div>
+        <Avatar className={NAVBAR_AVATAR_BADGE_CLASS}>
+          {user.image && (
+            <AvatarImage src={user.image} alt={user.name || "User"} />
+          )}
+          <AvatarFallback>
+            {user.name?.charAt(0) || "U"}
+          </AvatarFallback>
+        </Avatar>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" sideOffset={4} className="w-56 sm:w-72">

@@ -36,17 +36,13 @@ export function CompanyValidationList() {
 
   function handleRejectConfirm(reason: string) {
     if (!state.rejectingId) return
-    rejectCompany(
-      { companyId: state.rejectingId, reason },
-      { onSuccess: () => state.handleRejectDialogChange(false) },
-    )
+    state.handleRejectDialogChange(false)
+    rejectCompany({ companyId: state.rejectingId, reason })
   }
 
   function handleDeleteConfirm(companyId: string) {
-    deleteCompany(
-      { companyId },
-      { onSuccess: () => state.handleDeleteDialogChange(false) },
-    )
+    state.handleDeleteDialogChange(false)
+    deleteCompany({ companyId })
   }
 
   return (

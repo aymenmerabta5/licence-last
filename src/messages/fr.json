@@ -1261,8 +1261,10 @@
         "unknownRole": "Utilisateur",
         "roles": {
           "student": "Étudiant",
-          "company_admin": "Recruteur",
-          "dept_head": "Chef de département",
+      "company_admin": "Recruteur",
+      "department_head": "Chef de département",
+      "dept_head": "Chef de département",
+      "recruiter": "Recruteur",
           "university_admin": "Administrateur universitaire",
           "super_admin": "Super administrateur"
         },
@@ -1911,7 +1913,9 @@
         "roles": {
           "student": "Étudiant",
           "company_admin": "Admin entreprise",
+          "recruiter": "Recruteur",
           "dept_head": "Chef de département",
+          "department_head": "Chef de département",
           "university_admin": "Admin universitaire",
           "super_admin": "Super admin"
         },
@@ -1943,7 +1947,10 @@
           "password": "Mot de passe",
           "role": "Rôle",
           "university": "Université",
-          "selectUniversity": "Sélectionner une université"
+          "selectUniversity": "Sélectionner une université",
+          "company": "Entreprise",
+          "selectCompany": "Sélectionner une entreprise",
+          "noResults": "Aucun résultat"
         },
         "dialogs": {
           "cancel": "Annuler",
@@ -1993,7 +2000,9 @@
         "roles": {
           "student": "Étudiant",
           "company_admin": "Admin entreprise",
+          "recruiter": "Recruteur",
           "dept_head": "Chef de département",
+          "department_head": "Chef de département",
           "university_admin": "Admin universitaire",
           "super_admin": "Super admin"
         },

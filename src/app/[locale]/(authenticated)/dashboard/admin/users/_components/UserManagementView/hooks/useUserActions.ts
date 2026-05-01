@@ -61,8 +61,15 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
       email: string
       password: string
       name: string
-      role: "student" | "company_admin" | "university_admin" | "super_admin"
+      role:
+        | "student"
+        | "company_admin"
+        | "university_admin"
+        | "department_head"
+        | "super_admin"
+        | "recruiter"
       universityId?: string
+      companyId?: string
     }) => orpcClient.adminUsers.create(data),
     onMutate: async (data) => {
       await cancelAdminUsersQueries()

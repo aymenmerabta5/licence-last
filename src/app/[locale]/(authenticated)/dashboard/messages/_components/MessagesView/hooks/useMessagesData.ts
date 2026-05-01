@@ -361,7 +361,7 @@ export function useMessagesData({
     threadMessagesErrorMessage: threadMessagesQuery.error
       ? toErrorMessage(threadMessagesQuery.error, t("conversationLoadError"))
       : null,
-    sendMessage: sendMessageMutation.mutateAsync,
+    sendMessage: sendMessageMutation.mutate,
     sendPending: sendMessageMutation.isPending,
     sendErrorMessage: sendMessageMutation.error
       ? toErrorMessage(sendMessageMutation.error, t("sendError"))

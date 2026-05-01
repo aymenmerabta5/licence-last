@@ -22,16 +22,14 @@ export function useAssignHeadDialog({ onAssign }: UseAssignHeadDialogParams) {
     setHeadEmail("")
   }
 
-  const submit = async () => {
+  const submit = () => {
     if (!department) return
     if (!headEmail.trim()) return
 
-    try {
-      await onAssign(department.id, headEmail)
-      close()
-    } catch {
+    close()
+    onAssign(department.id, headEmail).catch(() => {
       // Error feedback is handled by the mutation hook.
-    }
+    })
   }
 
   return {

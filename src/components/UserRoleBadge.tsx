@@ -10,6 +10,8 @@ const ROLE_BADGE_STYLES: Record<string, string> = {
     "border-sky-500/30 bg-sky-500/10 text-sky-700 dark:border-sky-400/30 dark:bg-sky-400/10 dark:text-sky-300",
   department_head:
     "border-violet-500/30 bg-violet-500/10 text-violet-700 dark:border-violet-400/30 dark:bg-violet-400/10 dark:text-violet-300",
+  recruiter:
+    "border-teal-500/30 bg-teal-500/10 text-teal-700 dark:border-teal-400/30 dark:bg-teal-400/10 dark:text-teal-300",
   super_admin:
     "border-destructive/40 bg-destructive/10 text-destructive dark:bg-destructive/20",
 }

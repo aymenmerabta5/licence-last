@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl"
 import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
 import { UserActionsMenu } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/UserActionsMenu"
 import { UserRoleBadge } from "@/components/UserRoleBadge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { TableCell, TableRow } from "@/components/ui/table"
 
 interface UserRowProps {
@@ -33,11 +34,17 @@ export function UserRow({
 }: UserRowProps) {
   const t = useTranslations("dashboard.superAdmin.users")
 
-  const displayRole = user.universityMembershipRole ?? user.role
+  const displayRole =
+    user.companyMemberRole === "recruiter"
+      ? "recruiter"
+      : (user.universityMembershipRole ?? user.role)
   const roleLabelKey =
     displayRole === "department_head" ? "dept_head" : (displayRole ?? "student")
 
   const affiliation = (() => {
+    if (user.companyMemberRole === "recruiter" && user.companyName) {
+      return user.companyName
+    }
     if (user.universityMembershipRole === "department_head") {
       if (user.departmentName && user.universityName) {
         return `${user.departmentName} @ ${user.universityName}`
@@ -47,6 +54,12 @@ export function UserRow({
     if (user.role === "university_admin" && user.universityName) {
       return user.universityName
     }
+    if (user.role === "company_admin" && user.companyName) {
+      return user.companyName
+    }
+    if (user.role === "student" && user.universityName) {
+      return user.universityName
+    }
     return null
   })()
 
@@ -54,9 +67,14 @@ export function UserRow({
     <TableRow className="group hover:bg-primary/[0.02] border-b border-border/50 transition-colors">
       <TableCell className="py-4">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="h-9 w-9 bg-accent/50 border border-border/50 flex items-center justify-center text-xs font-semibold text-foreground shrink-0 rounded-sm">
-            {(user.name?.[0] ?? user.email[0]).toUpperCase()}
-          </div>
+          <Avatar className="h-9 w-9 rounded-sm border border-border/50">
+            {user.image && (
+              <AvatarImage src={user.image} alt={user.name || user.email} />
+            )}
+            <AvatarFallback className="rounded-sm bg-accent/50 text-xs font-semibold text-foreground">
+              {(user.name?.[0] ?? user.email[0]).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
           <div className="min-w-0 flex flex-col justify-center">
             <p className="text-[13px] font-medium text-foreground truncate leading-none mb-1.5 group-hover:text-primary transition-colors">
               {user.name || "—"}
