@@ -15,9 +15,6 @@ export function AssistantHeader() {
     >
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50">
-            {t("kicker")}
-          </p>
           <h1 className="font-serif text-[clamp(1.75rem,4vw,2.5rem)] leading-none tracking-tight text-heading">
             {t.rich("title", {
               accent: (chunks) => (

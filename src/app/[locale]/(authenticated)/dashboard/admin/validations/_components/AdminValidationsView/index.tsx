@@ -19,7 +19,6 @@ export function AdminValidationsView() {
       backLabel={t("backToDashboard")}
       title={t("title")}
       description={t("description")}
-      kicker="Validation Center"
       emptyLabel={t("empty")}
       detailHref={(applicationId) =>
         `/dashboard/admin/validations/${applicationId}`

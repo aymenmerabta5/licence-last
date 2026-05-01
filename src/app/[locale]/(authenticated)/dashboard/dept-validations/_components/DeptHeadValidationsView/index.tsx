@@ -19,7 +19,6 @@ export function DeptHeadValidationsView() {
       backLabel={t("backToDashboard")}
       title={t("title")}
       description={t("description")}
-      kicker={t("title")}
       emptyLabel={t("empty")}
       detailHref={(applicationId) =>
         `/dashboard/dept-validations/${applicationId}`

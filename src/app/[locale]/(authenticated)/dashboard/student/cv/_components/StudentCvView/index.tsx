@@ -1,9 +1,11 @@
 "use client"
 
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { StudentCvSections } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/StudentCvSections"
 
+import { StudentCvSections } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/StudentCvSections"
 import { useStudentCvData } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/hooks/useStudentCvData"
+import { ease, reveal } from "@/lib/animations"
 import { resolveLocalizedError } from "@/lib/error-message"
 
 export function StudentCvView() {
@@ -29,17 +31,23 @@ export function StudentCvView() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-16">
-      <header className="space-y-2">
-        <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary">
-          Student Profile
-        </p>
-        <h1 className="font-serif text-3xl text-heading tracking-tight">
-          CV Manager
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Manage your resume, experiences, and projects from one place.
-        </p>
-      </header>
+      <motion.header
+        {...reveal}
+        transition={{ duration: 0.6, ease }}
+        className="space-y-4"
+      >
+        <div className="h-0.5 bg-primary" />
+        <div className="space-y-3">
+          <div className="space-y-2">
+            <h1 className="font-serif text-[clamp(1.8rem,3.2vw,2.4rem)] leading-[1.1] tracking-tight text-heading">
+              CV Manager
+            </h1>
+            <p className="text-sm font-light text-muted-foreground max-w-lg">
+              Manage your resume, experiences, and projects from one place.
+            </p>
+          </div>
+        </div>
+      </motion.header>
 
       <StudentCvSections
         cv={studentCvData.cv}

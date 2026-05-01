@@ -37,7 +37,6 @@ export interface ValidationListPageProps {
   backLabel: string
   title: string
   description: string
-  kicker: string
   emptyLabel: string
   detailHref: (applicationId: string) => string
   listNamespace: string

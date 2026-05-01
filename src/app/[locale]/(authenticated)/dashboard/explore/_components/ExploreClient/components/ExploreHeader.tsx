@@ -35,9 +35,6 @@ export function ExploreHeader() {
         <div className="relative">
           {/* Top row: section label + date */}
           <div className="flex items-center justify-between mb-5">
-            <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary [[dir=rtl]_&]:tracking-normal">
-              {t("title")}
-            </span>
             <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hidden sm:block [[dir=rtl]_&]:tracking-normal">
               {dateStr}
             </span>

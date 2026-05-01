@@ -4,7 +4,6 @@ import { CalendarCheck, CalendarClock, CalendarDays } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import type { InterviewsRole } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
-import { Badge } from "@/components/ui/badge"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
 interface InterviewsHeaderProps {
@@ -28,13 +27,6 @@ export function InterviewsHeader({ role, counts }: InterviewsHeaderProps) {
       />
 
       <div className="space-y-4">
-        <motion.div {...reveal} transition={revealWithDelay(0.05)}>
-          <Badge variant="editorial-muted">
-            {role === "student" ? t("roleStudent") : t("roleCompany")}{" "}
-            {t("roleDashboard")}
-          </Badge>
-        </motion.div>
-
         <motion.div
           {...reveal}
           transition={revealWithDelay(0.1)}

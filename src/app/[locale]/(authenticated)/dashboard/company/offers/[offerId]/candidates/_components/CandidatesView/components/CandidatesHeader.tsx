@@ -1,7 +1,8 @@
-import { ArrowLeft, Kanban } from "lucide-react"
+import { ArrowLeft, Users } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 
+import { Badge } from "@/components/ui/badge"
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
 
@@ -32,19 +33,9 @@ export function CandidatesHeader({
 
       <div className="h-0.5 bg-primary" />
       <div className="border border-t-0 border-border/50 p-6 sm:p-8 relative overflow-hidden">
-        {/* Dark mode glow */}
-        <div className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100">
-          <div className="absolute -top-20 end-0 h-40 w-40 rounded-full bg-primary/5 blur-3xl" />
-        </div>
-
-        <div className="relative flex items-start justify-between gap-4">
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Kanban className="h-3.5 w-3.5 text-primary" />
-              <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary [[dir=rtl]_&]:tracking-normal">
-                {t("title")}
-              </span>
-            </div>
+            <Badge variant="editorial-muted">{t("kicker")}</Badge>
             <h1 className="font-serif text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.08] tracking-tight text-heading">
               {t("pipelineHeading")}
             </h1>
@@ -56,13 +47,18 @@ export function CandidatesHeader({
           </div>
 
           {totalCandidates !== undefined && totalCandidates > 0 && (
-            <div className="border-s-2 border-primary/20 ps-4 shrink-0">
-              <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
-                {t("candidateCountLabel")}
-              </span>
-              <p className="font-serif text-3xl font-bold text-heading leading-none tabular-nums mt-0.5">
-                {totalCandidates}
-              </p>
+            <div className="flex items-center gap-3 border-s-2 border-primary/20 ps-4 shrink-0">
+              <div className="flex h-10 w-10 items-center justify-center border border-border/50 bg-primary/5">
+                <Users className="h-4 w-4 text-primary" />
+              </div>
+              <div>
+                <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
+                  {t("candidateCountLabel")}
+                </span>
+                <p className="font-serif text-3xl font-bold text-heading leading-none tabular-nums mt-0.5">
+                  {totalCandidates}
+                </p>
+              </div>
             </div>
           )}
         </div>

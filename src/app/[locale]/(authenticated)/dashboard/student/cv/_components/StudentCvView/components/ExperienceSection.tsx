@@ -1,7 +1,9 @@
 "use client"
 
-import { Plus } from "lucide-react"
+import { Briefcase, Plus } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useState } from "react"
+
 import { ExperienceEditor } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/experience/ExperienceEditor"
 import { ExperienceListItem } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/experience/ExperienceListItem"
 import type {
@@ -14,7 +16,7 @@ import {
 } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/experience/utils"
 import type { StudentCvExperience } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/types"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ease, reveal } from "@/lib/animations"
 
 export function ExperienceSection({
   experiences,
@@ -55,12 +57,25 @@ export function ExperienceSection({
   }
 
   return (
-    <Card className="border-border/40 rounded-3xl">
-      <CardHeader className="flex flex-row items-center justify-between gap-4">
-        <CardTitle className="font-serif text-xl">Experience</CardTitle>
+    <motion.section
+      {...reveal}
+      transition={{ duration: 0.6, ease, delay: 0.2 }}
+      className="border border-border/50"
+    >
+      <div className="flex items-center justify-between gap-4 border-b border-border/50 px-6 py-4">
+        <div className="flex items-center gap-3">
+          <Briefcase className="h-4 w-4 text-primary" />
+          <h2 className="font-serif text-xl text-heading">Experience</h2>
+          {experiences.length > 0 && (
+            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+              {experiences.length}{" "}
+              {experiences.length === 1 ? "Entry" : "Entries"}
+            </span>
+          )}
+        </div>
         <Button
           type="button"
-          size="sm"
+          size="editorial-sm"
           variant="editorial-outline"
           className="gap-1.5"
           onClick={handleStartAdding}
@@ -68,9 +83,9 @@ export function ExperienceSection({
           <Plus className="h-3.5 w-3.5" />
           Add
         </Button>
-      </CardHeader>
+      </div>
 
-      <CardContent className="space-y-4">
+      <div className="px-6 py-6 space-y-4">
         {adding && (
           <ExperienceEditor
             mode="create"
@@ -94,9 +109,14 @@ export function ExperienceSection({
         )}
 
         {experiences.length === 0 && !adding && (
-          <p className="text-sm text-muted-foreground">
-            No experience entries yet.
-          </p>
+          <div className="flex flex-col items-center justify-center gap-3 py-8 text-center">
+            <div className="flex h-12 w-12 items-center justify-center border border-dashed border-border/60">
+              <Briefcase className="h-5 w-5 text-muted-foreground/40" />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              No experience entries yet.
+            </p>
+          </div>
         )}
 
         {experiences.map((item) => {
@@ -141,7 +161,7 @@ export function ExperienceSection({
             />
           )
         })}
-      </CardContent>
-    </Card>
+      </div>
+    </motion.section>
   )
 }

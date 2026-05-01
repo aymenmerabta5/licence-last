@@ -9,7 +9,6 @@ import { UserInfoCard } from "@/app/[locale]/(authenticated)/dashboard/admin/use
 import { useImpersonation } from "@/app/[locale]/(authenticated)/dashboard/admin/users/[userId]/_components/UserDetailView/hooks/useImpersonation"
 import { useUserDetail } from "@/app/[locale]/(authenticated)/dashboard/admin/users/[userId]/_components/UserDetailView/hooks/useUserDetail"
 import { useUserDetailActions } from "@/app/[locale]/(authenticated)/dashboard/admin/users/[userId]/_components/UserDetailView/hooks/useUserDetailActions"
-import { Badge } from "@/components/ui/badge"
 import { Link } from "@/i18n/routing"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
@@ -70,7 +69,6 @@ export function UserDetailView({ userId }: UserDetailViewProps) {
           transition={revealWithDelay(0.1)}
           className="space-y-3"
         >
-          <Badge variant="editorial-muted">{t("kicker")}</Badge>
           <h1 className="font-serif text-[clamp(1.8rem,3.2vw,2.4rem)] leading-[1.1] tracking-tight text-heading">
             {user.name || user.email}
           </h1>

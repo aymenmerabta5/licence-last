@@ -17,9 +17,6 @@ export function InterviewHeader({
     <div className="space-y-4">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
-          <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50">
-            {t("title")}
-          </p>
           <h1 className="font-serif text-[clamp(1.5rem,4vw,2.25rem)] leading-tight tracking-tight text-heading">
             {interview.offerTitle}
           </h1>

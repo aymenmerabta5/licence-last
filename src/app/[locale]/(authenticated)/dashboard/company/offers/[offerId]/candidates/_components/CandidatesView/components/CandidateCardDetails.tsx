@@ -1,6 +1,7 @@
 "use client"
 
 import { useLocale, useTranslations } from "next-intl"
+
 import type { CandidateApp } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
 import { getLanguageLabel, toSupportedLocale } from "@/lib/constants/languages"
 
@@ -18,13 +19,13 @@ export function CandidateCardDetails({ app }: CandidateCardDetailsProps) {
   return (
     <>
       <div className="flex items-center justify-between gap-2 text-[10px]">
-        <span className="font-bold uppercase tracking-wider text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
+        <span className="font-bold uppercase tracking-[0.12em] text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
           {tExplore("skills")}
         </span>
         <span className="font-serif text-sm text-heading">
           {app.skillMatchPercentage}
           <span className="text-[9px] text-muted-foreground/50">%</span>{" "}
-          <span className="text-[9px] uppercase tracking-wider text-muted-foreground/50">
+          <span className="text-[9px] uppercase tracking-[0.12em] text-muted-foreground/50">
             {t("skillMatch")}
           </span>
         </span>
@@ -50,7 +51,7 @@ export function CandidateCardDetails({ app }: CandidateCardDetailsProps) {
 
       {app.languages.length > 0 ? (
         <div className="space-y-1.5">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
+          <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
             {tExplore("languages")}
           </p>
           <div className="flex flex-wrap gap-1.5">

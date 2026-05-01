@@ -534,9 +534,9 @@
       "logout": "تسجيل الخروج"
     },
     "error": {
-      "title": "Something went wrong",
-      "description": "An unexpected error occurred. Please try again.",
-      "retry": "Try again"
+      "title": "حدث خطأ ما",
+      "description": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
+      "retry": "إعادة المحاولة"
     },
     "timeline": {
       "title": "Application Timeline",
@@ -986,6 +986,7 @@
         }
       },
       "candidates": {
+        "kicker": "المرشحون",
         "title": "المرشحون",
         "backToOffers": "العودة للعروض",
         "empty": "لا توجد طلبات بعد. عرضك متاح للطلاب حالياً.",
@@ -998,7 +999,8 @@
         "acceptTitle": "قبول المرشح",
         "acceptDescription": "هل تقبل {name}؟ سيؤدي هذا لإخطار المسؤولين للمصادقة على التنسيب.",
         "confirmAcceptButton": "قبول",
-        "confirmRefuse": "رفض هذا المرشح؟ سيتم إخطارهم.",
+        "acceptNotice": "سيؤدي قبول هذا المرشح إلى إخطار المسؤولين للمصادقة على التنسيب.",
+        "confirmRefuse": "سيتم إخطار هذا المرشح بقرارك.",
         "refuseTitle": "رفض المرشح",
         "refuseDescription": "هل أنت متأكد من رفض {name}؟",
         "refuseNotePlaceholder": "اختياري: قدم ملاحظات للمرشح...",

@@ -2,7 +2,6 @@
 
 import * as motion from "motion/react-client"
 import { useLocale, useTranslations } from "next-intl"
-import { Badge } from "@/components/ui/badge"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
 export function AdminStatsHeader() {
@@ -23,10 +22,6 @@ export function AdminStatsHeader() {
       />
 
       <div className="space-y-2.5 sm:space-y-3">
-        <motion.div {...reveal} transition={revealWithDelay(0.05)}>
-          <Badge variant="editorial-muted">{t("badge")}</Badge>
-        </motion.div>
-
         <motion.div
           {...reveal}
           transition={revealWithDelay(0.1)}

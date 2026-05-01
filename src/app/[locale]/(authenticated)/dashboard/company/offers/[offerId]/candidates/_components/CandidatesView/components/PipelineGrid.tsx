@@ -56,11 +56,9 @@ export function PipelineGrid({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease, delay: 0.1 }}
-        className="border border-dashed border-border/40 p-12 text-center space-y-4"
+        className="flex flex-col items-center justify-center gap-3 border border-dashed border-border/40 py-16 text-center"
       >
-        <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-primary/5">
-          <Users className="h-8 w-8 text-primary/30" />
-        </div>
+        <Users className="h-8 w-8 text-muted-foreground/30" />
         <p className="text-sm text-muted-foreground/60">
           {isFiltered ? t("emptyFiltered") : t("empty")}
         </p>
@@ -79,7 +77,9 @@ export function PipelineGrid({
       >
         <div className="flex items-center gap-2 text-muted-foreground/40">
           <GripVertical className="h-3 w-3" />
-          <p className="text-[10px] font-medium">{t("dragHint")}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.15em]">
+            {t("dragHint")}
+          </p>
         </div>
         <div className="overflow-y-auto md:overflow-x-auto md:overflow-y-hidden pb-3">
           <div className="grid grid-flow-row md:grid-flow-col grid-cols-1 md:auto-cols-[minmax(280px,1fr)] gap-3 min-w-0 md:min-w-[1760px]">

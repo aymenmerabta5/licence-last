@@ -3,7 +3,6 @@
 import { ArrowLeft } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Badge } from "@/components/ui/badge"
 import { Link } from "@/i18n/routing"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
@@ -33,7 +32,6 @@ export function DepartmentsHeader() {
         transition={revealWithDelay(0.1)}
         className="space-y-2"
       >
-        <Badge variant="editorial-muted">Department Management</Badge>
         <h1 className="font-serif text-[clamp(2rem,4vw,3rem)] leading-none tracking-tight text-heading">
           {t("title")}
         </h1>

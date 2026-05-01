@@ -2,7 +2,6 @@
 
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { Badge } from "@/components/ui/badge"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
 interface UniversityValidationHeaderProps {
@@ -23,10 +22,6 @@ export function UniversityValidationHeader({
       />
 
       <div className="space-y-3">
-        <motion.div {...reveal} transition={revealWithDelay(0.05)}>
-          <Badge variant="editorial-muted">{t("kicker")}</Badge>
-        </motion.div>
-
         <motion.div
           {...reveal}
           transition={revealWithDelay(0.1)}

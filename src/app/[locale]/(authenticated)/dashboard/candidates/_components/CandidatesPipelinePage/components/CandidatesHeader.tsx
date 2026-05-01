@@ -1,5 +1,4 @@
 import type { CandidatesDashboardTranslations } from "@/app/[locale]/(authenticated)/dashboard/candidates/_components/CandidatesPipelinePage/types"
-import { Badge } from "@/components/ui/badge"
 
 interface CandidatesHeaderProps {
   totalCandidates: number
@@ -15,8 +14,6 @@ export function CandidatesHeader({
       <div className="h-0.5 bg-primary" />
 
       <div className="space-y-3">
-        <Badge variant="editorial-muted">{t("candidates.title")}</Badge>
-
         <h1 className="font-serif text-[clamp(2rem,4vw,3rem)] leading-none tracking-tight text-heading">
           {t("candidates.title")}
         </h1>

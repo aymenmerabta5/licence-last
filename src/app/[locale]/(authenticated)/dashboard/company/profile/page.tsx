@@ -1,6 +1,5 @@
 import { getTranslations } from "next-intl/server"
 import { CompanyProfileForm } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm"
-import { Badge } from "@/components/ui/badge"
 import { requireCompanyOwner } from "@/lib/dashboard-access"
 
 export default async function CompanyProfilePage() {
@@ -16,8 +15,6 @@ export default async function CompanyProfilePage() {
         <div className="h-0.5 bg-primary" />
 
         <div className="space-y-3">
-          <Badge variant="editorial-muted">{t("title")}</Badge>
-
           <div className="space-y-2">
             <h1 className="font-serif text-[clamp(1.8rem,3.2vw,2.4rem)] leading-[1.1] tracking-tight text-heading">
               {company.name}

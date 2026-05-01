@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl"
 import { useDashboard } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import { PlacementCertificateCard } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/PlacementCertificateCard"
 import { useCompanyDocuments } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/hooks/useCompanyDocuments"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
@@ -35,10 +34,6 @@ export function CompanyDocumentsView() {
         />
 
         <div className="space-y-3">
-          <motion.div {...reveal} transition={revealWithDelay(0.05)}>
-            <Badge variant="editorial-muted">{t("title")}</Badge>
-          </motion.div>
-
           <motion.div
             {...reveal}
             transition={revealWithDelay(0.1)}

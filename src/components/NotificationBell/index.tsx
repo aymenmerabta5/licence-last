@@ -62,7 +62,7 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
           <Button
             variant="ghost"
             size="icon-lg"
-            className={NAVBAR_ICON_CONTROL_CLASS}
+            className={`${NAVBAR_ICON_CONTROL_CLASS} overflow-visible`}
           />
         }
       >

@@ -6,7 +6,6 @@ import { ValidationCard } from "@/app/[locale]/(authenticated)/dashboard/_compon
 import { ValidationEmptyState } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/ValidationEmptyState"
 import { ValidationLoadingState } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/ValidationLoadingState"
 import type { ValidationListPageProps } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/types"
-import { Badge } from "@/components/ui/badge"
 import { Link } from "@/i18n/routing"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
@@ -19,7 +18,6 @@ export function ValidationListPage({
   backLabel,
   title,
   description,
-  kicker,
   emptyLabel,
   detailHref,
   listNamespace,
@@ -54,7 +52,6 @@ export function ValidationListPage({
           transition={revealWithDelay(0.1)}
           className="space-y-3"
         >
-          <Badge variant="editorial-muted">{kicker}</Badge>
           <h1 className="font-serif text-[clamp(2rem,4vw,3rem)] leading-none tracking-tight text-heading">
             {title}
           </h1>

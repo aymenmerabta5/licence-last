@@ -1,10 +1,13 @@
 ﻿"use client"
 
 import { FileText, Trash2, Upload } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useRef } from "react"
+
 import type { StudentCvResume } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/types"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ease, reveal } from "@/lib/animations"
 
 interface ResumeSectionProps {
   resume: StudentCvResume | null
@@ -30,11 +33,36 @@ export function ResumeSection({
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <Card className="border-border/40 rounded-3xl">
-      <CardHeader>
-        <CardTitle className="font-serif text-xl">Resume</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <motion.section
+      {...reveal}
+      transition={{ duration: 0.6, ease, delay: 0.1 }}
+      className="border border-border/50"
+    >
+      <div className="flex items-center justify-between gap-4 border-b border-border/50 px-6 py-4">
+        <div className="flex items-center gap-3">
+          <h2 className="font-serif text-xl text-heading">Resume</h2>
+          {resume && (
+            <Badge
+              variant="outline"
+              className="text-[10px] font-bold uppercase tracking-[0.18em]"
+            >
+              Uploaded
+            </Badge>
+          )}
+        </div>
+        <Button
+          type="button"
+          size="editorial-sm"
+          variant="editorial-outline"
+          disabled={isUploading}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <Upload className="h-3.5 w-3.5" />
+          {isUploading ? "Uploading..." : "Upload PDF"}
+        </Button>
+      </div>
+
+      <div className="px-6 py-6">
         <input
           ref={fileInputRef}
           type="file"
@@ -49,18 +77,20 @@ export function ResumeSection({
         />
 
         {resume ? (
-          <div className="border border-border/30 p-4 space-y-3">
-            <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex items-start gap-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-border/50 bg-primary/5">
+                <FileText className="h-4 w-4 text-primary" />
+              </div>
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-heading truncate">
                   {resume.fileName}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {formatBytes(resume.fileSizeBytes)} - Uploaded{" "}
+                  {formatBytes(resume.fileSizeBytes)} · Uploaded{" "}
                   {new Date(resume.uploadedAt).toLocaleDateString()}
                 </p>
               </div>
-              <FileText className="h-4 w-4 text-primary shrink-0" />
             </div>
 
             <div className="flex flex-wrap gap-2">
@@ -90,22 +120,16 @@ export function ResumeSection({
             </div>
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            No resume uploaded yet.
-          </p>
+          <div className="flex flex-col items-center justify-center gap-3 py-8 text-center">
+            <div className="flex h-12 w-12 items-center justify-center border border-dashed border-border/60">
+              <FileText className="h-5 w-5 text-muted-foreground/40" />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              No resume uploaded yet.
+            </p>
+          </div>
         )}
-
-        <Button
-          type="button"
-          size="sm"
-          className="gap-1.5"
-          disabled={isUploading}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <Upload className="h-3.5 w-3.5" />
-          {isUploading ? "Uploading..." : "Upload PDF"}
-        </Button>
-      </CardContent>
-    </Card>
+      </div>
+    </motion.section>
   )
 }

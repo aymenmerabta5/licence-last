@@ -2,6 +2,7 @@
 
 import { CalendarPlus, Check, Loader2, X } from "lucide-react"
 import { useTranslations } from "next-intl"
+
 import type { CandidateApp } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
 import { SelectField } from "@/components/form-fields"
 import { Button } from "@/components/ui/button"
@@ -56,7 +57,7 @@ export function CandidateCardActions({
           app.pipelineStage === "accepted" ||
           app.pipelineStage === "rejected"
         }
-        className="h-8 rounded-sm border-border/50 bg-secondary/10 text-xs"
+        className="h-8 rounded-none border-border/50 bg-secondary/10 text-xs"
       />
 
       {app.status === "applied" && (
@@ -64,8 +65,8 @@ export function CandidateCardActions({
           {(app.pipelineStage === "applied" || app.pipelineStage === "screening") && (
             <Button
               size="sm"
-              variant="outline"
-              className="h-7 gap-1.5 border-violet-500/30 text-[10px] font-bold uppercase tracking-wider text-violet-600 hover:bg-violet-500/5 hover:text-violet-700"
+              variant="editorial-outline"
+              className="h-7 gap-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-violet-600 border-violet-500/30 hover:bg-violet-500/5 hover:text-violet-700 hover:border-violet-500/50"
               onClick={onInterview}
             >
               <CalendarPlus className="h-3 w-3" />
@@ -76,7 +77,7 @@ export function CandidateCardActions({
           {app.pipelineStage === "offer" && (
             <Button
               size="sm"
-              className="h-7 flex-1 gap-1.5 bg-emerald-600 text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-700"
+              className="h-7 flex-1 gap-1.5 rounded-none bg-emerald-600 text-[10px] font-bold uppercase tracking-[0.12em] hover:bg-emerald-700"
               onClick={onAccept}
               disabled={actionLoading === app.id}
             >
@@ -90,9 +91,9 @@ export function CandidateCardActions({
           )}
 
           <Button
-            variant="outline"
+            variant="editorial-outline"
             size="sm"
-            className="h-7 flex-1 gap-1.5 border-destructive/20 text-[10px] font-bold uppercase tracking-wider text-destructive hover:bg-destructive/5"
+            className="h-7 flex-1 gap-1.5 border-destructive/20 text-[10px] font-bold uppercase tracking-[0.12em] text-destructive hover:bg-destructive/5 hover:border-destructive/40"
             onClick={onRefuse}
           >
             <X className="h-3 w-3" />
@@ -103,14 +104,14 @@ export function CandidateCardActions({
 
       <Link
         href={`/profile/${app.student.id}` as "/profile"}
-        className="block w-full py-1 text-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground/40 transition-colors hover:text-primary"
+        className="block w-full py-1 text-center text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground/40 transition-colors hover:text-primary"
       >
         {t("viewProfile")}
       </Link>
 
       <button
         type="button"
-        className="w-full py-1 text-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground/40 transition-colors hover:text-primary"
+        className="w-full py-1 text-center text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground/40 transition-colors hover:text-primary"
         onClick={onViewTimeline}
       >
         View timeline

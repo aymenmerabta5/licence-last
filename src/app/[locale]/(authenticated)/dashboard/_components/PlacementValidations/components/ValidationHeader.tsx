@@ -2,7 +2,6 @@
 
 import { ArrowLeft } from "lucide-react"
 import type { ValidationHeaderProps } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/types"
-import { Badge } from "@/components/ui/badge"
 import { Link } from "@/i18n/routing"
 
 export function ValidationHeader({
@@ -28,7 +27,6 @@ export function ValidationHeader({
       </Link>
 
       <div className="space-y-3">
-        <Badge variant="editorial-muted">Validation Detail</Badge>
         <h1 className="font-serif text-[clamp(1.8rem,3.2vw,2.4rem)] leading-[1.1] tracking-tight text-heading">
           {title}
         </h1>

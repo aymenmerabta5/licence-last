@@ -534,9 +534,9 @@
       "logout": "Se Déconnecter"
     },
     "error": {
-      "title": "Something went wrong",
-      "description": "An unexpected error occurred. Please try again.",
-      "retry": "Try again"
+      "title": "Une erreur est survenue",
+      "description": "Une erreur inattendue s'est produite. Veuillez reessayer.",
+      "retry": "Reessayer"
     },
     "timeline": {
       "title": "Application Timeline",
@@ -986,6 +986,7 @@
         }
       },
       "candidates": {
+        "kicker": "Candidats",
         "title": "Candidats",
         "backToOffers": "Retour aux offres",
         "empty": "Aucune candidature pour le moment. Votre offre est visible par les étudiants.",
@@ -998,7 +999,8 @@
         "acceptTitle": "Accepter le candidat",
         "acceptDescription": "Accepter {name} ? Cela notifiera les administrateurs pour la validation du placement.",
         "confirmAcceptButton": "Accepter",
-        "confirmRefuse": "Refuser ce candidat ? Il sera notifié.",
+        "acceptNotice": "Accepter ce candidat informera les administrateurs pour la validation du placement.",
+        "confirmRefuse": "Ce candidat sera notifié de votre décision.",
         "refuseTitle": "Refuser le candidat",
         "refuseDescription": "Êtes-vous sûr de vouloir refuser {name} ?",
         "refuseNotePlaceholder": "Optionnel : Fournissez un retour au candidat...",

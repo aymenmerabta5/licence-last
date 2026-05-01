@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl"
 import { DomainManager } from "@/app/[locale]/(authenticated)/dashboard/university/profile/_components/UniversityProfileView/components/DomainManager"
 import { UniversityProfileForm } from "@/app/[locale]/(authenticated)/dashboard/university/profile/_components/UniversityProfileView/components/UniversityProfileForm"
 import { useUniversityProfile } from "@/app/[locale]/(authenticated)/dashboard/university/profile/_components/UniversityProfileView/hooks/useUniversityProfile"
-import { Badge } from "@/components/ui/badge"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
 export function UniversityProfileView() {
@@ -57,7 +56,6 @@ export function UniversityProfileView() {
           transition={revealWithDelay(0.1)}
           className="space-y-3"
         >
-          <Badge variant="editorial-muted">{t("kicker")}</Badge>
           <h1 className="font-serif text-[clamp(1.8rem,3.2vw,2.4rem)] leading-[1.1] tracking-tight text-heading">
             {university.name}
           </h1>

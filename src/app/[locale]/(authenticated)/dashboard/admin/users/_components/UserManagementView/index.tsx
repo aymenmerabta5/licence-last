@@ -10,7 +10,6 @@ import { useUserActions } from "@/app/[locale]/(authenticated)/dashboard/admin/u
 import { useUserDialogState } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/hooks/useUserDialogState"
 import { useUserManagement } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/hooks/useUserManagement"
 import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
-import { Badge } from "@/components/ui/badge"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 import { orpc } from "@/server/orpc/client"
 
@@ -34,10 +33,6 @@ export function UserManagementView() {
         />
 
         <div className="space-y-3">
-          <motion.div {...reveal} transition={revealWithDelay(0.05)}>
-            <Badge variant="editorial-muted">{t("kicker")}</Badge>
-          </motion.div>
-
           <motion.div
             {...reveal}
             transition={revealWithDelay(0.1)}

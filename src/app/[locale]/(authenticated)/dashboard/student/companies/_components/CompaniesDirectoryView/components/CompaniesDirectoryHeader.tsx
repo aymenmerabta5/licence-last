@@ -1,6 +1,7 @@
 import { Search, X } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -37,9 +38,6 @@ export function CompaniesDirectoryHeader({
       <div className="h-0.5 bg-primary" />
       <div className="border border-t-0 border-border/50 p-6 md:p-8 space-y-6">
         <div className="space-y-2">
-          <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-primary [[dir=rtl]_&]:tracking-normal">
-            {t("kicker")}
-          </p>
           <h1 className="font-serif text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.1] tracking-tight text-heading">
             {t("title")}
           </h1>
@@ -86,9 +84,9 @@ export function CompaniesDirectoryHeader({
           {hasActiveFilters && (
             <Button
               type="button"
-              variant="ghost"
-              size="sm"
-              className="h-11 gap-1.5 rounded-none px-4 text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/70 hover:text-destructive [[dir=rtl]_&]:tracking-normal"
+              variant="editorial-outline"
+              size="editorial-sm"
+              className="h-11 gap-1.5 px-4 text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/70 hover:text-destructive [[dir=rtl]_&]:tracking-normal"
               onClick={onClearFilters}
             >
               <X className="h-3 w-3" />

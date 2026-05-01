@@ -23,9 +23,6 @@ export function CompanyOffersHeader() {
         </div>
         <div className="relative flex items-start justify-between gap-4">
           <div className="space-y-2">
-            <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary [[dir=rtl]_&]:tracking-normal">
-              {t("pageTitle")}
-            </span>
             <h1 className="font-serif text-[clamp(1.75rem,3.5vw,2.5rem)] leading-[1.08] tracking-tight text-heading">
               {t("title")}
             </h1>

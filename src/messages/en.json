@@ -986,6 +986,7 @@
         }
       },
       "candidates": {
+        "kicker": "Candidates",
         "title": "Candidates",
         "backToOffers": "Back to offers",
         "empty": "No applications yet. Your offer is visible to students.",
@@ -998,7 +999,8 @@
         "acceptTitle": "Accept Candidate",
         "acceptDescription": "Accept {name}? This will notify administrators for placement validation.",
         "confirmAcceptButton": "Accept",
-        "confirmRefuse": "Refuse this candidate? They will be notified.",
+        "acceptNotice": "Accepting this candidate will notify administrators for placement validation.",
+        "confirmRefuse": "This candidate will be notified of your decision.",
         "refuseTitle": "Refuse Candidate",
         "refuseDescription": "Are you sure you want to refuse {name}?",
         "refuseNotePlaceholder": "Optional: Provide feedback to the candidate...",

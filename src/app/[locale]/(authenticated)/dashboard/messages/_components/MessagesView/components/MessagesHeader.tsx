@@ -10,7 +10,6 @@ interface MessagesHeaderProps {
 
 export function MessagesHeader({ role, threadCount }: MessagesHeaderProps) {
   const t = useTranslations("dashboard.messages")
-  const kicker = role === "student" ? t("kickerStudent") : t("kickerCompany")
   const subtitle =
     role === "student" ? t("subtitleStudent") : t("subtitleCompany")
 
@@ -23,9 +22,6 @@ export function MessagesHeader({ role, threadCount }: MessagesHeaderProps) {
       <div className="h-0.5 bg-primary" />
       <div className="border border-t-0 border-border/50 px-6 py-6 sm:px-8 sm:py-8">
         <div className="space-y-2">
-          <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary">
-            {kicker}
-          </p>
           <h1 className="font-serif text-[clamp(1.75rem,3.5vw,2.5rem)] leading-[1.08] tracking-tight text-heading">
             {t("title")}
           </h1>

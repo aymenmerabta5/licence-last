@@ -282,3 +282,8 @@ Shared components in `src/components/form-fields/`:
 - Serif headlines (`font-serif`), sans body (`font-sans`)
 - Dark mode as first-class "Night Edition"
 - Use `motion` for orchestrated animations, Tailwind for simple transitions
+
+## NOTE
+
+- When a component violate the architectural constraints you will go and fix it DONT EVER RESTORE the last state of the component if its changed
+- You will tell before restoring any component state and you will ask the user before doing that

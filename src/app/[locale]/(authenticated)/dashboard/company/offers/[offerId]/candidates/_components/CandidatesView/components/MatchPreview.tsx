@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { Loader2, Zap } from "lucide-react"
 import { useTranslations } from "next-intl"
+
 import { cn } from "@/lib/utils"
 import { orpc } from "@/server/orpc/client"
 
@@ -51,7 +52,7 @@ export function MatchPreview({ offerId, studentUserId }: MatchPreviewProps) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <Zap className="h-3 w-3 text-primary/50" />
-          <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/50">
+          <span className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground/50">
             {t("scoreLabel")}
           </span>
         </div>
@@ -67,10 +68,10 @@ export function MatchPreview({ offerId, studentUserId }: MatchPreviewProps) {
       </div>
 
       {/* Mini progress bar */}
-      <div className="h-1 rounded-full bg-secondary/30 overflow-hidden">
+      <div className="h-1 bg-secondary/30 overflow-hidden">
         <div
           className={cn(
-            "h-full rounded-full transition-all",
+            "h-full transition-all",
             getBarColor(score),
           )}
           style={{ width: `${Math.min(score, 100)}%` }}

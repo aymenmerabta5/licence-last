@@ -162,20 +162,6 @@ export async function DashboardContent({
     <div className="max-w-7xl mx-auto space-y-10">
       {/* ── Page Header (static, no data fetching) ── */}
       <header className="space-y-3">
-        <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground/50">
-          {t(
-            `roles.${
-              effectiveRole === "company_admin"
-                ? "recruiter"
-                : effectiveRole === "super_admin"
-                  ? "university_admin"
-                  : isDeptHead
-                    ? "department_head"
-                    : effectiveRole
-            }`,
-          )}{" "}
-          Dashboard
-        </p>
         <h1 className="font-serif text-[clamp(2.25rem,5vw,3.25rem)] leading-none tracking-tight text-heading">
           {greeting}{" "}
           <span className="text-primary">

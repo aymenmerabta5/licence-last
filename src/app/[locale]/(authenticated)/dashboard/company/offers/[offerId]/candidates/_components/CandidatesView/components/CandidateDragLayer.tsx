@@ -45,7 +45,7 @@ export function CandidateDragLayer() {
     >
       <div
         className={cn(
-          "w-64 border border-border/50 bg-background p-3.5 space-y-2 rounded-sm shadow-xl",
+          "w-64 border border-border/50 bg-background p-3.5 space-y-2 shadow-xl",
           "opacity-90 scale-[1.02] rotate-1",
         )}
         style={{
@@ -54,7 +54,7 @@ export function CandidateDragLayer() {
       >
         {/* Student info row */}
         <div className="flex items-start gap-3">
-          <div className="h-9 w-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+          <div className="h-9 w-9 bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
             <span className="text-[10px] font-bold text-primary">{initials}</span>
           </div>
 
@@ -75,7 +75,7 @@ export function CandidateDragLayer() {
 
         {/* Status */}
         <span
-          className={`inline-flex items-center px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase border rounded-sm ${STATUS_COLORS[app.status] ?? ""}`}
+          className={`inline-flex items-center px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase border ${STATUS_COLORS[app.status] ?? ""}`}
         >
           {app.status.replace("_", " ")}
         </span>

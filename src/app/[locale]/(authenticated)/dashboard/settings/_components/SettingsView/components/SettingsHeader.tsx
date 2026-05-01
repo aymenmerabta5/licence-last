@@ -1,7 +1,6 @@
 "use client"
 
 import * as motion from "motion/react-client"
-import { Badge } from "@/components/ui/badge"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
 export function SettingsHeader() {
@@ -14,10 +13,6 @@ export function SettingsHeader() {
       />
 
       <div className="space-y-3">
-        <motion.div {...reveal} transition={revealWithDelay(0.05)}>
-          <Badge variant="editorial-muted">Account Directory</Badge>
-        </motion.div>
-
         <motion.div
           {...reveal}
           transition={revealWithDelay(0.1)}
