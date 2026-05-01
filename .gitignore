@@ -72,7 +72,9 @@ docs/chapter-1/
 docs/chapter-2/
 docs/chapter-3/
 docs/chapter-4/
-
+TESTING.md
+TESTING_SMALL.md
+docs/plans/
 
 # image files (keep out of source control)
 *.png
