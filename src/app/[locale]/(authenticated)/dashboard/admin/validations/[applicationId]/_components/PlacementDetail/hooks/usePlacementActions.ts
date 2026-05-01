@@ -58,6 +58,11 @@ export function usePlacementActions(
     }
   }, [startDate, endDate, expectedStartDate, expectedEndDate])
 
+  const listPendingQueryKey = ["placements", "listPending"] as const
+  const detailQueryKey = orpc.placements.getPendingById.queryOptions({
+    input: { applicationId },
+  }).queryKey
+
   const summaryMutation = useMutation(
     orpc.placements.generateValidationSummary.mutationOptions({
       onSuccess: (data) => {
@@ -66,56 +71,164 @@ export function usePlacementActions(
     }),
   )
 
-  const validateMutation = useMutation(
-    orpc.placements.validate.mutationOptions({
-      onSuccess: async (result) => {
-        try {
-          setPdfLoading(true)
-          setPdfError(null)
-          await orpcClient.documents.generateAgreement({
-            placementId: result.placementId,
-          })
-        } catch (error) {
-          setPdfError(
-            error instanceof Error
-              ? error.message
-              : t("agreementGenerationError"),
-          )
-          toast.error(t("agreementGenerationError"))
-        } finally {
-          setPdfLoading(false)
+  const validateMutation = useMutation({
+    ...orpc.placements.validate.mutationOptions(),
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: listPendingQueryKey })
+      await queryClient.cancelQueries({ queryKey: detailQueryKey })
+
+      const previousListData = queryClient.getQueryData(listPendingQueryKey)
+      const previousDetailData = queryClient.getQueryData(detailQueryKey)
+
+      queryClient.setQueryData(listPendingQueryKey, (old) => {
+        if (!old || typeof old !== "object") return old
+        const record = old as {
+          pages?: Array<{ applications?: unknown[] }>
+          pageParams?: unknown[]
         }
+        if (!Array.isArray(record.pages)) return old
+        return {
+          ...record,
+          pages: record.pages.map((page) => {
+            if (!page || typeof page !== "object") return page
+            const p = page as { applications?: unknown[] }
+            if (!Array.isArray(p.applications)) return page
+            return {
+              ...p,
+              applications: p.applications.filter(
+                (app) => (app as { id?: string }).id !== applicationId,
+              ),
+            }
+          }),
+        }
+      })
 
-        queryClient.invalidateQueries({
-          queryKey: ["placements", "listPending"],
-        })
-        toast.success(t("validateSuccess"))
-        setActionLoading(false)
-        router.push("/dashboard/admin/validations")
-      },
-      onError: () => {
-        toast.error(t("validateError"))
-        setActionLoading(false)
-      },
-    }),
-  )
+      queryClient.setQueryData(detailQueryKey, (old) => {
+        if (!old || !old.application) return old
+        return {
+          ...old,
+          application: {
+            ...old.application,
+            status: "admin_validated" as const,
+          },
+        }
+      })
 
-  const rejectMutation = useMutation(
-    orpc.placements.reject.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["placements", "listPending"],
+      return { previousListData, previousDetailData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousListData) {
+        queryClient.setQueryData(listPendingQueryKey, context.previousListData)
+      }
+      if (context?.previousDetailData) {
+        queryClient.setQueryData(detailQueryKey, context.previousDetailData)
+      }
+      toast.error(t("validateError"))
+      setActionLoading(false)
+    },
+    onSuccess: async (result) => {
+      try {
+        setPdfLoading(true)
+        setPdfError(null)
+        await orpcClient.documents.generateAgreement({
+          placementId: result.placementId,
         })
-        toast.success(t("rejectSuccess"))
-        setActionLoading(false)
-        router.push("/dashboard/admin/validations")
-      },
-      onError: () => {
-        toast.error(t("rejectError"))
-        setActionLoading(false)
-      },
-    }),
-  )
+      } catch (error) {
+        setPdfError(
+          error instanceof Error
+            ? error.message
+            : t("agreementGenerationError"),
+        )
+        toast.error(t("agreementGenerationError"))
+      } finally {
+        setPdfLoading(false)
+      }
+
+      queryClient.invalidateQueries({
+        queryKey: ["placements", "listPending"],
+      })
+      toast.success(t("validateSuccess"))
+      setActionLoading(false)
+      router.push("/dashboard/admin/validations")
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["placements", "listPending"],
+      })
+      queryClient.invalidateQueries({ queryKey: detailQueryKey })
+    },
+  })
+
+  const rejectMutation = useMutation({
+    ...orpc.placements.reject.mutationOptions(),
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: listPendingQueryKey })
+      await queryClient.cancelQueries({ queryKey: detailQueryKey })
+
+      const previousListData = queryClient.getQueryData(listPendingQueryKey)
+      const previousDetailData = queryClient.getQueryData(detailQueryKey)
+
+      queryClient.setQueryData(listPendingQueryKey, (old) => {
+        if (!old || typeof old !== "object") return old
+        const record = old as {
+          pages?: Array<{ applications?: unknown[] }>
+          pageParams?: unknown[]
+        }
+        if (!Array.isArray(record.pages)) return old
+        return {
+          ...record,
+          pages: record.pages.map((page) => {
+            if (!page || typeof page !== "object") return page
+            const p = page as { applications?: unknown[] }
+            if (!Array.isArray(p.applications)) return page
+            return {
+              ...p,
+              applications: p.applications.filter(
+                (app) => (app as { id?: string }).id !== applicationId,
+              ),
+            }
+          }),
+        }
+      })
+
+      queryClient.setQueryData(detailQueryKey, (old) => {
+        if (!old || !old.application) return old
+        return {
+          ...old,
+          application: {
+            ...old.application,
+            status: "admin_rejected" as const,
+          },
+        }
+      })
+
+      return { previousListData, previousDetailData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousListData) {
+        queryClient.setQueryData(listPendingQueryKey, context.previousListData)
+      }
+      if (context?.previousDetailData) {
+        queryClient.setQueryData(detailQueryKey, context.previousDetailData)
+      }
+      toast.error(t("rejectError"))
+      setActionLoading(false)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["placements", "listPending"],
+      })
+      toast.success(t("rejectSuccess"))
+      setActionLoading(false)
+      router.push("/dashboard/admin/validations")
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["placements", "listPending"],
+      })
+      queryClient.invalidateQueries({ queryKey: detailQueryKey })
+    },
+  })
 
   const handleValidate = () => {
     if (!startDate || !endDate) {

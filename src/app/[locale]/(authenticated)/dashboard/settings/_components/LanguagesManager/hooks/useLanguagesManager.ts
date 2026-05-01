@@ -43,18 +43,34 @@ export function useLanguagesManager() {
 
   const languages = draftLanguages ?? initialLanguages
 
-  const upsertMutation = useMutation(
-    orpc.students.upsertLanguages.mutationOptions({
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: profileQueryOptions.queryKey,
-        })
-        setDraftLanguages(null)
-        setSaveError("")
-        toast.success(t("saveSuccess"))
-      },
-    }),
-  )
+  const upsertMutation = useMutation({
+    ...orpc.students.upsertLanguages.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: profileQueryOptions.queryKey })
+      const previousData = queryClient.getQueryData(profileQueryOptions.queryKey)
+      queryClient.setQueryData(profileQueryOptions.queryKey, (old) => {
+        if (!old) return old
+        return { ...old, languages: variables.languages }
+      })
+      return { previousData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          profileQueryOptions.queryKey,
+          context.previousData,
+        )
+      }
+    },
+    onSuccess: () => {
+      setDraftLanguages(null)
+      setSaveError("")
+      toast.success(t("saveSuccess"))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: profileQueryOptions.queryKey })
+    },
+  })
 
   const isDirty =
     draftLanguages !== null &&

@@ -29,23 +29,62 @@ export function useCompanyOffers() {
     [],
   )
 
-  const statusMutation = useMutation(orpc.offers.updateStatus.mutationOptions())
+  const statusMutation = useMutation({
+    ...orpc.offers.updateStatus.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey })
+      const previousData = queryClient.getQueryData<typeof offers>(queryKey)
+      queryClient.setQueryData<typeof offers>(queryKey, (old) => {
+        if (!old) return old
+        return old.map((offer) =>
+          offer.id === variables.offerId
+            ? {
+                ...offer,
+                status: variables.action === "publish" ? "published" : "closed",
+              }
+            : offer,
+        )
+      })
+      return { previousData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(queryKey, context.previousData)
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey })
+    },
+  })
 
-  const deleteMutation = useMutation(orpc.offers.delete.mutationOptions())
+  const deleteMutation = useMutation({
+    ...orpc.offers.delete.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey })
+      const previousData = queryClient.getQueryData<typeof offers>(queryKey)
+      queryClient.setQueryData<typeof offers>(queryKey, (old) => {
+        if (!old) return old
+        return old.filter((offer) => offer.id !== variables.offerId)
+      })
+      return { previousData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(queryKey, context.previousData)
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey })
+    },
+  })
 
   const handlePublish = async (offerId: string) => {
     setActionLoading(offerId)
     try {
-      const result = await statusMutation.mutateAsync({
+      await statusMutation.mutateAsync({
         offerId,
         action: "publish",
       })
-      queryClient.setQueryData<typeof offers>(queryKey, (current = []) =>
-        current.map((offer) =>
-          offer.id === offerId ? { ...offer, status: result.newStatus } : offer,
-        ),
-      )
-      await queryClient.invalidateQueries({ queryKey })
       toast.success(t("toasts.publishSuccess"))
     } catch (error) {
       const code = (error as { data?: { code?: string } })?.data?.code
@@ -68,16 +107,10 @@ export function useCompanyOffers() {
   const handleClose = async (offerId: string) => {
     setActionLoading(offerId)
     try {
-      const result = await statusMutation.mutateAsync({
+      await statusMutation.mutateAsync({
         offerId,
         action: "close",
       })
-      queryClient.setQueryData<typeof offers>(queryKey, (current = []) =>
-        current.map((offer) =>
-          offer.id === offerId ? { ...offer, status: result.newStatus } : offer,
-        ),
-      )
-      await queryClient.invalidateQueries({ queryKey })
       toast.success(t("toasts.closeSuccess"))
     } catch {
       toast.error(t("form.error"))
@@ -90,10 +123,6 @@ export function useCompanyOffers() {
     setActionLoading(offerId)
     try {
       await deleteMutation.mutateAsync({ offerId })
-      queryClient.setQueryData<typeof offers>(queryKey, (current = []) =>
-        current.filter((offer) => offer.id !== offerId),
-      )
-      await queryClient.invalidateQueries({ queryKey })
       toast.success(t("toasts.deleteSuccess"))
     } catch {
       toast.error(t("form.error"))

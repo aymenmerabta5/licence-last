@@ -1,6 +1,6 @@
 "use client"
 
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
@@ -11,6 +11,7 @@ export function useOfferApplication(
   existingApp: OfferDetailProps["existingApplication"],
 ) {
   const t = useTranslations("dashboard.offerDetail")
+  const queryClient = useQueryClient()
 
   const [showApplyForm, setShowApplyForm] = useState(false)
   const [coverLetter, setCoverLetter] = useState("")
@@ -29,19 +30,48 @@ export function useOfferApplication(
   const application =
     localApplication ?? existingApp ?? checkApplicationQuery.data ?? null
 
-  const applyMutation = useMutation(
-    orpc.applications.apply.mutationOptions({
-      onSuccess: (data) => {
-        setLocalApplication({
-          id: data.applicationId,
-          status: "applied",
-          createdAt: new Date(),
-        })
-        setShowApplyForm(false)
-        setSuccessMsg(t("applicationSuccess"))
-      },
-    }),
-  )
+  const applyMutation = useMutation({
+    ...orpc.applications.apply.mutationOptions(),
+    onSuccess: (data) => {
+      setLocalApplication({
+        id: data.applicationId,
+        status: "applied",
+        createdAt: new Date(),
+      })
+      setShowApplyForm(false)
+      setSuccessMsg(t("applicationSuccess"))
+    },
+    onMutate: async (variables) => {
+      const checkQueryKey = orpc.applications.checkApplication.queryOptions({
+        input: { offerId: variables.offerId },
+      }).queryKey
+      await queryClient.cancelQueries({ queryKey: checkQueryKey })
+      const previousData = queryClient.getQueryData(checkQueryKey)
+
+      queryClient.setQueryData(checkQueryKey, {
+        id: `optimistic-${variables.offerId}`,
+        status: "applied",
+        createdAt: new Date(),
+      })
+
+      return { previousData }
+    },
+    onError: (_err, variables, context) => {
+      const checkQueryKey = orpc.applications.checkApplication.queryOptions({
+        input: { offerId: variables.offerId },
+      }).queryKey
+      if (context?.previousData) {
+        queryClient.setQueryData(checkQueryKey, context.previousData)
+      }
+    },
+    onSettled: (_data, _error, variables) => {
+      const checkQueryKey = orpc.applications.checkApplication.queryOptions({
+        input: { offerId: variables.offerId },
+      }).queryKey
+      queryClient.invalidateQueries({ queryKey: checkQueryKey })
+      queryClient.invalidateQueries({ queryKey: ["applications", "listByStudent"] })
+    },
+  })
 
   const draftMutation = useMutation(
     orpc.applications.generateCoverLetter.mutationOptions({

@@ -99,7 +99,7 @@ export function ChangePasswordForm({
                 type="submit"
                 disabled={isSubmitting}
                 variant="editorial"
-                className="w-full rounded-xl h-11"
+                className="w-full rounded-none h-11"
               >
                 {isSubmitting ? (
                   <>

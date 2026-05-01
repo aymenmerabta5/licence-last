@@ -86,6 +86,17 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.NEXT_PUBLIC_BETTER_AUTH_URL,
+  advanced: {
+    ipAddress: {
+      ipAddressHeaders: [
+        "x-vercel-forwarded-for",
+        "x-real-ip",
+        "x-forwarded-for",
+        "cf-connecting-ip",
+      ],
+    },
+    trustedProxyHeaders: true,
+  },
   rateLimit: {
     enabled: AUTH_RATE_LIMIT_ENABLED,
   },

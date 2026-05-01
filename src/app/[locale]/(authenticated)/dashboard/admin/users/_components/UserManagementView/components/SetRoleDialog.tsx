@@ -93,11 +93,12 @@ export function SetRoleDialog({
             <Button
               type="button"
               variant="outline"
+              className="rounded-none"
               onClick={() => onOpenChange(false)}
             >
               {t("dialogs.cancel")}
             </Button>
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" className="rounded-none" disabled={isPending}>
               {isPending && <Loader2 className="h-4 w-4 me-2 animate-spin" />}
               {t("dialogs.setRole.submit")}
             </Button>

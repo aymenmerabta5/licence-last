@@ -15,10 +15,10 @@ export const modalDescriptionClassName =
   "text-muted-foreground text-sm leading-relaxed *:[a]:underline *:[a]:underline-offset-3 *:[a]:hover:text-foreground"
 
 export const modalFooterClassName =
-  "bg-muted/50 -mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t p-4 sm:flex-row sm:justify-end"
+  "bg-muted/50 -mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-none border-t p-4 sm:flex-row sm:justify-end"
 
 export const dialogSizeVariants = cva(
-  "max-w-[calc(100%-2rem)] rounded-xl p-4 ring-1",
+  "max-w-[calc(100%-2rem)] rounded-none p-4 ring-1",
   {
     variants: {
       size: {

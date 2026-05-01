@@ -23,27 +23,88 @@ export function useInterviewDetailData({ interviewId, initialInterview }: UseInt
     initialData: initialInterview,
   })
 
-  const confirmSlotMutation = useMutation(
-    orpc.interviews.confirmSlot.mutationOptions({
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: orpc.interviews.getById.queryOptions({ input: { interviewId } }).queryKey,
-        })
-        await queryClient.invalidateQueries({
-          queryKey: orpc.interviews.listForStudent.queryOptions().queryKey,
-        })
-        toast.success(t("errors.common.interviewSlotConfirmed"))
-      },
-      onError: (error) => {
-        toast.error(
-          resolveLocalizedError(error, {
-            t,
-            fallbackKey: "errors.common.confirmInterviewSlotFailed",
-          }),
-        )
-      },
-    }),
-  )
+  const detailQueryKey = orpc.interviews.getById.queryOptions({ input: { interviewId } }).queryKey
+  const studentListQueryKey = orpc.interviews.listForStudent.queryOptions().queryKey
+  const companyListQueryKey = orpc.interviews.listForCompany.queryOptions().queryKey
+
+  const confirmSlotMutation = useMutation({
+    ...orpc.interviews.confirmSlot.mutationOptions(),
+    onMutate: async (variables) => {
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: detailQueryKey }),
+        queryClient.cancelQueries({ queryKey: studentListQueryKey }),
+        queryClient.cancelQueries({ queryKey: companyListQueryKey }),
+      ])
+
+      const previousDetail = queryClient.getQueryData(detailQueryKey)
+      const previousStudentList = queryClient.getQueryData(studentListQueryKey)
+      const previousCompanyList = queryClient.getQueryData(companyListQueryKey)
+
+      queryClient.setQueryData(detailQueryKey, (old) => {
+        if (!old) return old
+        return {
+          ...old,
+          status: "confirmed" as const,
+          confirmedSlotId: variables.slotId,
+          confirmedAt: new Date(),
+        }
+      })
+
+      queryClient.setQueryData(studentListQueryKey, (old) => {
+        if (!Array.isArray(old)) return old
+        return old.map((interview) => {
+          if (interview.id !== variables.interviewId) return interview
+          return {
+            ...interview,
+            status: "confirmed" as const,
+            confirmedSlotId: variables.slotId,
+            confirmedAt: new Date(),
+          }
+        }) as typeof old
+      })
+
+      queryClient.setQueryData(companyListQueryKey, (old) => {
+        if (!Array.isArray(old)) return old
+        return old.map((interview) => {
+          if (interview.id !== variables.interviewId) return interview
+          return {
+            ...interview,
+            status: "confirmed" as const,
+            confirmedSlotId: variables.slotId,
+            confirmedAt: new Date(),
+          }
+        }) as typeof old
+      })
+
+      return { previousDetail, previousStudentList, previousCompanyList }
+    },
+    onSuccess: () => {
+      toast.success(t("errors.common.interviewSlotConfirmed"))
+    },
+    onError: (error, _variables, context) => {
+      if (context?.previousDetail) {
+        queryClient.setQueryData(detailQueryKey, context.previousDetail)
+      }
+      if (context?.previousStudentList) {
+        queryClient.setQueryData(studentListQueryKey, context.previousStudentList)
+      }
+      if (context?.previousCompanyList) {
+        queryClient.setQueryData(companyListQueryKey, context.previousCompanyList)
+      }
+
+      toast.error(
+        resolveLocalizedError(error, {
+          t,
+          fallbackKey: "errors.common.confirmInterviewSlotFailed",
+        }),
+      )
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: detailQueryKey })
+      queryClient.invalidateQueries({ queryKey: studentListQueryKey })
+      queryClient.invalidateQueries({ queryKey: companyListQueryKey })
+    },
+  })
 
   const confirmSlot = async (input: ConfirmSlotInput) => {
     setConfirmingSlotId(input.slotId)

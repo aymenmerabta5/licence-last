@@ -40,7 +40,63 @@ export function useOfferMatching(
 
   const captureSnapshotMutation = useMutation({
     ...orpc.matching.captureReadinessSnapshot.mutationOptions(),
-    onSuccess: () =>
+    onMutate: async (variables) => {
+      await Promise.all([
+        queryClient.cancelQueries({
+          queryKey: readinessHistoryQueryOptions.queryKey,
+        }),
+        queryClient.cancelQueries({
+          queryKey: matchScoreQueryOptions.queryKey,
+        }),
+      ])
+
+      const previousReadinessHistory = queryClient.getQueryData(
+        readinessHistoryQueryOptions.queryKey,
+      )
+      const previousMatchScore = queryClient.getQueryData(
+        matchScoreQueryOptions.queryKey,
+      )
+
+      const skillGap = skillGapQuery.data
+      if (skillGap) {
+        queryClient.setQueryData(
+          readinessHistoryQueryOptions.queryKey,
+          (old) => {
+            if (!old) return old
+            return {
+              ...old,
+              points: [
+                {
+                  id: crypto.randomUUID(),
+                  readyPercent: skillGap.readyPercent,
+                  missingSkillsCount: skillGap.missingSkills.length,
+                  capturedAt: new Date(),
+                  source: variables.source as string,
+                } as (typeof old.points)[number],
+                ...old.points,
+              ],
+            }
+          },
+        )
+      }
+
+      return { previousReadinessHistory, previousMatchScore }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousReadinessHistory) {
+        queryClient.setQueryData(
+          readinessHistoryQueryOptions.queryKey,
+          context.previousReadinessHistory,
+        )
+      }
+      if (context?.previousMatchScore) {
+        queryClient.setQueryData(
+          matchScoreQueryOptions.queryKey,
+          context.previousMatchScore,
+        )
+      }
+    },
+    onSettled: () => {
       Promise.all([
         queryClient.invalidateQueries({
           queryKey: readinessHistoryQueryOptions.queryKey,
@@ -48,7 +104,8 @@ export function useOfferMatching(
         queryClient.invalidateQueries({
           queryKey: matchScoreQueryOptions.queryKey,
         }),
-      ]),
+      ])
+    },
   })
 
   const captureSnapshotMutateRef = useRef(captureSnapshotMutation.mutate)

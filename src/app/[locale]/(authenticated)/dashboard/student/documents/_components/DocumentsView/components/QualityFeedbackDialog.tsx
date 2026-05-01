@@ -77,7 +77,7 @@ export function QualityFeedbackDialog({
                     variant="editorial-outline"
                     size="sm"
                     className={cn(
-                      "min-w-14 gap-1.5 border-border/40",
+                      "min-w-14 gap-1.5 border-border/40 rounded-none",
                       isActive && "border-primary bg-primary/10 text-primary",
                     )}
                     onClick={() => onFieldChange("rating", ratingValue)}
@@ -133,6 +133,7 @@ export function QualityFeedbackDialog({
           <Button
             type="button"
             variant="editorial-outline"
+            className="rounded-none"
             disabled={isSubmitting}
             onClick={() => onOpenChange(false)}
           >
@@ -141,7 +142,7 @@ export function QualityFeedbackDialog({
           <Button
             type="button"
             variant="editorial"
-            className="gap-1.5"
+            className="gap-1.5 rounded-none"
             disabled={isSubmitting}
             onClick={onSubmit}
           >

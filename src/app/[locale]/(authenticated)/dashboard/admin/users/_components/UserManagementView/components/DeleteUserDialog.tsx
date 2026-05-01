@@ -42,11 +42,12 @@ export function DeleteUserDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" className="rounded-none" onClick={() => onOpenChange(false)}>
             {t("dialogs.cancel")}
           </Button>
           <Button
             variant="destructive"
+            className="rounded-none"
             disabled={isPending}
             onClick={() => user && onConfirm(user.id)}
           >

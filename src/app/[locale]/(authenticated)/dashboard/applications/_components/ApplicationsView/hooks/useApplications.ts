@@ -49,21 +49,58 @@ export function useApplications() {
     [data],
   )
 
-  const withdrawMutation = useMutation(
-    orpc.applications.withdraw.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["applications", "listByStudent"],
-        })
-        toast.success(t("withdrawSuccess"))
-        setWithdrawingId(null)
-      },
-      onError: () => {
-        toast.error(t("withdrawError"))
-        setWithdrawingId(null)
-      },
-    }),
-  )
+  const withdrawMutation = useMutation({
+    ...orpc.applications.withdraw.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({
+        queryKey: ["applications", "listByStudent"],
+      })
+      const previousData = queryClient.getQueryData([
+        "applications",
+        "listByStudent",
+      ])
+      queryClient.setQueryData(
+        ["applications", "listByStudent"],
+        (old) => {
+          if (!old || typeof old !== "object" || !("pages" in old))
+            return old
+          const data = old as {
+            pages: Array<{ applications: Array<{ id: string }> }>
+            pageParams: unknown[]
+          }
+          return {
+            ...data,
+            pages: data.pages.map((page) => ({
+              ...page,
+              applications: page.applications.filter(
+                (app) => app.id !== variables.applicationId,
+              ),
+            })),
+          }
+        },
+      )
+      return { previousData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          ["applications", "listByStudent"],
+          context.previousData,
+        )
+      }
+      toast.error(t("withdrawError"))
+      setWithdrawingId(null)
+    },
+    onSuccess: () => {
+      toast.success(t("withdrawSuccess"))
+      setWithdrawingId(null)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["applications", "listByStudent"],
+      })
+    },
+  })
 
   const handleWithdraw = (applicationId: string, confirmMessage: string) => {
     if (!window.confirm(confirmMessage)) return

@@ -27,27 +27,40 @@ function extractErrorMessage(error: unknown, fallback: string) {
 export function useResolveReport() {
   const queryClient = useQueryClient()
 
-  const mutation = useMutation(
-    orpc.companies.resolveReport.mutationOptions({
-      onSuccess: async (_, variables) => {
-        await queryClient.invalidateQueries({
-          queryKey: orpc.companies.listReports.queryOptions({
-            input: { status: "open", limit: 12 },
-          }).queryKey,
-        })
-        toast.success(
-          variables.status === "resolved"
-            ? "Report resolved successfully."
-            : "Report dismissed successfully.",
-        )
-      },
-      onError: (error) => {
-        toast.error(
-          extractErrorMessage(error, "Failed to update report status."),
-        )
-      },
-    }),
-  )
+  const reportsQueryKey = orpc.companies.listReports.queryOptions({
+    input: { status: "open", limit: 12 },
+  }).queryKey
+
+  const mutation = useMutation({
+    ...orpc.companies.resolveReport.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: reportsQueryKey })
+      const previousData = queryClient.getQueryData(reportsQueryKey)
+      queryClient.setQueryData(reportsQueryKey, (old) => {
+        if (!Array.isArray(old)) return old
+        return old.filter((report) => report.id !== variables.reportId)
+      })
+      return { previousData }
+    },
+    onSuccess: async (_, variables) => {
+      toast.success(
+        variables.status === "resolved"
+          ? "Report resolved successfully."
+          : "Report dismissed successfully.",
+      )
+    },
+    onError: (error, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(reportsQueryKey, context.previousData)
+      }
+      toast.error(
+        extractErrorMessage(error, "Failed to update report status."),
+      )
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: reportsQueryKey })
+    },
+  })
 
   return {
     isPending: mutation.isPending,

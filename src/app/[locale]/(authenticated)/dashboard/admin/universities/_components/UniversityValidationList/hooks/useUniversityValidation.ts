@@ -1,5 +1,6 @@
 "use client"
 
+import type { InfiniteData } from "@tanstack/react-query"
 import {
   useInfiniteQuery,
   useMutation,
@@ -17,6 +18,17 @@ import type { UniversityStatus } from "@/lib/schemas/enums"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
 const PAGE_SIZE = 20
+
+type UniversityPage = { universities: UniversityListItem[]; hasMore: boolean }
+
+function isInfiniteUniversityData(data: unknown): data is InfiniteData<UniversityPage> {
+  return (
+    typeof data === "object" &&
+    data !== null &&
+    "pages" in data &&
+    Array.isArray((data as Record<string, unknown>).pages)
+  )
+}
 
 export function useUniversityValidation() {
   const t = useTranslations("dashboard.admin.universities")
@@ -73,15 +85,70 @@ export function useUniversityValidation() {
   const invalidateUniversityQueries = () =>
     queryClient.invalidateQueries({ queryKey: universitiesQueryKey })
 
+  const getUniversityListQueries = () =>
+    queryClient.getQueriesData<unknown>({
+      predicate: (query) => {
+        const keyStr = JSON.stringify(query.queryKey)
+        return keyStr.includes("universities") && keyStr.includes("list")
+      },
+    })
+
   const approveMutation = useMutation({
     mutationFn: (universityId: string) =>
       orpcClient.universities.approve({ universityId }),
+    onMutate: async (universityId) => {
+      await queryClient.cancelQueries({ queryKey: universitiesQueryKey })
+      const previousQueries = getUniversityListQueries()
+      previousQueries.forEach(([queryKey, data]) => {
+        if (!data) return
+        if (isInfiniteUniversityData(data)) {
+          queryClient.setQueryData<InfiniteData<UniversityPage>>(
+            queryKey,
+            (old) => {
+              if (!old) return old
+              return {
+                ...old,
+                pages: old.pages.map((page) => ({
+                  ...page,
+                  universities: page.universities.map((u) =>
+                    u.id === universityId
+                      ? { ...u, status: "approved" as const }
+                      : u,
+                  ),
+                })),
+              }
+            },
+          )
+        } else {
+          queryClient.setQueryData<UniversityPage>(queryKey, (old) => {
+            if (!old) return old
+            return {
+              ...old,
+              universities: old.universities.map((u) =>
+                u.id === universityId
+                  ? { ...u, status: "approved" as const }
+                  : u,
+              ),
+            }
+          })
+        }
+      })
+      return { previousQueries }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousQueries) {
+        context.previousQueries.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data)
+        })
+      }
+      toast.error(t("approveError"))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: universitiesQueryKey })
+    },
     onSuccess: () => {
       toast.success(t("approveSuccess"))
       invalidateUniversityQueries()
-    },
-    onError: () => {
-      toast.error(t("approveError"))
     },
   })
 
@@ -93,36 +160,213 @@ export function useUniversityValidation() {
       universityId: string
       reason: string
     }) => orpcClient.universities.reject({ universityId, reason }),
+    onMutate: async ({ universityId }) => {
+      await queryClient.cancelQueries({ queryKey: universitiesQueryKey })
+      const previousQueries = getUniversityListQueries()
+      previousQueries.forEach(([queryKey, data]) => {
+        if (!data) return
+        if (isInfiniteUniversityData(data)) {
+          queryClient.setQueryData<InfiniteData<UniversityPage>>(
+            queryKey,
+            (old) => {
+              if (!old) return old
+              return {
+                ...old,
+                pages: old.pages.map((page) => ({
+                  ...page,
+                  universities: page.universities.map((u) =>
+                    u.id === universityId
+                      ? { ...u, status: "rejected" as const }
+                      : u,
+                  ),
+                })),
+              }
+            },
+          )
+        } else {
+          queryClient.setQueryData<UniversityPage>(queryKey, (old) => {
+            if (!old) return old
+            return {
+              ...old,
+              universities: old.universities.map((u) =>
+                u.id === universityId
+                  ? { ...u, status: "rejected" as const }
+                  : u,
+              ),
+            }
+          })
+        }
+      })
+      return { previousQueries }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousQueries) {
+        context.previousQueries.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data)
+        })
+      }
+      toast.error(t("rejectError"))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: universitiesQueryKey })
+    },
     onSuccess: () => {
       toast.success(t("rejectSuccess"))
       invalidateUniversityQueries()
-    },
-    onError: () => {
-      toast.error(t("rejectError"))
     },
   })
 
   const updateMutation = useMutation({
     mutationFn: (payload: UpdateUniversityPayload) =>
       orpcClient.universities.update(payload),
+    onMutate: async (payload) => {
+      await queryClient.cancelQueries({ queryKey: universitiesQueryKey })
+      const previousQueries = getUniversityListQueries()
+      previousQueries.forEach(([queryKey, data]) => {
+        if (!data) return
+        if (isInfiniteUniversityData(data)) {
+          queryClient.setQueryData<InfiniteData<UniversityPage>>(
+            queryKey,
+            (old) => {
+              if (!old) return old
+              return {
+                ...old,
+                pages: old.pages.map((page) => ({
+                  ...page,
+                  universities: page.universities.map((u) =>
+                    u.id === payload.universityId
+                      ? {
+                          ...u,
+                          ...(payload.name !== undefined && {
+                            name: payload.name,
+                          }),
+                          ...(payload.abbreviation !== undefined && {
+                            abbreviation: payload.abbreviation,
+                          }),
+                          ...(payload.phone !== undefined && {
+                            phone: payload.phone,
+                          }),
+                          ...(payload.wilayaCode !== undefined && {
+                            wilayaCode: payload.wilayaCode,
+                          }),
+                          ...(payload.city !== undefined && {
+                            city: payload.city,
+                          }),
+                          ...(payload.address !== undefined && {
+                            address: payload.address,
+                          }),
+                        }
+                      : u,
+                  ),
+                })),
+              }
+            },
+          )
+        } else {
+          queryClient.setQueryData<UniversityPage>(queryKey, (old) => {
+            if (!old) return old
+            return {
+              ...old,
+              universities: old.universities.map((u) =>
+                u.id === payload.universityId
+                  ? {
+                      ...u,
+                      ...(payload.name !== undefined && {
+                        name: payload.name,
+                      }),
+                      ...(payload.abbreviation !== undefined && {
+                        abbreviation: payload.abbreviation,
+                      }),
+                      ...(payload.phone !== undefined && {
+                        phone: payload.phone,
+                      }),
+                      ...(payload.wilayaCode !== undefined && {
+                        wilayaCode: payload.wilayaCode,
+                      }),
+                      ...(payload.city !== undefined && {
+                        city: payload.city,
+                      }),
+                      ...(payload.address !== undefined && {
+                        address: payload.address,
+                      }),
+                    }
+                  : u,
+              ),
+            }
+          })
+        }
+      })
+      return { previousQueries }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousQueries) {
+        context.previousQueries.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data)
+        })
+      }
+      toast.error(t("updateError"))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: universitiesQueryKey })
+    },
     onSuccess: () => {
       toast.success(t("updateSuccess"))
       invalidateUniversityQueries()
-    },
-    onError: () => {
-      toast.error(t("updateError"))
     },
   })
 
   const deleteMutation = useMutation({
     mutationFn: ({ universityId }: { universityId: string }) =>
       orpcClient.universities.delete({ universityId }),
+    onMutate: async ({ universityId }) => {
+      await queryClient.cancelQueries({ queryKey: universitiesQueryKey })
+      const previousQueries = getUniversityListQueries()
+      previousQueries.forEach(([queryKey, data]) => {
+        if (!data) return
+        if (isInfiniteUniversityData(data)) {
+          queryClient.setQueryData<InfiniteData<UniversityPage>>(
+            queryKey,
+            (old) => {
+              if (!old) return old
+              return {
+                ...old,
+                pages: old.pages.map((page) => ({
+                  ...page,
+                  universities: page.universities.filter(
+                    (u) => u.id !== universityId,
+                  ),
+                })),
+              }
+            },
+          )
+        } else {
+          queryClient.setQueryData<UniversityPage>(queryKey, (old) => {
+            if (!old) return old
+            return {
+              ...old,
+              universities: old.universities.filter(
+                (u) => u.id !== universityId,
+              ),
+            }
+          })
+        }
+      })
+      return { previousQueries }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousQueries) {
+        context.previousQueries.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data)
+        })
+      }
+      toast.error(t("deleteError"))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: universitiesQueryKey })
+    },
     onSuccess: () => {
       toast.success(t("deleteSuccess"))
       invalidateUniversityQueries()
-    },
-    onError: () => {
-      toast.error(t("deleteError"))
     },
   })
 

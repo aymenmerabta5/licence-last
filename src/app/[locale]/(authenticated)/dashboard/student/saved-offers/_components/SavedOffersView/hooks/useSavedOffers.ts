@@ -4,6 +4,7 @@ import {
   useInfiniteQuery,
   useMutation,
   useQueryClient,
+  type QueryKey,
 } from "@tanstack/react-query"
 import { useMemo } from "react"
 
@@ -12,7 +13,7 @@ import { orpc, orpcClient } from "@/server/orpc/client"
 export function useSavedOffers() {
   const queryClient = useQueryClient()
   const savedQueryKey = useMemo(
-    () => orpc.offers.listSaved.queryOptions().queryKey,
+    () => orpc.offers.listSaved.queryOptions().queryKey as QueryKey,
     [],
   )
 
@@ -30,11 +31,36 @@ export function useSavedOffers() {
   })
 
   const unsaveMutation = useMutation({
-    ...orpc.offers.unsave.mutationOptions({
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: savedQueryKey })
-      },
-    }),
+    ...orpc.offers.unsave.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: savedQueryKey })
+      const previousData = queryClient.getQueryData(savedQueryKey)
+      queryClient.setQueryData(savedQueryKey, (old) => {
+        if (!old || typeof old !== "object" || !("pages" in old)) return old
+        const data = old as {
+          pages: Array<{ offers: Array<{ offerId: string }> }>
+          pageParams: unknown[]
+        }
+        return {
+          ...data,
+          pages: data.pages.map((page) => ({
+            ...page,
+            offers: page.offers.filter(
+              (o) => o.offerId !== variables.offerId,
+            ),
+          })),
+        }
+      })
+      return { previousData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(savedQueryKey, context.previousData)
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: savedQueryKey })
+    },
   })
 
   const offers =

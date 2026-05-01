@@ -14,25 +14,70 @@ export function useCompanyTeamData() {
 
   const membersQuery = useQuery(membersQueryOptions)
 
-  const inviteMutation = useMutation(
-    orpc.companies.inviteMember.mutationOptions({
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: membersQueryOptions.queryKey,
-        })
-      },
-    }),
-  )
+  const inviteMutation = useMutation({
+    ...orpc.companies.inviteMember.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({
+        queryKey: membersQueryOptions.queryKey,
+      })
+      const previousData = queryClient.getQueryData(membersQueryOptions.queryKey)
+      queryClient.setQueryData(membersQueryOptions.queryKey, (old) => {
+        if (!old) return old
+        return [
+          ...old,
+          {
+            userId: `optimistic-${Date.now()}`,
+            email: variables.email,
+            name: variables.name ?? null,
+            role: "recruiter" as const,
+            joinedAt: new Date(),
+          },
+        ]
+      })
+      return { previousData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          membersQueryOptions.queryKey,
+          context.previousData,
+        )
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: membersQueryOptions.queryKey,
+      })
+    },
+  })
 
-  const removeMutation = useMutation(
-    orpc.companies.removeMember.mutationOptions({
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: membersQueryOptions.queryKey,
-        })
-      },
-    }),
-  )
+  const removeMutation = useMutation({
+    ...orpc.companies.removeMember.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({
+        queryKey: membersQueryOptions.queryKey,
+      })
+      const previousData = queryClient.getQueryData(membersQueryOptions.queryKey)
+      queryClient.setQueryData(membersQueryOptions.queryKey, (old) => {
+        if (!old) return old
+        return old.filter((member) => member.userId !== variables.userId)
+      })
+      return { previousData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          membersQueryOptions.queryKey,
+          context.previousData,
+        )
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: membersQueryOptions.queryKey,
+      })
+    },
+  })
 
   return {
     members: membersQuery.data ?? [],

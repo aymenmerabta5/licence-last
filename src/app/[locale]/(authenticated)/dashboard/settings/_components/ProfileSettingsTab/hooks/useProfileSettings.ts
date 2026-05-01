@@ -40,25 +40,65 @@ export function useProfileSettings(
   const [isAvatarDeleting, setIsAvatarDeleting] = useState(false)
   const avatarInputRef = useRef<HTMLInputElement>(null)
 
-  const updateMeMutation = useMutation(
-    orpc.users.updateMe.mutationOptions({
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: meQueryOptions.queryKey,
-        })
-      },
-    }),
-  )
+  const updateMeMutation = useMutation({
+    ...orpc.users.updateMe.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: meQueryOptions.queryKey })
+      const previousData = queryClient.getQueryData(meQueryOptions.queryKey)
+      queryClient.setQueryData(meQueryOptions.queryKey, (old) => {
+        if (!old) return old
+        return { ...old, user: { ...old.user, name: variables.name } }
+      })
+      return { previousData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(meQueryOptions.queryKey, context.previousData)
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: meQueryOptions.queryKey })
+    },
+  })
 
-  const upsertDetailsMutation = useMutation(
-    orpc.students.upsertProfileDetails.mutationOptions({
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: profileQueryOptions.queryKey,
-        })
-      },
-    }),
-  )
+  const upsertDetailsMutation = useMutation({
+    ...orpc.students.upsertProfileDetails.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: profileQueryOptions.queryKey })
+      const previousData = queryClient.getQueryData(profileQueryOptions.queryKey)
+      queryClient.setQueryData<StudentProfileResult>(profileQueryOptions.queryKey, (old) => {
+        if (!old?.profile) return old
+        return {
+          ...old,
+          profile: {
+            ...old.profile,
+            bio: variables.bio ?? old.profile.bio,
+            phone: variables.phone ?? old.profile.phone,
+            githubUrl: variables.githubUrl ?? old.profile.githubUrl,
+            portfolioUrl: variables.portfolioUrl ?? old.profile.portfolioUrl,
+            studentNumber:
+              variables.studentNumber ?? old.profile.studentNumber,
+            department: variables.department ?? old.profile.department,
+            level: variables.level ?? old.profile.level,
+            wilayaCode: (variables.wilayaCode as number | undefined) ?? old.profile.wilayaCode,
+            address: variables.address ?? old.profile.address,
+          },
+        }
+      })
+      return { previousData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          profileQueryOptions.queryKey,
+          context.previousData,
+        )
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: profileQueryOptions.queryKey })
+    },
+  })
 
   const role = me.user.role ?? null
   const isStudent = role === "student"

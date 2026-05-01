@@ -114,7 +114,7 @@ export function EditUniversityDialog({
             <Button
               type="button"
               variant="editorial-outline"
-              className="rounded-xl h-10"
+              className="rounded-none h-10"
               onClick={() => onOpenChange(false)}
             >
               {t("cancel")}
@@ -122,7 +122,7 @@ export function EditUniversityDialog({
             <Button
               type="submit"
               variant="editorial"
-              className="rounded-xl h-10"
+              className="rounded-none h-10"
               disabled={isUpdating}
             >
               {isUpdating ? (

@@ -16,6 +16,14 @@ const useMutationMock = mock((options: Record<string, unknown>) => ({
     if (onSuccess) {
       await onSuccess(undefined, variables as { status: string })
     }
+
+    const onSettled = options.onSettled as
+      | (() => Promise<void> | void)
+      | undefined
+
+    if (onSettled) {
+      await onSettled()
+    }
   },
 }))
 

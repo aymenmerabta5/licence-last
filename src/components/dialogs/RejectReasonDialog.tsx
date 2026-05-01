@@ -81,6 +81,7 @@ export function RejectReasonDialog({
           <Button
             type="button"
             variant="outline"
+            className="rounded-none"
             onClick={() => handleOpenChange(false)}
           >
             {cancelLabel}
@@ -88,6 +89,7 @@ export function RejectReasonDialog({
           <Button
             type="button"
             variant="destructive"
+            className="rounded-none"
             disabled={isPending || !reason.trim()}
             onClick={() => {
               onConfirm(reason.trim())

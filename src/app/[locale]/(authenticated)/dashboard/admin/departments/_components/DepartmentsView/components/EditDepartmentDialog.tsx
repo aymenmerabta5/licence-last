@@ -93,6 +93,7 @@ export function EditDepartmentDialog({
               type="button"
               variant="outline"
               size="sm"
+              className="rounded-none"
               onClick={() => onOpenChange(false)}
             >
               {t("cancel")}
@@ -101,6 +102,7 @@ export function EditDepartmentDialog({
               type="button"
               variant="editorial"
               size="editorial-sm"
+              className="rounded-none"
               onClick={handleSubmit}
               disabled={isDisabled}
             >

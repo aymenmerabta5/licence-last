@@ -77,6 +77,7 @@ export function ResolveReportDialog({
                     status === "resolved" ? "editorial" : "editorial-outline"
                   }
                   size="sm"
+                  className="rounded-none"
                   onClick={() => onStatusChange("resolved")}
                   disabled={isPending}
                 >
@@ -88,6 +89,7 @@ export function ResolveReportDialog({
                     status === "dismissed" ? "editorial" : "editorial-outline"
                   }
                   size="sm"
+                  className="rounded-none"
                   onClick={() => onStatusChange("dismissed")}
                   disabled={isPending}
                 >
@@ -116,6 +118,7 @@ export function ResolveReportDialog({
           <Button
             type="button"
             variant="editorial-outline"
+            className="rounded-none"
             onClick={() => onOpenChange(false)}
             disabled={isPending}
           >
@@ -124,7 +127,7 @@ export function ResolveReportDialog({
           <Button
             type="button"
             variant="editorial"
-            className="gap-1.5"
+            className="gap-1.5 rounded-none"
             onClick={onConfirm}
             disabled={isPending || !report}
           >

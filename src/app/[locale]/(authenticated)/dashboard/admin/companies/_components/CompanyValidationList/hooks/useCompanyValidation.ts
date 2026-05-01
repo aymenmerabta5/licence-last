@@ -1,5 +1,6 @@
 "use client"
 
+import type { InfiniteData } from "@tanstack/react-query"
 import {
   useInfiniteQuery,
   useMutation,
@@ -14,6 +15,11 @@ import type { CompanyStatus } from "@/lib/schemas/enums"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
 const PAGE_SIZE = 20
+
+type CompaniesInfiniteData = InfiniteData<{
+  companies: CompanyListItem[]
+  hasMore: boolean
+}>
 
 function downloadFile(base64: string, fileName: string, mimeType: string) {
   const bytes = Uint8Array.from(atob(base64), (char) => char.charCodeAt(0))
@@ -93,12 +99,36 @@ export function useCompanyValidation() {
   const approveMutation = useMutation({
     mutationFn: (companyId: string) =>
       orpcClient.companies.approve({ companyId }),
+    onMutate: async (companyId) => {
+      await queryClient.cancelQueries({ queryKey })
+      const previousData = queryClient.getQueryData<CompaniesInfiniteData>(queryKey)
+      queryClient.setQueryData<CompaniesInfiniteData>(queryKey, (old) => {
+        if (!old) return old
+        return {
+          ...old,
+          pages: old.pages.map((page) => ({
+            ...page,
+            companies: page.companies.map((company) =>
+              company.id === companyId
+                ? { ...company, status: "approved" }
+                : company,
+            ),
+          })),
+        }
+      })
+      return { previousData }
+    },
     onSuccess: () => {
       toast.success(t("approveSuccess"))
-      queryClient.invalidateQueries({ queryKey })
     },
-    onError: () => {
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData<CompaniesInfiniteData>(queryKey, context.previousData)
+      }
       toast.error(t("approveError"))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey })
     },
   })
 
@@ -110,36 +140,108 @@ export function useCompanyValidation() {
       companyId: string
       reason: string
     }) => orpcClient.companies.reject({ companyId, reason }),
+    onMutate: async ({ companyId }) => {
+      await queryClient.cancelQueries({ queryKey })
+      const previousData = queryClient.getQueryData<CompaniesInfiniteData>(queryKey)
+      queryClient.setQueryData<CompaniesInfiniteData>(queryKey, (old) => {
+        if (!old) return old
+        return {
+          ...old,
+          pages: old.pages.map((page) => ({
+            ...page,
+            companies: page.companies.map((company) =>
+              company.id === companyId
+                ? { ...company, status: "rejected" }
+                : company,
+            ),
+          })),
+        }
+      })
+      return { previousData }
+    },
     onSuccess: () => {
       toast.success(t("rejectSuccess"))
-      queryClient.invalidateQueries({ queryKey })
     },
-    onError: () => {
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData<CompaniesInfiniteData>(queryKey, context.previousData)
+      }
       toast.error(t("rejectError"))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey })
     },
   })
 
   const suspendMutation = useMutation({
     mutationFn: (companyId: string) =>
       orpcClient.companies.suspend({ companyId }),
+    onMutate: async (companyId) => {
+      await queryClient.cancelQueries({ queryKey })
+      const previousData = queryClient.getQueryData<CompaniesInfiniteData>(queryKey)
+      queryClient.setQueryData<CompaniesInfiniteData>(queryKey, (old) => {
+        if (!old) return old
+        return {
+          ...old,
+          pages: old.pages.map((page) => ({
+            ...page,
+            companies: page.companies.map((company) =>
+              company.id === companyId
+                ? { ...company, status: "suspended" }
+                : company,
+            ),
+          })),
+        }
+      })
+      return { previousData }
+    },
     onSuccess: () => {
       toast.success(t("suspendSuccess"))
-      queryClient.invalidateQueries({ queryKey })
     },
-    onError: () => {
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData<CompaniesInfiniteData>(queryKey, context.previousData)
+      }
       toast.error(t("suspendError"))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey })
     },
   })
 
   const reactivateMutation = useMutation({
     mutationFn: (companyId: string) =>
       orpcClient.companies.reactivate({ companyId }),
+    onMutate: async (companyId) => {
+      await queryClient.cancelQueries({ queryKey })
+      const previousData = queryClient.getQueryData<CompaniesInfiniteData>(queryKey)
+      queryClient.setQueryData<CompaniesInfiniteData>(queryKey, (old) => {
+        if (!old) return old
+        return {
+          ...old,
+          pages: old.pages.map((page) => ({
+            ...page,
+            companies: page.companies.map((company) =>
+              company.id === companyId
+                ? { ...company, status: "approved" }
+                : company,
+            ),
+          })),
+        }
+      })
+      return { previousData }
+    },
     onSuccess: () => {
       toast.success(t("reactivateSuccess"))
-      queryClient.invalidateQueries({ queryKey })
     },
-    onError: () => {
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData<CompaniesInfiniteData>(queryKey, context.previousData)
+      }
       toast.error(t("reactivateError"))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey })
     },
   })
 
@@ -154,12 +256,34 @@ export function useCompanyValidation() {
   const deleteMutation = useMutation({
     mutationFn: ({ companyId }: { companyId: string }) =>
       orpcClient.companies.delete({ companyId }),
+    onMutate: async ({ companyId }) => {
+      await queryClient.cancelQueries({ queryKey })
+      const previousData = queryClient.getQueryData<CompaniesInfiniteData>(queryKey)
+      queryClient.setQueryData<CompaniesInfiniteData>(queryKey, (old) => {
+        if (!old) return old
+        return {
+          ...old,
+          pages: old.pages.map((page) => ({
+            ...page,
+            companies: page.companies.filter(
+              (company) => company.id !== companyId,
+            ),
+          })),
+        }
+      })
+      return { previousData }
+    },
     onSuccess: () => {
       toast.success(t("deleteSuccess"))
-      queryClient.invalidateQueries({ queryKey })
     },
-    onError: () => {
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData<CompaniesInfiniteData>(queryKey, context.previousData)
+      }
       toast.error(t("deleteError"))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey })
     },
   })
 

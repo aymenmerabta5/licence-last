@@ -89,7 +89,7 @@ export function TimelineModal({
           ))}
 
           <DialogFooter>
-            <Button variant="outline" onClick={onClose}>
+            <Button variant="outline" className="rounded-none" onClick={onClose}>
               {t("close")}
             </Button>
           </DialogFooter>

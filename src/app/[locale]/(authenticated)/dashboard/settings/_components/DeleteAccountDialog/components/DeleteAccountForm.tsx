@@ -60,7 +60,7 @@ export function DeleteAccountForm({ state }: DeleteAccountFormProps) {
           state.isLoading || !state.isConfirmed || !state.password.trim()
         }
         variant="destructive"
-        className="h-11 w-full"
+        className="h-11 w-full rounded-none"
       >
         {state.isLoading ? (
           <>

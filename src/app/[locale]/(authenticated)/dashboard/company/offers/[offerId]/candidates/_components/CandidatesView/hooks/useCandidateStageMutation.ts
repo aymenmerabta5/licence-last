@@ -8,12 +8,14 @@ import { toast } from "sonner"
 import type { PipelineStage } from "@/lib/constants/pipeline"
 import { canTransitionStage } from "@/lib/constants/pipeline"
 import type { InferRouterOutputs } from "@orpc/server"
-import { orpcClient } from "@/server/orpc/client"
+import { orpc, orpcClient } from "@/server/orpc/client"
 import type { AppRouter } from "@/server/orpc/router"
 
 type ListApplicationsByOfferResult = InferRouterOutputs<
   AppRouter
 >["applications"]["listByOffer"]
+
+type TimelineResult = InferRouterOutputs<AppRouter>["applications"]["getTimeline"]
 
 interface UseCandidateStageMutationParams {
   applicationsQueryKey: readonly unknown[]
@@ -23,6 +25,7 @@ interface UseCandidateStageMutationParams {
 
 interface StageMutationContext {
   previousData?: InfiniteData<ListApplicationsByOfferResult>
+  previousTimeline?: TimelineResult
   applicationId: string
 }
 
@@ -62,11 +65,40 @@ export function useCandidateStageMutation({
         )
       }
 
-      return { previousData, applicationId } satisfies StageMutationContext
+      const fromStage = applicationStageById.get(applicationId)
+      const timelineQueryKey = orpc.applications.getTimeline.queryOptions({
+        input: { applicationId },
+      }).queryKey
+      const previousTimeline =
+        queryClient.getQueryData<TimelineResult>(timelineQueryKey)
+
+      if (previousTimeline) {
+        queryClient.setQueryData<TimelineResult>(timelineQueryKey, [
+          {
+            id: `optimistic-${Date.now()}`,
+            eventType: "pipeline_stage_changed",
+            fromStage: fromStage ?? null,
+            toStage,
+            fromStatus: null,
+            toStatus: null,
+            payload: {},
+            createdAt: new Date(),
+          },
+          ...previousTimeline,
+        ])
+      }
+
+      return { previousData, previousTimeline, applicationId } satisfies StageMutationContext
     },
     onError: (_error, _variables, context) => {
       if (context?.previousData) {
         queryClient.setQueryData(applicationsQueryKey, context.previousData)
+      }
+      if (context?.previousTimeline) {
+        const timelineQueryKey = orpc.applications.getTimeline.queryOptions({
+          input: { applicationId: context.applicationId },
+        }).queryKey
+        queryClient.setQueryData(timelineQueryKey, context.previousTimeline)
       }
       toast.error(t("stageUpdateFailed"))
     },
@@ -77,6 +109,10 @@ export function useCandidateStageMutation({
         removePendingStage(prev, settledApplicationId),
       )
       await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+      const timelineQueryKey = orpc.applications.getTimeline.queryOptions({
+        input: { applicationId: settledApplicationId },
+      }).queryKey
+      await queryClient.invalidateQueries({ queryKey: timelineQueryKey })
       await onStageSettled?.(settledApplicationId)
     },
   })

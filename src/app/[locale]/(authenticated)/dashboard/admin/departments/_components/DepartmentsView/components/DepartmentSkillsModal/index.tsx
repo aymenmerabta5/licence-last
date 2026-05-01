@@ -123,7 +123,7 @@ export function DepartmentSkillsModal({
                 size="editorial-sm"
                 onClick={handleCreateSkill}
                 disabled={isCreatingSkill}
-                className="gap-2"
+                className="gap-2 rounded-none"
               >
                 {isCreatingSkill ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -153,6 +153,7 @@ export function DepartmentSkillsModal({
               type="button"
               variant="outline"
               size="sm"
+              className="rounded-none"
               onClick={() => handleOpenChange(false)}
             >
               {t("cancel")}
@@ -161,6 +162,7 @@ export function DepartmentSkillsModal({
               type="button"
               variant="editorial"
               size="editorial-sm"
+              className="rounded-none"
               onClick={handleSave}
               disabled={isSaving || !isDirty}
             >

@@ -5,6 +5,7 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
+  type InfiniteData,
 } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
@@ -129,17 +130,127 @@ export function useCandidates(offerId: string) {
     enabled: !!openedTimelineFor,
   })
 
-  const acceptMutation = useMutation(
-    orpc.applications.companyAccept.mutationOptions(),
-  )
+  const acceptMutation = useMutation({
+    ...orpc.applications.companyAccept.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: applicationsQueryKey })
+      const previousData =
+        queryClient.getQueryData<InfiniteData<ListApplicationsByOfferResult>>(
+          applicationsQueryKey,
+        )
+      if (previousData) {
+        queryClient.setQueryData<InfiniteData<ListApplicationsByOfferResult>>(
+          applicationsQueryKey,
+          (old) => {
+            if (!old) return old
+            return {
+              ...old,
+              pages: old.pages.map((page) => ({
+                ...page,
+                applications: page.applications.map((app) =>
+                  app.id === variables.applicationId
+                    ? { ...app, status: "company_accepted", pipelineStage: "offer" }
+                    : app,
+                ),
+              })),
+            }
+          },
+        )
+      }
+      return { previousData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(applicationsQueryKey, context.previousData)
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+    },
+  })
 
-  const refuseMutation = useMutation(
-    orpc.applications.companyRefuse.mutationOptions(),
-  )
+  const refuseMutation = useMutation({
+    ...orpc.applications.companyRefuse.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: applicationsQueryKey })
+      const previousData =
+        queryClient.getQueryData<InfiniteData<ListApplicationsByOfferResult>>(
+          applicationsQueryKey,
+        )
+      if (previousData) {
+        queryClient.setQueryData<InfiniteData<ListApplicationsByOfferResult>>(
+          applicationsQueryKey,
+          (old) => {
+            if (!old) return old
+            return {
+              ...old,
+              pages: old.pages.map((page) => ({
+                ...page,
+                applications: page.applications.map((app) =>
+                  app.id === variables.applicationId
+                    ? {
+                        ...app,
+                        status: "company_refused",
+                        pipelineStage: "rejected",
+                        companyNote: variables.note ?? null,
+                      }
+                    : app,
+                ),
+              })),
+            }
+          },
+        )
+      }
+      return { previousData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(applicationsQueryKey, context.previousData)
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+    },
+  })
 
-  const proposeSlotsMutation = useMutation(
-    orpc.interviews.proposeSlots.mutationOptions(),
-  )
+  const proposeSlotsMutation = useMutation({
+    ...orpc.interviews.proposeSlots.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: applicationsQueryKey })
+      const previousData =
+        queryClient.getQueryData<InfiniteData<ListApplicationsByOfferResult>>(
+          applicationsQueryKey,
+        )
+      if (previousData) {
+        queryClient.setQueryData<InfiniteData<ListApplicationsByOfferResult>>(
+          applicationsQueryKey,
+          (old) => {
+            if (!old) return old
+            return {
+              ...old,
+              pages: old.pages.map((page) => ({
+                ...page,
+                applications: page.applications.map((app) =>
+                  app.id === variables.applicationId
+                    ? { ...app, pipelineStage: "interview" }
+                    : app,
+                ),
+              })),
+            }
+          },
+        )
+      }
+      return { previousData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(applicationsQueryKey, context.previousData)
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+    },
+  })
 
   const handleAccept = async () => {
     if (!acceptModal) return

@@ -1,6 +1,7 @@
 "use client"
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import type { InferRouterOutputs } from "@orpc/server"
 import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
@@ -12,6 +13,11 @@ import {
 } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/[applicationId]/_components/DeptHeadPlacementDetail/hooks/placementActionUtils"
 import { useRouter } from "@/i18n/routing"
 import { orpc, orpcClient } from "@/server/orpc/client"
+import type { AppRouter } from "@/server/orpc/router"
+
+type ListPendingResult = InferRouterOutputs<AppRouter>["deptHead"]["listPending"]
+type GetPendingByIdResult =
+  InferRouterOutputs<AppRouter>["deptHead"]["getPendingById"]
 
 export function useDeptHeadPlacementActions(
   applicationId: string,
@@ -47,6 +53,11 @@ export function useDeptHeadPlacementActions(
     }
   }, [startDate, endDate, expectedStartDate, expectedEndDate])
 
+  const listPendingQueryKey = orpc.deptHead.listPending.queryOptions().queryKey
+  const pendingByIdQueryKey = orpc.deptHead.getPendingById.queryOptions({
+    input: { applicationId },
+  }).queryKey
+
   const summaryMutation = useMutation(
     orpc.placements.generateValidationSummary.mutationOptions({
       onSuccess: (data) => {
@@ -55,56 +66,154 @@ export function useDeptHeadPlacementActions(
     }),
   )
 
-  const validateMutation = useMutation(
-    orpc.deptHead.validate.mutationOptions({
-      onSuccess: async (result) => {
-        try {
-          setPdfLoading(true)
-          setPdfError(null)
-          await orpcClient.documents.generateAgreement({
-            placementId: result.placementId,
-          })
-        } catch (error) {
-          setPdfError(
-            error instanceof Error
-              ? error.message
-              : t("agreementGenerationError"),
-          )
-          toast.error(t("agreementGenerationError"))
-        } finally {
-          setPdfLoading(false)
-        }
+  const validateMutation = useMutation({
+    ...orpc.deptHead.validate.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listPendingQueryKey })
+      await queryClient.cancelQueries({ queryKey: pendingByIdQueryKey })
+      const previousListData = queryClient.getQueryData<ListPendingResult>(
+        listPendingQueryKey,
+      )
+      const previousDetailData = queryClient.getQueryData<GetPendingByIdResult>(
+        pendingByIdQueryKey,
+      )
 
-        queryClient.invalidateQueries({
-          queryKey: ["deptHead", "listPending"],
-        })
-        toast.success(t("validateSuccess"))
-        setActionLoading(false)
-        router.push("/dashboard/dept-validations")
-      },
-      onError: () => {
-        toast.error(t("validateError"))
-        setActionLoading(false)
-      },
-    }),
-  )
+      if (previousListData) {
+        queryClient.setQueryData<ListPendingResult>(
+          listPendingQueryKey,
+          (old) => {
+            if (!old) return old
+            return {
+              ...old,
+              applications: old.applications.filter(
+                (app) => app.id !== variables.applicationId,
+              ),
+            }
+          },
+        )
+      }
 
-  const rejectMutation = useMutation(
-    orpc.deptHead.reject.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["deptHead", "listPending"],
+      if (previousDetailData) {
+        queryClient.setQueryData<GetPendingByIdResult>(
+          pendingByIdQueryKey,
+          (old) => {
+            if (!old) return old
+            return { ...old, application: null }
+          },
+        )
+      }
+
+      return { previousListData, previousDetailData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousListData) {
+        queryClient.setQueryData(listPendingQueryKey, context.previousListData)
+      }
+      if (context?.previousDetailData) {
+        queryClient.setQueryData(
+          pendingByIdQueryKey,
+          context.previousDetailData,
+        )
+      }
+      toast.error(t("validateError"))
+      setActionLoading(false)
+    },
+    onSuccess: async (result) => {
+      try {
+        setPdfLoading(true)
+        setPdfError(null)
+        await orpcClient.documents.generateAgreement({
+          placementId: result.placementId,
         })
-        toast.success(t("rejectSuccess"))
-        setActionLoading(false)
-        router.push("/dashboard/dept-validations")
-      },
-      onError: () => {
-        toast.error(t("rejectError"))
-        setActionLoading(false)
-      },
-    }),
-  )
+      } catch (error) {
+        setPdfError(
+          error instanceof Error
+            ? error.message
+            : t("agreementGenerationError"),
+        )
+        toast.error(t("agreementGenerationError"))
+      } finally {
+        setPdfLoading(false)
+      }
+
+      queryClient.invalidateQueries({
+        queryKey: ["deptHead", "listPending"],
+      })
+      toast.success(t("validateSuccess"))
+      setActionLoading(false)
+      router.push("/dashboard/dept-validations")
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: listPendingQueryKey })
+      queryClient.invalidateQueries({ queryKey: pendingByIdQueryKey })
+    },
+  })
+
+  const rejectMutation = useMutation({
+    ...orpc.deptHead.reject.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listPendingQueryKey })
+      await queryClient.cancelQueries({ queryKey: pendingByIdQueryKey })
+      const previousListData = queryClient.getQueryData<ListPendingResult>(
+        listPendingQueryKey,
+      )
+      const previousDetailData = queryClient.getQueryData<GetPendingByIdResult>(
+        pendingByIdQueryKey,
+      )
+
+      if (previousListData) {
+        queryClient.setQueryData<ListPendingResult>(
+          listPendingQueryKey,
+          (old) => {
+            if (!old) return old
+            return {
+              ...old,
+              applications: old.applications.filter(
+                (app) => app.id !== variables.applicationId,
+              ),
+            }
+          },
+        )
+      }
+
+      if (previousDetailData) {
+        queryClient.setQueryData<GetPendingByIdResult>(
+          pendingByIdQueryKey,
+          (old) => {
+            if (!old) return old
+            return { ...old, application: null }
+          },
+        )
+      }
+
+      return { previousListData, previousDetailData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousListData) {
+        queryClient.setQueryData(listPendingQueryKey, context.previousListData)
+      }
+      if (context?.previousDetailData) {
+        queryClient.setQueryData(
+          pendingByIdQueryKey,
+          context.previousDetailData,
+        )
+      }
+      toast.error(t("rejectError"))
+      setActionLoading(false)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["deptHead", "listPending"],
+      })
+      toast.success(t("rejectSuccess"))
+      setActionLoading(false)
+      router.push("/dashboard/dept-validations")
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: listPendingQueryKey })
+      queryClient.invalidateQueries({ queryKey: pendingByIdQueryKey })
+    },
+  })
 
   const getValidatedDates = () => {
     if (!startDate || !endDate) {

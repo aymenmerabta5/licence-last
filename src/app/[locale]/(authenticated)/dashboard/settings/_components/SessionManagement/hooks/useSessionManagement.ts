@@ -27,15 +27,23 @@ export function useSessionManagement() {
   const currentSession = enrichedSessions.find((s) => s.isCurrent)
   const otherSessions = enrichedSessions.filter((s) => !s.isCurrent)
 
+  const sessionsQueryKey = orpc.users.listMySessions.queryOptions().queryKey
+
   const revokeMutation = useMutation({
     ...orpc.users.revokeMySession.mutationOptions(),
-    onSuccess: () => {
-      toast.success(t("revokeSuccess"))
-      queryClient.invalidateQueries({
-        queryKey: orpc.users.listMySessions.queryOptions().queryKey,
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: sessionsQueryKey })
+      const previousData = queryClient.getQueryData(sessionsQueryKey)
+      queryClient.setQueryData(sessionsQueryKey, (old) => {
+        if (!old) return old
+        return old.filter((s) => s.id !== variables.sessionId)
       })
+      return { previousData }
     },
-    onError: (err) => {
+    onError: (err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(sessionsQueryKey, context.previousData)
+      }
       toast.error(
         resolveLocalizedError(err, {
           t: tr,
@@ -43,23 +51,41 @@ export function useSessionManagement() {
         }),
       )
     },
+    onSuccess: () => {
+      toast.success(t("revokeSuccess"))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: sessionsQueryKey })
+    },
   })
 
   const revokeOthersMutation = useMutation({
     ...orpc.users.revokeOtherSessions.mutationOptions(),
-    onSuccess: (data) => {
-      toast.success(t("revokeOthersSuccess", { count: data.revoked }))
-      queryClient.invalidateQueries({
-        queryKey: orpc.users.listMySessions.queryOptions().queryKey,
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: sessionsQueryKey })
+      const previousData = queryClient.getQueryData(sessionsQueryKey)
+      queryClient.setQueryData(sessionsQueryKey, (old) => {
+        if (!old) return old
+        return old.filter((s) => s.isCurrent)
       })
+      return { previousData }
     },
-    onError: (err) => {
+    onError: (err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(sessionsQueryKey, context.previousData)
+      }
       toast.error(
         resolveLocalizedError(err, {
           t: tr,
           fallbackKey: "dashboard.settings.sessions.revokeOthersError",
         }),
       )
+    },
+    onSuccess: (data) => {
+      toast.success(t("revokeOthersSuccess", { count: data.revoked }))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: sessionsQueryKey })
     },
   })
 

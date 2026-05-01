@@ -30,7 +30,7 @@ export function RejectDialog({
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md space-y-4 border border-border bg-background p-6"
+        className="w-full max-w-md space-y-4 rounded-none border border-border bg-background p-6"
       >
         <h3 className="font-serif text-lg text-heading">{t("rejectTitle")}</h3>
         <p className="text-sm text-muted-foreground">
@@ -43,7 +43,7 @@ export function RejectDialog({
           className="min-h-[80px] w-full resize-none border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
         />
         <div className="flex justify-end gap-2">
-          <Button variant="outline" size="sm" onClick={onClose}>
+          <Button variant="outline" size="sm" onClick={onClose} className="rounded-none">
             {t("cancel")}
           </Button>
           <Button
@@ -51,6 +51,7 @@ export function RejectDialog({
             size="sm"
             onClick={onConfirm}
             disabled={actionLoading}
+            className="rounded-none"
           >
             {actionLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />

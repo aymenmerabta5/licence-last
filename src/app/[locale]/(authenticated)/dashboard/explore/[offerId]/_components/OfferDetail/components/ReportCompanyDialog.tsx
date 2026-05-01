@@ -64,6 +64,7 @@ export function ReportCompanyDialog({
           <Button
             type="button"
             variant="editorial-outline"
+            className="rounded-none"
             onClick={() => onOpenChange(false)}
             disabled={isSubmitting}
           >
@@ -72,7 +73,7 @@ export function ReportCompanyDialog({
           <Button
             type="button"
             variant="editorial"
-            className="gap-1.5"
+            className="gap-1.5 rounded-none"
             disabled={isSubmitting}
             onClick={onSubmit}
           >

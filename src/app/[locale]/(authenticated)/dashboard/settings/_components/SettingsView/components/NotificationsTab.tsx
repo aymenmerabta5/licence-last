@@ -33,13 +33,26 @@ export function NotificationsTab({ email }: NotificationsTabProps) {
     enabled: notificationPreferencesEnabled,
   })
 
-  const updatePreferencesMutation = useMutation(
-    orpc.notifications.updatePreferences.mutationOptions({
-      onSuccess: async (next) => {
-        queryClient.setQueryData(queryOptions.queryKey, next)
-      },
-    }),
-  )
+  const updatePreferencesMutation = useMutation({
+    ...orpc.notifications.updatePreferences.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: queryOptions.queryKey })
+      const previousData = queryClient.getQueryData(queryOptions.queryKey)
+      queryClient.setQueryData(queryOptions.queryKey, (old) => {
+        if (!old) return old
+        return { ...old, ...variables }
+      })
+      return { previousData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(queryOptions.queryKey, context.previousData)
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: queryOptions.queryKey })
+    },
+  })
 
   const showSoonState =
     !notificationPreferencesEnabled ||

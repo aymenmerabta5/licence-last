@@ -54,6 +54,7 @@ export function RemoveMemberDialog({
             variant="outline"
             disabled={isPending}
             onClick={() => onOpenChange(false)}
+            className="rounded-none"
           >
             {t("removeDialog.cancel")}
           </Button>
@@ -62,6 +63,7 @@ export function RemoveMemberDialog({
             variant="destructive"
             disabled={isPending || !member}
             onClick={() => member && onConfirm(member)}
+            className="rounded-none"
           >
             {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             {t("removeDialog.confirm")}

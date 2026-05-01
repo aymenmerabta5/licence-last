@@ -41,12 +41,7 @@ interface CreateUserDialogProps {
   universities?: UniversityOption[]
 }
 
-const roles = [
-  "student",
-  "company_admin",
-  "university_admin",
-  "super_admin",
-] as const
+const roles = ["student", "company_admin", "university_admin", "super_admin"] as const
 
 const rolesRequiringUniversity = new Set<string>([
   "student",
@@ -179,12 +174,14 @@ export function CreateUserDialog({
             <Button
               type="button"
               variant="outline"
+              className="rounded-none"
               onClick={() => onOpenChange(false)}
             >
               {t("dialogs.cancel")}
             </Button>
             <Button
               type="submit"
+              className="rounded-none"
               disabled={isPending || (requiresUniversity && !universityId)}
             >
               {isPending && <Loader2 className="h-4 w-4 me-2 animate-spin" />}

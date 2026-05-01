@@ -50,7 +50,7 @@ export function UserFilters({
           placeholder={t("searchPlaceholder")}
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="ps-9"
+          className="ps-9 rounded-none"
         />
       </div>
 
@@ -77,7 +77,7 @@ export function UserFilters({
       {canCreate && (
         <Button
           onClick={onCreateClick}
-          className="w-full justify-center gap-2 md:w-auto md:justify-self-end"
+          className="w-full justify-center gap-2 rounded-none md:w-auto md:justify-self-end"
         >
           <Plus className="h-4 w-4" />
           {t("createUser")}

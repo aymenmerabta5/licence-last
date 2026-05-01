@@ -14,6 +14,7 @@ import { orpcClient } from "@/server/orpc/client"
 interface UseMessagesDataParams {
   role: MessagesRole
   selectedThreadId: string | null
+  currentUserId: string
 }
 
 type SendMessageTarget =
@@ -83,6 +84,7 @@ async function fetchConversationStarters(
 export function useMessagesData({
   role,
   selectedThreadId,
+  currentUserId,
 }: UseMessagesDataParams) {
   const t = useTranslations("dashboard.messages")
   const queryClient = useQueryClient()
@@ -144,7 +146,121 @@ export function useMessagesData({
         body: normalizedBody,
       })
     },
+    onMutate: async ({ target, body }) => {
+      const normalizedBody = body.trim()
+      if (!normalizedBody) return
+
+      if (target.kind === "thread") {
+        const threadId = target.thread.id
+        const threadMessagesKey = ["messages", "thread", threadId]
+        const threadsKey = ["messages", "threads", role]
+
+        await queryClient.cancelQueries({ queryKey: threadMessagesKey })
+        await queryClient.cancelQueries({ queryKey: threadsKey })
+
+        const previousThreadMessages =
+          queryClient.getQueryData<ThreadMessagesResponse>(threadMessagesKey)
+        const previousThreads =
+          queryClient.getQueryData<MessageThread[]>(threadsKey)
+
+        queryClient.setQueryData<ThreadMessagesResponse>(
+          threadMessagesKey,
+          (old) => {
+            if (!old) return old
+            return {
+              ...old,
+              messages: [
+                ...old.messages,
+                {
+                  id: `optimistic-${Date.now()}`,
+                  senderUserId: currentUserId,
+                  body: normalizedBody,
+                  createdAt: new Date(),
+                  senderName: null,
+                  senderImage: null,
+                },
+              ],
+            }
+          },
+        )
+
+        queryClient.setQueryData<MessageThread[]>(threadsKey, (old) => {
+          if (!old) return old
+          return old.map((thread) =>
+            thread.id === threadId
+              ? {
+                  ...thread,
+                  lastMessageAt: new Date(),
+                  hasUnread: false,
+                  unreadCount: 0,
+                }
+              : thread,
+          )
+        })
+
+        return { previousThreadMessages, previousThreads, threadId }
+      }
+
+      const starterId = target.starter.id
+      const startersKey = ["messages", "starters", role]
+
+      await queryClient.cancelQueries({ queryKey: startersKey })
+      const previousStarters =
+        queryClient.getQueryData<MessageConversationStarter[]>(startersKey)
+
+      queryClient.setQueryData<MessageConversationStarter[]>(
+        startersKey,
+        (old) => {
+          if (!old) return old
+          return old.filter((starter) => starter.id !== starterId)
+        },
+      )
+
+      return { previousStarters }
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.threadId && context?.previousThreadMessages) {
+        queryClient.setQueryData(
+          ["messages", "thread", context.threadId],
+          context.previousThreadMessages,
+        )
+      }
+      if (context?.previousThreads) {
+        queryClient.setQueryData(
+          ["messages", "threads", role],
+          context.previousThreads,
+        )
+      }
+      if (context?.previousStarters) {
+        queryClient.setQueryData(
+          ["messages", "starters", role],
+          context.previousStarters,
+        )
+      }
+    },
     onSuccess: async (_, variables) => {
+      const threadId =
+        variables.target.kind === "thread"
+          ? variables.target.thread.id
+          : undefined
+
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["messages", "threads", role],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["messages", "starters", role],
+        }),
+        ...(threadId
+          ? [
+              queryClient.invalidateQueries({
+                queryKey: ["messages", "thread", threadId],
+              }),
+            ]
+          : []),
+      ])
+    },
+    onSettled: async (_, __, variables) => {
       const threadId =
         variables.target.kind === "thread"
           ? variables.target.thread.id
@@ -171,7 +287,37 @@ export function useMessagesData({
   const markThreadReadMutation = useMutation({
     mutationFn: async (threadId: string) =>
       orpcClient.messages.markThreadRead({ threadId }),
+    onMutate: async (threadId: string) => {
+      const threadsKey = ["messages", "threads", role]
+      await queryClient.cancelQueries({ queryKey: threadsKey })
+      const previousThreads =
+        queryClient.getQueryData<MessageThread[]>(threadsKey)
+
+      queryClient.setQueryData<MessageThread[]>(threadsKey, (old) => {
+        if (!old) return old
+        return old.map((thread) =>
+          thread.id === threadId
+            ? { ...thread, hasUnread: false, unreadCount: 0 }
+            : thread,
+        )
+      })
+
+      return { previousThreads }
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previousThreads) {
+        queryClient.setQueryData(
+          ["messages", "threads", role],
+          context.previousThreads,
+        )
+      }
+    },
     onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["messages", "threads", role],
+      })
+    },
+    onSettled: async () => {
       await queryClient.invalidateQueries({
         queryKey: ["messages", "threads", role],
       })

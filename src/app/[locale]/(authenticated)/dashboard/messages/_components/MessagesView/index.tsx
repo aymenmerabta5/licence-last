@@ -42,6 +42,7 @@ export function MessagesView({ role, currentUserId }: MessagesViewProps) {
   } = useMessagesData({
     role,
     selectedThreadId,
+    currentUserId,
   })
 
   useEffect(() => {

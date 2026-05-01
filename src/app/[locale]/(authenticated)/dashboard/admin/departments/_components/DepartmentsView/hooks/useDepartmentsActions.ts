@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { toast } from "sonner"
 
 import { resolveLocalizedError } from "@/lib/error-message"
@@ -17,6 +17,14 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
   const t = useTranslations("dashboard.admin.departments")
   const queryClient = useQueryClient()
 
+  const listQueryOptions = useMemo(
+    () =>
+      orpc.departments.list.queryOptions({
+        input: { universityId: selectedUniversityId ?? "" },
+      }),
+    [selectedUniversityId],
+  )
+
   const [newName, setNewName] = useState("")
   const canCreate = Boolean(selectedUniversityId)
 
@@ -24,90 +32,206 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
     queryClient.invalidateQueries({ queryKey: [DEPARTMENTS_LIST_QUERY_PATH] })
   }
 
-  const createMutation = useMutation(
-    orpc.departments.create.mutationOptions({
-      onSuccess: () => {
-        invalidate()
-        toast.success(t("createSuccess"))
-      },
-      onError: (error) => {
-        toast.error(
-          resolveLocalizedError(error, {
-            t: tr,
-            fallbackKey: "dashboard.admin.departments.error",
-          }),
+  const createMutation = useMutation({
+    ...orpc.departments.create.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listQueryOptions.queryKey })
+      const previousData = queryClient.getQueryData(listQueryOptions.queryKey)
+      queryClient.setQueryData(listQueryOptions.queryKey, (old) => {
+        if (!old) return old
+        return [
+          ...old,
+          {
+            id: `optimistic-${Date.now()}`,
+            name: variables.name,
+            headUserId: null,
+            headUserName: null,
+            headUserEmail: null,
+            skillCount: 0,
+            createdAt: new Date(),
+          },
+        ]
+      })
+      return { previousData }
+    },
+    onSuccess: () => {
+      invalidate()
+      toast.success(t("createSuccess"))
+    },
+    onError: (error, _variables, context) => {
+      toast.error(
+        resolveLocalizedError(error, {
+          t: tr,
+          fallbackKey: "dashboard.admin.departments.error",
+        }),
+      )
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          listQueryOptions.queryKey,
+          context.previousData,
         )
-      },
-    }),
-  )
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: listQueryOptions.queryKey })
+    },
+  })
 
-  const updateMutation = useMutation(
-    orpc.departments.update.mutationOptions({
-      onSuccess: () => {
-        invalidate()
-        toast.success(t("updateSuccess"))
-      },
-      onError: (error) => {
-        toast.error(
-          resolveLocalizedError(error, {
-            t: tr,
-            fallbackKey: "dashboard.admin.departments.error",
-          }),
+  const updateMutation = useMutation({
+    ...orpc.departments.update.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listQueryOptions.queryKey })
+      const previousData = queryClient.getQueryData(listQueryOptions.queryKey)
+      queryClient.setQueryData(listQueryOptions.queryKey, (old) => {
+        if (!old) return old
+        return old.map((dept) =>
+          dept.id === variables.departmentId
+            ? { ...dept, name: variables.name ?? dept.name }
+            : dept,
         )
-      },
-    }),
-  )
+      })
+      return { previousData }
+    },
+    onSuccess: () => {
+      invalidate()
+      toast.success(t("updateSuccess"))
+    },
+    onError: (error, _variables, context) => {
+      toast.error(
+        resolveLocalizedError(error, {
+          t: tr,
+          fallbackKey: "dashboard.admin.departments.error",
+        }),
+      )
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          listQueryOptions.queryKey,
+          context.previousData,
+        )
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: listQueryOptions.queryKey })
+    },
+  })
 
-  const assignHeadMutation = useMutation(
-    orpc.departments.assignHead.mutationOptions({
-      onSuccess: () => {
-        invalidate()
-        toast.success(t("assignSuccess"))
-      },
-      onError: (error) => {
-        toast.error(
-          resolveLocalizedError(error, {
-            t: tr,
-            fallbackKey: "dashboard.admin.departments.error",
-          }),
+  const assignHeadMutation = useMutation({
+    ...orpc.departments.assignHead.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listQueryOptions.queryKey })
+      const previousData = queryClient.getQueryData(listQueryOptions.queryKey)
+      queryClient.setQueryData(listQueryOptions.queryKey, (old) => {
+        if (!old) return old
+        return old.map((dept) =>
+          dept.id === variables.departmentId
+            ? {
+                ...dept,
+                headUserEmail: variables.headEmail ?? dept.headUserEmail,
+              }
+            : dept,
         )
-      },
-    }),
-  )
+      })
+      return { previousData }
+    },
+    onSuccess: () => {
+      invalidate()
+      toast.success(t("assignSuccess"))
+    },
+    onError: (error, _variables, context) => {
+      toast.error(
+        resolveLocalizedError(error, {
+          t: tr,
+          fallbackKey: "dashboard.admin.departments.error",
+        }),
+      )
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          listQueryOptions.queryKey,
+          context.previousData,
+        )
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: listQueryOptions.queryKey })
+    },
+  })
 
-  const unassignHeadMutation = useMutation(
-    orpc.departments.unassignHead.mutationOptions({
-      onSuccess: () => {
-        invalidate()
-        toast.success(t("removeHeadSuccess"))
-      },
-      onError: (error) => {
-        toast.error(
-          resolveLocalizedError(error, {
-            t: tr,
-            fallbackKey: "dashboard.admin.departments.error",
-          }),
+  const unassignHeadMutation = useMutation({
+    ...orpc.departments.unassignHead.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listQueryOptions.queryKey })
+      const previousData = queryClient.getQueryData(listQueryOptions.queryKey)
+      queryClient.setQueryData(listQueryOptions.queryKey, (old) => {
+        if (!old) return old
+        return old.map((dept) =>
+          dept.id === variables.departmentId
+            ? {
+                ...dept,
+                headUserId: null,
+                headUserName: null,
+                headUserEmail: null,
+              }
+            : dept,
         )
-      },
-    }),
-  )
+      })
+      return { previousData }
+    },
+    onSuccess: () => {
+      invalidate()
+      toast.success(t("removeHeadSuccess"))
+    },
+    onError: (error, _variables, context) => {
+      toast.error(
+        resolveLocalizedError(error, {
+          t: tr,
+          fallbackKey: "dashboard.admin.departments.error",
+        }),
+      )
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          listQueryOptions.queryKey,
+          context.previousData,
+        )
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: listQueryOptions.queryKey })
+    },
+  })
 
-  const deleteDepartmentMutation = useMutation(
-    orpc.departments.delete.mutationOptions({
-      onSuccess: () => {
-        invalidate()
-        toast.success(t("deleteSuccess"))
-      },
-      onError: (error) => {
-        toast.error(
-          resolveLocalizedError(error, {
-            t: tr,
-            fallbackKey: "dashboard.admin.departments.error",
-          }),
+  const deleteDepartmentMutation = useMutation({
+    ...orpc.departments.delete.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listQueryOptions.queryKey })
+      const previousData = queryClient.getQueryData(listQueryOptions.queryKey)
+      queryClient.setQueryData(listQueryOptions.queryKey, (old) => {
+        if (!old) return old
+        return old.filter((dept) => dept.id !== variables.departmentId)
+      })
+      return { previousData }
+    },
+    onSuccess: () => {
+      invalidate()
+      toast.success(t("deleteSuccess"))
+    },
+    onError: (error, _variables, context) => {
+      toast.error(
+        resolveLocalizedError(error, {
+          t: tr,
+          fallbackKey: "dashboard.admin.departments.error",
+        }),
+      )
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          listQueryOptions.queryKey,
+          context.previousData,
         )
-      },
-    }),
-  )
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: listQueryOptions.queryKey })
+    },
+  })
 
   const handleCreate = () => {
     if (!newName.trim()) return

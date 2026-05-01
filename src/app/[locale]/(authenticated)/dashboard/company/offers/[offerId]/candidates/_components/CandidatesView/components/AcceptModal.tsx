@@ -68,6 +68,7 @@ export function AcceptModal({
               variant="editorial-outline"
               size="editorial-sm"
               onClick={onCancel}
+              className="rounded-none"
             >
               {t("cancel")}
             </Button>

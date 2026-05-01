@@ -92,22 +92,74 @@ export function useCompanyFeedback(): UseCompanyFeedbackResult {
   )
   const [errors, setErrors] = useState<QualityFeedbackFormErrors>({})
 
-  const feedbackMutation = useMutation(
-    orpc.companies.submitQualityFeedback.mutationOptions({
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: orpc.companies.listTrustIndices.queryOptions().queryKey,
+  const trustIndicesQueryKey = orpc.companies.listTrustIndices.queryOptions()
+    .queryKey
+
+  const feedbackMutation = useMutation({
+    ...orpc.companies.submitQualityFeedback.mutationOptions(),
+    onMutate: async (variables: {
+      placementId: string
+      rating: number
+      wouldRecommend: boolean
+      comment?: string
+    }) => {
+      await queryClient.cancelQueries({ queryKey: trustIndicesQueryKey })
+      const previousData = queryClient.getQueryData(trustIndicesQueryKey)
+
+      if (activePlacement) {
+        queryClient.setQueryData(trustIndicesQueryKey, (old) => {
+          if (!Array.isArray(old)) return old
+          return old.map((item) => {
+            if (item.companyName !== activePlacement.companyName) return item
+
+            const ratingBoost = Math.round((variables.rating / 5) * 5)
+            const recommendBoost = variables.wouldRecommend ? 2 : 0
+            const newFeedbackScore = Math.min(
+              100,
+              item.factors.feedbackScore + ratingBoost + recommendBoost,
+            )
+            const trustDelta = Math.round((ratingBoost + recommendBoost) * 0.3)
+            const newTrustScore = Math.min(
+              100,
+              item.trustScore + trustDelta,
+            )
+
+            return {
+              ...item,
+              trustScore: newTrustScore,
+              tier:
+                newTrustScore >= 80
+                  ? "excellent"
+                  : newTrustScore >= 65
+                    ? "good"
+                    : newTrustScore >= 45
+                      ? "watch"
+                      : "low",
+              factors: {
+                ...item.factors,
+                feedbackScore: newFeedbackScore,
+              },
+            }
+          })
         })
-        toast.success(t("submitSuccess"))
-        setActivePlacement(null)
-        setValues(DEFAULT_FEEDBACK_VALUES)
-        setErrors({})
-      },
-      onError: (error) => {
-        toast.error(extractErrorMessage(error, t("submitError")))
-      },
-    }),
-  )
+      }
+
+      return { previousData }
+    },
+    onError: (error, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(trustIndicesQueryKey, context.previousData)
+      }
+      toast.error(extractErrorMessage(error, t("submitError")))
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: trustIndicesQueryKey })
+      toast.success(t("submitSuccess"))
+      setActivePlacement(null)
+      setValues(DEFAULT_FEEDBACK_VALUES)
+      setErrors({})
+    },
+  })
 
   function openForPlacement(placement: FeedbackPlacementContext) {
     setActivePlacement(placement)

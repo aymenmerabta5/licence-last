@@ -129,14 +129,53 @@ export function useConversationActions({
     })
   }
 
-  const createConversationMutation = useMutation(
-    orpc.assistant.createConversation.mutationOptions({
-      onSuccess: async (conversation) => {
-        onSelectedConversationChange(conversation.id)
-        await invalidateConversationList()
-      },
-    }),
-  )
+  const createConversationMutation = useMutation({
+    ...orpc.assistant.createConversation.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listConversationsQueryKey })
+      const previousConversationListData =
+        queryClient.getQueryData<ConversationListData>(listConversationsQueryKey)
+
+      const optimisticConversation: ConversationListItem = {
+        id: `optimistic-${Date.now()}`,
+        model: variables.model,
+        updatedAt: new Date(),
+      }
+
+      queryClient.setQueryData<ConversationListData>(
+        listConversationsQueryKey,
+        (old) => {
+          if (!old) return old
+          return {
+            ...old,
+            conversations: [optimisticConversation, ...old.conversations],
+          }
+        },
+      )
+
+      return { previousConversationListData }
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previousConversationListData) {
+        queryClient.setQueryData(
+          listConversationsQueryKey,
+          context.previousConversationListData,
+        )
+      } else {
+        queryClient.removeQueries({
+          queryKey: listConversationsQueryKey,
+          exact: true,
+        })
+      }
+    },
+    onSuccess: async (conversation) => {
+      onSelectedConversationChange(conversation.id)
+      await invalidateConversationList()
+    },
+    onSettled: async () => {
+      await invalidateConversationList()
+    },
+  })
 
   const updateModelMutation = useMutation(
     orpc.assistant.updateConversationModel.mutationOptions({
@@ -244,53 +283,243 @@ export function useConversationActions({
     }),
   )
 
-  const updateTitleMutation = useMutation(
-    orpc.assistant.updateConversationTitle.mutationOptions({
-      onSuccess: async (_data, variables) => {
-        await invalidateConversationList()
-        await invalidateConversationDetail(variables.conversationId)
+  const updateTitleMutation = useMutation({
+    ...orpc.assistant.updateConversationTitle.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listConversationsQueryKey })
+      const previousConversationListData =
+        queryClient.getQueryData<ConversationListData>(listConversationsQueryKey)
 
-        toast.success(t("titleUpdateSuccess"))
-      },
-      onError: () => {
-        toast.error(t("titleUpdateError"))
-      },
-    }),
-  )
+      queryClient.setQueryData<ConversationListData>(
+        listConversationsQueryKey,
+        (old) => {
+          if (!old) return old
+          return {
+            ...old,
+            conversations: old.conversations.map((conversation) =>
+              conversation.id === variables.conversationId
+                ? { ...conversation, title: variables.title }
+                : conversation,
+            ),
+          }
+        },
+      )
 
-  const deleteConversationMutation = useMutation(
-    orpc.assistant.deleteConversation.mutationOptions({
-      onSuccess: async (_data, variables) => {
-        const nextSelectedConversationId = resolveSelectionAfterDelete({
-          deletedConversationId: variables.conversationId,
-          activeConversationId,
-          selectedConversationId,
-          conversations,
+      const conversationDetailQueryKey =
+        orpc.assistant.getConversation.queryOptions({
+          input: { conversationId: variables.conversationId },
+        }).queryKey
+
+      await queryClient.cancelQueries({ queryKey: conversationDetailQueryKey })
+      const previousConversationDetailData =
+        queryClient.getQueryData<ConversationDetailData>(
+          conversationDetailQueryKey,
+        )
+
+      queryClient.setQueryData<ConversationDetailData>(
+        conversationDetailQueryKey,
+        (old) => {
+          if (!old) return old
+          return {
+            ...old,
+            conversation: {
+              ...old.conversation,
+              title: variables.title,
+            },
+          }
+        },
+      )
+
+      return { previousConversationListData, previousConversationDetailData }
+    },
+    onError: (_error, variables, context) => {
+      const conversationDetailQueryKey =
+        orpc.assistant.getConversation.queryOptions({
+          input: { conversationId: variables.conversationId },
+        }).queryKey
+
+      if (context?.previousConversationListData) {
+        queryClient.setQueryData(
+          listConversationsQueryKey,
+          context.previousConversationListData,
+        )
+      } else {
+        queryClient.removeQueries({
+          queryKey: listConversationsQueryKey,
+          exact: true,
         })
+      }
+      if (context?.previousConversationDetailData) {
+        queryClient.setQueryData(
+          conversationDetailQueryKey,
+          context.previousConversationDetailData,
+        )
+      } else {
+        queryClient.removeQueries({
+          queryKey: conversationDetailQueryKey,
+          exact: true,
+        })
+      }
+      toast.error(t("titleUpdateError"))
+    },
+    onSuccess: async (_data, variables) => {
+      await invalidateConversationList()
+      await invalidateConversationDetail(variables.conversationId)
 
-        if (nextSelectedConversationId !== undefined) {
-          onSelectedConversationChange(nextSelectedConversationId)
+      toast.success(t("titleUpdateSuccess"))
+    },
+    onSettled: async (_data, _error, variables) => {
+      await invalidateConversationList()
+      await invalidateConversationDetail(variables.conversationId)
+    },
+  })
+
+  const deleteConversationMutation = useMutation({
+    ...orpc.assistant.deleteConversation.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listConversationsQueryKey })
+      const previousConversationListData =
+        queryClient.getQueryData<ConversationListData>(listConversationsQueryKey)
+
+      queryClient.setQueryData<ConversationListData>(
+        listConversationsQueryKey,
+        (old) => {
+          if (!old) return old
+          return {
+            ...old,
+            conversations: old.conversations.filter(
+              (conversation) => conversation.id !== variables.conversationId,
+            ),
+          }
+        },
+      )
+
+      return { previousConversationListData }
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previousConversationListData) {
+        queryClient.setQueryData(
+          listConversationsQueryKey,
+          context.previousConversationListData,
+        )
+      } else {
+        queryClient.removeQueries({
+          queryKey: listConversationsQueryKey,
+          exact: true,
+        })
+      }
+      toast.error(t("deleteConversationError"))
+    },
+    onSuccess: async (_data, variables) => {
+      const nextSelectedConversationId = resolveSelectionAfterDelete({
+        deletedConversationId: variables.conversationId,
+        activeConversationId,
+        selectedConversationId,
+        conversations,
+      })
+
+      if (nextSelectedConversationId !== undefined) {
+        onSelectedConversationChange(nextSelectedConversationId)
+      }
+
+      await invalidateConversationList()
+      toast.success(t("deleteConversationSuccess"))
+    },
+    onSettled: async () => {
+      await invalidateConversationList()
+    },
+  })
+
+  const appendMessageMutation = useMutation({
+    ...orpc.assistant.appendMessage.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listMessagesQueryKey })
+      const previousMessages = queryClient.getQueryData<{
+        messages: Array<{
+          id: string
+          role: string
+          text: string | null
+          parts: unknown
+          createdAt: Date
+        }>
+      }>(listMessagesQueryKey)
+
+      const text =
+        (variables.parts ?? [])
+          .map((part) => {
+            if (
+              typeof part === "object" &&
+              part !== null &&
+              "type" in part &&
+              (part as { type: string }).type === "text" &&
+              "text" in part
+            ) {
+              return (part as { text: string }).text
+            }
+            return ""
+          })
+          .filter(Boolean)
+          .join(" ") || null
+
+      queryClient.setQueryData(listMessagesQueryKey, (old) => {
+        if (!old || typeof old !== "object" || !("messages" in old)) return old
+        const oldMessages = old as { messages: unknown[] }
+        return {
+          ...oldMessages,
+          messages: [
+            ...oldMessages.messages,
+            {
+              id: `optimistic-${Date.now()}`,
+              role: variables.role,
+              text,
+              parts: variables.parts ?? [],
+              createdAt: new Date(),
+            },
+          ],
         }
+      })
 
-        await invalidateConversationList()
-        toast.success(t("deleteConversationSuccess"))
-      },
-      onError: () => {
-        toast.error(t("deleteConversationError"))
-      },
-    }),
-  )
+      await queryClient.cancelQueries({ queryKey: listConversationsQueryKey })
+      const previousConversationListData =
+        queryClient.getQueryData<ConversationListData>(listConversationsQueryKey)
 
-  const appendMessageMutation = useMutation(
-    orpc.assistant.appendMessage.mutationOptions({
-      onSuccess: async () => {
-        await invalidateConversationList()
-        await queryClient.invalidateQueries({
-          queryKey: listMessagesQueryKey,
-        })
-      },
-    }),
-  )
+      queryClient.setQueryData<ConversationListData>(
+        listConversationsQueryKey,
+        (old) => {
+          if (!old) return old
+          return {
+            ...old,
+            conversations: old.conversations.map((conversation) =>
+              conversation.id === variables.conversationId
+                ? { ...conversation, updatedAt: new Date() }
+                : conversation,
+            ),
+          }
+        },
+      )
+
+      return { previousMessages, previousConversationListData }
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previousMessages) {
+        queryClient.setQueryData(listMessagesQueryKey, context.previousMessages)
+      }
+      if (context?.previousConversationListData) {
+        queryClient.setQueryData(
+          listConversationsQueryKey,
+          context.previousConversationListData,
+        )
+      }
+    },
+    onSuccess: async () => {
+      await invalidateConversationList()
+      await queryClient.invalidateQueries({ queryKey: listMessagesQueryKey })
+    },
+    onSettled: async () => {
+      await invalidateConversationList()
+      await queryClient.invalidateQueries({ queryKey: listMessagesQueryKey })
+    },
+  })
 
   const handleCreateConversation = async () => {
     const modelId = defaultModelId ?? models[0]?.id ?? null

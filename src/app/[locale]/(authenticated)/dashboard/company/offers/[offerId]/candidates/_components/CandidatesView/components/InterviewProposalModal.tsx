@@ -38,16 +38,12 @@ export function InterviewProposalModal({
   onSubmit,
 }: InterviewProposalModalProps) {
   const t = useTranslations("dashboard.company.candidates")
-  const [slots, setSlots] = useState<ProposedSlotDraft[]>([
-    { id: crypto.randomUUID(), startsAt: "", endsAt: "", location: "", meetingUrl: "" },
-  ])
+  const [slots, setSlots] = useState<ProposedSlotDraft[]>([{ id: crypto.randomUUID(), startsAt: "", endsAt: "", location: "", meetingUrl: "" }])
   const [note, setNote] = useState("")
 
   useEffect(() => {
     if (isOpen) {
-      setSlots([
-        { id: crypto.randomUUID(), startsAt: "", endsAt: "", location: "", meetingUrl: "" },
-      ])
+      setSlots([{ id: crypto.randomUUID(), startsAt: "", endsAt: "", location: "", meetingUrl: "" }])
       setNote("")
     }
   }, [isOpen])
@@ -139,6 +135,7 @@ export function InterviewProposalModal({
             onClick={onClose}
             disabled={isSubmitting}
             aria-label={t("interviewModal.closeAria")}
+            className="rounded-none"
           >
             <X className="h-4 w-4" />
           </Button>
@@ -176,6 +173,7 @@ export function InterviewProposalModal({
             size="editorial-sm"
             onClick={onClose}
             disabled={isSubmitting}
+            className="rounded-none"
           >
             {t("interviewModal.cancel")}
           </Button>
@@ -183,7 +181,7 @@ export function InterviewProposalModal({
             size="sm"
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="font-bold uppercase tracking-wider text-[11px]"
+            className="font-bold uppercase tracking-wider text-[11px] rounded-none"
           >
             {isSubmitting ? (
               <Loader2 className="h-4 w-4 animate-spin" />

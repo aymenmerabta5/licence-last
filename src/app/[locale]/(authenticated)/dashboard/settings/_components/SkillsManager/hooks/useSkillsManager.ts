@@ -92,18 +92,37 @@ export function useSkillsManager() {
   const { groups, categoryOrder, categoryLabels } =
     useSkillGrouping(filteredSkills)
 
-  const upsertMutation = useMutation(
-    orpc.students.upsertSkills.mutationOptions({
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: profileQueryOptions.queryKey,
-        })
-        setDraftSelectedIds(null)
-        setSaveTick((t) => t + 1)
-        toast.success(t("saveSuccess"))
-      },
-    }),
-  )
+  const upsertMutation = useMutation({
+    ...orpc.students.upsertSkills.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: profileQueryOptions.queryKey })
+      const previousData = queryClient.getQueryData(profileQueryOptions.queryKey)
+      queryClient.setQueryData(profileQueryOptions.queryKey, (old) => {
+        if (!old) return old
+        const nextSkills = allSkills.filter((s) =>
+          variables.skillTagIds.includes(s.id),
+        )
+        return { ...old, skills: nextSkills }
+      })
+      return { previousData }
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          profileQueryOptions.queryKey,
+          context.previousData,
+        )
+      }
+    },
+    onSuccess: () => {
+      setDraftSelectedIds(null)
+      setSaveTick((t) => t + 1)
+      toast.success(t("saveSuccess"))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: profileQueryOptions.queryKey })
+    },
+  })
 
   const isBusy = isLoadingSkills || isLoadingProfile || upsertMutation.isPending
   const isAtMax = selectedIds.length >= MAX_SKILLS

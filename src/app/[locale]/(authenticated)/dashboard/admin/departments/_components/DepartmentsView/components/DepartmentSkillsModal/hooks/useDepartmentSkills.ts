@@ -66,21 +66,63 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
   const { groups, categoryOrder, categoryLabels } =
     useSkillGrouping(filteredSkills)
 
-  const syncMutation = useMutation(
-    orpc.departments.syncSkills.mutationOptions({
-      onSuccess: async () => {
-        await Promise.all([
-          queryClient.invalidateQueries({
-            queryKey: [DEPARTMENTS_LIST_QUERY_PATH],
-          }),
-          queryClient.invalidateQueries({
-            queryKey: departmentSkillsQueryKey,
-          }),
-        ])
-        setDraftOverride(null)
-      },
-    }),
-  )
+  const syncMutation = useMutation({
+    ...orpc.departments.syncSkills.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: departmentSkillsQueryKey })
+      await queryClient.cancelQueries({
+        queryKey: [DEPARTMENTS_LIST_QUERY_PATH],
+      })
+
+      const previousSkills = queryClient.getQueryData(departmentSkillsQueryKey)
+      queryClient.setQueryData(departmentSkillsQueryKey, variables.skillTagIds)
+
+      const listQueries = queryClient.getQueriesData({
+        queryKey: [DEPARTMENTS_LIST_QUERY_PATH],
+      })
+      for (const [queryKey, data] of listQueries) {
+        if (!Array.isArray(data)) continue
+        queryClient.setQueryData(
+          queryKey,
+          data.map((dept) =>
+            dept.id === variables.departmentId
+              ? { ...dept, skillCount: variables.skillTagIds.length }
+              : dept,
+          ),
+        )
+      }
+
+      return { previousSkills, previousLists: listQueries }
+    },
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [DEPARTMENTS_LIST_QUERY_PATH],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: departmentSkillsQueryKey,
+        }),
+      ])
+      setDraftOverride(null)
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previousSkills !== undefined) {
+        queryClient.setQueryData(
+          departmentSkillsQueryKey,
+          context.previousSkills,
+        )
+      }
+      for (const [queryKey, data] of context?.previousLists ?? []) {
+        queryClient.setQueryData(queryKey, data)
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: departmentSkillsQueryKey })
+      queryClient.invalidateQueries({
+        queryKey: [DEPARTMENTS_LIST_QUERY_PATH],
+      })
+    },
+  })
 
   const createSkillMutation = useMutation({
     mutationFn: (name: string) =>

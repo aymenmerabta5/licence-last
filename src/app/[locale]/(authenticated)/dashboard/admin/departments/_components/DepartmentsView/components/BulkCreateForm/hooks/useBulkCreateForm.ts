@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { resolveLocalizedError } from "@/lib/error-message"
 import type { BulkDepartmentRow } from "@/lib/schemas/department"
@@ -23,6 +23,14 @@ export function useBulkCreateForm(universityId: string | null) {
   const t = useTranslations("dashboard.admin.departments.bulkCreate")
   const tv = useTranslations("auth.validation")
   const queryClient = useQueryClient()
+
+  const listQueryOptions = useMemo(
+    () =>
+      orpc.departments.list.queryOptions({
+        input: { universityId: universityId ?? "" },
+      }),
+    [universityId],
+  )
 
   const [rows, setRows] = useState<BulkDepartmentRow[]>([emptyRow()])
   const [fieldErrors, setFieldErrors] = useState<
@@ -54,50 +62,76 @@ export function useBulkCreateForm(universityId: string | null) {
     [],
   )
 
-  const mutation = useMutation(
-    orpc.departments.bulkCreateWithHeads.mutationOptions({
-      onSuccess: (data) => {
-        queryClient.invalidateQueries({
-          queryKey: [DEPARTMENTS_LIST_QUERY_PATH],
-        })
+  const mutation = useMutation({
+    ...orpc.departments.bulkCreateWithHeads.mutationOptions(),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listQueryOptions.queryKey })
+      const previousData = queryClient.getQueryData(listQueryOptions.queryKey)
+      queryClient.setQueryData(listQueryOptions.queryKey, (old) => {
+        if (!old) return old
+        const newDepartments = variables.rows.map((row, i) => ({
+          id: `optimistic-${Date.now()}-${i}`,
+          name: row.departmentName,
+          headUserId: null,
+          headUserName: null,
+          headUserEmail: row.headEmail || null,
+          skillCount: 0,
+          createdAt: new Date(),
+        }))
+        return [...old, ...newDepartments]
+      })
+      return { previousData }
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: [DEPARTMENTS_LIST_QUERY_PATH],
+      })
 
-        if (data.errors.length === 0) {
-          toast.success(t("successMessage", { count: data.created.length }))
-          setRows([emptyRow()])
-          setFieldErrors([{}])
-        } else if (data.created.length > 0) {
-          toast.warning(
-            t("partialSuccess", {
-              created: data.created.length,
-              failed: data.errors.length,
-            }),
-          )
-          // Show individual errors
-          for (const err of data.errors) {
-            toast.error(
-              t("rowError", { name: err.departmentName, error: err.message }),
-            )
-          }
-          setRows([emptyRow()])
-          setFieldErrors([{}])
-        } else {
-          for (const err of data.errors) {
-            toast.error(
-              t("rowError", { name: err.departmentName, error: err.message }),
-            )
-          }
-        }
-      },
-      onError: (error) => {
-        toast.error(
-          resolveLocalizedError(error, {
-            t: tr,
-            fallbackKey: "dashboard.admin.departments.bulkCreate.error",
+      if (data.errors.length === 0) {
+        toast.success(t("successMessage", { count: data.created.length }))
+        setRows([emptyRow()])
+        setFieldErrors([{}])
+      } else if (data.created.length > 0) {
+        toast.warning(
+          t("partialSuccess", {
+            created: data.created.length,
+            failed: data.errors.length,
           }),
         )
-      },
-    }),
-  )
+        // Show individual errors
+        for (const err of data.errors) {
+          toast.error(
+            t("rowError", { name: err.departmentName, error: err.message }),
+          )
+        }
+        setRows([emptyRow()])
+        setFieldErrors([{}])
+      } else {
+        for (const err of data.errors) {
+          toast.error(
+            t("rowError", { name: err.departmentName, error: err.message }),
+          )
+        }
+      }
+    },
+    onError: (error, _variables, context) => {
+      toast.error(
+        resolveLocalizedError(error, {
+          t: tr,
+          fallbackKey: "dashboard.admin.departments.bulkCreate.error",
+        }),
+      )
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          listQueryOptions.queryKey,
+          context.previousData,
+        )
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: listQueryOptions.queryKey })
+    },
+  })
 
   const handleSubmit = useCallback(() => {
     if (!universityId) {
