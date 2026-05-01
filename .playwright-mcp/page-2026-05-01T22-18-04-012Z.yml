@@ -1,0 +1,42 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - main [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - link "Back to home" [ref=e7] [cursor=pointer]:
+            - /url: /en
+            - img
+          - generic [ref=e8]: Stag.io
+        - generic [ref=e9]:
+          - button "Select language" [disabled]:
+            - img
+            - generic: EN
+            - img
+          - button [ref=e10] [cursor=pointer]:
+            - img
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - heading "Choose Your Path" [level=1] [ref=e15]
+          - paragraph [ref=e16]: Select how you want to use Stag
+        - generic [ref=e17]:
+          - button "I'm a Student Find internships, build your profile, and connect with companies." [ref=e18] [cursor=pointer]:
+            - img [ref=e20]
+            - generic [ref=e23]:
+              - paragraph [ref=e24]: I'm a Student
+              - paragraph [ref=e25]: Find internships, build your profile, and connect with companies.
+            - img [ref=e26]
+          - button "I'm a Company Post internship offers, discover talent, and manage applications." [ref=e28] [cursor=pointer]:
+            - img [ref=e30]
+            - generic [ref=e34]:
+              - paragraph [ref=e35]: I'm a Company
+              - paragraph [ref=e36]: Post internship offers, discover talent, and manage applications.
+            - img [ref=e37]
+          - button "I'm a University Admin Manage your university, approve student domains, and oversee internships." [ref=e39] [cursor=pointer]:
+            - img [ref=e41]
+            - generic [ref=e46]:
+              - paragraph [ref=e47]: I'm a University Admin
+              - paragraph [ref=e48]: Manage your university, approve student domains, and oversee internships.
+            - img [ref=e49]
+    - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e56] [cursor=pointer]:
+    - img [ref=e57]

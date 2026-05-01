@@ -1,0 +1,59 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - main [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - link "Back to home" [ref=e7] [cursor=pointer]:
+            - /url: /en
+            - img
+          - generic [ref=e8]: Stag.io
+        - generic [ref=e9]:
+          - button "Select language" [disabled]:
+            - img
+            - generic: EN
+            - img
+          - button [ref=e10] [cursor=pointer]:
+            - img
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - heading "Welcome Back" [level=1] [ref=e15]
+          - paragraph [ref=e16]: Sign in to your Stag account
+        - generic [ref=e17]:
+          - generic [ref=e18]:
+            - generic [ref=e19]: Email address
+            - group [ref=e20]:
+              - group [ref=e21]:
+                - img [ref=e22]
+              - textbox "Email address" [ref=e25]:
+                - /placeholder: you@university.edu
+          - generic [ref=e26]:
+            - generic [ref=e27]: Password
+            - group [ref=e28]:
+              - group [ref=e29]:
+                - img [ref=e30]
+              - textbox "Password" [ref=e33]:
+                - /placeholder: Enter your password
+              - group [ref=e34]:
+                - button "Show password" [ref=e35] [cursor=pointer]:
+                  - img
+        - generic [ref=e36]:
+          - generic [ref=e37] [cursor=pointer]:
+            - generic [ref=e38]:
+              - checkbox "Remember me" [ref=e39]
+              - img
+            - generic [ref=e40]: Remember me
+          - link "Forgot password?" [ref=e41] [cursor=pointer]:
+            - /url: /en/reset-password
+        - button "Sign In" [ref=e43] [cursor=pointer]:
+          - text: Sign In
+          - img
+        - generic [ref=e44]:
+          - separator [ref=e45]
+          - generic [ref=e46]: or
+        - paragraph [ref=e47]:
+          - text: Don't have an account?
+          - link "Create one" [ref=e48] [cursor=pointer]:
+            - /url: /en/signup
+    - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e54] [cursor=pointer]:
+    - img [ref=e55]

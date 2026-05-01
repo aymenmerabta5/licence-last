@@ -1,0 +1,177 @@
+"use client"
+
+import { Building2, ChevronDown, ChevronUp, Loader2, X } from "lucide-react"
+import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
+import type { ApplicationJourney } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/types"
+import { InterviewSlotsSection } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/InterviewSlotsSection"
+import { JourneyTimeline } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/JourneyTimeline"
+import { PlacementDocumentsSection } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/PlacementDocumentsSection"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { STATUS_COLORS, STAGE_COLUMNS, STAGE_LABELS } from "@/lib/constants/pipeline"
+import { ease, reveal } from "@/lib/animations"
+import { cn } from "@/lib/utils"
+
+interface ApplicationJourneyCardProps {
+  journey: ApplicationJourney
+  isExpanded: boolean
+  onToggleExpand: () => void
+  onWithdraw: (applicationId: string) => void
+  isWithdrawing: boolean
+  onConfirmSlot: (interviewId: string, slotId: string) => void
+  confirmingSlotId: string | null
+  onDownloadDocument: (documentId: string) => void
+  downloadingDocumentId: string | null
+}
+
+function getNextActionVariant(journey: ApplicationJourney): "action" | "waiting" | "ready" {
+  const hasPendingInterview = journey.interviews.some(
+    (i) => i.status === "pending_confirmation",
+  )
+  const hasPendingDocs = journey.placement?.documents.some((d) => d.status === "pending")
+  if (hasPendingInterview || hasPendingDocs) return "action"
+  const hasGeneratedDocs = journey.placement?.documents.some((d) => d.status === "generated")
+  if (hasGeneratedDocs) return "ready"
+  return "waiting"
+}
+
+export function ApplicationJourneyCard({
+  journey,
+  isExpanded,
+  onToggleExpand,
+  onWithdraw,
+  isWithdrawing,
+  onConfirmSlot,
+  confirmingSlotId,
+  onDownloadDocument,
+  downloadingDocumentId,
+}: ApplicationJourneyCardProps) {
+  const t = useTranslations("dashboard.applications.hub")
+  const nextAction = getNextActionVariant(journey)
+
+  const nextActionClass = {
+    action:
+      "bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800",
+    waiting: "bg-muted text-muted-foreground border-border",
+    ready:
+      "bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800",
+  }[nextAction]
+
+  const nextActionLabel = {
+    action: t("nextAction.actionRequired"),
+    waiting: t("nextAction.waiting"),
+    ready: t("nextAction.readyToDownload"),
+  }[nextAction]
+
+  return (
+    <motion.article
+      {...reveal}
+      transition={{ duration: 0.6, ease }}
+      className={cn(
+        "overflow-hidden border transition-colors",
+        isExpanded
+          ? "border-foreground/30 bg-card/50"
+          : "border-border/60 bg-card/30 hover:border-foreground/20",
+      )}
+    >
+      <button
+        type="button"
+        onClick={onToggleExpand}
+        className="flex w-full items-center gap-4 p-4 text-start transition-colors hover:bg-muted/20"
+      >
+        <Avatar size="lg">
+          {journey.companyLogoUrl && (
+            <AvatarImage src={journey.companyLogoUrl} alt={journey.companyName} />
+          )}
+          <AvatarFallback>
+            <Building2 className="h-4 w-4" />
+          </AvatarFallback>
+        </Avatar>
+
+        <div className="min-w-0 flex-1">
+          <h3 className="truncate font-serif text-base text-heading">{journey.offerTitle}</h3>
+          <p className="truncate text-xs font-light text-muted-foreground">
+            {journey.companyName}
+          </p>
+        </div>
+
+        <div className="hidden shrink-0 items-center gap-3 sm:flex">
+          <span
+            className={cn(
+              "inline-flex items-center border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
+              STATUS_COLORS[journey.status] ?? "",
+            )}
+          >
+            {t(`status.${journey.status}`)}
+          </span>
+
+          <span
+            className={cn(
+              "inline-flex items-center border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
+              nextActionClass,
+            )}
+          >
+            {nextActionLabel}
+          </span>
+
+          <span className="text-xs text-muted-foreground">
+            {new Date(journey.createdAt).toLocaleDateString()}
+          </span>
+
+          {isExpanded ? (
+            <ChevronUp className="h-4 w-4 text-muted-foreground" />
+          ) : (
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          )}
+        </div>
+      </button>
+
+      {isExpanded && (
+        <div className="border-t border-border/60 px-4 pb-4 pt-2">
+          <JourneyTimeline
+            currentStage={journey.pipelineStage}
+            stages={[...STAGE_COLUMNS]}
+            stageLabels={STAGE_LABELS}
+          />
+
+          {journey.interviews.length > 0 && (
+            <InterviewSlotsSection
+              interviews={journey.interviews}
+              confirmingSlotId={confirmingSlotId}
+              onConfirmSlot={onConfirmSlot}
+            />
+          )}
+
+          {journey.placement && (
+            <PlacementDocumentsSection
+              placement={journey.placement}
+              downloadingDocumentId={downloadingDocumentId}
+              onDownload={onDownloadDocument}
+            />
+          )}
+
+          {journey.status === "applied" && (
+            <div className="mt-4 flex justify-end border-t border-border/60 pt-4">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => onWithdraw(journey.id)}
+                disabled={isWithdrawing}
+                className="h-7 gap-1 px-2 text-[11px] text-muted-foreground hover:text-destructive"
+              >
+                {isWithdrawing ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                ) : (
+                  <X className="h-3 w-3" />
+                )}
+                {t("journeyCard.withdraw")}
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+    </motion.article>
+  )
+}

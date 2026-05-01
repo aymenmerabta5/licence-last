@@ -29,6 +29,23 @@ function groupByCategory(skills: StudentSkill[], fallbackCategory: string) {
   return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b))
 }
 
+const categoryGradients: Record<string, string> = {
+  frontend: "from-amber-500/10 to-orange-500/10 text-amber-700 border-amber-200 hover:bg-amber-500 hover:text-white hover:border-amber-500",
+  backend: "from-emerald-500/10 to-teal-500/10 text-emerald-700 border-emerald-200 hover:bg-emerald-500 hover:text-white hover:border-emerald-500",
+  devops: "from-sky-500/10 to-blue-500/10 text-sky-700 border-sky-200 hover:bg-sky-500 hover:text-white hover:border-sky-500",
+  design: "from-rose-500/10 to-pink-500/10 text-rose-700 border-rose-200 hover:bg-rose-500 hover:text-white hover:border-rose-500",
+  mobile: "from-violet-500/10 to-purple-500/10 text-violet-700 border-violet-200 hover:bg-violet-500 hover:text-white hover:border-violet-500",
+  general: "from-slate-100 to-slate-200/50 text-slate-700 border-slate-200 hover:bg-slate-800 hover:text-white hover:border-slate-800",
+}
+
+function getCategoryStyle(category: string) {
+  const key = category.toLowerCase()
+  for (const [prefix, style] of Object.entries(categoryGradients)) {
+    if (key.includes(prefix)) return style
+  }
+  return categoryGradients.general
+}
+
 export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
   const t = useTranslations("dashboard.student.profile")
   const hasSkills = skills.length > 0
@@ -42,9 +59,9 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
       className="relative group"
     >
       {hasSkills ? (
-        <div className="relative rounded-[2.5rem] border border-slate-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-500 hover:shadow-[0_30px_70px_rgba(0,0,0,0.06)]">
-          <div className="flex items-center justify-between px-8 py-7 border-b border-slate-50 bg-slate-50/30">
-            <div className="flex items-center gap-4">
+        <div className="relative rounded-[2rem] border border-slate-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-500 hover:shadow-[0_30px_70px_rgba(0,0,0,0.06)]">
+          <div className="flex items-center justify-between px-6 py-6 border-b border-slate-50 bg-slate-50/30">
+            <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/5">
                 <Zap className="h-5 w-5 text-primary" />
               </div>
@@ -60,16 +77,17 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
             </div>
           </div>
 
-          <div className="p-8 space-y-8">
+          <div className="p-6 space-y-7">
             {grouped.map(([category, categorySkills], groupIdx) => (
-              <div key={category} className="space-y-4">
+              <div key={category} className="space-y-3">
                 {grouped.length > 1 && (
                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">
                     {category}
                   </p>
                 )}
-                <div className="flex flex-wrap gap-3.5">
+                <div className="flex flex-wrap gap-2.5">
                   {categorySkills.map((skill, skillIdx) => {
+                    const catStyle = getCategoryStyle(category)
                     return (
                       <motion.div
                         key={skill.id}
@@ -85,7 +103,7 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
                       >
                         <Badge
                           variant="outline"
-                          className="bg-slate-50 text-slate-700 border-slate-100 text-[11px] font-bold uppercase tracking-wide rounded-xl px-5 py-2.5 transition-all hover:bg-primary hover:text-white hover:border-primary hover:shadow-[0_8px_20px_rgba(var(--primary-rgb),0.2)]"
+                          className={`bg-gradient-to-br ${catStyle} text-[11px] font-bold uppercase tracking-wide rounded-xl px-4 py-2 transition-all hover:shadow-lg cursor-default`}
                         >
                           {skill.name}
                         </Badge>
@@ -97,7 +115,7 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
             ))}
 
             {canEdit && (
-              <div className="pt-6 border-t border-slate-50">
+              <div className="pt-4 border-t border-slate-50">
                 <Link href="/dashboard/settings">
                   <button
                     type="button"
@@ -117,7 +135,7 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
           </div>
         </div>
       ) : (
-        <div className="rounded-[2.5rem] border-2 border-dashed border-slate-100 p-12 bg-white/50 backdrop-blur-sm">
+        <div className="rounded-[2rem] border-2 border-dashed border-slate-100 p-12 bg-white/50 backdrop-blur-sm">
           {canEdit ? (
             <EmptyState
               icon={Award}

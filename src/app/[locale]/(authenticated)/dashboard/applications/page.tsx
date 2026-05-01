@@ -1,11 +1,11 @@
 import { Suspense } from "react"
-import { ApplicationsView } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsView"
+import { ApplicationsHubController } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/ApplicationsHubController"
 import { requireOnboardedStudent } from "@/lib/dashboard-access"
 
 export async function ApplicationsPageContent() {
   await requireOnboardedStudent()
 
-  return <ApplicationsView />
+  return <ApplicationsHubController />
 }
 
 export default function ApplicationsPage() {

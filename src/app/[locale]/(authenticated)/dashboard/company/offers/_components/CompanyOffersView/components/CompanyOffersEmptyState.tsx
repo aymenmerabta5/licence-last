@@ -1,28 +1,23 @@
 "use client"
 
 import { Briefcase, Plus } from "lucide-react"
-import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
-import { ease } from "@/lib/animations"
 
 export function CompanyOffersEmptyState() {
   const t = useTranslations("dashboard.company.offers")
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease, delay: 0.1 }}
-      className="space-y-4 border border-dashed border-border/40 p-12 text-center"
-    >
+    <div className="border border-dashed border-border/60 p-12 text-center space-y-4">
       <div className="mx-auto flex h-14 w-14 items-center justify-center border border-border/50 bg-muted/30">
         <Briefcase className="h-6 w-6 text-muted-foreground/40" />
       </div>
-      <p className="mx-auto max-w-xs text-sm text-muted-foreground/60">
-        {t("empty")}
-      </p>
+      <div className="space-y-2">
+        <p className="font-serif text-lg text-heading">
+          {t("empty")}
+        </p>
+      </div>
       <Link href={"/dashboard/company/offers/new" as "/dashboard"}>
         <Button
           variant="editorial-outline"
@@ -33,6 +28,6 @@ export function CompanyOffersEmptyState() {
           {t("createOffer")}
         </Button>
       </Link>
-    </motion.div>
+    </div>
   )
 }

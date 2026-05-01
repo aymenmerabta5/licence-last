@@ -22,7 +22,7 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.2, ease }}
-      className="grid grid-cols-1 sm:grid-cols-3 gap-8"
+      className="grid grid-cols-1 sm:grid-cols-3 gap-6 2xl:gap-8"
     >
       {stats.map((stat, i) => {
         const Icon = stat.icon
@@ -39,13 +39,13 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
           >
             <div
               className={cn(
-                "relative h-full rounded-[2.5rem] border border-slate-100 bg-white p-10 transition-all duration-500",
+                "relative h-full rounded-[2rem] border border-slate-100 bg-white p-8 2xl:p-10 transition-all duration-500",
                 "hover:border-primary/20 hover:shadow-[0_30px_60px_rgba(0,0,0,0.05)] hover:-translate-y-1",
               )}
             >
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                  <Icon className="h-7 w-7" />
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex h-12 w-12 2xl:h-14 2xl:w-14 items-center justify-center rounded-2xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                  <Icon className="h-6 w-6 2xl:h-7 2xl:w-7" />
                 </div>
                 <div className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-300 group-hover:text-primary transition-colors">
                   {stat.title}
@@ -53,12 +53,12 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
               </div>
 
               <div className="space-y-4">
-                <div className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 group-hover:text-primary transition-colors duration-500">
+                <div className="font-serif text-3xl sm:text-4xl 2xl:text-5xl font-bold tracking-tight text-slate-900 group-hover:text-primary transition-colors duration-500">
                   {stat.value}
                 </div>
 
                 {isHighlight ? (
-                  <div className="space-y-4 pt-2">
+                  <div className="space-y-3 pt-2">
                     <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}

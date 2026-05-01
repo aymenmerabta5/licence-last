@@ -1,9 +1,7 @@
 "use client"
 
 import { CheckCircle2, Shield, TrendingUp } from "lucide-react"
-import * as motion from "motion/react-client"
 import type { TrustData } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/types"
-import { ease } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
 const TIER_COLORS: Record<string, { text: string; bar: string }> = {
@@ -24,18 +22,11 @@ export function TrustBanner({ data }: TrustBannerProps) {
   const colors = TIER_COLORS[data.tier] ?? TIER_COLORS.good
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease, delay: 0.08 }}
-      className="border border-border/50 border-s-4 border-s-primary/30 p-5 sm:p-6"
-    >
+    <div className="border border-border/60 bg-card/30 dark:bg-card/50 p-5 sm:p-6">
       <div className="flex flex-wrap items-center gap-6 sm:gap-10">
         {/* Trust score */}
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-primary/5">
-            <Shield className="h-4 w-4 text-primary" />
-          </div>
+          <Shield className="h-4 w-4 text-primary" />
           <div>
             <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50 [[dir=rtl]_&]:tracking-normal">
               Trust Score
@@ -51,7 +42,7 @@ export function TrustBanner({ data }: TrustBannerProps) {
           </div>
         </div>
 
-        {/* Animated bar */}
+        {/* Bar */}
         <div className="flex-1 min-w-[120px] space-y-1.5">
           <div className="flex items-center justify-between">
             <span
@@ -63,12 +54,10 @@ export function TrustBanner({ data }: TrustBannerProps) {
               {data.tier}
             </span>
           </div>
-          <div className="h-1.5 rounded-full bg-secondary/30 overflow-hidden">
-            <motion.div
-              className={cn("h-full rounded-full", colors.bar)}
-              initial={{ width: 0 }}
-              animate={{ width: `${Math.min(data.trustScore, 100)}%` }}
-              transition={{ duration: 1, delay: 0.3, ease }}
+          <div className="h-1.5 bg-secondary/30 overflow-hidden">
+            <div
+              className={cn("h-full", colors.bar)}
+              style={{ width: `${Math.min(data.trustScore, 100)}%` }}
             />
           </div>
         </div>
@@ -95,6 +84,6 @@ export function TrustBanner({ data }: TrustBannerProps) {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }

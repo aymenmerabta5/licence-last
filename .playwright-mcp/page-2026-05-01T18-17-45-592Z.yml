@@ -1,0 +1,84 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic:
+        - generic:
+          - complementary:
+            - generic:
+              - generic: Stag.io
+            - generic:
+              - navigation:
+                - link "Dashboard":
+                  - /url: /en/dashboard
+                  - generic:
+                    - img
+                    - generic: Dashboard
+                - link "Statistics":
+                  - /url: /en/dashboard/admin/stats
+                  - generic:
+                    - img
+                    - generic: Statistics
+                - link "Companies":
+                  - /url: /en/dashboard/admin/companies
+                  - generic:
+                    - img
+                    - generic: Companies
+                - link "Universities":
+                  - /url: /en/dashboard/admin/universities
+                  - generic:
+                    - img
+                    - generic: Universities
+                - link "User Management":
+                  - /url: /en/dashboard/admin/users
+                  - generic:
+                    - img
+                    - generic: User Management
+                - link "Settings":
+                  - /url: /en/dashboard/settings
+                  - generic:
+                    - img
+                    - generic: Settings
+            - generic:
+              - generic:
+                - button "Log out":
+                  - img
+                  - generic: Log out
+      - generic [ref=e4]:
+        - banner [ref=e5]:
+          - generic [ref=e6]:
+            - button "Toggle menu" [ref=e7] [cursor=pointer]:
+              - img [ref=e8]
+            - heading "notifications" [level=2] [ref=e10]
+          - generic [ref=e12]:
+            - button "Switch to dark mode" [ref=e14] [cursor=pointer]:
+              - generic [ref=e15]:
+                - img
+              - generic [ref=e16]:
+                - img
+            - button "Super Admin A" [ref=e18] [cursor=pointer]:
+              - generic [ref=e20]: Super Admin
+              - generic [ref=e21]: A
+        - main [ref=e22]:
+          - generic [ref=e25]:
+            - generic [ref=e29]:
+              - generic [ref=e30]:
+                - heading "Notifications" [level=1] [ref=e31]
+                - paragraph [ref=e32]: 0 unread
+              - generic [ref=e33]:
+                - button "Summarize" [disabled]:
+                  - img
+                  - text: Summarize
+                - button "Mark all read" [disabled]:
+                  - img
+                  - text: Mark all read
+            - generic [ref=e34]:
+              - img [ref=e35]
+              - generic [ref=e37]: Loading notifications
+    - generic [ref=e38]:
+      - img [ref=e40]
+      - button "Open Tanstack query devtools" [ref=e88] [cursor=pointer]:
+        - img [ref=e89]
+    - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e142] [cursor=pointer]:
+    - img [ref=e143]
+  - alert [ref=e146]

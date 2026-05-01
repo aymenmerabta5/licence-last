@@ -1491,7 +1491,51 @@
       "withdrawError": "Failed to withdraw application.",
       "loading": "Loading...",
       "loadMore": "Load more",
-      "exploreOffers": "Explore Internships"
+      "exploreOffers": "Explore Internships",
+      "hub": {
+        "title": "My Applications",
+        "subtitle": "Track your applications, interviews, and placement documents in one place",
+        "filters": {
+          "all": "All",
+          "actionRequired": "Action Required",
+          "inProgress": "In Progress",
+          "finalized": "Finalized"
+        },
+        "nextAction": {
+          "confirmSlot": "Confirm interview slot",
+          "downloadAgreement": "Download agreement",
+          "downloadCertificate": "Download certificate",
+          "waitingForCompany": "Waiting for company",
+          "waitingForValidation": "Waiting for department approval",
+          "none": "No action needed"
+        },
+        "journeyCard": {
+          "appliedOn": "Applied on",
+          "withdraw": "Withdraw",
+          "viewJourney": "View journey",
+          "hideJourney": "Hide journey",
+          "interviewSection": "Interview",
+          "placementSection": "Placement",
+          "approvedBy": "Approved by {validator} on {date}",
+          "placementDates": "{start} — {end}"
+        },
+        "interview": {
+          "noteFromCompany": "From the company",
+          "confirmSlot": "Confirm",
+          "confirmed": "Confirmed",
+          "joinMeeting": "Join meeting",
+          "noSlots": "No time slots available",
+          "chooseSlot": "Choose a time slot that works for you:"
+        },
+        "document": {
+          "agreement": "Internship Agreement",
+          "certificate": "Completion Certificate",
+          "statusPending": "Pending",
+          "statusGenerated": "Ready",
+          "download": "Download",
+          "downloading": "Downloading..."
+        }
+      }
     },
     "documents": {
       "pageTitle": "My Documents",
@@ -1950,6 +1994,9 @@
           "selectUniversity": "Select a university",
           "company": "Company",
           "selectCompany": "Select a company",
+          "department": "Department",
+          "selectDepartment": "Select a department",
+          "noDepartment": "None",
           "noResults": "No results"
         },
         "dialogs": {

@@ -2,8 +2,10 @@
 
 import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
+import { DepartmentSelect } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/DepartmentSelect"
+import { OrganizationSearchField } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/OrganizationSearchField"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -22,23 +24,36 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+type ChangeRole =
+  | "student"
+  | "company_admin"
+  | "university_admin"
+  | "department_head"
+  | "super_admin"
+  | "recruiter"
+
 interface SetRoleDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   user: AdminUser | null
   onSubmit: (data: {
     userId: string
-    role: "student" | "company_admin" | "university_admin" | "super_admin"
+    role: ChangeRole
+    universityId?: string
+    companyId?: string
+    departmentId?: string
   }) => void
   isPending: boolean
 }
 
-const roles = [
+const roles: ChangeRole[] = [
   "student",
   "company_admin",
   "university_admin",
+  "department_head",
   "super_admin",
-] as const
+  "recruiter",
+]
 
 export function SetRoleDialog({
   open,
@@ -48,15 +63,45 @@ export function SetRoleDialog({
   isPending,
 }: SetRoleDialogProps) {
   const t = useTranslations("dashboard.superAdmin.users")
-  const [role, setRole] = useState<(typeof roles)[number]>(
-    (user?.role as (typeof roles)[number]) ?? "student",
+  const [role, setRole] = useState<ChangeRole>(
+    (user?.role as ChangeRole) ?? "student",
   )
+  const [universityId, setUniversityId] = useState("")
+  const [companyId, setCompanyId] = useState("")
+  const [departmentId, setDepartmentId] = useState("")
+
+  const isUniversitySearch =
+    role === "student" || role === "department_head"
+  const isCompanySearch = role === "recruiter"
+  const showDepartmentSelect =
+    role === "department_head" && !!universityId
+
+  useEffect(() => {
+    setRole((user?.role as ChangeRole) ?? "student")
+    setUniversityId("")
+    setCompanyId("")
+    setDepartmentId("")
+  }, [user])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!user) return
-    onSubmit({ userId: user.id, role })
+    onSubmit({
+      userId: user.id,
+      role,
+      ...(isUniversitySearch && universityId
+        ? { universityId }
+        : {}),
+      ...(isCompanySearch && companyId ? { companyId } : {}),
+      ...(showDepartmentSelect && departmentId
+        ? { departmentId }
+        : {}),
+    })
   }
+
+  const attachmentMissing =
+    (isUniversitySearch && !universityId) ||
+    (isCompanySearch && !companyId)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -66,7 +111,9 @@ export function SetRoleDialog({
             {t("dialogs.setRole.title")}
           </DialogTitle>
           <DialogDescription>
-            {t("dialogs.setRole.description", { email: user?.email ?? "" })}
+            {t("dialogs.setRole.description", {
+              email: user?.email ?? "",
+            })}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -74,8 +121,17 @@ export function SetRoleDialog({
             <Label>{t("fields.role")}</Label>
             <Select
               value={role}
-              onValueChange={(v) => v && setRole(v as typeof role)}
-              items={roles.map((r) => ({ value: r, label: t(`roles.${r}`) }))}
+              onValueChange={(v) => {
+                if (!v) return
+                setRole(v as ChangeRole)
+                setUniversityId("")
+                setCompanyId("")
+                setDepartmentId("")
+              }}
+              items={roles.map((r) => ({
+                value: r,
+                label: t(`roles.${r}`),
+              }))}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -89,6 +145,33 @@ export function SetRoleDialog({
               </SelectContent>
             </Select>
           </div>
+
+          <OrganizationSearchField
+            role={role}
+            value={isUniversitySearch ? universityId : companyId}
+            onChange={(id) => {
+              if (isUniversitySearch) {
+                setUniversityId(id)
+                setDepartmentId("")
+              } else {
+                setCompanyId(id)
+              }
+            }}
+            onClear={() => {
+              setUniversityId("")
+              setCompanyId("")
+              setDepartmentId("")
+            }}
+          />
+
+          {showDepartmentSelect && (
+            <DepartmentSelect
+              universityId={universityId}
+              departmentId={departmentId}
+              onChange={(id) => setDepartmentId(id)}
+            />
+          )}
+
           <DialogFooter>
             <Button
               type="button"
@@ -98,8 +181,14 @@ export function SetRoleDialog({
             >
               {t("dialogs.cancel")}
             </Button>
-            <Button type="submit" className="rounded-none" disabled={isPending}>
-              {isPending && <Loader2 className="h-4 w-4 me-2 animate-spin" />}
+            <Button
+              type="submit"
+              className="rounded-none"
+              disabled={isPending || attachmentMissing}
+            >
+              {isPending && (
+                <Loader2 className="h-4 w-4 me-2 animate-spin" />
+              )}
               {t("dialogs.setRole.submit")}
             </Button>
           </DialogFooter>

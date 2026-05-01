@@ -22,7 +22,7 @@ import {
   revokeSession,
 } from "@/server/services/admin/session-management"
 import { setUserPassword } from "@/server/services/admin/set-password"
-import { setUserRole } from "@/server/services/admin/set-role"
+import { updateUserRole } from "@/server/services/admin/set-role"
 import { updateUser } from "@/server/services/admin/update-user"
 import { db } from "@/server/db"
 import { company } from "@/server/db/schema/companies"
@@ -130,12 +130,41 @@ export const createUserProcedure = superAdminProcedureStandard
 
 export const setRoleProcedure = superAdminProcedureStandard
   .input(
-    z.object({
-      userId: z.string().min(1),
-      role: primaryUserRoleSchema,
+    z
+      .object({
+        userId: z.string().min(1),
+        role: createUserRoleSchema,
+        universityId: z.string().min(1).optional(),
+        companyId: z.string().min(1).optional(),
+        departmentId: z.string().min(1).optional(),
+      })
+      .refine(
+        (data) => {
+          if (
+            data.role === "student" ||
+            data.role === "department_head"
+          ) {
+            return !!data.universityId
+          }
+          if (data.role === "recruiter") {
+            return !!data.companyId
+          }
+          return true
+        },
+        {
+          message: "Required attachment is missing for this role",
+          path: ["universityId"],
+        },
+      ),
+  )
+  .handler(async ({ input }) =>
+    updateUserRole(input.userId, {
+      role: input.role,
+      universityId: input.universityId,
+      companyId: input.companyId,
+      departmentId: input.departmentId,
     }),
   )
-  .handler(async ({ input }) => setUserRole(input.userId, input.role))
 
 export const banUserProcedure = adminProcedureStandard
   .input(

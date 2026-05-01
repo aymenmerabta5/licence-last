@@ -83,7 +83,7 @@ mock.module("@/server/services/admin/set-password", () => ({
   setUserPassword: mock(async () => ({ success: true })),
 }))
 mock.module("@/server/services/admin/set-role", () => ({
-  setUserRole: mock(async () => ({ success: true })),
+  updateUserRole: mock(async () => ({ success: true })),
 }))
 mock.module("@/server/services/admin/update-user", () => ({
   updateUser: mock(async () => ({ success: true })),

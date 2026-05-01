@@ -117,11 +117,12 @@ export function useCandidates(offerId: string) {
       ),
     [applications],
   )
-  const { pendingStageById, handleStageChange } = useCandidateStageMutation({
-    applicationsQueryKey,
-    applicationStageById,
-    onStageSettled: refreshTimelineForApplication,
-  })
+  const { pendingStageById, handleStageChange: doStageChange } =
+    useCandidateStageMutation({
+      applicationsQueryKey,
+      applicationStageById,
+      onStageSettled: refreshTimelineForApplication,
+    })
 
   const timelineQuery = useQuery({
     ...orpc.applications.getTimeline.queryOptions({
@@ -346,6 +347,33 @@ export function useCandidates(offerId: string) {
         },
       },
     )
+  }
+
+  const handleStageChange = (
+    applicationId: string,
+    toStage: PipelineStage,
+  ) => {
+    if (toStage === "accepted") {
+      const app = applications.find((a) => a.id === applicationId)
+      if (app) {
+        setAcceptModal({
+          applicationId,
+          studentName: app.student.name || "Student",
+        })
+      }
+      return
+    }
+    if (toStage === "rejected") {
+      const app = applications.find((a) => a.id === applicationId)
+      if (app) {
+        setRefuseModal({
+          applicationId,
+          studentName: app.student.name || "Student",
+        })
+      }
+      return
+    }
+    doStageChange(applicationId, toStage)
   }
 
   const grouped = useMemo(() => {

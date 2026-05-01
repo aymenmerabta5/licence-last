@@ -35,6 +35,7 @@ const withdrawApplicationMock = mock(async () => ({
 const listApplicationsByOfferMock = mock(async () => ({ applications: [] }))
 const updatePipelineStageMock = mock(async () => ({ applicationId: "app-1" }))
 const listApplicationTimelineMock = mock(async (): Promise<unknown[]> => [])
+const listStudentApplicationJourneysMock = mock(async (): Promise<unknown[]> => [])
 const revalidateTagMock = mock(() => {})
 const isAdminRoleMock = mock(() => false)
 const dbLimitQueue: unknown[][] = []
@@ -113,6 +114,9 @@ mock.module("@/server/services/applications/pipeline", () => ({
   listApplicationTimeline: listApplicationTimelineMock,
   updateApplicationPipelineStage: updatePipelineStageMock,
 }))
+mock.module("@/server/services/applications/list-student-journeys", () => ({
+  listStudentApplicationJourneys: listStudentApplicationJourneysMock,
+}))
 const selectBuilder = {
   from: () => selectBuilder,
   innerJoin: () => selectBuilder,
@@ -144,6 +148,7 @@ describe("src/server/orpc/routes/applications", () => {
     listApplicationsByOfferMock.mockClear()
     updatePipelineStageMock.mockClear()
     listApplicationTimelineMock.mockClear()
+    listStudentApplicationJourneysMock.mockClear()
     revalidateTagMock.mockClear()
     isAdminRoleMock.mockClear()
     isAdminRoleMock.mockImplementation(() => false)
@@ -580,5 +585,22 @@ describe("src/server/orpc/routes/applications", () => {
       message:
         "AI service is temporarily unavailable. Please try again shortly.",
     })
+  })
+
+  test("listStudentJourneysProcedure calls service with student user id", async () => {
+    listStudentApplicationJourneysMock.mockResolvedValueOnce([
+      { id: "journey-1" },
+    ])
+
+    const { listStudentJourneysProcedure } = await import(
+      "@/server/orpc/routes/applications"
+    )
+
+    const result = await callProcedure(listStudentJourneysProcedure, {
+      context: { user: { id: "student-1" } },
+    })
+
+    expect(result).toEqual([{ id: "journey-1" }])
+    expect(listStudentApplicationJourneysMock).toHaveBeenCalledWith("student-1")
   })
 })

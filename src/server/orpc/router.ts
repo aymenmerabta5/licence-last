@@ -20,6 +20,7 @@ import {
   getTimelineProcedure,
   listByOfferProcedure,
   listStudentApplicationsProcedure,
+  listStudentJourneysProcedure,
   searchOffersProcedure,
   updatePipelineStageProcedure,
   withdrawApplicationProcedure,
@@ -264,6 +265,7 @@ export const appRouter = {
     updatePipelineStage: updatePipelineStageProcedure,
     getTimeline: getTimelineProcedure,
     generateCoverLetter: generateCoverLetterProcedure,
+    listJourneys: listStudentJourneysProcedure,
   },
   matching: {
     getScore: getScoreProcedure,

@@ -7,6 +7,7 @@ import { useMemo, useState } from "react"
 import { CompanyOffersEmptyState } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/CompanyOffersEmptyState"
 import { CompanyOffersFilters } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/CompanyOffersFilters"
 import { CompanyOffersHeader } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/CompanyOffersHeader"
+import { CompanyOffersStats } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/CompanyOffersStats"
 import { OfferCard } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/OfferCard"
 import { TrustBanner } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/components/TrustBanner"
 import { useCompanyOffers } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/CompanyOffersView/hooks/useCompanyOffers"
@@ -67,7 +68,15 @@ export function CompanyOffersView({
       }),
     [offers, normalizedQuery, statusFilter],
   )
+
   const hasOffers = offers.length > 0
+  const publishedOffersCount = offers.filter(
+    (o) => o.status === "published",
+  ).length
+  const totalCandidates = offers.reduce(
+    (sum, o) => sum + o.candidatesCount,
+    0,
+  )
 
   return (
     <div className="mx-auto max-w-5xl space-y-8 pb-16">
@@ -87,36 +96,45 @@ export function CompanyOffersView({
 
       {!isLoading && hasOffers && (
         <>
-          <CompanyOffersFilters
-            searchQuery={searchQuery}
-            statusFilter={statusFilter}
-            onSearchChange={setSearchQuery}
-            onStatusChange={setStatusFilter}
+          <CompanyOffersStats
+            totalOffers={offers.length}
+            publishedOffers={publishedOffersCount}
+            totalCandidates={totalCandidates}
           />
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/40 [[dir=rtl]_&]:tracking-normal">
-              {filteredOffers.length} offer
-              {filteredOffers.length !== 1 ? "s" : ""}
-            </span>
-          </div>
-          <div className="space-y-3">
-            {filteredOffers.map((offer, index) => (
-              <OfferCard
-                key={offer.id}
-                offer={offer}
-                index={index}
-                canManageStatus={canManageStatus}
-                isActionLoading={actionLoading === offer.id}
-                onPublish={() => handlePublish(offer.id)}
-                onClose={() =>
-                  setConfirmInfo({ offerId: offer.id, type: "close" })
-                }
-                onDelete={() =>
-                  setConfirmInfo({ offerId: offer.id, type: "delete" })
-                }
-              />
-            ))}
-          </div>
+
+          <section className="space-y-5">
+            <CompanyOffersFilters
+              searchQuery={searchQuery}
+              statusFilter={statusFilter}
+              onSearchChange={setSearchQuery}
+              onStatusChange={setStatusFilter}
+            />
+
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/40 [[dir=rtl]_&]:tracking-normal">
+                {filteredOffers.length} offer
+                {filteredOffers.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              {filteredOffers.map((offer) => (
+                <OfferCard
+                  key={offer.id}
+                  offer={offer}
+                  canManageStatus={canManageStatus}
+                  isActionLoading={actionLoading === offer.id}
+                  onPublish={() => handlePublish(offer.id)}
+                  onClose={() =>
+                    setConfirmInfo({ offerId: offer.id, type: "close" })
+                  }
+                  onDelete={() =>
+                    setConfirmInfo({ offerId: offer.id, type: "delete" })
+                  }
+                />
+              ))}
+            </div>
+          </section>
 
           <AlertDialog
             open={!!confirmInfo}

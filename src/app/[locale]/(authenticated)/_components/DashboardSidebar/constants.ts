@@ -62,12 +62,6 @@ export const navItems: NavItem[] = [
     roles: ["student"],
   },
   {
-    labelKey: "myDocuments",
-    href: "/dashboard/student/documents",
-    icon: FileCheck,
-    roles: ["student"],
-  },
-  {
     labelKey: "studentCv",
     href: "/dashboard/student/cv",
     icon: FileUser,
@@ -89,7 +83,7 @@ export const navItems: NavItem[] = [
     labelKey: "interviews",
     href: "/dashboard/interviews",
     icon: CalendarClock,
-    roles: ["student", "company_admin"],
+    roles: ["company_admin"],
   },
   {
     labelKey: "companyProfile",

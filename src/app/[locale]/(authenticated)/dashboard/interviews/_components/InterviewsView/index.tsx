@@ -5,7 +5,6 @@ import { useMemo } from "react"
 import { CompanyInterviewsSection } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/CompanyInterviewsSection"
 import { FeatureDisabledCard } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/FeatureDisabledCard"
 import { InterviewsHeader } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewsHeader"
-import { StudentInterviewsSection } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/StudentInterviewsSection"
 import { useInterviewsData } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsData"
 import type { InterviewsRole } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 import { reveal, revealWithDelay } from "@/lib/animations"
@@ -21,8 +20,7 @@ export function InterviewsView({ role }: InterviewsViewProps) {
   })
 
   const counts = useMemo(() => {
-    const interviews =
-      role === "student" ? data.studentInterviews : data.companyInterviews
+    const interviews = data.companyInterviews
     return {
       total: interviews.length,
       pending: interviews.filter(
@@ -32,7 +30,7 @@ export function InterviewsView({ role }: InterviewsViewProps) {
         (interview) => interview.status === "confirmed",
       ).length,
     }
-  }, [data.companyInterviews, data.studentInterviews, role])
+  }, [data.companyInterviews])
 
   return (
     <div className="mx-auto max-w-5xl space-y-8 pb-16">
@@ -40,14 +38,6 @@ export function InterviewsView({ role }: InterviewsViewProps) {
 
       {data.isFeatureDisabled ? (
         <FeatureDisabledCard />
-      ) : role === "student" ? (
-        <StudentInterviewsSection
-          interviews={data.studentInterviews}
-          isLoading={data.isStudentLoading}
-          errorMessage={data.studentErrorMessage}
-          confirmingSlotId={data.confirmingSlotId}
-          onConfirmSlot={data.confirmSlot}
-        />
       ) : (
         <motion.div {...reveal} transition={revealWithDelay(0.15)}>
           <CompanyInterviewsSection

@@ -1491,7 +1491,51 @@
       "withdrawError": "فشل في سحب الطلب.",
       "loading": "تحميل...",
       "loadMore": "تحميل المزيد",
-      "exploreOffers": "استكشاف التدريب"
+      "exploreOffers": "استكشاف التدريب",
+      "hub": {
+        "title": "طلباتي",
+        "subtitle": "تتبع طلباتك ومقابلاتك ومستندات التنسيب في مكان واحد",
+        "filters": {
+          "all": "الكل",
+          "actionRequired": "يتطلب إجراءً",
+          "inProgress": "قيد التقدم",
+          "finalized": "مكتمل"
+        },
+        "nextAction": {
+          "confirmSlot": "تأكيد موعد المقابلة",
+          "downloadAgreement": "تحميل الاتفاقية",
+          "downloadCertificate": "تحميل الشهادة",
+          "waitingForCompany": "في انتظار الشركة",
+          "waitingForValidation": "في انتظار موافقة القسم",
+          "none": "لا يوجد إجراء مطلوب"
+        },
+        "journeyCard": {
+          "appliedOn": "تم التقديم في",
+          "withdraw": "سحب",
+          "viewJourney": "عرض الرحلة",
+          "hideJourney": "إخفاء الرحلة",
+          "interviewSection": "المقابلة",
+          "placementSection": "التنسيب",
+          "approvedBy": "تمت الموافقة من قِبل {validator} في {date}",
+          "placementDates": "{start} — {end}"
+        },
+        "interview": {
+          "noteFromCompany": "من الشركة",
+          "confirmSlot": "تأكيد",
+          "confirmed": "تم التأكيد",
+          "joinMeeting": "الانضمام للاجتماع",
+          "noSlots": "لا توجد مواعيد متاحة",
+          "chooseSlot": "اختر موعداً يناسبك:"
+        },
+        "document": {
+          "agreement": "اتفاقية التدريب",
+          "certificate": "شهادة الإنجاز",
+          "statusPending": "قيد الانتظار",
+          "statusGenerated": "جاهز",
+          "download": "تحميل",
+          "downloading": "جارٍ التحميل..."
+        }
+      }
     },
     "documents": {
       "pageTitle": "المستندات الخاصة بي",
@@ -1950,6 +1994,9 @@
           "selectUniversity": "اختر جامعة",
           "company": "الشركة",
           "selectCompany": "اختر شركة",
+          "department": "القسم",
+          "selectDepartment": "اختر قسماً",
+          "noDepartment": "لا يوجد",
           "noResults": "لا توجد نتائج"
         },
         "dialogs": {

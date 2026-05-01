@@ -51,14 +51,7 @@ export function UserManagementDialogs({
           user={dialogState.roleTarget}
           onSubmit={(data) => {
             dialogState.setRoleTarget(null)
-            actions.setRole.mutate(data, {
-              onSuccess: () => {
-                actions.updateUser.mutate({
-                  userId: data.userId,
-                  role: data.role,
-                })
-              },
-            })
+            actions.setRole.mutate(data)
           }}
           isPending={actions.setRole.isPending}
         />

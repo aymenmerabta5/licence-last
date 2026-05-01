@@ -1,0 +1,90 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic:
+        - generic:
+          - complementary:
+            - generic:
+              - generic: Stag.io
+            - generic:
+              - navigation:
+                - link "Dashboard":
+                  - /url: /en/dashboard
+                  - generic:
+                    - img
+                    - generic: Dashboard
+                - link "Statistics":
+                  - /url: /en/dashboard/admin/stats
+                  - generic:
+                    - img
+                    - generic: Statistics
+                - link "Companies":
+                  - /url: /en/dashboard/admin/companies
+                  - generic:
+                    - img
+                    - generic: Companies
+                - link "Universities":
+                  - /url: /en/dashboard/admin/universities
+                  - generic:
+                    - img
+                    - generic: Universities
+                - link "User Management":
+                  - /url: /en/dashboard/admin/users
+                  - generic:
+                    - img
+                    - generic: User Management
+                - link "Settings":
+                  - /url: /en/dashboard/settings
+                  - generic:
+                    - img
+                    - generic: Settings
+            - generic:
+              - generic:
+                - button "Log out":
+                  - img
+                  - generic: Log out
+      - generic [ref=e4]:
+        - banner [ref=e5]:
+          - generic [ref=e6]:
+            - button "Toggle menu" [ref=e7] [cursor=pointer]:
+              - img [ref=e8]
+            - heading "companies" [level=2] [ref=e10]
+          - generic [ref=e12]:
+            - button "Switch to dark mode" [ref=e14] [cursor=pointer]:
+              - generic [ref=e15]:
+                - img
+              - generic [ref=e16]:
+                - img
+            - button "Super Admin A" [ref=e18] [cursor=pointer]:
+              - generic [ref=e20]: Super Admin
+              - generic [ref=e21]: A
+        - main [ref=e22]:
+          - generic [ref=e24]:
+            - generic [ref=e28]:
+              - generic [ref=e29]:
+                - heading "Company Validation" [level=1] [ref=e30]
+                - paragraph [ref=e31]: Review and approve pending company registrations.
+              - generic [ref=e32]:
+                - generic [ref=e33]: "0"
+                - generic [ref=e34]: Total
+            - generic [ref=e35]:
+              - generic [ref=e36]:
+                - img
+                - textbox "Search by name or abbreviation..." [ref=e37]
+              - generic [ref=e38]:
+                - generic [ref=e39]: Filter by status
+                - combobox [ref=e40] [cursor=pointer]:
+                  - generic [ref=e41]: Pending
+                  - img: ▼
+                - textbox [ref=e42]: pending
+            - generic [ref=e43]:
+              - img [ref=e44]
+              - generic [ref=e46]: Loading companies
+    - generic [ref=e47]:
+      - img [ref=e49]
+      - button "Open Tanstack query devtools" [ref=e97] [cursor=pointer]:
+        - img [ref=e98]
+    - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e151] [cursor=pointer]:
+    - img [ref=e152]
+  - alert [ref=e155]

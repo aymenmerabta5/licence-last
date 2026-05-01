@@ -135,7 +135,13 @@ export function OffersPageSkeleton() {
         <Skeleton className="h-11 w-full sm:w-36" />
       </div>
       <Skeleton className="h-20" />
-      <CardStack count={2} height="h-56" />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <Skeleton key={index} className="h-28" />
+        ))}
+      </div>
+      <Skeleton className="h-24" />
+      <CardStack count={2} height="h-48" />
     </div>
   )
 }

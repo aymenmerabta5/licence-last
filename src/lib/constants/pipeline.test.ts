@@ -17,6 +17,13 @@ describe("canTransitionStage", () => {
     expect(canTransitionStage("applied", "accepted")).toBe(false)
   })
 
+  test("allows terminal transitions from late stages", () => {
+    expect(canTransitionStage("interview", "accepted")).toBe(true)
+    expect(canTransitionStage("interview", "rejected")).toBe(true)
+    expect(canTransitionStage("offer", "accepted")).toBe(true)
+    expect(canTransitionStage("offer", "rejected")).toBe(true)
+  })
+
   test("blocks all transitions from terminal stages", () => {
     expect(canTransitionStage("accepted", "interview")).toBe(false)
     expect(canTransitionStage("rejected", "applied")).toBe(false)

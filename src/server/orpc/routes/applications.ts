@@ -45,6 +45,7 @@ import { companyRefuseApplication } from "@/server/services/applications/company
 import { isApplicationServiceError } from "@/server/services/applications/errors"
 import { listApplicationsByOffer } from "@/server/services/applications/list-by-offer"
 import { listApplicationsByStudent } from "@/server/services/applications/list-by-student"
+import { listStudentApplicationJourneys } from "@/server/services/applications/list-student-journeys"
 import {
   listApplicationTimeline,
   updateApplicationPipelineStage,
@@ -363,3 +364,6 @@ export const getTimelineProcedure = authedProcedureGenerous
 
     return listApplicationTimeline(input.applicationId)
   })
+
+export const listStudentJourneysProcedure = studentProcedureGenerous
+  .handler(async ({ context }) => listStudentApplicationJourneys(context.user.id))

@@ -11,25 +11,41 @@ import { STATUS_COLORS } from "@/lib/constants/pipeline"
 import { cn } from "@/lib/utils"
 
 export function CandidateDragLayer() {
-  const { isDragging, item, itemType, currentOffset } = useDragLayer(
-    (monitor) => ({
-      item: monitor.getItem(),
-      itemType: monitor.getItemType(),
-      isDragging: monitor.isDragging(),
-      currentOffset: monitor.getClientOffset(),
-    }),
-  )
+  const {
+    isDragging,
+    item,
+    itemType,
+    currentOffset,
+    initialClientOffset,
+    initialSourceClientOffset,
+  } = useDragLayer((monitor) => ({
+    item: monitor.getItem(),
+    itemType: monitor.getItemType(),
+    isDragging: monitor.isDragging(),
+    currentOffset: monitor.getClientOffset(),
+    initialClientOffset: monitor.getInitialClientOffset(),
+    initialSourceClientOffset: monitor.getInitialSourceClientOffset(),
+  }))
 
   if (
     !isDragging ||
     itemType !== CANDIDATE_CARD_DND_TYPE ||
     !currentOffset ||
-    !item
+    !item ||
+    !initialClientOffset ||
+    !initialSourceClientOffset
   ) {
     return null
   }
 
   const { app } = item as CandidateCardDragItem
+
+  // Maintain the same relative grab point so the card doesn't jump
+  const grabOffsetX = initialClientOffset.x - initialSourceClientOffset.x
+  const grabOffsetY = initialClientOffset.y - initialSourceClientOffset.y
+
+  const x = currentOffset.x - grabOffsetX
+  const y = currentOffset.y - grabOffsetY
 
   const initials = (app.student.name || "?")
     .split(" ")
@@ -45,16 +61,16 @@ export function CandidateDragLayer() {
     >
       <div
         className={cn(
-          "w-64 border border-border/50 bg-background p-3.5 space-y-2 shadow-xl",
+          "w-64 border border-border/50 bg-background p-3.5 space-y-2 shadow-xl rounded-sm",
           "opacity-90 scale-[1.02] rotate-1",
         )}
         style={{
-          transform: `translate(${currentOffset.x + 12}px, ${currentOffset.y + 12}px)`,
+          transform: `translate(${x}px, ${y}px)`,
         }}
       >
         {/* Student info row */}
         <div className="flex items-start gap-3">
-          <div className="h-9 w-9 bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+          <div className="h-9 w-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
             <span className="text-[10px] font-bold text-primary">{initials}</span>
           </div>
 
@@ -75,7 +91,7 @@ export function CandidateDragLayer() {
 
         {/* Status */}
         <span
-          className={`inline-flex items-center px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase border ${STATUS_COLORS[app.status] ?? ""}`}
+          className={`inline-flex items-center px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase border rounded-sm ${STATUS_COLORS[app.status] ?? ""}`}
         >
           {app.status.replace("_", " ")}
         </span>

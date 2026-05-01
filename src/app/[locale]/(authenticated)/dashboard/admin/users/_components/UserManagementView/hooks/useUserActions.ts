@@ -128,7 +128,16 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
   const setRole = useMutation({
     mutationFn: (data: {
       userId: string
-      role: "student" | "company_admin" | "university_admin" | "super_admin"
+      role:
+        | "student"
+        | "company_admin"
+        | "university_admin"
+        | "department_head"
+        | "super_admin"
+        | "recruiter"
+      universityId?: string
+      companyId?: string
+      departmentId?: string
     }) => orpcClient.adminUsers.setRole(data),
     onMutate: async (data) => {
       await cancelAdminUsersQueries()

@@ -35,9 +35,12 @@ export function EducationSection({
       className="space-y-8"
     >
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-5">
+          <span className="text-[10px] font-black text-primary/40 uppercase tracking-[0.3em] hidden sm:block">
+            02
+          </span>
           <div className="h-12 w-2 rounded-full bg-primary/40" />
-          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
+          <h2 className="font-serif text-3xl sm:text-4xl 2xl:text-5xl font-bold text-slate-900 tracking-tight">
             {labels.education}
           </h2>
         </div>
@@ -46,25 +49,25 @@ export function EducationSection({
       {hasEducation ? (
         <div className="relative">
           {/* Timeline Line */}
-          <div className="absolute top-0 bottom-0 start-[39px] w-0.5 bg-slate-100" />
+          <div className="absolute top-0 bottom-0 start-[27px] sm:start-[35px] md:start-[43px] w-1 bg-gradient-to-b from-primary/30 via-primary/10 to-transparent rounded-full" />
 
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="relative ps-4 sm:ps-12 md:ps-24 group"
+            className="relative ps-2 sm:ps-4 md:ps-6 group"
           >
             {/* Timeline Marker */}
-            <div className="absolute start-[30px] top-4 h-5 w-5 rounded-full border-4 border-white bg-primary shadow-lg group-hover:scale-125 transition-transform" />
+            <div className="absolute start-[18px] sm:start-[26px] md:start-[34px] top-5 h-6 w-6 rounded-full border-4 border-white bg-primary shadow-lg shadow-primary/20 group-hover:scale-125 transition-transform" />
 
-            <div className="rounded-[2.5rem] border border-slate-100 bg-white p-10 sm:p-14 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_30px_70px_rgba(0,0,0,0.06)] transition-all duration-500">
+            <div className="rounded-[2.5rem] border border-slate-100 bg-white p-8 sm:p-12 2xl:p-14 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_30px_70px_rgba(0,0,0,0.06)] transition-all duration-500">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-8">
                 <div className="space-y-6">
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <div className="flex items-center gap-3 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
                       <GraduationCap className="h-4 w-4" />
                       {labels.university}
                     </div>
-                    <h3 className="text-3xl font-bold text-slate-800 leading-tight">
+                    <h3 className="text-2xl sm:text-3xl 2xl:text-4xl font-bold text-slate-800 leading-tight font-serif">
                       {university.name}
                     </h3>
                   </div>
@@ -79,8 +82,8 @@ export function EducationSection({
                   )}
 
                   {profile?.department && (
-                    <div className="pt-4 border-t border-slate-50">
-                      <div className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1">
+                    <div className="pt-5 border-t border-slate-50">
+                      <div className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1.5">
                         Department
                       </div>
                       <p className="text-lg font-bold text-slate-600">

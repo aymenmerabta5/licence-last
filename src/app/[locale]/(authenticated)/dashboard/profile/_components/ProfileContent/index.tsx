@@ -170,15 +170,18 @@ export function ProfileContent({
         canEdit={canEdit}
         profileText={profileText}
         roleLabel={roleLabel}
+        university={university}
+        department={profile?.department}
+        level={profile?.level}
       />
 
       {/* Stats Bulletin */}
       {stats.length > 0 && <ProfileStats stats={stats} />}
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-16">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-10 xl:gap-12 2xl:gap-16">
         {/* Sidebar Column */}
-        <div className="lg:col-span-4 space-y-10">
+        <div className="xl:col-span-3 2xl:col-span-3 space-y-8">
           <ContactInfoCard
             user={user}
             profile={profile}
@@ -195,7 +198,7 @@ export function ProfileContent({
         </div>
 
         {/* Main Column */}
-        <div className="lg:col-span-8 space-y-12">
+        <div className="xl:col-span-9 2xl:col-span-9 space-y-14">
           <BioSection profile={profile} labels={bioLabels} canEdit={canEdit} />
           <EducationSection
             profile={profile}

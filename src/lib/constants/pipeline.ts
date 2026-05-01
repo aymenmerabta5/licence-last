@@ -26,12 +26,15 @@ export const STAGE_LABELS: Record<PipelineStage, string> = {
 /**
  * Keep this map in sync with server transition rules in
  * src/server/services/applications/pipeline.ts.
+ * Note: Terminal stages (accepted/rejected) are allowed from
+ * interview and offer on the client so DnD works, but the server
+ * intercepts them and routes to companyAccept/companyRefuse.
  */
 export const STAGE_TRANSITIONS: Record<PipelineStage, PipelineStage[]> = {
   applied: ["screening", "interview", "offer"],
   screening: ["applied", "interview", "offer"],
-  interview: ["screening", "offer"],
-  offer: ["interview"],
+  interview: ["screening", "offer", "accepted", "rejected"],
+  offer: ["interview", "accepted", "rejected"],
   accepted: [],
   rejected: [],
 }

@@ -49,16 +49,12 @@ describe("useSidebar", () => {
     const labelKeys = result.current.filteredItems.map((item) => item.labelKey)
 
     expect(labelKeys).not.toContain("savedOffers")
-    expect(labelKeys).toContain("interviews")
   })
 
-  test("hides interviews nav item when the flag is off", () => {
-    isInterviewsEnabledOnClientMock.mockImplementation(() => false)
-
+  test("never shows interviews nav item for students", () => {
     const { result } = renderHook(() => useSidebar("student"))
     const labelKeys = result.current.filteredItems.map((item) => item.labelKey)
 
-    expect(labelKeys).toContain("savedOffers")
     expect(labelKeys).not.toContain("interviews")
   })
 

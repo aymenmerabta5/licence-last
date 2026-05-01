@@ -68,10 +68,10 @@ function applyRouteMocks() {
   )
 
   mock.module(
-    "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsView",
+    "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/ApplicationsHubController",
     () => ({
-      ApplicationsView: () => (
-        <div data-testid="applications-view">applications</div>
+      ApplicationsHubController: () => (
+        <div data-testid="applications-hub">applications hub</div>
       ),
     }),
   )
@@ -183,8 +183,8 @@ describe("dashboard route consolidation", () => {
 
     render(await ApplicationsPageContent())
 
-    expect(screen.getByTestId("applications-view").textContent).toBe(
-      "applications",
+    expect(screen.getByTestId("applications-hub").textContent).toBe(
+      "applications hub",
     )
     expect(localeRedirectMock).not.toHaveBeenCalled()
   })

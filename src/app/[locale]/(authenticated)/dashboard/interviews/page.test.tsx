@@ -57,8 +57,7 @@ describe("dashboard/interviews/page", () => {
     expect(page.type).toBe(Suspense)
   })
 
-  test("redirects students when interviews feature is disabled", async () => {
-    isFeatureEnabledMock.mockImplementation(() => false)
+  test("always redirects students to applications", async () => {
     requireRoleMock.mockImplementation(async () => ({ role: "student" }))
 
     const result = await InterviewsPageContent()

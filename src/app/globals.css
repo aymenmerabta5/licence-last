@@ -88,6 +88,8 @@
   --sidebar-accent-foreground: oklch(0.145 0 0);
   --sidebar-border: oklch(0.145 0 0 / 8%);
   --sidebar-ring: oklch(0.577 0.198 40);
+  --scrollbar-thumb: oklch(0.51 0.01 70 / 35%);
+  --scrollbar-thumb-hover: oklch(0.577 0.198 40 / 60%);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -129,6 +131,8 @@
   --sidebar-accent-foreground: oklch(0.94 0.018 80);
   --sidebar-border: oklch(0.28 0.012 58);
   --sidebar-ring: oklch(0.577 0.198 40);
+  --scrollbar-thumb: oklch(0.63 0.014 65 / 30%);
+  --scrollbar-thumb-hover: oklch(0.577 0.198 40 / 55%);
 }
 
 /* Arabic glyphs in Noto Sans Arabic can read slightly smaller than Latin at
@@ -151,6 +155,54 @@ html[lang="ar"] {
 
 .dark ::selection {
   background-color: oklch(0.87 0.016 75 / 28%);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Editorial Scrollbar — bespoke, restrained, like a fine book margin
+   Applies globally AND to .custom-scrollbar containers so every
+   scrollbar in the app feels intentional and cohesive.
+   ═══════════════════════════════════════════════════════════════════ */
+html,
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+html::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+html::-webkit-scrollbar-track,
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb,
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 100px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+html::-webkit-scrollbar-corner,
+.custom-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-button,
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none !important;
+  -webkit-appearance: none !important;
+  height: 0 !important;
+  width: 0 !important;
 }
 
 @layer base {

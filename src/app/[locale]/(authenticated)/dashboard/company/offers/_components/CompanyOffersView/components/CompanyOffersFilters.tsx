@@ -32,7 +32,7 @@ export function CompanyOffersFilters({
   )
 
   return (
-    <div className="space-y-3 border border-border/40 p-4 sm:p-5">
+    <div className="space-y-3">
       <label htmlFor="company-offers-search" className="sr-only">
         {t("form.title")}
       </label>

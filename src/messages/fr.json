@@ -1491,7 +1491,51 @@
       "withdrawError": "Échec du retrait de la candidature.",
       "loading": "Chargement...",
       "loadMore": "Charger plus",
-      "exploreOffers": "Explorer les stages"
+      "exploreOffers": "Explorer les stages",
+      "hub": {
+        "title": "Mes candidatures",
+        "subtitle": "Suivez vos candidatures, entretiens et documents de placement en un seul endroit",
+        "filters": {
+          "all": "Toutes",
+          "actionRequired": "Action requise",
+          "inProgress": "En cours",
+          "finalized": "Finalisées"
+        },
+        "nextAction": {
+          "confirmSlot": "Confirmer le créneau d'entretien",
+          "downloadAgreement": "Télécharger la convention",
+          "downloadCertificate": "Télécharger l'attestation",
+          "waitingForCompany": "En attente de l'entreprise",
+          "waitingForValidation": "En attente de validation du département",
+          "none": "Aucune action requise"
+        },
+        "journeyCard": {
+          "appliedOn": "Postulé le",
+          "withdraw": "Retirer",
+          "viewJourney": "Voir le parcours",
+          "hideJourney": "Masquer le parcours",
+          "interviewSection": "Entretien",
+          "placementSection": "Placement",
+          "approvedBy": "Approuvé par {validator} le {date}",
+          "placementDates": "{start} — {end}"
+        },
+        "interview": {
+          "noteFromCompany": "De l'entreprise",
+          "confirmSlot": "Confirmer",
+          "confirmed": "Confirmé",
+          "joinMeeting": "Rejoindre la réunion",
+          "noSlots": "Aucun créneau disponible",
+          "chooseSlot": "Choisissez un créneau qui vous convient :"
+        },
+        "document": {
+          "agreement": "Convention de stage",
+          "certificate": "Attestation de fin de stage",
+          "statusPending": "En attente",
+          "statusGenerated": "Prêt",
+          "download": "Télécharger",
+          "downloading": "Téléchargement..."
+        }
+      }
     },
     "documents": {
       "pageTitle": "Mes documents",
@@ -1950,6 +1994,9 @@
           "selectUniversity": "Sélectionner une université",
           "company": "Entreprise",
           "selectCompany": "Sélectionner une entreprise",
+          "department": "Département",
+          "selectDepartment": "Sélectionner un département",
+          "noDepartment": "Aucun",
           "noResults": "Aucun résultat"
         },
         "dialogs": {
