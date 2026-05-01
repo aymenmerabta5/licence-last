@@ -22,7 +22,7 @@
     "test:e2e": "PLAYWRIGHT_REUSE_SERVER=1 bun --env-file=.env.e2e x playwright test",
     "test:e2e:visual": "PLAYWRIGHT_REUSE_SERVER=1 bun --env-file=.env.e2e x playwright test --project=visual",
     "test:ci": "node scripts/run-tests.cjs",
-    "check:all": "bun run lint && bun run lint:architecture && bun run typecheck && bun run test && bun run build",
+    "check:all": "bun run lint && bun run lint:architecture && bun run lint:rtl-logical && bun run typecheck && bun run test && bun run build",
     "db:generate": "bun run db:generate:dev",
     "db:generate:dev": "bun --env-file=.env.development x --bun drizzle-kit generate",
     "db:generate:prod": "bun --env-file=.env.production x --bun drizzle-kit generate",
