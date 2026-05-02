@@ -1496,6 +1496,17 @@
       "hub": {
         "title": "Mes candidatures",
         "subtitle": "Suivez vos candidatures, entretiens et documents de placement en un seul endroit",
+        "loading": "Chargement des candidatures...",
+        "pipeline": {
+          "applied": "Candidature envoyée",
+          "screening": "Sélection",
+          "interview": "Entretien",
+          "offer": "Offre",
+          "accepted": "Acceptée",
+          "rejected": "Refusée"
+        },
+        "errorTitle": "Une erreur est survenue",
+        "errorDescription": "Impossible de charger vos candidatures. Veuillez réessayer plus tard.",
         "filters": {
           "all": "Toutes",
           "actionRequired": "Action requise",

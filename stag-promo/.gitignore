@@ -1,0 +1,38 @@
+node_modules
+dist
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Remotion rendered output videos (do not commit generated media)
+out
+out-*.mp4
+out-*.png
+out-*.jpg
+out-*.webm
+out-*.gif
+
+# test frames / stills generated during dev
+out-*.png
+out-frame-*.png
+
+# cache / logs
+.eslintcache
+.stylelintcache
+.turbo
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+desktop.ini

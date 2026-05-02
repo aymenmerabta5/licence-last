@@ -1,4 +1,6 @@
-import { Loader2 } from "lucide-react"
+"use client"
+
+import { Loader2, MessageSquare } from "lucide-react"
 import { useTranslations } from "next-intl"
 import type { RefObject } from "react"
 import type {
@@ -36,8 +38,13 @@ export function ConversationMessages({
   return (
     <div className="flex-1 space-y-3 overflow-y-auto pe-1">
       {!selectedThread && !selectedStarter && (
-        <div className="flex h-full min-h-[16rem] items-center justify-center text-center text-sm text-muted-foreground">
-          {t("emptySelection")}
+        <div className="flex h-full min-h-[16rem] flex-col items-center justify-center gap-3 text-center">
+          <div className="flex h-12 w-12 items-center justify-center border border-dashed border-border/60">
+            <MessageSquare className="h-5 w-5 text-muted-foreground/40" />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {t("emptySelection")}
+          </p>
         </div>
       )}
 
@@ -71,8 +78,11 @@ export function ConversationMessages({
         !isLoading &&
         !errorMessage &&
         messages.length === 0 && (
-          <div className="py-10 text-center text-sm text-muted-foreground">
-            {t("emptyThread")}
+          <div className="flex h-full min-h-[16rem] flex-col items-center justify-center gap-3 text-center">
+            <div className="flex h-12 w-12 items-center justify-center border border-dashed border-border/60">
+              <MessageSquare className="h-5 w-5 text-muted-foreground/40" />
+            </div>
+            <p className="text-sm text-muted-foreground">{t("emptyThread")}</p>
           </div>
         )}
 
@@ -91,10 +101,10 @@ export function ConversationMessages({
               >
                 <div
                   className={cn(
-                    "max-w-[85%] border px-3 py-2 text-sm",
+                    "max-w-[85%] border px-3 py-2.5 text-sm",
                     isOwnMessage
-                      ? "border-primary/50 bg-primary/10 text-foreground"
-                      : "border-border/80 bg-background/70 text-foreground",
+                      ? "border-primary/40 bg-primary/5 text-foreground"
+                      : "border-border/60 bg-background/70 text-foreground",
                   )}
                 >
                   {!isOwnMessage && (
@@ -105,7 +115,7 @@ export function ConversationMessages({
                   <p className="whitespace-pre-wrap break-words leading-relaxed">
                     {message.body}
                   </p>
-                  <p className="mt-1 text-[10px] text-muted-foreground">
+                  <p className="mt-1.5 text-[10px] text-muted-foreground/70">
                     {formatDateTime(message.createdAt)}
                   </p>
                 </div>

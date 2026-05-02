@@ -1,9 +1,11 @@
 import { Building2 } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import type { RefObject } from "react"
 
 import { CompanyDirectoryCard } from "@/app/[locale]/(authenticated)/dashboard/student/companies/_components/CompaniesDirectoryView/components/CompanyDirectoryCard"
 import type { CompanyDirectoryItem } from "@/app/[locale]/(authenticated)/dashboard/student/companies/_components/CompaniesDirectoryView/types"
+import { ease, reveal } from "@/lib/animations"
 
 interface CompaniesGridProps {
   companies: CompanyDirectoryItem[]
@@ -38,17 +40,30 @@ export function CompaniesGrid({
   if (companies.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 border border-dashed border-border/40 py-16 text-center">
-        <Building2 className="h-8 w-8 text-muted-foreground/30" />
+        <div className="flex h-12 w-12 items-center justify-center border border-dashed border-border/60">
+          <Building2 className="h-5 w-5 text-muted-foreground/40" />
+        </div>
         <p className="text-sm text-muted-foreground">{t("empty")}</p>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <motion.div
+      {...reveal}
+      transition={{ duration: 0.5, ease, delay: 0.05 }}
+      className="space-y-6"
+    >
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {companies.map((company) => (
-          <CompanyDirectoryCard key={company.id} company={company} />
+        {companies.map((company, i) => (
+          <motion.div
+            key={company.id}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease, delay: 0.03 * (i % 12) }}
+          >
+            <CompanyDirectoryCard company={company} />
+          </motion.div>
         ))}
       </div>
 
@@ -60,6 +75,6 @@ export function CompaniesGrid({
           )}
         </div>
       )}
-    </div>
+    </motion.div>
   )
 }

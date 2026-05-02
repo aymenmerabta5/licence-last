@@ -1,6 +1,5 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { useEffect, useMemo, useState } from "react"
 import { ConversationPane } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/ConversationPane"
 import { MessagesHeader } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/MessagesHeader"
@@ -8,7 +7,6 @@ import { ThreadListPane } from "@/app/[locale]/(authenticated)/dashboard/message
 import { useMessagesData } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/hooks/useMessagesData"
 import { useMessagesState } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/hooks/useMessagesState"
 import type { MessagesRole } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
-import { revealWithDelay } from "@/lib/animations"
 
 interface MessagesViewProps {
   role: MessagesRole
@@ -126,29 +124,28 @@ export function MessagesView({ role, currentUserId }: MessagesViewProps) {
     }
 
     resetDraft()
-    sendMessage({ target, body }, {
-      onSuccess: (result) => {
-        if (target.kind === "starter") {
-          const threadId = (result as unknown as { threadId?: string }).threadId
-          if (threadId) {
-            setPendingThreadId(threadId)
-            selectThread(threadId)
+    sendMessage(
+      { target, body },
+      {
+        onSuccess: (result) => {
+          if (target.kind === "starter") {
+            const threadId = (result as unknown as { threadId?: string })
+              .threadId
+            if (threadId) {
+              setPendingThreadId(threadId)
+              selectThread(threadId)
+            }
           }
-        }
+        },
       },
-    })
+    )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-8">
       <MessagesHeader role={role} threadCount={threads.length} />
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={revealWithDelay(0.08)}
-        className="grid gap-5 lg:grid-cols-[340px_minmax(0,1fr)]"
-      >
+      <div className="grid gap-5 lg:grid-cols-[340px_minmax(0,1fr)]">
         <ThreadListPane
           role={role}
           threads={threads}
@@ -176,7 +173,7 @@ export function MessagesView({ role, currentUserId }: MessagesViewProps) {
           sendPending={sendPending}
           sendErrorMessage={sendErrorMessage}
         />
-      </motion.div>
+      </div>
     </div>
   )
 }

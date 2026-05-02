@@ -1,10 +1,8 @@
 "use client"
 
 import { FileText, Languages, Wrench } from "lucide-react"
-import * as motion from "motion/react-client"
 import { useLocale, useTranslations } from "next-intl"
 import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
-import { ease, reveal } from "@/lib/animations"
 import { getLanguageLabel, toSupportedLocale } from "@/lib/constants/languages"
 
 interface OfferBodyProps {
@@ -20,80 +18,67 @@ export function OfferBody({ offer }: OfferBodyProps) {
   const languageLocale = toSupportedLocale(locale)
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-8">
       {/* Description */}
-      <motion.section
-        {...reveal}
-        transition={{ duration: 0.5, ease, delay: 0.1 }}
-        className="space-y-6"
-      >
-        <div className="flex items-center gap-3 border-b-2 border-border/80 pb-2">
-          <FileText className="h-4 w-4 text-foreground shrink-0" />
-          <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-foreground">
-            {t("description")}
-          </h2>
+      <section className="border border-border/50">
+        <div className="flex items-center gap-3 border-b border-border/50 px-6 py-4">
+          <FileText className="h-4 w-4 text-primary" />
+          <h2 className="font-serif text-xl text-heading">{t("description")}</h2>
         </div>
-        <div className="text-base text-heading leading-relaxed font-serif max-w-prose whitespace-pre-wrap first-letter:text-[2.8rem] first-letter:font-bold first-letter:leading-[1] first-letter:align-middle">
-          {offer.description}
+        <div className="px-6 py-6">
+          <p className="text-sm text-heading leading-relaxed whitespace-pre-wrap">
+            {offer.description}
+          </p>
         </div>
-      </motion.section>
+      </section>
 
       {/* Skills */}
       {offer.skills.length > 0 && (
-        <motion.section
-          {...reveal}
-          transition={{ duration: 0.5, ease, delay: 0.15 }}
-          className="space-y-6"
-        >
-          <div className="flex items-center gap-3 border-b-2 border-border/80 pb-2">
-            <Wrench className="h-4 w-4 text-foreground shrink-0" />
-            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-foreground">
+        <section className="border border-border/50">
+          <div className="flex items-center gap-3 border-b border-border/50 px-6 py-4">
+            <Wrench className="h-4 w-4 text-primary" />
+            <h2 className="font-serif text-xl text-heading">
               {t("requiredSkills")}
             </h2>
           </div>
-          <div className="flex justify-start flex-wrap gap-x-4 gap-y-3">
-            {offer.skills.map((skill, i) => (
-              <motion.span
-                key={skill.id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, ease, delay: 0.2 + i * 0.04 }}
-                className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.2em] bg-transparent border-b border-primary/30 text-primary pb-0.5 hover:border-primary transition-colors cursor-default"
-              >
-                {skill.name}
-              </motion.span>
-            ))}
+          <div className="px-6 py-6">
+            <div className="flex flex-wrap gap-2">
+              {offer.skills.map((skill) => (
+                <span
+                  key={skill.id}
+                  className="inline-flex items-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.15em] bg-primary/5 border border-primary/10 text-primary/80 [[dir=rtl]_&]:tracking-normal"
+                >
+                  {skill.name}
+                </span>
+              ))}
+            </div>
           </div>
-        </motion.section>
+        </section>
       )}
 
+      {/* Languages */}
       {offer.languageRequirements.length > 0 && (
-        <motion.section
-          {...reveal}
-          transition={{ duration: 0.5, ease, delay: 0.18 }}
-          className="space-y-6"
-        >
-          <div className="flex items-center gap-3 border-b-2 border-border/80 pb-2">
-            <Languages className="h-4 w-4 text-foreground shrink-0" />
-            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-foreground">
+        <section className="border border-border/50">
+          <div className="flex items-center gap-3 border-b border-border/50 px-6 py-4">
+            <Languages className="h-4 w-4 text-primary" />
+            <h2 className="font-serif text-xl text-heading">
               {t("languageRequirements")}
             </h2>
           </div>
-          <div className="flex justify-start flex-wrap gap-x-4 gap-y-3">
-            {offer.languageRequirements.map((requirement, index) => (
-              <motion.span
-                key={requirement.languageCode}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, ease, delay: 0.22 + index * 0.04 }}
-                className="inline-flex items-center text-[11px] font-bold uppercase tracking-[0.2em] bg-transparent border-b border-border/60 text-foreground/80 pb-0.5"
-              >
-                {getLanguageLabel(requirement.languageCode, languageLocale)} ·{" "}
-                {tProficiency(requirement.minimumProficiency as "a1")}
-              </motion.span>
-            ))}
+          <div className="px-6 py-6">
+            <div className="flex flex-wrap gap-2">
+              {offer.languageRequirements.map((requirement) => (
+                <span
+                  key={requirement.languageCode}
+                  className="inline-flex items-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.15em] bg-secondary/30 border border-border/40 text-foreground/80 [[dir=rtl]_&]:tracking-normal"
+                >
+                  {getLanguageLabel(requirement.languageCode, languageLocale)} ·{" "}
+                  {tProficiency(requirement.minimumProficiency as "a1")}
+                </span>
+              ))}
+            </div>
           </div>
-        </motion.section>
+        </section>
       )}
     </div>
   )

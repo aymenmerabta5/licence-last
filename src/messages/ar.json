@@ -1496,6 +1496,17 @@
       "hub": {
         "title": "طلباتي",
         "subtitle": "تتبع طلباتك ومقابلاتك ومستندات التنسيب في مكان واحد",
+        "loading": "جارٍ تحميل الطلبات...",
+        "pipeline": {
+          "applied": "تم التقديم",
+          "screening": "الفرز",
+          "interview": "المقابلة",
+          "offer": "العرض",
+          "accepted": "مقبول",
+          "rejected": "مرفوض"
+        },
+        "errorTitle": "حدث خطأ ما",
+        "errorDescription": "تعذر تحميل طلباتك. يرجى المحاولة مرة أخرى لاحقًا.",
         "filters": {
           "all": "الكل",
           "actionRequired": "يتطلب إجراءً",

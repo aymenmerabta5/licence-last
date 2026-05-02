@@ -116,13 +116,21 @@ export function ToolInvocationView({
 
   return (
     <div className="mt-3 overflow-hidden rounded-none border border-border/60 bg-muted/10">
-      <button
-        type="button"
+      <div
+        role="button"
+        tabIndex={0}
         onClick={() => setIsExpanded((current) => !current)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault()
+            setIsExpanded((current) => !current)
+          }
+        }}
         className={cn(
           "w-full text-start",
           "flex items-center justify-between gap-3 px-3 py-2.5",
           "transition-colors hover:bg-muted/30",
+          "cursor-pointer",
         )}
       >
         <div className="flex min-w-0 items-center gap-2">
@@ -160,7 +168,7 @@ export function ToolInvocationView({
             )}
           />
         </div>
-      </button>
+      </div>
 
       {isExpanded ? (
         <ToolInvocationBody

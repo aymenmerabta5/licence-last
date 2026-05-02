@@ -12,7 +12,6 @@ import type {
   ThreadMessage,
 } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 
 interface ConversationPaneProps {
@@ -101,7 +100,7 @@ export function ConversationPane({
   }
 
   return (
-    <Card className="rounded-none border-border/60 bg-card/60 backdrop-blur supports-[backdrop-filter]:bg-card/40 min-h-[34rem]">
+    <div className="border border-border/50 bg-card/30 min-h-[34rem] flex flex-col">
       <ConversationThreadHeader
         role={role}
         selectedThread={selectedThread}
@@ -109,7 +108,7 @@ export function ConversationPane({
         threadTitle={threadTitle}
       />
 
-      <div className="flex flex-1 flex-col px-4 py-3 sm:px-5 sm:py-4">
+      <div className="flex-1 flex flex-col px-5 py-4">
         <ConversationMessages
           role={role}
           selectedThread={selectedThread}
@@ -123,7 +122,7 @@ export function ConversationPane({
 
         <form
           onSubmit={handleSubmit}
-          className="mt-3 border-t border-border/60 pt-3"
+          className="mt-3 border-t border-border/40 pt-3"
         >
           <Textarea
             value={draft}
@@ -139,7 +138,7 @@ export function ConversationPane({
                   : t("composerPlaceholderEmpty")
             }
             disabled={!canCompose || sendPending}
-            className="min-h-[84px] resize-none rounded-none bg-background/70"
+            className="min-h-[84px] resize-none rounded-none bg-background/70 border-foreground/10 focus-visible:border-primary/40"
           />
 
           <div className="mt-2 flex items-center justify-between gap-3">
@@ -167,6 +166,6 @@ export function ConversationPane({
           )}
         </form>
       </div>
-    </Card>
+    </div>
   )
 }

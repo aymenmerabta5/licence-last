@@ -1,4 +1,4 @@
-import { Loader2, Newspaper } from "lucide-react"
+import { Loader2, Newspaper, Search } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import type { RefObject } from "react"
@@ -27,97 +27,97 @@ export function OffersGrid({
   const t = useTranslations("dashboard.explore")
 
   return (
-    <div className="flex gap-10">
-      {/* Sidebar filters — desktop only */}
-      <motion.aside
-        {...reveal}
-        transition={{ duration: 0.5, ease, delay: 0.1 }}
-        className="hidden lg:block w-60 shrink-0 sticky top-24 self-start max-h-[calc(100vh-8rem)] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {filterPanel}
-      </motion.aside>
-
-      {/* Main content */}
-      <div className="flex-1 min-w-0">
-        {/* Results header */}
+    <motion.section
+      {...reveal}
+      transition={{ duration: 0.6, ease, delay: 0.15 }}
+      className="border border-border/50"
+    >
+      {/* Section header */}
+      <div className="flex items-center justify-between gap-4 border-b border-border/50 px-6 py-4">
+        <div className="flex items-center gap-3">
+          <Newspaper className="h-4 w-4 text-primary" />
+          <h2 className="font-serif text-xl text-heading">
+            {t("results") ?? "Results"}
+          </h2>
+        </div>
         {!isLoading && offers.length > 0 && (
-          <motion.div
-            {...reveal}
-            transition={{ duration: 0.4, ease, delay: 0.08 }}
-            className="flex items-center justify-between pb-4 mb-6 border-b-2 border-foreground dark:border-foreground/15"
-          >
-            <h2 className="font-serif text-lg font-bold text-heading">
-              {t("results") ?? "Results"}
-            </h2>
-            <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/40 [[dir=rtl]_&]:tracking-normal">
-              {totalCount} {t("positions") ?? "positions"}
-            </span>
-          </motion.div>
-        )}
-
-        {/* Loading state */}
-        {isLoading && (
-          <div className="flex flex-col items-center justify-center py-20 space-y-4">
-            <Loader2 className="h-5 w-5 animate-spin text-primary/40" />
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/30 [[dir=rtl]_&]:tracking-normal">
-              {t("loading") ?? "Loading offers..."}
-            </p>
-          </div>
-        )}
-
-        {/* Empty state */}
-        {!isLoading && offers.length === 0 && (
-          <motion.div
-            {...reveal}
-            transition={{ duration: 0.6, ease, delay: 0.1 }}
-            className="border border-border/40 p-8 md:p-16 text-center space-y-4"
-          >
-            <div className="inline-flex items-center justify-center p-4 bg-primary/5">
-              <Newspaper className="h-8 w-8 text-muted-foreground/20" />
-            </div>
-            <div className="space-y-2">
-              <h3 className="font-serif text-lg text-heading">
-                {t("noResults")}
-              </h3>
-              <p className="text-xs text-muted-foreground/40 font-light max-w-xs mx-auto leading-relaxed">
-                {t("noResultsHint") ??
-                  "Try adjusting your filters or search terms to discover more opportunities."}
-              </p>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Offers grid */}
-        {offers.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-            {offers.map((offer, i) => (
-              <motion.div
-                key={offer.id}
-                {...reveal}
-                transition={{
-                  duration: 0.4,
-                  ease,
-                  delay: 0.03 * (i % 12),
-                }}
-              >
-                <OfferCard offer={offer} />
-              </motion.div>
-            ))}
-          </div>
-        )}
-
-        {/* Infinite scroll sentinel */}
-        <div ref={sentinelRef} className="h-4" />
-
-        {/* Loading more */}
-        {isFetchingNextPage && (
-          <div className="flex items-center justify-center gap-3 py-10">
-            <div className="h-px w-8 bg-border/40" />
-            <Loader2 className="h-4 w-4 animate-spin text-primary/30" />
-            <div className="h-px w-8 bg-border/40" />
-          </div>
+          <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground [[dir=rtl]_&]:tracking-normal">
+            {totalCount} {t("positions") ?? "positions"}
+          </span>
         )}
       </div>
-    </div>
+
+      <div className="px-6 py-6">
+        <div className="flex gap-8">
+          {/* Sidebar filters — desktop only */}
+          <aside className="hidden lg:block w-56 shrink-0 sticky top-24 self-start max-h-[calc(100vh-8rem)] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {filterPanel}
+          </aside>
+
+          {/* Main content */}
+          <div className="flex-1 min-w-0">
+            {/* Loading state */}
+            {isLoading && (
+              <div className="flex flex-col items-center justify-center py-20 space-y-4">
+                <Loader2 className="h-5 w-5 animate-spin text-primary/40" />
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/30 [[dir=rtl]_&]:tracking-normal">
+                  {t("loading") ?? "Loading offers..."}
+                </p>
+              </div>
+            )}
+
+            {/* Empty state */}
+            {!isLoading && offers.length === 0 && (
+              <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
+                <div className="flex h-12 w-12 items-center justify-center border border-dashed border-border/60">
+                  <Search className="h-5 w-5 text-muted-foreground/40" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-serif text-lg text-heading">
+                    {t("noResults")}
+                  </h3>
+                  <p className="text-xs text-muted-foreground/40 font-light max-w-xs mx-auto leading-relaxed">
+                    {t("noResultsHint") ??
+                      "Try adjusting your filters or search terms to discover more opportunities."}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Offers grid */}
+            {offers.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                {offers.map((offer, i) => (
+                  <motion.div
+                    key={offer.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.4,
+                      ease,
+                      delay: 0.03 * (i % 12),
+                    }}
+                  >
+                    <OfferCard offer={offer} />
+                  </motion.div>
+                ))}
+              </div>
+            )}
+
+            {/* Infinite scroll sentinel */}
+            <div ref={sentinelRef} className="h-4" />
+
+            {/* Loading more */}
+            {isFetchingNextPage && (
+              <div className="flex items-center justify-center gap-3 py-10">
+                <div className="h-px w-8 bg-border/40" />
+                <Loader2 className="h-4 w-4 animate-spin text-primary/30" />
+                <div className="h-px w-8 bg-border/40" />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.section>
   )
 }

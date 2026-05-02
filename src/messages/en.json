@@ -1496,6 +1496,17 @@
       "hub": {
         "title": "My Applications",
         "subtitle": "Track your applications, interviews, and placement documents in one place",
+        "loading": "Loading applications...",
+        "pipeline": {
+          "applied": "Applied",
+          "screening": "Screening",
+          "interview": "Interview",
+          "offer": "Offer",
+          "accepted": "Accepted",
+          "rejected": "Rejected"
+        },
+        "errorTitle": "Something went wrong",
+        "errorDescription": "Could not load your applications. Please try again later.",
         "filters": {
           "all": "All",
           "actionRequired": "Action Required",

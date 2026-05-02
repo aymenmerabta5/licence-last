@@ -117,7 +117,7 @@ export async function companyAcceptApplication(
     .update(application)
     .set({
       status: "company_accepted",
-      pipelineStage: "offer",
+      pipelineStage: "accepted",
       pipelineStageUpdatedAt: now,
       companyActionByUserId: actionByUserId,
       companyActionAt: now,
@@ -144,7 +144,7 @@ export async function companyAcceptApplication(
       actorUserId: actionByUserId,
       eventType: "application_status_changed",
       fromStage: app.pipelineStage,
-      toStage: "offer",
+      toStage: "accepted",
       fromStatus: app.status,
       toStatus: "company_accepted",
       payload: { reason: "company_accepted", companyNote: companyNote ?? null },

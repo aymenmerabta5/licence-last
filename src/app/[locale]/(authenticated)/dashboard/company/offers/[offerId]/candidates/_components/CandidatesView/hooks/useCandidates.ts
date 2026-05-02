@@ -150,7 +150,7 @@ export function useCandidates(offerId: string) {
                 ...page,
                 applications: page.applications.map((app) =>
                   app.id === variables.applicationId
-                    ? { ...app, status: "company_accepted", pipelineStage: "offer" }
+                    ? { ...app, status: "company_accepted", pipelineStage: "accepted" }
                     : app,
                 ),
               })),
@@ -353,8 +353,9 @@ export function useCandidates(offerId: string) {
     applicationId: string,
     toStage: PipelineStage,
   ) => {
+    const app = applications.find((a) => a.id === applicationId)
+
     if (toStage === "accepted") {
-      const app = applications.find((a) => a.id === applicationId)
       if (app) {
         setAcceptModal({
           applicationId,
@@ -364,7 +365,6 @@ export function useCandidates(offerId: string) {
       return
     }
     if (toStage === "rejected") {
-      const app = applications.find((a) => a.id === applicationId)
       if (app) {
         setRefuseModal({
           applicationId,
@@ -372,6 +372,16 @@ export function useCandidates(offerId: string) {
         })
       }
       return
+    }
+    if (toStage === "interview") {
+      if (app && !app.interviewPreview) {
+        setInterviewModal({
+          applicationId,
+          studentName: app.student.name || "Student",
+          offerTitle: offer?.title || "",
+        })
+        return
+      }
     }
     doStageChange(applicationId, toStage)
   }

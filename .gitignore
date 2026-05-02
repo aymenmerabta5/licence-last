@@ -19,6 +19,9 @@
 
 # production
 /build
+/stag-promo/out/
+/stag-promo/node_modules/
+/stag-promo/dist/
 
 # misc
 .DS_Store
@@ -36,6 +39,22 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# cache / logs
+.eslintcache
+.stylelintcache
+.turbo
+*.log
+
+# editors (keep IDE configs local)
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+desktop.ini
 
 # typescript
 *.tsbuildinfo

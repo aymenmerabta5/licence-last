@@ -18,63 +18,70 @@ export function CompanyDirectoryCard({ company }: CompanyDirectoryCardProps) {
 
   return (
     <Link href={`/company/${company.slug}`} className="block group">
-      <article className="h-full border border-border/50 bg-background p-5 transition-all duration-300 hover:border-primary/35">
-        <div className="flex items-start gap-3">
-          {company.logoUrl ? (
-            <Image
-              src={company.logoUrl}
-              alt={company.name}
-              width={48}
-              height={48}
-              className="h-12 w-12 border border-border/60 object-cover shrink-0"
-            />
-          ) : (
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center border border-border/60 bg-primary/10 font-serif text-lg text-primary">
-              {initial}
-            </div>
-          )}
+      <article className="relative border border-border/60 h-full transition-all duration-300 hover:border-primary/30 hover:shadow-md dark:hover:shadow-primary/5 overflow-hidden">
+        {/* Top accent line */}
+        <div className="h-0.5 bg-primary" />
 
-          <div className="min-w-0 flex-1 space-y-1">
-            <h3 className="line-clamp-2 font-serif text-lg leading-tight text-heading transition-colors group-hover:text-primary">
-              {company.name}
-            </h3>
-            <div className="flex flex-wrap items-center gap-2">
+        <div className="p-5 space-y-4">
+          {/* Header row */}
+          <div className="flex items-start gap-3">
+            {company.logoUrl ? (
+              <Image
+                src={company.logoUrl}
+                alt={company.name}
+                width={44}
+                height={44}
+                className="h-11 w-11 border border-border/60 object-cover shrink-0"
+              />
+            ) : (
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center border border-border/60 bg-primary/5 font-serif text-base text-primary">
+                {initial}
+              </div>
+            )}
+
+            <div className="min-w-0 flex-1">
+              <h3 className="font-serif text-base leading-tight text-heading tracking-tight line-clamp-2 group-hover:text-primary transition-colors">
+                {company.name}
+              </h3>
               <Badge
                 variant="outline"
-                className="text-[10px] font-bold uppercase tracking-[0.12em]"
+                className="mt-1.5 text-[9px] font-bold uppercase tracking-[0.12em]"
               >
                 <BriefcaseBusiness className="h-3 w-3 me-1" />
                 {t("openOffersCount", { count: company.openOffersCount })}
               </Badge>
             </div>
           </div>
-        </div>
 
-        {company.description && (
-          <p className="mt-4 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
-            {company.description}
-          </p>
-        )}
-
-        <div className="mt-4 flex flex-wrap gap-3 border-t border-border/30 pt-3 text-xs text-muted-foreground">
-          {wilayaName && (
-            <span className="inline-flex items-center gap-1">
-              <MapPin className="h-3.5 w-3.5" />
-              {wilayaName}
-            </span>
+          {/* Description */}
+          {company.description && (
+            <p className="text-xs text-muted-foreground/60 font-light leading-relaxed line-clamp-3">
+              {company.description}
+            </p>
           )}
-          {company.websiteUrl && (
-            <span className="inline-flex items-center gap-1">
-              <Globe className="h-3.5 w-3.5" />
-              {t("websiteAvailable")}
-            </span>
-          )}
-        </div>
 
-        <p className="mt-4 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.18em] text-primary transition-colors group-hover:text-heading [[dir=rtl]_&]:tracking-normal">
-          {t("viewProfile")}
-          <ArrowUpRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-        </p>
+          {/* Meta row */}
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground/50 pt-2 border-t border-border/20">
+            {wilayaName && (
+              <span className="inline-flex items-center gap-1">
+                <MapPin className="h-3 w-3" />
+                {wilayaName}
+              </span>
+            )}
+            {company.websiteUrl && (
+              <span className="inline-flex items-center gap-1">
+                <Globe className="h-3 w-3" />
+                {t("websiteAvailable")}
+              </span>
+            )}
+          </div>
+
+          {/* CTA */}
+          <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-[0.15em] text-primary opacity-0 group-hover:opacity-100 transition-opacity [[dir=rtl]_&]:tracking-normal">
+            {t("viewProfile")}
+            <ArrowUpRight className="h-3 w-3" />
+          </div>
+        </div>
       </article>
     </Link>
   )

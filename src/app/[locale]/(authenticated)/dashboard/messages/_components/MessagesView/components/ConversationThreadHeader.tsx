@@ -1,3 +1,5 @@
+"use client"
+
 import { useTranslations } from "next-intl"
 import type {
   MessageConversationStarter,
@@ -49,7 +51,7 @@ export function ConversationThreadHeader({
   const selectedConversation = selectedThread ?? selectedStarter
 
   return (
-    <div className="border-b border-border/60 px-4 py-3 sm:px-5">
+    <div className="border-b border-border/50 px-5 py-4">
       <div className="flex items-center gap-3">
         <Avatar size="sm">
           <AvatarImage

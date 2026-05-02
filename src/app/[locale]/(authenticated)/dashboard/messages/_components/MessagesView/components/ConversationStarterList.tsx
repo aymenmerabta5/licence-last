@@ -1,12 +1,12 @@
+"use client"
+
 import { ArrowUpRight, MessageCirclePlus } from "lucide-react"
-import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import type {
   MessageConversationStarter,
   MessagesRole,
 } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/types"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { reveal, revealWithDelay } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
 interface ConversationStarterListProps {
@@ -66,9 +66,9 @@ export function ConversationStarterList({
   const fallbackStudentName = t("fallbackStudentName")
 
   return (
-    <section className="mt-4 border-t border-border/40 px-2 pt-4">
-      <div className="px-2 pb-2">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
+    <section className="mt-4 border-t border-border/30 px-2 pt-4">
+      <div className="px-2 pb-3">
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary [[dir=rtl]_&]:tracking-normal">
           {t("startersLabel")}
         </p>
         <p className="mt-1 text-xs text-muted-foreground">
@@ -79,7 +79,7 @@ export function ConversationStarterList({
       </div>
 
       <div className="space-y-1">
-        {starters.map((starter, index) => {
+        {starters.map((starter) => {
           const displayName = getStarterDisplayName(
             starter,
             role,
@@ -89,11 +89,9 @@ export function ConversationStarterList({
           const isActive = starter.id === selectedStarterId
 
           return (
-            <motion.button
+            <button
               key={starter.id}
               type="button"
-              {...reveal}
-              transition={revealWithDelay(Math.min(index * 0.03, 0.18))}
               className={cn(
                 "w-full border px-3 py-3 text-start transition-colors",
                 "hover:border-primary/30 hover:bg-primary/5",
@@ -127,7 +125,7 @@ export function ConversationStarterList({
                   </div>
                 </div>
               </div>
-            </motion.button>
+            </button>
           )
         })}
       </div>
