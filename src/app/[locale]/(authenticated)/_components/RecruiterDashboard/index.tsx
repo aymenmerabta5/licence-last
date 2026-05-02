@@ -7,7 +7,11 @@ import { RecentOffers } from "@/app/[locale]/(authenticated)/_components/Recruit
 import { RecruiterHero } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard/components/RecruiterHero"
 import { RecruiterQuickActions } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard/components/RecruiterQuickActions"
 import { TrustGauge } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard/components/TrustGauge"
-import { useRecruiterDashboardData } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard/hooks/useRecruiterDashboardData"
+import {
+  useRecruiterDashboardData,
+  type OfferWithSkills,
+  type CompanyTrustIndex,
+} from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard/hooks/useRecruiterDashboardData"
 
 interface RecruiterDashboardProps {
   user: {
@@ -17,11 +21,15 @@ interface RecruiterDashboardProps {
     role: string
   }
   assistantEnabled: boolean
+  initialOffers?: OfferWithSkills[]
+  initialTrustData?: CompanyTrustIndex | null
 }
 
 export function RecruiterDashboard({
   user: _user,
   assistantEnabled,
+  initialOffers,
+  initialTrustData,
 }: RecruiterDashboardProps) {
   const {
     activeOffers,
@@ -33,7 +41,10 @@ export function RecruiterDashboard({
     trustData,
     isTrustLoading,
     isLoading,
-  } = useRecruiterDashboardData()
+  } = useRecruiterDashboardData({
+    offers: initialOffers,
+    trustData: initialTrustData,
+  })
 
   if (isLoading) {
     return (

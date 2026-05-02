@@ -1,8 +1,6 @@
-import { headers } from "next/headers"
 import { DashboardClientProvider } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import { requireRole } from "@/lib/auth-guards"
 import { localeRedirect } from "@/lib/navigation"
-import { getFreshAuthSession } from "@/server/auth/get-fresh-session"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 import { getCompanyMembership } from "@/server/services/companies/membership"
 import { getUniversityStatusByUserId } from "@/server/services/universities/get-status"
@@ -29,11 +27,7 @@ export async function AuthenticatedContent({
   ])
   let companyMembershipRole: string | null = null
 
-  // Check if current session is impersonated
-  const session = await getFreshAuthSession(await headers())
-  const impersonatedBy =
-    (session?.session as { impersonatedBy?: string } | null)?.impersonatedBy ??
-    null
+  const impersonatedBy = user.impersonatedBy ?? null
 
   // ── Block unapproved company_admin ──
   if (user.role === "company_admin") {

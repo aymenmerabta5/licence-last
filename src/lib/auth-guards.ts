@@ -33,7 +33,12 @@ interface UniversityMembershipSummary {
   universityId: string
 }
 
-type SessionResult = { user: SessionUser } | null
+interface SessionData {
+  user: SessionUser
+  session?: { impersonatedBy?: string } | null
+}
+
+type SessionResult = SessionData | null
 
 interface RequireRoleDependencies {
   getHeaders: typeof headers
@@ -84,6 +89,7 @@ const DEFAULT_REQUIRE_ROLE_DEPENDENCIES: RequireRoleDependencies = {
 async function resolveSessionUser(
   user: SessionUser,
   dependencies: RequireRoleDependencies,
+  impersonatedBy?: string | null,
 ) {
   const rawRole = user.role
   const membership =
@@ -104,6 +110,7 @@ async function resolveSessionUser(
     effectiveRole,
     rawRole,
     approvalRole,
+    impersonatedBy: impersonatedBy ?? null,
     universityId: legacyDeptHeadWithoutMembership
       ? null
       : (membership?.universityId ?? user.universityId ?? null),
@@ -143,6 +150,7 @@ export async function requireRole(
   const derivedUser = await resolveSessionUser(
     session.user,
     resolvedDependencies,
+    (session.session as { impersonatedBy?: string } | null)?.impersonatedBy,
   )
 
   if (derivedUser.banned) {

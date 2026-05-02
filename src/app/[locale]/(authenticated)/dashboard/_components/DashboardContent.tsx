@@ -1,13 +1,27 @@
 import { getTranslations } from "next-intl/server"
 import { Suspense } from "react"
+import type {
+  AdminStats,
+  TrustIndex,
+  UniversityDashboardStats,
+} from "@/app/[locale]/(authenticated)/_components/AdminDashboard/hooks/useAdminDashboardData"
+import type {
+  CompanyTrustIndex,
+  OfferWithSkills,
+} from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard/hooks/useRecruiterDashboardData"
 import type { StudentDashboardData } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 import { requireDashboardUser } from "@/lib/dashboard-access"
 import { isFeatureEnabled } from "@/lib/feature-flags"
 import { localeRedirect } from "@/lib/navigation"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 import { listApplicationsByStudent } from "@/server/services/applications/list-by-student"
+import { getCompanyTrustIndex, listCompanyTrustIndices } from "@/server/services/companies/trust-index"
+import { getCompanyMembership } from "@/server/services/companies/membership"
 import { listInterviewsForStudent } from "@/server/services/interviews/list-for-student"
+import { listOffersByCompany } from "@/server/services/offers/list-by-company"
 import { recommendOffersForStudent } from "@/server/services/offers/recommend"
+import { getAdminStats } from "@/server/services/stats/get-admin-stats"
+import { getUniversityDashboardStats } from "@/server/services/stats/get-university-dashboard-stats"
 import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
 import { getStudentProfile } from "@/server/services/students/get-profile"
 
@@ -25,9 +39,14 @@ interface DashboardContentProps {
   recruiterComponent: React.ComponentType<{
     user: { id: string; name: string | null; email: string; role: string }
     assistantEnabled: boolean
+    initialOffers?: OfferWithSkills[]
+    initialTrustData?: CompanyTrustIndex | null
   }>
   adminComponent: React.ComponentType<{
     user: { id: string; name: string | null; email: string; role: string }
+    initialStats?: AdminStats
+    initialUniversityStats?: UniversityDashboardStats
+    initialTrustIndices?: TrustIndex[]
   }>
   deptHeadComponent: React.ComponentType<{
     user: { id: string; name: string | null; email: string; role: string }
@@ -115,6 +134,61 @@ async function StudentDashboardContent({
   return <Component user={user} data={studentData} />
 }
 
+async function RecruiterDashboardWrapper({
+  user,
+  assistantEnabled,
+  recruiterComponent: RecruiterDashboard,
+}: {
+  user: { id: string; name: string | null; email: string; role: string }
+  assistantEnabled: boolean
+  recruiterComponent: DashboardContentProps["recruiterComponent"]
+}) {
+  const membership = await getCompanyMembership(user.id)
+  const companyId = membership?.companyId
+
+  const [offers, trustData] = await Promise.all([
+    companyId ? listOffersByCompany(companyId) : Promise.resolve([]),
+    companyId ? getCompanyTrustIndex(companyId) : Promise.resolve(null),
+  ])
+
+  return (
+    <RecruiterDashboard
+      user={user}
+      assistantEnabled={assistantEnabled}
+      initialOffers={offers}
+      initialTrustData={trustData}
+    />
+  )
+}
+
+async function AdminDashboardWrapper({
+  user,
+  adminComponent: AdminDashboard,
+}: {
+  user: { id: string; name: string | null; email: string; role: string }
+  adminComponent: DashboardContentProps["adminComponent"]
+}) {
+  const isSuperAdmin = user.role === "super_admin"
+  const isUniversityAdmin = user.role === "university_admin"
+
+  const [stats, universityStats, trustIndices] = await Promise.all([
+    isSuperAdmin ? getAdminStats() : Promise.resolve(undefined),
+    isUniversityAdmin && (user as { universityId?: string | null }).universityId
+      ? getUniversityDashboardStats((user as { universityId?: string | null }).universityId as string)
+      : Promise.resolve(undefined),
+    isSuperAdmin ? listCompanyTrustIndices(5) : Promise.resolve(undefined),
+  ])
+
+  return (
+    <AdminDashboard
+      user={user}
+      initialStats={stats}
+      initialUniversityStats={universityStats}
+      initialTrustIndices={trustIndices}
+    />
+  )
+}
+
 /**
  * Dashboard content component that handles auth and data fetching.
  * Separated to support Next.js 16 cacheComponents with Suspense boundary.
@@ -184,9 +258,10 @@ export async function DashboardContent({
       )}
 
       {effectiveRole === "company_admin" && (
-        <RecruiterDashboard
+        <RecruiterDashboardWrapper
           user={{ ...user, role: effectiveRole as string }}
           assistantEnabled={assistantEnabled}
+          recruiterComponent={RecruiterDashboard}
         />
       )}
       {isDeptHead && (
@@ -194,7 +269,10 @@ export async function DashboardContent({
       )}
       {((effectiveRole === "university_admin" && !isDeptHead) ||
         effectiveRole === "super_admin") && (
-        <AdminDashboard user={{ ...user, role: effectiveRole as string }} />
+        <AdminDashboardWrapper
+          user={{ ...user, role: effectiveRole as string }}
+          adminComponent={AdminDashboard}
+        />
       )}
     </div>
   )

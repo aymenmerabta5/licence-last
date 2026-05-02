@@ -42,10 +42,7 @@ const { DashboardClientProvider } = await import(
 )
 
 describe("DashboardClientProvider", () => {
-  test("keeps the dashboard shell rendering when navbar and sidebar suspend", () => {
-    shouldSuspendNavbar = true
-    shouldSuspendSidebar = true
-
+  test("renders dashboard shell with navbar, sidebar and children", () => {
     render(
       <DashboardClientProvider
         user={{
@@ -60,8 +57,7 @@ describe("DashboardClientProvider", () => {
     )
 
     expect(screen.getByText("Messages content")).toBeDefined()
-
-    shouldSuspendNavbar = false
-    shouldSuspendSidebar = false
+    expect(screen.getByTestId("dashboard-navbar")).toBeDefined()
+    expect(screen.getByTestId("dashboard-sidebar")).toBeDefined()
   })
 })

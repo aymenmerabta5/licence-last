@@ -528,10 +528,10 @@ export function SettingsPageSkeleton() {
           </div>
         </div>
 
-        {/* Content skeleton — matches tab content (bordered cards with headers + rows) */}
+        {/* Content skeleton — matches Profile tab (default active tab) */}
         <div className="space-y-8 lg:col-span-9">
-          {/* Section header card */}
-          <div className="overflow-hidden border border-border/60">
+          {/* Profile Identity header card */}
+          <div className="overflow-hidden border border-border/60 bg-card/30 dark:bg-card/50">
             <div className="flex items-center gap-2.5 border-b border-border/40 bg-muted/20 px-6 py-4 dark:bg-muted/10">
               <Skeleton className="h-4 w-4 shrink-0 rounded-none" />
               <Skeleton className="h-5 w-32" />
@@ -541,61 +541,91 @@ export function SettingsPageSkeleton() {
             </div>
           </div>
 
-          {/* Card with rows */}
-          <div className="overflow-hidden border border-border/60">
-            <div className="divide-y divide-border/20">
-              {Array.from({ length: 3 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col justify-between gap-4 px-6 py-5 sm:flex-row sm:items-center"
-                >
-                  <div className="flex items-start gap-3">
-                    <Skeleton className="mt-0.5 h-8 w-8 shrink-0 rounded-none" />
-                    <div className="space-y-1.5">
-                      <Skeleton className="h-3.5 w-24" />
-                      <Skeleton className="h-2.5 w-36" />
-                    </div>
-                  </div>
-                  <Skeleton className="ms-11 h-9 w-24 rounded-none sm:ms-0" />
+          {/* Avatar card */}
+          <div className="border border-border/60 bg-card/30 dark:bg-card/50 p-6 sm:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8">
+              <Skeleton className="h-28 w-28 sm:h-32 sm:w-32 shrink-0 rounded-none" />
+              <div className="space-y-3 min-w-0 flex-1">
+                <div className="space-y-1">
+                  <Skeleton className="h-3 w-24" />
+                  <Skeleton className="h-2.5 w-40" />
+                  <Skeleton className="h-2.5 w-28" />
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Another card with checkbox-like rows */}
-          <div className="overflow-hidden border border-border/60">
-            <div className="flex items-center gap-2.5 border-b border-border/40 bg-muted/20 px-6 py-4 dark:bg-muted/10">
-              <Skeleton className="h-4 w-4 shrink-0 rounded-none" />
-              <Skeleton className="h-5 w-36" />
-            </div>
-            <div className="space-y-4 p-6">
-              {Array.from({ length: 2 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="flex items-start gap-3 border border-border/40 p-4"
-                >
-                  <Skeleton className="mt-1 h-4 w-4 shrink-0 rounded-sm" />
-                  <div className="flex-1 space-y-1">
-                    <Skeleton className="h-3.5 w-32" />
-                    <Skeleton className="h-3 w-full max-w-sm" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Danger zone card */}
-          <div className="overflow-hidden border border-destructive/20 dark:border-destructive/15">
-            <div className="h-0.5 bg-destructive/40" />
-            <div className="flex flex-col justify-between gap-6 p-6 sm:flex-row sm:items-center">
-              <div className="flex items-start gap-3">
-                <Skeleton className="h-9 w-9 shrink-0 rounded-none" />
-                <div className="min-w-0 space-y-1">
-                  <Skeleton className="h-6 w-28" />
-                  <Skeleton className="h-4 w-full max-w-xs" />
+                <div className="flex flex-wrap gap-2">
+                  <Skeleton className="h-9 w-28 rounded-none" />
+                  <Skeleton className="h-9 w-24 rounded-none" />
                 </div>
               </div>
-              <Skeleton className="h-10 w-32 shrink-0 rounded-none" />
+            </div>
+          </div>
+
+          {/* Personal Information */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-2.5">
+              <Skeleton className="h-4 w-0.5 rounded-none" />
+              <Skeleton className="h-2.5 w-40" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Skeleton className="h-12 rounded-xl" />
+              <Skeleton className="h-12 rounded-xl" />
+            </div>
+          </div>
+
+          {/* Academic Info section */}
+          <div className="space-y-5">
+            <div className="flex items-center gap-6 py-4">
+              <div className="h-px flex-1 bg-border/20" />
+              <Skeleton className="h-6 w-32 rounded-full" />
+              <div className="h-px flex-1 bg-border/20" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Skeleton className="h-12 rounded-xl" />
+              <Skeleton className="h-12 rounded-xl" />
+            </div>
+          </div>
+
+          {/* Location section */}
+          <div className="space-y-5">
+            <div className="flex items-center gap-6 py-4">
+              <div className="h-px flex-1 bg-border/20" />
+              <Skeleton className="h-6 w-28 rounded-full" />
+              <div className="h-px flex-1 bg-border/20" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Skeleton className="h-12 rounded-xl" />
+              <Skeleton className="h-12 rounded-xl" />
+            </div>
+          </div>
+
+          {/* Web Presence section */}
+          <div className="space-y-5">
+            <div className="flex items-center gap-6 py-4">
+              <div className="h-px flex-1 bg-border/20" />
+              <Skeleton className="h-6 w-36 rounded-full" />
+              <div className="h-px flex-1 bg-border/20" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Skeleton className="h-12 rounded-xl" />
+              <Skeleton className="h-12 rounded-xl" />
+            </div>
+          </div>
+
+          {/* Bio section */}
+          <div className="space-y-5">
+            <div className="flex items-center gap-6 py-4">
+              <div className="h-px flex-1 bg-border/20" />
+              <Skeleton className="h-6 w-24 rounded-full" />
+              <div className="h-px flex-1 bg-border/20" />
+            </div>
+            <Skeleton className="h-[140px] w-full rounded-xl" />
+          </div>
+
+          {/* Form actions */}
+          <div className="flex flex-col gap-4 border-t border-border/40 pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <Skeleton className="h-4 w-48 rounded-none hidden sm:block" />
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+              <Skeleton className="h-10 w-full sm:w-24 rounded-none" />
+              <Skeleton className="h-10 w-full sm:w-32 rounded-none" />
             </div>
           </div>
         </div>

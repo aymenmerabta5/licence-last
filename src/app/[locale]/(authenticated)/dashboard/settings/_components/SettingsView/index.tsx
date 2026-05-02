@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { AnimatePresence } from "motion/react"
 import * as motion from "motion/react-client"
 
@@ -8,18 +9,16 @@ import { ProfileSettingsTab } from "@/app/[locale]/(authenticated)/dashboard/set
 import { NotificationsTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/NotificationsTab"
 import { SettingsHeader } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/SettingsHeader"
 import { SettingsTabs } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/SettingsTabs"
-import { useSettingsData } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/hooks/useSettingsData"
 import { ease } from "@/lib/animations"
+import type { MeResult, StudentProfileResult } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/types"
 
-export function SettingsView() {
-  const {
-    activeTab,
-    setActiveTab,
-    me,
-    meLoading,
-    studentProfile,
-    profileLoading,
-  } = useSettingsData()
+interface SettingsViewProps {
+  me: MeResult
+  studentProfile: StudentProfileResult | null
+}
+
+export function SettingsView({ me, studentProfile }: SettingsViewProps) {
+  const [activeTab, setActiveTab] = useState("profile")
 
   return (
     <div className="max-w-7xl mx-auto space-y-10 pb-24">
@@ -42,7 +41,7 @@ export function SettingsView() {
                 <ProfileSettingsTab
                   me={me}
                   studentProfile={studentProfile}
-                  isLoading={meLoading || profileLoading}
+                  isLoading={false}
                 />
               )}
 

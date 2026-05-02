@@ -2,12 +2,29 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
-import { orpc } from "@/server/orpc/client"
+import { orpc, type orpcClient } from "@/server/orpc/client"
 
-export function useRecruiterDashboardData() {
-  const { data: offers = [], isLoading: isOffersLoading } = useQuery(
-    orpc.offers.listByCompany.queryOptions(),
-  )
+export type OfferWithSkills = Awaited<
+  ReturnType<typeof orpcClient.offers.listByCompany>
+>[number]
+export type CompanyTrustIndex = Awaited<
+  ReturnType<typeof orpcClient.companies.getTrustIndex>
+>
+
+interface RecruiterDashboardInitialData {
+  offers?: OfferWithSkills[]
+  trustData?: CompanyTrustIndex | null
+}
+
+export function useRecruiterDashboardData(
+  initialData?: RecruiterDashboardInitialData,
+) {
+  const { data: offers = initialData?.offers ?? [], isLoading: isOffersLoading } =
+    useQuery({
+      ...orpc.offers.listByCompany.queryOptions(),
+      enabled: initialData?.offers === undefined,
+      initialData: initialData?.offers,
+    })
 
   // Derive companyId from offers for trust index query
   const companyId = offers[0]?.companyId
@@ -15,7 +32,8 @@ export function useRecruiterDashboardData() {
     ...orpc.companies.getTrustIndex.queryOptions({
       input: { companyId: companyId ?? "" },
     }),
-    enabled: !!companyId,
+    enabled: !!companyId && initialData?.trustData === undefined,
+    initialData: initialData?.trustData ?? undefined,
   })
 
   const offerStats = useMemo(() => {

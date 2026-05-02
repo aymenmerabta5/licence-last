@@ -1,6 +1,10 @@
+"use cache"
+
 import "server-only"
 
 import { count, eq, sql } from "drizzle-orm"
+import { cacheLife, cacheTag } from "next/cache"
+import { CACHE_TAGS } from "@/lib/cache"
 
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
@@ -21,6 +25,9 @@ export interface AdminStats {
 }
 
 export async function getAdminStats(): Promise<AdminStats> {
+  cacheLife("minutes")
+  cacheTag(CACHE_TAGS.ADMIN_STATS)
+
   const [studentsRow] = await db
     .select({ value: count() })
     .from(user)

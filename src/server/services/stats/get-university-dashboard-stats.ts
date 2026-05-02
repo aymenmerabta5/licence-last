@@ -1,6 +1,10 @@
+"use cache"
+
 import "server-only"
 
 import { and, count, eq } from "drizzle-orm"
+import { cacheLife, cacheTag } from "next/cache"
+import { CACHE_TAGS } from "@/lib/cache"
 
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
@@ -21,6 +25,9 @@ export interface UniversityDashboardStats {
 export async function getUniversityDashboardStats(
   universityId: string,
 ): Promise<UniversityDashboardStats> {
+  cacheLife("minutes")
+  cacheTag(CACHE_TAGS.UNIVERSITY_STATS(universityId))
+
   const [
     studentsRow,
     departmentsRow,

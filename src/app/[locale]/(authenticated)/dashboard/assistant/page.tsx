@@ -1,4 +1,5 @@
 import { Suspense } from "react"
+
 import { AssistantPageContent } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantPageContent"
 import { Skeleton } from "@/components/ui/skeleton"
 

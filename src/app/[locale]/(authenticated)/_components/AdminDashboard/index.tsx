@@ -6,7 +6,12 @@ import { PlatformBulletin } from "@/app/[locale]/(authenticated)/_components/Adm
 import { StatusBreakdown } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/StatusBreakdown"
 import { TrustLeaderboard } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/TrustLeaderboard"
 import { UniversityKpiGrid } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/UniversityKpiGrid"
-import { useAdminDashboardData } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/hooks/useAdminDashboardData"
+import {
+  useAdminDashboardData,
+  type AdminStats,
+  type UniversityDashboardStats,
+  type TrustIndex,
+} from "@/app/[locale]/(authenticated)/_components/AdminDashboard/hooks/useAdminDashboardData"
 
 interface AdminDashboardProps {
   user: {
@@ -15,11 +20,23 @@ interface AdminDashboardProps {
     email: string
     role: string
   }
+  initialStats?: AdminStats
+  initialUniversityStats?: UniversityDashboardStats
+  initialTrustIndices?: TrustIndex[]
 }
 
-export function AdminDashboard({ user }: AdminDashboardProps) {
+export function AdminDashboard({
+  user,
+  initialStats,
+  initialUniversityStats,
+  initialTrustIndices,
+}: AdminDashboardProps) {
   const { isSuperAdmin, stats, universityStats, isLoading, trustIndices } =
-    useAdminDashboardData(user.role)
+    useAdminDashboardData(user.role, {
+      stats: initialStats,
+      universityStats: initialUniversityStats,
+      trustIndices: initialTrustIndices,
+    })
 
   if (isLoading) {
     return (
