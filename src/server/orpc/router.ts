@@ -12,6 +12,10 @@ import {
   updateUserProcedure,
 } from "@/server/orpc/routes/admin-users"
 import {
+  getMaintenanceModeProcedure,
+  setMaintenanceModeProcedure,
+} from "@/server/orpc/routes/admin-settings"
+import {
   applyToOfferProcedure,
   checkApplicationProcedure,
   companyAcceptProcedure,
@@ -359,6 +363,10 @@ export const appRouter = {
     listSessions: listUserSessionsProcedure,
     revokeSession: revokeSessionProcedure,
     revokeAllSessions: revokeAllSessionsProcedure,
+  },
+  adminSettings: {
+    getMaintenanceMode: getMaintenanceModeProcedure,
+    setMaintenanceMode: setMaintenanceModeProcedure,
   },
   universities: {
     list: listUniversitiesProcedure,

@@ -8,6 +8,20 @@
       "when": 1773996667261,
       "tag": "0000_initial_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773996667262,
+      "tag": "0001_migrate_dept_head_to_membership",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1777718217760,
+      "tag": "0002_site_settings",
+      "breakpoints": true
     }
   ]
 }

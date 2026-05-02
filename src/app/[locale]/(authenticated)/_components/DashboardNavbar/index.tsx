@@ -62,11 +62,6 @@ export function DashboardNavbar({ user }: { user: NavbarUser }) {
           <h2 className="text-2xl font-serif text-heading tracking-tight capitalize">
             {currentSection.replace(/-/g, " ")}
           </h2>
-          <div className="hidden xl:flex items-center gap-2 text-xs text-muted-foreground font-mono tracking-wider opacity-60">
-            <span>[</span>
-            <span className="uppercase">{segments[0] || "dashboard"}</span>
-            <span>]</span>
-          </div>
         </div>
       </div>
 

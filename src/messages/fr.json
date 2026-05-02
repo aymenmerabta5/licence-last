@@ -2992,5 +2992,15 @@
       "linkedin": "LinkedIn",
       "instagram": "Instagram"
     }
+  },
+  "admin": {
+    "siteSettings": "Paramètres du site",
+    "maintenanceMode": "Mode maintenance",
+    "maintenanceModeDescription": "Lorsqu'il est activé, tous les utilisateurs sauf les super administrateurs verront une page de maintenance et ne pourront pas accéder à la plateforme.",
+    "maintenanceModeSaved": "Mode maintenance mis à jour avec succès"
+  },
+  "maintenance": {
+    "title": "En maintenance",
+    "subtitle": "Nous améliorons Stag. Veuillez revenir bientôt."
   }
 }

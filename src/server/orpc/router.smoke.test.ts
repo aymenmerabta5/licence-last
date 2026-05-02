@@ -43,6 +43,7 @@ describe("src/server/orpc/router smoke coverage", () => {
     const namespaces = namespaceMatches.map((match) => match[1]).sort()
 
     expect(namespaces).toEqual([
+      "adminSettings",
       "adminUsers",
       "applications",
       "assistant",

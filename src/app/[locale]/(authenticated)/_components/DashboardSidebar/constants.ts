@@ -177,6 +177,12 @@ export const navItems: NavItem[] = [
     hideForUniversityMembershipRoles: ["department_head"],
   },
   {
+    labelKey: "siteSettings",
+    href: "/dashboard/admin/site-settings",
+    icon: Settings,
+    roles: ["super_admin"],
+  },
+  {
     labelKey: "settings",
     href: "/dashboard/settings",
     icon: Settings,

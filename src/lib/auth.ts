@@ -318,7 +318,7 @@ export const auth = betterAuth({
       },
       adminRoles: ["super_admin"],
       defaultRole: "student",
-      impersonationSessionDuration: 15 * 60, // 15 minutes
+      impersonationSessionDuration: 60 * 60 * 8, // 8 hours (full work day)
     }),
     twoFactor({
       issuer: "Stag",

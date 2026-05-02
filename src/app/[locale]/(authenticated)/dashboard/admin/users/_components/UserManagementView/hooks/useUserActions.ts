@@ -17,16 +17,25 @@ type UsersListData = {
   offset: number
 }
 
+function isAdminUsersListQuery(query: { queryKey: unknown }): boolean {
+  const key = query.queryKey
+  if (!Array.isArray(key)) return false
+  const path = key[0]
+  return (
+    Array.isArray(path) &&
+    path.length >= 2 &&
+    path[0] === "adminUsers" &&
+    path[1] === "list"
+  )
+}
+
 export function useUserActions(refreshUsers?: RefreshUsersCallback) {
   const t = useTranslations()
   const queryClient = useQueryClient()
 
   const invalidate = async () => {
     await queryClient.invalidateQueries({
-      predicate: (query) => {
-        const queryKey = JSON.stringify(query.queryKey)
-        return queryKey.includes("adminUsers") && queryKey.includes("list")
-      },
+      predicate: isAdminUsersListQuery,
     })
   }
 
@@ -41,19 +50,13 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
 
   const cancelAdminUsersQueries = async () => {
     await queryClient.cancelQueries({
-      predicate: (query) => {
-        const queryKey = JSON.stringify(query.queryKey)
-        return queryKey.includes("adminUsers") && queryKey.includes("list")
-      },
+      predicate: isAdminUsersListQuery,
     })
   }
 
   const getAdminUsersListQueries = () =>
     queryClient.getQueriesData<UsersListData>({
-      predicate: (query) => {
-        const queryKey = JSON.stringify(query.queryKey)
-        return queryKey.includes("adminUsers") && queryKey.includes("list")
-      },
+      predicate: isAdminUsersListQuery,
     })
 
   const createUser = useMutation({
@@ -117,10 +120,7 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
     },
     onSettled: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const queryKey = JSON.stringify(query.queryKey)
-          return queryKey.includes("adminUsers") && queryKey.includes("list")
-        },
+        predicate: isAdminUsersListQuery,
       })
     },
   })
@@ -175,10 +175,7 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
     },
     onSettled: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const queryKey = JSON.stringify(query.queryKey)
-          return queryKey.includes("adminUsers") && queryKey.includes("list")
-        },
+        predicate: isAdminUsersListQuery,
       })
     },
   })
@@ -232,10 +229,7 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
     },
     onSettled: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const queryKey = JSON.stringify(query.queryKey)
-          return queryKey.includes("adminUsers") && queryKey.includes("list")
-        },
+        predicate: isAdminUsersListQuery,
       })
     },
   })
@@ -293,10 +287,7 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
     },
     onSettled: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const queryKey = JSON.stringify(query.queryKey)
-          return queryKey.includes("adminUsers") && queryKey.includes("list")
-        },
+        predicate: isAdminUsersListQuery,
       })
     },
   })
@@ -341,10 +332,7 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
     },
     onSettled: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const queryKey = JSON.stringify(query.queryKey)
-          return queryKey.includes("adminUsers") && queryKey.includes("list")
-        },
+        predicate: isAdminUsersListQuery,
       })
     },
   })
@@ -387,10 +375,7 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
     },
     onSettled: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const queryKey = JSON.stringify(query.queryKey)
-          return queryKey.includes("adminUsers") && queryKey.includes("list")
-        },
+        predicate: isAdminUsersListQuery,
       })
     },
   })
@@ -422,10 +407,7 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
     },
     onSettled: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const queryKey = JSON.stringify(query.queryKey)
-          return queryKey.includes("adminUsers") && queryKey.includes("list")
-        },
+        predicate: isAdminUsersListQuery,
       })
     },
   })
