@@ -57,6 +57,7 @@ interface AgreementContext {
     companyPhone: string | null
     companyRepresentativeName: string | null
     companyContactEmail: string | null
+    companyLogoUrl: string | null
     studentName: string | null
     studentEmail: string
     studentUserId: string
@@ -70,6 +71,7 @@ interface AgreementContext {
     universityDepartmentName: string | null
     universityAddress: string | null
     universityPhone: string | null
+    universityLogoUrl: string | null
   }
   data: AgreementData
 }
@@ -143,10 +145,12 @@ function toAgreementSnapshot(value: unknown): AgreementData | null {
     companyPhone: pickString(record.companyPhone),
     companyRepresentativeName: pickString(record.companyRepresentativeName),
     companyContactEmail: pickString(record.companyContactEmail),
+    companyLogoUrl: pickString(record.companyLogoUrl) ?? undefined,
     universityName: pickString(record.universityName),
     universityDepartmentName: pickString(record.universityDepartmentName),
     universityAddress: pickString(record.universityAddress),
     universityPhone: pickString(record.universityPhone),
+    universityLogoUrl: pickString(record.universityLogoUrl) ?? undefined,
     offerTitle,
     internshipType,
     startDate,
@@ -203,6 +207,7 @@ async function loadAgreementContext(
       companyPhone: company.phone,
       companyRepresentativeName: company.representativeName,
       companyContactEmail: company.contactEmail,
+      companyLogoUrl: company.logoUrl,
       studentName: user.name,
       studentEmail: user.email,
       studentUserId: user.id,
@@ -216,6 +221,7 @@ async function loadAgreementContext(
       universityDepartmentName: university.departmentName,
       universityAddress: university.address,
       universityPhone: university.phone,
+      universityLogoUrl: university.logoUrl,
     })
     .from(application)
     .innerJoin(internshipOffer, eq(application.offerId, internshipOffer.id))
@@ -248,10 +254,12 @@ async function loadAgreementContext(
       companyPhone: row.companyPhone ?? null,
       companyRepresentativeName: row.companyRepresentativeName ?? null,
       companyContactEmail: row.companyContactEmail ?? null,
+      companyLogoUrl: row.companyLogoUrl ?? undefined,
       universityName: row.universityName ?? null,
       universityDepartmentName: row.universityDepartmentName ?? null,
       universityAddress: row.universityAddress ?? null,
       universityPhone: row.universityPhone ?? null,
+      universityLogoUrl: row.universityLogoUrl ?? undefined,
       offerTitle: row.offerTitle,
       internshipType: row.internshipType,
       startDate: placementRecord.startDate,

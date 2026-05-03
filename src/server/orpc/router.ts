@@ -183,6 +183,7 @@ import {
   removeUniversityDomainProcedure,
   updateMyUniversityProcedure,
   updateUniversityProcedure,
+  uploadUniversityLogoProcedure,
 } from "@/server/orpc/routes/universities"
 import {
   deleteAvatarProcedure,
@@ -380,6 +381,7 @@ export const appRouter = {
     listMyDomains: listMyUniversityDomainsProcedure,
     addDomain: addUniversityDomainProcedure,
     removeDomain: removeUniversityDomainProcedure,
+    uploadLogo: uploadUniversityLogoProcedure,
   },
   assistant: {
     listModels: listAssistantModelsProcedure,

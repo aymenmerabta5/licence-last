@@ -38,6 +38,7 @@ interface CertificateContext {
     offerTitle: string
     offerInternshipType: string
     companyName: string
+    companyLogoUrl: string | null
     studentName: string | null
     studentEmail: string
     studentUniversityId: string | null
@@ -81,6 +82,7 @@ function toCertificateSnapshot(value: unknown): CertificateData | null {
   const studentName = pickString(record.studentName)
   const studentEmail = pickString(record.studentEmail)
   const companyName = pickString(record.companyName)
+  const companyLogoUrl = pickString(record.companyLogoUrl)
   const offerTitle = pickString(record.offerTitle)
   const internshipType = pickString(record.internshipType)
   const startDate = pickDate(record.startDate)
@@ -103,6 +105,7 @@ function toCertificateSnapshot(value: unknown): CertificateData | null {
     studentEmail,
     universityName: pickString(record.universityName),
     companyName,
+    companyLogoUrl: companyLogoUrl ?? undefined,
     offerTitle,
     internshipType,
     startDate,
@@ -129,6 +132,7 @@ async function loadCertificateContext(
       offerTitle: internshipOffer.title,
       offerInternshipType: internshipOffer.internshipType,
       companyName: company.name,
+      companyLogoUrl: company.logoUrl,
       studentName: user.name,
       studentEmail: user.email,
       studentUniversityId: user.universityId,
@@ -165,6 +169,7 @@ async function loadCertificateContext(
       studentEmail: app.studentEmail,
       universityName: uniName,
       companyName: app.companyName,
+      companyLogoUrl: app.companyLogoUrl ?? undefined,
       offerTitle: app.offerTitle,
       internshipType: app.offerInternshipType,
       startDate: placementRecord.startDate,

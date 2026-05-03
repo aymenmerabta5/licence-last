@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   headerBand: {
     backgroundColor: COLORS.headerBg,
     paddingHorizontal: 36,
-    paddingVertical: 22,
+    paddingVertical: 14,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -107,12 +107,12 @@ const styles = StyleSheet.create({
   },
   body: {
     paddingHorizontal: 36,
-    paddingVertical: 20,
+    paddingVertical: 8,
   },
   partiesRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 16,
+    marginBottom: 10,
     gap: 12,
   },
   partyCard: {
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
     borderRadius: 6,
-    padding: 12,
+    padding: 8,
     borderTopWidth: 0,
     borderLeftWidth: 0,
     borderRightWidth: 0,
@@ -142,8 +142,8 @@ const styles = StyleSheet.create({
   partyHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 8,
-    paddingBottom: 6,
+    marginBottom: 4,
+    paddingBottom: 3,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.divider,
   },
@@ -185,15 +185,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 10,
     gap: 28,
   },
   dateCard: {
     alignItems: "center",
     backgroundColor: COLORS.cardBg,
     borderRadius: 6,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
     minWidth: 140,
@@ -231,14 +231,14 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
-    padding: 14,
-    marginBottom: 16,
+    padding: 10,
+    marginBottom: 10,
   },
   detailsHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
-    paddingBottom: 8,
+    marginBottom: 6,
+    paddingBottom: 4,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.divider,
   },
@@ -263,11 +263,11 @@ const styles = StyleSheet.create({
   detailsCol: {
     width: "50%",
     paddingRight: 8,
-    marginBottom: 6,
+    marginBottom: 3,
   },
   detailsColFull: {
     width: "100%",
-    marginBottom: 6,
+    marginBottom: 3,
   },
   detailsLabel: {
     fontSize: 8,
@@ -287,8 +287,8 @@ const styles = StyleSheet.create({
     color: COLORS.textPrimary,
   },
   signaturesSection: {
-    marginTop: 8,
-    marginBottom: 12,
+    marginTop: 4,
+    marginBottom: 6,
   },
   signaturesRow: {
     flexDirection: "row",
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
   sigCard: {
     flex: 1,
     alignItems: "center",
-    paddingTop: 8,
+    paddingTop: 4,
   },
   sigLabel: {
     fontFamily: "DejaVu Sans Bold",
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     letterSpacing: 0.6,
     color: COLORS.textSecondary,
-    marginBottom: 22,
+    marginBottom: 14,
   },
   sigLineBox: {
     width: "100%",
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: COLORS.divider,
     paddingHorizontal: 36,
-    paddingVertical: 12,
+    paddingVertical: 8,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -387,12 +387,14 @@ export interface AgreementData {
   companyPhone: string | null
   companyRepresentativeName: string | null
   companyContactEmail: string | null
+  companyLogoUrl?: string
 
   // University info
   universityName: string | null
   universityDepartmentName: string | null
   universityAddress: string | null
   universityPhone: string | null
+  universityLogoUrl?: string
 
   // Placement info
   offerTitle: string
@@ -463,33 +465,68 @@ export function ConventionDeStageTemplate({
         ? "اتفاقية التدريب"
         : "Internship Agreement"
 
-  const universityDisplay = data.universityDepartmentName
-    ? `${data.universityName} — ${data.universityDepartmentName}`
-    : (data.universityName ?? "")
-
   return (
     <Document>
       <Page size="A4" orientation="landscape" style={styles.page}>
-        {/* Header Band */}
-        <View style={styles.headerBand}>
-          <View style={styles.headerLeft}>
-            <Text style={styles.headerTitle}>{title}</Text>
-            {universityDisplay ? (
-              <Text style={styles.headerSubtitle}>{universityDisplay}</Text>
-            ) : null}
-          </View>
-          <View style={styles.headerBadge}>
-            <Text style={styles.headerBadgeLabel}>
-              {locale === "fr" ? "N° Vérification" : "Verification"}
-            </Text>
-            <Text style={styles.headerBadgeValue}>
-              {verificationCode ?? "—"}
-            </Text>
-          </View>
-        </View>
+        {/* Clean Header: Logo | Title | Logo */}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            paddingHorizontal: 36,
+            paddingTop: 10,
+            paddingBottom: 4,
+            borderBottomWidth: 2,
+            borderBottomColor: "#d97706",
+          }}
+        >
+          {/* Company Logo */}
+          {data.companyLogoUrl ? (
+            <Image
+              src={data.companyLogoUrl}
+              style={{ width: 36, height: 36, objectFit: "contain", marginTop: 2 }}
+            />
+          ) : (
+            <View style={{ width: 36 }} />
+          )}
 
-        {/* Accent Bar */}
-        <View style={styles.accentBar} />
+          {/* Center Title */}
+          <View style={{ alignItems: "center", flex: 1, paddingHorizontal: 8 }}>
+            <Text
+              style={{
+                fontFamily: "DejaVu Serif",
+                fontSize: 9,
+                color: "#57534e",
+                letterSpacing: 0.5,
+              }}
+            >
+              stag.io
+            </Text>
+            <Text
+              style={{
+                fontFamily: "DejaVu Serif Bold",
+                fontSize: 16,
+                color: "#0f172a",
+                letterSpacing: 1.2,
+                textTransform: "uppercase",
+                marginTop: 2,
+              }}
+            >
+              {title}
+            </Text>
+          </View>
+
+          {/* University Logo */}
+          {data.universityLogoUrl ? (
+            <Image
+              src={data.universityLogoUrl}
+              style={{ width: 36, height: 36, objectFit: "contain", marginTop: 2 }}
+            />
+          ) : (
+            <View style={{ width: 36 }} />
+          )}
+        </View>
 
         {/* Body */}
         <View style={styles.body}>

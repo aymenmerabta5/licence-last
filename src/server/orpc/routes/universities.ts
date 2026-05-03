@@ -9,6 +9,7 @@ import { CACHE_TAGS } from "@/lib/cache"
 import { universityStatusSchema } from "@/lib/schemas/enums"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
+import { university } from "@/server/db/schema/universities"
 import UniversityApprovedEmail from "@/server/email/templates/UniversityApprovedEmail"
 import { isAdminRole } from "@/server/orpc/authz"
 import {
@@ -16,12 +17,14 @@ import {
   authedProcedureGenerous,
   authedProcedureStandard,
   superAdminProcedureStandard,
+  universityProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
 import {
   createServiceORPCError,
   throwCodedORPCError,
 } from "@/server/orpc/utils/service-error"
 import { emitNotification } from "@/server/services/notifications/emit"
+import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
 import { addUniversityDomain } from "@/server/services/universities/add-domain"
 import { approveUniversity } from "@/server/services/universities/approve"
 import { createUniversity } from "@/server/services/universities/create"
@@ -32,6 +35,7 @@ import { listUniversityDomains } from "@/server/services/universities/list-domai
 import { rejectUniversity } from "@/server/services/universities/reject"
 import { removeUniversityDomain } from "@/server/services/universities/remove-domain"
 import { updateUniversity } from "@/server/services/universities/update"
+import { deleteFile } from "@/server/storage/s3"
 
 /* ── Reads ── */
 
@@ -132,6 +136,7 @@ export const updateUniversityProcedure = superAdminProcedureStandard
         .optional(),
       city: z.string().nullable().optional(),
       address: z.string().nullable().optional(),
+      logoUrl: z.string().url().optional().or(z.literal("")),
     }),
   )
   .handler(async ({ input }) => {
@@ -143,6 +148,7 @@ export const updateUniversityProcedure = superAdminProcedureStandard
         wilayaCode: input.wilayaCode,
         city: input.city,
         address: input.address,
+        logoUrl: input.logoUrl || null,
       })
 
       revalidateTag(CACHE_TAGS.UNIVERSITIES, "max")
@@ -307,6 +313,7 @@ export const updateMyUniversityProcedure = adminProcedureStandard
         .optional(),
       city: z.string().nullable().optional(),
       address: z.string().nullable().optional(),
+      logoUrl: z.string().url().optional().or(z.literal("")),
     }),
   )
   .handler(async ({ input, context }) => {
@@ -336,6 +343,7 @@ export const updateMyUniversityProcedure = adminProcedureStandard
         wilayaCode: input.wilayaCode,
         city: input.city,
         address: input.address,
+        logoUrl: input.logoUrl || null,
       })
 
       revalidateTag(CACHE_TAGS.UNIVERSITIES, "max")
@@ -456,4 +464,39 @@ export const removeUniversityDomainProcedure = adminProcedureStandard
         fallbackMessage: "Failed to remove domain",
       })
     }
+  })
+
+export const uploadUniversityLogoProcedure = universityProcedureStandard
+  .input(z.object({ file: z.file() }))
+  .handler(async ({ input, context }) => {
+    const universityId = context.user.universityId
+    if (!universityId) {
+      throwCodedORPCError("BAD_REQUEST", "NO_UNIVERSITY_ASSIGNED", {
+        message: "No university assigned",
+      })
+    }
+
+    const [current] = await db
+      .select({ logoUrl: university.logoUrl })
+      .from(university)
+      .where(eq(university.id, universityId))
+      .limit(1)
+
+    const result = await uploadImageToS3({
+      file: input.file,
+      folder: "university-logos",
+    })
+
+    await updateUniversity(universityId, { logoUrl: result.url })
+
+    if (current?.logoUrl) {
+      try {
+        const oldKey = new URL(current.logoUrl).pathname.slice(1)
+        await deleteFile(oldKey)
+      } catch {
+        // Ignore cleanup errors
+      }
+    }
+
+    return { url: result.url }
   })

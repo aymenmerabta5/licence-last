@@ -2,9 +2,11 @@
 
 import { useForm } from "@tanstack/react-form"
 import { useTranslations } from "next-intl"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { toast } from "sonner"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { createUniversityUpdateSchema } from "@/lib/schemas/university"
+import { orpcClient } from "@/server/orpc/client"
 import type { university } from "@/server/db/schema/universities"
 
 type University = typeof university.$inferSelect
@@ -29,8 +31,11 @@ export function useUniversityProfileForm({
   university,
   onSubmit,
 }: UseUniversityProfileFormOptions) {
+  const t = useTranslations("dashboard.universityProfile")
   const tv = useTranslations("auth.validation")
   const schema = useMemo(() => createUniversityUpdateSchema(tv), [tv])
+
+  const [isLogoUploading, setIsLogoUploading] = useState(false)
 
   const form = useForm({
     defaultValues: {
@@ -40,6 +45,7 @@ export function useUniversityProfileForm({
       wilayaCode: "",
       city: "",
       address: "",
+      logoUrl: "",
     },
     validators: {
       onSubmit: ({ value }) =>
@@ -80,7 +86,25 @@ export function useUniversityProfileForm({
     )
     form.setFieldValue("city", university.city ?? "")
     form.setFieldValue("address", university.address ?? "")
+    form.setFieldValue("logoUrl", university.logoUrl ?? "")
   }, [form, university])
 
-  return { form }
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setIsLogoUploading(true)
+
+    try {
+      const result = await orpcClient.universities.uploadLogo({ file })
+      form.setFieldValue("logoUrl", result.url)
+      toast.success(t("logoUploadSuccess"))
+    } catch {
+      toast.error(t("logoUploadError"))
+    } finally {
+      setIsLogoUploading(false)
+    }
+  }
+
+  return { form, isLogoUploading, handleLogoUpload }
 }

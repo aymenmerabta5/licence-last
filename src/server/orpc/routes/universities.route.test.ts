@@ -50,6 +50,7 @@ const isAdminRoleMock = mock(
 function applyUniversitiesRouteMocks() {
   mock.module("@/server/orpc/rate-limited-procedures", () => ({
     universityProcedureAssistant: createProcedureMock(),
+    universityProcedureStandard: createProcedureMock(),
     authedProcedureGenerous: createProcedureMock(),
     authedProcedureStandard: createProcedureMock(),
     superAdminProcedureStandard: createProcedureMock(),
@@ -268,6 +269,7 @@ describe("src/server/orpc/routes/universities", () => {
       wilayaCode: undefined,
       city: "Algiers",
       address: undefined,
+      logoUrl: null,
     })
     expect(revalidateTagMock).toHaveBeenCalledTimes(3)
   })

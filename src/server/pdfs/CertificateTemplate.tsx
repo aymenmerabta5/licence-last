@@ -177,6 +177,7 @@ export interface CertificateData {
   internshipType: string
   startDate: Date
   endDate: Date
+  companyLogoUrl?: string
 }
 
 interface CertificateTemplateProps {
@@ -232,6 +233,11 @@ export function InternshipCertificateTemplate({
           <View style={styles.innerFrame}>
             {/* Header */}
             <View style={styles.header}>
+              <View style={{ alignItems: "center", marginBottom: data.companyLogoUrl ? 12 : 0 }}>
+                {data.companyLogoUrl ? (
+                  <Image src={data.companyLogoUrl} style={{ width: 80, height: 80, objectFit: "contain" }} />
+                ) : null}
+              </View>
               <Text style={styles.title}>{title}</Text>
               <View style={styles.goldLine} />
               <Text style={styles.university}>

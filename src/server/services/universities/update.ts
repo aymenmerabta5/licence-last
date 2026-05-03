@@ -16,6 +16,7 @@ export interface UpdateUniversityInput {
   wilayaCode?: number | null
   city?: string | null
   address?: string | null
+  logoUrl?: string | null
 }
 
 /**
@@ -36,6 +37,7 @@ export async function updateUniversity(
   if (data.wilayaCode !== undefined) updates.wilayaCode = data.wilayaCode
   if (data.city !== undefined) updates.city = data.city?.trim() || null
   if (data.address !== undefined) updates.address = data.address?.trim() || null
+  if (data.logoUrl !== undefined) updates.logoUrl = data.logoUrl
 
   if (Object.keys(updates).length === 0) {
     return { universityId }

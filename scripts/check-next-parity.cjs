@@ -8,6 +8,7 @@ const TARGET_EXTENSIONS = new Set([".ts", ".tsx"])
 
 const IMG_ALLOWLIST = new Set([
   "src/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/components/LogoUploadSection.tsx",
+  "src/app/[locale]/(authenticated)/dashboard/university/profile/_components/UniversityProfileView/components/LogoUploadSection.tsx",
   "src/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/CompanyCard.tsx",
   "src/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/OfferHeader.tsx",
   "src/app/[locale]/(authenticated)/dashboard/explore/_components/OfferCard.tsx",

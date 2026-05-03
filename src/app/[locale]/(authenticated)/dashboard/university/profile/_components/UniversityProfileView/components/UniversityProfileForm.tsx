@@ -2,6 +2,7 @@
 
 import { Building2, Loader2, MapPin, Phone, Save } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { LogoUploadSection } from "@/app/[locale]/(authenticated)/dashboard/university/profile/_components/UniversityProfileView/components/LogoUploadSection"
 import { useUniversityProfileForm } from "@/app/[locale]/(authenticated)/dashboard/university/profile/_components/UniversityProfileView/hooks/useUniversityProfileForm"
 import { TextField } from "@/components/form-fields"
 import { Button } from "@/components/ui/button"
@@ -29,7 +30,10 @@ export function UniversityProfileForm({
   isUpdating,
 }: UniversityProfileFormProps) {
   const t = useTranslations("dashboard.universityProfile")
-  const { form } = useUniversityProfileForm({ university, onSubmit })
+  const { form, isLogoUploading, handleLogoUpload } = useUniversityProfileForm({
+    university,
+    onSubmit,
+  })
 
   const getError = (errors: unknown[]) =>
     errors.length > 0 ? errorMessage(errors[0]) : undefined
@@ -42,6 +46,12 @@ export function UniversityProfileForm({
       }}
       className="space-y-5"
     >
+      <LogoUploadSection
+        logoUrl={form.getFieldValue("logoUrl")}
+        isUploading={isLogoUploading}
+        onUpload={handleLogoUpload}
+      />
+
       <form.Field name="name">
         {(field) => (
           <TextField

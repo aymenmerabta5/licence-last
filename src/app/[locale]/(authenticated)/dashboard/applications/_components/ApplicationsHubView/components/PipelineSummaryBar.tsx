@@ -34,7 +34,7 @@ export function PipelineSummaryBar({
             onClick={() => onStageClick(isActive ? null : stage)}
             className={cn(
               "relative flex flex-col items-center gap-2 border-border/50 px-4 py-5 text-center transition-colors duration-500 sm:items-start sm:text-start md:px-5 md:py-6",
-              "hover:bg-foreground hover:text-background",
+              "hover:bg-muted/40",
               index < STAGE_COLUMNS.length - 1 && "border-e",
               index < STAGE_COLUMNS.length - 1 &&
                 index % 2 === 1 &&
