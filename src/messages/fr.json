@@ -1660,7 +1660,29 @@
       },
       "loading": "Loading documents",
       "noDocumentsTitle": "No documents yet",
-      "placementCount": "{count, plural, one {# placement} other {# placements}}"
+      "placementCount": "{count, plural, one {# placement} other {# placements}}",
+      "certificateVersions": "Versions du certificat",
+      "generateNewVersion": "Générer une nouvelle version",
+      "generateDialog": {
+        "title": "Générer le certificat",
+        "languageLabel": "Langue",
+        "borderLabel": "Style de bordure",
+        "generate": "Générer",
+        "regenerate": "Régénérer",
+        "regenerateWarning": "Cette version existe déjà. La régénération la remplacera.",
+        "cancel": "Annuler"
+      },
+      "border": {
+        "classic": "Or classique",
+        "minimal": "Minimal épuré",
+        "formal": "Académique formel",
+        "ornate": "Or ornemental",
+        "modern": "Moderne",
+        "premium": "Premium marine"
+      }
+    },
+    "placementDocuments": {
+      "certificateVersion": "{language} · {border}"
     },
     "admin": {
       "title": "Tableau de Bord Admin",

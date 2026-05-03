@@ -1660,7 +1660,29 @@
       },
       "loading": "Loading documents",
       "noDocumentsTitle": "No documents yet",
-      "placementCount": "{count, plural, one {# placement} other {# placements}}"
+      "placementCount": "{count, plural, one {# placement} other {# placements}}",
+      "certificateVersions": "إصدارات الشهادة",
+      "generateNewVersion": "إنشاء نسخة جديدة",
+      "generateDialog": {
+        "title": "إنشاء شهادة",
+        "languageLabel": "اللغة",
+        "borderLabel": "نمط الإطار",
+        "generate": "إنشاء",
+        "regenerate": "إعادة الإنشاء",
+        "regenerateWarning": "هذه النسخة موجودة بالفعل. إعادة الإنشاء ستستبدلها.",
+        "cancel": "إلغاء"
+      },
+      "border": {
+        "classic": "ذهبي كلاسيكي",
+        "minimal": "بسيط ونظيف",
+        "formal": "أكاديمي رسمي",
+        "ornate": "ذهبي مزخرف",
+        "modern": "عصري",
+        "premium": "بريميوم بحري"
+      }
+    },
+    "placementDocuments": {
+      "certificateVersion": "{language} · {border}"
     },
     "admin": {
       "title": "لوحة تحكم المشرف",

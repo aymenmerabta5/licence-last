@@ -19,6 +19,8 @@ interface PlacementDocumentsSectionProps {
       type: "agreement" | "certificate"
       status: string
       verificationCode: string | null
+      locale: string
+      borderStyle: string
     }>
   }
   downloadingDocumentId: string | null
@@ -31,6 +33,7 @@ export function PlacementDocumentsSection({
   onDownload,
 }: PlacementDocumentsSectionProps) {
   const t = useTranslations("dashboard.applications.hub")
+  const tPlacementDocs = useTranslations("dashboard.placementDocuments")
   const locale = useLocale()
 
   const dateFormatter = useMemo(
@@ -81,6 +84,11 @@ export function PlacementDocumentsSection({
                 <span className="truncate text-xs font-medium text-foreground">
                   {t(`document.type.${doc.type}`)}
                 </span>
+                {doc.type === "certificate" && (
+                  <span className="text-[10px] text-muted-foreground">
+                    {tPlacementDocs("certificateVersion", { language: doc.locale, border: doc.borderStyle })}
+                  </span>
+                )}
                 <Badge
                   variant="editorial-muted"
                   className={cn(

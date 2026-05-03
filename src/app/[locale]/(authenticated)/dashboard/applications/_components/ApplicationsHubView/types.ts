@@ -19,6 +19,8 @@ export interface JourneyDocument {
   type: "agreement" | "certificate"
   status: string
   verificationCode: string | null
+  locale: string
+  borderStyle: string
 }
 
 export interface JourneyPlacement {

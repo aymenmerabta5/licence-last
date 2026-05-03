@@ -1660,7 +1660,29 @@
       },
       "loading": "Loading documents",
       "noDocumentsTitle": "No documents yet",
-      "placementCount": "{count, plural, one {# placement} other {# placements}}"
+      "placementCount": "{count, plural, one {# placement} other {# placements}}",
+      "certificateVersions": "Certificate Versions",
+      "generateNewVersion": "Generate New Version",
+      "generateDialog": {
+        "title": "Generate Certificate",
+        "languageLabel": "Language",
+        "borderLabel": "Border Style",
+        "generate": "Generate",
+        "regenerate": "Regenerate",
+        "regenerateWarning": "This version already exists. Regenerating will replace it.",
+        "cancel": "Cancel"
+      },
+      "border": {
+        "classic": "Classic Gold",
+        "minimal": "Minimal Clean",
+        "formal": "Formal Academic",
+        "ornate": "Ornate Gold",
+        "modern": "Modern Edge",
+        "premium": "Premium Navy"
+      }
+    },
+    "placementDocuments": {
+      "certificateVersion": "{language} · {border}"
     },
     "admin": {
       "title": "Admin Dashboard",

@@ -39,6 +39,8 @@ export async function downloadDocument(
       documentType: placementDocument.type,
       placementId: placement.id,
       status: placementDocument.status,
+      locale: placementDocument.locale,
+      borderStyle: placementDocument.borderStyle,
       meta: placementDocument.meta,
       verificationCode: placementDocument.verificationCode,
       storageKey: placementDocument.storageKey,
@@ -71,6 +73,7 @@ export async function downloadDocument(
 
   const meta = toMetaRecord(row.meta)
   const locale = pickString(meta.locale) ?? input.locale ?? "en"
+  const borderStyle = pickString(meta.borderStyle) ?? row.borderStyle ?? "classic"
   const fileName =
     pickString(meta.fileName) ?? `${row.documentType}_${row.placementId}.pdf`
   const verificationCode = pickString(row.verificationCode)
@@ -122,6 +125,7 @@ export async function downloadDocument(
       buffer: await renderCertificatePdfBuffer({
         placementId: row.placementId,
         locale,
+        borderStyle,
         verificationCode,
         snapshotData: row.snapshotData,
       }),

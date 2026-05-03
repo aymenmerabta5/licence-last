@@ -8,6 +8,8 @@ export interface PlacementDocument {
   status: PlacementDocumentStatus
   verificationCode: string | null
   createdAt: Date | string
+  locale: string
+  borderStyle: string
 }
 
 export interface CompanyPlacementDocumentSummary {
