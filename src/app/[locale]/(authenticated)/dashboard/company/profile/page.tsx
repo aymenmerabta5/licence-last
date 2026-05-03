@@ -20,7 +20,7 @@ function CompanyProfileFallback() {
   )
 }
 
-async function CompanyProfilePageContent() {
+export async function CompanyProfilePageContent() {
   const [{ company, membership }, t] = await Promise.all([
     requireCompanyOwner(),
     getTranslations("dashboard.company.profile"),

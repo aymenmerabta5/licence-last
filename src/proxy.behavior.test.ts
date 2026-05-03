@@ -32,7 +32,7 @@ describe("src/proxy root-path behavior", () => {
       },
     })
 
-    const response = proxy(request)
+    const response = await proxy(request)
 
     expect(response.headers.get("location")).toBe("https://example.com/fr")
   })
@@ -43,7 +43,7 @@ describe("src/proxy root-path behavior", () => {
     const { proxy } = await importProxy()
     const request = new NextRequest("https://example.com/en/login")
 
-    const response = proxy(request)
+    const response = await proxy(request)
 
     expect(response?.headers.get("location") ?? null).toBeNull()
   })

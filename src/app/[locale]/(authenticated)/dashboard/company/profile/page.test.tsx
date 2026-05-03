@@ -108,8 +108,8 @@ describe("dashboard/company/profile/page", () => {
   })
 
   test("renders the profile form for company owners", async () => {
-    const { default: CompanyProfilePage } = await loadCompanyProfilePage()
-    render(await CompanyProfilePage())
+    const { CompanyProfilePageContent } = await loadCompanyProfilePage()
+    render(await CompanyProfilePageContent())
 
     expect(screen.getByTestId("company-profile-form").textContent).toContain(
       '"canDeleteCompany":true',

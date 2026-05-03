@@ -12,7 +12,7 @@ export const getMaintenanceModeProcedure = superAdminProcedure.handler(
       .from(siteSettings)
       .where(eq(siteSettings.id, "singleton"))
       .limit(1)
-    return { enabled: row?.maintenanceMode ?? true }
+    return { enabled: row?.maintenanceMode ?? false }
   },
 )
 

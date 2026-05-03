@@ -9,6 +9,13 @@ const intlMiddleware = createMiddleware(routing)
 
 export const PROTECTED_PATHS = ["/dashboard", "/onboarding", "/profile"]
 export const AUTH_PATHS = ["/login", "/signup", "/reset-password"]
+export const MAINTENANCE_EXEMPT_PATHS = [
+  "/login",
+  "/signup",
+  "/reset-password",
+  "/verify",
+  "/maintenance",
+]
 
 /**
  * Strip the locale prefix from a pathname.
@@ -42,10 +49,45 @@ export function isAuthPath(pathname: string): boolean {
   return AUTH_PATHS.some((p) => matchesPath(path, p))
 }
 
-export function proxy(request: NextRequest) {
+/**
+ * Check if a pathname should bypass maintenance-mode enforcement.
+ */
+export function isMaintenanceExemptPath(pathname: string): boolean {
+  const path = stripLocale(pathname)
+  return MAINTENANCE_EXEMPT_PATHS.some((p) => matchesPath(path, p))
+}
+
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   const locale = pathname.match(/^\/(en|fr|ar)(?=\/|$)/)?.[1] ?? "en"
+
+  if (!isMaintenanceExemptPath(pathname)) {
+    try {
+      const maintenanceUrl = new URL("/api/maintenance/status", request.url)
+      const maintenanceResponse = await fetch(maintenanceUrl, {
+        headers: {
+          cookie: request.headers.get("cookie") ?? "",
+        },
+      })
+
+      if (maintenanceResponse.ok) {
+        const { enabled, canBypass } =
+          (await maintenanceResponse.json()) as {
+            enabled: boolean
+            canBypass: boolean
+          }
+
+        if (enabled && !canBypass) {
+          return NextResponse.rewrite(
+            new URL(`/${locale}/maintenance`, request.url),
+          )
+        }
+      }
+    } catch {
+      // Fail open: if the status check is unreachable, allow the request
+    }
+  }
 
   if (isProtectedPath(pathname)) {
     const sessionCookie = getSessionCookie(request)

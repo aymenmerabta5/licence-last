@@ -9,7 +9,7 @@ export async function getMaintenanceMode(): Promise<boolean> {
     .from(siteSettings)
     .where(eq(siteSettings.id, "singleton"))
     .limit(1)
-  return row?.maintenanceMode ?? true
+  return row?.maintenanceMode ?? false
 }
 
 export async function isMaintenanceBypass(
