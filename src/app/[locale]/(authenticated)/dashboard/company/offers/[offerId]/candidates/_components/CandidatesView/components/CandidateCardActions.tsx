@@ -55,6 +55,7 @@ export function CandidateCardActions({
         disabled={
           isStagePending ||
           app.pipelineStage === "accepted" ||
+          app.pipelineStage === "validated" ||
           app.pipelineStage === "rejected"
         }
         className="h-8 rounded-none border-border/50 bg-secondary/10 text-xs"

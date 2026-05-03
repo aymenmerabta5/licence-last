@@ -66,8 +66,8 @@ export function ConversationStarterList({
   const fallbackStudentName = t("fallbackStudentName")
 
   return (
-    <section className="mt-4 border-t border-border/30 px-2 pt-4">
-      <div className="px-2 pb-3">
+    <section className="mt-4 border-t border-border/30 pt-4">
+      <div className="pb-3">
         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary [[dir=rtl]_&]:tracking-normal">
           {t("startersLabel")}
         </p>

@@ -19,7 +19,7 @@ export function PipelineSummaryBar({ counts, activeStage, onStageClick }: Pipeli
     <motion.div
       {...reveal}
       transition={revealWithDelay(0.1)}
-      className="grid grid-cols-2 border border-border/80 bg-background shadow-[4px_4px_0_0_oklch(var(--border))] md:grid-cols-3 lg:grid-cols-6"
+      className="grid grid-cols-2 border border-border/80 bg-background shadow-[4px_4px_0_0_oklch(var(--border))] md:grid-cols-3 lg:grid-cols-7"
     >
       {STAGE_COLUMNS.map((stage, index) => {
         const isActive = activeStage === stage

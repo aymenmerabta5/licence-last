@@ -1502,7 +1502,8 @@
           "screening": "الفرز",
           "interview": "المقابلة",
           "offer": "العرض",
-          "accepted": "مقبول",
+          "accepted": "في انتظار التحقق",
+          "validated": "تم التحقق",
           "rejected": "مرفوض"
         },
         "errorTitle": "حدث خطأ ما",
@@ -2440,6 +2441,7 @@
         "interview": "المقابلة",
         "offer": "العرض",
         "accepted": "مقبول",
+        "validated": "تم التحقق",
         "rejected": "مرفوض"
       },
       "fallbackStudent": "طالب",
@@ -3040,7 +3042,9 @@
     "maintenanceModeSaved": "تم تحديث وضع الصيانة بنجاح"
   },
   "maintenance": {
+    "kicker": "توقف تحريري",
     "title": "تحت الصيانة",
-    "subtitle": "نحن نحسن Stag. يرجى العودة قريبًا."
+    "subtitle": "نحن نُحسّن Stag لنقدّم لك تجربة أفضل. يرجى العودة قريبًا.",
+    "status": "أعمال جارية"
   }
 }

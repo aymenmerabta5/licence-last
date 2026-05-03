@@ -216,7 +216,7 @@ export async function validatePlacement(
       .update(application)
       .set({
         status: "admin_validated",
-        pipelineStage: "accepted",
+        pipelineStage: "validated",
         pipelineStageUpdatedAt: now,
         adminActionByUserId: adminUserId,
         adminActionAt: now,
@@ -257,7 +257,7 @@ export async function validatePlacement(
         companyName: app.companyName,
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
-        stage: "accepted",
+        stage: "validated",
         status: "admin_validated",
       },
     })
@@ -273,10 +273,10 @@ export async function validatePlacement(
       applicationId,
       actorUserId: adminUserId,
       eventType: "application_status_changed",
-      fromStage: app.pipelineStage,
-      toStage: "accepted",
-      fromStatus: app.status,
-      toStatus: "admin_validated",
+        fromStage: app.pipelineStage,
+        toStage: "validated",
+        fromStatus: app.status,
+        toStatus: "admin_validated",
       payload: {
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),

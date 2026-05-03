@@ -137,7 +137,7 @@ export function useApplicationHub() {
         )
       case "finalized":
         return journeys.filter(
-          (j) => ["accepted", "rejected"].includes(j.pipelineStage) || j.status === "withdrawn",
+          (j) => ["accepted", "validated", "rejected"].includes(j.pipelineStage) || j.status === "withdrawn",
         )
       default:
         return journeys

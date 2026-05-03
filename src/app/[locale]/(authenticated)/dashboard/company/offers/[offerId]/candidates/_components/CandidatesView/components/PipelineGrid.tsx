@@ -82,7 +82,7 @@ export function PipelineGrid({
           </p>
         </div>
         <div className="overflow-y-auto md:overflow-x-auto md:overflow-y-hidden pb-3">
-          <div className="grid grid-flow-row md:grid-flow-col grid-cols-1 md:auto-cols-[minmax(280px,1fr)] gap-3 min-w-0 md:min-w-[1760px]">
+          <div className="grid grid-flow-row md:grid-flow-col grid-cols-1 md:auto-cols-[minmax(280px,1fr)] gap-3 min-w-0 md:min-w-max">
             {STAGE_COLUMNS.map((stage) => (
               <PipelineStageColumn
                 key={stage}

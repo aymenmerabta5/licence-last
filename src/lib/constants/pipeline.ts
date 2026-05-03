@@ -9,6 +9,7 @@ export const STAGE_COLUMNS = [
   "interview",
   "offer",
   "accepted",
+  "validated",
   "rejected",
 ] as const
 
@@ -19,23 +20,25 @@ export const STAGE_LABELS: Record<PipelineStage, string> = {
   screening: "Screening",
   interview: "Interview",
   offer: "Offer",
-  accepted: "Accepted",
+  accepted: "Awaiting Validation",
+  validated: "Validated",
   rejected: "Rejected",
 }
 
 /**
+ * One-way pipeline transitions. Moving right is permanent;
+ * candidates can never regress to an earlier stage.
+ * Terminal stages (accepted/validated/rejected) are final.
  * Keep this map in sync with server transition rules in
  * src/server/services/applications/pipeline.ts.
- * Note: Terminal stages (accepted/rejected) are allowed from
- * interview and offer on the client so DnD works, but the server
- * intercepts them and routes to companyAccept/companyRefuse.
  */
 export const STAGE_TRANSITIONS: Record<PipelineStage, PipelineStage[]> = {
   applied: ["screening", "interview", "offer"],
-  screening: ["applied", "interview", "offer"],
-  interview: ["screening", "offer", "accepted", "rejected"],
-  offer: ["interview", "accepted", "rejected"],
+  screening: ["interview", "offer"],
+  interview: ["offer", "accepted", "rejected"],
+  offer: ["accepted", "rejected"],
   accepted: [],
+  validated: [],
   rejected: [],
 }
 
@@ -51,6 +54,8 @@ export const STATUS_COLORS: Record<string, string> = {
   company_refused:
     "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800",
   admin_validated:
+    "bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800",
+  validated:
     "bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800",
   admin_rejected:
     "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800",

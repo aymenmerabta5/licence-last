@@ -50,6 +50,28 @@ export async function companyRefuseApplication(
     )
   }
 
+  if (app.status === "company_refused") {
+    if (app.pipelineStage === "rejected") {
+      log.info({ applicationId }, "Application already refused; returning idempotent success")
+      return { success: true, applicationId }
+    }
+
+    log.warn(
+      { applicationId, currentPipelineStage: app.pipelineStage },
+      "Application status is company_refused but pipelineStage is not rejected; syncing",
+    )
+
+    await db
+      .update(application)
+      .set({
+        pipelineStage: "rejected",
+        pipelineStageUpdatedAt: new Date(),
+      })
+      .where(eq(application.id, applicationId))
+
+    return { success: true, applicationId }
+  }
+
   if (app.status !== "applied") {
     throw new ApplicationServiceError(
       "APPLICATION_INVALID_STATE",

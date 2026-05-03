@@ -1502,7 +1502,8 @@
           "screening": "Screening",
           "interview": "Interview",
           "offer": "Offer",
-          "accepted": "Accepted",
+          "accepted": "Awaiting Validation",
+          "validated": "Validated",
           "rejected": "Rejected"
         },
         "errorTitle": "Something went wrong",
@@ -2438,9 +2439,10 @@
         "applied": "Applied",
         "screening": "Screening",
         "interview": "Interview",
-        "offer": "Offer",
-        "accepted": "Accepted",
-        "rejected": "Rejected"
+          "offer": "Offer",
+          "accepted": "Awaiting Validation",
+          "validated": "Validated",
+          "rejected": "Rejected"
       },
       "fallbackStudent": "Student",
       "disabled": {
@@ -3040,7 +3042,9 @@
     "maintenanceModeSaved": "Maintenance mode updated successfully"
   },
   "maintenance": {
+    "kicker": "Editorial Pause",
     "title": "Under Maintenance",
-    "subtitle": "We're making Stag even better. Please check back soon."
+    "subtitle": "We are refining Stag to serve you better. Please check back soon.",
+    "status": "Work in progress"
   }
 }

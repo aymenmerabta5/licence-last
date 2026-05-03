@@ -1502,7 +1502,8 @@
           "screening": "Sélection",
           "interview": "Entretien",
           "offer": "Offre",
-          "accepted": "Acceptée",
+          "accepted": "En attente de validation",
+          "validated": "Validée",
           "rejected": "Refusée"
         },
         "errorTitle": "Une erreur est survenue",
@@ -2440,6 +2441,7 @@
         "interview": "Entretien",
         "offer": "Offre",
         "accepted": "Accepte",
+        "validated": "Validee",
         "rejected": "Rejete"
       },
       "fallbackStudent": "Etudiant",
@@ -3040,7 +3042,9 @@
     "maintenanceModeSaved": "Mode maintenance mis à jour avec succès"
   },
   "maintenance": {
+    "kicker": "Pause éditoriale",
     "title": "En maintenance",
-    "subtitle": "Nous améliorons Stag. Veuillez revenir bientôt."
+    "subtitle": "Nous peaufinons Stag pour mieux vous servir. Merci de revenir bientôt.",
+    "status": "Travaux en cours"
   }
 }

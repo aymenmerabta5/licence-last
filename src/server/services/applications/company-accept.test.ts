@@ -188,6 +188,82 @@ describe("src/server/services/applications/company-accept", () => {
     expect(createNotificationMock).toHaveBeenCalledTimes(3)
   })
 
+  test("should return idempotent success when already company_accepted and pipelineStage is accepted or validated", async () => {
+    mockSelectResults.push([
+      {
+        id: "app-1",
+        status: "company_accepted",
+        pipelineStage: "accepted",
+        offerId: "offer-1",
+        studentUserId: "student-1",
+        offerTitle: "Offer 1",
+        offerCompanyId: "company-1",
+        offerStatus: "published",
+        offerMaxPositions: 5,
+        companyName: "Acme",
+        studentUniversityId: "uni-1",
+        studentDepartmentId: null,
+      },
+    ])
+
+    const { companyAcceptApplication } = await importCompanyAcceptApplication()
+    const result = await companyAcceptApplication("app-1", "company-1", "actor-1")
+
+    expect(result.success).toBe(true)
+    expect(mockUpdate).not.toHaveBeenCalled()
+  })
+
+  test("should return idempotent success when already company_accepted and pipelineStage is validated", async () => {
+    mockSelectResults.push([
+      {
+        id: "app-1",
+        status: "company_accepted",
+        pipelineStage: "validated",
+        offerId: "offer-1",
+        studentUserId: "student-1",
+        offerTitle: "Offer 1",
+        offerCompanyId: "company-1",
+        offerStatus: "published",
+        offerMaxPositions: 5,
+        companyName: "Acme",
+        studentUniversityId: "uni-1",
+        studentDepartmentId: null,
+      },
+    ])
+
+    const { companyAcceptApplication } = await importCompanyAcceptApplication()
+    const result = await companyAcceptApplication("app-1", "company-1", "actor-1")
+
+    expect(result.success).toBe(true)
+    expect(mockUpdate).not.toHaveBeenCalled()
+  })
+
+  test("should sync pipelineStage when status is company_accepted but pipelineStage is not accepted", async () => {
+    mockSelectResults.push([
+      {
+        id: "app-1",
+        status: "company_accepted",
+        pipelineStage: "offer",
+        offerId: "offer-1",
+        studentUserId: "student-1",
+        offerTitle: "Offer 1",
+        offerCompanyId: "company-1",
+        offerStatus: "published",
+        offerMaxPositions: 5,
+        companyName: "Acme",
+        studentUniversityId: "uni-1",
+        studentDepartmentId: null,
+      },
+    ])
+
+    const { companyAcceptApplication } = await importCompanyAcceptApplication()
+    const result = await companyAcceptApplication("app-1", "company-1", "actor-1")
+
+    expect(result.success).toBe(true)
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(createNotificationMock).not.toHaveBeenCalled()
+  })
+
   test("should throw when application changes before update", async () => {
     mockSelectResults.push([
       {

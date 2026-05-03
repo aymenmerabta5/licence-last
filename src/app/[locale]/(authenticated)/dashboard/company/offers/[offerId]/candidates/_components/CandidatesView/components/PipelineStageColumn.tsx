@@ -46,6 +46,12 @@ const STAGE_THEME: Record<
     dropBg: "border-emerald-500/40 bg-emerald-500/5",
     border: "border-emerald-500/15",
   },
+  validated: {
+    dot: "bg-emerald-600",
+    headerBg: "bg-emerald-600/5",
+    dropBg: "border-emerald-600/40 bg-emerald-600/5",
+    border: "border-emerald-600/15",
+  },
   rejected: {
     dot: "bg-rose-500",
     headerBg: "bg-rose-500/5",
@@ -149,6 +155,7 @@ export function PipelineStageColumn({
             canDrag={
               !pendingStageById[app.id] &&
               app.pipelineStage !== "accepted" &&
+              app.pipelineStage !== "validated" &&
               app.pipelineStage !== "rejected"
             }
             onAccept={() => onAccept(app)}

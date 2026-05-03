@@ -60,6 +60,28 @@ export async function companyAcceptApplication(
     )
   }
 
+  if (app.status === "company_accepted") {
+    if (app.pipelineStage === "accepted" || app.pipelineStage === "validated") {
+      log.info({ applicationId }, "Application already accepted; returning idempotent success")
+      return { success: true, applicationId }
+    }
+
+    log.warn(
+      { applicationId, currentPipelineStage: app.pipelineStage },
+      "Application status is company_accepted but pipelineStage is not accepted; syncing",
+    )
+
+    await db
+      .update(application)
+      .set({
+        pipelineStage: "accepted",
+        pipelineStageUpdatedAt: new Date(),
+      })
+      .where(eq(application.id, applicationId))
+
+    return { success: true, applicationId }
+  }
+
   if (app.status !== "applied") {
     throw new ApplicationServiceError(
       "APPLICATION_INVALID_STATE",

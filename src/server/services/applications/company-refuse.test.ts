@@ -120,6 +120,49 @@ describe("src/server/services/applications/company-refuse", () => {
     expect(createNotificationMock).toHaveBeenCalledTimes(1)
   })
 
+  test("should return idempotent success when already company_refused and pipelineStage is rejected", async () => {
+    mockSelectResults.push([
+      {
+        id: "app-1",
+        status: "company_refused",
+        pipelineStage: "rejected",
+        offerId: "offer-1",
+        studentUserId: "student-1",
+        offerTitle: "Offer 1",
+        offerCompanyId: "company-1",
+        companyName: "Acme",
+      },
+    ])
+
+    const { companyRefuseApplication } = await importCompanyRefuseApplication()
+    const result = await companyRefuseApplication("app-1", "company-1", "actor-1")
+
+    expect(result.success).toBe(true)
+    expect(mockUpdate).not.toHaveBeenCalled()
+  })
+
+  test("should sync pipelineStage when status is company_refused but pipelineStage is not rejected", async () => {
+    mockSelectResults.push([
+      {
+        id: "app-1",
+        status: "company_refused",
+        pipelineStage: "offer",
+        offerId: "offer-1",
+        studentUserId: "student-1",
+        offerTitle: "Offer 1",
+        offerCompanyId: "company-1",
+        companyName: "Acme",
+      },
+    ])
+
+    const { companyRefuseApplication } = await importCompanyRefuseApplication()
+    const result = await companyRefuseApplication("app-1", "company-1", "actor-1")
+
+    expect(result.success).toBe(true)
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(createNotificationMock).not.toHaveBeenCalled()
+  })
+
   test("should throw when application changes before refusal update", async () => {
     mockSelectResults.push([
       {

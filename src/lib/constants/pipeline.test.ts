@@ -8,16 +8,22 @@ describe("canTransitionStage", () => {
     expect(canTransitionStage("screening", "offer")).toBe(true)
   })
 
-  test("allows configured backward transition", () => {
-    expect(canTransitionStage("offer", "interview")).toBe(true)
-  })
-
-  test("blocks invalid transitions", () => {
+  test("blocks all backward transitions", () => {
+    expect(canTransitionStage("screening", "applied")).toBe(false)
+    expect(canTransitionStage("interview", "screening")).toBe(false)
+    expect(canTransitionStage("interview", "applied")).toBe(false)
+    expect(canTransitionStage("offer", "interview")).toBe(false)
+    expect(canTransitionStage("offer", "screening")).toBe(false)
     expect(canTransitionStage("offer", "applied")).toBe(false)
-    expect(canTransitionStage("applied", "accepted")).toBe(false)
   })
 
-  test("allows terminal transitions from late stages", () => {
+  test("blocks invalid and skipped transitions", () => {
+    expect(canTransitionStage("applied", "accepted")).toBe(false)
+    expect(canTransitionStage("screening", "accepted")).toBe(false)
+    expect(canTransitionStage("applied", "rejected")).toBe(false)
+  })
+
+  test("allows forward terminal transitions from late stages", () => {
     expect(canTransitionStage("interview", "accepted")).toBe(true)
     expect(canTransitionStage("interview", "rejected")).toBe(true)
     expect(canTransitionStage("offer", "accepted")).toBe(true)
@@ -26,6 +32,8 @@ describe("canTransitionStage", () => {
 
   test("blocks all transitions from terminal stages", () => {
     expect(canTransitionStage("accepted", "interview")).toBe(false)
+    expect(canTransitionStage("accepted", "offer")).toBe(false)
     expect(canTransitionStage("rejected", "applied")).toBe(false)
+    expect(canTransitionStage("rejected", "offer")).toBe(false)
   })
 })

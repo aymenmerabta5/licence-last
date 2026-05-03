@@ -31,13 +31,7 @@ interface ListParams {
 export interface ApplicationWithStudent {
   id: string
   status: ApplicationStatus
-  pipelineStage:
-    | "applied"
-    | "screening"
-    | "interview"
-    | "offer"
-    | "accepted"
-    | "rejected"
+  pipelineStage: PipelineStage
   coverLetter: string | null
   createdAt: Date
   companyActionAt: Date | null
