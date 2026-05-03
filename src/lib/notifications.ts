@@ -24,6 +24,10 @@ export interface NotificationsSummary {
   suggestedNextActions: string[]
 }
 
+export interface NotificationDestination {
+  href: string
+}
+
 export type NotificationTranslationFn = (
   key: string,
   values?: Record<string, string | number>,
@@ -73,6 +77,14 @@ function getPayloadText(
     return null
   }
   return asText(payload[key])
+}
+
+function buildThreadHref(threadId: string | null): string {
+  if (!threadId) {
+    return "/dashboard/messages"
+  }
+
+  return `/dashboard/messages?threadId=${encodeURIComponent(threadId)}`
 }
 
 function humanizeToken(value: string): string {
@@ -381,6 +393,46 @@ export function formatNotification(
   return {
     title: formatNotificationTitle(input.type, t),
     message: formatByType(input.type, payload, t),
+  }
+}
+
+export function getNotificationDestination(
+  input: NotificationInput,
+): NotificationDestination {
+  const payload = asPayloadRecord(input.payload)
+  const threadId = getPayloadText(payload, "threadId")
+  const offerId = getPayloadText(payload, "offerId")
+
+  switch (input.type) {
+    case "new_message":
+      return { href: buildThreadHref(threadId) }
+    case "new_application":
+      return {
+        href: offerId
+          ? `/dashboard/company/offers/${offerId}/candidates`
+          : "/dashboard/candidates",
+      }
+    case "application_stage_changed":
+    case "application_refused":
+    case "interview_proposed":
+    case "interview_cancelled":
+    case "interview_completed":
+    case "agreement_generated":
+    case "certificate_generated":
+    case "placement_validated":
+    case "placement_rejected":
+      return { href: "/dashboard/applications" }
+    case "interview_confirmed":
+      return { href: "/dashboard/interviews" }
+    case "placement_pending_validation":
+      return { href: "/dashboard/admin/validations" }
+    case "company_approved":
+    case "company_rejected":
+    case "company_suspended":
+    case "company_reactivated":
+      return { href: "/dashboard/company/profile" }
+    default:
+      return { href: "/dashboard/notifications" }
   }
 }
 

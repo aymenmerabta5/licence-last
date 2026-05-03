@@ -1513,13 +1513,31 @@
           "inProgress": "In Progress",
           "finalized": "Finalized"
         },
+        "empty": {
+          "title": "No applications yet",
+          "description": "Start exploring internships to track your applications, interviews, and placement documents here.",
+          "explore": "Explore Internships"
+        },
         "nextAction": {
+          "actionRequired": "Action required",
+          "waiting": "Waiting",
+          "readyToDownload": "Ready to download",
           "confirmSlot": "Confirm interview slot",
           "downloadAgreement": "Download agreement",
           "downloadCertificate": "Download certificate",
           "waitingForCompany": "Waiting for company",
           "waitingForValidation": "Waiting for department approval",
           "none": "No action needed"
+        },
+        "status": {
+          "applied": "Applied",
+          "company_accepted": "Accepted",
+          "company_refused": "Refused",
+          "admin_validated": "Validated",
+          "admin_rejected": "Rejected",
+          "withdrawn": "Withdrawn",
+          "pending": "Pending",
+          "generated": "Ready"
         },
         "journeyCard": {
           "appliedOn": "Applied on",
@@ -1532,7 +1550,10 @@
           "placementDates": "{start} — {end}"
         },
         "interview": {
+          "title": "Interview",
           "noteFromCompany": "From the company",
+          "confirm": "Confirm",
+          "confirming": "Confirming...",
           "confirmSlot": "Confirm",
           "confirmed": "Confirmed",
           "joinMeeting": "Join meeting",
@@ -1540,6 +1561,13 @@
           "chooseSlot": "Choose a time slot that works for you:"
         },
         "document": {
+          "placementTitle": "Placement documents",
+          "approvedBy": "Approved by {name} on {date}",
+          "approvedOn": "Approved on {date}",
+          "type": {
+            "agreement": "Internship Agreement",
+            "certificate": "Completion Certificate"
+          },
           "agreement": "Internship Agreement",
           "certificate": "Completion Certificate",
           "statusPending": "Pending",

@@ -1,5 +1,6 @@
 "use client"
 
+import { useSearchParams } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 import { ConversationPane } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/ConversationPane"
 import { MessagesHeader } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/MessagesHeader"
@@ -14,6 +15,8 @@ interface MessagesViewProps {
 }
 
 export function MessagesView({ role, currentUserId }: MessagesViewProps) {
+  const searchParams = useSearchParams()
+  const requestedThreadId = searchParams.get("threadId")
   const [pendingThreadId, setPendingThreadId] = useState<string | null>(null)
   const {
     selectedThreadId,
@@ -42,6 +45,15 @@ export function MessagesView({ role, currentUserId }: MessagesViewProps) {
     selectedThreadId,
     currentUserId,
   })
+
+  useEffect(() => {
+    if (!requestedThreadId || requestedThreadId === selectedThreadId) {
+      return
+    }
+
+    setPendingThreadId(requestedThreadId)
+    selectThread(requestedThreadId)
+  }, [requestedThreadId, selectThread, selectedThreadId])
 
   useEffect(() => {
     if (

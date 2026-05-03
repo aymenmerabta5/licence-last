@@ -36,6 +36,13 @@ mock.module("next-intl", () => ({
     },
 }))
 
+mock.module("@/i18n/routing", () => ({
+  Link: ({
+    children,
+    ...props
+  }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => <a {...props}>{children}</a>,
+}))
+
 mock.module("motion/react-client", createMotionReactClientMock)
 
 const { NotificationsList } = await import(
@@ -111,11 +118,38 @@ describe("src/app/[locale]/(authenticated)/dashboard/notifications/_components/N
       />,
     )
 
-    const buttons = screen.getAllByRole("button")
-    fireEvent.click(buttons[0])
-    fireEvent.click(buttons[1])
+    const links = screen.getAllByRole("link")
+    fireEvent.click(links[0] as HTMLAnchorElement)
+    fireEvent.click(links[1] as HTMLAnchorElement)
 
     expect(onMarkRead).toHaveBeenCalledTimes(1)
     expect(onMarkRead).toHaveBeenCalledWith("n-unread")
+  })
+
+  test("builds a thread-specific href for message notifications", () => {
+    const onMarkRead = mock(() => {})
+
+    render(
+      <NotificationsList
+        notifications={[
+          {
+            id: "n-message",
+            type: "new_message",
+            createdAt: "2026-02-18T10:00:00.000Z",
+            readAt: null,
+            payload: { threadId: "thread-9", offerTitle: "Backend Internship" },
+          },
+        ]}
+        isLoading={false}
+        isFetchingNextPage={false}
+        onMarkRead={onMarkRead}
+        sentinelRef={sentinelRef}
+      />,
+    )
+
+    expect(screen.getByRole("link")).toHaveAttribute(
+      "href",
+      "/dashboard/messages?threadId=thread-9",
+    )
   })
 })

@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test"
 import {
   buildNotificationsFallbackSummary,
   formatNotification,
+  getNotificationDestination,
   type NotificationTranslationFn,
 } from "@/lib/notifications"
 
@@ -59,5 +60,25 @@ describe("src/lib/notifications", () => {
       "Consultez les notifications non lues.",
       "Traitez les messages d'abord.",
     ])
+  })
+
+  test("builds a messages href that deep-links to the target thread", () => {
+    const result = getNotificationDestination({
+      type: "new_message",
+      payload: { threadId: "thread-42" },
+    })
+
+    expect(result).toEqual({
+      href: "/dashboard/messages?threadId=thread-42",
+    })
+  })
+
+  test("falls back to the messages page when a message notification has no thread id", () => {
+    const result = getNotificationDestination({
+      type: "new_message",
+      payload: {},
+    })
+
+    expect(result).toEqual({ href: "/dashboard/messages" })
   })
 })

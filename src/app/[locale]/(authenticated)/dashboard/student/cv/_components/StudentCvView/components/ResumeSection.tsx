@@ -69,10 +69,12 @@ export function ResumeSection({
           accept="application/pdf"
           className="hidden"
           onChange={async (event) => {
-            const file = event.target.files?.[0]
+            const input = event.currentTarget
+            const file = input.files?.[0]
             if (!file) return
+
+            input.value = ""
             await onUpload(file)
-            event.currentTarget.value = ""
           }}
         />
 

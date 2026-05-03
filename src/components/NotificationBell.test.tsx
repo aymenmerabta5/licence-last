@@ -10,6 +10,9 @@ mock.module("next-intl", () => ({
         markAllRead: "Mark all read",
         empty: "No notifications yet.",
         viewAll: "View all",
+        "feed.titles.new_message": "New message",
+        "feed.messages.new_message.withOfferTitle":
+          "You received a new message about {offerTitle}.",
         relativeNow: "just now",
         relativeMinutesShort: "{count}m",
         relativeHoursShort: "{count}h",
@@ -189,5 +192,29 @@ describe("src/components/NotificationBell", () => {
     expect(markAllReadMutateMock).toHaveBeenCalledTimes(1)
     expect(markAllReadMutateMock).toHaveBeenCalledWith({})
     expect(markReadMutateMock).not.toHaveBeenCalled()
+  })
+
+  test("renders a message notification link that points to the related thread", async () => {
+    queryState.data = {
+      unreadCount: 1,
+      notifications: [
+        {
+          id: "n-message",
+          type: "new_message",
+          payload: { threadId: "thread-24", offerTitle: "Backend Internship" },
+          createdAt: "2026-02-18T10:00:00.000Z",
+          readAt: null,
+        },
+      ],
+    }
+
+    const { NotificationBell } = await loadNotificationBell()
+
+    render(<NotificationBell viewerId="viewer-1" />)
+
+    expect(screen.getByRole("link", { name: /new message/i })).toHaveAttribute(
+      "href",
+      "/dashboard/messages?threadId=thread-24",
+    )
   })
 })

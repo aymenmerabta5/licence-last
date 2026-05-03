@@ -3,7 +3,7 @@
 import { CheckCheck } from "lucide-react"
 
 import { Link } from "@/i18n/routing"
-import { formatNotification } from "@/lib/notifications"
+import { formatNotification, getNotificationDestination } from "@/lib/notifications"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenuContent,
@@ -90,34 +90,45 @@ export function NotificationDropdownContent({
               },
               t,
             )
+            const destination = getNotificationDestination({
+              type: n.type,
+              payload: n.payload,
+            })
+            const isUnread = n.readAt === null
 
             return (
               <DropdownMenuItem
                 key={n.id}
-                className="cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors items-start gap-2"
-                onSelect={(e) => {
-                  e.preventDefault()
-                  onMarkRead(n.id)
-                }}
+                className="focus:bg-primary/5 focus:text-primary transition-colors items-start gap-2 p-0"
               >
-                <div className="flex-1 min-w-0 py-0.5">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-xs font-medium truncate">
-                      {formatted.title}
-                    </p>
-                    <span className="text-[10px] text-muted-foreground shrink-0">
-                      {formatRelative(new Date(n.createdAt), t)}
-                    </span>
+                <Link
+                  href={destination.href as "/dashboard"}
+                  className="flex w-full items-start gap-2 px-1.5 py-1 text-inherit no-underline"
+                  onClick={() => {
+                    if (isUnread) {
+                      onMarkRead(n.id)
+                    }
+                  }}
+                >
+                  <div className="flex-1 min-w-0 py-0.5">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-xs font-medium truncate">
+                        {formatted.title}
+                      </p>
+                      <span className="text-[10px] text-muted-foreground shrink-0">
+                        {formatRelative(new Date(n.createdAt), t)}
+                      </span>
+                    </div>
+                    {formatted.message && (
+                      <p className="text-[11px] text-muted-foreground line-clamp-2">
+                        {formatted.message}
+                      </p>
+                    )}
                   </div>
-                  {formatted.message && (
-                    <p className="text-[11px] text-muted-foreground line-clamp-2">
-                      {formatted.message}
-                    </p>
+                  {isUnread && (
+                    <span className="mt-2 w-2 h-2 rounded-full bg-primary shrink-0" />
                   )}
-                </div>
-                {n.readAt === null && (
-                  <span className="mt-2 w-2 h-2 rounded-full bg-primary shrink-0" />
-                )}
+                </Link>
               </DropdownMenuItem>
             )
           })}

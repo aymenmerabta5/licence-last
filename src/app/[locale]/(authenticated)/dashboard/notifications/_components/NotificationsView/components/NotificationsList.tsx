@@ -3,8 +3,9 @@ import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import type { RefObject } from "react"
 
+import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
-import { formatNotification } from "@/lib/notifications"
+import { formatNotification, getNotificationDestination } from "@/lib/notifications"
 import { formatRelativeTime } from "@/lib/date"
 import { cn } from "@/lib/utils"
 
@@ -76,24 +77,31 @@ export function NotificationsList({
           t,
         )
         const isUnread = n.readAt === null
+        const destination = getNotificationDestination({
+          type: n.type,
+          payload: n.payload,
+        })
 
         return (
-          <motion.button
+          <motion.div
             key={n.id}
-            type="button"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: Math.min(i * 0.05, 0.4), ease }}
-            disabled={!isUnread}
-            onClick={() => isUnread && onMarkRead(n.id)}
             className={cn(
               "group relative block w-full text-start border-b border-border/50 bg-background transition-colors",
-              isUnread
-                ? "cursor-pointer hover:bg-muted/5"
-                : "opacity-75",
+              isUnread ? "hover:bg-muted/5" : "opacity-75",
             )}
           >
-            <div className="py-5 px-4 sm:px-6">
+            <Link
+              href={destination.href as "/dashboard"}
+              className="block py-5 px-4 text-inherit no-underline sm:px-6"
+              onClick={() => {
+                if (isUnread) {
+                  onMarkRead(n.id)
+                }
+              }}
+            >
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1 space-y-1">
                   <p className="text-xs font-semibold tracking-wide text-heading uppercase">
@@ -114,8 +122,8 @@ export function NotificationsList({
                   )}
                 </div>
               </div>
-            </div>
-          </motion.button>
+            </Link>
+          </motion.div>
         )
       })}
 

@@ -10,6 +10,14 @@ import { orpc, orpcClient } from "@/server/orpc/client"
 
 export type FilterTab = "all" | "action_required" | "in_progress" | "finalized"
 
+export function unwrapORPCPayload<T>(value: T | { json: T }): T {
+  if (typeof value === "object" && value !== null && "json" in value) {
+    return (value as { json: T }).json
+  }
+
+  return value as T
+}
+
 function base64ToBlob(base64: string, type: string): Blob {
   const byteCharacters = atob(base64)
   const byteNumbers = new Array<number>(byteCharacters.length)
@@ -32,52 +40,10 @@ export function useApplicationHub() {
 
   const journeysQuery = useQuery({
     queryKey: ["applications", "hub", "journeys"],
-    queryFn: async () => {
-      const [appsResult, interviewsResult, docsResult] = await Promise.all([
-        orpcClient.applications.listByStudent({ limit: 100 }),
-        orpcClient.interviews.listForStudent({}),
-        orpcClient.documents.listByStudent(),
-      ])
-
-      const journeys: ApplicationJourney[] = appsResult.applications.map((app) => {
-        const appInterviews = interviewsResult.filter((i) => i.applicationId === app.id)
-        const appPlacement = docsResult.find((p) => p.applicationId === app.id)
-
-        return {
-          ...app,
-          interviews: appInterviews.map((i) => ({
-            id: i.id,
-            status: i.status,
-            note: i.note,
-            confirmedSlotId: i.confirmedSlotId,
-            slots: i.slots.map((s) => ({
-              id: s.id,
-              startsAt: s.startsAt,
-              endsAt: s.endsAt,
-              location: s.location,
-              meetingUrl: s.meetingUrl,
-            })),
-          })),
-          placement: appPlacement
-            ? {
-                placementId: appPlacement.placementId,
-                startDate: appPlacement.startDate,
-                endDate: appPlacement.endDate,
-                validatedAt: appPlacement.validatedAt,
-                validatedByName: null,
-                documents: appPlacement.documents.map((d) => ({
-                  id: d.id,
-                  type: d.type,
-                  status: d.status,
-                  verificationCode: d.verificationCode,
-                })),
-              }
-            : null,
-        }
-      })
-
-      return journeys
-    },
+    queryFn: async () =>
+      unwrapORPCPayload<ApplicationJourney[]>(
+        await orpcClient.applications.listJourneys(),
+      ),
   })
 
   const withdrawMutation = useMutation({

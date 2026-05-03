@@ -1513,13 +1513,31 @@
           "inProgress": "En cours",
           "finalized": "Finalisées"
         },
+        "empty": {
+          "title": "Aucune candidature pour le moment",
+          "description": "Commencez à explorer les stages pour suivre ici vos candidatures, entretiens et documents de placement.",
+          "explore": "Explorer les stages"
+        },
         "nextAction": {
+          "actionRequired": "Action requise",
+          "waiting": "En attente",
+          "readyToDownload": "Prêt à télécharger",
           "confirmSlot": "Confirmer le créneau d'entretien",
           "downloadAgreement": "Télécharger la convention",
           "downloadCertificate": "Télécharger l'attestation",
           "waitingForCompany": "En attente de l'entreprise",
           "waitingForValidation": "En attente de validation du département",
           "none": "Aucune action requise"
+        },
+        "status": {
+          "applied": "Candidature envoyée",
+          "company_accepted": "Acceptée",
+          "company_refused": "Refusée",
+          "admin_validated": "Validée",
+          "admin_rejected": "Rejetée",
+          "withdrawn": "Retirée",
+          "pending": "En attente",
+          "generated": "Prêt"
         },
         "journeyCard": {
           "appliedOn": "Postulé le",
@@ -1532,7 +1550,10 @@
           "placementDates": "{start} — {end}"
         },
         "interview": {
+          "title": "Entretien",
           "noteFromCompany": "De l'entreprise",
+          "confirm": "Confirmer",
+          "confirming": "Confirmation...",
           "confirmSlot": "Confirmer",
           "confirmed": "Confirmé",
           "joinMeeting": "Rejoindre la réunion",
@@ -1540,6 +1561,13 @@
           "chooseSlot": "Choisissez un créneau qui vous convient :"
         },
         "document": {
+          "placementTitle": "Documents de placement",
+          "approvedBy": "Approuvé par {name} le {date}",
+          "approvedOn": "Approuvé le {date}",
+          "type": {
+            "agreement": "Convention de stage",
+            "certificate": "Attestation de fin de stage"
+          },
           "agreement": "Convention de stage",
           "certificate": "Attestation de fin de stage",
           "statusPending": "En attente",

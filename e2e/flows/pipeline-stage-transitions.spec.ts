@@ -14,6 +14,23 @@ test.describe("Pipeline Stage Transitions", () => {
     ).toBeVisible({ timeout: 15000 })
   })
 
+  test("can open an offer candidates page from the candidate pipeline list", async ({
+    page,
+  }) => {
+    const fixture = await seedApplicationFixture({ status: "applied" })
+    await loginAsCompany(page)
+    await page.goto("/en/dashboard/candidates")
+
+    await page.getByRole("link", { name: new RegExp(fixture.offerTitle, "i") }).click()
+
+    await expect(page).toHaveURL(
+      new RegExp(`/en/dashboard/company/offers/${fixture.offerId}/candidates$`),
+    )
+    await expect(page.getByText(fixture.offerTitle).first()).toBeVisible({
+      timeout: 15000,
+    })
+  })
+
   test("can navigate to offer candidates page", async ({ page }) => {
     const fixture = await seedApplicationFixture({ status: "applied" })
     await loginAsCompany(page)

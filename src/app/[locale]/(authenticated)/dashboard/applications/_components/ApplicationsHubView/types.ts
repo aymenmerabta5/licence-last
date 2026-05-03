@@ -34,7 +34,7 @@ export interface ApplicationJourney {
   id: string
   status: string
   pipelineStage: string
-  coverLetter: string | null
+  coverLetter?: string | null
   createdAt: string | Date
   offerId: string
   offerTitle: string
