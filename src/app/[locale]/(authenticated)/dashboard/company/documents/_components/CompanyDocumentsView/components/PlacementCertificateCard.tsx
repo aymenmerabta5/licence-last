@@ -25,11 +25,6 @@ interface PlacementCertificateCardProps {
   companyMembershipRole?: string | null
   generatingPlacementId: string | null
   downloadingDocumentId: string | null
-  onGenerateCertificate: (
-    placementId: string,
-    locale: string,
-    borderStyle: string,
-  ) => void
   onDownloadDocument: (documentId: string) => void
   onOpenGenerateDialog: (placementId: string) => void
 }
@@ -39,7 +34,6 @@ export function PlacementCertificateCard({
   companyMembershipRole = null,
   generatingPlacementId,
   downloadingDocumentId,
-  onGenerateCertificate,
   onDownloadDocument,
   onOpenGenerateDialog,
 }: PlacementCertificateCardProps) {

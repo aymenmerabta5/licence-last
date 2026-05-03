@@ -29,6 +29,13 @@
       "when": 1777918217760,
       "tag": "0003_add_validated_pipeline_stage",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1777846474584,
+      "tag": "0004_lumpy_angel",
+      "breakpoints": true
     }
   ]
 }

@@ -131,7 +131,6 @@ export function CompanyDocumentsView() {
                 companyMembershipRole={companyMembershipRole}
                 generatingPlacementId={generatingPlacementId}
                 downloadingDocumentId={downloadingDocumentId}
-                onGenerateCertificate={handleGenerateCertificate}
                 onDownloadDocument={handleDownloadDocument}
                 onOpenGenerateDialog={handleOpenGenerateDialog}
               />

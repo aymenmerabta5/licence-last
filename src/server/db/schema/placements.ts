@@ -44,6 +44,8 @@ export const placementDocument = pgTable(
       .notNull()
       .references(() => placement.id, { onDelete: "cascade" }),
     type: documentTypeEnum("type").notNull(),
+    locale: text("locale").default("en").notNull(),
+    borderStyle: text("border_style").default("classic").notNull(),
     status: documentStatusEnum("status").default("pending").notNull(),
     storageKey: text("storage_key"),
     url: text("url"),
@@ -53,13 +55,17 @@ export const placementDocument = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
-    uniqueIndex("document_placement_type_uidx").on(
+    uniqueIndex("document_placement_variant_uidx").on(
       table.placementId,
       table.type,
+      table.locale,
+      table.borderStyle,
     ),
     uniqueIndex("document_verification_code_uidx").on(table.verificationCode),
     index("document_placementId_idx").on(table.placementId),
     index("document_type_idx").on(table.type),
+    index("document_locale_idx").on(table.locale),
+    index("document_borderStyle_idx").on(table.borderStyle),
     index("document_status_idx").on(table.status),
     index("document_storageKey_idx").on(table.storageKey),
   ],

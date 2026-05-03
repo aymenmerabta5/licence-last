@@ -178,6 +178,7 @@ describe("src/server/services/documents/download-by-company", () => {
     expect(renderCertificatePdfBufferMock).toHaveBeenCalledWith({
       placementId: "placement-1",
       locale: "fr",
+      borderStyle: "classic",
       verificationCode: "INTX-ABCD-EF12",
       snapshotData: expect.objectContaining({
         studentName: "Student",

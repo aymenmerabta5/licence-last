@@ -65,7 +65,6 @@ describe("PlacementCertificateCard", () => {
         companyMembershipRole="owner"
         generatingPlacementId={null}
         downloadingDocumentId={null}
-        onGenerateCertificate={() => {}}
         onDownloadDocument={() => {}}
         onOpenGenerateDialog={() => {}}
       />,
@@ -83,7 +82,6 @@ describe("PlacementCertificateCard", () => {
         companyMembershipRole="recruiter"
         generatingPlacementId={null}
         downloadingDocumentId={null}
-        onGenerateCertificate={() => {}}
         onDownloadDocument={() => {}}
         onOpenGenerateDialog={() => {}}
       />,
@@ -128,7 +126,6 @@ describe("PlacementCertificateCard", () => {
         companyMembershipRole="owner"
         generatingPlacementId={null}
         downloadingDocumentId={null}
-        onGenerateCertificate={() => {}}
         onDownloadDocument={() => {}}
         onOpenGenerateDialog={() => {}}
       />,
