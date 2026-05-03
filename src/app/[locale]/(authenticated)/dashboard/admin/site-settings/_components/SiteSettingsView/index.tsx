@@ -1,13 +1,14 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { useQuery, useMutation } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { orpc } from "@/server/orpc/client"
 import { toast } from "sonner"
 import { Switch } from "@/components/ui/switch"
 
 export function SiteSettingsView() {
   const t = useTranslations("admin")
+  const queryClient = useQueryClient()
 
   const { data, isLoading } = useQuery(
     orpc.adminSettings.getMaintenanceMode.queryOptions(),
@@ -16,6 +17,10 @@ export function SiteSettingsView() {
     orpc.adminSettings.setMaintenanceMode.mutationOptions({
       onSuccess: () => {
         toast.success(t("maintenanceModeSaved"))
+        void queryClient.invalidateQueries({
+          queryKey: orpc.adminSettings.getMaintenanceMode.queryOptions()
+            .queryKey,
+        })
       },
     }),
   )

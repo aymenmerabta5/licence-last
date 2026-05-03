@@ -66,6 +66,7 @@ export async function proxy(request: NextRequest) {
     try {
       const maintenanceUrl = new URL("/api/maintenance/status", request.url)
       const maintenanceResponse = await fetch(maintenanceUrl, {
+        cache: "no-store",
         headers: {
           cookie: request.headers.get("cookie") ?? "",
         },
@@ -83,7 +84,8 @@ export async function proxy(request: NextRequest) {
           )
         }
       }
-    } catch {
+    } catch (err) {
+      console.error("[proxy] maintenance status check failed:", err)
       // Fail open: if the status check is unreachable, allow the request
     }
   }

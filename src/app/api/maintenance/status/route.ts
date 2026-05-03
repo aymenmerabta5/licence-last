@@ -19,8 +19,16 @@ export async function GET(request: Request) {
 
     const canBypass = await isMaintenanceBypass(currentRole, impersonatedBy)
 
-    return NextResponse.json({ enabled, canBypass })
-  } catch {
+    return NextResponse.json(
+      { enabled, canBypass },
+      {
+        headers: {
+          "Cache-Control": "no-store, max-age=0",
+        },
+      },
+    )
+  } catch (err) {
+    console.error("[maintenance/status] error:", err)
     // Fail open: if the DB or session check breaks, never lock the site
     return NextResponse.json({ enabled: false, canBypass: false })
   }
