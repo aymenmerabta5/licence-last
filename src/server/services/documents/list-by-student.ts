@@ -12,6 +12,8 @@ export interface StudentDocumentItem {
   id: string
   type: "agreement" | "certificate"
   status: "pending" | "generated" | "failed"
+  locale: string
+  borderStyle: string
   verificationCode: string | null
   createdAt: Date
 }
@@ -60,6 +62,8 @@ export async function listDocumentsByStudent(
       placementId: placementDocument.placementId,
       type: placementDocument.type,
       status: placementDocument.status,
+      locale: placementDocument.locale,
+      borderStyle: placementDocument.borderStyle,
       verificationCode: placementDocument.verificationCode,
       createdAt: placementDocument.createdAt,
     })
@@ -74,6 +78,8 @@ export async function listDocumentsByStudent(
       id: doc.id,
       type: doc.type,
       status: doc.status,
+      locale: doc.locale,
+      borderStyle: doc.borderStyle,
       verificationCode: doc.verificationCode,
       createdAt: doc.createdAt,
     })

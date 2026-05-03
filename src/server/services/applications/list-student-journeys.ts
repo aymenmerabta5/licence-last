@@ -46,6 +46,8 @@ export interface ApplicationJourney {
       type: "agreement" | "certificate"
       status: string
       verificationCode: string | null
+      locale: string
+      borderStyle: string
     }>
   } | null
 }
@@ -137,6 +139,8 @@ export async function listStudentApplicationJourneys(
             type: placementDocument.type,
             status: placementDocument.status,
             verificationCode: placementDocument.verificationCode,
+            locale: placementDocument.locale,
+            borderStyle: placementDocument.borderStyle,
           })
           .from(placementDocument)
           .where(inArray(placementDocument.placementId, placementIds))

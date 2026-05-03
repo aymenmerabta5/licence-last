@@ -12,6 +12,8 @@ export interface CompanyDocumentItem {
   id: string
   type: "agreement" | "certificate"
   status: "pending" | "generated" | "failed"
+  locale: string
+  borderStyle: string
   verificationCode: string | null
   createdAt: Date
 }
@@ -71,6 +73,8 @@ export async function listDocumentsByCompany(
       placementId: placementDocument.placementId,
       type: placementDocument.type,
       status: placementDocument.status,
+      locale: placementDocument.locale,
+      borderStyle: placementDocument.borderStyle,
       verificationCode: placementDocument.verificationCode,
       createdAt: placementDocument.createdAt,
     })
@@ -85,6 +89,8 @@ export async function listDocumentsByCompany(
       id: doc.id,
       type: doc.type,
       status: doc.status,
+      locale: doc.locale,
+      borderStyle: doc.borderStyle,
       verificationCode: doc.verificationCode,
       createdAt: doc.createdAt,
     })

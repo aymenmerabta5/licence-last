@@ -182,6 +182,7 @@ export const generateCompanyCertificateProcedure = companyOwnerProcedureStandard
     z.object({
       placementId: z.string().min(1),
       locale: z.enum(["en", "fr", "ar"]).optional(),
+      borderStyle: z.enum(["classic", "minimal", "formal", "ornate", "modern", "premium"]).optional(),
     }),
   )
   .handler(async ({ input, context }) => {
@@ -194,6 +195,7 @@ export const generateCompanyCertificateProcedure = companyOwnerProcedureStandard
         issuedByUserId: context.user.id,
         issuedByMembershipRole: context.companyMembership.role,
         locale: input.locale,
+        borderStyle: input.borderStyle,
       })
 
       return {

@@ -15,6 +15,7 @@ import {
   type CertificateData,
   InternshipCertificateTemplate,
 } from "@/server/pdfs/CertificateTemplate"
+import type { BorderStyleKey } from "@/server/pdfs/borders"
 import { DocumentServiceError } from "@/server/services/documents/errors"
 import { persistDocumentBuffer } from "@/server/services/documents/persist"
 import { generateQRCodeDataUrl } from "@/server/services/documents/qr-utils"
@@ -23,6 +24,7 @@ import { generateVerificationCode } from "@/server/services/documents/verificati
 export interface GenerateCertificateInput {
   placementId: string
   locale?: string
+  borderStyle?: string
 }
 
 export interface GenerateCertificateResult {
@@ -71,6 +73,16 @@ function pickDate(value: unknown): Date | null {
   }
 
   return null
+}
+
+async function deleteStorageKeyIfExists(key: string | null): Promise<void> {
+  if (!key) return
+  const { deleteFile } = await import("@/server/storage/s3")
+  try {
+    await deleteFile(key)
+  } catch {
+    /* ignore */
+  }
 }
 
 function toCertificateSnapshot(value: unknown): CertificateData | null {
@@ -181,6 +193,7 @@ async function loadCertificateContext(
 async function renderCertificateBuffer(params: {
   data: CertificateData
   locale: string
+  borderStyle: string
   verificationCode: string
 }): Promise<Buffer> {
   const verificationUrl = `${env.NEXT_PUBLIC_BETTER_AUTH_URL}/${params.locale}/verify/${params.verificationCode}`
@@ -190,6 +203,7 @@ async function renderCertificateBuffer(params: {
     createElement(InternshipCertificateTemplate, {
       data: params.data,
       locale: params.locale,
+      borderStyle: params.borderStyle as BorderStyleKey,
       verificationCode: params.verificationCode,
       qrCodeDataUrl,
     }) as unknown as Parameters<typeof renderToBuffer>[0],
@@ -201,6 +215,7 @@ async function renderCertificateBuffer(params: {
 export async function renderCertificatePdfBuffer(input: {
   placementId: string
   locale: string
+  borderStyle: string
   verificationCode: string
   snapshotData?: unknown
 }): Promise<Buffer> {
@@ -209,6 +224,7 @@ export async function renderCertificatePdfBuffer(input: {
     return renderCertificateBuffer({
       data: snapshot,
       locale: input.locale,
+      borderStyle: input.borderStyle,
       verificationCode: input.verificationCode,
     })
   }
@@ -217,6 +233,7 @@ export async function renderCertificatePdfBuffer(input: {
   return renderCertificateBuffer({
     data: context.data,
     locale: input.locale,
+    borderStyle: input.borderStyle,
     verificationCode: input.verificationCode,
   })
 }
@@ -224,7 +241,7 @@ export async function renderCertificatePdfBuffer(input: {
 export async function generateCertificate(
   input: GenerateCertificateInput,
 ): Promise<GenerateCertificateResult> {
-  const { placementId, locale = "en" } = input
+  const { placementId, locale = "en", borderStyle = "classic" } = input
   const context = await loadCertificateContext(placementId)
 
   if (context.placementRecord.endDate > new Date()) {
@@ -241,6 +258,8 @@ export async function generateCertificate(
       and(
         eq(placementDocument.placementId, placementId),
         eq(placementDocument.type, "certificate"),
+        eq(placementDocument.locale, locale),
+        eq(placementDocument.borderStyle, borderStyle),
       ),
     )
     .limit(1)
@@ -261,9 +280,11 @@ export async function generateCertificate(
       buffer = await fetchDocumentBuffer(existingDoc.storageKey)
     }
     if (!buffer) {
+      await deleteStorageKeyIfExists(existingDoc.storageKey)
       buffer = await renderCertificateBuffer({
         data: existingSnapshot ?? context.data,
         locale: existingLocale ?? locale,
+        borderStyle,
         verificationCode: existingVerificationCode,
       })
     }
@@ -280,12 +301,14 @@ export async function generateCertificate(
     ...existingMeta,
     generatedAt: existingGeneratedAt ?? new Date().toISOString(),
     locale: issuedLocale,
+    borderStyle,
     fileName: existingFileName ?? `certificate_${placementId}.pdf`,
   }
 
   let pdfBuffer = await renderCertificateBuffer({
     data: context.data,
     locale: issuedLocale,
+    borderStyle,
     verificationCode,
   })
 
@@ -313,6 +336,8 @@ export async function generateCertificate(
         id: crypto.randomUUID(),
         placementId,
         type: "certificate",
+        locale: issuedLocale,
+        borderStyle,
         status: "generated",
         verificationCode,
         storageKey: persistedKey,
@@ -334,6 +359,8 @@ export async function generateCertificate(
           and(
             eq(placementDocument.placementId, placementId),
             eq(placementDocument.type, "certificate"),
+            eq(placementDocument.locale, locale),
+            eq(placementDocument.borderStyle, borderStyle),
           ),
         )
         .limit(1)
@@ -357,6 +384,7 @@ export async function generateCertificate(
           buffer: await renderCertificateBuffer({
             data: resolvedSnapshot ?? context.data,
             locale: pickString(resolvedMeta.locale) ?? issuedLocale,
+            borderStyle,
             verificationCode: resolvedVerificationCode,
           }),
         }
@@ -367,6 +395,7 @@ export async function generateCertificate(
       pdfBuffer = await renderCertificateBuffer({
         data: context.data,
         locale: pickString(resolvedMeta.locale) ?? issuedLocale,
+        borderStyle,
         verificationCode,
       })
 
@@ -387,6 +416,7 @@ export async function generateCertificate(
             generatedAt:
               pickString(resolvedMeta.generatedAt) ?? issuedMeta.generatedAt,
             locale: pickString(resolvedMeta.locale) ?? issuedMeta.locale,
+            borderStyle: pickString(resolvedMeta.borderStyle) ?? borderStyle,
             fileName: pickString(resolvedMeta.fileName) ?? issuedMeta.fileName,
           },
         })

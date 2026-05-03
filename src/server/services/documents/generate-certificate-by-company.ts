@@ -18,6 +18,7 @@ interface GenerateCertificateByCompanyInput {
   issuedByUserId: string
   issuedByMembershipRole: string
   locale?: string
+  borderStyle?: string
 }
 
 interface GenerateCertificateByCompanyResult {
@@ -48,6 +49,7 @@ export async function generateCertificateByCompany(
     issuedByUserId,
     issuedByMembershipRole,
     locale,
+    borderStyle,
   } = input
 
   if (issuedByMembershipRole !== "owner") {
@@ -111,6 +113,7 @@ export async function generateCertificateByCompany(
   const result = await generateCertificate({
     placementId: placementRow.placementId,
     locale,
+    borderStyle,
   })
 
   if (!result.buffer) {
@@ -153,6 +156,8 @@ export async function generateCertificateByCompany(
   if (!hasImmutableIssuer) {
     const claimedMeta = {
       ...meta,
+      locale: pickString(meta.locale) ?? locale ?? "en",
+      borderStyle: pickString(meta.borderStyle) ?? borderStyle ?? "classic",
       issuedByUserId,
       issuedByRole: "company_admin",
       issuedByMembershipRole,
