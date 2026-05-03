@@ -40,6 +40,10 @@ export function useCompanyDocuments() {
   const [downloadingDocumentId, setDownloadingDocumentId] = useState<
     string | null
   >(null)
+  const [generateDialogOpen, setGenerateDialogOpen] = useState(false)
+  const [dialogPlacementId, setDialogPlacementId] = useState<string | null>(
+    null,
+  )
 
   const listQueryOptions = orpc.documents.listByCompany.queryOptions()
   const documentsQuery = useQuery(listQueryOptions)
@@ -50,13 +54,23 @@ export function useCompanyDocuments() {
     orpc.documents.downloadByCompany.mutationOptions(),
   )
 
-  const handleGenerateCertificate = async (placementId: string) => {
+  const handleOpenGenerateDialog = (placementId: string) => {
+    setDialogPlacementId(placementId)
+    setGenerateDialogOpen(true)
+  }
+
+  const handleGenerateCertificate = async (
+    placementId: string,
+    certificateLocale: string,
+    borderStyle: string,
+  ) => {
     setGeneratingPlacementId(placementId)
 
     try {
       const result = await generateMutation.mutateAsync({
         placementId,
-        locale: resolveLocale(locale),
+        locale: resolveLocale(certificateLocale),
+        borderStyle: borderStyle as import("@/server/pdfs/borders").BorderStyleKey,
       })
 
       if (result.pdfBase64) {
@@ -71,6 +85,8 @@ export function useCompanyDocuments() {
       toast.error(t("generateError"))
     } finally {
       setGeneratingPlacementId(null)
+      setGenerateDialogOpen(false)
+      setDialogPlacementId(null)
     }
   }
 
@@ -99,5 +115,9 @@ export function useCompanyDocuments() {
     downloadingDocumentId,
     handleGenerateCertificate,
     handleDownloadDocument,
+    generateDialogOpen,
+    setGenerateDialogOpen,
+    dialogPlacementId,
+    handleOpenGenerateDialog,
   }
 }

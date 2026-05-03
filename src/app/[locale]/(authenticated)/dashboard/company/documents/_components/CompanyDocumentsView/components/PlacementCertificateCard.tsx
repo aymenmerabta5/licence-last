@@ -1,6 +1,12 @@
 "use client"
 
-import { Briefcase, Calendar, GraduationCap, Mail } from "lucide-react"
+import {
+  Briefcase,
+  Calendar,
+  FilePlus,
+  GraduationCap,
+  Mail,
+} from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { useMemo } from "react"
 import { PlacementDocumentPanel } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/PlacementDocumentPanel"
@@ -11,6 +17,7 @@ import {
   STATUS_STYLES,
 } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/utils"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { INTERNSHIP_TYPE_LABELS } from "@/lib/constants/internship"
 
 interface PlacementCertificateCardProps {
@@ -18,8 +25,13 @@ interface PlacementCertificateCardProps {
   companyMembershipRole?: string | null
   generatingPlacementId: string | null
   downloadingDocumentId: string | null
-  onGenerateCertificate: (placementId: string) => void
+  onGenerateCertificate: (
+    placementId: string,
+    locale: string,
+    borderStyle: string,
+  ) => void
   onDownloadDocument: (documentId: string) => void
+  onOpenGenerateDialog: (placementId: string) => void
 }
 
 export function PlacementCertificateCard({
@@ -29,6 +41,7 @@ export function PlacementCertificateCard({
   downloadingDocumentId,
   onGenerateCertificate,
   onDownloadDocument,
+  onOpenGenerateDialog,
 }: PlacementCertificateCardProps) {
   const t = useTranslations("dashboard.companyDocuments")
   const locale = useLocale()
@@ -45,14 +58,12 @@ export function PlacementCertificateCard({
   )
   const agreementDoc =
     placement.documents.find((doc) => doc.type === "agreement") ?? null
-  const certificateDoc =
-    placement.documents.find((doc) => doc.type === "certificate") ?? null
+  const certificateDocs = placement.documents.filter(
+    (doc) => doc.type === "certificate",
+  )
   const isGenerating = generatingPlacementId === placement.placementId
   const isAgreementDownloading = agreementDoc
     ? downloadingDocumentId === agreementDoc.id
-    : false
-  const isCertificateDownloading = certificateDoc
-    ? downloadingDocumentId === certificateDoc.id
     : false
   const agreementAction = agreementDoc
     ? getReadonlyDocumentActionState(
@@ -66,23 +77,6 @@ export function PlacementCertificateCard({
         },
       )
     : null
-  const certificateAction = getCertificateActionState({
-    status: certificateDoc?.status ?? "notGenerated",
-    isOwner: companyMembershipRole === "owner",
-    isLoading:
-      certificateDoc?.status === "generated"
-        ? isCertificateDownloading
-        : isGenerating,
-    labels: {
-      download: t("download"),
-      downloading: t("downloading"),
-      pending: t("status.pending"),
-      failed: t("status.failed"),
-      generate: t("generate"),
-      generating: t("generating"),
-      ownerOnlyGenerate: t("ownerOnlyGenerate"),
-    },
-  })
 
   return (
     <article className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden">
@@ -156,40 +150,111 @@ export function PlacementCertificateCard({
           />
         )}
 
-        <PlacementDocumentPanel
-          title={t("certificate")}
-          statusLabel={
-            certificateDoc
-              ? t(`status.${certificateDoc.status}` as "status.pending")
-              : t("status.notGenerated")
-          }
-          statusClassName={
-            STATUS_STYLES[certificateDoc?.status ?? "notGenerated"]
-          }
-          verificationCodeLabel={t("placement.verificationCode")}
-          verificationCode={certificateDoc?.verificationCode ?? null}
-          notAvailableLabel={t("placement.notAvailable")}
-          actionVariant={certificateAction.actionVariant}
-          actionLabel={certificateAction.actionLabel}
-          actionLoadingLabel={certificateAction.actionLoadingLabel}
-          showDownloadIcon={certificateAction.showDownloadIcon}
-          isActionLoading={
-            certificateAction.actionKind === "download"
-              ? isCertificateDownloading
-              : certificateAction.actionKind === "generate"
-                ? isGenerating
-                : false
-          }
-          isActionDisabled={certificateAction.isActionDisabled}
-          onAction={() => {
-            if (certificateAction.actionKind === "download" && certificateDoc) {
-              onDownloadDocument(certificateDoc.id)
-            }
-            if (certificateAction.actionKind === "generate") {
-              onGenerateCertificate(placement.placementId)
-            }
-          }}
-        />
+        {/* Certificate panels */}
+        {certificateDocs.length > 0 ? (
+          <div className="space-y-3">
+            {certificateDocs.map((doc) => {
+              const isCertificateDownloading =
+                downloadingDocumentId === doc.id
+              const certificateAction = getReadonlyDocumentActionState(
+                doc.status,
+                isCertificateDownloading,
+                {
+                  download: t("download"),
+                  downloading: t("downloading"),
+                  pending: t("status.pending"),
+                  failed: t("status.failed"),
+                },
+              )
+
+              return (
+                <PlacementDocumentPanel
+                  key={doc.id}
+                  title={`${t("certificate")} \u00b7 ${doc.locale.toUpperCase()} \u00b7 ${t(`border.${doc.borderStyle}`)}`}
+                  statusLabel={
+                    t(`status.${doc.status}` as "status.pending")
+                  }
+                  statusClassName={STATUS_STYLES[doc.status]}
+                  verificationCodeLabel={t("placement.verificationCode")}
+                  verificationCode={doc.verificationCode}
+                  notAvailableLabel={t("placement.notAvailable")}
+                  actionVariant={certificateAction.actionVariant}
+                  actionLabel={certificateAction.actionLabel}
+                  actionLoadingLabel={certificateAction.actionLoadingLabel}
+                  showDownloadIcon={certificateAction.showDownloadIcon}
+                  isActionLoading={isCertificateDownloading}
+                  isActionDisabled={certificateAction.isActionDisabled}
+                  onAction={() => {
+                    if (
+                      certificateAction.actionKind === "download" &&
+                      doc.status === "generated"
+                    ) {
+                      onDownloadDocument(doc.id)
+                    }
+                  }}
+                />
+              )
+            })}
+          </div>
+        ) : (
+          (() => {
+            const emptyCertificateAction = getCertificateActionState({
+              status: "notGenerated",
+              isOwner: companyMembershipRole === "owner",
+              isLoading: isGenerating,
+              labels: {
+                download: t("download"),
+                downloading: t("downloading"),
+                pending: t("status.pending"),
+                failed: t("status.failed"),
+                generate: t("generate"),
+                generating: t("generating"),
+                ownerOnlyGenerate: t("ownerOnlyGenerate"),
+              },
+            })
+
+            return (
+              <PlacementDocumentPanel
+                title={t("certificate")}
+                statusLabel={t("status.notGenerated")}
+                statusClassName={STATUS_STYLES.notGenerated}
+                verificationCodeLabel={t("placement.verificationCode")}
+                verificationCode={null}
+                notAvailableLabel={t("placement.notAvailable")}
+                actionVariant={emptyCertificateAction.actionVariant}
+                actionLabel={emptyCertificateAction.actionLabel}
+                actionLoadingLabel={emptyCertificateAction.actionLoadingLabel}
+                showDownloadIcon={emptyCertificateAction.showDownloadIcon}
+                isActionLoading={
+                  emptyCertificateAction.actionKind === "generate"
+                    ? isGenerating
+                    : false
+                }
+                isActionDisabled={emptyCertificateAction.isActionDisabled}
+                onAction={() => {
+                  if (emptyCertificateAction.actionKind === "generate") {
+                    onOpenGenerateDialog(placement.placementId)
+                  }
+                }}
+              />
+            )
+          })()
+        )}
+
+        {/* Generate New Version button */}
+        {companyMembershipRole === "owner" && (
+          <Button
+            type="button"
+            variant="editorial-outline"
+            size="editorial-sm"
+            className="gap-1.5"
+            onClick={() => onOpenGenerateDialog(placement.placementId)}
+            disabled={isGenerating}
+          >
+            <FilePlus className="h-3.5 w-3.5" />
+            {t("generateNewVersion")}
+          </Button>
+        )}
       </div>
     </article>
   )

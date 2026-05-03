@@ -4,6 +4,7 @@ import { FileText, Loader2, RefreshCw } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { useDashboard } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
+import { CertificateGenerationDialog } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/CertificateGenerationDialog"
 import { PlacementCertificateCard } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/PlacementCertificateCard"
 import { useCompanyDocuments } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/hooks/useCompanyDocuments"
 import { Button } from "@/components/ui/button"
@@ -21,6 +22,10 @@ export function CompanyDocumentsView() {
     downloadingDocumentId,
     handleGenerateCertificate,
     handleDownloadDocument,
+    generateDialogOpen,
+    setGenerateDialogOpen,
+    dialogPlacementId,
+    handleOpenGenerateDialog,
   } = useCompanyDocuments()
 
   return (
@@ -128,11 +133,36 @@ export function CompanyDocumentsView() {
                 downloadingDocumentId={downloadingDocumentId}
                 onGenerateCertificate={handleGenerateCertificate}
                 onDownloadDocument={handleDownloadDocument}
+                onOpenGenerateDialog={handleOpenGenerateDialog}
               />
             </motion.div>
           ))}
         </div>
       )}
+
+      <CertificateGenerationDialog
+        open={generateDialogOpen}
+        onOpenChange={setGenerateDialogOpen}
+        existingVariants={
+          dialogPlacementId
+            ? placements
+                .find((p) => p.placementId === dialogPlacementId)
+                ?.documents.filter((d) => d.type === "certificate")
+                .map((d) => ({ locale: d.locale, borderStyle: d.borderStyle })) ??
+              []
+            : []
+        }
+        onGenerate={(certificateLocale, borderStyle) => {
+          if (dialogPlacementId) {
+            handleGenerateCertificate(
+              dialogPlacementId,
+              certificateLocale,
+              borderStyle,
+            )
+          }
+        }}
+        isGenerating={generatingPlacementId !== null}
+      />
     </div>
   )
 }

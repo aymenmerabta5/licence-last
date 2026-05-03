@@ -67,6 +67,7 @@ describe("PlacementCertificateCard", () => {
         downloadingDocumentId={null}
         onGenerateCertificate={() => {}}
         onDownloadDocument={() => {}}
+        onOpenGenerateDialog={() => {}}
       />,
     )
 
@@ -84,6 +85,7 @@ describe("PlacementCertificateCard", () => {
         downloadingDocumentId={null}
         onGenerateCertificate={() => {}}
         onDownloadDocument={() => {}}
+        onOpenGenerateDialog={() => {}}
       />,
     )
 
@@ -128,6 +130,7 @@ describe("PlacementCertificateCard", () => {
         downloadingDocumentId={null}
         onGenerateCertificate={() => {}}
         onDownloadDocument={() => {}}
+        onOpenGenerateDialog={() => {}}
       />,
     )
 
