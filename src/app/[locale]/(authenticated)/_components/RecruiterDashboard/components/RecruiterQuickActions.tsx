@@ -13,7 +13,7 @@ import * as motion from "motion/react-client"
 import type { Route } from "next"
 import { useTranslations } from "next-intl"
 import { Link } from "@/i18n/routing"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
 interface ActionItem {
@@ -71,8 +71,7 @@ export function RecruiterQuickActions({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ duration: 0.6, delay: 0.4, ease }}
       className="space-y-8 relative"
     >
@@ -91,7 +90,7 @@ export function RecruiterQuickActions({
         {actions.map((action, i) => {
           const Icon = action.icon
           return (
-            <Link key={i} href={action.href as Route}>
+            <Link key={i} href={action.href as Route} prefetch={false}>
               <div
                 className={cn(
                   "group relative overflow-hidden flex items-center justify-between p-5 md:p-6 transition-colors duration-300",

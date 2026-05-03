@@ -40,6 +40,7 @@ export function ValidationListPage({
         <motion.div {...reveal} transition={revealWithDelay(0.05)}>
           <Link
             href={backHref as "/dashboard"}
+            prefetch={false}
             className="group inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.1em] text-muted-foreground hover:text-primary transition-colors"
           >
             <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />

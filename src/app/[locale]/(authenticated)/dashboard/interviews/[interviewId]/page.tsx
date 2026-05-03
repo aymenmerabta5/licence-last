@@ -1,10 +1,17 @@
+import { Suspense } from "react"
+
 import { localeRedirect } from "@/lib/navigation"
 import { requireRole } from "@/lib/auth-guards"
 
-type Params = Promise<{ interviewId: string }>
-
-export default async function InterviewDetailPage({ params }: { params: Params }) {
-  await params
+async function InterviewDetailPageContent() {
   await requireRole(["student"])
   return localeRedirect("/dashboard/applications")
+}
+
+export default function InterviewDetailPage() {
+  return (
+    <Suspense fallback={null}>
+      <InterviewDetailPageContent />
+    </Suspense>
+  )
 }

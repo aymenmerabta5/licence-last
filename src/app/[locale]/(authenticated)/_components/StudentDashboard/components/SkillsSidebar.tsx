@@ -58,6 +58,7 @@ export function SkillsSidebar({
               <div className="mt-auto">
                 <Link
                   href={`/profile/${profileUserId}` as Route}
+                  prefetch={false}
                   className="block w-full"
                 >
                   <Button className="w-full bg-primary text-primary-foreground group-hover/box:bg-foreground group-hover/box:text-background border-none rounded-none font-bold uppercase tracking-[0.15em] text-[10px] h-12 transition-all duration-300 shadow-[4px_4px_0_0_oklch(var(--background))] group-hover/box:shadow-[4px_4px_0_0_oklch(var(--primary))]">
@@ -77,6 +78,7 @@ export function SkillsSidebar({
               </p>
               <Link
                 href={`/profile/${profileUserId}` as Route}
+                prefetch={false}
                 className="w-full mt-8"
               >
                 <Button className="w-full bg-background border-2 border-background text-foreground hover:bg-primary hover:border-primary hover:text-primary-foreground group-hover/box:bg-foreground group-hover/box:border-foreground group-hover/box:text-background rounded-none font-bold uppercase tracking-[0.15em] text-[10px] h-12 transition-all duration-300">

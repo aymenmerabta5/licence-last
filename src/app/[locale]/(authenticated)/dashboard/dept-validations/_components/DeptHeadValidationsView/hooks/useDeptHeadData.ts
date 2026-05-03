@@ -11,6 +11,8 @@ type ListPendingApplicationsResult = InferRouterOutputs<
   AppRouter
 >["deptHead"]["listPending"]
 
+const STALE_TIME_MS = 5 * 60 * 1000
+
 export function useDeptHeadData() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery<ListPendingApplicationsResult>({
@@ -27,6 +29,8 @@ export function useDeptHeadData() {
         | { companyActionAt: string; id: string }
         | undefined,
       getNextPageParam: (lastPage) => lastPage.nextCursor,
+      staleTime: STALE_TIME_MS,
+      refetchOnWindowFocus: false,
     })
 
   const applications = useMemo(

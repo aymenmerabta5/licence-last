@@ -1,6 +1,5 @@
 "use client"
 
-import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import type { NavItem } from "@/app/[locale]/(authenticated)/_components/DashboardSidebar/constants"
 import { Link } from "@/i18n/routing"
@@ -47,9 +46,7 @@ export function SidebarNav({ items, pathname, isCollapsed }: SidebarNavProps) {
               />
 
               {!isCollapsed && (
-                <motion.span
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
+                <span
                   className={cn(
                     "text-sm tracking-wide transition-all duration-500",
                     isActive
@@ -58,7 +55,7 @@ export function SidebarNav({ items, pathname, isCollapsed }: SidebarNavProps) {
                   )}
                 >
                   {t(item.labelKey)}
-                </motion.span>
+                </span>
               )}
             </span>
           </Link>

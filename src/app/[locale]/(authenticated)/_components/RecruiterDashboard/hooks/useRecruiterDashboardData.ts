@@ -24,6 +24,8 @@ export function useRecruiterDashboardData(
       ...orpc.offers.listByCompany.queryOptions(),
       enabled: initialData?.offers === undefined,
       initialData: initialData?.offers,
+      staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
     })
 
   // Derive companyId from offers for trust index query
@@ -34,6 +36,8 @@ export function useRecruiterDashboardData(
     }),
     enabled: !!companyId && initialData?.trustData === undefined,
     initialData: initialData?.trustData ?? undefined,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
   })
 
   const offerStats = useMemo(() => {

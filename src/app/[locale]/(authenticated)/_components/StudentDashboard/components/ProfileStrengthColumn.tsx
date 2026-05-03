@@ -68,7 +68,7 @@ export function ProfileStrengthColumn({
           <Button
             nativeButton={false}
             render={
-              <Link href={`/profile/${profileUserId}` as Route}>
+              <Link href={`/profile/${profileUserId}` as Route} prefetch={false}>
                 {t("completeProfile")}
               </Link>
             }
@@ -78,7 +78,7 @@ export function ProfileStrengthColumn({
         <Button
           nativeButton={false}
           render={
-            <Link href="/dashboard/explore">{t("exploreInternships")}</Link>
+            <Link href="/dashboard/explore" prefetch={false}>{t("exploreInternships")}</Link>
           }
           variant="outline"
           className="w-full flex-1 rounded-none tracking-widest uppercase text-[10px] md:text-xs h-12 md:h-14 border-foreground/30 hover:border-foreground hover:bg-foreground hover:text-background transition-all duration-300 bg-transparent"

@@ -6,7 +6,6 @@ export type StudentProfileResult = Awaited<
 >
 
 export interface ProfileSettingsTabProps {
-  me: MeResult | undefined
-  studentProfile: StudentProfileResult | null | undefined
-  isLoading: boolean
+  me: MeResult
+  studentProfile: StudentProfileResult | null
 }

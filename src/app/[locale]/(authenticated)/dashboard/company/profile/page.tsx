@@ -1,8 +1,26 @@
+import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
+
 import { CompanyProfileForm } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm"
+import { Skeleton } from "@/components/ui/skeleton"
 import { requireCompanyOwner } from "@/lib/dashboard-access"
 
-export default async function CompanyProfilePage() {
+function CompanyProfileFallback() {
+  return (
+    <div className="mx-auto max-w-5xl space-y-8 pb-16">
+      <div className="space-y-4">
+        <Skeleton className="h-0.5 w-full" />
+        <div className="space-y-3">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-4 w-48" />
+        </div>
+      </div>
+      <Skeleton className="h-96" />
+    </div>
+  )
+}
+
+async function CompanyProfilePageContent() {
   const [{ company, membership }, t] = await Promise.all([
     requireCompanyOwner(),
     getTranslations("dashboard.company.profile"),
@@ -43,5 +61,13 @@ export default async function CompanyProfilePage() {
         />
       </div>
     </div>
+  )
+}
+
+export default function CompanyProfilePage() {
+  return (
+    <Suspense fallback={<CompanyProfileFallback />}>
+      <CompanyProfilePageContent />
+    </Suspense>
   )
 }

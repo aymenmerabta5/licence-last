@@ -13,7 +13,7 @@ import {
 import * as motion from "motion/react-client"
 
 import { StatsCard } from "@/app/[locale]/(authenticated)/_components/StatsCard"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface UniversityKpiGridProps {
   stats: {
@@ -83,8 +83,7 @@ export function UniversityKpiGrid({ stats }: UniversityKpiGridProps) {
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ duration: 0.6, delay: 0.15, ease }}
       className="space-y-5 sm:space-y-8"
     >

@@ -5,7 +5,7 @@ import * as motion from "motion/react-client"
 import type { Route } from "next"
 import { Badge } from "@/components/ui/badge"
 import { Link } from "@/i18n/routing"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface Offer {
   id: string
@@ -30,12 +30,11 @@ interface RecentOffersProps {
 export function RecentOffers({ offers }: RecentOffersProps) {
   if (offers.length === 0) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.3, ease }}
-        className="space-y-4"
-      >
+    <motion.div
+      {...reveal}
+      transition={{ duration: 0.6, delay: 0.3, ease }}
+      className="space-y-4"
+    >
         <div className="flex items-end justify-between border-b-4 border-foreground pb-4">
           <div>
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/70 mb-2 block">
@@ -64,8 +63,7 @@ export function RecentOffers({ offers }: RecentOffersProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ duration: 0.6, delay: 0.3, ease }}
       className="space-y-8 relative"
     >
@@ -80,6 +78,7 @@ export function RecentOffers({ offers }: RecentOffersProps) {
         </div>
         <Link
           href="/dashboard/company/offers"
+          prefetch={false}
           className="text-foreground hover:bg-foreground hover:text-background border border-transparent hover:border-foreground transition-all duration-300 font-bold uppercase tracking-[0.15em] text-[10px] py-1 px-3 h-8 flex items-center group/btn"
         >
           View All{" "}
@@ -92,6 +91,7 @@ export function RecentOffers({ offers }: RecentOffersProps) {
           <Link
             key={offer.id}
             href={`/dashboard/company/offers/${offer.id}/candidates` as Route}
+            prefetch={false}
             className="group relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 md:p-6 transition-colors hover:bg-foreground hover:text-background overflow-hidden"
           >
             <div className="absolute inset-x-0 bottom-0 h-1 bg-primary/20 scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 ease-in-out" />

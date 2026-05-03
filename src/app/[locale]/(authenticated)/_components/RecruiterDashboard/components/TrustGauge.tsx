@@ -2,7 +2,7 @@
 
 import { Shield } from "lucide-react"
 import * as motion from "motion/react-client"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
 interface TrustData {
@@ -56,8 +56,7 @@ export function TrustGauge({ trustData, isLoading }: TrustGaugeProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ duration: 0.6, delay: 0.4, ease }}
       className="space-y-6 flex flex-col h-full bg-foreground border-2 border-foreground p-6 md:p-8 relative group"
     >

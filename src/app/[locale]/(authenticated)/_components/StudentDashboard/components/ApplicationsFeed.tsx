@@ -36,7 +36,7 @@ export function ApplicationsFeed({
             <span className="text-primary/40 leading-none">.</span>
           </h2>
         </div>
-        <Link href="/dashboard/applications">
+        <Link href="/dashboard/applications" prefetch={false}>
           <Button
             variant="ghost"
             size="sm"
@@ -72,7 +72,7 @@ export function ApplicationsFeed({
               matching opportunities.
             </p>
 
-            <Link href="/dashboard/explore">
+            <Link href="/dashboard/explore" prefetch={false}>
               <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-none font-bold uppercase tracking-[0.15em] text-[10px] shadow-[4px_4px_0_0_oklch(var(--foreground))]">
                 <Search className="h-3.5 w-3.5 me-2" /> {labels.exploreButton}
               </Button>

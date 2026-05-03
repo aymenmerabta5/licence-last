@@ -41,7 +41,6 @@ export function SettingsView({ me, studentProfile }: SettingsViewProps) {
                 <ProfileSettingsTab
                   me={me}
                   studentProfile={studentProfile}
-                  isLoading={false}
                 />
               )}
 

@@ -3,7 +3,7 @@
 import { ArrowRight, Shield } from "lucide-react"
 import * as motion from "motion/react-client"
 import { Link } from "@/i18n/routing"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
 interface TrustEntry {
@@ -29,8 +29,7 @@ export function TrustLeaderboard({ indices }: TrustLeaderboardProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ duration: 0.6, delay: 0.45, ease }}
       className="space-y-6 flex flex-col h-full bg-foreground border-2 border-foreground p-6 md:p-8 relative group"
     >
@@ -84,6 +83,7 @@ export function TrustLeaderboard({ indices }: TrustLeaderboardProps) {
       <div className="relative z-10 w-full mt-4 border-t border-background/20 pt-4 group/btn shrink-0">
         <Link
           href="/dashboard/admin/stats"
+          prefetch={false}
           className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary hover:text-background w-full flex items-center justify-between"
         >
           <span>View All Analytics</span>

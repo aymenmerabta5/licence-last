@@ -1,6 +1,8 @@
+import { Suspense } from "react"
 import { notFound } from "next/navigation"
 
 import { OfferDetailClient } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail"
+import { Skeleton } from "@/components/ui/skeleton"
 import { requireOnboardedStudent } from "@/lib/dashboard-access"
 import {
   getOfferById,
@@ -9,7 +11,19 @@ import {
 
 type Params = Promise<{ offerId: string }>
 
-export default async function OfferDetailPage({ params }: { params: Params }) {
+function OfferDetailFallback() {
+  return (
+    <div className="max-w-5xl mx-auto space-y-8 pb-20">
+      <div className="space-y-3">
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-10 w-72" />
+      </div>
+      <Skeleton className="h-96" />
+    </div>
+  )
+}
+
+async function OfferDetailPageContent({ params }: { params: Params }) {
   const [{ offerId }, { user }] = await Promise.all([
     params,
     requireOnboardedStudent(),
@@ -36,5 +50,13 @@ export default async function OfferDetailPage({ params }: { params: Params }) {
       existingApplication={existingApplication}
       studentUserId={user.id}
     />
+  )
+}
+
+export default function OfferDetailPage({ params }: { params: Params }) {
+  return (
+    <Suspense fallback={<OfferDetailFallback />}>
+      <OfferDetailPageContent params={params} />
+    </Suspense>
   )
 }

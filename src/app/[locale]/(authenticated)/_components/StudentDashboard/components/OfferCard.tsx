@@ -17,6 +17,7 @@ export function OfferCard({ offer, index: _index }: OfferCardProps) {
   return (
     <Link
       href={`/dashboard/explore/${offer.id}`}
+      prefetch={false}
       className="group relative block h-full"
     >
       <div className="relative h-full border border-border/80 bg-background hover:bg-foreground hover:text-background flex flex-col p-6 transition-all duration-500 shadow-[6px_6px_0_0_oklch(var(--border)_/_0.3)] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px]">

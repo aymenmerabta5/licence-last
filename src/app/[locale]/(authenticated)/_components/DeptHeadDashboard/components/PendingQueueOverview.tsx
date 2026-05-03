@@ -116,6 +116,7 @@ export function PendingQueueOverview({
                 href={
                   `/dashboard/dept-validations/${application.id}` as "/dashboard"
                 }
+                prefetch={false}
                 className="group/item relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 md:p-6 transition-colors hover:bg-foreground hover:text-background"
               >
                 <div className="flex items-center gap-4">

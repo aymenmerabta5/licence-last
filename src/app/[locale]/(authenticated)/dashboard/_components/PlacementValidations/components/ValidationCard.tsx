@@ -36,6 +36,7 @@ export function ValidationCard({
   return (
     <Link
       href={href as "/dashboard"}
+      prefetch={false}
       className="block border border-border p-5 transition-all duration-200 hover:border-primary/30 hover:bg-muted/30"
     >
       <div className="flex items-start justify-between gap-4">

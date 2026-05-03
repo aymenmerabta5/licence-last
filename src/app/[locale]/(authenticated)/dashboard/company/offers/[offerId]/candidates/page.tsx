@@ -1,8 +1,20 @@
 import { Suspense } from "react"
 
-import { CandidatesView } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView"
+import dynamic from "next/dynamic"
 import { Skeleton } from "@/components/ui/skeleton"
 import { requireApprovedCompanyAdmin } from "@/lib/dashboard-access"
+
+const CandidatesView = dynamic(
+  () =>
+    import(
+      "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView"
+    ).then((module) => ({
+      default: module.CandidatesView,
+    })),
+  {
+    loading: () => <CandidatesPageFallback />,
+  },
+)
 
 interface CandidatesPageProps {
   params: Promise<{ offerId: string }>

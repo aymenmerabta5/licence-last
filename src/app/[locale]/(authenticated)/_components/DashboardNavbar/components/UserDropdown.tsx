@@ -96,13 +96,13 @@ export function UserDropdown({
             {t("accountSettings")}
           </DropdownMenuLabel>
           {isStudent && (
-            <Link href={profileHref}>
+            <Link href={profileHref} prefetch={false}>
               <DropdownMenuItem className="h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">
                 <User className="h-4 w-4 me-2" /> {t("viewProfile")}
               </DropdownMenuItem>
             </Link>
           )}
-          <Link href="/dashboard/settings">
+          <Link href="/dashboard/settings" prefetch={false}>
             <DropdownMenuItem className="h-9 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors">
               <User className="h-4 w-4 me-2" /> {t("profileSettings")}
             </DropdownMenuItem>

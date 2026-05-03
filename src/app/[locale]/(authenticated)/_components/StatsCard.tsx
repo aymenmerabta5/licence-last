@@ -2,6 +2,7 @@
 
 import type { LucideIcon } from "lucide-react"
 import * as motion from "motion/react-client"
+import { ease, reveal } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
 export function StatsCard({
@@ -25,9 +26,8 @@ export function StatsCard({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      {...reveal}
+      transition={{ duration: 0.5, delay: index * 0.1, ease }}
       className={cn("h-full", className)}
     >
       <div

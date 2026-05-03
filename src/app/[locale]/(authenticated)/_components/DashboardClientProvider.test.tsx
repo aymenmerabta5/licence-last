@@ -2,8 +2,8 @@ import { describe, expect, mock, test } from "bun:test"
 import { render, screen } from "@testing-library/react"
 
 const suspendedTree = new Promise<void>(() => {})
-let shouldSuspendNavbar = false
-let shouldSuspendSidebar = false
+const shouldSuspendNavbar = false
+const shouldSuspendSidebar = false
 
 mock.module(
   "@/app/[locale]/(authenticated)/_components/DashboardNavbar",

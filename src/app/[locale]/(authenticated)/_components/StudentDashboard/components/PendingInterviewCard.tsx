@@ -37,6 +37,7 @@ export function PendingInterviewCard({ interview }: PendingInterviewCardProps) {
           </p>
           <Link
             href={`/dashboard/interviews/${interview.id}`}
+            prefetch={false}
             className="inline-block text-xs font-medium text-primary hover:underline"
           >
             {t("action")} →

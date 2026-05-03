@@ -20,13 +20,85 @@ import { getCompanyMembership } from "@/server/services/companies/membership"
 import { listInterviewsForStudent } from "@/server/services/interviews/list-for-student"
 import { listOffersByCompany } from "@/server/services/offers/list-by-company"
 import { recommendOffersForStudent } from "@/server/services/offers/recommend"
+import { Skeleton } from "@/components/ui/skeleton"
 import { getAdminStats } from "@/server/services/stats/get-admin-stats"
 import { getUniversityDashboardStats } from "@/server/services/stats/get-university-dashboard-stats"
 import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"
 import { getStudentProfile } from "@/server/services/students/get-profile"
 
+function StudentFallback() {
+  return (
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <Skeleton className="h-28 rounded-2xl" />
+        <Skeleton className="h-28 rounded-2xl" />
+        <Skeleton className="h-28 rounded-2xl" />
+      </div>
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <div className="space-y-6 lg:col-span-8">
+          <div className="space-y-4">
+            <Skeleton className="h-8 w-48 rounded" />
+            <Skeleton className="h-32 rounded-xl" />
+            <Skeleton className="h-32 rounded-xl" />
+          </div>
+          <div className="space-y-4">
+            <Skeleton className="h-8 w-48 rounded" />
+            <Skeleton className="h-32 rounded-xl" />
+            <Skeleton className="h-32 rounded-xl" />
+          </div>
+        </div>
+        <div className="lg:col-span-4">
+          <div className="space-y-6">
+            <Skeleton className="h-40 rounded-xl" />
+            <Skeleton className="h-64 rounded-xl" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function RecruiterFallback() {
+  return (
+    <div className="space-y-12">
+      <Skeleton className="h-48 rounded-2xl" />
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+        <Skeleton className="h-28 rounded-2xl" />
+        <Skeleton className="h-28 rounded-2xl" />
+        <Skeleton className="h-28 rounded-2xl" />
+        <Skeleton className="h-28 rounded-2xl" />
+      </div>
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
+        <div className="lg:col-span-7 space-y-10">
+          <Skeleton className="h-80 rounded-2xl" />
+        </div>
+        <div className="lg:col-span-5 space-y-10">
+          <Skeleton className="h-48 rounded-2xl" />
+          <Skeleton className="h-32 rounded-2xl" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function AdminFallback() {
+  return (
+    <div className="space-y-8 sm:space-y-12">
+      <Skeleton className="h-48 rounded-2xl" />
+      <Skeleton className="h-56 rounded-2xl" />
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div className="lg:col-span-8">
+          <Skeleton className="h-96 rounded-2xl" />
+        </div>
+        <div className="lg:col-span-4">
+          <Skeleton className="h-96 rounded-2xl" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 interface DashboardContentProps {
-  studentFallback: React.ReactNode
   studentComponent: React.ComponentType<{
     user: {
       id: string
@@ -194,7 +266,6 @@ async function AdminDashboardWrapper({
  * Separated to support Next.js 16 cacheComponents with Suspense boundary.
  */
 export async function DashboardContent({
-  studentFallback,
   studentComponent,
   recruiterComponent: RecruiterDashboard,
   adminComponent: AdminDashboard,
@@ -249,7 +320,7 @@ export async function DashboardContent({
 
       {/* ── Role-Specific Content with Suspense boundaries ── */}
       {effectiveRole === "student" && (
-        <Suspense fallback={studentFallback}>
+        <Suspense fallback={<StudentFallback />}>
           <StudentDashboardContent
             user={{ ...user, role: effectiveRole as string }}
             component={studentComponent}
@@ -258,21 +329,25 @@ export async function DashboardContent({
       )}
 
       {effectiveRole === "company_admin" && (
-        <RecruiterDashboardWrapper
-          user={{ ...user, role: effectiveRole as string }}
-          assistantEnabled={assistantEnabled}
-          recruiterComponent={RecruiterDashboard}
-        />
+        <Suspense fallback={<RecruiterFallback />}>
+          <RecruiterDashboardWrapper
+            user={{ ...user, role: effectiveRole as string }}
+            assistantEnabled={assistantEnabled}
+            recruiterComponent={RecruiterDashboard}
+          />
+        </Suspense>
       )}
       {isDeptHead && (
         <DeptHeadDashboard user={{ ...user, role: effectiveRole as string }} />
       )}
       {((effectiveRole === "university_admin" && !isDeptHead) ||
         effectiveRole === "super_admin") && (
-        <AdminDashboardWrapper
-          user={{ ...user, role: effectiveRole as string }}
-          adminComponent={AdminDashboard}
-        />
+        <Suspense fallback={<AdminFallback />}>
+          <AdminDashboardWrapper
+            user={{ ...user, role: effectiveRole as string }}
+            adminComponent={AdminDashboard}
+          />
+        </Suspense>
       )}
     </div>
   )

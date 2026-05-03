@@ -4,7 +4,10 @@ import { ArrowRight, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { PendingQueueOverview } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/components/PendingQueueOverview"
-import { useDeptHeadDashboardData } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/hooks/useDeptHeadDashboardData"
+import {
+  useDeptHeadDashboardData,
+  type DeptHeadDashboardInitialData,
+} from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/hooks/useDeptHeadDashboardData"
 import type {
   DeptHeadDashboardLabels,
   DeptHeadDashboardProps,
@@ -14,11 +17,14 @@ import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
-export function DeptHeadDashboard({ user }: DeptHeadDashboardProps) {
+export function DeptHeadDashboard({
+  user,
+  initialPendingResult,
+}: DeptHeadDashboardProps & DeptHeadDashboardInitialData) {
   void user
   const t = useTranslations("dashboard.deptHeadDashboard")
   const { applications, pendingCount, queueIsBusy, isLoading } =
-    useDeptHeadDashboardData()
+    useDeptHeadDashboardData({ initialPendingResult })
 
   const labels: DeptHeadDashboardLabels = {
     pendingLabel: t("pendingLabel"),
@@ -98,7 +104,10 @@ export function DeptHeadDashboard({ user }: DeptHeadDashboardProps) {
             transition={revealWithDelay(0.2)}
             className="pt-2"
           >
-            <Link href={"/dashboard/dept-validations" as "/dashboard"}>
+            <Link
+              href={"/dashboard/dept-validations" as "/dashboard"}
+              prefetch={false}
+            >
               <Button variant="editorial" size="editorial" className="gap-2">
                 {t("openQueue")}
                 <ArrowRight className="h-3.5 w-3.5" />

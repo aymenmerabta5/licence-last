@@ -111,7 +111,7 @@ export function WelcomeHero({
             <Button
               nativeButton={false}
               render={
-                <Link href={`/profile/${profileUserId}` as Route}>
+                <Link href={`/profile/${profileUserId}` as Route} prefetch={false}>
                   {t("completeProfile")}
                 </Link>
               }
@@ -122,7 +122,7 @@ export function WelcomeHero({
           <Button
             nativeButton={false}
             render={
-              <Link href="/dashboard/explore">{t("exploreInternships")}</Link>
+                <Link href="/dashboard/explore" prefetch={false}>{t("exploreInternships")}</Link>
             }
             variant="editorial-outline"
             size="editorial"

@@ -3,7 +3,7 @@
 import { ArrowRight, Clock, ShieldAlert } from "lucide-react"
 import * as motion from "motion/react-client"
 import { Link } from "@/i18n/routing"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface AttentionBannerProps {
   pendingCount: number
@@ -18,11 +18,10 @@ export function AttentionBanner({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ duration: 0.5, delay: 0.3, ease }}
     >
-      <Link href="/dashboard/admin/validations">
+      <Link href="/dashboard/admin/validations" prefetch={false}>
         <div className="group relative overflow-hidden border-s-4 border-s-primary bg-primary/[0.03] dark:bg-primary/[0.06] p-6 sm:p-7 transition-colors hover:bg-primary/[0.05] dark:hover:bg-primary/[0.08]">
           {/* Subtle pattern */}
           <div className="absolute inset-0 opacity-[0.015] pointer-events-none bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,currentColor_10px,currentColor_11px)]" />

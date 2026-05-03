@@ -33,7 +33,7 @@ export function RecommendedOffers({ offers, labels }: RecommendedOffersProps) {
             <span className="text-primary/40 leading-none">.</span>
           </h2>
         </div>
-        <Link href="/dashboard/explore">
+        <Link href="/dashboard/explore" prefetch={false}>
           <Button
             variant="ghost"
             size="sm"
