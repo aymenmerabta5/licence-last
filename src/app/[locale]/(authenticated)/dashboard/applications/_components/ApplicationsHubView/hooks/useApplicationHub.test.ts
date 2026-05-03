@@ -1,8 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import {
-  unwrapORPCPayload,
-} from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/hooks/useApplicationHub"
+import { unwrapORPCPayload } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/hooks/useApplicationHub"
 
 describe("useApplicationHub helpers", () => {
   test("returns raw payload values unchanged", () => {

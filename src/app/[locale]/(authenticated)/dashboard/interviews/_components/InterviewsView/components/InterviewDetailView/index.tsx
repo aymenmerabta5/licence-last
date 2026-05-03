@@ -11,9 +11,14 @@ import { useInterviewDetailData } from "@/app/[locale]/(authenticated)/dashboard
 import type { InterviewDetailViewProps } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewDetailView/types"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
-export function InterviewDetailView({ interview: initialInterview }: InterviewDetailViewProps) {
+export function InterviewDetailView({
+  interview: initialInterview,
+}: InterviewDetailViewProps) {
   const t = useTranslations("dashboard.interviews.detail")
-  const data = useInterviewDetailData({ interviewId: initialInterview.id, initialInterview })
+  const data = useInterviewDetailData({
+    interviewId: initialInterview.id,
+    initialInterview,
+  })
   const interview = data.interview ?? initialInterview
 
   if (data.isLoading && !data.interview && !initialInterview) {
@@ -34,7 +39,9 @@ export function InterviewDetailView({ interview: initialInterview }: InterviewDe
         transition={{ duration: 0.6, ease }}
         className="space-y-2 border border-destructive/30 bg-destructive/5 p-6"
       >
-        <p className="text-sm font-medium text-destructive">{t("loadErrorTitle")}</p>
+        <p className="text-sm font-medium text-destructive">
+          {t("loadErrorTitle")}
+        </p>
         <p className="text-xs text-muted-foreground">{data.errorMessage}</p>
       </motion.div>
     )
@@ -58,7 +65,10 @@ export function InterviewDetailView({ interview: initialInterview }: InterviewDe
           transition={revealWithDelay(0.1)}
           className="flex items-start gap-3 border border-border/40 bg-muted/20 p-4 dark:bg-muted/10"
         >
-          <MessageSquare className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+          <MessageSquare
+            className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground"
+            aria-hidden="true"
+          />
           <div className="space-y-1">
             <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">
               {t("noteTitle")}
@@ -80,7 +90,10 @@ export function InterviewDetailView({ interview: initialInterview }: InterviewDe
 
       {isPending && (
         <motion.div {...reveal} transition={revealWithDelay(0.2)}>
-          <RequestChangeForm offerId={interview.offerId} companyName={interview.companyName} />
+          <RequestChangeForm
+            offerId={interview.offerId}
+            companyName={interview.companyName}
+          />
         </motion.div>
       )}
     </div>

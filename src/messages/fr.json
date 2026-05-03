@@ -1262,10 +1262,10 @@
         "unknownRole": "Utilisateur",
         "roles": {
           "student": "Étudiant",
-      "company_admin": "Recruteur",
-      "department_head": "Chef de département",
-      "dept_head": "Chef de département",
-      "recruiter": "Recruteur",
+          "company_admin": "Recruteur",
+          "department_head": "Chef de département",
+          "dept_head": "Chef de département",
+          "recruiter": "Recruteur",
           "university_admin": "Administrateur universitaire",
           "super_admin": "Super administrateur"
         },

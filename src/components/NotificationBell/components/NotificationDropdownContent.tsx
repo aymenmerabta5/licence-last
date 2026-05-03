@@ -3,7 +3,10 @@
 import { CheckCheck } from "lucide-react"
 
 import { Link } from "@/i18n/routing"
-import { formatNotification, getNotificationDestination } from "@/lib/notifications"
+import {
+  formatNotification,
+  getNotificationDestination,
+} from "@/lib/notifications"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenuContent,

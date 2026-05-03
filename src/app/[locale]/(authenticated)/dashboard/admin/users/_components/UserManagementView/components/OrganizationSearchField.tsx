@@ -152,7 +152,8 @@ export function OrganizationSearchField({
                   <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                 </div>
               )}
-              {!searchLoading && searchResults.length === 0 &&
+              {!searchLoading &&
+                searchResults.length === 0 &&
                 debouncedSearch.length > 0 && (
                   <div className="px-3 py-2 text-sm text-muted-foreground">
                     {t("fields.noResults")}

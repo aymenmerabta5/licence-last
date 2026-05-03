@@ -115,7 +115,8 @@ export const validateProcedure = adminProcedureStandard
         validatePlacementDateRange(startDate, endDate)
       } catch (error) {
         throw new ORPCError("BAD_REQUEST", {
-          message: error instanceof Error ? error.message : "Invalid date input",
+          message:
+            error instanceof Error ? error.message : "Invalid date input",
         })
       }
     }
@@ -222,7 +223,8 @@ export const deptHeadValidateProcedure = deptHeadProcedureStandard
         validatePlacementDateRange(startDate, endDate)
       } catch (error) {
         throw new ORPCError("BAD_REQUEST", {
-          message: error instanceof Error ? error.message : "Invalid date input",
+          message:
+            error instanceof Error ? error.message : "Invalid date input",
         })
       }
     }

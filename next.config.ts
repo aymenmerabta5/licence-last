@@ -1,34 +1,34 @@
-import type { NextConfig } from "next";
-import createNextIntlPlugin from "next-intl/plugin";
+import type { NextConfig } from "next"
+import createNextIntlPlugin from "next-intl/plugin"
 
-const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts")
 
 interface ImageRemotePattern {
-  hostname: string;
-  pathname?: string;
-  port?: string;
-  protocol?: "http" | "https";
+  hostname: string
+  pathname?: string
+  port?: string
+  protocol?: "http" | "https"
 }
 
 function toRemotePattern(rawUrl?: string): ImageRemotePattern | null {
-  if (!rawUrl) return null;
+  if (!rawUrl) return null
 
   try {
-    const url = new URL(rawUrl);
-    const protocol = url.protocol.replace(":", "");
-    if (protocol !== "http" && protocol !== "https") return null;
+    const url = new URL(rawUrl)
+    const protocol = url.protocol.replace(":", "")
+    if (protocol !== "http" && protocol !== "https") return null
 
     const pathname =
-      url.pathname === "/" ? "/**" : `${url.pathname.replace(/\/+$/, "")}/**`;
+      url.pathname === "/" ? "/**" : `${url.pathname.replace(/\/+$/, "")}/**`
 
     return {
       protocol,
       hostname: url.hostname,
       port: url.port || undefined,
       pathname,
-    };
+    }
   } catch {
-    return null;
+    return null
   }
 }
 
@@ -37,11 +37,11 @@ function getStorageImageRemotePatterns(): ImageRemotePattern[] {
     process.env.S3_PUBLIC_URL,
     process.env.NEXT_PUBLIC_S3_URL,
     process.env.S3_ENDPOINT,
-  ];
+  ]
 
   const patterns = candidates
     .map(toRemotePattern)
-    .filter((pattern): pattern is ImageRemotePattern => pattern !== null);
+    .filter((pattern): pattern is ImageRemotePattern => pattern !== null)
 
   patterns.push(
     {
@@ -59,7 +59,7 @@ function getStorageImageRemotePatterns(): ImageRemotePattern[] {
       hostname: "*.r2.dev",
       pathname: "/**",
     },
-  );
+  )
 
   return Array.from(
     new Map(
@@ -68,7 +68,7 @@ function getStorageImageRemotePatterns(): ImageRemotePattern[] {
         pattern,
       ]),
     ).values(),
-  );
+  )
 }
 
 const nextConfig: NextConfig = {
@@ -113,12 +113,12 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-    ];
+    ]
   },
   images: {
     remotePatterns: getStorageImageRemotePatterns(),
   },
   allowedDevOrigins: ["http://localhost:3000"],
-};
+}
 
-export default withNextIntl(nextConfig);
+export default withNextIntl(nextConfig)

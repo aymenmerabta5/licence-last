@@ -71,7 +71,7 @@ export function VerifyForm() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease, delay: 0.35 }}
         >
-            <Button
+          <Button
             type="submit"
             disabled={!code.trim() || isSubmitting}
             className="w-full h-12 text-base font-semibold shadow-sm rounded-none"

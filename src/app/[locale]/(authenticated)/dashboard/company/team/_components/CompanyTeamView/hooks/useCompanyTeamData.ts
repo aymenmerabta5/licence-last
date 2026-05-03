@@ -20,7 +20,9 @@ export function useCompanyTeamData() {
       await queryClient.cancelQueries({
         queryKey: membersQueryOptions.queryKey,
       })
-      const previousData = queryClient.getQueryData(membersQueryOptions.queryKey)
+      const previousData = queryClient.getQueryData(
+        membersQueryOptions.queryKey,
+      )
       queryClient.setQueryData(membersQueryOptions.queryKey, (old) => {
         if (!old) return old
         return [
@@ -57,7 +59,9 @@ export function useCompanyTeamData() {
       await queryClient.cancelQueries({
         queryKey: membersQueryOptions.queryKey,
       })
-      const previousData = queryClient.getQueryData(membersQueryOptions.queryKey)
+      const previousData = queryClient.getQueryData(
+        membersQueryOptions.queryKey,
+      )
       queryClient.setQueryData(membersQueryOptions.queryKey, (old) => {
         if (!old) return old
         return old.filter((member) => member.userId !== variables.userId)

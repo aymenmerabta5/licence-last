@@ -57,14 +57,12 @@ export function useOnboardingForm() {
     ],
   )
 
-  const { data: departmentsResult } = useQuery(
-    {
-      ...orpc.departments.list.queryOptions({
-        input: { universityId: universityId ?? "" },
-      }),
-      enabled: !!universityId,
-    },
-  )
+  const { data: departmentsResult } = useQuery({
+    ...orpc.departments.list.queryOptions({
+      input: { universityId: universityId ?? "" },
+    }),
+    enabled: !!universityId,
+  })
   const departments = useMemo(
     () => departmentsResult ?? [],
     [departmentsResult],

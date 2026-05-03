@@ -79,7 +79,8 @@ mock.module("next/cache", () => ({
   cacheTag: () => {},
   revalidateTag: revalidateTagMock,
   revalidatePath: () => {},
-  updateTag: () => {},
+  updateTag: () => {},
+
   unstable_cache: (fn: (...args: any[]) => any) => fn,
 }))
 

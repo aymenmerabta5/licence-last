@@ -19,14 +19,16 @@ interface RecruiterDashboardInitialData {
 export function useRecruiterDashboardData(
   initialData?: RecruiterDashboardInitialData,
 ) {
-  const { data: offers = initialData?.offers ?? [], isLoading: isOffersLoading } =
-    useQuery({
-      ...orpc.offers.listByCompany.queryOptions(),
-      enabled: initialData?.offers === undefined,
-      initialData: initialData?.offers,
-      staleTime: 5 * 60 * 1000,
-      refetchOnWindowFocus: false,
-    })
+  const {
+    data: offers = initialData?.offers ?? [],
+    isLoading: isOffersLoading,
+  } = useQuery({
+    ...orpc.offers.listByCompany.queryOptions(),
+    enabled: initialData?.offers === undefined,
+    initialData: initialData?.offers,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  })
 
   // Derive companyId from offers for trust index query
   const companyId = offers[0]?.companyId

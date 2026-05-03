@@ -54,7 +54,9 @@ describe("src/server/services/students/delete-experience", () => {
       `@/server/services/students/delete-experience?fresh=${Date.now()}`
     )
 
-    await expect(deleteStudentExperience("exp-1", "user-1")).rejects.toMatchObject({
+    await expect(
+      deleteStudentExperience("exp-1", "user-1"),
+    ).rejects.toMatchObject({
       code: "EXPERIENCE_NOT_FOUND",
       message: "Experience not found",
     })
@@ -69,7 +71,9 @@ describe("src/server/services/students/delete-experience", () => {
       `@/server/services/students/delete-experience?fresh=${Date.now()}`
     )
 
-    await expect(deleteStudentExperience("exp-1", "user-1")).rejects.toMatchObject({
+    await expect(
+      deleteStudentExperience("exp-1", "user-1"),
+    ).rejects.toMatchObject({
       code: "EXPERIENCE_FORBIDDEN",
       message: "You do not have access to this experience",
     })

@@ -1,19 +1,19 @@
-import { useCurrentFrame } from "remotion";
-import { fadeIn, slideUp, scaleIn, colors, fonts } from "../lib/animations";
+import { useCurrentFrame } from "remotion"
+import { fadeIn, slideUp, scaleIn, colors, fonts } from "../lib/animations"
 
 interface CardProps {
-  num: string;
-  title: string;
-  desc: string;
-  delay: number;
+  num: string
+  title: string
+  desc: string
+  delay: number
 }
 
 const FeatureCard = ({ num, title, desc, delay }: CardProps) => {
-  const frame = useCurrentFrame();
+  const frame = useCurrentFrame()
 
-  const cardOpacity = fadeIn(frame, delay, 18);
-  const cardY = slideUp(frame, delay, 20, 24);
-  const cardScale = scaleIn(frame, delay, 22);
+  const cardOpacity = fadeIn(frame, delay, 18)
+  const cardY = slideUp(frame, delay, 20, 24)
+  const cardScale = scaleIn(frame, delay, 22)
 
   return (
     <div
@@ -65,14 +65,14 @@ const FeatureCard = ({ num, title, desc, delay }: CardProps) => {
         {desc}
       </p>
     </div>
-  );
-};
+  )
+}
 
 export const SceneFeatures = () => {
-  const frame = useCurrentFrame();
+  const frame = useCurrentFrame()
 
-  const titleOpacity = fadeIn(frame, 0, 18);
-  const titleY = slideUp(frame, 0, 18, 16);
+  const titleOpacity = fadeIn(frame, 0, 18)
+  const titleY = slideUp(frame, 0, 18, 16)
 
   const features: CardProps[] = [
     {
@@ -93,7 +93,7 @@ export const SceneFeatures = () => {
       desc: "Validate placements, generate official PDFs, access global placement analytics.",
       delay: 34,
     },
-  ];
+  ]
 
   return (
     <div
@@ -176,5 +176,5 @@ export const SceneFeatures = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}

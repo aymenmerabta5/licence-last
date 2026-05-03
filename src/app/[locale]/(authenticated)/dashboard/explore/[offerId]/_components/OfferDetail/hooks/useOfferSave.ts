@@ -1,6 +1,11 @@
 "use client"
 
-import { useMutation, useQuery, useQueryClient, type QueryKey } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type QueryKey,
+} from "@tanstack/react-query"
 import { useMemo } from "react"
 
 import { isSavedOffersEnabledOnClient } from "@/lib/feature-flags-client"
@@ -38,7 +43,9 @@ export function useOfferSave(offerId: string) {
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: checkQueryOptions.queryKey })
       await queryClient.cancelQueries({ queryKey: listSavedQueryKey })
-      const previousCheckData = queryClient.getQueryData(checkQueryOptions.queryKey)
+      const previousCheckData = queryClient.getQueryData(
+        checkQueryOptions.queryKey,
+      )
 
       queryClient.setQueryData(checkQueryOptions.queryKey, { saved: true })
 
@@ -46,7 +53,10 @@ export function useOfferSave(offerId: string) {
     },
     onError: (_err, _variables, context) => {
       if (context?.previousCheckData) {
-        queryClient.setQueryData(checkQueryOptions.queryKey, context.previousCheckData)
+        queryClient.setQueryData(
+          checkQueryOptions.queryKey,
+          context.previousCheckData,
+        )
       }
     },
     onSettled: () => {
@@ -60,7 +70,9 @@ export function useOfferSave(offerId: string) {
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: checkQueryOptions.queryKey })
       await queryClient.cancelQueries({ queryKey: listSavedQueryKey })
-      const previousCheckData = queryClient.getQueryData(checkQueryOptions.queryKey)
+      const previousCheckData = queryClient.getQueryData(
+        checkQueryOptions.queryKey,
+      )
       const previousListData = queryClient.getQueryData(listSavedQueryKey)
 
       queryClient.setQueryData(checkQueryOptions.queryKey, { saved: false })
@@ -81,7 +93,10 @@ export function useOfferSave(offerId: string) {
     },
     onError: (_err, _variables, context) => {
       if (context?.previousCheckData) {
-        queryClient.setQueryData(checkQueryOptions.queryKey, context.previousCheckData)
+        queryClient.setQueryData(
+          checkQueryOptions.queryKey,
+          context.previousCheckData,
+        )
       }
       if (context?.previousListData) {
         queryClient.setQueryData(listSavedQueryKey, context.previousListData)

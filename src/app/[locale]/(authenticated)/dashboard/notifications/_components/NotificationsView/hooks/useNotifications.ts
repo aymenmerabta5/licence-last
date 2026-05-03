@@ -35,7 +35,10 @@ interface ClientNotificationListData {
   hasMore: boolean
 }
 
-type NotificationsInfiniteData = InfiniteData<ClientNotificationListData, NotificationsCursor>
+type NotificationsInfiniteData = InfiniteData<
+  ClientNotificationListData,
+  NotificationsCursor
+>
 
 export function useNotifications(viewerId: string) {
   const t = useTranslations("dashboard.notifications")
@@ -82,7 +85,8 @@ export function useNotifications(viewerId: string) {
     onMutate: async () => {
       const queryKey = notificationsQueryKeys.list(viewerId, PAGE_SIZE)
       await queryClient.cancelQueries({ queryKey })
-      const previousData = queryClient.getQueryData<NotificationsInfiniteData>(queryKey)
+      const previousData =
+        queryClient.getQueryData<NotificationsInfiniteData>(queryKey)
       queryClient.setQueryData<NotificationsInfiniteData>(queryKey, (old) => {
         if (!old) return old
         return {
@@ -90,7 +94,9 @@ export function useNotifications(viewerId: string) {
           pages: old.pages.map((page) => ({
             ...page,
             notifications: page.notifications.map((n) =>
-              n.readAt === null ? { ...n, readAt: new Date().toISOString() } : n,
+              n.readAt === null
+                ? { ...n, readAt: new Date().toISOString() }
+                : n,
             ),
             unreadCount: 0,
           })),
@@ -125,7 +131,8 @@ export function useNotifications(viewerId: string) {
     onMutate: async (variables) => {
       const queryKey = notificationsQueryKeys.list(viewerId, PAGE_SIZE)
       await queryClient.cancelQueries({ queryKey })
-      const previousData = queryClient.getQueryData<NotificationsInfiniteData>(queryKey)
+      const previousData =
+        queryClient.getQueryData<NotificationsInfiniteData>(queryKey)
       queryClient.setQueryData<NotificationsInfiniteData>(queryKey, (old) => {
         if (!old) return old
         const wasUnread = old.pages.some((page) =>

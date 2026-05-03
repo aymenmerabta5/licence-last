@@ -69,7 +69,11 @@ export function TextField({
         />
       </InputGroup>
       {error && (
-        <p id={`${id}-error`} className="text-destructive text-[11px] tracking-wide" role="alert">
+        <p
+          id={`${id}-error`}
+          className="text-destructive text-[11px] tracking-wide"
+          role="alert"
+        >
           {error}
         </p>
       )}

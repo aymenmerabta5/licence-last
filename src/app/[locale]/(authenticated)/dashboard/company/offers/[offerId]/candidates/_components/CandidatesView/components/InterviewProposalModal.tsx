@@ -2,11 +2,9 @@
 
 import { useTranslations } from "next-intl"
 import { useCallback, useEffect, useState } from "react"
-
-import { CalendarPlus, Loader2, X } from "lucide-react"
+import { InterviewProposalModalFooter } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/InterviewProposalModalFooter"
+import { InterviewProposalModalHeader } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/InterviewProposalModalHeader"
 import * as motion from "motion/react-client"
-
-import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 import { ease, reveal } from "@/lib/animations"
@@ -24,7 +22,12 @@ interface InterviewProposalModalProps {
   onSubmit: (payload: {
     applicationId: string
     note?: string
-    slots: Array<{ startsAt: string; endsAt: string; location?: string; meetingUrl?: string }>
+    slots: Array<{
+      startsAt: string
+      endsAt: string
+      location?: string
+      meetingUrl?: string
+    }>
   }) => Promise<void>
 }
 
@@ -38,12 +41,28 @@ export function InterviewProposalModal({
   onSubmit,
 }: InterviewProposalModalProps) {
   const t = useTranslations("dashboard.company.candidates")
-  const [slots, setSlots] = useState<ProposedSlotDraft[]>([{ id: crypto.randomUUID(), startsAt: "", endsAt: "", location: "", meetingUrl: "" }])
+  const [slots, setSlots] = useState<ProposedSlotDraft[]>([
+    {
+      id: crypto.randomUUID(),
+      startsAt: "",
+      endsAt: "",
+      location: "",
+      meetingUrl: "",
+    },
+  ])
   const [note, setNote] = useState("")
 
   useEffect(() => {
     if (isOpen) {
-      setSlots([{ id: crypto.randomUUID(), startsAt: "", endsAt: "", location: "", meetingUrl: "" }])
+      setSlots([
+        {
+          id: crypto.randomUUID(),
+          startsAt: "",
+          endsAt: "",
+          location: "",
+          meetingUrl: "",
+        },
+      ])
       setNote("")
     }
   }, [isOpen])
@@ -60,7 +79,13 @@ export function InterviewProposalModal({
   const handleAddSlot = useCallback(() => {
     setSlots((prev) => [
       ...prev,
-      { id: crypto.randomUUID(), startsAt: "", endsAt: "", location: "", meetingUrl: "" },
+      {
+        id: crypto.randomUUID(),
+        startsAt: "",
+        endsAt: "",
+        location: "",
+        meetingUrl: "",
+      },
     ])
   }, [])
 
@@ -96,7 +121,13 @@ export function InterviewProposalModal({
     })
 
     setSlots([
-      { id: crypto.randomUUID(), startsAt: "", endsAt: "", location: "", meetingUrl: "" },
+      {
+        id: crypto.randomUUID(),
+        startsAt: "",
+        endsAt: "",
+        location: "",
+        meetingUrl: "",
+      },
     ])
     setNote("")
   }, [slots, note, applicationId, onSubmit])
@@ -113,35 +144,14 @@ export function InterviewProposalModal({
           isSubmitting && "opacity-90",
         )}
       >
-        {/* Header */}
-        <div className="flex items-start justify-between p-6 border-b border-border/50">
-          <div className="flex items-start gap-3">
-            <div className="p-2 rounded-xl bg-primary/10 shrink-0">
-              <CalendarPlus className="h-4 w-4 text-primary" />
-            </div>
-            <div>
-              <h3 className="font-serif text-lg text-heading tracking-tight">
-                {t("interviewModal.title")}
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                {studentName} — {offerTitle}
-              </p>
-            </div>
-          </div>
-          <Button
-            type="button"
-            size="icon-xs"
-            variant="ghost"
-            onClick={onClose}
-            disabled={isSubmitting}
-            aria-label={t("interviewModal.closeAria")}
-            className="rounded-none"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
+        <InterviewProposalModalHeader
+          studentName={studentName}
+          offerTitle={offerTitle}
+          closeAriaLabel={t("interviewModal.closeAria")}
+          isSubmitting={isSubmitting}
+          onClose={onClose}
+        />
 
-        {/* Body */}
         <div className="p-6 space-y-6 overflow-y-auto">
           <CompanySlotsEditor
             slots={slots}
@@ -166,30 +176,13 @@ export function InterviewProposalModal({
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="flex gap-2 justify-end p-6 border-t border-border/50">
-          <Button
-            variant="editorial-outline"
-            size="editorial-sm"
-            onClick={onClose}
-            disabled={isSubmitting}
-            className="rounded-none"
-          >
-            {t("interviewModal.cancel")}
-          </Button>
-          <Button
-            size="sm"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            className="font-bold uppercase tracking-wider text-[11px] rounded-none"
-          >
-            {isSubmitting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              t("interviewModal.submit")
-            )}
-          </Button>
-        </div>
+        <InterviewProposalModalFooter
+          cancelLabel={t("interviewModal.cancel")}
+          submitLabel={t("interviewModal.submit")}
+          isSubmitting={isSubmitting}
+          onClose={onClose}
+          onSubmit={handleSubmit}
+        />
       </motion.div>
     </div>
   )

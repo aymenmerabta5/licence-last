@@ -76,9 +76,7 @@ export function CreateUserDialog({
       password,
       name,
       role,
-      ...(isUniversitySearch && universityId
-        ? { universityId }
-        : {}),
+      ...(isUniversitySearch && universityId ? { universityId } : {}),
       ...(isCompanySearch && companyId ? { companyId } : {}),
     })
     setEmail("")
@@ -90,8 +88,7 @@ export function CreateUserDialog({
   }
 
   const attachmentMissing =
-    (isUniversitySearch && !universityId) ||
-    (isCompanySearch && !companyId)
+    (isUniversitySearch && !universityId) || (isCompanySearch && !companyId)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

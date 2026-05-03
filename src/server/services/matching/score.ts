@@ -20,7 +20,10 @@ import {
   type MatchScoreResult,
 } from "@/server/services/matching/score-core"
 
-export type { MatchReason, MatchScoreResult } from "@/server/services/matching/score-core"
+export type {
+  MatchReason,
+  MatchScoreResult,
+} from "@/server/services/matching/score-core"
 
 export async function getExplainableMatchScore(
   studentUserId: string,

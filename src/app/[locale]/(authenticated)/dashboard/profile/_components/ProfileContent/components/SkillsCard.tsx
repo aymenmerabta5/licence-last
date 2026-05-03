@@ -30,12 +30,18 @@ function groupByCategory(skills: StudentSkill[], fallbackCategory: string) {
 }
 
 const categoryGradients: Record<string, string> = {
-  frontend: "from-amber-500/10 to-orange-500/10 text-amber-700 border-amber-200 hover:bg-amber-500 hover:text-white hover:border-amber-500",
-  backend: "from-emerald-500/10 to-teal-500/10 text-emerald-700 border-emerald-200 hover:bg-emerald-500 hover:text-white hover:border-emerald-500",
-  devops: "from-sky-500/10 to-blue-500/10 text-sky-700 border-sky-200 hover:bg-sky-500 hover:text-white hover:border-sky-500",
-  design: "from-rose-500/10 to-pink-500/10 text-rose-700 border-rose-200 hover:bg-rose-500 hover:text-white hover:border-rose-500",
-  mobile: "from-violet-500/10 to-purple-500/10 text-violet-700 border-violet-200 hover:bg-violet-500 hover:text-white hover:border-violet-500",
-  general: "from-slate-100 to-slate-200/50 text-slate-700 border-slate-200 hover:bg-slate-800 hover:text-white hover:border-slate-800",
+  frontend:
+    "from-amber-500/10 to-orange-500/10 text-amber-700 border-amber-200 hover:bg-amber-500 hover:text-white hover:border-amber-500",
+  backend:
+    "from-emerald-500/10 to-teal-500/10 text-emerald-700 border-emerald-200 hover:bg-emerald-500 hover:text-white hover:border-emerald-500",
+  devops:
+    "from-sky-500/10 to-blue-500/10 text-sky-700 border-sky-200 hover:bg-sky-500 hover:text-white hover:border-sky-500",
+  design:
+    "from-rose-500/10 to-pink-500/10 text-rose-700 border-rose-200 hover:bg-rose-500 hover:text-white hover:border-rose-500",
+  mobile:
+    "from-violet-500/10 to-purple-500/10 text-violet-700 border-violet-200 hover:bg-violet-500 hover:text-white hover:border-violet-500",
+  general:
+    "from-slate-100 to-slate-200/50 text-slate-700 border-slate-200 hover:bg-slate-800 hover:text-white hover:border-slate-800",
 }
 
 function getCategoryStyle(category: string) {

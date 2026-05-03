@@ -65,7 +65,9 @@ export function SocialLinks({ profile, labels }: SocialLinksProps) {
               whileHover={{ x: 4 }}
               className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 transition-all group/link hover:bg-white hover:border-primary/20 hover:shadow-md"
             >
-              <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${link.bgColor} ${link.hoverBg} transition-all duration-300`}>
+              <div
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${link.bgColor} ${link.hoverBg} transition-all duration-300`}
+              >
                 <link.icon className={`h-5 w-5 ${link.textColor}`} />
               </div>
               <div className="space-y-0.5 overflow-hidden min-w-0 flex-1">

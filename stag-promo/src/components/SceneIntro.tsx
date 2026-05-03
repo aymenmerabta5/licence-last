@@ -1,20 +1,27 @@
-import { useCurrentFrame } from "remotion";
-import { fadeIn, slideUp, scaleIn, drawLine, colors, fonts } from "../lib/animations";
+import { useCurrentFrame } from "remotion"
+import {
+  fadeIn,
+  slideUp,
+  scaleIn,
+  drawLine,
+  colors,
+  fonts,
+} from "../lib/animations"
 
 export const SceneIntro = () => {
-  const frame = useCurrentFrame();
+  const frame = useCurrentFrame()
 
-  const logoOpacity = fadeIn(frame, 0, 25);
-  const logoY = slideUp(frame, 0, 30, 24);
-  const logoScale = scaleIn(frame, 0, 35);
+  const logoOpacity = fadeIn(frame, 0, 25)
+  const logoY = slideUp(frame, 0, 30, 24)
+  const logoScale = scaleIn(frame, 0, 35)
 
-  const volOpacity = fadeIn(frame, 18, 20);
-  const volY = slideUp(frame, 18, 20, 12);
+  const volOpacity = fadeIn(frame, 18, 20)
+  const volY = slideUp(frame, 18, 20, 12)
 
-  const line1 = drawLine(frame, 12, 20);
-  const line2 = drawLine(frame, 20, 20);
+  const line1 = drawLine(frame, 12, 20)
+  const line2 = drawLine(frame, 20, 20)
 
-  const bottomOpacity = fadeIn(frame, 35, 20);
+  const bottomOpacity = fadeIn(frame, 35, 20)
 
   return (
     <div
@@ -132,5 +139,5 @@ export const SceneIntro = () => {
         A New Standard
       </div>
     </div>
-  );
-};
+  )
+}

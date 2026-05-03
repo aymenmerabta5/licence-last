@@ -4,7 +4,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { toast } from "sonner"
-import type { ConfirmSlotInput, InterviewDetailViewProps } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewDetailView/types"
+import type {
+  ConfirmSlotInput,
+  InterviewDetailViewProps,
+} from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewDetailView/types"
 import { resolveLocalizedError } from "@/lib/error-message"
 import { orpc } from "@/server/orpc/client"
 
@@ -13,7 +16,10 @@ interface UseInterviewDetailDataParams {
   initialInterview?: InterviewDetailViewProps["interview"]
 }
 
-export function useInterviewDetailData({ interviewId, initialInterview }: UseInterviewDetailDataParams) {
+export function useInterviewDetailData({
+  interviewId,
+  initialInterview,
+}: UseInterviewDetailDataParams) {
   const t = useTranslations()
   const queryClient = useQueryClient()
   const [confirmingSlotId, setConfirmingSlotId] = useState<string | null>(null)
@@ -23,9 +29,13 @@ export function useInterviewDetailData({ interviewId, initialInterview }: UseInt
     initialData: initialInterview,
   })
 
-  const detailQueryKey = orpc.interviews.getById.queryOptions({ input: { interviewId } }).queryKey
-  const studentListQueryKey = orpc.interviews.listForStudent.queryOptions().queryKey
-  const companyListQueryKey = orpc.interviews.listForCompany.queryOptions().queryKey
+  const detailQueryKey = orpc.interviews.getById.queryOptions({
+    input: { interviewId },
+  }).queryKey
+  const studentListQueryKey =
+    orpc.interviews.listForStudent.queryOptions().queryKey
+  const companyListQueryKey =
+    orpc.interviews.listForCompany.queryOptions().queryKey
 
   const confirmSlotMutation = useMutation({
     ...orpc.interviews.confirmSlot.mutationOptions(),
@@ -86,10 +96,16 @@ export function useInterviewDetailData({ interviewId, initialInterview }: UseInt
         queryClient.setQueryData(detailQueryKey, context.previousDetail)
       }
       if (context?.previousStudentList) {
-        queryClient.setQueryData(studentListQueryKey, context.previousStudentList)
+        queryClient.setQueryData(
+          studentListQueryKey,
+          context.previousStudentList,
+        )
       }
       if (context?.previousCompanyList) {
-        queryClient.setQueryData(companyListQueryKey, context.previousCompanyList)
+        queryClient.setQueryData(
+          companyListQueryKey,
+          context.previousCompanyList,
+        )
       }
 
       toast.error(
@@ -116,7 +132,9 @@ export function useInterviewDetailData({ interviewId, initialInterview }: UseInt
   return {
     interview: interviewQuery.data,
     isLoading: interviewQuery.isLoading,
-    errorMessage: interviewQuery.error ? t("errors.common.interviewsLoadFailed") : null,
+    errorMessage: interviewQuery.error
+      ? t("errors.common.interviewsLoadFailed")
+      : null,
     confirmingSlotId,
     confirmSlot,
   }

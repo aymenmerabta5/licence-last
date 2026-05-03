@@ -1,17 +1,8 @@
-import { Suspense } from "react"
 import { CompaniesDirectoryView } from "@/app/[locale]/(authenticated)/dashboard/student/companies/_components/CompaniesDirectoryView"
 import { requireOnboardedStudent } from "@/lib/dashboard-access"
 
-async function StudentCompaniesPageContent() {
+export default async function StudentCompaniesPage() {
   await requireOnboardedStudent()
 
   return <CompaniesDirectoryView />
-}
-
-export default function StudentCompaniesPage() {
-  return (
-    <Suspense fallback={null}>
-      <StudentCompaniesPageContent />
-    </Suspense>
-  )
 }

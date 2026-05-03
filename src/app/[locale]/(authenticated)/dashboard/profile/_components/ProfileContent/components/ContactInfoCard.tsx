@@ -10,7 +10,10 @@ import {
   User,
 } from "lucide-react"
 import * as motion from "motion/react-client"
-import type { ProfileContentProps, StudentProfile } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
+import type {
+  ProfileContentProps,
+  StudentProfile,
+} from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { ease } from "@/lib/animations"
 
 interface ContactInfoCardProps {

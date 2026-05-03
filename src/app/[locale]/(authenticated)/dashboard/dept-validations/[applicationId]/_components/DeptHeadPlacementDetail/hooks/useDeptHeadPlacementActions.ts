@@ -10,7 +10,8 @@ import { useRouter } from "@/i18n/routing"
 import { orpc, orpcClient } from "@/server/orpc/client"
 import type { AppRouter } from "@/server/orpc/router"
 
-type ListPendingResult = InferRouterOutputs<AppRouter>["deptHead"]["listPending"]
+type ListPendingResult =
+  InferRouterOutputs<AppRouter>["deptHead"]["listPending"]
 type GetPendingByIdResult =
   InferRouterOutputs<AppRouter>["deptHead"]["getPendingById"]
 
@@ -46,12 +47,10 @@ export function useDeptHeadPlacementActions(applicationId: string) {
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: listPendingQueryKey })
       await queryClient.cancelQueries({ queryKey: pendingByIdQueryKey })
-      const previousListData = queryClient.getQueryData<ListPendingResult>(
-        listPendingQueryKey,
-      )
-      const previousDetailData = queryClient.getQueryData<GetPendingByIdResult>(
-        pendingByIdQueryKey,
-      )
+      const previousListData =
+        queryClient.getQueryData<ListPendingResult>(listPendingQueryKey)
+      const previousDetailData =
+        queryClient.getQueryData<GetPendingByIdResult>(pendingByIdQueryKey)
 
       if (previousListData) {
         queryClient.setQueryData<ListPendingResult>(
@@ -129,12 +128,10 @@ export function useDeptHeadPlacementActions(applicationId: string) {
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: listPendingQueryKey })
       await queryClient.cancelQueries({ queryKey: pendingByIdQueryKey })
-      const previousListData = queryClient.getQueryData<ListPendingResult>(
-        listPendingQueryKey,
-      )
-      const previousDetailData = queryClient.getQueryData<GetPendingByIdResult>(
-        pendingByIdQueryKey,
-      )
+      const previousListData =
+        queryClient.getQueryData<ListPendingResult>(listPendingQueryKey)
+      const previousDetailData =
+        queryClient.getQueryData<GetPendingByIdResult>(pendingByIdQueryKey)
 
       if (previousListData) {
         queryClient.setQueryData<ListPendingResult>(
@@ -236,4 +233,3 @@ export function useDeptHeadPlacementActions(applicationId: string) {
     generateAiSummary,
   }
 }
-

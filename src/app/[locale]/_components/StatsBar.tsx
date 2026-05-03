@@ -30,7 +30,9 @@ export function StatsBar() {
               // Mobile 2-col: first-row items get bottom border
               i < 2 && "border-b border-border/60 md:border-b-0",
               // Desktop 4-col: all-but-last get end border; last has none
-              i < stats.length - 1 ? "md:border-e md:border-border/60" : "md:border-e-0",
+              i < stats.length - 1
+                ? "md:border-e md:border-border/60"
+                : "md:border-e-0",
             )}
           >
             <div className="font-serif text-4xl sm:text-5xl mb-2 text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] drop-shadow-sm">

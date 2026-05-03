@@ -54,7 +54,9 @@ describe("src/server/services/students/delete-project", () => {
       `@/server/services/students/delete-project?fresh=${Date.now()}`
     )
 
-    await expect(deleteStudentProject("proj-1", "user-1")).rejects.toMatchObject({
+    await expect(
+      deleteStudentProject("proj-1", "user-1"),
+    ).rejects.toMatchObject({
       code: "PROJECT_NOT_FOUND",
       message: "Project not found",
     })
@@ -69,7 +71,9 @@ describe("src/server/services/students/delete-project", () => {
       `@/server/services/students/delete-project?fresh=${Date.now()}`
     )
 
-    await expect(deleteStudentProject("proj-1", "user-1")).rejects.toMatchObject({
+    await expect(
+      deleteStudentProject("proj-1", "user-1"),
+    ).rejects.toMatchObject({
       code: "PROJECT_FORBIDDEN",
       message: "You do not have access to this project",
     })

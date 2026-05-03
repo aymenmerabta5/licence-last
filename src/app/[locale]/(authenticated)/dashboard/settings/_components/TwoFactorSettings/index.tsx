@@ -38,9 +38,7 @@ export function TwoFactorSettings({
             <ShieldCheck className="h-4 w-4 text-muted-foreground" />
           </div>
           <div className="space-y-0.5">
-            <h4 className="text-sm font-medium text-heading">
-              {t("title")}
-            </h4>
+            <h4 className="text-sm font-medium text-heading">{t("title")}</h4>
             <p className="text-[11px] text-muted-foreground">
               {t("description")}
             </p>

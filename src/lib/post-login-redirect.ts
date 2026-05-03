@@ -12,9 +12,7 @@ interface PostLoginRedirectInput {
  * Determine where to redirect a user after login,
  * based on their role, onboarding status, and company/university status.
  */
-export function getPostLoginRedirectPath(
-  me: PostLoginRedirectInput,
-): string {
+export function getPostLoginRedirectPath(me: PostLoginRedirectInput): string {
   const { user, company, university } = me
   const effectiveRole = user.effectiveRole ?? user.role
 

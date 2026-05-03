@@ -22,11 +22,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function MaintenanceRoute({
-  params,
-}: {
-  params: Params
-}) {
+export default async function MaintenanceRoute({ params }: { params: Params }) {
   const { locale } = await params
 
   return (

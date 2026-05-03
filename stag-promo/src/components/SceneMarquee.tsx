@@ -1,5 +1,5 @@
-import { useCurrentFrame } from "remotion";
-import { fadeIn, colors, fonts } from "../lib/animations";
+import { useCurrentFrame } from "remotion"
+import { fadeIn, colors, fonts } from "../lib/animations"
 
 const items = [
   "INTERNSHIP MATCHING",
@@ -8,15 +8,15 @@ const items = [
   "AUTO DOCUMENTS",
   "SKILL TAGS",
   "REAL-TIME TRACKING",
-];
+]
 
 export const SceneMarquee = () => {
-  const frame = useCurrentFrame();
+  const frame = useCurrentFrame()
 
-  const barOpacity = fadeIn(frame, 0, 20);
-  const scrollOffset = (frame * 2.5) % 800;
+  const barOpacity = fadeIn(frame, 0, 20)
+  const scrollOffset = (frame * 2.5) % 800
 
-  const repeated = [...items, ...items, ...items, ...items];
+  const repeated = [...items, ...items, ...items, ...items]
 
   return (
     <div
@@ -90,7 +90,10 @@ export const SceneMarquee = () => {
           }}
         >
           {repeated.map((txt, i) => (
-            <span key={i} style={{ display: "flex", alignItems: "center", gap: "48px" }}>
+            <span
+              key={i}
+              style={{ display: "flex", alignItems: "center", gap: "48px" }}
+            >
               <span
                 style={{
                   fontFamily: fonts.sans,
@@ -136,5 +139,5 @@ export const SceneMarquee = () => {
         &#x221e;
       </div>
     </div>
-  );
-};
+  )
+}

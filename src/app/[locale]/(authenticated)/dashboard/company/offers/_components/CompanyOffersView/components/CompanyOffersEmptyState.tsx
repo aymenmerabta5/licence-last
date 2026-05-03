@@ -14,9 +14,7 @@ export function CompanyOffersEmptyState() {
         <Briefcase className="h-6 w-6 text-muted-foreground/40" />
       </div>
       <div className="space-y-2">
-        <p className="font-serif text-lg text-heading">
-          {t("empty")}
-        </p>
+        <p className="font-serif text-lg text-heading">{t("empty")}</p>
       </div>
       <Link href={"/dashboard/company/offers/new" as "/dashboard"}>
         <Button

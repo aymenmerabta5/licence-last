@@ -5,27 +5,28 @@ import type { ReactNode } from "react"
 import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
 
 mock.module("next-intl", () => ({
-  useTranslations: () => (key: string, values?: Record<string, string | number>) => {
-    const translations: Record<string, string> = {
-      noUsers: "No users",
-      "table.user": "User",
-      "table.role": "Role",
-      "table.status": "Status",
-      "table.created": "Created",
-      "roles.student": "Student",
-      "roles.university_admin": "University Admin",
-      "roles.dept_head": "Department Head",
-      "status.active": "Active",
-      "status.banned": "Banned",
-      "pagination.showing": "Showing {from}-{to} of {total}",
-    }
+  useTranslations:
+    () => (key: string, values?: Record<string, string | number>) => {
+      const translations: Record<string, string> = {
+        noUsers: "No users",
+        "table.user": "User",
+        "table.role": "Role",
+        "table.status": "Status",
+        "table.created": "Created",
+        "roles.student": "Student",
+        "roles.university_admin": "University Admin",
+        "roles.dept_head": "Department Head",
+        "status.active": "Active",
+        "status.banned": "Banned",
+        "pagination.showing": "Showing {from}-{to} of {total}",
+      }
 
-    let text = translations[key] ?? key
-    for (const [name, value] of Object.entries(values ?? {})) {
-      text = text.replace(`{${name}}`, String(value))
-    }
-    return text
-  },
+      let text = translations[key] ?? key
+      for (const [name, value] of Object.entries(values ?? {})) {
+        text = text.replace(`{${name}}`, String(value))
+      }
+      return text
+    },
 }))
 
 mock.module("@/i18n/routing", () => ({

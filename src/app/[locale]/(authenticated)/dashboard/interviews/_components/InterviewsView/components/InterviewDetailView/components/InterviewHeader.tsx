@@ -22,12 +22,17 @@ export function InterviewHeader({
           </h1>
           <div className="flex items-center gap-2 text-sm font-light text-muted-foreground">
             <span>{t("companyLabel")}:</span>
-            <span className="font-medium text-foreground">{interview.companyName}</span>
+            <span className="font-medium text-foreground">
+              {interview.companyName}
+            </span>
           </div>
         </div>
         <Avatar size="lg">
           {interview.companyLogoUrl && (
-            <AvatarImage src={interview.companyLogoUrl} alt={interview.companyName} />
+            <AvatarImage
+              src={interview.companyLogoUrl}
+              alt={interview.companyName}
+            />
           )}
           <AvatarFallback>
             <Building2 className="h-5 w-5" aria-hidden="true" />

@@ -73,10 +73,7 @@ export function CompanyOffersView({
   const publishedOffersCount = offers.filter(
     (o) => o.status === "published",
   ).length
-  const totalCandidates = offers.reduce(
-    (sum, o) => sum + o.candidatesCount,
-    0,
-  )
+  const totalCandidates = offers.reduce((sum, o) => sum + o.candidatesCount, 0)
 
   return (
     <div className="mx-auto max-w-5xl space-y-8 pb-16">

@@ -33,7 +33,9 @@ describe("ResumeSection", () => {
       />,
     )
 
-    const input = container.querySelector('input[type="file"]') as HTMLInputElement
+    const input = container.querySelector(
+      'input[type="file"]',
+    ) as HTMLInputElement
     const file = new File(["pdf"], "resume.pdf", { type: "application/pdf" })
 
     Object.defineProperty(input, "files", {

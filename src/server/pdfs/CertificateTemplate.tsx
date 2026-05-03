@@ -300,7 +300,7 @@ export function InternshipCertificateTemplate({
 
               {verificationCode && (
                 <View style={styles.verificationBox}>
-                  {qrCodeDataUrl && (
+                  {qrCodeDataUrl && (
                     <Image style={styles.qrCode} src={qrCodeDataUrl} />
                   )}
                   <View style={styles.vTextBox}>

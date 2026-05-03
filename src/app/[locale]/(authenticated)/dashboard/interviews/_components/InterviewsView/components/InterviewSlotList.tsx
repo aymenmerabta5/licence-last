@@ -56,9 +56,7 @@ export function InterviewSlotList({
               {slot.location && (
                 <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
                   <MapPin className="h-3 w-3" />
-                  <span className="hidden sm:inline">
-                    {slot.location}
-                  </span>
+                  <span className="hidden sm:inline">{slot.location}</span>
                 </span>
               )}
               {slot.meetingUrl && (

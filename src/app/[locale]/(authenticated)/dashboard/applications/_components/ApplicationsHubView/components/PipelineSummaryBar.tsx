@@ -12,7 +12,11 @@ interface PipelineSummaryBarProps {
   onStageClick: (stage: string | null) => void
 }
 
-export function PipelineSummaryBar({ counts, activeStage, onStageClick }: PipelineSummaryBarProps) {
+export function PipelineSummaryBar({
+  counts,
+  activeStage,
+  onStageClick,
+}: PipelineSummaryBarProps) {
   const t = useTranslations("dashboard.applications.hub")
 
   return (
@@ -32,10 +36,13 @@ export function PipelineSummaryBar({ counts, activeStage, onStageClick }: Pipeli
               "relative flex flex-col items-center gap-2 border-border/50 px-4 py-5 text-center transition-colors duration-500 sm:items-start sm:text-start md:px-5 md:py-6",
               "hover:bg-foreground hover:text-background",
               index < STAGE_COLUMNS.length - 1 && "border-e",
-              index < STAGE_COLUMNS.length - 1 && index % 2 === 1 && "max-md:border-none",
+              index < STAGE_COLUMNS.length - 1 &&
+                index % 2 === 1 &&
+                "max-md:border-none",
               "border-b md:border-b-0",
               index >= STAGE_COLUMNS.length - 2 && "max-md:border-b-0",
-              isActive && "border-b-2 border-b-primary bg-foreground/5 dark:bg-foreground/10",
+              isActive &&
+                "border-b-2 border-b-primary bg-foreground/5 dark:bg-foreground/10",
             )}
           >
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/50">

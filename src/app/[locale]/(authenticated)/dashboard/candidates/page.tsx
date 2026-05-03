@@ -1,5 +1,4 @@
 import { getTranslations } from "next-intl/server"
-import { Suspense } from "react"
 
 import { CandidatesPipelinePage } from "@/app/[locale]/(authenticated)/dashboard/candidates/_components/CandidatesPipelinePage"
 import { requireApprovedCompanyAdmin } from "@/lib/dashboard-access"
@@ -7,7 +6,7 @@ import { localeRedirect } from "@/lib/navigation"
 import { getCompanyMembership } from "@/server/services/companies/membership"
 import { listOffersByCompany } from "@/server/services/offers/list-by-company"
 
-async function CandidatesPageContent() {
+export default async function CandidatesPage() {
   const { user } = await requireApprovedCompanyAdmin()
   const membership = await getCompanyMembership(user.id)
 
@@ -21,12 +20,4 @@ async function CandidatesPageContent() {
   ])
 
   return <CandidatesPipelinePage offers={offers} t={t} />
-}
-
-export default function CandidatesPage() {
-  return (
-    <Suspense fallback={null}>
-      <CandidatesPageContent />
-    </Suspense>
-  )
 }

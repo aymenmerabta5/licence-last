@@ -109,10 +109,7 @@ function buildSearchCondition(
   return ilike(userTable.email, pattern)
 }
 
-async function listUsersBySubrole(
-  params: ListUsersParams,
-  augment: AugmentFn,
-) {
+async function listUsersBySubrole(params: ListUsersParams, augment: AugmentFn) {
   const limit = params.limit ?? 20
   const offset = params.offset ?? 0
   const subrole = params.filterValue as string
@@ -156,20 +153,11 @@ async function listUsersBySubrole(
     .from(userTable)
     .$dynamic()
 
-  const countQuery = db
-    .select({ count: count() })
-    .from(userTable)
-    .$dynamic()
+  const countQuery = db.select({ count: count() }).from(userTable).$dynamic()
 
   if (isRecruiter) {
-    baseQuery.innerJoin(
-      companyMember,
-      eq(userTable.id, companyMember.userId),
-    )
-    countQuery.innerJoin(
-      companyMember,
-      eq(userTable.id, companyMember.userId),
-    )
+    baseQuery.innerJoin(companyMember, eq(userTable.id, companyMember.userId))
+    countQuery.innerJoin(companyMember, eq(userTable.id, companyMember.userId))
   } else {
     baseQuery.innerJoin(
       universityMember,
@@ -183,9 +171,7 @@ async function listUsersBySubrole(
 
   const rows = await baseQuery
     .where(whereClause)
-    .orderBy(
-      orderDirection === "asc" ? orderByColumn : desc(orderByColumn),
-    )
+    .orderBy(orderDirection === "asc" ? orderByColumn : desc(orderByColumn))
     .limit(limit)
     .offset(offset)
 

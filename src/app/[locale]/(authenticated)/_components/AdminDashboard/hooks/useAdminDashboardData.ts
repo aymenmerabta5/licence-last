@@ -4,7 +4,9 @@ import { useQuery } from "@tanstack/react-query"
 
 import { orpc, type orpcClient } from "@/server/orpc/client"
 
-export type AdminStats = Awaited<ReturnType<typeof orpcClient.stats.getAdminStats>>
+export type AdminStats = Awaited<
+  ReturnType<typeof orpcClient.stats.getAdminStats>
+>
 export type UniversityDashboardStats = Awaited<
   ReturnType<typeof orpcClient.stats.getUniversityDashboardStats>
 >

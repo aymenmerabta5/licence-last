@@ -38,11 +38,7 @@ export function SettingsTabs({ activeTab, onTabChange }: SettingsTabsProps) {
           {TABS.map((tab) => {
             const Icon = tab.icon
             return (
-              <TabsTrigger
-                key={tab.id}
-                value={tab.id}
-                className="gap-1.5"
-              >
+              <TabsTrigger key={tab.id} value={tab.id} className="gap-1.5">
                 <Icon className="h-3.5 w-3.5" />
                 {tab.label}
               </TabsTrigger>

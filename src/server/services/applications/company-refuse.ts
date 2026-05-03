@@ -52,7 +52,10 @@ export async function companyRefuseApplication(
 
   if (app.status === "company_refused") {
     if (app.pipelineStage === "rejected") {
-      log.info({ applicationId }, "Application already refused; returning idempotent success")
+      log.info(
+        { applicationId },
+        "Application already refused; returning idempotent success",
+      )
       return { success: true, applicationId }
     }
 

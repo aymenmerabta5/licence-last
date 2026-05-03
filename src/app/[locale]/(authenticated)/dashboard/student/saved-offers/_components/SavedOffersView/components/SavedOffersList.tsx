@@ -52,7 +52,6 @@ export function SavedOffersList({
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-start gap-3 min-w-0">
                 {offer.companyLogoUrl ? (
-
                   <img
                     src={offer.companyLogoUrl}
                     alt={offer.companyName}

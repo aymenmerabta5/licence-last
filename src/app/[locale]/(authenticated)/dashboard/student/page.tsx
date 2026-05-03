@@ -1,14 +1,5 @@
-import { Suspense } from "react"
 import { localeRedirect } from "@/lib/navigation"
 
-export async function StudentDashboardPageContent() {
+export default async function StudentDashboardPage() {
   return localeRedirect("/dashboard")
-}
-
-export default function StudentDashboardPage() {
-  return (
-    <Suspense fallback={null}>
-      <StudentDashboardPageContent />
-    </Suspense>
-  )
 }

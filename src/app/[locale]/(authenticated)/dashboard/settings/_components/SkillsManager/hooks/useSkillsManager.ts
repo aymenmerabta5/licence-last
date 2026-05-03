@@ -95,8 +95,12 @@ export function useSkillsManager() {
   const upsertMutation = useMutation({
     ...orpc.students.upsertSkills.mutationOptions(),
     onMutate: async (variables) => {
-      await queryClient.cancelQueries({ queryKey: profileQueryOptions.queryKey })
-      const previousData = queryClient.getQueryData(profileQueryOptions.queryKey)
+      await queryClient.cancelQueries({
+        queryKey: profileQueryOptions.queryKey,
+      })
+      const previousData = queryClient.getQueryData(
+        profileQueryOptions.queryKey,
+      )
       queryClient.setQueryData(profileQueryOptions.queryKey, (old) => {
         if (!old) return old
         const nextSkills = allSkills.filter((s) =>

@@ -62,7 +62,10 @@ export async function companyAcceptApplication(
 
   if (app.status === "company_accepted") {
     if (app.pipelineStage === "accepted" || app.pipelineStage === "validated") {
-      log.info({ applicationId }, "Application already accepted; returning idempotent success")
+      log.info(
+        { applicationId },
+        "Application already accepted; returning idempotent success",
+      )
       return { success: true, applicationId }
     }
 

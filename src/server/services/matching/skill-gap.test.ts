@@ -114,7 +114,6 @@ describe("src/server/services/matching/skill-gap", () => {
       missingSkills: [],
       matchedSkills: [{ id: "s1", name: "React" }],
       breakdown: {},
-
     } as any)
 
     const { getSkillGapRoadmap } = await import(

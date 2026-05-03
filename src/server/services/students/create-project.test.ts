@@ -43,7 +43,9 @@ describe("src/server/services/students/create-project", () => {
     expect(typeof result.projectId).toBe("string")
     expect(mockInsert).toHaveBeenCalledTimes(1)
 
-    const payload = (mockValues.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const payload = (
+      mockValues.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(payload.userId).toBe("user-1")
     expect(payload.name).toBe("Portfolio")
     expect(payload.summary).toBe("Personal site")
@@ -67,7 +69,9 @@ describe("src/server/services/students/create-project", () => {
       "user-1",
     )
 
-    const payload = (mockValues.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const payload = (
+      mockValues.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(payload.name).toBe("Portfolio")
     expect(payload.summary).toBe("Personal site")
     expect(payload.projectUrl).toBe("https://example.com")
@@ -89,7 +93,9 @@ describe("src/server/services/students/create-project", () => {
       "user-1",
     )
 
-    const payload = (mockValues.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const payload = (
+      mockValues.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(payload.projectUrl).toBeNull()
     expect(payload.repositoryUrl).toBeNull()
   })
@@ -130,7 +136,9 @@ describe("src/server/services/students/create-project", () => {
       "user-1",
     )
 
-    const payload = (mockValues.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const payload = (
+      mockValues.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(payload.startDate).toBeNull()
     expect(payload.endDate).toBeNull()
   })

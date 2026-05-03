@@ -24,9 +24,7 @@ const TOKEN_PATTERNS = [
   /(?:^|\s)(?:[^\s"'`]+:)*-?right-(?:\d+|\[[^\]]+\]|px|full|auto)(?=$|\s|["'`])/,
 ]
 
-const EXCEPTION_PATTERNS = [
-  /data-\[side=(left|right)\]/,
-]
+const EXCEPTION_PATTERNS = [/data-\[side=(left|right)\]/]
 
 function hasPhysicalDirectionToken(line) {
   return TOKEN_PATTERNS.some((pattern) => pattern.test(line))

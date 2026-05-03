@@ -1,8 +1,7 @@
-import { Suspense } from "react"
 import { requireRole } from "@/lib/auth-guards"
 import { localeRedirect } from "@/lib/navigation"
 
-async function ProfilePageContent() {
+export default async function ProfilePage() {
   const user = await requireRole([
     "student",
     "company_admin",
@@ -12,12 +11,4 @@ async function ProfilePageContent() {
 
   // Keep /dashboard/profile for backwards compatibility; the profile is now public at /profile/[userId].
   return localeRedirect(`/profile/${user.id}`)
-}
-
-export default function ProfilePage() {
-  return (
-    <Suspense fallback={null}>
-      <ProfilePageContent />
-    </Suspense>
-  )
 }

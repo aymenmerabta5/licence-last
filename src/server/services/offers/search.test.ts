@@ -1,6 +1,9 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
-let mockOffersRows: any[] = []
-let mockOfferSkillsRows: any[] = []
+import { beforeEach, describe, expect, mock, test } from "bun:test"
+
+let mockOffersRows: any[] = []
+
+let mockOfferSkillsRows: any[] = []
+
 let mockOfferLanguagesRows: any[] = []
 
 let selectCallIdx = 0
@@ -8,18 +11,22 @@ let selectCallIdx = 0
 // Query 1 (offers)
 const mockLimit = mock(() => Promise.resolve(mockOffersRows))
 const mockOrderBy = mock(() => ({ limit: mockLimit }))
-const mockWhere = mock(() => ({ orderBy: mockOrderBy }))
-const mockJoinCompany = mock(() => ({}) as any)
+const mockWhere = mock(() => ({ orderBy: mockOrderBy }))
+
+const mockJoinCompany = mock(() => ({}) as any)
+
 const mockFromOffers = mock(() => ({}) as any)
 
-// Query 2 (skills)
+// Query 2 (skills)
+
 const mockSkillWhere = mock<() => Promise<any[]>>(() =>
   Promise.resolve(mockOfferSkillsRows),
 )
 const mockJoinSkill = mock(() => ({ where: mockSkillWhere }))
 const mockFromSkills = mock(() => ({ innerJoin: mockJoinSkill }))
 
-// Query 3 (languages)
+// Query 3 (languages)
+
 const mockLanguageWhere = mock<() => Promise<any[]>>(() =>
   Promise.resolve(mockOfferLanguagesRows),
 )

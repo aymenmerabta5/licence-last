@@ -8,10 +8,12 @@ function HeaderSkeleton({
   width?: string
 }) {
   return (
-    <div className="space-y-3">
-      <Skeleton className="h-4 w-32" />
-      <Skeleton className={`h-10 ${width}`} />
-      {!compact ? <Skeleton className="h-4 w-full max-w-xl" /> : null}
+    <div className="space-y-4">
+      <Skeleton className="h-0.5 w-full max-w-xs" />
+      <div className="space-y-3">
+        <Skeleton className={`h-10 ${width}`} />
+        {!compact ? <Skeleton className="h-4 w-full max-w-xl" /> : null}
+      </div>
     </div>
   )
 }
@@ -29,13 +31,23 @@ function CardStack({ count, height }: { count: number; height: string }) {
 export function DashboardOverviewSkeleton() {
   return (
     <div className="mx-auto max-w-7xl space-y-10">
-      <HeaderSkeleton width="w-72" />
-      <Skeleton className="h-32 rounded-[2rem]" />
+      {/* Editorial header — matches actual greeting + subtitle on /dashboard */}
+      <header className="space-y-3">
+        <Skeleton className="h-12 w-3/4 max-w-lg" />
+        <Skeleton className="h-4 w-full max-w-xl" />
+      </header>
+
+      {/* Generic hero / stats area placeholder */}
+      <Skeleton className="h-40 rounded-[2rem]" />
+
+      {/* Stats row placeholder */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {Array.from({ length: 3 }).map((_, index) => (
           <Skeleton key={index} className="h-28 rounded-[2rem]" />
         ))}
       </div>
+
+      {/* Two-column content placeholder */}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
         <div className="space-y-6 lg:col-span-8">
           <Skeleton className="h-64 rounded-[2rem]" />
@@ -305,7 +317,10 @@ export function OfferDetailPageSkeleton() {
         </div>
         <div className="space-y-8 lg:col-span-4">
           {Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className="overflow-hidden border border-border/60">
+            <div
+              key={index}
+              className="overflow-hidden border border-border/60"
+            >
               <div className="flex items-center gap-2.5 border-b border-border/40 bg-muted/20 px-6 py-4 dark:bg-muted/10">
                 <Skeleton className="h-4 w-4 shrink-0 rounded-none" />
                 <Skeleton className="h-5 w-24" />

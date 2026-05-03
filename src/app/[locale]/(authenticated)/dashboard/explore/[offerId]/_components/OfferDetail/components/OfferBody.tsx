@@ -23,7 +23,9 @@ export function OfferBody({ offer }: OfferBodyProps) {
       <section className="border border-border/50">
         <div className="flex items-center gap-3 border-b border-border/50 px-6 py-4">
           <FileText className="h-4 w-4 text-primary" />
-          <h2 className="font-serif text-xl text-heading">{t("description")}</h2>
+          <h2 className="font-serif text-xl text-heading">
+            {t("description")}
+          </h2>
         </div>
         <div className="px-6 py-6">
           <p className="text-sm text-heading leading-relaxed whitespace-pre-wrap">

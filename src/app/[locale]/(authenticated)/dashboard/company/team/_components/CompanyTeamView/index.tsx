@@ -24,8 +24,15 @@ export function CompanyTeamView({ currentUserId }: CompanyTeamViewProps) {
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
   const [memberToRemove, setMemberToRemove] = useState<MemberItem | null>(null)
-  const { members, isLoading, isError, error, inviteMutation, removeMutation, refetch } =
-    useCompanyTeamData()
+  const {
+    members,
+    isLoading,
+    isError,
+    error,
+    inviteMutation,
+    removeMutation,
+    refetch,
+  } = useCompanyTeamData()
 
   const currentMember = useMemo(
     () => members.find((member) => member.userId === currentUserId),

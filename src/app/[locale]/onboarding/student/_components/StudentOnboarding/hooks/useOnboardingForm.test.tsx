@@ -1,7 +1,8 @@
 import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 import { renderHook } from "@testing-library/react"
 
-const observedQueryOptions: Array<{ enabled?: boolean; queryKey?: unknown[] }> = []
+const observedQueryOptions: Array<{ enabled?: boolean; queryKey?: unknown[] }> =
+  []
 let currentMeResult: { university?: { id: string } | null } | undefined
 let importCounter = 0
 

@@ -86,7 +86,6 @@ describe("src/server/services/companies/list", () => {
   })
 
   test("should cap limit at 200", async () => {
-
     mockOffset.mockResolvedValue([] as any)
 
     const { listCompanies } = await import(

@@ -39,7 +39,9 @@ describe("src/server/services/skills/create", () => {
 
   test("should create a new skill when name does not exist", async () => {
     mockLimit.mockResolvedValue([])
-    mockReturning.mockResolvedValue([{ id: "skill-1", name: "React", slug: "react" }])
+    mockReturning.mockResolvedValue([
+      { id: "skill-1", name: "React", slug: "react" },
+    ])
 
     const { createSkill } = await import(
       `@/server/services/skills/create?fresh=${Date.now()}`
@@ -103,13 +105,17 @@ describe("src/server/services/skills/create", () => {
 
     await createSkill("C++")
 
-    const payload = (mockValues.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const payload = (
+      mockValues.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(payload.slug).toBeDefined()
   })
 
   test("should handle null category", async () => {
     mockLimit.mockResolvedValue([])
-    mockReturning.mockResolvedValue([{ id: "skill-1", name: "React", slug: "react" }])
+    mockReturning.mockResolvedValue([
+      { id: "skill-1", name: "React", slug: "react" },
+    ])
 
     const { createSkill } = await import(
       `@/server/services/skills/create?fresh=${Date.now()}`
@@ -122,7 +128,9 @@ describe("src/server/services/skills/create", () => {
 
   test("should trim name and category", async () => {
     mockLimit.mockResolvedValue([])
-    mockReturning.mockResolvedValue([{ id: "skill-1", name: "React", slug: "react" }])
+    mockReturning.mockResolvedValue([
+      { id: "skill-1", name: "React", slug: "react" },
+    ])
 
     const { createSkill } = await import(
       `@/server/services/skills/create?fresh=${Date.now()}`
@@ -130,7 +138,9 @@ describe("src/server/services/skills/create", () => {
 
     await createSkill("  React  ", "  frontend  ")
 
-    const payload = (mockValues.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const payload = (
+      mockValues.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(payload.name).toBe("React")
     expect(payload.category).toBe("frontend")
   })

@@ -72,7 +72,9 @@ export function ApplicationPanel({
               <div className="flex h-12 w-12 items-center justify-center border border-dashed border-border/60">
                 <Send className="h-5 w-5 text-muted-foreground/40" />
               </div>
-              <p className="text-sm text-muted-foreground">{t("offerClosed")}</p>
+              <p className="text-sm text-muted-foreground">
+                {t("offerClosed")}
+              </p>
             </div>
           ) : showApplyForm ? (
             <ApplicationFormCard

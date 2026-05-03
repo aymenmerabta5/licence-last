@@ -70,7 +70,9 @@ export function UserActionsMenu({
         {canViewDetails && (
           <DropdownMenuItem
             render={
-              <Link href={`/dashboard/admin/users/${user.id}` as "/dashboard"} />
+              <Link
+                href={`/dashboard/admin/users/${user.id}` as "/dashboard"}
+              />
             }
           >
             <Eye className="h-4 w-4 me-2" />
@@ -89,9 +91,8 @@ export function UserActionsMenu({
             {t("actions.setPassword")}
           </DropdownMenuItem>
         )}
-        {(canViewDetails || canSetRole || canSetPassword) && canModerateUsers && (
-          <DropdownMenuSeparator />
-        )}
+        {(canViewDetails || canSetRole || canSetPassword) &&
+          canModerateUsers && <DropdownMenuSeparator />}
         {canModerateUsers && (
           <>
             {user.banned ? (

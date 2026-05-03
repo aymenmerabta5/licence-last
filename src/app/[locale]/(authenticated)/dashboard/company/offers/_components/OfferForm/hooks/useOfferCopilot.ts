@@ -38,10 +38,7 @@ function resolveSkillIds(
   return Array.from(new Set(mapped)).slice(0, 20)
 }
 
-export function useOfferCopilot(
-  form: OfferFormApi,
-  skillTags: SkillTag[],
-) {
+export function useOfferCopilot(form: OfferFormApi, skillTags: SkillTag[]) {
   const [aiPrompt, setAiPrompt] = useState("")
   const [activeIntent, setActiveIntent] = useState<OfferCopilotIntent | null>(
     null,

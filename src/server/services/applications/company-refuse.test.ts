@@ -135,7 +135,11 @@ describe("src/server/services/applications/company-refuse", () => {
     ])
 
     const { companyRefuseApplication } = await importCompanyRefuseApplication()
-    const result = await companyRefuseApplication("app-1", "company-1", "actor-1")
+    const result = await companyRefuseApplication(
+      "app-1",
+      "company-1",
+      "actor-1",
+    )
 
     expect(result.success).toBe(true)
     expect(mockUpdate).not.toHaveBeenCalled()
@@ -156,7 +160,11 @@ describe("src/server/services/applications/company-refuse", () => {
     ])
 
     const { companyRefuseApplication } = await importCompanyRefuseApplication()
-    const result = await companyRefuseApplication("app-1", "company-1", "actor-1")
+    const result = await companyRefuseApplication(
+      "app-1",
+      "company-1",
+      "actor-1",
+    )
 
     expect(result.success).toBe(true)
     expect(mockUpdate).toHaveBeenCalledTimes(1)

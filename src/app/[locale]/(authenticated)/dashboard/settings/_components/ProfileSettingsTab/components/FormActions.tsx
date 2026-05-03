@@ -30,9 +30,7 @@ export function FormActions({ form, isBusy, onReset }: FormActionsProps) {
         >
           {t("discard")}
         </Button>
-        <form.Subscribe
-          selector={(state) => [state.isSubmitting] as const}
-        >
+        <form.Subscribe selector={(state) => [state.isSubmitting] as const}>
           {([isSubmitting]) => (
             <Button
               type="submit"

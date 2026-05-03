@@ -20,9 +20,7 @@ export function FormActions({ form }: FormActionsProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease, delay: 0.4 }}
     >
-      <form.Subscribe
-        selector={(state) => [state.isSubmitting] as const}
-      >
+      <form.Subscribe selector={(state) => [state.isSubmitting] as const}>
         {([isSubmitting]) => (
           <Button
             type="submit"

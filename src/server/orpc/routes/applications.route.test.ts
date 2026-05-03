@@ -35,7 +35,9 @@ const withdrawApplicationMock = mock(async () => ({
 const listApplicationsByOfferMock = mock(async () => ({ applications: [] }))
 const updatePipelineStageMock = mock(async () => ({ applicationId: "app-1" }))
 const listApplicationTimelineMock = mock(async (): Promise<unknown[]> => [])
-const listStudentApplicationJourneysMock = mock(async (): Promise<unknown[]> => [])
+const listStudentApplicationJourneysMock = mock(
+  async (): Promise<unknown[]> => [],
+)
 const revalidateTagMock = mock(() => {})
 const isAdminRoleMock = mock(() => false)
 const dbLimitQueue: unknown[][] = []
@@ -77,7 +79,8 @@ mock.module("next/cache", () => ({
   cacheTag: () => {},
   revalidateTag: revalidateTagMock,
   revalidatePath: () => {},
-  updateTag: () => {},
+  updateTag: () => {},
+
   unstable_cache: (fn: (...args: any[]) => any) => fn,
 }))
 

@@ -51,7 +51,10 @@ function RootFallbackContent({
             {edition}
           </span>
 
-          <div className="flex items-center justify-center gap-4" aria-hidden="true">
+          <div
+            className="flex items-center justify-center gap-4"
+            aria-hidden="true"
+          >
             <span
               className="h-px bg-foreground/15 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
               style={{ width: 56 }}
@@ -74,12 +77,18 @@ function RootFallbackContent({
             4
             <span className="relative inline-block">
               <span className="text-primary">0</span>
-              <span className="absolute -bottom-1 start-0 end-0 h-[3px] bg-primary origin-left [[dir=rtl]_&]:origin-right" aria-hidden="true" />
+              <span
+                className="absolute -bottom-1 start-0 end-0 h-[3px] bg-primary origin-left [[dir=rtl]_&]:origin-right"
+                aria-hidden="true"
+              />
             </span>
             4
           </span>
 
-          <div className="flex items-center justify-center gap-4" aria-hidden="true">
+          <div
+            className="flex items-center justify-center gap-4"
+            aria-hidden="true"
+          >
             <span
               className="h-px bg-foreground/15 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
               style={{ width: 40 }}
@@ -111,7 +120,10 @@ function RootFallbackContent({
             <ArrowRight className="h-4 w-4" />
           </a>
 
-          <div className="mt-14 flex items-center justify-center gap-4" aria-hidden="true">
+          <div
+            className="mt-14 flex items-center justify-center gap-4"
+            aria-hidden="true"
+          >
             <span
               className="h-px bg-foreground/15 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
               style={{ width: 20 }}

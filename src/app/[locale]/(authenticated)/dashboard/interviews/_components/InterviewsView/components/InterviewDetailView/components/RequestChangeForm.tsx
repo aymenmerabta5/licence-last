@@ -14,7 +14,10 @@ interface RequestChangeFormProps {
   companyName: string
 }
 
-export function RequestChangeForm({ offerId, companyName }: RequestChangeFormProps) {
+export function RequestChangeForm({
+  offerId,
+  companyName,
+}: RequestChangeFormProps) {
   const t = useTranslations("dashboard.interviews.detail")
   const form = useRequestChangeForm({ offerId, companyName })
 
@@ -29,13 +32,21 @@ export function RequestChangeForm({ offerId, companyName }: RequestChangeFormPro
       >
         <span>{t("requestChangeTitle")}</span>
         <ChevronDown
-          className={cn("h-3.5 w-3.5 transition-transform", form.isExpanded && "rotate-180")}
+          className={cn(
+            "h-3.5 w-3.5 transition-transform",
+            form.isExpanded && "rotate-180",
+          )}
           aria-hidden="true"
         />
       </button>
 
       {form.isExpanded && (
-        <motion.div id="request-change-panel" {...reveal} transition={{ duration: 0.4, ease }} className="space-y-3">
+        <motion.div
+          id="request-change-panel"
+          {...reveal}
+          transition={{ duration: 0.4, ease }}
+          className="space-y-3"
+        >
           <p className="text-xs text-muted-foreground">
             {t("requestChangeDescription", { companyName })}
           </p>

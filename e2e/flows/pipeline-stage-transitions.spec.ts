@@ -21,7 +21,9 @@ test.describe("Pipeline Stage Transitions", () => {
     await loginAsCompany(page)
     await page.goto("/en/dashboard/candidates")
 
-    await page.getByRole("link", { name: new RegExp(fixture.offerTitle, "i") }).click()
+    await page
+      .getByRole("link", { name: new RegExp(fixture.offerTitle, "i") })
+      .click()
 
     await expect(page).toHaveURL(
       new RegExp(`/en/dashboard/company/offers/${fixture.offerId}/candidates$`),

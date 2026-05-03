@@ -69,7 +69,9 @@ export function useOfferApplication(
         input: { offerId: variables.offerId },
       }).queryKey
       queryClient.invalidateQueries({ queryKey: checkQueryKey })
-      queryClient.invalidateQueries({ queryKey: ["applications", "listByStudent"] })
+      queryClient.invalidateQueries({
+        queryKey: ["applications", "listByStudent"],
+      })
     },
   })
 

@@ -54,9 +54,7 @@ export function CompanyDocumentsView() {
               className="flex items-center gap-2 text-xs text-muted-foreground border-t border-border/50 pt-4"
             >
               <FileText className="h-3.5 w-3.5" />
-              <span>
-                {t("placementCount", { count: placements.length })}
-              </span>
+              <span>{t("placementCount", { count: placements.length })}</span>
             </motion.div>
           )}
         </div>
@@ -104,7 +102,9 @@ export function CompanyDocumentsView() {
             <FileText className="h-6 w-6 text-muted-foreground/40" />
           </div>
           <div className="space-y-2">
-            <p className="font-serif text-lg text-heading">{t("noDocumentsTitle")}</p>
+            <p className="font-serif text-lg text-heading">
+              {t("noDocumentsTitle")}
+            </p>
             <p className="text-sm font-light text-muted-foreground max-w-sm mx-auto">
               {t("empty")}
             </p>

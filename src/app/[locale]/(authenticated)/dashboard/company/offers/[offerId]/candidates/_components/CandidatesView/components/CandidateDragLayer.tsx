@@ -71,7 +71,9 @@ export function CandidateDragLayer() {
         {/* Student info row */}
         <div className="flex items-start gap-3">
           <div className="h-9 w-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-            <span className="text-[10px] font-bold text-primary">{initials}</span>
+            <span className="text-[10px] font-bold text-primary">
+              {initials}
+            </span>
           </div>
 
           <div className="flex-1 min-w-0">

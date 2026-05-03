@@ -134,7 +134,9 @@ export function useConversationActions({
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: listConversationsQueryKey })
       const previousConversationListData =
-        queryClient.getQueryData<ConversationListData>(listConversationsQueryKey)
+        queryClient.getQueryData<ConversationListData>(
+          listConversationsQueryKey,
+        )
 
       const optimisticConversation: ConversationListItem = {
         id: `optimistic-${Date.now()}`,
@@ -288,7 +290,9 @@ export function useConversationActions({
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: listConversationsQueryKey })
       const previousConversationListData =
-        queryClient.getQueryData<ConversationListData>(listConversationsQueryKey)
+        queryClient.getQueryData<ConversationListData>(
+          listConversationsQueryKey,
+        )
 
       queryClient.setQueryData<ConversationListData>(
         listConversationsQueryKey,
@@ -379,7 +383,9 @@ export function useConversationActions({
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: listConversationsQueryKey })
       const previousConversationListData =
-        queryClient.getQueryData<ConversationListData>(listConversationsQueryKey)
+        queryClient.getQueryData<ConversationListData>(
+          listConversationsQueryKey,
+        )
 
       queryClient.setQueryData<ConversationListData>(
         listConversationsQueryKey,
@@ -481,7 +487,9 @@ export function useConversationActions({
 
       await queryClient.cancelQueries({ queryKey: listConversationsQueryKey })
       const previousConversationListData =
-        queryClient.getQueryData<ConversationListData>(listConversationsQueryKey)
+        queryClient.getQueryData<ConversationListData>(
+          listConversationsQueryKey,
+        )
 
       queryClient.setQueryData<ConversationListData>(
         listConversationsQueryKey,

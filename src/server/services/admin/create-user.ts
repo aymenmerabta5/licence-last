@@ -130,9 +130,7 @@ export async function createUser(
     }
   } catch (error) {
     const constraint =
-      typeof error === "object" &&
-      error !== null &&
-      "constraint" in error
+      typeof error === "object" && error !== null && "constraint" in error
         ? (error as { constraint?: string }).constraint
         : undefined
 

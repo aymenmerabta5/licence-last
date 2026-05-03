@@ -64,7 +64,9 @@ describe("src/server/services/students/update-experience", () => {
     expect(result).toEqual({ experienceId: "exp-1" })
     expect(mockUpdate).toHaveBeenCalledTimes(1)
 
-    const changes = (mockSet.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const changes = (
+      mockSet.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(changes.title).toBe("New Title")
   })
 
@@ -165,7 +167,9 @@ describe("src/server/services/students/update-experience", () => {
 
     await updateStudentExperience("exp-1", { isCurrent: true }, "user-1")
 
-    const changes = (mockSet.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const changes = (
+      mockSet.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(changes.isCurrent).toBe(true)
     expect(changes.endDate).toBeNull()
   })
@@ -190,11 +194,17 @@ describe("src/server/services/students/update-experience", () => {
 
     await updateStudentExperience(
       "exp-1",
-      { title: "  New Title  ", organization: "  New Org  ", description: "  New Desc  " },
+      {
+        title: "  New Title  ",
+        organization: "  New Org  ",
+        description: "  New Desc  ",
+      },
       "user-1",
     )
 
-    const changes = (mockSet.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const changes = (
+      mockSet.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(changes.title).toBe("New Title")
     expect(changes.organization).toBe("New Org")
     expect(changes.description).toBe("New Desc")
@@ -218,13 +228,11 @@ describe("src/server/services/students/update-experience", () => {
       `@/server/services/students/update-experience?fresh=${Date.now()}`
     )
 
-    await updateStudentExperience(
-      "exp-1",
-      { description: "   " },
-      "user-1",
-    )
+    await updateStudentExperience("exp-1", { description: "   " }, "user-1")
 
-    const changes = (mockSet.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const changes = (
+      mockSet.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(changes.description).toBeNull()
   })
 })

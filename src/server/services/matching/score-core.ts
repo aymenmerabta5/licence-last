@@ -87,8 +87,14 @@ export interface ScoringInputs {
 export function computeExplainableMatchScore(
   inputs: ScoringInputs,
 ): MatchScoreResult {
-  const { offer, profile, offerSkills, studentSkills, languageReqs, languages } =
-    inputs
+  const {
+    offer,
+    profile,
+    offerSkills,
+    studentSkills,
+    languageReqs,
+    languages,
+  } = inputs
 
   const studentSkillIds = new Set(studentSkills.map((skill) => skill.id))
   const matchedSkills = offerSkills.filter((skill) =>

@@ -2439,10 +2439,10 @@
         "applied": "Applied",
         "screening": "Screening",
         "interview": "Interview",
-          "offer": "Offer",
-          "accepted": "Awaiting Validation",
-          "validated": "Validated",
-          "rejected": "Rejected"
+        "offer": "Offer",
+        "accepted": "Awaiting Validation",
+        "validated": "Validated",
+        "rejected": "Rejected"
       },
       "fallbackStudent": "Student",
       "disabled": {

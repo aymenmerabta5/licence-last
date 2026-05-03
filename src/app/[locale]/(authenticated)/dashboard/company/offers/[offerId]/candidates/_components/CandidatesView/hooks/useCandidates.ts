@@ -24,9 +24,8 @@ import type { InferRouterOutputs } from "@orpc/server"
 import { orpc, orpcClient } from "@/server/orpc/client"
 import type { AppRouter } from "@/server/orpc/router"
 
-type ListApplicationsByOfferResult = InferRouterOutputs<
-  AppRouter
->["applications"]["listByOffer"]
+type ListApplicationsByOfferResult =
+  InferRouterOutputs<AppRouter>["applications"]["listByOffer"]
 
 const EMPTY_FILTERS: CandidateFiltersState = {
   skillTagIds: [],
@@ -150,7 +149,11 @@ export function useCandidates(offerId: string) {
                 ...page,
                 applications: page.applications.map((app) =>
                   app.id === variables.applicationId
-                    ? { ...app, status: "company_accepted", pipelineStage: "accepted" }
+                    ? {
+                        ...app,
+                        status: "company_accepted",
+                        pipelineStage: "accepted",
+                      }
                     : app,
                 ),
               })),
@@ -262,7 +265,9 @@ export function useCandidates(offerId: string) {
       { applicationId },
       {
         onSuccess: async () => {
-          await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+          await queryClient.invalidateQueries({
+            queryKey: applicationsQueryKey,
+          })
           await refreshTimelineForApplication(applicationId)
           queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
           toast.success(t("acceptSuccess"))
@@ -287,7 +292,9 @@ export function useCandidates(offerId: string) {
       { applicationId, note: refuseNote || undefined },
       {
         onSuccess: async () => {
-          await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+          await queryClient.invalidateQueries({
+            queryKey: applicationsQueryKey,
+          })
           await refreshTimelineForApplication(applicationId)
           queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
           toast.success(t("refuseSuccess"))
@@ -329,7 +336,9 @@ export function useCandidates(offerId: string) {
             toStage: "interview",
           })
 
-          await queryClient.invalidateQueries({ queryKey: applicationsQueryKey })
+          await queryClient.invalidateQueries({
+            queryKey: applicationsQueryKey,
+          })
           await refreshTimelineForApplication(payload.applicationId)
           queryClient.invalidateQueries({ queryKey: ["notifications", "list"] })
           queryClient.invalidateQueries({
@@ -349,10 +358,7 @@ export function useCandidates(offerId: string) {
     )
   }
 
-  const handleStageChange = (
-    applicationId: string,
-    toStage: PipelineStage,
-  ) => {
+  const handleStageChange = (applicationId: string, toStage: PipelineStage) => {
     const app = applications.find((a) => a.id === applicationId)
 
     if (toStage === "accepted") {

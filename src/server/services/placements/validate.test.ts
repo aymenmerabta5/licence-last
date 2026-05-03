@@ -87,7 +87,13 @@ const txWhere = mock(() => ({}) as any)
 const txUpdateReturning = mock(() => Promise.resolve([{ id: "app-1" }]))
 
 interface Tx {
-  select: () => { from: typeof appLockFrom | typeof txFrom1 | typeof existingFrom | typeof txFrom2 }
+  select: () => {
+    from:
+      | typeof appLockFrom
+      | typeof txFrom1
+      | typeof existingFrom
+      | typeof txFrom2
+  }
   insert: typeof txInsert
   update: typeof txUpdate
 }
@@ -344,7 +350,9 @@ describe("src/server/services/placements/validate", () => {
     ])
     mockSelectResults.push([{ userId: "member-1" }])
     txSelectResults.push([{ id: "app-1" }])
-    txSelectResults.push([{ id: "offer-1", status: "published", maxPositions: 2 }])
+    txSelectResults.push([
+      { id: "offer-1", status: "published", maxPositions: 2 },
+    ])
     txSelectResults.push([])
     txSelectResults.push([{ value: 0 }])
 
@@ -386,7 +394,9 @@ describe("src/server/services/placements/validate", () => {
       },
     ])
     txSelectResults.push([{ id: "app-1" }])
-    txSelectResults.push([{ id: "offer-1", status: "published", maxPositions: 1 }])
+    txSelectResults.push([
+      { id: "offer-1", status: "published", maxPositions: 1 },
+    ])
     txSelectResults.push([])
     txSelectResults.push([{ value: 1 }])
 
@@ -401,7 +411,9 @@ describe("src/server/services/placements/validate", () => {
         startDate: new Date("2030-01-01"),
         endDate: new Date("2030-02-01"),
       }),
-    ).rejects.toThrow("This offer has reached its maximum number of positions and cannot accept more placements")
+    ).rejects.toThrow(
+      "This offer has reached its maximum number of positions and cannot accept more placements",
+    )
 
     expect(txInsert).not.toHaveBeenCalled()
     expect(createNotificationMock).not.toHaveBeenCalled()
@@ -429,7 +441,9 @@ describe("src/server/services/placements/validate", () => {
       },
     ])
     txSelectResults.push([{ id: "app-1" }])
-    txSelectResults.push([{ id: "offer-1", status: "published", maxPositions: 2 }])
+    txSelectResults.push([
+      { id: "offer-1", status: "published", maxPositions: 2 },
+    ])
     txSelectResults.push([])
     txSelectResults.push([{ value: 0 }])
     txPlacementReturning.mockResolvedValueOnce([])
@@ -474,7 +488,9 @@ describe("src/server/services/placements/validate", () => {
     ])
     mockSelectResults.push([{ userId: "member-1" }])
     txSelectResults.push([{ id: "app-1" }])
-    txSelectResults.push([{ id: "offer-1", status: "published", maxPositions: 2 }])
+    txSelectResults.push([
+      { id: "offer-1", status: "published", maxPositions: 2 },
+    ])
     txSelectResults.push([])
     txSelectResults.push([{ value: 0 }])
 
@@ -488,7 +504,10 @@ describe("src/server/services/placements/validate", () => {
 
     expect(result.success).toBe(true)
     expect(mockTransaction).toHaveBeenCalledTimes(1)
-    const insertValues = (txValues.mock.calls as unknown[][])[0][0] as Record<string, unknown>
+    const insertValues = (txValues.mock.calls as unknown[][])[0][0] as Record<
+      string,
+      unknown
+    >
     expect(insertValues.startDate).toEqual(new Date("2030-03-01"))
     expect(insertValues.endDate).toEqual(new Date("2030-04-01"))
   })

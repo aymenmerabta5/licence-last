@@ -182,7 +182,8 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
       }),
     ).rejects.toMatchObject({
       code: "APPLICATION_INVALID_STATE",
-      message: "Schedule interview slots first before moving to interview stage",
+      message:
+        "Schedule interview slots first before moving to interview stage",
     })
   })
 

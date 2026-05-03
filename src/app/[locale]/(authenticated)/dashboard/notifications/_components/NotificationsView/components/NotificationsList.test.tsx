@@ -40,7 +40,9 @@ mock.module("@/i18n/routing", () => ({
   Link: ({
     children,
     ...props
-  }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => <a {...props}>{children}</a>,
+  }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
+    <a {...props}>{children}</a>
+  ),
 }))
 
 mock.module("motion/react-client", createMotionReactClientMock)

@@ -7,9 +7,8 @@ import type { InferRouterOutputs } from "@orpc/server"
 import { orpcClient } from "@/server/orpc/client"
 import type { AppRouter } from "@/server/orpc/router"
 
-type ListPendingApplicationsResult = InferRouterOutputs<
-  AppRouter
->["deptHead"]["listPending"]
+type ListPendingApplicationsResult =
+  InferRouterOutputs<AppRouter>["deptHead"]["listPending"]
 
 const STALE_TIME_MS = 5 * 60 * 1000
 

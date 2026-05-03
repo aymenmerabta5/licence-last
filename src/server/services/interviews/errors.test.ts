@@ -2,7 +2,9 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 function applyMocks() {
   mock.module("@/server/services/errors", () => ({
-    ServiceError: class ServiceError<TCode extends string = string> extends Error {
+    ServiceError: class ServiceError<
+      TCode extends string = string,
+    > extends Error {
       readonly code: TCode
       constructor(code: TCode, message: string) {
         super(message)

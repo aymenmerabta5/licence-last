@@ -1,40 +1,42 @@
-import { AbsoluteFill, Sequence, useCurrentFrame } from "remotion";
-import { fadeOut } from "./lib/animations";
-import { SceneIntro } from "./components/SceneIntro";
-import { SceneTagline } from "./components/SceneTagline";
-import { SceneMarquee } from "./components/SceneMarquee";
-import { SceneFeatures } from "./components/SceneFeatures";
-import { SceneStats } from "./components/SceneStats";
-import { SceneCTA } from "./components/SceneCTA";
+import { AbsoluteFill, Sequence, useCurrentFrame } from "remotion"
+import { fadeOut } from "./lib/animations"
+import { SceneIntro } from "./components/SceneIntro"
+import { SceneTagline } from "./components/SceneTagline"
+import { SceneMarquee } from "./components/SceneMarquee"
+import { SceneFeatures } from "./components/SceneFeatures"
+import { SceneStats } from "./components/SceneStats"
+import { SceneCTA } from "./components/SceneCTA"
 
 interface FadeOutWrapperProps {
-  children: React.ReactNode;
-  fadeStart: number;
-  fadeDuration: number;
+  children: React.ReactNode
+  fadeStart: number
+  fadeDuration: number
 }
 
-const FadeOutWrapper = ({ children, fadeStart, fadeDuration }: FadeOutWrapperProps) => {
-  const frame = useCurrentFrame();
-  const opacity = fadeOut(frame, fadeStart, fadeDuration);
+const FadeOutWrapper = ({
+  children,
+  fadeStart,
+  fadeDuration,
+}: FadeOutWrapperProps) => {
+  const frame = useCurrentFrame()
+  const opacity = fadeOut(frame, fadeStart, fadeDuration)
   return (
-    <div style={{ position: "absolute", inset: 0, opacity }}>
-      {children}
-    </div>
-  );
-};
+    <div style={{ position: "absolute", inset: 0, opacity }}>{children}</div>
+  )
+}
 
 export const StagPromo = () => {
-  const fps = 30;
+  const fps = 30
 
   // Scene timing with 1-second overlaps for crossfades
-  const s1 = { start: 0,       dur: fps * 4 };   // Intro (4s)
-  const s2 = { start: fps * 3, dur: fps * 5 };   // Tagline (5s, overlaps 1s)
-  const s3 = { start: fps * 6, dur: fps * 4 };   // Marquee (4s, overlaps 2s)
-  const s4 = { start: fps * 9, dur: fps * 5 };   // Features (5s, overlaps 1s)
-  const s5 = { start: fps * 12, dur: fps * 5 };  // Stats (5s, overlaps 2s)
-  const s6 = { start: fps * 15, dur: fps * 5 };  // CTA (5s, overlaps 2s)
+  const s1 = { start: 0, dur: fps * 4 } // Intro (4s)
+  const s2 = { start: fps * 3, dur: fps * 5 } // Tagline (5s, overlaps 1s)
+  const s3 = { start: fps * 6, dur: fps * 4 } // Marquee (4s, overlaps 2s)
+  const s4 = { start: fps * 9, dur: fps * 5 } // Features (5s, overlaps 1s)
+  const s5 = { start: fps * 12, dur: fps * 5 } // Stats (5s, overlaps 2s)
+  const s6 = { start: fps * 15, dur: fps * 5 } // CTA (5s, overlaps 2s)
 
-  const t = fps * 0.6; // transition duration (0.6s)
+  const t = fps * 0.6 // transition duration (0.6s)
 
   return (
     <AbsoluteFill style={{ background: "oklch(0.145 0.01 60)" }}>
@@ -80,5 +82,5 @@ export const StagPromo = () => {
         </FadeOutWrapper>
       </Sequence>
     </AbsoluteFill>
-  );
-};
+  )
+}

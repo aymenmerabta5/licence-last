@@ -73,9 +73,7 @@ export async function updateUserRole(
     await db
       .delete(universityMember)
       .where(eq(universityMember.userId, targetUserId))
-    await db
-      .delete(companyMember)
-      .where(eq(companyMember.userId, targetUserId))
+    await db.delete(companyMember).where(eq(companyMember.userId, targetUserId))
 
     return { success: true }
   }
@@ -93,9 +91,7 @@ export async function updateUserRole(
     await db
       .delete(universityMember)
       .where(eq(universityMember.userId, targetUserId))
-    await db
-      .delete(companyMember)
-      .where(eq(companyMember.userId, targetUserId))
+    await db.delete(companyMember).where(eq(companyMember.userId, targetUserId))
 
     await db.insert(companyMember).values({
       companyId: data.companyId,
@@ -116,9 +112,7 @@ export async function updateUserRole(
       })
       .where(eq(user.id, targetUserId))
 
-    await db
-      .delete(companyMember)
-      .where(eq(companyMember.userId, targetUserId))
+    await db.delete(companyMember).where(eq(companyMember.userId, targetUserId))
     await db
       .delete(universityMember)
       .where(eq(universityMember.userId, targetUserId))
@@ -146,9 +140,7 @@ export async function updateUserRole(
   await db
     .delete(universityMember)
     .where(eq(universityMember.userId, targetUserId))
-  await db
-    .delete(companyMember)
-    .where(eq(companyMember.userId, targetUserId))
+  await db.delete(companyMember).where(eq(companyMember.userId, targetUserId))
 
   return { success: true }
 }

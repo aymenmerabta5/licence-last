@@ -40,7 +40,9 @@ describe("src/server/services/applications/generate-cover-letter", () => {
       companyDescription: "A tech company",
     })
 
-    expect(result.coverLetter).toBe("Dear Hiring Manager, I am excited to apply...")
+    expect(result.coverLetter).toBe(
+      "Dear Hiring Manager, I am excited to apply...",
+    )
     expect(mockGenerateText).toHaveBeenCalledTimes(1)
   })
 

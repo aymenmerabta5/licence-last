@@ -15,7 +15,10 @@ import { isFeatureEnabled } from "@/lib/feature-flags"
 import { localeRedirect } from "@/lib/navigation"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 import { listApplicationsByStudent } from "@/server/services/applications/list-by-student"
-import { getCompanyTrustIndex, listCompanyTrustIndices } from "@/server/services/companies/trust-index"
+import {
+  getCompanyTrustIndex,
+  listCompanyTrustIndices,
+} from "@/server/services/companies/trust-index"
 import { getCompanyMembership } from "@/server/services/companies/membership"
 import { listInterviewsForStudent } from "@/server/services/interviews/list-for-student"
 import { listOffersByCompany } from "@/server/services/offers/list-by-company"
@@ -140,14 +143,22 @@ async function StudentDashboardContent({
     data: StudentDashboardData
   }>
 }) {
-  const [stats, recentAppsResult, profile, recommendedResult, pendingInterviews] =
-    await Promise.all([
-      getStudentDashboardStats(user.id),
-      listApplicationsByStudent(user.id, { limit: 5 }),
-      getStudentProfile(user.id),
-      recommendOffersForStudent({ studentUserId: user.id, limit: 3 }),
-      listInterviewsForStudent(user.id, { status: "pending_confirmation", limit: 1 }),
-    ])
+  const [
+    stats,
+    recentAppsResult,
+    profile,
+    recommendedResult,
+    pendingInterviews,
+  ] = await Promise.all([
+    getStudentDashboardStats(user.id),
+    listApplicationsByStudent(user.id, { limit: 5 }),
+    getStudentProfile(user.id),
+    recommendOffersForStudent({ studentUserId: user.id, limit: 3 }),
+    listInterviewsForStudent(user.id, {
+      status: "pending_confirmation",
+      limit: 1,
+    }),
+  ])
 
   const profileCompleteness = calculateProfileCompleteness({
     bio: profile?.profile.bio,
@@ -193,14 +204,15 @@ async function StudentDashboardContent({
     })),
     skills: profile?.skills ?? [],
     profileCompleteness,
-    pendingInterview: pendingInterviews.length > 0
-      ? {
-          id: pendingInterviews[0].id,
-          offerTitle: pendingInterviews[0].offerTitle,
-          companyName: pendingInterviews[0].companyName,
-          companyLogoUrl: pendingInterviews[0].companyLogoUrl,
-        }
-      : null,
+    pendingInterview:
+      pendingInterviews.length > 0
+        ? {
+            id: pendingInterviews[0].id,
+            offerTitle: pendingInterviews[0].offerTitle,
+            companyName: pendingInterviews[0].companyName,
+            companyLogoUrl: pendingInterviews[0].companyLogoUrl,
+          }
+        : null,
   }
 
   return <Component user={user} data={studentData} />
@@ -246,7 +258,9 @@ async function AdminDashboardWrapper({
   const [stats, universityStats, trustIndices] = await Promise.all([
     isSuperAdmin ? getAdminStats() : Promise.resolve(undefined),
     isUniversityAdmin && (user as { universityId?: string | null }).universityId
-      ? getUniversityDashboardStats((user as { universityId?: string | null }).universityId as string)
+      ? getUniversityDashboardStats(
+          (user as { universityId?: string | null }).universityId as string,
+        )
       : Promise.resolve(undefined),
     isSuperAdmin ? listCompanyTrustIndices(5) : Promise.resolve(undefined),
   ])

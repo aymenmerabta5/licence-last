@@ -63,7 +63,8 @@ export function CandidateCardActions({
 
       {app.status === "applied" && (
         <div className="flex flex-col gap-2">
-          {(app.pipelineStage === "applied" || app.pipelineStage === "screening") && (
+          {(app.pipelineStage === "applied" ||
+            app.pipelineStage === "screening") && (
             <Button
               size="sm"
               variant="editorial-outline"

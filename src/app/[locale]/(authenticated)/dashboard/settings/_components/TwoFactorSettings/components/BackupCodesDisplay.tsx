@@ -11,10 +11,7 @@ interface BackupCodesDisplayProps {
   onDone: () => void
 }
 
-export function BackupCodesDisplay({
-  codes,
-  onDone,
-}: BackupCodesDisplayProps) {
+export function BackupCodesDisplay({ codes, onDone }: BackupCodesDisplayProps) {
   const t = useTranslations("dashboard.settings.twoFactor.backupCodes")
 
   function copyAll() {

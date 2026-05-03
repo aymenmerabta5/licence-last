@@ -78,7 +78,11 @@ describe("src/server/services/students/upsert-resume", () => {
       mimeType: "application/pdf",
     })
 
-    const updateSet = (mockOnConflictDoUpdate.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const updateSet = (
+      mockOnConflictDoUpdate.mock.calls[0] as unknown as [
+        Record<string, unknown>,
+      ]
+    )[0]
     expect(updateSet.set).toBeDefined()
     expect(updateSet.target).toBeDefined()
   })

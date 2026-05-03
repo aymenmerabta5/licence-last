@@ -46,8 +46,12 @@ export function useLanguagesManager() {
   const upsertMutation = useMutation({
     ...orpc.students.upsertLanguages.mutationOptions(),
     onMutate: async (variables) => {
-      await queryClient.cancelQueries({ queryKey: profileQueryOptions.queryKey })
-      const previousData = queryClient.getQueryData(profileQueryOptions.queryKey)
+      await queryClient.cancelQueries({
+        queryKey: profileQueryOptions.queryKey,
+      })
+      const previousData = queryClient.getQueryData(
+        profileQueryOptions.queryKey,
+      )
       queryClient.setQueryData(profileQueryOptions.queryKey, (old) => {
         if (!old) return old
         return { ...old, languages: variables.languages }

@@ -59,8 +59,12 @@ export function DeptHeadPlacementDetail({
           />
 
           <ValidationForm
-            expectedStartDate={toDateInputValue(application?.offer.expectedStartDate)}
-            expectedEndDate={toDateInputValue(application?.offer.expectedEndDate)}
+            expectedStartDate={toDateInputValue(
+              application?.offer.expectedStartDate,
+            )}
+            expectedEndDate={toDateInputValue(
+              application?.offer.expectedEndDate,
+            )}
             actionLoading={actions.actionLoading}
             pdfLoading={actions.pdfLoading}
             onValidate={actions.handleValidate}

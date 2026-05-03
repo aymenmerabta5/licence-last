@@ -101,40 +101,40 @@ export function UsersTable({
           <div className="hidden border border-border/80 bg-background shadow-[4px_4px_0_0_oklch(var(--border))] md:block">
             <div className="overflow-x-auto">
               <Table className="min-w-[700px]">
-            <TableHeader>
-              <TableRow className="hover:bg-transparent border-b-border/80">
-                <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
-                  {t("table.user")}
-                </TableHead>
-                <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
-                  {t("table.role")}
-                </TableHead>
-                <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
-                  {t("table.status")}
-                </TableHead>
-                <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
-                  {t("table.created")}
-                </TableHead>
-                <TableHead className="w-[50px] h-12" />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users.map((u) => (
-                <UserRow
-                  key={u.id}
-                  user={u}
-                  onBan={onBan}
-                  onUnban={onUnban}
-                  onSetRole={onSetRole}
-                  onSetPassword={onSetPassword}
-                  onDelete={onDelete}
-                  canModerateUsers={canModerateUsers}
-                  canViewDetails={canViewDetails}
-                  canSetRole={canSetRole}
-                  canSetPassword={canSetPassword}
-                />
-              ))}
-            </TableBody>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent border-b-border/80">
+                    <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
+                      {t("table.user")}
+                    </TableHead>
+                    <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
+                      {t("table.role")}
+                    </TableHead>
+                    <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
+                      {t("table.status")}
+                    </TableHead>
+                    <TableHead className="text-[10px] uppercase tracking-widest font-medium text-foreground/60 h-12">
+                      {t("table.created")}
+                    </TableHead>
+                    <TableHead className="w-[50px] h-12" />
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {users.map((u) => (
+                    <UserRow
+                      key={u.id}
+                      user={u}
+                      onBan={onBan}
+                      onUnban={onUnban}
+                      onSetRole={onSetRole}
+                      onSetPassword={onSetPassword}
+                      onDelete={onDelete}
+                      canModerateUsers={canModerateUsers}
+                      canViewDetails={canViewDetails}
+                      canSetRole={canSetRole}
+                      canSetPassword={canSetPassword}
+                    />
+                  ))}
+                </TableBody>
               </Table>
             </div>
           </div>

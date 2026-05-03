@@ -135,7 +135,11 @@ export async function updateApplicationPipelineStage(input: {
     )
   }
 
-  if (input.toStage === "accepted" || input.toStage === "validated" || input.toStage === "rejected") {
+  if (
+    input.toStage === "accepted" ||
+    input.toStage === "validated" ||
+    input.toStage === "rejected"
+  ) {
     throw new ApplicationServiceError(
       "APPLICATION_INVALID_STATE",
       "Use explicit company/admin actions for terminal application decisions",

@@ -43,7 +43,9 @@ describe("src/server/services/students/create-experience", () => {
     expect(typeof result.experienceId).toBe("string")
     expect(mockInsert).toHaveBeenCalledTimes(1)
 
-    const payload = (mockValues.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const payload = (
+      mockValues.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(payload.userId).toBe("user-1")
     expect(payload.title).toBe("Intern")
     expect(payload.organization).toBe("Acme")
@@ -67,7 +69,9 @@ describe("src/server/services/students/create-experience", () => {
       "user-1",
     )
 
-    const payload = (mockValues.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const payload = (
+      mockValues.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(payload.title).toBe("Intern")
     expect(payload.organization).toBe("Acme")
     expect(payload.description).toBe("Dev work")
@@ -88,7 +92,9 @@ describe("src/server/services/students/create-experience", () => {
       "user-1",
     )
 
-    const payload = (mockValues.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const payload = (
+      mockValues.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(payload.description).toBeNull()
   })
 
@@ -108,7 +114,9 @@ describe("src/server/services/students/create-experience", () => {
       "user-1",
     )
 
-    const payload = (mockValues.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const payload = (
+      mockValues.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(payload.isCurrent).toBe(true)
     expect(payload.endDate).toBeNull()
   })

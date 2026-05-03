@@ -193,9 +193,9 @@ describe("src/server/services/interviews/get-by-id", () => {
       "@/server/services/interviews/get-by-id?fresh=2" as string
     )
 
-    await expect(getInterviewById("interview-missing", "student-1")).rejects.toThrow(
-      "Interview not found",
-    )
+    await expect(
+      getInterviewById("interview-missing", "student-1"),
+    ).rejects.toThrow("Interview not found")
 
     expect(dbSelect).toHaveBeenCalledTimes(1)
   })

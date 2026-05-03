@@ -3,7 +3,10 @@
 import { Briefcase, MapPin } from "lucide-react"
 import { useTranslations } from "next-intl"
 import type { OfferFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferForm"
-import type { InternshipType, WorkMode } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
+import type {
+  InternshipType,
+  WorkMode,
+} from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
 import { SelectField } from "@/components/form-fields"
 import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYAS } from "@/lib/wilayas"
@@ -54,7 +57,9 @@ export function DetailsTypeLocationFields({
             placeholder={t("internshipTypePlaceholder")}
             options={INTERNSHIP_TYPE_OPTIONS}
             value={field.state.value}
-            onChange={(value) => field.handleChange(value as InternshipType | "")}
+            onChange={(value) =>
+              field.handleChange(value as InternshipType | "")
+            }
             onBlur={field.handleBlur}
             error={getFieldError(field)}
           />

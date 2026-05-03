@@ -24,7 +24,11 @@ export function SidebarNav({ items, pathname, isCollapsed }: SidebarNavProps) {
         const Icon = item.icon
 
         return (
-          <Link key={item.href} href={item.href as "/dashboard"} prefetch={false}>
+          <Link
+            key={item.href}
+            href={item.href as "/dashboard"}
+            prefetch={false}
+          >
             <span
               className={cn(
                 "flex items-center gap-4 py-2.5 transition-all duration-500 group relative border-s-2",

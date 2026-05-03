@@ -5,10 +5,7 @@ import type { ApplicationStatus, PipelineStage } from "@/lib/schemas/enums"
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { user } from "@/server/db/schema/auth"
-import {
-  interview,
-  interviewSlot,
-} from "@/server/db/schema/interviews"
+import { interview, interviewSlot } from "@/server/db/schema/interviews"
 import {
   internshipOffer,
   internshipOfferSkill,

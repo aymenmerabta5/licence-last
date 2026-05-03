@@ -49,7 +49,8 @@ export function useStudentCvData() {
     ...orpc.studentCv.createExperience.mutationOptions(),
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: cvQueryKey })
-      const previousData = queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
+      const previousData =
+        queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
       queryClient.setQueryData<StudentCvDataType>(cvQueryKey, (old) => {
         if (!old) return old
         const tempId = crypto.randomUUID()
@@ -91,7 +92,8 @@ export function useStudentCvData() {
     ...orpc.studentCv.updateExperience.mutationOptions(),
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: cvQueryKey })
-      const previousData = queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
+      const previousData =
+        queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
       queryClient.setQueryData<StudentCvDataType>(cvQueryKey, (old) => {
         if (!old) return old
         return {
@@ -158,7 +160,8 @@ export function useStudentCvData() {
     ...orpc.studentCv.deleteExperience.mutationOptions(),
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: cvQueryKey })
-      const previousData = queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
+      const previousData =
+        queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
       queryClient.setQueryData<StudentCvDataType>(cvQueryKey, (old) => {
         if (!old) return old
         return {
@@ -184,7 +187,8 @@ export function useStudentCvData() {
     ...orpc.studentCv.createProject.mutationOptions(),
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: cvQueryKey })
-      const previousData = queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
+      const previousData =
+        queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
       queryClient.setQueryData<StudentCvDataType>(cvQueryKey, (old) => {
         if (!old) return old
         const tempId = crypto.randomUUID()
@@ -224,7 +228,8 @@ export function useStudentCvData() {
     ...orpc.studentCv.updateProject.mutationOptions(),
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: cvQueryKey })
-      const previousData = queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
+      const previousData =
+        queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
       queryClient.setQueryData<StudentCvDataType>(cvQueryKey, (old) => {
         if (!old) return old
         return {
@@ -253,9 +258,7 @@ export function useStudentCvData() {
                   : null,
               }),
               ...(variables.endDate !== undefined && {
-                endDate: variables.endDate
-                  ? new Date(variables.endDate)
-                  : null,
+                endDate: variables.endDate ? new Date(variables.endDate) : null,
               }),
               updatedAt: new Date(),
             }
@@ -278,7 +281,8 @@ export function useStudentCvData() {
     ...orpc.studentCv.deleteProject.mutationOptions(),
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: cvQueryKey })
-      const previousData = queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
+      const previousData =
+        queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
       queryClient.setQueryData<StudentCvDataType>(cvQueryKey, (old) => {
         if (!old) return old
         return {
@@ -304,7 +308,8 @@ export function useStudentCvData() {
     ...orpc.studentCv.uploadResume.mutationOptions(),
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: cvQueryKey })
-      const previousData = queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
+      const previousData =
+        queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
       queryClient.setQueryData<StudentCvDataType>(cvQueryKey, (old) => {
         if (!old) return old
         return {
@@ -335,7 +340,8 @@ export function useStudentCvData() {
     ...orpc.studentCv.deleteResume.mutationOptions(),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: cvQueryKey })
-      const previousData = queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
+      const previousData =
+        queryClient.getQueryData<StudentCvDataType>(cvQueryKey)
       queryClient.setQueryData<StudentCvDataType>(cvQueryKey, (old) => {
         if (!old) return old
         return { ...old, resume: null }

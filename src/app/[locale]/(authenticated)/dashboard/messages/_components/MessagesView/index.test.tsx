@@ -67,7 +67,9 @@ mock.module(
 mock.module(
   "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/ThreadListPane",
   () => ({
-    ThreadListPane: (_props: React.ComponentProps<"div">) => <div>Thread list</div>,
+    ThreadListPane: (_props: React.ComponentProps<"div">) => (
+      <div>Thread list</div>
+    ),
   }),
 )
 

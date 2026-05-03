@@ -102,7 +102,7 @@ export const createUserProcedure = superAdminProcedureStandard
           message: "Required attachment is missing for this role",
           path: ["universityId"],
         },
-      )
+      ),
   )
   .handler(async ({ input }) => {
     if (input.role === "recruiter" && input.companyId) {
@@ -140,10 +140,7 @@ export const setRoleProcedure = superAdminProcedureStandard
       })
       .refine(
         (data) => {
-          if (
-            data.role === "student" ||
-            data.role === "department_head"
-          ) {
+          if (data.role === "student" || data.role === "department_head") {
             return !!data.universityId
           }
           if (data.role === "recruiter") {

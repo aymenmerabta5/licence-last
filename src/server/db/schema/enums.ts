@@ -50,7 +50,15 @@ export const applicationStatusEnum = pgEnum("application_status", [
 
 export const applicationPipelineStageEnum = pgEnum(
   "application_pipeline_stage",
-  ["applied", "screening", "interview", "offer", "accepted", "validated", "rejected"],
+  [
+    "applied",
+    "screening",
+    "interview",
+    "offer",
+    "accepted",
+    "validated",
+    "rejected",
+  ],
 )
 
 export const documentTypeEnum = pgEnum("document_type", [

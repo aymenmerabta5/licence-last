@@ -1,21 +1,21 @@
-import { useCurrentFrame } from "remotion";
-import { fadeIn, slideUp, countUp, colors, fonts } from "../lib/animations";
+import { useCurrentFrame } from "remotion"
+import { fadeIn, slideUp, countUp, colors, fonts } from "../lib/animations"
 
 interface StatItemProps {
-  value: number;
-  suffix: string;
-  label: string;
-  delay: number;
+  value: number
+  suffix: string
+  label: string
+  delay: number
 }
 
 const StatItem = ({ value, suffix, label, delay }: StatItemProps) => {
-  const frame = useCurrentFrame();
+  const frame = useCurrentFrame()
 
-  const itemOpacity = fadeIn(frame, delay, 16);
-  const itemY = slideUp(frame, delay, 18, 20);
-  const current = countUp(frame, delay + 8, 36, 0, value);
+  const itemOpacity = fadeIn(frame, delay, 16)
+  const itemY = slideUp(frame, delay, 18, 20)
+  const current = countUp(frame, delay + 8, 36, 0, value)
 
-  const display = Math.round(current).toLocaleString();
+  const display = Math.round(current).toLocaleString()
 
   return (
     <div
@@ -55,21 +55,21 @@ const StatItem = ({ value, suffix, label, delay }: StatItemProps) => {
         {label}
       </div>
     </div>
-  );
-};
+  )
+}
 
 export const SceneStats = () => {
-  const frame = useCurrentFrame();
+  const frame = useCurrentFrame()
 
-  const titleOpacity = fadeIn(frame, 0, 16);
-  const titleY = slideUp(frame, 0, 16, 14);
+  const titleOpacity = fadeIn(frame, 0, 16)
+  const titleY = slideUp(frame, 0, 16, 14)
 
   const stats: StatItemProps[] = [
     { value: 2500, suffix: "+", label: "Students Connected", delay: 12 },
     { value: 350, suffix: "+", label: "Partner Companies", delay: 18 },
     { value: 45, suffix: "", label: "Universities", delay: 24 },
     { value: 96, suffix: "%", label: "Placement Rate", delay: 30 },
-  ];
+  ]
 
   return (
     <div
@@ -155,5 +155,5 @@ export const SceneStats = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}

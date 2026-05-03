@@ -365,5 +365,6 @@ export const getTimelineProcedure = authedProcedureGenerous
     return listApplicationTimeline(input.applicationId)
   })
 
-export const listStudentJourneysProcedure = studentProcedureGenerous
-  .handler(async ({ context }) => listStudentApplicationJourneys(context.user.id))
+export const listStudentJourneysProcedure = studentProcedureGenerous.handler(
+  async ({ context }) => listStudentApplicationJourneys(context.user.id),
+)

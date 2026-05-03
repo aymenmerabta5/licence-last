@@ -37,6 +37,10 @@ mock.module("@/components/ImpersonationBanner", () => ({
   ),
 }))
 
+mock.module("@/components/RouteProgress", () => ({
+  RouteProgress: () => <div data-testid="route-progress" />,
+}))
+
 const { DashboardClientProvider } = await import(
   "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 )

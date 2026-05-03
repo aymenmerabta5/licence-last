@@ -64,7 +64,9 @@ describe("src/server/services/students/update-project", () => {
     expect(result).toEqual({ projectId: "proj-1" })
     expect(mockUpdate).toHaveBeenCalledTimes(1)
 
-    const changes = (mockSet.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const changes = (
+      mockSet.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(changes.name).toBe("New Name")
   })
 
@@ -174,7 +176,9 @@ describe("src/server/services/students/update-project", () => {
       "user-1",
     )
 
-    const changes = (mockSet.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const changes = (
+      mockSet.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(changes.name).toBe("New Name")
     expect(changes.summary).toBe("New Summary")
     expect(changes.projectUrl).toBe("https://example.com")
@@ -205,7 +209,9 @@ describe("src/server/services/students/update-project", () => {
       "user-1",
     )
 
-    const changes = (mockSet.mock.calls[0] as unknown as [Record<string, unknown>])[0]
+    const changes = (
+      mockSet.mock.calls[0] as unknown as [Record<string, unknown>]
+    )[0]
     expect(changes.projectUrl).toBeNull()
     expect(changes.repositoryUrl).toBeNull()
   })

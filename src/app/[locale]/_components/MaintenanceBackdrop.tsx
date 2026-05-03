@@ -16,7 +16,8 @@ export function MaintenanceBackdrop() {
             "radial-gradient(circle at 50% 85%, var(--color-primary) 0px, transparent 1px), " +
             "radial-gradient(circle at 65% 60%, var(--color-primary) 0px, transparent 1px), " +
             "radial-gradient(circle at 30% 70%, var(--color-primary) 0px, transparent 1px)",
-          backgroundSize: "320px 320px, 440px 440px, 280px 280px, 360px 360px, 400px 400px",
+          backgroundSize:
+            "320px 320px, 440px 440px, 280px 280px, 360px 360px, 400px 400px",
         }}
       />
 

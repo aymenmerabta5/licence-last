@@ -1,7 +1,13 @@
 import type { ReactNode } from "react"
 import { Link } from "@/i18n/routing"
 
-export function FooterLink({ href, children }: { href: string; children: ReactNode }) {
+export function FooterLink({
+  href,
+  children,
+}: {
+  href: string
+  children: ReactNode
+}) {
   return (
     <Link
       href={href as Parameters<typeof Link>[0]["href"]}

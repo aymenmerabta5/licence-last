@@ -59,8 +59,15 @@ export function ErrorShell({
     ? "relative z-10 flex flex-col items-center text-center max-w-xl"
     : "relative z-10 flex flex-col items-center text-center max-w-xl"
 
-  function renderAction(action: ErrorAction, variantName: "editorial" | "editorial-outline") {
-    const iconNode = action.icon ?? (action.href ? <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-2 [[dir=rtl]_&]:group-hover:-translate-x-2" /> : null)
+  function renderAction(
+    action: ErrorAction,
+    variantName: "editorial" | "editorial-outline",
+  ) {
+    const iconNode =
+      action.icon ??
+      (action.href ? (
+        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-2 [[dir=rtl]_&]:group-hover:-translate-x-2" />
+      ) : null)
 
     if (action.href) {
       return (
@@ -78,7 +85,12 @@ export function ErrorShell({
     }
 
     return (
-      <Button variant={variantName} size="editorial" onClick={action.onClick} className="group">
+      <Button
+        variant={variantName}
+        size="editorial"
+        onClick={action.onClick}
+        className="group"
+      >
         {action.label}
         {iconNode}
       </Button>
@@ -92,7 +104,10 @@ export function ErrorShell({
       <div className={contentWrapperClass}>
         {/* Ambient glow — dark mode only */}
         {isFullPage && (
-          <div className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100" aria-hidden="true">
+          <div
+            className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100"
+            aria-hidden="true"
+          >
             <div className="absolute -top-20 -start-20 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
             <div className="absolute -bottom-28 start-1/2 h-[26rem] w-[26rem] -translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/15" />
@@ -212,7 +227,8 @@ export function ErrorShell({
             className="flex flex-wrap items-center justify-center gap-4"
           >
             {renderAction(primaryAction, "editorial")}
-            {secondaryAction && renderAction(secondaryAction, "editorial-outline")}
+            {secondaryAction &&
+              renderAction(secondaryAction, "editorial-outline")}
           </motion.div>
 
           {/* Bottom separator */}

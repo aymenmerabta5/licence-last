@@ -64,7 +64,11 @@ describe("src/server/services/messages/list-threads-by-student", () => {
     dbRows = rows
     dbReadStateRows = [{ threadId: "thread-1", lastReadMessageId: "message-1" }]
     dbExecuteRows = [
-      { id: "message-2", sender_user_id: "company-admin-1", thread_id: "thread-1" },
+      {
+        id: "message-2",
+        sender_user_id: "company-admin-1",
+        thread_id: "thread-1",
+      },
     ]
 
     const { listMessageThreadsByStudent } = await import(
@@ -117,7 +121,11 @@ describe("src/server/services/messages/list-threads-by-student", () => {
     dbRows = rows
     dbReadStateRows = [{ threadId: "thread-1", lastReadMessageId: "message-2" }]
     dbExecuteRows = [
-      { id: "message-2", sender_user_id: "company-admin-1", thread_id: "thread-1" },
+      {
+        id: "message-2",
+        sender_user_id: "company-admin-1",
+        thread_id: "thread-1",
+      },
       { id: "message-3", sender_user_id: "student-1", thread_id: "thread-2" },
     ]
 

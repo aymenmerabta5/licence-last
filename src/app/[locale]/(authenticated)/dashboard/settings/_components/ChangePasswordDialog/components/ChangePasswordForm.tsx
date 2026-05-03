@@ -31,9 +31,7 @@ export function ChangePasswordForm({
       className="space-y-5"
     >
       <ServerError message={serverError} />
-      <SuccessMessage
-        message={isSuccess ? t("success") : ""}
-      />
+      <SuccessMessage message={isSuccess ? t("success") : ""} />
 
       {!isSuccess && (
         <>

@@ -1,27 +1,34 @@
-import { useCurrentFrame } from "remotion";
-import { fadeIn, slideUp, scaleXReveal, drawLine, colors, fonts } from "../lib/animations";
+import { useCurrentFrame } from "remotion"
+import {
+  fadeIn,
+  slideUp,
+  scaleXReveal,
+  drawLine,
+  colors,
+  fonts,
+} from "../lib/animations"
 
 export const SceneTagline = () => {
-  const frame = useCurrentFrame();
+  const frame = useCurrentFrame()
 
-  const sepOpacity = fadeIn(frame, 0, 18);
-  const sepLine = drawLine(frame, 0, 20);
+  const sepOpacity = fadeIn(frame, 0, 18)
+  const sepLine = drawLine(frame, 0, 20)
 
-  const word1 = fadeIn(frame, 12, 20);
-  const word1Y = slideUp(frame, 12, 22, 28);
+  const word1 = fadeIn(frame, 12, 20)
+  const word1Y = slideUp(frame, 12, 22, 28)
 
-  const word2 = fadeIn(frame, 22, 20);
-  const word2Y = slideUp(frame, 22, 22, 28);
+  const word2 = fadeIn(frame, 22, 20)
+  const word2Y = slideUp(frame, 22, 22, 28)
 
-  const word3 = fadeIn(frame, 32, 20);
-  const word3Y = slideUp(frame, 32, 22, 28);
-  const underlineScale = scaleXReveal(frame, 48, 18);
+  const word3 = fadeIn(frame, 32, 20)
+  const word3Y = slideUp(frame, 32, 22, 28)
+  const underlineScale = scaleXReveal(frame, 48, 18)
 
-  const descOpacity = fadeIn(frame, 50, 20);
-  const descY = slideUp(frame, 50, 20, 16);
+  const descOpacity = fadeIn(frame, 50, 20)
+  const descY = slideUp(frame, 50, 20, 16)
 
-  const ctaOpacity = fadeIn(frame, 62, 18);
-  const ctaY = slideUp(frame, 62, 18, 12);
+  const ctaOpacity = fadeIn(frame, 62, 18)
+  const ctaY = slideUp(frame, 62, 18, 12)
 
   return (
     <div
@@ -124,7 +131,13 @@ export const SceneTagline = () => {
           }}
         >
           of{" "}
-          <span style={{ position: "relative", display: "inline-block", color: colors.primary }}>
+          <span
+            style={{
+              position: "relative",
+              display: "inline-block",
+              color: colors.primary,
+            }}
+          >
             Internship
             {/* ScaleX underline matching HeroContent */}
             <span
@@ -180,7 +193,9 @@ export const SceneTagline = () => {
             textWrap: "balance" as const,
           }}
         >
-          A centralized platform bridging the gap between universities and enterprises. Skill-based matching, automated document generation, and placement tracking.
+          A centralized platform bridging the gap between universities and
+          enterprises. Skill-based matching, automated document generation, and
+          placement tracking.
         </p>
         <p
           style={{
@@ -192,7 +207,9 @@ export const SceneTagline = () => {
             textWrap: "balance" as const,
           }}
         >
-          Within the framework of MESRS strategy to strengthen the University-Enterprise link, Stag digitizes the entire internship lifecycle.
+          Within the framework of MESRS strategy to strengthen the
+          University-Enterprise link, Stag digitizes the entire internship
+          lifecycle.
         </p>
       </div>
 
@@ -236,5 +253,5 @@ export const SceneTagline = () => {
         </span>
       </div>
     </div>
-  );
-};
+  )
+}

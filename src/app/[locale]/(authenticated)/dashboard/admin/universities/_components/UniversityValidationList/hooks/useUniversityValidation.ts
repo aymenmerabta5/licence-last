@@ -21,7 +21,9 @@ const PAGE_SIZE = 20
 
 type UniversityPage = { universities: UniversityListItem[]; hasMore: boolean }
 
-function isInfiniteUniversityData(data: unknown): data is InfiniteData<UniversityPage> {
+function isInfiniteUniversityData(
+  data: unknown,
+): data is InfiniteData<UniversityPage> {
   return (
     typeof data === "object" &&
     data !== null &&

@@ -14,7 +14,9 @@ import { resolveLocalizedError } from "@/lib/error-message"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
-export type ProfileSettingsFormApi = ReturnType<typeof useProfileSettings>["form"]
+export type ProfileSettingsFormApi = ReturnType<
+  typeof useProfileSettings
+>["form"]
 
 export function useProfileSettings(
   me: MeResult,
@@ -64,27 +66,36 @@ export function useProfileSettings(
   const upsertDetailsMutation = useMutation({
     ...orpc.students.upsertProfileDetails.mutationOptions(),
     onMutate: async (variables) => {
-      await queryClient.cancelQueries({ queryKey: profileQueryOptions.queryKey })
-      const previousData = queryClient.getQueryData(profileQueryOptions.queryKey)
-      queryClient.setQueryData<StudentProfileResult>(profileQueryOptions.queryKey, (old) => {
-        if (!old?.profile) return old
-        return {
-          ...old,
-          profile: {
-            ...old.profile,
-            bio: variables.bio ?? old.profile.bio,
-            phone: variables.phone ?? old.profile.phone,
-            githubUrl: variables.githubUrl ?? old.profile.githubUrl,
-            portfolioUrl: variables.portfolioUrl ?? old.profile.portfolioUrl,
-            studentNumber:
-              variables.studentNumber ?? old.profile.studentNumber,
-            department: variables.department ?? old.profile.department,
-            level: variables.level ?? old.profile.level,
-            wilayaCode: (variables.wilayaCode as number | undefined) ?? old.profile.wilayaCode,
-            address: variables.address ?? old.profile.address,
-          },
-        }
+      await queryClient.cancelQueries({
+        queryKey: profileQueryOptions.queryKey,
       })
+      const previousData = queryClient.getQueryData(
+        profileQueryOptions.queryKey,
+      )
+      queryClient.setQueryData<StudentProfileResult>(
+        profileQueryOptions.queryKey,
+        (old) => {
+          if (!old?.profile) return old
+          return {
+            ...old,
+            profile: {
+              ...old.profile,
+              bio: variables.bio ?? old.profile.bio,
+              phone: variables.phone ?? old.profile.phone,
+              githubUrl: variables.githubUrl ?? old.profile.githubUrl,
+              portfolioUrl: variables.portfolioUrl ?? old.profile.portfolioUrl,
+              studentNumber:
+                variables.studentNumber ?? old.profile.studentNumber,
+              department: variables.department ?? old.profile.department,
+              level: variables.level ?? old.profile.level,
+              wilayaCode:
+                (variables.wilayaCode as number | undefined) ??
+                old.profile.wilayaCode,
+              address: variables.address ?? old.profile.address,
+            },
+          }
+        },
+      )
       return { previousData }
     },
     onError: (_err, _variables, context) => {

@@ -2,9 +2,9 @@ import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 import { NextRequest } from "next/server"
 
 const getSessionCookieMock = mock<() => string | null>(() => null)
-const fetchMock = mock<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>(
-  () => Promise.resolve(new Response()),
-)
+const fetchMock = mock<
+  (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
+>(() => Promise.resolve(new Response()))
 
 mock.module("better-auth/cookies", () => ({
   getSessionCookie: getSessionCookieMock,

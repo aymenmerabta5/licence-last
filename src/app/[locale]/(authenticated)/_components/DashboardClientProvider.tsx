@@ -4,6 +4,7 @@ import { createContext, useContext, useState } from "react"
 import { DashboardNavbar } from "@/app/[locale]/(authenticated)/_components/DashboardNavbar"
 import { DashboardSidebar } from "@/app/[locale]/(authenticated)/_components/DashboardSidebar"
 import { ImpersonationBanner } from "@/components/ImpersonationBanner"
+import { RouteProgress } from "@/components/RouteProgress"
 
 const DashboardContext = createContext<{
   isSidebarOpen: boolean
@@ -66,6 +67,8 @@ export function DashboardClientProvider({
       )}
 
       <div className="flex min-h-screen bg-background text-foreground transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] selection:bg-primary/10 selection:text-primary">
+        <RouteProgress />
+
         {/* Mobile Sidebar — Overlay backdrop */}
         {isSidebarOpen && (
           <div

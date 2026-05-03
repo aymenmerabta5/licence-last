@@ -1222,10 +1222,10 @@
         "unknownRole": "مستخدم",
         "roles": {
           "student": "طالب",
-      "company_admin": "مسؤول توظيف",
-      "department_head": "رئيس قسم",
-      "dept_head": "رئيس قسم",
-      "recruiter": "مسؤول توظيف",
+          "company_admin": "مسؤول توظيف",
+          "department_head": "رئيس قسم",
+          "dept_head": "رئيس قسم",
+          "recruiter": "مسؤول توظيف",
           "university_admin": "مسؤول جامعة",
           "super_admin": "مسؤول نظام"
         },

@@ -56,7 +56,8 @@ mock.module("@/server/db", () => ({
       // Call 3: company accepted count (where)
       // Call 4+: admins list (leftJoin + where)
       if (selectCallIdx === 1) return { from: mockFromWithTwoJoins }
-      if (selectCallIdx === 2 || selectCallIdx === 3) return { from: mockFromCounts }
+      if (selectCallIdx === 2 || selectCallIdx === 3)
+        return { from: mockFromCounts }
       return { from: mockFromAdmins }
     },
     update: mockUpdate,
@@ -207,7 +208,11 @@ describe("src/server/services/applications/company-accept", () => {
     ])
 
     const { companyAcceptApplication } = await importCompanyAcceptApplication()
-    const result = await companyAcceptApplication("app-1", "company-1", "actor-1")
+    const result = await companyAcceptApplication(
+      "app-1",
+      "company-1",
+      "actor-1",
+    )
 
     expect(result.success).toBe(true)
     expect(mockUpdate).not.toHaveBeenCalled()
@@ -232,7 +237,11 @@ describe("src/server/services/applications/company-accept", () => {
     ])
 
     const { companyAcceptApplication } = await importCompanyAcceptApplication()
-    const result = await companyAcceptApplication("app-1", "company-1", "actor-1")
+    const result = await companyAcceptApplication(
+      "app-1",
+      "company-1",
+      "actor-1",
+    )
 
     expect(result.success).toBe(true)
     expect(mockUpdate).not.toHaveBeenCalled()
@@ -257,7 +266,11 @@ describe("src/server/services/applications/company-accept", () => {
     ])
 
     const { companyAcceptApplication } = await importCompanyAcceptApplication()
-    const result = await companyAcceptApplication("app-1", "company-1", "actor-1")
+    const result = await companyAcceptApplication(
+      "app-1",
+      "company-1",
+      "actor-1",
+    )
 
     expect(result.success).toBe(true)
     expect(mockUpdate).toHaveBeenCalledTimes(1)

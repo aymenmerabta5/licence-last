@@ -32,8 +32,33 @@ export function DashboardShellSkeleton() {
         </header>
 
         <main className="flex-1 px-4 py-8 sm:px-8 lg:px-12 lg:py-10">
-          <div className="mx-auto w-full max-w-7xl pb-10">
+          <div className="mx-auto w-full max-w-7xl space-y-10 pb-10">
+            {/* Editorial header skeleton */}
+            <header className="space-y-3">
+              <Skeleton className="h-12 w-3/4 max-w-lg" />
+              <Skeleton className="h-4 w-full max-w-xl" />
+            </header>
+
+            {/* Hero / banner placeholder */}
             <Skeleton className="h-40 rounded-[2rem]" />
+
+            {/* Stats row */}
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <Skeleton key={index} className="h-28 rounded-[2rem]" />
+              ))}
+            </div>
+
+            {/* Two-column content */}
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+              <div className="space-y-6 lg:col-span-8">
+                <Skeleton className="h-64 rounded-[2rem]" />
+                <Skeleton className="h-64 rounded-[2rem]" />
+              </div>
+              <div className="space-y-6 lg:col-span-4">
+                <Skeleton className="h-64 rounded-[2rem]" />
+              </div>
+            </div>
           </div>
         </main>
       </div>

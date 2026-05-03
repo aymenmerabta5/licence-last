@@ -1,17 +1,29 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
-const mockSelect = mock(() => ({}) as any)
-const mockFrom = mock(() => ({}) as any)
-const mockSelectWhere = mock(() => ({}) as any)
-const mockLimit = mock((): any => [])
-const mockInsert = mock(() => ({}) as any)
-const mockValues = mock((): any => Promise.resolve())
-const mockTxUpdate = mock(() => ({}) as any)
-const mockTxSet = mock(() => ({}) as any)
-const mockTxUpdateWhere = mock(() => ({ returning: mockTxUpdateReturning }))
+import { beforeEach, describe, expect, mock, test } from "bun:test"
+
+const mockSelect = mock(() => ({}) as any)
+
+const mockFrom = mock(() => ({}) as any)
+
+const mockSelectWhere = mock(() => ({}) as any)
+
+const mockLimit = mock((): any => [])
+
+const mockInsert = mock(() => ({}) as any)
+
+const mockValues = mock((): any => Promise.resolve())
+
+const mockTxUpdate = mock(() => ({}) as any)
+
+const mockTxSet = mock(() => ({}) as any)
+
+const mockTxUpdateWhere = mock(() => ({ returning: mockTxUpdateReturning }))
+
 const mockTxUpdateReturning = mock((): any =>
   Promise.resolve([{ id: "offer-1" }]),
-)
-const mockDelete = mock(() => ({}) as any)
+)
+
+const mockDelete = mock(() => ({}) as any)
+
 const mockDeleteWhere = mock((): any => Promise.resolve())
 
 const mockTx = {

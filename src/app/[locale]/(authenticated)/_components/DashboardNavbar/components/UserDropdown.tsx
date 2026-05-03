@@ -83,9 +83,7 @@ export function UserDropdown({
           {user.image && (
             <AvatarImage src={user.image} alt={user.name || "User"} />
           )}
-          <AvatarFallback>
-            {user.name?.charAt(0) || "U"}
-          </AvatarFallback>
+          <AvatarFallback>{user.name?.charAt(0) || "U"}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
 

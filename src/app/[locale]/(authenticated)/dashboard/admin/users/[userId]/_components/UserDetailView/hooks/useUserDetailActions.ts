@@ -174,8 +174,7 @@ export function useUserDetailActions() {
   })
 
   const unbanUser = useMutation({
-    mutationFn: (userId: string) =>
-      orpcClient.adminUsers.unban({ userId }),
+    mutationFn: (userId: string) => orpcClient.adminUsers.unban({ userId }),
     onMutate: async (variables) => {
       const userQueryKey = getUserDetailQueryKey(variables)
       await queryClient.cancelQueries({ queryKey: userQueryKey })

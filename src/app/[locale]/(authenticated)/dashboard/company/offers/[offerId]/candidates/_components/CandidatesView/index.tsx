@@ -1,9 +1,8 @@
 "use client"
 
-import { InterviewProposalModal } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/InterviewProposalModal"
 import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { CandidatesDialogs } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidatesDialogs"
+import { CandidatesViewDialogs } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidatesViewDialogs"
 import { CandidatesFilters } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidatesFilters"
 import { CandidatesHeader } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidatesHeader"
 import { PipelineGrid } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/PipelineGrid"
@@ -16,46 +15,19 @@ interface CandidatesViewProps {
 export function CandidatesView({ offerId }: CandidatesViewProps) {
   const tExplore = useTranslations("dashboard.explore")
   const {
-    offer,
-    availableSkills,
-    applications,
-    isLoading,
-    isFetchingNextPage,
-    grouped,
-    sentinelRef,
-    actionLoading,
-    acceptModal,
-    setAcceptModal,
-    handleAccept,
-    refuseModal,
-    setRefuseModal,
-    refuseNote,
-    setRefuseNote,
-    handleRefuse,
-    interviewModal,
-    setInterviewModal,
-    isProposingInterview,
-    handleProposeInterview,
-    handleStageChange,
-    pendingStageById,
-    openedTimelineFor,
-    setOpenedTimelineFor,
-    timelineData,
-    isTimelineLoading,
-    filters,
-    hasActiveFilters,
-    toggleSkill,
-    toggleLanguage,
-    clearFilters,
+    offer, availableSkills, applications, isLoading, isFetchingNextPage,
+    grouped, sentinelRef, actionLoading, acceptModal, setAcceptModal,
+    handleAccept, refuseModal, setRefuseModal, refuseNote, setRefuseNote,
+    handleRefuse, interviewModal, setInterviewModal, isProposingInterview,
+    handleProposeInterview, handleStageChange, pendingStageById,
+    openedTimelineFor, setOpenedTimelineFor, timelineData,
+    isTimelineLoading, filters, hasActiveFilters,
+    toggleSkill, toggleLanguage, clearFilters,
   } = useCandidates(offerId)
 
   return (
     <div className="w-full space-y-8">
-      <CandidatesHeader
-        offerTitle={offer?.title}
-        totalCandidates={applications.length}
-      />
-
+      <CandidatesHeader offerTitle={offer?.title} totalCandidates={applications.length} />
       <CandidatesFilters
         skills={availableSkills}
         skillTagIds={filters.skillTagIds}
@@ -81,14 +53,12 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
         onViewTimeline={setOpenedTimelineFor}
       />
       <div ref={sentinelRef} className="h-4" />
-
       {isFetchingNextPage && (
         <div className="flex justify-center py-8">
           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         </div>
       )}
-
-      <CandidatesDialogs
+      <CandidatesViewDialogs
         openedTimelineFor={openedTimelineFor}
         timelineData={timelineData}
         isTimelineLoading={isTimelineLoading}
@@ -102,16 +72,10 @@ export function CandidatesView({ offerId }: CandidatesViewProps) {
         onRefuseNoteChange={setRefuseNote}
         onConfirmRefuse={handleRefuse}
         onCloseRefuse={() => { setRefuseModal(null); setRefuseNote("") }}
-      />
-
-      <InterviewProposalModal
-        applicationId={interviewModal?.applicationId ?? ""}
-        studentName={interviewModal?.studentName ?? ""}
-        offerTitle={interviewModal?.offerTitle ?? ""}
-        isOpen={!!interviewModal}
-        isSubmitting={isProposingInterview}
-        onClose={() => setInterviewModal(null)}
-        onSubmit={handleProposeInterview}
+        interviewModal={interviewModal}
+        isProposingInterview={isProposingInterview}
+        onCloseInterview={() => setInterviewModal(null)}
+        onSubmitInterview={handleProposeInterview}
       />
     </div>
   )

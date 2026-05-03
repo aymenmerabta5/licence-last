@@ -72,11 +72,10 @@ export async function proxy(request: NextRequest) {
       })
 
       if (maintenanceResponse.ok) {
-        const { enabled, canBypass } =
-          (await maintenanceResponse.json()) as {
-            enabled: boolean
-            canBypass: boolean
-          }
+        const { enabled, canBypass } = (await maintenanceResponse.json()) as {
+          enabled: boolean
+          canBypass: boolean
+        }
 
         if (enabled && !canBypass) {
           return NextResponse.rewrite(

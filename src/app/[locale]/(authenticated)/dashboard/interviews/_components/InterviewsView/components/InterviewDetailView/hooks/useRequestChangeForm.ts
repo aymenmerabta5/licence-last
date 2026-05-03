@@ -12,7 +12,10 @@ interface UseRequestChangeFormParams {
   companyName: string
 }
 
-export function useRequestChangeForm({ offerId, companyName }: UseRequestChangeFormParams) {
+export function useRequestChangeForm({
+  offerId,
+  companyName,
+}: UseRequestChangeFormParams) {
   const t = useTranslations("dashboard.interviews.detail")
   const tCommon = useTranslations()
   const [body, setBody] = useState("")

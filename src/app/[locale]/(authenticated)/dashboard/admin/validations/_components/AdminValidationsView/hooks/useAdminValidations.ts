@@ -7,9 +7,8 @@ import type { InferRouterOutputs } from "@orpc/server"
 import { orpcClient } from "@/server/orpc/client"
 import type { AppRouter } from "@/server/orpc/router"
 
-type ListPendingApplicationsResult = InferRouterOutputs<
-  AppRouter
->["placements"]["listPending"]
+type ListPendingApplicationsResult =
+  InferRouterOutputs<AppRouter>["placements"]["listPending"]
 
 function unwrapORPCPayload<T>(value: T | { json: T }): T {
   if (typeof value === "object" && value !== null && "json" in value) {

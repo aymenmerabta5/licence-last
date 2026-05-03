@@ -36,7 +36,9 @@ export function useApplicationHub() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null)
   const [confirmingSlotId, setConfirmingSlotId] = useState<string | null>(null)
-  const [downloadingDocumentId, setDownloadingDocumentId] = useState<string | null>(null)
+  const [downloadingDocumentId, setDownloadingDocumentId] = useState<
+    string | null
+  >(null)
 
   const journeysQuery = useQuery({
     queryKey: ["applications", "hub", "journeys"],
@@ -49,16 +51,26 @@ export function useApplicationHub() {
   const withdrawMutation = useMutation({
     ...orpc.applications.withdraw.mutationOptions(),
     onMutate: async (variables) => {
-      await queryClient.cancelQueries({ queryKey: ["applications", "hub", "journeys"] })
-      const previous = queryClient.getQueryData<ApplicationJourney[]>(["applications", "hub", "journeys"])
-      queryClient.setQueryData<ApplicationJourney[]>(["applications", "hub", "journeys"], (old) =>
-        old?.filter((j) => j.id !== variables.applicationId),
+      await queryClient.cancelQueries({
+        queryKey: ["applications", "hub", "journeys"],
+      })
+      const previous = queryClient.getQueryData<ApplicationJourney[]>([
+        "applications",
+        "hub",
+        "journeys",
+      ])
+      queryClient.setQueryData<ApplicationJourney[]>(
+        ["applications", "hub", "journeys"],
+        (old) => old?.filter((j) => j.id !== variables.applicationId),
       )
       return { previous }
     },
     onError: (_err, _vars, context) => {
       if (context?.previous) {
-        queryClient.setQueryData(["applications", "hub", "journeys"], context.previous)
+        queryClient.setQueryData(
+          ["applications", "hub", "journeys"],
+          context.previous,
+        )
       }
       toast.error(t("withdrawError"))
       setWithdrawingId(null)
@@ -68,7 +80,9 @@ export function useApplicationHub() {
       setWithdrawingId(null)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["applications", "hub", "journeys"] })
+      queryClient.invalidateQueries({
+        queryKey: ["applications", "hub", "journeys"],
+      })
     },
   })
 
@@ -86,7 +100,9 @@ export function useApplicationHub() {
       setConfirmingSlotId(null)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["applications", "hub", "journeys"] })
+      queryClient.invalidateQueries({
+        queryKey: ["applications", "hub", "journeys"],
+      })
     },
   })
 
@@ -113,7 +129,9 @@ export function useApplicationHub() {
       setDownloadingDocumentId(null)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["applications", "hub", "journeys"] })
+      queryClient.invalidateQueries({
+        queryKey: ["applications", "hub", "journeys"],
+      })
     },
   })
 
@@ -127,17 +145,25 @@ export function useApplicationHub() {
         return journeys
       case "action_required":
         return journeys.filter((j) => {
-          const hasPendingInterview = j.interviews.some((i) => i.status === "pending_confirmation")
-          const hasPendingDocs = j.placement?.documents.some((d) => d.status === "pending")
+          const hasPendingInterview = j.interviews.some(
+            (i) => i.status === "pending_confirmation",
+          )
+          const hasPendingDocs = j.placement?.documents.some(
+            (d) => d.status === "pending",
+          )
           return hasPendingInterview || hasPendingDocs
         })
       case "in_progress":
         return journeys.filter((j) =>
-          ["applied", "screening", "interview", "offer"].includes(j.pipelineStage),
+          ["applied", "screening", "interview", "offer"].includes(
+            j.pipelineStage,
+          ),
         )
       case "finalized":
         return journeys.filter(
-          (j) => ["accepted", "validated", "rejected"].includes(j.pipelineStage) || j.status === "withdrawn",
+          (j) =>
+            ["accepted", "validated", "rejected"].includes(j.pipelineStage) ||
+            j.status === "withdrawn",
         )
       default:
         return journeys

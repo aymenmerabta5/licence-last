@@ -32,8 +32,7 @@ export function MessageToolInvocations({
         if (
           isRecord(part) &&
           (part.type === "dynamic-tool" ||
-            (typeof part.type === "string" &&
-              part.type.startsWith("tool-")))
+            (typeof part.type === "string" && part.type.startsWith("tool-")))
         ) {
           const toolName =
             part.type === "dynamic-tool"
@@ -44,9 +43,7 @@ export function MessageToolInvocations({
                 ? part.type.slice("tool-".length)
                 : null
 
-          const authStatus = toolName
-            ? (authByTool[toolName] ?? null)
-            : null
+          const authStatus = toolName ? (authByTool[toolName] ?? null) : null
           const toolCallId =
             isRecord(part) &&
             typeof (part as Record<string, unknown>).toolCallId === "string"

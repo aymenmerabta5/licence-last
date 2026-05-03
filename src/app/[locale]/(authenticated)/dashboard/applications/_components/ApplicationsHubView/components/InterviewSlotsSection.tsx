@@ -152,7 +152,9 @@ export function InterviewSlotsSection({
                           ) : (
                             <CalendarCheck2 className="h-3 w-3" />
                           )}
-                          {isConfirming ? t("interview.confirming") : t("interview.confirm")}
+                          {isConfirming
+                            ? t("interview.confirming")
+                            : t("interview.confirm")}
                         </Button>
                       )}
                     </div>

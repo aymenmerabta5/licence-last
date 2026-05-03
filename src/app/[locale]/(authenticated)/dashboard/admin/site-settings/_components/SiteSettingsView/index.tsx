@@ -10,14 +10,14 @@ export function SiteSettingsView() {
   const t = useTranslations("admin")
 
   const { data, isLoading } = useQuery(
-    orpc.adminSettings.getMaintenanceMode.queryOptions()
+    orpc.adminSettings.getMaintenanceMode.queryOptions(),
   )
   const { mutateAsync, isPending } = useMutation(
     orpc.adminSettings.setMaintenanceMode.mutationOptions({
       onSuccess: () => {
         toast.success(t("maintenanceModeSaved"))
       },
-    })
+    }),
   )
 
   const isMaintenanceMode = data?.enabled ?? false
@@ -39,7 +39,9 @@ export function SiteSettingsView() {
           </div>
           <Switch
             checked={isMaintenanceMode}
-            onCheckedChange={(checked: boolean) => mutateAsync({ enabled: checked })}
+            onCheckedChange={(checked: boolean) =>
+              mutateAsync({ enabled: checked })
+            }
             disabled={isLoading || isPending}
           />
         </div>

@@ -43,7 +43,12 @@ export function RejectDialog({
           className="min-h-[80px] w-full resize-none border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
         />
         <div className="flex justify-end gap-2">
-          <Button variant="outline" size="sm" onClick={onClose} className="rounded-none">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onClose}
+            className="rounded-none"
+          >
             {t("cancel")}
           </Button>
           <Button

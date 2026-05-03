@@ -54,10 +54,18 @@ export function VerificationResult({ result, code }: VerificationResultProps) {
               <motion.div
                 initial={{ scale: 0.5, opacity: 0, rotate: -15 }}
                 animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 15,
+                  delay: 0.2,
+                }}
                 className="inline-flex items-center justify-center size-24 rounded-full border-4 border-destructive/10 bg-destructive/5 mb-6"
               >
-                <ShieldX className="size-11 text-destructive" strokeWidth={1.5} />
+                <ShieldX
+                  className="size-11 text-destructive"
+                  strokeWidth={1.5}
+                />
               </motion.div>
 
               <motion.div
@@ -86,7 +94,10 @@ export function VerificationResult({ result, code }: VerificationResultProps) {
             <div className="mt-8 pt-6 border-t border-border text-center">
               <Link
                 href="/verify"
-                className={cn(buttonVariants({ variant: "outline" }), "rounded-none")}
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "rounded-none",
+                )}
               >
                 {t("invalid.tryAgain")}
               </Link>
@@ -132,10 +143,18 @@ export function VerificationResult({ result, code }: VerificationResultProps) {
             <motion.div
               initial={{ scale: 0.5, opacity: 0, rotate: -180 }}
               animate={{ scale: 1, opacity: 1, rotate: 0 }}
-              transition={{ type: "spring", stiffness: 180, damping: 14, delay: 0.2 }}
+              transition={{
+                type: "spring",
+                stiffness: 180,
+                damping: 14,
+                delay: 0.2,
+              }}
               className="inline-flex items-center justify-center size-24 rounded-full border-4 border-green-500/15 bg-green-500/5 mb-6"
             >
-              <ShieldCheck className="size-11 text-green-600 dark:text-green-400" strokeWidth={1.5} />
+              <ShieldCheck
+                className="size-11 text-green-600 dark:text-green-400"
+                strokeWidth={1.5}
+              />
             </motion.div>
 
             <motion.div
@@ -198,7 +217,10 @@ export function VerificationResult({ result, code }: VerificationResultProps) {
               icon={<FileText className="size-4" strokeWidth={1.5} />}
               label={t("valid.status")}
               value={
-                <Badge variant="outline" className={cn("text-xs font-semibold", statusColor)}>
+                <Badge
+                  variant="outline"
+                  className={cn("text-xs font-semibold", statusColor)}
+                >
                   {statusLabel}
                 </Badge>
               }
@@ -218,7 +240,10 @@ export function VerificationResult({ result, code }: VerificationResultProps) {
             </p>
             <Link
               href="/verify"
-              className={cn(buttonVariants({ variant: "outline" }), "rounded-none")}
+              className={cn(
+                buttonVariants({ variant: "outline" }),
+                "rounded-none",
+              )}
             >
               {t("invalid.tryAgain")}
             </Link>
@@ -245,7 +270,9 @@ function InfoRow({
         <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
           {label}
         </p>
-        <div className="font-medium text-sm sm:text-base leading-snug">{value}</div>
+        <div className="font-medium text-sm sm:text-base leading-snug">
+          {value}
+        </div>
       </div>
     </div>
   )

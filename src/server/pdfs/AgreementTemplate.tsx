@@ -22,151 +22,353 @@ Font.register({
   src: path.join(fontsDir, "DejaVuSans-Bold.ttf"),
 })
 
+Font.register({
+  family: "DejaVu Serif",
+  src: path.join(fontsDir, "DejaVuSerif.ttf"),
+})
+
+Font.register({
+  family: "DejaVu Serif Bold",
+  src: path.join(fontsDir, "DejaVuSerif-Bold.ttf"),
+})
+
+const COLORS = {
+  headerBg: "#0f172a",
+  headerText: "#ffffff",
+  accent: "#d97706",
+  accentLight: "#f59e0b",
+  cardBg: "#fafaf9",
+  cardBorder: "#e7e5e4",
+  textPrimary: "#1c1917",
+  textSecondary: "#57534e",
+  textMuted: "#78716c",
+  white: "#ffffff",
+  divider: "#e7e5e4",
+  labelBg: "#f5f5f4",
+}
+
 const styles = StyleSheet.create({
   page: {
     fontFamily: "DejaVu Sans",
     fontSize: 9,
-    padding: 28,
-    lineHeight: 1.35,
-    backgroundColor: "#ffffff",
+    lineHeight: 1.4,
+    backgroundColor: COLORS.white,
+    padding: 0,
+    color: COLORS.textPrimary,
   },
-  header: {
+  headerBand: {
+    backgroundColor: COLORS.headerBg,
+    paddingHorizontal: 36,
+    paddingVertical: 22,
+    flexDirection: "row",
     alignItems: "center",
-    marginBottom: 14,
+    justifyContent: "space-between",
   },
-  title: {
-    fontFamily: "DejaVu Sans Bold",
-    fontSize: 18,
+  headerLeft: {
+    flexDirection: "column",
+  },
+  headerTitle: {
+    fontFamily: "DejaVu Serif Bold",
+    fontSize: 22,
+    color: COLORS.headerText,
+    letterSpacing: 1.2,
     textTransform: "uppercase",
-    letterSpacing: 1.5,
-    color: "#1a1a2e",
   },
-  subtitle: {
+  headerSubtitle: {
+    fontFamily: "DejaVu Serif",
     fontSize: 10,
-    color: "#555555",
-    marginTop: 3,
+    color: "#94a3b8",
+    marginTop: 4,
+  },
+  headerBadge: {
+    backgroundColor: "#1e293b",
+    borderWidth: 1,
+    borderColor: "#334155",
+    borderRadius: 4,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    alignItems: "center",
+  },
+  headerBadgeLabel: {
+    fontSize: 7,
+    color: "#94a3b8",
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
+  },
+  headerBadgeValue: {
+    fontFamily: "DejaVu Sans Bold",
+    fontSize: 9,
+    color: COLORS.headerText,
+    marginTop: 2,
+  },
+  accentBar: {
+    height: 4,
+    backgroundColor: COLORS.accent,
+  },
+  body: {
+    paddingHorizontal: 36,
+    paddingVertical: 20,
   },
   partiesRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 14,
+    marginBottom: 16,
+    gap: 12,
   },
-  partyColumn: {
-    width: "31%",
-    borderTopWidth: 2,
-    borderTopColor: "#1a1a2e",
-    paddingTop: 6,
+  partyCard: {
+    flex: 1,
+    backgroundColor: COLORS.cardBg,
+    borderWidth: 1,
+    borderColor: COLORS.cardBorder,
+    borderRadius: 6,
+    padding: 12,
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+  },
+  partyCardStudent: {
+    borderLeftWidth: 4,
+    borderLeftColor: "#2563eb",
+  },
+  partyCardCompany: {
+    borderLeftWidth: 4,
+    borderLeftColor: "#059669",
+  },
+  partyCardUniversity: {
+    borderLeftWidth: 4,
+    borderLeftColor: "#7c3aed",
+  },
+  partyHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+    paddingBottom: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.divider,
+  },
+  partyDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 6,
   },
   partyTitle: {
     fontFamily: "DejaVu Sans Bold",
-    fontSize: 10,
-    marginBottom: 6,
+    fontSize: 9,
     textTransform: "uppercase",
-    color: "#1a1a2e",
+    letterSpacing: 0.8,
+    color: COLORS.textPrimary,
   },
   row: {
     flexDirection: "row",
-    marginBottom: 2,
+    marginBottom: 3,
+    alignItems: "flex-start",
+  },
+  rowTight: {
+    flexDirection: "row",
+    marginBottom: 1,
+    alignItems: "flex-start",
   },
   label: {
-    width: "40%",
-    color: "#555555",
+    width: "38%",
+    color: COLORS.textMuted,
     fontSize: 8,
   },
   value: {
-    width: "60%",
+    flex: 1,
     fontFamily: "DejaVu Sans Bold",
     fontSize: 8,
+    color: COLORS.textPrimary,
   },
-  section: {
-    marginBottom: 12,
-    borderTopWidth: 1,
-    borderTopColor: "#dddddd",
-    paddingTop: 8,
-  },
-  sectionTitle: {
-    fontFamily: "DejaVu Sans Bold",
-    fontSize: 10,
-    marginBottom: 6,
-    textTransform: "uppercase",
-    color: "#1a1a2e",
-  },
-  datesBar: {
+  datesSection: {
     flexDirection: "row",
     justifyContent: "center",
-    marginBottom: 12,
-    backgroundColor: "#f7f7f9",
-    paddingVertical: 8,
-    paddingHorizontal: 24,
-  },
-  dateBlock: {
     alignItems: "center",
-    marginHorizontal: 24,
+    marginBottom: 16,
+    gap: 28,
+  },
+  dateCard: {
+    alignItems: "center",
+    backgroundColor: COLORS.cardBg,
+    borderRadius: 6,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: COLORS.cardBorder,
+    minWidth: 140,
+  },
+  dateConnector: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  dateConnectorLine: {
+    width: 40,
+    height: 1,
+    backgroundColor: COLORS.accent,
+    marginBottom: 4,
+  },
+  dateConnectorLabel: {
+    fontSize: 7,
+    color: COLORS.textMuted,
+    textTransform: "uppercase",
+    letterSpacing: 0.6,
   },
   dateLabel: {
     fontSize: 8,
-    color: "#666666",
-    marginBottom: 2,
+    color: COLORS.textMuted,
+    marginBottom: 3,
+    textTransform: "uppercase",
+    letterSpacing: 0.6,
   },
   dateValue: {
+    fontFamily: "DejaVu Serif Bold",
+    fontSize: 12,
+    color: COLORS.textPrimary,
+  },
+  detailsSection: {
+    backgroundColor: COLORS.cardBg,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: COLORS.cardBorder,
+    padding: 14,
+    marginBottom: 16,
+  },
+  detailsHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.divider,
+  },
+  detailsHeaderDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: COLORS.accent,
+    marginRight: 6,
+  },
+  detailsTitle: {
     fontFamily: "DejaVu Sans Bold",
-    fontSize: 10,
-    color: "#1a1a2e",
+    fontSize: 9,
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
+    color: COLORS.textPrimary,
+  },
+  detailsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  detailsCol: {
+    width: "50%",
+    paddingRight: 8,
+    marginBottom: 6,
+  },
+  detailsColFull: {
+    width: "100%",
+    marginBottom: 6,
+  },
+  detailsLabel: {
+    fontSize: 8,
+    color: COLORS.textMuted,
+    marginBottom: 2,
+    textTransform: "uppercase",
+    letterSpacing: 0.4,
+  },
+  detailsValue: {
+    fontFamily: "DejaVu Sans Bold",
+    fontSize: 9,
+    color: COLORS.textPrimary,
+  },
+  detailsValueLarge: {
+    fontFamily: "DejaVu Serif Bold",
+    fontSize: 11,
+    color: COLORS.textPrimary,
+  },
+  signaturesSection: {
+    marginTop: 8,
+    marginBottom: 12,
   },
   signaturesRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 4,
+    gap: 24,
   },
-  sigBox: {
-    width: "30%",
+  sigCard: {
+    flex: 1,
     alignItems: "center",
+    paddingTop: 8,
   },
   sigLabel: {
     fontFamily: "DejaVu Sans Bold",
-    fontSize: 9,
-    marginBottom: 28,
+    fontSize: 8,
     textTransform: "uppercase",
-    color: "#333333",
+    letterSpacing: 0.6,
+    color: COLORS.textSecondary,
+    marginBottom: 22,
+  },
+  sigLineBox: {
+    width: "100%",
+    alignItems: "center",
   },
   sigLine: {
-    width: "100%",
-    borderTopWidth: 1,
-    borderTopColor: "#000000",
-    paddingTop: 3,
+    width: "85%",
+    height: 1,
+    backgroundColor: COLORS.textMuted,
+    marginBottom: 5,
+  },
+  sigName: {
     fontSize: 8,
-    color: "#555555",
+    color: COLORS.textMuted,
     textAlign: "center",
   },
-  verificationBar: {
+  footerBand: {
+    marginTop: "auto",
+    borderTopWidth: 1,
+    borderTopColor: COLORS.divider,
+    paddingHorizontal: 36,
+    paddingVertical: 12,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    marginTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: "#eeeeee",
-    paddingTop: 6,
-    gap: 8,
+    justifyContent: "space-between",
+  },
+  footerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
   qrCode: {
-    width: 40,
-    height: 40,
+    width: 36,
+    height: 36,
+    borderRadius: 4,
+  },
+  footerCodeBox: {
+    flexDirection: "column",
   },
   verificationCode: {
     fontFamily: "DejaVu Sans Bold",
-    fontSize: 9,
-    color: "#333333",
+    fontSize: 10,
+    color: COLORS.textPrimary,
+    letterSpacing: 0.6,
   },
   verificationUrl: {
     fontSize: 7,
-    color: "#888888",
+    color: COLORS.textMuted,
     marginTop: 1,
   },
-  footer: {
-    marginTop: 4,
-    textAlign: "center",
+  footerRight: {
+    alignItems: "flex-end",
+  },
+  footerText: {
     fontSize: 7,
-    color: "#999999",
+    color: COLORS.textMuted,
+  },
+  footerBrand: {
+    fontFamily: "DejaVu Sans Bold",
+    fontSize: 7,
+    color: COLORS.textSecondary,
+    marginTop: 2,
   },
 })
 
@@ -206,6 +408,7 @@ interface ConventionDeStageTemplateProps {
   locale?: string
   verificationCode?: string
   qrCodeDataUrl?: string
+  verificationUrl?: string
 }
 
 export function ConventionDeStageTemplate({
@@ -213,11 +416,20 @@ export function ConventionDeStageTemplate({
   locale = "en",
   verificationCode,
   qrCodeDataUrl,
+  verificationUrl,
 }: ConventionDeStageTemplateProps) {
   const formatDate = (date: Date) => {
     return date.toLocaleDateString(locale === "fr" ? "fr-FR" : "en-US", {
       year: "numeric",
       month: "long",
+      day: "numeric",
+    })
+  }
+
+  const shortDate = (date: Date) => {
+    return date.toLocaleDateString(locale === "fr" ? "fr-FR" : "en-US", {
+      year: "numeric",
+      month: "short",
       day: "numeric",
     })
   }
@@ -246,255 +458,328 @@ export function ConventionDeStageTemplate({
 
   const title =
     locale === "fr"
-      ? "CONVENTION DE STAGE"
+      ? "Convention de Stage"
       : locale === "ar"
         ? "اتفاقية التدريب"
-        : "INTERNSHIP AGREEMENT"
+        : "Internship Agreement"
+
+  const universityDisplay = data.universityDepartmentName
+    ? `${data.universityName} — ${data.universityDepartmentName}`
+    : (data.universityName ?? "")
 
   return (
     <Document>
       <Page size="A4" orientation="landscape" style={styles.page}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.subtitle}>
-            {data.universityName || "University"}
-          </Text>
-        </View>
-
-        {/* Parties */}
-        <View style={styles.partiesRow}>
-          {/* Student */}
-          <View style={styles.partyColumn}>
-            <Text style={styles.partyTitle}>
-              {locale === "fr" ? "Stagiaire" : "Trainee"}
-            </Text>
-            <View style={styles.row}>
-              <Text style={styles.label}>
-                {locale === "fr" ? "Nom :" : "Name :"}
-              </Text>
-              <Text style={styles.value}>{data.studentName}</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.label}>Email :</Text>
-              <Text style={styles.value}>{data.studentEmail}</Text>
-            </View>
-            {data.studentPhone && (
-              <View style={styles.row}>
-                <Text style={styles.label}>
-                  {locale === "fr" ? "Tél :" : "Phone :"}
-                </Text>
-                <Text style={styles.value}>{data.studentPhone}</Text>
-              </View>
-            )}
-            {data.studentNumber && (
-              <View style={styles.row}>
-                <Text style={styles.label}>
-                  {locale === "fr" ? "Matricule :" : "Student ID :"}
-                </Text>
-                <Text style={styles.value}>{data.studentNumber}</Text>
-              </View>
-            )}
-            {data.studentDepartment && (
-              <View style={styles.row}>
-                <Text style={styles.label}>
-                  {locale === "fr" ? "Dépt :" : "Dept :"}
-                </Text>
-                <Text style={styles.value}>{data.studentDepartment}</Text>
-              </View>
-            )}
-            {data.studentAddress && (
-              <View style={styles.row}>
-                <Text style={styles.label}>
-                  {locale === "fr" ? "Adr :" : "Addr :"}
-                </Text>
-                <Text style={styles.value}>{data.studentAddress}</Text>
-              </View>
-            )}
+        {/* Header Band */}
+        <View style={styles.headerBand}>
+          <View style={styles.headerLeft}>
+            <Text style={styles.headerTitle}>{title}</Text>
+            {universityDisplay ? (
+              <Text style={styles.headerSubtitle}>{universityDisplay}</Text>
+            ) : null}
           </View>
-
-          {/* Company */}
-          <View style={styles.partyColumn}>
-            <Text style={styles.partyTitle}>
-              {locale === "fr" ? "Entreprise" : "Company"}
+          <View style={styles.headerBadge}>
+            <Text style={styles.headerBadgeLabel}>
+              {locale === "fr" ? "N° Vérification" : "Verification"}
             </Text>
-            <View style={styles.row}>
-              <Text style={styles.label}>
-                {locale === "fr" ? "Nom :" : "Name :"}
-              </Text>
-              <Text style={styles.value}>{data.companyName}</Text>
-            </View>
-            {data.companyAddress && (
-              <View style={styles.row}>
-                <Text style={styles.label}>
-                  {locale === "fr" ? "Adr :" : "Addr :"}
-                </Text>
-                <Text style={styles.value}>{data.companyAddress}</Text>
-              </View>
-            )}
-            {data.companyPhone && (
-              <View style={styles.row}>
-                <Text style={styles.label}>
-                  {locale === "fr" ? "Tél :" : "Phone :"}
-                </Text>
-                <Text style={styles.value}>{data.companyPhone}</Text>
-              </View>
-            )}
-            {data.companyRepresentativeName && (
-              <View style={styles.row}>
-                <Text style={styles.label}>
-                  {locale === "fr" ? "Repr :" : "Rep :"}
-                </Text>
-                <Text style={styles.value}>
-                  {data.companyRepresentativeName}
-                </Text>
-              </View>
-            )}
-            {data.companyContactEmail && (
-              <View style={styles.row}>
-                <Text style={styles.label}>Email :</Text>
-                <Text style={styles.value}>{data.companyContactEmail}</Text>
-              </View>
-            )}
-          </View>
-
-          {/* University */}
-          <View style={styles.partyColumn}>
-            <Text style={styles.partyTitle}>
-              {locale === "fr" ? "Université" : "University"}
+            <Text style={styles.headerBadgeValue}>
+              {verificationCode ?? "—"}
             </Text>
-            {(data.universityName || data.universityDepartmentName) && (
-              <View style={styles.row}>
-                <Text style={styles.label}>
-                  {locale === "fr" ? "Nom :" : "Name :"}
-                </Text>
-                <Text style={styles.value}>
-                  {data.universityDepartmentName
-                    ? `${data.universityName} — ${data.universityDepartmentName}`
-                    : (data.universityName ?? "")}
-                </Text>
-              </View>
-            )}
-            {data.universityAddress && (
-              <View style={styles.row}>
-                <Text style={styles.label}>
-                  {locale === "fr" ? "Adr :" : "Addr :"}
-                </Text>
-                <Text style={styles.value}>{data.universityAddress}</Text>
-              </View>
-            )}
-            {data.universityPhone && (
-              <View style={styles.row}>
-                <Text style={styles.label}>
-                  {locale === "fr" ? "Tél :" : "Phone :"}
-                </Text>
-                <Text style={styles.value}>{data.universityPhone}</Text>
-              </View>
-            )}
           </View>
         </View>
 
-        {/* Dates bar */}
-        <View style={styles.datesBar}>
-          <View style={styles.dateBlock}>
-            <Text style={styles.dateLabel}>
-              {locale === "fr" ? "Date de début" : "Start Date"}
-            </Text>
-            <Text style={styles.dateValue}>{formatDate(data.startDate)}</Text>
-          </View>
-          <View style={styles.dateBlock}>
-            <Text style={styles.dateLabel}>
-              {locale === "fr" ? "Date de fin" : "End Date"}
-            </Text>
-            <Text style={styles.dateValue}>{formatDate(data.endDate)}</Text>
-          </View>
-        </View>
+        {/* Accent Bar */}
+        <View style={styles.accentBar} />
 
-        {/* Internship Details */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
-            {locale === "fr" ? "Détails du stage" : "Internship details"}
-          </Text>
-          <View style={[styles.row, { marginBottom: 4 }]}>
-            <Text style={[styles.label, { width: "15%" }]}>
-              {locale === "fr" ? "Sujet :" : "Subject :"}
-            </Text>
-            <Text style={[styles.value, { width: "85%" }]}>
-              {data.offerTitle}
-            </Text>
+        {/* Body */}
+        <View style={styles.body}>
+          {/* Parties */}
+          <View style={styles.partiesRow}>
+            {/* Student */}
+            <View style={[styles.partyCard, styles.partyCardStudent]}>
+              <View style={styles.partyHeader}>
+                <View
+                  style={[styles.partyDot, { backgroundColor: "#2563eb" }]}
+                />
+                <Text style={styles.partyTitle}>
+                  {locale === "fr" ? "Stagiaire" : "Trainee"}
+                </Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>
+                  {locale === "fr" ? "Nom" : "Name"}
+                </Text>
+                <Text style={styles.value}>{data.studentName}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Email</Text>
+                <Text style={styles.value}>{data.studentEmail}</Text>
+              </View>
+              {data.studentPhone ? (
+                <View style={styles.row}>
+                  <Text style={styles.label}>
+                    {locale === "fr" ? "Téléphone" : "Phone"}
+                  </Text>
+                  <Text style={styles.value}>{data.studentPhone}</Text>
+                </View>
+              ) : null}
+              {data.studentNumber ? (
+                <View style={styles.row}>
+                  <Text style={styles.label}>
+                    {locale === "fr" ? "Matricule" : "Student ID"}
+                  </Text>
+                  <Text style={styles.value}>{data.studentNumber}</Text>
+                </View>
+              ) : null}
+              {data.studentDepartment ? (
+                <View style={styles.row}>
+                  <Text style={styles.label}>
+                    {locale === "fr" ? "Département" : "Department"}
+                  </Text>
+                  <Text style={styles.value}>{data.studentDepartment}</Text>
+                </View>
+              ) : null}
+              {data.studentAddress ? (
+                <View style={styles.row}>
+                  <Text style={styles.label}>
+                    {locale === "fr" ? "Adresse" : "Address"}
+                  </Text>
+                  <Text style={styles.value}>{data.studentAddress}</Text>
+                </View>
+              ) : null}
+            </View>
+
+            {/* Company */}
+            <View style={[styles.partyCard, styles.partyCardCompany]}>
+              <View style={styles.partyHeader}>
+                <View
+                  style={[styles.partyDot, { backgroundColor: "#059669" }]}
+                />
+                <Text style={styles.partyTitle}>
+                  {locale === "fr" ? "Entreprise" : "Company"}
+                </Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>
+                  {locale === "fr" ? "Nom" : "Name"}
+                </Text>
+                <Text style={styles.value}>{data.companyName}</Text>
+              </View>
+              {data.companyAddress ? (
+                <View style={styles.row}>
+                  <Text style={styles.label}>
+                    {locale === "fr" ? "Adresse" : "Address"}
+                  </Text>
+                  <Text style={styles.value}>{data.companyAddress}</Text>
+                </View>
+              ) : null}
+              {data.companyPhone ? (
+                <View style={styles.row}>
+                  <Text style={styles.label}>
+                    {locale === "fr" ? "Téléphone" : "Phone"}
+                  </Text>
+                  <Text style={styles.value}>{data.companyPhone}</Text>
+                </View>
+              ) : null}
+              {data.companyRepresentativeName ? (
+                <View style={styles.row}>
+                  <Text style={styles.label}>
+                    {locale === "fr" ? "Représentant" : "Representative"}
+                  </Text>
+                  <Text style={styles.value}>
+                    {data.companyRepresentativeName}
+                  </Text>
+                </View>
+              ) : null}
+              {data.companyContactEmail ? (
+                <View style={styles.row}>
+                  <Text style={styles.label}>Email</Text>
+                  <Text style={styles.value}>{data.companyContactEmail}</Text>
+                </View>
+              ) : null}
+            </View>
+
+            {/* University */}
+            <View style={[styles.partyCard, styles.partyCardUniversity]}>
+              <View style={styles.partyHeader}>
+                <View
+                  style={[styles.partyDot, { backgroundColor: "#7c3aed" }]}
+                />
+                <Text style={styles.partyTitle}>
+                  {locale === "fr" ? "Université" : "University"}
+                </Text>
+              </View>
+              {(data.universityName || data.universityDepartmentName) ? (
+                <View style={styles.row}>
+                  <Text style={styles.label}>
+                    {locale === "fr" ? "Nom" : "Name"}
+                  </Text>
+                  <Text style={styles.value}>
+                    {data.universityDepartmentName
+                      ? `${data.universityName} — ${data.universityDepartmentName}`
+                      : (data.universityName ?? "")}
+                  </Text>
+                </View>
+              ) : null}
+              {data.universityAddress ? (
+                <View style={styles.row}>
+                  <Text style={styles.label}>
+                    {locale === "fr" ? "Adresse" : "Address"}
+                  </Text>
+                  <Text style={styles.value}>{data.universityAddress}</Text>
+                </View>
+              ) : null}
+              {data.universityPhone ? (
+                <View style={styles.row}>
+                  <Text style={styles.label}>
+                    {locale === "fr" ? "Téléphone" : "Phone"}
+                  </Text>
+                  <Text style={styles.value}>{data.universityPhone}</Text>
+                </View>
+              ) : null}
+            </View>
           </View>
-          <View style={styles.row}>
-            <Text style={[styles.label, { width: "15%" }]}>
-              {locale === "fr" ? "Type :" : "Type :"}
-            </Text>
-            <Text style={[styles.value, { width: "30%" }]}>
-              {internshipTypeLabels[data.internshipType] || data.internshipType}
-            </Text>
-            <Text style={[styles.label, { width: "15%", paddingLeft: 16 }]}>
-              {locale === "fr" ? "Durée :" : "Duration :"}
-            </Text>
-            <Text style={[styles.value, { width: "40%" }]}>
-              {data.durationWeeks
-                ? `${data.durationWeeks} ${locale === "fr" ? "semaines" : "weeks"}`
-                : "—"}
-            </Text>
-          </View>
-          {data.workMode && (
-            <View style={styles.row}>
-              <Text style={[styles.label, { width: "15%" }]}>
-                {locale === "fr" ? "Mode :" : "Mode :"}
+
+          {/* Dates */}
+          <View style={styles.datesSection}>
+            <View style={styles.dateCard}>
+              <Text style={styles.dateLabel}>
+                {locale === "fr" ? "Date de début" : "Start Date"}
               </Text>
-              <Text style={[styles.value, { width: "30%" }]}>
-                {workModeLabel}
+              <Text style={styles.dateValue}>{formatDate(data.startDate)}</Text>
+            </View>
+            <View style={styles.dateConnector}>
+              <View style={styles.dateConnectorLine} />
+              <Text style={styles.dateConnectorLabel}>
+                {data.durationWeeks
+                  ? `${data.durationWeeks} ${locale === "fr" ? "semaines" : "weeks"}`
+                  : locale === "fr"
+                    ? "Durée"
+                    : "Duration"}
               </Text>
             </View>
-          )}
+            <View style={styles.dateCard}>
+              <Text style={styles.dateLabel}>
+                {locale === "fr" ? "Date de fin" : "End Date"}
+              </Text>
+              <Text style={styles.dateValue}>{formatDate(data.endDate)}</Text>
+            </View>
+          </View>
+
+          {/* Internship Details */}
+          <View style={styles.detailsSection}>
+            <View style={styles.detailsHeader}>
+              <View style={styles.detailsHeaderDot} />
+              <Text style={styles.detailsTitle}>
+                {locale === "fr"
+                  ? "Détails du Stage"
+                  : "Internship Details"}
+              </Text>
+            </View>
+            <View style={styles.detailsGrid}>
+              <View style={styles.detailsColFull}>
+                <Text style={styles.detailsLabel}>
+                  {locale === "fr" ? "Sujet" : "Subject"}
+                </Text>
+                <Text style={styles.detailsValueLarge}>{data.offerTitle}</Text>
+              </View>
+              <View style={styles.detailsCol}>
+                <Text style={styles.detailsLabel}>
+                  {locale === "fr" ? "Type" : "Type"}
+                </Text>
+                <Text style={styles.detailsValue}>
+                  {internshipTypeLabels[data.internshipType] ||
+                    data.internshipType}
+                </Text>
+              </View>
+              <View style={styles.detailsCol}>
+                <Text style={styles.detailsLabel}>
+                  {locale === "fr" ? "Mode de travail" : "Work Mode"}
+                </Text>
+                <Text style={styles.detailsValue}>
+                  {workModeLabel || "—"}
+                </Text>
+              </View>
+              <View style={styles.detailsCol}>
+                <Text style={styles.detailsLabel}>
+                  {locale === "fr" ? "Durée" : "Duration"}
+                </Text>
+                <Text style={styles.detailsValue}>
+                  {data.durationWeeks
+                    ? `${data.durationWeeks} ${locale === "fr" ? "semaines" : "weeks"}`
+                    : "—"}
+                </Text>
+              </View>
+              <View style={styles.detailsCol}>
+                <Text style={styles.detailsLabel}>
+                  {locale === "fr" ? "Généré le" : "Generated"}
+                </Text>
+                <Text style={styles.detailsValue}>
+                  {shortDate(new Date())}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Signatures */}
+          <View style={styles.signaturesSection}>
+            <View style={styles.signaturesRow}>
+              <View style={styles.sigCard}>
+                <Text style={styles.sigLabel}>
+                  {locale === "fr" ? "Le Stagiaire" : "The Trainee"}
+                </Text>
+                <View style={styles.sigLineBox}>
+                  <View style={styles.sigLine} />
+                  <Text style={styles.sigName}>{data.studentName}</Text>
+                </View>
+              </View>
+              <View style={styles.sigCard}>
+                <Text style={styles.sigLabel}>
+                  {locale === "fr" ? "L'Entreprise" : "The Company"}
+                </Text>
+                <View style={styles.sigLineBox}>
+                  <View style={styles.sigLine} />
+                  <Text style={styles.sigName}>
+                    {data.companyRepresentativeName || data.companyName}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.sigCard}>
+                <Text style={styles.sigLabel}>
+                  {locale === "fr" ? "L'Université" : "The University"}
+                </Text>
+                <View style={styles.sigLineBox}>
+                  <View style={styles.sigLine} />
+                  <Text style={styles.sigName}>{data.universityName}</Text>
+                </View>
+              </View>
+            </View>
+          </View>
         </View>
 
-        {/* Signatures */}
-        <View style={styles.signaturesRow}>
-          <View style={styles.sigBox}>
-            <Text style={styles.sigLabel}>
-              {locale === "fr" ? "Le stagiaire" : "The trainee"}
-            </Text>
-            <Text style={styles.sigLine}>{data.studentName}</Text>
-          </View>
-          <View style={styles.sigBox}>
-            <Text style={styles.sigLabel}>
-              {locale === "fr" ? "L'entreprise" : "The company"}
-            </Text>
-            <Text style={styles.sigLine}>
-              {data.companyRepresentativeName || data.companyName}
-            </Text>
-          </View>
-          <View style={styles.sigBox}>
-            <Text style={styles.sigLabel}>
-              {locale === "fr" ? "L'université" : "The university"}
-            </Text>
-            <Text style={styles.sigLine}>{data.universityName}</Text>
-          </View>
-        </View>
-
-        {/* Verification */}
-        {verificationCode && (
-          <View style={styles.verificationBar}>
-            {qrCodeDataUrl && (
+        {/* Footer Band */}
+        <View style={styles.footerBand}>
+          <View style={styles.footerLeft}>
+            {qrCodeDataUrl ? (
               <Image style={styles.qrCode} src={qrCodeDataUrl} />
-            )}
-            <View>
-              <Text style={styles.verificationCode}>{verificationCode}</Text>
-              <Text style={styles.verificationUrl}>stag.io/verify</Text>
+            ) : null}
+            <View style={styles.footerCodeBox}>
+              <Text style={styles.verificationCode}>
+                {verificationCode ?? "—"}
+              </Text>
+              <Text style={styles.verificationUrl}>{verificationUrl ?? "stag.io/verify"}</Text>
             </View>
           </View>
-        )}
-
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text>
-            {locale === "fr"
-              ? `Cette convention est générée automatiquement par le système Stag — ${formatDate(new Date())}`
-              : `This agreement is automatically generated by the Stag system — ${formatDate(new Date())}`}
-          </Text>
+          <View style={styles.footerRight}>
+            <Text style={styles.footerText}>
+              {locale === "fr"
+                ? "Document généré automatiquement par le système Stag"
+                : "Automatically generated by the Stag system"}
+            </Text>
+            <Text style={styles.footerBrand}>
+              stag.io — {formatDate(new Date())}
+            </Text>
+          </View>
         </View>
       </Page>
     </Document>

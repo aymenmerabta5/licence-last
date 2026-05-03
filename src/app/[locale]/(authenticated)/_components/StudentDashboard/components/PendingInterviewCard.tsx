@@ -23,7 +23,10 @@ export function PendingInterviewCard({ interview }: PendingInterviewCardProps) {
     >
       <div className="flex items-start gap-4">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-amber-500/30 bg-amber-500/10">
-          <Calendar className="h-4 w-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />
+          <Calendar
+            className="h-4 w-4 text-amber-600 dark:text-amber-400"
+            aria-hidden="true"
+          />
         </div>
         <div className="min-w-0 flex-1 space-y-1">
           <p className="text-xs font-bold uppercase tracking-[0.15em] text-amber-700 dark:text-amber-400">

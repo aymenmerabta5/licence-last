@@ -1,11 +1,6 @@
 "use client"
 
-import {
-  CalendarDays,
-  Loader2,
-  MessageSquare,
-  UserRound,
-} from "lucide-react"
+import { CalendarDays, Loader2, MessageSquare, UserRound } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { InterviewSlotList } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewSlotList"

@@ -84,7 +84,9 @@ export function NavbarSessionControls() {
           }
           aria-label={t("aria.accountMenu")}
         >
-          <Avatar className={`${NAVBAR_AVATAR_BADGE_CLASS} h-9 w-9 text-[13px] font-bold`}>
+          <Avatar
+            className={`${NAVBAR_AVATAR_BADGE_CLASS} h-9 w-9 text-[13px] font-bold`}
+          >
             {user?.image && (
               <AvatarImage src={user.image} alt={user.name || "User"} />
             )}

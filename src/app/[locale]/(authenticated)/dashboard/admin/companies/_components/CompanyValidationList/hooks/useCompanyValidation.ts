@@ -101,7 +101,8 @@ export function useCompanyValidation() {
       orpcClient.companies.approve({ companyId }),
     onMutate: async (companyId) => {
       await queryClient.cancelQueries({ queryKey })
-      const previousData = queryClient.getQueryData<CompaniesInfiniteData>(queryKey)
+      const previousData =
+        queryClient.getQueryData<CompaniesInfiniteData>(queryKey)
       queryClient.setQueryData<CompaniesInfiniteData>(queryKey, (old) => {
         if (!old) return old
         return {
@@ -123,7 +124,10 @@ export function useCompanyValidation() {
     },
     onError: (_err, _variables, context) => {
       if (context?.previousData) {
-        queryClient.setQueryData<CompaniesInfiniteData>(queryKey, context.previousData)
+        queryClient.setQueryData<CompaniesInfiniteData>(
+          queryKey,
+          context.previousData,
+        )
       }
       toast.error(t("approveError"))
     },
@@ -142,7 +146,8 @@ export function useCompanyValidation() {
     }) => orpcClient.companies.reject({ companyId, reason }),
     onMutate: async ({ companyId }) => {
       await queryClient.cancelQueries({ queryKey })
-      const previousData = queryClient.getQueryData<CompaniesInfiniteData>(queryKey)
+      const previousData =
+        queryClient.getQueryData<CompaniesInfiniteData>(queryKey)
       queryClient.setQueryData<CompaniesInfiniteData>(queryKey, (old) => {
         if (!old) return old
         return {
@@ -164,7 +169,10 @@ export function useCompanyValidation() {
     },
     onError: (_err, _variables, context) => {
       if (context?.previousData) {
-        queryClient.setQueryData<CompaniesInfiniteData>(queryKey, context.previousData)
+        queryClient.setQueryData<CompaniesInfiniteData>(
+          queryKey,
+          context.previousData,
+        )
       }
       toast.error(t("rejectError"))
     },
@@ -178,7 +186,8 @@ export function useCompanyValidation() {
       orpcClient.companies.suspend({ companyId }),
     onMutate: async (companyId) => {
       await queryClient.cancelQueries({ queryKey })
-      const previousData = queryClient.getQueryData<CompaniesInfiniteData>(queryKey)
+      const previousData =
+        queryClient.getQueryData<CompaniesInfiniteData>(queryKey)
       queryClient.setQueryData<CompaniesInfiniteData>(queryKey, (old) => {
         if (!old) return old
         return {
@@ -200,7 +209,10 @@ export function useCompanyValidation() {
     },
     onError: (_err, _variables, context) => {
       if (context?.previousData) {
-        queryClient.setQueryData<CompaniesInfiniteData>(queryKey, context.previousData)
+        queryClient.setQueryData<CompaniesInfiniteData>(
+          queryKey,
+          context.previousData,
+        )
       }
       toast.error(t("suspendError"))
     },
@@ -214,7 +226,8 @@ export function useCompanyValidation() {
       orpcClient.companies.reactivate({ companyId }),
     onMutate: async (companyId) => {
       await queryClient.cancelQueries({ queryKey })
-      const previousData = queryClient.getQueryData<CompaniesInfiniteData>(queryKey)
+      const previousData =
+        queryClient.getQueryData<CompaniesInfiniteData>(queryKey)
       queryClient.setQueryData<CompaniesInfiniteData>(queryKey, (old) => {
         if (!old) return old
         return {
@@ -236,7 +249,10 @@ export function useCompanyValidation() {
     },
     onError: (_err, _variables, context) => {
       if (context?.previousData) {
-        queryClient.setQueryData<CompaniesInfiniteData>(queryKey, context.previousData)
+        queryClient.setQueryData<CompaniesInfiniteData>(
+          queryKey,
+          context.previousData,
+        )
       }
       toast.error(t("reactivateError"))
     },
@@ -258,7 +274,8 @@ export function useCompanyValidation() {
       orpcClient.companies.delete({ companyId }),
     onMutate: async ({ companyId }) => {
       await queryClient.cancelQueries({ queryKey })
-      const previousData = queryClient.getQueryData<CompaniesInfiniteData>(queryKey)
+      const previousData =
+        queryClient.getQueryData<CompaniesInfiniteData>(queryKey)
       queryClient.setQueryData<CompaniesInfiniteData>(queryKey, (old) => {
         if (!old) return old
         return {
@@ -278,7 +295,10 @@ export function useCompanyValidation() {
     },
     onError: (_err, _variables, context) => {
       if (context?.previousData) {
-        queryClient.setQueryData<CompaniesInfiniteData>(queryKey, context.previousData)
+        queryClient.setQueryData<CompaniesInfiniteData>(
+          queryKey,
+          context.previousData,
+        )
       }
       toast.error(t("deleteError"))
     },

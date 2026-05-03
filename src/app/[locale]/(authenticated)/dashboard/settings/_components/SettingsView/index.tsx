@@ -10,7 +10,10 @@ import { NotificationsTab } from "@/app/[locale]/(authenticated)/dashboard/setti
 import { SettingsHeader } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/SettingsHeader"
 import { SettingsTabs } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/SettingsTabs"
 import { ease } from "@/lib/animations"
-import type { MeResult, StudentProfileResult } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/types"
+import type {
+  MeResult,
+  StudentProfileResult,
+} from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/types"
 
 interface SettingsViewProps {
   me: MeResult
@@ -38,10 +41,7 @@ export function SettingsView({ me, studentProfile }: SettingsViewProps) {
               transition={{ duration: 0.35, ease }}
             >
               {activeTab === "profile" && (
-                <ProfileSettingsTab
-                  me={me}
-                  studentProfile={studentProfile}
-                />
+                <ProfileSettingsTab me={me} studentProfile={studentProfile} />
               )}
 
               {activeTab === "account" && <AccountSettingsTab me={me} />}

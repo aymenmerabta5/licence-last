@@ -90,7 +90,9 @@ const fallbackAllowedModels = isPoeEndpoint
 const aiProvider = createOpenAI({
   apiKey: env.AI_API_KEY,
   baseURL,
-  fetch: isPoeEndpoint ? (sseCompatFetch as typeof globalThis.fetch) : undefined,
+  fetch: isPoeEndpoint
+    ? (sseCompatFetch as typeof globalThis.fetch)
+    : undefined,
 })
 
 export function hasAIProviderConfig(): boolean {

@@ -70,11 +70,9 @@ export function SetRoleDialog({
   const [companyId, setCompanyId] = useState("")
   const [departmentId, setDepartmentId] = useState("")
 
-  const isUniversitySearch =
-    role === "student" || role === "department_head"
+  const isUniversitySearch = role === "student" || role === "department_head"
   const isCompanySearch = role === "recruiter"
-  const showDepartmentSelect =
-    role === "department_head" && !!universityId
+  const showDepartmentSelect = role === "department_head" && !!universityId
 
   useEffect(() => {
     setRole((user?.role as ChangeRole) ?? "student")
@@ -89,19 +87,14 @@ export function SetRoleDialog({
     onSubmit({
       userId: user.id,
       role,
-      ...(isUniversitySearch && universityId
-        ? { universityId }
-        : {}),
+      ...(isUniversitySearch && universityId ? { universityId } : {}),
       ...(isCompanySearch && companyId ? { companyId } : {}),
-      ...(showDepartmentSelect && departmentId
-        ? { departmentId }
-        : {}),
+      ...(showDepartmentSelect && departmentId ? { departmentId } : {}),
     })
   }
 
   const attachmentMissing =
-    (isUniversitySearch && !universityId) ||
-    (isCompanySearch && !companyId)
+    (isUniversitySearch && !universityId) || (isCompanySearch && !companyId)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -186,9 +179,7 @@ export function SetRoleDialog({
               className="rounded-none"
               disabled={isPending || attachmentMissing}
             >
-              {isPending && (
-                <Loader2 className="h-4 w-4 me-2 animate-spin" />
-              )}
+              {isPending && <Loader2 className="h-4 w-4 me-2 animate-spin" />}
               {t("dialogs.setRole.submit")}
             </Button>
           </DialogFooter>

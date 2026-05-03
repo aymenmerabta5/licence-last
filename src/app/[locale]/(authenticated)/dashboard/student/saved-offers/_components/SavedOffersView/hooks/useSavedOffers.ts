@@ -45,9 +45,7 @@ export function useSavedOffers() {
           ...data,
           pages: data.pages.map((page) => ({
             ...page,
-            offers: page.offers.filter(
-              (o) => o.offerId !== variables.offerId,
-            ),
+            offers: page.offers.filter((o) => o.offerId !== variables.offerId),
           })),
         }
       })

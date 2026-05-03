@@ -68,7 +68,8 @@ export function LanguagesCard({
           <div className="p-6 space-y-4">
             {languages.map((lang, idx) => {
               const width = proficiencyWidths[lang.proficiency] || "50%"
-              const color = proficiencyColors[lang.proficiency] || "bg-primary/50"
+              const color =
+                proficiencyColors[lang.proficiency] || "bg-primary/50"
 
               return (
                 <motion.div

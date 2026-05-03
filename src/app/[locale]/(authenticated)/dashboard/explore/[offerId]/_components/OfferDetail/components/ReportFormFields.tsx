@@ -51,9 +51,7 @@ export function ReportFormFields({
   return (
     <div className="space-y-4 py-2">
       <div className="space-y-2">
-        <Label htmlFor="company-report-category">
-          {t("categoryLabel")}
-        </Label>
+        <Label htmlFor="company-report-category">{t("categoryLabel")}</Label>
         <Select
           value={values.category}
           onValueChange={(value) => {
@@ -87,9 +85,7 @@ export function ReportFormFields({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="company-report-severity">
-          {t("severityLabel")}
-        </Label>
+        <Label htmlFor="company-report-severity">{t("severityLabel")}</Label>
         <Select
           value={values.severity}
           onValueChange={(value) => {
@@ -129,9 +125,7 @@ export function ReportFormFields({
         <Textarea
           id="company-report-description"
           value={values.description}
-          onChange={(event) =>
-            onFieldChange("description", event.target.value)
-          }
+          onChange={(event) => onFieldChange("description", event.target.value)}
           placeholder={t("descriptionPlaceholder")}
           className="min-h-28 rounded-xl border-border/40"
           disabled={isSubmitting}

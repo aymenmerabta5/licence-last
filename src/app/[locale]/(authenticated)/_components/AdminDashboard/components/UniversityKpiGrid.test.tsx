@@ -31,7 +31,9 @@ describe("UniversityKpiGrid", () => {
     const grid = screen.getByTestId("university-kpi-grid")
     expect(grid.className).toContain("grid-cols-2")
 
-    const compactCards = container.querySelectorAll('[class*="col-span-2"], [class*="h-full"]')
+    const compactCards = container.querySelectorAll(
+      '[class*="col-span-2"], [class*="h-full"]',
+    )
     expect(compactCards.length).toBeGreaterThan(0)
   })
 })

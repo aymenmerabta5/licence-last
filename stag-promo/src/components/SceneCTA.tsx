@@ -1,24 +1,31 @@
-import { useCurrentFrame } from "remotion";
-import { fadeIn, slideUp, scaleIn, drawLine, colors, fonts } from "../lib/animations";
+import { useCurrentFrame } from "remotion"
+import {
+  fadeIn,
+  slideUp,
+  scaleIn,
+  drawLine,
+  colors,
+  fonts,
+} from "../lib/animations"
 
 export const SceneCTA = () => {
-  const frame = useCurrentFrame();
+  const frame = useCurrentFrame()
 
-  const logoOpacity = fadeIn(frame, 8, 18);
-  const logoY = slideUp(frame, 8, 18, 20);
-  const logoScale = scaleIn(frame, 8, 20);
+  const logoOpacity = fadeIn(frame, 8, 18)
+  const logoY = slideUp(frame, 8, 18, 20)
+  const logoScale = scaleIn(frame, 8, 20)
 
-  const lineOpacity = fadeIn(frame, 10, 16);
-  const lineWidth = drawLine(frame, 14, 20);
+  const lineOpacity = fadeIn(frame, 10, 16)
+  const lineWidth = drawLine(frame, 14, 20)
 
-  const headlineOpacity = fadeIn(frame, 22, 18);
-  const headlineY = slideUp(frame, 22, 18, 16);
+  const headlineOpacity = fadeIn(frame, 22, 18)
+  const headlineY = slideUp(frame, 22, 18, 16)
 
-  const ctaOpacity = fadeIn(frame, 34, 16);
-  const ctaScale = scaleIn(frame, 34, 18);
+  const ctaOpacity = fadeIn(frame, 34, 16)
+  const ctaScale = scaleIn(frame, 34, 18)
 
-  const urlOpacity = fadeIn(frame, 46, 16);
-  const urlY = slideUp(frame, 46, 16, 10);
+  const urlOpacity = fadeIn(frame, 46, 16)
+  const urlY = slideUp(frame, 46, 16, 10)
 
   return (
     <div
@@ -160,5 +167,5 @@ export const SceneCTA = () => {
         stag.io
       </div>
     </div>
-  );
-};
+  )
+}

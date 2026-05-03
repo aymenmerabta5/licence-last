@@ -30,7 +30,10 @@ describe("src/server/services/applications/list-by-student-base", () => {
     mockFrom.mockReturnValue({ innerJoin: mockInnerJoin })
     mockInnerJoin.mockReturnValue({ innerJoin: mockInnerJoin })
     // After second innerJoin, chain leads to where
-    mockInnerJoin.mockImplementation(() => ({ innerJoin: mockInnerJoin, where: mockWhere }))
+    mockInnerJoin.mockImplementation(() => ({
+      innerJoin: mockInnerJoin,
+      where: mockWhere,
+    }))
     // Final where call
     mockWhere.mockReturnValue({ orderBy: mockOrderBy })
     mockOrderBy.mockReturnValue({ limit: mockLimit })

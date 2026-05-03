@@ -70,10 +70,7 @@ export function MatchPreview({ offerId, studentUserId }: MatchPreviewProps) {
       {/* Mini progress bar */}
       <div className="h-1 bg-secondary/30 overflow-hidden">
         <div
-          className={cn(
-            "h-full transition-all",
-            getBarColor(score),
-          )}
+          className={cn("h-full transition-all", getBarColor(score))}
           style={{ width: `${Math.min(score, 100)}%` }}
         />
       </div>

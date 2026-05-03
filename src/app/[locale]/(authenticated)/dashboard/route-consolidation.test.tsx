@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
 import { cleanup, render, screen } from "@testing-library/react"
-import { Suspense } from "react"
 
 const requireRoleMock = mock(async () => ({
   id: "student-1",
@@ -99,14 +98,12 @@ describe("dashboard route consolidation", () => {
   })
 
   test("redirects legacy student landing page to the canonical dashboard", async () => {
-    const { default: StudentDashboardPage, StudentDashboardPageContent } =
-      await loadModule("@/app/[locale]/(authenticated)/dashboard/student/page")
+    const { default: StudentDashboardPage } = await loadModule(
+      "@/app/[locale]/(authenticated)/dashboard/student/page",
+    )
 
-    const page = StudentDashboardPage()
-    const result = await StudentDashboardPageContent()
+    const result = await StudentDashboardPage()
 
-    expect(page).not.toBeInstanceOf(Promise)
-    expect(page.type).toBe(Suspense)
     expect(localeRedirectMock).toHaveBeenCalledWith("/dashboard")
     expect(result).toBeDefined()
   })
@@ -134,24 +131,20 @@ describe("dashboard route consolidation", () => {
   })
 
   test("renders the canonical explore page for onboarded students", async () => {
-    const { default: ExplorePage, ExplorePageContent } = await loadModule(
+    const { default: ExplorePage } = await loadModule(
       "@/app/[locale]/(authenticated)/dashboard/explore/page",
     )
 
-    const page = ExplorePage()
+    const page = await ExplorePage()
 
-    expect(page).not.toBeInstanceOf(Promise)
-    expect(page.type).toBe(Suspense)
-    expect(requireRoleMock).not.toHaveBeenCalled()
-
-    render(await ExplorePageContent())
-
+    expect(requireRoleMock).toHaveBeenCalled()
+    render(page)
     expect(screen.getByTestId("explore-client").textContent).toBe("explore")
     expect(localeRedirectMock).not.toHaveBeenCalled()
   })
 
   test("redirects non-onboarded students away from the canonical explore page", async () => {
-    const { default: ExplorePage, ExplorePageContent } = await loadModule(
+    const { default: ExplorePage } = await loadModule(
       "@/app/[locale]/(authenticated)/dashboard/explore/page",
     )
     requireRoleMock.mockResolvedValueOnce({
@@ -160,29 +153,21 @@ describe("dashboard route consolidation", () => {
       onboardingCompleted: false,
     })
 
-    const page = ExplorePage()
-    const result = await ExplorePageContent()
+    const result = await ExplorePage()
 
-    expect(page).not.toBeInstanceOf(Promise)
-    expect(page.type).toBe(Suspense)
     expect(localeRedirectMock).toHaveBeenCalledWith("/onboarding/student")
     expect(result).toBeDefined()
   })
 
   test("renders the canonical applications page for onboarded students", async () => {
-    const { default: ApplicationsPage, ApplicationsPageContent } =
-      await loadModule(
-        "@/app/[locale]/(authenticated)/dashboard/applications/page",
-      )
+    const { default: ApplicationsPage } = await loadModule(
+      "@/app/[locale]/(authenticated)/dashboard/applications/page",
+    )
 
-    const page = ApplicationsPage()
+    const page = await ApplicationsPage()
 
-    expect(page).not.toBeInstanceOf(Promise)
-    expect(page.type).toBe(Suspense)
-    expect(requireRoleMock).not.toHaveBeenCalled()
-
-    render(await ApplicationsPageContent())
-
+    expect(requireRoleMock).toHaveBeenCalled()
+    render(page)
     expect(screen.getByTestId("applications-hub").textContent).toBe(
       "applications hub",
     )
@@ -190,21 +175,17 @@ describe("dashboard route consolidation", () => {
   })
 
   test("redirects non-onboarded students away from the canonical applications page", async () => {
-    const { default: ApplicationsPage, ApplicationsPageContent } =
-      await loadModule(
-        "@/app/[locale]/(authenticated)/dashboard/applications/page",
-      )
+    const { default: ApplicationsPage } = await loadModule(
+      "@/app/[locale]/(authenticated)/dashboard/applications/page",
+    )
     requireRoleMock.mockResolvedValueOnce({
       id: "student-1",
       role: "student",
       onboardingCompleted: false,
     })
 
-    const page = ApplicationsPage()
-    const result = await ApplicationsPageContent()
+    const result = await ApplicationsPage()
 
-    expect(page).not.toBeInstanceOf(Promise)
-    expect(page.type).toBe(Suspense)
     expect(localeRedirectMock).toHaveBeenCalledWith("/onboarding/student")
     expect(result).toBeDefined()
   })

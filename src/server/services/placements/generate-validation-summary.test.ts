@@ -2,7 +2,11 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const mockGenerateText = mock(async () => ({
   output: {
-    summaryBullets: ["Student: John Doe", "Company: Acme", "Offer: Frontend Intern"],
+    summaryBullets: [
+      "Student: John Doe",
+      "Company: Acme",
+      "Offer: Frontend Intern",
+    ],
     checklist: ["Verify student documents"],
     potentialInconsistencies: [],
   },

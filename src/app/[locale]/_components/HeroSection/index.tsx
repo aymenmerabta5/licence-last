@@ -21,7 +21,10 @@ export function HeroSection() {
   )
 
   return (
-    <section id="discover" className="relative px-5 sm:px-8 pt-10 sm:pt-16 pb-14 sm:pb-20 lg:px-16">
+    <section
+      id="discover"
+      className="relative px-5 sm:px-8 pt-10 sm:pt-16 pb-14 sm:pb-20 lg:px-16"
+    >
       <div
         className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100"
         aria-hidden="true"

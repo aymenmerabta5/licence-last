@@ -1,6 +1,12 @@
 "use client"
 
-import { ArrowRight, BookOpen, Compass, Github, ShieldCheck } from "lucide-react"
+import {
+  ArrowRight,
+  BookOpen,
+  Compass,
+  Github,
+  ShieldCheck,
+} from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 
@@ -142,9 +148,7 @@ export function Footer() {
                   className="rounded-none border-t-0 border-x-0 border-b-2 border-border bg-transparent px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors"
                 />
               </div>
-              {error && (
-                <p className="text-xs text-red-500 mt-1">{error}</p>
-              )}
+              {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
               <Button
                 type="submit"
                 variant="editorial"

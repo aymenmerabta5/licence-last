@@ -17,10 +17,7 @@ export function AttentionBanner({
   if (pendingCount === 0) return null
 
   return (
-    <motion.div
-      {...reveal}
-      transition={{ duration: 0.5, delay: 0.3, ease }}
-    >
+    <motion.div {...reveal} transition={{ duration: 0.5, delay: 0.3, ease }}>
       <Link href="/dashboard/admin/validations" prefetch={false}>
         <div className="group relative overflow-hidden border-s-4 border-s-primary bg-primary/[0.03] dark:bg-primary/[0.06] p-6 sm:p-7 transition-colors hover:bg-primary/[0.05] dark:hover:bg-primary/[0.08]">
           {/* Subtle pattern */}

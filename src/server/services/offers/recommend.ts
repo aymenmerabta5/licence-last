@@ -115,9 +115,13 @@ export async function recommendOffersForStudent(
 
   try {
     const candidateIds = candidates.map((c) => c.id)
-    const batchScores = candidateIds.length > 0
-      ? await getExplainableMatchScoresBatch(input.studentUserId, candidateIds)
-      : new Map()
+    const batchScores =
+      candidateIds.length > 0
+        ? await getExplainableMatchScoresBatch(
+            input.studentUserId,
+            candidateIds,
+          )
+        : new Map()
 
     scored = candidates.map((offer) => {
       const match = batchScores.get(offer.id)

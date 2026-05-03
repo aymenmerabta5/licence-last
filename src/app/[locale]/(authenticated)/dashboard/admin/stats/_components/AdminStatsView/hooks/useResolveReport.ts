@@ -53,9 +53,7 @@ export function useResolveReport() {
       if (context?.previousData) {
         queryClient.setQueryData(reportsQueryKey, context.previousData)
       }
-      toast.error(
-        extractErrorMessage(error, "Failed to update report status."),
-      )
+      toast.error(extractErrorMessage(error, "Failed to update report status."))
     },
     onSettled: async () => {
       await queryClient.invalidateQueries({ queryKey: reportsQueryKey })

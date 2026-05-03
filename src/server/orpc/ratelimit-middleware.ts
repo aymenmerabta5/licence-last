@@ -260,7 +260,8 @@ export function createRateLimitMiddleware(config: RateLimitConfig) {
   const limiter = createResilientLimiter(config)
 
   return createRatelimitMiddleware({
-    limiter: () => limiter,
+    limiter: () => limiter,
+
     key: async ({ context }, _input) => {
       const headersList = await headers()
       const ip = extractClientIp(headersList)

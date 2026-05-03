@@ -276,6 +276,7 @@ async function renderAgreementBuffer(params: {
       locale: params.locale,
       verificationCode: params.verificationCode,
       qrCodeDataUrl,
+      verificationUrl,
     }) as unknown as Parameters<typeof renderToBuffer>[0],
   )
 

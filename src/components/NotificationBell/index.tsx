@@ -7,7 +7,10 @@ import { NAVBAR_ICON_CONTROL_CLASS } from "@/components/navbar-control-styles"
 import { NotificationDropdownContent } from "@/components/NotificationBell/components/NotificationDropdownContent"
 import { NotificationTrigger } from "@/components/NotificationBell/components/NotificationTrigger"
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { notificationsQueryKeys } from "@/lib/notifications-query"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
@@ -53,7 +56,8 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
     onMutate: async (variables) => {
       const queryKey = notificationsQueryKeys.list(viewerId, 6)
       await queryClient.cancelQueries({ queryKey })
-      const previousData = queryClient.getQueryData<ClientNotificationListData>(queryKey)
+      const previousData =
+        queryClient.getQueryData<ClientNotificationListData>(queryKey)
       queryClient.setQueryData<ClientNotificationListData>(queryKey, (old) => {
         if (!old) return old
         const target = old.notifications.find(
@@ -100,7 +104,8 @@ export function NotificationBell({ viewerId }: NotificationBellProps) {
     onMutate: async () => {
       const queryKey = notificationsQueryKeys.list(viewerId, 6)
       await queryClient.cancelQueries({ queryKey })
-      const previousData = queryClient.getQueryData<ClientNotificationListData>(queryKey)
+      const previousData =
+        queryClient.getQueryData<ClientNotificationListData>(queryKey)
       queryClient.setQueryData<ClientNotificationListData>(queryKey, (old) => {
         if (!old) return old
         return {

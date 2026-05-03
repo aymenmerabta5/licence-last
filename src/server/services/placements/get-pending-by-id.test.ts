@@ -1,4 +1,5 @@
-import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
+
 const mockSelectResults: any[][] = []
 let selectCallIdx = 0
 
@@ -6,13 +7,19 @@ const mockLimit1 = mock(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)
 })
-const mockWhere1 = mock(() => ({ limit: mockLimit1 }))
-const mockLeftJoinUniversity = mock(() => ({}) as any)
-const mockLeftJoinProfile = mock(() => ({}) as any)
-const mockInnerJoinUser = mock(() => ({}) as any)
-const mockInnerJoinCompany = mock(() => ({}) as any)
+const mockWhere1 = mock(() => ({ limit: mockLimit1 }))
+
+const mockLeftJoinUniversity = mock(() => ({}) as any)
+
+const mockLeftJoinProfile = mock(() => ({}) as any)
+
+const mockInnerJoinUser = mock(() => ({}) as any)
+
+const mockInnerJoinCompany = mock(() => ({}) as any)
+
 const mockInnerJoinOffer = mock(() => ({}) as any)
-const mockFrom1 = mock(() => ({ innerJoin: mockInnerJoinOffer }))
+const mockFrom1 = mock(() => ({ innerJoin: mockInnerJoinOffer }))
+
 const mockWhere2 = mock<() => Promise<any[]>>(() => {
   const results = mockSelectResults[selectCallIdx - 1] ?? []
   return Promise.resolve(results)

@@ -1,6 +1,6 @@
-import "./index.css";
-import { Composition } from "remotion";
-import { StagPromo } from "./Composition";
+import "./index.css"
+import { Composition } from "remotion"
+import { StagPromo } from "./Composition"
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -12,5 +12,5 @@ export const RemotionRoot: React.FC = () => {
       width={1920}
       height={1080}
     />
-  );
-};
+  )
+}

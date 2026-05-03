@@ -65,9 +65,7 @@ export function TimelineModal({
           )}
 
           {!isLoading && events.length === 0 && (
-            <p className="text-sm text-muted-foreground">
-              {t("empty")}
-            </p>
+            <p className="text-sm text-muted-foreground">{t("empty")}</p>
           )}
 
           {events.map((event) => (
@@ -89,7 +87,11 @@ export function TimelineModal({
           ))}
 
           <DialogFooter>
-            <Button variant="outline" className="rounded-none" onClick={onClose}>
+            <Button
+              variant="outline"
+              className="rounded-none"
+              onClick={onClose}
+            >
               {t("close")}
             </Button>
           </DialogFooter>

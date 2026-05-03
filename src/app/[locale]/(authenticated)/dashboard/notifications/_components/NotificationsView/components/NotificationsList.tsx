@@ -5,7 +5,10 @@ import type { RefObject } from "react"
 
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
-import { formatNotification, getNotificationDestination } from "@/lib/notifications"
+import {
+  formatNotification,
+  getNotificationDestination,
+} from "@/lib/notifications"
 import { formatRelativeTime } from "@/lib/date"
 import { cn } from "@/lib/utils"
 

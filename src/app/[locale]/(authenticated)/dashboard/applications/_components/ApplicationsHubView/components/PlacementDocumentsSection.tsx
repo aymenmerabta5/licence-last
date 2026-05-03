@@ -43,7 +43,8 @@ export function PlacementDocumentsSection({
     [locale],
   )
 
-  const formatDate = (value: Date | string) => dateFormatter.format(new Date(value))
+  const formatDate = (value: Date | string) =>
+    dateFormatter.format(new Date(value))
 
   return (
     <div className="space-y-4 border-t border-border/60 pt-4">
@@ -57,7 +58,9 @@ export function PlacementDocumentsSection({
                 name: placement.validatedByName,
                 date: formatDate(placement.validatedAt),
               })
-            : t("document.approvedOn", { date: formatDate(placement.validatedAt) })}
+            : t("document.approvedOn", {
+                date: formatDate(placement.validatedAt),
+              })}
         </p>
         <p className="text-xs text-muted-foreground">
           {formatDate(placement.startDate)} — {formatDate(placement.endDate)}
@@ -109,7 +112,9 @@ export function PlacementDocumentsSection({
                 ) : (
                   <Download className="h-3 w-3" />
                 )}
-                {isDownloading ? t("document.downloading") : t("document.download")}
+                {isDownloading
+                  ? t("document.downloading")
+                  : t("document.download")}
               </Button>
             </div>
           )

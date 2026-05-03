@@ -9,7 +9,11 @@ import { JourneyTimeline } from "@/app/[locale]/(authenticated)/dashboard/applic
 import { PlacementDocumentsSection } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/PlacementDocumentsSection"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { STATUS_COLORS, STAGE_COLUMNS, STAGE_LABELS } from "@/lib/constants/pipeline"
+import {
+  STATUS_COLORS,
+  STAGE_COLUMNS,
+  STAGE_LABELS,
+} from "@/lib/constants/pipeline"
 import { ease, reveal } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
@@ -25,13 +29,19 @@ interface ApplicationJourneyCardProps {
   downloadingDocumentId: string | null
 }
 
-function getNextActionVariant(journey: ApplicationJourney): "action" | "waiting" | "ready" {
+function getNextActionVariant(
+  journey: ApplicationJourney,
+): "action" | "waiting" | "ready" {
   const hasPendingInterview = journey.interviews.some(
     (i) => i.status === "pending_confirmation",
   )
-  const hasPendingDocs = journey.placement?.documents.some((d) => d.status === "pending")
+  const hasPendingDocs = journey.placement?.documents.some(
+    (d) => d.status === "pending",
+  )
   if (hasPendingInterview || hasPendingDocs) return "action"
-  const hasGeneratedDocs = journey.placement?.documents.some((d) => d.status === "generated")
+  const hasGeneratedDocs = journey.placement?.documents.some(
+    (d) => d.status === "generated",
+  )
   if (hasGeneratedDocs) return "ready"
   return "waiting"
 }
@@ -82,7 +92,10 @@ export function ApplicationJourneyCard({
       >
         <Avatar size="lg">
           {journey.companyLogoUrl && (
-            <AvatarImage src={journey.companyLogoUrl} alt={journey.companyName} />
+            <AvatarImage
+              src={journey.companyLogoUrl}
+              alt={journey.companyName}
+            />
           )}
           <AvatarFallback>
             <Building2 className="h-4 w-4" />
@@ -90,7 +103,9 @@ export function ApplicationJourneyCard({
         </Avatar>
 
         <div className="min-w-0 flex-1">
-          <h3 className="truncate font-serif text-base text-heading">{journey.offerTitle}</h3>
+          <h3 className="truncate font-serif text-base text-heading">
+            {journey.offerTitle}
+          </h3>
           <p className="truncate text-xs font-light text-muted-foreground">
             {journey.companyName}
           </p>

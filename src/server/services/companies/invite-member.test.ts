@@ -13,7 +13,6 @@ const mockTxUpdateWhere = mock(async () => undefined)
 const mockTxUpdateSet = mock(() => ({ where: mockTxUpdateWhere }))
 const mockTxUpdate = mock(() => ({ set: mockTxUpdateSet }))
 const mockTransaction = mock(
-
   async (fn: (tx: any) => Promise<void>) => {
     await fn({
       insert: mockTxInsert,

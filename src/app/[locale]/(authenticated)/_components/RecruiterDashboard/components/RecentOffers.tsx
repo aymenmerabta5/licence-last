@@ -30,11 +30,11 @@ interface RecentOffersProps {
 export function RecentOffers({ offers }: RecentOffersProps) {
   if (offers.length === 0) {
     return (
-    <motion.div
-      {...reveal}
-      transition={{ duration: 0.6, delay: 0.3, ease }}
-      className="space-y-4"
-    >
+      <motion.div
+        {...reveal}
+        transition={{ duration: 0.6, delay: 0.3, ease }}
+        className="space-y-4"
+      >
         <div className="flex items-end justify-between border-b-4 border-foreground pb-4">
           <div>
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/70 mb-2 block">

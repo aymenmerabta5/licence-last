@@ -11,11 +11,11 @@ import type { InferRouterOutputs } from "@orpc/server"
 import { orpc, orpcClient } from "@/server/orpc/client"
 import type { AppRouter } from "@/server/orpc/router"
 
-type ListApplicationsByOfferResult = InferRouterOutputs<
-  AppRouter
->["applications"]["listByOffer"]
+type ListApplicationsByOfferResult =
+  InferRouterOutputs<AppRouter>["applications"]["listByOffer"]
 
-type TimelineResult = InferRouterOutputs<AppRouter>["applications"]["getTimeline"]
+type TimelineResult =
+  InferRouterOutputs<AppRouter>["applications"]["getTimeline"]
 
 interface UseCandidateStageMutationParams {
   applicationsQueryKey: readonly unknown[]
@@ -88,7 +88,11 @@ export function useCandidateStageMutation({
         ])
       }
 
-      return { previousData, previousTimeline, applicationId } satisfies StageMutationContext
+      return {
+        previousData,
+        previousTimeline,
+        applicationId,
+      } satisfies StageMutationContext
     },
     onError: (_error, _variables, context) => {
       if (context?.previousData) {
