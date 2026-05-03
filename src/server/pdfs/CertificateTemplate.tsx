@@ -8,6 +8,7 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer"
+import { borderComponents, type BorderStyleKey } from "@/server/pdfs/borders"
 
 // Register fonts from local TTF files (CDN URLs are unreliable)
 const fontsDir = path.join(process.cwd(), "node_modules/dejavu-fonts-ttf/ttf")
@@ -28,20 +29,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     padding: 32,
     backgroundColor: "#ffffff",
-  },
-  outerFrame: {
-    flex: 1,
-    borderWidth: 3,
-    borderColor: "#1a1a2e",
-    padding: 3,
-    position: "relative",
-  },
-  innerFrame: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "#c9a227",
-    padding: 28,
-    justifyContent: "space-between",
   },
   header: {
     alignItems: "center",
@@ -185,6 +172,7 @@ interface CertificateTemplateProps {
   locale?: string
   verificationCode?: string
   qrCodeDataUrl?: string
+  borderStyle?: BorderStyleKey
 }
 
 export function InternshipCertificateTemplate({
@@ -192,6 +180,7 @@ export function InternshipCertificateTemplate({
   locale = "en",
   verificationCode,
   qrCodeDataUrl,
+  borderStyle = "classic",
 }: CertificateTemplateProps) {
   const formatDate = (date: Date) =>
     date.toLocaleDateString(locale === "fr" ? "fr-FR" : "en-US", {
@@ -226,98 +215,98 @@ export function InternshipCertificateTemplate({
         ? "توقيع (المؤسسة)"
         : "Signature (Company)"
 
+  const Border = borderComponents[borderStyle] ?? borderComponents.classic
+
   return (
     <Document>
       <Page size="A4" orientation="landscape" style={styles.page}>
-        <View style={styles.outerFrame}>
-          <View style={styles.innerFrame}>
-            {/* Header */}
-            <View style={styles.header}>
-              <View style={{ alignItems: "center", marginBottom: data.companyLogoUrl ? 12 : 0 }}>
-                {data.companyLogoUrl ? (
-                  <Image src={data.companyLogoUrl} style={{ width: 80, height: 80, objectFit: "contain" }} />
-                ) : null}
-              </View>
-              <Text style={styles.title}>{title}</Text>
-              <View style={styles.goldLine} />
-              <Text style={styles.university}>
-                {data.universityName || "University"}
-              </Text>
+        <Border>
+          {/* Header */}
+          <View style={styles.header}>
+            <View style={{ alignItems: "center", marginBottom: data.companyLogoUrl ? 12 : 0 }}>
+              {data.companyLogoUrl ? (
+                <Image src={data.companyLogoUrl} style={{ width: 80, height: 80, objectFit: "contain" }} />
+              ) : null}
             </View>
+            <Text style={styles.title}>{title}</Text>
+            <View style={styles.goldLine} />
+            <Text style={styles.university}>
+              {data.universityName || "University"}
+            </Text>
+          </View>
 
-            {/* Body */}
-            <View style={styles.body}>
-              <Text style={styles.certifyText}>
-                {locale === "fr"
-                  ? "Nous certifions par la présente que"
-                  : locale === "ar"
-                    ? "نشهد بموجب هذا أن"
-                    : "This is to certify that"}{" "}
-                <Text style={styles.strong}>{data.studentName}</Text>{" "}
-                {locale === "fr"
-                  ? "a effectué un stage au sein de"
-                  : locale === "ar"
-                    ? "أتم فترة تدريب لدى"
-                    : "has successfully completed an internship at"}{" "}
-                <Text style={styles.strong}>{data.companyName}</Text>.
-              </Text>
+          {/* Body */}
+          <View style={styles.body}>
+            <Text style={styles.certifyText}>
+              {locale === "fr"
+                ? "Nous certifions par la présente que"
+                : locale === "ar"
+                  ? "نشهد بموجب هذا أن"
+                  : "This is to certify that"}{" "}
+              <Text style={styles.strong}>{data.studentName}</Text>{" "}
+              {locale === "fr"
+                ? "a effectué un stage au sein de"
+                : locale === "ar"
+                  ? "أتم فترة تدريب لدى"
+                  : "has successfully completed an internship at"}{" "}
+              <Text style={styles.strong}>{data.companyName}</Text>.
+            </Text>
 
-              <View style={styles.detailsRow}>
-                <View style={styles.detailItem}>
-                  <Text style={styles.detailLabel}>{subjectLabel}</Text>
-                  <Text style={styles.detailValue}>{data.offerTitle}</Text>
-                </View>
-
-                <View style={styles.detailItemBorder}>
-                  <Text style={styles.detailLabel}>{periodLabel}</Text>
-                  <Text style={styles.detailValue}>
-                    {formatDate(data.startDate)} — {formatDate(data.endDate)}
-                  </Text>
-                </View>
-
-                <View style={styles.detailItemBorder}>
-                  <Text style={styles.detailLabel}>{typeLabel}</Text>
-                  <Text style={styles.detailValue}>{data.internshipType}</Text>
-                </View>
+            <View style={styles.detailsRow}>
+              <View style={styles.detailItem}>
+                <Text style={styles.detailLabel}>{subjectLabel}</Text>
+                <Text style={styles.detailValue}>{data.offerTitle}</Text>
               </View>
 
-              <Text style={styles.emailText}>{data.studentEmail}</Text>
-            </View>
-
-            {/* Signatures */}
-            <View style={styles.sigSection}>
-              <View style={styles.sigBox}>
-                <Text style={styles.sigLine}>{uniSig}</Text>
+              <View style={styles.detailItemBorder}>
+                <Text style={styles.detailLabel}>{periodLabel}</Text>
+                <Text style={styles.detailValue}>
+                  {formatDate(data.startDate)} — {formatDate(data.endDate)}
+                </Text>
               </View>
-              <View style={styles.sigBox}>
-                <Text style={styles.sigLine}>{compSig}</Text>
+
+              <View style={styles.detailItemBorder}>
+                <Text style={styles.detailLabel}>{typeLabel}</Text>
+                <Text style={styles.detailValue}>{data.internshipType}</Text>
               </View>
             </View>
 
-            {/* Bottom row: issue date + verification */}
-            <View style={styles.bottomRow}>
-              <Text style={styles.issueDate}>
-                {locale === "fr"
-                  ? `Date de délivrance : ${formatDate(new Date())}`
-                  : locale === "ar"
-                    ? `تاريخ الإصدار : ${formatDate(new Date())}`
-                    : `Date of issue : ${formatDate(new Date())}`}
-              </Text>
+            <Text style={styles.emailText}>{data.studentEmail}</Text>
+          </View>
 
-              {verificationCode && (
-                <View style={styles.verificationBox}>
-                  {qrCodeDataUrl && (
-                    <Image style={styles.qrCode} src={qrCodeDataUrl} />
-                  )}
-                  <View style={styles.vTextBox}>
-                    <Text style={styles.vCode}>{verificationCode}</Text>
-                    <Text style={styles.vUrl}>stag.io/verify</Text>
-                  </View>
-                </View>
-              )}
+          {/* Signatures */}
+          <View style={styles.sigSection}>
+            <View style={styles.sigBox}>
+              <Text style={styles.sigLine}>{uniSig}</Text>
+            </View>
+            <View style={styles.sigBox}>
+              <Text style={styles.sigLine}>{compSig}</Text>
             </View>
           </View>
-        </View>
+
+          {/* Bottom row: issue date + verification */}
+          <View style={styles.bottomRow}>
+            <Text style={styles.issueDate}>
+              {locale === "fr"
+                ? `Date de délivrance : ${formatDate(new Date())}`
+                : locale === "ar"
+                  ? `تاريخ الإصدار : ${formatDate(new Date())}`
+                  : `Date of issue : ${formatDate(new Date())}`}
+            </Text>
+
+            {verificationCode && (
+              <View style={styles.verificationBox}>
+                {qrCodeDataUrl && (
+                  <Image style={styles.qrCode} src={qrCodeDataUrl} />
+                )}
+                <View style={styles.vTextBox}>
+                  <Text style={styles.vCode}>{verificationCode}</Text>
+                  <Text style={styles.vUrl}>stag.io/verify</Text>
+                </View>
+              </View>
+            )}
+          </View>
+        </Border>
       </Page>
     </Document>
   )
