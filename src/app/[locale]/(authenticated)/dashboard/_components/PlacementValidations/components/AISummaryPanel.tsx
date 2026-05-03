@@ -7,12 +7,48 @@ import { useTranslations } from "next-intl"
 import type { ValidationSummary } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/types"
 import { Button } from "@/components/ui/button"
 import { ease, reveal } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
 interface AISummaryPanelProps {
   aiSummary: ValidationSummary | null
   isSummarizing: boolean
   summaryError: Error | null
   onGenerate: () => void
+}
+
+function Section({
+  title,
+  children,
+  className,
+}: {
+  title: string
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <div className={cn("space-y-2", className)}>
+      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/80">
+        {title}
+      </p>
+      {children}
+    </div>
+  )
+}
+
+function BulletList({ items }: { items: string[] }) {
+  return (
+    <ul className="space-y-2">
+      {items.map((item, index) => (
+        <li
+          key={index}
+          className="flex gap-2 text-sm text-muted-foreground leading-relaxed"
+        >
+          <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary/60" />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  )
 }
 
 export function AISummaryPanel({
@@ -27,12 +63,12 @@ export function AISummaryPanel({
     <motion.div
       {...reveal}
       transition={{ duration: 0.5, ease, delay: 0.18 }}
-      className="space-y-4 border border-border p-6 lg:col-span-2"
+      className="space-y-5 border border-border bg-background p-6 lg:col-span-2"
     >
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
-          <h2 className="flex items-center gap-2 font-serif text-lg text-heading">
-            <Sparkles className="h-4 w-4" />
+          <h2 className="flex items-center gap-2 font-serif text-lg font-semibold text-heading">
+            <Sparkles className="h-4 w-4 text-primary" />
             {t("ai.title")}
           </h2>
           <p className="text-sm font-light text-muted-foreground">
@@ -42,7 +78,7 @@ export function AISummaryPanel({
         <Button
           type="button"
           variant="outline"
-          className="gap-2"
+          className="gap-2 shrink-0 rounded-none"
           disabled={isSummarizing}
           onClick={onGenerate}
         >
@@ -56,57 +92,40 @@ export function AISummaryPanel({
       </div>
 
       {summaryError && (
-        <p className="text-xs text-destructive">{summaryError.message}</p>
+        <div className="border border-destructive/20 bg-destructive/5 p-3 text-xs text-destructive">
+          {summaryError.message}
+        </div>
       )}
 
       {aiSummary ? (
         <div className="grid gap-6 lg:grid-cols-3">
-          <div className="space-y-2 lg:col-span-2">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              {t("ai.summary")}
-            </p>
-            <ul className="list-disc space-y-1 ps-5 text-sm text-muted-foreground">
-              {aiSummary.summaryBullets.map((item, index) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                {t("ai.checklist")}
-              </p>
+          <Section title={t("ai.summary")} className="lg:col-span-2">
+            <BulletList items={aiSummary.summaryBullets} />
+          </Section>
+
+          <div className="space-y-5">
+            <Section title={t("ai.checklist")}>
               {aiSummary.checklist.length === 0 ? (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {t("ai.noMissingItems")}
                 </p>
               ) : (
-                <ul className="list-disc space-y-1 ps-5 text-sm text-muted-foreground">
-                  {aiSummary.checklist.map((item, index) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
+                <BulletList items={aiSummary.checklist} />
               )}
-            </div>
+            </Section>
 
             {aiSummary.potentialInconsistencies.length > 0 && (
-              <div className="space-y-2">
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                  {t("ai.potentialInconsistencies")}
-                </p>
-                <ul className="list-disc space-y-1 ps-5 text-sm text-muted-foreground">
-                  {aiSummary.potentialInconsistencies.map((item, index) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
-              </div>
+              <Section title={t("ai.potentialInconsistencies")}>
+                <BulletList items={aiSummary.potentialInconsistencies} />
+              </Section>
             )}
           </div>
         </div>
       ) : (
-        <p className="text-xs text-muted-foreground">
-          {isSummarizing ? t("ai.generating") : t("ai.hint")}
-        </p>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          {isSummarizing && <Loader2 className="h-3 w-3 animate-spin" />}
+          <span>{isSummarizing ? t("ai.generating") : t("ai.hint")}</span>
+        </div>
       )}
     </motion.div>
   )

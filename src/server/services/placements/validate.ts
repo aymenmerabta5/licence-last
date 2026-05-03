@@ -23,8 +23,8 @@ export interface ValidatePlacementInput {
   adminUniversityId: string | null
   /** Required when adminRole is "department_head" — scopes validation to their department */
   adminDepartmentId?: string | null
-  startDate: Date
-  endDate: Date
+  startDate?: Date
+  endDate?: Date
 }
 
 export interface ValidatePlacementResult {
@@ -56,6 +56,8 @@ export async function validatePlacement(
       offerTitle: internshipOffer.title,
       offerInternshipType: internshipOffer.internshipType,
       offerStatus: internshipOffer.status,
+      expectedStartDate: internshipOffer.expectedStartDate,
+      expectedEndDate: internshipOffer.expectedEndDate,
       companyId: internshipOffer.companyId,
       companyName: company.name,
       companyAddress: company.address,
@@ -124,6 +126,22 @@ export async function validatePlacement(
         "You do not have access to validate this application",
       )
     }
+  }
+
+  let resolvedStartDate: Date
+  let resolvedEndDate: Date
+  if (startDate && endDate) {
+    resolvedStartDate = startDate
+    resolvedEndDate = endDate
+  } else {
+    if (!app.expectedStartDate || !app.expectedEndDate) {
+      throw new ServiceError(
+        "OFFER_EXPECTED_PERIOD_INCOMPLETE",
+        "Offer expected start/end dates are required for validation",
+      )
+    }
+    resolvedStartDate = app.expectedStartDate
+    resolvedEndDate = app.expectedEndDate
   }
 
   const now = new Date()
@@ -197,8 +215,8 @@ export async function validatePlacement(
         applicationId,
         validatedByUserId: adminUserId,
         validatedAt: now,
-        startDate,
-        endDate,
+        startDate: resolvedStartDate,
+        endDate: resolvedEndDate,
       })
       .onConflictDoNothing({
         target: [placement.applicationId],
@@ -255,8 +273,8 @@ export async function validatePlacement(
         offerId: app.offerId,
         offerTitle: app.offerTitle,
         companyName: app.companyName,
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
+        startDate: resolvedStartDate.toISOString(),
+        endDate: resolvedEndDate.toISOString(),
         stage: "validated",
         status: "admin_validated",
       },
@@ -278,8 +296,8 @@ export async function validatePlacement(
         fromStatus: app.status,
         toStatus: "admin_validated",
       payload: {
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
+        startDate: resolvedStartDate.toISOString(),
+        endDate: resolvedEndDate.toISOString(),
       },
     })
   } catch (error) {
@@ -310,8 +328,8 @@ export async function validatePlacement(
               offerTitle: app.offerTitle,
               studentUserId: app.studentUserId,
               studentName: app.studentName,
-              startDate: startDate.toISOString(),
-              endDate: endDate.toISOString(),
+              startDate: resolvedStartDate.toISOString(),
+              endDate: resolvedEndDate.toISOString(),
             },
           })
         } catch (error) {

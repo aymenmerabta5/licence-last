@@ -2,19 +2,15 @@
 
 import { Calendar, Check, Loader2, X } from "lucide-react"
 import * as motion from "motion/react-client"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import { ease, reveal } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
 interface ValidationFormProps {
-  startDate: string
-  onStartDateChange: (value: string) => void
-  endDate: string
-  onEndDateChange: (value: string) => void
   expectedStartDate?: string | null
   expectedEndDate?: string | null
-  showOutOfRangeWarning?: boolean
   actionLoading: boolean
   pdfLoading: boolean
   onValidate: () => void
@@ -22,89 +18,88 @@ interface ValidationFormProps {
 }
 
 export function ValidationForm({
-  startDate,
-  onStartDateChange,
-  endDate,
-  onEndDateChange,
   expectedStartDate,
   expectedEndDate,
-  showOutOfRangeWarning,
   actionLoading,
   pdfLoading,
   onValidate,
   onOpenReject,
 }: ValidationFormProps) {
   const t = useTranslations("dashboard.admin.validations.detail")
+  const locale = useLocale()
+
+  const hasBothDates = Boolean(expectedStartDate) && Boolean(expectedEndDate)
 
   return (
     <motion.div
       {...reveal}
       transition={{ duration: 0.5, ease, delay: 0.2 }}
-      className="space-y-6 border border-primary/30 bg-primary/5 p-6 lg:col-span-2"
+      className="space-y-6 border border-primary/20 bg-primary/[0.02] p-6 lg:col-span-2"
     >
-      <h2 className="flex items-center gap-2 font-serif text-lg text-heading">
-        <Calendar className="h-4 w-4" />
-        {t("setInternshipPeriod")}
-      </h2>
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <label className="text-xs font-medium text-muted-foreground">
-            {t("startDate")} *
-          </label>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(event) => onStartDateChange(event.target.value)}
-            min={new Date().toISOString().split("T")[0]}
-            className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-          />
+      {/* Header */}
+      <div className="flex items-center gap-3 border-b border-primary/10 pb-4">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-primary/20 bg-primary/5 text-primary">
+          <Calendar className="h-4 w-4" />
         </div>
-        <div className="space-y-2">
-          <label className="text-xs font-medium text-muted-foreground">
-            {t("endDate")} *
-          </label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(event) => onEndDateChange(event.target.value)}
-            min={startDate || new Date().toISOString().split("T")[0]}
-            className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-          />
+        <div>
+          <h3 className="font-serif text-lg font-semibold text-heading">
+            {t("internshipPeriod")}
+          </h3>
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            {t("periodFromOffer")}
+          </p>
         </div>
       </div>
 
-      {(expectedStartDate || expectedEndDate) && (
-        <p className="text-xs text-muted-foreground">
-          {t("expectedPeriod")}: {expectedStartDate || t("notAvailable")} -{" "}
-          {expectedEndDate || t("notAvailable")}
-        </p>
-      )}
+      {/* Date display */}
+      <div className="space-y-2">
+        {hasBothDates ? (
+          <div className="text-sm">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {new Date(expectedStartDate!).toLocaleDateString(locale, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+              {" — "}
+              {new Date(expectedEndDate!).toLocaleDateString(locale, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </span>
+          </div>
+        ) : (
+          <div className="border border-amber-500/30 bg-amber-500/10 p-3">
+            <p className="text-xs leading-relaxed text-amber-800 dark:text-amber-300">
+              {t("periodNotAvailable")}
+            </p>
+          </div>
+        )}
+      </div>
 
-      {showOutOfRangeWarning && (
-        <div className="border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-700 dark:text-amber-300">
-          {t("selectedDatesOutsideExpectedRange")}
-        </div>
-      )}
-
-      <div className="flex flex-col gap-3 pt-4 sm:flex-row">
+      {/* Actions */}
+      <div className="flex flex-col gap-3 pt-2 sm:flex-row">
         <Button
           onClick={onValidate}
-          disabled={actionLoading || !startDate || !endDate}
-          className="flex-1 gap-2 bg-green-600 hover:bg-green-700"
+          disabled={actionLoading || !hasBothDates}
+          className={cn(
+            "flex-1 gap-2 rounded-none bg-emerald-600 text-white hover:bg-emerald-700",
+            "transition-colors",
+          )}
         >
           {actionLoading || pdfLoading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
             <Check className="h-4 w-4" />
           )}
-          {pdfLoading ? t("generatingPdf") : t("validateAndGenerate")}
+          {pdfLoading ? t("generatingPdf") : t("validatePlacement")}
         </Button>
         <Button
           variant="outline"
           onClick={onOpenReject}
           disabled={actionLoading}
-          className="flex-1 gap-2 border-destructive/30 text-destructive hover:bg-destructive/10"
+          className="flex-1 gap-2 rounded-none border-destructive/30 text-destructive hover:bg-destructive/10"
         >
           <X className="h-4 w-4" />
           {t("reject")}

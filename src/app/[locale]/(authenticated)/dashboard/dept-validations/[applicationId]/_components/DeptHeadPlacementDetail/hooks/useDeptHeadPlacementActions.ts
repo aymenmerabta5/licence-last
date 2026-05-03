@@ -3,14 +3,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import type { InferRouterOutputs } from "@orpc/server"
 import { useTranslations } from "next-intl"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 import type { ValidationSummary } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations"
-import {
-  isAfterDate,
-  isBeforeDate,
-  toDateInputValue,
-} from "@/app/[locale]/(authenticated)/dashboard/dept-validations/[applicationId]/_components/DeptHeadPlacementDetail/hooks/placementActionUtils"
 import { useRouter } from "@/i18n/routing"
 import { orpc, orpcClient } from "@/server/orpc/client"
 import type { AppRouter } from "@/server/orpc/router"
@@ -19,22 +14,11 @@ type ListPendingResult = InferRouterOutputs<AppRouter>["deptHead"]["listPending"
 type GetPendingByIdResult =
   InferRouterOutputs<AppRouter>["deptHead"]["getPendingById"]
 
-export function useDeptHeadPlacementActions(
-  applicationId: string,
-  expectedDates?: {
-    expectedStartDate?: Date | string | null
-    expectedEndDate?: Date | string | null
-  },
-) {
+export function useDeptHeadPlacementActions(applicationId: string) {
   const t = useTranslations("dashboard.admin.validations.detail")
   const router = useRouter()
   const queryClient = useQueryClient()
 
-  const expectedStartDate = toDateInputValue(expectedDates?.expectedStartDate)
-  const expectedEndDate = toDateInputValue(expectedDates?.expectedEndDate)
-
-  const [startDate, setStartDate] = useState("")
-  const [endDate, setEndDate] = useState("")
   const [validateModal, setValidateModal] = useState(false)
   const [rejectModal, setRejectModal] = useState(false)
   const [rejectReason, setRejectReason] = useState("")
@@ -43,15 +27,6 @@ export function useDeptHeadPlacementActions(
   const [pdfError, setPdfError] = useState<string | null>(null)
 
   const [aiSummary, setAiSummary] = useState<ValidationSummary | null>(null)
-
-  useEffect(() => {
-    if (!startDate && expectedStartDate) {
-      setStartDate(expectedStartDate)
-    }
-    if (!endDate && expectedEndDate) {
-      setEndDate(expectedEndDate)
-    }
-  }, [startDate, endDate, expectedStartDate, expectedEndDate])
 
   const listPendingQueryKey = orpc.deptHead.listPending.queryOptions().queryKey
   const pendingByIdQueryKey = orpc.deptHead.getPendingById.queryOptions({
@@ -215,40 +190,15 @@ export function useDeptHeadPlacementActions(
     },
   })
 
-  const getValidatedDates = () => {
-    if (!startDate || !endDate) {
-      alert(t("selectDates"))
-      return null
-    }
-    const start = new Date(startDate)
-    const end = new Date(endDate)
-    if (start >= end) {
-      alert(t("invalidDates"))
-      return null
-    }
-
-    return { start, end }
-  }
-
   const handleValidate = () => {
-    const dates = getValidatedDates()
-    if (!dates) return
-
     setValidateModal(true)
   }
 
   const handleConfirmValidate = () => {
-    const dates = getValidatedDates()
-    if (!dates) return
-
     setValidateModal(false)
 
     setActionLoading(true)
-    validateMutation.mutate({
-      applicationId,
-      startDate: dates.start.toISOString(),
-      endDate: dates.end.toISOString(),
-    })
+    validateMutation.mutate({ applicationId })
   }
 
   const handleReject = () => {
@@ -263,36 +213,15 @@ export function useDeptHeadPlacementActions(
   function generateAiSummary(application: Record<string, unknown>) {
     setAiSummary(null)
     summaryMutation.mutate({
-      application: {
-        ...application,
-        selectedStartDate: startDate || null,
-        selectedEndDate: endDate || null,
-      },
+      application,
     })
   }
 
-  const isBeforeExpectedStart = expectedStartDate
-    ? isBeforeDate(startDate, expectedStartDate)
-    : false
-  const isAfterExpectedEnd = expectedEndDate
-    ? isAfterDate(endDate, expectedEndDate)
-    : false
-
-  const showOutOfRangeWarning =
-    !!startDate && !!endDate && (isBeforeExpectedStart || isAfterExpectedEnd)
-
   return {
-    startDate,
-    setStartDate,
-    endDate,
-    setEndDate,
-    expectedStartDate,
-    expectedEndDate,
-    showOutOfRangeWarning,
-    validateModal,
-    setValidateModal,
     rejectModal,
     setRejectModal,
+    validateModal,
+    setValidateModal,
     rejectReason,
     setRejectReason,
     actionLoading,
@@ -307,3 +236,4 @@ export function useDeptHeadPlacementActions(
     generateAiSummary,
   }
 }
+

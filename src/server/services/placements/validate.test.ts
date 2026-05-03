@@ -448,4 +448,48 @@ describe("src/server/services/placements/validate", () => {
     ).rejects.toThrow("A placement already exists for this application")
     expect(createNotificationMock).not.toHaveBeenCalled()
   })
+
+  test("should auto-fallback to offer expected dates when startDate/endDate not provided", async () => {
+    mockSelectResults.push([
+      {
+        id: "app-1",
+        status: "company_accepted",
+        studentUserId: "stu-1",
+        offerId: "offer-1",
+        offerTitle: "Offer",
+        offerInternshipType: "pfe",
+        offerStatus: "published",
+        companyId: "company-1",
+        companyName: "Acme",
+        companyAddress: null,
+        companyPhone: null,
+        companyRepresentativeName: null,
+        studentName: "Student",
+        studentEmail: "s@example.com",
+        universityId: null,
+        studentDepartmentId: null,
+        expectedStartDate: new Date("2030-03-01"),
+        expectedEndDate: new Date("2030-04-01"),
+      },
+    ])
+    mockSelectResults.push([{ userId: "member-1" }])
+    txSelectResults.push([{ id: "app-1" }])
+    txSelectResults.push([{ id: "offer-1", status: "published", maxPositions: 2 }])
+    txSelectResults.push([])
+    txSelectResults.push([{ value: 0 }])
+
+    const { validatePlacement } = await importValidatePlacement()
+    const result = await validatePlacement({
+      applicationId: "app-1",
+      adminUserId: "admin-1",
+      adminRole: "super_admin",
+      adminUniversityId: null,
+    })
+
+    expect(result.success).toBe(true)
+    expect(mockTransaction).toHaveBeenCalledTimes(1)
+    const insertValues = (txValues.mock.calls as unknown[][])[0][0] as Record<string, unknown>
+    expect(insertValues.startDate).toEqual(new Date("2030-03-01"))
+    expect(insertValues.endDate).toEqual(new Date("2030-04-01"))
+  })
 })

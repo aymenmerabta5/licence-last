@@ -2,61 +2,24 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 import type { ValidationSummary } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations"
 import { useRouter } from "@/i18n/routing"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
-function toDateInputValue(value: Date | string | null | undefined): string {
-  if (!value) return ""
-
-  const date = typeof value === "string" ? new Date(value) : value
-  if (Number.isNaN(date.getTime())) return ""
-
-  return date.toISOString().split("T")[0]
-}
-
-function isBeforeDate(dateA: string, dateB: string): boolean {
-  return new Date(dateA).getTime() < new Date(dateB).getTime()
-}
-
-function isAfterDate(dateA: string, dateB: string): boolean {
-  return new Date(dateA).getTime() > new Date(dateB).getTime()
-}
-
-export function usePlacementActions(
-  applicationId: string,
-  expectedDates?: {
-    expectedStartDate?: Date | string | null
-    expectedEndDate?: Date | string | null
-  },
-) {
+export function usePlacementActions(applicationId: string) {
   const t = useTranslations("dashboard.admin.validations.detail")
   const router = useRouter()
   const queryClient = useQueryClient()
 
-  const expectedStartDate = toDateInputValue(expectedDates?.expectedStartDate)
-  const expectedEndDate = toDateInputValue(expectedDates?.expectedEndDate)
-
-  const [startDate, setStartDate] = useState("")
-  const [endDate, setEndDate] = useState("")
+  const [validateModal, setValidateModal] = useState(false)
   const [rejectModal, setRejectModal] = useState(false)
-  const [rejectReason, setRejectReason] = useState("")
   const [actionLoading, setActionLoading] = useState(false)
   const [pdfLoading, setPdfLoading] = useState(false)
   const [pdfError, setPdfError] = useState<string | null>(null)
 
   const [aiSummary, setAiSummary] = useState<ValidationSummary | null>(null)
-
-  useEffect(() => {
-    if (!startDate && expectedStartDate) {
-      setStartDate(expectedStartDate)
-    }
-    if (!endDate && expectedEndDate) {
-      setEndDate(expectedEndDate)
-    }
-  }, [startDate, endDate, expectedStartDate, expectedEndDate])
 
   const listPendingQueryKey = ["placements", "listPending"] as const
   const detailQueryKey = orpc.placements.getPendingById.queryOptions({
@@ -231,71 +194,41 @@ export function usePlacementActions(
   })
 
   const handleValidate = () => {
-    if (!startDate || !endDate) {
-      alert(t("selectDates"))
-      return
-    }
-    const start = new Date(startDate)
-    const end = new Date(endDate)
-    if (start >= end) {
-      alert(t("invalidDates"))
-      return
-    }
-    if (!window.confirm(t("confirmValidate"))) return
-
-    setActionLoading(true)
-    validateMutation.mutate({
-      applicationId,
-      startDate: start.toISOString(),
-      endDate: end.toISOString(),
-    })
+    setValidateModal(true)
   }
 
-  const handleReject = () => {
+  const handleConfirmValidate = () => {
+    setValidateModal(false)
+    setActionLoading(true)
+    validateMutation.mutate({ applicationId })
+  }
+
+  const handleReject = (reason: string) => {
+    setRejectModal(false)
     setActionLoading(true)
     rejectMutation.mutate({
       applicationId,
-      reason: rejectReason || undefined,
+      reason: reason || undefined,
     })
   }
 
   function generateAiSummary(application: Record<string, unknown>) {
     setAiSummary(null)
     summaryMutation.mutate({
-      application: {
-        ...application,
-        selectedStartDate: startDate || null,
-        selectedEndDate: endDate || null,
-      },
+      application,
     })
   }
 
-  const isBeforeExpectedStart = expectedStartDate
-    ? isBeforeDate(startDate, expectedStartDate)
-    : false
-  const isAfterExpectedEnd = expectedEndDate
-    ? isAfterDate(endDate, expectedEndDate)
-    : false
-
-  const showOutOfRangeWarning =
-    !!startDate && !!endDate && (isBeforeExpectedStart || isAfterExpectedEnd)
-
   return {
-    startDate,
-    setStartDate,
-    endDate,
-    setEndDate,
-    expectedStartDate,
-    expectedEndDate,
-    showOutOfRangeWarning,
+    validateModal,
+    setValidateModal,
     rejectModal,
     setRejectModal,
-    rejectReason,
-    setRejectReason,
     actionLoading,
     pdfLoading,
     pdfError,
     handleValidate,
+    handleConfirmValidate,
     handleReject,
     aiSummary,
     isSummarizing: summaryMutation.isPending,

@@ -14,6 +14,13 @@ import { ValidateConfirmationDialog } from "@/app/[locale]/(authenticated)/dashb
 import { useDeptHeadPlacementActions } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/[applicationId]/_components/DeptHeadPlacementDetail/hooks/useDeptHeadPlacementActions"
 import { useDeptHeadPlacementData } from "@/app/[locale]/(authenticated)/dashboard/dept-validations/[applicationId]/_components/DeptHeadPlacementDetail/hooks/useDeptHeadPlacementData"
 
+function toDateInputValue(value: Date | string | null | undefined): string {
+  if (!value) return ""
+  const date = typeof value === "string" ? new Date(value) : value
+  if (Number.isNaN(date.getTime())) return ""
+  return date.toISOString().split("T")[0]
+}
+
 export function DeptHeadPlacementDetail({
   applicationId,
 }: {
@@ -22,10 +29,7 @@ export function DeptHeadPlacementDetail({
   const detailT = useTranslations("dashboard.admin.validations.detail")
   const listT = useTranslations("dashboard.admin.deptValidations")
   const { application, isLoading } = useDeptHeadPlacementData(applicationId)
-  const actions = useDeptHeadPlacementActions(applicationId, {
-    expectedStartDate: application?.offer.expectedStartDate,
-    expectedEndDate: application?.offer.expectedEndDate,
-  })
+  const actions = useDeptHeadPlacementActions(applicationId)
 
   return (
     <ValidationDetailLayout
@@ -55,13 +59,8 @@ export function DeptHeadPlacementDetail({
           />
 
           <ValidationForm
-            startDate={actions.startDate}
-            onStartDateChange={actions.setStartDate}
-            endDate={actions.endDate}
-            onEndDateChange={actions.setEndDate}
-            expectedStartDate={actions.expectedStartDate}
-            expectedEndDate={actions.expectedEndDate}
-            showOutOfRangeWarning={actions.showOutOfRangeWarning}
+            expectedStartDate={toDateInputValue(application?.offer.expectedStartDate)}
+            expectedEndDate={toDateInputValue(application?.offer.expectedEndDate)}
             actionLoading={actions.actionLoading}
             pdfLoading={actions.pdfLoading}
             onValidate={actions.handleValidate}

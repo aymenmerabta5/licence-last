@@ -98,24 +98,26 @@ export const validateProcedure = adminProcedureStandard
   .input(
     z.object({
       applicationId: z.string().min(1),
-      startDate: z.string().min(1),
-      endDate: z.string().min(1),
+      startDate: z.string().min(1).optional(),
+      endDate: z.string().min(1).optional(),
     }),
   )
   .handler(async ({ input, context }) => {
     assertUniversityAdminRole(context.user)
 
     // Validate dates first; these throw user-facing messages.
-    let startDate: Date
-    let endDate: Date
-    try {
-      startDate = parseInputDate(input.startDate, "Start date")
-      endDate = parseInputDate(input.endDate, "End date")
-      validatePlacementDateRange(startDate, endDate)
-    } catch (error) {
-      throw new ORPCError("BAD_REQUEST", {
-        message: error instanceof Error ? error.message : "Invalid date input",
-      })
+    let startDate: Date | undefined
+    let endDate: Date | undefined
+    if (input.startDate && input.endDate) {
+      try {
+        startDate = parseInputDate(input.startDate, "Start date")
+        endDate = parseInputDate(input.endDate, "End date")
+        validatePlacementDateRange(startDate, endDate)
+      } catch (error) {
+        throw new ORPCError("BAD_REQUEST", {
+          message: error instanceof Error ? error.message : "Invalid date input",
+        })
+      }
     }
 
     try {
@@ -206,21 +208,23 @@ export const deptHeadValidateProcedure = deptHeadProcedureStandard
   .input(
     z.object({
       applicationId: z.string().min(1),
-      startDate: z.string().min(1),
-      endDate: z.string().min(1),
+      startDate: z.string().min(1).optional(),
+      endDate: z.string().min(1).optional(),
     }),
   )
   .handler(async ({ input, context }) => {
-    let startDate: Date
-    let endDate: Date
-    try {
-      startDate = parseInputDate(input.startDate, "Start date")
-      endDate = parseInputDate(input.endDate, "End date")
-      validatePlacementDateRange(startDate, endDate)
-    } catch (error) {
-      throw new ORPCError("BAD_REQUEST", {
-        message: error instanceof Error ? error.message : "Invalid date input",
-      })
+    let startDate: Date | undefined
+    let endDate: Date | undefined
+    if (input.startDate && input.endDate) {
+      try {
+        startDate = parseInputDate(input.startDate, "Start date")
+        endDate = parseInputDate(input.endDate, "End date")
+        validatePlacementDateRange(startDate, endDate)
+      } catch (error) {
+        throw new ORPCError("BAD_REQUEST", {
+          message: error instanceof Error ? error.message : "Invalid date input",
+        })
+      }
     }
 
     try {

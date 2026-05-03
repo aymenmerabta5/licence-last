@@ -9,6 +9,7 @@ import {
   NAVBAR_ICON_CONTROL_CLASS,
 } from "@/components/navbar-control-styles"
 import { NavbarSessionControlsFallback } from "@/components/Navbar/components/NavbarSessionControlsFallback"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -83,9 +84,12 @@ export function NavbarSessionControls() {
           }
           aria-label={t("aria.accountMenu")}
         >
-          <div className={`${NAVBAR_AVATAR_BADGE_CLASS} h-9 w-9 text-[13px] font-bold`}>
-            {userInitial}
-          </div>
+          <Avatar className={`${NAVBAR_AVATAR_BADGE_CLASS} h-9 w-9 text-[13px] font-bold`}>
+            {user?.image && (
+              <AvatarImage src={user.image} alt={user.name || "User"} />
+            )}
+            <AvatarFallback>{userInitial}</AvatarFallback>
+          </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" sideOffset={10} className="w-64">
           <DropdownMenuGroup>
