@@ -3,8 +3,10 @@
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
+import { useRouter } from "next/navigation"
 import { useCallback, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
+import { authClient } from "@/lib/auth-client"
 import { studentProfileDetailsSchema } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/hooks/profileSettingsSchema"
 import type {
   MeResult,
@@ -23,6 +25,7 @@ export function useProfileSettings(
   studentProfile: StudentProfileResult | null,
 ) {
   const t = useTranslations()
+  const router = useRouter()
   const queryClient = useQueryClient()
 
   const meQueryOptions = useMemo(() => orpc.users.getMe.queryOptions(), [])
@@ -212,6 +215,8 @@ export function useProfileSettings(
         await queryClient.invalidateQueries({
           queryKey: meQueryOptions.queryKey,
         })
+        await authClient.getSession({ query: { disableCookieCache: true } })
+        router.refresh()
         toast.success(t("errors.common.profilePhotoUpdated"))
       } catch (err) {
         toast.error(
@@ -224,7 +229,7 @@ export function useProfileSettings(
         setIsAvatarUploading(false)
       }
     },
-    [queryClient, meQueryOptions.queryKey, t],
+    [queryClient, meQueryOptions.queryKey, t, router],
   )
 
   const handleAvatarDelete = useCallback(async () => {
@@ -234,6 +239,8 @@ export function useProfileSettings(
       await orpcClient.users.deleteAvatar({})
       setAvatarUrl(null)
       await queryClient.invalidateQueries({ queryKey: meQueryOptions.queryKey })
+      await authClient.getSession({ query: { disableCookieCache: true } })
+      router.refresh()
       toast.success(t("errors.common.profilePhotoRemoved"))
     } catch (err) {
       toast.error(
@@ -245,7 +252,7 @@ export function useProfileSettings(
     } finally {
       setIsAvatarDeleting(false)
     }
-  }, [avatarUrl, meQueryOptions.queryKey, queryClient, t])
+  }, [avatarUrl, meQueryOptions.queryKey, queryClient, t, router])
 
   return {
     form,

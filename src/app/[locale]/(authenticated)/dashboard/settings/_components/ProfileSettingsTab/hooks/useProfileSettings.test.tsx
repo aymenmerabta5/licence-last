@@ -27,6 +27,16 @@ mock.module("next-intl", () => ({
     })[key] ?? key,
 }))
 
+mock.module("next/navigation", () => ({
+  useRouter: () => ({ refresh: mock(() => {}) }),
+}))
+
+mock.module("@/lib/auth-client", () => ({
+  authClient: {
+    getSession: mock(async () => ({})),
+  },
+}))
+
 mock.module("@/server/orpc/client", () => ({
   orpc: {
     placements: {
