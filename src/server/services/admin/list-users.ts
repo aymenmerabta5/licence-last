@@ -1,12 +1,26 @@
 import "server-only"
 
-import { and, count, desc, eq, ilike, inArray } from "drizzle-orm"
+import {
+  and,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  isNull,
+  ne,
+  or,
+} from "drizzle-orm"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import { db } from "@/server/db"
 import { user as userTable } from "@/server/db/schema/auth"
 import { company, companyMember } from "@/server/db/schema/companies"
 import { department } from "@/server/db/schema/departments"
+import {
+  resolveMembershipAwareRoleFilter,
+  type MembershipAwareRoleFilter,
+} from "@/server/services/admin/role-filtering"
 import { university } from "@/server/db/schema/universities"
 import { universityMember } from "@/server/db/schema/university-memberships"
 
@@ -109,24 +123,46 @@ function buildSearchCondition(
   return ilike(userTable.email, pattern)
 }
 
-async function listUsersBySubrole(params: ListUsersParams, augment: AugmentFn) {
+async function listUsersByMembershipAwareRole(
+  params: ListUsersParams,
+  augment: AugmentFn,
+) {
   const limit = params.limit ?? 20
   const offset = params.offset ?? 0
-  const subrole = params.filterValue as string
+  const roleFilter = resolveMembershipAwareRoleFilter(params)
 
-  const isRecruiter = subrole === "recruiter"
+  if (!roleFilter) {
+    throw new Error("Membership-aware role filter is required")
+  }
+
+  const usesCompanyMembership =
+    roleFilter === "company_admin" || roleFilter === "recruiter"
   const searchCondition = buildSearchCondition(
     params.searchValue,
     params.searchField,
   )
 
-  const membershipFilter = isRecruiter
-    ? eq(companyMember.role, "recruiter")
-    : eq(universityMember.role, "department_head")
+  const roleFilterCondition =
+    roleFilter === "recruiter"
+      ? eq(companyMember.role, "recruiter")
+      : roleFilter === "department_head"
+        ? eq(universityMember.role, "department_head")
+        : roleFilter === "company_admin"
+          ? and(
+              eq(userTable.role, "company_admin"),
+              or(isNull(companyMember.role), ne(companyMember.role, "recruiter")),
+            )
+          : and(
+              eq(userTable.role, "university_admin"),
+              or(
+                isNull(universityMember.role),
+                ne(universityMember.role, "department_head"),
+              ),
+            )
 
   const whereClause = searchCondition
-    ? and(membershipFilter, searchCondition)
-    : membershipFilter
+    ? and(roleFilterCondition, searchCondition)
+    : roleFilterCondition
 
   const orderByColumn =
     params.sortBy === "createdAt"
@@ -135,7 +171,9 @@ async function listUsersBySubrole(params: ListUsersParams, augment: AugmentFn) {
         ? userTable.name
         : params.sortBy === "email"
           ? userTable.email
-          : userTable.createdAt
+          : params.sortBy === "role"
+            ? userTable.role
+            : userTable.createdAt
 
   const orderDirection = params.sortDirection === "asc" ? "asc" : "desc"
 
@@ -155,15 +193,33 @@ async function listUsersBySubrole(params: ListUsersParams, augment: AugmentFn) {
 
   const countQuery = db.select({ count: count() }).from(userTable).$dynamic()
 
-  if (isRecruiter) {
-    baseQuery.innerJoin(companyMember, eq(userTable.id, companyMember.userId))
-    countQuery.innerJoin(companyMember, eq(userTable.id, companyMember.userId))
+  if (usesCompanyMembership) {
+    const join =
+      roleFilter === "recruiter"
+        ? baseQuery.innerJoin.bind(baseQuery)
+        : baseQuery.leftJoin.bind(baseQuery)
+    const countJoin =
+      roleFilter === "recruiter"
+        ? countQuery.innerJoin.bind(countQuery)
+        : countQuery.leftJoin.bind(countQuery)
+
+    join(companyMember, eq(userTable.id, companyMember.userId))
+    countJoin(companyMember, eq(userTable.id, companyMember.userId))
   } else {
-    baseQuery.innerJoin(
+    const join =
+      roleFilter === "department_head"
+        ? baseQuery.innerJoin.bind(baseQuery)
+        : baseQuery.leftJoin.bind(baseQuery)
+    const countJoin =
+      roleFilter === "department_head"
+        ? countQuery.innerJoin.bind(countQuery)
+        : countQuery.leftJoin.bind(countQuery)
+
+    join(
       universityMember,
       eq(userTable.id, universityMember.userId),
     )
-    countQuery.innerJoin(
+    countJoin(
       universityMember,
       eq(userTable.id, universityMember.userId),
     )
@@ -202,12 +258,8 @@ export async function listUsers(
   const limit = params.limit ?? 20
   const offset = params.offset ?? 0
 
-  if (
-    params.filterField === "role" &&
-    (params.filterValue === "recruiter" ||
-      params.filterValue === "department_head")
-  ) {
-    return listUsersBySubrole(params, augment)
+  if (resolveMembershipAwareRoleFilter(params)) {
+    return listUsersByMembershipAwareRole(params, augment)
   }
 
   const result = await api.listUsers({

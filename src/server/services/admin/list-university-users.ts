@@ -1,6 +1,6 @@
 import "server-only"
 
-import { and, asc, count, desc, eq, ilike, ne } from "drizzle-orm"
+import { and, asc, count, desc, eq, ilike, isNull, ne, or } from "drizzle-orm"
 
 import type { PrimaryUserRole } from "@/lib/effective-role"
 import { db } from "@/server/db"
@@ -34,6 +34,12 @@ function buildSearchPattern(
 
 export async function listUniversityUsers(params: ListUniversityUsersParams) {
   const conditions = [eq(user.universityId, params.universityId)]
+  const roleFilterValue =
+    params.filterField === "role" && typeof params.filterValue === "string"
+      ? params.filterValue
+      : undefined
+  const shouldJoinMembership =
+    roleFilterValue === "department_head" || roleFilterValue === "university_admin"
 
   if (params.searchValue) {
     const searchField = params.searchField ?? "email"
@@ -72,11 +78,32 @@ export async function listUniversityUsers(params: ListUniversityUsersParams) {
       params.filterField === "role" &&
       typeof params.filterValue === "string"
     ) {
-      conditions.push(
-        filterOperator === "ne"
-          ? ne(user.role, params.filterValue as PrimaryUserRole)
-          : eq(user.role, params.filterValue as PrimaryUserRole),
-      )
+      if (params.filterValue === "department_head") {
+        conditions.push(
+          filterOperator === "ne"
+            ? ne(universityMember.role, "department_head")
+            : eq(universityMember.role, "department_head"),
+        )
+      } else if (
+        params.filterValue === "university_admin" &&
+        filterOperator === "eq"
+      ) {
+        const primaryUniversityAdminCondition = or(
+          isNull(universityMember.role),
+          ne(universityMember.role, "department_head"),
+        )
+
+        conditions.push(eq(user.role, "university_admin"))
+        if (primaryUniversityAdminCondition) {
+          conditions.push(primaryUniversityAdminCondition)
+        }
+      } else {
+        conditions.push(
+          filterOperator === "ne"
+            ? ne(user.role, params.filterValue as PrimaryUserRole)
+            : eq(user.role, params.filterValue as PrimaryUserRole),
+        )
+      }
     }
 
     if (
@@ -114,12 +141,15 @@ export async function listUniversityUsers(params: ListUniversityUsersParams) {
           : user.createdAt
 
   const whereClause = and(...conditions)
-  const [totalRow] = await db
-    .select({ value: count() })
-    .from(user)
-    .where(whereClause)
+  const countQuery = db.select({ value: count() }).from(user).$dynamic()
 
-  const users = await db
+  if (shouldJoinMembership) {
+    countQuery.leftJoin(universityMember, eq(user.id, universityMember.userId))
+  }
+
+  const [totalRow] = await countQuery.where(whereClause)
+
+  const usersQuery = db
     .select({
       id: user.id,
       email: user.email,
@@ -140,7 +170,10 @@ export async function listUniversityUsers(params: ListUniversityUsersParams) {
       departmentName: department.name,
     })
     .from(user)
-    .leftJoin(universityMember, eq(user.id, universityMember.userId))
+
+  usersQuery.leftJoin(universityMember, eq(user.id, universityMember.userId))
+
+  const users = await usersQuery
     .leftJoin(department, eq(universityMember.departmentId, department.id))
     .where(whereClause)
     .orderBy(sortDirection === "asc" ? asc(sortColumn) : desc(sortColumn))
