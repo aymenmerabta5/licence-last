@@ -1,5 +1,6 @@
 "use client"
 
+import { useQueryClient } from "@tanstack/react-query"
 import { Eye, Loader2, X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
@@ -7,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { useRouter } from "@/i18n/routing"
 import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
+import { orpc } from "@/server/orpc/client"
 
 interface ImpersonationBannerProps {
   userName: string
@@ -19,12 +21,15 @@ export function ImpersonationBanner({
 }: ImpersonationBannerProps) {
   const t = useTranslations("dashboard.superAdmin.impersonation")
   const router = useRouter()
+  const queryClient = useQueryClient()
   const [isPending, setIsPending] = useState(false)
 
   const stopImpersonating = async () => {
     setIsPending(true)
     try {
       await authClient.admin.stopImpersonating()
+      const meQueryOptions = orpc.users.getMe.queryOptions()
+      await queryClient.resetQueries({ queryKey: meQueryOptions.queryKey })
       router.push("/dashboard/admin/users")
       router.refresh()
     } catch {
