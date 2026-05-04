@@ -121,6 +121,7 @@ describe("src/server/services/placements/get-pending-by-id", () => {
         offerExpectedEndDate: null,
         companyId: "company-1",
         companyName: "Acme",
+        companyLogoUrl: null,
         companyAddress: null,
         companyPhone: null,
         companyRepresentativeName: null,

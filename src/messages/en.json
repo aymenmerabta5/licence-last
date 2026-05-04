@@ -645,7 +645,8 @@
       "checkStatus": "Check status",
       "retryTool": "Retry",
       "authStatus": "Status: {status}",
-      "unknown": "Unknown"
+      "unknown": "Unknown",
+      "generatingTitle": "Naming…"
     },
     "notifications": {
       "title": "Notifications",
@@ -1499,6 +1500,8 @@
         "loading": "Loading applications...",
         "downloadSuccess": "Document downloaded successfully.",
         "downloadError": "Failed to download document.",
+        "confirmSlotSuccess": "Interview slot confirmed successfully.",
+        "confirmSlotError": "Failed to confirm interview slot.",
         "pipeline": {
           "applied": "Applied",
           "screening": "Screening",

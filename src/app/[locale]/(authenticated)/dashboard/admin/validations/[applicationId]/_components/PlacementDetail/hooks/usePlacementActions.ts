@@ -6,7 +6,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import type { ValidationSummary } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations"
 import { useRouter } from "@/i18n/routing"
-import { orpc, orpcClient } from "@/server/orpc/client"
+import { orpc } from "@/server/orpc/client"
 
 export function usePlacementActions(applicationId: string) {
   const t = useTranslations("dashboard.admin.validations.detail")
@@ -16,8 +16,8 @@ export function usePlacementActions(applicationId: string) {
   const [validateModal, setValidateModal] = useState(false)
   const [rejectModal, setRejectModal] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
-  const [pdfLoading, setPdfLoading] = useState(false)
-  const [pdfError, setPdfError] = useState<string | null>(null)
+  const [pdfLoading, _setPdfLoading] = useState(false)
+  const [pdfError, _setPdfError] = useState<string | null>(null)
 
   const [aiSummary, setAiSummary] = useState<ValidationSummary | null>(null)
 
@@ -89,26 +89,12 @@ export function usePlacementActions(applicationId: string) {
       toast.error(t("validateError"))
       setActionLoading(false)
     },
-    onSuccess: async (result) => {
-      try {
-        setPdfLoading(true)
-        setPdfError(null)
-        await orpcClient.documents.generateAgreement({
-          placementId: result.placementId,
-        })
-      } catch (error) {
-        setPdfError(
-          error instanceof Error
-            ? error.message
-            : t("agreementGenerationError"),
-        )
-        toast.error(t("agreementGenerationError"))
-      } finally {
-        setPdfLoading(false)
-      }
-
+    onSuccess: async (_result) => {
       queryClient.invalidateQueries({
         queryKey: ["placements", "listPending"],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ["applications", "hub", "journeys"],
       })
       toast.success(t("validateSuccess"))
       setActionLoading(false)

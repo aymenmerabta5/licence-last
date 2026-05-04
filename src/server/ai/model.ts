@@ -74,7 +74,11 @@ function patchSSELine(line: string): string {
   return line
 }
 
-const GENERIC_FALLBACK_ALLOWED_MODELS = ["openai/gpt-4o-mini", "openai/gpt-4o"]
+const GENERIC_FALLBACK_ALLOWED_MODELS = [
+  "DeepSeek-V4-Flash-EL",
+  "openai/gpt-4o-mini",
+  "openai/gpt-4o",
+]
 const POE_FALLBACK_ALLOWED_MODELS = ["GPT-5.2", "GPT-4o", "GPT-4o-mini"]
 
 const AI_PROVIDER_CONFIG_ERROR =

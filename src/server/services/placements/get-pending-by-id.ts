@@ -79,6 +79,7 @@ export async function getPendingApplicationById(
       offerExpectedEndDate: internshipOffer.expectedEndDate,
       companyId: company.id,
       companyName: company.name,
+      companyLogoUrl: company.logoUrl,
       companyAddress: company.address,
       companyPhone: company.phone,
       companyRepresentativeName: company.representativeName,
@@ -164,6 +165,7 @@ export async function getPendingApplicationById(
     company: {
       id: row.companyId,
       name: row.companyName,
+      logoUrl: row.companyLogoUrl,
       address: row.companyAddress,
       phone: row.companyPhone,
       representativeName: row.companyRepresentativeName,

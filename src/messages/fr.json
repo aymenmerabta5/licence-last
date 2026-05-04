@@ -645,7 +645,8 @@
       "checkStatus": "Vérifier le statut",
       "retryTool": "Réessayer",
       "authStatus": "Statut : {status}",
-      "unknown": "Inconnu"
+      "unknown": "Inconnu",
+      "generatingTitle": "Génération du titre…"
     },
     "notifications": {
       "title": "Notifications",
@@ -1499,6 +1500,8 @@
         "loading": "Chargement des candidatures...",
         "downloadSuccess": "Document téléchargé avec succès.",
         "downloadError": "Échec du téléchargement du document.",
+        "confirmSlotSuccess": "Créneau d'entretien confirmé avec succès.",
+        "confirmSlotError": "Échec de la confirmation du créneau d'entretien.",
         "pipeline": {
           "applied": "Candidature envoyée",
           "screening": "Sélection",

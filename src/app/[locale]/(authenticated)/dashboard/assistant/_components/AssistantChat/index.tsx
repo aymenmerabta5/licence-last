@@ -7,6 +7,7 @@ import { ChatHeader } from "@/app/[locale]/(authenticated)/dashboard/assistant/_
 import { ConversationSidebar } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ConversationSidebar"
 import { ConversationThread } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ConversationThread"
 import { useChatSession } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/hooks/useChatSession"
+import { useTitleGeneration } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/hooks/useTitleGeneration"
 import { Card } from "@/components/ui/card"
 
 export function AssistantChat() {
@@ -31,6 +32,15 @@ export function AssistantChat() {
     handleAppendNote,
   } = useChatSession()
 
+  const {
+    generatingTitleIds,
+    isGeneratingTitle,
+    handleFirstMessageSent,
+  } = useTitleGeneration({
+    conversations,
+    activeConversationId,
+  })
+
   return (
     <div
       className="flex flex-col"
@@ -46,6 +56,7 @@ export function AssistantChat() {
               conversations={conversations}
               selectedConversationId={activeConversationId}
               isLoading={conversationsLoading}
+              generatingTitleIds={generatingTitleIds}
               onSelect={handleSelectConversation}
               onCreate={handleCreateConversation}
               onDelete={handleDeleteConversation}
@@ -57,6 +68,7 @@ export function AssistantChat() {
         <Card className="rounded-none border-border/60 bg-card/60 backdrop-blur supports-[backdrop-filter]:bg-card/40 flex flex-col flex-1 min-h-0 min-w-0 overflow-hidden">
           <ChatHeader
             conversationTitle={selectedConversation?.title}
+            isGeneratingTitle={isGeneratingTitle}
             models={models}
             activeModel={activeModel}
             onUpdateModel={handleUpdateModel}
@@ -79,6 +91,7 @@ export function AssistantChat() {
                 isNoteDialogOpen={isNoteDialogOpen}
                 onNoteDialogOpenChange={setIsNoteDialogOpen}
                 onAppendNote={handleAppendNote}
+                onFirstMessageSent={handleFirstMessageSent}
               />
             )}
           </div>

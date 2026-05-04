@@ -17,6 +17,7 @@ interface ConversationSidebarProps {
   conversations: ConversationListItem[]
   selectedConversationId: string | null
   isLoading: boolean
+  generatingTitleIds?: Set<string>
   onSelect: (conversationId: string) => void
   onCreate: () => void
   onDelete: (conversationId: string) => void
@@ -26,6 +27,7 @@ export function ConversationSidebar({
   conversations,
   selectedConversationId,
   isLoading,
+  generatingTitleIds,
   onSelect,
   onCreate,
   onDelete,
@@ -130,6 +132,7 @@ export function ConversationSidebar({
                 isActive={conversation.id === selectedConversationId}
                 isDeleting={deletingId === conversation.id}
                 isConfirmingDelete={confirmDeleteId === conversation.id}
+                isGeneratingTitle={generatingTitleIds?.has(conversation.id)}
                 confirmDeleteLabel={t("confirmDelete")}
                 deleteConversationAria={t("deleteConversation")}
                 onSelect={onSelect}

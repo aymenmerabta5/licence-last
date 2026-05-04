@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl"
 import { ConversationComposer } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/ConversationComposer"
 import { MessageBubble } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/MessageBubble"
 import { SaveNoteDialog } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/SaveNoteDialog"
+import { TypingIndicator } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/TypingIndicator"
 import { useConversationThread } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/hooks/useConversationThread"
 import { Button } from "@/components/ui/button"
 import { ease, reveal } from "@/lib/animations"
@@ -21,33 +22,7 @@ interface ConversationThreadProps {
     note: string,
     onSuccess?: (savedText: string) => void,
   ) => Promise<void>
-}
-
-function TypingIndicator() {
-  return (
-    <div className="flex items-center gap-1 px-4 py-3 bg-muted/30 border-s-2 border-primary/20">
-      <div className="flex gap-1">
-        <motion.span
-          key="dot-1"
-          className="w-2 h-2 bg-primary/60 rounded-full"
-          animate={{ opacity: [0.4, 1, 0.4] }}
-          transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
-        />
-        <motion.span
-          key="dot-2"
-          className="w-2 h-2 bg-primary/60 rounded-full"
-          animate={{ opacity: [0.4, 1, 0.4] }}
-          transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
-        />
-        <motion.span
-          key="dot-3"
-          className="w-2 h-2 bg-primary/60 rounded-full"
-          animate={{ opacity: [0.4, 1, 0.4] }}
-          transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}
-        />
-      </div>
-    </div>
-  )
+  onFirstMessageSent?: (conversationId: string) => void
 }
 
 export function ConversationThread({
@@ -57,6 +32,7 @@ export function ConversationThread({
   isNoteDialogOpen,
   onNoteDialogOpenChange,
   onAppendNote,
+  onFirstMessageSent,
 }: ConversationThreadProps) {
   const t = useTranslations("dashboard.assistant")
   const {
@@ -97,6 +73,27 @@ export function ConversationThread({
       setMessages((prev) => [...prev, noteMessage])
       scrollToBottom()
     })
+  }
+
+  const wrappedHandleSubmit = (event: React.FormEvent) => {
+    if (messages.length === 0 && onFirstMessageSent) {
+      onFirstMessageSent(conversationId)
+    }
+    handleSubmit(event)
+  }
+
+  const wrappedHandleKeyDown = (
+    event: React.KeyboardEvent<HTMLTextAreaElement>,
+  ) => {
+    if (
+      event.key === "Enter" &&
+      !event.shiftKey &&
+      messages.length === 0 &&
+      onFirstMessageSent
+    ) {
+      onFirstMessageSent(conversationId)
+    }
+    handleKeyDown(event)
   }
 
   return (
@@ -172,8 +169,8 @@ export function ConversationThread({
         canSendMessage={canSendMessage}
         errorMessage={error?.message ?? null}
         textareaRef={textareaRef}
-        onSubmit={handleSubmit}
-        onKeyDown={handleKeyDown}
+        onSubmit={wrappedHandleSubmit}
+        onKeyDown={wrappedHandleKeyDown}
         onTextareaChange={handleTextareaChange}
         onStop={stop}
       />

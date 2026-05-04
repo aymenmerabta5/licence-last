@@ -53,6 +53,7 @@ export interface PendingApplication {
   company: {
     id: string
     name: string
+    logoUrl: string | null
     address: string | null
     phone: string | null
     representativeName: string | null
@@ -164,6 +165,7 @@ export async function listPendingApplications(
       offerExpectedEndDate: internshipOffer.expectedEndDate,
       companyId: company.id,
       companyName: company.name,
+      companyLogoUrl: company.logoUrl,
       companyAddress: company.address,
       companyPhone: company.phone,
       companyRepresentativeName: company.representativeName,
@@ -272,6 +274,7 @@ export async function listPendingApplications(
       company: {
         id: app.companyId,
         name: app.companyName,
+        logoUrl: app.companyLogoUrl,
         address: app.companyAddress,
         phone: app.companyPhone,
         representativeName: app.companyRepresentativeName,

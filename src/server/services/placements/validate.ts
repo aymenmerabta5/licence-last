@@ -14,6 +14,10 @@ import { placement, placementDocument } from "@/server/db/schema/placements"
 import { studentProfile } from "@/server/db/schema/students"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
 import { ServiceError } from "@/server/services/errors"
+import {
+  generateAgreement,
+  type AgreementIssuerContext,
+} from "@/server/services/documents/generate-agreement"
 import { createNotification } from "@/server/services/notifications/create"
 
 export interface ValidatePlacementInput {
@@ -262,6 +266,38 @@ export async function validatePlacement(
       status: "pending",
     })
   })
+
+  // Generate agreement automatically after validation
+  if (adminRole === "university_admin" || adminRole === "department_head") {
+    try {
+      const issuer: AgreementIssuerContext = {
+        userId: adminUserId,
+        role: "university_admin",
+        universityId: adminUniversityId,
+        departmentId: adminDepartmentId ?? null,
+        universityMembershipRole:
+          adminRole === "department_head" ? "department_head" : null,
+      }
+      const agreementResult = await generateAgreement({
+        placementId,
+        locale: "en",
+        issuer,
+      })
+      log.info(
+        {
+          placementId,
+          applicationId,
+          documentId: agreementResult.documentId,
+        },
+        "Agreement generated automatically after placement validation",
+      )
+    } catch (error) {
+      log.error(
+        { err: error, placementId, applicationId },
+        "Failed to auto-generate agreement after placement validation",
+      )
+    }
+  }
 
   try {
     await createNotification({

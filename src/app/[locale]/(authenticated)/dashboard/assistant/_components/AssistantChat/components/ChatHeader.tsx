@@ -1,6 +1,6 @@
 "use client"
 
-import { NotebookPen, Pencil, Plus } from "lucide-react"
+import { Loader2, NotebookPen, Pencil, Plus } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { RenameConversationDialog } from "@/app/[locale]/(authenticated)/dashboard/assistant/_components/AssistantChat/components/RenameConversationDialog"
@@ -21,6 +21,7 @@ interface Model {
 
 interface ChatHeaderProps {
   conversationTitle?: string | null
+  isGeneratingTitle?: boolean
   models: Model[]
   activeModel: string | null
   onUpdateModel: (modelId: string) => void
@@ -31,6 +32,7 @@ interface ChatHeaderProps {
 
 export function ChatHeader({
   conversationTitle,
+  isGeneratingTitle,
   models,
   activeModel,
   onUpdateModel,
@@ -48,7 +50,14 @@ export function ChatHeader({
           {t("conversation")}
         </p>
         <p className="mt-1 text-sm text-foreground truncate">
-          {formatConversationTitle(conversationTitle)}
+          {isGeneratingTitle ? (
+            <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              {t("generatingTitle")}
+            </span>
+          ) : (
+            formatConversationTitle(conversationTitle)
+          )}
         </p>
       </div>
 

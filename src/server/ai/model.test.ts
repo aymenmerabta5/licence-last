@@ -32,7 +32,7 @@ describe("src/server/ai/model", () => {
     expect(chatMock).not.toHaveBeenCalled()
   })
 
-  test("returns a model when an AI provider key is configured", async () => {
+  test("returns the default model when an AI provider key is configured", async () => {
     mock.module("@/env", () => ({
       env: {
         AI_API_KEY: "key-123",
@@ -47,5 +47,24 @@ describe("src/server/ai/model", () => {
 
     expect(getAIModel()).toEqual({ modelId: "openai/gpt-4o-mini" })
     expect(chatMock).toHaveBeenCalledWith("openai/gpt-4o-mini")
+  })
+
+  test("returns DeepSeek-V4-Flash-EL when explicitly requested", async () => {
+    mock.module("@/env", () => ({
+      env: {
+        AI_API_KEY: "key-123",
+        AI_MODEL: "openai/gpt-4o-mini",
+        AI_ALLOWED_MODELS: undefined,
+        AI_BASE_URL: undefined,
+      },
+    }))
+
+    const modulePath = "@/server/ai/model?deepseek=1" as string
+    const { getAIModel } = await import(modulePath)
+
+    expect(getAIModel("DeepSeek-V4-Flash-EL")).toEqual({
+      modelId: "DeepSeek-V4-Flash-EL",
+    })
+    expect(chatMock).toHaveBeenCalledWith("DeepSeek-V4-Flash-EL")
   })
 })

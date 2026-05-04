@@ -645,7 +645,8 @@
       "checkStatus": "تحقق من الحالة",
       "retryTool": "إعادة المحاولة",
       "authStatus": "الحالة: {status}",
-      "unknown": "غير معروف"
+      "unknown": "غير معروف",
+      "generatingTitle": "جارٍ إنشاء العنوان…"
     },
     "notifications": {
       "title": "الإشعارات",
@@ -1499,6 +1500,8 @@
         "loading": "جارٍ تحميل الطلبات...",
         "downloadSuccess": "تم تنزيل المستند بنجاح.",
         "downloadError": "فشل تنزيل المستند.",
+        "confirmSlotSuccess": "تم تأكيد موعد المقابلة بنجاح.",
+        "confirmSlotError": "فشل تأكيد موعد المقابلة.",
         "pipeline": {
           "applied": "تم التقديم",
           "screening": "الفرز",
