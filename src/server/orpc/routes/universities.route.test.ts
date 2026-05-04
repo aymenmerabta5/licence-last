@@ -269,7 +269,7 @@ describe("src/server/orpc/routes/universities", () => {
       wilayaCode: undefined,
       city: "Algiers",
       address: undefined,
-      logoUrl: null,
+      logoUrl: undefined,
     })
     expect(revalidateTagMock).toHaveBeenCalledTimes(3)
   })

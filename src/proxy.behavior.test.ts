@@ -2,9 +2,16 @@ import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 import { NextRequest } from "next/server"
 
 const getSessionCookieMock = mock<() => string | null>(() => null)
+const checkMaintenanceStatusMock = mock<
+  () => Promise<{ enabled: boolean; canBypass: boolean }>
+>(() => Promise.resolve({ enabled: false, canBypass: false }))
 
 mock.module("better-auth/cookies", () => ({
   getSessionCookie: getSessionCookieMock,
+}))
+
+mock.module("@/lib/proxy-maintenance", () => ({
+  checkMaintenanceStatus: checkMaintenanceStatusMock,
 }))
 
 describe("src/proxy root-path behavior", () => {
@@ -13,6 +20,10 @@ describe("src/proxy root-path behavior", () => {
   beforeEach(() => {
     getSessionCookieMock.mockReset()
     getSessionCookieMock.mockReturnValue(null)
+    checkMaintenanceStatusMock.mockReset()
+    checkMaintenanceStatusMock.mockReturnValue(
+      Promise.resolve({ enabled: false, canBypass: false }),
+    )
   })
 
   afterAll(() => {

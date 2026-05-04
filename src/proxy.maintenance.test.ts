@@ -116,6 +116,9 @@ describe("src/proxy maintenance-mode behavior", () => {
   })
 
   test("fails open when status check throws an error", async () => {
+    const originalConsoleError = console.error
+    console.error = () => {}
+
     checkMaintenanceStatusMock.mockImplementation(() =>
       Promise.reject(new Error("Database unreachable")),
     )
@@ -125,5 +128,7 @@ describe("src/proxy maintenance-mode behavior", () => {
     const response = await proxy(request)
 
     expect(response.headers.get("x-middleware-rewrite")).toBeNull()
+
+    console.error = originalConsoleError
   })
 })

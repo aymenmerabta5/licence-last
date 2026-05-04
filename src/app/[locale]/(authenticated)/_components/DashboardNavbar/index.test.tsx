@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, mock, test } from "bun:test"
-import { render, screen } from "@testing-library/react"
+import { act, render, screen } from "@testing-library/react"
 
 mock.module(
   "@/app/[locale]/(authenticated)/_components/DashboardClientProvider",
@@ -73,35 +73,42 @@ describe("DashboardNavbar", () => {
     mock.restore()
   })
 
-  test("does not render a search field in the header", () => {
-    render(
-      <DashboardNavbar
-        user={{
-          id: "user-1",
-          name: "Seed User",
-          email: "seed@example.com",
-          role: "student",
-        }}
-      />,
-    )
+  test("does not render a search field in the header", async () => {
+    await act(async () => {
+      render(
+        <DashboardNavbar
+          user={{
+            id: "user-1",
+            name: "Seed User",
+            email: "seed@example.com",
+            role: "student",
+          }}
+        />,
+      )
+    })
 
     expect(screen.queryByPlaceholderText("Search...")).toBeNull()
   })
 
-  test("does not render the Stag logo in the small-device header", () => {
-    const { container } = render(
-      <DashboardNavbar
-        user={{
-          id: "user-1",
-          name: "Seed User",
-          email: "seed@example.com",
-          role: "student",
-        }}
-      />,
-    )
+  test("does not render the Stag logo in the small-device header", async () => {
+    let container: HTMLElement
+
+    await act(async () => {
+      const result = render(
+        <DashboardNavbar
+          user={{
+            id: "user-1",
+            name: "Seed User",
+            email: "seed@example.com",
+            role: "student",
+          }}
+        />,
+      )
+      container = result.container
+    })
 
     expect(
-      container.querySelector('[data-testid="dashboard-mobile-logo"]'),
+      container!.querySelector('[data-testid="dashboard-mobile-logo"]'),
     ).toBeNull()
   })
 })
