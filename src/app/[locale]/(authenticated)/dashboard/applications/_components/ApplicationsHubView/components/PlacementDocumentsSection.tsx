@@ -1,8 +1,9 @@
 "use client"
 
-import { Download, Loader2 } from "lucide-react"
+import { useState } from "react"
+import { Download, FilePlus, Loader2 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
-import { useMemo } from "react"
+import { CertificateGenerationDialog } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/CertificateGenerationDialog"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
@@ -25,29 +26,54 @@ interface PlacementDocumentsSectionProps {
   }
   downloadingDocumentId: string | null
   onDownload: (documentId: string) => void
+  generatingPlacementId: string | null
+  onGenerateCertificate: (
+    placementId: string,
+    locale: string,
+    borderStyle: string,
+  ) => void
 }
 
 export function PlacementDocumentsSection({
   placement,
   downloadingDocumentId,
   onDownload,
+  generatingPlacementId,
+  onGenerateCertificate,
 }: PlacementDocumentsSectionProps) {
   const t = useTranslations("dashboard.applications.hub")
   const tPlacementDocs = useTranslations("dashboard.placementDocuments")
   const locale = useLocale()
 
-  const dateFormatter = useMemo(
-    () =>
-      new Intl.DateTimeFormat(locale, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }),
-    [locale],
-  )
+  const [dialogOpen, setDialogOpen] = useState(false)
+
+  const dateFormatter = new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  })
 
   const formatDate = (value: Date | string) =>
     dateFormatter.format(new Date(value))
+
+  const endDate = new Date(placement.endDate)
+  const isInternshipCompleted = endDate <= new Date()
+
+  const agreementDocs = placement.documents.filter((d) => d.type === "agreement")
+  const certificateDocs = placement.documents.filter(
+    (d) => d.type === "certificate",
+  )
+  const generatedCertificates = certificateDocs.filter(
+    (d) => d.status === "generated",
+  )
+
+  const isGenerating = generatingPlacementId === placement.placementId
+
+  const handleDownloadAll = () => {
+    for (const doc of generatedCertificates) {
+      onDownload(doc.id)
+    }
+  }
 
   return (
     <div className="space-y-4 border-t border-border/60 pt-4">
@@ -70,64 +96,183 @@ export function PlacementDocumentsSection({
         </p>
       </div>
 
-      <div className="space-y-2">
-        {placement.documents.map((doc) => {
-          const isDownloading = downloadingDocumentId === doc.id
-          const canDownload = doc.status === "generated" && !isDownloading
+      {/* Agreement documents */}
+      {agreementDocs.map((doc) => {
+        const isDownloading = downloadingDocumentId === doc.id
+        const canDownload = doc.status === "generated" && !isDownloading
 
-          return (
-            <div
-              key={doc.id}
-              className="flex items-center justify-between gap-3 border border-border/60 px-3 py-2.5 transition-colors hover:border-foreground/20"
-            >
-              <div className="flex min-w-0 items-center gap-2">
-                <span className="truncate text-xs font-medium text-foreground">
-                  {t(`document.type.${doc.type}`)}
-                </span>
-                {doc.type === "certificate" && (
-                  <span className="text-[10px] text-muted-foreground">
-                    {tPlacementDocs("certificateVersion", { language: doc.locale, border: doc.borderStyle })}
-                  </span>
+        return (
+          <div
+            key={doc.id}
+            className="flex items-center justify-between gap-3 border border-border/60 px-3 py-2.5 transition-colors hover:border-foreground/20"
+          >
+            <div className="flex min-w-0 items-center gap-2">
+              <span className="truncate text-xs font-medium text-foreground">
+                {t(`document.type.${doc.type}`)}
+              </span>
+              <Badge
+                variant="editorial-muted"
+                className={cn(
+                  doc.status === "generated" &&
+                    "text-emerald-600 dark:text-emerald-400",
+                  doc.status === "pending" &&
+                    "text-amber-600 dark:text-amber-400",
                 )}
-                <Badge
-                  variant="editorial-muted"
-                  className={cn(
-                    doc.status === "generated" &&
-                      "text-emerald-600 dark:text-emerald-400",
-                    doc.status === "pending" &&
-                      "text-amber-600 dark:text-amber-400",
-                  )}
-                >
-                  {t(`status.${doc.status}`)}
-                </Badge>
-                {doc.verificationCode && (
-                  <span className="font-mono text-[10px] text-muted-foreground">
-                    {doc.verificationCode}
-                  </span>
-                )}
-              </div>
-
-              <Button
-                type="button"
-                variant="editorial-outline"
-                size="editorial-sm"
-                disabled={!canDownload}
-                className="gap-1.5"
-                onClick={() => onDownload(doc.id)}
               >
-                {isDownloading ? (
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                ) : (
-                  <Download className="h-3 w-3" />
-                )}
-                {isDownloading
-                  ? t("document.downloading")
-                  : t("document.download")}
-              </Button>
+                {t(`status.${doc.status}`)}
+              </Badge>
+              {doc.verificationCode && (
+                <span className="font-mono text-[10px] text-muted-foreground">
+                  {doc.verificationCode}
+                </span>
+              )}
             </div>
+
+            <Button
+              type="button"
+              variant="editorial-outline"
+              size="editorial-sm"
+              disabled={!canDownload}
+              className="gap-1.5"
+              onClick={() => onDownload(doc.id)}
+            >
+              {isDownloading ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <Download className="h-3 w-3" />
+              )}
+              {isDownloading
+                ? t("document.downloading")
+                : t("document.download")}
+            </Button>
+          </div>
+        )
+      })}
+
+      {/* Certificate documents */}
+      {certificateDocs.length > 0 && (
+        <div className="space-y-2">
+          {certificateDocs.map((doc) => {
+            const isDownloading = downloadingDocumentId === doc.id
+            const canDownload = doc.status === "generated" && !isDownloading
+
+            return (
+              <div
+                key={doc.id}
+                className="flex items-center justify-between gap-3 border border-border/60 px-3 py-2.5 transition-colors hover:border-foreground/20"
+              >
+                <div className="flex min-w-0 items-center gap-2">
+                  <span className="truncate text-xs font-medium text-foreground">
+                    {t(`document.type.${doc.type}`)}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground">
+                    {tPlacementDocs("certificateVersion", {
+                      language: doc.locale,
+                      border: doc.borderStyle,
+                    })}
+                  </span>
+                  <Badge
+                    variant="editorial-muted"
+                    className={cn(
+                      doc.status === "generated" &&
+                        "text-emerald-600 dark:text-emerald-400",
+                      doc.status === "pending" &&
+                        "text-amber-600 dark:text-amber-400",
+                    )}
+                  >
+                    {t(`status.${doc.status}`)}
+                  </Badge>
+                  {doc.verificationCode && (
+                    <span className="font-mono text-[10px] text-muted-foreground">
+                      {doc.verificationCode}
+                    </span>
+                  )}
+                </div>
+
+                <Button
+                  type="button"
+                  variant="editorial-outline"
+                  size="editorial-sm"
+                  disabled={!canDownload}
+                  className="gap-1.5"
+                  onClick={() => onDownload(doc.id)}
+                >
+                  {isDownloading ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <Download className="h-3 w-3" />
+                  )}
+                  {isDownloading
+                    ? t("document.downloading")
+                    : t("document.download")}
+                </Button>
+              </div>
+            )
+          })}
+
+          {generatedCertificates.length > 1 && (
+            <Button
+              type="button"
+              variant="editorial-outline"
+              size="editorial-sm"
+              className="gap-1.5"
+              onClick={handleDownloadAll}
+            >
+              <Download className="h-3 w-3" />
+              {t("document.downloadAll")}
+            </Button>
+          )}
+        </div>
+      )}
+
+      {/* Generate certificate action */}
+      {isInternshipCompleted && (
+        <div className="flex items-center gap-2 pt-1">
+          <Button
+            type="button"
+            variant="editorial-outline"
+            size="editorial-sm"
+            className="gap-1.5"
+            disabled={isGenerating}
+            onClick={() => setDialogOpen(true)}
+          >
+            {isGenerating ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <FilePlus className="h-3.5 w-3.5" />
+            )}
+            {isGenerating
+              ? t("document.generating")
+              : t("document.generateCertificate")}
+          </Button>
+        </div>
+      )}
+
+      {!isInternshipCompleted && certificateDocs.length === 0 && (
+        <p className="text-xs text-muted-foreground">
+          {t("document.certificateAvailableAfter", {
+            date: formatDate(placement.endDate),
+          })}
+        </p>
+      )}
+
+      <CertificateGenerationDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        existingVariants={certificateDocs.map((d) => ({
+          locale: d.locale,
+          borderStyle: d.borderStyle,
+        }))}
+        onGenerate={(certificateLocale, borderStyle) => {
+          onGenerateCertificate(
+            placement.placementId,
+            certificateLocale,
+            borderStyle,
           )
-        })}
-      </div>
+          setDialogOpen(false)
+        }}
+        isGenerating={isGenerating}
+      />
     </div>
   )
 }

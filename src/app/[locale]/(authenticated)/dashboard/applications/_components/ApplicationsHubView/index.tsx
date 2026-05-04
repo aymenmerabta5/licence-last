@@ -25,6 +25,12 @@ interface ApplicationsHubViewProps {
   confirmingSlotId: string | null
   onDownloadDocument: (documentId: string) => void
   downloadingDocumentId: string | null
+  generatingPlacementId: string | null
+  onGenerateCertificate: (
+    placementId: string,
+    locale: string,
+    borderStyle: string,
+  ) => void
 }
 
 export function ApplicationsHubView(props: ApplicationsHubViewProps) {
@@ -45,6 +51,8 @@ export function ApplicationsHubView(props: ApplicationsHubViewProps) {
     confirmingSlotId,
     onDownloadDocument,
     downloadingDocumentId,
+    generatingPlacementId,
+    onGenerateCertificate,
   } = props
   const displayedJourneys = activeStage
     ? journeys.filter((j) => j.pipelineStage === activeStage)
@@ -78,6 +86,8 @@ export function ApplicationsHubView(props: ApplicationsHubViewProps) {
         confirmingSlotId={confirmingSlotId}
         onDownloadDocument={onDownloadDocument}
         downloadingDocumentId={downloadingDocumentId}
+        generatingPlacementId={generatingPlacementId}
+        onGenerateCertificate={onGenerateCertificate}
       />
     </div>
   )

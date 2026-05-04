@@ -2,12 +2,16 @@ import { afterAll, beforeEach, describe, expect, mock, test } from "bun:test"
 import { NextRequest } from "next/server"
 
 const getSessionCookieMock = mock<() => string | null>(() => null)
-const fetchMock = mock<
-  (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
->(() => Promise.resolve(new Response()))
+const checkMaintenanceStatusMock = mock<
+  () => Promise<{ enabled: boolean; canBypass: boolean }>
+>(() => Promise.resolve({ enabled: false, canBypass: false }))
 
 mock.module("better-auth/cookies", () => ({
   getSessionCookie: getSessionCookieMock,
+}))
+
+mock.module("@/lib/proxy-maintenance", () => ({
+  checkMaintenanceStatus: checkMaintenanceStatusMock,
 }))
 
 describe("src/proxy maintenance-mode behavior", () => {
@@ -16,8 +20,10 @@ describe("src/proxy maintenance-mode behavior", () => {
   beforeEach(() => {
     getSessionCookieMock.mockReset()
     getSessionCookieMock.mockReturnValue(null)
-    fetchMock.mockReset()
-    globalThis.fetch = fetchMock as unknown as typeof globalThis.fetch
+    checkMaintenanceStatusMock.mockReset()
+    checkMaintenanceStatusMock.mockReturnValue(
+      Promise.resolve({ enabled: false, canBypass: false }),
+    )
   })
 
   afterAll(() => {
@@ -30,13 +36,8 @@ describe("src/proxy maintenance-mode behavior", () => {
   }
 
   function mockMaintenanceResponse(enabled: boolean, canBypass: boolean) {
-    fetchMock.mockReturnValue(
-      Promise.resolve(
-        new Response(JSON.stringify({ enabled, canBypass }), {
-          status: 200,
-          headers: { "content-type": "application/json" },
-        }),
-      ),
+    checkMaintenanceStatusMock.mockReturnValue(
+      Promise.resolve({ enabled, canBypass }),
     )
   }
 
@@ -114,9 +115,9 @@ describe("src/proxy maintenance-mode behavior", () => {
     expect(response.headers.get("x-middleware-rewrite")).toBeNull()
   })
 
-  test("fails open when status endpoint is unreachable", async () => {
-    fetchMock.mockImplementation(() =>
-      Promise.reject(new Error("Network error")),
+  test("fails open when status check throws an error", async () => {
+    checkMaintenanceStatusMock.mockImplementation(() =>
+      Promise.reject(new Error("Database unreachable")),
     )
     const { proxy } = await importProxy()
     const request = new NextRequest("https://example.com/en/about")

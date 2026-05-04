@@ -2,6 +2,7 @@
 
 import { Building2, Camera, ImagePlus, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
+import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { ease, reveal } from "@/lib/animations"
 
@@ -28,9 +29,11 @@ export function LogoUploadSection({
         {/* Logo display with upload overlay */}
         <div className="relative group shrink-0">
           {logoUrl ? (
-            <img
+            <Image
               src={logoUrl}
               alt="Company logo"
+              width={112}
+              height={112}
               className="h-24 w-24 sm:h-28 sm:w-28 object-cover border-2 border-primary/20"
             />
           ) : (

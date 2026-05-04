@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
 import createMiddleware from "next-intl/middleware"
 
+import { checkMaintenanceStatus } from "@/lib/proxy-maintenance"
 import { routing } from "@/i18n/routing"
 
 const intlMiddleware = createMiddleware(routing)
@@ -64,25 +65,19 @@ export async function proxy(request: NextRequest) {
 
   if (!isMaintenanceExemptPath(pathname)) {
     try {
-      const maintenanceUrl = new URL("/api/maintenance/status", request.url)
-      const maintenanceResponse = await fetch(maintenanceUrl, {
-        cache: "no-store",
-        headers: {
-          cookie: request.headers.get("cookie") ?? "",
-        },
-      })
+      const { enabled, canBypass } = await checkMaintenanceStatus(request)
 
-      if (maintenanceResponse.ok) {
-        const { enabled, canBypass } = (await maintenanceResponse.json()) as {
-          enabled: boolean
-          canBypass: boolean
-        }
-
-        if (enabled && !canBypass) {
-          return NextResponse.rewrite(
-            new URL(`/${locale}/maintenance`, request.url),
-          )
-        }
+      if (enabled && !canBypass) {
+        const response = NextResponse.rewrite(
+          new URL(`/${locale}/maintenance`, request.url),
+        )
+        response.headers.set(
+          "Cache-Control",
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+        )
+        response.headers.set("CDN-Cache-Control", "no-store")
+        response.headers.set("Cloudflare-CDN-Cache-Control", "no-store")
+        return response
       }
     } catch (err) {
       console.error("[proxy] maintenance status check failed:", err)
@@ -93,7 +88,16 @@ export async function proxy(request: NextRequest) {
   if (isProtectedPath(pathname)) {
     const sessionCookie = getSessionCookie(request)
     if (!sessionCookie) {
-      return NextResponse.redirect(new URL(`/${locale}/login`, request.url))
+      const response = NextResponse.redirect(
+        new URL(`/${locale}/login`, request.url),
+      )
+      response.headers.set(
+        "Cache-Control",
+        "no-store, no-cache, must-revalidate, proxy-revalidate",
+      )
+      response.headers.set("CDN-Cache-Control", "no-store")
+      response.headers.set("Cloudflare-CDN-Cache-Control", "no-store")
+      return response
     }
   }
 
@@ -108,5 +112,5 @@ export const config = {
   // - /_vercel (Vercel internals)
   // - /static (inside /public)
   // - /.*\..*$ (files with extensions, e.g. favicon.ico)
-  matcher: ["/((?!api|_next|_vercel|static|.*\\..*).*)"],
+  matcher: ["/((?!api|_next|_vercel|static|.*\\..*).*)",],
 }

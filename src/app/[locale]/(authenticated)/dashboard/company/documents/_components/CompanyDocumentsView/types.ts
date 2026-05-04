@@ -10,6 +10,7 @@ export interface PlacementDocument {
   createdAt: Date | string
   locale: string
   borderStyle: string
+  meta?: unknown
 }
 
 export interface CompanyPlacementDocumentSummary {

@@ -16,6 +16,7 @@ export interface StudentDocumentItem {
   borderStyle: string
   verificationCode: string | null
   createdAt: Date
+  meta: unknown
 }
 
 export interface StudentPlacementWithDocuments {
@@ -66,6 +67,7 @@ export async function listDocumentsByStudent(
       borderStyle: placementDocument.borderStyle,
       verificationCode: placementDocument.verificationCode,
       createdAt: placementDocument.createdAt,
+      meta: placementDocument.meta,
     })
     .from(placementDocument)
     .where(inArray(placementDocument.placementId, placementIds))
@@ -82,6 +84,7 @@ export async function listDocumentsByStudent(
       borderStyle: doc.borderStyle,
       verificationCode: doc.verificationCode,
       createdAt: doc.createdAt,
+      meta: doc.meta,
     })
     docsByPlacement.set(doc.placementId, current)
   }

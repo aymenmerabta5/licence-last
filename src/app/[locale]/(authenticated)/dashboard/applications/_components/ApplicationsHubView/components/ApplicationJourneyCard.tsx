@@ -27,6 +27,12 @@ interface ApplicationJourneyCardProps {
   confirmingSlotId: string | null
   onDownloadDocument: (documentId: string) => void
   downloadingDocumentId: string | null
+  generatingPlacementId: string | null
+  onGenerateCertificate: (
+    placementId: string,
+    locale: string,
+    borderStyle: string,
+  ) => void
 }
 
 function getNextActionVariant(
@@ -56,6 +62,8 @@ export function ApplicationJourneyCard({
   confirmingSlotId,
   onDownloadDocument,
   downloadingDocumentId,
+  generatingPlacementId,
+  onGenerateCertificate,
 }: ApplicationJourneyCardProps) {
   const t = useTranslations("dashboard.applications.hub")
   const nextAction = getNextActionVariant(journey)
@@ -163,6 +171,8 @@ export function ApplicationJourneyCard({
               placement={journey.placement}
               downloadingDocumentId={downloadingDocumentId}
               onDownload={onDownloadDocument}
+              generatingPlacementId={generatingPlacementId}
+              onGenerateCertificate={onGenerateCertificate}
             />
           )}
 

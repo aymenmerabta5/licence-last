@@ -23,11 +23,21 @@ export interface VerificationResult {
   generatedAt: string | null
 }
 
+export interface VerificationRevoked {
+  valid: false
+  status: "revoked"
+  revokedAt: string
+  reason: string
+}
+
 export interface VerificationNotFound {
   valid: false
 }
 
-export type VerifyDocumentResult = VerificationResult | VerificationNotFound
+export type VerifyDocumentResult =
+  | VerificationResult
+  | VerificationRevoked
+  | VerificationNotFound
 
 function toMetaRecord(value: unknown): Record<string, unknown> {
   if (value && typeof value === "object" && !Array.isArray(value)) {
@@ -68,6 +78,19 @@ export async function verifyDocument(
   }
 
   const meta = toMetaRecord(doc.meta)
+
+  if (typeof meta.revokedAt === "string" && meta.revokedAt.length > 0) {
+    return {
+      valid: false,
+      status: "revoked",
+      revokedAt: meta.revokedAt,
+      reason:
+        typeof meta.revocationReason === "string"
+          ? meta.revocationReason
+          : "Revoked",
+    }
+  }
+
   const snapshot = toSnapshotRecord(doc.snapshotData)
 
   if (snapshot) {

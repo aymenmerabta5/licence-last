@@ -2,6 +2,7 @@
 
 import { Building2, MapPin, ShieldAlert } from "lucide-react"
 import * as motion from "motion/react-client"
+import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { ReportCompanyDialog } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/components/ReportCompanyDialog"
 import type { UseCompanyReportResult } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/hooks/useCompanyReport"
@@ -36,9 +37,11 @@ export function CompanyCard({
         {/* Company info */}
         <div className="flex items-start gap-4">
           {offer.companyLogoUrl ? (
-            <img
+            <Image
               src={offer.companyLogoUrl}
               alt={offer.companyName}
+              width={56}
+              height={56}
               className="h-14 w-14 border border-border/40 object-cover shrink-0"
             />
           ) : (

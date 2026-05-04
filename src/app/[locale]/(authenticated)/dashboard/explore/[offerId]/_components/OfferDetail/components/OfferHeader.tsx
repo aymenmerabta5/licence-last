@@ -2,6 +2,7 @@
 
 import { ArrowLeft, Bookmark, BookmarkCheck } from "lucide-react"
 import * as motion from "motion/react-client"
+import Image from "next/image"
 import { useTranslations } from "next-intl"
 import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/explore/[offerId]/_components/OfferDetail/types"
 import { Button } from "@/components/ui/button"
@@ -78,9 +79,11 @@ export function OfferHeader({
             </p>
           </div>
           {offer.companyLogoUrl ? (
-            <img
+            <Image
               src={offer.companyLogoUrl}
               alt={offer.companyName}
+              width={44}
+              height={44}
               className="h-11 w-11 border border-border/40 object-cover"
             />
           ) : (

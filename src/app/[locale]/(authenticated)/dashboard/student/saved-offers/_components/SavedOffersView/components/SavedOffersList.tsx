@@ -1,6 +1,7 @@
 "use client"
 
 import { BookmarkMinus, Building2, Clock3, MapPin } from "lucide-react"
+import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
@@ -52,9 +53,11 @@ export function SavedOffersList({
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-start gap-3 min-w-0">
                 {offer.companyLogoUrl ? (
-                  <img
+                  <Image
                     src={offer.companyLogoUrl}
                     alt={offer.companyName}
+                    width={36}
+                    height={36}
                     className="h-9 w-9 object-cover border border-border/60 shrink-0"
                   />
                 ) : (

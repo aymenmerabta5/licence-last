@@ -345,7 +345,12 @@ export async function generateCertificate(
         meta: issuedMeta,
       })
       .onConflictDoNothing({
-        target: [placementDocument.placementId, placementDocument.type],
+        target: [
+          placementDocument.placementId,
+          placementDocument.type,
+          placementDocument.locale,
+          placementDocument.borderStyle,
+        ],
       })
       .returning()
 

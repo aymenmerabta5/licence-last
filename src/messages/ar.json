@@ -1576,7 +1576,13 @@
           "statusPending": "قيد الانتظار",
           "statusGenerated": "جاهز",
           "download": "تحميل",
-          "downloading": "جارٍ التحميل..."
+          "downloading": "جارٍ التحميل...",
+          "generateCertificate": "إنشاء شهادة",
+          "generating": "جارٍ الإنشاء...",
+          "generateSuccess": "تم إنشاء الشهادة بنجاح.",
+          "generateError": "فشل إنشاء الشهادة.",
+          "downloadAll": "تحميل الكل",
+          "certificateAvailableAfter": "الشهادة متاحة بعد {date}"
         }
       }
     },
@@ -1646,7 +1652,8 @@
         "notGenerated": "لم يتم إنشاؤها",
         "pending": "قيد الانتظار",
         "generated": "تم إنشاؤها",
-        "failed": "فشل"
+        "failed": "فشل",
+        "revoked": "ملغاة"
       },
       "placement": {
         "student": "طالب",
@@ -1663,6 +1670,33 @@
       "placementCount": "{count, plural, one {# placement} other {# placements}}",
       "certificateVersions": "إصدارات الشهادة",
       "generateNewVersion": "إنشاء نسخة جديدة",
+      "certificateAvailableAfter": "إنشاء الشهادة متاح بعد {date}",
+      "searchPlaceholder": "البحث بالاسم أو البريد الإلكتروني...",
+      "searchLabel": "البحث عن الطلاب",
+      "revoke": "إلغاء",
+      "revoking": "جارٍ الإلغاء...",
+      "revokeDialog": {
+        "title": "إلغاء الشهادة",
+        "description": "سيؤدي ذلك إلى إبطال الشهادة ومنع التحقق منها في المستقبل. لا يمكن التراجع عن هذا الإجراء.",
+        "reasonLabel": "سبب الإلغاء",
+        "reasonPlaceholder": "مثال: تواريخ غير صحيحة، التدريب غير مكتمل...",
+        "confirm": "إلغاء الشهادة",
+        "cancel": "إلغاء"
+      },
+      "revokeSuccess": "تم إلغاء الشهادة بنجاح.",
+      "revokeError": "فشل في إلغاء الشهادة.",
+      "revoked": "ملغاة",
+      "revokedReason": "السبب: {reason}",
+      "generateMissing": "إنشاء جميع المفقودة",
+      "generateMissingGenerating": "جارٍ الإنشاء...",
+      "generateMissingSuccess": "تم إنشاء {count} شهادات مفقودة.",
+      "generateMissingError": "فشل في إنشاء {count} شهادات.",
+      "generateMissingDialog": {
+        "title": "إنشاء الشهادات المفقودة",
+        "description": "إنشاء شهادات لجميع المتدربين الذين أكملوا التدريب ولا يملكون شهادة بعد.",
+        "noMissing": "جميع المتدربين الذين أكملوا التدريب لديهم شهادات بالفعل.",
+        "confirm": "إنشاء"
+      },
       "generateDialog": {
         "title": "إنشاء شهادة",
         "languageLabel": "اللغة",

@@ -1,31 +1,46 @@
 "use client"
 
-import { FileText, Loader2, RefreshCw } from "lucide-react"
+import { FilePlus, FileText, Loader2, RefreshCw, Search } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { useDashboard } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import { CertificateGenerationDialog } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/CertificateGenerationDialog"
 import { PlacementCertificateCard } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/PlacementCertificateCard"
+import { RevokeCertificateDialog } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/RevokeCertificateDialog"
 import { useCompanyDocuments } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/hooks/useCompanyDocuments"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
 export function CompanyDocumentsView() {
   const t = useTranslations("dashboard.companyDocuments")
   const { companyMembershipRole } = useDashboard()
+  const isOwner = companyMembershipRole === "owner"
+
   const {
     placements,
     isLoading,
     isError,
+    isFetchingNextPage,
     refetch,
     generatingPlacementId,
     downloadingDocumentId,
+    revokingDocumentId,
     handleGenerateCertificate,
     handleDownloadDocument,
+    handleOpenRevokeDialog,
+    handleRevokeCertificate,
+    handleGenerateMissing,
     generateDialogOpen,
     setGenerateDialogOpen,
     dialogPlacementId,
     handleOpenGenerateDialog,
+    revokeDialogOpen,
+    setRevokeDialogOpen,
+    searchQuery,
+    setSearchQuery,
+    isGeneratingMissing,
+    sentinelRef,
   } = useCompanyDocuments()
 
   return (
@@ -64,6 +79,46 @@ export function CompanyDocumentsView() {
           )}
         </div>
       </header>
+
+      {/* Search + Generate Missing */}
+      {!isLoading && !isError && (
+        <motion.div
+          {...reveal}
+          transition={revealWithDelay(0.1)}
+          className="flex flex-col sm:flex-row gap-3"
+        >
+          <div className="relative flex-1">
+            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={t("searchPlaceholder")}
+              className="ps-9"
+              aria-label={t("searchLabel")}
+            />
+          </div>
+          {isOwner && (
+            <Button
+              type="button"
+              variant="editorial"
+              size="editorial-sm"
+              className="gap-1.5 shrink-0"
+              onClick={() => setGenerateDialogOpen(true)}
+              disabled={isGeneratingMissing}
+            >
+              {isGeneratingMissing ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <FilePlus className="h-3.5 w-3.5" />
+              )}
+              {isGeneratingMissing
+                ? t("generateMissingGenerating")
+                : t("generateMissing")}
+            </Button>
+          )}
+        </motion.div>
+      )}
 
       {/* Loading */}
       {isLoading && (
@@ -131,11 +186,26 @@ export function CompanyDocumentsView() {
                 companyMembershipRole={companyMembershipRole}
                 generatingPlacementId={generatingPlacementId}
                 downloadingDocumentId={downloadingDocumentId}
+                revokingDocumentId={revokingDocumentId}
                 onDownloadDocument={handleDownloadDocument}
                 onOpenGenerateDialog={handleOpenGenerateDialog}
+                onOpenRevokeDialog={handleOpenRevokeDialog}
               />
             </motion.div>
           ))}
+
+          {/* Infinite scroll sentinel */}
+          <div ref={sentinelRef} className="h-4" />
+
+          {/* Fetching next page indicator */}
+          {isFetchingNextPage && (
+            <div className="flex items-center justify-center py-4 gap-2">
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">
+                {t("loading")}
+              </span>
+            </div>
+          )}
         </div>
       )}
 
@@ -158,9 +228,20 @@ export function CompanyDocumentsView() {
               certificateLocale,
               borderStyle,
             )
+          } else {
+            handleGenerateMissing(certificateLocale, borderStyle)
           }
         }}
-        isGenerating={generatingPlacementId !== null}
+        isGenerating={
+          generatingPlacementId !== null || isGeneratingMissing
+        }
+      />
+
+      <RevokeCertificateDialog
+        open={revokeDialogOpen}
+        onOpenChange={setRevokeDialogOpen}
+        onConfirm={handleRevokeCertificate}
+        isRevoking={revokingDocumentId !== null}
       />
     </div>
   )

@@ -1,6 +1,6 @@
 import type { PlacementDocumentStatus } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/types"
 
-export type DocumentStatus = PlacementDocumentStatus | "notGenerated"
+export type DocumentStatus = PlacementDocumentStatus | "notGenerated" | "revoked"
 
 export const STATUS_STYLES: Record<DocumentStatus, string> = {
   notGenerated: "bg-muted text-muted-foreground border-border",
@@ -9,6 +9,8 @@ export const STATUS_STYLES: Record<DocumentStatus, string> = {
   generated:
     "bg-emerald-500/10 text-emerald-700 border-emerald-500/20 dark:text-emerald-300 dark:bg-emerald-950/30 dark:border-emerald-500/30",
   failed: "bg-destructive/10 text-destructive border-destructive/20",
+  revoked:
+    "bg-red-500/10 text-red-700 border-red-500/20 dark:text-red-300 dark:bg-red-950/30 dark:border-red-500/30",
 }
 
 type DocumentActionVariant = "editorial" | "editorial-outline"
@@ -40,7 +42,19 @@ export function getReadonlyDocumentActionState(
   status: PlacementDocumentStatus,
   isLoading: boolean,
   labels: DownloadActionLabels,
+  isRevoked = false,
 ): DocumentActionState {
+  if (isRevoked) {
+    return {
+      actionKind: "none",
+      actionVariant: "editorial-outline",
+      actionLabel: "revoked",
+      actionLoadingLabel: "revoked",
+      showDownloadIcon: false,
+      isActionDisabled: true,
+    }
+  }
+
   if (status === "generated") {
     return {
       actionKind: "download",

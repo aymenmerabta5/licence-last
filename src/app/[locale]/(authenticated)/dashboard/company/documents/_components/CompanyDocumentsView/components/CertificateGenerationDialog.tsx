@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useTranslations } from "next-intl"
+import { BorderPreview } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/BorderPreview"
 import {
   Dialog,
   DialogContent,
@@ -54,6 +55,9 @@ export function CertificateGenerationDialog({
     BORDER_OPTIONS[0].key
   )
 
+  const selectedLocale =
+    SUPPORTED_LOCALES.find((l) => l.value === locale) ?? SUPPORTED_LOCALES[0]
+
   const isExisting = existingVariants.some(
     (v) => v.locale === locale && v.borderStyle === borderStyle
   )
@@ -74,9 +78,15 @@ export function CertificateGenerationDialog({
             <label className="text-sm font-medium">
               {t("generateDialog.languageLabel")}
             </label>
-            <Select value={locale} onValueChange={(value) => value && setLocale(value)}>
+            <Select
+              value={locale}
+              onValueChange={(value) => value && setLocale(value)}
+            >
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue>
+                  <span className="me-2">{selectedLocale.flag}</span>
+                  {selectedLocale.label}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {SUPPORTED_LOCALES.map((l) => (
@@ -101,13 +111,16 @@ export function CertificateGenerationDialog({
                     key={option.key}
                     type="button"
                     onClick={() => setBorderStyle(option.key)}
-                    className={`rounded-md border px-3 py-2 text-sm transition-colors ${
+                    className={`flex items-center gap-3 rounded-none border px-3 py-2.5 text-sm transition-colors ${
                       isSelected
                         ? "border-primary bg-primary/5 font-medium"
                         : "border-border hover:bg-muted/50"
                     }`}
                   >
-                    {t(`border.${option.nameKey}`)}
+                    <BorderPreview borderKey={option.key} />
+                    <span className="text-start leading-tight">
+                      {t(`border.${option.nameKey}`)}
+                    </span>
                   </button>
                 )
               })}
@@ -124,12 +137,17 @@ export function CertificateGenerationDialog({
         <div className="flex justify-end gap-2">
           <Button
             variant="outline"
+            className="rounded-none"
             onClick={() => onOpenChange(false)}
             disabled={isGenerating}
           >
             {t("generateDialog.cancel")}
           </Button>
-          <Button onClick={handleGenerate} disabled={isGenerating}>
+          <Button
+            className="rounded-none"
+            onClick={handleGenerate}
+            disabled={isGenerating}
+          >
             {isExisting
               ? t("generateDialog.regenerate")
               : t("generateDialog.generate")}

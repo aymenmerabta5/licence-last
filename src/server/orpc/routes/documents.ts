@@ -14,8 +14,11 @@ import {
   generateAgreement,
 } from "@/server/services/documents/generate-agreement"
 import { generateCertificateByCompany } from "@/server/services/documents/generate-certificate-by-company"
+import { generateCertificateByStudent } from "@/server/services/documents/generate-certificate-by-student"
+import { generateMissingCertificates } from "@/server/services/documents/generate-missing-certificates"
 import { listDocumentsByCompany } from "@/server/services/documents/list-by-company"
 import { listDocumentsByStudent } from "@/server/services/documents/list-by-student"
+import { revokeCertificate } from "@/server/services/documents/revoke-certificate"
 import { verifyDocument } from "@/server/services/documents/verify"
 
 const {
@@ -144,9 +147,33 @@ export const listStudentDocumentsProcedure = studentProcedureGenerous.handler(
 /* Company Documents List */
 
 export const listCompanyDocumentsProcedure =
-  companyAdminProcedureGenerous.handler(async ({ context }) =>
-    listDocumentsByCompany(context.companyMembership.companyId),
-  )
+  companyAdminProcedureGenerous
+    .input(
+      z
+        .object({
+          cursor: z
+            .object({
+              validatedAt: z.string(),
+              placementId: z.string(),
+            })
+            .optional(),
+          limit: z.number().min(1).max(50).optional(),
+          search: z.string().optional(),
+        })
+        .optional(),
+    )
+    .handler(async ({ input, context }) => {
+      const result = await listDocumentsByCompany(
+        context.companyMembership.companyId,
+        {
+          cursor: input?.cursor,
+          limit: input?.limit,
+          search: input?.search,
+        },
+      )
+
+      return result
+    })
 
 /* Student Document Download */
 
@@ -209,6 +236,35 @@ export const generateCompanyCertificateProcedure = companyOwnerProcedureStandard
     }
   })
 
+/* Student Certificate Generation */
+
+export const generateStudentCertificateProcedure = studentProcedureStandard
+  .input(
+    z.object({
+      placementId: z.string().min(1),
+      locale: z.enum(["en", "fr", "ar"]).optional(),
+      borderStyle: z.enum(["classic", "minimal", "formal", "ornate", "modern", "premium"]).optional(),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    try {
+      const result = await generateCertificateByStudent({
+        placementId: input.placementId,
+        studentUserId: context.user.id,
+        locale: input.locale,
+        borderStyle: input.borderStyle,
+      })
+
+      return {
+        success: result.success,
+        documentId: result.documentId,
+        pdfBase64: result.buffer?.toString("base64"),
+      }
+    } catch (error) {
+      throwDocumentRouteError(error, "Failed to generate certificate")
+    }
+  })
+
 /* Company Document Download */
 
 export const downloadCompanyDocumentProcedure = companyAdminProcedureStandard
@@ -235,6 +291,73 @@ export const downloadCompanyDocumentProcedure = companyAdminProcedureStandard
       throwDocumentRouteError(error, "Failed to download document")
     }
   })
+
+/* Revoke Certificate */
+
+export const revokeCertificateProcedure = companyOwnerProcedureStandard
+  .input(
+    z.object({
+      documentId: z.string().min(1),
+      reason: z.string().min(1),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    assertCompanyOwner(context)
+
+    try {
+      const result = await revokeCertificate({
+        documentId: input.documentId,
+        companyId: context.companyMembership.companyId,
+        revokedByUserId: context.user.id,
+        revokedByMembershipRole: context.companyMembership.role,
+        reason: input.reason,
+      })
+
+      return result
+    } catch (error) {
+      throwDocumentRouteError(error, "Failed to revoke certificate")
+    }
+  })
+
+/* Generate Missing Certificates */
+
+export const generateMissingCertificatesProcedure =
+  companyOwnerProcedureStandard
+    .input(
+      z.object({
+        locale: z.enum(["en", "fr", "ar"]).optional(),
+        borderStyle: z
+          .enum([
+            "classic",
+            "minimal",
+            "formal",
+            "ornate",
+            "modern",
+            "premium",
+          ])
+          .optional(),
+      }),
+    )
+    .handler(async ({ input, context }) => {
+      assertCompanyOwner(context)
+
+      try {
+        const result = await generateMissingCertificates({
+          companyId: context.companyMembership.companyId,
+          issuedByUserId: context.user.id,
+          issuedByMembershipRole: context.companyMembership.role,
+          locale: input.locale,
+          borderStyle: input.borderStyle,
+        })
+
+        return result
+      } catch (error) {
+        throwDocumentRouteError(
+          error,
+          "Failed to generate missing certificates",
+        )
+      }
+    })
 
 /* Verify Document */
 

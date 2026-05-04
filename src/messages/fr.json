@@ -1576,7 +1576,13 @@
           "statusPending": "En attente",
           "statusGenerated": "Prêt",
           "download": "Télécharger",
-          "downloading": "Téléchargement..."
+          "downloading": "Téléchargement...",
+          "generateCertificate": "Générer l'attestation",
+          "generating": "Génération...",
+          "generateSuccess": "Attestation générée avec succès.",
+          "generateError": "Échec de la génération de l'attestation.",
+          "downloadAll": "Tout télécharger",
+          "certificateAvailableAfter": "Attestation disponible après le {date}"
         }
       }
     },
@@ -1646,7 +1652,8 @@
         "notGenerated": "Non généré",
         "pending": "En attente",
         "generated": "Généré",
-        "failed": "Échoué"
+        "failed": "Échoué",
+        "revoked": "Révoqué"
       },
       "placement": {
         "student": "Étudiant",
@@ -1663,6 +1670,33 @@
       "placementCount": "{count, plural, one {# placement} other {# placements}}",
       "certificateVersions": "Versions du certificat",
       "generateNewVersion": "Générer une nouvelle version",
+      "certificateAvailableAfter": "Génération du certificat disponible après le {date}",
+      "searchPlaceholder": "Rechercher par nom ou email...",
+      "searchLabel": "Rechercher des étudiants",
+      "revoke": "Révoquer",
+      "revoking": "Révocation...",
+      "revokeDialog": {
+        "title": "Révoquer le certificat",
+        "description": "Cela invalidera le certificat et empêchera toute vérification future. Cette action est irréversible.",
+        "reasonLabel": "Motif de révocation",
+        "reasonPlaceholder": "ex. Dates incorrectes, stage non terminé...",
+        "confirm": "Révoquer le certificat",
+        "cancel": "Annuler"
+      },
+      "revokeSuccess": "Certificat révoqué avec succès.",
+      "revokeError": "Échec de la révocation du certificat.",
+      "revoked": "Révoqué",
+      "revokedReason": "Motif : {reason}",
+      "generateMissing": "Générer les manquants",
+      "generateMissingGenerating": "Génération...",
+      "generateMissingSuccess": "{count} certificats manquants générés.",
+      "generateMissingError": "Échec de la génération de {count} certificats.",
+      "generateMissingDialog": {
+        "title": "Générer les certificats manquants",
+        "description": "Générer des certificats pour tous les stagiaires terminés qui n'en ont pas encore.",
+        "noMissing": "Tous les stagiaires terminés ont déjà des certificats.",
+        "confirm": "Générer"
+      },
       "generateDialog": {
         "title": "Générer le certificat",
         "languageLabel": "Langue",

@@ -23,13 +23,24 @@ export async function GET(request: Request) {
       { enabled, canBypass },
       {
         headers: {
-          "Cache-Control": "no-store, max-age=0",
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+          "CDN-Cache-Control": "no-store",
+          "Cloudflare-CDN-Cache-Control": "no-store",
         },
       },
     )
   } catch (err) {
     console.error("[maintenance/status] error:", err)
     // Fail open: if the DB or session check breaks, never lock the site
-    return NextResponse.json({ enabled: false, canBypass: false })
+    return NextResponse.json(
+      { enabled: false, canBypass: false },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+          "CDN-Cache-Control": "no-store",
+          "Cloudflare-CDN-Cache-Control": "no-store",
+        },
+      },
+    )
   }
 }

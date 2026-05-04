@@ -1576,7 +1576,13 @@
           "statusPending": "Pending",
           "statusGenerated": "Ready",
           "download": "Download",
-          "downloading": "Downloading..."
+          "downloading": "Downloading...",
+          "generateCertificate": "Generate Certificate",
+          "generating": "Generating...",
+          "generateSuccess": "Certificate generated successfully.",
+          "generateError": "Failed to generate certificate.",
+          "downloadAll": "Download All",
+          "certificateAvailableAfter": "Certificate available after {date}"
         }
       }
     },
@@ -1646,7 +1652,8 @@
         "notGenerated": "Not generated",
         "pending": "Pending",
         "generated": "Generated",
-        "failed": "Failed"
+        "failed": "Failed",
+        "revoked": "Revoked"
       },
       "placement": {
         "student": "Student",
@@ -1663,6 +1670,33 @@
       "placementCount": "{count, plural, one {# placement} other {# placements}}",
       "certificateVersions": "Certificate Versions",
       "generateNewVersion": "Generate New Version",
+      "certificateAvailableAfter": "Certificate generation available after {date}",
+      "searchPlaceholder": "Search by student name or email...",
+      "searchLabel": "Search students",
+      "revoke": "Revoke",
+      "revoking": "Revoking...",
+      "revokeDialog": {
+        "title": "Revoke Certificate",
+        "description": "This will invalidate the certificate and prevent future verification. This action cannot be undone.",
+        "reasonLabel": "Reason for revocation",
+        "reasonPlaceholder": "e.g., Incorrect dates, internship not completed...",
+        "confirm": "Revoke Certificate",
+        "cancel": "Cancel"
+      },
+      "revokeSuccess": "Certificate revoked successfully.",
+      "revokeError": "Failed to revoke certificate.",
+      "revoked": "Revoked",
+      "revokedReason": "Reason: {reason}",
+      "generateMissing": "Generate All Missing",
+      "generateMissingGenerating": "Generating...",
+      "generateMissingSuccess": "Generated {count} missing certificates.",
+      "generateMissingError": "Failed to generate {count} certificates.",
+      "generateMissingDialog": {
+        "title": "Generate Missing Certificates",
+        "description": "Generate certificates for all completed interns who do not yet have one.",
+        "noMissing": "All completed interns already have certificates.",
+        "confirm": "Generate"
+      },
       "generateDialog": {
         "title": "Generate Certificate",
         "languageLabel": "Language",

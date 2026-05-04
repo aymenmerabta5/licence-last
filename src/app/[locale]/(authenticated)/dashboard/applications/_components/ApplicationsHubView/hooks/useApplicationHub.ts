@@ -39,6 +39,9 @@ export function useApplicationHub() {
   const [downloadingDocumentId, setDownloadingDocumentId] = useState<
     string | null
   >(null)
+  const [generatingPlacementId, setGeneratingPlacementId] = useState<
+    string | null
+  >(null)
 
   const journeysQuery = useQuery({
     queryKey: ["applications", "hub", "journeys"],
@@ -189,8 +192,46 @@ export function useApplicationHub() {
     confirmSlotMutation.mutate({ interviewId, slotId })
   }
 
+  const generateCertificateMutation = useMutation({
+    ...orpc.documents.generateCertificate.mutationOptions(),
+    onMutate: async (variables) => {
+      setGeneratingPlacementId(variables.placementId)
+    },
+    onError: () => {
+      toast.error(t("document.generateError"))
+      setGeneratingPlacementId(null)
+    },
+    onSuccess: () => {
+      toast.success(t("document.generateSuccess"))
+      setGeneratingPlacementId(null)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["applications", "hub", "journeys"],
+      })
+    },
+  })
+
   const onDownloadDocument = (documentId: string) => {
     downloadMutation.mutate({ documentId })
+  }
+
+  const onGenerateCertificate = (
+    placementId: string,
+    locale: string,
+    borderStyle: string,
+  ) => {
+    generateCertificateMutation.mutate({
+      placementId,
+      locale: locale as "en" | "fr" | "ar",
+      borderStyle: borderStyle as
+        | "classic"
+        | "minimal"
+        | "formal"
+        | "ornate"
+        | "modern"
+        | "premium",
+    })
   }
 
   return {
@@ -208,5 +249,7 @@ export function useApplicationHub() {
     confirmingSlotId,
     onDownloadDocument,
     downloadingDocumentId,
+    generatingPlacementId,
+    onGenerateCertificate,
   }
 }

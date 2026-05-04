@@ -6,6 +6,7 @@ import {
   FilePlus,
   GraduationCap,
   Mail,
+  ShieldX,
 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { useMemo } from "react"
@@ -18,15 +19,30 @@ import {
 } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { INTERNSHIP_TYPE_LABELS } from "@/lib/constants/internship"
+
+function toMetaRecord(value: unknown): Record<string, unknown> {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value as Record<string, unknown>
+  }
+  return {}
+}
 
 interface PlacementCertificateCardProps {
   placement: CompanyPlacementDocumentSummary
   companyMembershipRole?: string | null
   generatingPlacementId: string | null
   downloadingDocumentId: string | null
+  revokingDocumentId: string | null
   onDownloadDocument: (documentId: string) => void
   onOpenGenerateDialog: (placementId: string) => void
+  onOpenRevokeDialog?: (documentId: string) => void
 }
 
 export function PlacementCertificateCard({
@@ -34,13 +50,16 @@ export function PlacementCertificateCard({
   companyMembershipRole = null,
   generatingPlacementId,
   downloadingDocumentId,
+  revokingDocumentId,
   onDownloadDocument,
   onOpenGenerateDialog,
+  onOpenRevokeDialog,
 }: PlacementCertificateCardProps) {
   const t = useTranslations("dashboard.companyDocuments")
   const locale = useLocale()
   const internshipTypeLabel =
     INTERNSHIP_TYPE_LABELS[placement.internshipType] ?? placement.internshipType
+
   const dateFormatter = useMemo(
     () =>
       new Intl.DateTimeFormat(locale, {
@@ -50,6 +69,11 @@ export function PlacementCertificateCard({
       }),
     [locale],
   )
+
+  const endDate = new Date(placement.endDate)
+  const isInternshipCompleted = endDate <= new Date()
+  const formattedEndDate = dateFormatter.format(endDate)
+
   const agreementDoc =
     placement.documents.find((doc) => doc.type === "agreement") ?? null
   const certificateDocs = placement.documents.filter(
@@ -71,6 +95,12 @@ export function PlacementCertificateCard({
         },
       )
     : null
+
+  const certificateDisabledReason = !isInternshipCompleted
+    ? t("certificateAvailableAfter", { date: formattedEndDate })
+    : undefined
+
+  const isOwner = companyMembershipRole === "owner"
 
   return (
     <article className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden">
@@ -112,7 +142,7 @@ export function PlacementCertificateCard({
           <MetaItem
             icon={Calendar}
             label={t("placement.endDate")}
-            value={dateFormatter.format(new Date(placement.endDate))}
+            value={formattedEndDate}
           />
         </dl>
       </div>
@@ -148,8 +178,13 @@ export function PlacementCertificateCard({
         {certificateDocs.length > 0 ? (
           <div className="space-y-3">
             {certificateDocs.map((doc) => {
-              const isCertificateDownloading =
-                downloadingDocumentId === doc.id
+              const meta = toMetaRecord(doc.meta)
+              const revokedAt =
+                typeof meta.revokedAt === "string" ? meta.revokedAt : undefined
+              const isRevoked = !!revokedAt
+              const isCertificateDownloading = downloadingDocumentId === doc.id
+              const isCertificateRevoking = revokingDocumentId === doc.id
+
               const certificateAction = getReadonlyDocumentActionState(
                 doc.status,
                 isCertificateDownloading,
@@ -159,33 +194,60 @@ export function PlacementCertificateCard({
                   pending: t("status.pending"),
                   failed: t("status.failed"),
                 },
+                isRevoked,
               )
+
+              const title = isRevoked
+                ? `${t("certificate")} \u00b7 ${doc.locale.toUpperCase()} \u00b7 ${t(`border.${doc.borderStyle}`)}`
+                : `${t("certificate")} \u00b7 ${doc.locale.toUpperCase()} \u00b7 ${t(`border.${doc.borderStyle}`)}`
 
               return (
                 <PlacementDocumentPanel
                   key={doc.id}
-                  title={`${t("certificate")} \u00b7 ${doc.locale.toUpperCase()} \u00b7 ${t(`border.${doc.borderStyle}`)}`}
+                  title={title}
                   statusLabel={
-                    t(`status.${doc.status}` as "status.pending")
+                    isRevoked
+                      ? t("status.revoked")
+                      : t(`status.${doc.status}` as "status.pending")
                   }
-                  statusClassName={STATUS_STYLES[doc.status]}
+                  statusClassName={
+                    isRevoked ? STATUS_STYLES.revoked : STATUS_STYLES[doc.status]
+                  }
                   verificationCodeLabel={t("placement.verificationCode")}
-                  verificationCode={doc.verificationCode}
+                  verificationCode={
+                    isRevoked ? null : doc.verificationCode
+                  }
                   notAvailableLabel={t("placement.notAvailable")}
                   actionVariant={certificateAction.actionVariant}
                   actionLabel={certificateAction.actionLabel}
                   actionLoadingLabel={certificateAction.actionLoadingLabel}
                   showDownloadIcon={certificateAction.showDownloadIcon}
-                  isActionLoading={isCertificateDownloading}
+                  isActionLoading={
+                    isCertificateDownloading || isCertificateRevoking
+                  }
                   isActionDisabled={certificateAction.isActionDisabled}
                   onAction={() => {
                     if (
+                      !isRevoked &&
                       certificateAction.actionKind === "download" &&
                       doc.status === "generated"
                     ) {
                       onDownloadDocument(doc.id)
                     }
                   }}
+                  extraActions={
+                    isOwner && !isRevoked && doc.status === "generated"
+                      ? [
+                          {
+                            label: t("revoke"),
+                            variant: "ghost" as const,
+                            icon: ShieldX,
+                            isLoading: isCertificateRevoking,
+                            onClick: () => onOpenRevokeDialog?.(doc.id),
+                          },
+                        ]
+                      : undefined
+                  }
                 />
               )
             })}
@@ -194,7 +256,7 @@ export function PlacementCertificateCard({
           (() => {
             const emptyCertificateAction = getCertificateActionState({
               status: "notGenerated",
-              isOwner: companyMembershipRole === "owner",
+              isOwner,
               isLoading: isGenerating,
               labels: {
                 download: t("download"),
@@ -206,6 +268,10 @@ export function PlacementCertificateCard({
                 ownerOnlyGenerate: t("ownerOnlyGenerate"),
               },
             })
+
+            const canGenerate =
+              isInternshipCompleted &&
+              emptyCertificateAction.actionKind === "generate"
 
             return (
               <PlacementDocumentPanel
@@ -224,7 +290,10 @@ export function PlacementCertificateCard({
                     ? isGenerating
                     : false
                 }
-                isActionDisabled={emptyCertificateAction.isActionDisabled}
+                isActionDisabled={
+                  emptyCertificateAction.isActionDisabled || !canGenerate
+                }
+                disabledReason={certificateDisabledReason}
                 onAction={() => {
                   if (emptyCertificateAction.actionKind === "generate") {
                     onOpenGenerateDialog(placement.placementId)
@@ -236,18 +305,36 @@ export function PlacementCertificateCard({
         )}
 
         {/* Generate New Version button */}
-        {companyMembershipRole === "owner" && (
-          <Button
-            type="button"
-            variant="editorial-outline"
-            size="editorial-sm"
-            className="gap-1.5"
-            onClick={() => onOpenGenerateDialog(placement.placementId)}
-            disabled={isGenerating}
-          >
-            <FilePlus className="h-3.5 w-3.5" />
-            {t("generateNewVersion")}
-          </Button>
+        {isOwner && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <span
+                  className="inline-block cursor-not-allowed"
+                  onClick={(e) => {
+                    if (!isInternshipCompleted) e.preventDefault()
+                  }}
+                >
+                  <Button
+                    type="button"
+                    variant="editorial-outline"
+                    size="editorial-sm"
+                    className="gap-1.5"
+                    onClick={() => onOpenGenerateDialog(placement.placementId)}
+                    disabled={isGenerating || !isInternshipCompleted}
+                  >
+                    <FilePlus className="h-3.5 w-3.5" />
+                    {t("generateNewVersion")}
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              {certificateDisabledReason && (
+                <TooltipContent>
+                  <p>{certificateDisabledReason}</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
         )}
       </div>
     </article>

@@ -22,6 +22,12 @@ interface ApplicationsHubBodyProps {
   confirmingSlotId: string | null
   onDownloadDocument: (documentId: string) => void
   downloadingDocumentId: string | null
+  generatingPlacementId: string | null
+  onGenerateCertificate: (
+    placementId: string,
+    locale: string,
+    borderStyle: string,
+  ) => void
 }
 
 export function ApplicationsHubBody({
@@ -36,6 +42,8 @@ export function ApplicationsHubBody({
   confirmingSlotId,
   onDownloadDocument,
   downloadingDocumentId,
+  generatingPlacementId,
+  onGenerateCertificate,
 }: ApplicationsHubBodyProps) {
   const t = useTranslations("dashboard.applications.hub")
 
@@ -103,6 +111,8 @@ export function ApplicationsHubBody({
           confirmingSlotId={confirmingSlotId}
           onDownloadDocument={onDownloadDocument}
           downloadingDocumentId={downloadingDocumentId}
+          generatingPlacementId={generatingPlacementId}
+          onGenerateCertificate={onGenerateCertificate}
         />
       ))}
     </div>

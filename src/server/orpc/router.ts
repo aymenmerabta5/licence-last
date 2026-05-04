@@ -80,8 +80,11 @@ import {
   downloadDocumentProcedure,
   generateAgreementProcedure,
   generateCompanyCertificateProcedure,
+  generateMissingCertificatesProcedure,
+  generateStudentCertificateProcedure,
   listCompanyDocumentsProcedure,
   listStudentDocumentsProcedure,
+  revokeCertificateProcedure,
   verifyDocumentProcedure,
 } from "@/server/orpc/routes/documents"
 import {
@@ -306,10 +309,13 @@ export const appRouter = {
     generateAgreement: generateAgreementProcedure,
     listByStudent: listStudentDocumentsProcedure,
     download: downloadDocumentProcedure,
+    generateCertificate: generateStudentCertificateProcedure,
     listByCompany: listCompanyDocumentsProcedure,
     generateCertificateByCompany: generateCompanyCertificateProcedure,
     downloadByCompany: downloadCompanyDocumentProcedure,
     verify: verifyDocumentProcedure,
+    revokeCertificate: revokeCertificateProcedure,
+    generateMissingCertificates: generateMissingCertificatesProcedure,
   },
   notifications: {
     list: listNotificationsProcedure,
