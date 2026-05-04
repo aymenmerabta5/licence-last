@@ -26,13 +26,27 @@ export async function checkMaintenanceStatus(request: NextRequest): Promise<{
     return { enabled: true, canBypass: false }
   }
 
+  // better-auth signs session cookies as `token.signature`.
+  // Extract the raw token to match the database `session.token` column.
+  let rawToken: string
+  try {
+    const decoded = decodeURIComponent(sessionCookie)
+    const parts = decoded.split(".")
+    if (parts.length < 2) {
+      return { enabled: true, canBypass: false }
+    }
+    rawToken = parts.slice(0, -1).join(".")
+  } catch {
+    return { enabled: true, canBypass: false }
+  }
+
   const [sessionRow] = await db
     .select({
       userId: session.userId,
       impersonatedBy: session.impersonatedBy,
     })
     .from(session)
-    .where(eq(session.token, sessionCookie))
+    .where(eq(session.token, rawToken))
     .limit(1)
 
   if (!sessionRow) {
