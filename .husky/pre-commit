@@ -1,1 +1,7 @@
-bun run lint && bun run typecheck
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+npx biome lint . &&
+node scripts/check-import-aliases.cjs &&
+node scripts/check-next-parity.cjs &&
+npx tsc --noEmit

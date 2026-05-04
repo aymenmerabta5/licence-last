@@ -11,8 +11,8 @@ import {
   Sparkles,
 } from "lucide-react"
 import * as motion from "motion/react-client"
-import { useLocale, useTranslations } from "next-intl"
 import Image from "next/image"
+import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
 import { toast } from "sonner"
 import type { ProfileUser } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
@@ -94,6 +94,7 @@ export function ProfileHeader({
                       alt={user.name || t("profileImageAlt")}
                       fill
                       className="object-cover"
+                      unoptimized
                     />
                   ) : (
                     <span className="text-slate-800 text-5xl sm:text-6xl lg:text-7xl font-serif tracking-tighter">

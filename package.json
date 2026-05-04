@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "analyze:turbopack": "next experimental-analyze",
-    "lint": "bun run lint:biome && bun run lint:imports && bun run lint:next-parity",
+    "lint": "biome lint . && node scripts/check-import-aliases.cjs && node scripts/check-next-parity.cjs",
     "lint:biome": "biome lint .",
     "lint:fix": "biome check --write --unsafe .",
     "format": "biome format --write .",
