@@ -342,6 +342,8 @@
       "impersonationFailed": "Failed to impersonate."
     },
     "codes": {
+      "EMAIL_ALREADY_EXISTS": "An account with this email already exists.",
+      "COMPANY_MEMBER_ALREADY_ASSIGNED": "User is already assigned to another company.",
       "ACCOUNT_SUSPENDED": "Account suspended.",
       "UNIVERSITY_MEMBERSHIP_CONFLICT": "Multiple university memberships found for this user.",
       "COMPANY_MEMBERSHIP_CONFLICT": "Multiple company memberships found for this user.",

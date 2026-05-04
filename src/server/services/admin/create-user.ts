@@ -75,18 +75,39 @@ export async function createUser(
   const getHeaders = deps.getHeaders ?? headers
   const primaryRole = resolvePrimaryRole(data.role)
 
-  const result = await api.createUser({
-    headers: await getHeaders(),
-    body: {
-      email: data.email,
-      password: data.password,
-      name: data.name,
-      role: primaryRole,
-      data: {
-        emailVerified: true,
+  let result: unknown
+  try {
+    result = await api.createUser({
+      headers: await getHeaders(),
+      body: {
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        role: primaryRole,
+        data: {
+          emailVerified: true,
+        },
       },
-    },
-  })
+    })
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error
+        ? error.message.toLowerCase()
+        : String(error).toLowerCase()
+
+    if (
+      message.includes("already exists") ||
+      message.includes("email already")
+    ) {
+      throw new ServiceError(
+        "EMAIL_ALREADY_EXISTS",
+        "An account with this email already exists",
+        { cause: error },
+      )
+    }
+
+    throw error
+  }
 
   const createdUserId = extractUserId(result)
   if (!createdUserId) {
