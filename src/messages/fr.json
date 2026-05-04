@@ -342,6 +342,8 @@
       "impersonationFailed": "Impossible d'usurper cet utilisateur."
     },
     "codes": {
+      "EMAIL_ALREADY_EXISTS": "Un compte avec cette adresse e-mail existe déjà.",
+      "COMPANY_MEMBER_ALREADY_ASSIGNED": "L'utilisateur est déjà affecté à une autre entreprise.",
       "ACCOUNT_SUSPENDED": "Compte suspendu.",
       "UNIVERSITY_MEMBERSHIP_CONFLICT": "Plusieurs affiliations universitaires ont ete trouvees pour cet utilisateur.",
       "COMPANY_MEMBERSHIP_CONFLICT": "Plusieurs affiliations d'entreprise ont ete trouvees pour cet utilisateur.",

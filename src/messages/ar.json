@@ -342,6 +342,8 @@
       "impersonationFailed": "تعذر انتحال هوية هذا المستخدم."
     },
     "codes": {
+      "EMAIL_ALREADY_EXISTS": "يوجد حساب بهذا البريد الإلكتروني بالفعل.",
+      "COMPANY_MEMBER_ALREADY_ASSIGNED": "هذا المستخدم مسجل بالفعل في شركة أخرى.",
       "ACCOUNT_SUSPENDED": "تم تعليق الحساب.",
       "UNIVERSITY_MEMBERSHIP_CONFLICT": "تم العثور على انتماءات جامعية متعددة لهذا المستخدم.",
       "COMPANY_MEMBERSHIP_CONFLICT": "تم العثور على انتماءات متعددة لشركات لهذا المستخدم.",

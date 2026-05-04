@@ -3,6 +3,7 @@ import "server-only"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import type { PrimaryUserRole } from "@/lib/effective-role"
+import { ServiceError } from "@/server/services/errors"
 
 interface UpdateUserData {
   name?: string
@@ -37,10 +38,28 @@ export async function updateUser(
 ) {
   const api = deps.authApi ?? getAuthApi()
   const getHeaders = deps.getHeaders ?? headers
-  const result = await api.adminUpdateUser({
-    headers: await getHeaders(),
-    body: { userId, data },
-  })
+  try {
+    return await api.adminUpdateUser({
+      headers: await getHeaders(),
+      body: { userId, data },
+    })
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error
+        ? error.message.toLowerCase()
+        : String(error).toLowerCase()
 
-  return result
+    if (
+      message.includes("already exists") ||
+      message.includes("email already")
+    ) {
+      throw new ServiceError(
+        "EMAIL_ALREADY_EXISTS",
+        "An account with this email already exists",
+        { cause: error },
+      )
+    }
+
+    throw error
+  }
 }

@@ -10,7 +10,7 @@ import {
   superAdminProcedureGenerous,
   superAdminProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
-import { throwCodedORPCError } from "@/server/orpc/utils/service-error"
+import { createServiceORPCError, throwCodedORPCError } from "@/server/orpc/utils/service-error"
 import { banUser, unbanUser } from "@/server/services/admin/ban-user"
 import { createUser } from "@/server/services/admin/create-user"
 import { listUniversityUsers } from "@/server/services/admin/list-university-users"
@@ -118,14 +118,24 @@ export const createUserProcedure = superAdminProcedureStandard
       }
     }
 
-    return createUser({
-      email: input.email,
-      password: input.password,
-      name: input.name,
-      role: input.role,
-      universityId: input.universityId,
-      companyId: input.companyId,
-    })
+    try {
+      return await createUser({
+        email: input.email,
+        password: input.password,
+        name: input.name,
+        role: input.role,
+        universityId: input.universityId,
+        companyId: input.companyId,
+      })
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          EMAIL_ALREADY_EXISTS: "CONFLICT",
+          COMPANY_MEMBER_ALREADY_ASSIGNED: "CONFLICT",
+        },
+        fallbackMessage: "Failed to create user",
+      })
+    }
   })
 
 export const setRoleProcedure = superAdminProcedureStandard
@@ -227,7 +237,16 @@ export const updateUserProcedure = superAdminProcedureStandard
   )
   .handler(async ({ input }) => {
     const { userId, ...data } = input
-    return updateUser(userId, data)
+    try {
+      return await updateUser(userId, data)
+    } catch (error) {
+      createServiceORPCError(error, {
+        codeMap: {
+          EMAIL_ALREADY_EXISTS: "CONFLICT",
+        },
+        fallbackMessage: "Failed to update user",
+      })
+    }
   })
 
 export const listUserSessionsProcedure = superAdminProcedureGenerous
