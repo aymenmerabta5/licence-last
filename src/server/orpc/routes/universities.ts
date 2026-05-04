@@ -11,7 +11,10 @@ import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { university } from "@/server/db/schema/universities"
 import UniversityApprovedEmail from "@/server/email/templates/UniversityApprovedEmail"
+import { createModuleLogger } from "@/server/logging"
 import { isAdminRole } from "@/server/orpc/authz"
+
+const log = createModuleLogger("orpc/routes/universities")
 import {
   adminProcedureStandard,
   authedProcedureGenerous,
@@ -136,7 +139,7 @@ export const updateUniversityProcedure = superAdminProcedureStandard
         .optional(),
       city: z.string().nullable().optional(),
       address: z.string().nullable().optional(),
-      logoUrl: z.string().url().optional().or(z.literal("")),
+      logoUrl: z.string().url().nullable().optional().or(z.literal("")),
     }),
   )
   .handler(async ({ input }) => {
@@ -148,7 +151,7 @@ export const updateUniversityProcedure = superAdminProcedureStandard
         wilayaCode: input.wilayaCode,
         city: input.city,
         address: input.address,
-        logoUrl: input.logoUrl || null,
+        logoUrl: input.logoUrl === "" ? null : (input.logoUrl ?? undefined),
       })
 
       revalidateTag(CACHE_TAGS.UNIVERSITIES, "max")
@@ -313,7 +316,7 @@ export const updateMyUniversityProcedure = adminProcedureStandard
         .optional(),
       city: z.string().nullable().optional(),
       address: z.string().nullable().optional(),
-      logoUrl: z.string().url().optional().or(z.literal("")),
+      logoUrl: z.string().url().nullable().optional().or(z.literal("")),
     }),
   )
   .handler(async ({ input, context }) => {
@@ -343,7 +346,7 @@ export const updateMyUniversityProcedure = adminProcedureStandard
         wilayaCode: input.wilayaCode,
         city: input.city,
         address: input.address,
-        logoUrl: input.logoUrl || null,
+        logoUrl: input.logoUrl === "" ? null : (input.logoUrl ?? undefined),
       })
 
       revalidateTag(CACHE_TAGS.UNIVERSITIES, "max")
@@ -488,13 +491,23 @@ export const uploadUniversityLogoProcedure = universityProcedureStandard
     })
 
     await updateUniversity(universityId, { logoUrl: result.url })
+    revalidateTag(CACHE_TAGS.UNIVERSITIES, "max")
+    revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-${universityId}`, "max")
+    revalidateTag(`${CACHE_TAGS.UNIVERSITIES}-user-${context.user.id}`, "max")
 
-    if (current?.logoUrl) {
+    if (current?.logoUrl && current.logoUrl !== result.url) {
       try {
-        const oldKey = new URL(current.logoUrl).pathname.slice(1)
-        await deleteFile(oldKey)
-      } catch {
-        // Ignore cleanup errors
+        const url = new URL(current.logoUrl)
+        const oldKey = url.pathname.startsWith("/")
+          ? url.pathname.slice(1)
+          : url.pathname
+
+        if (oldKey) {
+          log.info({ universityId, oldKey }, "Deleting old logo from S3")
+          await deleteFile(oldKey)
+        }
+      } catch (err) {
+        log.warn({ err, logoUrl: current.logoUrl }, "Failed to delete old logo")
       }
     }
 

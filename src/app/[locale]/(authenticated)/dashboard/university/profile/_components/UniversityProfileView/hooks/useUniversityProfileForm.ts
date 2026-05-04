@@ -24,12 +24,15 @@ interface UseUniversityProfileFormOptions {
     wilayaCode?: number | null
     city?: string | null
     address?: string | null
+    logoUrl?: string | null
   }) => void
+  onLogoUploadSuccess?: () => void
 }
 
 export function useUniversityProfileForm({
   university,
   onSubmit,
+  onLogoUploadSuccess,
 }: UseUniversityProfileFormOptions) {
   const t = useTranslations("dashboard.universityProfile")
   const tv = useTranslations("auth.validation")
@@ -71,10 +74,12 @@ export function useUniversityProfileForm({
         wilayaCode: value.wilayaCode.trim() ? Number(value.wilayaCode) : null,
         city: value.city.trim() || null,
         address: value.address.trim() || null,
+        logoUrl: value.logoUrl || null,
       })
     },
   })
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: we only want to sync the form when the university data first loads or changes identity
   useEffect(() => {
     if (!university) return
     form.setFieldValue("name", university.name)
@@ -87,24 +92,29 @@ export function useUniversityProfileForm({
     form.setFieldValue("city", university.city ?? "")
     form.setFieldValue("address", university.address ?? "")
     form.setFieldValue("logoUrl", university.logoUrl ?? "")
-  }, [form, university])
+  }, [form, university?.id])
 
-  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+  const handleLogoUpload = useMemo(
+    () => async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (!file) return
 
-    setIsLogoUploading(true)
+      setIsLogoUploading(true)
 
-    try {
-      const result = await orpcClient.universities.uploadLogo({ file })
-      form.setFieldValue("logoUrl", result.url)
-      toast.success(t("logoUploadSuccess"))
-    } catch {
-      toast.error(t("logoUploadError"))
-    } finally {
-      setIsLogoUploading(false)
-    }
-  }
+      try {
+        const result = await orpcClient.universities.uploadLogo({ file })
+        form.setFieldValue("logoUrl", result.url)
+        onLogoUploadSuccess?.()
+        toast.success(t("logoUploadSuccess"))
+      } catch {
+        toast.error(t("logoUploadError"))
+      } finally {
+        setIsLogoUploading(false)
+        e.target.value = ""
+      }
+    },
+    [form, onLogoUploadSuccess, t],
+  )
 
   return { form, isLogoUploading, handleLogoUpload }
 }

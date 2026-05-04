@@ -20,6 +20,7 @@ export function UniversityProfileView() {
     isAddingDomain,
     removeDomain,
     isRemovingDomain,
+    invalidate,
   } = useUniversityProfile()
 
   if (isLoading) {
@@ -80,6 +81,7 @@ export function UniversityProfileView() {
           <UniversityProfileForm
             university={university}
             onSubmit={updateUniversity}
+            onLogoUploadSuccess={invalidate}
             isUpdating={isUpdating}
           />
         </div>

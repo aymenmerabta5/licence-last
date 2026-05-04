@@ -20,19 +20,23 @@ interface UniversityProfileFormProps {
     wilayaCode?: number | null
     city?: string | null
     address?: string | null
+    logoUrl?: string | null
   }) => void
+  onLogoUploadSuccess?: () => void
   isUpdating: boolean
 }
 
 export function UniversityProfileForm({
   university,
   onSubmit,
+  onLogoUploadSuccess,
   isUpdating,
 }: UniversityProfileFormProps) {
   const t = useTranslations("dashboard.universityProfile")
   const { form, isLogoUploading, handleLogoUpload } = useUniversityProfileForm({
     university,
     onSubmit,
+    onLogoUploadSuccess,
   })
 
   const getError = (errors: unknown[]) =>
@@ -46,11 +50,15 @@ export function UniversityProfileForm({
       }}
       className="space-y-5"
     >
-      <LogoUploadSection
-        logoUrl={form.getFieldValue("logoUrl")}
-        isUploading={isLogoUploading}
-        onUpload={handleLogoUpload}
-      />
+      <form.Field name="logoUrl">
+        {(field) => (
+          <LogoUploadSection
+            logoUrl={field.state.value}
+            isUploading={isLogoUploading}
+            onUpload={handleLogoUpload}
+          />
+        )}
+      </form.Field>
 
       <form.Field name="name">
         {(field) => (

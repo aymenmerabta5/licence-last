@@ -45,6 +45,7 @@ export function useUniversityProfile() {
       wilayaCode?: number | null
       city?: string | null
       address?: string | null
+      logoUrl?: string | null
     }) => orpcClient.universities.updateMyUniversity(input),
     onMutate: async (variables) => {
       if (!universityId) return
@@ -63,6 +64,7 @@ export function useUniversityProfile() {
           wilayaCode: variables.wilayaCode ?? old.wilayaCode,
           city: variables.city ?? old.city,
           address: variables.address ?? old.address,
+          logoUrl: variables.logoUrl ?? old.logoUrl,
         }
       })
       return { previousData }
@@ -160,5 +162,6 @@ export function useUniversityProfile() {
     isAddingDomain: addDomainMutation.isPending,
     removeDomain: removeDomainMutation.mutate,
     isRemovingDomain: removeDomainMutation.isPending,
+    invalidate,
   }
 }

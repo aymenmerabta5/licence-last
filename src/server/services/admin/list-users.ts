@@ -19,7 +19,6 @@ import { company, companyMember } from "@/server/db/schema/companies"
 import { department } from "@/server/db/schema/departments"
 import {
   resolveMembershipAwareRoleFilter,
-  type MembershipAwareRoleFilter,
 } from "@/server/services/admin/role-filtering"
 import { university } from "@/server/db/schema/universities"
 import { universityMember } from "@/server/db/schema/university-memberships"
