@@ -2,7 +2,10 @@ import "server-only"
 
 import { ORPCError } from "@orpc/server"
 import { eq } from "drizzle-orm"
+import { revalidateTag } from "next/cache"
 import { z } from "zod"
+import { CACHE_TAGS } from "@/lib/cache"
+import { sanitizeIpAddress } from "@/lib/utils"
 import { db } from "@/server/db"
 import { user } from "@/server/db/schema/auth"
 import { createModuleLogger } from "@/server/logging"
@@ -22,7 +25,6 @@ import {
 } from "@/server/services/users/session-management"
 import { updateMe } from "@/server/services/users/update-me"
 import { deleteFile } from "@/server/storage/s3"
-import { sanitizeIpAddress } from "@/lib/utils"
 
 const log = createModuleLogger("orpc/routes/users")
 
@@ -88,6 +90,7 @@ export const uploadAvatarProcedure = authedProcedureStandard
       }
 
       await updateMe(context.user.id, { image: url })
+      revalidateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id), "max")
       return { url }
     } catch (error) {
       // Typed service errors should be preserved as transport-safe responses.
@@ -147,6 +150,7 @@ export const deleteAvatarProcedure = authedProcedureStandard.handler(
 
     try {
       await updateMe(context.user.id, { image: null })
+      revalidateTag(CACHE_TAGS.PUBLIC_PROFILE(context.user.id), "max")
     } catch (error) {
       createServiceORPCError(error, {
         codeMap: {

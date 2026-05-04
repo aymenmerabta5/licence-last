@@ -47,6 +47,7 @@ export function AvatarSection({
                 fill
                 className="object-cover"
                 sizes="(max-width: 640px) 112px, 128px"
+                unoptimized
               />
             ) : (
               avatarInitial
