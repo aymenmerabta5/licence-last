@@ -120,11 +120,13 @@ export function PlacementDocumentPanel({
         {disabledReason ? (
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
-                <span className="inline-block shrink-0 cursor-not-allowed">
-                  {actionButton}
-                </span>
-              </TooltipTrigger>
+              <TooltipTrigger
+                render={(props) => (
+                  <span {...props} className="inline-block shrink-0 cursor-not-allowed">
+                    {actionButton}
+                  </span>
+                )}
+              />
               <TooltipContent>
                 <p>{disabledReason}</p>
               </TooltipContent>

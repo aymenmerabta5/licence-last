@@ -308,26 +308,29 @@ export function PlacementCertificateCard({
         {isOwner && (
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
-                <span
-                  className="inline-block cursor-not-allowed"
-                  onClick={(e) => {
-                    if (!isInternshipCompleted) e.preventDefault()
-                  }}
-                >
-                  <Button
-                    type="button"
-                    variant="editorial-outline"
-                    size="editorial-sm"
-                    className="gap-1.5"
-                    onClick={() => onOpenGenerateDialog(placement.placementId)}
-                    disabled={isGenerating || !isInternshipCompleted}
+              <TooltipTrigger
+                render={(props) => (
+                  <span
+                    {...props}
+                    className="inline-block cursor-not-allowed"
+                    onClick={(e) => {
+                      if (!isInternshipCompleted) e.preventDefault()
+                    }}
                   >
-                    <FilePlus className="h-3.5 w-3.5" />
-                    {t("generateNewVersion")}
-                  </Button>
-                </span>
-              </TooltipTrigger>
+                    <Button
+                      type="button"
+                      variant="editorial-outline"
+                      size="editorial-sm"
+                      className="gap-1.5"
+                      onClick={() => onOpenGenerateDialog(placement.placementId)}
+                      disabled={isGenerating || !isInternshipCompleted}
+                    >
+                      <FilePlus className="h-3.5 w-3.5" />
+                      {t("generateNewVersion")}
+                    </Button>
+                  </span>
+                )}
+              />
               {certificateDisabledReason && (
                 <TooltipContent>
                   <p>{certificateDisabledReason}</p>
