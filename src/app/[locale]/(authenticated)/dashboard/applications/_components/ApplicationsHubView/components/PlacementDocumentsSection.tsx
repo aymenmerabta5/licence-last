@@ -3,10 +3,10 @@
 import { useState } from "react"
 import { Download, FilePlus, Loader2 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
+import { AgreementDocItem } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/AgreementDocItem"
+import { CertificateDocItem } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/CertificateDocItem"
 import { CertificateGenerationDialog } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/CertificateGenerationDialog"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
 
 interface PlacementDocumentsSectionProps {
   placement: {
@@ -42,7 +42,6 @@ export function PlacementDocumentsSection({
   onGenerateCertificate,
 }: PlacementDocumentsSectionProps) {
   const t = useTranslations("dashboard.applications.hub")
-  const tPlacementDocs = useTranslations("dashboard.placementDocuments")
   const locale = useLocale()
 
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -97,118 +96,26 @@ export function PlacementDocumentsSection({
       </div>
 
       {/* Agreement documents */}
-      {agreementDocs.map((doc) => {
-        const isDownloading = downloadingDocumentId === doc.id
-        const canDownload = doc.status === "generated" && !isDownloading
-
-        return (
-          <div
-            key={doc.id}
-            className="flex items-center justify-between gap-3 border border-border/60 px-3 py-2.5 transition-colors hover:border-foreground/20"
-          >
-            <div className="flex min-w-0 items-center gap-2">
-              <span className="truncate text-xs font-medium text-foreground">
-                {t(`document.type.${doc.type}`)}
-              </span>
-              <Badge
-                variant="editorial-muted"
-                className={cn(
-                  doc.status === "generated" &&
-                    "text-emerald-600 dark:text-emerald-400",
-                  doc.status === "pending" &&
-                    "text-amber-600 dark:text-amber-400",
-                )}
-              >
-                {t(`status.${doc.status}`)}
-              </Badge>
-              {doc.verificationCode && (
-                <span className="font-mono text-[10px] text-muted-foreground">
-                  {doc.verificationCode}
-                </span>
-              )}
-            </div>
-
-            <Button
-              type="button"
-              variant="editorial-outline"
-              size="editorial-sm"
-              disabled={!canDownload}
-              className="gap-1.5"
-              onClick={() => onDownload(doc.id)}
-            >
-              {isDownloading ? (
-                <Loader2 className="h-3 w-3 animate-spin" />
-              ) : (
-                <Download className="h-3 w-3" />
-              )}
-              {isDownloading
-                ? t("document.downloading")
-                : t("document.download")}
-            </Button>
-          </div>
-        )
-      })}
+      {agreementDocs.map((doc) => (
+        <AgreementDocItem
+          key={doc.id}
+          doc={doc}
+          downloadingDocumentId={downloadingDocumentId}
+          onDownload={onDownload}
+        />
+      ))}
 
       {/* Certificate documents */}
       {certificateDocs.length > 0 && (
         <div className="space-y-2">
-          {certificateDocs.map((doc) => {
-            const isDownloading = downloadingDocumentId === doc.id
-            const canDownload = doc.status === "generated" && !isDownloading
-
-            return (
-              <div
-                key={doc.id}
-                className="flex items-center justify-between gap-3 border border-border/60 px-3 py-2.5 transition-colors hover:border-foreground/20"
-              >
-                <div className="flex min-w-0 items-center gap-2">
-                  <span className="truncate text-xs font-medium text-foreground">
-                    {t(`document.type.${doc.type}`)}
-                  </span>
-                  <span className="text-[10px] text-muted-foreground">
-                    {tPlacementDocs("certificateVersion", {
-                      language: doc.locale,
-                      border: doc.borderStyle,
-                    })}
-                  </span>
-                  <Badge
-                    variant="editorial-muted"
-                    className={cn(
-                      doc.status === "generated" &&
-                        "text-emerald-600 dark:text-emerald-400",
-                      doc.status === "pending" &&
-                        "text-amber-600 dark:text-amber-400",
-                    )}
-                  >
-                    {t(`status.${doc.status}`)}
-                  </Badge>
-                  {doc.verificationCode && (
-                    <span className="font-mono text-[10px] text-muted-foreground">
-                      {doc.verificationCode}
-                    </span>
-                  )}
-                </div>
-
-                <Button
-                  type="button"
-                  variant="editorial-outline"
-                  size="editorial-sm"
-                  disabled={!canDownload}
-                  className="gap-1.5"
-                  onClick={() => onDownload(doc.id)}
-                >
-                  {isDownloading ? (
-                    <Loader2 className="h-3 w-3 animate-spin" />
-                  ) : (
-                    <Download className="h-3 w-3" />
-                  )}
-                  {isDownloading
-                    ? t("document.downloading")
-                    : t("document.download")}
-                </Button>
-              </div>
-            )
-          })}
+          {certificateDocs.map((doc) => (
+            <CertificateDocItem
+              key={doc.id}
+              doc={doc}
+              downloadingDocumentId={downloadingDocumentId}
+              onDownload={onDownload}
+            />
+          ))}
 
           {generatedCertificates.length > 1 && (
             <Button

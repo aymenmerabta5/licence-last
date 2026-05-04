@@ -1,19 +1,15 @@
 "use client"
 
-import { Building2, ChevronDown, ChevronUp, Loader2, X } from "lucide-react"
+import { Loader2, X } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import type { ApplicationJourney } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/types"
+import { ApplicationJourneyCardHeader } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/ApplicationJourneyCardHeader"
 import { InterviewSlotsSection } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/InterviewSlotsSection"
 import { JourneyTimeline } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/JourneyTimeline"
 import { PlacementDocumentsSection } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/PlacementDocumentsSection"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import {
-  STATUS_COLORS,
-  STAGE_COLUMNS,
-  STAGE_LABELS,
-} from "@/lib/constants/pipeline"
+import { STAGE_COLUMNS, STAGE_LABELS } from "@/lib/constants/pipeline"
 import { ease, reveal } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
@@ -93,62 +89,14 @@ export function ApplicationJourneyCard({
           : "border-border/60 bg-card/30 hover:border-foreground/20",
       )}
     >
-      <button
-        type="button"
-        onClick={onToggleExpand}
-        className="flex w-full items-center gap-4 p-4 text-start transition-colors hover:bg-muted/20"
-      >
-        <Avatar size="lg">
-          {journey.companyLogoUrl && (
-            <AvatarImage
-              src={journey.companyLogoUrl}
-              alt={journey.companyName}
-            />
-          )}
-          <AvatarFallback>
-            <Building2 className="h-4 w-4" />
-          </AvatarFallback>
-        </Avatar>
-
-        <div className="min-w-0 flex-1">
-          <h3 className="truncate font-serif text-base text-heading">
-            {journey.offerTitle}
-          </h3>
-          <p className="truncate text-xs font-light text-muted-foreground">
-            {journey.companyName}
-          </p>
-        </div>
-
-        <div className="hidden shrink-0 items-center gap-3 sm:flex">
-          <span
-            className={cn(
-              "inline-flex items-center border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
-              STATUS_COLORS[journey.status] ?? "",
-            )}
-          >
-            {t(`status.${journey.status}`)}
-          </span>
-
-          <span
-            className={cn(
-              "inline-flex items-center border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
-              nextActionClass,
-            )}
-          >
-            {nextActionLabel}
-          </span>
-
-          <span className="text-xs text-muted-foreground">
-            {new Date(journey.createdAt).toLocaleDateString()}
-          </span>
-
-          {isExpanded ? (
-            <ChevronUp className="h-4 w-4 text-muted-foreground" />
-          ) : (
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
-          )}
-        </div>
-      </button>
+      <ApplicationJourneyCardHeader
+        journey={journey}
+        isExpanded={isExpanded}
+        nextActionClass={nextActionClass}
+        nextActionLabel={nextActionLabel}
+        onToggleExpand={onToggleExpand}
+        tStatus={(status) => t(`status.${status}`)}
+      />
 
       {isExpanded && (
         <div className="border-t border-border/60 px-4 pb-4 pt-2">
