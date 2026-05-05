@@ -3,6 +3,8 @@
 import { ArrowRight, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+import { DeptHeadStatsCards } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/components/DeptHeadStatsCards"
+import { useDeptHeadStats } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/hooks/useDeptHeadStats"
 import { PendingQueueOverview } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/components/PendingQueueOverview"
 import {
   useDeptHeadDashboardData,
@@ -25,6 +27,8 @@ export function DeptHeadDashboard({
   const t = useTranslations("dashboard.deptHeadDashboard")
   const { applications, pendingCount, queueIsBusy, isLoading } =
     useDeptHeadDashboardData({ initialPendingResult })
+
+  const { stats, isLoading: statsLoading } = useDeptHeadStats()
 
   const labels: DeptHeadDashboardLabels = {
     pendingLabel: t("pendingLabel"),
@@ -116,6 +120,28 @@ export function DeptHeadDashboard({
           </motion.div>
         </div>
       </header>
+
+      {/* Stats Overview */}
+      <motion.section
+        {...reveal}
+        transition={revealWithDelay(0.25)}
+        className="space-y-4"
+      >
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-border/40" />
+          <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground">
+            {t("statsTitle")}
+          </span>
+          <div className="h-px flex-1 bg-border/40" />
+        </div>
+        {statsLoading ? (
+          <div className="flex items-center justify-center py-10">
+            <Loader2 className="h-5 w-5 animate-spin text-primary" />
+          </div>
+        ) : (
+          <DeptHeadStatsCards stats={stats} />
+        )}
+      </motion.section>
 
       {isLoading && (
         <div className="flex flex-col items-center justify-center py-20 gap-3">
