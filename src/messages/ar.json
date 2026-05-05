@@ -1466,7 +1466,15 @@
       "queueClear": "جميع المحاصرين في الوقت الراهن.",
       "recentTitle": "الطلبات المعلقة الأخيرة",
       "empty": "لا توجد عمليات التحقق من الصحة المعلقة في القسم الخاص بك.",
-      "acceptedOn": "مقبول على"
+      "acceptedOn": "مقبول على",
+      "statsTitle": "نظرة عامة على القسم",
+      "stats": {
+        "totalStudents": "إجمالي الطلاب",
+        "pendingValidations": "الموافقات المعلقة",
+        "activeInternships": "التدريبات النشطة",
+        "studentsWithoutInternship": "بدون تدريب",
+        "view": "عرض"
+      }
     },
     "applications": {
       "pageTitle": "تطبيقاتي",

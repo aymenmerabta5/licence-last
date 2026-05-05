@@ -1317,7 +1317,15 @@
       "queueClear": "Tout est à jour pour le moment.",
       "recentTitle": "Demandes récentes en attente",
       "empty": "Aucune validation en attente dans votre département.",
-      "acceptedOn": "Accepté le"
+      "acceptedOn": "Accepté le",
+      "statsTitle": "Vue d'ensemble du département",
+      "stats": {
+        "totalStudents": "Total Étudiants",
+        "pendingValidations": "Validations en attente",
+        "activeInternships": "Stages actifs",
+        "studentsWithoutInternship": "Sans stage",
+        "view": "Voir"
+      }
     },
     "explore": {
       "pageTitle": "Explorer les stages",

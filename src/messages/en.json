@@ -1317,7 +1317,15 @@
       "queueClear": "All caught up for now.",
       "recentTitle": "Recent Pending Requests",
       "empty": "No pending validations in your department.",
-      "acceptedOn": "Accepted on"
+      "acceptedOn": "Accepted on",
+      "statsTitle": "Department Overview",
+      "stats": {
+        "totalStudents": "Total Students",
+        "pendingValidations": "Pending Validations",
+        "activeInternships": "Active Internships",
+        "studentsWithoutInternship": "Without Internship",
+        "view": "View"
+      }
     },
     "explore": {
       "pageTitle": "Explore Internships",
