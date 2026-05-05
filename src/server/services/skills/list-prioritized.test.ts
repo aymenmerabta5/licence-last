@@ -1,56 +1,35 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-// First select = departmentSkill query (select->from->where => returns rows)
-// Second select = skillTag query (select->from->orderBy => returns rows)
-let selectCallIdx = 0
+let deptSkillIds: string[] = []
 
-const mockWhere = mock(() => Promise.resolve([] as any[]))
+const mockGetEffective = mock(() => Promise.resolve(deptSkillIds))
+
+mock.module("@/server/services/departments/get-effective-skills", () => ({
+  getEffectiveDepartmentSkillIds: mockGetEffective,
+}))
+
 const mockOrderBy = mock(() => Promise.resolve([] as any[]))
+const mockFrom = mock(() => ({ orderBy: mockOrderBy }))
+const mockSelect = mock(() => ({ from: mockFrom }))
 
-const mockFrom = mock(() => {
-  if (selectCallIdx === 1) {
-    return { where: mockWhere }
-  }
-  return { orderBy: mockOrderBy }
-})
-
-const mockSelect = mock(() => {
-  selectCallIdx++
-  return { from: mockFrom }
-})
-
-function applyMocks() {
-  mock.module("@/server/db", () => ({
-    db: {
-      select: mockSelect,
-    },
-  }))
-}
+mock.module("@/server/db", () => ({
+  db: { select: mockSelect },
+}))
 
 describe("src/server/services/skills/list-prioritized", () => {
   beforeEach(() => {
-    applyMocks()
-
-    selectCallIdx = 0
+    deptSkillIds = []
+    mockGetEffective.mockClear()
     mockSelect.mockClear()
     mockFrom.mockClear()
-    mockWhere.mockClear()
     mockOrderBy.mockClear()
 
-    mockSelect.mockImplementation(() => {
-      selectCallIdx++
-      return { from: mockFrom }
-    })
-    mockFrom.mockImplementation(() => {
-      if (selectCallIdx === 1) {
-        return { where: mockWhere }
-      }
-      return { orderBy: mockOrderBy }
-    })
+    mockSelect.mockReturnValue({ from: mockFrom })
+    mockFrom.mockReturnValue({ orderBy: mockOrderBy })
   })
 
   test("should separate department skills from other skills", async () => {
-    mockWhere.mockResolvedValue([{ skillTagId: "skill-1" }])
+    deptSkillIds = ["skill-1"]
     mockOrderBy.mockResolvedValue([
       { id: "skill-1", name: "React", slug: "react", category: "frontend" },
       { id: "skill-2", name: "Node.js", slug: "node-js", category: "backend" },
@@ -62,6 +41,7 @@ describe("src/server/services/skills/list-prioritized", () => {
 
     const result = await listSkillTagsPrioritized("dept-1")
 
+    expect(mockGetEffective).toHaveBeenCalledWith("dept-1")
     expect(result.departmentSkills).toHaveLength(1)
     expect(result.departmentSkills[0]).toMatchObject({
       id: "skill-1",
@@ -75,7 +55,7 @@ describe("src/server/services/skills/list-prioritized", () => {
   })
 
   test("should return all skills as other when department has none", async () => {
-    mockWhere.mockResolvedValue([])
+    deptSkillIds = []
     mockOrderBy.mockResolvedValue([
       { id: "skill-1", name: "React", slug: "react", category: "frontend" },
     ])
@@ -86,6 +66,7 @@ describe("src/server/services/skills/list-prioritized", () => {
 
     const result = await listSkillTagsPrioritized("dept-1")
 
+    expect(mockGetEffective).toHaveBeenCalledWith("dept-1")
     expect(result.departmentSkills).toHaveLength(0)
     expect(result.otherSkills).toHaveLength(1)
   })

@@ -1,10 +1,10 @@
 import "server-only"
 
-import { asc, eq } from "drizzle-orm"
+import { asc } from "drizzle-orm"
 
 import { db } from "@/server/db"
-import { departmentSkill } from "@/server/db/schema/departments"
 import { skillTag } from "@/server/db/schema/skills"
+import { getEffectiveDepartmentSkillIds } from "@/server/services/departments/get-effective-skills"
 
 interface Skill {
   id: string
@@ -21,15 +21,10 @@ export interface ListSkillTagsPrioritizedResult {
 export async function listSkillTagsPrioritized(
   departmentId: string,
 ): Promise<ListSkillTagsPrioritizedResult> {
-  // Fetch department skill IDs
-  const deptSkillRows = await db
-    .select({ skillTagId: departmentSkill.skillTagId })
-    .from(departmentSkill)
-    .where(eq(departmentSkill.departmentId, departmentId))
+  const deptSkillIdSet = new Set(
+    await getEffectiveDepartmentSkillIds(departmentId),
+  )
 
-  const deptSkillIdSet = new Set(deptSkillRows.map((r) => r.skillTagId))
-
-  // Fetch ALL skills (no filter)
   const allSkills = await db
     .select({
       id: skillTag.id,

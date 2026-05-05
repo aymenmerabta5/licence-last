@@ -4,12 +4,19 @@ const mockValues = mock(() => Promise.resolve())
 const mockInsert = mock(() => ({ values: mockValues }))
 
 const mockFindFirst = mock(() => Promise.resolve(null as any))
+
+const mockSelectLimit = mock(() => Promise.resolve([] as any[]))
+const mockSelectWhere = mock(() => ({ limit: mockSelectLimit }))
+const mockSelectFrom = mock(() => ({ where: mockSelectWhere }))
+const mockSelect = mock(() => ({ from: mockSelectFrom }))
+
 let moduleImportCounter = 0
 
 function applyCreateDepartmentMocks() {
   mock.module("@/server/db", () => ({
     db: {
       insert: mockInsert,
+      select: mockSelect,
       query: {
         department: {
           findFirst: mockFindFirst,
@@ -32,9 +39,18 @@ describe("createDepartment", () => {
     mockInsert.mockClear()
     mockValues.mockClear()
     mockFindFirst.mockClear()
+    mockSelect.mockClear()
+    mockSelectFrom.mockClear()
+    mockSelectWhere.mockClear()
+    mockSelectLimit.mockClear()
+
     mockInsert.mockReturnValue({ values: mockValues })
     mockValues.mockResolvedValue(undefined)
     mockFindFirst.mockResolvedValue(null)
+    mockSelect.mockReturnValue({ from: mockSelectFrom })
+    mockSelectFrom.mockReturnValue({ where: mockSelectWhere })
+    mockSelectWhere.mockReturnValue({ limit: mockSelectLimit })
+    mockSelectLimit.mockResolvedValue([])
   })
 
   test("should return departmentId", async () => {
@@ -69,5 +85,29 @@ describe("createDepartment", () => {
     expect(
       createDepartment({ universityId: "uni-1", name: "CS" }),
     ).rejects.toThrow("Department with this name already exists")
+  })
+
+  test("should create with fieldId when field exists", async () => {
+    mockSelectLimit.mockResolvedValue([{ id: "field-1" }])
+    const { createDepartment } = await loadCreateDepartmentModule()
+    const result = await createDepartment({
+      universityId: "uni-1",
+      name: "Computer Science",
+      fieldId: "field-1",
+    })
+    expect(result.departmentId).toBeDefined()
+    expect(mockSelect).toHaveBeenCalledTimes(1)
+  })
+
+  test("should throw if fieldId does not exist", async () => {
+    mockSelectLimit.mockResolvedValue([])
+    const { createDepartment } = await loadCreateDepartmentModule()
+    expect(
+      createDepartment({
+        universityId: "uni-1",
+        name: "Computer Science",
+        fieldId: "bad-field",
+      }),
+    ).rejects.toThrow("Field of study not found")
   })
 })

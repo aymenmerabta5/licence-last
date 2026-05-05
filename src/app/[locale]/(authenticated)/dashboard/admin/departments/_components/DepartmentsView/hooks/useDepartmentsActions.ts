@@ -49,6 +49,7 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
             headUserEmail: null,
             skillCount: 0,
             createdAt: new Date(),
+            fieldName: null,
           },
         ]
       })

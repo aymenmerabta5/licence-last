@@ -77,6 +77,7 @@ export function useBulkCreateForm(universityId: string | null) {
           headUserEmail: row.headEmail || null,
           skillCount: 0,
           createdAt: new Date(),
+          fieldName: null,
         }))
         return [...old, ...newDepartments]
       })

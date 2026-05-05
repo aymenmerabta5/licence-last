@@ -10,10 +10,11 @@ const log = createModuleLogger("services/departments/update")
 
 export async function updateDepartment(
   departmentId: string,
-  data: { name?: string },
+  data: { name?: string; fieldId?: string | null },
 ) {
   const updates: Record<string, unknown> = {}
   if (data.name !== undefined) updates.name = data.name.trim()
+  if (data.fieldId !== undefined) updates.fieldId = data.fieldId
 
   if (Object.keys(updates).length === 0) {
     return { success: true }
