@@ -4,9 +4,11 @@ import { ORPCError } from "@orpc/server"
 
 import {
   adminProcedureGenerous,
+  deptHeadProcedureGenerous,
   superAdminProcedureGenerous,
 } from "@/server/orpc/rate-limited-procedures"
 import { getAdminStats } from "@/server/services/stats/get-admin-stats"
+import { getDepartmentDashboardStats } from "@/server/services/stats/get-department-dashboard-stats"
 import { getUniversityDashboardStats } from "@/server/services/stats/get-university-dashboard-stats"
 
 export const getAdminStatsProcedure = superAdminProcedureGenerous.handler(
@@ -31,4 +33,9 @@ export const getUniversityDashboardStatsProcedure =
     }
 
     return getUniversityDashboardStats(context.user.universityId)
+  })
+
+export const getDepartmentDashboardStatsProcedure =
+  deptHeadProcedureGenerous.handler(async ({ context }) => {
+    return getDepartmentDashboardStats(context.departmentId)
   })

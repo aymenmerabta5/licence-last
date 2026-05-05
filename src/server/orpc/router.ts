@@ -162,6 +162,7 @@ import {
 } from "@/server/orpc/routes/skills"
 import {
   getAdminStatsProcedure,
+  getDepartmentDashboardStatsProcedure,
   getUniversityDashboardStatsProcedure,
 } from "@/server/orpc/routes/stats"
 import {
@@ -311,6 +312,7 @@ export const appRouter = {
     getPendingById: deptHeadGetPendingByIdProcedure,
     validate: deptHeadValidateProcedure,
     reject: deptHeadRejectProcedure,
+    getDashboardStats: getDepartmentDashboardStatsProcedure,
   },
   departments: {
     list: listDepartmentsProcedure,
