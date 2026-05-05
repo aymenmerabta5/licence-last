@@ -147,6 +147,15 @@ import {
   validateProcedure,
 } from "@/server/orpc/routes/placements"
 import {
+  createFieldProcedure,
+  deleteFieldProcedure,
+  getFieldProcedure,
+  getFieldSkillsProcedure,
+  listFieldsProcedure,
+  syncFieldSkillsProcedure,
+  updateFieldProcedure,
+} from "@/server/orpc/routes/fields"
+import {
   createSkillProcedure,
   listSkillTagsPrioritizedProcedure,
   listSkillTagsProcedure,
@@ -231,6 +240,15 @@ export const appRouter = {
     submitReport: submitCompanyReportProcedure,
     listReports: listCompanyReportsProcedure,
     resolveReport: resolveCompanyReportProcedure,
+  },
+  fields: {
+    list: listFieldsProcedure,
+    get: getFieldProcedure,
+    create: createFieldProcedure,
+    update: updateFieldProcedure,
+    delete: deleteFieldProcedure,
+    syncSkills: syncFieldSkillsProcedure,
+    getSkills: getFieldSkillsProcedure,
   },
   skills: {
     list: listSkillTagsProcedure,

@@ -10,6 +10,11 @@ interface DepartmentUniversityOption {
   name: string
 }
 
+interface FieldOption {
+  id: string
+  name: string
+}
+
 export function useDepartmentsData() {
   const { data: me, isLoading: isMeLoading } = useQuery(
     orpc.users.getMe.queryOptions(),
@@ -78,6 +83,12 @@ export function useDepartmentsData() {
     }),
   })
 
+  const { data: fieldsResult } = useQuery(
+    orpc.fields.list.queryOptions(),
+  )
+
+  const fields = useMemo<FieldOption[]>(() => fieldsResult?.fields ?? [], [fieldsResult])
+
   return {
     universityId,
     departments: (data ?? []) as DepartmentItem[],
@@ -90,5 +101,6 @@ export function useDepartmentsData() {
     selectedUniversityId,
     setSelectedUniversityId,
     refetch,
+    fields,
   }
 }

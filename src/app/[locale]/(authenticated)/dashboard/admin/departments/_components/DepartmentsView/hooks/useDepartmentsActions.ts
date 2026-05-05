@@ -26,6 +26,7 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
   )
 
   const [newName, setNewName] = useState("")
+  const [newFieldId, setNewFieldId] = useState("")
   const canCreate = Boolean(selectedUniversityId)
 
   const invalidate = () => {
@@ -50,6 +51,7 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
             skillCount: 0,
             createdAt: new Date(),
             fieldName: null,
+            fieldId: variables.fieldId ?? null,
           },
         ]
       })
@@ -234,18 +236,23 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
     },
   })
 
-  const handleCreate = () => {
-    if (!newName.trim()) return
+  const handleCreate = (data: { name: string; fieldId?: string }) => {
+    if (!data.name.trim()) return
     if (!selectedUniversityId) {
       toast.error(t("selectUniversityFirst"))
       return
     }
 
     createMutation.mutate(
-      { name: newName.trim(), universityId: selectedUniversityId },
+      {
+        name: data.name.trim(),
+        universityId: selectedUniversityId,
+        fieldId: data.fieldId,
+      },
       {
         onSuccess: () => {
           setNewName("")
+          setNewFieldId("")
         },
       },
     )
@@ -259,7 +266,7 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
 
   const updateDepartment = async (
     departmentId: string,
-    data: { name?: string },
+    data: { name?: string; fieldId?: string | null },
   ) => updateMutation.mutateAsync({ departmentId, ...data })
 
   const unassignHead = async (departmentId: string) =>
@@ -271,6 +278,8 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
   return {
     newName,
     setNewName,
+    newFieldId,
+    setNewFieldId,
     canCreate,
     handleCreate,
     updateDepartment,

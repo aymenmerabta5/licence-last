@@ -159,6 +159,7 @@ export const createDepartmentProcedure = adminProcedureStandard
     z.object({
       name: z.string().min(2).max(200),
       universityId: z.string().min(1).optional(),
+      fieldId: z.string().min(1).optional(),
     }),
   )
   .handler(async ({ input, context }) => {
@@ -171,11 +172,13 @@ export const createDepartmentProcedure = adminProcedureStandard
       return await createDepartment({
         universityId,
         name: input.name,
+        fieldId: input.fieldId,
       })
     } catch (error) {
       createServiceORPCError(error, {
         codeMap: {
           DEPARTMENT_NAME_EXISTS: "CONFLICT",
+          FIELD_NOT_FOUND: "NOT_FOUND",
         },
         fallbackMessage: "Failed to create department",
       })
@@ -187,15 +190,21 @@ export const updateDepartmentProcedure = adminProcedureStandard
     z.object({
       departmentId: z.string().min(1),
       name: z.string().min(2).max(200).optional(),
+      fieldId: z.string().min(1).optional().nullable(),
     }),
   )
   .handler(async ({ input, context }) => {
     await assertCanManageDepartment(input.departmentId, context)
 
+    const updateData: { name?: string; fieldId?: string | null } = {
+      name: input.name,
+    }
+    if (input.fieldId !== undefined) {
+      updateData.fieldId = input.fieldId
+    }
+
     try {
-      return await updateDepartment(input.departmentId, {
-        name: input.name,
-      })
+      return await updateDepartment(input.departmentId, updateData)
     } catch (error) {
       createServiceORPCError(error, {
         codeMap: {

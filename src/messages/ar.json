@@ -276,7 +276,9 @@
       "proficiencyInvalid": "يرجى اختيار مستوى كفاءة صالح",
       "workModeInvalid": "يرجى اختيار نمط عمل صالح",
       "languageWeightMin": "يجب أن تكون أولوية اللغة 1 على الأقل",
-      "languageWeightMax": "يجب ألا تتجاوز أولوية اللغة 5"
+      "languageWeightMax": "يجب ألا تتجاوز أولوية اللغة 5",
+      "fieldNameRequired": "Field name is required",
+      "fieldNameTooLong": "Field name cannot exceed 200 characters"
     }
   },
   "errors": {
@@ -527,6 +529,7 @@
       "validatePlacements": "المصادقة على التنسيب",
       "deptValidations": "مصادقات القسم",
       "departments": "الأقسام",
+      "fields": "Fields of Study",
       "statistics": "الإحصائيات",
       "userManagement": "إدارة المستخدمين",
       "universityProfile": "الملف الجامعي",
@@ -1883,6 +1886,36 @@
           "rowError": "{name}: {error}",
           "selectUniversityFirst": "اختر جامعة للمتابعة.",
           "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+        },
+        "fieldOfStudy": "Field of Study",
+        "selectField": "Select a field of study",
+        "fieldInheritsSkills": "Inherits {count} skills",
+        "noField": "No field assigned",
+        "assignField": "Assign Field"
+      },
+      "fields": {
+        "title": "Fields of Study",
+        "description": "Manage global field-of-study templates and their pre-curated skills.",
+        "addField": "Add Field",
+        "name": "Field name",
+        "namePlaceholder": "e.g. Computer Science",
+        "descriptionLabel": "Description",
+        "skillCount": "{count} skills",
+        "manageSkills": "Manage Skills",
+        "createSuccess": "Field created successfully.",
+        "deleteSuccess": "Field deleted successfully.",
+        "deleteErrorInUse": "Cannot delete: field is assigned to departments.",
+        "error": "Something went wrong.",
+        "skills": {
+          "title": "Skills for {name}",
+          "description": "Select the skills relevant to this field of study.",
+          "save": "Save",
+          "cancel": "Cancel",
+          "skillsSelected": "skills selected",
+          "searchPlaceholder": "Search skills...",
+          "saveSuccess": "Field skills updated.",
+          "createSkill": "Create '{name}'",
+          "createSkillSuccess": "'{name}' created and selected."
         }
       },
       "deptValidations": {
@@ -2383,6 +2416,39 @@
         "searchPlaceholder": "مهارات البحث...",
         "saveSuccess": "تم تحديث مهارات القسم.",
         "saveError": "لا يمكن تحديث المهارات."
+      }
+    },
+    "fields": {
+      "pageTitle": "مجالات الدراسة",
+      "title": "مجالات الدراسة",
+      "description": "أنشئ وأدر مجالات الدراسة واربط المهارات ذات الصلة.",
+      "empty": "لم يتم العثور على مجالات. ابدأ بإنشاء واحدة.",
+      "addField": "إضافة مجال",
+      "backToDashboard": "العودة إلى لوحة التحكم",
+      "name": "اسم المجال",
+      "namePlaceholder": "مثال: علوم الحاسوب",
+      "description": "الوصف",
+      "descriptionPlaceholder": "وصف موجز لهذا المجال...",
+      "save": "إنشاء المجال",
+      "success": "تم إنشاء المجال",
+      "error": "فشل إنشاء المجال",
+      "createSuccess": "تم إنشاء المجال بنجاح.",
+      "deleteSuccess": "تم حذف المجال بنجاح.",
+      "manageSkills": "المهارات",
+      "deleteConfirm": "هل أنت متأكد أنك تريد حذف هذا المجال؟",
+      "skills": {
+        "title": "مهارات {name}",
+        "description": "اختر المهارات ذات الصلة بهذا المجال. سيراها الطلاب كمهارات موصى بها.",
+        "save": "حفظ المهارات",
+        "cancel": "إلغاء",
+        "skillsSelected": "مهارات محددة",
+        "searchPlaceholder": "البحث عن مهارات...",
+        "saveSuccess": "تم تحديث مهارات المجال.",
+        "saveError": "تعذر تحديث المهارات.",
+        "skillNotFound": "لم يتم العثور على '{query}'.",
+        "createSkill": "إنشاء '{name}'",
+        "createSkillSuccess": "تم إنشاء وتحديد '{name}'.",
+        "createSkillError": "تعذر إنشاء المهارة."
       }
     },
     "messages": {

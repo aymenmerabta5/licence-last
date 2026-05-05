@@ -27,6 +27,7 @@ export function DepartmentsView() {
     universityOptions,
     selectedUniversityId,
     setSelectedUniversityId,
+    fields,
   } = useDepartmentsData()
   const actions = useDepartmentsActions(universityId)
   const assignHeadDialog = useAssignHeadDialog({ onAssign: actions.assignHead })
@@ -35,9 +36,9 @@ export function DepartmentsView() {
   const emptyLabel = hasUniversityContext
     ? t("empty")
     : t("selectUniversityFirst")
-  const handleEditDepartment = (departmentId: string, name: string) => {
+  const handleEditDepartment = (departmentId: string, name: string, fieldId: string | null) => {
     viewState.setEditTarget(null)
-    actions.updateDepartment(departmentId, { name }).catch(() => {
+    actions.updateDepartment(departmentId, { name, fieldId }).catch(() => {
       // Error feedback is handled by the mutation hook.
     })
   }
@@ -60,13 +61,21 @@ export function DepartmentsView() {
         <CreateDepartmentForm
           name={actions.newName}
           onNameChange={actions.setNewName}
+          fieldId={actions.newFieldId}
+          onFieldIdChange={actions.setNewFieldId}
+          fields={fields}
           canCreate={actions.canCreate}
           showUniversitySelector={isSuperAdmin}
           selectedUniversityId={selectedUniversityId}
           universityOptions={universityOptions}
           onUniversityIdChange={setSelectedUniversityId}
           isCreating={actions.isCreating}
-          onSubmit={actions.handleCreate}
+          onSubmit={() =>
+            actions.handleCreate({
+              name: actions.newName,
+              fieldId: actions.newFieldId || undefined,
+            })
+          }
         />
       </motion.div>
       <motion.div {...reveal} transition={revealWithDelay(0.12)}>
@@ -95,6 +104,7 @@ export function DepartmentsView() {
         open={Boolean(viewState.editTarget)}
         onOpenChange={viewState.handleEditOpenChange}
         department={viewState.editTarget}
+        fields={fields}
         onConfirm={handleEditDepartment}
         isPending={actions.isUpdating}
       />

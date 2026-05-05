@@ -10,6 +10,7 @@ import {
   FileText,
   FileUser,
   FolderTree,
+  GraduationCap,
   Landmark,
   LayoutDashboard,
   MessageSquareText,
@@ -143,6 +144,12 @@ export const navItems: NavItem[] = [
     icon: FolderTree,
     roles: ["university_admin"],
     hideForUniversityMembershipRoles: ["department_head"],
+  },
+  {
+    labelKey: "fields",
+    href: "/dashboard/admin/fields",
+    icon: GraduationCap,
+    roles: ["super_admin"],
   },
   {
     labelKey: "statistics",

@@ -47,6 +47,15 @@ export function DepartmentCard({
               <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium border border-border/50 text-muted-foreground">
                 {department.skillCount} {t("manageSkills")}
               </span>
+              {department.fieldName ? (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] border border-primary/30 bg-primary/5 text-primary">
+                  {department.fieldName}
+                </span>
+              ) : (
+                <span className="text-[10px] text-muted-foreground italic">
+                  {t("noFieldAssigned")}
+                </span>
+              )}
               {hasAssignedHead && (
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] border border-emerald-400/60 bg-emerald-50 text-emerald-700 dark:border-emerald-500/40 dark:bg-emerald-950/40 dark:text-emerald-300">
                   <UserCheck className="h-3 w-3" />

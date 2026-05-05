@@ -276,7 +276,9 @@
       "languageWeightMax": "La priorite de la langue ne peut pas depasser 5",
       "companyVerificationDocumentRequired": "Veuillez televerser un document de verification de l'entreprise",
       "companyVerificationDocumentType": "Le document de verification doit etre un fichier PDF, JPEG ou PNG",
-      "companyVerificationDocumentSize": "La taille du document de verification ne peut pas depasser 10 Mo"
+      "companyVerificationDocumentSize": "La taille du document de verification ne peut pas depasser 10 Mo",
+      "fieldNameRequired": "Le nom de la filière est requis",
+      "fieldNameTooLong": "Le nom de la filière ne peut pas dépasser 200 caractères"
     }
   },
   "errors": {
@@ -527,6 +529,7 @@
       "validatePlacements": "Valider les placements",
       "deptValidations": "Validations du département",
       "departments": "Départements",
+      "fields": "Filières",
       "statistics": "Statistiques",
       "userManagement": "Gestion des utilisateurs",
       "universityProfile": "Profil Universit\u00e9",
@@ -1883,6 +1886,36 @@
           "rowError": "{name} : {error}",
           "selectUniversityFirst": "S\u00e9lectionnez une universit\u00e9 pour continuer.",
           "error": "Quelque chose s'est mal pass\u00e9. Veuillez r\u00e9essayer."
+        },
+        "fieldOfStudy": "Filière",
+        "selectField": "Sélectionner une filière",
+        "fieldInheritsSkills": "Hérite de {count} compétences",
+        "noField": "Aucune filière assignée",
+        "assignField": "Assigner une filière"
+      },
+      "fields": {
+        "title": "Filières",
+        "description": "Gérez les modèles de filières globaux et leurs compétences pré-curées.",
+        "addField": "Ajouter une filière",
+        "name": "Nom de la filière",
+        "namePlaceholder": "ex. Informatique",
+        "descriptionLabel": "Description",
+        "skillCount": "{count} compétences",
+        "manageSkills": "Gérer les compétences",
+        "createSuccess": "Filière créée avec succès.",
+        "deleteSuccess": "Filière supprimée avec succès.",
+        "deleteErrorInUse": "Impossible de supprimer : la filière est assignée à des départements.",
+        "error": "Une erreur est survenue.",
+        "skills": {
+          "title": "Compétences pour {name}",
+          "description": "Sélectionnez les compétences pertinentes pour cette filière.",
+          "save": "Enregistrer",
+          "cancel": "Annuler",
+          "skillsSelected": "compétences sélectionnées",
+          "searchPlaceholder": "Rechercher des compétences...",
+          "saveSuccess": "Compétences de la filière mises à jour.",
+          "createSkill": "Créer '{name}'",
+          "createSkillSuccess": "'{name}' créé et sélectionné."
         }
       },
       "deptValidations": {
@@ -2383,6 +2416,39 @@
         "searchPlaceholder": "Rechercher des compétences...",
         "saveSuccess": "Compétences du département mises à jour.",
         "saveError": "Impossible de mettre à jour les compétences."
+      }
+    },
+    "fields": {
+      "pageTitle": "Domaines d'etude",
+      "title": "Domaines d'etude",
+      "description": "Creez et gerez les domaines d'etude et associez les competences pertinentes.",
+      "empty": "Aucun domaine trouve. Commencez par en creer un.",
+      "addField": "Ajouter un domaine",
+      "backToDashboard": "Retour au tableau de bord",
+      "name": "Nom du domaine",
+      "namePlaceholder": "ex. Informatique",
+      "description": "Description",
+      "descriptionPlaceholder": "Breve description de ce domaine...",
+      "save": "Creer le domaine",
+      "success": "Domaine cree",
+      "error": "Echec de la creation du domaine",
+      "createSuccess": "Domaine cree avec succes.",
+      "deleteSuccess": "Domaine supprime avec succes.",
+      "manageSkills": "Competences",
+      "deleteConfirm": "Voulez-vous vraiment supprimer ce domaine ?",
+      "skills": {
+        "title": "Competences pour {name}",
+        "description": "Selectionnez les competences pertinentes pour ce domaine. Les etudiants les verront comme recommandees.",
+        "save": "Enregistrer les competences",
+        "cancel": "Annuler",
+        "skillsSelected": "competences selectionnees",
+        "searchPlaceholder": "Rechercher des competences...",
+        "saveSuccess": "Competences du domaine mises a jour.",
+        "saveError": "Impossible de mettre a jour les competences.",
+        "skillNotFound": "'{query}' introuvable.",
+        "createSkill": "Creer '{name}'",
+        "createSkillSuccess": "'{name}' cree et selectionne.",
+        "createSkillError": "Impossible de creer la competence."
       }
     },
     "messages": {

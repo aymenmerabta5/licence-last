@@ -276,7 +276,9 @@
       "languageWeightMax": "Language priority cannot exceed 5",
       "companyVerificationDocumentRequired": "Please upload a company verification document",
       "companyVerificationDocumentType": "Verification document must be a PDF, JPEG, or PNG file",
-      "companyVerificationDocumentSize": "Verification document file size cannot exceed 10MB"
+      "companyVerificationDocumentSize": "Verification document file size cannot exceed 10MB",
+      "fieldNameRequired": "Field name is required",
+      "fieldNameTooLong": "Field name cannot exceed 200 characters"
     }
   },
   "errors": {
@@ -527,6 +529,7 @@
       "validatePlacements": "Validate Placements",
       "deptValidations": "Department Validations",
       "departments": "Departments",
+      "fields": "Fields of Study",
       "statistics": "Statistics",
       "userManagement": "User Management",
       "universityProfile": "University Profile",
@@ -1883,6 +1886,36 @@
           "rowError": "{name}: {error}",
           "selectUniversityFirst": "Select a university to continue.",
           "error": "Something went wrong. Please try again."
+        },
+        "fieldOfStudy": "Field of Study",
+        "selectField": "Select a field of study",
+        "fieldInheritsSkills": "Inherits {count} skills",
+        "noField": "No field assigned",
+        "assignField": "Assign Field"
+      },
+      "fields": {
+        "title": "Fields of Study",
+        "description": "Manage global field-of-study templates and their pre-curated skills.",
+        "addField": "Add Field",
+        "name": "Field name",
+        "namePlaceholder": "e.g. Computer Science",
+        "descriptionLabel": "Description",
+        "skillCount": "{count} skills",
+        "manageSkills": "Manage Skills",
+        "createSuccess": "Field created successfully.",
+        "deleteSuccess": "Field deleted successfully.",
+        "deleteErrorInUse": "Cannot delete: field is assigned to departments.",
+        "error": "Something went wrong.",
+        "skills": {
+          "title": "Skills for {name}",
+          "description": "Select the skills relevant to this field of study.",
+          "save": "Save",
+          "cancel": "Cancel",
+          "skillsSelected": "skills selected",
+          "searchPlaceholder": "Search skills...",
+          "saveSuccess": "Field skills updated.",
+          "createSkill": "Create '{name}'",
+          "createSkillSuccess": "'{name}' created and selected."
         }
       },
       "deptValidations": {
@@ -2383,6 +2416,39 @@
         "searchPlaceholder": "Search skills...",
         "saveSuccess": "Department skills updated.",
         "saveError": "Could not update skills."
+      }
+    },
+    "fields": {
+      "pageTitle": "Fields of Study",
+      "title": "Fields of Study",
+      "description": "Create and manage fields of study and link relevant skills.",
+      "empty": "No fields found. Start by creating one.",
+      "addField": "Add Field",
+      "backToDashboard": "Back to dashboard",
+      "name": "Field Name",
+      "namePlaceholder": "e.g. Computer Science",
+      "description": "Description",
+      "descriptionPlaceholder": "Brief description of this field...",
+      "save": "Create Field",
+      "success": "Field created",
+      "error": "Failed to create field",
+      "createSuccess": "Field created successfully.",
+      "deleteSuccess": "Field deleted successfully.",
+      "manageSkills": "Skills",
+      "deleteConfirm": "Are you sure you want to delete this field?",
+      "skills": {
+        "title": "Skills for {name}",
+        "description": "Select the skills relevant to this field. Students will see these as recommended.",
+        "save": "Save Skills",
+        "cancel": "Cancel",
+        "skillsSelected": "skills selected",
+        "searchPlaceholder": "Search skills...",
+        "saveSuccess": "Field skills updated.",
+        "saveError": "Could not update skills.",
+        "skillNotFound": "'{query}' not found.",
+        "createSkill": "Create '{name}'",
+        "createSkillSuccess": "'{name}' created and selected.",
+        "createSkillError": "Could not create skill."
       }
     },
     "messages": {
