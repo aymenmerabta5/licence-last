@@ -18,6 +18,7 @@ import { cacheLife } from "next/cache"
 export const CACHE_TAGS = {
   // Reference data
   SKILLS: "skills",
+  FIELDS: "fields",
   UNIVERSITIES: "universities",
 
   // Student data

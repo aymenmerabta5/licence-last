@@ -10,6 +10,7 @@ import {
 import { user } from "@/server/db/schema/auth"
 import { company, companyMember } from "@/server/db/schema/companies"
 import { department, departmentSkill } from "@/server/db/schema/departments"
+import { field, fieldSkill } from "@/server/db/schema/fields"
 import {
   internshipOffer,
   internshipOfferSkill,
@@ -123,6 +124,10 @@ export const departmentRelations = relations(department, ({ one, many }) => ({
     fields: [department.universityId],
     references: [university.id],
   }),
+  field: one(field, {
+    fields: [department.fieldId],
+    references: [field.id],
+  }),
   students: many(studentProfile),
   memberships: many(universityMember),
   skills: many(departmentSkill),
@@ -138,6 +143,10 @@ export const departmentSkillRelations = relations(
     skill: one(skillTag, {
       fields: [departmentSkill.skillTagId],
       references: [skillTag.id],
+    }),
+    createdBy: one(user, {
+      fields: [departmentSkill.createdByUserId],
+      references: [user.id],
     }),
   }),
 )
@@ -206,6 +215,22 @@ export const skillTagRelations = relations(skillTag, ({ many }) => ({
   studentSkills: many(studentSkill),
   offerSkills: many(internshipOfferSkill),
   departmentSkills: many(departmentSkill),
+  fieldSkills: many(fieldSkill),
+}))
+
+export const fieldRelations = relations(field, ({ many }) => ({
+  skills: many(fieldSkill),
+}))
+
+export const fieldSkillRelations = relations(fieldSkill, ({ one }) => ({
+  field: one(field, {
+    fields: [fieldSkill.fieldId],
+    references: [field.id],
+  }),
+  skill: one(skillTag, {
+    fields: [fieldSkill.skillTagId],
+    references: [skillTag.id],
+  }),
 }))
 
 // ── Companies ─────────────────────────────────────────

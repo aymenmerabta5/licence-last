@@ -36,6 +36,20 @@
       "when": 1777846474584,
       "tag": "0004_lumpy_angel",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1778008024328,
+      "tag": "0005_superb_the_executioner",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1778008185417,
+      "tag": "0006_tearful_famine",
+      "breakpoints": true
     }
   ]
 }
