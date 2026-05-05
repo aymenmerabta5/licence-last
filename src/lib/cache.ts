@@ -36,6 +36,8 @@ export const CACHE_TAGS = {
   ADMIN_STATS: "admin-stats",
   UNIVERSITY_STATS: (universityId: string) =>
     `university-stats-${universityId}`,
+  DEPARTMENT_STATS: (departmentId: string) =>
+    `department-stats-${departmentId}`,
 
   // Offers
   OFFER_SEARCH: "offer-search",
