@@ -2427,7 +2427,7 @@
       "backToDashboard": "Back to dashboard",
       "name": "Field Name",
       "namePlaceholder": "e.g. Computer Science",
-      "description": "Description",
+      "descriptionLabel": "Description",
       "descriptionPlaceholder": "Brief description of this field...",
       "save": "Create Field",
       "success": "Field created",

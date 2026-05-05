@@ -2427,7 +2427,7 @@
       "backToDashboard": "العودة إلى لوحة التحكم",
       "name": "اسم المجال",
       "namePlaceholder": "مثال: علوم الحاسوب",
-      "description": "الوصف",
+      "descriptionLabel": "الوصف",
       "descriptionPlaceholder": "وصف موجز لهذا المجال...",
       "save": "إنشاء المجال",
       "success": "تم إنشاء المجال",

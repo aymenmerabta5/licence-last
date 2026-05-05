@@ -2427,7 +2427,7 @@
       "backToDashboard": "Retour au tableau de bord",
       "name": "Nom du domaine",
       "namePlaceholder": "ex. Informatique",
-      "description": "Description",
+      "descriptionLabel": "Description",
       "descriptionPlaceholder": "Breve description de ce domaine...",
       "save": "Creer le domaine",
       "success": "Domaine cree",
