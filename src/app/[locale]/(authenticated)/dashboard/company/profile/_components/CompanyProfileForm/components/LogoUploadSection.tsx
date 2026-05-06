@@ -30,10 +30,12 @@ export function LogoUploadSection({
         <div className="relative group shrink-0">
           {logoUrl ? (
             <Image
+              key={logoUrl}
               src={logoUrl}
               alt="Company logo"
               width={112}
               height={112}
+              unoptimized
               className="h-24 w-24 sm:h-28 sm:w-28 object-cover border-2 border-primary/20"
             />
           ) : (

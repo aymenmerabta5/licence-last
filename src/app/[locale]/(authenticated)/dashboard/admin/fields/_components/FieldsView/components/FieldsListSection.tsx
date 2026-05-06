@@ -2,6 +2,8 @@
 
 import { GraduationCap, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
+
 import { FieldCard } from "@/app/[locale]/(authenticated)/dashboard/admin/fields/_components/FieldsView/components/FieldCard"
 import type { FieldItem } from "@/app/[locale]/(authenticated)/dashboard/admin/fields/_components/FieldsView/types"
 import { reveal, revealWithDelay } from "@/lib/animations"
@@ -9,7 +11,6 @@ import { reveal, revealWithDelay } from "@/lib/animations"
 interface FieldsListSectionProps {
   fields: FieldItem[]
   isLoading: boolean
-  emptyLabel: string
   onManageSkills: (fieldId: string) => void
   onDelete: (fieldId: string) => void
 }
@@ -17,16 +18,17 @@ interface FieldsListSectionProps {
 export function FieldsListSection({
   fields,
   isLoading,
-  emptyLabel,
   onManageSkills,
   onDelete,
 }: FieldsListSectionProps) {
+  const t = useTranslations("dashboard.admin.fields")
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-3">
         <Loader2 className="h-5 w-5 animate-spin text-primary" />
         <span className="text-xs uppercase tracking-[0.1em] text-muted-foreground">
-          Loading fields
+          {t("loading")}
         </span>
       </div>
     )
@@ -43,9 +45,9 @@ export function FieldsListSection({
           <GraduationCap className="h-6 w-6 text-muted-foreground/40" />
         </div>
         <div className="space-y-1">
-          <p className="font-serif text-lg text-heading">No fields</p>
+          <p className="font-serif text-lg text-heading">{t("emptyTitle")}</p>
           <p className="text-sm font-light text-muted-foreground">
-            {emptyLabel}
+            {t("empty")}
           </p>
         </div>
       </motion.div>

@@ -1902,18 +1902,27 @@
         "assignField": "Assigner une filière"
       },
       "fields": {
+        "pageTitle": "Filières",
         "title": "Filières",
         "description": "Gérez les modèles de filières globaux et leurs compétences pré-curées.",
+        "empty": "Aucune filière trouvée. Commencez par en créer une.",
+        "emptyTitle": "Aucune filière",
         "addField": "Ajouter une filière",
+        "backToDashboard": "Retour au tableau de bord",
         "name": "Nom de la filière",
         "namePlaceholder": "ex. Informatique",
         "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Brève description de cette filière...",
         "skillCount": "{count} compétences",
         "manageSkills": "Gérer les compétences",
+        "save": "Créer la filière",
+        "success": "Filière créée",
+        "error": "Une erreur est survenue.",
         "createSuccess": "Filière créée avec succès.",
         "deleteSuccess": "Filière supprimée avec succès.",
         "deleteErrorInUse": "Impossible de supprimer : la filière est assignée à des départements.",
-        "error": "Une erreur est survenue.",
+        "deleteConfirm": "Voulez-vous vraiment supprimer cette filière ?",
+        "loading": "Chargement des filières",
         "skills": {
           "title": "Compétences pour {name}",
           "description": "Sélectionnez les compétences pertinentes pour cette filière.",
@@ -1922,8 +1931,11 @@
           "skillsSelected": "compétences sélectionnées",
           "searchPlaceholder": "Rechercher des compétences...",
           "saveSuccess": "Compétences de la filière mises à jour.",
+          "saveError": "Impossible de mettre à jour les compétences.",
+          "skillNotFound": "'{query}' introuvable.",
           "createSkill": "Créer '{name}'",
-          "createSkillSuccess": "'{name}' créé et sélectionné."
+          "createSkillSuccess": "'{name}' créé et sélectionné.",
+          "createSkillError": "Impossible de créer la compétence."
         }
       },
       "deptValidations": {
@@ -2426,39 +2438,7 @@
         "saveError": "Impossible de mettre à jour les compétences."
       }
     },
-    "fields": {
-      "pageTitle": "Domaines d'etude",
-      "title": "Domaines d'etude",
-      "description": "Creez et gerez les domaines d'etude et associez les competences pertinentes.",
-      "empty": "Aucun domaine trouve. Commencez par en creer un.",
-      "addField": "Ajouter un domaine",
-      "backToDashboard": "Retour au tableau de bord",
-      "name": "Nom du domaine",
-      "namePlaceholder": "ex. Informatique",
-      "descriptionLabel": "Description",
-      "descriptionPlaceholder": "Breve description de ce domaine...",
-      "save": "Creer le domaine",
-      "success": "Domaine cree",
-      "error": "Echec de la creation du domaine",
-      "createSuccess": "Domaine cree avec succes.",
-      "deleteSuccess": "Domaine supprime avec succes.",
-      "manageSkills": "Competences",
-      "deleteConfirm": "Voulez-vous vraiment supprimer ce domaine ?",
-      "skills": {
-        "title": "Competences pour {name}",
-        "description": "Selectionnez les competences pertinentes pour ce domaine. Les etudiants les verront comme recommandees.",
-        "save": "Enregistrer les competences",
-        "cancel": "Annuler",
-        "skillsSelected": "competences selectionnees",
-        "searchPlaceholder": "Rechercher des competences...",
-        "saveSuccess": "Competences du domaine mises a jour.",
-        "saveError": "Impossible de mettre a jour les competences.",
-        "skillNotFound": "'{query}' introuvable.",
-        "createSkill": "Creer '{name}'",
-        "createSkillSuccess": "'{name}' cree et selectionne.",
-        "createSkillError": "Impossible de creer la competence."
-      }
-    },
+
     "messages": {
       "kickerStudent": "Boite etudiante",
       "kickerCompany": "Boite entreprise",

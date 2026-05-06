@@ -50,7 +50,6 @@ export function FieldsView() {
       <FieldsListSection
         fields={fields}
         isLoading={isLoading}
-        emptyLabel={t("empty")}
         onManageSkills={setSkillsModalFieldId}
         onDelete={handleDelete}
       />
