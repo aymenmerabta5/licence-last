@@ -1,13 +1,15 @@
 import {
   index,
+  integer,
   pgTable,
   primaryKey,
+  serial,
   text,
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core"
 import { field } from "@/server/db/schema/fields"
-import { skillTag } from "@/server/db/schema/skills"
+import { skillCategory, skillTag } from "@/server/db/schema/skills"
 import { user } from "@/server/db/schema/auth"
 import { university } from "@/server/db/schema/universities"
 
@@ -54,5 +56,26 @@ export const departmentSkill = pgTable(
   (table) => [
     primaryKey({ columns: [table.departmentId, table.skillTagId] }),
     index("department_skill_skillTagId_idx").on(table.skillTagId),
+  ],
+)
+
+export const departmentCategory = pgTable(
+  "department_category",
+  {
+    id: serial("id").primaryKey(),
+    departmentId: text("department_id")
+      .notNull()
+      .references(() => department.id, { onDelete: "cascade" }),
+    categoryId: integer("category_id")
+      .notNull()
+      .references(() => skillCategory.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("department_category_department_category_uidx").on(
+      table.departmentId,
+      table.categoryId,
+    ),
+    index("department_category_department_id_idx").on(table.departmentId),
   ],
 )

@@ -9,7 +9,7 @@ import {
 } from "@/server/db/schema/assistant"
 import { user } from "@/server/db/schema/auth"
 import { company, companyMember } from "@/server/db/schema/companies"
-import { department, departmentSkill } from "@/server/db/schema/departments"
+import { department, departmentCategory, departmentSkill } from "@/server/db/schema/departments"
 import { field, fieldSkill } from "@/server/db/schema/fields"
 import {
   internshipOffer,
@@ -32,7 +32,7 @@ import {
   notificationPreference,
 } from "@/server/db/schema/notifications"
 import { placement, placementDocument } from "@/server/db/schema/placements"
-import { skillTag } from "@/server/db/schema/skills"
+import { skillCategory, skillTag } from "@/server/db/schema/skills"
 import {
   studentExperience,
   studentProject,
@@ -131,6 +131,7 @@ export const departmentRelations = relations(department, ({ one, many }) => ({
   students: many(studentProfile),
   memberships: many(universityMember),
   skills: many(departmentSkill),
+  categories: many(departmentCategory),
 }))
 
 export const departmentSkillRelations = relations(
@@ -211,12 +212,35 @@ export const studentResumeRelations = relations(studentResume, ({ one }) => ({
 
 // ── Skills ────────────────────────────────────────────
 
-export const skillTagRelations = relations(skillTag, ({ many }) => ({
+export const skillTagRelations = relations(skillTag, ({ one, many }) => ({
+  category: one(skillCategory, {
+    fields: [skillTag.categoryId],
+    references: [skillCategory.id],
+  }),
   studentSkills: many(studentSkill),
   offerSkills: many(internshipOfferSkill),
   departmentSkills: many(departmentSkill),
   fieldSkills: many(fieldSkill),
 }))
+
+export const skillCategoryRelations = relations(skillCategory, ({ many }) => ({
+  skills: many(skillTag),
+  departments: many(departmentCategory),
+}))
+
+export const departmentCategoryRelations = relations(
+  departmentCategory,
+  ({ one }) => ({
+    department: one(department, {
+      fields: [departmentCategory.departmentId],
+      references: [department.id],
+    }),
+    category: one(skillCategory, {
+      fields: [departmentCategory.categoryId],
+      references: [skillCategory.id],
+    }),
+  }),
+)
 
 export const fieldRelations = relations(field, ({ many }) => ({
   skills: many(fieldSkill),

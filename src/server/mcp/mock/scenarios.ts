@@ -1,5 +1,6 @@
 import "server-only"
 
+import { eq } from "drizzle-orm"
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { user } from "@/server/db/schema/auth"
@@ -10,7 +11,7 @@ import {
 } from "@/server/db/schema/internships"
 import { notification } from "@/server/db/schema/notifications"
 import { placement, placementDocument } from "@/server/db/schema/placements"
-import { skillTag } from "@/server/db/schema/skills"
+import { skillCategory, skillTag } from "@/server/db/schema/skills"
 import { studentProfile, studentSkill } from "@/server/db/schema/students"
 import { university, universityDomain } from "@/server/db/schema/universities"
 import { createBatchId, createEntityId } from "@/server/mcp/mock/id"
@@ -118,6 +119,23 @@ async function ensureSkillTags(
   const missing = Math.max(0, requiredCount - result.length)
   if (missing === 0) return result
 
+  // Resolve "other" category
+  let otherCategory = await db
+    .select({ id: skillCategory.id })
+    .from(skillCategory)
+    .where(eq(skillCategory.name, "other"))
+    .limit(1)
+
+  if (!otherCategory[0]) {
+    const [inserted] = await db
+      .insert(skillCategory)
+      .values({ name: "other", slug: "other" })
+      .returning({ id: skillCategory.id })
+    otherCategory = [inserted]
+  }
+
+  const categoryId = otherCategory[0].id
+
   const createdRows = Array.from({ length: missing }).map((_, index) => {
     const id = ctx.nextId("skill")
     const sequence = index + 1
@@ -127,6 +145,7 @@ async function ensureSkillTags(
       name,
       slug: `mcpdev-skill-${slugify(ctx.batchId)}-${sequence}`,
       category: "other",
+      categoryId,
     }
   })
 

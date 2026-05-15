@@ -3,7 +3,7 @@ import "server-only"
 import { randomUUID } from "node:crypto"
 import { eq } from "drizzle-orm"
 import { db } from "@/server/db"
-import { skillTag } from "@/server/db/schema/skills"
+import { skillCategory, skillTag } from "@/server/db/schema/skills"
 import { createModuleLogger } from "@/server/logging"
 import { ServiceError } from "@/server/services/errors"
 
@@ -72,6 +72,28 @@ export async function createSkill(name: string, category?: string | null) {
     attempt++
   }
 
+  // Resolve categoryId from category name
+  const categoryName = category?.trim() || "Uncategorized"
+  const [existingCategory] = await db
+    .select({ id: skillCategory.id })
+    .from(skillCategory)
+    .where(eq(skillCategory.name, categoryName))
+    .limit(1)
+
+  let categoryId: number
+  if (existingCategory) {
+    categoryId = existingCategory.id
+  } else {
+    const [insertedCategory] = await db
+      .insert(skillCategory)
+      .values({
+        name: categoryName,
+        slug: categoryName.toLowerCase().replace(/\s+/g, "-"),
+      })
+      .returning({ id: skillCategory.id })
+    categoryId = insertedCategory.id
+  }
+
   const [inserted] = await db
     .insert(skillTag)
     .values({
@@ -79,6 +101,7 @@ export async function createSkill(name: string, category?: string | null) {
       name: trimmed,
       slug,
       category: category?.trim() || null,
+      categoryId,
     })
     .returning({ id: skillTag.id, name: skillTag.name, slug: skillTag.slug })
 
