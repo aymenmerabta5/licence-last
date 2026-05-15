@@ -12,7 +12,9 @@ function createQuery(rows: any[]) {
   })
 }
 
-const mockWhere = mock(() => createQuery(mockSelectResults[selectCallIdx - 1] ?? []))
+const mockWhere = mock(() =>
+  createQuery(mockSelectResults[selectCallIdx - 1] ?? []),
+)
 const mockFrom = mock(() => ({ where: mockWhere }))
 
 mock.module("@/server/db", () => ({
@@ -40,10 +42,20 @@ describe("getEffectiveDepartmentSkillIds", () => {
     mockFrom.mockClear()
   })
 
-  test("should return all department skills in legacy mode (no fieldId)", async () => {
+  test("should return empty array when no categories and no overrides", async () => {
+    mockSelectResults.push([], [])
+
+    const { getEffectiveDepartmentSkillIds } = await loadModule()
+    const result = await getEffectiveDepartmentSkillIds("dept-1")
+
+    expect(result).toEqual([])
+  })
+
+  test("should return skills from department categories", async () => {
     mockSelectResults.push(
-      [{ fieldId: null }],
-      [{ skillTagId: "s1" }, { skillTagId: "s2" }],
+      [{ categoryId: 1 }],
+      [{ id: "s1" }, { id: "s2" }],
+      [],
     )
 
     const { getEffectiveDepartmentSkillIds } = await loadModule()
@@ -52,38 +64,57 @@ describe("getEffectiveDepartmentSkillIds", () => {
     expect(result).toEqual(["s1", "s2"])
   })
 
-  test("should return empty array in legacy mode when no skills", async () => {
-    mockSelectResults.push([{ fieldId: null }], [])
-
-    const { getEffectiveDepartmentSkillIds } = await loadModule()
-    const result = await getEffectiveDepartmentSkillIds("dept-1")
-
-    expect(result).toEqual([])
-  })
-
-  test("should compute effective skills in template mode", async () => {
+  test("should add override skills to baseline", async () => {
     mockSelectResults.push(
-      [{ fieldId: "f1" }],
-      [{ skillTagId: "s1" }, { skillTagId: "s2" }],
-      [{ skillTagId: "s3" }],
-      [{ skillTagId: "s2" }],
+      [{ categoryId: 1 }],
+      [{ id: "s1" }],
+      [{ skillTagId: "s2", action: "add" }],
     )
 
     const { getEffectiveDepartmentSkillIds } = await loadModule()
     const result = await getEffectiveDepartmentSkillIds("dept-1")
 
-    expect(result).toEqual(["s1", "s3"])
+    expect(result).toEqual(["s1", "s2"])
   })
 
-  test("should sort result alphabetically", async () => {
+  test("should remove override skills from baseline", async () => {
     mockSelectResults.push(
-      [{ fieldId: null }],
-      [{ skillTagId: "b" }, { skillTagId: "a" }],
+      [{ categoryId: 1 }],
+      [{ id: "s1" }, { id: "s2" }],
+      [{ skillTagId: "s2", action: "remove" }],
     )
 
     const { getEffectiveDepartmentSkillIds } = await loadModule()
     const result = await getEffectiveDepartmentSkillIds("dept-1")
 
-    expect(result).toEqual(["a", "b"])
+    expect(result).toEqual(["s1"])
+  })
+
+  test("should handle add and remove overrides together", async () => {
+    mockSelectResults.push(
+      [{ categoryId: 1 }],
+      [{ id: "s1" }],
+      [
+        { skillTagId: "s2", action: "add" },
+        { skillTagId: "s1", action: "remove" },
+      ],
+    )
+
+    const { getEffectiveDepartmentSkillIds } = await loadModule()
+    const result = await getEffectiveDepartmentSkillIds("dept-1")
+
+    expect(result).toEqual(["s2"])
+  })
+
+  test("should return override-only skills when no categories", async () => {
+    mockSelectResults.push(
+      [],
+      [{ skillTagId: "s1", action: "add" }],
+    )
+
+    const { getEffectiveDepartmentSkillIds } = await loadModule()
+    const result = await getEffectiveDepartmentSkillIds("dept-1")
+
+    expect(result).toEqual(["s1"])
   })
 })

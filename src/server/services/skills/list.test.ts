@@ -51,7 +51,7 @@ describe("src/server/services/skills/list", () => {
     mockOffset.mockResolvedValue([])
   })
 
-  test("should return all skills when no category filter", async () => {
+  test("should return all skills when no filters", async () => {
     const skills: SkillTag[] = [
       { id: "1", name: "React", slug: "react", category: "frontend" },
       { id: "2", name: "Node.js", slug: "node-js", category: "backend" },
@@ -67,14 +67,27 @@ describe("src/server/services/skills/list", () => {
     expect(mockFrom).toHaveBeenCalled()
   })
 
-  test("should filter by category when provided", async () => {
+  test("should filter by categoryId when provided", async () => {
     const skills: SkillTag[] = [
       { id: "1", name: "React", slug: "react", category: "frontend" },
     ]
     mockOffset.mockResolvedValue(skills)
 
     const { listSkillTags } = await importListSkillTags()
-    const result = await listSkillTags({ category: "frontend" })
+    const result = await listSkillTags({ categoryId: 1 })
+
+    expect(result.skills).toEqual(skills)
+    expect(mockWhere).toHaveBeenCalled()
+  })
+
+  test("should filter by status when provided", async () => {
+    const skills: SkillTag[] = [
+      { id: "1", name: "React", slug: "react", category: "frontend" },
+    ]
+    mockOffset.mockResolvedValue(skills)
+
+    const { listSkillTags } = await importListSkillTags()
+    const result = await listSkillTags({ status: "active" })
 
     expect(result.skills).toEqual(skills)
     expect(mockWhere).toHaveBeenCalled()

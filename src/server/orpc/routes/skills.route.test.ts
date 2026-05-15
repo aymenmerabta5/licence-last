@@ -21,16 +21,31 @@ async function callProcedure<T>(procedure: unknown, args: unknown): Promise<T> {
 const listSkillTagsMock = mock(async () => ({ items: [] }))
 const listSkillTagsPrioritizedMock = mock(async () => ({ items: [] }))
 const createSkillMock = mock(async () => ({
-  id: "skill-1",
-  name: "Test",
-  slug: "test",
-  created: true,
+  status: "created" as const,
+  skill: { id: "skill-1", name: "Test", slug: "test" },
 }))
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   universityProcedureAssistant: createProcedureMock(),
   publicProcedureStandard: createProcedureMock(),
   adminProcedureStandard: createProcedureMock(),
+}))
+
+mock.module("@/server/db", () => ({
+  db: {
+    select: () => ({
+      from: () => ({
+        where: () => ({
+          limit: () => Promise.resolve([{ id: 1 }]),
+        }),
+      }),
+    }),
+    insert: () => ({
+      values: () => ({
+        returning: () => Promise.resolve([{ id: 1 }]),
+      }),
+    }),
+  },
 }))
 
 mock.module("@/server/services/skills/list", () => ({
@@ -56,8 +71,8 @@ describe("src/server/orpc/routes/skills", () => {
     )
 
     const input = {
-      category: "frontend",
-      departmentId: "dep-1",
+      categoryId: 1,
+      status: "active",
       limit: 25,
       offset: 0,
     }
@@ -85,6 +100,9 @@ describe("src/server/orpc/routes/skills", () => {
 
     const result = await callProcedure(createSkillProcedure, {
       input: { name: "Rust", category: "language" },
+      context: {
+        user: { id: "user-1", role: "admin", rawRole: "admin" },
+      },
     })
 
     expect(result).toEqual({
@@ -93,6 +111,10 @@ describe("src/server/orpc/routes/skills", () => {
       slug: "test",
       created: true,
     })
-    expect(createSkillMock).toHaveBeenCalledWith("Rust", "language")
+    expect(createSkillMock).toHaveBeenCalledWith(
+      { name: "Rust", categoryId: 1, force: undefined },
+      "user-1",
+      "admin",
+    )
   })
 })

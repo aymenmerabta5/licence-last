@@ -1,68 +1,44 @@
 import "server-only"
 
-import { and, eq } from "drizzle-orm"
+import { eq, inArray } from "drizzle-orm"
 
 import { db } from "@/server/db"
-import { department, departmentSkill } from "@/server/db/schema/departments"
-import { fieldSkill } from "@/server/db/schema/fields"
+import { departmentCategory, departmentSkill } from "@/server/db/schema"
+import { skillTag } from "@/server/db/schema/skills"
 
 export async function getEffectiveDepartmentSkillIds(
   departmentId: string,
 ): Promise<string[]> {
-  // 1. Get department's fieldId
-  const [deptRow] = await db
-    .select({ fieldId: department.fieldId })
-    .from(department)
-    .where(eq(department.id, departmentId))
-    .limit(1)
+  const deptCategories = await db
+    .select({ categoryId: departmentCategory.categoryId })
+    .from(departmentCategory)
+    .where(eq(departmentCategory.departmentId, departmentId))
 
-  const fieldId = deptRow?.fieldId ?? null
+  const categoryIds = deptCategories.map((dc) => dc.categoryId)
+  let skillIds: string[] = []
 
-  // 2. Legacy mode: no field assignment
-  if (!fieldId) {
-    const rows = await db
-      .select({ skillTagId: departmentSkill.skillTagId })
-      .from(departmentSkill)
-      .where(eq(departmentSkill.departmentId, departmentId))
+  if (categoryIds.length > 0) {
+    const categorySkills = await db
+      .select({ id: skillTag.id })
+      .from(skillTag)
+      .where(inArray(skillTag.categoryId, categoryIds))
 
-    return rows.map((r) => r.skillTagId).sort()
+    skillIds = categorySkills.map((s) => s.id)
   }
 
-  // 3. Template mode: compute effective skills
-  const fieldSkillRows = await db
-    .select({ skillTagId: fieldSkill.skillTagId })
-    .from(fieldSkill)
-    .where(eq(fieldSkill.fieldId, fieldId))
-
-  const effectiveIds = new Set(fieldSkillRows.map((r) => r.skillTagId))
-
-  const addRows = await db
-    .select({ skillTagId: departmentSkill.skillTagId })
+  const overrides = await db
+    .select({
+      skillTagId: departmentSkill.skillTagId,
+      action: departmentSkill.action,
+    })
     .from(departmentSkill)
-    .where(
-      and(
-        eq(departmentSkill.departmentId, departmentId),
-        eq(departmentSkill.action, "add"),
-      ),
-    )
+    .where(eq(departmentSkill.departmentId, departmentId))
 
-  for (const row of addRows) {
-    effectiveIds.add(row.skillTagId)
+  const addSet = new Set(skillIds)
+  for (const override of overrides) {
+    if (override.action === "add") addSet.add(override.skillTagId)
+    else if (override.action === "remove") addSet.delete(override.skillTagId)
   }
 
-  const removeRows = await db
-    .select({ skillTagId: departmentSkill.skillTagId })
-    .from(departmentSkill)
-    .where(
-      and(
-        eq(departmentSkill.departmentId, departmentId),
-        eq(departmentSkill.action, "remove"),
-      ),
-    )
-
-  for (const row of removeRows) {
-    effectiveIds.delete(row.skillTagId)
-  }
-
-  return Array.from(effectiveIds).sort()
+  return Array.from(addSet)
 }

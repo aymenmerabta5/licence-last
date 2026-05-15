@@ -1,7 +1,10 @@
+"use cache"
+
 import "server-only"
 
-import { asc } from "drizzle-orm"
-
+import { asc, eq } from "drizzle-orm"
+import { cacheTag } from "next/cache"
+import { CACHE_PROFILES, CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
 import { skillTag } from "@/server/db/schema/skills"
 import { getEffectiveDepartmentSkillIds } from "@/server/services/departments/get-effective-skills"
@@ -21,6 +24,9 @@ export interface ListSkillTagsPrioritizedResult {
 export async function listSkillTagsPrioritized(
   departmentId: string,
 ): Promise<ListSkillTagsPrioritizedResult> {
+  CACHE_PROFILES.REFERENCE()
+  cacheTag(CACHE_TAGS.SKILLS, `department-${departmentId}`)
+
   const deptSkillIdSet = new Set(
     await getEffectiveDepartmentSkillIds(departmentId),
   )
@@ -33,7 +39,12 @@ export async function listSkillTagsPrioritized(
       category: skillTag.category,
     })
     .from(skillTag)
+    .where(eq(skillTag.status, "active"))
     .orderBy(asc(skillTag.name))
+
+  if (deptSkillIdSet.size === 0) {
+    return { departmentSkills: [], otherSkills: allSkills }
+  }
 
   const departmentSkills: Skill[] = []
   const otherSkills: Skill[] = []

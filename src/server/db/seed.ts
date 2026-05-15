@@ -1,5 +1,7 @@
 import { randomBytes, randomUUID, scryptSync } from "node:crypto"
+import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
+import { skillCategory, skillTag } from "@/server/db/schema"
 
 const logger = console
 const DEFAULT_SEED_UNIVERSITY_ADMIN_NAME = "Seed University Admin"
@@ -222,22 +224,71 @@ function toSlug(name: string): string {
     .replace(/^-+|-+$/g, "")
 }
 
-async function seedSkillTags(db: SeedDb) {
-  for (const entry of SEED_SKILL_TAGS) {
-    const slug = toSlug(entry.name)
-    const existingRows = await db<{ id: string }[]>`
-      select id
-      from "skill_tag"
-      where "slug" = ${slug}
-      limit 1
-    `
+async function seedSkillCategories(db: SeedDb) {
+  const drizzleDb = drizzle(db, { schema: { skillCategory, skillTag } })
 
-    if (!existingRows[0]) {
-      await db`
-        insert into "skill_tag" ("id", "name", "slug", "category")
-        values (${randomUUID()}, ${entry.name}, ${slug}, ${entry.category})
-      `
-      logger.info({ event: "skill_tag_seeded", name: entry.name })
+  const uniqueCategories = Array.from(
+    new Set(SEED_SKILL_TAGS.map((entry) => entry.category)),
+  )
+
+  const categoryValues = uniqueCategories.map((name) => ({
+    name,
+    slug: toSlug(name),
+  }))
+
+  if (categoryValues.length > 0) {
+    await drizzleDb
+      .insert(skillCategory)
+      .values(categoryValues)
+      .onConflictDoNothing({ target: skillCategory.slug })
+
+    logger.info({
+      event: "skill_categories_seeded",
+      count: categoryValues.length,
+    })
+  }
+}
+
+async function seedSkillTags(db: SeedDb) {
+  const drizzleDb = drizzle(db, { schema: { skillCategory, skillTag } })
+
+  const categories = await drizzleDb.select().from(skillCategory)
+  const categoryIdBySlug = new Map(
+    categories.map((c) => [c.slug, c.id]),
+  )
+
+  const values = SEED_SKILL_TAGS.map((entry) => {
+    const slug = toSlug(entry.name)
+    const categorySlug = toSlug(entry.category)
+    const categoryId = categoryIdBySlug.get(categorySlug)
+
+    if (!categoryId) {
+      logger.warn({
+        event: "skill_tag_skip",
+        name: entry.name,
+        reason: `category not found for slug: ${categorySlug}`,
+      })
+      return null
+    }
+
+    return {
+      id: randomUUID(),
+      name: entry.name,
+      slug,
+      category: entry.category,
+      categoryId,
+    }
+  }).filter((v): v is NonNullable<typeof v> => v !== null)
+
+  if (values.length > 0) {
+    const result = await drizzleDb
+      .insert(skillTag)
+      .values(values)
+      .onConflictDoNothing({ target: skillTag.slug })
+      .returning()
+
+    for (const row of result) {
+      logger.info({ event: "skill_tag_seeded", name: row.name })
     }
   }
 }
@@ -920,6 +971,7 @@ async function main() {
     }
 
     await seedDepartments(db)
+    await seedSkillCategories(db)
     await seedSkillTags(db)
     await seedDepartmentSkills(db)
     await seedLinkedUniversityAdmin(db)

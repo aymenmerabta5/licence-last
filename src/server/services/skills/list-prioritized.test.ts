@@ -9,7 +9,8 @@ mock.module("@/server/services/departments/get-effective-skills", () => ({
 }))
 
 const mockOrderBy = mock(() => Promise.resolve([] as any[]))
-const mockFrom = mock(() => ({ orderBy: mockOrderBy }))
+const mockWhere = mock(() => ({ orderBy: mockOrderBy }))
+const mockFrom = mock(() => ({ where: mockWhere }))
 const mockSelect = mock(() => ({ from: mockFrom }))
 
 mock.module("@/server/db", () => ({
@@ -23,9 +24,11 @@ describe("src/server/services/skills/list-prioritized", () => {
     mockSelect.mockClear()
     mockFrom.mockClear()
     mockOrderBy.mockClear()
+    mockWhere.mockClear()
 
     mockSelect.mockReturnValue({ from: mockFrom })
-    mockFrom.mockReturnValue({ orderBy: mockOrderBy })
+    mockFrom.mockReturnValue({ where: mockWhere })
+    mockWhere.mockReturnValue({ orderBy: mockOrderBy })
   })
 
   test("should separate department skills from other skills", async () => {

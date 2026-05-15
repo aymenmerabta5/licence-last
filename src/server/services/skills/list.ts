@@ -2,16 +2,15 @@
 
 import "server-only"
 
-import { and, asc, eq, inArray } from "drizzle-orm"
+import { and, asc, eq } from "drizzle-orm"
 import { cacheTag } from "next/cache"
 import { CACHE_PROFILES, CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
-import { departmentSkill } from "@/server/db/schema/departments"
 import { skillTag } from "@/server/db/schema/skills"
 
 export interface ListSkillTagsInput {
-  category?: string
-  departmentId?: string
+  categoryId?: number
+  status?: string
   limit?: number
   offset?: number
 }
@@ -31,28 +30,24 @@ export async function listSkillTags(
 ): Promise<ListSkillTagsResult> {
   CACHE_PROFILES.REFERENCE()
   cacheTag(CACHE_TAGS.SKILLS)
-  if (input?.category) {
-    cacheTag(`${CACHE_TAGS.SKILLS}-${input.category}`)
+  if (input?.categoryId) {
+    cacheTag(`${CACHE_TAGS.SKILLS}-category-${input.categoryId}`)
   }
-  if (input?.departmentId) {
-    cacheTag(`${CACHE_TAGS.SKILLS}-dept-${input.departmentId}`)
+  if (input?.status) {
+    cacheTag(`${CACHE_TAGS.SKILLS}-status-${input.status}`)
   }
 
   const limit = Math.min(input?.limit ?? 100, 500)
   const offset = input?.offset ?? 0
 
-  // Build conditions
   const conditions = []
-  if (input?.category) {
-    conditions.push(eq(skillTag.category, input.category))
+  if (input?.categoryId) {
+    conditions.push(eq(skillTag.categoryId, input.categoryId))
   }
-  if (input?.departmentId) {
-    // Subquery: get skill IDs linked to this department
-    const deptSkillIds = db
-      .select({ skillTagId: departmentSkill.skillTagId })
-      .from(departmentSkill)
-      .where(eq(departmentSkill.departmentId, input.departmentId))
-    conditions.push(inArray(skillTag.id, deptSkillIds))
+  if (input?.status) {
+    conditions.push(
+      eq(skillTag.status, input.status as "active" | "deprecated"),
+    )
   }
 
   const query = db

@@ -1,76 +1,152 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-const mockLimit = mock(() => Promise.resolve([] as any[]))
+const mockSelectResults: any[][] = []
+let selectCallIdx = 0
+
+const mockLimit = mock(() =>
+  Promise.resolve(mockSelectResults[selectCallIdx - 1] ?? []),
+)
 const mockWhere = mock(() => ({ limit: mockLimit }))
 const mockFrom = mock(() => ({ where: mockWhere }))
-const mockSelect = mock(() => ({ from: mockFrom }))
+const mockSelect = mock(() => {
+  selectCallIdx++
+  return { from: mockFrom }
+})
 
 const mockReturning = mock(() => Promise.resolve([] as any[]))
 const mockValues = mock(() => ({ returning: mockReturning }))
 const mockInsert = mock(() => ({ values: mockValues }))
 
+mock.module("@/server/db", () => ({
+  db: {
+    select: mockSelect,
+    insert: mockInsert,
+  },
+}))
+
 function applyMocks() {
-  mock.module("@/server/db", () => ({
-    db: {
-      select: mockSelect,
-      insert: mockInsert,
-    },
-  }))
+  selectCallIdx = 0
+  mockSelectResults.length = 0
+
+  mockLimit.mockClear()
+  mockWhere.mockClear()
+  mockFrom.mockClear()
+  mockSelect.mockClear()
+  mockInsert.mockClear()
+  mockValues.mockClear()
+  mockReturning.mockClear()
+
+  mockSelect.mockImplementation(() => {
+    selectCallIdx++
+    return { from: mockFrom }
+  })
+  mockFrom.mockReturnValue({ where: mockWhere })
+  mockWhere.mockReturnValue({ limit: mockLimit })
+  mockLimit.mockImplementation(() =>
+    Promise.resolve(mockSelectResults[selectCallIdx - 1] ?? []),
+  )
+  mockInsert.mockReturnValue({ values: mockValues })
+  mockValues.mockReturnValue({ returning: mockReturning })
 }
 
-describe("src/server/services/skills/create", () => {
+describe("createSkill", () => {
   beforeEach(() => {
     applyMocks()
-
-    mockSelect.mockClear()
-    mockFrom.mockClear()
-    mockWhere.mockClear()
-    mockLimit.mockClear()
-    mockInsert.mockClear()
-    mockValues.mockClear()
-    mockReturning.mockClear()
-
-    mockSelect.mockReturnValue({ from: mockFrom })
-    mockFrom.mockReturnValue({ where: mockWhere })
-    mockWhere.mockReturnValue({ limit: mockLimit })
-    mockInsert.mockReturnValue({ values: mockValues })
-    mockValues.mockReturnValue({ returning: mockReturning })
   })
 
-  test("should create a new skill when name does not exist", async () => {
-    mockLimit.mockResolvedValue([])
-    mockReturning.mockResolvedValue([
-      { id: "skill-1", name: "React", slug: "react" },
+  test("should return exists for exact match", async () => {
+    mockSelectResults.push([
+      { id: "skill-1", name: "React", slug: "react", categoryId: 1 },
     ])
 
     const { createSkill } = await import(
       `@/server/services/skills/create?fresh=${Date.now()}`
     )
 
-    const result = await createSkill("React", "frontend")
+    const result = await createSkill(
+      { name: "React", categoryId: 1 },
+      "user-1",
+      "admin",
+    )
 
-    expect(result.created).toBe(true)
-    expect(result.id).toBe("skill-1")
-    expect(result.name).toBe("React")
-    expect(result.slug).toBe("react")
-    expect(result.category).toBe("frontend")
+    expect(result.status).toBe("exists")
+    expect(result.skill.id).toBe("skill-1")
+    expect(mockInsert).not.toHaveBeenCalled()
+  })
+
+  test("should return similar_exists for close match", async () => {
+    mockSelectResults.push(
+      [],
+      [{ id: "skill-1", name: "Reacct", slug: "reacct", categoryId: 1 }],
+    )
+
+    const { createSkill } = await import(
+      `@/server/services/skills/create?fresh=${Date.now()}`
+    )
+
+    const result = await createSkill(
+      { name: "Reacct", categoryId: 1 },
+      "user-1",
+      "admin",
+    )
+
+    expect(result.status).toBe("similar_exists")
+    expect(result.similar).toHaveLength(1)
+    expect(mockInsert).not.toHaveBeenCalled()
+  })
+
+  test("should create new skill when no match", async () => {
+    mockSelectResults.push([], [])
+    mockReturning.mockResolvedValue([
+      {
+        id: "new-skill",
+        name: "Quantum Computing",
+        slug: "quantum-computing",
+        categoryId: 1,
+      },
+    ])
+
+    const { createSkill } = await import(
+      `@/server/services/skills/create?fresh=${Date.now()}`
+    )
+
+    const result = await createSkill(
+      { name: "Quantum Computing", categoryId: 1 },
+      "user-1",
+      "admin",
+    )
+
+    expect(result.status).toBe("created")
+    expect(result.skill.id).toBe("new-skill")
     expect(mockInsert).toHaveBeenCalledTimes(1)
   })
 
-  test("should return existing skill when exact name already exists", async () => {
-    mockLimit.mockResolvedValue([
-      { id: "skill-1", name: "React", slug: "react" },
+  test("should force create when similar exists and force is true", async () => {
+    mockSelectResults.push(
+      [],
+      [{ id: "skill-1", name: "Reacct", slug: "reacct", categoryId: 1 }],
+    )
+    mockReturning.mockResolvedValue([
+      {
+        id: "new-skill",
+        name: "Reacct",
+        slug: "reacct",
+        categoryId: 1,
+      },
     ])
 
     const { createSkill } = await import(
       `@/server/services/skills/create?fresh=${Date.now()}`
     )
 
-    const result = await createSkill("React")
+    const result = await createSkill(
+      { name: "Reacct", categoryId: 1, force: true },
+      "user-1",
+      "admin",
+    )
 
-    expect(result.created).toBe(false)
-    expect(result.id).toBe("skill-1")
-    expect(mockInsert).not.toHaveBeenCalled()
+    expect(result.status).toBe("created")
+    expect(mockInsert).toHaveBeenCalledTimes(1)
   })
 
   test("should throw SKILL_NAME_REQUIRED for empty name", async () => {
@@ -78,7 +154,9 @@ describe("src/server/services/skills/create", () => {
       `@/server/services/skills/create?fresh=${Date.now()}`
     )
 
-    await expect(createSkill("   ")).rejects.toMatchObject({
+    await expect(
+      createSkill({ name: "   ", categoryId: 1 }, "user-1", "admin"),
+    ).rejects.toMatchObject({
       code: "SKILL_NAME_REQUIRED",
       message: "Skill name is required",
     })
@@ -89,59 +167,11 @@ describe("src/server/services/skills/create", () => {
       `@/server/services/skills/create?fresh=${Date.now()}`
     )
 
-    await expect(createSkill("a".repeat(101))).rejects.toMatchObject({
+    await expect(
+      createSkill({ name: "a".repeat(101), categoryId: 1 }, "user-1", "admin"),
+    ).rejects.toMatchObject({
       code: "SKILL_NAME_TOO_LONG",
       message: "Skill name must be at most 100 characters",
     })
-  })
-
-  test("should generate URL-safe slug from name", async () => {
-    mockLimit.mockResolvedValue([])
-    mockReturning.mockResolvedValue([{ id: "skill-1", name: "C++", slug: "c" }])
-
-    const { createSkill } = await import(
-      `@/server/services/skills/create?fresh=${Date.now()}`
-    )
-
-    await createSkill("C++")
-
-    const payload = (
-      mockValues.mock.calls[0] as unknown as [Record<string, unknown>]
-    )[0]
-    expect(payload.slug).toBeDefined()
-  })
-
-  test("should handle null category", async () => {
-    mockLimit.mockResolvedValue([])
-    mockReturning.mockResolvedValue([
-      { id: "skill-1", name: "React", slug: "react" },
-    ])
-
-    const { createSkill } = await import(
-      `@/server/services/skills/create?fresh=${Date.now()}`
-    )
-
-    const result = await createSkill("React")
-
-    expect(result.category).toBeNull()
-  })
-
-  test("should trim name and category", async () => {
-    mockLimit.mockResolvedValue([])
-    mockReturning.mockResolvedValue([
-      { id: "skill-1", name: "React", slug: "react" },
-    ])
-
-    const { createSkill } = await import(
-      `@/server/services/skills/create?fresh=${Date.now()}`
-    )
-
-    await createSkill("  React  ", "  frontend  ")
-
-    const payload = (
-      mockValues.mock.calls[0] as unknown as [Record<string, unknown>]
-    )[0]
-    expect(payload.name).toBe("React")
-    expect(payload.category).toBe("frontend")
   })
 })
