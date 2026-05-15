@@ -75,3 +75,36 @@ export function createStudentProfileSchema(
       }
     })
 }
+
+/**
+ * Student profile details schema for settings page.
+ * Lighter subset without skills/languages, includes name.
+ */
+export function createStudentProfileDetailsSchema(t: TranslationFn) {
+  return z.object({
+    name: z.string().trim().min(2, { error: t("nameMin") }).max(120),
+    bio: z.string().optional(),
+    phone: z.string().optional(),
+    githubUrl: z
+      .string()
+      .url({ error: t("githubUrlInvalid") })
+      .optional()
+      .or(z.literal("")),
+    portfolioUrl: z
+      .string()
+      .url({ error: t("portfolioUrlInvalid") })
+      .optional()
+      .or(z.literal("")),
+    studentNumber: z.string().optional(),
+    department: z.string().optional(),
+    level: z.string().optional(),
+    wilayaCode: z.coerce
+      .number()
+      .int()
+      .min(1, { error: t("wilayaRequired") })
+      .max(58, { error: t("wilayaInvalid") })
+      .optional()
+      .or(z.literal(0)),
+    address: z.string().optional(),
+  })
+}

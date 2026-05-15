@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { fadeIn } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
 interface ConversationComposerProps {
@@ -82,8 +83,7 @@ export function ConversationComposer({
 
       {errorMessage && (
         <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          {...fadeIn}
           className="text-xs text-destructive"
         >
           {errorMessage}

@@ -8,6 +8,10 @@ mock.module("motion/react-client", () => ({
   ),
 }))
 
+mock.module("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
+}))
+
 const { ResumeSection } = await import(
   "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/ResumeSection"
 )

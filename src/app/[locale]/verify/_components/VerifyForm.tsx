@@ -52,8 +52,7 @@ export function VerifyForm() {
       <form onSubmit={handleSubmit} className="space-y-5">
         <motion.div
           className="space-y-2"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
+          {...reveal}
           transition={{ duration: 0.5, ease, delay: 0.25 }}
         >
           <Input
@@ -67,8 +66,7 @@ export function VerifyForm() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
+          {...reveal}
           transition={{ duration: 0.5, ease, delay: 0.35 }}
         >
           <Button

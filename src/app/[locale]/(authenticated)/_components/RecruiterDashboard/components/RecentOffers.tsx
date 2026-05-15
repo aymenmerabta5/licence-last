@@ -3,6 +3,7 @@
 import { ArrowRight, Briefcase, Users } from "lucide-react"
 import * as motion from "motion/react-client"
 import type { Route } from "next"
+import { useTranslations } from "next-intl"
 import { Badge } from "@/components/ui/badge"
 import { Link } from "@/i18n/routing"
 import { ease, reveal } from "@/lib/animations"
@@ -28,6 +29,7 @@ interface RecentOffersProps {
 }
 
 export function RecentOffers({ offers }: RecentOffersProps) {
+  const t = useTranslations("dashboard.recruiter.offers")
   if (offers.length === 0) {
     return (
       <motion.div
@@ -38,10 +40,10 @@ export function RecentOffers({ offers }: RecentOffersProps) {
         <div className="flex items-end justify-between border-b-4 border-foreground pb-4">
           <div>
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/70 mb-2 block">
-              Positions
+              {t("positions")}
             </span>
             <h2 className="font-serif text-3xl font-normal text-foreground tracking-tighter">
-              Your Offers<span className="text-primary/40 leading-none">.</span>
+              {t("yourOffers")}<span className="text-primary/40 leading-none">.</span>
             </h2>
           </div>
         </div>
@@ -51,10 +53,10 @@ export function RecentOffers({ offers }: RecentOffersProps) {
             <Briefcase className="h-6 w-6 text-foreground/40" />
           </div>
           <h3 className="font-serif text-2xl text-foreground mb-3 relative z-10">
-            No Offers Yet
+            {t("noOffersYet")}
           </h3>
           <p className="text-xs text-foreground/50 font-medium max-w-sm relative z-10">
-            Post your first internship position.
+            {t("postFirstOffer")}
           </p>
         </div>
       </motion.div>
@@ -67,13 +69,13 @@ export function RecentOffers({ offers }: RecentOffersProps) {
       transition={{ duration: 0.6, delay: 0.3, ease }}
       className="space-y-8 relative"
     >
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b-4 border-foreground pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b-4 border-foreground pb-4">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/70 mb-2 block">
-            Positions
+            {t("positions")}
           </span>
           <h2 className="font-serif text-3xl md:text-5xl font-normal tracking-tighter text-foreground mb-4 sm:mb-0">
-            Your Offers<span className="text-primary/40 leading-none">.</span>
+            {t("yourOffers")}<span className="text-primary/40 leading-none">.</span>
           </h2>
         </div>
         <Link
@@ -81,7 +83,7 @@ export function RecentOffers({ offers }: RecentOffersProps) {
           prefetch={false}
           className="text-foreground hover:bg-foreground hover:text-background border border-transparent hover:border-foreground transition-all duration-300 font-bold uppercase tracking-[0.15em] text-[10px] py-1 px-3 h-8 flex items-center group/btn"
         >
-          View All{" "}
+          {t("viewAll")}{" "}
           <ArrowRight className="inline h-3 w-3 ms-2 group-hover/btn:translate-x-1 transition-transform" />
         </Link>
       </div>
@@ -121,7 +123,7 @@ export function RecentOffers({ offers }: RecentOffersProps) {
             <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0 border-t sm:border-t-0 border-border/20 pt-4 sm:pt-0 group-hover:border-background/20 relative z-10">
               <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.15em] text-foreground/50 group-hover:text-background/50">
                 <Users className="h-3.5 w-3.5" />
-                <span>Candidates</span>
+                <span>{t("candidatesLabel")}</span>
               </div>
               <span className="font-serif text-2xl font-normal tracking-tighter text-foreground group-hover:text-primary tabular-nums">
                 {offer.candidatesCount}

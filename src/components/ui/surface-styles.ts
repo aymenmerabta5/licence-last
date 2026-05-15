@@ -4,7 +4,7 @@ export const modalOverlayClassName =
   "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs fixed inset-0 isolate z-50"
 
 export const modalContentClassName =
-  "bg-background data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 ring-foreground/10 fixed top-1/2 left-1/2 z-50 grid w-full -translate-x-1/2 -translate-y-1/2 gap-4 text-sm outline-none duration-100"
+  "bg-background data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 ring-foreground/10 fixed top-1/2 start-1/2 z-50 grid w-full -translate-x-1/2 -translate-y-1/2 gap-4 text-sm outline-none duration-100"
 
 export const modalHeaderClassName = "flex flex-col gap-2"
 

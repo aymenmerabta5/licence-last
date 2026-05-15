@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 import type { CompanyStatus } from "@/lib/schemas/enums"
 
 interface CompanyStatusFilterProps {
@@ -31,8 +31,7 @@ export function CompanyStatusFilter({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ duration: 0.4, delay: 0.15, ease }}
       className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
     >

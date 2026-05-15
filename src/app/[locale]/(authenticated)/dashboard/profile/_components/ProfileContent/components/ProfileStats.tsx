@@ -2,7 +2,7 @@
 
 import type { LucideIcon } from "lucide-react"
 import * as motion from "motion/react-client"
-import { ease } from "@/lib/animations"
+import { ease, fadeIn, reveal } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
 interface StatItem {
@@ -19,8 +19,7 @@ interface ProfileStatsProps {
 export function ProfileStats({ stats }: ProfileStatsProps) {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      {...fadeIn}
       transition={{ duration: 0.6, delay: 0.2, ease }}
       className="grid grid-cols-1 sm:grid-cols-3 gap-6 2xl:gap-8"
     >
@@ -32,8 +31,7 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
         return (
           <motion.div
             key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            {...reveal}
             transition={{ delay: 0.3 + i * 0.1, duration: 0.6, ease }}
             className="group relative"
           >

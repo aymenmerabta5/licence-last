@@ -1,6 +1,7 @@
-import { cn } from "@/lib/utils"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+import { ease, reveal } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
 export function StatsBar() {
   const t = useTranslations("stats")
@@ -15,9 +16,8 @@ export function StatsBar() {
   return (
     <section className="px-5 sm:px-8 lg:px-16 pb-16 sm:pb-20">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: "easeOut", delay: 0.5 }}
+        {...reveal}
+        transition={{ duration: 0.7, ease, delay: 0.5 }}
         className="mx-auto max-w-6xl grid grid-cols-2 md:grid-cols-4 gap-0 rounded-3xl border border-border/60 bg-background shadow-[0_4px_40px_-12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_40px_-12px_rgba(0,0,0,0.2)] overflow-hidden transition-all duration-500"
       >
         {stats.map((stat, i) => (

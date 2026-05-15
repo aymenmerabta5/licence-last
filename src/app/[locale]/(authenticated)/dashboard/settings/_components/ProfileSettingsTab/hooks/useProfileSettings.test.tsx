@@ -27,8 +27,9 @@ mock.module("next-intl", () => ({
     })[key] ?? key,
 }))
 
-mock.module("next/navigation", () => ({
+mock.module("@/i18n/routing", () => ({
   useRouter: () => ({ refresh: mock(() => {}) }),
+  Link: ({ children }: { children: ReactNode }) => children,
 }))
 
 mock.module("@/lib/auth-client", () => ({

@@ -6,7 +6,7 @@ import { useLocale } from "next-intl"
 import type { StudentExperience } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface ExperienceSectionProps {
   experiences: StudentExperience[]
@@ -32,8 +32,7 @@ export function ExperienceSection({
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ delay: 0.5, duration: 0.8, ease }}
       className="space-y-10"
     >

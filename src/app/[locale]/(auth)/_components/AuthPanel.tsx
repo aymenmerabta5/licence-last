@@ -2,7 +2,7 @@
 
 import { ArrowLeft } from "lucide-react"
 import * as motion from "motion/react-client"
-import Link from "next/link"
+import { Link } from "@/i18n/routing"
 import { useTranslations } from "next-intl"
 
 import { ease, reveal } from "@/lib/animations"

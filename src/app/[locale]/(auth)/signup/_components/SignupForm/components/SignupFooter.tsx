@@ -4,7 +4,7 @@ import * as motion from "motion/react-client"
 
 import { Separator } from "@/components/ui/separator"
 import { Link } from "@/i18n/routing"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface SignupFooterProps {
   orLabel: string
@@ -20,8 +20,7 @@ export function SignupFooter({
   return (
     <>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        {...reveal}
         transition={{ duration: 0.6, ease, delay: 0.25 }}
         className="relative"
       >
@@ -32,8 +31,7 @@ export function SignupFooter({
       </motion.div>
 
       <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        {...reveal}
         transition={{ duration: 0.6, ease, delay: 0.3 }}
         className="text-center text-sm text-muted-foreground"
       >

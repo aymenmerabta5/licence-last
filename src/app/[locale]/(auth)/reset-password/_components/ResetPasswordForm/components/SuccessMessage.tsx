@@ -5,15 +5,14 @@ import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 
 import { Link } from "@/i18n/routing"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 export function SuccessMessage() {
   const t = useTranslations("auth.resetPassword")
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ duration: 0.5, ease }}
       className="space-y-8"
     >

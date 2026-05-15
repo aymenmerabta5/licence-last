@@ -38,6 +38,7 @@ export function ToolInvocationBody({
   onRetry,
 }: ToolInvocationBodyProps) {
   const t = useTranslations("dashboard.assistant")
+  const tTool = useTranslations("dashboard.assistant.tool")
   const isAuthRequired = isAuthorizationRequiredOutput(output)
   const toolOutputError =
     isRecord(output) && typeof output.error === "string" ? output.error : null
@@ -111,7 +112,7 @@ export function ToolInvocationBody({
 
         <div className="flex items-center justify-between">
           <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-            {showRaw ? "Raw Data" : "Summary"}
+            {showRaw ? tTool("rawData") : tTool("summary")}
           </p>
           <Button
             type="button"
@@ -120,7 +121,7 @@ export function ToolInvocationBody({
             onClick={onToggleRaw}
             className="h-6 text-[10px]"
           >
-            {showRaw ? "Show Summary" : "Show Raw"}
+            {showRaw ? tTool("showSummary") : tTool("showRaw")}
           </Button>
         </div>
 
@@ -155,7 +156,7 @@ export function ToolInvocationBody({
             {isRecord(output) && typeof output.result === "string" ? (
               <p>{output.result}</p>
             ) : (
-              <p>Tool executed successfully</p>
+              <p>{tTool("executedSuccessfully")}</p>
             )}
           </div>
         ) : null}

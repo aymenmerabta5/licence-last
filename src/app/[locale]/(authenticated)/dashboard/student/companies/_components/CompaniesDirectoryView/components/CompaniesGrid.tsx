@@ -58,8 +58,7 @@ export function CompaniesGrid({
         {companies.map((company, i) => (
           <motion.div
             key={company.id}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
+            {...reveal}
             transition={{ duration: 0.4, ease, delay: 0.03 * (i % 12) }}
           >
             <CompanyDirectoryCard company={company} />

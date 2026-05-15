@@ -24,7 +24,7 @@ export function HeroContent({
       <motion.div
         {...revealVariants}
         transition={getTransition(
-          { duration: 0.7, ease: "easeOut" },
+          { duration: 0.7, ease },
           prefersReducedMotion,
         )}
         className="mb-8 flex items-center gap-3"
@@ -38,7 +38,7 @@ export function HeroContent({
       <motion.h1
         {...revealVariants}
         transition={getTransition(
-          { duration: 0.7, ease: "easeOut", delay: 0.12 },
+          { duration: 0.7, ease, delay: 0.12 },
           prefersReducedMotion,
         )}
         className="font-serif text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
@@ -75,7 +75,7 @@ export function HeroContent({
       <motion.div
         {...revealVariants}
         transition={getTransition(
-          { duration: 0.7, ease: "easeOut", delay: 0.24 },
+          { duration: 0.7, ease, delay: 0.24 },
           prefersReducedMotion,
         )}
         className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-8 border-t border-border pt-6 sm:pt-8 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
@@ -91,7 +91,7 @@ export function HeroContent({
       <motion.div
         {...revealVariants}
         transition={getTransition(
-          { duration: 0.7, ease: "easeOut", delay: 0.36 },
+          { duration: 0.7, ease, delay: 0.36 },
           prefersReducedMotion,
         )}
         className="mt-6 sm:mt-10 flex flex-wrap items-center gap-4 sm:gap-6"

@@ -3,7 +3,7 @@ import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import type { OnboardingFormApi } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/types"
 import { Button } from "@/components/ui/button"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface StudentSubmitSectionProps {
   form: OnboardingFormApi
@@ -14,8 +14,7 @@ export function StudentSubmitSection({ form }: StudentSubmitSectionProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ duration: 0.6, ease, delay: 0.2 }}
       className="pt-2"
     >

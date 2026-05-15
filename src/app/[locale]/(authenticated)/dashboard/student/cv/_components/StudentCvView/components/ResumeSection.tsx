@@ -2,6 +2,7 @@
 
 import { FileText, Trash2, Upload } from "lucide-react"
 import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
 import { useRef } from "react"
 
 import type { StudentCvResume } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/types"
@@ -30,6 +31,7 @@ export function ResumeSection({
   onUpload,
   onDelete,
 }: ResumeSectionProps) {
+  const t = useTranslations("dashboard.student.cv")
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   return (
@@ -40,13 +42,13 @@ export function ResumeSection({
     >
       <div className="flex items-center justify-between gap-4 border-b border-border/50 px-6 py-4">
         <div className="flex items-center gap-3">
-          <h2 className="font-serif text-xl text-heading">Resume</h2>
+          <h2 className="font-serif text-xl text-heading">{t("resume")}</h2>
           {resume && (
             <Badge
               variant="outline"
               className="text-[10px] font-bold uppercase tracking-[0.18em]"
             >
-              Uploaded
+              {t("uploaded")}
             </Badge>
           )}
         </div>
@@ -58,7 +60,7 @@ export function ResumeSection({
           onClick={() => fileInputRef.current?.click()}
         >
           <Upload className="h-3.5 w-3.5" />
-          {isUploading ? "Uploading..." : "Upload PDF"}
+          {isUploading ? t("uploading") : t("uploadPdf")}
         </Button>
       </div>
 
@@ -89,7 +91,7 @@ export function ResumeSection({
                   {resume.fileName}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {formatBytes(resume.fileSizeBytes)} · Uploaded{" "}
+                  {formatBytes(resume.fileSizeBytes)} · {t("uploaded")}{" "}
                   {new Date(resume.uploadedAt).toLocaleDateString()}
                 </p>
               </div>
@@ -104,7 +106,7 @@ export function ResumeSection({
                   window.open(resume.fileUrl, "_blank", "noopener,noreferrer")
                 }
               >
-                Open
+                {t("open")}
               </Button>
               <Button
                 type="button"
@@ -117,7 +119,7 @@ export function ResumeSection({
                 className="gap-1.5 text-destructive border-destructive/30 hover:bg-destructive/5"
               >
                 <Trash2 className="h-3.5 w-3.5" />
-                {isDeleting ? "Deleting..." : "Delete"}
+                {isDeleting ? t("deleting") : t("delete")}
               </Button>
             </div>
           </div>
@@ -127,7 +129,7 @@ export function ResumeSection({
               <FileText className="h-5 w-5 text-muted-foreground/40" />
             </div>
             <p className="text-sm text-muted-foreground">
-              No resume uploaded yet.
+              {t("noResume")}
             </p>
           </div>
         )}

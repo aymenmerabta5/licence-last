@@ -1,6 +1,7 @@
 "use client"
 
 import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
 import { Badge } from "@/components/ui/badge"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
@@ -12,6 +13,7 @@ interface RecruiterHeroProps {
 }
 
 export function RecruiterHero({ activeOffers, trustData }: RecruiterHeroProps) {
+  const t = useTranslations("dashboard.recruiter.hero")
   const now = new Date()
 
   return (
@@ -24,7 +26,7 @@ export function RecruiterHero({ activeOffers, trustData }: RecruiterHeroProps) {
 
       <div className="space-y-3">
         <motion.div {...reveal} transition={revealWithDelay(0.05)}>
-          <Badge variant="editorial-muted">Company</Badge>
+          <Badge variant="editorial-muted">{t("badge")}</Badge>
         </motion.div>
 
         <motion.div
@@ -34,12 +36,12 @@ export function RecruiterHero({ activeOffers, trustData }: RecruiterHeroProps) {
         >
           <div className="space-y-3">
             <p className="text-sm italic text-muted-foreground">
-              Talent Acquisition
+              {t("talentAcquisition")}
             </p>
             <h1 className="font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-heading max-w-2xl">
               {activeOffers > 0
-                ? "Your pipeline is active."
-                : "Ready to find your next intern?"}
+                ? t("pipelineActive")
+                : t("findNextIntern")}
             </h1>
             <p className="text-sm font-light text-muted-foreground max-w-xl">
               {activeOffers > 0
@@ -70,7 +72,7 @@ export function RecruiterHero({ activeOffers, trustData }: RecruiterHeroProps) {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-4">
                     <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
-                      Trust Score
+                      {t("trustScore")}
                     </span>
                     <span className="font-serif text-lg text-heading tabular-nums">
                       {trustData.trustScore}

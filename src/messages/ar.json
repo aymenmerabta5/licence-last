@@ -651,7 +651,14 @@
       "retryTool": "إعادة المحاولة",
       "authStatus": "الحالة: {status}",
       "unknown": "غير معروف",
-      "generatingTitle": "جارٍ إنشاء العنوان…"
+      "generatingTitle": "جارٍ إنشاء العنوان…",
+      "tool": {
+        "rawData": "البيانات الخام",
+        "summary": "الملخص",
+        "showSummary": "عرض الملخص",
+        "showRaw": "عرض البيانات الخام",
+        "executedSuccessfully": "تم تنفيذ الأداة بنجاح"
+      }
     },
     "notifications": {
       "title": "الإشعارات",
@@ -1172,7 +1179,8 @@
         "exploreInternships": "استكشاف التربصات",
         "profileStrength": "قوة الملف الشخصي",
         "profileReady": "ملفك جاهز",
-        "profileRemaining": "بقي {remaining}% للإكمال"
+        "profileRemaining": "بقي {remaining}% للإكمال",
+        "badge": "طالب"
       },
       "status": {
         "applied": "قيد الانتظار",
@@ -1252,6 +1260,27 @@
         "languagesLabel": "اللغات",
         "githubLabel": "جيثب",
         "portfolioLabel": "معرض الأعمال"
+      },
+      "cv": {
+        "resume": "السيرة الذاتية",
+        "uploaded": "تم الرفع",
+        "uploadPdf": "رفع ملف PDF",
+        "uploading": "جارٍ الرفع...",
+        "open": "فتح",
+        "delete": "حذف",
+        "deleting": "جارٍ الحذف...",
+        "noResume": "لم يتم رفع سيرة ذاتية بعد.",
+        "projects": "المشاريع",
+        "project": "مشروع",
+        "projectsCount": "{count} {count, plural, one {مشروع} other {مشاريع}}",
+        "add": "إضافة",
+        "noProjects": "لم تُضف مشاريع بعد.",
+        "experience": "الخبرة",
+        "entry": "مخرج",
+        "entries": "مخرجات",
+        "addExperience": "إضافة",
+        "noExperience": "لم تُضف خبرات بعد.",
+        "experienceCount": "{count} {count, plural, one {مُدخَل} other {مُدخَلات}}"
       }
     },
     "explore": {
@@ -1452,7 +1481,22 @@
         "manageOffers": "إدارة العروض",
         "reviewCandidates": "مراجعة التطبيقات"
       },
-      "pipeline": "خط أنابيب المرشح"
+      "pipeline": "خط أنابيب المرشح",
+      "hero": {
+        "badge": "شركة",
+        "talentAcquisition": "اكتساب المواهب",
+        "pipelineActive": "مسارك نشط.",
+        "findNextIntern": "هل أنت مستعد لإيجاد متدربك التالي؟",
+        "trustScore": "نقطة الثقة"
+      },
+      "offers": {
+        "positions": "المناصب",
+        "yourOffers": "عروضك.",
+        "viewAll": "عرض الكل",
+        "candidatesLabel": "المرشحون",
+        "noOffersYet": "لا توجد عروض بعد",
+        "postFirstOffer": "انشر أول عرض تدريب لك."
+      }
     },
     "deptHeadDashboard": {
       "subtitle": "مراجعة طلبات التوظيف لقسمك",
@@ -1740,7 +1784,19 @@
       "stats": {
         "totalPlacements": "إجمالي المواضع",
         "pendingValidation": "في انتظار التحقق من الصحة",
-        "docsGenerated": "تم إنشاء المستندات"
+        "docsGenerated": "تم إنشاء المستندات",
+        "reports": {
+          "updateReportStatus": "تحديث حالة التقرير",
+          "resolveOrDismiss": "حل أو رفض هذا التقرير. يمكن الإشارة إلى ملاحظة اختيارية لتوثيق القرار.",
+          "decision": "القرار",
+          "resolve": "حل",
+          "dismiss": "رفض",
+          "resolutionNote": "ملاحظة الحل (اختياري)",
+          "resolutionNotePlaceholder": "أضف سياقاً لسجل التدقيق",
+          "cancel": "إلغاء",
+          "saveDecision": "حفظ القرار",
+          "saving": "جارٍ الحفظ..."
+        }
       },
       "actions": {
         "validatePlacements": "التحقق من صحة المواضع",
@@ -1899,7 +1955,9 @@
         "selectField": "Select a field of study",
         "fieldInheritsSkills": "Inherits {count} skills",
         "noField": "No field assigned",
-        "assignField": "Assign Field"
+        "assignField": "Assign Field",
+        "loading": "جارٍ تحميل الأقسام",
+        "noDepartmentsTitle": "لا توجد أقسام"
       },
       "fields": {
         "pageTitle": "مجالات الدراسة",
@@ -2097,6 +2155,12 @@
         "badge": "???? ??????",
         "title": "???? ??????",
         "description": "???? ????????? ???????? ??????? ??????? ???? ??????? ??? ???? Stag."
+      },
+      "trustLeaderboard": {
+        "securityRating": "تقييم الأمان",
+        "trustIndex": "مؤشر الثقة",
+        "score": "النقطة",
+        "viewAllAnalytics": "عرض جميع التحليلات"
       }
     },
     "superAdmin": {
@@ -2408,7 +2472,21 @@
         "changing": "Changing...",
         "submit": "Change Password",
         "success": "Password changed successfully."
-      }
+      },
+      "profileIdentity": "هوية الملف الشخصي",
+      "profileIdentityDescription": "تحكم هذه المعلومات في كيفية إدراك الشركات والمسؤولين لوجودك الرقمي عبر المنصة.",
+      "personalInformation": "المعلومات الشخصية",
+      "saved": "تم الحفظ.",
+      "securityBaseline": "خط الأمان الأساسي",
+      "securityBaselineDescription": "إعدادات المصادقة الرئيسية. حافظ على بيانات اعتماد قوية لحماية محيطك الرقمي.",
+      "primaryEmail": "البريد الإلكتروني الرئيسي",
+      "primaryEmailDescription": "يستخدم لتسجيل الدخول والإشعارات الرسمية.",
+      "passwordLabel": "كلمة المرور",
+      "passwordDescription": "تحديث كلمة المرور. سيتم إلغاء الجلسات النشطة الأخرى.",
+      "update": "تحديث",
+      "dangerZone": "منطقة الخطر",
+      "dangerZoneDescription": "حذف حسابك وجميع البيانات المرتبطة به نهائياً. لا يمكن التراجع عن هذا الإجراء.",
+      "deleteAccountButton": "حذف الحساب"
     },
     "departments": {
       "pageTitle": "إدارة الأقسام",
@@ -2438,7 +2516,6 @@
         "saveError": "لا يمكن تحديث المهارات."
       }
     },
-
     "messages": {
       "kickerStudent": "صندوق الطالب",
       "kickerCompany": "صندوق الشركة",
@@ -2593,6 +2670,9 @@
         "requestChangeSuccess": "تم إرسال الرسالة إلى {companyName}.",
         "backToInterviews": "العودة إلى المقابلات"
       }
+    },
+    "placementValidations": {
+      "noValidationsTitle": "لا توجد مصادقات"
     }
   },
   "howItWorks": {
@@ -3171,5 +3251,51 @@
     "title": "تحت الصيانة",
     "subtitle": "نحن نُحسّن Stag لنقدّم لك تجربة أفضل. يرجى العودة قريبًا.",
     "status": "أعمال جارية"
+  },
+  "ui": {
+    "sidebar": {
+      "title": "الشريط الجانبي",
+      "toggle": "تبديل الشريط الجانبي"
+    },
+    "breadcrumb": {
+      "more": "المزيد"
+    }
+  },
+  "preview": {
+    "agreement": {
+      "internshipAgreement": "اتفاقية التدريب",
+      "verification": "التحقق",
+      "trainee": "المتدرب",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "studentId": "رقم الطالب",
+      "department": "القسم",
+      "address": "العنوان",
+      "company": "الشركة",
+      "representative": "الممثل",
+      "university": "الجامعة",
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء",
+      "weeks": "{count} أسابيع",
+      "internshipDetails": "تفاصيل التدريب",
+      "subject": "الموضوع",
+      "type": "النوع",
+      "workMode": "نمط العمل",
+      "duration": "المدة",
+      "generated": "تاريخ الإنشاء",
+      "theTrainee": "المتدرب",
+      "theCompany": "الشركة",
+      "theUniversity": "الجامعة",
+      "autoGenerated": "تم إنشاؤه تلقائياً بواسطة نظام Stag",
+      "previewNote": "هذا معاينة ببيانات وهمية لتوضيح تخطيط الاتفاقية.",
+      "internshipTypePfe": "مشروع السنة النهائية",
+      "internshipTypeImmersion": "تدريب انغماسي",
+      "internshipTypeSummer": "تدريب صيفي",
+      "internshipTypePractical": "تدريب تطبيقي",
+      "workModeRemote": "عن بعد",
+      "workModeHybrid": "هجين",
+      "workModeOnsite": "حضوري"
+    }
   }
 }

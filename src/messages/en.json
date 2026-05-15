@@ -651,7 +651,14 @@
       "retryTool": "Retry",
       "authStatus": "Status: {status}",
       "unknown": "Unknown",
-      "generatingTitle": "Naming…"
+      "generatingTitle": "Naming…",
+      "tool": {
+        "rawData": "Raw Data",
+        "summary": "Summary",
+        "showSummary": "Show Summary",
+        "showRaw": "Show Raw",
+        "executedSuccessfully": "Tool executed successfully"
+      }
     },
     "notifications": {
       "title": "Notifications",
@@ -1208,7 +1215,8 @@
         "exploreInternships": "Explore Internships",
         "profileStrength": "Profile Strength",
         "profileReady": "Your profile is ready",
-        "profileRemaining": "{remaining}% remaining to complete"
+        "profileRemaining": "{remaining}% remaining to complete",
+        "badge": "Student"
       },
       "status": {
         "applied": "Pending",
@@ -1288,6 +1296,27 @@
         "languagesLabel": "Languages",
         "githubLabel": "GitHub",
         "portfolioLabel": "Portfolio"
+      },
+      "cv": {
+        "resume": "Resume",
+        "uploaded": "Uploaded",
+        "uploadPdf": "Upload PDF",
+        "uploading": "Uploading...",
+        "open": "Open",
+        "delete": "Delete",
+        "deleting": "Deleting...",
+        "noResume": "No resume uploaded yet.",
+        "projects": "Projects",
+        "project": "Project",
+        "projectsCount": "{count} {count, plural, one {Project} other {Projects}}",
+        "add": "Add",
+        "noProjects": "No projects added yet.",
+        "experience": "Experience",
+        "entry": "Entry",
+        "entries": "Entries",
+        "addExperience": "Add",
+        "noExperience": "No experience entries yet.",
+        "experienceCount": "{count} {count, plural, one {Entry} other {Entries}}"
       }
     },
     "recruiter": {
@@ -1303,7 +1332,22 @@
         "manageOffers": "Manage Offers",
         "reviewCandidates": "Review Applications"
       },
-      "pipeline": "Candidate Pipeline"
+      "pipeline": "Candidate Pipeline",
+      "hero": {
+        "badge": "Company",
+        "talentAcquisition": "Talent Acquisition",
+        "pipelineActive": "Your pipeline is active.",
+        "findNextIntern": "Ready to find your next intern?",
+        "trustScore": "Trust Score"
+      },
+      "offers": {
+        "positions": "Positions",
+        "yourOffers": "Your Offers.",
+        "viewAll": "View All",
+        "candidatesLabel": "Candidates",
+        "noOffersYet": "No Offers Yet",
+        "postFirstOffer": "Post your first internship position."
+      }
     },
     "deptHeadDashboard": {
       "subtitle": "Review placement requests for your department",
@@ -1740,7 +1784,19 @@
       "stats": {
         "totalPlacements": "Total Placements",
         "pendingValidation": "Pending Validation",
-        "docsGenerated": "Documents Generated"
+        "docsGenerated": "Documents Generated",
+        "reports": {
+          "updateReportStatus": "Update Report Status",
+          "resolveOrDismiss": "Resolve or dismiss this report. An optional note can document the decision.",
+          "decision": "Decision",
+          "resolve": "Resolve",
+          "dismiss": "Dismiss",
+          "resolutionNote": "Resolution Note (optional)",
+          "resolutionNotePlaceholder": "Add context for audit trail",
+          "cancel": "Cancel",
+          "saveDecision": "Save decision",
+          "saving": "Saving..."
+        }
       },
       "actions": {
         "validatePlacements": "Validate Placements",
@@ -1899,7 +1955,9 @@
         "selectField": "Select a field of study",
         "fieldInheritsSkills": "Inherits {count} skills",
         "noField": "No field assigned",
-        "assignField": "Assign Field"
+        "assignField": "Assign Field",
+        "loading": "Loading departments",
+        "noDepartmentsTitle": "No departments"
       },
       "fields": {
         "pageTitle": "Fields of Study",
@@ -2097,6 +2155,12 @@
         "badge": "Admin overview",
         "title": "Platform performance",
         "description": "Track approvals, engagement, placements, and operational health across the Stag network."
+      },
+      "trustLeaderboard": {
+        "securityRating": "Security Rating",
+        "trustIndex": "Trust Index",
+        "score": "Score",
+        "viewAllAnalytics": "View All Analytics"
       }
     },
     "superAdmin": {
@@ -2408,7 +2472,21 @@
         "changing": "Changing...",
         "submit": "Change Password",
         "success": "Password changed successfully."
-      }
+      },
+      "profileIdentity": "Profile Identity",
+      "profileIdentityDescription": "This information governs how companies and administrators perceive your digital presence across the platform.",
+      "personalInformation": "Personal Information",
+      "saved": "Saved.",
+      "securityBaseline": "Security Baseline",
+      "securityBaselineDescription": "Key authentication settings. Maintain robust credentials to protect your digital perimeter.",
+      "primaryEmail": "Primary Email",
+      "primaryEmailDescription": "Used for login and official notifications.",
+      "passwordLabel": "Password",
+      "passwordDescription": "Update your password. Other active sessions will be revoked.",
+      "update": "Update",
+      "dangerZone": "Danger Zone",
+      "dangerZoneDescription": "Permanently delete your account and all associated data. This action cannot be undone.",
+      "deleteAccountButton": "Delete Account"
     },
     "departments": {
       "pageTitle": "Departments Management",
@@ -2438,7 +2516,6 @@
         "saveError": "Could not update skills."
       }
     },
-
     "messages": {
       "kickerStudent": "Student Inbox",
       "kickerCompany": "Company Inbox",
@@ -2593,6 +2670,9 @@
         "requestChangeSuccess": "Message sent to {companyName}.",
         "backToInterviews": "Back to interviews"
       }
+    },
+    "placementValidations": {
+      "noValidationsTitle": "No validations"
     }
   },
   "companyPublic": {
@@ -3171,5 +3251,51 @@
     "title": "Under Maintenance",
     "subtitle": "We are refining Stag to serve you better. Please check back soon.",
     "status": "Work in progress"
+  },
+  "ui": {
+    "sidebar": {
+      "title": "Sidebar",
+      "toggle": "Toggle Sidebar"
+    },
+    "breadcrumb": {
+      "more": "More"
+    }
+  },
+  "preview": {
+    "agreement": {
+      "internshipAgreement": "Internship Agreement",
+      "verification": "Verification",
+      "trainee": "Trainee",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "studentId": "Student ID",
+      "department": "Department",
+      "address": "Address",
+      "company": "Company",
+      "representative": "Representative",
+      "university": "University",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "weeks": "{count} weeks",
+      "internshipDetails": "Internship Details",
+      "subject": "Subject",
+      "type": "Type",
+      "workMode": "Work Mode",
+      "duration": "Duration",
+      "generated": "Generated",
+      "theTrainee": "The Trainee",
+      "theCompany": "The Company",
+      "theUniversity": "The University",
+      "autoGenerated": "Automatically generated by the Stag system",
+      "previewNote": "This is a preview with fake data to demonstrate the agreement layout.",
+      "internshipTypePfe": "Final Year Project",
+      "internshipTypeImmersion": "Immersion Internship",
+      "internshipTypeSummer": "Summer Internship",
+      "internshipTypePractical": "Practical Training",
+      "workModeRemote": "Remote",
+      "workModeHybrid": "Hybrid",
+      "workModeOnsite": "On-site"
+    }
   }
 }

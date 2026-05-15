@@ -9,7 +9,7 @@ import { useCompanyProfileForm } from "@/app/[locale]/(authenticated)/dashboard/
 import type { CompanyProfileFormProps } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/types"
 import { ServerError } from "@/components/ServerError"
 import { SuccessMessage } from "@/components/SuccessMessage"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
   const {
@@ -26,8 +26,7 @@ export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
 
   return (
     <motion.form
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ duration: 0.6, ease, delay: 0.1 }}
       onSubmit={(e) => {
         e.preventDefault()

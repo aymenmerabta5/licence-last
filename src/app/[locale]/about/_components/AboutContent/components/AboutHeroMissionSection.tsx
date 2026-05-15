@@ -22,7 +22,7 @@ export function AboutHeroMissionSection({ t }: AboutSectionProps) {
         <div className="relative mx-auto max-w-6xl">
           <motion.div
             {...reveal}
-            transition={{ duration: 0.7, ease: "easeOut" }}
+            transition={{ duration: 0.7, ease }}
             className="mb-8 flex items-center gap-3"
           >
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary [[dir=rtl]_&]:tracking-normal">
@@ -33,7 +33,7 @@ export function AboutHeroMissionSection({ t }: AboutSectionProps) {
 
           <motion.h1
             {...reveal}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.12 }}
+            transition={{ duration: 0.7, ease, delay: 0.12 }}
             className="max-w-4xl font-serif text-heading"
             style={{
               fontSize: "clamp(2.5rem, 5vw, 5rem)",
@@ -64,7 +64,7 @@ export function AboutHeroMissionSection({ t }: AboutSectionProps) {
 
           <motion.p
             {...reveal}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.24 }}
+            transition={{ duration: 0.7, ease, delay: 0.24 }}
             className="mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground"
           >
             {t("hero.description")}
@@ -77,7 +77,7 @@ export function AboutHeroMissionSection({ t }: AboutSectionProps) {
           <div className="lg:col-span-4">
             <motion.div
               {...reveal}
-              transition={{ duration: 0.7, ease: "easeOut" }}
+              transition={{ duration: 0.7, ease }}
               className="mb-6 flex items-center gap-3"
             >
               <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary [[dir=rtl]_&]:tracking-normal">
@@ -87,7 +87,7 @@ export function AboutHeroMissionSection({ t }: AboutSectionProps) {
             </motion.div>
             <motion.h2
               {...reveal}
-              transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+              transition={{ duration: 0.7, ease, delay: 0.1 }}
               className="sticky top-8 font-serif text-heading"
               style={{
                 fontSize: "clamp(2rem, 4vw, 3rem)",
@@ -106,7 +106,7 @@ export function AboutHeroMissionSection({ t }: AboutSectionProps) {
                 {...reveal}
                 transition={{
                   duration: 0.7,
-                  ease: "easeOut",
+                  ease,
                   delay: 0.2 + index * 0.1,
                 }}
                 className="text-lg leading-relaxed text-muted-foreground"

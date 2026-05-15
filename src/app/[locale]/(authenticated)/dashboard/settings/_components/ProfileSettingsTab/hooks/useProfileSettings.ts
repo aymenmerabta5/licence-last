@@ -3,11 +3,11 @@
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@/i18n/routing"
 import { useCallback, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
 import { authClient } from "@/lib/auth-client"
-import { studentProfileDetailsSchema } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/hooks/profileSettingsSchema"
+import { createStudentProfileDetailsSchema } from "@/lib/schemas/student"
 import type {
   MeResult,
   StudentProfileResult,
@@ -25,8 +25,14 @@ export function useProfileSettings(
   studentProfile: StudentProfileResult | null,
 ) {
   const t = useTranslations()
+  const tv = useTranslations("auth.validation")
   const router = useRouter()
   const queryClient = useQueryClient()
+
+  const schema = useMemo(
+    () => createStudentProfileDetailsSchema(tv),
+    [tv],
+  )
 
   const meQueryOptions = useMemo(() => orpc.users.getMe.queryOptions(), [])
   const profileQueryOptions = useMemo(
@@ -136,8 +142,7 @@ export function useProfileSettings(
   const form = useForm({
     defaultValues: initialValues,
     validators: {
-      onSubmit: ({ value }) =>
-        mapZodErrors(studentProfileDetailsSchema.safeParse(value)),
+      onSubmit: ({ value }) => mapZodErrors(schema.safeParse(value)),
     },
     onSubmit: async ({ value }) => {
       if (!me.user) return

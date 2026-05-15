@@ -4,14 +4,14 @@ import type { ForCompaniesSectionProps } from "@/app/[locale]/for-companies/_com
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Link } from "@/i18n/routing"
-import { reveal } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 export function ForCompaniesCtaSection({ t }: ForCompaniesSectionProps) {
   return (
     <section className="border-t border-border px-4 sm:px-6 lg:px-16 py-20">
       <motion.div
         {...reveal}
-        transition={{ duration: 0.7, ease: "easeOut" }}
+        transition={{ duration: 0.7, ease }}
         className="mx-auto flex max-w-6xl flex-col items-center justify-center gap-8 sm:flex-row"
       >
         <div className="text-center sm:text-start">

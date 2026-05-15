@@ -90,8 +90,7 @@ export function OffersGrid({
                 {offers.map((offer, i) => (
                   <motion.div
                     key={offer.id}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    {...reveal}
                     transition={{
                       duration: 0.4,
                       ease,

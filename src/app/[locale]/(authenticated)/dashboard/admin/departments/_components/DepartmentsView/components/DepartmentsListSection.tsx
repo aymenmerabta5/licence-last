@@ -2,6 +2,7 @@
 
 import { FolderTree, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
 import { DepartmentCard } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentCard"
 import type { DepartmentItem } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/types"
 import { reveal, revealWithDelay } from "@/lib/animations"
@@ -29,12 +30,13 @@ export function DepartmentsListSection({
   onDeleteDepartment,
   onManageSkills,
 }: DepartmentsListSectionProps) {
+  const t = useTranslations("dashboard.admin.departments")
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-3">
         <Loader2 className="h-5 w-5 animate-spin text-primary" />
         <span className="text-xs uppercase tracking-[0.1em] text-muted-foreground">
-          Loading departments
+          {t("loading")}
         </span>
       </div>
     )
@@ -51,7 +53,7 @@ export function DepartmentsListSection({
           <FolderTree className="h-6 w-6 text-muted-foreground/40" />
         </div>
         <div className="space-y-1">
-          <p className="font-serif text-lg text-heading">No departments</p>
+          <p className="font-serif text-lg text-heading">{t("noDepartmentsTitle")}</p>
           <p className="text-sm font-light text-muted-foreground">
             {emptyLabel}
           </p>

@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl"
 import type { RefObject } from "react"
 import { UniversityCard } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/components/UniversityCard"
 import type { UniversityListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/universities/_components/UniversityValidationList/types"
-import { ease } from "@/lib/animations"
+import { ease, fadeIn, reveal } from "@/lib/animations"
 
 interface UniversityValidationContentProps {
   universities: UniversityListItem[]
@@ -53,8 +53,7 @@ export function UniversityValidationContent({
   if (universities.length === 0) {
     return (
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        {...fadeIn}
         transition={{ duration: 0.4, ease }}
         className="border border-dashed border-border/60 p-12 text-center space-y-4"
       >
@@ -79,8 +78,7 @@ export function UniversityValidationContent({
         {universities.map((university, index) => (
           <motion.div
             key={university.id}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
+            {...reveal}
             transition={{ duration: 0.4, delay: index * 0.05, ease }}
           >
             <UniversityCard

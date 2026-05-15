@@ -13,7 +13,7 @@ import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import type { CompanyProfileFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/hooks/useCompanyProfileForm"
 import { SelectField, TextAreaField, TextField } from "@/components/form-fields"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 import { errorMessage } from "@/lib/schemas/auth"
 import { WILAYA_OPTIONS } from "@/lib/wilayas"
 
@@ -36,8 +36,7 @@ function EditorialSection({
 }: EditorialSectionProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ duration: 0.5, ease, delay }}
       className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden"
     >

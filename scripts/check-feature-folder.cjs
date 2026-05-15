@@ -1,10 +1,9 @@
 #!/usr/bin/env node
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const fs = require("node:fs")
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require("node:path")
 
 const APP_ROOT = path.join(process.cwd(), "src", "app")
+const COMPONENTS_ROOT = path.join(process.cwd(), "src", "components")
 const MAX_STANDALONE_LINES = 150
 const MAX_ORCHESTRATOR_LINES = 120
 const MAX_SECTION_LINES = 200
@@ -105,9 +104,80 @@ function isClientComponent(filePath) {
   return false
 }
 
+function hasQueryLogic(filePath) {
+  const content = fs.readFileSync(filePath, "utf8")
+  const hasUseQuery = /\buseQuery\b/.test(content)
+  const hasUseMutation = /\buseMutation\b/.test(content)
+  const hasOrcpClient = /\borpcClient\b/.test(content)
+  const hasOrcpImport = /from\s+["']@\/server\/orpc/.test(content)
+  return hasUseQuery || hasUseMutation || hasOrcpClient || hasOrcpImport
+}
+
+function hasHooksDirectory(dirPath) {
+  const hooksDir = path.join(dirPath, "hooks")
+  return fs.existsSync(hooksDir) && fs.statSync(hooksDir).isDirectory()
+}
+
+// Shared infrastructure directories that are exempt from feature-folder rules
+const SHARED_INFRA_DIRS = [
+  "src/components/ui/",
+  "src/components/error/",
+  "src/components/form-fields/",
+  "src/components/providers/",
+  "src/components/dialogs/",
+]
+
+function isSharedInfrastructure(normalized) {
+  return SHARED_INFRA_DIRS.some((prefix) => normalized.startsWith(prefix))
+}
+
 function getPolicy(filePath) {
   const normalized = relativePath(filePath)
 
+  // Exempt shared infrastructure (ui primitives, providers, etc.)
+  if (isSharedInfrastructure(normalized)) {
+    return null
+  }
+
+  // src/components feature folders
+  if (normalized.startsWith("src/components/")) {
+    if (!isClientComponent(filePath)) {
+      return null
+    }
+    const dirname = path.dirname(normalized)
+    const basename = path.basename(normalized)
+
+    // e.g. src/components/NotificationBell/index.tsx
+    if (basename === "index.tsx" && dirname.split("/").length === 3) {
+      return {
+        max: MAX_ORCHESTRATOR_LINES,
+        kind: "feature orchestrator",
+        dir: path.dirname(filePath),
+      }
+    }
+
+    // e.g. src/components/NotificationBell/components/*.tsx
+    if (normalized.includes("/components/")) {
+      return {
+        max: MAX_SECTION_LINES,
+        kind: "feature section",
+        dir: null,
+      }
+    }
+
+    // Standalone component in src/components/
+    if (dirname === "src/components") {
+      return {
+        max: MAX_STANDALONE_LINES,
+        kind: "standalone component",
+        dir: null,
+      }
+    }
+
+    return null
+  }
+
+  // src/app feature folders
   if (!normalized.includes("/_components/")) {
     return null
   }
@@ -120,6 +190,7 @@ function getPolicy(filePath) {
     return {
       max: MAX_ORCHESTRATOR_LINES,
       kind: "feature orchestrator",
+      dir: path.dirname(filePath),
     }
   }
 
@@ -127,46 +198,78 @@ function getPolicy(filePath) {
     return {
       max: MAX_SECTION_LINES,
       kind: "feature section",
+      dir: null,
     }
   }
 
   return {
     max: MAX_STANDALONE_LINES,
     kind: "standalone _components file",
+    dir: null,
   }
 }
 
 function main() {
-  if (!fs.existsSync(APP_ROOT)) {
-    console.error(`Missing app root: ${APP_ROOT}`)
-    process.exit(1)
-  }
-
-  const files = listTsxFiles(APP_ROOT)
   const violations = []
 
-  for (const filePath of files) {
-    const policy = getPolicy(filePath)
-    if (!policy) {
+  for (const root of [APP_ROOT, COMPONENTS_ROOT]) {
+    if (!fs.existsSync(root)) {
       continue
     }
 
-    const normalizedPath = relativePath(filePath)
-    if (LEGACY_EXEMPTIONS.has(normalizedPath)) {
-      continue
-    }
+    const files = listTsxFiles(root)
 
-    const lines = countLines(filePath)
-    if (lines <= policy.max) {
-      continue
-    }
+    for (const filePath of files) {
+      const policy = getPolicy(filePath)
+      if (!policy) {
+        continue
+      }
 
-    violations.push({
-      file: normalizedPath,
-      lines,
-      max: policy.max,
-      kind: policy.kind,
-    })
+      const normalizedPath = relativePath(filePath)
+      if (LEGACY_EXEMPTIONS.has(normalizedPath)) {
+        continue
+      }
+
+      const lines = countLines(filePath)
+      if (lines > policy.max) {
+        violations.push({
+          file: normalizedPath,
+          lines,
+          max: policy.max,
+          kind: policy.kind,
+          message: `${normalizedPath} (${lines} lines) exceeds ${policy.max} lines for ${policy.kind}.`,
+        })
+      }
+
+      // Orchestrator-specific checks
+      if (policy.kind === "feature orchestrator" && policy.dir) {
+        if (hasQueryLogic(filePath)) {
+          violations.push({
+            file: normalizedPath,
+            lines,
+            max: policy.max,
+            kind: policy.kind,
+            message: `${normalizedPath} contains data fetching logic (useQuery/useMutation/orpc imports). Orchestrators must not have queries — extract to hooks/useFeatureData.ts.`,
+          })
+        }
+
+        if (!hasHooksDirectory(policy.dir)) {
+          // Only flag if there is query logic or complex state that warrants hooks/
+          const content = fs.readFileSync(filePath, "utf8")
+          const hasComplexState =
+            /\buseState\b/.test(content) || /\buseReducer\b/.test(content)
+          if (hasQueryLogic(filePath) || hasComplexState) {
+            violations.push({
+              file: normalizedPath,
+              lines,
+              max: policy.max,
+              kind: policy.kind,
+              message: `${normalizedPath} is missing a hooks/ directory. Feature orchestrators with state or data fetching must have hooks/useFeatureData.ts and/or hooks/useFeatureState.ts.`,
+            })
+          }
+        }
+      }
+    }
   }
 
   if (violations.length === 0) {
@@ -176,9 +279,7 @@ function main() {
 
   console.error("Feature-folder architecture violations found:")
   for (const violation of violations) {
-    console.error(
-      `${violation.file} (${violation.lines} lines) exceeds ${violation.max} lines for ${violation.kind}.`,
-    )
+    console.error(violation.message)
   }
   process.exit(1)
 }

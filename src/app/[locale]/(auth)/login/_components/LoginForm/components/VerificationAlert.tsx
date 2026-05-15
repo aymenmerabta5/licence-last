@@ -4,6 +4,7 @@ import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
+import { reveal } from "@/lib/animations"
 
 interface VerificationAlertProps {
   onResend: () => void
@@ -14,8 +15,7 @@ export function VerificationAlert({ onResend }: VerificationAlertProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       className="space-y-3"
     >
       <Button

@@ -35,7 +35,7 @@ export function WelcomeHero({
 
       <div className="space-y-3">
         <motion.div {...reveal} transition={revealWithDelay(0.05)}>
-          <Badge variant="editorial-muted">Student</Badge>
+          <Badge variant="editorial-muted">{t("badge")}</Badge>
         </motion.div>
 
         <motion.div

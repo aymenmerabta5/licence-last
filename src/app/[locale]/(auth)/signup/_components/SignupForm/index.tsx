@@ -13,7 +13,7 @@ import { ServerError } from "@/components/ServerError"
 import { SubmitButton } from "@/components/SubmitButton"
 import { TurnstileWidget } from "@/components/TurnstileWidget"
 import { Link } from "@/i18n/routing"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 export function SignupForm({ role, onBack }: SignupFormProps) {
   const t = useTranslations("auth.signup")
@@ -105,8 +105,7 @@ export function SignupForm({ role, onBack }: SignupFormProps) {
       <ServerError message={serverError} />
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        {...reveal}
         transition={{ duration: 0.6, ease, delay: 0.1 }}
       >
         <SignupFields form={form} labels={labels} />

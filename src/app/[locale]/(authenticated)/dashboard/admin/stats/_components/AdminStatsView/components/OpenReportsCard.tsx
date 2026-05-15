@@ -9,7 +9,7 @@ import type {
   ResolveReportInput,
 } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/hooks/useResolveReport"
 import { Button } from "@/components/ui/button"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
 const SEVERITY_STYLES: Record<
@@ -99,8 +99,7 @@ export function OpenReportsCard({
   return (
     <>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        {...reveal}
         transition={{ duration: 0.6, delay: 0.45, ease }}
         className="space-y-3 sm:space-y-4"
       >

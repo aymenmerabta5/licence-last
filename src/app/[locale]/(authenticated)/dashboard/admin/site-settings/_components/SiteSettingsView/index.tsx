@@ -1,31 +1,15 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { orpc } from "@/server/orpc/client"
-import { toast } from "sonner"
+
 import { Switch } from "@/components/ui/switch"
+
+import { useSiteSettings } from "@/app/[locale]/(authenticated)/dashboard/admin/site-settings/_components/SiteSettingsView/hooks/useSiteSettings"
 
 export function SiteSettingsView() {
   const t = useTranslations("admin")
-  const queryClient = useQueryClient()
-
-  const { data, isLoading } = useQuery(
-    orpc.adminSettings.getMaintenanceMode.queryOptions(),
-  )
-  const { mutateAsync, isPending } = useMutation(
-    orpc.adminSettings.setMaintenanceMode.mutationOptions({
-      onSuccess: () => {
-        toast.success(t("maintenanceModeSaved"))
-        void queryClient.invalidateQueries({
-          queryKey: orpc.adminSettings.getMaintenanceMode.queryOptions()
-            .queryKey,
-        })
-      },
-    }),
-  )
-
-  const isMaintenanceMode = data?.enabled ?? false
+  const { isMaintenanceMode, isLoading, setMaintenanceMode, isPending } =
+    useSiteSettings()
 
   return (
     <div className="space-y-6">
@@ -45,7 +29,7 @@ export function SiteSettingsView() {
           <Switch
             checked={isMaintenanceMode}
             onCheckedChange={(checked: boolean) =>
-              mutateAsync({ enabled: checked })
+              setMaintenanceMode({ enabled: checked })
             }
             disabled={isLoading || isPending}
           />

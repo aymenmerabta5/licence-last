@@ -9,7 +9,7 @@ import { ProfileSettingsTab } from "@/app/[locale]/(authenticated)/dashboard/set
 import { NotificationsTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/NotificationsTab"
 import { SettingsHeader } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/SettingsHeader"
 import { SettingsTabs } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/SettingsTabs"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 import type {
   MeResult,
   StudentProfileResult,
@@ -35,8 +35,7 @@ export function SettingsView({ me, studentProfile }: SettingsViewProps) {
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={activeTab}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
+              {...reveal}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.35, ease }}
             >

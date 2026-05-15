@@ -21,7 +21,7 @@ export function AboutValuesStatsSection({ t }: AboutSectionProps) {
         <div className="mx-auto max-w-6xl">
           <motion.div
             {...reveal}
-            transition={{ duration: 0.7, ease: "easeOut" }}
+            transition={{ duration: 0.7, ease }}
             className="mb-6 flex items-center gap-3"
           >
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary [[dir=rtl]_&]:tracking-normal">
@@ -32,7 +32,7 @@ export function AboutValuesStatsSection({ t }: AboutSectionProps) {
 
           <motion.h2
             {...reveal}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+            transition={{ duration: 0.7, ease, delay: 0.1 }}
             className="mb-12 font-serif text-heading"
             style={{
               fontSize: "clamp(2rem, 4vw, 3.5rem)",
@@ -71,7 +71,7 @@ export function AboutValuesStatsSection({ t }: AboutSectionProps) {
       <section className="border-t border-border px-4 sm:px-6 lg:px-16 py-20">
         <motion.div
           {...reveal}
-          transition={{ duration: 0.7, ease: "easeOut" }}
+          transition={{ duration: 0.7, ease }}
           className="mx-auto max-w-6xl"
         >
           <div className="mb-10 flex items-center gap-3">

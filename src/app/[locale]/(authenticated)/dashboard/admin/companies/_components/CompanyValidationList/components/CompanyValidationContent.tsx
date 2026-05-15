@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl"
 import type { RefObject } from "react"
 import { CompanyCard } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyCard"
 import type { CompanyListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/types"
-import { ease } from "@/lib/animations"
+import { ease, fadeIn, reveal } from "@/lib/animations"
 
 interface CompanyValidationContentProps {
   companies: CompanyListItem[]
@@ -63,8 +63,7 @@ export function CompanyValidationContent({
   if (companies.length === 0) {
     return (
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        {...fadeIn}
         transition={{ duration: 0.4, ease }}
         className="border border-dashed border-border/60 p-12 text-center space-y-4"
       >
@@ -86,8 +85,7 @@ export function CompanyValidationContent({
       {companies.map((company, index) => (
         <motion.div
           key={company.id}
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
+          {...reveal}
           transition={{ duration: 0.4, delay: index * 0.05, ease }}
         >
           <CompanyCard

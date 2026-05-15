@@ -1,3 +1,5 @@
+import "server-only"
+
 export type MembershipAwareRoleFilter =
   | "company_admin"
   | "department_head"

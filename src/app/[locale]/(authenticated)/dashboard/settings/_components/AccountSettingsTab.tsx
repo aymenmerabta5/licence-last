@@ -1,6 +1,7 @@
 "use client"
 
 import { AlertTriangle, KeyRound, Mail, Shield } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { ChangePasswordDialog } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ChangePasswordDialog"
 import { DeleteAccountDialog } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/DeleteAccountDialog"
@@ -21,6 +22,7 @@ interface AccountSettingsTabProps {
 }
 
 export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
+  const t = useTranslations("dashboard.settings")
   const [passwordDialogOpen, setPasswordDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
@@ -30,13 +32,12 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
       <div className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden">
         <div className="flex items-center gap-2.5 px-6 py-4 border-b border-border/40 bg-muted/20 dark:bg-muted/10">
           <Shield className="h-4 w-4 text-primary" />
-          <h2 className="font-serif text-lg text-heading">Security Baseline</h2>
+          <h2 className="font-serif text-lg text-heading">{t("securityBaseline")}</h2>
         </div>
 
         <div className="px-6 py-4">
           <p className="text-sm font-light text-muted-foreground">
-            Key authentication settings. Maintain robust credentials to protect
-            your digital perimeter.
+            {t("securityBaselineDescription")}
           </p>
         </div>
 
@@ -49,10 +50,10 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
               </div>
               <div className="space-y-0.5">
                 <h4 className="text-sm font-medium text-heading">
-                  Primary Email
+                  {t("primaryEmail")}
                 </h4>
                 <p className="text-[11px] text-muted-foreground">
-                  Used for login and official notifications.
+                  {t("primaryEmailDescription")}
                 </p>
               </div>
             </div>
@@ -73,9 +74,9 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
                 <KeyRound className="h-4 w-4 text-muted-foreground" />
               </div>
               <div className="space-y-0.5">
-                <h4 className="text-sm font-medium text-heading">Password</h4>
+                <h4 className="text-sm font-medium text-heading">{t("passwordLabel")}</h4>
                 <p className="text-[11px] text-muted-foreground">
-                  Update your password. Other active sessions will be revoked.
+                  {t("passwordDescription")}
                 </p>
               </div>
             </div>
@@ -86,7 +87,7 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
               className="ms-11 sm:ms-0"
               onClick={() => setPasswordDialogOpen(true)}
             >
-              Update
+              {t("update")}
             </Button>
           </div>
 
@@ -108,13 +109,12 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
             <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-destructive/20 bg-destructive/5 dark:bg-destructive/10">
               <AlertTriangle className="h-4 w-4 text-destructive" />
             </div>
-            <div className="space-y-1 min-w-0">
+              <div className="space-y-1 min-w-0">
               <h3 className="font-serif text-lg tracking-tight text-heading">
-                Danger Zone
+                {t("dangerZone")}
               </h3>
               <p className="text-sm font-light text-muted-foreground">
-                Permanently delete your account and all associated data. This
-                action cannot be undone.
+                {t("dangerZoneDescription")}
               </p>
             </div>
           </div>
@@ -124,7 +124,7 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
             onClick={() => setDeleteDialogOpen(true)}
             className="shrink-0"
           >
-            Delete Account
+            {t("deleteAccountButton")}
           </Button>
         </div>
       </div>

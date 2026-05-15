@@ -5,7 +5,7 @@ import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import type { CompanyProfileFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/profile/_components/CompanyProfileForm/hooks/useCompanyProfileForm"
 import { Button } from "@/components/ui/button"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface FormActionsProps {
   form: CompanyProfileFormApi
@@ -16,8 +16,7 @@ export function FormActions({ form }: FormActionsProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ duration: 0.5, ease, delay: 0.4 }}
     >
       <form.Subscribe selector={(state) => [state.isSubmitting] as const}>

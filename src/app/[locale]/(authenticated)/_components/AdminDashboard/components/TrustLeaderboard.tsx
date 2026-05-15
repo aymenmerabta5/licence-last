@@ -2,6 +2,7 @@
 
 import { ArrowRight, Shield } from "lucide-react"
 import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
 import { Link } from "@/i18n/routing"
 import { ease, reveal } from "@/lib/animations"
 import { cn } from "@/lib/utils"
@@ -25,6 +26,7 @@ interface TrustLeaderboardProps {
 }
 
 export function TrustLeaderboard({ indices }: TrustLeaderboardProps) {
+  const t = useTranslations("dashboard.admin.trustLeaderboard")
   if (indices.length === 0) return null
 
   return (
@@ -38,10 +40,10 @@ export function TrustLeaderboard({ indices }: TrustLeaderboardProps) {
       <div className="flex items-end justify-between border-b-4 border-background/20 pb-4 relative z-10 w-full shrink-0">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-background/50 mb-2 flex items-center gap-1.5">
-            <Shield className="h-3.5 w-3.5" /> Security Rating
+            <Shield className="h-3.5 w-3.5" /> {t("securityRating")}
           </span>
           <h2 className="font-serif text-3xl font-normal text-background tracking-tighter line-clamp-1 break-words pb-1">
-            Trust Index
+            {t("trustIndex")}
           </h2>
         </div>
       </div>
@@ -70,7 +72,7 @@ export function TrustLeaderboard({ indices }: TrustLeaderboardProps) {
             </div>
             <div className="flex flex-col items-end">
               <span className="text-[9px] uppercase tracking-[0.2em] text-background/50 font-bold mb-0.5">
-                Score
+                {t("score")}
               </span>
               <span className="font-serif text-3xl font-normal text-background tracking-tighter leading-none group-hover/item:text-primary transition-colors">
                 {entry.trustScore}
@@ -86,7 +88,7 @@ export function TrustLeaderboard({ indices }: TrustLeaderboardProps) {
           prefetch={false}
           className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary hover:text-background w-full flex items-center justify-between"
         >
-          <span>View All Analytics</span>
+          <span>{t("viewAllAnalytics")}</span>
           <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover/btn:translate-x-2" />
         </Link>
       </div>

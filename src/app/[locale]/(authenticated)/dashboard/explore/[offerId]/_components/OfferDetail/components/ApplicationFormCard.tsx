@@ -7,7 +7,7 @@ import type { OfferApplyMutation } from "@/app/[locale]/(authenticated)/dashboar
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface ApplicationFormCardProps {
   coverLetter: string
@@ -81,8 +81,7 @@ export function ApplicationFormCard({
 
         {coverLetterDraft ? (
           <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
+            {...reveal}
             transition={{ duration: 0.3, ease }}
             className="border-s-2 border-amber-500/50 bg-amber-500/5 p-4 space-y-3"
           >

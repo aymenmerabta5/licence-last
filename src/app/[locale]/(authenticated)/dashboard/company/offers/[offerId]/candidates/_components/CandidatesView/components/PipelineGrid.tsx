@@ -7,7 +7,7 @@ import { HTML5Backend } from "react-dnd-html5-backend"
 import { CandidateDragLayer } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidateDragLayer"
 import { PipelineStageColumn } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/PipelineStageColumn"
 import type { CandidateApp } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/types"
-import { ease } from "@/lib/animations"
+import { ease, fadeIn, reveal } from "@/lib/animations"
 import type { PipelineStage } from "@/lib/constants/pipeline"
 import { STAGE_COLUMNS } from "@/lib/constants/pipeline"
 
@@ -53,8 +53,7 @@ export function PipelineGrid({
   if (applications.length === 0) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
+        {...reveal}
         transition={{ duration: 0.6, ease, delay: 0.1 }}
         className="flex flex-col items-center justify-center gap-3 border border-dashed border-border/40 py-16 text-center"
       >
@@ -70,8 +69,7 @@ export function PipelineGrid({
     <DndProvider backend={HTML5Backend}>
       <CandidateDragLayer />
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        {...fadeIn}
         transition={{ duration: 0.5, ease, delay: 0.15 }}
         className="space-y-3"
       >

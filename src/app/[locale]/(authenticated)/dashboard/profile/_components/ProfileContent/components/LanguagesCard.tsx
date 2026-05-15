@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl"
 import type { StudentLanguage } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { Badge } from "@/components/ui/badge"
 import { Link } from "@/i18n/routing"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface LanguagesCardProps {
   languages: StudentLanguage[]
@@ -74,8 +74,7 @@ export function LanguagesCard({
               return (
                 <motion.div
                   key={`${lang.languageCode}-${idx}`}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  {...reveal}
                   transition={{ delay: 0.6 + idx * 0.1 }}
                   className="space-y-3 p-4 rounded-2xl bg-slate-50 border border-slate-100 group/item hover:bg-white hover:border-primary/20 transition-all duration-300"
                 >

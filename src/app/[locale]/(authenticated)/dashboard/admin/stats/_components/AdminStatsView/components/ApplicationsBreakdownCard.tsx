@@ -2,7 +2,7 @@
 
 import { BarChart3 } from "lucide-react"
 import * as motion from "motion/react-client"
-import { ease } from "@/lib/animations"
+import { ease, fadeIn, reveal } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
 const STATUS_COLORS: Record<string, string> = {
@@ -39,8 +39,7 @@ export function ApplicationsBreakdownCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ duration: 0.6, delay: 0.35, ease }}
       className="space-y-4 sm:space-y-5 border border-border/60 bg-card/30 dark:bg-card/50 p-4 sm:p-6"
     >
@@ -104,8 +103,7 @@ export function ApplicationsBreakdownCard({
         {entries.map(([status, count], i) => (
           <motion.div
             key={status}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            {...fadeIn}
             transition={{ delay: 0.6 + i * 0.05, duration: 0.4, ease }}
             className="bg-background py-4 px-3 sm:py-5 sm:px-4 text-center transition-colors hover:bg-primary/[0.02]"
           >

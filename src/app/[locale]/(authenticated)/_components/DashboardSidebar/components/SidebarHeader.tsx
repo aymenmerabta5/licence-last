@@ -2,7 +2,7 @@
 
 import { AnimatePresence } from "motion/react"
 import * as motion from "motion/react-client"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@/i18n/routing"
 
 import { ease } from "@/lib/animations"
 

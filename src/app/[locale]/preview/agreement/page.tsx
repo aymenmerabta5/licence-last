@@ -1,7 +1,10 @@
 import { headers } from "next/headers"
+import { getLocale, getTranslations } from "next-intl/server"
 
 export default async function AgreementPreviewPage() {
   await headers()
+  const locale = await getLocale()
+  const t = await getTranslations("preview.agreement")
 
   // Fake data for demonstration
   const data = {
@@ -32,33 +35,33 @@ export default async function AgreementPreviewPage() {
   const generatedDate = new Date()
 
   const formatDate = (date: Date) =>
-    date.toLocaleDateString("en-US", {
+    date.toLocaleDateString(locale, {
       year: "numeric",
       month: "long",
       day: "numeric",
     })
 
   const shortDate = (date: Date) =>
-    date.toLocaleDateString("en-US", {
+    date.toLocaleDateString(locale, {
       year: "numeric",
       month: "short",
       day: "numeric",
     })
 
   const internshipTypeLabel: Record<string, string> = {
-    pfe: "Final Year Project",
-    immersion: "Immersion Internship",
-    summer: "Summer Internship",
-    practical: "Practical Training",
+    pfe: t("internshipTypePfe"),
+    immersion: t("internshipTypeImmersion"),
+    summer: t("internshipTypeSummer"),
+    practical: t("internshipTypePractical"),
   }
 
   const workModeLabel =
     data.workMode === "remote"
-      ? "Remote"
+      ? t("workModeRemote")
       : data.workMode === "hybrid"
-        ? "Hybrid"
+        ? t("workModeHybrid")
         : data.workMode === "onsite"
-          ? "On-site"
+          ? t("workModeOnsite")
           : data.workMode ?? "—"
 
   return (
@@ -70,7 +73,7 @@ export default async function AgreementPreviewPage() {
           <div className="flex items-center justify-between bg-slate-900 px-8 py-6">
             <div>
               <h1 className="font-serif text-2xl font-bold uppercase tracking-widest text-white">
-                Internship Agreement
+                {t("internshipAgreement")}
               </h1>
               <p className="mt-1 font-serif text-sm text-slate-400">
                 {data.universityName} — {data.universityDepartmentName}
@@ -78,7 +81,7 @@ export default async function AgreementPreviewPage() {
             </div>
             <div className="rounded-md border border-slate-700 bg-slate-800 px-4 py-2 text-center">
               <p className="text-[10px] uppercase tracking-widest text-slate-400">
-                Verification
+                {t("verification")}
               </p>
               <p className="mt-0.5 font-mono text-sm font-bold text-white">
                 {verificationCode}
@@ -99,13 +102,13 @@ export default async function AgreementPreviewPage() {
                   <div className="mb-3 flex items-center gap-2 border-b border-stone-200 pb-2">
                     <span className="inline-block h-2 w-2 rounded-full bg-blue-600" />
                     <span className="text-xs font-bold uppercase tracking-wider text-stone-800">
-                      Trainee
+                      {t("trainee")}
                     </span>
                   </div>
                   <div className="space-y-2">
                     <div className="flex gap-2">
                       <span className="w-[38%] text-[11px] text-stone-500">
-                        Name
+                        {t("name")}
                       </span>
                       <span className="flex-1 text-[11px] font-semibold text-stone-900">
                         {data.studentName}
@@ -113,7 +116,7 @@ export default async function AgreementPreviewPage() {
                     </div>
                     <div className="flex gap-2">
                       <span className="w-[38%] text-[11px] text-stone-500">
-                        Email
+                        {t("email")}
                       </span>
                       <span className="flex-1 text-[11px] font-semibold text-stone-900">
                         {data.studentEmail}
@@ -121,7 +124,7 @@ export default async function AgreementPreviewPage() {
                     </div>
                     <div className="flex gap-2">
                       <span className="w-[38%] text-[11px] text-stone-500">
-                        Phone
+                        {t("phone")}
                       </span>
                       <span className="flex-1 text-[11px] font-semibold text-stone-900">
                         {data.studentPhone}
@@ -129,7 +132,7 @@ export default async function AgreementPreviewPage() {
                     </div>
                     <div className="flex gap-2">
                       <span className="w-[38%] text-[11px] text-stone-500">
-                        Student ID
+                        {t("studentId")}
                       </span>
                       <span className="flex-1 text-[11px] font-semibold text-stone-900">
                         {data.studentNumber}
@@ -137,7 +140,7 @@ export default async function AgreementPreviewPage() {
                     </div>
                     <div className="flex gap-2">
                       <span className="w-[38%] text-[11px] text-stone-500">
-                        Department
+                        {t("department")}
                       </span>
                       <span className="flex-1 text-[11px] font-semibold text-stone-900">
                         {data.studentDepartment}
@@ -145,7 +148,7 @@ export default async function AgreementPreviewPage() {
                     </div>
                     <div className="flex gap-2">
                       <span className="w-[38%] text-[11px] text-stone-500">
-                        Address
+                        {t("address")}
                       </span>
                       <span className="flex-1 text-[11px] font-semibold text-stone-900">
                         {data.studentAddress}
@@ -161,13 +164,13 @@ export default async function AgreementPreviewPage() {
                   <div className="mb-3 flex items-center gap-2 border-b border-stone-200 pb-2">
                     <span className="inline-block h-2 w-2 rounded-full bg-emerald-600" />
                     <span className="text-xs font-bold uppercase tracking-wider text-stone-800">
-                      Company
+                      {t("company")}
                     </span>
                   </div>
                   <div className="space-y-2">
                     <div className="flex gap-2">
                       <span className="w-[38%] text-[11px] text-stone-500">
-                        Name
+                        {t("name")}
                       </span>
                       <span className="flex-1 text-[11px] font-semibold text-stone-900">
                         {data.companyName}
@@ -175,7 +178,7 @@ export default async function AgreementPreviewPage() {
                     </div>
                     <div className="flex gap-2">
                       <span className="w-[38%] text-[11px] text-stone-500">
-                        Address
+                        {t("address")}
                       </span>
                       <span className="flex-1 text-[11px] font-semibold text-stone-900">
                         {data.companyAddress}
@@ -183,7 +186,7 @@ export default async function AgreementPreviewPage() {
                     </div>
                     <div className="flex gap-2">
                       <span className="w-[38%] text-[11px] text-stone-500">
-                        Phone
+                        {t("phone")}
                       </span>
                       <span className="flex-1 text-[11px] font-semibold text-stone-900">
                         {data.companyPhone}
@@ -191,7 +194,7 @@ export default async function AgreementPreviewPage() {
                     </div>
                     <div className="flex gap-2">
                       <span className="w-[38%] text-[11px] text-stone-500">
-                        Representative
+                        {t("representative")}
                       </span>
                       <span className="flex-1 text-[11px] font-semibold text-stone-900">
                         {data.companyRepresentativeName}
@@ -199,7 +202,7 @@ export default async function AgreementPreviewPage() {
                     </div>
                     <div className="flex gap-2">
                       <span className="w-[38%] text-[11px] text-stone-500">
-                        Email
+                        {t("email")}
                       </span>
                       <span className="flex-1 text-[11px] font-semibold text-stone-900">
                         {data.companyContactEmail}
@@ -215,13 +218,13 @@ export default async function AgreementPreviewPage() {
                   <div className="mb-3 flex items-center gap-2 border-b border-stone-200 pb-2">
                     <span className="inline-block h-2 w-2 rounded-full bg-violet-600" />
                     <span className="text-xs font-bold uppercase tracking-wider text-stone-800">
-                      University
+                      {t("university")}
                     </span>
                   </div>
                   <div className="space-y-2">
                     <div className="flex gap-2">
                       <span className="w-[38%] text-[11px] text-stone-500">
-                        Name
+                        {t("name")}
                       </span>
                       <span className="flex-1 text-[11px] font-semibold text-stone-900">
                         {data.universityName} — {data.universityDepartmentName}
@@ -229,7 +232,7 @@ export default async function AgreementPreviewPage() {
                     </div>
                     <div className="flex gap-2">
                       <span className="w-[38%] text-[11px] text-stone-500">
-                        Address
+                        {t("address")}
                       </span>
                       <span className="flex-1 text-[11px] font-semibold text-stone-900">
                         {data.universityAddress}
@@ -237,7 +240,7 @@ export default async function AgreementPreviewPage() {
                     </div>
                     <div className="flex gap-2">
                       <span className="w-[38%] text-[11px] text-stone-500">
-                        Phone
+                        {t("phone")}
                       </span>
                       <span className="flex-1 text-[11px] font-semibold text-stone-900">
                         {data.universityPhone}
@@ -252,7 +255,7 @@ export default async function AgreementPreviewPage() {
             <div className="mt-6 flex items-center justify-center gap-6">
               <div className="min-w-[160px] rounded-lg border border-stone-200 bg-stone-50 py-3 text-center">
                 <p className="text-[10px] uppercase tracking-wider text-stone-500">
-                  Start Date
+                  {t("startDate")}
                 </p>
                 <p className="mt-1 font-serif text-lg font-bold text-stone-900">
                   {formatDate(data.startDate)}
@@ -261,12 +264,12 @@ export default async function AgreementPreviewPage() {
               <div className="flex flex-col items-center">
                 <div className="h-px w-10 bg-amber-500" />
                 <p className="mt-1 text-[10px] uppercase tracking-wider text-stone-400">
-                  {data.durationWeeks} weeks
+                  {t("weeks", { count: data.durationWeeks })}
                 </p>
               </div>
               <div className="min-w-[160px] rounded-lg border border-stone-200 bg-stone-50 py-3 text-center">
                 <p className="text-[10px] uppercase tracking-wider text-stone-500">
-                  End Date
+                  {t("endDate")}
                 </p>
                 <p className="mt-1 font-serif text-lg font-bold text-stone-900">
                   {formatDate(data.endDate)}
@@ -279,13 +282,13 @@ export default async function AgreementPreviewPage() {
               <div className="mb-4 flex items-center gap-2 border-b border-stone-200 pb-3">
                 <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
                 <span className="text-xs font-bold uppercase tracking-wider text-stone-800">
-                  Internship Details
+                  {t("internshipDetails")}
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-x-6 gap-y-4">
                 <div className="col-span-2">
                   <p className="text-[10px] uppercase tracking-wider text-stone-500">
-                    Subject
+                    {t("subject")}
                   </p>
                   <p className="mt-0.5 font-serif text-base font-bold text-stone-900">
                     {data.offerTitle}
@@ -293,16 +296,15 @@ export default async function AgreementPreviewPage() {
                 </div>
                 <div>
                   <p className="text-[10px] uppercase tracking-wider text-stone-500">
-                    Type
+                    {t("type")}
                   </p>
                   <p className="mt-0.5 text-sm font-semibold text-stone-900">
-                    {internshipTypeLabel[data.internshipType] ??
-                      data.internshipType}
+                    {internshipTypeLabel[data.internshipType] ?? data.internshipType}
                   </p>
                 </div>
                 <div>
                   <p className="text-[10px] uppercase tracking-wider text-stone-500">
-                    Work Mode
+                    {t("workMode")}
                   </p>
                   <p className="mt-0.5 text-sm font-semibold text-stone-900">
                     {workModeLabel}
@@ -310,15 +312,15 @@ export default async function AgreementPreviewPage() {
                 </div>
                 <div>
                   <p className="text-[10px] uppercase tracking-wider text-stone-500">
-                    Duration
+                    {t("duration")}
                   </p>
                   <p className="mt-0.5 text-sm font-semibold text-stone-900">
-                    {data.durationWeeks} weeks
+                    {t("weeks", { count: data.durationWeeks })}
                   </p>
                 </div>
                 <div>
                   <p className="text-[10px] uppercase tracking-wider text-stone-500">
-                    Generated
+                    {t("generated")}
                   </p>
                   <p className="mt-0.5 text-sm font-semibold text-stone-900">
                     {shortDate(generatedDate)}
@@ -331,7 +333,7 @@ export default async function AgreementPreviewPage() {
             <div className="mt-8 grid grid-cols-3 gap-8">
               <div className="text-center">
                 <p className="text-xs font-bold uppercase tracking-wider text-stone-600">
-                  The Trainee
+                  {t("theTrainee")}
                 </p>
                 <div className="mx-auto mt-6 w-4/5 border-t border-stone-400 pt-2">
                   <p className="text-[11px] text-stone-500">
@@ -341,7 +343,7 @@ export default async function AgreementPreviewPage() {
               </div>
               <div className="text-center">
                 <p className="text-xs font-bold uppercase tracking-wider text-stone-600">
-                  The Company
+                  {t("theCompany")}
                 </p>
                 <div className="mx-auto mt-6 w-4/5 border-t border-stone-400 pt-2">
                   <p className="text-[11px] text-stone-500">
@@ -351,7 +353,7 @@ export default async function AgreementPreviewPage() {
               </div>
               <div className="text-center">
                 <p className="text-xs font-bold uppercase tracking-wider text-stone-600">
-                  The University
+                  {t("theUniversity")}
                 </p>
                 <div className="mx-auto mt-6 w-4/5 border-t border-stone-400 pt-2">
                   <p className="text-[11px] text-stone-500">
@@ -393,7 +395,7 @@ export default async function AgreementPreviewPage() {
             </div>
             <div className="text-end">
               <p className="text-[10px] text-stone-500">
-                Automatically generated by the Stag system
+                {t("autoGenerated")}
               </p>
               <p className="mt-0.5 text-[10px] font-bold text-stone-700">
                 stag.io — {formatDate(generatedDate)}
@@ -404,7 +406,7 @@ export default async function AgreementPreviewPage() {
 
         {/* Note */}
         <p className="mt-4 text-center text-xs text-stone-500">
-          This is a preview with fake data to demonstrate the agreement layout.
+          {t("previewNote")}
         </p>
       </div>
     </main>

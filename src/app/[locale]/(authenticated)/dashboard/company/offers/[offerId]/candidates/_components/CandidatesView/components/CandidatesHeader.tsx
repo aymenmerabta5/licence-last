@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl"
 
 import { Badge } from "@/components/ui/badge"
 import { Link } from "@/i18n/routing"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface CandidatesHeaderProps {
   offerTitle?: string
@@ -19,8 +19,7 @@ export function CandidatesHeader({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ duration: 0.6, ease }}
     >
       <Link

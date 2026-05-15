@@ -5,7 +5,7 @@ import { UserTypeColumn } from "@/app/[locale]/_components/HowItWorksSection/com
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Link } from "@/i18n/routing"
-import { reveal } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 export function HowItWorksSection() {
   const t = useTranslations("howItWorks")
@@ -24,7 +24,7 @@ export function HowItWorksSection() {
         <div className="mb-10 sm:mb-16 max-w-2xl">
           <motion.div
             {...reveal}
-            transition={{ duration: 0.7, ease: "easeOut" }}
+            transition={{ duration: 0.7, ease }}
             className="flex items-center gap-3 mb-6"
           >
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary [[dir=rtl]_&]:tracking-normal">
@@ -35,7 +35,7 @@ export function HowItWorksSection() {
 
           <motion.h2
             {...reveal}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+            transition={{ duration: 0.7, ease, delay: 0.1 }}
             className="font-serif text-heading transition-colors duration-500"
             style={{
               fontSize: "clamp(2rem, 7vw, 4rem)",
@@ -49,7 +49,7 @@ export function HowItWorksSection() {
 
           <motion.p
             {...reveal}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
+            transition={{ duration: 0.7, ease, delay: 0.2 }}
             className="mt-6 text-lg leading-relaxed text-muted-foreground transition-colors duration-500"
           >
             {t("description")}
@@ -64,7 +64,7 @@ export function HowItWorksSection() {
 
         <motion.div
           {...reveal}
-          transition={{ duration: 0.7, ease: "easeOut", delay: 0.8 }}
+          transition={{ duration: 0.7, ease, delay: 0.8 }}
           className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-6 pt-12 border-t border-border transition-colors duration-500"
         >
           <p className="text-muted-foreground text-center sm:text-start">

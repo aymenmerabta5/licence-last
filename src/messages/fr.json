@@ -532,7 +532,7 @@
       "fields": "Filières",
       "statistics": "Statistiques",
       "userManagement": "Gestion des utilisateurs",
-      "universityProfile": "Profil Universit\u00e9",
+      "universityProfile": "Profil Université",
       "companies": "Entreprises",
       "universities": "Universités",
       "siteSettings": "Paramètres du site",
@@ -651,7 +651,14 @@
       "retryTool": "Réessayer",
       "authStatus": "Statut : {status}",
       "unknown": "Inconnu",
-      "generatingTitle": "Génération du titre…"
+      "generatingTitle": "Génération du titre…",
+      "tool": {
+        "rawData": "Données brutes",
+        "summary": "Résumé",
+        "showSummary": "Afficher le résumé",
+        "showRaw": "Afficher les données brutes",
+        "executedSuccessfully": "Outil exécuté avec succès"
+      }
     },
     "notifications": {
       "title": "Notifications",
@@ -1208,7 +1215,8 @@
         "exploreInternships": "Explorer les stages",
         "profileStrength": "Force du profil",
         "profileReady": "Votre profil est prêt",
-        "profileRemaining": "{remaining}% restant à compléter"
+        "profileRemaining": "{remaining}% restant à compléter",
+        "badge": "Étudiant"
       },
       "status": {
         "applied": "En attente",
@@ -1288,6 +1296,27 @@
         "languagesLabel": "Langues",
         "githubLabel": "GitHub",
         "portfolioLabel": "Portfolio"
+      },
+      "cv": {
+        "resume": "CV",
+        "uploaded": "Téléversé",
+        "uploadPdf": "Téléverser un PDF",
+        "uploading": "Téléversement...",
+        "open": "Ouvrir",
+        "delete": "Supprimer",
+        "deleting": "Suppression...",
+        "noResume": "Aucun CV téléversé pour le moment.",
+        "projects": "Projets",
+        "project": "Projet",
+        "projectsCount": "{count} {count, plural, one {Projet} other {Projets}}",
+        "add": "Ajouter",
+        "noProjects": "Aucun projet ajouté pour le moment.",
+        "experience": "Expérience",
+        "entry": "Entrée",
+        "entries": "Entrées",
+        "addExperience": "Ajouter",
+        "noExperience": "Aucune expérience ajoutée pour le moment.",
+        "experienceCount": "{count} {count, plural, one {Entrée} other {Entrées}}"
       }
     },
     "recruiter": {
@@ -1303,7 +1332,22 @@
         "manageOffers": "Gérer les offres",
         "reviewCandidates": "Examiner les candidatures"
       },
-      "pipeline": "Pipeline de candidats"
+      "pipeline": "Pipeline de candidats",
+      "hero": {
+        "badge": "Entreprise",
+        "talentAcquisition": "Acquisition de talents",
+        "pipelineActive": "Votre pipeline est actif.",
+        "findNextIntern": "Prêt à trouver votre prochain stagiaire ?",
+        "trustScore": "Score de confiance"
+      },
+      "offers": {
+        "positions": "Postes",
+        "yourOffers": "Vos offres.",
+        "viewAll": "Voir tout",
+        "candidatesLabel": "Candidats",
+        "noOffersYet": "Aucune offre pour le moment",
+        "postFirstOffer": "Publiez votre première offre de stage."
+      }
     },
     "deptHeadDashboard": {
       "subtitle": "Examinez les demandes de placement de votre département",
@@ -1740,7 +1784,19 @@
       "stats": {
         "totalPlacements": "Total des placements",
         "pendingValidation": "En attente de validation",
-        "docsGenerated": "Documents générés"
+        "docsGenerated": "Documents générés",
+        "reports": {
+          "updateReportStatus": "Mettre à jour le statut du signalement",
+          "resolveOrDismiss": "Résoudre ou rejeter ce signalement. Une note optionnelle peut documenter la décision.",
+          "decision": "Décision",
+          "resolve": "Résoudre",
+          "dismiss": "Rejeter",
+          "resolutionNote": "Note de résolution (optionnel)",
+          "resolutionNotePlaceholder": "Ajouter du contexte pour la piste d'audit",
+          "cancel": "Annuler",
+          "saveDecision": "Enregistrer la décision",
+          "saving": "Enregistrement..."
+        }
       },
       "actions": {
         "validatePlacements": "Valider les placements",
@@ -1863,23 +1919,23 @@
         "editDepartmentDescription": "Mettez à jour le nom du département ci-dessous.",
         "error": "Quelque chose s'est mal passe. Veuillez reessayer.",
         "skills": {
-          "title": "Comp\u00e9tences pour {name}",
-          "description": "S\u00e9lectionnez les comp\u00e9tences pertinentes pour ce d\u00e9partement. Les \u00e9tudiants les verront comme recommand\u00e9es.",
-          "save": "Enregistrer les comp\u00e9tences",
+          "title": "Compétences pour {name}",
+          "description": "Sélectionnez les compétences pertinentes pour ce département. Les étudiants les verront comme recommandées.",
+          "save": "Enregistrer les compétences",
           "cancel": "Annuler",
-          "skillsSelected": "comp\u00e9tences s\u00e9lectionn\u00e9es",
-          "searchPlaceholder": "Rechercher des comp\u00e9tences...",
-          "saveSuccess": "Comp\u00e9tences du d\u00e9partement mises \u00e0 jour.",
-          "saveError": "Impossible de mettre \u00e0 jour les comp\u00e9tences.",
+          "skillsSelected": "compétences sélectionnées",
+          "searchPlaceholder": "Rechercher des compétences...",
+          "saveSuccess": "Compétences du département mises à jour.",
+          "saveError": "Impossible de mettre à jour les compétences.",
           "skillNotFound": "'{query}' introuvable.",
-          "createSkill": "Cr\u00e9er '{name}'",
-          "createSkillSuccess": "'{name}' cr\u00e9\u00e9 et s\u00e9lectionn\u00e9.",
-          "createSkillError": "Impossible de cr\u00e9er la comp\u00e9tence."
+          "createSkill": "Créer '{name}'",
+          "createSkillSuccess": "'{name}' créé et sélectionné.",
+          "createSkillError": "Impossible de créer la compétence."
         },
         "bulkCreate": {
-          "title": "Cr\u00e9ation en masse de d\u00e9partements",
-          "description": "Cr\u00e9ez plusieurs d\u00e9partements et assignez des chefs en une seule fois. Chaque chef recevra un email de bienvenue avec un lien de r\u00e9initialisation de mot de passe.",
-          "departmentName": "Nom du d\u00e9partement",
+          "title": "Création en masse de départements",
+          "description": "Créez plusieurs départements et assignez des chefs en une seule fois. Chaque chef recevra un email de bienvenue avec un lien de réinitialisation de mot de passe.",
+          "departmentName": "Nom du département",
           "departmentNamePlaceholder": "ex. Informatique",
           "headEmail": "Email du chef",
           "headEmailPlaceholder": "ex. chef@university.dz",
@@ -1887,19 +1943,21 @@
           "headNamePlaceholder": "ex. Dr. Ahmed Benali",
           "addRow": "Ajouter une ligne",
           "removeRow": "Supprimer la ligne",
-          "submit": "Tout cr\u00e9er",
-          "submitting": "Cr\u00e9ation...",
-          "successMessage": "{count} d\u00e9partement(s) cr\u00e9\u00e9(s) avec succ\u00e8s.",
-          "partialSuccess": "{created} cr\u00e9\u00e9(s), {failed} \u00e9chou\u00e9(s).",
+          "submit": "Tout créer",
+          "submitting": "Création...",
+          "successMessage": "{count} département(s) créé(s) avec succès.",
+          "partialSuccess": "{created} créé(s), {failed} échoué(s).",
           "rowError": "{name} : {error}",
-          "selectUniversityFirst": "S\u00e9lectionnez une universit\u00e9 pour continuer.",
-          "error": "Quelque chose s'est mal pass\u00e9. Veuillez r\u00e9essayer."
+          "selectUniversityFirst": "Sélectionnez une université pour continuer.",
+          "error": "Quelque chose s'est mal passé. Veuillez réessayer."
         },
         "fieldOfStudy": "Filière",
         "selectField": "Sélectionner une filière",
         "fieldInheritsSkills": "Hérite de {count} compétences",
         "noField": "Aucune filière assignée",
-        "assignField": "Assigner une filière"
+        "assignField": "Assigner une filière",
+        "loading": "Chargement des départements",
+        "noDepartmentsTitle": "Aucun département"
       },
       "fields": {
         "pageTitle": "Filières",
@@ -2097,6 +2155,12 @@
         "badge": "Vue admin",
         "title": "Performance de la plateforme",
         "description": "Suivez les validations, l engagement, les placements et la sante operationnelle du reseau Stag."
+      },
+      "trustLeaderboard": {
+        "securityRating": "Évaluation de sécurité",
+        "trustIndex": "Indice de confiance",
+        "score": "Score",
+        "viewAllAnalytics": "Voir toutes les analyses"
       }
     },
     "superAdmin": {
@@ -2229,25 +2293,25 @@
         }
       },
       "impersonation": {
-        "banner": "Vous usurpez l'identit\u00e9 de {name}",
-        "stop": "Arr\u00eater"
+        "banner": "Vous usurpez l'identité de {name}",
+        "stop": "Arrêter"
       }
     },
     "universityProfile": {
       "loading": "Chargement du profil universitaire...",
-      "notFound": "Universit\u00e9 introuvable.",
-      "kicker": "Universit\u00e9",
-      "description": "G\u00e9rez le profil public de votre universit\u00e9 et ses domaines d'email.",
-      "profileTitle": "Informations de l'universit\u00e9",
+      "notFound": "Université introuvable.",
+      "kicker": "Université",
+      "description": "Gérez le profil public de votre université et ses domaines d'email.",
+      "profileTitle": "Informations de l'université",
       "domainsTitle": "Domaines d'email",
-      "name": "Nom de l'universit\u00e9",
-      "namePlaceholder": "Universit\u00e9 des Sciences et Technologies",
-      "abbreviation": "Abr\u00e9viation",
+      "name": "Nom de l'université",
+      "namePlaceholder": "Université des Sciences et Technologies",
+      "abbreviation": "Abréviation",
       "abbreviationPlaceholder": "USTHB",
-      "phone": "Num\u00e9ro de t\u00e9l\u00e9phone",
+      "phone": "Numéro de téléphone",
       "phonePlaceholder": "+213 21 XX XX XX",
       "wilayaCode": "Wilaya",
-      "wilayaPlaceholder": "S\u00e9lectionnez votre wilaya",
+      "wilayaPlaceholder": "Sélectionnez votre wilaya",
       "city": "Ville",
       "cityPlaceholder": "Alger",
       "address": "Adresse",
@@ -2259,16 +2323,16 @@
       "logoUploading": "Téléversement...",
       "logoUploadSuccess": "Logo téléversé avec succès.",
       "logoUploadError": "Échec du téléversement du logo.",
-      "updateSuccess": "Profil universitaire mis \u00e0 jour.",
-      "updateError": "\u00c9chec de la mise \u00e0 jour du profil.",
+      "updateSuccess": "Profil universitaire mis à jour.",
+      "updateError": "Échec de la mise à jour du profil.",
       "newDomain": "Nouveau domaine",
       "domainPlaceholder": "univ-exemple.dz",
       "addDomain": "Ajouter un domaine",
-      "addDomainSuccess": "Domaine ajout\u00e9. Il sera examin\u00e9 pour approbation.",
-      "addDomainError": "\u00c9chec de l'ajout du domaine.",
+      "addDomainSuccess": "Domaine ajouté. Il sera examiné pour approbation.",
+      "addDomainError": "Échec de l'ajout du domaine.",
       "removeDomain": "Supprimer le domaine",
-      "removeDomainSuccess": "Domaine supprim\u00e9.",
-      "removeDomainError": "\u00c9chec de la suppression du domaine."
+      "removeDomainSuccess": "Domaine supprimé.",
+      "removeDomainError": "Échec de la suppression du domaine."
     },
     "settings": {
       "twoFactor": {
@@ -2408,7 +2472,21 @@
         "changing": "Changing...",
         "submit": "Change Password",
         "success": "Password changed successfully."
-      }
+      },
+      "profileIdentity": "Identité du profil",
+      "profileIdentityDescription": "Ces informations déterminent comment les entreprises et les administrateurs perçoivent votre présence numérique sur la plateforme.",
+      "personalInformation": "Informations personnelles",
+      "saved": "Enregistré.",
+      "securityBaseline": "Sécurité de base",
+      "securityBaselineDescription": "Paramètres d'authentification clés. Maintenez des identifiants robustes pour protéger votre périmètre numérique.",
+      "primaryEmail": "E-mail principal",
+      "primaryEmailDescription": "Utilisé pour la connexion et les notifications officielles.",
+      "passwordLabel": "Mot de passe",
+      "passwordDescription": "Mettez à jour votre mot de passe. Les autres sessions actives seront révoquées.",
+      "update": "Mettre à jour",
+      "dangerZone": "Zone de danger",
+      "dangerZoneDescription": "Supprimez définitivement votre compte et toutes les données associées. Cette action est irréversible.",
+      "deleteAccountButton": "Supprimer le compte"
     },
     "departments": {
       "pageTitle": "Gestion des départements",
@@ -2438,7 +2516,6 @@
         "saveError": "Impossible de mettre à jour les compétences."
       }
     },
-
     "messages": {
       "kickerStudent": "Boite etudiante",
       "kickerCompany": "Boite entreprise",
@@ -2593,6 +2670,9 @@
         "requestChangeSuccess": "Message envoyé à {companyName}.",
         "backToInterviews": "Retour aux entretiens"
       }
+    },
+    "placementValidations": {
+      "noValidationsTitle": "Aucune validation"
     }
   },
   "companyPublic": {
@@ -3171,5 +3251,51 @@
     "title": "En maintenance",
     "subtitle": "Nous peaufinons Stag pour mieux vous servir. Merci de revenir bientôt.",
     "status": "Travaux en cours"
+  },
+  "ui": {
+    "sidebar": {
+      "title": "Barre latérale",
+      "toggle": "Basculer la barre latérale"
+    },
+    "breadcrumb": {
+      "more": "Plus"
+    }
+  },
+  "preview": {
+    "agreement": {
+      "internshipAgreement": "Convention de stage",
+      "verification": "Vérification",
+      "trainee": "Stagiaire",
+      "name": "Nom",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "studentId": "N° étudiant",
+      "department": "Département",
+      "address": "Adresse",
+      "company": "Entreprise",
+      "representative": "Représentant",
+      "university": "Université",
+      "startDate": "Date de début",
+      "endDate": "Date de fin",
+      "weeks": "{count} semaines",
+      "internshipDetails": "Détails du stage",
+      "subject": "Sujet",
+      "type": "Type",
+      "workMode": "Mode de travail",
+      "duration": "Durée",
+      "generated": "Généré le",
+      "theTrainee": "Le Stagiaire",
+      "theCompany": "L'Entreprise",
+      "theUniversity": "L'Université",
+      "autoGenerated": "Généré automatiquement par le système Stag",
+      "previewNote": "Ceci est un aperçu avec des données fictives pour démontrer la mise en page de la convention.",
+      "internshipTypePfe": "Projet de fin d'études",
+      "internshipTypeImmersion": "Stage d'immersion",
+      "internshipTypeSummer": "Stage d'été",
+      "internshipTypePractical": "Formation pratique",
+      "workModeRemote": "À distance",
+      "workModeHybrid": "Hybride",
+      "workModeOnsite": "Sur site"
+    }
   }
 }

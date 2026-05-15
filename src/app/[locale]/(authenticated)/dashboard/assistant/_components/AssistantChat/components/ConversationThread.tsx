@@ -114,8 +114,7 @@ export function ConversationThread({
           messages.map((message, index) => (
             <motion.div
               key={message.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
+              {...reveal}
               transition={{ duration: 0.3, ease, delay: index * 0.05 }}
             >
               <MessageBubble

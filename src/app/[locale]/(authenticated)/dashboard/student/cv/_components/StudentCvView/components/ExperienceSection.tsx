@@ -2,6 +2,7 @@
 
 import { Briefcase, Plus } from "lucide-react"
 import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 
 import { ExperienceEditor } from "@/app/[locale]/(authenticated)/dashboard/student/cv/_components/StudentCvView/components/experience/ExperienceEditor"
@@ -27,6 +28,7 @@ export function ExperienceSection({
   onUpdate,
   onDelete,
 }: ExperienceSectionProps) {
+  const t = useTranslations("dashboard.student.cv")
   const [adding, setAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draft, setDraft] = useState<ExperienceDraft>(EMPTY_EXPERIENCE_DRAFT)
@@ -65,11 +67,10 @@ export function ExperienceSection({
       <div className="flex items-center justify-between gap-4 border-b border-border/50 px-6 py-4">
         <div className="flex items-center gap-3">
           <Briefcase className="h-4 w-4 text-primary" />
-          <h2 className="font-serif text-xl text-heading">Experience</h2>
+          <h2 className="font-serif text-xl text-heading">{t("experience")}</h2>
           {experiences.length > 0 && (
             <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
-              {experiences.length}{" "}
-              {experiences.length === 1 ? "Entry" : "Entries"}
+              {t("experienceCount", { count: experiences.length })}
             </span>
           )}
         </div>
@@ -81,7 +82,7 @@ export function ExperienceSection({
           onClick={handleStartAdding}
         >
           <Plus className="h-3.5 w-3.5" />
-          Add
+          {t("addExperience")}
         </Button>
       </div>
 
@@ -114,7 +115,7 @@ export function ExperienceSection({
               <Briefcase className="h-5 w-5 text-muted-foreground/40" />
             </div>
             <p className="text-sm text-muted-foreground">
-              No experience entries yet.
+              {t("noExperience")}
             </p>
           </div>
         )}

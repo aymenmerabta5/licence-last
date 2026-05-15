@@ -1,6 +1,7 @@
 "use client"
 
 import { Loader2 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import type { ReportResolutionStatus } from "@/app/[locale]/(authenticated)/dashboard/admin/stats/_components/AdminStatsView/hooks/useResolveReport"
 import { Button } from "@/components/ui/button"
 import {
@@ -44,16 +45,16 @@ export function ResolveReportDialog({
   onResolutionNoteChange,
   onConfirm,
 }: ResolveReportDialogProps) {
+  const t = useTranslations("dashboard.admin.stats.reports")
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="font-serif text-xl">
-            Update Report Status
+            {t("updateReportStatus")}
           </DialogTitle>
           <DialogDescription>
-            Resolve or dismiss this report. An optional note can document the
-            decision.
+            {t("resolveOrDismiss")}
           </DialogDescription>
         </DialogHeader>
 
@@ -69,7 +70,7 @@ export function ResolveReportDialog({
             </div>
 
             <div className="space-y-2">
-              <Label>Decision</Label>
+              <Label>{t("decision")}</Label>
               <div className="flex gap-2">
                 <Button
                   type="button"
@@ -81,7 +82,7 @@ export function ResolveReportDialog({
                   onClick={() => onStatusChange("resolved")}
                   disabled={isPending}
                 >
-                  Resolve
+                  {t("resolve")}
                 </Button>
                 <Button
                   type="button"
@@ -93,20 +94,20 @@ export function ResolveReportDialog({
                   onClick={() => onStatusChange("dismissed")}
                   disabled={isPending}
                 >
-                  Dismiss
+                  {t("dismiss")}
                 </Button>
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="report-resolution-note">
-                Resolution Note (optional)
+                {t("resolutionNote")}
               </Label>
               <Textarea
                 id="report-resolution-note"
                 value={resolutionNote}
                 onChange={(event) => onResolutionNoteChange(event.target.value)}
-                placeholder="Add context for audit trail"
+                placeholder={t("resolutionNotePlaceholder")}
                 className="min-h-24 rounded-xl border-border/40"
                 disabled={isPending}
               />
@@ -122,7 +123,7 @@ export function ResolveReportDialog({
             onClick={() => onOpenChange(false)}
             disabled={isPending}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             type="button"
@@ -134,10 +135,10 @@ export function ResolveReportDialog({
             {isPending ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Saving...
+                {t("saving")}
               </>
             ) : (
-              "Save decision"
+              t("saveDecision")
             )}
           </Button>
         </DialogFooter>

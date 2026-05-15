@@ -1,8 +1,6 @@
 "use client"
 
 import { ArrowRight, Menu } from "lucide-react"
-import { useLocale, useTranslations } from "next-intl"
-import { useMemo, useState, useSyncExternalStore } from "react"
 
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { NAVBAR_ICON_CONTROL_CLASS } from "@/components/navbar-control-styles"
@@ -11,58 +9,32 @@ import { NavbarMobileSessionControlsFallback } from "@/components/Navbar/compone
 import { NavbarSessionControls } from "@/components/Navbar/components/NavbarSessionControls"
 import { NavbarSessionControlsFallback } from "@/components/Navbar/components/NavbarSessionControlsFallback"
 import { ThemeToggle } from "@/components/ThemeToggle"
+import { useNavbarState } from "@/components/Navbar/hooks/useNavbarState"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { Link } from "@/i18n/routing"
 
-const subscribeHydration = () => () => {}
-const getHydratedSnapshot = () => true
-const getServerHydratedSnapshot = () => false
-
 export function Navbar() {
-  const t = useTranslations("nav")
-  const locale = useLocale()
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const mounted = useSyncExternalStore(
-    subscribeHydration,
-    getHydratedSnapshot,
-    getServerHydratedSnapshot,
-  )
-
-  const navItems = useMemo(
-    () => [
-      { href: "/discover" as const, label: t("discover") },
-      { href: "/for-students" as const, label: t("forStudents") },
-      { href: "/for-companies" as const, label: t("forRecruiters") },
-      { href: "/about" as const, label: t("about") },
-    ],
-    [t],
-  )
-
-  const sheetSide = locale === "ar" ? "left" : "right"
+  const { mobileOpen, setMobileOpen, mounted, navItems, sheetSide } =
+    useNavbarState()
 
   return (
     <>
-      <nav
-        className="relative z-20 flex items-center justify-between px-6 sm:px-8 lg:px-16 pt-6 pb-6 border-b border-border transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
-        aria-label={t("aria.mainNav")}
-      >
+      <nav className="relative z-20 flex items-center justify-between px-6 sm:px-8 lg:px-16 pt-6 pb-6 border-b border-border transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="icon-lg"
             onClick={() => setMobileOpen(true)}
             className={`md:hidden ${NAVBAR_ICON_CONTROL_CLASS}`}
-            aria-label={t("aria.openMenu")}
           >
-            <Menu className="h-5 w-5 text-current" aria-hidden="true" />
+            <Menu className="h-5 w-5 text-current" />
           </Button>
 
           <Link
             href="/"
             className="font-serif text-2xl tracking-tight text-heading transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
-            aria-label="Stag"
           >
             Stag<span className="text-primary">.</span>io
           </Link>
@@ -85,11 +57,7 @@ export function Navbar() {
             <LanguageSwitcher />
           </div>
           <ThemeToggle />
-          {mounted ? (
-            <NavbarSessionControls />
-          ) : (
-            <NavbarSessionControlsFallback />
-          )}
+          {mounted ? <NavbarSessionControls /> : <NavbarSessionControlsFallback />}
         </div>
       </nav>
 
@@ -106,9 +74,6 @@ export function Navbar() {
             >
               Stag<span className="text-primary">.</span>io
             </Link>
-            <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
-              {t("menu")}
-            </p>
           </div>
 
           <div className="p-6 space-y-6">
@@ -121,10 +86,7 @@ export function Navbar() {
                   className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium tracking-wide text-foreground/70 hover:text-primary hover:bg-secondary/30 transition-colors"
                 >
                   <span>{item.label}</span>
-                  <ArrowRight
-                    className="h-4 w-4 text-foreground/30"
-                    aria-hidden="true"
-                  />
+                  <ArrowRight className="h-4 w-4 text-foreground/30" />
                 </Link>
               ))}
             </nav>
@@ -132,9 +94,7 @@ export function Navbar() {
             <Separator className="bg-border/50" />
 
             {mounted ? (
-              <NavbarMobileSessionControls
-                onNavigate={() => setMobileOpen(false)}
-              />
+              <NavbarMobileSessionControls onNavigate={() => setMobileOpen(false)} />
             ) : (
               <NavbarMobileSessionControlsFallback />
             )}

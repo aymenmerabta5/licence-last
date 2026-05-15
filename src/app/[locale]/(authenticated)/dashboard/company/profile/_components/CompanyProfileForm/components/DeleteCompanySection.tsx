@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { NameConfirmationAlertDialog } from "@/components/dialogs/NameConfirmationAlertDialog"
 import { Button } from "@/components/ui/button"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface DeleteCompanySectionProps {
   companyName: string
@@ -30,8 +30,7 @@ export function DeleteCompanySection({
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ duration: 0.5, ease, delay: 0.45 }}
       className="border border-destructive/20 dark:border-destructive/15 overflow-hidden"
     >

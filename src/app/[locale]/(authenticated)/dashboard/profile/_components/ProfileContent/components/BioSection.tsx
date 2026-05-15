@@ -5,7 +5,7 @@ import * as motion from "motion/react-client"
 import type { StudentProfile } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
-import { ease } from "@/lib/animations"
+import { ease, fadeIn, reveal } from "@/lib/animations"
 
 interface BioSectionProps {
   profile?: StudentProfile | null
@@ -22,8 +22,7 @@ export function BioSection({ profile, canEdit, labels }: BioSectionProps) {
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ delay: 0.3, duration: 0.8, ease }}
       className="relative"
     >
@@ -57,8 +56,7 @@ export function BioSection({ profile, canEdit, labels }: BioSectionProps) {
               <Quote className="h-16 w-16 2xl:h-20 2xl:w-20 text-primary/5 mb-8 -ms-2" />
 
               <motion.p
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
+                {...fadeIn}
                 transition={{ duration: 1 }}
                 className="text-xl sm:text-2xl 2xl:text-3xl text-slate-700 leading-[1.8] font-light whitespace-pre-line first-letter:float-start first-letter:font-serif first-letter:text-[3rem] sm:first-letter:text-[4.5rem] 2xl:first-letter:text-[6rem] first-letter:font-bold first-letter:text-primary first-letter:leading-[0.8] first-letter:me-6 first-letter:mt-4 first-letter:drop-shadow-lg"
               >

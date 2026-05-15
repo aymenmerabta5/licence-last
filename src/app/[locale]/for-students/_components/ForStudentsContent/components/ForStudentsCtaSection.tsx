@@ -3,14 +3,14 @@ import * as motion from "motion/react-client"
 import type { ForStudentsSectionProps } from "@/app/[locale]/for-students/_components/ForStudentsContent/types"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
-import { reveal } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 export function ForStudentsCtaSection({ t }: ForStudentsSectionProps) {
   return (
     <section className="border-t border-border px-4 sm:px-6 lg:px-16 py-20">
       <motion.div
         {...reveal}
-        transition={{ duration: 0.7, ease: "easeOut" }}
+        transition={{ duration: 0.7, ease }}
         className="mx-auto max-w-6xl text-center"
       >
         <h2

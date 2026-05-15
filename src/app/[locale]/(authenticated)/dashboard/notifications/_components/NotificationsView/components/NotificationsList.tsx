@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl"
 import type { RefObject } from "react"
 
 import { Link } from "@/i18n/routing"
-import { ease } from "@/lib/animations"
+import { ease, fadeIn, reveal } from "@/lib/animations"
 import {
   formatNotification,
   getNotificationDestination,
@@ -51,8 +51,7 @@ export function NotificationsList({
   if (notifications.length === 0) {
     return (
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        {...fadeIn}
         transition={{ duration: 0.4, ease }}
         className="border border-dashed border-border/60 p-12 text-center space-y-4"
       >
@@ -88,8 +87,7 @@ export function NotificationsList({
         return (
           <motion.div
             key={n.id}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
+            {...reveal}
             transition={{ duration: 0.4, delay: Math.min(i * 0.05, 0.4), ease }}
             className={cn(
               "group relative block w-full text-start border-b border-border/50 bg-background transition-colors",

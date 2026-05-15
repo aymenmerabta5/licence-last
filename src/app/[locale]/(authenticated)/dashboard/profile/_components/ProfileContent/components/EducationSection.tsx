@@ -5,7 +5,7 @@ import * as motion from "motion/react-client"
 import type { StudentProfile } from "@/app/[locale]/(authenticated)/dashboard/profile/_components/ProfileContent/types"
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 interface EducationSectionProps {
   profile?: StudentProfile | null
@@ -29,8 +29,7 @@ export function EducationSection({
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
+      {...reveal}
       transition={{ delay: 0.4, duration: 0.8, ease }}
       className="space-y-8"
     >

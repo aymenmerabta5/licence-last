@@ -36,7 +36,7 @@ export default function AgreementGeneratedEmail({
           Hi <strong>{studentName}</strong>, your internship placement has been
           validated and your official agreement has been generated.
         </Text>
-        <Section className="bg-background my-4 rounded-md border border-border px-4 py-4 text-left">
+        <Section className="bg-background my-4 rounded-md border border-border px-4 py-4 text-start">
           <Text className="text-mutedForeground mb-1 text-xs font-semibold uppercase tracking-wider">
             Placement Summary
           </Text>

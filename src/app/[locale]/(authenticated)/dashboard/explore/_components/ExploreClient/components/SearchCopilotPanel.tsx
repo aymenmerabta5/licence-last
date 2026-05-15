@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl"
 import type { FilterState } from "@/app/[locale]/(authenticated)/dashboard/explore/_components/ExploreClient/hooks/useOfferSearch"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 import { INTERNSHIP_TYPE_LABELS } from "@/lib/constants/internship"
 import { getWilayaName } from "@/lib/wilayas"
 
@@ -128,8 +128,7 @@ export function SearchCopilotPanel({
 
       {aiSuggestion && (
         <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
+          {...reveal}
           transition={{ duration: 0.3, ease }}
           className="border-t border-border/40 pt-4 space-y-3"
         >

@@ -1,9 +1,15 @@
 "use client"
 
-import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile"
+import type { TurnstileInstance } from "@marsidev/react-turnstile"
+import dynamic from "next/dynamic"
 import { useLocale } from "next-intl"
 import { useTheme } from "next-themes"
 import { type Ref, useImperativeHandle, useRef } from "react"
+
+const Turnstile = dynamic(
+  () => import("@marsidev/react-turnstile").then((mod) => mod.Turnstile),
+  { ssr: false },
+)
 
 export interface CaptchaHandle {
   reset: () => void

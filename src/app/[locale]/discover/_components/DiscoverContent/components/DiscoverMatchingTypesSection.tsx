@@ -27,7 +27,7 @@ export function DiscoverMatchingTypesSection({ t }: DiscoverSectionProps) {
           <div className="lg:col-span-5">
             <motion.div
               {...reveal}
-              transition={{ duration: 0.7, ease: "easeOut" }}
+              transition={{ duration: 0.7, ease }}
               className="mb-6 flex items-center gap-3"
             >
               <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary [[dir=rtl]_&]:tracking-normal">
@@ -37,7 +37,7 @@ export function DiscoverMatchingTypesSection({ t }: DiscoverSectionProps) {
             </motion.div>
             <motion.h2
               {...reveal}
-              transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+              transition={{ duration: 0.7, ease, delay: 0.1 }}
               className="font-serif text-heading"
               style={{
                 fontSize: "clamp(2rem, 4vw, 3.5rem)",
@@ -49,7 +49,7 @@ export function DiscoverMatchingTypesSection({ t }: DiscoverSectionProps) {
             </motion.h2>
             <motion.p
               {...reveal}
-              transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
+              transition={{ duration: 0.7, ease, delay: 0.2 }}
               className="mt-6 leading-relaxed text-muted-foreground"
             >
               {t("matching.description")}
@@ -97,7 +97,7 @@ export function DiscoverMatchingTypesSection({ t }: DiscoverSectionProps) {
         <div className="mx-auto max-w-6xl">
           <motion.div
             {...reveal}
-            transition={{ duration: 0.7, ease: "easeOut" }}
+            transition={{ duration: 0.7, ease }}
             className="mb-6 flex items-center gap-3"
           >
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary [[dir=rtl]_&]:tracking-normal">
@@ -108,7 +108,7 @@ export function DiscoverMatchingTypesSection({ t }: DiscoverSectionProps) {
 
           <motion.h2
             {...reveal}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+            transition={{ duration: 0.7, ease, delay: 0.1 }}
             className="mb-12 font-serif text-heading"
             style={{
               fontSize: "clamp(2rem, 4vw, 3.5rem)",

@@ -4,7 +4,7 @@ import { ArrowRight, Building2, GraduationCap, School } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 
-import { ease } from "@/lib/animations"
+import { ease, reveal } from "@/lib/animations"
 
 type SelectedRole = "student" | "company_admin" | "university_admin"
 
@@ -30,8 +30,7 @@ export function RoleSelector({ onSelect }: RoleSelectorProps) {
   return (
     <div className="space-y-7">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        {...reveal}
         transition={{ duration: 0.6, ease }}
       >
         <h1 className="font-serif text-3xl text-heading tracking-tight mb-2 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
@@ -47,8 +46,7 @@ export function RoleSelector({ onSelect }: RoleSelectorProps) {
           <motion.button
             key={key}
             type="button"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            {...reveal}
             transition={{ duration: 0.6, ease, delay: 0.1 + i * 0.1 }}
             onClick={() => onSelect(key)}
             className="group relative flex items-start gap-4 p-5 text-start border border-border bg-background hover:border-primary/40 hover:bg-primary/[0.02] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] cursor-pointer"

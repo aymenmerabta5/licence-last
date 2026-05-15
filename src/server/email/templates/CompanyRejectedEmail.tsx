@@ -25,7 +25,7 @@ export default function CompanyRejectedEmail({
           Unfortunately, the application for <strong>{companyName}</strong> was
           not approved at this time.
         </Text>
-        <Section className="bg-background my-4 rounded-md border border-border px-4 py-3 text-left">
+        <Section className="bg-background my-4 rounded-md border border-border px-4 py-3 text-start">
           <Text className="text-mutedForeground mb-1 text-xs font-semibold uppercase tracking-wider">
             Reason
           </Text>
