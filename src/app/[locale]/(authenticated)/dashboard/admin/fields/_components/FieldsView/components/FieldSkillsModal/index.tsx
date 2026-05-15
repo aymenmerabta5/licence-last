@@ -1,6 +1,7 @@
 "use client"
 
-import { Loader2, Plus, Search } from "lucide-react"
+import { useState } from "react"
+import { Loader2, Plus, Save, Search } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 
@@ -30,6 +31,9 @@ export function FieldSkillsModal({
   onOpenChange,
 }: FieldSkillsModalProps) {
   const t = useTranslations("dashboard.admin.fields.skills")
+  const [similarSkills, setSimilarSkills] = useState<
+    Array<{ id: string; name: string }> | null
+  >(null)
 
   const {
     query,
@@ -51,7 +55,10 @@ export function FieldSkillsModal({
   } = useFieldSkills(fieldId, open)
 
   const handleOpenChange = (next: boolean) => {
-    if (!next) resetState()
+    if (!next) {
+      resetState()
+      setSimilarSkills(null)
+    }
     onOpenChange(next)
   }
 
@@ -66,18 +73,47 @@ export function FieldSkillsModal({
   const handleCreateSkill = async () => {
     if (!query.trim()) return
     try {
-      const newSkill = await createSkill(query.trim())
-      toast.success(t("createSkillSuccess", { name: newSkill.name }))
-      toggleSkill(newSkill.id)
+      const result = await createSkill({ name: query.trim() })
+      if ("status" in result && result.status === "similar_exists") {
+        setSimilarSkills(result.similar)
+        return
+      }
+      toast.success(t("createSkillSuccess", { name: result.name }))
+      toggleSkill(result.id)
       setQuery("")
+      setSimilarSkills(null)
     } catch {
       toast.error(t("createSkillError"))
     }
   }
 
+  const handleForceCreate = async () => {
+    if (!query.trim()) return
+    try {
+      const result = await createSkill({ name: query.trim(), force: true })
+      if ("status" in result && result.status === "similar_exists") {
+        setSimilarSkills(result.similar)
+        return
+      }
+      toast.success(t("createSkillSuccess", { name: result.name }))
+      toggleSkill(result.id)
+      setQuery("")
+      setSimilarSkills(null)
+    } catch {
+      toast.error(t("createSkillError"))
+    }
+  }
+
+  const handleUseExisting = (skillId: string) => {
+    toggleSkill(skillId)
+    setSimilarSkills(null)
+    setQuery("")
+    toast.success(t("useExisting"))
+  }
+
   const queryTrimmed = query.trim()
   const showCreateOption =
-    queryTrimmed.length > 0 && !isLoading && !hasExactMatch
+    queryTrimmed.length > 0 && !isLoading && !hasExactMatch && !similarSkills
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -95,7 +131,10 @@ export function FieldSkillsModal({
           <input
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              if (similarSkills) setSimilarSkills(null)
+            }}
             placeholder={t("searchPlaceholder")}
             className="w-full ps-9 pe-3 py-2 text-sm border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary"
           />
@@ -133,6 +172,54 @@ export function FieldSkillsModal({
                 )}
                 {t("createSkill", { name: queryTrimmed })}
               </Button>
+            </div>
+          )}
+
+          {similarSkills && (
+            <div className="space-y-3 border border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-800/40 px-4 py-3">
+              <p className="text-sm font-medium text-amber-900 dark:text-amber-200">
+                {t("didYouMean")}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {similarSkills.map((skill) => (
+                  <Button
+                    key={skill.id}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleUseExisting(skill.id)}
+                    className="rounded-none"
+                  >
+                    {skill.name}
+                  </Button>
+                ))}
+              </div>
+              <div className="flex items-center gap-2 pt-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSimilarSkills(null)}
+                  className="rounded-none"
+                >
+                  {t("cancel")}
+                </Button>
+                <Button
+                  type="button"
+                  variant="editorial-outline"
+                  size="editorial-sm"
+                  onClick={handleForceCreate}
+                  disabled={isCreatingSkill}
+                  className="rounded-none gap-2"
+                >
+                  {isCreatingSkill ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Save className="h-3.5 w-3.5" />
+                  )}
+                  {t("createAnyway")}
+                </Button>
+              </div>
             </div>
           )}
         </div>

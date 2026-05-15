@@ -1930,7 +1930,11 @@
           "skillNotFound": "'{query}' not found.",
           "createSkill": "Create '{name}'",
           "createSkillSuccess": "'{name}' created and selected.",
-          "createSkillError": "Could not create skill."
+          "createSkillError": "Could not create skill.",
+          "didYouMean": "Did you mean one of these?",
+          "createAnyway": "Create Anyway",
+          "useExisting": "Skill selected.",
+          "manageCategories": "Manage Categories"
         },
         "bulkCreate": {
           "title": "Bulk Create Departments",
@@ -1957,7 +1961,12 @@
         "noField": "No field assigned",
         "assignField": "Assign Field",
         "loading": "Loading departments",
-        "noDepartmentsTitle": "No departments"
+        "noDepartmentsTitle": "No departments",
+        "categoriesTitle": "Skill Categories",
+        "categoriesDescription": "Assign skill categories to control which skill pools students in this department can access.",
+        "saveCategories": "Save Categories",
+        "categoriesSaveSuccess": "Categories updated.",
+        "categoriesSaveError": "Could not update categories."
       },
       "fields": {
         "pageTitle": "Fields of Study",
@@ -1993,7 +2002,10 @@
           "skillNotFound": "'{query}' not found.",
           "createSkill": "Create '{name}'",
           "createSkillSuccess": "'{name}' created and selected.",
-          "createSkillError": "Could not create skill."
+          "createSkillError": "Could not create skill.",
+          "didYouMean": "Did you mean one of these?",
+          "createAnyway": "Create Anyway",
+          "useExisting": "Skill selected."
         }
       },
       "deptValidations": {
@@ -2432,7 +2444,10 @@
       "skillsManager": {
         "minRequired": "Select at least 1 skill.",
         "saveSuccess": "Skills updated.",
-        "saveError": "Could not save skills."
+        "saveError": "Could not save skills.",
+        "findSkills": "Find skills",
+        "searchPlaceholder": "React, Postgres, Docker...",
+        "maxReached": "Maximum reached — remove a skill to add another."
       },
       "languageManager": {
         "title": "Languages",

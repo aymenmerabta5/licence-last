@@ -1,6 +1,7 @@
 "use client"
 
 import { CheckCircle2, Search } from "lucide-react"
+import { useTranslations } from "next-intl"
 import {
   InputGroup,
   InputGroupAddon,
@@ -25,13 +26,15 @@ export function SkillSearch({
   saveError,
   saveTick,
 }: SkillSearchProps) {
+  const t = useTranslations("dashboard.settings.skillsManager")
+
   return (
     <div className="space-y-2.5">
       <Label
         htmlFor="skill-search"
         className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60"
       >
-        Find skills
+        {t("findSkills")}
       </Label>
       <div className="relative">
         <InputGroup className="rounded-lg h-11">
@@ -42,7 +45,7 @@ export function SkillSearch({
             id="skill-search"
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
-            placeholder="React, Postgres, Docker..."
+            placeholder={t("searchPlaceholder")}
             disabled={isLoading}
           />
         </InputGroup>
@@ -51,7 +54,7 @@ export function SkillSearch({
       {/* Status messages */}
       {isAtMax && (
         <p className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">
-          Maximum reached — remove a skill to add another.
+          {t("maxReached")}
         </p>
       )}
       {saveError && (
@@ -61,7 +64,7 @@ export function SkillSearch({
       )}
       {saveTick > 0 && (
         <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
-          <CheckCircle2 className="h-3 w-3" /> Skills saved
+          <CheckCircle2 className="h-3 w-3" /> {t("saveSuccess")}
         </p>
       )}
     </div>

@@ -1930,7 +1930,11 @@
           "skillNotFound": "'{query}' introuvable.",
           "createSkill": "Créer '{name}'",
           "createSkillSuccess": "'{name}' créé et sélectionné.",
-          "createSkillError": "Impossible de créer la compétence."
+          "createSkillError": "Impossible de créer la compétence.",
+          "didYouMean": "Vouliez-vous dire l'un de ces éléments ?",
+          "createAnyway": "Créer quand même",
+          "useExisting": "Compétence sélectionnée.",
+          "manageCategories": "Gérer les catégories"
         },
         "bulkCreate": {
           "title": "Création en masse de départements",
@@ -1957,7 +1961,12 @@
         "noField": "Aucune filière assignée",
         "assignField": "Assigner une filière",
         "loading": "Chargement des départements",
-        "noDepartmentsTitle": "Aucun département"
+        "noDepartmentsTitle": "Aucun département",
+        "categoriesTitle": "Catégories de compétences",
+        "categoriesDescription": "Assignez des catégories de compétences pour contrôler les pools de compétences accessibles aux étudiants de ce département.",
+        "saveCategories": "Enregistrer les catégories",
+        "categoriesSaveSuccess": "Catégories mises à jour.",
+        "categoriesSaveError": "Impossible de mettre à jour les catégories."
       },
       "fields": {
         "pageTitle": "Filières",
@@ -1993,7 +2002,10 @@
           "skillNotFound": "'{query}' introuvable.",
           "createSkill": "Créer '{name}'",
           "createSkillSuccess": "'{name}' créé et sélectionné.",
-          "createSkillError": "Impossible de créer la compétence."
+          "createSkillError": "Impossible de créer la compétence.",
+          "didYouMean": "Vouliez-vous dire l'un de ces éléments ?",
+          "createAnyway": "Créer quand même",
+          "useExisting": "Compétence sélectionnée."
         }
       },
       "deptValidations": {
@@ -2432,7 +2444,10 @@
       "skillsManager": {
         "minRequired": "Sélectionnez au moins 1 compétence.",
         "saveSuccess": "Compétences mises à jour.",
-        "saveError": "Impossible d'enregistrer les compétences."
+        "saveError": "Impossible d'enregistrer les compétences.",
+        "findSkills": "Rechercher des compétences",
+        "searchPlaceholder": "React, Postgres, Docker...",
+        "maxReached": "Maximum atteint — supprimez une compétence pour en ajouter une autre."
       },
       "languageManager": {
         "title": "Langues",

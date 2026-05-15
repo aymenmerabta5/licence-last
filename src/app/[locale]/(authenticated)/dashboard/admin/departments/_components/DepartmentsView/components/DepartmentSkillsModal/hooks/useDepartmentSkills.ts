@@ -125,12 +125,19 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
   })
 
   const createSkillMutation = useMutation({
-    mutationFn: (name: string) =>
-      orpcClient.skills.create({ name, category: "other" }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: allSkillsQueryKey,
-      })
+    mutationFn: async ({
+      name,
+      force,
+    }: {
+      name: string
+      force?: boolean
+    }) => orpcClient.skills.create({ name, category: "other", force }),
+    onSuccess: async (data) => {
+      if ("id" in data) {
+        await queryClient.invalidateQueries({
+          queryKey: allSkillsQueryKey,
+        })
+      }
     },
   })
 

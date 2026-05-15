@@ -129,9 +129,16 @@ export const createSkillProcedure = authedProcedureStandard
       )
 
       if (result.status === "similar_exists") {
+        return {
+          status: "similar_exists" as const,
+          similar: result.similar,
+        }
+      }
+
+      if (result.status === "exists") {
         throw new ServiceError(
-          "SIMILAR_SKILLS_EXIST",
-          `Similar skills already exist: ${result.similar.map((s) => s.name).join(", ")}`,
+          "SKILL_ALREADY_EXISTS",
+          `Skill '${input.name}' already exists`,
         )
       }
 
@@ -139,14 +146,14 @@ export const createSkillProcedure = authedProcedureStandard
 
       return {
         ...result.skill,
-        created: result.status === "created",
+        created: true,
       }
     } catch (error) {
       createServiceORPCError(error, {
         codeMap: {
           SKILL_NAME_REQUIRED: "BAD_REQUEST",
           SKILL_NAME_TOO_LONG: "BAD_REQUEST",
-          SIMILAR_SKILLS_EXIST: "CONFLICT",
+          SKILL_ALREADY_EXISTS: "CONFLICT",
           FORBIDDEN: "FORBIDDEN",
         },
         fallbackMessage: "Failed to create skill",

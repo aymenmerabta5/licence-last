@@ -1930,7 +1930,11 @@
           "skillNotFound": "'{query}' غير موجود.",
           "createSkill": "إنشاء '{name}'",
           "createSkillSuccess": "تم إنشاء وتحديد '{name}'.",
-          "createSkillError": "لا يمكن إنشاء المهارة."
+          "createSkillError": "لا يمكن إنشاء المهارة.",
+          "didYouMean": "هل تقصد أحد هذه الخيارات؟",
+          "createAnyway": "إنشاء على أي حال",
+          "useExisting": "تم اختيار المهارة.",
+          "manageCategories": "إدارة الفئات"
         },
         "bulkCreate": {
           "title": "إنشاء أقسام مجمعة",
@@ -1957,7 +1961,12 @@
         "noField": "No field assigned",
         "assignField": "Assign Field",
         "loading": "جارٍ تحميل الأقسام",
-        "noDepartmentsTitle": "لا توجد أقسام"
+        "noDepartmentsTitle": "لا توجد أقسام",
+        "categoriesTitle": "فئات المهارات",
+        "categoriesDescription": "قم بتعيين فئات المهارات للتحكم في مجموعات المهارات التي يمكن للطلاب في هذا القسم الوصول إليها.",
+        "saveCategories": "حفظ الفئات",
+        "categoriesSaveSuccess": "تم تحديث الفئات.",
+        "categoriesSaveError": "تعذر تحديث الفئات."
       },
       "fields": {
         "pageTitle": "مجالات الدراسة",
@@ -1993,7 +2002,10 @@
           "skillNotFound": "لم يتم العثور على '{query}'.",
           "createSkill": "إنشاء '{name}'",
           "createSkillSuccess": "تم إنشاء وتحديد '{name}'.",
-          "createSkillError": "تعذر إنشاء المهارة."
+          "createSkillError": "تعذر إنشاء المهارة.",
+          "didYouMean": "هل تقصد أحد هذه الخيارات؟",
+          "createAnyway": "إنشاء على أي حال",
+          "useExisting": "تم اختيار المهارة."
         }
       },
       "deptValidations": {
@@ -2432,7 +2444,10 @@
       "skillsManager": {
         "minRequired": "اختر مهارة واحدة على الأقل.",
         "saveSuccess": "تم تحديث المهارات.",
-        "saveError": "لا يمكن حفظ المهارات."
+        "saveError": "لا يمكن حفظ المهارات.",
+        "findSkills": "البحث عن مهارات",
+        "searchPlaceholder": "React, Postgres, Docker...",
+        "maxReached": "تم الوصول إلى الحد الأقصى — قم بإزالة مهارة لإضافة أخرى."
       },
       "languageManager": {
         "title": "اللغات",

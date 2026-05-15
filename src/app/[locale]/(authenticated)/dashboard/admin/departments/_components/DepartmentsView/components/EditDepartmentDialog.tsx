@@ -4,6 +4,7 @@ import { Loader2, Pencil } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import type { DepartmentItem } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/types"
+import { DepartmentCategoryConfig } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentCategoryConfig"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -110,6 +111,10 @@ export function EditDepartmentDialog({
             value={fieldId}
             onChange={setFieldId}
           />
+
+          {department && (
+            <DepartmentCategoryConfig departmentId={department.id} />
+          )}
         </div>
 
         <DialogFooter>

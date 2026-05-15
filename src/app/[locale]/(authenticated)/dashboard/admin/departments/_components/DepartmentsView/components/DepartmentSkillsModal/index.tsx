@@ -1,9 +1,11 @@
 "use client"
 
-import { Loader2, Plus, Search } from "lucide-react"
+import { useState } from "react"
+import { ChevronDown, ChevronUp, Loader2, Plus, Save, Search } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 import { useDepartmentSkills } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/hooks/useDepartmentSkills"
+import { DepartmentCategoryConfig } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentCategoryConfig"
 import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
 import { Button } from "@/components/ui/button"
 import {
@@ -29,6 +31,10 @@ export function DepartmentSkillsModal({
   onOpenChange,
 }: DepartmentSkillsModalProps) {
   const t = useTranslations("dashboard.admin.departments.skills")
+  const [similarSkills, setSimilarSkills] = useState<
+    Array<{ id: string; name: string }> | null
+  >(null)
+  const [showCategories, setShowCategories] = useState(false)
 
   const {
     query,
@@ -50,7 +56,11 @@ export function DepartmentSkillsModal({
   } = useDepartmentSkills(departmentId, open)
 
   const handleOpenChange = (next: boolean) => {
-    if (!next) resetState()
+    if (!next) {
+      resetState()
+      setSimilarSkills(null)
+      setShowCategories(false)
+    }
     onOpenChange(next)
   }
 
@@ -65,18 +75,47 @@ export function DepartmentSkillsModal({
   const handleCreateSkill = async () => {
     if (!query.trim()) return
     try {
-      const newSkill = await createSkill(query.trim())
-      toast.success(t("createSkillSuccess", { name: newSkill.name }))
-      toggleSkill(newSkill.id)
+      const result = await createSkill({ name: query.trim() })
+      if ("status" in result && result.status === "similar_exists") {
+        setSimilarSkills(result.similar)
+        return
+      }
+      toast.success(t("createSkillSuccess", { name: result.name }))
+      toggleSkill(result.id)
       setQuery("")
+      setSimilarSkills(null)
     } catch {
       toast.error(t("createSkillError"))
     }
   }
 
+  const handleForceCreate = async () => {
+    if (!query.trim()) return
+    try {
+      const result = await createSkill({ name: query.trim(), force: true })
+      if ("status" in result && result.status === "similar_exists") {
+        setSimilarSkills(result.similar)
+        return
+      }
+      toast.success(t("createSkillSuccess", { name: result.name }))
+      toggleSkill(result.id)
+      setQuery("")
+      setSimilarSkills(null)
+    } catch {
+      toast.error(t("createSkillError"))
+    }
+  }
+
+  const handleUseExisting = (skillId: string) => {
+    toggleSkill(skillId)
+    setSimilarSkills(null)
+    setQuery("")
+    toast.success(t("useExisting"))
+  }
+
   const queryTrimmed = query.trim()
   const showCreateOption =
-    queryTrimmed.length > 0 && !isLoading && !hasExactMatch
+    queryTrimmed.length > 0 && !isLoading && !hasExactMatch && !similarSkills
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -88,13 +127,33 @@ export function DepartmentSkillsModal({
           <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
 
+        {/* Category management toggle */}
+        <button
+          type="button"
+          onClick={() => setShowCategories((prev) => !prev)}
+          className="flex items-center justify-between w-full text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:text-foreground transition-colors py-1"
+        >
+          <span>{t("manageCategories")}</span>
+          {showCategories ? (
+            <ChevronUp className="h-3.5 w-3.5" />
+          ) : (
+            <ChevronDown className="h-3.5 w-3.5" />
+          )}
+        </button>
+        {showCategories && (
+          <DepartmentCategoryConfig departmentId={departmentId} />
+        )}
+
         {/* Search */}
         <div className="relative">
           <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              if (similarSkills) setSimilarSkills(null)
+            }}
             placeholder={t("searchPlaceholder")}
             className="w-full ps-9 pe-3 py-2 text-sm border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary"
           />
@@ -132,6 +191,54 @@ export function DepartmentSkillsModal({
                 )}
                 {t("createSkill", { name: queryTrimmed })}
               </Button>
+            </div>
+          )}
+
+          {similarSkills && (
+            <div className="space-y-3 border border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-800/40 px-4 py-3">
+              <p className="text-sm font-medium text-amber-900 dark:text-amber-200">
+                {t("didYouMean")}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {similarSkills.map((skill) => (
+                  <Button
+                    key={skill.id}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleUseExisting(skill.id)}
+                    className="rounded-none"
+                  >
+                    {skill.name}
+                  </Button>
+                ))}
+              </div>
+              <div className="flex items-center gap-2 pt-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSimilarSkills(null)}
+                  className="rounded-none"
+                >
+                  {t("cancel")}
+                </Button>
+                <Button
+                  type="button"
+                  variant="editorial-outline"
+                  size="editorial-sm"
+                  onClick={handleForceCreate}
+                  disabled={isCreatingSkill}
+                  className="rounded-none gap-2"
+                >
+                  {isCreatingSkill ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Save className="h-3.5 w-3.5" />
+                  )}
+                  {t("createAnyway")}
+                </Button>
+              </div>
             </div>
           )}
         </div>
