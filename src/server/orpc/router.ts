@@ -65,11 +65,13 @@ import {
   uploadCompanyLogoProcedure,
 } from "@/server/orpc/routes/companies"
 import {
+  assignCategoriesProcedure,
   assignDepartmentHeadProcedure,
   bulkCreateDepartmentsProcedure,
   createDepartmentProcedure,
   deleteDepartmentProcedure,
   getDepartmentSkillsProcedure,
+  listDepartmentCategoriesProcedure,
   listDepartmentsProcedure,
   syncDepartmentSkillsProcedure,
   unassignDepartmentHeadProcedure,
@@ -157,6 +159,7 @@ import {
 } from "@/server/orpc/routes/fields"
 import {
   createSkillProcedure,
+  listSkillCategoriesProcedure,
   listSkillTagsPrioritizedProcedure,
   listSkillTagsProcedure,
 } from "@/server/orpc/routes/skills"
@@ -255,6 +258,7 @@ export const appRouter = {
     list: listSkillTagsProcedure,
     listPrioritized: listSkillTagsPrioritizedProcedure,
     create: createSkillProcedure,
+    listCategories: listSkillCategoriesProcedure,
   },
   students: {
     getProfile: getStudentProfileProcedure,
@@ -324,6 +328,8 @@ export const appRouter = {
     bulkCreateWithHeads: bulkCreateDepartmentsProcedure,
     syncSkills: syncDepartmentSkillsProcedure,
     getSkills: getDepartmentSkillsProcedure,
+    assignCategories: assignCategoriesProcedure,
+    listCategories: listDepartmentCategoriesProcedure,
   },
   documents: {
     generateAgreement: generateAgreementProcedure,

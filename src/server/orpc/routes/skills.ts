@@ -1,16 +1,23 @@
+"use cache"
+
 import "server-only"
 
 import { eq } from "drizzle-orm"
+import { cacheTag } from "next/cache"
 import { z } from "zod"
 
-import { CACHE_TAGS } from "@/lib/cache"
+import { CACHE_PROFILES, CACHE_TAGS } from "@/lib/cache"
 import {
-  adminProcedureStandard,
+  authedProcedureStandard,
   publicProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
-import { createServiceORPCError } from "@/server/orpc/utils/service-error"
+import {
+  createServiceORPCError,
+  throwCodedORPCError,
+} from "@/server/orpc/utils/service-error"
 import { db } from "@/server/db"
 import { skillCategory } from "@/server/db/schema"
+import { departmentCategory } from "@/server/db/schema/departments"
 import { createSkill } from "@/server/services/skills/create"
 import { listSkillTags } from "@/server/services/skills/list"
 import { listSkillTagsPrioritized } from "@/server/services/skills/list-prioritized"
@@ -41,7 +48,7 @@ export const listSkillTagsPrioritizedProcedure = publicProcedureStandard
   .input(z.object({ departmentId: z.string().min(1) }))
   .handler(async ({ input }) => listSkillTagsPrioritized(input.departmentId))
 
-export const createSkillProcedure = adminProcedureStandard
+export const createSkillProcedure = authedProcedureStandard
   .input(
     z.object({
       name: z.string().trim().min(1).max(100),
@@ -52,6 +59,19 @@ export const createSkillProcedure = adminProcedureStandard
   )
   .handler(async ({ input, context }) => {
     try {
+      const userRole = context.user.rawRole ?? context.user.role ?? "unknown"
+
+      if (
+        userRole !== "super_admin" &&
+        userRole !== "company_admin" &&
+        userRole !== "company_owner" &&
+        userRole !== "dept_head"
+      ) {
+        throwCodedORPCError("FORBIDDEN", "SKILL_CREATE_ACCESS_REQUIRED", {
+          message: "You do not have permission to create skills",
+        })
+      }
+
       let resolvedCategoryId = input.categoryId
       if (resolvedCategoryId == null) {
         const categoryName = input.category?.trim() || "Uncategorized"
@@ -75,6 +95,29 @@ export const createSkillProcedure = adminProcedureStandard
         }
       }
 
+      if (userRole === "dept_head" && context.user.universityDepartmentId) {
+        const allowedCategories = await db
+          .select({ categoryId: departmentCategory.categoryId })
+          .from(departmentCategory)
+          .where(
+            eq(
+              departmentCategory.departmentId,
+              context.user.universityDepartmentId,
+            ),
+          )
+
+        const allowedCategoryIds = allowedCategories.map(
+          (row) => row.categoryId,
+        )
+
+        if (!allowedCategoryIds.includes(resolvedCategoryId!)) {
+          throw new ServiceError(
+            "FORBIDDEN",
+            "This category is not assigned to your department",
+          )
+        }
+      }
+
       const result = await createSkill(
         {
           name: input.name,
@@ -82,7 +125,7 @@ export const createSkillProcedure = adminProcedureStandard
           force: input.force,
         },
         context.user.id,
-        context.user.rawRole ?? context.user.role ?? "unknown",
+        userRole,
       )
 
       if (result.status === "similar_exists") {
@@ -104,8 +147,23 @@ export const createSkillProcedure = adminProcedureStandard
           SKILL_NAME_REQUIRED: "BAD_REQUEST",
           SKILL_NAME_TOO_LONG: "BAD_REQUEST",
           SIMILAR_SKILLS_EXIST: "CONFLICT",
+          FORBIDDEN: "FORBIDDEN",
         },
         fallbackMessage: "Failed to create skill",
       })
     }
+  })
+
+export const listSkillCategoriesProcedure = publicProcedureStandard
+  .handler(async () => {
+    CACHE_PROFILES.REFERENCE()
+    cacheTag(CACHE_TAGS.SKILLS)
+
+    const categories = await db
+      .select()
+      .from(skillCategory)
+      .where(eq(skillCategory.status, "active"))
+      .orderBy(skillCategory.name)
+
+    return categories
   })

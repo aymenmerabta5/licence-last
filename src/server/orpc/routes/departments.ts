@@ -1,15 +1,20 @@
 import "server-only"
 
-import { eq } from "drizzle-orm"
+import { and, eq, notInArray } from "drizzle-orm"
+import { revalidateTag } from "next/cache"
 import { z } from "zod"
 
+import { CACHE_TAGS } from "@/lib/cache"
 import { bulkCreateDepartmentsSchema } from "@/lib/schemas/department"
 import { db } from "@/server/db"
-import { department } from "@/server/db/schema/departments"
+import { department, departmentCategory } from "@/server/db/schema/departments"
+import { skillCategory } from "@/server/db/schema/skills"
 import { university } from "@/server/db/schema/universities"
 import {
   adminProcedureStandard,
   authedProcedureGenerous,
+  authedProcedureStandard,
+  publicProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
 import {
   createServiceORPCError,
@@ -342,3 +347,84 @@ export const syncDepartmentSkillsProcedure = adminProcedureStandard
 export const getDepartmentSkillsProcedure = authedProcedureGenerous
   .input(z.object({ departmentId: z.string().min(1) }))
   .handler(async ({ input }) => getDepartmentSkillIds(input.departmentId))
+
+export const assignCategoriesProcedure = authedProcedureStandard
+  .input(
+    z.object({
+      departmentId: z.string().min(1),
+      categoryIds: z.array(z.number().int().positive()),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    const userRole = context.user.rawRole ?? context.user.role ?? "unknown"
+
+    if (
+      userRole !== "super_admin" &&
+      userRole !== "company_admin" &&
+      userRole !== "company_owner"
+    ) {
+      throwCodedORPCError("FORBIDDEN", "CATEGORY_ASSIGN_ACCESS_REQUIRED", {
+        message:
+          "Only super admins, company admins, and company owners can assign categories",
+      })
+    }
+
+    const { departmentId, categoryIds } = input
+
+    if (categoryIds.length > 0) {
+      await db
+        .delete(departmentCategory)
+        .where(
+          and(
+            eq(departmentCategory.departmentId, departmentId),
+            notInArray(departmentCategory.categoryId, categoryIds),
+          ),
+        )
+    } else {
+      await db
+        .delete(departmentCategory)
+        .where(eq(departmentCategory.departmentId, departmentId))
+    }
+
+    if (categoryIds.length > 0) {
+      await db
+        .insert(departmentCategory)
+        .values(
+          categoryIds.map((categoryId) => ({
+            departmentId,
+            categoryId,
+          })),
+        )
+        .onConflictDoNothing()
+    }
+
+    revalidateTag(CACHE_TAGS.SKILLS, "max")
+    revalidateTag(`department-${departmentId}`, "max")
+
+    return { success: true }
+  })
+
+export const listDepartmentCategoriesProcedure = publicProcedureStandard
+  .input(z.object({ departmentId: z.string().min(1) }))
+  .handler(async ({ input }) => {
+    const categories = await db
+      .select({
+        id: skillCategory.id,
+        name: skillCategory.name,
+        slug: skillCategory.slug,
+        description: skillCategory.description,
+        icon: skillCategory.icon,
+        status: skillCategory.status,
+        createdAt: skillCategory.createdAt,
+        updatedAt: skillCategory.updatedAt,
+      })
+      .from(skillCategory)
+      .innerJoin(
+        departmentCategory,
+        eq(departmentCategory.categoryId, skillCategory.id),
+      )
+      .where(eq(departmentCategory.departmentId, input.departmentId))
+      .orderBy(skillCategory.name)
+
+    return categories
+  })

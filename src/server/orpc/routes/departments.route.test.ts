@@ -37,14 +37,34 @@ const listDepartmentsMock = mock(async (): Promise<DepartmentListItem[]> => [])
 const updateDepartmentMock = mock(async () => ({ success: true }))
 const syncDepartmentSkillsMock = mock(async () => ({ success: true }))
 
+let listDepartmentCategoriesResult: unknown[] = []
+
 const dbLimitMock = mock(async () => [{ universityId: "uni-1" }])
 const dbWhereMock = mock(() => ({ limit: dbLimitMock }))
-const dbFromMock = mock(() => ({ where: dbWhereMock }))
+const dbFromMock = mock(() => ({
+  where: dbWhereMock,
+  innerJoin: () => ({
+    where: () => ({
+      orderBy: () => Promise.resolve(listDepartmentCategoriesResult),
+    }),
+  }),
+}))
 const dbSelectMock = mock(() => ({ from: dbFromMock }))
+
+const deleteWhereMock = mock(() => Promise.resolve(undefined))
+const deleteMock = mock(() => ({ where: deleteWhereMock }))
+
+const insertValuesMock = mock(() => ({
+  returning: () => Promise.resolve([{ id: 1 }]),
+  onConflictDoNothing: () => Promise.resolve(undefined),
+}))
+const insertMock = mock(() => ({ values: insertValuesMock }))
 
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   authedProcedureGenerous: createProcedureMock(),
   adminProcedureStandard: createProcedureMock(),
+  authedProcedureStandard: createProcedureMock(),
+  publicProcedureStandard: createProcedureMock(),
   universityProcedureAssistant: createProcedureMock(),
   universityProcedureStandard: createProcedureMock(),
 }))
@@ -83,6 +103,8 @@ mock.module("@/server/services/departments/update", () => ({
 mock.module("@/server/db", () => ({
   db: {
     select: dbSelectMock,
+    delete: deleteMock,
+    insert: insertMock,
   },
 }))
 
@@ -98,6 +120,9 @@ describe("src/server/orpc/routes/departments", () => {
     dbWhereMock.mockClear()
     dbLimitMock.mockClear()
     dbLimitMock.mockResolvedValue([{ universityId: "uni-1" }])
+    deleteWhereMock.mockClear()
+    insertValuesMock.mockClear()
+    listDepartmentCategoriesResult = []
   })
 
   test("createDepartmentProcedure passes university context to service", async () => {
@@ -291,5 +316,122 @@ describe("src/server/orpc/routes/departments", () => {
       code: "BAD_REQUEST",
       message: "Invalid skill tag IDs: stale-skill",
     })
+  })
+
+  test("assignCategoriesProcedure allows super_admin", async () => {
+    const { assignCategoriesProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
+
+    const result = await callProcedure(assignCategoriesProcedure, {
+      input: { departmentId: "dept-1", categoryIds: [1, 2] },
+      context: { user: { role: "super_admin", rawRole: "super_admin" } },
+    })
+
+    expect(result).toEqual({ success: true })
+    expect(deleteWhereMock).toHaveBeenCalled()
+    expect(insertValuesMock).toHaveBeenCalled()
+  })
+
+  test("assignCategoriesProcedure allows company_admin", async () => {
+    const { assignCategoriesProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
+
+    const result = await callProcedure(assignCategoriesProcedure, {
+      input: { departmentId: "dept-1", categoryIds: [1, 2] },
+      context: {
+        user: { role: "company_admin", rawRole: "company_admin" },
+      },
+    })
+
+    expect(result).toEqual({ success: true })
+    expect(deleteWhereMock).toHaveBeenCalled()
+    expect(insertValuesMock).toHaveBeenCalled()
+  })
+
+  test("assignCategoriesProcedure allows company_owner", async () => {
+    const { assignCategoriesProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
+
+    const result = await callProcedure(assignCategoriesProcedure, {
+      input: { departmentId: "dept-1", categoryIds: [1, 2] },
+      context: {
+        user: { role: "company_owner", rawRole: "company_owner" },
+      },
+    })
+
+    expect(result).toEqual({ success: true })
+  })
+
+  test("assignCategoriesProcedure clears all categories when given empty array", async () => {
+    const { assignCategoriesProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
+
+    const result = await callProcedure(assignCategoriesProcedure, {
+      input: { departmentId: "dept-1", categoryIds: [] },
+      context: { user: { role: "super_admin", rawRole: "super_admin" } },
+    })
+
+    expect(result).toEqual({ success: true })
+    expect(deleteWhereMock).toHaveBeenCalled()
+    expect(insertValuesMock).not.toHaveBeenCalled()
+  })
+
+  test("assignCategoriesProcedure rejects unauthorized roles", async () => {
+    const { assignCategoriesProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
+
+    await expect(
+      callProcedure(assignCategoriesProcedure, {
+        input: { departmentId: "dept-1", categoryIds: [1] },
+        context: { user: { role: "student", rawRole: "student" } },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      data: { code: "CATEGORY_ASSIGN_ACCESS_REQUIRED" },
+    })
+
+    expect(deleteWhereMock).not.toHaveBeenCalled()
+    expect(insertValuesMock).not.toHaveBeenCalled()
+  })
+
+  test("listDepartmentCategoriesProcedure returns categories for a department", async () => {
+    listDepartmentCategoriesResult = [
+      {
+        id: 1,
+        name: "Programming",
+        slug: "programming",
+        description: "Programming languages",
+        icon: null,
+        status: "active",
+        createdAt: new Date("2026-01-01"),
+        updatedAt: new Date("2026-01-01"),
+      },
+    ]
+
+    const { listDepartmentCategoriesProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
+
+    const result = await callProcedure(listDepartmentCategoriesProcedure, {
+      input: { departmentId: "dept-1" },
+    })
+
+    expect(result).toEqual([
+      {
+        id: 1,
+        name: "Programming",
+        slug: "programming",
+        description: "Programming languages",
+        icon: null,
+        status: "active",
+        createdAt: new Date("2026-01-01"),
+        updatedAt: new Date("2026-01-01"),
+      },
+    ])
   })
 })

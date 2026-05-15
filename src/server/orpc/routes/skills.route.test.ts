@@ -25,24 +25,43 @@ const createSkillMock = mock(async () => ({
   skill: { id: "skill-1", name: "Test", slug: "test" },
 }))
 
+let dbSelectResult: unknown[] = [{ id: 1 }]
+let dbOrderByResult: unknown[] = []
+
+function createDbChain(result: unknown[]) {
+  return {
+    limit(_n?: number) {
+      return Promise.resolve(result)
+    },
+    orderBy() {
+      return createDbChain(dbOrderByResult)
+    },
+    then(resolve: (value: unknown[]) => unknown) {
+      return resolve(result)
+    },
+  }
+}
+
 mock.module("@/server/orpc/rate-limited-procedures", () => ({
   universityProcedureAssistant: createProcedureMock(),
   publicProcedureStandard: createProcedureMock(),
-  adminProcedureStandard: createProcedureMock(),
+  authedProcedureStandard: createProcedureMock(),
 }))
 
 mock.module("@/server/db", () => ({
   db: {
     select: () => ({
       from: () => ({
-        where: () => ({
-          limit: () => Promise.resolve([{ id: 1 }]),
+        where: () => createDbChain(dbSelectResult),
+        innerJoin: () => ({
+          where: () => createDbChain(dbOrderByResult),
         }),
       }),
     }),
     insert: () => ({
       values: () => ({
         returning: () => Promise.resolve([{ id: 1 }]),
+        onConflictDoNothing: () => Promise.resolve(undefined),
       }),
     }),
   },
@@ -63,6 +82,8 @@ describe("src/server/orpc/routes/skills", () => {
     listSkillTagsMock.mockClear()
     listSkillTagsPrioritizedMock.mockClear()
     createSkillMock.mockClear()
+    dbSelectResult = [{ id: 1 }]
+    dbOrderByResult = []
   })
 
   test("listSkillTagsProcedure delegates with optional filters", async () => {
@@ -95,13 +116,13 @@ describe("src/server/orpc/routes/skills", () => {
     expect(listSkillTagsPrioritizedMock).toHaveBeenCalledWith("dep-1")
   })
 
-  test("createSkillProcedure delegates with name and category", async () => {
+  test("createSkillProcedure allows super_admin", async () => {
     const { createSkillProcedure } = await import("@/server/orpc/routes/skills")
 
     const result = await callProcedure(createSkillProcedure, {
-      input: { name: "Rust", category: "language" },
+      input: { name: "Rust", categoryId: 1 },
       context: {
-        user: { id: "user-1", role: "admin", rawRole: "admin" },
+        user: { id: "user-1", role: "super_admin", rawRole: "super_admin" },
       },
     })
 
@@ -114,7 +135,143 @@ describe("src/server/orpc/routes/skills", () => {
     expect(createSkillMock).toHaveBeenCalledWith(
       { name: "Rust", categoryId: 1, force: undefined },
       "user-1",
-      "admin",
+      "super_admin",
     )
+  })
+
+  test("createSkillProcedure allows company_admin", async () => {
+    const { createSkillProcedure } = await import("@/server/orpc/routes/skills")
+
+    const result = await callProcedure(createSkillProcedure, {
+      input: { name: "Rust", categoryId: 1 },
+      context: {
+        user: { id: "user-1", role: "company_admin", rawRole: "company_admin" },
+      },
+    })
+
+    expect(result).toEqual({
+      id: "skill-1",
+      name: "Test",
+      slug: "test",
+      created: true,
+    })
+  })
+
+  test("createSkillProcedure allows company_owner", async () => {
+    const { createSkillProcedure } = await import("@/server/orpc/routes/skills")
+
+    const result = await callProcedure(createSkillProcedure, {
+      input: { name: "Rust", categoryId: 1 },
+      context: {
+        user: {
+          id: "user-1",
+          role: "company_owner",
+          rawRole: "company_owner",
+        },
+      },
+    })
+
+    expect(result).toEqual({
+      id: "skill-1",
+      name: "Test",
+      slug: "test",
+      created: true,
+    })
+  })
+
+  test("createSkillProcedure allows dept_head when category is assigned", async () => {
+    dbSelectResult = [{ categoryId: 1 }]
+    const { createSkillProcedure } = await import("@/server/orpc/routes/skills")
+
+    const result = await callProcedure(createSkillProcedure, {
+      input: { name: "Rust", categoryId: 1 },
+      context: {
+        user: {
+          id: "user-1",
+          role: "dept_head",
+          rawRole: "dept_head",
+          universityDepartmentId: "dept-1",
+        },
+      },
+    })
+
+    expect(result).toEqual({
+      id: "skill-1",
+      name: "Test",
+      slug: "test",
+      created: true,
+    })
+  })
+
+  test("createSkillProcedure rejects dept_head when category is not assigned", async () => {
+    dbSelectResult = [{ categoryId: 2 }]
+    const { createSkillProcedure } = await import("@/server/orpc/routes/skills")
+
+    await expect(
+      callProcedure(createSkillProcedure, {
+        input: { name: "Rust", categoryId: 1 },
+        context: {
+          user: {
+            id: "user-1",
+            role: "dept_head",
+            rawRole: "dept_head",
+            universityDepartmentId: "dept-1",
+          },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      message: "This category is not assigned to your department",
+    })
+  })
+
+  test("createSkillProcedure rejects students", async () => {
+    const { createSkillProcedure } = await import("@/server/orpc/routes/skills")
+
+    await expect(
+      callProcedure(createSkillProcedure, {
+        input: { name: "Rust", categoryId: 1 },
+        context: {
+          user: { id: "user-1", role: "student", rawRole: "student" },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      data: { code: "SKILL_CREATE_ACCESS_REQUIRED" },
+    })
+  })
+
+  test("listSkillCategoriesProcedure returns active categories", async () => {
+    dbOrderByResult = [
+      {
+        id: 1,
+        name: "Programming",
+        slug: "programming",
+        description: "Programming languages",
+        icon: null,
+        status: "active",
+        createdAt: new Date("2026-01-01"),
+        updatedAt: new Date("2026-01-01"),
+      },
+    ]
+
+    const { listSkillCategoriesProcedure } = await import(
+      "@/server/orpc/routes/skills"
+    )
+
+    const result = await callProcedure(listSkillCategoriesProcedure, {})
+
+    expect(result).toEqual([
+      {
+        id: 1,
+        name: "Programming",
+        slug: "programming",
+        description: "Programming languages",
+        icon: null,
+        status: "active",
+        createdAt: new Date("2026-01-01"),
+        updatedAt: new Date("2026-01-01"),
+      },
+    ])
   })
 })
