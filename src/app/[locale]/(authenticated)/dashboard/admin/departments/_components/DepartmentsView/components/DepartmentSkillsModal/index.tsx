@@ -1,18 +1,21 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronDown, ChevronUp, Loader2, Plus, Save, Search } from "lucide-react"
+import { ChevronDown, ChevronUp } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
-import { useDepartmentSkills } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/hooks/useDepartmentSkills"
+
 import { DepartmentCategoryConfig } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentCategoryConfig"
+import { useDepartmentSkills } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/hooks/useDepartmentSkills"
 import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
-import { Button } from "@/components/ui/button"
+import { SkillCreateRow } from "@/components/skill-modals/SkillCreateRow"
+import { SkillDialogFooter } from "@/components/skill-modals/SkillDialogFooter"
+import { SkillSearchInput } from "@/components/skill-modals/SkillSearchInput"
+import { SkillSimilarSuggestions } from "@/components/skill-modals/SkillSimilarSuggestions"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
@@ -35,7 +38,6 @@ export function DepartmentSkillsModal({
     Array<{ id: string; name: string }> | null
   >(null)
   const [showCategories, setShowCategories] = useState(false)
-
   const {
     query,
     setQuery,
@@ -126,8 +128,6 @@ export function DepartmentSkillsModal({
           </DialogTitle>
           <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
-
-        {/* Category management toggle */}
         <button
           type="button"
           onClick={() => setShowCategories((prev) => !prev)}
@@ -143,23 +143,14 @@ export function DepartmentSkillsModal({
         {showCategories && (
           <DepartmentCategoryConfig departmentId={departmentId} />
         )}
-
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value)
-              if (similarSkills) setSimilarSkills(null)
-            }}
-            placeholder={t("searchPlaceholder")}
-            className="w-full ps-9 pe-3 py-2 text-sm border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary"
-          />
-        </div>
-
-        {/* Scrollable skill grid */}
+        <SkillSearchInput
+          query={query}
+          onChange={(value) => {
+            setQuery(value)
+            if (similarSkills) setSimilarSkills(null)
+          }}
+          placeholder={t("searchPlaceholder")}
+        />
         <div className="flex-1 overflow-y-auto space-y-4 min-h-0 py-2">
           <SkillCategoryGrid
             groups={groups}
@@ -170,117 +161,38 @@ export function DepartmentSkillsModal({
             isLoading={isLoading}
             onToggle={toggleSkill}
           />
-
           {showCreateOption && (
-            <div className="flex items-center justify-between border border-dashed border-border/60 bg-muted/20 dark:bg-muted/10 px-4 py-3">
-              <p className="text-sm text-muted-foreground">
-                {t("skillNotFound", { query: queryTrimmed })}
-              </p>
-              <Button
-                type="button"
-                variant="editorial-outline"
-                size="editorial-sm"
-                onClick={handleCreateSkill}
-                disabled={isCreatingSkill}
-                className="gap-2 rounded-none"
-              >
-                {isCreatingSkill ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                ) : (
-                  <Plus className="h-3.5 w-3.5" />
-                )}
-                {t("createSkill", { name: queryTrimmed })}
-              </Button>
-            </div>
+            <SkillCreateRow
+              isCreating={isCreatingSkill}
+              onCreate={handleCreateSkill}
+              label={t("skillNotFound", { query: queryTrimmed })}
+              createLabel={t("createSkill", { name: queryTrimmed })}
+            />
           )}
-
           {similarSkills && (
-            <div className="space-y-3 border border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-800/40 px-4 py-3">
-              <p className="text-sm font-medium text-amber-900 dark:text-amber-200">
-                {t("didYouMean")}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {similarSkills.map((skill) => (
-                  <Button
-                    key={skill.id}
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleUseExisting(skill.id)}
-                    className="rounded-none"
-                  >
-                    {skill.name}
-                  </Button>
-                ))}
-              </div>
-              <div className="flex items-center gap-2 pt-1">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSimilarSkills(null)}
-                  className="rounded-none"
-                >
-                  {t("cancel")}
-                </Button>
-                <Button
-                  type="button"
-                  variant="editorial-outline"
-                  size="editorial-sm"
-                  onClick={handleForceCreate}
-                  disabled={isCreatingSkill}
-                  className="rounded-none gap-2"
-                >
-                  {isCreatingSkill ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <Save className="h-3.5 w-3.5" />
-                  )}
-                  {t("createAnyway")}
-                </Button>
-              </div>
-            </div>
+            <SkillSimilarSuggestions
+              skills={similarSkills}
+              isCreating={isCreatingSkill}
+              onUseExisting={handleUseExisting}
+              onForceCreate={handleForceCreate}
+              onCancel={() => setSimilarSkills(null)}
+              didYouMeanLabel={t("didYouMean")}
+              cancelLabel={t("cancel")}
+              createAnywayLabel={t("createAnyway")}
+            />
           )}
         </div>
-
-        <DialogFooter className="flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground tabular-nums">
-              {draftIds.length} {t("skillsSelected")}
-            </span>
-            {saveError && (
-              <p className="text-[11px] text-destructive font-medium">
-                {saveError}
-              </p>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="rounded-none"
-              onClick={() => handleOpenChange(false)}
-            >
-              {t("cancel")}
-            </Button>
-            <Button
-              type="button"
-              variant="editorial"
-              size="editorial-sm"
-              className="rounded-none"
-              onClick={handleSave}
-              disabled={isSaving || !isDirty}
-            >
-              {isSaving ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                t("save")
-              )}
-            </Button>
-          </div>
-        </DialogFooter>
+        <SkillDialogFooter
+          selectedCount={draftIds.length}
+          skillsSelectedLabel={t("skillsSelected")}
+          saveError={saveError}
+          isSaving={isSaving}
+          isDirty={isDirty}
+          cancelLabel={t("cancel")}
+          saveLabel={t("save")}
+          onCancel={() => handleOpenChange(false)}
+          onSave={handleSave}
+        />
       </DialogContent>
     </Dialog>
   )
