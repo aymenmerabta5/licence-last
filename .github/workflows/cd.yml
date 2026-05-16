@@ -183,9 +183,9 @@ jobs:
               exit 1
             fi
 
-            curl --fail --silent --show-error \
-              --resolve "${DOMAIN_NAME}:443:127.0.0.1" \
-              "https://${DOMAIN_NAME}/api/health" >/dev/null
+            # Health check directly via app container (bypasses Caddy TLS on first deploy)
+            sudo docker compose --env-file .env -f docker-compose.prod.yml exec -T app \
+              sh -c 'wget -qO- http://localhost:3000/api/health || exit 1'
 
             sudo docker compose --env-file .env -f docker-compose.prod.yml ps
 
