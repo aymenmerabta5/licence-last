@@ -177,6 +177,19 @@ jobs:
             sudo docker compose --env-file .env -f docker-compose.prod.yml pull app
             sudo docker compose --env-file .env -f docker-compose.prod.yml up -d --force-recreate --wait --remove-orphans app redis caddy
 
+            # Auto-seed on first deploy (skip if users already exist)
+            POSTGRES_USER="$(awk -F= '/^POSTGRES_USER=/{print $2}' .env | tail -n 1)"
+            POSTGRES_DB="$(awk -F= '/^POSTGRES_DB=/{print $2}' .env | tail -n 1)"
+            USER_COUNT=$(sudo docker compose exec -T db psql -U "${POSTGRES_USER:-stag}" -d "${POSTGRES_DB:-stag}" -t -c "SELECT COUNT(*) FROM users;" 2>/dev/null | tr -d ' \n' || echo "0")
+
+            if [ "$USER_COUNT" = "0" ] || [ "$USER_COUNT" = "" ]; then
+              echo "Fresh database detected — running seed..."
+              sudo docker compose exec -T app bun run src/server/db/seed.ts
+              echo "Seed complete."
+            else
+              echo "Database already seeded ($USER_COUNT users) — skipping."
+            fi
+
             DOMAIN_NAME="$(awk -F= '/^DOMAIN_NAME=/{print $2}' .env | tail -n 1)"
             if [ -z "$DOMAIN_NAME" ]; then
               echo "DOMAIN_NAME is missing in $HOME/stag/.env" >&2
