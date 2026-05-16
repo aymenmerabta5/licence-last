@@ -23,13 +23,13 @@ Stag manages the complete internship lifecycle:
     App Router      API Routes
    (RSC + CC)     /     |     \
                 Auth   oRPC   Assistant
-                |       |        |
-         Better Auth    oRPC   AI Gateway
-                \       |      /
-             +-----------------------+
-             |    Services Layer     |
-             |   Business Logic      |
-             +-----------+-----------+
+                          |       |        |
+                    Better Auth   oRPC   AI Gateway
+                           \       |      /
+                        +-----------------------+
+                        |    Services Layer     |
+                        |   Business Logic      |
+                        +-----------+-----------+
                          |
            +-------------+-------------+
            |             |             |
@@ -47,7 +47,7 @@ Stag manages the complete internship lifecycle:
 | API | oRPC (type-safe RPC) + TanStack Query |
 | Database | PostgreSQL + Drizzle ORM |
 | Auth | Better Auth (2FA, multi-session, role-based) |
-| AI | Gateway-first provider routing (OpenAI-compatible) + Arcade |
+| AI | Single OpenAI-compatible provider + Arcade |
 | Email | Resend + React Email |
 | Storage | S3-compatible (AWS S3 / Cloudflare R2) |
 | i18n | next-intl (English, French, Arabic with full RTL) |
@@ -202,7 +202,7 @@ Operational contracts:
 
 ### Auth & Roles
 
-4 primary roles enforced via middleware chain: `student`, `company_admin`, `university_admin`, `super_admin`. Department heads are `university_admin` users with a `department_head` membership in the `university_member` table.
+5 roles enforced via middleware chain: `student`, `company_admin`, `university_admin`, `super_admin`, plus `dept_head` (legacy; new department heads are `university_admin` users with a `department_head` membership in the `university_member` table).
 
 - Email verification required on signup
 - 2FA support: TOTP, OTP (email), backup codes
@@ -221,9 +221,11 @@ Public verification system for internship documents:
 
 ### AI Assistant
 
-Role-based copilot with gateway-first provider routing and Poe compatibility:
+Role-based copilot with a single OpenAI-compatible provider:
 
-- Role-aware assistant responses for student, company, and admin contexts
+- **Company Copilot**: Full conversational chat with persistence
+- **Student Copilot**: Intent-specific one-off calls only (search parsing, cover letter drafting) — no persistent conversation CRUD
+- **Admin Copilot**: Intent-specific one-off calls only (validation summaries) — no persistent conversation CRUD
 - Server-side tools for drafting, summarization, and workflow assistance
 - Arcade integration for external tools such as GitHub and Gmail
 - Context minimization with PII redaction
