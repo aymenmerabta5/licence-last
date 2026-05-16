@@ -770,7 +770,7 @@ async function ensureCredentialAccount(
       update "account"
       set
         "password" = ${hashSeedPassword(password)},
-        "updated_at" = ${new Date()}
+        "updated_at" = ${new Date().toISOString()}
       where "id" = ${credentialAccount.id}
     `
     logger.info({
