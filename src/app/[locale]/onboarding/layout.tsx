@@ -4,6 +4,7 @@ import {
   MobileHeroBanner,
 } from "@/app/[locale]/onboarding/_components/DecorativePanel"
 import { OnboardingContent } from "@/app/[locale]/onboarding/_components/OnboardingContent"
+import { OnboardingHeaderActions } from "@/app/[locale]/onboarding/_components/OnboardingHeaderActions"
 import {
   DecorativePanelSkeleton,
   MobileHeroBannerSkeleton,
@@ -44,6 +45,7 @@ export default function OnboardingLayout({
           <div className="hidden lg:block" />
 
           <div className="flex items-center gap-3">
+            <OnboardingHeaderActions />
             <LanguageSwitcher />
             <ThemeToggle />
           </div>

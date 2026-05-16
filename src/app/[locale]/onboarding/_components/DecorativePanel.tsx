@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowLeft, LogOut, Sparkles } from "lucide-react"
+import { ArrowLeft, Sparkles } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 
@@ -10,7 +10,6 @@ import {
   useOnboardingRoleConfig,
 } from "@/app/[locale]/onboarding/_components/decorativePanelShared"
 import { Link } from "@/i18n/routing"
-import { useLogout } from "@/hooks/useLogout"
 import { authClient } from "@/lib/auth-client"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
 
@@ -46,7 +45,6 @@ export function DecorativePanel() {
   const tRole = useTranslations(config.namespace)
   const tAuthPanel = useTranslations("auth.panel")
   const { data: session } = authClient.useSession()
-  const { logout, isLoggingOut } = useLogout()
   const isImpersonated = Boolean(
     (session?.session as { impersonatedBy?: string } | null)?.impersonatedBy,
   )
@@ -59,17 +57,7 @@ export function DecorativePanel() {
         <div className="absolute inset-0 bg-primary/[0.02]" />
       </div>
 
-      {isImpersonated ? (
-        <button
-          type="button"
-          aria-label={tAuthPanel("logoutAria")}
-          disabled={isLoggingOut}
-          onClick={logout}
-          className="absolute top-6 start-6 z-20 inline-flex h-10 w-10 items-center justify-center border border-border/60 bg-background text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50"
-        >
-          <LogOut className="h-4 w-4" />
-        </button>
-      ) : (
+      {!isImpersonated && (
         <Link
           href="/"
           aria-label={tAuthPanel("backHomeAria")}
