@@ -225,7 +225,8 @@
       "tagline": "Là où le talent rencontre l'opportunité",
       "description": "Le pont entre l'Université et l'Entreprise",
       "established": "Est. 2025",
-      "backHomeAria": "Retour à l'accueil"
+      "backHomeAria": "Retour à l'accueil",
+      "logoutAria": "Se déconnecter"
     },
     "validation": {
       "emailInvalid": "Veuillez saisir une adresse e-mail valide",

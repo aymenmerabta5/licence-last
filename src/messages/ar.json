@@ -225,7 +225,8 @@
       "tagline": "حيث تلتقي الموهبة بالفرصة",
       "description": "الجسر بين الجامعة والمؤسسة",
       "established": "تأسس عام 2025",
-      "backHomeAria": "العودة للرئيسية"
+      "backHomeAria": "العودة للرئيسية",
+      "logoutAria": "تسجيل الخروج"
     },
     "validation": {
       "emailInvalid": "يرجى إدخال بريد إلكتروني صالح",
