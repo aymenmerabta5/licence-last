@@ -109,13 +109,18 @@ jobs:
           ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Sync deployment config
-        uses: appleboy/scp-action@v1
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          source: "docker-compose.prod.yml,Caddyfile"
-          target: "/root/stag"
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p /root/stag"
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no docker-compose.prod.yml Caddyfile "$DEPLOY_USER@$DEPLOY_HOST:/root/stag/"
 
       - name: Deploy exact image
         uses: appleboy/ssh-action@v1.2.5
