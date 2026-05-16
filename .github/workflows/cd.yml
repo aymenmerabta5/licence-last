@@ -115,15 +115,17 @@ jobs:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
         run: |
           set -euo pipefail
-          mkdir -p ~/.ssh
-          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          SSH_DIR="/tmp/deploy_ssh_$$"
+          mkdir -p "$SSH_DIR"
+          printf '%s\n' "$DEPLOY_SSH_KEY" > "$SSH_DIR/deploy_key"
+          chmod 600 "$SSH_DIR/deploy_key"
+          ssh-keyscan -H "$DEPLOY_HOST" > "$SSH_DIR/known_hosts" 2>/dev/null || true
 
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p /root/stag"
+          ssh -i "$SSH_DIR/deploy_key" -o UserKnownHostsFile="$SSH_DIR/known_hosts" -o StrictHostKeyChecking=accept-new "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p /root/stag"
 
-          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new docker-compose.prod.yml Caddyfile "$DEPLOY_USER@$DEPLOY_HOST:/root/stag/"
+          scp -i "$SSH_DIR/deploy_key" -o UserKnownHostsFile="$SSH_DIR/known_hosts" -o StrictHostKeyChecking=accept-new docker-compose.prod.yml Caddyfile "$DEPLOY_USER@$DEPLOY_HOST:/root/stag/"
 
+          rm -rf "$SSH_DIR"
           echo "Files synced successfully"
 
       - name: Deploy exact image
