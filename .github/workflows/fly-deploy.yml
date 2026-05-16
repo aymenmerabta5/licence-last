@@ -1,0 +1,28 @@
+name: Fly Deploy
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+jobs:
+  deploy:
+    name: Deploy to Fly.io
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        run: flyctl deploy --remote-only --app azeldin
+
+      - name: Run database migrations
+        run: flyctl ssh console --app azeldin --command "bun run scripts/migrate.ts"
