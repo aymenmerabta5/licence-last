@@ -116,6 +116,7 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           source: "docker-compose.prod.yml,Caddyfile"
           target: "/root/stag"
+          overwrite: true
 
       - name: Deploy exact image
         uses: appleboy/ssh-action@v1.2.5
