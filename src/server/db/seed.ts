@@ -755,7 +755,7 @@ async function ensureCredentialAccount(
         ${"credential"},
         ${userId},
         ${hashSeedPassword(password)},
-        ${new Date()}
+        ${new Date().toISOString()}
       )
     `
     logger.info({
