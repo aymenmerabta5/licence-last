@@ -172,10 +172,10 @@ jobs:
             env_path.write_text("\n".join(rewritten) + "\n")
             PY
 
-            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+            echo "$GHCR_TOKEN" | sudo docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
 
-            docker compose --env-file .env -f docker-compose.prod.yml pull app
-            docker compose --env-file .env -f docker-compose.prod.yml up -d --force-recreate --wait --remove-orphans app redis caddy
+            sudo docker compose --env-file .env -f docker-compose.prod.yml pull app
+            sudo docker compose --env-file .env -f docker-compose.prod.yml up -d --force-recreate --wait --remove-orphans app redis caddy
 
             DOMAIN_NAME="$(awk -F= '/^DOMAIN_NAME=/{print $2}' .env | tail -n 1)"
             if [ -z "$DOMAIN_NAME" ]; then
@@ -187,7 +187,7 @@ jobs:
               --resolve "${DOMAIN_NAME}:443:127.0.0.1" \
               "https://${DOMAIN_NAME}/api/health" >/dev/null
 
-            docker compose --env-file .env -f docker-compose.prod.yml ps
+            sudo docker compose --env-file .env -f docker-compose.prod.yml ps
 
       - name: Cleanup old images on server
         if: success()
@@ -198,4 +198,4 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
             set -euo pipefail
-            docker image prune -f
+            sudo docker image prune -f
