@@ -97,6 +97,8 @@ jobs:
     permissions:
       contents: read
       packages: read
+    env:
+      DEPLOY_DIR: /home/${{ secrets.DEPLOY_USER }}/stag
     steps:
       - name: Checkout dispatched revision
         if: github.event_name == 'workflow_dispatch'
@@ -115,7 +117,7 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           source: "docker-compose.prod.yml,Caddyfile"
-          target: "/root/stag"
+          target: "${{ env.DEPLOY_DIR }}"
 
       - name: Deploy exact image
         uses: appleboy/ssh-action@v1.2.5
@@ -131,10 +133,10 @@ jobs:
           script: |
             set -euo pipefail
 
-            cd /root/stag
+            cd $HOME/stag
 
             if [ ! -f .env ]; then
-              echo ".env not found at /root/stag/.env" >&2
+              echo ".env not found at $HOME/stag/.env" >&2
               exit 1
             fi
 
@@ -177,7 +179,7 @@ jobs:
 
             DOMAIN_NAME="$(awk -F= '/^DOMAIN_NAME=/{print $2}' .env | tail -n 1)"
             if [ -z "$DOMAIN_NAME" ]; then
-              echo "DOMAIN_NAME is missing in /root/stag/.env" >&2
+              echo "DOMAIN_NAME is missing in $HOME/stag/.env" >&2
               exit 1
             fi
 
