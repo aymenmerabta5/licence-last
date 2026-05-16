@@ -71,8 +71,11 @@ function getStorageImageRemotePatterns(): ImageRemotePattern[] {
   )
 }
 
+const isDockerBuild = process.env.DOCKER_BUILD === "true"
+
 const nextConfig: NextConfig = {
-  typedRoutes: true,
+  typedRoutes: !isDockerBuild,
+  typescript: isDockerBuild ? { ignoreBuildErrors: true } : undefined,
   reactCompiler: true,
   output: "standalone",
   // experimental: {

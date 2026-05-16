@@ -22,6 +22,7 @@ RUN mkdir -p public
 
 # Increase Node heap size for memory-hungry builds (TypeScript + Next.js)
 ENV NODE_OPTIONS="--max-old-space-size=8192"
+ENV DOCKER_BUILD="true"
 
 # Build-time env values are required for T3 Env validation during `next build`.
 # These are safe defaults; provide real values at runtime via .env on the server.
