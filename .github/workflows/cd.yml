@@ -222,7 +222,8 @@ jobs:
 
             # Health check directly via app container (bypasses Caddy TLS on first deploy)
             sudo docker compose --env-file .env -f docker-compose.prod.yml exec -T app \
-              sh -c 'wget -qO- http://localhost:3000/api/health || exit 1'
+              bun -e 'fetch("http://localhost:3000/api/health").then(r => r.ok || process.exit(1))'
+            echo "Health check passed."
 
             sudo docker compose --env-file .env -f docker-compose.prod.yml ps
 
