@@ -11,11 +11,11 @@ import { company } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { placement, placementDocument } from "@/server/db/schema/placements"
 import { university } from "@/server/db/schema/universities"
+import type { BorderStyleKey } from "@/server/pdfs/borders"
 import {
   type CertificateData,
   InternshipCertificateTemplate,
 } from "@/server/pdfs/CertificateTemplate"
-import type { BorderStyleKey } from "@/server/pdfs/borders"
 import { DocumentServiceError } from "@/server/services/documents/errors"
 import { persistDocumentBuffer } from "@/server/services/documents/persist"
 import { generateQRCodeDataUrl } from "@/server/services/documents/qr-utils"

@@ -12,14 +12,12 @@ const mockTxInsert = mock(() => ({ values: mockTxInsertValues }))
 const mockTxUpdateWhere = mock(async () => undefined)
 const mockTxUpdateSet = mock(() => ({ where: mockTxUpdateWhere }))
 const mockTxUpdate = mock(() => ({ set: mockTxUpdateSet }))
-const mockTransaction = mock(
-  async (fn: (tx: any) => Promise<void>) => {
-    await fn({
-      insert: mockTxInsert,
-      update: mockTxUpdate,
-    })
-  },
-)
+const mockTransaction = mock(async (fn: (tx: any) => Promise<void>) => {
+  await fn({
+    insert: mockTxInsert,
+    update: mockTxUpdate,
+  })
+})
 
 const mockCreateUser = mock(async () => ({
   user: { id: "user-created" },

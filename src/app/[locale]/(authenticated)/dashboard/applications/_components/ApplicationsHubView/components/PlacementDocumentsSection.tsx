@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
 import { Download, FilePlus, Loader2 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
+import { useState } from "react"
 import { AgreementDocItem } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/AgreementDocItem"
 import { CertificateDocItem } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/CertificateDocItem"
 import { CertificateGenerationDialog } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/CertificateGenerationDialog"
@@ -58,7 +58,9 @@ export function PlacementDocumentsSection({
   const endDate = new Date(placement.endDate)
   const isInternshipCompleted = endDate <= new Date()
 
-  const agreementDocs = placement.documents.filter((d) => d.type === "agreement")
+  const agreementDocs = placement.documents.filter(
+    (d) => d.type === "agreement",
+  )
   const certificateDocs = placement.documents.filter(
     (d) => d.type === "certificate",
   )

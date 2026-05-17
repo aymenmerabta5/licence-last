@@ -34,7 +34,9 @@ export function SkillDialogFooter({
           {selectedCount} {skillsSelectedLabel}
         </span>
         {saveError && (
-          <p className="text-[11px] text-destructive font-medium">{saveError}</p>
+          <p className="text-[11px] text-destructive font-medium">
+            {saveError}
+          </p>
         )}
       </div>
 
@@ -56,11 +58,7 @@ export function SkillDialogFooter({
           onClick={onSave}
           disabled={isSaving || !isDirty}
         >
-          {isSaving ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            saveLabel
-          )}
+          {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : saveLabel}
         </Button>
       </div>
     </div>

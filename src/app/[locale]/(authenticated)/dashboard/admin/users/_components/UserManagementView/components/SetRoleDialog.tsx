@@ -3,9 +3,9 @@
 import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
-import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
 import { DepartmentSelect } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/DepartmentSelect"
 import { OrganizationSearchField } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/OrganizationSearchField"
+import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,

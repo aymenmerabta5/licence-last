@@ -1,12 +1,11 @@
 "use client"
 
 import { Calendar } from "lucide-react"
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-
 import type { PendingInterview } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
 import { Link } from "@/i18n/routing"
 import { reveal, revealWithDelay } from "@/lib/animations"
-import * as motion from "motion/react-client"
 
 interface PendingInterviewCardProps {
   interview: PendingInterview

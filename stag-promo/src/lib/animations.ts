@@ -1,4 +1,4 @@
-import { interpolate, Easing } from "remotion"
+import { Easing, interpolate } from "remotion"
 
 // ═══════════════════════════════════════════════════════════════════
 // Stag.io Design System — Animation Tokens

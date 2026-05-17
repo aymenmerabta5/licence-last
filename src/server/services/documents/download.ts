@@ -73,7 +73,8 @@ export async function downloadDocument(
 
   const meta = toMetaRecord(row.meta)
   const locale = pickString(meta.locale) ?? input.locale ?? "en"
-  const borderStyle = pickString(meta.borderStyle) ?? row.borderStyle ?? "classic"
+  const borderStyle =
+    pickString(meta.borderStyle) ?? row.borderStyle ?? "classic"
   const fileName =
     pickString(meta.fileName) ?? `${row.documentType}_${row.placementId}.pdf`
   const verificationCode = pickString(row.verificationCode)

@@ -107,10 +107,7 @@ describe("getEffectiveDepartmentSkillIds", () => {
   })
 
   test("should return override-only skills when no categories", async () => {
-    mockSelectResults.push(
-      [],
-      [{ skillTagId: "s1", action: "add" }],
-    )
+    mockSelectResults.push([], [{ skillTagId: "s1", action: "add" }])
 
     const { getEffectiveDepartmentSkillIds } = await loadModule()
     const result = await getEffectiveDepartmentSkillIds("dept-1")

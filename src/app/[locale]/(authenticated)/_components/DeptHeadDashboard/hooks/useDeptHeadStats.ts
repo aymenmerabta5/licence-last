@@ -22,7 +22,7 @@ export function useDeptHeadStats() {
     orpc.deptHead.getDashboardStats.queryOptions({
       staleTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
-    })
+    }),
   )
 
   const stats = (data ?? defaultStats) as DeptHeadStats

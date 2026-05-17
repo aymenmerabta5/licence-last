@@ -1,7 +1,7 @@
 "use client"
 
-import { usePathname } from "@/i18n/routing"
 import * as React from "react"
+import { usePathname } from "@/i18n/routing"
 
 export function RouteProgress() {
   const pathname = usePathname()
@@ -20,7 +20,12 @@ export function RouteProgress() {
 
       const href = anchor.getAttribute("href")
       if (!href) return
-      if (href.startsWith("http") || href.startsWith("#") || href.startsWith("mailto:")) return
+      if (
+        href.startsWith("http") ||
+        href.startsWith("#") ||
+        href.startsWith("mailto:")
+      )
+        return
       if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return
 
       setIsNavigating(true)

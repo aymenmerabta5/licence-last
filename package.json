@@ -43,6 +43,7 @@
     "db:reset:prod": "bun --env-file=.env.production run src/server/db/reset.ts --require-production-confirmation",
     "db:seed": "bun run db:seed:dev",
     "db:seed:dev": "bun --env-file=.env.development run src/server/db/seed.ts",
+    "db:seed:demo": "bun --env-file=.env.development run src/server/db/seed-demo.ts",
     "mcp:dev": "bun --env-file=.env.development run src/server/mcp/index.ts --mcp-dev",
     "prepare": "husky"
   },
@@ -52,6 +53,7 @@
     "@arcadeai/arcadejs": "^2.2.0",
     "@aws-sdk/client-s3": "^3.990.0",
     "@base-ui/react": "^1.1.0",
+    "@faker-js/faker": "^10.4.0",
     "@marsidev/react-turnstile": "^1.4.2",
     "@orpc/client": "^1.13.4",
     "@orpc/experimental-ratelimit": "^1.13.5",

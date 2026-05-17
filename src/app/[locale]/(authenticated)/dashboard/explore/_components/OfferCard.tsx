@@ -1,9 +1,8 @@
 "use client"
 
 import { ArrowRight, Building2, Clock, MapPin, Users } from "lucide-react"
-import { useLocale, useTranslations } from "next-intl"
-
 import Image from "next/image"
+import { useLocale, useTranslations } from "next-intl"
 import { Link } from "@/i18n/routing"
 import { INTERNSHIP_TYPE_COLORS } from "@/lib/constants/internship"
 import { getLanguageLabel, toSupportedLocale } from "@/lib/constants/languages"

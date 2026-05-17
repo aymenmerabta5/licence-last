@@ -287,7 +287,8 @@ describe("src/server/services/interviews/reschedule", () => {
     expect(txUpdate).toHaveBeenCalledTimes(1)
     expect(createNotificationMock).toHaveBeenCalledTimes(1)
 
-    const txInsertValueCalls = txInsertValues.mock.calls as unknown as unknown[][]
+    const txInsertValueCalls = txInsertValues.mock
+      .calls as unknown as unknown[][]
     const slotInsertPayload = txInsertValueCalls[0]?.[0] as Array<{
       id: string
       interviewId: string

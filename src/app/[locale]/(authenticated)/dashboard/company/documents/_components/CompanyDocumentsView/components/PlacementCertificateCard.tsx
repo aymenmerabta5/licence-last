@@ -211,12 +211,12 @@ export function PlacementCertificateCard({
                       : t(`status.${doc.status}` as "status.pending")
                   }
                   statusClassName={
-                    isRevoked ? STATUS_STYLES.revoked : STATUS_STYLES[doc.status]
+                    isRevoked
+                      ? STATUS_STYLES.revoked
+                      : STATUS_STYLES[doc.status]
                   }
                   verificationCodeLabel={t("placement.verificationCode")}
-                  verificationCode={
-                    isRevoked ? null : doc.verificationCode
-                  }
+                  verificationCode={isRevoked ? null : doc.verificationCode}
                   notAvailableLabel={t("placement.notAvailable")}
                   actionVariant={certificateAction.actionVariant}
                   actionLabel={certificateAction.actionLabel}
@@ -322,7 +322,9 @@ export function PlacementCertificateCard({
                       variant="editorial-outline"
                       size="editorial-sm"
                       className="gap-1.5"
-                      onClick={() => onOpenGenerateDialog(placement.placementId)}
+                      onClick={() =>
+                        onOpenGenerateDialog(placement.placementId)
+                      }
                       disabled={isGenerating || !isInternshipCompleted}
                     >
                       <FilePlus className="h-3.5 w-3.5" />

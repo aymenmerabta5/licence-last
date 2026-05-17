@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const generateTextMock = mock(() =>
-  Promise.resolve({ text: "  \"Drafting Internship Offer\"  " }),
+  Promise.resolve({ text: '  "Drafting Internship Offer"  ' }),
 )
 
 mock.module("ai", () => ({
@@ -18,9 +18,7 @@ describe("generateConversationTitle", () => {
   })
 
   test("returns a cleaned, truncated title when generation succeeds", async () => {
-    const { generateConversationTitle } = await import(
-      "@/server/ai/auto-title"
-    )
+    const { generateConversationTitle } = await import("@/server/ai/auto-title")
 
     const title = await generateConversationTitle(
       "Help me draft an internship offer for a software engineer",
@@ -35,9 +33,7 @@ describe("generateConversationTitle", () => {
       throw new Error("Model error")
     })
 
-    const { generateConversationTitle } = await import(
-      "@/server/ai/auto-title"
-    )
+    const { generateConversationTitle } = await import("@/server/ai/auto-title")
 
     const title = await generateConversationTitle("Any message")
 
@@ -49,9 +45,7 @@ describe("generateConversationTitle", () => {
       Promise.resolve({ text: "   " }),
     )
 
-    const { generateConversationTitle } = await import(
-      "@/server/ai/auto-title"
-    )
+    const { generateConversationTitle } = await import("@/server/ai/auto-title")
 
     const title = await generateConversationTitle("Any message")
 

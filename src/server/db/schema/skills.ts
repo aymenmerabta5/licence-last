@@ -1,4 +1,11 @@
-import { index, integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core"
+import {
+  index,
+  integer,
+  pgTable,
+  serial,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core"
 
 export const skillCategory = pgTable("skill_category", {
   id: serial("id").primaryKey(),
@@ -6,7 +13,9 @@ export const skillCategory = pgTable("skill_category", {
   slug: text("slug").notNull().unique(),
   description: text("description"),
   icon: text("icon"),
-  status: text({ enum: ["active", "deprecated"] }).default("active").notNull(),
+  status: text({ enum: ["active", "deprecated"] })
+    .default("active")
+    .notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
@@ -25,7 +34,9 @@ export const skillTag = pgTable(
       .notNull()
       .references(() => skillCategory.id),
     description: text("description"),
-    status: text({ enum: ["active", "deprecated"] }).default("active").notNull(),
+    status: text({ enum: ["active", "deprecated"] })
+      .default("active")
+      .notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

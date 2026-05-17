@@ -1,24 +1,29 @@
 import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react"
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react"
 
 const pushMock = mock(() => undefined)
 const refreshMock = mock(() => undefined)
 const stopImpersonatingMock = mock(async () => undefined)
 
 mock.module("next-intl", () => ({
-  useTranslations: () =>
-    (key: string, values?: { name?: string }) => {
-      if (key === "banner") {
-        return `You are impersonating ${values?.name ?? ""}`
-      }
+  useTranslations: () => (key: string, values?: { name?: string }) => {
+    if (key === "banner") {
+      return `You are impersonating ${values?.name ?? ""}`
+    }
 
-      if (key === "stop") {
-        return "Stop"
-      }
+    if (key === "stop") {
+      return "Stop"
+    }
 
-      return key
-    },
+    return key
+  },
 }))
 
 mock.module("@/i18n/routing", () => ({
@@ -69,7 +74,8 @@ describe("ImpersonationBanner", () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { retry: false } },
     })
-    queryClient.resetQueries = resetQueriesMock as typeof queryClient.resetQueries
+    queryClient.resetQueries =
+      resetQueriesMock as typeof queryClient.resetQueries
 
     const { ImpersonationBanner } = await loadImpersonationBanner()
 

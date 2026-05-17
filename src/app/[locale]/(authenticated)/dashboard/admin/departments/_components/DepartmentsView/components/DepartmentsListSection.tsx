@@ -53,7 +53,9 @@ export function DepartmentsListSection({
           <FolderTree className="h-6 w-6 text-muted-foreground/40" />
         </div>
         <div className="space-y-1">
-          <p className="font-serif text-lg text-heading">{t("noDepartmentsTitle")}</p>
+          <p className="font-serif text-lg text-heading">
+            {t("noDepartmentsTitle")}
+          </p>
           <p className="text-sm font-light text-muted-foreground">
             {emptyLabel}
           </p>

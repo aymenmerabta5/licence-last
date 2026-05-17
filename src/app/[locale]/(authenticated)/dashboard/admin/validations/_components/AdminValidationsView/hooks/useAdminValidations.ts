@@ -1,9 +1,9 @@
 "use client"
 
+import type { InferRouterOutputs } from "@orpc/server"
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
 import { useInfiniteScroll } from "@/hooks"
-import type { InferRouterOutputs } from "@orpc/server"
 import { orpcClient } from "@/server/orpc/client"
 import type { AppRouter } from "@/server/orpc/router"
 

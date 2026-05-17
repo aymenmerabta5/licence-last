@@ -43,7 +43,8 @@ export function RecentOffers({ offers }: RecentOffersProps) {
               {t("positions")}
             </span>
             <h2 className="font-serif text-3xl font-normal text-foreground tracking-tighter">
-              {t("yourOffers")}<span className="text-primary/40 leading-none">.</span>
+              {t("yourOffers")}
+              <span className="text-primary/40 leading-none">.</span>
             </h2>
           </div>
         </div>
@@ -69,13 +70,14 @@ export function RecentOffers({ offers }: RecentOffersProps) {
       transition={{ duration: 0.6, delay: 0.3, ease }}
       className="space-y-8 relative"
     >
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b-4 border-foreground pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b-4 border-foreground pb-4">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/70 mb-2 block">
             {t("positions")}
           </span>
           <h2 className="font-serif text-3xl md:text-5xl font-normal tracking-tighter text-foreground mb-4 sm:mb-0">
-            {t("yourOffers")}<span className="text-primary/40 leading-none">.</span>
+            {t("yourOffers")}
+            <span className="text-primary/40 leading-none">.</span>
           </h2>
         </div>
         <Link

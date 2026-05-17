@@ -8,7 +8,7 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer"
-import { borderComponents, type BorderStyleKey } from "@/server/pdfs/borders"
+import { type BorderStyleKey, borderComponents } from "@/server/pdfs/borders"
 
 // Register fonts from local TTF files (CDN URLs are unreliable)
 const fontsDir = path.join(process.cwd(), "node_modules/dejavu-fonts-ttf/ttf")
@@ -223,9 +223,17 @@ export function InternshipCertificateTemplate({
         <Border>
           {/* Header */}
           <View style={styles.header}>
-            <View style={{ alignItems: "center", marginBottom: data.companyLogoUrl ? 12 : 0 }}>
+            <View
+              style={{
+                alignItems: "center",
+                marginBottom: data.companyLogoUrl ? 12 : 0,
+              }}
+            >
               {data.companyLogoUrl ? (
-                <Image src={data.companyLogoUrl} style={{ width: 80, height: 80, objectFit: "contain" }} />
+                <Image
+                  src={data.companyLogoUrl}
+                  style={{ width: 80, height: 80, objectFit: "contain" }}
+                />
               ) : null}
             </View>
             <Text style={styles.title}>{title}</Text>

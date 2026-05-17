@@ -3,10 +3,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
-
+import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
 import { resolveLocalizedError } from "@/lib/error-message"
 import { orpcClient } from "@/server/orpc/client"
-import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
 
 type RefreshUsersCallback = () => Promise<unknown>
 

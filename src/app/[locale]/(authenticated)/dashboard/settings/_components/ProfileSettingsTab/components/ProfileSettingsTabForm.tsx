@@ -46,7 +46,9 @@ export function ProfileSettingsTabForm({
       <div className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden">
         <div className="flex items-center gap-2.5 px-6 py-4 border-b border-border/40 bg-muted/20 dark:bg-muted/10">
           <User className="h-4 w-4 text-primary" />
-          <h2 className="font-serif text-lg text-heading">{t("profileIdentity")}</h2>
+          <h2 className="font-serif text-lg text-heading">
+            {t("profileIdentity")}
+          </h2>
         </div>
         <div className="px-6 py-4">
           <p className="text-sm font-light text-muted-foreground">

@@ -66,7 +66,10 @@ export async function rescheduleInterviewSlots(
       .limit(1)
 
     if (!interviewRow) {
-      throw new InterviewServiceError("INTERVIEW_NOT_FOUND", "Interview not found")
+      throw new InterviewServiceError(
+        "INTERVIEW_NOT_FOUND",
+        "Interview not found",
+      )
     }
 
     if (interviewRow.companyId !== companyId) {
@@ -129,7 +132,10 @@ export async function rescheduleInterviewSlots(
       },
     })
   } catch (error) {
-    log.warn({ error, interviewId: result.interviewId }, "Failed to notify student")
+    log.warn(
+      { error, interviewId: result.interviewId },
+      "Failed to notify student",
+    )
   }
 
   return { interviewId: result.interviewId }

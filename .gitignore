@@ -74,6 +74,8 @@ phases
 .ralph
 .agent/mcp/
 playwright-report
+playwright-report/
+.playwright-mcp/
 test-results
 tmp-biome-schema.json
 .tmp-biome-schema.json

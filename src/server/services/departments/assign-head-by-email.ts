@@ -6,13 +6,12 @@ import { eq } from "drizzle-orm"
 
 import { auth, pendingWelcomeEmails } from "@/lib/auth"
 import { db } from "@/server/db"
-import { ServiceError } from "@/server/services/errors"
 import { user } from "@/server/db/schema/auth"
 import { department } from "@/server/db/schema/departments"
 import { university } from "@/server/db/schema/universities"
-
 import { assignDepartmentHead } from "@/server/services/departments/assign-head"
 import { deriveHeadNameFromEmail } from "@/server/services/departments/derive-head-name"
+import { ServiceError } from "@/server/services/errors"
 
 interface AssignDepartmentHeadByEmailInput {
   departmentId: string

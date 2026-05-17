@@ -1,11 +1,12 @@
 "use client"
 
+import type { InferRouterOutputs } from "@orpc/server"
 import {
+  type InfiniteData,
   useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
-  type InfiniteData,
 } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
@@ -20,7 +21,6 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll"
 import type { LanguageCode } from "@/lib/constants/languages"
 import type { PipelineStage } from "@/lib/constants/pipeline"
 import { STAGE_COLUMNS } from "@/lib/constants/pipeline"
-import type { InferRouterOutputs } from "@orpc/server"
 import { orpc, orpcClient } from "@/server/orpc/client"
 import type { AppRouter } from "@/server/orpc/router"
 

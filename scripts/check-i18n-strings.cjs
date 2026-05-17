@@ -271,12 +271,24 @@ function isLikelyUiText(value) {
   return true
 }
 
-function visitNode(node, sourceFile, hasTranslations, violations, normalizedPath) {
+function visitNode(
+  node,
+  sourceFile,
+  hasTranslations,
+  violations,
+  normalizedPath,
+) {
   if (ts.isJsxText(node)) {
     const text = node.text.trim()
     if (text && isLikelyUiText(text) && !isAllowedString(text)) {
-      const { line } = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile))
-      violations.push({ file: normalizedPath, line: line + 1, text: text.slice(0, 40) })
+      const { line } = sourceFile.getLineAndCharacterOfPosition(
+        node.getStart(sourceFile),
+      )
+      violations.push({
+        file: normalizedPath,
+        line: line + 1,
+        text: text.slice(0, 40),
+      })
     }
   }
 
@@ -285,7 +297,12 @@ function visitNode(node, sourceFile, hasTranslations, violations, normalizedPath
     const parent = node.parent
     if (parent && ts.isJsxAttribute(parent)) {
       const attrName = parent.name.text
-      if (attrName.startsWith("aria-") || attrName.startsWith("data-") || attrName === "className" || attrName === "placeholder") {
+      if (
+        attrName.startsWith("aria-") ||
+        attrName.startsWith("data-") ||
+        attrName === "className" ||
+        attrName === "placeholder"
+      ) {
         // skip
       }
     }
@@ -294,21 +311,45 @@ function visitNode(node, sourceFile, hasTranslations, violations, normalizedPath
       if (hasTranslations) {
         const lower = text.toLowerCase()
         const uiKeywords = [
-          "section", "settings", "profile", "account", "dashboard", "overview",
-          "details", "information", "summary", "description", "experience",
-          "projects", "candidates", "analytics", "decision",
+          "section",
+          "settings",
+          "profile",
+          "account",
+          "dashboard",
+          "overview",
+          "details",
+          "information",
+          "summary",
+          "description",
+          "experience",
+          "projects",
+          "candidates",
+          "analytics",
+          "decision",
         ]
         if (!uiKeywords.some((k) => lower.includes(k)) && text.length < 15) {
           // Continue to children
           ts.forEachChild(node, (child) =>
-            visitNode(child, sourceFile, hasTranslations, violations, normalizedPath),
+            visitNode(
+              child,
+              sourceFile,
+              hasTranslations,
+              violations,
+              normalizedPath,
+            ),
           )
           return
         }
       }
 
-      const { line } = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile))
-      violations.push({ file: normalizedPath, line: line + 1, text: text.slice(0, 40) })
+      const { line } = sourceFile.getLineAndCharacterOfPosition(
+        node.getStart(sourceFile),
+      )
+      violations.push({
+        file: normalizedPath,
+        line: line + 1,
+        text: text.slice(0, 40),
+      })
     }
   }
 
@@ -328,10 +369,15 @@ function main() {
   for (const filePath of files) {
     const normalizedPath = toPosixPath(path.relative(process.cwd(), filePath))
     if (FILE_ALLOWLIST.has(normalizedPath)) continue
-    if (normalizedPath.endsWith(".test.tsx") || normalizedPath.endsWith(".test.ts")) continue
+    if (
+      normalizedPath.endsWith(".test.tsx") ||
+      normalizedPath.endsWith(".test.ts")
+    )
+      continue
 
     const content = fs.readFileSync(filePath, "utf8")
-    const hasTranslations = /\buseTranslations\b/.test(content) || /\bgetTranslations\b/.test(content)
+    const hasTranslations =
+      /\buseTranslations\b/.test(content) || /\bgetTranslations\b/.test(content)
 
     const sourceFile = ts.createSourceFile(
       filePath,
@@ -341,7 +387,13 @@ function main() {
       filePath.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
     )
 
-    visitNode(sourceFile, sourceFile, hasTranslations, violations, normalizedPath)
+    visitNode(
+      sourceFile,
+      sourceFile,
+      hasTranslations,
+      violations,
+      normalizedPath,
+    )
   }
 
   if (violations.length === 0) {

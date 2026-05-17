@@ -1,5 +1,6 @@
 "use client"
 
+import type { InferRouterOutputs } from "@orpc/server"
 import type { InfiniteData } from "@tanstack/react-query"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
@@ -7,7 +8,6 @@ import { useState } from "react"
 import { toast } from "sonner"
 import type { PipelineStage } from "@/lib/constants/pipeline"
 import { canTransitionStage } from "@/lib/constants/pipeline"
-import type { InferRouterOutputs } from "@orpc/server"
 import { orpc, orpcClient } from "@/server/orpc/client"
 import type { AppRouter } from "@/server/orpc/router"
 

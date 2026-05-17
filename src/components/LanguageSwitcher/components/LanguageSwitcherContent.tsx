@@ -3,7 +3,17 @@
 import { ChevronDownIcon, Globe } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useSyncExternalStore, useTransition } from "react"
-
+import { LanguageSwitcherFallback } from "@/components/LanguageSwitcher/components/LanguageSwitcherFallback"
+import {
+  getHydratedSnapshot,
+  getLocaleLabel,
+  getServerHydratedSnapshot,
+  LOCALES,
+  subscribeHydration,
+  triggerClassName,
+} from "@/components/LanguageSwitcher/utils"
+import { NAVBAR_ICON_CONTROL_CLASS } from "@/components/navbar-control-styles"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,18 +21,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { NAVBAR_ICON_CONTROL_CLASS } from "@/components/navbar-control-styles"
-import {
-  getLocaleLabel,
-  getHydratedSnapshot,
-  getServerHydratedSnapshot,
-  LOCALES,
-  subscribeHydration,
-  triggerClassName,
-} from "@/components/LanguageSwitcher/utils"
 import { usePathname, useRouter } from "@/i18n/routing"
-import { Button } from "@/components/ui/button"
-import { LanguageSwitcherFallback } from "@/components/LanguageSwitcher/components/LanguageSwitcherFallback"
 
 export function LanguageSwitcherContent({ compact }: { compact?: boolean }) {
   const t = useTranslations("language.switcher")
@@ -81,12 +80,18 @@ export function LanguageSwitcherContent({ compact }: { compact?: boolean }) {
         aria-label={t("aria")}
       >
         <Globe
-          className={compact ? "h-4 w-4 text-current opacity-70 transition-opacity duration-300 group-hover:opacity-100" : "h-3.5 w-3.5 text-current opacity-70 transition-opacity duration-300 group-hover:opacity-100"}
+          className={
+            compact
+              ? "h-4 w-4 text-current opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+              : "h-3.5 w-3.5 text-current opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+          }
           aria-hidden="true"
         />
         {!compact && (
           <>
-            <span className="min-w-8 text-start">{getLocaleLabel(t, locale)}</span>
+            <span className="min-w-8 text-start">
+              {getLocaleLabel(t, locale)}
+            </span>
             <ChevronDownIcon
               className="h-3.5 w-3.5 text-current opacity-60 transition-opacity duration-300 group-hover:opacity-100"
               aria-hidden="true"

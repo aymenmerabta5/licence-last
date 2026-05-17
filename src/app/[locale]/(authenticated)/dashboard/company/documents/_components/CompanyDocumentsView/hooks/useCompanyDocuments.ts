@@ -1,5 +1,6 @@
 "use client"
 
+import type { InferRouterOutputs } from "@orpc/server"
 import {
   useInfiniteQuery,
   useMutation,
@@ -8,11 +9,9 @@ import {
 import { useLocale, useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
-
 import { useDebounce, useInfiniteScroll } from "@/hooks"
 import { getErrorMessage } from "@/lib/error-message"
 import { orpc, orpcClient } from "@/server/orpc/client"
-import type { InferRouterOutputs } from "@orpc/server"
 import type { AppRouter } from "@/server/orpc/router"
 
 type ListByCompanyResult =
@@ -88,7 +87,9 @@ export function useCompanyDocuments() {
     queryKey: listQueryKey,
     queryFn: async ({ pageParam }) =>
       orpcClient.documents.listByCompany({
-        cursor: pageParam as { validatedAt: string; placementId: string } | undefined,
+        cursor: pageParam as
+          | { validatedAt: string; placementId: string }
+          | undefined,
         limit: 12,
         search: debouncedSearch || undefined,
       }),
@@ -138,7 +139,8 @@ export function useCompanyDocuments() {
       const result = await generateMutation.mutateAsync({
         placementId,
         locale: resolveLocale(certificateLocale),
-        borderStyle: borderStyle as import("@/server/pdfs/borders").BorderStyleKey,
+        borderStyle:
+          borderStyle as import("@/server/pdfs/borders").BorderStyleKey,
       })
 
       if (result.pdfBase64) {
@@ -213,7 +215,8 @@ export function useCompanyDocuments() {
     try {
       const result = await generateMissingMutation.mutateAsync({
         locale: resolveLocale(certificateLocale),
-        borderStyle: borderStyle as import("@/server/pdfs/borders").BorderStyleKey,
+        borderStyle:
+          borderStyle as import("@/server/pdfs/borders").BorderStyleKey,
       })
 
       if (result.generatedCount > 0) {
@@ -225,9 +228,7 @@ export function useCompanyDocuments() {
       }
 
       if (result.errors.length > 0) {
-        toast.error(
-          t("generateMissingError", { count: result.errors.length }),
-        )
+        toast.error(t("generateMissingError", { count: result.errors.length }))
       }
 
       await queryClient.invalidateQueries({

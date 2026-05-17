@@ -19,7 +19,8 @@ export function useSiteSettings() {
       onSuccess: () => {
         toast.success(t("maintenanceModeSaved"))
         void queryClient.invalidateQueries({
-          queryKey: orpc.adminSettings.getMaintenanceMode.queryOptions().queryKey,
+          queryKey:
+            orpc.adminSettings.getMaintenanceMode.queryOptions().queryKey,
         })
       },
     }),

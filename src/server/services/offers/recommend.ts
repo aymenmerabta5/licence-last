@@ -4,9 +4,9 @@ import { eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
+import { createModuleLogger } from "@/server/logging"
 import { getExplainableMatchScore } from "@/server/services/matching/score"
 import { getExplainableMatchScoresBatch } from "@/server/services/matching/score-batch"
-import { createModuleLogger } from "@/server/logging"
 import { searchOffers } from "@/server/services/offers/search"
 
 const log = createModuleLogger("services/offers/recommend")

@@ -82,7 +82,11 @@ export function createStudentProfileSchema(
  */
 export function createStudentProfileDetailsSchema(t: TranslationFn) {
   return z.object({
-    name: z.string().trim().min(2, { error: t("nameMin") }).max(120),
+    name: z
+      .string()
+      .trim()
+      .min(2, { error: t("nameMin") })
+      .max(120),
     bio: z.string().optional(),
     phone: z.string().optional(),
     githubUrl: z

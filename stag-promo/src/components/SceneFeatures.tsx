@@ -1,5 +1,5 @@
 import { useCurrentFrame } from "remotion"
-import { fadeIn, slideUp, scaleIn, colors, fonts } from "../lib/animations"
+import { colors, fadeIn, fonts, scaleIn, slideUp } from "../lib/animations"
 
 interface CardProps {
   num: string

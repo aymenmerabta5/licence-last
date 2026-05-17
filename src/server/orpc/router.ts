@@ -1,4 +1,8 @@
 import {
+  getMaintenanceModeProcedure,
+  setMaintenanceModeProcedure,
+} from "@/server/orpc/routes/admin-settings"
+import {
   banUserProcedure,
   createUserProcedure,
   listUserSessionsProcedure,
@@ -11,10 +15,6 @@ import {
   unbanUserProcedure,
   updateUserProcedure,
 } from "@/server/orpc/routes/admin-users"
-import {
-  getMaintenanceModeProcedure,
-  setMaintenanceModeProcedure,
-} from "@/server/orpc/routes/admin-settings"
 import {
   applyToOfferProcedure,
   checkApplicationProcedure,

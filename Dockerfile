@@ -83,6 +83,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Copy migration files and scripts for runtime migrations
 COPY --from=builder --chown=nextjs:nodejs /app/src/server/db/migrations ./src/server/db/migrations
 COPY --from=builder --chown=nextjs:nodejs /app/src/server/db/seed.ts ./src/server/db/seed.ts
+COPY --from=builder --chown=nextjs:nodejs /app/src/server/db/seed-demo.ts ./src/server/db/seed-demo.ts
 COPY --from=builder --chown=nextjs:nodejs /app/scripts/migrate.ts ./scripts/migrate.ts
 
 # Copy tsconfig and schema files so @/ aliases resolve at runtime
@@ -92,6 +93,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/src/server/db/schema ./src/server
 # Copy runtime dependencies needed for migrations/seed
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/drizzle-orm ./node_modules/drizzle-orm
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/postgres ./node_modules/postgres
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@faker-js/faker ./node_modules/@faker-js/faker
 
 # Copy entrypoint script
 COPY --from=builder --chown=nextjs:nodejs /app/scripts/docker-entrypoint.sh ./scripts/docker-entrypoint.sh

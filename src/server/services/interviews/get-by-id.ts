@@ -1,12 +1,12 @@
 import "server-only"
 
-import { eq, asc } from "drizzle-orm"
+import { asc, eq } from "drizzle-orm"
 
 import { db } from "@/server/db"
 import { company } from "@/server/db/schema/companies"
+import type { interviewStatusEnum } from "@/server/db/schema/enums"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { interview, interviewSlot } from "@/server/db/schema/interviews"
-import type { interviewStatusEnum } from "@/server/db/schema/enums"
 import { InterviewServiceError } from "@/server/services/interviews/errors"
 
 type InterviewStatus = (typeof interviewStatusEnum.enumValues)[number]

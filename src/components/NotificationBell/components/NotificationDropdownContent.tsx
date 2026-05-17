@@ -1,12 +1,6 @@
 "use client"
 
 import { CheckCheck } from "lucide-react"
-
-import { Link } from "@/i18n/routing"
-import {
-  formatNotification,
-  getNotificationDestination,
-} from "@/lib/notifications"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenuContent,
@@ -15,6 +9,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
+import { Link } from "@/i18n/routing"
+import {
+  formatNotification,
+  getNotificationDestination,
+} from "@/lib/notifications"
 
 type NotificationTranslationFn = (
   key: string,

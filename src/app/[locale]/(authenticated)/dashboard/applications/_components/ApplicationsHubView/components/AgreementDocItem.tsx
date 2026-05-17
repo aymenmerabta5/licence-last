@@ -2,8 +2,8 @@
 
 import { Download, Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 interface AgreementDocItemProps {
@@ -40,8 +40,7 @@ export function AgreementDocItem({
           className={cn(
             doc.status === "generated" &&
               "text-emerald-600 dark:text-emerald-400",
-            doc.status === "pending" &&
-              "text-amber-600 dark:text-amber-400",
+            doc.status === "pending" && "text-amber-600 dark:text-amber-400",
           )}
         >
           {t(`status.${doc.status}`)}

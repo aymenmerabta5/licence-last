@@ -3,8 +3,8 @@ import { Suspense } from "react"
 import { SettingsView } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView"
 import { Skeleton } from "@/components/ui/skeleton"
 import { requireRole } from "@/lib/auth-guards"
-import { getMe } from "@/server/services/users/get-me"
 import { getStudentProfile } from "@/server/services/students/get-profile"
+import { getMe } from "@/server/services/users/get-me"
 
 function SettingsFallback() {
   return (

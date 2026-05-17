@@ -3,12 +3,11 @@
 import { LayoutDashboard, LogOut } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useCallback } from "react"
-
+import { NavbarSessionControlsFallback } from "@/components/Navbar/components/NavbarSessionControlsFallback"
 import {
   NAVBAR_AVATAR_BADGE_CLASS,
   NAVBAR_ICON_CONTROL_CLASS,
 } from "@/components/navbar-control-styles"
-import { NavbarSessionControlsFallback } from "@/components/Navbar/components/NavbarSessionControlsFallback"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {

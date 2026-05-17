@@ -61,7 +61,10 @@ export async function requestInterviewReschedule(
       .limit(1)
 
     if (!interviewRow) {
-      throw new InterviewServiceError("INTERVIEW_NOT_FOUND", "Interview not found")
+      throw new InterviewServiceError(
+        "INTERVIEW_NOT_FOUND",
+        "Interview not found",
+      )
     }
 
     if (interviewRow.studentUserId !== studentUserId) {
@@ -71,7 +74,10 @@ export async function requestInterviewReschedule(
       )
     }
 
-    if (interviewRow.status === "cancelled" || interviewRow.status === "completed") {
+    if (
+      interviewRow.status === "cancelled" ||
+      interviewRow.status === "completed"
+    ) {
       throw new InterviewServiceError(
         "INTERVIEW_INVALID_STATUS",
         "Interview cannot be rescheduled in its current state",
@@ -149,7 +155,10 @@ export async function requestInterviewReschedule(
       }
     }
   } catch (error) {
-    log.warn({ error, interviewId: result.interviewId }, "Failed to notify company")
+    log.warn(
+      { error, interviewId: result.interviewId },
+      "Failed to notify company",
+    )
   }
 
   return { interviewId: result.interviewId }

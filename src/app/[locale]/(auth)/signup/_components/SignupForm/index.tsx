@@ -104,10 +104,7 @@ export function SignupForm({ role, onBack }: SignupFormProps) {
 
       <ServerError message={serverError} />
 
-      <motion.div
-        {...reveal}
-        transition={{ duration: 0.6, ease, delay: 0.1 }}
-      >
+      <motion.div {...reveal} transition={{ duration: 0.6, ease, delay: 0.1 }}>
         <SignupFields form={form} labels={labels} />
       </motion.div>
 

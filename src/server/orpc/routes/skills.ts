@@ -3,10 +3,12 @@
 import "server-only"
 
 import { eq } from "drizzle-orm"
-import { cacheTag } from "next/cache"
+import { cacheTag, revalidateTag } from "next/cache"
 import { z } from "zod"
-
 import { CACHE_PROFILES, CACHE_TAGS } from "@/lib/cache"
+import { db } from "@/server/db"
+import { skillCategory } from "@/server/db/schema"
+import { departmentCategory } from "@/server/db/schema/departments"
 import {
   authedProcedureStandard,
   publicProcedureStandard,
@@ -15,14 +17,10 @@ import {
   createServiceORPCError,
   throwCodedORPCError,
 } from "@/server/orpc/utils/service-error"
-import { db } from "@/server/db"
-import { skillCategory } from "@/server/db/schema"
-import { departmentCategory } from "@/server/db/schema/departments"
+import { ServiceError } from "@/server/services/errors"
 import { createSkill } from "@/server/services/skills/create"
 import { listSkillTags } from "@/server/services/skills/list"
 import { listSkillTagsPrioritized } from "@/server/services/skills/list-prioritized"
-import { ServiceError } from "@/server/services/errors"
-import { revalidateTag } from "next/cache"
 
 export const listSkillTagsProcedure = publicProcedureStandard
   .input(
@@ -161,8 +159,8 @@ export const createSkillProcedure = authedProcedureStandard
     }
   })
 
-export const listSkillCategoriesProcedure = publicProcedureStandard
-  .handler(async () => {
+export const listSkillCategoriesProcedure = publicProcedureStandard.handler(
+  async () => {
     CACHE_PROFILES.REFERENCE()
     cacheTag(CACHE_TAGS.SKILLS)
 
@@ -173,4 +171,5 @@ export const listSkillCategoriesProcedure = publicProcedureStandard
       .orderBy(skillCategory.name)
 
     return categories
-  })
+  },
+)

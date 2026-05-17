@@ -1,10 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useMutation } from "@tanstack/react-query"
 import { Loader2, Send } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { useMutation } from "@tanstack/react-query"
+import { useState } from "react"
 import { toast } from "sonner"
 import { CompanySlotsEditor } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/CompanySlotsEditor"
 import type { ProposedSlotDraft } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
@@ -27,7 +27,9 @@ function createEmptySlot(): ProposedSlotDraft {
   }
 }
 
-export function RescheduleSlotsInline({ interviewId }: RescheduleSlotsInlineProps) {
+export function RescheduleSlotsInline({
+  interviewId,
+}: RescheduleSlotsInlineProps) {
   const t = useTranslations("dashboard.interviews")
   const tCommon = useTranslations()
   const [slots, setSlots] = useState<ProposedSlotDraft[]>([createEmptySlot()])
@@ -48,7 +50,11 @@ export function RescheduleSlotsInline({ interviewId }: RescheduleSlotsInlineProp
     },
   })
 
-  const handleSlotChange = (slotId: string, field: keyof ProposedSlotDraft, value: string) => {
+  const handleSlotChange = (
+    slotId: string,
+    field: keyof ProposedSlotDraft,
+    value: string,
+  ) => {
     setSlots((prev) =>
       prev.map((s) => (s.id === slotId ? { ...s, [field]: value } : s)),
     )
@@ -79,7 +85,11 @@ export function RescheduleSlotsInline({ interviewId }: RescheduleSlotsInlineProp
   }
 
   return (
-    <motion.div {...reveal} transition={{ duration: 0.4, ease }} className="space-y-4">
+    <motion.div
+      {...reveal}
+      transition={{ duration: 0.4, ease }}
+      className="space-y-4"
+    >
       <CompanySlotsEditor
         slots={slots}
         onSlotChange={handleSlotChange}
@@ -100,7 +110,9 @@ export function RescheduleSlotsInline({ interviewId }: RescheduleSlotsInlineProp
           ) : (
             <Send className="h-3 w-3" />
           )}
-          {mutation.isPending ? t("rescheduleSubmitting") : t("rescheduleSubmit")}
+          {mutation.isPending
+            ? t("rescheduleSubmitting")
+            : t("rescheduleSubmit")}
         </Button>
       </div>
     </motion.div>

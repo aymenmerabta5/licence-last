@@ -1,13 +1,13 @@
 "use client"
 
 import * as motion from "motion/react-client"
-import { useState } from "react"
 import { useTranslations } from "next-intl"
+import { useState } from "react"
 import { ApplicationsHubBody } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/ApplicationsHubBody"
 import { FilterTabs } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/FilterTabs"
 import { PipelineSummaryBar } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/PipelineSummaryBar"
-import type { ApplicationJourney } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/types"
 import type { FilterTab } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/hooks/useApplicationHub"
+import type { ApplicationJourney } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/types"
 import { ease, reveal } from "@/lib/animations"
 
 interface ApplicationsHubViewProps {

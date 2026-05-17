@@ -5,14 +5,12 @@ const mockInsert = mock(() => ({ values: mockValues }))
 const mockWhere = mock(() => Promise.resolve())
 const mockSet = mock(() => ({ where: mockWhere }))
 const mockUpdate = mock(() => ({ set: mockSet }))
-const mockTransaction = mock(
-  async (fn: (tx: any) => Promise<void>) => {
-    await fn({
-      insert: mockInsert,
-      update: mockUpdate,
-    })
-  },
-)
+const mockTransaction = mock(async (fn: (tx: any) => Promise<void>) => {
+  await fn({
+    insert: mockInsert,
+    update: mockUpdate,
+  })
+})
 
 const dbMock = {
   insert: mockInsert,

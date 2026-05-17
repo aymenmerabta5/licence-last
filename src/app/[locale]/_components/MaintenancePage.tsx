@@ -1,10 +1,10 @@
 "use client"
 
+import { Wrench } from "lucide-react"
 import { motion, useReducedMotion } from "motion/react"
 import { useTranslations } from "next-intl"
-import { Wrench } from "lucide-react"
 import { MaintenanceBackdrop } from "@/app/[locale]/_components/MaintenanceBackdrop"
-import { reveal, ease, fadeIn } from "@/lib/animations"
+import { ease, fadeIn, reveal } from "@/lib/animations"
 
 export function MaintenancePage() {
   const t = useTranslations("maintenance")

@@ -1,15 +1,15 @@
 "use client"
 
-import { useState } from "react"
 import { useTranslations } from "next-intl"
+import { useState } from "react"
 import { BorderPreview } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/components/BorderPreview"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
 import {
   Select,
   SelectContent,
@@ -52,14 +52,14 @@ export function CertificateGenerationDialog({
   const t = useTranslations("dashboard.companyDocuments")
   const [locale, setLocale] = useState<string>(SUPPORTED_LOCALES[0].value)
   const [borderStyle, setBorderStyle] = useState<BorderStyleKey>(
-    BORDER_OPTIONS[0].key
+    BORDER_OPTIONS[0].key,
   )
 
   const selectedLocale =
     SUPPORTED_LOCALES.find((l) => l.value === locale) ?? SUPPORTED_LOCALES[0]
 
   const isExisting = existingVariants.some(
-    (v) => v.locale === locale && v.borderStyle === borderStyle
+    (v) => v.locale === locale && v.borderStyle === borderStyle,
   )
 
   const handleGenerate = () => {

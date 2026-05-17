@@ -3,13 +3,13 @@
 import { ArrowRight, Menu } from "lucide-react"
 
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
-import { NAVBAR_ICON_CONTROL_CLASS } from "@/components/navbar-control-styles"
 import { NavbarMobileSessionControls } from "@/components/Navbar/components/NavbarMobileSessionControls"
 import { NavbarMobileSessionControlsFallback } from "@/components/Navbar/components/NavbarMobileSessionControlsFallback"
 import { NavbarSessionControls } from "@/components/Navbar/components/NavbarSessionControls"
 import { NavbarSessionControlsFallback } from "@/components/Navbar/components/NavbarSessionControlsFallback"
-import { ThemeToggle } from "@/components/ThemeToggle"
 import { useNavbarState } from "@/components/Navbar/hooks/useNavbarState"
+import { NAVBAR_ICON_CONTROL_CLASS } from "@/components/navbar-control-styles"
+import { ThemeToggle } from "@/components/ThemeToggle"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
@@ -57,7 +57,11 @@ export function Navbar() {
             <LanguageSwitcher />
           </div>
           <ThemeToggle />
-          {mounted ? <NavbarSessionControls /> : <NavbarSessionControlsFallback />}
+          {mounted ? (
+            <NavbarSessionControls />
+          ) : (
+            <NavbarSessionControlsFallback />
+          )}
         </div>
       </nav>
 
@@ -94,7 +98,9 @@ export function Navbar() {
             <Separator className="bg-border/50" />
 
             {mounted ? (
-              <NavbarMobileSessionControls onNavigate={() => setMobileOpen(false)} />
+              <NavbarMobileSessionControls
+                onNavigate={() => setMobileOpen(false)}
+              />
             ) : (
               <NavbarMobileSessionControlsFallback />
             )}

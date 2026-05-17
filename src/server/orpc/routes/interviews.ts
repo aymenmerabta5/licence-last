@@ -311,7 +311,10 @@ export const requestInterviewRescheduleProcedure = studentProcedureStandard
           interviewId: input.interviewId,
           reason: input.reason,
           proposedSlots: input.proposedSlots.map((slot) => ({
-            startsAt: parseInterviewSlotDate(slot.startsAt, "Proposed slot start"),
+            startsAt: parseInterviewSlotDate(
+              slot.startsAt,
+              "Proposed slot start",
+            ),
             endsAt: parseInterviewSlotDate(slot.endsAt, "Proposed slot end"),
           })),
         },
@@ -354,8 +357,14 @@ export const rescheduleInterviewSlotsProcedure = companyAdminProcedureStandard
           interviewId: input.interviewId,
           note: input.note,
           slots: input.slots.map((slot, index) => ({
-            startsAt: parseInterviewSlotDate(slot.startsAt, `Slot ${index + 1} start`),
-            endsAt: parseInterviewSlotDate(slot.endsAt, `Slot ${index + 1} end`),
+            startsAt: parseInterviewSlotDate(
+              slot.startsAt,
+              `Slot ${index + 1} start`,
+            ),
+            endsAt: parseInterviewSlotDate(
+              slot.endsAt,
+              `Slot ${index + 1} end`,
+            ),
             location: slot.location || null,
             meetingUrl: slot.meetingUrl || null,
           })),

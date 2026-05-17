@@ -1,19 +1,19 @@
 "use client"
 
-import { useState } from "react"
 import { AnimatePresence } from "motion/react"
 import * as motion from "motion/react-client"
+import { useState } from "react"
 
 import { AccountSettingsTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/AccountSettingsTab"
 import { ProfileSettingsTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab"
-import { NotificationsTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/NotificationsTab"
-import { SettingsHeader } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/SettingsHeader"
-import { SettingsTabs } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/SettingsTabs"
-import { ease, reveal } from "@/lib/animations"
 import type {
   MeResult,
   StudentProfileResult,
 } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/types"
+import { NotificationsTab } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/NotificationsTab"
+import { SettingsHeader } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/SettingsHeader"
+import { SettingsTabs } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SettingsView/components/SettingsTabs"
+import { ease, reveal } from "@/lib/animations"
 
 interface SettingsViewProps {
   me: MeResult

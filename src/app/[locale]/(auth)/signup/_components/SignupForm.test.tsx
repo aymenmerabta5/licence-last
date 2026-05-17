@@ -72,7 +72,7 @@ mock.module("@/lib/schemas/auth", () => ({
           message: "Name must be at least 2 characters",
         })
       }
-      if (!data.email || !data.email.includes("@")) {
+      if (!data.email?.includes("@")) {
         issues.push({ path: ["email"], message: "Invalid email" })
       }
       if (!data.password || data.password.length < 8) {

@@ -26,9 +26,7 @@ function applyMocks() {
 
 async function loadUpdateFieldModule() {
   moduleImportCounter += 1
-  return import(
-    `@/server/services/fields/update?test=${moduleImportCounter}`
-  )
+  return import(`@/server/services/fields/update?test=${moduleImportCounter}`)
 }
 
 describe("updateField", () => {
@@ -54,9 +52,7 @@ describe("updateField", () => {
     mockUpdate.mockReturnValue({ set: mockSet })
     mockSet.mockReturnValue({ where: mockWhere })
     mockWhere.mockReturnValue({ returning: mockReturning })
-    mockReturning.mockImplementation(() =>
-      Promise.resolve(mockReturningResult),
-    )
+    mockReturning.mockImplementation(() => Promise.resolve(mockReturningResult))
   })
 
   test("should update name when provided", async () => {
@@ -110,20 +106,22 @@ describe("updateField", () => {
     mockSelectLimitResult = [{ id: "other-field" }]
 
     const { updateField } = await loadUpdateFieldModule()
-    await expect(updateField("field-1", { name: "Taken" })).rejects.toMatchObject(
-      {
-        code: "FIELD_NAME_EXISTS",
-        message: "A field with this name already exists",
-      },
-    )
+    await expect(
+      updateField("field-1", { name: "Taken" }),
+    ).rejects.toMatchObject({
+      code: "FIELD_NAME_EXISTS",
+      message: "A field with this name already exists",
+    })
   })
 
   test("should throw FIELD_NAME_REQUIRED for empty name", async () => {
     const { updateField } = await loadUpdateFieldModule()
-    await expect(updateField("field-1", { name: "   " })).rejects.toMatchObject({
-      code: "FIELD_NAME_REQUIRED",
-      message: "Field name is required",
-    })
+    await expect(updateField("field-1", { name: "   " })).rejects.toMatchObject(
+      {
+        code: "FIELD_NAME_REQUIRED",
+        message: "Field name is required",
+      },
+    )
   })
 
   test("should throw FIELD_NAME_TOO_LONG for name over 100 chars", async () => {

@@ -1,10 +1,10 @@
 "use client"
 
 import { Building2, ChevronDown, ChevronUp } from "lucide-react"
+import type { ApplicationJourney } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/types"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { STATUS_COLORS } from "@/lib/constants/pipeline"
 import { cn } from "@/lib/utils"
-import type { ApplicationJourney } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/types"
 
 interface ApplicationJourneyCardHeaderProps {
   journey: ApplicationJourney
@@ -31,10 +31,7 @@ export function ApplicationJourneyCardHeader({
     >
       <Avatar size="lg">
         {journey.companyLogoUrl && (
-          <AvatarImage
-            src={journey.companyLogoUrl}
-            alt={journey.companyName}
-          />
+          <AvatarImage src={journey.companyLogoUrl} alt={journey.companyName} />
         )}
         <AvatarFallback>
           <Building2 className="h-4 w-4" />

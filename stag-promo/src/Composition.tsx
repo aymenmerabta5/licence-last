@@ -1,11 +1,11 @@
 import { AbsoluteFill, Sequence, useCurrentFrame } from "remotion"
-import { fadeOut } from "./lib/animations"
-import { SceneIntro } from "./components/SceneIntro"
-import { SceneTagline } from "./components/SceneTagline"
-import { SceneMarquee } from "./components/SceneMarquee"
-import { SceneFeatures } from "./components/SceneFeatures"
-import { SceneStats } from "./components/SceneStats"
 import { SceneCTA } from "./components/SceneCTA"
+import { SceneFeatures } from "./components/SceneFeatures"
+import { SceneIntro } from "./components/SceneIntro"
+import { SceneMarquee } from "./components/SceneMarquee"
+import { SceneStats } from "./components/SceneStats"
+import { SceneTagline } from "./components/SceneTagline"
+import { fadeOut } from "./lib/animations"
 
 interface FadeOutWrapperProps {
   children: React.ReactNode

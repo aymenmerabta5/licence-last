@@ -1,6 +1,13 @@
 "use client"
 
-import { CalendarDays, ChevronDown, ChevronUp, Loader2, MessageSquare, UserRound } from "lucide-react"
+import {
+  CalendarDays,
+  ChevronDown,
+  ChevronUp,
+  Loader2,
+  MessageSquare,
+  UserRound,
+} from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
@@ -23,7 +30,9 @@ export function CompanyInterviewsSection({
   errorMessage,
 }: CompanyInterviewsSectionProps) {
   const t = useTranslations("dashboard.interviews")
-  const [openRescheduleFor, setOpenRescheduleFor] = useState<string | null>(null)
+  const [openRescheduleFor, setOpenRescheduleFor] = useState<string | null>(
+    null,
+  )
 
   if (isLoading) {
     return (
@@ -140,7 +149,9 @@ export function CompanyInterviewsSection({
                     type="button"
                     onClick={() =>
                       setOpenRescheduleFor(
-                        openRescheduleFor === interview.id ? null : interview.id,
+                        openRescheduleFor === interview.id
+                          ? null
+                          : interview.id,
                       )
                     }
                     className="flex items-center gap-1 pt-1 text-[11px] font-medium text-violet-600 transition-colors hover:text-violet-800 dark:text-violet-400 dark:hover:text-violet-300"

@@ -2,8 +2,8 @@
 
 import { GraduationCap, Mail, MapPin, Phone, User } from "lucide-react"
 import * as motion from "motion/react-client"
-import { useTranslations } from "next-intl"
 import Image from "next/image"
+import { useTranslations } from "next-intl"
 
 import { InfoRow } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/InfoRow"
 import type { ValidationDetailData } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/types"

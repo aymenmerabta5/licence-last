@@ -82,10 +82,7 @@ export function ConversationComposer({
       </div>
 
       {errorMessage && (
-        <motion.p
-          {...fadeIn}
-          className="text-xs text-destructive"
-        >
+        <motion.p {...fadeIn} className="text-xs text-destructive">
           {errorMessage}
         </motion.p>
       )}

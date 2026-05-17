@@ -6,9 +6,9 @@ import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { placement, placementDocument } from "@/server/db/schema/placements"
+import { logger } from "@/server/logging"
 import { DocumentServiceError } from "@/server/services/documents/errors"
 import { generateCertificateByCompany } from "@/server/services/documents/generate-certificate-by-company"
-import { logger } from "@/server/logging"
 
 interface GenerateMissingCertificatesInput {
   companyId: string

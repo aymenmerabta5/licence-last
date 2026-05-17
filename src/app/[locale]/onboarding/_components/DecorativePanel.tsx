@@ -10,8 +10,8 @@ import {
   useOnboardingRoleConfig,
 } from "@/app/[locale]/onboarding/_components/decorativePanelShared"
 import { Link } from "@/i18n/routing"
-import { authClient } from "@/lib/auth-client"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
+import { authClient } from "@/lib/auth-client"
 
 function DotSeparator({
   lineWidth = 32,

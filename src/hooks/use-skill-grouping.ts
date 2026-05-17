@@ -70,4 +70,4 @@ export function useSkillGrouping(skills: SkillTag[]) {
   }, [skills])
 }
 
-export { CATEGORY_ORDER, CATEGORY_LABELS }
+export { CATEGORY_LABELS, CATEGORY_ORDER }

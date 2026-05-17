@@ -1,5 +1,6 @@
 "use client"
 
+import type { InferRouterOutputs } from "@orpc/server"
 import {
   Building2,
   Calendar,
@@ -10,7 +11,6 @@ import {
   User,
 } from "lucide-react"
 import { motion } from "motion/react"
-import type { InferRouterOutputs } from "@orpc/server"
 import { useLocale, useTranslations } from "next-intl"
 
 import { Badge } from "@/components/ui/badge"

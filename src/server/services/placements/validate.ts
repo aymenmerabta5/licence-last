@@ -13,11 +13,11 @@ import { internshipOffer } from "@/server/db/schema/internships"
 import { placement, placementDocument } from "@/server/db/schema/placements"
 import { studentProfile } from "@/server/db/schema/students"
 import { appendTimelineEvent } from "@/server/services/applications/pipeline"
-import { ServiceError } from "@/server/services/errors"
 import {
-  generateAgreement,
   type AgreementIssuerContext,
+  generateAgreement,
 } from "@/server/services/documents/generate-agreement"
+import { ServiceError } from "@/server/services/errors"
 import { createNotification } from "@/server/services/notifications/create"
 
 export interface ValidatePlacementInput {

@@ -1,10 +1,8 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-
-import { Switch } from "@/components/ui/switch"
-
 import { useSiteSettings } from "@/app/[locale]/(authenticated)/dashboard/admin/site-settings/_components/SiteSettingsView/hooks/useSiteSettings"
+import { Switch } from "@/components/ui/switch"
 
 export function SiteSettingsView() {
   const t = useTranslations("admin")

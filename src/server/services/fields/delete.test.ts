@@ -2,7 +2,9 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const selectLimitQueue: unknown[][] = []
 
-const mockLimit = mock((): any => Promise.resolve(selectLimitQueue.shift() ?? []))
+const mockLimit = mock((): any =>
+  Promise.resolve(selectLimitQueue.shift() ?? []),
+)
 const mockWhere = mock(() => ({ limit: mockLimit }))
 const mockFrom = mock(() => ({ where: mockWhere }))
 const mockSelect = mock(() => ({ from: mockFrom }))
@@ -22,9 +24,7 @@ function applyMocks() {
 let moduleImportCounter = 0
 async function loadDeleteFieldModule() {
   moduleImportCounter += 1
-  return import(
-    `@/server/services/fields/delete?test=${moduleImportCounter}`
-  )
+  return import(`@/server/services/fields/delete?test=${moduleImportCounter}`)
 }
 
 describe("deleteField", () => {

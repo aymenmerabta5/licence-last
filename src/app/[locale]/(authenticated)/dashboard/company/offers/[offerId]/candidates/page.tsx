@@ -1,6 +1,5 @@
-import { Suspense } from "react"
-
 import dynamic from "next/dynamic"
+import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { requireApprovedCompanyAdmin } from "@/lib/dashboard-access"
 

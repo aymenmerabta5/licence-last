@@ -14,10 +14,7 @@ export function VerificationAlert({ onResend }: VerificationAlertProps) {
   const t = useTranslations("auth.login")
 
   return (
-    <motion.div
-      {...reveal}
-      className="space-y-3"
-    >
+    <motion.div {...reveal} className="space-y-3">
       <Button
         type="button"
         variant="outline"

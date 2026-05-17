@@ -214,11 +214,13 @@ export function CompanyDocumentsView() {
         onOpenChange={setGenerateDialogOpen}
         existingVariants={
           dialogPlacementId
-            ? placements
+            ? (placements
                 .find((p) => p.placementId === dialogPlacementId)
                 ?.documents.filter((d) => d.type === "certificate")
-                .map((d) => ({ locale: d.locale, borderStyle: d.borderStyle })) ??
-              []
+                .map((d) => ({
+                  locale: d.locale,
+                  borderStyle: d.borderStyle,
+                })) ?? [])
             : []
         }
         onGenerate={(certificateLocale, borderStyle) => {
@@ -232,9 +234,7 @@ export function CompanyDocumentsView() {
             handleGenerateMissing(certificateLocale, borderStyle)
           }
         }}
-        isGenerating={
-          generatingPlacementId !== null || isGeneratingMissing
-        }
+        isGenerating={generatingPlacementId !== null || isGeneratingMissing}
       />
 
       <RevokeCertificateDialog

@@ -15,7 +15,9 @@ export function ValidationEmptyState({ label }: ValidationEmptyStateProps) {
         <ClipboardCheck className="h-6 w-6 text-muted-foreground/40" />
       </div>
       <div className="space-y-1">
-        <p className="font-serif text-lg text-heading">{t("noValidationsTitle")}</p>
+        <p className="font-serif text-lg text-heading">
+          {t("noValidationsTitle")}
+        </p>
         <p className="text-sm font-light text-muted-foreground">{label}</p>
       </div>
     </div>

@@ -9,5 +9,10 @@ if [ "$RUN_SEED" = "true" ]; then
   bun run src/server/db/seed.ts
 fi
 
+if [ "$SEED_DEMO" = "true" ]; then
+  echo "Running comprehensive demo seed..."
+  bun run src/server/db/seed-demo.ts
+fi
+
 echo "Starting server..."
 exec bun ./server.js

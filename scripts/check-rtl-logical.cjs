@@ -12,18 +12,56 @@ const SCAN_DIRS = [
 const EXT_REGEX = /\.(tsx|ts|jsx|js)$/
 
 const TOKEN_PATTERNS = [
-  { pattern: /(?:^|\s)(?:[^\s"'`]+:)*text-left(?=$|\s|["'`])/, replacement: "text-start" },
-  { pattern: /(?:^|\s)(?:[^\s"'`]+:)*text-right(?=$|\s|["'`])/, replacement: "text-end" },
-  { pattern: /(?:^|\s)(?:[^\s"'`]+:)*border-l(?:-[^\s"'`]+)?(?=$|\s|["'`])/, replacement: "border-s" },
-  { pattern: /(?:^|\s)(?:[^\s"'`]+:)*border-r(?:-[^\s"'`]+)?(?=$|\s|["'`])/, replacement: "border-e" },
-  { pattern: /(?:^|\s)(?:[^\s"'`]+:)*rounded-l(?:-[^\s"'`]+)?(?=$|\s|["'`])/, replacement: "rounded-s" },
-  { pattern: /(?:^|\s)(?:[^\s"'`]+:)*rounded-r(?:-[^\s"'`]+)?(?=$|\s|["'`])/, replacement: "rounded-e" },
-  { pattern: /(?:^|\s)(?:[^\s"'`]+:)*-?ml-[^\s"'`]+(?=$|\s|["'`])/, replacement: "ms-*" },
-  { pattern: /(?:^|\s)(?:[^\s"'`]+:)*-?mr-[^\s"'`]+(?=$|\s|["'`])/, replacement: "me-*" },
-  { pattern: /(?:^|\s)(?:[^\s"'`]+:)*pl-[^\s"'`]+(?=$|\s|["'`])/, replacement: "ps-*" },
-  { pattern: /(?:^|\s)(?:[^\s"'`]+:)*pr-[^\s"'`]+(?=$|\s|["'`])/, replacement: "pe-*" },
-  { pattern: /(?:^|\s)(?:[^\s"'`]+:)*-?left-(?:\d+|\[[^\]]+\]|px|full|auto|\d+\/\d+)(?=$|\s|["'`])/, replacement: "start-*" },
-  { pattern: /(?:^|\s)(?:[^\s"'`]+:)*-?right-(?:\d+|\[[^\]]+\]|px|full|auto|\d+\/\d+)(?=$|\s|["'`])/, replacement: "end-*" },
+  {
+    pattern: /(?:^|\s)(?:[^\s"'`]+:)*text-left(?=$|\s|["'`])/,
+    replacement: "text-start",
+  },
+  {
+    pattern: /(?:^|\s)(?:[^\s"'`]+:)*text-right(?=$|\s|["'`])/,
+    replacement: "text-end",
+  },
+  {
+    pattern: /(?:^|\s)(?:[^\s"'`]+:)*border-l(?:-[^\s"'`]+)?(?=$|\s|["'`])/,
+    replacement: "border-s",
+  },
+  {
+    pattern: /(?:^|\s)(?:[^\s"'`]+:)*border-r(?:-[^\s"'`]+)?(?=$|\s|["'`])/,
+    replacement: "border-e",
+  },
+  {
+    pattern: /(?:^|\s)(?:[^\s"'`]+:)*rounded-l(?:-[^\s"'`]+)?(?=$|\s|["'`])/,
+    replacement: "rounded-s",
+  },
+  {
+    pattern: /(?:^|\s)(?:[^\s"'`]+:)*rounded-r(?:-[^\s"'`]+)?(?=$|\s|["'`])/,
+    replacement: "rounded-e",
+  },
+  {
+    pattern: /(?:^|\s)(?:[^\s"'`]+:)*-?ml-[^\s"'`]+(?=$|\s|["'`])/,
+    replacement: "ms-*",
+  },
+  {
+    pattern: /(?:^|\s)(?:[^\s"'`]+:)*-?mr-[^\s"'`]+(?=$|\s|["'`])/,
+    replacement: "me-*",
+  },
+  {
+    pattern: /(?:^|\s)(?:[^\s"'`]+:)*pl-[^\s"'`]+(?=$|\s|["'`])/,
+    replacement: "ps-*",
+  },
+  {
+    pattern: /(?:^|\s)(?:[^\s"'`]+:)*pr-[^\s"'`]+(?=$|\s|["'`])/,
+    replacement: "pe-*",
+  },
+  {
+    pattern:
+      /(?:^|\s)(?:[^\s"'`]+:)*-?left-(?:\d+|\[[^\]]+\]|px|full|auto|\d+\/\d+)(?=$|\s|["'`])/,
+    replacement: "start-*",
+  },
+  {
+    pattern:
+      /(?:^|\s)(?:[^\s"'`]+:)*-?right-(?:\d+|\[[^\]]+\]|px|full|auto|\d+\/\d+)(?=$|\s|["'`])/,
+    replacement: "end-*",
+  },
 ]
 
 const EXCEPTION_PATTERNS = [/data-\[side=(left|right)\]/]

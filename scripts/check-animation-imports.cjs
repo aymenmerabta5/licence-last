@@ -23,9 +23,12 @@ const EXCEPTION_FILES = new Set([
 ])
 
 function shouldSkipFile(filePath) {
-  const normalized = path.relative(process.cwd(), filePath).replaceAll("\\", "/")
+  const normalized = path
+    .relative(process.cwd(), filePath)
+    .replaceAll("\\", "/")
   if (EXCEPTION_FILES.has(normalized)) return true
-  if (normalized.endsWith(".test.tsx") || normalized.endsWith(".test.ts")) return true
+  if (normalized.endsWith(".test.tsx") || normalized.endsWith(".test.ts"))
+    return true
   return false
 }
 
@@ -94,7 +97,9 @@ function main() {
     return
   }
 
-  console.error("Found inline animation definitions that should use @/lib/animations imports:")
+  console.error(
+    "Found inline animation definitions that should use @/lib/animations imports:",
+  )
   for (const v of violations) {
     console.error(`${v.filePath}:${v.lineNumber}  ${v.snippet}`)
   }

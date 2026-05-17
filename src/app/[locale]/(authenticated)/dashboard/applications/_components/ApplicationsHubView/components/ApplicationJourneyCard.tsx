@@ -3,14 +3,14 @@
 import { Loader2, X } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import type { ApplicationJourney } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/types"
 import { ApplicationJourneyCardHeader } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/ApplicationJourneyCardHeader"
 import { InterviewSlotsSection } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/InterviewSlotsSection"
 import { JourneyTimeline } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/JourneyTimeline"
 import { PlacementDocumentsSection } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/PlacementDocumentsSection"
+import type { ApplicationJourney } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/types"
 import { Button } from "@/components/ui/button"
-import { STAGE_COLUMNS, STAGE_LABELS } from "@/lib/constants/pipeline"
 import { ease, reveal } from "@/lib/animations"
+import { STAGE_COLUMNS, STAGE_LABELS } from "@/lib/constants/pipeline"
 import { cn } from "@/lib/utils"
 
 interface ApplicationJourneyCardProps {

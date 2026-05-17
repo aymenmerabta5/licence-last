@@ -5,11 +5,11 @@ import type { ApplicationStatus, PipelineStage } from "@/lib/schemas/enums"
 import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { user } from "@/server/db/schema/auth"
-import { interview, interviewSlot } from "@/server/db/schema/interviews"
 import {
   internshipOffer,
   internshipOfferSkill,
 } from "@/server/db/schema/internships"
+import { interview, interviewSlot } from "@/server/db/schema/interviews"
 import { studentLanguage } from "@/server/db/schema/languages"
 import { skillTag } from "@/server/db/schema/skills"
 import { studentProfile, studentSkill } from "@/server/db/schema/students"

@@ -27,20 +27,25 @@ export function RescheduleRequestForm({
 }: RescheduleRequestFormProps) {
   const t = useTranslations("dashboard.interviews.detail")
   const [reason, setReason] = useState("")
-  const [slots, setSlots] = useState([
-    { id: "1", startsAt: "", endsAt: "" },
-  ])
+  const [slots, setSlots] = useState([{ id: "1", startsAt: "", endsAt: "" }])
 
   const addSlot = () => {
     if (slots.length >= 3) return
-    setSlots((prev) => [...prev, { id: crypto.randomUUID(), startsAt: "", endsAt: "" }])
+    setSlots((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), startsAt: "", endsAt: "" },
+    ])
   }
 
   const removeSlot = (slotId: string) => {
     setSlots((prev) => prev.filter((s) => s.id !== slotId))
   }
 
-  const updateSlot = (slotId: string, field: "startsAt" | "endsAt", value: string) => {
+  const updateSlot = (
+    slotId: string,
+    field: "startsAt" | "endsAt",
+    value: string,
+  ) => {
     setSlots((prev) =>
       prev.map((s) => (s.id === slotId ? { ...s, [field]: value } : s)),
     )
@@ -68,7 +73,9 @@ export function RescheduleRequestForm({
       <h2 className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground">
         {t("rescheduleTitle")}
       </h2>
-      <p className="text-xs text-muted-foreground">{t("rescheduleDescription")}</p>
+      <p className="text-xs text-muted-foreground">
+        {t("rescheduleDescription")}
+      </p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-3">
           {slots.map((slot, index) => (
@@ -80,7 +87,9 @@ export function RescheduleRequestForm({
                 <Input
                   type="datetime-local"
                   value={slot.startsAt}
-                  onChange={(e) => updateSlot(slot.id, "startsAt", e.target.value)}
+                  onChange={(e) =>
+                    updateSlot(slot.id, "startsAt", e.target.value)
+                  }
                   required
                 />
               </div>
@@ -91,7 +100,9 @@ export function RescheduleRequestForm({
                 <Input
                   type="datetime-local"
                   value={slot.endsAt}
-                  onChange={(e) => updateSlot(slot.id, "endsAt", e.target.value)}
+                  onChange={(e) =>
+                    updateSlot(slot.id, "endsAt", e.target.value)
+                  }
                   required
                 />
               </div>
@@ -143,7 +154,9 @@ export function RescheduleRequestForm({
             type="submit"
             variant="editorial"
             size="sm"
-            disabled={isSubmitting || slots.some((s) => !s.startsAt || !s.endsAt)}
+            disabled={
+              isSubmitting || slots.some((s) => !s.startsAt || !s.endsAt)
+            }
             className="gap-1.5"
           >
             {isSubmitting ? (

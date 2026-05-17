@@ -2,9 +2,8 @@ import { getSessionCookie } from "better-auth/cookies"
 import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
 import createMiddleware from "next-intl/middleware"
-
-import { checkMaintenanceStatus } from "@/lib/proxy-maintenance"
 import { routing } from "@/i18n/routing"
+import { checkMaintenanceStatus } from "@/lib/proxy-maintenance"
 
 const intlMiddleware = createMiddleware(routing)
 
@@ -112,5 +111,5 @@ export const config = {
   // - /_vercel (Vercel internals)
   // - /static (inside /public)
   // - /.*\..*$ (files with extensions, e.g. favicon.ico)
-  matcher: ["/((?!api|_next|_vercel|static|.*\\..*).*)",],
+  matcher: ["/((?!api|_next|_vercel|static|.*\\..*).*)"],
 }

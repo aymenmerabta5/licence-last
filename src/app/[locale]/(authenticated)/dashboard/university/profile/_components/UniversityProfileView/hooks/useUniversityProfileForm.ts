@@ -6,8 +6,8 @@ import { useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
 import { createUniversityUpdateSchema } from "@/lib/schemas/university"
-import { orpcClient } from "@/server/orpc/client"
 import type { university } from "@/server/db/schema/universities"
+import { orpcClient } from "@/server/orpc/client"
 
 type University = typeof university.$inferSelect
 

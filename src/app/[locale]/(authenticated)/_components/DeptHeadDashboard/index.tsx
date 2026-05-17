@@ -4,12 +4,12 @@ import { ArrowRight, Loader2 } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { DeptHeadStatsCards } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/components/DeptHeadStatsCards"
-import { useDeptHeadStats } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/hooks/useDeptHeadStats"
 import { PendingQueueOverview } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/components/PendingQueueOverview"
 import {
-  useDeptHeadDashboardData,
   type DeptHeadDashboardInitialData,
+  useDeptHeadDashboardData,
 } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/hooks/useDeptHeadDashboardData"
+import { useDeptHeadStats } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/hooks/useDeptHeadStats"
 import type {
   DeptHeadDashboardLabels,
   DeptHeadDashboardProps,

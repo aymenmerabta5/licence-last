@@ -89,7 +89,7 @@ mock.module("@/lib/schemas/auth", () => ({
     safeParse: (data: { email: string; password: string }) => {
       const issues: Array<{ path: (string | number)[]; message: string }> = []
 
-      if (!data.email || !data.email.includes("@")) {
+      if (!data.email?.includes("@")) {
         issues.push({ path: ["email"], message: "Invalid email" })
       }
       if (!data.password) {

@@ -1,8 +1,8 @@
 "use client"
 
-import type { ReactNode } from "react"
-import * as motion from "motion/react-client"
 import { ArrowRight } from "lucide-react"
+import * as motion from "motion/react-client"
+import type { ReactNode } from "react"
 
 import { DotSeparator } from "@/components/error/DotSeparator"
 import { Navbar } from "@/components/Navbar"

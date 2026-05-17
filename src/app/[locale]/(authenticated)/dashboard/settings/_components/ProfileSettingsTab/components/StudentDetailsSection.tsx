@@ -2,8 +2,8 @@
 
 import { Globe, GraduationCap, MapPin, PenLine } from "lucide-react"
 import { useTranslations } from "next-intl"
-import type { ProfileSettingsFormApi } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/hooks/useProfileSettings"
 import { LanguagesManager } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/LanguagesManager"
+import type { ProfileSettingsFormApi } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/hooks/useProfileSettings"
 import { SkillsManager } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/SkillsManager"
 import { SelectField, TextAreaField, TextField } from "@/components/form-fields"
 import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"

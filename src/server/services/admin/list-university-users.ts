@@ -39,7 +39,8 @@ export async function listUniversityUsers(params: ListUniversityUsersParams) {
       ? params.filterValue
       : undefined
   const shouldJoinMembership =
-    roleFilterValue === "department_head" || roleFilterValue === "university_admin"
+    roleFilterValue === "department_head" ||
+    roleFilterValue === "university_admin"
 
   if (params.searchValue) {
     const searchField = params.searchField ?? "email"

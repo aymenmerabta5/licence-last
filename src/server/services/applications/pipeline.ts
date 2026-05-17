@@ -11,8 +11,8 @@ import {
   application,
   applicationTimelineEvent,
 } from "@/server/db/schema/applications"
-import { interview } from "@/server/db/schema/interviews"
 import { internshipOffer } from "@/server/db/schema/internships"
+import { interview } from "@/server/db/schema/interviews"
 import { createModuleLogger } from "@/server/logging"
 import { ApplicationServiceError } from "@/server/services/applications/errors"
 import { createNotification } from "@/server/services/notifications/create"

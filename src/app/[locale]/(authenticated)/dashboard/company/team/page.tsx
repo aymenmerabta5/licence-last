@@ -1,6 +1,6 @@
 import { Suspense } from "react"
-import { CompanyTeamView } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView"
 import { TeamPageSkeleton } from "@/app/[locale]/(authenticated)/dashboard/_components/DashboardPageSkeletons"
+import { CompanyTeamView } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView"
 import { requireCompanyOwner } from "@/lib/dashboard-access"
 
 async function CompanyTeamPageContent() {

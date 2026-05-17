@@ -1,11 +1,11 @@
 import { useCurrentFrame } from "remotion"
 import {
-  fadeIn,
-  slideUp,
-  scaleXReveal,
-  drawLine,
   colors,
+  drawLine,
+  fadeIn,
   fonts,
+  scaleXReveal,
+  slideUp,
 } from "../lib/animations"
 
 export const SceneTagline = () => {

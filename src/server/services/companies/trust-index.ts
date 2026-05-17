@@ -5,11 +5,11 @@ import { cacheLife, cacheTag } from "next/cache"
 
 import { CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
-import { ServiceError } from "@/server/services/errors"
 import { application } from "@/server/db/schema/applications"
 import { company } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { companyQualityFeedback, companyReport } from "@/server/db/schema/trust"
+import { ServiceError } from "@/server/services/errors"
 
 export interface CompanyTrustIndex {
   companyId: string

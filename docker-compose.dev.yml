@@ -1,0 +1,91 @@
+services:
+  # ─── PostgreSQL ──────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-stag}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-stag}
+      POSTGRES_DB: ${POSTGRES_DB:-stag}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - stag-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-stag}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ─── Redis ───────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - stag-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ─── Next.js Application ────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-stag}:${POSTGRES_PASSWORD:-stag}@db:5432/${POSTGRES_DB:-stag}
+      REDIS_URL: redis://redis:6379
+      REDIS_RATE_LIMIT_ENABLED: "false"
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-demo-secret-key-32chars-long!!}
+      NEXT_PUBLIC_BETTER_AUTH_URL: ${NEXT_PUBLIC_BETTER_AUTH_URL:-http://localhost:3000}
+      BETTER_AUTH_TRUSTED_ORIGINS: ${BETTER_AUTH_TRUSTED_ORIGINS:-http://localhost:3000}
+      TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY:-}
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      EMAIL_FROM: ${EMAIL_FROM:-}
+      S3_BUCKET: ${S3_BUCKET:-}
+      S3_ENDPOINT: ${S3_ENDPOINT:-}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-}
+      S3_PUBLIC_URL: ${S3_PUBLIC_URL:-}
+      NEXT_PUBLIC_S3_URL: ${NEXT_PUBLIC_S3_URL:-}
+      S3_REGION: ${S3_REGION:-auto}
+      FEATURE_NOTIF_PREFERENCES: "true"
+      FEATURE_SAVED_OFFERS: "true"
+      FEATURE_INTERVIEWS: "true"
+      FEATURE_LANGUAGE_REQUIREMENTS: "true"
+      FEATURE_COMPANY_ASSISTANT: "true"
+      NEXT_PUBLIC_FEATURE_NOTIF_PREFERENCES: "true"
+      NEXT_PUBLIC_FEATURE_SAVED_OFFERS: "true"
+      NEXT_PUBLIC_FEATURE_INTERVIEWS: "true"
+      NEXT_PUBLIC_FEATURE_LANGUAGE_REQUIREMENTS: "true"
+      NEXT_PUBLIC_FEATURE_COMPANY_ASSISTANT: "true"
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@stag.io}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-DemoPass123!}
+      SEED_UNIVERSITY_ADMIN_EMAIL: ${SEED_UNIVERSITY_ADMIN_EMAIL:-uni-admin-1@stag.io}
+      SEED_UNIVERSITY_ADMIN_PASSWORD: ${SEED_UNIVERSITY_ADMIN_PASSWORD:-DemoPass123!}
+    ports:
+      - "3000:3000"
+    networks:
+      - stag-net
+    command: >
+      sh -c "bun run db:migrate:dev && bun run db:seed:demo && bun run start"
+
+volumes:
+  pgdata:
+
+networks:
+  stag-net:
+    driver: bridge

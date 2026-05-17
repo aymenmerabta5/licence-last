@@ -1,10 +1,10 @@
 "use client"
 
 import {
+  type QueryKey,
   useInfiniteQuery,
   useMutation,
   useQueryClient,
-  type QueryKey,
 } from "@tanstack/react-query"
 import { useMemo } from "react"
 

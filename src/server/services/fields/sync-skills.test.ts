@@ -87,9 +87,7 @@ describe("syncFieldSkills", () => {
     await syncFieldSkills("field-1", [{ skillTagId: "s1" }])
 
     const payload = (
-      mockTxValues.mock.calls[0] as unknown as [
-        Array<Record<string, unknown>>,
-      ]
+      mockTxValues.mock.calls[0] as unknown as [Array<Record<string, unknown>>]
     )[0]
     expect(payload[0].isCore).toBe(false)
   })
@@ -97,10 +95,7 @@ describe("syncFieldSkills", () => {
   test("should throw SKILL_LIMIT_EXCEEDED for more than 200 skills", async () => {
     const { syncFieldSkills } = await loadSyncSkillsModule()
     await expect(
-      syncFieldSkills(
-        "field-1",
-        Array(201).fill({ skillTagId: "s1" }),
-      ),
+      syncFieldSkills("field-1", Array(201).fill({ skillTagId: "s1" })),
     ).rejects.toMatchObject({
       code: "SKILL_LIMIT_EXCEEDED",
       message: "A maximum of 200 skills per field is allowed",

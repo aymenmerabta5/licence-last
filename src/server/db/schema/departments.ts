@@ -8,9 +8,9 @@ import {
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core"
+import { user } from "@/server/db/schema/auth"
 import { field } from "@/server/db/schema/fields"
 import { skillCategory, skillTag } from "@/server/db/schema/skills"
-import { user } from "@/server/db/schema/auth"
 import { university } from "@/server/db/schema/universities"
 
 export const department = pgTable(
@@ -49,8 +49,9 @@ export const departmentSkill = pgTable(
       .notNull()
       .references(() => skillTag.id, { onDelete: "cascade" }),
     action: text("action").notNull().default("add"),
-    createdByUserId: text("created_by_user_id")
-      .references(() => user.id, { onDelete: "cascade" }),
+    createdByUserId: text("created_by_user_id").references(() => user.id, {
+      onDelete: "cascade",
+    }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [

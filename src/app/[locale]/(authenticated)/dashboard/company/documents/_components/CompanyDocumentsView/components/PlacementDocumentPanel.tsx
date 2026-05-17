@@ -122,7 +122,10 @@ export function PlacementDocumentPanel({
             <Tooltip>
               <TooltipTrigger
                 render={(props) => (
-                  <span {...props} className="inline-block shrink-0 cursor-not-allowed">
+                  <span
+                    {...props}
+                    className="inline-block shrink-0 cursor-not-allowed"
+                  >
                     {actionButton}
                   </span>
                 )}

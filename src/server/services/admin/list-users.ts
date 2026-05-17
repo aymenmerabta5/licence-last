@@ -17,11 +17,9 @@ import { db } from "@/server/db"
 import { user as userTable } from "@/server/db/schema/auth"
 import { company, companyMember } from "@/server/db/schema/companies"
 import { department } from "@/server/db/schema/departments"
-import {
-  resolveMembershipAwareRoleFilter,
-} from "@/server/services/admin/role-filtering"
 import { university } from "@/server/db/schema/universities"
 import { universityMember } from "@/server/db/schema/university-memberships"
+import { resolveMembershipAwareRoleFilter } from "@/server/services/admin/role-filtering"
 
 interface ListUsersParams {
   limit?: number
@@ -85,6 +83,10 @@ async function augmentUsersWithAffiliations(users: Array<{ id: string }>) {
       departmentName: department.name,
       companyMemberRole: companyMember.role,
       companyName: company.name,
+      onboardingCompleted: userTable.onboardingCompleted,
+      emailVerified: userTable.emailVerified,
+      companyStatus: company.status,
+      universityStatus: university.status,
     })
     .from(userTable)
     .leftJoin(universityMember, eq(userTable.id, universityMember.userId))
@@ -149,7 +151,10 @@ async function listUsersByMembershipAwareRole(
         : roleFilter === "company_admin"
           ? and(
               eq(userTable.role, "company_admin"),
-              or(isNull(companyMember.role), ne(companyMember.role, "recruiter")),
+              or(
+                isNull(companyMember.role),
+                ne(companyMember.role, "recruiter"),
+              ),
             )
           : and(
               eq(userTable.role, "university_admin"),
@@ -214,14 +219,8 @@ async function listUsersByMembershipAwareRole(
         ? countQuery.innerJoin.bind(countQuery)
         : countQuery.leftJoin.bind(countQuery)
 
-    join(
-      universityMember,
-      eq(userTable.id, universityMember.userId),
-    )
-    countJoin(
-      universityMember,
-      eq(userTable.id, universityMember.userId),
-    )
+    join(universityMember, eq(userTable.id, universityMember.userId))
+    countJoin(universityMember, eq(userTable.id, universityMember.userId))
   }
 
   const rows = await baseQuery

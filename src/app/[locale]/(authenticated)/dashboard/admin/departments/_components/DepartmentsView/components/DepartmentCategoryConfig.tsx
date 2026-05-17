@@ -1,12 +1,12 @@
 "use client"
 
-import { useMemo, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useTranslations } from "next-intl"
-import { toast } from "sonner"
 import { Loader2, Save } from "lucide-react"
-import { Checkbox } from "@/components/ui/checkbox"
+import { useTranslations } from "next-intl"
+import { useMemo, useState } from "react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { orpc } from "@/server/orpc/client"
 
 interface DepartmentCategoryConfigProps {

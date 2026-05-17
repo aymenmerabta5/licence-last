@@ -45,10 +45,9 @@ export const interview = pgTable(
     note: text("note"),
     rescheduleNote: text("reschedule_note"),
     rescheduleRequestedAt: timestamp("reschedule_requested_at"),
-    rescheduleRequestedByUserId: text("reschedule_requested_by_user_id").references(
-      () => user.id,
-      { onDelete: "set null" },
-    ),
+    rescheduleRequestedByUserId: text(
+      "reschedule_requested_by_user_id",
+    ).references(() => user.id, { onDelete: "set null" }),
     confirmedAt: timestamp("confirmed_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")

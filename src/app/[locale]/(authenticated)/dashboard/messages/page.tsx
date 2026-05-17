@@ -1,8 +1,8 @@
 import { Suspense } from "react"
 
 import { MessagesView } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView"
-import { requireRole } from "@/lib/auth-guards"
 import { Skeleton } from "@/components/ui/skeleton"
+import { requireRole } from "@/lib/auth-guards"
 
 export default async function MessagesPage() {
   const user = await requireRole(["student", "company_admin"])

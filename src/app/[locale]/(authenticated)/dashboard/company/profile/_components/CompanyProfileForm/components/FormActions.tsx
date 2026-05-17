@@ -15,10 +15,7 @@ export function FormActions({ form }: FormActionsProps) {
   const t = useTranslations("dashboard.company.profile")
 
   return (
-    <motion.div
-      {...reveal}
-      transition={{ duration: 0.5, ease, delay: 0.4 }}
-    >
+    <motion.div {...reveal} transition={{ duration: 0.5, ease, delay: 0.4 }}>
       <form.Subscribe selector={(state) => [state.isSubmitting] as const}>
         {([isSubmitting]) => (
           <Button

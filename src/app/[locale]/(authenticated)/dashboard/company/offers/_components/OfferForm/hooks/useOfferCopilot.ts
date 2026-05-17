@@ -2,11 +2,11 @@
 
 import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
+import type { OfferFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferForm"
 import type {
   CopilotResult,
   OfferCopilotIntent,
 } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/types"
-import type { OfferFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferForm"
 import { isInternshipType, isWorkMode } from "@/lib/schemas/enums"
 import { orpcClient } from "@/server/orpc/client"
 

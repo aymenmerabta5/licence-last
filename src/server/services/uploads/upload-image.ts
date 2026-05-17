@@ -1,17 +1,15 @@
 import "server-only"
 
 import { randomUUID } from "node:crypto"
-
-import { createModuleLogger } from "@/server/logging"
-import { ServiceError } from "@/server/services/errors"
-import { uploadFile } from "@/server/storage/s3"
-
 import {
   ALLOWED_IMAGE_TYPES,
   IMAGE_EXT_MAP,
   MAX_IMAGE_SIZE,
   validateMagicBytes,
 } from "@/lib/image-validation"
+import { createModuleLogger } from "@/server/logging"
+import { ServiceError } from "@/server/services/errors"
+import { uploadFile } from "@/server/storage/s3"
 
 const log = createModuleLogger("services/uploads/upload-image")
 

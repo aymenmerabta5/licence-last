@@ -4,13 +4,19 @@ import { eq } from "drizzle-orm"
 import { z } from "zod"
 
 import { primaryUserRoleSchema } from "@/lib/schemas/enums"
+import { sanitizeIpAddress } from "@/lib/utils"
+import { db } from "@/server/db"
+import { company } from "@/server/db/schema/companies"
 import {
   adminProcedureGenerous,
   adminProcedureStandard,
   superAdminProcedureGenerous,
   superAdminProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
-import { createServiceORPCError, throwCodedORPCError } from "@/server/orpc/utils/service-error"
+import {
+  createServiceORPCError,
+  throwCodedORPCError,
+} from "@/server/orpc/utils/service-error"
 import { banUser, unbanUser } from "@/server/services/admin/ban-user"
 import { createUser } from "@/server/services/admin/create-user"
 import { listUniversityUsers } from "@/server/services/admin/list-university-users"
@@ -24,9 +30,6 @@ import {
 import { setUserPassword } from "@/server/services/admin/set-password"
 import { updateUserRole } from "@/server/services/admin/set-role"
 import { updateUser } from "@/server/services/admin/update-user"
-import { db } from "@/server/db"
-import { company } from "@/server/db/schema/companies"
-import { sanitizeIpAddress } from "@/lib/utils"
 
 const listUsersInputSchema = z.object({
   limit: z.number().min(1).max(100).optional().default(20),

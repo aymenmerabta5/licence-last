@@ -3,6 +3,7 @@
 import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
+import { OrganizationSearchField } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/OrganizationSearchField"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -21,7 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { OrganizationSearchField } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/OrganizationSearchField"
 
 type CreateUserRole =
   | "student"

@@ -1,13 +1,11 @@
 "use client"
 
-import { useTranslations } from "next-intl"
-import * as motion from "motion/react-client"
 import { Briefcase, ClipboardList, GraduationCap, Users } from "lucide-react"
-
+import * as motion from "motion/react-client"
+import { useTranslations } from "next-intl"
+import type { DeptHeadStats } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/hooks/useDeptHeadStats"
 import { Link } from "@/i18n/routing"
 import { ease, reveal } from "@/lib/animations"
-
-import type { DeptHeadStats } from "@/app/[locale]/(authenticated)/_components/DeptHeadDashboard/hooks/useDeptHeadStats"
 
 interface DeptHeadStatsCardsProps {
   stats: DeptHeadStats

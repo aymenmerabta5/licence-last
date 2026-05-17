@@ -31,26 +31,51 @@ export function Footer() {
               {t("description")}
             </p>
             <div className="mt-1 sm:mt-2 flex flex-wrap items-center gap-3 sm:gap-4">
-              <FooterIconLink external href="https://github.com/aymenmerabta5/licence-last" icon={<Github className="size-5" />} label={t("social.github")} />
-              <FooterIconLink href="/about" icon={<BookOpen className="size-5" />} label={t("links.aboutUs")} />
-              <FooterIconLink href="/discover" icon={<Compass className="size-5" />} label={t("links.discover")} />
-              <FooterIconLink href="/privacy" icon={<ShieldCheck className="size-5" />} label={t("legal.privacyPolicy")} />
+              <FooterIconLink
+                external
+                href="https://github.com/aymenmerabta5/licence-last"
+                icon={<Github className="size-5" />}
+                label={t("social.github")}
+              />
+              <FooterIconLink
+                href="/about"
+                icon={<BookOpen className="size-5" />}
+                label={t("links.aboutUs")}
+              />
+              <FooterIconLink
+                href="/discover"
+                icon={<Compass className="size-5" />}
+                label={t("links.discover")}
+              />
+              <FooterIconLink
+                href="/privacy"
+                icon={<ShieldCheck className="size-5" />}
+                label={t("legal.privacyPolicy")}
+              />
             </div>
           </div>
 
           <div className="hidden lg:block lg:col-span-1" />
 
           <div className="lg:col-span-2 flex flex-col gap-3 sm:gap-4">
-            <h4 className="font-bold uppercase tracking-[0.15em] text-sm text-foreground">{t("sections.platform")}</h4>
+            <h4 className="font-bold uppercase tracking-[0.15em] text-sm text-foreground">
+              {t("sections.platform")}
+            </h4>
             <div className="flex flex-col gap-2.5 sm:gap-3">
               <FooterLink href="/discover">{t("links.discover")}</FooterLink>
-              <FooterLink href="/for-students">{t("links.forStudents")}</FooterLink>
-              <FooterLink href="/for-companies">{t("links.forCompanies")}</FooterLink>
+              <FooterLink href="/for-students">
+                {t("links.forStudents")}
+              </FooterLink>
+              <FooterLink href="/for-companies">
+                {t("links.forCompanies")}
+              </FooterLink>
             </div>
           </div>
 
           <div className="lg:col-span-2 flex flex-col gap-3 sm:gap-4">
-            <h4 className="font-bold uppercase tracking-[0.15em] text-sm text-foreground">{t("sections.company")}</h4>
+            <h4 className="font-bold uppercase tracking-[0.15em] text-sm text-foreground">
+              {t("sections.company")}
+            </h4>
             <div className="flex flex-col gap-2.5 sm:gap-3">
               <FooterLink href="/about">{t("links.aboutUs")}</FooterLink>
               <FooterLink href="/login">{t("links.signIn")}</FooterLink>
@@ -66,9 +91,24 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 text-xs sm:text-sm text-center md:text-start text-muted-foreground">
           <p>{copyrightText}</p>
           <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-5 gap-y-2 sm:gap-8">
-            <Link href="/privacy" className="hover:text-foreground transition-colors">{t("legal.privacyPolicy")}</Link>
-            <Link href="/terms" className="hover:text-foreground transition-colors">{t("legal.termsOfService")}</Link>
-            <Link href="/cookies" className="hover:text-foreground transition-colors">{t("legal.cookiePolicy")}</Link>
+            <Link
+              href="/privacy"
+              className="hover:text-foreground transition-colors"
+            >
+              {t("legal.privacyPolicy")}
+            </Link>
+            <Link
+              href="/terms"
+              className="hover:text-foreground transition-colors"
+            >
+              {t("legal.termsOfService")}
+            </Link>
+            <Link
+              href="/cookies"
+              className="hover:text-foreground transition-colors"
+            >
+              {t("legal.cookiePolicy")}
+            </Link>
           </div>
         </div>
       </div>

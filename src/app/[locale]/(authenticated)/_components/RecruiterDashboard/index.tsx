@@ -8,9 +8,9 @@ import { RecruiterHero } from "@/app/[locale]/(authenticated)/_components/Recrui
 import { RecruiterQuickActions } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard/components/RecruiterQuickActions"
 import { TrustGauge } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard/components/TrustGauge"
 import {
-  useRecruiterDashboardData,
-  type OfferWithSkills,
   type CompanyTrustIndex,
+  type OfferWithSkills,
+  useRecruiterDashboardData,
 } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard/hooks/useRecruiterDashboardData"
 
 interface RecruiterDashboardProps {

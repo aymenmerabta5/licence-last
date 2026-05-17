@@ -10,20 +10,20 @@ import type {
   OfferWithSkills,
 } from "@/app/[locale]/(authenticated)/_components/RecruiterDashboard/hooks/useRecruiterDashboardData"
 import type { StudentDashboardData } from "@/app/[locale]/(authenticated)/_components/StudentDashboard/types"
+import { Skeleton } from "@/components/ui/skeleton"
 import { requireDashboardUser } from "@/lib/dashboard-access"
 import { isFeatureEnabled } from "@/lib/feature-flags"
 import { localeRedirect } from "@/lib/navigation"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 import { listApplicationsByStudent } from "@/server/services/applications/list-by-student"
+import { getCompanyMembership } from "@/server/services/companies/membership"
 import {
   getCompanyTrustIndex,
   listCompanyTrustIndices,
 } from "@/server/services/companies/trust-index"
-import { getCompanyMembership } from "@/server/services/companies/membership"
 import { listInterviewsForStudent } from "@/server/services/interviews/list-for-student"
 import { listOffersByCompany } from "@/server/services/offers/list-by-company"
 import { recommendOffersForStudent } from "@/server/services/offers/recommend"
-import { Skeleton } from "@/components/ui/skeleton"
 import { getAdminStats } from "@/server/services/stats/get-admin-stats"
 import { getUniversityDashboardStats } from "@/server/services/stats/get-university-dashboard-stats"
 import { getStudentDashboardStats } from "@/server/services/students/get-dashboard-stats"

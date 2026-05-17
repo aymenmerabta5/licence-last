@@ -32,14 +32,11 @@ export function AssistantChat() {
     handleAppendNote,
   } = useChatSession()
 
-  const {
-    generatingTitleIds,
-    isGeneratingTitle,
-    handleFirstMessageSent,
-  } = useTitleGeneration({
-    conversations,
-    activeConversationId,
-  })
+  const { generatingTitleIds, isGeneratingTitle, handleFirstMessageSent } =
+    useTitleGeneration({
+      conversations,
+      activeConversationId,
+    })
 
   return (
     <div

@@ -28,9 +28,7 @@ function applyMocks() {
 let moduleImportCounter = 0
 async function importListFields() {
   moduleImportCounter += 1
-  return import(
-    `@/server/services/fields/list?test=${moduleImportCounter}`
-  )
+  return import(`@/server/services/fields/list?test=${moduleImportCounter}`)
 }
 
 describe("src/server/services/fields/list", () => {

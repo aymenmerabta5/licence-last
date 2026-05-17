@@ -45,6 +45,10 @@ export function createUniversityUpdateSchema(t: TranslationFn) {
       .optional(),
     city: z.string().optional(),
     address: z.string().optional(),
-    logoUrl: z.string().url({ message: t("websiteUrlInvalid") }).optional().or(z.literal("")),
+    logoUrl: z
+      .string()
+      .url({ message: t("websiteUrlInvalid") })
+      .optional()
+      .or(z.literal("")),
   })
 }

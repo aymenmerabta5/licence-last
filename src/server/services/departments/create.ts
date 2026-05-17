@@ -38,10 +38,7 @@ export async function createDepartment(data: {
       .limit(1)
 
     if (!fieldRow) {
-      throw new ServiceError(
-        "FIELD_NOT_FOUND",
-        "Field of study not found",
-      )
+      throw new ServiceError("FIELD_NOT_FOUND", "Field of study not found")
     }
   }
 

@@ -12,7 +12,11 @@ function collectFiles(dir, out) {
     const entryPath = path.join(dir, entry.name)
     if (entry.isDirectory()) {
       collectFiles(entryPath, out)
-    } else if (entry.isFile() && EXT_REGEX.test(entry.name) && !entry.name.endsWith(".test.ts")) {
+    } else if (
+      entry.isFile() &&
+      EXT_REGEX.test(entry.name) &&
+      !entry.name.endsWith(".test.ts")
+    ) {
       out.push(entryPath)
     }
   }
@@ -31,7 +35,9 @@ function main() {
   for (const filePath of files) {
     const content = fs.readFileSync(filePath, "utf8")
     if (!hasServerOnlyImport(content)) {
-      violations.push(path.relative(process.cwd(), filePath).replaceAll("\\", "/"))
+      violations.push(
+        path.relative(process.cwd(), filePath).replaceAll("\\", "/"),
+      )
     }
   }
 

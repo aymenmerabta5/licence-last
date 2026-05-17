@@ -1,7 +1,7 @@
 "use client"
 
-import { InterviewProposalModal } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/InterviewProposalModal"
 import { CandidatesDialogs } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/CandidatesDialogs"
+import { InterviewProposalModal } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/InterviewProposalModal"
 import type {
   AcceptModalState,
   RefuseModalState,
@@ -29,7 +29,11 @@ interface CandidatesViewDialogsProps {
   onRefuseNoteChange: (note: string) => void
   onConfirmRefuse: () => void
   onCloseRefuse: () => void
-  interviewModal: { applicationId: string; studentName: string; offerTitle: string } | null
+  interviewModal: {
+    applicationId: string
+    studentName: string
+    offerTitle: string
+  } | null
   isProposingInterview: boolean
   onCloseInterview: () => void
   onSubmitInterview: (payload: {

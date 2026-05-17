@@ -2200,7 +2200,8 @@
         },
         "status": {
           "active": "Active",
-          "banned": "Banned"
+          "banned": "Banned",
+          "pending": "Pending"
         },
         "table": {
           "user": "User",
@@ -2290,7 +2291,8 @@
         },
         "status": {
           "active": "Active",
-          "banned": "Banned"
+          "banned": "Banned",
+          "pending": "Pending"
         },
         "sessions": {
           "title": "Active Sessions",

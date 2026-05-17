@@ -66,7 +66,9 @@ function getImportSpecifiers(node) {
     return { source, names: [] }
   }
 
-  const names = bindings.elements.map((el) => el.propertyName?.text ?? el.name.text)
+  const names = bindings.elements.map(
+    (el) => el.propertyName?.text ?? el.name.text,
+  )
   return { source, names }
 }
 
@@ -100,7 +102,9 @@ function main() {
       if (importInfo.source === "next/link") {
         violations.push({
           file: normalizedPath,
-          line: sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile)).line + 1,
+          line:
+            sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile))
+              .line + 1,
           message: `Import from "next/link". Use "@/i18n/routing" instead for locale-aware routing.`,
         })
       }
@@ -111,7 +115,10 @@ function main() {
           if (!ALLOWED_NEXT_NAVIGATION.has(name)) {
             violations.push({
               file: normalizedPath,
-              line: sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile)).line + 1,
+              line:
+                sourceFile.getLineAndCharacterOfPosition(
+                  node.getStart(sourceFile),
+                ).line + 1,
               message: `Import "${name}" from "next/navigation" is not allowed. Use "@/i18n/routing" instead.`,
             })
           }

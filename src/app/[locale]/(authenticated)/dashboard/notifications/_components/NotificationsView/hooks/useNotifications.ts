@@ -1,11 +1,11 @@
 "use client"
 
+import type { InfiniteData } from "@tanstack/react-query"
 import {
   useInfiniteQuery,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query"
-import type { InfiniteData } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { useMemo } from "react"
 import { toast } from "sonner"

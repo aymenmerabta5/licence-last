@@ -32,7 +32,9 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
       <div className="border border-border/60 bg-card/30 dark:bg-card/50 overflow-hidden">
         <div className="flex items-center gap-2.5 px-6 py-4 border-b border-border/40 bg-muted/20 dark:bg-muted/10">
           <Shield className="h-4 w-4 text-primary" />
-          <h2 className="font-serif text-lg text-heading">{t("securityBaseline")}</h2>
+          <h2 className="font-serif text-lg text-heading">
+            {t("securityBaseline")}
+          </h2>
         </div>
 
         <div className="px-6 py-4">
@@ -74,7 +76,9 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
                 <KeyRound className="h-4 w-4 text-muted-foreground" />
               </div>
               <div className="space-y-0.5">
-                <h4 className="text-sm font-medium text-heading">{t("passwordLabel")}</h4>
+                <h4 className="text-sm font-medium text-heading">
+                  {t("passwordLabel")}
+                </h4>
                 <p className="text-[11px] text-muted-foreground">
                   {t("passwordDescription")}
                 </p>
@@ -109,7 +113,7 @@ export function AccountSettingsTab({ me }: AccountSettingsTabProps) {
             <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-destructive/20 bg-destructive/5 dark:bg-destructive/10">
               <AlertTriangle className="h-4 w-4 text-destructive" />
             </div>
-              <div className="space-y-1 min-w-0">
+            <div className="space-y-1 min-w-0">
               <h3 className="font-serif text-lg tracking-tight text-heading">
                 {t("dangerZone")}
               </h3>

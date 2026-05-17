@@ -18,10 +18,7 @@ export function CandidatesHeader({
   const t = useTranslations("dashboard.company.candidates")
 
   return (
-    <motion.div
-      {...reveal}
-      transition={{ duration: 0.6, ease }}
-    >
+    <motion.div {...reveal} transition={{ duration: 0.6, ease }}>
       <Link
         href={"/dashboard/company/offers" as "/dashboard"}
         className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors mb-5 group"

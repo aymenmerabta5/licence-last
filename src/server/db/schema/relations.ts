@@ -9,7 +9,11 @@ import {
 } from "@/server/db/schema/assistant"
 import { user } from "@/server/db/schema/auth"
 import { company, companyMember } from "@/server/db/schema/companies"
-import { department, departmentCategory, departmentSkill } from "@/server/db/schema/departments"
+import {
+  department,
+  departmentCategory,
+  departmentSkill,
+} from "@/server/db/schema/departments"
 import { field, fieldSkill } from "@/server/db/schema/fields"
 import {
   internshipOffer,

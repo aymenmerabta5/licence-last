@@ -1,11 +1,11 @@
 import { useCurrentFrame } from "remotion"
 import {
-  fadeIn,
-  slideUp,
-  scaleIn,
-  drawLine,
   colors,
+  drawLine,
+  fadeIn,
   fonts,
+  scaleIn,
+  slideUp,
 } from "../lib/animations"
 
 export const SceneIntro = () => {

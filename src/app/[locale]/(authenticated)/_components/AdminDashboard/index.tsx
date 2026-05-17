@@ -7,10 +7,10 @@ import { StatusBreakdown } from "@/app/[locale]/(authenticated)/_components/Admi
 import { TrustLeaderboard } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/TrustLeaderboard"
 import { UniversityKpiGrid } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/UniversityKpiGrid"
 import {
-  useAdminDashboardData,
   type AdminStats,
-  type UniversityDashboardStats,
   type TrustIndex,
+  type UniversityDashboardStats,
+  useAdminDashboardData,
 } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/hooks/useAdminDashboardData"
 
 interface AdminDashboardProps {

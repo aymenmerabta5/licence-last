@@ -1,11 +1,10 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-
-import { useNotificationData } from "@/components/NotificationBell/hooks/useNotificationData"
-import { NAVBAR_ICON_CONTROL_CLASS } from "@/components/navbar-control-styles"
 import { NotificationDropdownContent } from "@/components/NotificationBell/components/NotificationDropdownContent"
 import { NotificationTrigger } from "@/components/NotificationBell/components/NotificationTrigger"
+import { useNotificationData } from "@/components/NotificationBell/hooks/useNotificationData"
+import { NAVBAR_ICON_CONTROL_CLASS } from "@/components/navbar-control-styles"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,

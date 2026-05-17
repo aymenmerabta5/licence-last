@@ -15,6 +15,7 @@ import { createModuleLogger } from "@/server/logging"
 import { isAdminRole } from "@/server/orpc/authz"
 
 const log = createModuleLogger("orpc/routes/universities")
+
 import {
   adminProcedureStandard,
   authedProcedureGenerous,
@@ -27,7 +28,6 @@ import {
   throwCodedORPCError,
 } from "@/server/orpc/utils/service-error"
 import { emitNotification } from "@/server/services/notifications/emit"
-import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
 import { addUniversityDomain } from "@/server/services/universities/add-domain"
 import { approveUniversity } from "@/server/services/universities/approve"
 import { createUniversity } from "@/server/services/universities/create"
@@ -38,6 +38,7 @@ import { listUniversityDomains } from "@/server/services/universities/list-domai
 import { rejectUniversity } from "@/server/services/universities/reject"
 import { removeUniversityDomain } from "@/server/services/universities/remove-domain"
 import { updateUniversity } from "@/server/services/universities/update"
+import { uploadImageToS3 } from "@/server/services/uploads/upload-image"
 import { deleteFile } from "@/server/storage/s3"
 
 /* ── Reads ── */

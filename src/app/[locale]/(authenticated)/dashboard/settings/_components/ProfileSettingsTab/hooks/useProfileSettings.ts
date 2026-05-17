@@ -3,17 +3,17 @@
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
-import { useRouter } from "@/i18n/routing"
 import { useCallback, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
-import { authClient } from "@/lib/auth-client"
-import { createStudentProfileDetailsSchema } from "@/lib/schemas/student"
 import type {
   MeResult,
   StudentProfileResult,
 } from "@/app/[locale]/(authenticated)/dashboard/settings/_components/ProfileSettingsTab/types"
+import { useRouter } from "@/i18n/routing"
+import { authClient } from "@/lib/auth-client"
 import { resolveLocalizedError } from "@/lib/error-message"
 import { mapZodErrors } from "@/lib/schemas/map-errors"
+import { createStudentProfileDetailsSchema } from "@/lib/schemas/student"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
 export type ProfileSettingsFormApi = ReturnType<
@@ -29,10 +29,7 @@ export function useProfileSettings(
   const router = useRouter()
   const queryClient = useQueryClient()
 
-  const schema = useMemo(
-    () => createStudentProfileDetailsSchema(tv),
-    [tv],
-  )
+  const schema = useMemo(() => createStudentProfileDetailsSchema(tv), [tv])
 
   const meQueryOptions = useMemo(() => orpc.users.getMe.queryOptions(), [])
   const profileQueryOptions = useMemo(

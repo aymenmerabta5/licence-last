@@ -98,7 +98,9 @@ export async function listDocumentsByCompany(
     .where(
       and(
         ...whereConditions,
-        searchUserIds ? inArray(application.studentUserId, searchUserIds) : undefined,
+        searchUserIds
+          ? inArray(application.studentUserId, searchUserIds)
+          : undefined,
         cursorCondition,
       ),
     )

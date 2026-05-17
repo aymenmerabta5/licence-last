@@ -1,6 +1,9 @@
 import type { PlacementDocumentStatus } from "@/app/[locale]/(authenticated)/dashboard/company/documents/_components/CompanyDocumentsView/types"
 
-export type DocumentStatus = PlacementDocumentStatus | "notGenerated" | "revoked"
+export type DocumentStatus =
+  | PlacementDocumentStatus
+  | "notGenerated"
+  | "revoked"
 
 export const STATUS_STYLES: Record<DocumentStatus, string> = {
   notGenerated: "bg-muted text-muted-foreground border-border",

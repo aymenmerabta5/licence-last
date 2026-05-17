@@ -67,7 +67,7 @@ export function usePlacementActions(applicationId: string) {
       })
 
       queryClient.setQueryData(detailQueryKey, (old) => {
-        if (!old || !old.application) return old
+        if (!old?.application) return old
         return {
           ...old,
           application: {
@@ -141,7 +141,7 @@ export function usePlacementActions(applicationId: string) {
       })
 
       queryClient.setQueryData(detailQueryKey, (old) => {
-        if (!old || !old.application) return old
+        if (!old?.application) return old
         return {
           ...old,
           application: {

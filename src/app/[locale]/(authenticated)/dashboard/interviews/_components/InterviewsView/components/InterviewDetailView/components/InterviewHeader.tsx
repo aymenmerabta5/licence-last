@@ -2,9 +2,9 @@
 
 import { Building2 } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type { InterviewDetailViewProps } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewDetailView/types"
 import { InterviewStatusBadge } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewStatusBadge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import type { InterviewDetailViewProps } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewDetailView/types"
 
 export function InterviewHeader({
   interview,

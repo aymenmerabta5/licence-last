@@ -5,8 +5,8 @@ import { db } from "@/server/db"
 import { application } from "@/server/db/schema/applications"
 import { user } from "@/server/db/schema/auth"
 import { company } from "@/server/db/schema/companies"
-import { interview, interviewSlot } from "@/server/db/schema/interviews"
 import { internshipOffer } from "@/server/db/schema/internships"
+import { interview, interviewSlot } from "@/server/db/schema/interviews"
 import { placement, placementDocument } from "@/server/db/schema/placements"
 
 export interface ApplicationJourney {

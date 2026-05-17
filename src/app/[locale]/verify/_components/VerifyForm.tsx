@@ -1,7 +1,7 @@
 "use client"
 
-import { motion } from "motion/react"
 import { ShieldCheck } from "lucide-react"
+import { motion } from "motion/react"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"

@@ -1,5 +1,5 @@
 import { useCurrentFrame } from "remotion"
-import { fadeIn, slideUp, countUp, colors, fonts } from "../lib/animations"
+import { colors, countUp, fadeIn, fonts, slideUp } from "../lib/animations"
 
 interface StatItemProps {
   value: number

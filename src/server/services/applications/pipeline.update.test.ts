@@ -343,7 +343,8 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
       }),
     ).rejects.toMatchObject({
       code: "APPLICATION_INVALID_STATE",
-      message: "Cannot move candidate forward until the interview is confirmed.",
+      message:
+        "Cannot move candidate forward until the interview is confirmed.",
     })
 
     expect(updateSetMock).not.toHaveBeenCalled()
@@ -364,7 +365,8 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
       }),
     ).rejects.toMatchObject({
       code: "APPLICATION_INVALID_STATE",
-      message: "Cannot move candidate forward until the interview is confirmed.",
+      message:
+        "Cannot move candidate forward until the interview is confirmed.",
     })
 
     expect(updateSetMock).not.toHaveBeenCalled()
@@ -385,7 +387,8 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
       }),
     ).rejects.toMatchObject({
       code: "APPLICATION_INVALID_STATE",
-      message: "Cannot move candidate forward until the interview is confirmed.",
+      message:
+        "Cannot move candidate forward until the interview is confirmed.",
     })
 
     expect(updateSetMock).not.toHaveBeenCalled()

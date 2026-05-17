@@ -1,16 +1,16 @@
 "use client"
 
+import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { useCallback, useEffect, useState } from "react"
 import { InterviewProposalModalFooter } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/InterviewProposalModalFooter"
 import { InterviewProposalModalHeader } from "@/app/[locale]/(authenticated)/dashboard/company/offers/[offerId]/candidates/_components/CandidatesView/components/InterviewProposalModalHeader"
-import * as motion from "motion/react-client"
-import { Textarea } from "@/components/ui/textarea"
-import { cn } from "@/lib/utils"
-import { ease, reveal } from "@/lib/animations"
 import { CompanySlotsEditor } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/CompanySlotsEditor"
-import type { ProposedSlotDraft } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 import { normalizeLocalDateTimeInput } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/hooks/useInterviewsData.helpers"
+import type { ProposedSlotDraft } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
+import { Textarea } from "@/components/ui/textarea"
+import { ease, reveal } from "@/lib/animations"
+import { cn } from "@/lib/utils"
 
 interface InterviewProposalModalProps {
   applicationId: string
@@ -68,9 +68,15 @@ export function InterviewProposalModal({
   }, [isOpen])
 
   const handleSlotChange = useCallback(
-    (slotId: string, field: Exclude<keyof ProposedSlotDraft, "id">, value: string) => {
+    (
+      slotId: string,
+      field: Exclude<keyof ProposedSlotDraft, "id">,
+      value: string,
+    ) => {
       setSlots((prev) =>
-        prev.map((slot) => (slot.id === slotId ? { ...slot, [field]: value } : slot)),
+        prev.map((slot) =>
+          slot.id === slotId ? { ...slot, [field]: value } : slot,
+        ),
       )
     },
     [],

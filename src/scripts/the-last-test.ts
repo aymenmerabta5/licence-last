@@ -4,18 +4,18 @@ import { mock } from "bun:test"
 mock.module("server-only", () => ({}))
 
 import { randomBytes, randomUUID, scryptSync } from "node:crypto"
+import { eq } from "drizzle-orm"
 import { db } from "@/server/db"
-import { user, account } from "@/server/db/schema/auth"
-import { studentProfile } from "@/server/db/schema/students"
+import { account, user } from "@/server/db/schema/auth"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { placementDocument } from "@/server/db/schema/placements"
-import { eq } from "drizzle-orm"
+import { studentProfile } from "@/server/db/schema/students"
 
 import { applyToOffer } from "@/server/services/applications/apply"
 import { companyAcceptApplication } from "@/server/services/applications/company-accept"
-import { validatePlacement } from "@/server/services/placements/validate"
 import { generateAgreement } from "@/server/services/documents/generate-agreement"
 import { generateCertificate } from "@/server/services/documents/generate-certificate"
+import { validatePlacement } from "@/server/services/placements/validate"
 
 const logger = console
 
@@ -158,7 +158,10 @@ async function runTheLastTest() {
     },
   })
   logger.info(
-    { documentId: agreementResult.documentId, success: agreementResult.success },
+    {
+      documentId: agreementResult.documentId,
+      success: agreementResult.success,
+    },
     "Agreement generated",
   )
 
@@ -170,7 +173,10 @@ async function runTheLastTest() {
     borderStyle: "classic",
   })
   logger.info(
-    { documentId: certificateResult.documentId, success: certificateResult.success },
+    {
+      documentId: certificateResult.documentId,
+      success: certificateResult.success,
+    },
     "Certificate generated",
   )
 

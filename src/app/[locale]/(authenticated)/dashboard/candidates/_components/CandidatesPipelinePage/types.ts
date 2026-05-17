@@ -1,6 +1,5 @@
-import type { getTranslations } from "next-intl/server"
-
 import type { InferRouterOutputs } from "@orpc/server"
+import type { getTranslations } from "next-intl/server"
 import type { AppRouter } from "@/server/orpc/router"
 
 type ListOffersByCompanyResult =

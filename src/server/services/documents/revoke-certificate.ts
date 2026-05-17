@@ -7,8 +7,8 @@ import { application } from "@/server/db/schema/applications"
 import { company } from "@/server/db/schema/companies"
 import { internshipOffer } from "@/server/db/schema/internships"
 import { placement, placementDocument } from "@/server/db/schema/placements"
-import { DocumentServiceError } from "@/server/services/documents/errors"
 import { logger } from "@/server/logging"
+import { DocumentServiceError } from "@/server/services/documents/errors"
 import { createNotification } from "@/server/services/notifications/create"
 
 interface RevokeCertificateInput {

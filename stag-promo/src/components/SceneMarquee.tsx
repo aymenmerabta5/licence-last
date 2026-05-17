@@ -1,5 +1,5 @@
 import { useCurrentFrame } from "remotion"
-import { fadeIn, colors, fonts } from "../lib/animations"
+import { colors, fadeIn, fonts } from "../lib/animations"
 
 const items = [
   "INTERNSHIP MATCHING",

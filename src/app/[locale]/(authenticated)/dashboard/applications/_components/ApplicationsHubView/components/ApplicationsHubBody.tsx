@@ -1,8 +1,7 @@
 "use client"
 
-import { Search } from "lucide-react"
+import { Loader2, Search } from "lucide-react"
 import * as motion from "motion/react-client"
-import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { ApplicationJourneyCard } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/components/ApplicationJourneyCard"
 import type { ApplicationJourney } from "@/app/[locale]/(authenticated)/dashboard/applications/_components/ApplicationsHubView/types"
@@ -64,9 +63,7 @@ export function ApplicationsHubBody({
         <p className="text-sm font-medium text-destructive">
           {t("errorTitle")}
         </p>
-        <p className="text-xs text-muted-foreground">
-          {t("errorDescription")}
-        </p>
+        <p className="text-xs text-muted-foreground">{t("errorDescription")}</p>
       </div>
     )
   }

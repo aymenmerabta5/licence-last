@@ -53,9 +53,7 @@ export function ResolveReportDialog({
           <DialogTitle className="font-serif text-xl">
             {t("updateReportStatus")}
           </DialogTitle>
-          <DialogDescription>
-            {t("resolveOrDismiss")}
-          </DialogDescription>
+          <DialogDescription>{t("resolveOrDismiss")}</DialogDescription>
         </DialogHeader>
 
         {report && (

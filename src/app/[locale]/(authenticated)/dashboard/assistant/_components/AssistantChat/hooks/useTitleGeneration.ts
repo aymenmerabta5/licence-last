@@ -18,9 +18,7 @@ export function useTitleGeneration({
   conversations,
   activeConversationId,
 }: UseTitleGenerationOptions): UseTitleGenerationResult {
-  const [pendingTitleIds, setPendingTitleIds] = useState<Set<string>>(
-    new Set(),
-  )
+  const [pendingTitleIds, setPendingTitleIds] = useState<Set<string>>(new Set())
 
   // Clear pending IDs when titles appear in fetched data
   useEffect(() => {

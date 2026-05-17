@@ -1,5 +1,5 @@
-import type { RefObject } from "react"
 import type { InferRouterOutputs } from "@orpc/server"
+import type { RefObject } from "react"
 import type { AppRouter } from "@/server/orpc/router"
 
 type ListPendingApplicationsResult =

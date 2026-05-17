@@ -485,7 +485,12 @@ export function ConventionDeStageTemplate({
           {data.companyLogoUrl ? (
             <Image
               src={data.companyLogoUrl}
-              style={{ width: 36, height: 36, objectFit: "contain", marginTop: 2 }}
+              style={{
+                width: 36,
+                height: 36,
+                objectFit: "contain",
+                marginTop: 2,
+              }}
             />
           ) : (
             <View style={{ width: 36 }} />
@@ -521,7 +526,12 @@ export function ConventionDeStageTemplate({
           {data.universityLogoUrl ? (
             <Image
               src={data.universityLogoUrl}
-              style={{ width: 36, height: 36, objectFit: "contain", marginTop: 2 }}
+              style={{
+                width: 36,
+                height: 36,
+                objectFit: "contain",
+                marginTop: 2,
+              }}
             />
           ) : (
             <View style={{ width: 36 }} />
@@ -646,7 +656,7 @@ export function ConventionDeStageTemplate({
                   {locale === "fr" ? "Université" : "University"}
                 </Text>
               </View>
-              {(data.universityName || data.universityDepartmentName) ? (
+              {data.universityName || data.universityDepartmentName ? (
                 <View style={styles.row}>
                   <Text style={styles.label}>
                     {locale === "fr" ? "Nom" : "Name"}
@@ -708,9 +718,7 @@ export function ConventionDeStageTemplate({
             <View style={styles.detailsHeader}>
               <View style={styles.detailsHeaderDot} />
               <Text style={styles.detailsTitle}>
-                {locale === "fr"
-                  ? "Détails du Stage"
-                  : "Internship Details"}
+                {locale === "fr" ? "Détails du Stage" : "Internship Details"}
               </Text>
             </View>
             <View style={styles.detailsGrid}>
@@ -733,9 +741,7 @@ export function ConventionDeStageTemplate({
                 <Text style={styles.detailsLabel}>
                   {locale === "fr" ? "Mode de travail" : "Work Mode"}
                 </Text>
-                <Text style={styles.detailsValue}>
-                  {workModeLabel || "—"}
-                </Text>
+                <Text style={styles.detailsValue}>{workModeLabel || "—"}</Text>
               </View>
               <View style={styles.detailsCol}>
                 <Text style={styles.detailsLabel}>
@@ -751,9 +757,7 @@ export function ConventionDeStageTemplate({
                 <Text style={styles.detailsLabel}>
                   {locale === "fr" ? "Généré le" : "Generated"}
                 </Text>
-                <Text style={styles.detailsValue}>
-                  {shortDate(new Date())}
-                </Text>
+                <Text style={styles.detailsValue}>{shortDate(new Date())}</Text>
               </View>
             </View>
           </View>
@@ -804,7 +808,9 @@ export function ConventionDeStageTemplate({
               <Text style={styles.verificationCode}>
                 {verificationCode ?? "—"}
               </Text>
-              <Text style={styles.verificationUrl}>{verificationUrl ?? "stag.io/verify"}</Text>
+              <Text style={styles.verificationUrl}>
+                {verificationUrl ?? "stag.io/verify"}
+              </Text>
             </View>
           </View>
           <View style={styles.footerRight}>

@@ -29,10 +29,7 @@ export function RoleSelector({ onSelect }: RoleSelectorProps) {
 
   return (
     <div className="space-y-7">
-      <motion.div
-        {...reveal}
-        transition={{ duration: 0.6, ease }}
-      >
+      <motion.div {...reveal} transition={{ duration: 0.6, ease }}>
         <h1 className="font-serif text-3xl text-heading tracking-tight mb-2 transition-colors duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
           {t("title")}
         </h1>

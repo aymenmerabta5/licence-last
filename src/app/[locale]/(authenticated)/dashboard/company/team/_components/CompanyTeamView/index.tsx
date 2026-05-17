@@ -12,8 +12,8 @@ import { MembersList } from "@/app/[locale]/(authenticated)/dashboard/company/te
 import { RemoveMemberDialog } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/components/RemoveMemberDialog"
 import { useCompanyTeamData } from "@/app/[locale]/(authenticated)/dashboard/company/team/_components/CompanyTeamView/hooks/useCompanyTeamData"
 import { Button } from "@/components/ui/button"
-import { resolveLocalizedError } from "@/lib/error-message"
 import { reveal, revealWithDelay } from "@/lib/animations"
+import { resolveLocalizedError } from "@/lib/error-message"
 
 interface CompanyTeamViewProps {
   currentUserId: string

@@ -146,34 +146,33 @@ export const listStudentDocumentsProcedure = studentProcedureGenerous.handler(
 
 /* Company Documents List */
 
-export const listCompanyDocumentsProcedure =
-  companyAdminProcedureGenerous
-    .input(
-      z
-        .object({
-          cursor: z
-            .object({
-              validatedAt: z.string(),
-              placementId: z.string(),
-            })
-            .optional(),
-          limit: z.number().min(1).max(50).optional(),
-          search: z.string().optional(),
-        })
-        .optional(),
+export const listCompanyDocumentsProcedure = companyAdminProcedureGenerous
+  .input(
+    z
+      .object({
+        cursor: z
+          .object({
+            validatedAt: z.string(),
+            placementId: z.string(),
+          })
+          .optional(),
+        limit: z.number().min(1).max(50).optional(),
+        search: z.string().optional(),
+      })
+      .optional(),
+  )
+  .handler(async ({ input, context }) => {
+    const result = await listDocumentsByCompany(
+      context.companyMembership.companyId,
+      {
+        cursor: input?.cursor,
+        limit: input?.limit,
+        search: input?.search,
+      },
     )
-    .handler(async ({ input, context }) => {
-      const result = await listDocumentsByCompany(
-        context.companyMembership.companyId,
-        {
-          cursor: input?.cursor,
-          limit: input?.limit,
-          search: input?.search,
-        },
-      )
 
-      return result
-    })
+    return result
+  })
 
 /* Student Document Download */
 
@@ -209,7 +208,9 @@ export const generateCompanyCertificateProcedure = companyOwnerProcedureStandard
     z.object({
       placementId: z.string().min(1),
       locale: z.enum(["en", "fr", "ar"]).optional(),
-      borderStyle: z.enum(["classic", "minimal", "formal", "ornate", "modern", "premium"]).optional(),
+      borderStyle: z
+        .enum(["classic", "minimal", "formal", "ornate", "modern", "premium"])
+        .optional(),
     }),
   )
   .handler(async ({ input, context }) => {
@@ -243,7 +244,9 @@ export const generateStudentCertificateProcedure = studentProcedureStandard
     z.object({
       placementId: z.string().min(1),
       locale: z.enum(["en", "fr", "ar"]).optional(),
-      borderStyle: z.enum(["classic", "minimal", "formal", "ornate", "modern", "premium"]).optional(),
+      borderStyle: z
+        .enum(["classic", "minimal", "formal", "ornate", "modern", "premium"])
+        .optional(),
     }),
   )
   .handler(async ({ input, context }) => {
@@ -327,14 +330,7 @@ export const generateMissingCertificatesProcedure =
       z.object({
         locale: z.enum(["en", "fr", "ar"]).optional(),
         borderStyle: z
-          .enum([
-            "classic",
-            "minimal",
-            "formal",
-            "ornate",
-            "modern",
-            "premium",
-          ])
+          .enum(["classic", "minimal", "formal", "ornate", "modern", "premium"])
           .optional(),
       }),
     )

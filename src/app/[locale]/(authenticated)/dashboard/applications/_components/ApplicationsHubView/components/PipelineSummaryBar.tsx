@@ -2,8 +2,8 @@
 
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
-import { STAGE_COLUMNS } from "@/lib/constants/pipeline"
 import { reveal, revealWithDelay } from "@/lib/animations"
+import { STAGE_COLUMNS } from "@/lib/constants/pipeline"
 import { cn } from "@/lib/utils"
 
 interface PipelineSummaryBarProps {

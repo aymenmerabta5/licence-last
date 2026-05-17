@@ -253,9 +253,7 @@ async function seedSkillTags(db: SeedDb) {
   const drizzleDb = drizzle(db, { schema: { skillCategory, skillTag } })
 
   const categories = await drizzleDb.select().from(skillCategory)
-  const categoryIdBySlug = new Map(
-    categories.map((c) => [c.slug, c.id]),
-  )
+  const categoryIdBySlug = new Map(categories.map((c) => [c.slug, c.id]))
 
   const values = SEED_SKILL_TAGS.map((entry) => {
     const slug = toSlug(entry.name)

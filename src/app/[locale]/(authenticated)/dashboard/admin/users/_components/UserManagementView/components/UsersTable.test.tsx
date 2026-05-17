@@ -18,6 +18,7 @@ mock.module("next-intl", () => ({
         "roles.dept_head": "Department Head",
         "status.active": "Active",
         "status.banned": "Banned",
+        "status.pending": "Pending",
         "pagination.showing": "Showing {from}-{to} of {total}",
       }
 

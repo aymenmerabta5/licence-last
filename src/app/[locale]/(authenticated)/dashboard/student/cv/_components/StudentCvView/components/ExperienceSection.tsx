@@ -114,9 +114,7 @@ export function ExperienceSection({
             <div className="flex h-12 w-12 items-center justify-center border border-dashed border-border/60">
               <Briefcase className="h-5 w-5 text-muted-foreground/40" />
             </div>
-            <p className="text-sm text-muted-foreground">
-              {t("noExperience")}
-            </p>
+            <p className="text-sm text-muted-foreground">{t("noExperience")}</p>
           </div>
         )}
 

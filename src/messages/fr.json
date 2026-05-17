@@ -2200,7 +2200,8 @@
         },
         "status": {
           "active": "Actif",
-          "banned": "Banni"
+          "banned": "Banni",
+          "pending": "En attente"
         },
         "table": {
           "user": "Utilisateur",
@@ -2290,7 +2291,8 @@
         },
         "status": {
           "active": "Actif",
-          "banned": "Banni"
+          "banned": "Banni",
+          "pending": "En attente"
         },
         "sessions": {
           "title": "Sessions actives",

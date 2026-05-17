@@ -39,9 +39,7 @@ export function RecruiterHero({ activeOffers, trustData }: RecruiterHeroProps) {
               {t("talentAcquisition")}
             </p>
             <h1 className="font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-heading max-w-2xl">
-              {activeOffers > 0
-                ? t("pipelineActive")
-                : t("findNextIntern")}
+              {activeOffers > 0 ? t("pipelineActive") : t("findNextIntern")}
             </h1>
             <p className="text-sm font-light text-muted-foreground max-w-xl">
               {activeOffers > 0
