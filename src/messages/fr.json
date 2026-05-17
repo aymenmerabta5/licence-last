@@ -307,6 +307,8 @@
       "allSessionsRevoked": "Toutes les sessions ont ete revoquees.",
       "interviewSlotConfirmed": "Creneau d'entretien confirme.",
       "confirmInterviewSlotFailed": "Impossible de confirmer ce creneau.",
+      "interviewRescheduleRequested": "Demande de replanification envoyee.",
+      "requestRescheduleFailed": "Impossible de demander une replanification.",
       "interviewProposalSent": "Proposition d'entretien envoyee.",
       "interviewProposalFailed": "Impossible d'envoyer la proposition d'entretien.",
       "selectApplication": "Veuillez selectionner une candidature.",
@@ -1074,6 +1076,7 @@
         "interview": "Entretien",
         "interviewPending": "En attente de confirmation",
         "interviewConfirmed": "Confirmé",
+        "interviewRescheduleRequested": "Replanification demandée",
         "slotCount": "{count, plural, one {{count} créneau proposé} other {{count} créneaux proposés}}",
         "interviewModal": {
           "title": "Proposer un entretien",
@@ -2606,6 +2609,9 @@
         "notePlaceholder": "Partagez le contexte pour l etudiant : format, preparation, tenue...",
         "submit": "Envoyer la proposition"
       },
+      "rescheduleSuccess": "Nouveaux creneaux proposes avec succes.",
+      "rescheduleSubmitting": "Envoi en cours...",
+      "rescheduleSubmit": "Proposer de nouveaux creneaux",
       "slots": {
         "title": "Creneaux",
         "add": "Ajouter un creneau",
@@ -2625,7 +2631,10 @@
         "title": "Entretiens proposes",
         "total": "{count} au total",
         "linkLabel": "Lien",
-        "confirmedLabel": "Confirme"
+        "confirmedLabel": "Confirme",
+        "rescheduleRequestedLabel": "Le candidat a demande une replanification",
+        "showRescheduleForm": "Proposer de nouveaux creneaux",
+        "hideRescheduleForm": "Masquer le formulaire"
       },
       "studentSection": {
         "loading": "Chargement des entretiens",
@@ -2646,7 +2655,8 @@
         "pending_confirmation": "En attente de confirmation",
         "confirmed": "Confirme",
         "cancelled": "Annule",
-        "completed": "Termine"
+        "completed": "Termine",
+        "reschedule_requested": "Replanification demandee"
       },
       "unknownStage": "Etape inconnue",
       "stageLabels": {
@@ -2684,6 +2694,20 @@
         "requestChangePlaceholder": "Indiquez les horaires qui vous conviennent mieux...",
         "requestChangeSubmit": "Envoyer la demande",
         "requestChangeSuccess": "Message envoyé à {companyName}.",
+        "rescheduleTitle": "Demander d'autres créneaux",
+        "rescheduleDescription": "Proposez 1 à 3 créneaux alternatifs. L'entreprise examinera et confirmera ou suggérera de nouveaux horaires.",
+        "rescheduleReason": "Motif (optionnel)",
+        "rescheduleReasonPlaceholder": "Expliquez pourquoi vous avez besoin d'autres horaires...",
+        "rescheduleSubmit": "Demander une replanification",
+        "rescheduleSubmitting": "Demande en cours...",
+        "addSlot": "Ajouter un créneau",
+        "removeLastSlot": "Supprimer le dernier créneau",
+        "slots": {
+          "startsAt": "Début",
+          "endsAt": "Fin"
+        },
+        "rescheduleRequestedTitle": "Replanification demandée",
+        "rescheduleRequestedDescription": "Vous avez demandé d'autres créneaux. L'entreprise proposera de nouveaux horaires prochainement.",
         "backToInterviews": "Retour aux entretiens"
       }
     },

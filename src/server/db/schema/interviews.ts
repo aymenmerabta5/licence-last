@@ -43,6 +43,12 @@ export const interview = pgTable(
       .default("pending_confirmation")
       .notNull(),
     note: text("note"),
+    rescheduleNote: text("reschedule_note"),
+    rescheduleRequestedAt: timestamp("reschedule_requested_at"),
+    rescheduleRequestedByUserId: text("reschedule_requested_by_user_id").references(
+      () => user.id,
+      { onDelete: "set null" },
+    ),
     confirmedAt: timestamp("confirmed_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
@@ -58,6 +64,9 @@ export const interview = pgTable(
     index("interview_status_idx").on(table.status),
     index("interview_proposedByUserId_idx").on(table.proposedByUserId),
     index("interview_confirmedByUserId_idx").on(table.confirmedByUserId),
+    index("interview_rescheduleRequestedByUserId_idx").on(
+      table.rescheduleRequestedByUserId,
+    ),
   ],
 )
 

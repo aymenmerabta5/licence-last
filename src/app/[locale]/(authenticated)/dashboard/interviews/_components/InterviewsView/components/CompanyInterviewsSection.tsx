@@ -1,10 +1,12 @@
 "use client"
 
-import { CalendarDays, Loader2, MessageSquare, UserRound } from "lucide-react"
+import { CalendarDays, ChevronDown, ChevronUp, Loader2, MessageSquare, UserRound } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
+import { useState } from "react"
 import { InterviewSlotList } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewSlotList"
 import { InterviewStatusBadge } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewStatusBadge"
+import { RescheduleSlotsInline } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/RescheduleSlotsInline"
 import type { CompanyInterviewView } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/types"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ease, reveal, revealWithDelay } from "@/lib/animations"
@@ -21,6 +23,7 @@ export function CompanyInterviewsSection({
   errorMessage,
 }: CompanyInterviewsSectionProps) {
   const t = useTranslations("dashboard.interviews")
+  const [openRescheduleFor, setOpenRescheduleFor] = useState<string | null>(null)
 
   if (isLoading) {
     return (
@@ -116,6 +119,47 @@ export function CompanyInterviewsSection({
               <div className="flex items-start gap-2 bg-muted/30 p-3 text-xs text-muted-foreground dark:bg-muted/20">
                 <MessageSquare className="mt-0.5 h-3.5 w-3.5 shrink-0" />
                 <p className="font-light leading-relaxed">{interview.note}</p>
+              </div>
+            </div>
+          )}
+
+          {interview.status === "reschedule_requested" && (
+            <div className="px-5 pt-3">
+              <div className="flex items-start gap-2 border border-violet-400/40 bg-violet-50/50 p-3 text-xs dark:bg-violet-950/20">
+                <MessageSquare className="mt-0.5 h-3.5 w-3.5 shrink-0 text-violet-500" />
+                <div className="flex-1 space-y-1">
+                  <p className="font-medium text-violet-700 dark:text-violet-300">
+                    {t("rescheduleRequestedLabel")}
+                  </p>
+                  {interview.rescheduleNote && (
+                    <p className="font-light leading-relaxed text-muted-foreground">
+                      {interview.rescheduleNote}
+                    </p>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setOpenRescheduleFor(
+                        openRescheduleFor === interview.id ? null : interview.id,
+                      )
+                    }
+                    className="flex items-center gap-1 pt-1 text-[11px] font-medium text-violet-600 transition-colors hover:text-violet-800 dark:text-violet-400 dark:hover:text-violet-300"
+                  >
+                    {openRescheduleFor === interview.id
+                      ? t("hideRescheduleForm")
+                      : t("showRescheduleForm")}
+                    {openRescheduleFor === interview.id ? (
+                      <ChevronUp className="h-3 w-3" />
+                    ) : (
+                      <ChevronDown className="h-3 w-3" />
+                    )}
+                  </button>
+                  {openRescheduleFor === interview.id && (
+                    <div className="pt-2">
+                      <RescheduleSlotsInline interviewId={interview.id} />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}

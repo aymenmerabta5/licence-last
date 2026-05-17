@@ -307,6 +307,8 @@
       "allSessionsRevoked": "تم إلغاء جميع الجلسات.",
       "interviewSlotConfirmed": "تم تأكيد موعد المقابلة.",
       "confirmInterviewSlotFailed": "تعذر تأكيد هذا الموعد.",
+      "interviewRescheduleRequested": "تم إرسال طلب إعادة الجدولة.",
+      "requestRescheduleFailed": "تعذر طلب إعادة الجدولة.",
       "interviewProposalSent": "تم إرسال اقتراح المقابلة.",
       "interviewProposalFailed": "تعذر إرسال اقتراح المقابلة.",
       "selectApplication": "يرجى اختيار طلب.",
@@ -1074,6 +1076,7 @@
         "interview": "مقابلة",
         "interviewPending": "في انتظار التأكيد",
         "interviewConfirmed": "مؤكد",
+        "interviewRescheduleRequested": "طلب إعادة جدولة",
         "slotCount": "{count} مواعيد مقترحة",
         "interviewModal": {
           "title": "اقتراح مقابلة",
@@ -2606,6 +2609,9 @@
         "notePlaceholder": "شارك سياقا للطالب: شكل المقابلة، ما الذي يجب تحضيره، وقواعد اللباس...",
         "submit": "إرسال الاقتراح"
       },
+      "rescheduleSuccess": "تم اقتراح المواعيد الجديدة بنجاح.",
+      "rescheduleSubmitting": "جاري الإرسال...",
+      "rescheduleSubmit": "اقتراح مواعيد جديدة",
       "slots": {
         "title": "المواعيد",
         "add": "أضف موعدا",
@@ -2625,7 +2631,10 @@
         "title": "المقابلات المقترحة",
         "total": "{count} إجمالا",
         "linkLabel": "الرابط",
-        "confirmedLabel": "مؤكد"
+        "confirmedLabel": "مؤكد",
+        "rescheduleRequestedLabel": "طلب المرشح إعادة جدولة",
+        "showRescheduleForm": "اقتراح مواعيد جديدة",
+        "hideRescheduleForm": "إخفاء النموذج"
       },
       "studentSection": {
         "loading": "جار تحميل المقابلات",
@@ -2646,7 +2655,8 @@
         "pending_confirmation": "بانتظار التأكيد",
         "confirmed": "مؤكد",
         "cancelled": "ملغى",
-        "completed": "مكتمل"
+        "completed": "مكتمل",
+        "reschedule_requested": "طلب إعادة جدولة"
       },
       "unknownStage": "مرحلة غير معروفة",
       "stageLabels": {
@@ -2684,6 +2694,20 @@
         "requestChangePlaceholder": "أخبرهم بالأوقات التي تناسبك بشكل أفضل...",
         "requestChangeSubmit": "إرسال الطلب",
         "requestChangeSuccess": "تم إرسال الرسالة إلى {companyName}.",
+        "rescheduleTitle": "طلب مواعيد بديلة",
+        "rescheduleDescription": "اقترح من 1 إلى 3 مواعيل بديلة. ستقوم الشركة بمراجعة وتأكيد أو اقتراح مواعيد جديدة.",
+        "rescheduleReason": "السبب (اختياري)",
+        "rescheduleReasonPlaceholder": "اشرح لماذا تحتاج إلى مواعيد مختلفة...",
+        "rescheduleSubmit": "طلب إعادة الجدولة",
+        "rescheduleSubmitting": "جاري الطلب...",
+        "addSlot": "إضافة موعد",
+        "removeLastSlot": "إزالة آخر موعد",
+        "slots": {
+          "startsAt": "البداية",
+          "endsAt": "النهاية"
+        },
+        "rescheduleRequestedTitle": "تم طلب إعادة الجدولة",
+        "rescheduleRequestedDescription": "لقد طلبت مواعيد مختلفة. ستقوم الشركة باقتراح مواعيد جديدة قريبًا.",
         "backToInterviews": "العودة إلى المقابلات"
       }
     },

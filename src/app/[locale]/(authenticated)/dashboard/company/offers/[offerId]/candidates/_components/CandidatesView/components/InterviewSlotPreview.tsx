@@ -27,7 +27,9 @@ export function InterviewSlotPreview({
         <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-violet-600 dark:text-violet-400">
           {status === "pending_confirmation"
             ? t("interviewPending")
-            : t("interviewConfirmed")}
+            : status === "reschedule_requested"
+              ? t("interviewRescheduleRequested")
+              : t("interviewConfirmed")}
         </span>
       </div>
       {nextSlotStartsAt && (

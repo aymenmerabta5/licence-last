@@ -61,6 +61,12 @@ const getInterviewByIdMock = mock(async () => ({
   updatedAt: new Date("2026-01-01"),
   slots: [],
 }))
+const requestInterviewRescheduleMock = mock(async () => ({
+  interviewId: "int-1",
+}))
+const rescheduleInterviewSlotsMock = mock(async () => ({
+  interviewId: "int-1",
+}))
 const parseInputDateMock = mock((value: string, fieldLabel: string) => {
   const parsed = new Date(value)
   if (Number.isNaN(parsed.getTime())) {
@@ -128,6 +134,12 @@ mock.module("@/server/services/interviews/confirm", () => ({
 mock.module("@/server/services/interviews/get-by-id", () => ({
   getInterviewById: getInterviewByIdMock,
 }))
+mock.module("@/server/services/interviews/request-reschedule", () => ({
+  requestInterviewReschedule: requestInterviewRescheduleMock,
+}))
+mock.module("@/server/services/interviews/reschedule", () => ({
+  rescheduleInterviewSlots: rescheduleInterviewSlotsMock,
+}))
 
 describe("src/server/orpc/routes/interviews", () => {
   beforeEach(() => {
@@ -136,6 +148,8 @@ describe("src/server/orpc/routes/interviews", () => {
     proposeInterviewSlotsMock.mockClear()
     confirmInterviewSlotMock.mockClear()
     getInterviewByIdMock.mockClear()
+    requestInterviewRescheduleMock.mockClear()
+    rescheduleInterviewSlotsMock.mockClear()
     parseInputDateMock.mockClear()
     isFeatureEnabledMock.mockClear()
     isFeatureEnabledMock.mockImplementation(
@@ -377,5 +391,89 @@ describe("src/server/orpc/routes/interviews", () => {
         code: "FORBIDDEN",
       })
     })
+  })
+
+  test("requestInterviewRescheduleProcedure parses dates and delegates", async () => {
+    const { requestInterviewRescheduleProcedure } = await import(
+      "@/server/orpc/routes/interviews"
+    )
+
+    const input = {
+      interviewId: "int-1",
+      reason: "I need a different time",
+      proposedSlots: [
+        {
+          startsAt: "2026-02-20T10:00:00.000Z",
+          endsAt: "2026-02-20T11:00:00.000Z",
+        },
+      ],
+    }
+
+    const result = await callProcedure(requestInterviewRescheduleProcedure, {
+      input,
+      context: { user: { id: "student-1" } },
+    })
+
+    expect(result).toEqual({ interviewId: "int-1" })
+    expect(parseInputDateMock).toHaveBeenCalledTimes(2)
+    expect(requestInterviewRescheduleMock).toHaveBeenCalledWith(
+      {
+        interviewId: "int-1",
+        reason: "I need a different time",
+        proposedSlots: [
+          {
+            startsAt: new Date("2026-02-20T10:00:00.000Z"),
+            endsAt: new Date("2026-02-20T11:00:00.000Z"),
+          },
+        ],
+      },
+      "student-1",
+    )
+  })
+
+  test("rescheduleInterviewSlotsProcedure parses dates and delegates", async () => {
+    const { rescheduleInterviewSlotsProcedure } = await import(
+      "@/server/orpc/routes/interviews"
+    )
+
+    const input = {
+      interviewId: "int-1",
+      note: "Here are new slots",
+      slots: [
+        {
+          startsAt: "2026-02-20T10:00:00.000Z",
+          endsAt: "2026-02-20T11:00:00.000Z",
+          location: "Room A",
+          meetingUrl: "https://meet.example.com/abc",
+        },
+      ],
+    }
+
+    const result = await callProcedure(rescheduleInterviewSlotsProcedure, {
+      input,
+      context: {
+        user: { id: "company-user-1" },
+        companyMembership: { companyId: "company-1" },
+      },
+    })
+
+    expect(result).toEqual({ interviewId: "int-1" })
+    expect(parseInputDateMock).toHaveBeenCalledTimes(2)
+    expect(rescheduleInterviewSlotsMock).toHaveBeenCalledWith(
+      {
+        interviewId: "int-1",
+        note: "Here are new slots",
+        slots: [
+          {
+            startsAt: new Date("2026-02-20T10:00:00.000Z"),
+            endsAt: new Date("2026-02-20T11:00:00.000Z"),
+            location: "Room A",
+            meetingUrl: "https://meet.example.com/abc",
+          },
+        ],
+      },
+      "company-1",
+      "company-user-1",
+    )
   })
 })

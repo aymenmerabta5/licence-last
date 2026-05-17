@@ -122,11 +122,104 @@ export function useInterviewDetailData({
     },
   })
 
+  const requestRescheduleMutation = useMutation({
+    ...orpc.interviews.requestReschedule.mutationOptions(),
+    onMutate: async (variables) => {
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: detailQueryKey }),
+        queryClient.cancelQueries({ queryKey: studentListQueryKey }),
+        queryClient.cancelQueries({ queryKey: companyListQueryKey }),
+      ])
+
+      const previousDetail = queryClient.getQueryData(detailQueryKey)
+      const previousStudentList = queryClient.getQueryData(studentListQueryKey)
+      const previousCompanyList = queryClient.getQueryData(companyListQueryKey)
+
+      queryClient.setQueryData(detailQueryKey, (old) => {
+        if (!old) return old
+        return {
+          ...old,
+          status: "reschedule_requested" as const,
+          confirmedSlotId: null,
+          confirmedAt: null,
+        }
+      })
+
+      queryClient.setQueryData(studentListQueryKey, (old) => {
+        if (!Array.isArray(old)) return old
+        return old.map((interview) => {
+          if (interview.id !== variables.interviewId) return interview
+          return {
+            ...interview,
+            status: "reschedule_requested" as const,
+            confirmedSlotId: null,
+            confirmedAt: null,
+          }
+        }) as typeof old
+      })
+
+      queryClient.setQueryData(companyListQueryKey, (old) => {
+        if (!Array.isArray(old)) return old
+        return old.map((interview) => {
+          if (interview.id !== variables.interviewId) return interview
+          return {
+            ...interview,
+            status: "reschedule_requested" as const,
+            confirmedSlotId: null,
+            confirmedAt: null,
+          }
+        }) as typeof old
+      })
+
+      return { previousDetail, previousStudentList, previousCompanyList }
+    },
+    onSuccess: () => {
+      toast.success(t("errors.common.interviewRescheduleRequested"))
+    },
+    onError: (error, _variables, context) => {
+      if (context?.previousDetail) {
+        queryClient.setQueryData(detailQueryKey, context.previousDetail)
+      }
+      if (context?.previousStudentList) {
+        queryClient.setQueryData(
+          studentListQueryKey,
+          context.previousStudentList,
+        )
+      }
+      if (context?.previousCompanyList) {
+        queryClient.setQueryData(
+          companyListQueryKey,
+          context.previousCompanyList,
+        )
+      }
+
+      toast.error(
+        resolveLocalizedError(error, {
+          t,
+          fallbackKey: "errors.common.requestRescheduleFailed",
+        }),
+      )
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: detailQueryKey })
+      queryClient.invalidateQueries({ queryKey: studentListQueryKey })
+      queryClient.invalidateQueries({ queryKey: companyListQueryKey })
+    },
+  })
+
   const confirmSlot = async (input: ConfirmSlotInput) => {
     setConfirmingSlotId(input.slotId)
     confirmSlotMutation.mutate(input, {
       onSettled: () => setConfirmingSlotId(null),
     })
+  }
+
+  const requestReschedule = async (input: {
+    interviewId: string
+    reason?: string
+    proposedSlots: Array<{ startsAt: string; endsAt: string }>
+  }) => {
+    requestRescheduleMutation.mutate(input)
   }
 
   return {
@@ -137,5 +230,7 @@ export function useInterviewDetailData({
       : null,
     confirmingSlotId,
     confirmSlot,
+    requestReschedule,
+    isRequestingReschedule: requestRescheduleMutation.isPending,
   }
 }

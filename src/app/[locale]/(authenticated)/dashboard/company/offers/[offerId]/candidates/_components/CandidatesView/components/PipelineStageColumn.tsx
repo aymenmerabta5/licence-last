@@ -92,6 +92,20 @@ export function PipelineStageColumn({
       accept: CANDIDATE_CARD_DND_TYPE,
       canDrop: (item: CandidateCardDragItem) => {
         if (item.fromStage === stage) return false
+
+        if (
+          item.fromStage === "interview" &&
+          (stage === "offer" || stage === "accepted" || stage === "rejected")
+        ) {
+          const interviewStatus = item.app.interviewPreview?.status
+          if (
+            interviewStatus === "pending_confirmation" ||
+            interviewStatus === "reschedule_requested"
+          ) {
+            return false
+          }
+        }
+
         return canTransitionStage(item.fromStage, stage)
       },
       drop: (item: CandidateCardDragItem) => {

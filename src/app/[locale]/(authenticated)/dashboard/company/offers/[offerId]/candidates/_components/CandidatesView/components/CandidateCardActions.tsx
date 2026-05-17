@@ -48,7 +48,13 @@ export function CandidateCardActions({
           disabled:
             option !== app.pipelineStage &&
             (!canTransitionStage(app.pipelineStage, option) ||
-              (option === "interview" && !app.interviewPreview)),
+              (option === "interview" && !app.interviewPreview) ||
+              (app.pipelineStage === "interview" &&
+                (app.interviewPreview?.status === "pending_confirmation" ||
+                  app.interviewPreview?.status === "reschedule_requested") &&
+                (option === "offer" ||
+                  option === "accepted" ||
+                  option === "rejected"))),
         }))}
         value={app.pipelineStage}
         onChange={(value) => onStageChange(value as PipelineStage)}

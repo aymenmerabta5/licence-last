@@ -97,6 +97,8 @@ import {
   listInterviewsForCompanyProcedure,
   listInterviewsForStudentProcedure,
   proposeInterviewSlotsProcedure,
+  requestInterviewRescheduleProcedure,
+  rescheduleInterviewSlotsProcedure,
 } from "@/server/orpc/routes/interviews"
 import {
   captureReadinessSnapshotProcedure,
@@ -358,6 +360,8 @@ export const appRouter = {
     complete: completeInterviewProcedure,
     cancel: cancelInterviewProcedure,
     getById: getInterviewByIdProcedure,
+    requestReschedule: requestInterviewRescheduleProcedure,
+    rescheduleSlots: rescheduleInterviewSlotsProcedure,
   },
   messages: {
     listByCompany: listMessageThreadsByCompanyProcedure,

@@ -307,6 +307,8 @@
       "allSessionsRevoked": "All sessions revoked.",
       "interviewSlotConfirmed": "Interview slot confirmed.",
       "confirmInterviewSlotFailed": "Could not confirm this slot.",
+      "interviewRescheduleRequested": "Reschedule request sent.",
+      "requestRescheduleFailed": "Could not request reschedule.",
       "interviewProposalSent": "Interview proposal sent.",
       "interviewProposalFailed": "Could not send interview proposal.",
       "selectApplication": "Please select an application.",
@@ -1074,6 +1076,7 @@
         "interview": "Interview",
         "interviewPending": "Pending Confirmation",
         "interviewConfirmed": "Confirmed",
+        "interviewRescheduleRequested": "Reschedule Requested",
         "slotCount": "{count, plural, one {{count} slot proposed} other {{count} slots proposed}}",
         "interviewModal": {
           "title": "Propose Interview",
@@ -2606,6 +2609,9 @@
         "notePlaceholder": "Share context for the student: interview format, what to prepare, dress code...",
         "submit": "Send proposal"
       },
+      "rescheduleSuccess": "New slots proposed successfully.",
+      "rescheduleSubmitting": "Proposing...",
+      "rescheduleSubmit": "Propose new slots",
       "slots": {
         "title": "Time Slots",
         "add": "Add slot",
@@ -2625,7 +2631,10 @@
         "title": "Proposed Interviews",
         "total": "{count} total",
         "linkLabel": "Link",
-        "confirmedLabel": "Confirmed"
+        "confirmedLabel": "Confirmed",
+        "rescheduleRequestedLabel": "Candidate requested reschedule",
+        "showRescheduleForm": "Propose new slots",
+        "hideRescheduleForm": "Hide form"
       },
       "studentSection": {
         "loading": "Loading interviews",
@@ -2646,7 +2655,8 @@
         "pending_confirmation": "Pending confirmation",
         "confirmed": "Confirmed",
         "cancelled": "Cancelled",
-        "completed": "Completed"
+        "completed": "Completed",
+        "reschedule_requested": "Reschedule requested"
       },
       "unknownStage": "Unknown stage",
       "stageLabels": {
@@ -2684,6 +2694,20 @@
         "requestChangePlaceholder": "Let them know what times work better for you...",
         "requestChangeSubmit": "Send request",
         "requestChangeSuccess": "Message sent to {companyName}.",
+        "rescheduleTitle": "Request different times",
+        "rescheduleDescription": "Propose 1 to 3 alternative time slots. The company will review and confirm or suggest new ones.",
+        "rescheduleReason": "Reason (optional)",
+        "rescheduleReasonPlaceholder": "Explain why you need different times...",
+        "rescheduleSubmit": "Request reschedule",
+        "rescheduleSubmitting": "Requesting...",
+        "addSlot": "Add slot",
+        "removeLastSlot": "Remove last slot",
+        "slots": {
+          "startsAt": "Start",
+          "endsAt": "End"
+        },
+        "rescheduleRequestedTitle": "Reschedule requested",
+        "rescheduleRequestedDescription": "You requested different times. The company will propose new slots soon.",
         "backToInterviews": "Back to interviews"
       }
     },

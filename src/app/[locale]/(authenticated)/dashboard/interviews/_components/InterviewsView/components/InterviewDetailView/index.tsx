@@ -1,11 +1,11 @@
 "use client"
 
-import { Loader2, MessageSquare } from "lucide-react"
+import { Clock, Loader2, MessageSquare } from "lucide-react"
 import * as motion from "motion/react-client"
 import { useTranslations } from "next-intl"
 import { BackLink } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewDetailView/components/BackLink"
 import { InterviewHeader } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewDetailView/components/InterviewHeader"
-import { RequestChangeForm } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewDetailView/components/RequestChangeForm"
+import { RescheduleRequestForm } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewDetailView/components/RescheduleRequestForm"
 import { SlotSelector } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewDetailView/components/SlotSelector"
 import { useInterviewDetailData } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewDetailView/hooks/useInterviewDetailData"
 import type { InterviewDetailViewProps } from "@/app/[locale]/(authenticated)/dashboard/interviews/_components/InterviewsView/components/InterviewDetailView/types"
@@ -48,6 +48,7 @@ export function InterviewDetailView({
   }
 
   const isPending = interview.status === "pending_confirmation"
+  const isRescheduleRequested = interview.status === "reschedule_requested"
 
   return (
     <div className="mx-auto max-w-3xl space-y-8 pb-16">
@@ -80,6 +81,27 @@ export function InterviewDetailView({
         </motion.div>
       )}
 
+      {isRescheduleRequested && (
+        <motion.div
+          {...reveal}
+          transition={revealWithDelay(0.1)}
+          className="flex items-start gap-3 border border-violet-400/40 bg-violet-50/50 p-4 dark:bg-violet-950/20"
+        >
+          <Clock
+            className="mt-0.5 h-4 w-4 shrink-0 text-violet-500"
+            aria-hidden="true"
+          />
+          <div className="space-y-1">
+            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-violet-600 dark:text-violet-400">
+              {t("rescheduleRequestedTitle")}
+            </p>
+            <p className="text-sm font-light leading-relaxed text-muted-foreground">
+              {t("rescheduleRequestedDescription")}
+            </p>
+          </div>
+        </motion.div>
+      )}
+
       <motion.div {...reveal} transition={revealWithDelay(0.15)}>
         <SlotSelector
           interview={interview}
@@ -90,9 +112,10 @@ export function InterviewDetailView({
 
       {isPending && (
         <motion.div {...reveal} transition={revealWithDelay(0.2)}>
-          <RequestChangeForm
-            offerId={interview.offerId}
-            companyName={interview.companyName}
+          <RescheduleRequestForm
+            interviewId={interview.id}
+            onSubmit={data.requestReschedule}
+            isSubmitting={data.isRequestingReschedule}
           />
         </motion.div>
       )}

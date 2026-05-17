@@ -8,7 +8,12 @@ import { internshipOffer } from "@/server/db/schema/internships"
 import { interview, interviewSlot } from "@/server/db/schema/interviews"
 
 interface ListStudentInterviewsParams {
-  status?: "pending_confirmation" | "confirmed" | "cancelled" | "completed"
+  status?:
+    | "pending_confirmation"
+    | "confirmed"
+    | "cancelled"
+    | "completed"
+    | "reschedule_requested"
   limit?: number
 }
 
@@ -37,6 +42,8 @@ export async function listInterviewsForStudent(
       confirmedSlotId: interview.confirmedSlotId,
       confirmedAt: interview.confirmedAt,
       note: interview.note,
+      rescheduleNote: interview.rescheduleNote,
+      rescheduleRequestedAt: interview.rescheduleRequestedAt,
       createdAt: interview.createdAt,
       updatedAt: interview.updatedAt,
     })

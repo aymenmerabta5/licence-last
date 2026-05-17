@@ -16,6 +16,8 @@ const STATUS_STYLES: Record<InterviewStatus, string> = {
     "border-rose-400/60 text-rose-700 bg-rose-50 dark:border-rose-500/40 dark:text-rose-300 dark:bg-rose-950/40",
   completed:
     "border-slate-400/60 text-slate-700 bg-slate-50 dark:border-slate-500/40 dark:text-slate-300 dark:bg-slate-950/40",
+  reschedule_requested:
+    "border-violet-400/60 text-violet-700 bg-violet-50 dark:border-violet-500/40 dark:text-violet-300 dark:bg-violet-950/40",
 }
 
 const STATUS_DOT: Record<InterviewStatus, string> = {
@@ -23,6 +25,7 @@ const STATUS_DOT: Record<InterviewStatus, string> = {
   confirmed: "bg-emerald-500 dark:bg-emerald-400",
   cancelled: "bg-rose-500 dark:bg-rose-400",
   completed: "bg-slate-500 dark:bg-slate-400",
+  reschedule_requested: "bg-violet-500 dark:bg-violet-400",
 }
 
 export function InterviewStatusBadge({ status }: InterviewStatusBadgeProps) {

@@ -64,6 +64,13 @@
       "when": 1778950700000,
       "tag": "0008_skill_category_and_tag_refactor",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1778950800000,
+      "tag": "0009_interview_reschedule",
+      "breakpoints": true
     }
   ]
 }

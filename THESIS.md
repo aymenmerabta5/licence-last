@@ -46,10 +46,11 @@ Stag is a full-stack web platform that digitalizes the complete internship lifec
 
 **User Roles:**
 - **Students**: Discover offers, apply with AI cover letters, track applications, view skill gap analysis
-- **Companies**: Post offers, manage candidate pipelines, use AI recruitment assistant
-- **University Admins**: Validate placements, manage departments, generate official documents
-- **Department Heads**: Validate placements scoped to their department only
-- **Super Admins**: Full platform administration, user management, analytics
+- **Company Owners**: Full company administration; manage team members (invite/remove recruiters); post and manage offers; handle candidate pipelines; schedule interviews; use AI recruitment assistant; manage company profile and verification documents
+- **Recruiters**: Post and manage internship offers; screen and manage candidate pipelines (accept, refuse, advance stages); communicate with applicants via messaging; schedule and manage interviews; use AI recruitment assistant for offer drafting and candidate summarization; operate under a company with scoped permissions (cannot manage company settings or team members)
+- **University Admins**: Validate placements across all departments; manage departments and assign department heads; generate official documents (agreements, certificates); oversee university-wide analytics
+- **Department Heads**: Review and validate/reject internship placements exclusively for students within their assigned department; access department-specific dashboard statistics and placement analytics; monitor student application journeys scoped to their department; cannot manage other departments or generate official documents (university admin privileges)
+- **Super Admins**: Full platform administration, user management, analytics, system configuration, and trust algorithm oversight
 
 ---
 

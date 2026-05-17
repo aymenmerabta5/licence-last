@@ -171,7 +171,7 @@ jobs:
             echo "$GHCR_TOKEN" | sudo docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
 
             sudo docker compose --env-file .env -f docker-compose.prod.yml pull app
-            sudo docker compose --env-file .env -f docker-compose.prod.yml up -d --force-recreate --wait --remove-orphans app redis caddy
+             sudo docker compose --env-file .env -f docker-compose.prod.yml up -d --force-recreate --wait --remove-orphans app redis caddy
 
             # Auto-seed on first deploy (skip if users already exist)
             POSTGRES_USER="$(awk -F= '/^POSTGRES_USER=/{print $2}' .env | tail -n 1)"

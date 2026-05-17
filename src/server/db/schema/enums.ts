@@ -120,4 +120,5 @@ export const interviewStatusEnum = pgEnum("interview_status", [
   "confirmed",
   "cancelled",
   "completed",
+  "reschedule_requested",
 ])

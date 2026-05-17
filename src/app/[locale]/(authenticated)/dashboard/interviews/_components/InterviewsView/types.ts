@@ -5,6 +5,7 @@ export type InterviewStatus =
   | "confirmed"
   | "cancelled"
   | "completed"
+  | "reschedule_requested"
 
 export interface InterviewSlotView {
   id: string
@@ -27,6 +28,8 @@ export interface StudentInterviewView {
   confirmedSlotId: string | null
   confirmedAt: Date | string | null
   note: string | null
+  rescheduleNote: string | null
+  rescheduleRequestedAt: Date | string | null
   createdAt: Date | string
   updatedAt: Date | string
   slots: InterviewSlotView[]
@@ -44,6 +47,8 @@ export interface CompanyInterviewView {
   confirmedSlotId: string | null
   confirmedAt: Date | string | null
   note: string | null
+  rescheduleNote: string | null
+  rescheduleRequestedAt: Date | string | null
   createdAt: Date | string
   updatedAt: Date | string
   slots: InterviewSlotView[]

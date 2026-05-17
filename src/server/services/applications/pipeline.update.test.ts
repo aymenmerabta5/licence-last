@@ -327,4 +327,132 @@ describe("src/server/services/applications/updateApplicationPipelineStage", () =
     expect(insertValuesMock).not.toHaveBeenCalled()
     expect(createNotificationMock).not.toHaveBeenCalled()
   })
+
+  test("rejects interview -> offer when interview is pending_confirmation", async () => {
+    queueApplicationRow({ pipelineStage: "interview" })
+    selectResultsQueue.push([{ status: "pending_confirmation" }])
+
+    const { updateApplicationPipelineStage } = await loadPipelineModule()
+
+    await expect(
+      updateApplicationPipelineStage({
+        applicationId: "app-1",
+        actorUserId: "company-user-1",
+        companyId: "company-1",
+        toStage: "offer",
+      }),
+    ).rejects.toMatchObject({
+      code: "APPLICATION_INVALID_STATE",
+      message: "Cannot move candidate forward until the interview is confirmed.",
+    })
+
+    expect(updateSetMock).not.toHaveBeenCalled()
+  })
+
+  test("rejects interview -> offer when interview is reschedule_requested", async () => {
+    queueApplicationRow({ pipelineStage: "interview" })
+    selectResultsQueue.push([{ status: "reschedule_requested" }])
+
+    const { updateApplicationPipelineStage } = await loadPipelineModule()
+
+    await expect(
+      updateApplicationPipelineStage({
+        applicationId: "app-1",
+        actorUserId: "company-user-1",
+        companyId: "company-1",
+        toStage: "offer",
+      }),
+    ).rejects.toMatchObject({
+      code: "APPLICATION_INVALID_STATE",
+      message: "Cannot move candidate forward until the interview is confirmed.",
+    })
+
+    expect(updateSetMock).not.toHaveBeenCalled()
+  })
+
+  test("rejects interview -> offer when interview is cancelled", async () => {
+    queueApplicationRow({ pipelineStage: "interview" })
+    selectResultsQueue.push([{ status: "cancelled" }])
+
+    const { updateApplicationPipelineStage } = await loadPipelineModule()
+
+    await expect(
+      updateApplicationPipelineStage({
+        applicationId: "app-1",
+        actorUserId: "company-user-1",
+        companyId: "company-1",
+        toStage: "offer",
+      }),
+    ).rejects.toMatchObject({
+      code: "APPLICATION_INVALID_STATE",
+      message: "Cannot move candidate forward until the interview is confirmed.",
+    })
+
+    expect(updateSetMock).not.toHaveBeenCalled()
+  })
+
+  test("rejects interview -> offer when no interview exists", async () => {
+    queueApplicationRow({ pipelineStage: "interview" })
+    selectResultsQueue.push([])
+
+    const { updateApplicationPipelineStage } = await loadPipelineModule()
+
+    await expect(
+      updateApplicationPipelineStage({
+        applicationId: "app-1",
+        actorUserId: "company-user-1",
+        companyId: "company-1",
+        toStage: "offer",
+      }),
+    ).rejects.toMatchObject({
+      code: "APPLICATION_INVALID_STATE",
+      message: "Cannot move candidate forward without a confirmed interview.",
+    })
+
+    expect(updateSetMock).not.toHaveBeenCalled()
+  })
+
+  test("allows interview -> offer when interview is confirmed", async () => {
+    queueApplicationRow({ pipelineStage: "interview" })
+    selectResultsQueue.push([{ status: "confirmed" }])
+
+    const { updateApplicationPipelineStage } = await loadPipelineModule()
+
+    const result = await updateApplicationPipelineStage({
+      applicationId: "app-1",
+      actorUserId: "company-user-1",
+      companyId: "company-1",
+      toStage: "offer",
+    })
+
+    expect(result).toEqual({
+      applicationId: "app-1",
+      studentUserId: "student-1",
+      fromStage: "interview",
+      toStage: "offer",
+    })
+    expect(updateSetMock).toHaveBeenCalledTimes(1)
+  })
+
+  test("allows interview -> offer when interview is completed", async () => {
+    queueApplicationRow({ pipelineStage: "interview" })
+    selectResultsQueue.push([{ status: "completed" }])
+
+    const { updateApplicationPipelineStage } = await loadPipelineModule()
+
+    const result = await updateApplicationPipelineStage({
+      applicationId: "app-1",
+      actorUserId: "company-user-1",
+      companyId: "company-1",
+      toStage: "offer",
+    })
+
+    expect(result).toEqual({
+      applicationId: "app-1",
+      studentUserId: "student-1",
+      fromStage: "interview",
+      toStage: "offer",
+    })
+    expect(updateSetMock).toHaveBeenCalledTimes(1)
+  })
 })

@@ -135,6 +135,32 @@ export async function updateApplicationPipelineStage(input: {
     )
   }
 
+  if (row.pipelineStage === "interview" && input.toStage === "offer") {
+    const [linkedInterview] = await db
+      .select({ status: interview.status })
+      .from(interview)
+      .where(eq(interview.applicationId, input.applicationId))
+      .limit(1)
+
+    if (!linkedInterview) {
+      throw new ApplicationServiceError(
+        "APPLICATION_INVALID_STATE",
+        "Cannot move candidate forward without a confirmed interview.",
+      )
+    }
+
+    if (
+      linkedInterview.status === "pending_confirmation" ||
+      linkedInterview.status === "reschedule_requested" ||
+      linkedInterview.status === "cancelled"
+    ) {
+      throw new ApplicationServiceError(
+        "APPLICATION_INVALID_STATE",
+        "Cannot move candidate forward until the interview is confirmed.",
+      )
+    }
+  }
+
   if (
     input.toStage === "accepted" ||
     input.toStage === "validated" ||

@@ -25,6 +25,8 @@ import { getInterviewById } from "@/server/services/interviews/get-by-id"
 import { listInterviewsForCompany } from "@/server/services/interviews/list-for-company"
 import { listInterviewsForStudent } from "@/server/services/interviews/list-for-student"
 import { proposeInterviewSlots } from "@/server/services/interviews/propose"
+import { requestInterviewReschedule } from "@/server/services/interviews/request-reschedule"
+import { rescheduleInterviewSlots } from "@/server/services/interviews/reschedule"
 
 const INTERVIEW_DATE_TIME_SCHEMA = z.string().datetime({ offset: true })
 const INTERVIEW_MEETING_URL_SCHEMA = z
@@ -87,7 +89,13 @@ const listInterviewsInputSchema = z
   .object({
     offerId: z.string().min(1).optional(),
     status: z
-      .enum(["pending_confirmation", "confirmed", "cancelled", "completed"])
+      .enum([
+        "pending_confirmation",
+        "confirmed",
+        "cancelled",
+        "completed",
+        "reschedule_requested",
+      ])
       .optional(),
     limit: z.coerce.number().int().min(1).max(100).optional(),
   })
@@ -108,7 +116,13 @@ export const listInterviewsForStudentProcedure = studentProcedureGenerous
     z
       .object({
         status: z
-          .enum(["pending_confirmation", "confirmed", "cancelled", "completed"])
+          .enum([
+            "pending_confirmation",
+            "confirmed",
+            "cancelled",
+            "completed",
+            "reschedule_requested",
+          ])
           .optional(),
         limit: z.coerce.number().int().min(1).max(100).optional(),
       })
@@ -269,6 +283,93 @@ export const cancelInterviewProcedure = companyAdminProcedureStandard
       createServiceORPCError(error, {
         codeMap: {},
         fallbackMessage: "Failed to cancel interview",
+      })
+    }
+  })
+
+export const requestInterviewRescheduleProcedure = studentProcedureStandard
+  .input(
+    z.object({
+      interviewId: z.string().min(1),
+      reason: z.string().max(500).optional(),
+      proposedSlots: z
+        .array(
+          z.object({
+            startsAt: INTERVIEW_DATE_TIME_SCHEMA,
+            endsAt: INTERVIEW_DATE_TIME_SCHEMA,
+          }),
+        )
+        .min(1)
+        .max(3),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    assertInterviewsEnabled()
+    try {
+      return await requestInterviewReschedule(
+        {
+          interviewId: input.interviewId,
+          reason: input.reason,
+          proposedSlots: input.proposedSlots.map((slot) => ({
+            startsAt: parseInterviewSlotDate(slot.startsAt, "Proposed slot start"),
+            endsAt: parseInterviewSlotDate(slot.endsAt, "Proposed slot end"),
+          })),
+        },
+        context.user.id,
+      )
+    } catch (error) {
+      if (isInterviewServiceError(error)) {
+        createInterviewORPCError(error)
+      }
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "Failed to request reschedule",
+      })
+    }
+  })
+
+export const rescheduleInterviewSlotsProcedure = companyAdminProcedureStandard
+  .input(
+    z.object({
+      interviewId: z.string().min(1),
+      note: z.string().max(1000).optional(),
+      slots: z
+        .array(
+          z.object({
+            startsAt: INTERVIEW_DATE_TIME_SCHEMA,
+            endsAt: INTERVIEW_DATE_TIME_SCHEMA,
+            location: z.string().max(200).optional(),
+            meetingUrl: INTERVIEW_MEETING_URL_SCHEMA,
+          }),
+        )
+        .min(1)
+        .max(20),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    assertInterviewsEnabled()
+    try {
+      return await rescheduleInterviewSlots(
+        {
+          interviewId: input.interviewId,
+          note: input.note,
+          slots: input.slots.map((slot, index) => ({
+            startsAt: parseInterviewSlotDate(slot.startsAt, `Slot ${index + 1} start`),
+            endsAt: parseInterviewSlotDate(slot.endsAt, `Slot ${index + 1} end`),
+            location: slot.location || null,
+            meetingUrl: slot.meetingUrl || null,
+          })),
+        },
+        context.companyMembership.companyId,
+        context.user.id,
+      )
+    } catch (error) {
+      if (isInterviewServiceError(error)) {
+        createInterviewORPCError(error)
+      }
+      createServiceORPCError(error, {
+        codeMap: {},
+        fallbackMessage: "Failed to reschedule interview",
       })
     }
   })
