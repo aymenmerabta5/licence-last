@@ -13,14 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { SelectField } from "@/components/form-fields/SelectField"
 
 interface UniversityOption {
-  id: string
-  name: string
-}
-
-interface FieldOption {
   id: string
   name: string
 }
@@ -28,9 +22,6 @@ interface FieldOption {
 interface CreateDepartmentFormProps {
   name: string
   onNameChange: (v: string) => void
-  fieldId: string
-  onFieldIdChange: (v: string) => void
-  fields: FieldOption[]
   canCreate: boolean
   showUniversitySelector?: boolean
   selectedUniversityId?: string
@@ -43,9 +34,6 @@ interface CreateDepartmentFormProps {
 export function CreateDepartmentForm({
   name,
   onNameChange,
-  fieldId,
-  onFieldIdChange,
-  fields,
   canCreate,
   showUniversitySelector = false,
   selectedUniversityId,
@@ -55,11 +43,6 @@ export function CreateDepartmentForm({
   onSubmit,
 }: CreateDepartmentFormProps) {
   const t = useTranslations("dashboard.admin.departments")
-
-  const fieldOptions = [
-    { value: "", label: t("selectField") },
-    ...fields.map((f) => ({ value: f.id, label: f.name })),
-  ]
 
   return (
     <section className="relative overflow-hidden border border-border/50 bg-background p-5 sm:p-6">
@@ -117,15 +100,6 @@ export function CreateDepartmentForm({
               className="h-10 rounded-xl border-border/60"
             />
           </div>
-
-          <SelectField
-            id="field-of-study"
-            label={t("fieldOfStudy")}
-            placeholder={t("selectField")}
-            options={fieldOptions}
-            value={fieldId}
-            onChange={onFieldIdChange}
-          />
         </div>
 
         <Button

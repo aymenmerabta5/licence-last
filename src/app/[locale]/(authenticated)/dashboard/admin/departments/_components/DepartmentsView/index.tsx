@@ -27,7 +27,6 @@ export function DepartmentsView() {
     universityOptions,
     selectedUniversityId,
     setSelectedUniversityId,
-    fields,
   } = useDepartmentsData()
   const actions = useDepartmentsActions(universityId)
   const assignHeadDialog = useAssignHeadDialog({ onAssign: actions.assignHead })
@@ -36,9 +35,9 @@ export function DepartmentsView() {
   const emptyLabel = hasUniversityContext
     ? t("empty")
     : t("selectUniversityFirst")
-  const handleEditDepartment = (departmentId: string, name: string, fieldId: string | null) => {
+  const handleEditDepartment = (departmentId: string, name: string) => {
     viewState.setEditTarget(null)
-    actions.updateDepartment(departmentId, { name, fieldId }).catch(() => {
+    actions.updateDepartment(departmentId, { name }).catch(() => {
       // Error feedback is handled by the mutation hook.
     })
   }
@@ -61,9 +60,6 @@ export function DepartmentsView() {
         <CreateDepartmentForm
           name={actions.newName}
           onNameChange={actions.setNewName}
-          fieldId={actions.newFieldId}
-          onFieldIdChange={actions.setNewFieldId}
-          fields={fields}
           canCreate={actions.canCreate}
           showUniversitySelector={isSuperAdmin}
           selectedUniversityId={selectedUniversityId}
@@ -73,7 +69,6 @@ export function DepartmentsView() {
           onSubmit={() =>
             actions.handleCreate({
               name: actions.newName,
-              fieldId: actions.newFieldId || undefined,
             })
           }
         />
@@ -104,7 +99,6 @@ export function DepartmentsView() {
         open={Boolean(viewState.editTarget)}
         onOpenChange={viewState.handleEditOpenChange}
         department={viewState.editTarget}
-        fields={fields}
         onConfirm={handleEditDepartment}
         isPending={actions.isUpdating}
       />

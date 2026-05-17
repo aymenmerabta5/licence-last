@@ -51,7 +51,6 @@ describe("src/server/orpc/router smoke coverage", () => {
       "departments",
       "deptHead",
       "documents",
-      "fields",
       "interviews",
       "matching",
       "messages",

@@ -26,7 +26,6 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
   )
 
   const [newName, setNewName] = useState("")
-  const [newFieldId, setNewFieldId] = useState("")
   const canCreate = Boolean(selectedUniversityId)
 
   const invalidate = () => {
@@ -51,7 +50,6 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
             skillCount: 0,
             createdAt: new Date(),
             fieldName: null,
-            fieldId: variables.fieldId ?? null,
           },
         ]
       })
@@ -236,7 +234,7 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
     },
   })
 
-  const handleCreate = (data: { name: string; fieldId?: string }) => {
+  const handleCreate = (data: { name: string }) => {
     if (!data.name.trim()) return
     if (!selectedUniversityId) {
       toast.error(t("selectUniversityFirst"))
@@ -247,12 +245,10 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
       {
         name: data.name.trim(),
         universityId: selectedUniversityId,
-        fieldId: data.fieldId,
       },
       {
         onSuccess: () => {
           setNewName("")
-          setNewFieldId("")
         },
       },
     )
@@ -278,8 +274,6 @@ export function useDepartmentsActions(selectedUniversityId: string | null) {
   return {
     newName,
     setNewName,
-    newFieldId,
-    setNewFieldId,
     canCreate,
     handleCreate,
     updateDepartment,

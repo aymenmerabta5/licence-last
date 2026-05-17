@@ -16,19 +16,12 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { SelectField } from "@/components/form-fields/SelectField"
-
-interface FieldOption {
-  id: string
-  name: string
-}
 
 interface EditDepartmentDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   department: DepartmentItem | null
-  fields: FieldOption[]
-  onConfirm: (departmentId: string, name: string, fieldId: string | null) => void
+  onConfirm: (departmentId: string, name: string) => void
   isPending: boolean
 }
 
@@ -36,35 +29,26 @@ export function EditDepartmentDialog({
   open,
   onOpenChange,
   department,
-  fields,
   onConfirm,
   isPending,
 }: EditDepartmentDialogProps) {
   const t = useTranslations("dashboard.admin.departments")
   const [name, setName] = useState("")
-  const [fieldId, setFieldId] = useState("")
 
   useEffect(() => {
     if (department) {
       setName(department.name)
-      setFieldId(department.fieldId ?? "")
     }
   }, [department])
 
   const trimmedName = name.trim()
-  const hasChanges =
-    trimmedName !== department?.name || fieldId !== (department?.fieldId ?? "")
+  const hasChanges = trimmedName !== department?.name
   const isDisabled = isPending || !trimmedName || !hasChanges
 
   const handleSubmit = () => {
     if (!department || isDisabled) return
-    onConfirm(department.id, trimmedName, fieldId || null)
+    onConfirm(department.id, trimmedName)
   }
-
-  const fieldOptions = [
-    { value: "", label: t("noField") },
-    ...fields.map((f) => ({ value: f.id, label: f.name })),
-  ]
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -102,15 +86,6 @@ export function EditDepartmentDialog({
               autoFocus
             />
           </div>
-
-          <SelectField
-            id="edit-field-of-study"
-            label={t("fieldOfStudy")}
-            placeholder={t("selectField")}
-            options={fieldOptions}
-            value={fieldId}
-            onChange={setFieldId}
-          />
 
           {department && (
             <DepartmentCategoryConfig departmentId={department.id} />

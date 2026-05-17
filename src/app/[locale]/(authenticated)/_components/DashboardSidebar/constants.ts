@@ -10,12 +10,12 @@ import {
   FileText,
   FileUser,
   FolderTree,
-  GraduationCap,
   Landmark,
   LayoutDashboard,
   MessageSquareText,
   Search,
   Settings,
+  SlidersHorizontal,
   Sparkles,
   Users,
   UsersRound,
@@ -146,12 +146,6 @@ export const navItems: NavItem[] = [
     hideForUniversityMembershipRoles: ["department_head"],
   },
   {
-    labelKey: "fields",
-    href: "/dashboard/admin/fields",
-    icon: GraduationCap,
-    roles: ["super_admin"],
-  },
-  {
     labelKey: "statistics",
     href: "/dashboard/admin/stats",
     icon: BarChart3,
@@ -186,7 +180,7 @@ export const navItems: NavItem[] = [
   {
     labelKey: "siteSettings",
     href: "/dashboard/admin/site-settings",
-    icon: Settings,
+    icon: SlidersHorizontal,
     roles: ["super_admin"],
   },
   {
