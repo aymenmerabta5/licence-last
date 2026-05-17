@@ -68,10 +68,13 @@ export function DashboardNavbar({ user }: { user: NavbarUser }) {
       {/* Right section */}
       <div className="flex min-w-0 items-center gap-3 sm:gap-4">
         {mounted && (
-          <div className="flex min-w-0 items-center gap-3 border-s border-border/30 ps-3 sm:gap-4 sm:ps-4">
-            <div className="hidden items-center gap-2.5 text-muted-foreground sm:flex xl:gap-3">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3 border-s border-border/30 ps-2 sm:ps-3 xl:gap-4 xl:ps-4">
+            <div className="flex items-center gap-1 text-muted-foreground sm:gap-2.5 xl:gap-3">
               <div className="hidden xl:block">
                 <LanguageSwitcher />
+              </div>
+              <div className="xl:hidden">
+                <LanguageSwitcher compact />
               </div>
               <ThemeToggle />
               <NotificationBell viewerId={user.id} />
