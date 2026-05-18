@@ -32,6 +32,7 @@ export function DashboardClientProvider({
   universityMembershipRole = null,
   universityDepartmentId = null,
   companySlug = null,
+  assistantEnabled,
 }: {
   children: React.ReactNode
   user: {
@@ -47,6 +48,7 @@ export function DashboardClientProvider({
   universityMembershipRole?: string | null
   universityDepartmentId?: string | null
   companySlug?: string | null
+  assistantEnabled?: boolean
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const effectiveRole = user.effectiveRole ?? user.role ?? "student"
@@ -86,6 +88,7 @@ export function DashboardClientProvider({
               role={effectiveRole}
               companyMembershipRole={companyMembershipRole}
               universityMembershipRole={universityMembershipRole}
+              assistantEnabled={assistantEnabled}
             />
           </div>
         </div>

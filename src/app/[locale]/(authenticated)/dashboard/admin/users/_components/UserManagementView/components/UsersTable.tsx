@@ -1,11 +1,10 @@
 "use client"
 
-import { ChevronLeft, ChevronRight, Loader2, Users } from "lucide-react"
+import { Loader2, Users } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { MobileUserCard } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/MobileUserCard"
 import { UserRow } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/components/UserRow"
 import type { AdminUser } from "@/app/[locale]/(authenticated)/dashboard/admin/users/_components/UserManagementView/types"
-import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -17,10 +16,9 @@ import {
 interface UsersTableProps {
   users: AdminUser[]
   isLoading: boolean
-  page: number
-  totalPages: number
-  total: number
-  onPageChange: (page: number) => void
+  isFetchingNextPage: boolean
+  hasNextPage: boolean
+  sentinelRef: React.RefObject<HTMLDivElement | null>
   onBan: (user: AdminUser) => void
   onUnban: (userId: string) => void
   onSetRole: (user: AdminUser) => void
@@ -35,10 +33,9 @@ interface UsersTableProps {
 export function UsersTable({
   users,
   isLoading,
-  page,
-  totalPages,
-  total,
-  onPageChange,
+  isFetchingNextPage,
+  hasNextPage,
+  sentinelRef,
   onBan,
   onUnban,
   onSetRole,
@@ -141,35 +138,14 @@ export function UsersTable({
         </>
       )}
 
-      {totalPages > 1 && (
-        <div className="flex flex-col items-center justify-between gap-3 pt-2 text-center text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground sm:flex-row sm:text-[11px] sm:tracking-wider sm:text-start">
-          <span className="leading-relaxed">
-            {t("pagination.showing", {
-              from: page * 20 + 1,
-              to: Math.min((page + 1) * 20, total),
-              total,
-            })}
-          </span>
-          <div className="flex gap-1">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-8 w-8"
-              disabled={page === 0}
-              onClick={() => onPageChange(page - 1)}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-8 w-8"
-              disabled={page >= totalPages - 1}
-              onClick={() => onPageChange(page + 1)}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
+      {hasNextPage && (
+        <div
+          ref={sentinelRef}
+          className="flex items-center justify-center py-6"
+        >
+          {isFetchingNextPage && (
+            <Loader2 className="h-5 w-5 animate-spin text-primary" />
+          )}
         </div>
       )}
     </div>

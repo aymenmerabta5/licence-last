@@ -1,7 +1,9 @@
 "use client"
 
 import { useMutation } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
+import { toast } from "sonner"
 import type { OfferFormApi } from "@/app/[locale]/(authenticated)/dashboard/company/offers/_components/OfferForm/hooks/useOfferForm"
 import type {
   CopilotResult,
@@ -39,6 +41,7 @@ function resolveSkillIds(
 }
 
 export function useOfferCopilot(form: OfferFormApi, skillTags: SkillTag[]) {
+  const t = useTranslations("dashboard.company.offers.form")
   const [aiPrompt, setAiPrompt] = useState("")
   const [activeIntent, setActiveIntent] = useState<OfferCopilotIntent | null>(
     null,
@@ -173,12 +176,24 @@ export function useOfferCopilot(form: OfferFormApi, skillTags: SkillTag[]) {
       case "offer_generate_draft":
         generateDraft.mutate()
         break
-      case "offer_improve_description":
-        improveDescription.mutate()
+      case "offer_improve_description": {
+        const promise = improveDescription.mutateAsync()
+        toast.promise(promise, {
+          loading: t("copilot.improving"),
+          success: t("copilot.descriptionImproved"),
+          error: t("copilot.descriptionImproveError"),
+        })
         break
-      case "offer_suggest_skill_tags":
-        suggestSkills.mutate()
+      }
+      case "offer_suggest_skill_tags": {
+        const promise = suggestSkills.mutateAsync()
+        toast.promise(promise, {
+          loading: t("copilot.suggesting"),
+          success: t("copilot.skillsSuggested"),
+          error: t("copilot.skillsSuggestError"),
+        })
         break
+      }
     }
   }
 

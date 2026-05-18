@@ -14,13 +14,15 @@ export function useSidebar(
   role: string,
   companyMembershipRole?: string | null,
   universityMembershipRole?: string | null,
+  assistantEnabled?: boolean,
 ) {
   const pathname = usePathname()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const { logout } = useLogout()
   const savedOffersEnabled = isSavedOffersEnabledOnClient()
   const interviewsEnabled = isInterviewsEnabledOnClient()
-  const companyAssistantEnabled = isCompanyAssistantEnabledOnClient()
+  const companyAssistantEnabled =
+    assistantEnabled ?? isCompanyAssistantEnabledOnClient()
 
   const filteredItems = useMemo(
     () =>

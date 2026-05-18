@@ -8,6 +8,7 @@ interface UseDepartmentSkillsModalOptions {
   setQuery: (value: string) => void
   createSkill: (opts: { name: string; force?: boolean }) => Promise<unknown>
   t: (key: string, values?: Record<string, string | number>) => string
+  assignedCategoryCount: number
 }
 
 export function useDepartmentSkillsModal({
@@ -15,11 +16,14 @@ export function useDepartmentSkillsModal({
   setQuery,
   createSkill,
   t,
+  assignedCategoryCount,
 }: UseDepartmentSkillsModalOptions) {
   const [similarSkills, setSimilarSkills] = useState<
     Array<{ id: string; name: string }> | null
   >(null)
-  const [showCategories, setShowCategories] = useState(false)
+  const [showCategories, setShowCategories] = useState(
+    assignedCategoryCount === 0,
+  )
 
   const dismissSimilar = useCallback(() => {
     setSimilarSkills(null)
@@ -31,8 +35,8 @@ export function useDepartmentSkillsModal({
 
   const resetModal = useCallback(() => {
     setSimilarSkills(null)
-    setShowCategories(false)
-  }, [])
+    setShowCategories(assignedCategoryCount === 0)
+  }, [assignedCategoryCount])
 
   async function handleCreateSkill(query: string) {
     const trimmed = query.trim()

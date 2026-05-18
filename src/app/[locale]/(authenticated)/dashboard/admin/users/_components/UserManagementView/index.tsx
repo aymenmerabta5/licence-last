@@ -76,10 +76,9 @@ export function UserManagementView() {
         <UsersTable
           users={mgmt.users as AdminUser[]}
           isLoading={mgmt.isLoading}
-          page={mgmt.page}
-          totalPages={mgmt.totalPages}
-          total={mgmt.total}
-          onPageChange={mgmt.setPage}
+          isFetchingNextPage={mgmt.isFetchingNextPage}
+          hasNextPage={mgmt.hasNextPage}
+          sentinelRef={mgmt.sentinelRef}
           onBan={dialogState.setBanTarget}
           onUnban={(userId) => actions.unbanUser.mutate({ userId })}
           onSetRole={dialogState.setRoleTarget}

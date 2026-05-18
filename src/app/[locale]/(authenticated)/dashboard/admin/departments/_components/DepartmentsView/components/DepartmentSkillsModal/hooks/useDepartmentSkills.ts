@@ -1,7 +1,7 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { useSkillGrouping } from "@/hooks"
 import { orpc, orpcClient } from "@/server/orpc/client"
@@ -28,6 +28,17 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
     [allSkillsResult?.skills],
   )
 
+  // Fetch assigned categories for this department
+  const { data: assignedCategories, isLoading: isLoadingCategories } = useQuery(
+    orpc.departments.listCategories.queryOptions({
+      input: { departmentId },
+    }),
+  )
+
+  const assignedCategorySlugs = useMemo(() => {
+    return new Set((assignedCategories ?? []).map((c) => c.slug))
+  }, [assignedCategories])
+
   // Fetch current department skill assignment
   const { data: currentSkillIds, isLoading: isLoadingCurrent } = useQuery({
     ...orpc.departments.getSkills.queryOptions({
@@ -51,17 +62,39 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
     setSaveError("")
   }, [])
 
+  // Remove deselected categories from draft so hidden skills don't persist
+  useEffect(() => {
+    if (!assignedCategories || allSkills.length === 0) return
+    const validSlugs = new Set(assignedCategories.map((c) => c.slug))
+    const validIds = new Set(
+      allSkills
+        .filter((s) => validSlugs.has(s.category ?? "general"))
+        .map((s) => s.id),
+    )
+    setDraftOverride((prev) => {
+      if (prev === null) return null
+      const next = prev.filter((id) => validIds.has(id))
+      return next.length === prev.length ? prev : next
+    })
+  }, [assignedCategories, allSkills])
+
   const filteredSkills = useMemo(() => {
+    // Only show skills from categories assigned to this department
+    const pool =
+      assignedCategorySlugs.size > 0
+        ? allSkills.filter((s) => assignedCategorySlugs.has(s.category ?? "general"))
+        : []
+
     const q = query.trim().toLowerCase()
-    if (!q) return allSkills
-    return allSkills.filter((s) => s.name.toLowerCase().includes(q))
-  }, [allSkills, query])
+    if (!q) return pool
+    return pool.filter((s) => s.name.toLowerCase().includes(q))
+  }, [allSkills, assignedCategorySlugs, query])
 
   const hasExactMatch = useMemo(() => {
     const q = query.trim().toLowerCase()
     if (!q) return true
-    return allSkills.some((s) => s.name.toLowerCase() === q)
-  }, [allSkills, query])
+    return filteredSkills.some((s) => s.name.toLowerCase() === q)
+  }, [filteredSkills, query])
 
   const { groups, categoryOrder, categoryLabels } =
     useSkillGrouping(filteredSkills)
@@ -196,7 +229,8 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
     setQuery,
     draftIds,
     allSkills,
-    isLoading: isLoadingSkills || isLoadingCurrent,
+    assignedCategories: assignedCategories ?? [],
+    isLoading: isLoadingSkills || isLoadingCurrent || isLoadingCategories,
     isSaving: syncMutation.isPending,
     isDirty,
     saveError,

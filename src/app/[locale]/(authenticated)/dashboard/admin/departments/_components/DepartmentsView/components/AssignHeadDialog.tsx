@@ -67,7 +67,7 @@ export function AssignHeadDialog({
                 value={headEmail}
                 onChange={(event) => onHeadEmailChange(event.target.value)}
                 placeholder={t("bulkCreate.headEmailPlaceholder")}
-                className="h-10 rounded-xl border-border/60 ps-9"
+                className="h-10 border-border/60 ps-9"
               />
             </div>
           </div>

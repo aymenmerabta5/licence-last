@@ -74,7 +74,7 @@ export function CreateDepartmentForm({
                   label: o.name,
                 }))}
               >
-                <SelectTrigger className="h-10 rounded-xl border-border/60">
+                <SelectTrigger className="h-10 border-border/60">
                   <SelectValue placeholder={t("selectUniversity")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -97,7 +97,7 @@ export function CreateDepartmentForm({
               value={name}
               onChange={(e) => onNameChange(e.target.value)}
               placeholder={t("namePlaceholder")}
-              className="h-10 rounded-xl border-border/60"
+              className="h-10 border-border/60"
             />
           </div>
         </div>
@@ -107,7 +107,7 @@ export function CreateDepartmentForm({
           disabled={isCreating || !name.trim() || !canCreate}
           variant="editorial"
           size="editorial-sm"
-          className="rounded-lg"
+          className=""
         >
           {isCreating ? (
             <Loader2 className="h-4 w-4 animate-spin" />

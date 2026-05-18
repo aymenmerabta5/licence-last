@@ -84,7 +84,7 @@ export function TrustLeaderboard({ indices }: TrustLeaderboardProps) {
 
       <div className="relative z-10 w-full mt-4 border-t border-background/20 pt-4 group/btn shrink-0">
         <Link
-          href="/dashboard/admin/stats"
+          href="/dashboard"
           prefetch={false}
           className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary hover:text-background w-full flex items-center justify-between"
         >

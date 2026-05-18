@@ -11,13 +11,15 @@ export function DashboardSidebar({
   role = "student",
   companyMembershipRole = null,
   universityMembershipRole = null,
+  assistantEnabled,
 }: {
   role?: string
   companyMembershipRole?: string | null
   universityMembershipRole?: string | null
+  assistantEnabled?: boolean
 }) {
   const { isCollapsed, setIsCollapsed, filteredItems, pathname, logout } =
-    useSidebar(role, companyMembershipRole, universityMembershipRole)
+    useSidebar(role, companyMembershipRole, universityMembershipRole, assistantEnabled)
 
   return (
     <motion.aside

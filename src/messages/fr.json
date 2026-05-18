@@ -1006,7 +1006,11 @@
             "previewDetails": "Détails",
             "previewSkills": "Compétences",
             "duration": "{weeks} sem",
-            "positions": "{count} pos."
+            "positions": "{count} pos.",
+            "descriptionImproved": "Description améliorée avec succès.",
+            "skillsSuggested": "Compétences suggérées avec succès.",
+            "descriptionImproveError": "Impossible d'améliorer la description.",
+            "skillsSuggestError": "Impossible de suggérer des compétences."
           }
         }
       },
@@ -1369,9 +1373,13 @@
       "statsTitle": "Vue d'ensemble du département",
       "stats": {
         "totalStudents": "Total Étudiants",
+        "totalStudentsDescription": "Inscrits dans votre département",
         "pendingValidations": "Validations en attente",
+        "pendingValidationsDescription": "En attente de votre validation",
         "activeInternships": "Stages actifs",
+        "activeInternshipsDescription": "En cours actuellement",
         "studentsWithoutInternship": "Sans stage",
+        "studentsWithoutInternshipDescription": "Besoin de placement",
         "view": "Voir"
       }
     },
@@ -1939,6 +1947,8 @@
           "createAnyway": "Créer quand même",
           "useExisting": "Compétence sélectionnée.",
           "manageCategories": "Gérer les catégories",
+          "noCategoriesTitle": "Aucune catégorie assignée",
+          "noCategoriesDescription": "Attribuez des catégories de compétences à ce département pour voir et sélectionner les compétences pertinentes.",
           "clearAll": "Tout effacer",
           "selectAll": "Tout sélectionner",
           "deselectAll": "Tout désélectionner",
@@ -2575,6 +2585,9 @@
       "fallbackCompanyName": "Entreprise",
       "fallbackStudentName": "Etudiant",
       "fallbackSenderName": "Expediteur",
+      "searchPlaceholder": "Rechercher des conversations...",
+      "noSearchResults": "Aucune conversation ne correspond a votre recherche.",
+      "searchAria": "Rechercher des conversations",
       "messageEmptyError": "Le message ne peut pas etre vide.",
       "missingStudentError": "Identifiant etudiant manquant pour cette conversation.",
       "threadsLoadError": "Impossible de charger les fils de messages.",

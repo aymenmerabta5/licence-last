@@ -1,5 +1,4 @@
 import {
-  BarChart3,
   Bookmark,
   Briefcase,
   Building2,
@@ -144,12 +143,6 @@ export const navItems: NavItem[] = [
     icon: FolderTree,
     roles: ["university_admin"],
     hideForUniversityMembershipRoles: ["department_head"],
-  },
-  {
-    labelKey: "statistics",
-    href: "/dashboard/admin/stats",
-    icon: BarChart3,
-    roles: ["super_admin"],
   },
   {
     labelKey: "companies",

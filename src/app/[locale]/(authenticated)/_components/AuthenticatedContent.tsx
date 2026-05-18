@@ -1,5 +1,6 @@
 import { DashboardClientProvider } from "@/app/[locale]/(authenticated)/_components/DashboardClientProvider"
 import { requireRole } from "@/lib/auth-guards"
+import { isFeatureEnabled } from "@/lib/feature-flags"
 import { localeRedirect } from "@/lib/navigation"
 import { getCompanyByUserId } from "@/server/services/companies/get"
 import { getCompanyMembership } from "@/server/services/companies/membership"
@@ -28,6 +29,7 @@ export async function AuthenticatedContent({
   let companyMembershipRole: string | null = null
 
   const impersonatedBy = user.impersonatedBy ?? null
+  const assistantEnabled = isFeatureEnabled("COMPANY_ASSISTANT")
 
   // ── Block unapproved company_admin ──
   if (user.role === "company_admin") {
@@ -57,6 +59,7 @@ export async function AuthenticatedContent({
         companySlug={company.slug}
         universityMembershipRole={user.universityMembershipRole ?? null}
         universityDepartmentId={user.universityDepartmentId ?? null}
+        assistantEnabled={assistantEnabled}
       >
         {children}
       </DashboardClientProvider>
@@ -84,6 +87,7 @@ export async function AuthenticatedContent({
       companyMembershipRole={companyMembershipRole}
       universityMembershipRole={user.universityMembershipRole ?? null}
       universityDepartmentId={user.universityDepartmentId ?? null}
+      assistantEnabled={assistantEnabled}
     >
       {children}
     </DashboardClientProvider>

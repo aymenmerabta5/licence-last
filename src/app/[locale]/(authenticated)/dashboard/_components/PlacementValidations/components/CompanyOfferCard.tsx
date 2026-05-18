@@ -9,6 +9,7 @@ import { InfoRow } from "@/app/[locale]/(authenticated)/dashboard/_components/Pl
 import { TimelineItem } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/TimelineItem"
 import type { ValidationDetailData } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/types"
 import { formatDate } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/utils"
+import { Separator } from "@/components/ui/separator"
 import { ease, reveal } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
@@ -19,12 +20,26 @@ interface CompanyOfferCardProps {
 function Section({
   children,
   className,
+  title,
+  titleIcon,
 }: {
   children: React.ReactNode
   className?: string
+  title?: string
+  titleIcon?: React.ReactNode
 }) {
   return (
-    <div className={cn("border-t border-border/40 pt-4", className)}>
+    <div className={cn("space-y-3", className)}>
+      {title && (
+        <div className="flex items-center gap-2">
+          {titleIcon && (
+            <span className="text-muted-foreground/70">{titleIcon}</span>
+          )}
+          <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+            {title}
+          </h3>
+        </div>
+      )}
       {children}
     </div>
   )
@@ -40,7 +55,7 @@ export function CompanyOfferCard({ application }: CompanyOfferCardProps) {
           application.offer.expectedStartDate,
           locale,
           t("notAvailable"),
-        )} — ${formatDate(
+        )} \u2014 ${formatDate(
           application.offer.expectedEndDate,
           locale,
           t("notAvailable"),
@@ -51,34 +66,28 @@ export function CompanyOfferCard({ application }: CompanyOfferCardProps) {
     <motion.div
       {...reveal}
       transition={{ duration: 0.5, ease, delay: 0.15 }}
-      className="group relative overflow-hidden border border-border bg-background"
+      className="relative overflow-hidden border border-border/60 bg-background"
     >
-      {/* Top accent band */}
-      <div className="absolute top-0 start-0 w-full h-1 bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20" />
-
-      {/* Subtle background watermark */}
-      <div className="absolute top-4 end-4 text-[6rem] font-serif font-bold text-primary/[0.04] leading-none select-none pointer-events-none hidden sm:block">
-        {application.company.name.charAt(0)}
-      </div>
-
-      <div className="relative p-6 sm:p-8 space-y-6">
+      <div className="relative p-6 sm:p-8 space-y-8">
         {/* Header with logo */}
         <div className="flex flex-col items-center text-center sm:flex-row sm:items-start sm:text-start gap-5">
           <CompanyLogo
             logoUrl={application.company.logoUrl}
             name={application.company.name}
           />
-          <div className="space-y-1 pt-1">
-            <h2 className="font-serif text-xl sm:text-2xl font-semibold text-heading tracking-tight">
-              {application.company.name}
-            </h2>
-            <p className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground">
-              {t("companyInfo")}
-            </p>
+          <div className="space-y-2 pt-0.5">
+            <div className="space-y-1">
+              <h2 className="font-serif text-xl sm:text-2xl font-semibold text-heading tracking-tight">
+                {application.company.name}
+              </h2>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                {t("companyInfo")}
+              </p>
+            </div>
             {application.company.contactEmail && (
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/5 border border-primary/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary/80">
-                  <Mail className="h-3 w-3" />
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Mail className="h-3 w-3 text-primary/60" />
                   {application.company.contactEmail}
                 </span>
               </div>
@@ -86,37 +95,42 @@ export function CompanyOfferCard({ application }: CompanyOfferCardProps) {
           </div>
         </div>
 
+        <Separator className="bg-border/40" />
+
         {/* Contact */}
-        <div className="space-y-1">
-          {application.company.address && (
-            <InfoRow
-              label={t("address")}
-              value={application.company.address}
-              icon={<MapPin className="h-3.5 w-3.5" />}
-            />
-          )}
-          {application.company.phone && (
-            <InfoRow
-              label={t("phone")}
-              value={application.company.phone}
-              icon={<Phone className="h-3.5 w-3.5" />}
-            />
-          )}
-          {application.company.representativeName && (
-            <InfoRow
-              label={t("representative")}
-              value={application.company.representativeName}
-            />
-          )}
-        </div>
+        <Section title={t("companyInfo")}>
+          <div className="grid gap-y-2 gap-x-6 sm:grid-cols-2">
+            {application.company.address && (
+              <InfoRow
+                label={t("address")}
+                value={application.company.address}
+                icon={<MapPin className="h-3.5 w-3.5" />}
+              />
+            )}
+            {application.company.phone && (
+              <InfoRow
+                label={t("phone")}
+                value={application.company.phone}
+                icon={<Phone className="h-3.5 w-3.5" />}
+              />
+            )}
+            {application.company.representativeName && (
+              <InfoRow
+                label={t("representative")}
+                value={application.company.representativeName}
+              />
+            )}
+          </div>
+        </Section>
+
+        <Separator className="bg-border/40" />
 
         {/* Offer Details */}
-        <Section>
-          <h3 className="mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-            <Stamp className="h-3.5 w-3.5 text-primary/60" />
-            {t("offerDetails")}
-          </h3>
-          <div className="space-y-1">
+        <Section
+          title={t("offerDetails")}
+          titleIcon={<Stamp className="h-3.5 w-3.5 text-primary/60" />}
+        >
+          <div className="grid gap-y-2 gap-x-6 sm:grid-cols-2">
             <InfoRow label={t("title")} value={application.offer.title} />
             <InfoRow
               label={t("type")}
@@ -152,28 +166,36 @@ export function CompanyOfferCard({ application }: CompanyOfferCardProps) {
           </div>
         </Section>
 
+        <Separator className="bg-border/40" />
+
         {/* Timeline */}
-        <Section>
-          <h3 className="mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-            <Clock className="h-3.5 w-3.5 text-primary/60" />
-            {t("timeline")}
-          </h3>
-          <TimelineItem label={t("appliedOn")} date={application.createdAt} />
-          <TimelineItem
-            label={t("companyAcceptedOn")}
-            date={application.companyActionAt}
-          />
+        <Section
+          title={t("timeline")}
+          titleIcon={<Clock className="h-3.5 w-3.5 text-primary/60" />}
+        >
+          <div className="border-s-2 border-border/40 ps-5 space-y-1">
+            <TimelineItem
+              label={t("appliedOn")}
+              date={application.createdAt}
+            />
+            <TimelineItem
+              label={t("companyAcceptedOn")}
+              date={application.companyActionAt}
+            />
+          </div>
         </Section>
 
         {application.coverLetter && (
-          <Section>
-            <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-              {t("coverLetter")}
-            </h3>
-            <p className="line-clamp-4 text-sm leading-relaxed text-muted-foreground">
-              {application.coverLetter}
-            </p>
-          </Section>
+          <>
+            <Separator className="bg-border/40" />
+            <Section title={t("coverLetter")}>
+              <div className="rounded-lg bg-muted/30 border border-border/30 p-4">
+                <p className="text-sm leading-[1.7] text-muted-foreground">
+                  {application.coverLetter}
+                </p>
+              </div>
+            </Section>
+          </>
         )}
       </div>
     </motion.div>

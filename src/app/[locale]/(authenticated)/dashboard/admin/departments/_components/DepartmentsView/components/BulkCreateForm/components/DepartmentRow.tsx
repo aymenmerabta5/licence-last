@@ -38,7 +38,7 @@ export function DepartmentRow({
           value={row.departmentName}
           onChange={(e) => onUpdate(index, "departmentName", e.target.value)}
           placeholder={t("departmentNamePlaceholder")}
-          className="h-10 rounded-lg border-border/60"
+          className="h-10 border-border/60"
         />
         {errors.departmentName && (
           <p className="text-xs text-destructive">{errors.departmentName}</p>
@@ -51,7 +51,7 @@ export function DepartmentRow({
           value={row.headEmail}
           onChange={(e) => onUpdate(index, "headEmail", e.target.value)}
           placeholder={t("headEmailPlaceholder")}
-          className="h-10 rounded-lg border-border/60"
+          className="h-10 border-border/60"
         />
         {errors.headEmail && (
           <p className="text-xs text-destructive">{errors.headEmail}</p>

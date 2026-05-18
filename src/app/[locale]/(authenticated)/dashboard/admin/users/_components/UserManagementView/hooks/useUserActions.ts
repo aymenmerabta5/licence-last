@@ -1,5 +1,6 @@
 "use client"
 
+import type { InfiniteData } from "@tanstack/react-query"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
@@ -15,6 +16,8 @@ type UsersListData = {
   limit: number
   offset: number
 }
+
+type UsersInfiniteData = InfiniteData<UsersListData, number>
 
 function isAdminUsersListQuery(query: { queryKey: unknown }): boolean {
   const key = query.queryKey
@@ -54,7 +57,7 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
   }
 
   const getAdminUsersListQueries = () =>
-    queryClient.getQueriesData<UsersListData>({
+    queryClient.getQueriesData<UsersInfiniteData>({
       predicate: isAdminUsersListQuery,
     })
 
@@ -89,12 +92,20 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
       }
       previousQueries.forEach(([queryKey, queryData]) => {
         if (!queryData) return
-        queryClient.setQueryData<UsersListData>(queryKey, (old) => {
+        queryClient.setQueryData<UsersInfiniteData>(queryKey, (old) => {
           if (!old) return old
           return {
             ...old,
-            users: [optimisticUser, ...old.users],
-            total: old.total + 1,
+            pages: old.pages.map((page, index) =>
+              index === 0
+                ? {
+                    ...page,
+                    users: [optimisticUser, ...page.users],
+                    total: page.total + 1,
+                  }
+                : page,
+            ),
+            pageParams: old.pageParams,
           }
         })
       })
@@ -143,13 +154,17 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
       const previousQueries = getAdminUsersListQueries()
       previousQueries.forEach(([queryKey, queryData]) => {
         if (!queryData) return
-        queryClient.setQueryData<UsersListData>(queryKey, (old) => {
+        queryClient.setQueryData<UsersInfiniteData>(queryKey, (old) => {
           if (!old) return old
           return {
             ...old,
-            users: old.users.map((u) =>
-              u.id === data.userId ? { ...u, role: data.role } : u,
-            ),
+            pages: old.pages.map((page) => ({
+              ...page,
+              users: page.users.map((u) =>
+                u.id === data.userId ? { ...u, role: data.role } : u,
+              ),
+            })),
+            pageParams: old.pageParams,
           }
         })
       })
@@ -191,20 +206,24 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
       const previousQueries = getAdminUsersListQueries()
       previousQueries.forEach(([queryKey, queryData]) => {
         if (!queryData) return
-        queryClient.setQueryData<UsersListData>(queryKey, (old) => {
+        queryClient.setQueryData<UsersInfiniteData>(queryKey, (old) => {
           if (!old) return old
           return {
             ...old,
-            users: old.users.map((u) =>
-              u.id === data.userId
-                ? {
-                    ...u,
-                    ...(data.name !== undefined && { name: data.name }),
-                    ...(data.email !== undefined && { email: data.email }),
-                    ...(data.role !== undefined && { role: data.role }),
-                  }
-                : u,
-            ),
+            pages: old.pages.map((page) => ({
+              ...page,
+              users: page.users.map((u) =>
+                u.id === data.userId
+                  ? {
+                      ...u,
+                      ...(data.name !== undefined && { name: data.name }),
+                      ...(data.email !== undefined && { email: data.email }),
+                      ...(data.role !== undefined && { role: data.role }),
+                    }
+                  : u,
+              ),
+            })),
+            pageParams: old.pageParams,
           }
         })
       })
@@ -244,24 +263,28 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
       const previousQueries = getAdminUsersListQueries()
       previousQueries.forEach(([queryKey, queryData]) => {
         if (!queryData) return
-        queryClient.setQueryData<UsersListData>(queryKey, (old) => {
+        queryClient.setQueryData<UsersInfiniteData>(queryKey, (old) => {
           if (!old) return old
           return {
             ...old,
-            users: old.users.map((u) =>
-              u.id === data.userId
-                ? {
-                    ...u,
-                    banned: true,
-                    ...(data.banReason !== undefined && {
-                      banReason: data.banReason,
-                    }),
-                    ...(data.banExpiresIn !== undefined && {
-                      banExpires: data.banExpiresIn,
-                    }),
-                  }
-                : u,
-            ),
+            pages: old.pages.map((page) => ({
+              ...page,
+              users: page.users.map((u) =>
+                u.id === data.userId
+                  ? {
+                      ...u,
+                      banned: true,
+                      ...(data.banReason !== undefined && {
+                        banReason: data.banReason,
+                      }),
+                      ...(data.banExpiresIn !== undefined && {
+                        banExpires: data.banExpiresIn,
+                      }),
+                    }
+                  : u,
+              ),
+            })),
+            pageParams: old.pageParams,
           }
         })
       })
@@ -298,15 +321,19 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
       const previousQueries = getAdminUsersListQueries()
       previousQueries.forEach(([queryKey, queryData]) => {
         if (!queryData) return
-        queryClient.setQueryData<UsersListData>(queryKey, (old) => {
+        queryClient.setQueryData<UsersInfiniteData>(queryKey, (old) => {
           if (!old) return old
           return {
             ...old,
-            users: old.users.map((u) =>
-              u.id === data.userId
-                ? { ...u, banned: false, banReason: null, banExpires: null }
-                : u,
-            ),
+            pages: old.pages.map((page) => ({
+              ...page,
+              users: page.users.map((u) =>
+                u.id === data.userId
+                  ? { ...u, banned: false, banReason: null, banExpires: null }
+                  : u,
+              ),
+            })),
+            pageParams: old.pageParams,
           }
         })
       })
@@ -344,12 +371,16 @@ export function useUserActions(refreshUsers?: RefreshUsersCallback) {
       const previousQueries = getAdminUsersListQueries()
       previousQueries.forEach(([queryKey, queryData]) => {
         if (!queryData) return
-        queryClient.setQueryData<UsersListData>(queryKey, (old) => {
+        queryClient.setQueryData<UsersInfiniteData>(queryKey, (old) => {
           if (!old) return old
           return {
             ...old,
-            users: old.users.filter((u) => u.id !== data.userId),
-            total: old.total - 1,
+            pages: old.pages.map((page) => ({
+              ...page,
+              users: page.users.filter((u) => u.id !== data.userId),
+              total: page.total - 1,
+            })),
+            pageParams: old.pageParams,
           }
         })
       })

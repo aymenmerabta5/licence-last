@@ -26,6 +26,8 @@ export function MessagesView({ role, currentUserId }: MessagesViewProps) {
     draft,
     setDraft,
     resetDraft,
+    searchQuery,
+    setSearchQuery,
   } = useMessagesState()
 
   const {
@@ -167,6 +169,8 @@ export function MessagesView({ role, currentUserId }: MessagesViewProps) {
           isLoading={threadsLoading}
           errorMessage={threadsErrorMessage}
           starterErrorMessage={startersErrorMessage}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
           onSelectThread={selectThread}
           onSelectStarter={selectStarter}
         />

@@ -1,53 +1,89 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
-import { useState } from "react"
-import { useDebounce } from "@/hooks"
-import { orpc } from "@/server/orpc/client"
+import { useInfiniteQuery } from "@tanstack/react-query"
+import { useMemo, useState } from "react"
+import { useDebounce, useInfiniteScroll } from "@/hooks"
+import { orpc, orpcClient } from "@/server/orpc/client"
+
+const PAGE_SIZE = 20
 
 export function useUserManagement() {
   const [search, setSearch] = useState("")
   const [roleFilter, setRoleFilter] = useState<string>("all")
-  const [page, setPage] = useState(0)
-  const limit = 20
   const debouncedSearch = useDebounce(search, 300)
 
-  const { data, isLoading, refetch } = useQuery(
-    orpc.adminUsers.list.queryOptions({
-      input: {
-        limit,
-        offset: page * limit,
-        ...(debouncedSearch && {
-          searchValue: debouncedSearch,
-          searchField: "email" as const,
-          searchOperator: "contains" as const,
-        }),
-        ...(roleFilter !== "all" && {
-          filterField: "role",
-          filterValue: roleFilter,
-          filterOperator: "eq" as const,
-        }),
-        sortBy: "createdAt",
-        sortDirection: "desc" as const,
-      },
+  const baseInput = useMemo(
+    () => ({
+      ...(debouncedSearch && {
+        searchValue: debouncedSearch,
+        searchField: "email" as const,
+        searchOperator: "contains" as const,
+      }),
+      ...(roleFilter !== "all" && {
+        filterField: "role" as const,
+        filterValue: roleFilter,
+        filterOperator: "eq" as const,
+      }),
+      sortBy: "createdAt" as const,
+      sortDirection: "desc" as const,
     }),
+    [debouncedSearch, roleFilter],
   )
 
-  const users = data?.users ?? []
-  const total = data?.total ?? 0
-  const totalPages = Math.ceil(total / limit)
+  const queryKey = useMemo(
+    () => orpc.adminUsers.list.queryOptions({ input: baseInput }).queryKey,
+    [baseInput],
+  )
+
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey,
+    queryFn: async ({ pageParam }) =>
+      orpcClient.adminUsers.list({
+        ...baseInput,
+        limit: PAGE_SIZE,
+        offset: pageParam as number,
+      }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      const nextOffset = lastPage.offset + lastPage.limit
+      if (nextOffset >= lastPage.total) return undefined
+      return nextOffset
+    },
+  })
+
+  const users = useMemo(
+    () => data?.pages.flatMap((page) => page.users) ?? [],
+    [data],
+  )
+
+  const total = data?.pages[0]?.total ?? 0
+
+  const sentinelRef = useInfiniteScroll(
+    () => {
+      void fetchNextPage()
+    },
+    hasNextPage,
+    isFetchingNextPage,
+  )
 
   return {
     users,
     total,
     isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    sentinelRef,
     search,
     setSearch,
     roleFilter,
     setRoleFilter,
-    page,
-    setPage,
-    totalPages,
     refetch,
   }
 }

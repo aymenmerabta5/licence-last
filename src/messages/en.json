@@ -1006,7 +1006,11 @@
             "previewDetails": "Details",
             "previewSkills": "Skills",
             "duration": "{weeks}w",
-            "positions": "{count} pos."
+            "positions": "{count} pos.",
+            "descriptionImproved": "Description improved successfully.",
+            "skillsSuggested": "Skills suggested successfully.",
+            "descriptionImproveError": "Failed to improve description.",
+            "skillsSuggestError": "Failed to suggest skills."
           }
         }
       },
@@ -1369,9 +1373,13 @@
       "statsTitle": "Department Overview",
       "stats": {
         "totalStudents": "Total Students",
+        "totalStudentsDescription": "Registered in your department",
         "pendingValidations": "Pending Validations",
+        "pendingValidationsDescription": "Awaiting your review",
         "activeInternships": "Active Internships",
+        "activeInternshipsDescription": "Currently ongoing",
         "studentsWithoutInternship": "Without Internship",
+        "studentsWithoutInternshipDescription": "Need placement",
         "view": "View"
       }
     },
@@ -1939,6 +1947,8 @@
           "createAnyway": "Create Anyway",
           "useExisting": "Skill selected.",
           "manageCategories": "Manage Categories",
+          "noCategoriesTitle": "No categories assigned",
+          "noCategoriesDescription": "Assign skill categories to this department to see and select relevant skills.",
           "clearAll": "Clear all",
           "selectAll": "Select all",
           "deselectAll": "Deselect all",
@@ -2575,6 +2585,9 @@
       "fallbackCompanyName": "Company",
       "fallbackStudentName": "Student",
       "fallbackSenderName": "Sender",
+      "searchPlaceholder": "Search conversations...",
+      "noSearchResults": "No conversations match your search.",
+      "searchAria": "Search conversations",
       "messageEmptyError": "Message cannot be empty.",
       "missingStudentError": "Missing student identifier for this conversation.",
       "threadsLoadError": "Failed to load message threads.",

@@ -71,7 +71,7 @@ export function BulkCreateForm({ universityId }: BulkCreateFormProps) {
             size="sm"
             onClick={addRow}
             disabled={isPending || rows.length >= 50}
-            className="gap-1.5 rounded-lg"
+            className="gap-1.5"
           >
             <Plus className="h-3.5 w-3.5" />
             {t("addRow")}
@@ -82,7 +82,7 @@ export function BulkCreateForm({ universityId }: BulkCreateFormProps) {
             disabled={isPending || !canSubmit}
             variant="editorial"
             size="editorial-sm"
-            className="rounded-lg"
+            className=""
           >
             {isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />

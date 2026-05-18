@@ -1006,7 +1006,11 @@
             "previewDetails": "التفاصيل",
             "previewSkills": "المهارات",
             "duration": "{weeks} أسبوع",
-            "positions": "{count} مناصب"
+            "positions": "{count} مناصب",
+            "descriptionImproved": "تم تحسين الوصف بنجاح.",
+            "skillsSuggested": "تم اقتراح المهارات بنجاح.",
+            "descriptionImproveError": "فشل في تحسين الوصف.",
+            "skillsSuggestError": "فشل في اقتراح المهارات."
           }
         }
       },
@@ -1518,9 +1522,13 @@
       "statsTitle": "نظرة عامة على القسم",
       "stats": {
         "totalStudents": "إجمالي الطلاب",
+        "totalStudentsDescription": "مسجلين في قسمك",
         "pendingValidations": "الموافقات المعلقة",
+        "pendingValidationsDescription": "في انتظار مراجعتك",
         "activeInternships": "التدريبات النشطة",
+        "activeInternshipsDescription": "جارية حالياً",
         "studentsWithoutInternship": "بدون تدريب",
+        "studentsWithoutInternshipDescription": "يحتاجون إلى تنسيب",
         "view": "عرض"
       }
     },
@@ -1939,6 +1947,8 @@
           "createAnyway": "إنشاء على أي حال",
           "useExisting": "تم اختيار المهارة.",
           "manageCategories": "إدارة الفئات",
+          "noCategoriesTitle": "لم يتم تعيين فئات",
+          "noCategoriesDescription": "قم بتعيين فئات المهارات لهذا القسم لمشاهدة واختيار المهارات ذات الصلة.",
           "clearAll": "مسح الكل",
           "selectAll": "تحديد الكل",
           "deselectAll": "إلغاء التحديد",
@@ -2575,6 +2585,9 @@
       "fallbackCompanyName": "شركة",
       "fallbackStudentName": "طالب",
       "fallbackSenderName": "مرسل",
+      "searchPlaceholder": "ابحث في المحادثات...",
+      "noSearchResults": "لا توجد محادثات تطابق بحثك.",
+      "searchAria": "البحث في المحادثات",
       "messageEmptyError": "لا يمكن أن تكون الرسالة فارغة.",
       "missingStudentError": "معرّف الطالب مفقود لهذه المحادثة.",
       "threadsLoadError": "تعذر تحميل محادثات الرسائل.",

@@ -1021,11 +1021,23 @@ function createUserRow(opts: {
 }
 
 async function seedAdminUsers(db: SeedDb, state: SeedState) {
+  // Use env credentials if available, otherwise fall back to demo defaults
+  const superAdminEmail =
+    process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase() || "admin@stag.io"
+  const superAdminPassword =
+    process.env.SEED_ADMIN_PASSWORD?.trim() || DEMO_PASSWORD
+  const superAdminName =
+    process.env.SEED_ADMIN_NAME?.trim() || "Super Admin"
+
   const superAdmin = createUserRow({
-    email: "admin@stag.io",
-    name: "Super Admin",
+    email: superAdminEmail,
+    name: superAdminName,
     role: "super_admin",
   })
+  // Override the hashed password with the env-provided one if it differs from default
+  if (superAdminPassword !== DEMO_PASSWORD) {
+    superAdmin.account.password = hashPassword(superAdminPassword)
+  }
 
   const uniAdmins = state.universities.map((uni, i) =>
     createUserRow({
@@ -2326,15 +2338,24 @@ async function seedSiteSettings(db: SeedDb) {
 }
 
 function printDemoCredentials(state: SeedState) {
+  const superAdminEmail =
+    process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase() || "admin@stag.io"
+  const superAdminPassword =
+    process.env.SEED_ADMIN_PASSWORD?.trim() || DEMO_PASSWORD
+
+  const padBox = (text: string, width = 64) =>
+    text.length > width ? text.slice(0, width - 3) + "..." : text.padEnd(width)
+
   const lines = [
     "",
     "╔══════════════════════════════════════════════════════════════════╗",
     "║                    DEMO SEED COMPLETE                            ║",
     "╠══════════════════════════════════════════════════════════════════╣",
-    "║  All accounts use password: DemoPass123!                         ║",
+    `║  ${padBox(`Super admin password: ${superAdminPassword}`)}║`,
+    `║  ${padBox("All other accounts use password: DemoPass123!")}║`,
     "╠══════════════════════════════════════════════════════════════════╣",
     "║  SUPER ADMIN                                                     ║",
-    "║    admin@stag.io                                                 ║",
+    `║    ${padBox(superAdminEmail)}║`,
     "╠══════════════════════════════════════════════════════════════════╣",
     "║  UNIVERSITY ADMINS                                               ║",
   ]

@@ -60,10 +60,9 @@ describe("UsersTable", () => {
       <UsersTable
         users={users}
         isLoading={false}
-        page={0}
-        totalPages={1}
-        total={1}
-        onPageChange={() => {}}
+        isFetchingNextPage={false}
+        hasNextPage={false}
+        sentinelRef={{ current: null }}
         onBan={() => {}}
         onUnban={() => {}}
         onSetRole={() => {}}

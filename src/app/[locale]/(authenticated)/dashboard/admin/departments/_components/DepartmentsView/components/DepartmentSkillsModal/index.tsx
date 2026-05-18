@@ -1,16 +1,11 @@
 "use client"
 
-import { ChevronDown, ChevronUp } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { DepartmentCategoryConfig } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentCategoryConfig"
+import { SkillsFooter } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/components/SkillsFooter"
+import { SkillsMainSection } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/components/SkillsMainSection"
 import { useDepartmentSkills } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/hooks/useDepartmentSkills"
 import { useDepartmentSkillsModal } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/hooks/useDepartmentSkillsModal"
-import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
-import { SkillCreateRow } from "@/components/skill-modals/SkillCreateRow"
-import { SkillDialogFooter } from "@/components/skill-modals/SkillDialogFooter"
-import { SkillSearchInput } from "@/components/skill-modals/SkillSearchInput"
-import { SkillSimilarSuggestions } from "@/components/skill-modals/SkillSimilarSuggestions"
 import {
   Dialog,
   DialogContent,
@@ -37,6 +32,7 @@ export function DepartmentSkillsModal({
     query,
     setQuery,
     draftIds,
+    assignedCategories,
     isLoading,
     isSaving,
     isDirty,
@@ -63,7 +59,13 @@ export function DepartmentSkillsModal({
     handleCreateSkill,
     handleForceCreate,
     handleUseExisting,
-  } = useDepartmentSkillsModal({ toggleSkill, setQuery, createSkill, t })
+  } = useDepartmentSkillsModal({
+    toggleSkill,
+    setQuery,
+    createSkill,
+    t,
+    assignedCategoryCount: assignedCategories.length,
+  })
 
   const handleOpenChange = (next: boolean) => {
     if (!next) {
@@ -80,10 +82,6 @@ export function DepartmentSkillsModal({
     }
   }
 
-  const queryTrimmed = query.trim()
-  const showCreateOption =
-    queryTrimmed.length > 0 && !isLoading && !hasExactMatch && !similarSkills
-
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col">
@@ -93,76 +91,36 @@ export function DepartmentSkillsModal({
           </DialogTitle>
           <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
-        <button
-          type="button"
-          onClick={toggleCategories}
-          className="flex items-center justify-between w-full text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:text-foreground transition-colors py-1"
-        >
-          <span>{t("manageCategories")}</span>
-          {showCategories ? (
-            <ChevronUp className="h-3.5 w-3.5" />
-          ) : (
-            <ChevronDown className="h-3.5 w-3.5" />
-          )}
-        </button>
-        {showCategories && (
-          <DepartmentCategoryConfig departmentId={departmentId} />
-        )}
-        <SkillSearchInput
+        <SkillsMainSection
+          departmentId={departmentId}
+          assignedCategories={assignedCategories}
+          isLoading={isLoading}
           query={query}
-          onChange={(value) => {
-            setQuery(value)
-            if (similarSkills) dismissSimilar()
-          }}
-          placeholder={t("searchPlaceholder")}
+          setQuery={setQuery}
+          draftIds={draftIds}
+          groups={groups}
+          categoryOrder={categoryOrder}
+          categoryLabels={categoryLabels}
+          toggleSkill={toggleSkill}
+          toggleCategory={toggleCategory}
+          showCategories={showCategories}
+          toggleCategories={toggleCategories}
+          similarSkills={similarSkills}
+          dismissSimilar={dismissSimilar}
+          isCreatingSkill={isCreatingSkill}
+          handleCreateSkill={handleCreateSkill}
+          handleForceCreate={handleForceCreate}
+          handleUseExisting={handleUseExisting}
+          hasExactMatch={hasExactMatch}
         />
-        <div className="flex-1 overflow-y-auto space-y-4 min-h-0 py-2">
-          <SkillCategoryGrid
-            groups={groups}
-            categoryOrder={categoryOrder}
-            categoryLabels={categoryLabels}
-            selectedIds={draftIds}
-            maxSkills={200}
-            isLoading={isLoading}
-            onToggle={toggleSkill}
-            onToggleCategory={toggleCategory}
-            selectAllLabel={t("selectAll")}
-            deselectAllLabel={t("deselectAll")}
-            selectRemainingLabel={t("selectRemaining")}
-          />
-          {showCreateOption && (
-            <SkillCreateRow
-              isCreating={isCreatingSkill}
-              onCreate={() => handleCreateSkill(queryTrimmed)}
-              label={t("skillNotFound", { query: queryTrimmed })}
-              createLabel={t("createSkill", { name: queryTrimmed })}
-            />
-          )}
-          {similarSkills && (
-            <SkillSimilarSuggestions
-              skills={similarSkills}
-              isCreating={isCreatingSkill}
-              onUseExisting={handleUseExisting}
-              onForceCreate={() => handleForceCreate(queryTrimmed)}
-              onCancel={dismissSimilar}
-              didYouMeanLabel={t("didYouMean")}
-              cancelLabel={t("cancel")}
-              createAnywayLabel={t("createAnyway")}
-            />
-          )}
-        </div>
-        <SkillDialogFooter
-          selectedCount={draftIds.length}
-          skillsSelectedLabel={t("skillsSelected")}
+        <SkillsFooter
+          draftIds={draftIds}
           saveError={saveError}
           isSaving={isSaving}
           isDirty={isDirty}
-          cancelLabel={t("cancel")}
-          saveLabel={t("save")}
-          clearLabel={t("clearAll")}
+          clearAll={clearAll}
           onCancel={() => handleOpenChange(false)}
           onSave={handleSave}
-          onClearAll={clearAll}
         />
       </DialogContent>
     </Dialog>

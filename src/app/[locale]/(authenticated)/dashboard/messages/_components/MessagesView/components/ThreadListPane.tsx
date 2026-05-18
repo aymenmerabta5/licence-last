@@ -1,7 +1,9 @@
-import { Loader2, MessageCircleMore } from "lucide-react"
+import { Loader2, MessageCircleMore, SearchX } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { useMemo } from "react"
 
 import { ConversationStarterList } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/ConversationStarterList"
+import { SearchBar } from "@/app/[locale]/(authenticated)/dashboard/messages/_components/MessagesView/components/SearchBar"
 import type {
   MessageConversationStarter,
   MessagesRole,
@@ -20,6 +22,8 @@ interface ThreadListPaneProps {
   isLoading: boolean
   errorMessage: string | null
   starterErrorMessage: string | null
+  searchQuery: string
+  onSearchChange: (value: string) => void
   onSelectThread: (threadId: string) => void
   onSelectStarter: (starterId: string) => void
 }
@@ -66,6 +70,27 @@ function formatUnreadCount(unreadCount: number): string {
   return String(unreadCount)
 }
 
+function itemMatchesQuery(
+  item: MessageThread | MessageConversationStarter,
+  role: MessagesRole,
+  query: string,
+  fallbackCompanyName: string,
+  fallbackStudentName: string,
+): boolean {
+  const trimmed = query.trim().toLowerCase()
+  if (!trimmed) return true
+
+  const displayName =
+    role === "student"
+      ? item.companyName?.trim() || fallbackCompanyName
+      : item.studentName?.trim() || fallbackStudentName
+
+  return (
+    displayName.toLowerCase().includes(trimmed) ||
+    item.offerTitle.toLowerCase().includes(trimmed)
+  )
+}
+
 export function ThreadListPane({
   role,
   threads,
@@ -75,6 +100,8 @@ export function ThreadListPane({
   isLoading,
   errorMessage,
   starterErrorMessage,
+  searchQuery,
+  onSearchChange,
   onSelectThread,
   onSelectStarter,
 }: ThreadListPaneProps) {
@@ -82,12 +109,43 @@ export function ThreadListPane({
   const fallbackCompanyName = t("fallbackCompanyName")
   const fallbackStudentName = t("fallbackStudentName")
 
+  const filteredThreads = useMemo(
+    () =>
+      threads.filter((thread) =>
+        itemMatchesQuery(
+          thread,
+          role,
+          searchQuery,
+          fallbackCompanyName,
+          fallbackStudentName,
+        ),
+      ),
+    [threads, role, searchQuery, fallbackCompanyName, fallbackStudentName],
+  )
+
+  const filteredStarters = useMemo(
+    () =>
+      starters.filter((starter) =>
+        itemMatchesQuery(
+          starter,
+          role,
+          searchQuery,
+          fallbackCompanyName,
+          fallbackStudentName,
+        ),
+      ),
+    [starters, role, searchQuery, fallbackCompanyName, fallbackStudentName],
+  )
+
+  const hasQuery = searchQuery.trim().length > 0
+
   return (
     <div className="border border-border/50 bg-card/30 min-h-[34rem]">
-      <div className="border-b border-border/50 px-5 py-4">
+      <div className="border-b border-border/50 px-5 py-4 space-y-3">
         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground [[dir=rtl]_&]:tracking-normal">
           {t("threadsLabel")}
         </p>
+        <SearchBar value={searchQuery} onChange={onSearchChange} />
       </div>
 
       <div className="max-h-[34rem] overflow-y-auto p-3">
@@ -103,24 +161,30 @@ export function ThreadListPane({
           </div>
         )}
 
-        {!isLoading && !errorMessage && threads.length === 0 && (
+        {!isLoading && !errorMessage && filteredThreads.length === 0 && filteredStarters.length === 0 && (
           <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
             <div className="flex h-12 w-12 items-center justify-center border border-dashed border-border/60">
-              <MessageCircleMore className="h-5 w-5 text-muted-foreground/40" />
+              {hasQuery ? (
+                <SearchX className="h-5 w-5 text-muted-foreground/40" />
+              ) : (
+                <MessageCircleMore className="h-5 w-5 text-muted-foreground/40" />
+              )}
             </div>
             <p className="text-sm text-muted-foreground">
-              {starters.length === 0
-                ? role === "student"
-                  ? t("emptyStudent")
-                  : t("emptyCompany")
-                : t("pickStarter")}
+              {hasQuery
+                ? t("noSearchResults")
+                : starters.length === 0
+                  ? role === "student"
+                    ? t("emptyStudent")
+                    : t("emptyCompany")
+                  : t("pickStarter")}
             </p>
           </div>
         )}
 
-        {!isLoading && !errorMessage && threads.length > 0 && (
+        {!isLoading && !errorMessage && filteredThreads.length > 0 && (
           <div className="space-y-1">
-            {threads.map((thread) => {
+            {filteredThreads.map((thread) => {
               const displayName = getThreadDisplayName(
                 thread,
                 role,
@@ -195,10 +259,10 @@ export function ThreadListPane({
           </div>
         )}
 
-        {!isLoading && !errorMessage && (
+        {!isLoading && !errorMessage && filteredStarters.length > 0 && (
           <ConversationStarterList
             role={role}
-            starters={starters}
+            starters={filteredStarters}
             selectedStarterId={selectedStarterId}
             onSelectStarter={onSelectStarter}
           />

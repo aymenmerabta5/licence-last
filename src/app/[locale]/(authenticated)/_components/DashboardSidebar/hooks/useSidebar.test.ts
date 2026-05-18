@@ -87,6 +87,28 @@ describe("useSidebar", () => {
     expect(labelKeys).toContain("assistant")
   })
 
+  test("shows assistant nav item when assistantEnabled prop is true regardless of client flag", () => {
+    isCompanyAssistantEnabledOnClientMock.mockImplementation(() => false)
+
+    const { result } = renderHook(() =>
+      useSidebar("company_admin", "owner", undefined, true),
+    )
+    const labelKeys = result.current.filteredItems.map((item) => item.labelKey)
+
+    expect(labelKeys).toContain("assistant")
+  })
+
+  test("hides assistant nav item when assistantEnabled prop is false", () => {
+    isCompanyAssistantEnabledOnClientMock.mockImplementation(() => true)
+
+    const { result } = renderHook(() =>
+      useSidebar("company_admin", "owner", undefined, false),
+    )
+    const labelKeys = result.current.filteredItems.map((item) => item.labelKey)
+
+    expect(labelKeys).not.toContain("assistant")
+  })
+
   test("hides university-admin-only routes from department heads", () => {
     const { result } = renderHook(() =>
       useSidebar("university_admin", undefined, "department_head"),

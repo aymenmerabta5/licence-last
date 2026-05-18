@@ -1,10 +1,18 @@
 "use client"
 
-import { Loader2 } from "lucide-react"
-import * as motion from "motion/react-client"
+import { Loader2, XCircle } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
 
 interface RejectDialogProps {
   studentName: string
@@ -26,37 +34,42 @@ export function RejectDialog({
   const t = useTranslations("dashboard.admin.validations.detail")
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md space-y-4 rounded-none border border-border bg-background p-6"
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
+        showCloseButton={!actionLoading}
+        className="gap-6 sm:max-w-lg"
       >
-        <h3 className="font-serif text-lg text-heading">{t("rejectTitle")}</h3>
-        <p className="text-sm text-muted-foreground">
-          {t("rejectDescription", { name: studentName })}
-        </p>
-        <textarea
+        <DialogHeader className="space-y-3">
+          <div className="flex items-center gap-2">
+            <XCircle className="h-5 w-5 text-destructive/70" />
+            <DialogTitle>{t("rejectTitle")}</DialogTitle>
+          </div>
+          <DialogDescription>
+            {t("rejectDescription", { name: studentName })}
+          </DialogDescription>
+        </DialogHeader>
+
+        <Textarea
           value={rejectReason}
           onChange={(event) => onRejectReasonChange(event.target.value)}
           placeholder={t("rejectReasonPlaceholder")}
-          className="min-h-[80px] w-full resize-none border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+          disabled={actionLoading}
+          className="min-h-[100px] resize-none border-border/60 bg-background text-sm focus-visible:ring-primary/30"
         />
-        <div className="flex justify-end gap-2">
+
+        <DialogFooter className="gap-2">
           <Button
             variant="outline"
-            size="sm"
             onClick={onClose}
-            className="rounded-none"
+            disabled={actionLoading}
+            className="border-border/60"
           >
             {t("cancel")}
           </Button>
           <Button
             variant="destructive"
-            size="sm"
             onClick={onConfirm}
             disabled={actionLoading}
-            className="rounded-none"
           >
             {actionLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -64,8 +77,8 @@ export function RejectDialog({
               t("confirmReject")
             )}
           </Button>
-        </div>
-      </motion.div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

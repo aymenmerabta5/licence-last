@@ -20,6 +20,8 @@ mock.module(
       draft: "",
       setDraft: () => {},
       resetDraft: () => {},
+      searchQuery: "",
+      setSearchQuery: () => {},
     }),
   }),
 )

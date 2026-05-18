@@ -8,6 +8,7 @@ export function useMessagesState() {
     null,
   )
   const [draft, setDraft] = useState("")
+  const [searchQuery, setSearchQuery] = useState("")
 
   const selectThread = useCallback((threadId: string | null) => {
     setSelectedThreadId(threadId)
@@ -31,5 +32,7 @@ export function useMessagesState() {
     draft,
     setDraft,
     resetDraft,
+    searchQuery,
+    setSearchQuery,
   }
 }

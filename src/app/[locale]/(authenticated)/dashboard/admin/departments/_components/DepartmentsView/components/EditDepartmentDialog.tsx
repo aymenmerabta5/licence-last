@@ -77,7 +77,7 @@ export function EditDepartmentDialog({
               value={name}
               onChange={(event) => setName(event.target.value)}
               placeholder={t("namePlaceholder")}
-              className="h-10 rounded-xl border-border/60"
+              className="h-10 border-border/60"
               onKeyDown={(event) => {
                 if (event.key === "Enter" && !isDisabled) {
                   handleSubmit()
