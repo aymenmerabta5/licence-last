@@ -758,8 +758,20 @@ async function seedUniversities(db: SeedDb, state: SeedState) {
     await db`INSERT INTO "university_domain" ("id", "university_id", "domain", "status", "created_at", "updated_at")
       VALUES (${randomUUID()}, ${id}, ${u.domain}, ${"pending"}, ${formatDateISO(new Date())}, ${formatDateISO(new Date())})
       ON CONFLICT DO NOTHING`
+  }
 
-    state.universities.push({ id, def: u })
+  // Rebuild state from actual DB rows so restarts never reference stale/random UUIDs
+  state.universities = []
+  const allInDb = await db<
+    { id: string; name: string }[]
+  >`SELECT id, name FROM university`
+  for (const u of DEMO_UNIVERSITIES) {
+    const found = allInDb.find((a) => a.name === u.name)
+    if (found) state.universities.push({ id: found.id, def: u })
+  }
+  for (const u of pendingUniDefs) {
+    const found = allInDb.find((a) => a.name === u.name)
+    if (found) state.universities.push({ id: found.id, def: u })
   }
 
   logger.info({
@@ -817,14 +829,21 @@ async function seedDepartments(db: SeedDb, state: SeedState) {
 
       const fieldId = fieldMap.get(fieldName) ?? null
 
-      const id = randomUUID()
       await db`INSERT INTO "department" ("id", "university_id", "name", "field_id", "created_at", "updated_at")
-        VALUES (${id}, ${uni.id}, ${deptName}, ${fieldId}, ${new Date().toISOString()}, ${new Date().toISOString()})
+        VALUES (${randomUUID()}, ${uni.id}, ${deptName}, ${fieldId}, ${new Date().toISOString()}, ${new Date().toISOString()})
         ON CONFLICT DO NOTHING`
-
-      state.departments.push({ id, name: deptName, universityId: uni.id })
     }
   }
+
+  // Rebuild state from actual DB rows so restarts don't carry fake IDs
+  const allDepts = await db<
+    { id: string; name: string; university_id: string }[]
+  >`SELECT id, name, university_id FROM department`
+  state.departments = allDepts.map((d) => ({
+    id: d.id,
+    name: d.name,
+    universityId: d.university_id,
+  }))
 
   logger.info({ event: "departments_seeded", count: state.departments.length })
 }
@@ -1029,16 +1048,15 @@ async function seedAdminUsers(db: SeedDb, state: SeedState) {
     allUsers.map((u) => u.account),
   )
 
-  state.users.push(
-    ...allUsers.map((u) => ({
-      id: u.user.id,
-      email: u.user.email,
-      name: u.user.name,
-      role: u.user.role,
-    })),
-  )
+  // Rebuild state from actual DB rows so restart / seed.ts overlap uses real IDs
+  const emails = allUsers.map((u) => u.user.email)
+  const dbUsers = await db<
+    { id: string; email: string; name: string; role: string }[]
+  >`SELECT id, email, name, role FROM "user" WHERE email = ANY(${emails})`
 
-  logger.info({ event: "admins_seeded", count: allUsers.length })
+  state.users.push(...dbUsers)
+
+  logger.info({ event: "admins_seeded", count: dbUsers.length })
 }
 
 async function seedDepartmentHeads(db: SeedDb, state: SeedState) {
@@ -1063,17 +1081,17 @@ async function seedDepartmentHeads(db: SeedDb, state: SeedState) {
     rows.map((r) => r.account),
   )
 
-  const created = rows.map((r) => ({
-    id: r.user.id,
-    email: r.user.email,
-    name: r.user.name,
-    role: r.user.role,
-  }))
-  state.users.push(...created)
+  // Fetch actual DB IDs so restarts / conflicts don't leave fake IDs in state
+  const headEmails = rows.map((r) => r.user.email)
+  const dbUsers = await db<
+    { id: string; email: string; name: string; role: string }[]
+  >`SELECT id, email, name, role FROM "user" WHERE email = ANY(${headEmails})`
+  state.users.push(...dbUsers)
 
-  // Link as university members
+  // Link as university members using real IDs
+  const userIdByEmail = new Map(dbUsers.map((u) => [u.email, u.id]))
   const memberRows = state.departments.map((dept, i) => ({
-    user_id: rows[i].user.id,
+    user_id: userIdByEmail.get(rows[i].user.email) ?? rows[i].user.id,
     university_id: dept.universityId,
     role: "department_head",
     department_id: dept.id,
@@ -1082,7 +1100,7 @@ async function seedDepartmentHeads(db: SeedDb, state: SeedState) {
   }))
   await batchInsert(db, "university_member", memberRows)
 
-  logger.info({ event: "department_heads_seeded", count: rows.length })
+  logger.info({ event: "department_heads_seeded", count: dbUsers.length })
 }
 
 async function seedCompanyStaff(db: SeedDb, state: SeedState) {
@@ -1114,28 +1132,38 @@ async function seedCompanyStaff(db: SeedDb, state: SeedState) {
     all.map((u) => u.account),
   )
 
-  state.users.push(
-    ...all.map((u) => ({
-      id: u.user.id,
-      email: u.user.email,
-      name: u.user.name,
-      role: u.user.role,
-    })),
-  )
+  // Fetch actual DB IDs so restarts / conflicts don't leave fake IDs in state
+  const staffEmails = all.map((u) => u.user.email)
+  const dbUsers = await db<
+    { id: string; email: string; name: string; role: string }[]
+  >`SELECT id, email, name, role FROM "user" WHERE email = ANY(${staffEmails})`
+  state.users.push(...dbUsers)
+
+  // Partition back into owners / recruiters using original order
+  const dbUserByEmail = new Map(dbUsers.map((u) => [u.email, u]))
+  const ownerEmails = owners.map((u) => u.user.email)
+  const recruiterEmails = recruiters.map((u) => u.user.email)
+
+  const dbOwners = ownerEmails
+    .map((e) => dbUserByEmail.get(e))
+    .filter((u): u is typeof u & object => u != null)
+  const dbRecruiters = recruiterEmails
+    .map((e) => dbUserByEmail.get(e))
+    .filter((u): u is typeof u & object => u != null)
 
   logger.info({
     event: "company_staff_seeded",
-    owners: owners.length,
-    recruiters: recruiters.length,
+    owners: dbOwners.length,
+    recruiters: dbRecruiters.length,
   })
 
-  return { owners, recruiters }
+  return { owners: dbOwners, recruiters: dbRecruiters }
 }
 
 async function seedCompanies(
   db: SeedDb,
   state: SeedState,
-  owners: ReturnType<typeof createUserRow>[],
+  owners: CreatedUser[],
 ) {
   const now = new Date()
   const rows = DEMO_COMPANIES.map((c, i) => ({
@@ -1147,7 +1175,7 @@ async function seedCompanies(
     website_url: `https://${c.slug}.com`,
     phone: `+213 ${randomInt(21, 38)} ${randomInt(100, 999)} ${randomInt(10, 99)} ${randomInt(10, 99)}`,
     contact_email: `contact@${c.slug}.com`,
-    representative_name: owners[i].user.name,
+    representative_name: owners[i].name,
     wilaya_code: c.wilayaCode,
     address: faker.location.streetAddress(),
     verification_document_key: null,
@@ -1166,7 +1194,11 @@ async function seedCompanies(
 
   await batchInsert(db, "company", rows)
 
-  state.companies = rows.map((r) => ({ id: r.id, name: r.name, slug: r.slug }))
+  // Rebuild state from actual DB rows so restarts don't carry fake IDs
+  const allCompanies = await db<
+    { id: string; name: string; slug: string }[]
+  >`SELECT id, name, slug FROM company`
+  state.companies = allCompanies
 
   // ── Incomplete companies (onboarding not finished) ──
   const incompleteCompanies = [
@@ -1210,26 +1242,29 @@ async function seedCompanies(
     "account",
     pendingOwners.map((u) => u.account),
   )
-  state.users.push(
-    ...pendingOwners.map((u) => ({
-      id: u.user.id,
-      email: u.user.email,
-      name: u.user.name,
-      role: u.user.role,
-    })),
-  )
+
+  // Fetch actual DB IDs for pending owners
+  const pendingEmails = pendingOwners.map((u) => u.user.email)
+  const dbPendingOwners = await db<
+    { id: string; email: string; name: string; role: string }[]
+  >`SELECT id, email, name, role FROM "user" WHERE email = ANY(${pendingEmails})`
+  state.users.push(...dbPendingOwners)
+  const pendingOwnerIdByEmail = new Map(dbPendingOwners.map((u) => [u.email, u.id]))
 
   for (let i = 0; i < pendingCompanyDefs.length; i++) {
     const c = pendingCompanyDefs[i]
     const companyId = randomUUID()
     await db`INSERT INTO "company" ("id", "name", "slug", "description", "logo_url", "website_url", "phone", "contact_email", "representative_name", "wilaya_code", "address", "verification_document_key", "verification_document_name", "verification_document_mime_type", "verification_document_size_bytes", "verification_document_uploaded_at", "status", "approved_at", "approved_by_user_id", "rejection_reason", "created_at", "updated_at")
-      VALUES (${companyId}, ${c.name}, ${c.slug}, ${faker.lorem.paragraph()}, ${`https://picsum.photos/seed/${c.slug}/200/200`}, ${`https://${c.slug}.com`}, ${`+213 ${randomInt(21, 38)} ${randomInt(100, 999)} ${randomInt(10, 99)} ${randomInt(10, 99)}`}, ${`contact@${c.slug}.com`}, ${pendingOwners[i].user.name}, ${c.wilayaCode}, ${faker.location.streetAddress()}, null, null, null, null, null, ${"pending"}, null, null, null, ${formatDateISO(now)}, ${formatDateISO(now)})
+      VALUES (${companyId}, ${c.name}, ${c.slug}, ${faker.lorem.paragraph()}, ${`https://picsum.photos/seed/${c.slug}/200/200`}, ${`https://${c.slug}.com`}, ${`+213 ${randomInt(21, 38)} ${randomInt(100, 999)} ${randomInt(10, 99)} ${randomInt(10, 99)}`}, ${`contact@${c.slug}.com`}, ${dbPendingOwners.find((u) => u.email === pendingOwners[i].user.email)?.name ?? pendingOwners[i].user.name}, ${c.wilayaCode}, ${faker.location.streetAddress()}, null, null, null, null, null, ${"pending"}, null, null, null, ${formatDateISO(now)}, ${formatDateISO(now)})
       ON CONFLICT DO NOTHING`
 
-    // Link owner as company member
-    await db`INSERT INTO "company_member" ("company_id", "user_id", "role", "created_at")
-      VALUES (${companyId}, ${pendingOwners[i].user.id}, ${"owner"}, ${formatDateISO(now)})
-      ON CONFLICT DO NOTHING`
+    // Link owner as company member using real ID
+    const realOwnerId = pendingOwnerIdByEmail.get(pendingOwners[i].user.email)
+    if (realOwnerId) {
+      await db`INSERT INTO "company_member" ("company_id", "user_id", "role", "created_at")
+        VALUES (${companyId}, ${realOwnerId}, ${"owner"}, ${formatDateISO(now)})
+        ON CONFLICT DO NOTHING`
+    }
   }
 
   logger.info({
@@ -1245,8 +1280,8 @@ async function seedCompanies(
 async function seedCompanyMembers(
   db: SeedDb,
   state: SeedState,
-  owners: ReturnType<typeof createUserRow>[],
-  recruiters: ReturnType<typeof createUserRow>[],
+  owners: CreatedUser[],
+  recruiters: CreatedUser[],
 ) {
   const rows: {
     company_id: string
@@ -1259,7 +1294,7 @@ async function seedCompanyMembers(
   for (let i = 0; i < DEMO_COMPANIES.length; i++) {
     rows.push({
       company_id: state.companies[i].id,
-      user_id: owners[i].user.id,
+      user_id: owners[i].id,
       role: "owner",
       created_at: formatDateISO(new Date()),
     })
@@ -1270,7 +1305,7 @@ async function seedCompanyMembers(
     const companyIdx = i % DEMO_COMPANIES.length
     rows.push({
       company_id: state.companies[companyIdx].id,
-      user_id: recruiters[i].user.id,
+      user_id: recruiters[i].id,
       role: "recruiter",
       created_at: formatDateISO(new Date()),
     })

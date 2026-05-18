@@ -12,8 +12,10 @@ interface SkillDialogFooterProps {
   isDirty: boolean
   cancelLabel: string
   saveLabel: string
+  clearLabel?: string
   onCancel: () => void
   onSave: () => void
+  onClearAll?: () => void
 }
 
 export function SkillDialogFooter({
@@ -24,15 +26,26 @@ export function SkillDialogFooter({
   isDirty,
   cancelLabel,
   saveLabel,
+  clearLabel,
   onCancel,
   onSave,
+  onClearAll,
 }: SkillDialogFooterProps) {
   return (
     <div className="flex-col gap-2 sm:flex-row sm:items-center sm:justify-between flex">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <span className="text-xs text-muted-foreground tabular-nums">
           {selectedCount} {skillsSelectedLabel}
         </span>
+        {onClearAll && selectedCount > 0 && (
+          <button
+            type="button"
+            onClick={onClearAll}
+            className="text-[11px] text-destructive hover:text-destructive/80 font-medium transition-colors"
+          >
+            {clearLabel}
+          </button>
+        )}
         {saveError && (
           <p className="text-[11px] text-destructive font-medium">
             {saveError}

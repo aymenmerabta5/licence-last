@@ -153,6 +153,28 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
     })
   }
 
+  function toggleCategory(_category: string, skillIds: string[]) {
+    setSaveError("")
+    setDraftOverride((prev) => {
+      const base = prev ?? currentSkillIds ?? []
+      const allSelected = skillIds.every((id) => base.includes(id))
+
+      if (allSelected) {
+        return base.filter((id) => !skillIds.includes(id))
+      }
+
+      const toAdd = skillIds.filter(
+        (id) => !base.includes(id) && base.length < 200,
+      )
+      return [...base, ...toAdd]
+    })
+  }
+
+  function clearAll() {
+    setSaveError("")
+    setDraftOverride([])
+  }
+
   async function save() {
     setSaveError("")
     try {
@@ -183,6 +205,8 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
     categoryLabels,
     hasExactMatch,
     toggleSkill,
+    toggleCategory,
+    clearAll,
     save,
     resetState,
     createSkill: createSkillMutation.mutateAsync,

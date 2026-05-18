@@ -51,6 +51,8 @@ export function DepartmentSkillsModal({
     categoryLabels,
     hasExactMatch,
     toggleSkill,
+    toggleCategory,
+    clearAll,
     save,
     resetState,
     createSkill,
@@ -160,6 +162,10 @@ export function DepartmentSkillsModal({
             maxSkills={200}
             isLoading={isLoading}
             onToggle={toggleSkill}
+            onToggleCategory={toggleCategory}
+            selectAllLabel={t("selectAll")}
+            deselectAllLabel={t("deselectAll")}
+            selectRemainingLabel={t("selectRemaining")}
           />
           {showCreateOption && (
             <SkillCreateRow
@@ -190,8 +196,10 @@ export function DepartmentSkillsModal({
           isDirty={isDirty}
           cancelLabel={t("cancel")}
           saveLabel={t("save")}
+          clearLabel={t("clearAll")}
           onCancel={() => handleOpenChange(false)}
           onSave={handleSave}
+          onClearAll={clearAll}
         />
       </DialogContent>
     </Dialog>

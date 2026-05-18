@@ -1,6 +1,6 @@
 "use client"
 
-import { Check, Loader2 } from "lucide-react"
+import { Check, Loader2, Minus, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface Skill {
@@ -16,6 +16,10 @@ interface SkillCategoryGridProps {
   maxSkills: number
   isLoading: boolean
   onToggle: (skillId: string) => void
+  onToggleCategory?: (category: string, skillIds: string[]) => void
+  selectAllLabel?: string
+  deselectAllLabel?: string
+  selectRemainingLabel?: string
 }
 
 export function SkillCategoryGrid({
@@ -26,6 +30,10 @@ export function SkillCategoryGrid({
   maxSkills,
   isLoading,
   onToggle,
+  onToggleCategory,
+  selectAllLabel = "Select all",
+  deselectAllLabel = "Deselect all",
+  selectRemainingLabel = "Select remaining",
 }: SkillCategoryGridProps) {
   if (isLoading) {
     return (
@@ -44,11 +52,59 @@ export function SkillCategoryGrid({
         const skills = groups[category]
         if (!skills || skills.length === 0) return null
 
+        const selectedInCategory = skills.filter((s) =>
+          selectedIds.includes(s.id),
+        )
+        const allSelected = selectedInCategory.length === skills.length
+        const someSelected =
+          selectedInCategory.length > 0 && !allSelected
+        const canSelectMore = selectedIds.length < maxSkills
+
         return (
           <div key={category} className="space-y-2.5">
-            <p className="text-[10px] font-bold tracking-[0.15em] uppercase text-muted-foreground/60">
-              {categoryLabels[category] ?? category}
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] font-bold tracking-[0.15em] uppercase text-muted-foreground/60">
+                {categoryLabels[category] ?? category}
+              </p>
+              {onToggleCategory && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    onToggleCategory(
+                      category,
+                      skills.map((s) => s.id),
+                    )
+                  }
+                  disabled={!allSelected && !canSelectMore}
+                  className={cn(
+                    "inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider transition-colors",
+                    allSelected || someSelected
+                      ? "text-primary hover:text-primary/80"
+                      : "text-muted-foreground hover:text-foreground",
+                    !allSelected &&
+                      !canSelectMore &&
+                      "opacity-30 cursor-not-allowed hover:text-muted-foreground",
+                  )}
+                >
+                  {allSelected ? (
+                    <>
+                      <Minus className="h-3 w-3" />
+                      {deselectAllLabel}
+                    </>
+                  ) : someSelected ? (
+                    <>
+                      <Plus className="h-3 w-3" />
+                      {selectRemainingLabel}
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="h-3 w-3" />
+                      {selectAllLabel}
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
             <div className="flex flex-wrap gap-1.5">
               {skills.map((skill) => {
                 const isSelected = selectedIds.includes(skill.id)
@@ -75,6 +131,11 @@ export function SkillCategoryGrid({
                 )
               })}
             </div>
+            {onToggleCategory && (
+              <p className="text-[10px] text-muted-foreground/50">
+                {selectedInCategory.length}/{skills.length} selected
+              </p>
+            )}
           </div>
         )
       })}

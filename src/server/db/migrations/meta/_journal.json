@@ -71,6 +71,13 @@
       "when": 1778950800000,
       "tag": "0009_interview_reschedule",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1779115220913,
+      "tag": "0010_amazing_carnage",
+      "breakpoints": true
     }
   ]
 }

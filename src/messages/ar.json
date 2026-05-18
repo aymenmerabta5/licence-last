@@ -1938,7 +1938,11 @@
           "didYouMean": "هل تقصد أحد هذه الخيارات؟",
           "createAnyway": "إنشاء على أي حال",
           "useExisting": "تم اختيار المهارة.",
-          "manageCategories": "إدارة الفئات"
+          "manageCategories": "إدارة الفئات",
+          "clearAll": "مسح الكل",
+          "selectAll": "تحديد الكل",
+          "deselectAll": "إلغاء التحديد",
+          "selectRemaining": "تحديد المتبقي"
         },
         "bulkCreate": {
           "title": "إنشاء أقسام مجمعة",
@@ -1963,6 +1967,7 @@
         "selectField": "Select a field of study",
         "fieldInheritsSkills": "Inherits {count} skills",
         "noField": "No field assigned",
+        "noFieldAssigned": "No field assigned",
         "assignField": "Assign Field",
         "loading": "جارٍ تحميل الأقسام",
         "noDepartmentsTitle": "لا توجد أقسام",

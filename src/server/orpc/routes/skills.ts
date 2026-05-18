@@ -1,11 +1,7 @@
-"use cache"
-
-import "server-only"
-
 import { eq } from "drizzle-orm"
-import { cacheTag, revalidateTag } from "next/cache"
+import { revalidateTag } from "next/cache"
 import { z } from "zod"
-import { CACHE_PROFILES, CACHE_TAGS } from "@/lib/cache"
+import { CACHE_TAGS } from "@/lib/cache"
 import { db } from "@/server/db"
 import { skillCategory } from "@/server/db/schema"
 import { departmentCategory } from "@/server/db/schema/departments"
@@ -19,6 +15,7 @@ import {
 } from "@/server/orpc/utils/service-error"
 import { ServiceError } from "@/server/services/errors"
 import { createSkill } from "@/server/services/skills/create"
+import { listSkillCategories } from "@/server/services/skills/list-categories"
 import { listSkillTags } from "@/server/services/skills/list"
 import { listSkillTagsPrioritized } from "@/server/services/skills/list-prioritized"
 
@@ -160,16 +157,5 @@ export const createSkillProcedure = authedProcedureStandard
   })
 
 export const listSkillCategoriesProcedure = publicProcedureStandard.handler(
-  async () => {
-    CACHE_PROFILES.REFERENCE()
-    cacheTag(CACHE_TAGS.SKILLS)
-
-    const categories = await db
-      .select()
-      .from(skillCategory)
-      .where(eq(skillCategory.status, "active"))
-      .orderBy(skillCategory.name)
-
-    return categories
-  },
+  async () => listSkillCategories(),
 )

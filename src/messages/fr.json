@@ -1938,7 +1938,11 @@
           "didYouMean": "Vouliez-vous dire l'un de ces éléments ?",
           "createAnyway": "Créer quand même",
           "useExisting": "Compétence sélectionnée.",
-          "manageCategories": "Gérer les catégories"
+          "manageCategories": "Gérer les catégories",
+          "clearAll": "Tout effacer",
+          "selectAll": "Tout sélectionner",
+          "deselectAll": "Tout désélectionner",
+          "selectRemaining": "Sélectionner le reste"
         },
         "bulkCreate": {
           "title": "Création en masse de départements",
@@ -1963,6 +1967,7 @@
         "selectField": "Sélectionner une filière",
         "fieldInheritsSkills": "Hérite de {count} compétences",
         "noField": "Aucune filière assignée",
+        "noFieldAssigned": "Aucune filière assignée",
         "assignField": "Assigner une filière",
         "loading": "Chargement des départements",
         "noDepartmentsTitle": "Aucun département",
