@@ -1,4 +1,14 @@
-ALTER TYPE "public"."interview_status" ADD VALUE 'reschedule_requested';--> statement-breakpoint
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_enum
+    WHERE enumlabel = 'reschedule_requested'
+    AND enumtypid = (SELECT oid FROM pg_type WHERE typname = 'interview_status')
+  ) THEN
+    ALTER TYPE "public"."interview_status" ADD VALUE 'reschedule_requested';
+  END IF;
+END$$;
+--> statement-breakpoint
 CREATE TABLE "department_category" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"department_id" text NOT NULL,
