@@ -179,31 +179,7 @@ jobs:
             USER_COUNT=$(sudo docker compose -f docker-compose.prod.yml exec -T db psql -U "${POSTGRES_USER:-stag}" -d "${POSTGRES_DB:-stag}" -t -c 'SELECT COUNT(*) FROM "user";' 2>/dev/null | tr -d ' \n' || echo "0")
 
             if [ "$USER_COUNT" = "0" ] || [ "$USER_COUNT" = "" ]; then
-              echo "Fresh database detected — ensuring schema..."
-              sudo docker compose -f docker-compose.prod.yml exec -T db psql -U "${POSTGRES_USER:-stag}" -d "${POSTGRES_DB:-stag}" -c "
-                CREATE TABLE IF NOT EXISTS skill_category (
-                  id SERIAL PRIMARY KEY,
-                  name TEXT NOT NULL UNIQUE,
-                  slug TEXT NOT NULL UNIQUE,
-                  description TEXT,
-                  icon TEXT,
-                  status TEXT DEFAULT 'active' NOT NULL,
-                  created_at TIMESTAMP DEFAULT NOW() NOT NULL,
-                  updated_at TIMESTAMP DEFAULT NOW() NOT NULL
-                );
-                CREATE TABLE IF NOT EXISTS department_category (
-                  id SERIAL PRIMARY KEY,
-                  department_id TEXT NOT NULL,
-                  category_id INTEGER NOT NULL,
-                  created_at TIMESTAMP DEFAULT NOW() NOT NULL,
-                  UNIQUE (department_id, category_id)
-                );
-                ALTER TABLE skill_tag ADD COLUMN IF NOT EXISTS category_id INTEGER;
-                ALTER TABLE skill_tag ADD COLUMN IF NOT EXISTS description TEXT;
-                ALTER TABLE skill_tag ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'active';
-                ALTER TABLE skill_tag ADD COLUMN IF NOT EXISTS created_by TEXT;
-              " 2>/dev/null || true
-              echo "Running seed..."
+              echo "Fresh database detected — running seed..."
               sudo docker compose -f docker-compose.prod.yml exec -T app bun run src/server/db/seed.ts
               echo "Seed complete."
             else
