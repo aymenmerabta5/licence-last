@@ -249,24 +249,29 @@ jobs:
         run: bun run src/server/db/seed.ts
 
       - name: Verify core tables exist
+        env:
+          PGHOST: localhost
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          PGDATABASE: stag_migration_test
         run: |
-          bun -e '
-          import postgres from "postgres";
-          const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
-          const tables = await sql`SELECT table_name FROM information_schema.tables WHERE table_schema = "public" AND table_type = "BASE TABLE"`;
-          const required = ["user", "university", "department", "company", "internship_offer", "application", "skill_tag", "skill_category"];
-          const missing = required.filter(r => !tables.some((t: any) => t.table_name === r));
-          await sql.end();
-          if (missing.length > 0) {
-            console.error("Missing tables after migration:", missing);
-            process.exit(1);
-          }
-          console.log("All required tables present:", required.join(", "));
-          '
+          for table in user university department company internship_offer application skill_tag skill_category; do
+            count=$(psql -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = '$table';" | tr -d ' \n')
+            if [ "$count" = "0" ]; then
+              echo "ERROR: Required table '$table' missing after migration" >&2
+              exit 1
+            fi
+            echo "OK: table '$table' exists"
+          done
 
       - name: Tear down
         if: always()
-        run: bun -e 'import postgres from "postgres"; const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false }); await sql`DROP SCHEMA public CASCADE; CREATE SCHEMA public;`; await sql.end();'
+        env:
+          PGHOST: localhost
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          PGDATABASE: stag_migration_test
+        run: psql -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 
   # Schema drift check: ensure generated SQL matches committed migrations
   schema-drift-check:
