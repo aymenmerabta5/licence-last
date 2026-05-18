@@ -6,43 +6,15 @@ import { useLocale, useTranslations } from "next-intl"
 
 import { CompanyLogo } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/CompanyLogo"
 import { InfoRow } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/InfoRow"
+import { Section } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/Section"
 import { TimelineItem } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/TimelineItem"
 import type { ValidationDetailData } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/types"
 import { formatDate } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/utils"
 import { Separator } from "@/components/ui/separator"
 import { ease, reveal } from "@/lib/animations"
-import { cn } from "@/lib/utils"
 
 interface CompanyOfferCardProps {
   application: ValidationDetailData
-}
-
-function Section({
-  children,
-  className,
-  title,
-  titleIcon,
-}: {
-  children: React.ReactNode
-  className?: string
-  title?: string
-  titleIcon?: React.ReactNode
-}) {
-  return (
-    <div className={cn("space-y-3", className)}>
-      {title && (
-        <div className="flex items-center gap-2">
-          {titleIcon && (
-            <span className="text-muted-foreground/70">{titleIcon}</span>
-          )}
-          <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-            {title}
-          </h3>
-        </div>
-      )}
-      {children}
-    </div>
-  )
 }
 
 export function CompanyOfferCard({ application }: CompanyOfferCardProps) {

@@ -42,7 +42,7 @@ export function PendingQueueOverview({
       <motion.section
         {...reveal}
         transition={{ duration: 0.45, ease, delay: 0.05 }}
-        className="lg:col-span-4 h-full"
+        className="lg:col-span-4 h-full lg:order-last"
       >
         <div className="h-full border border-border/80 bg-background hover:bg-foreground hover:text-background p-8 transition-all duration-500 shadow-[6px_6px_0_0_oklch(var(--border)_/_0.3)] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px] relative overflow-hidden group/stats">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMCIvPjxwYXRoIGQ9Ik0wLDRMMSw0TDEsM0wwLDNaIiBmaWxsPSIjMDAwIiBmaWxsLW9wYWNpdHk9IjAuMSIvPjwvc3ZnPg==')] opacity-[0.03] mix-blend-overlay pointer-events-none group-hover/stats:opacity-[0.1]" />

@@ -1,17 +1,20 @@
 "use client"
 
 import { Loader2 } from "lucide-react"
-import { DashboardHero } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/DashboardHero"
-import { PlatformBulletin } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/PlatformBulletin"
+import { useTranslations } from "next-intl"
+import { DashboardMasthead } from "@/app/[locale]/(authenticated)/_components/DashboardMasthead"
+import { StatsBulletin } from "@/app/[locale]/(authenticated)/_components/StatsBulletin"
 import { StatusBreakdown } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/StatusBreakdown"
 import { TrustLeaderboard } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/TrustLeaderboard"
 import { UniversityKpiGrid } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/components/UniversityKpiGrid"
+import { useAdminBulletinMetrics } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/hooks/useAdminBulletinMetrics"
 import {
   type AdminStats,
   type TrustIndex,
   type UniversityDashboardStats,
   useAdminDashboardData,
 } from "@/app/[locale]/(authenticated)/_components/AdminDashboard/hooks/useAdminDashboardData"
+import { Badge } from "@/components/ui/badge"
 
 interface AdminDashboardProps {
   user: {
@@ -31,12 +34,15 @@ export function AdminDashboard({
   initialUniversityStats,
   initialTrustIndices,
 }: AdminDashboardProps) {
+  const t = useTranslations("dashboard.admin")
   const { isSuperAdmin, stats, universityStats, isLoading, trustIndices } =
     useAdminDashboardData(user.role, {
       stats: initialStats,
       universityStats: initialUniversityStats,
       trustIndices: initialTrustIndices,
     })
+
+  const bulletinMetrics = useAdminBulletinMetrics(stats, isSuperAdmin)
 
   if (isLoading) {
     return (
@@ -51,10 +57,19 @@ export function AdminDashboard({
 
   return (
     <div className="space-y-8 sm:space-y-12">
-      <DashboardHero isSuperAdmin={isSuperAdmin} />
+      <DashboardMasthead
+        badge={<Badge variant="editorial-muted">{isSuperAdmin ? t("badge.system") : t("badge.university")}</Badge>}
+        eyebrow={isSuperAdmin ? t("eyebrow.global") : t("eyebrow.institutional")}
+        title={isSuperAdmin ? t("title.super") : t("title.university")}
+        description={
+          isSuperAdmin ? t("description.super") : t("description.university")
+        }
+      />
 
       {/* Platform stats bar — super_admin only */}
-      {isSuperAdmin && stats && <PlatformBulletin stats={stats} />}
+      {isSuperAdmin && stats && (
+        <StatsBulletin metrics={bulletinMetrics} />
+      )}
 
       {/* University metrics grid — university_admin only */}
       {!isSuperAdmin && universityStats && (

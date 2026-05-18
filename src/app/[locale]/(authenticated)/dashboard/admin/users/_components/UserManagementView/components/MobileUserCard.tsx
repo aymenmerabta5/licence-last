@@ -69,11 +69,11 @@ export function MobileUserCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-3">
-          <Avatar className="h-10 w-10 rounded-sm border border-border/50">
+          <Avatar className="h-10 w-10 rounded-full border border-border/50">
             {user.image && (
               <AvatarImage src={user.image} alt={user.name || user.email} />
             )}
-            <AvatarFallback className="rounded-sm bg-accent/50 text-xs font-semibold text-foreground">
+            <AvatarFallback className="rounded-full bg-accent/50 text-xs font-semibold text-foreground">
               {(user.name?.[0] ?? user.email[0]).toUpperCase()}
             </AvatarFallback>
           </Avatar>

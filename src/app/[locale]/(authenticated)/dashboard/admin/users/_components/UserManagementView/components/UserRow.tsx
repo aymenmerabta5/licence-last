@@ -68,11 +68,11 @@ export function UserRow({
     <TableRow className="group hover:bg-primary/[0.02] border-b border-border/50 transition-colors">
       <TableCell className="py-4">
         <div className="flex items-center gap-3 min-w-0">
-          <Avatar className="h-9 w-9 rounded-sm border border-border/50">
+          <Avatar className="h-9 w-9 rounded-full border border-border/50">
             {user.image && (
               <AvatarImage src={user.image} alt={user.name || user.email} />
             )}
-            <AvatarFallback className="rounded-sm bg-accent/50 text-xs font-semibold text-foreground">
+            <AvatarFallback className="rounded-full bg-accent/50 text-xs font-semibold text-foreground">
               {(user.name?.[0] ?? user.email[0]).toUpperCase()}
             </AvatarFallback>
           </Avatar>

@@ -2,85 +2,18 @@
 
 import { GraduationCap, Mail, MapPin, Phone } from "lucide-react"
 import * as motion from "motion/react-client"
-import Image from "next/image"
 import { useTranslations } from "next-intl"
 
 import { InfoRow } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/InfoRow"
+import { Section } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/Section"
+import { StudentAvatar } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/components/StudentAvatar"
 import type { ValidationDetailData } from "@/app/[locale]/(authenticated)/dashboard/_components/PlacementValidations/types"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { ease, reveal } from "@/lib/animations"
-import { cn } from "@/lib/utils"
 
 interface StudentInfoCardProps {
   application: ValidationDetailData
-}
-
-function getInitials(name: string | null) {
-  return (name ?? "U")
-    .split(" ")
-    .map((n) => n[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase()
-}
-
-function Section({
-  children,
-  className,
-  title,
-  titleIcon,
-}: {
-  children: React.ReactNode
-  className?: string
-  title?: string
-  titleIcon?: React.ReactNode
-}) {
-  return (
-    <div className={cn("space-y-3", className)}>
-      {title && (
-        <div className="flex items-center gap-2">
-          {titleIcon && (
-            <span className="text-muted-foreground/70">{titleIcon}</span>
-          )}
-          <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-            {title}
-          </h3>
-        </div>
-      )}
-      {children}
-    </div>
-  )
-}
-
-function StudentAvatar({
-  image,
-  name,
-}: {
-  image: string | null
-  name: string | null
-}) {
-  const initials = getInitials(name)
-
-  return (
-    <div className="relative shrink-0">
-      <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-full ring-1 ring-border ring-offset-2 ring-offset-background overflow-hidden bg-muted flex items-center justify-center">
-        {image ? (
-          <Image
-            src={image}
-            alt={name || "Student"}
-            fill
-            className="object-cover"
-            sizes="96px"
-          />
-        ) : (
-          <span className="text-foreground/50 text-xl sm:text-2xl font-serif tracking-tighter">
-            {initials}
-          </span>
-        )}
-      </div>
-    </div>
-  )
 }
 
 export function StudentInfoCard({ application }: StudentInfoCardProps) {
