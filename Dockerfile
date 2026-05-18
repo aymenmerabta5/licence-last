@@ -90,10 +90,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/scripts/migrate.ts ./scripts/migr
 COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./tsconfig.json
 COPY --from=builder --chown=nextjs:nodejs /app/src/server/db/schema ./src/server/db/schema
 
-# Copy runtime dependencies needed for migrations/seed
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/drizzle-orm ./node_modules/drizzle-orm
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/postgres ./node_modules/postgres
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@faker-js/faker ./node_modules/@faker-js/faker
+# Copy full node_modules so standalone scripts (migrations, seeds) can resolve all deps
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 
 # Copy entrypoint script
 COPY --from=builder --chown=nextjs:nodejs /app/scripts/docker-entrypoint.sh ./scripts/docker-entrypoint.sh
