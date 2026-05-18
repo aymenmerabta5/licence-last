@@ -176,7 +176,7 @@ jobs:
             # Auto-seed on first deploy (skip if users already exist)
             POSTGRES_USER="$(awk -F= '/^POSTGRES_USER=/{print $2}' .env | tail -n 1)"
             POSTGRES_DB="$(awk -F= '/^POSTGRES_DB=/{print $2}' .env | tail -n 1)"
-            USER_COUNT=$(sudo docker compose -f docker-compose.prod.yml exec -T db psql -U "${POSTGRES_USER:-stag}" -d "${POSTGRES_DB:-stag}" -t -c "SELECT COUNT(*) FROM users;" 2>/dev/null | tr -d ' \n' || echo "0")
+            USER_COUNT=$(sudo docker compose -f docker-compose.prod.yml exec -T db psql -U "${POSTGRES_USER:-stag}" -d "${POSTGRES_DB:-stag}" -t -c 'SELECT COUNT(*) FROM "user";' 2>/dev/null | tr -d ' \n' || echo "0")
 
             if [ "$USER_COUNT" = "0" ] || [ "$USER_COUNT" = "" ]; then
               echo "Fresh database detected — ensuring schema..."

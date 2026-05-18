@@ -21,8 +21,16 @@ function getErrorString(err: unknown): string {
   }
 }
 
+function getPostgresCode(err: unknown): string | undefined {
+  if (err && typeof err === "object" && "code" in err) {
+    return String((err as Record<string, unknown>).code)
+  }
+  return undefined
+}
+
 function isIdempotentError(err: unknown): boolean {
   const text = getErrorString(err)
+  const code = getPostgresCode(err)
   // Safe "already exists" codes that shouldn't block restart when a
   // previous migration run crashed before Drizzle could write the journal.
   const safeCodes = [
@@ -32,7 +40,12 @@ function isIdempotentError(err: unknown): boolean {
     "42701", // column already exists
     "42P16", // table already has column
   ]
-  return safeCodes.some((code) => text.includes(`"${code}"`) || text.includes(code))
+  return safeCodes.some(
+    (safeCode) =>
+      code === safeCode ||
+      text.includes(`"${safeCode}"`) ||
+      text.includes(safeCode),
+  )
 }
 
 try {
