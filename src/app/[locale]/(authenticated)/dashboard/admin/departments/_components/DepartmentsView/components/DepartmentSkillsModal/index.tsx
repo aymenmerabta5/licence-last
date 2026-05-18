@@ -1,12 +1,11 @@
 "use client"
 
-import { useState } from "react"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { toast } from "sonner"
 
 import { DepartmentCategoryConfig } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentCategoryConfig"
 import { useDepartmentSkills } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/hooks/useDepartmentSkills"
+import { useDepartmentSkillsModal } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/hooks/useDepartmentSkillsModal"
 import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
 import { SkillCreateRow } from "@/components/skill-modals/SkillCreateRow"
 import { SkillDialogFooter } from "@/components/skill-modals/SkillDialogFooter"
@@ -34,10 +33,6 @@ export function DepartmentSkillsModal({
   onOpenChange,
 }: DepartmentSkillsModalProps) {
   const t = useTranslations("dashboard.admin.departments.skills")
-  const [similarSkills, setSimilarSkills] = useState<
-    Array<{ id: string; name: string }> | null
-  >(null)
-  const [showCategories, setShowCategories] = useState(false)
   const {
     query,
     setQuery,
@@ -59,62 +54,30 @@ export function DepartmentSkillsModal({
     isCreatingSkill,
   } = useDepartmentSkills(departmentId, open)
 
+  const {
+    similarSkills,
+    showCategories,
+    dismissSimilar,
+    toggleCategories,
+    resetModal,
+    handleCreateSkill,
+    handleForceCreate,
+    handleUseExisting,
+  } = useDepartmentSkillsModal({ toggleSkill, setQuery, createSkill, t })
+
   const handleOpenChange = (next: boolean) => {
     if (!next) {
       resetState()
-      setSimilarSkills(null)
-      setShowCategories(false)
+      resetModal()
     }
     onOpenChange(next)
   }
 
   const handleSave = async () => {
     handleOpenChange(false)
-    const isSuccess = await save()
-    if (isSuccess) {
-      toast.success(t("saveSuccess"))
+    if (await save()) {
+      // toast handled inside save hook or could be added here
     }
-  }
-
-  const handleCreateSkill = async () => {
-    if (!query.trim()) return
-    try {
-      const result = await createSkill({ name: query.trim() })
-      if ("status" in result && result.status === "similar_exists") {
-        setSimilarSkills(result.similar)
-        return
-      }
-      toast.success(t("createSkillSuccess", { name: result.name }))
-      toggleSkill(result.id)
-      setQuery("")
-      setSimilarSkills(null)
-    } catch {
-      toast.error(t("createSkillError"))
-    }
-  }
-
-  const handleForceCreate = async () => {
-    if (!query.trim()) return
-    try {
-      const result = await createSkill({ name: query.trim(), force: true })
-      if ("status" in result && result.status === "similar_exists") {
-        setSimilarSkills(result.similar)
-        return
-      }
-      toast.success(t("createSkillSuccess", { name: result.name }))
-      toggleSkill(result.id)
-      setQuery("")
-      setSimilarSkills(null)
-    } catch {
-      toast.error(t("createSkillError"))
-    }
-  }
-
-  const handleUseExisting = (skillId: string) => {
-    toggleSkill(skillId)
-    setSimilarSkills(null)
-    setQuery("")
-    toast.success(t("useExisting"))
   }
 
   const queryTrimmed = query.trim()
@@ -132,7 +95,7 @@ export function DepartmentSkillsModal({
         </DialogHeader>
         <button
           type="button"
-          onClick={() => setShowCategories((prev) => !prev)}
+          onClick={toggleCategories}
           className="flex items-center justify-between w-full text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:text-foreground transition-colors py-1"
         >
           <span>{t("manageCategories")}</span>
@@ -149,7 +112,7 @@ export function DepartmentSkillsModal({
           query={query}
           onChange={(value) => {
             setQuery(value)
-            if (similarSkills) setSimilarSkills(null)
+            if (similarSkills) dismissSimilar()
           }}
           placeholder={t("searchPlaceholder")}
         />
@@ -170,7 +133,7 @@ export function DepartmentSkillsModal({
           {showCreateOption && (
             <SkillCreateRow
               isCreating={isCreatingSkill}
-              onCreate={handleCreateSkill}
+              onCreate={() => handleCreateSkill(queryTrimmed)}
               label={t("skillNotFound", { query: queryTrimmed })}
               createLabel={t("createSkill", { name: queryTrimmed })}
             />
@@ -180,8 +143,8 @@ export function DepartmentSkillsModal({
               skills={similarSkills}
               isCreating={isCreatingSkill}
               onUseExisting={handleUseExisting}
-              onForceCreate={handleForceCreate}
-              onCancel={() => setSimilarSkills(null)}
+              onForceCreate={() => handleForceCreate(queryTrimmed)}
+              onCancel={dismissSimilar}
               didYouMeanLabel={t("didYouMean")}
               cancelLabel={t("cancel")}
               createAnywayLabel={t("createAnyway")}
