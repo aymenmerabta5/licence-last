@@ -22,8 +22,16 @@ function getErrorString(err: unknown): string {
 }
 
 function getPostgresCode(err: unknown): string | undefined {
-  if (err && typeof err === "object" && "code" in err) {
-    return String((err as Record<string, unknown>).code)
+  let current: unknown = err
+  while (current && typeof current === "object") {
+    if ("code" in current) {
+      return String((current as Record<string, unknown>).code)
+    }
+    if ("cause" in current) {
+      current = (current as Record<string, unknown>).cause
+    } else {
+      break
+    }
   }
   return undefined
 }
