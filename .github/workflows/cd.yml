@@ -132,9 +132,18 @@ jobs:
             cd $HOME/stag
 
             if [ ! -f .env ]; then
-              echo ".env not found at $HOME/stag/.env" >&2
+              echo "[deploy] FATAL: .env not found at $HOME/stag/.env" >&2
               exit 1
             fi
+
+            # Validate critical secrets are present (not empty)
+            for key in POSTGRES_PASSWORD BETTER_AUTH_SECRET DOMAIN_NAME; do
+              value="$(grep "^${key}=" .env | cut -d= -f2- | tail -n 1 || true)"
+              if [ -z "$value" ]; then
+                echo "[deploy] FATAL: ${key} is missing or empty in .env" >&2
+                exit 1
+              fi
+            done
 
             python3 - <<'PY'
             import os
@@ -171,32 +180,34 @@ jobs:
             echo "$GHCR_TOKEN" | sudo docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
 
             sudo docker compose --env-file .env -f docker-compose.prod.yml pull app
-             sudo docker compose --env-file .env -f docker-compose.prod.yml up -d --force-recreate --wait --remove-orphans app redis caddy
+            sudo docker compose --env-file .env -f docker-compose.prod.yml up -d --force-recreate --wait --remove-orphans app redis caddy
 
-            # Auto-seed on first deploy (skip if users already exist)
+            # Detect fresh database and seed if needed
             POSTGRES_USER="$(awk -F= '/^POSTGRES_USER=/{print $2}' .env | tail -n 1)"
             POSTGRES_DB="$(awk -F= '/^POSTGRES_DB=/{print $2}' .env | tail -n 1)"
             USER_COUNT=$(sudo docker compose -f docker-compose.prod.yml exec -T db psql -U "${POSTGRES_USER:-stag}" -d "${POSTGRES_DB:-stag}" -t -c 'SELECT COUNT(*) FROM "user";' 2>/dev/null | tr -d ' \n' || echo "0")
 
             if [ "$USER_COUNT" = "0" ] || [ "$USER_COUNT" = "" ]; then
-              echo "Fresh database detected — running seed..."
+              echo "[deploy] Fresh database detected — running base seed..."
               sudo docker compose -f docker-compose.prod.yml exec -T app bun run src/server/db/seed.ts
-              echo "Seed complete."
+              echo "[deploy] Base seed complete."
             else
-              echo "Database already seeded ($USER_COUNT users) — skipping."
+              echo "[deploy] Database already seeded ($USER_COUNT users) — skipping seed."
             fi
 
             DOMAIN_NAME="$(awk -F= '/^DOMAIN_NAME=/{print $2}' .env | tail -n 1)"
             if [ -z "$DOMAIN_NAME" ]; then
-              echo "DOMAIN_NAME is missing in $HOME/stag/.env" >&2
+              echo "[deploy] FATAL: DOMAIN_NAME is missing in $HOME/stag/.env" >&2
               exit 1
             fi
 
-            # Health check directly via app container (bypasses Caddy TLS on first deploy)
+            # Health check via app container (bypasses Caddy TLS)
+            echo "[deploy] Running health check..."
             sudo docker compose --env-file .env -f docker-compose.prod.yml exec -T app \
               bun -e 'fetch("http://localhost:3000/api/health").then(r => r.ok || process.exit(1))'
-            echo "Health check passed."
+            echo "[deploy] Health check passed."
 
+            echo "[deploy] Active containers:"
             sudo docker compose --env-file .env -f docker-compose.prod.yml ps
 
       - name: Cleanup old images on server

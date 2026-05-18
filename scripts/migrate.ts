@@ -1,10 +1,20 @@
+import { existsSync } from "node:fs"
 import { drizzle } from "drizzle-orm/postgres-js"
 import { migrate } from "drizzle-orm/postgres-js/migrator"
 import postgres from "postgres"
 
+const MIGRATIONS_FOLDER = "./src/server/db/migrations"
+
 const databaseUrl = process.env.DATABASE_URL
 if (!databaseUrl) {
-  console.error("DATABASE_URL is not set")
+  console.error("[migrate] FATAL: DATABASE_URL is not set")
+  process.exit(1)
+}
+
+if (!existsSync(MIGRATIONS_FOLDER)) {
+  console.error(
+    `[migrate] FATAL: Migrations folder not found: ${MIGRATIONS_FOLDER}`,
+  )
   process.exit(1)
 }
 
@@ -13,7 +23,7 @@ const db = drizzle(sql)
 
 function getErrorString(err: unknown): string {
   if (typeof err === "string") return err
-  if (err instanceof Error) return `${err.message}\n${err.stack ?? ""}`
+  if (err instanceof Error) return `${err.name}: ${err.message}`
   try {
     return JSON.stringify(err)
   } catch {
@@ -56,20 +66,44 @@ function isIdempotentError(err: unknown): boolean {
   )
 }
 
-try {
-  await migrate(db, { migrationsFolder: "./src/server/db/migrations" })
-  console.log("Migrations applied successfully")
-} catch (error) {
-  if (isIdempotentError(error)) {
-    console.warn(
-      "Migration step encountered 'already exists' error, treating as success:",
-      getErrorString(error).split("\n")[0] ?? error,
+async function testConnection(): Promise<boolean> {
+  try {
+    await sql`SELECT 1`
+    return true
+  } catch (err) {
+    console.error(
+      "[migrate] FATAL: Cannot connect to database:",
+      getErrorString(err),
     )
-    console.log("Migrations applied successfully (idempotent)")
-  } else {
-    console.error("Migration failed:", error)
+    return false
+  }
+}
+
+async function runMigrations() {
+  const connected = await testConnection()
+  if (!connected) {
     process.exit(1)
   }
-} finally {
-  await sql.end()
+
+  try {
+    await migrate(db, { migrationsFolder: MIGRATIONS_FOLDER })
+    console.log("[migrate] All migrations applied successfully")
+  } catch (error) {
+    const code = getPostgresCode(error)
+    if (isIdempotentError(error)) {
+      console.warn(
+        `[migrate] Caught idempotent error (code: ${code ?? "unknown"})`,
+        "- treating as success.",
+      )
+      console.log("[migrate] Migrations applied successfully (idempotent)")
+    } else {
+      console.error(`[migrate] FATAL: Migration failed (code: ${code ?? "unknown"})`)
+      console.error("[migrate] Details:", getErrorString(error))
+      process.exit(1)
+    }
+  } finally {
+    await sql.end()
+  }
 }
+
+runMigrations()

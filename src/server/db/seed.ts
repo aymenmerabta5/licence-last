@@ -660,12 +660,17 @@ function getSeedAdminCredentials(): SeedAdminCredentials | null {
   const password = process.env.SEED_ADMIN_PASSWORD?.trim()
 
   if (!email || !password) {
-    logger.warn({
-      event: "admin_seed_skipped",
-      reason: "incomplete seed admin credentials",
-      hasEmail: Boolean(email),
-      hasPassword: Boolean(password),
-    })
+    logger.warn(
+      [
+        "",
+        "╔══════════════════════════════════════════════════════════════════╗",
+        "║  WARNING: Super admin seed skipped                               ║",
+        "╠══════════════════════════════════════════════════════════════════╣",
+        "║  Set SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD in .env            ║",
+        "║  to create a super admin account on fresh databases.             ║",
+        "╚══════════════════════════════════════════════════════════════════╝",
+      ].join("\n"),
+    )
     return null
   }
 
@@ -957,6 +962,8 @@ async function main() {
   })
 
   try {
+    logger.info("[seed] Starting base seed...")
+
     for (const entry of SEED_UNIVERSITIES) {
       await seedUniversity(db, entry)
     }
@@ -974,6 +981,26 @@ async function main() {
     await seedDepartmentSkills(db)
     await seedLinkedUniversityAdmin(db)
     await seedSuperAdmin(db)
+
+    // Summary
+    const uniCount = await db<{ count: number }[]>`SELECT COUNT(*)::int AS count FROM university`
+    const deptCount = await db<{ count: number }[]>`SELECT COUNT(*)::int AS count FROM department`
+    const skillCount = await db<{ count: number }[]>`SELECT COUNT(*)::int AS count FROM skill_tag`
+    const userCount = await db<{ count: number }[]>`SELECT COUNT(*)::int AS count FROM "user"`
+
+    logger.info(
+      [
+        "",
+        "╔══════════════════════════════════════════════════════════════════╗",
+        "║  BASE SEED COMPLETE                                              ║",
+        "╠══════════════════════════════════════════════════════════════════╣",
+        `║  Universities: ${String(uniCount[0]?.count ?? 0).padEnd(47)}║`,
+        `║  Departments:  ${String(deptCount[0]?.count ?? 0).padEnd(47)}║`,
+        `║  Skill tags:   ${String(skillCount[0]?.count ?? 0).padEnd(47)}║`,
+        `║  Users:        ${String(userCount[0]?.count ?? 0).padEnd(47)}║`,
+        "╚══════════════════════════════════════════════════════════════════╝",
+      ].join("\n"),
+    )
   } finally {
     await db.end({ timeout: 5 })
   }
@@ -982,10 +1009,10 @@ async function main() {
 if (import.meta.main) {
   main()
     .then(() => {
-      logger.info({ event: "seed_complete" })
+      logger.info({ event: "seed_complete" }, "[seed] Done")
     })
     .catch((err) => {
-      logger.error({ err, event: "seed_failed" }, "Database seeding failed")
+      logger.error({ err, event: "seed_failed" }, "[seed] Database seeding failed")
       process.exitCode = 1
     })
 }
