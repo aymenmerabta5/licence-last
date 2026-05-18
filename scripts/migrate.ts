@@ -11,23 +11,28 @@ if (!databaseUrl) {
 const sql = postgres(databaseUrl, { max: 1, prepare: false })
 const db = drizzle(sql)
 
-function isPostgresError(err: unknown): err is { code?: string; message?: string } {
-  return (
-    typeof err === "object" &&
-    err !== null &&
-    ("code" in err || "message" in err)
-  )
+function getErrorString(err: unknown): string {
+  if (typeof err === "string") return err
+  if (err instanceof Error) return `${err.message}\n${err.stack ?? ""}`
+  try {
+    return JSON.stringify(err)
+  } catch {
+    return String(err)
+  }
 }
 
 function isIdempotentError(err: unknown): boolean {
-  if (!isPostgresError(err)) return false
-  const code = err.code
-  // 42710 = duplicate_object (e.g. enum value already exists)
-  if (code === "42710") return true
-  // Other safe "already exists" codes that shouldn't block restart
-  if (code === "42P06") return true // schema already exists
-  if (code === "42P07") return true // relation already exists
-  return false
+  const text = getErrorString(err)
+  // Safe "already exists" codes that shouldn't block restart when a
+  // previous migration run crashed before Drizzle could write the journal.
+  const safeCodes = [
+    "42710", // duplicate_object (enum value already exists)
+    "42P06", // schema already exists
+    "42P07", // relation (table) already exists
+    "42701", // column already exists
+    "42P16", // table already has column
+  ]
+  return safeCodes.some((code) => text.includes(`"${code}"`) || text.includes(code))
 }
 
 try {
@@ -37,7 +42,7 @@ try {
   if (isIdempotentError(error)) {
     console.warn(
       "Migration step encountered 'already exists' error, treating as success:",
-      isPostgresError(error) ? error.message : error,
+      getErrorString(error).split("\n")[0] ?? error,
     )
     console.log("Migrations applied successfully (idempotent)")
   } else {
