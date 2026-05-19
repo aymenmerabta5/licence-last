@@ -30,8 +30,8 @@ const proficiencyWidths: Record<string, string> = {
 }
 
 const proficiencyColors: Record<string, string> = {
-  a1: "bg-slate-300",
-  a2: "bg-slate-400",
+  a1: "bg-muted-foreground/30",
+  a2: "bg-muted-foreground/40",
   b1: "bg-primary/40",
   b2: "bg-primary/60",
   c1: "bg-primary/80",
@@ -49,23 +49,21 @@ export function LanguagesCard({
 
   return (
     <motion.section
-      initial={{ opacity: 0, x: -20 }}
+      initial={{ opacity: 0, x: -16 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.5, duration: 0.8, ease }}
-      className="relative group"
+      transition={{ delay: 0.45, duration: 0.6, ease }}
+      className="border border-border/50 bg-card overflow-hidden"
     >
       {hasLanguages ? (
-        <div className="relative rounded-[2rem] border border-slate-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-500 hover:shadow-[0_30px_70px_rgba(0,0,0,0.06)]">
-          <div className="px-6 py-6 border-b border-slate-50 bg-slate-50/30 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/5">
-              <Globe className="h-5 w-5 text-primary" />
-            </div>
-            <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-800">
+        <>
+          <div className="px-5 py-4 border-b border-border/20 bg-muted/30 flex items-center gap-2.5">
+            <Globe className="h-4 w-4 text-primary" />
+            <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-foreground">
               {labels.languages}
             </h2>
           </div>
 
-          <div className="p-6 space-y-4">
+          <div className="p-5 space-y-3">
             {languages.map((lang, idx) => {
               const width = proficiencyWidths[lang.proficiency] || "50%"
               const color =
@@ -75,15 +73,15 @@ export function LanguagesCard({
                 <motion.div
                   key={`${lang.languageCode}-${idx}`}
                   {...reveal}
-                  transition={{ delay: 0.6 + idx * 0.1 }}
-                  className="space-y-3 p-4 rounded-2xl bg-slate-50 border border-slate-100 group/item hover:bg-white hover:border-primary/20 transition-all duration-300"
+                  transition={{ delay: 0.55 + idx * 0.08 }}
+                  className="space-y-2 p-3 border border-border/20 bg-muted/20"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white border border-slate-200 text-[11px] font-black uppercase text-slate-500 group-hover/item:text-primary transition-colors">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-card border border-border/30 text-[10px] font-bold uppercase text-muted-foreground">
                         {lang.languageCode}
                       </div>
-                      <span className="text-[14px] font-bold text-slate-700">
+                      <span className="text-sm font-medium text-foreground">
                         {new Intl.DisplayNames([lang.languageCode], {
                           type: "language",
                         }).of(lang.languageCode)}
@@ -91,23 +89,22 @@ export function LanguagesCard({
                     </div>
                     <Badge
                       variant="secondary"
-                      className="bg-white text-primary border-slate-200 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full"
+                      className="bg-card text-foreground border border-border/30 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-sm"
                     >
                       {tProficiency(lang.proficiency as "a1")}
                     </Badge>
                   </div>
 
-                  {/* Proficiency Bar */}
-                  <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                  <div className="h-1.5 w-full bg-muted rounded-sm overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width }}
                       transition={{
-                        duration: 1,
-                        delay: 0.8 + idx * 0.15,
+                        duration: 0.8,
+                        delay: 0.7 + idx * 0.12,
                         ease: "circOut",
                       }}
-                      className={`h-full ${color} rounded-full`}
+                      className={`h-full ${color} rounded-sm`}
                     />
                   </div>
                 </motion.div>
@@ -115,11 +112,11 @@ export function LanguagesCard({
             })}
 
             {canEdit && (
-              <div className="pt-2">
+              <div className="pt-1">
                 <Link href="/dashboard/settings">
                   <button
                     type="button"
-                    className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400 hover:text-primary transition-colors"
+                    className="text-[11px] font-bold uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors"
                   >
                     + {labels.addLanguages}
                   </button>
@@ -127,12 +124,12 @@ export function LanguagesCard({
               </div>
             )}
           </div>
-        </div>
+        </>
       ) : (
-        <div className="rounded-[2rem] border-2 border-dashed border-slate-100 p-12 bg-white/50">
-          <div className="text-center space-y-6">
-            <Languages className="h-10 w-10 mx-auto text-slate-200" />
-            <p className="text-[11px] text-slate-300 font-black uppercase tracking-[0.25em]">
+        <div className="p-8">
+          <div className="text-center space-y-4">
+            <Languages className="h-8 w-8 mx-auto text-muted-foreground/30" />
+            <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-[0.2em]">
               {labels.noLanguagesListed}
             </p>
           </div>

@@ -61,6 +61,13 @@ describe("src/server/services/offers/create", () => {
       title: "Frontend Intern",
       description: "Work on web projects",
       internshipType: "pfe",
+      workMode: "on_site",
+      wilayaCode: 16,
+      durationWeeks: 12,
+      maxPositions: 2,
+      applicationDeadlineAt: new Date("2030-01-01"),
+      expectedStartDate: new Date("2030-01-10"),
+      expectedEndDate: new Date("2030-04-10"),
       skillTagIds: ["skill-1", "skill-2"],
     })
 
@@ -78,6 +85,13 @@ describe("src/server/services/offers/create", () => {
       title: "Backend Intern",
       description: "Work on API projects",
       internshipType: "summer",
+      workMode: "remote",
+      wilayaCode: 16,
+      durationWeeks: 8,
+      maxPositions: 1,
+      applicationDeadlineAt: new Date("2030-01-01"),
+      expectedStartDate: new Date("2030-01-10"),
+      expectedEndDate: new Date("2030-04-10"),
       skillTagIds: [],
     })
 
@@ -93,6 +107,14 @@ describe("src/server/services/offers/create", () => {
       title: "DevOps Intern",
       description: "Learn CI/CD pipelines",
       internshipType: "immersion",
+      workMode: "hybrid",
+      wilayaCode: 16,
+      durationWeeks: 12,
+      maxPositions: 3,
+      applicationDeadlineAt: new Date("2030-01-01"),
+      expectedStartDate: new Date("2030-01-10"),
+      expectedEndDate: new Date("2030-04-10"),
+      skillTagIds: ["skill-1"],
     })
 
     expect(result).toHaveProperty("offerId")

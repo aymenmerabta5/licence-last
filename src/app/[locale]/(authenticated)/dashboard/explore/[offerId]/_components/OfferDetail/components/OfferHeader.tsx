@@ -8,6 +8,7 @@ import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease, reveal } from "@/lib/animations"
+import { resolvePublicUrl } from "@/lib/storage"
 
 interface OfferHeaderProps {
   offer: OfferDetailProps["offer"]
@@ -80,7 +81,7 @@ export function OfferHeader({
           </div>
           {offer.companyLogoUrl ? (
             <Image
-              src={offer.companyLogoUrl}
+              src={resolvePublicUrl(offer.companyLogoUrl) ?? ""}
               alt={offer.companyName}
               width={44}
               height={44}

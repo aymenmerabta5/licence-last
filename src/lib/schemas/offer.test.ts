@@ -36,25 +36,19 @@ describe("src/lib/schemas/offer", () => {
       expect(result.success).toBe(true)
     })
 
-    test("should accept minimal valid offer (title + description + type)", () => {
+    test("should accept minimal valid offer with all required fields", () => {
       const result = schema.safeParse({
         title: "Intern",
         description: "Work with us on real projects",
         internshipType: "summer",
-        skillTagIds: [],
-        languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
-      })
-
-      expect(result.success).toBe(true)
-    })
-
-    test("should accept empty workMode when left unselected", () => {
-      const result = schema.safeParse({
-        title: "Intern",
-        description: "Work with us on real projects",
-        internshipType: "summer",
-        workMode: "",
-        skillTagIds: [],
+        workMode: "on_site",
+        wilayaCode: 16,
+        durationWeeks: 8,
+        maxPositions: 2,
+        applicationDeadlineAt: "2030-01-01",
+        expectedStartDate: "2030-01-10",
+        expectedEndDate: "2030-04-10",
+        skillTagIds: ["skill-1"],
         languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
@@ -65,7 +59,14 @@ describe("src/lib/schemas/offer", () => {
       const result = schema.safeParse({
         description: "Some description here",
         internshipType: "pfe",
-        skillTagIds: [],
+        workMode: "on_site",
+        wilayaCode: 16,
+        durationWeeks: 8,
+        maxPositions: 2,
+        applicationDeadlineAt: "2030-01-01",
+        expectedStartDate: "2030-01-10",
+        expectedEndDate: "2030-04-10",
+        skillTagIds: ["skill-1"],
         languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
@@ -77,7 +78,14 @@ describe("src/lib/schemas/offer", () => {
         title: "AB",
         description: "Some description here",
         internshipType: "pfe",
-        skillTagIds: [],
+        workMode: "on_site",
+        wilayaCode: 16,
+        durationWeeks: 8,
+        maxPositions: 2,
+        applicationDeadlineAt: "2030-01-01",
+        expectedStartDate: "2030-01-10",
+        expectedEndDate: "2030-04-10",
+        skillTagIds: ["skill-1"],
         languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
@@ -93,7 +101,14 @@ describe("src/lib/schemas/offer", () => {
         title: "Good Title",
         description: "Short",
         internshipType: "pfe",
-        skillTagIds: [],
+        workMode: "on_site",
+        wilayaCode: 16,
+        durationWeeks: 8,
+        maxPositions: 2,
+        applicationDeadlineAt: "2030-01-01",
+        expectedStartDate: "2030-01-10",
+        expectedEndDate: "2030-04-10",
+        skillTagIds: ["skill-1"],
         languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
@@ -111,7 +126,14 @@ describe("src/lib/schemas/offer", () => {
         title: "Good Title",
         description: "A long enough description",
         internshipType: "invalid_type",
-        skillTagIds: [],
+        workMode: "on_site",
+        wilayaCode: 16,
+        durationWeeks: 8,
+        maxPositions: 2,
+        applicationDeadlineAt: "2030-01-01",
+        expectedStartDate: "2030-01-10",
+        expectedEndDate: "2030-04-10",
+        skillTagIds: ["skill-1"],
         languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
@@ -124,7 +146,14 @@ describe("src/lib/schemas/offer", () => {
           title: "Good Title",
           description: "A long enough description",
           internshipType: type,
-          skillTagIds: [],
+          workMode: "on_site",
+          wilayaCode: 16,
+          durationWeeks: 8,
+          maxPositions: 2,
+          applicationDeadlineAt: "2030-01-01",
+          expectedStartDate: "2030-01-10",
+          expectedEndDate: "2030-04-10",
+          skillTagIds: ["skill-1"],
           languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
         })
         expect(result.success).toBe(true)
@@ -136,8 +165,14 @@ describe("src/lib/schemas/offer", () => {
         title: "Good Title",
         description: "A long enough description",
         internshipType: "pfe",
+        workMode: "on_site",
         wilayaCode: 99,
-        skillTagIds: [],
+        durationWeeks: 8,
+        maxPositions: 2,
+        applicationDeadlineAt: "2030-01-01",
+        expectedStartDate: "2030-01-10",
+        expectedEndDate: "2030-04-10",
+        skillTagIds: ["skill-1"],
         languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
@@ -149,6 +184,13 @@ describe("src/lib/schemas/offer", () => {
         title: "Good Title",
         description: "A long enough description",
         internshipType: "pfe",
+        workMode: "on_site",
+        wilayaCode: 16,
+        durationWeeks: 8,
+        maxPositions: 2,
+        applicationDeadlineAt: "2030-01-01",
+        expectedStartDate: "2030-01-10",
+        expectedEndDate: "2030-04-10",
         skillTagIds: Array.from({ length: 21 }, (_, i) => `skill-${i}`),
         languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
@@ -167,7 +209,14 @@ describe("src/lib/schemas/offer", () => {
         title: "Good Title",
         description: "A long enough description",
         internshipType: "pfe",
-        skillTagIds: [],
+        workMode: "on_site",
+        wilayaCode: 16,
+        durationWeeks: 8,
+        maxPositions: 2,
+        applicationDeadlineAt: "2030-01-01",
+        expectedStartDate: "2030-01-10",
+        expectedEndDate: "2030-04-10",
+        skillTagIds: ["skill-1"],
         languageRequirements: [],
       })
 
@@ -188,7 +237,14 @@ describe("src/lib/schemas/offer", () => {
         title: "Good Title",
         description: "A long enough description",
         internshipType: "pfe",
-        skillTagIds: [],
+        workMode: "on_site",
+        wilayaCode: 16,
+        durationWeeks: 8,
+        maxPositions: 2,
+        applicationDeadlineAt: "2030-01-01",
+        expectedStartDate: "2030-01-10",
+        expectedEndDate: "2030-04-10",
+        skillTagIds: ["skill-1"],
         languageRequirements: [],
       })
 
@@ -200,7 +256,14 @@ describe("src/lib/schemas/offer", () => {
         title: "Good Title",
         description: "A long enough description",
         internshipType: "pfe",
-        skillTagIds: [],
+        workMode: "on_site",
+        wilayaCode: 16,
+        durationWeeks: 8,
+        maxPositions: 2,
+        applicationDeadlineAt: "2030-01-01",
+        expectedStartDate: "2030-01-10",
+        expectedEndDate: "2030-04-10",
+        skillTagIds: ["skill-1"],
         languageRequirements: [
           {
             languageCode: "en",
@@ -227,7 +290,13 @@ describe("src/lib/schemas/offer", () => {
         description: "A long enough description",
         internshipType: "pfe",
         workMode: "office",
-        skillTagIds: [],
+        wilayaCode: 16,
+        durationWeeks: 8,
+        maxPositions: 2,
+        applicationDeadlineAt: "2030-01-01",
+        expectedStartDate: "2030-01-10",
+        expectedEndDate: "2030-04-10",
+        skillTagIds: ["skill-1"],
         languageRequirements: [
           {
             languageCode: "xx",
@@ -259,7 +328,14 @@ describe("src/lib/schemas/offer", () => {
         title: "Good Title",
         description: "A long enough description",
         internshipType: "pfe",
-        skillTagIds: [],
+        workMode: "on_site",
+        wilayaCode: 16,
+        durationWeeks: 8,
+        maxPositions: 2,
+        applicationDeadlineAt: "2030-01-01",
+        expectedStartDate: "2030-01-10",
+        expectedEndDate: "2030-04-10",
+        skillTagIds: ["skill-1"],
         languageRequirements: [
           {
             languageCode: "en",
@@ -278,8 +354,14 @@ describe("src/lib/schemas/offer", () => {
         title: "Good Title",
         description: "A long enough description",
         internshipType: "pfe",
+        workMode: "on_site",
+        wilayaCode: 16,
         durationWeeks: "8",
-        skillTagIds: [],
+        maxPositions: 2,
+        applicationDeadlineAt: "2030-01-01",
+        expectedStartDate: "2030-01-10",
+        expectedEndDate: "2030-04-10",
+        skillTagIds: ["skill-1"],
         languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
@@ -289,13 +371,19 @@ describe("src/lib/schemas/offer", () => {
       }
     })
 
-    test("should reject incomplete expected period", () => {
+    test("should reject empty expected end date", () => {
       const result = schema.safeParse({
         title: "Good Title",
         description: "A long enough description",
         internshipType: "pfe",
+        workMode: "on_site",
+        wilayaCode: 16,
+        durationWeeks: 8,
+        maxPositions: 2,
+        applicationDeadlineAt: "2030-01-01",
         expectedStartDate: "2030-01-10",
-        skillTagIds: [],
+        expectedEndDate: "",
+        skillTagIds: ["skill-1"],
         languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
@@ -304,7 +392,7 @@ describe("src/lib/schemas/offer", () => {
         const issue = result.error.issues.find(
           (i) => i.path[0] === "expectedEndDate",
         )
-        expect(issue?.message).toBe("t:expectedPeriodBothRequired")
+        expect(issue?.message).toBe("t:dateRequired")
       }
     })
 
@@ -313,9 +401,14 @@ describe("src/lib/schemas/offer", () => {
         title: "Good Title",
         description: "A long enough description",
         internshipType: "pfe",
+        workMode: "on_site",
+        wilayaCode: 16,
+        durationWeeks: 8,
+        maxPositions: 2,
+        applicationDeadlineAt: "2030-01-01",
         expectedStartDate: "2030-02-10",
         expectedEndDate: "2030-01-10",
-        skillTagIds: [],
+        skillTagIds: ["skill-1"],
         languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 
@@ -333,10 +426,14 @@ describe("src/lib/schemas/offer", () => {
         title: "Good Title",
         description: "A long enough description",
         internshipType: "pfe",
+        workMode: "on_site",
+        wilayaCode: 16,
+        durationWeeks: 8,
+        maxPositions: 2,
         applicationDeadlineAt: "2030-02-01",
         expectedStartDate: "2030-01-10",
         expectedEndDate: "2030-03-10",
-        skillTagIds: [],
+        skillTagIds: ["skill-1"],
         languageRequirements: DEFAULT_LANGUAGE_REQUIREMENTS,
       })
 

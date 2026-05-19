@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { Link } from "@/i18n/routing"
 import { INTERNSHIP_TYPE_COLORS } from "@/lib/constants/internship"
 import { getLanguageLabel, toSupportedLocale } from "@/lib/constants/languages"
+import { resolvePublicUrl } from "@/lib/storage"
 import { cn } from "@/lib/utils"
 import { getWilayaName } from "@/lib/wilayas"
 
@@ -75,7 +76,7 @@ export function OfferCard({ offer }: OfferCardProps) {
           <div className="flex items-start gap-3">
             {offer.companyLogoUrl ? (
               <Image
-                src={offer.companyLogoUrl}
+                src={resolvePublicUrl(offer.companyLogoUrl) ?? ""}
                 alt={offer.companyName}
                 width={40}
                 height={40}

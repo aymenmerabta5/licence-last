@@ -109,15 +109,13 @@ export function useOfferForm(
               | "immersion"
               | "summer"
               | "practical",
-            workMode: value.workMode
-              ? (value.workMode as "on_site" | "hybrid" | "remote")
-              : undefined,
-            wilayaCode: value.wilayaCode || undefined,
-            durationWeeks: value.durationWeeks || undefined,
-            maxPositions: value.maxPositions || undefined,
-            applicationDeadlineAt: value.applicationDeadlineAt || undefined,
-            expectedStartDate: value.expectedStartDate || undefined,
-            expectedEndDate: value.expectedEndDate || undefined,
+            workMode: value.workMode as "on_site" | "hybrid" | "remote",
+            wilayaCode: value.wilayaCode,
+            durationWeeks: value.durationWeeks,
+            maxPositions: value.maxPositions,
+            applicationDeadlineAt: value.applicationDeadlineAt,
+            expectedStartDate: value.expectedStartDate,
+            expectedEndDate: value.expectedEndDate,
             skillTagIds: value.skillTagIds,
             ...(isLanguageRequirementsEnabled
               ? { languageRequirements: value.languageRequirements }

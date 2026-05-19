@@ -27,14 +27,14 @@ export async function createOffer(data: {
   title: string
   description: string
   internshipType: "pfe" | "immersion" | "summer" | "practical"
-  workMode?: "on_site" | "hybrid" | "remote"
-  wilayaCode?: number
-  durationWeeks?: number
-  maxPositions?: number
-  applicationDeadlineAt?: Date | null
-  expectedStartDate?: Date | null
-  expectedEndDate?: Date | null
-  skillTagIds?: string[]
+  workMode: "on_site" | "hybrid" | "remote"
+  wilayaCode: number
+  durationWeeks: number
+  maxPositions: number
+  applicationDeadlineAt: Date
+  expectedStartDate: Date
+  expectedEndDate: Date
+  skillTagIds: string[]
   languageRequirements?: OfferLanguageRequirementInput[]
 }) {
   const offerId = randomUUID()

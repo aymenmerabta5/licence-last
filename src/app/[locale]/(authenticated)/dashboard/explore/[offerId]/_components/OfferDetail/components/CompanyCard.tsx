@@ -10,6 +10,7 @@ import type { OfferDetailProps } from "@/app/[locale]/(authenticated)/dashboard/
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
 import { ease } from "@/lib/animations"
+import { resolvePublicUrl } from "@/lib/storage"
 
 interface CompanyCardProps {
   offer: OfferDetailProps["offer"]
@@ -38,7 +39,7 @@ export function CompanyCard({
         <div className="flex items-start gap-4">
           {offer.companyLogoUrl ? (
             <Image
-              src={offer.companyLogoUrl}
+              src={resolvePublicUrl(offer.companyLogoUrl) ?? ""}
               alt={offer.companyName}
               width={56}
               height={56}

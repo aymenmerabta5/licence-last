@@ -2,6 +2,7 @@
 
 import { Building2 } from "lucide-react"
 import Image from "next/image"
+import { resolvePublicUrl } from "@/lib/storage"
 
 interface CompanyLogoProps {
   logoUrl: string | null
@@ -16,12 +17,14 @@ export function CompanyLogo({ logoUrl, name }: CompanyLogoProps) {
     .join("")
     .toUpperCase()
 
+  const resolved = resolvePublicUrl(logoUrl)
+
   return (
     <div className="relative shrink-0">
       <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-xl ring-1 ring-border ring-offset-2 ring-offset-background overflow-hidden bg-muted flex items-center justify-center">
-        {logoUrl ? (
+        {resolved ? (
           <Image
-            src={logoUrl}
+            src={resolved}
             alt={name}
             fill
             className="object-cover"

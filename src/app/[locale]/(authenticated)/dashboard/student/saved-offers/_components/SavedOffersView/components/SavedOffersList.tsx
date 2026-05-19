@@ -5,6 +5,7 @@ import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { Link } from "@/i18n/routing"
+import { resolvePublicUrl } from "@/lib/storage"
 import { getWilayaName } from "@/lib/wilayas"
 
 interface SavedOffer {
@@ -54,7 +55,7 @@ export function SavedOffersList({
               <div className="flex items-start gap-3 min-w-0">
                 {offer.companyLogoUrl ? (
                   <Image
-                    src={offer.companyLogoUrl}
+                    src={resolvePublicUrl(offer.companyLogoUrl) ?? ""}
                     alt={offer.companyName}
                     width={36}
                     height={36}

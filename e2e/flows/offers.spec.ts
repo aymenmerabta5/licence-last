@@ -25,6 +25,15 @@ test.describe("Offer CRUD & Publishing", () => {
       "An internship offer created by E2E tests",
     )
 
+    await page.selectOption("#offer-type", "pfe")
+    await page.selectOption("#offer-work-mode", "on_site")
+    await page.selectOption("#offer-wilaya", "16")
+    await page.fill("#offer-duration", "12")
+    await page.fill("#offer-positions", "2")
+    await page.fill("#offer-application-deadline", "2030-01-01")
+    await page.fill("#offer-expected-start-date", "2030-01-10")
+    await page.fill("#offer-expected-end-date", "2030-04-10")
+
     const skillButton = page.locator('button:has-text("React")').first()
     await expect(skillButton).toBeVisible({ timeout: 10000 })
     await skillButton.click()

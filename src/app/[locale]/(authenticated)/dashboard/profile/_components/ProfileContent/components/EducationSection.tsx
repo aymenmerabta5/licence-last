@@ -30,64 +30,56 @@ export function EducationSection({
   return (
     <motion.section
       {...reveal}
-      transition={{ delay: 0.4, duration: 0.8, ease }}
-      className="space-y-8"
+      transition={{ delay: 0.4, duration: 0.6, ease }}
+      className="space-y-4"
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-5">
-          <span className="text-[10px] font-black text-primary/40 uppercase tracking-[0.3em] hidden sm:block">
-            02
-          </span>
-          <div className="h-12 w-2 rounded-full bg-primary/40" />
-          <h2 className="font-serif text-3xl sm:text-4xl 2xl:text-5xl font-bold text-slate-900 tracking-tight">
-            {labels.education}
-          </h2>
-        </div>
+      <div className="flex items-center gap-3">
+        <div className="h-0.5 w-8 bg-primary/60" />
+        <h2 className="font-serif text-xl sm:text-2xl text-heading">
+          {labels.education}
+        </h2>
       </div>
 
       {hasEducation ? (
-        <div className="relative">
-          {/* Timeline Line */}
-          <div className="absolute top-0 bottom-0 start-[27px] sm:start-[35px] md:start-[43px] w-1 bg-gradient-to-b from-primary/30 via-primary/10 to-transparent rounded-full" />
+        <div className="relative ps-6 sm:ps-8">
+          {/* Timeline line */}
+          <div className="absolute top-0 bottom-0 start-[11px] sm:start-[15px] w-px bg-border" />
 
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 12 }}
             animate={{ opacity: 1, x: 0 }}
-            className="relative ps-2 sm:ps-4 md:ps-6 group"
+            transition={{ delay: 0.5 }}
+            className="relative"
           >
-            {/* Timeline Marker */}
-            <div className="absolute start-[18px] sm:start-[26px] md:start-[34px] top-5 h-6 w-6 rounded-full border-4 border-white bg-primary shadow-lg shadow-primary/20 group-hover:scale-125 transition-transform" />
+            {/* Timeline dot */}
+            <div className="absolute start-0 sm:start-1 top-2 h-2.5 w-2.5 rounded-full border-2 border-background bg-primary" />
 
-            <div className="rounded-[2.5rem] border border-slate-100 bg-white p-8 sm:p-12 2xl:p-14 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_30px_70px_rgba(0,0,0,0.06)] transition-all duration-500">
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-8">
-                <div className="space-y-6">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
-                      <GraduationCap className="h-4 w-4" />
-                      {labels.university}
-                    </div>
-                    <h3 className="text-2xl sm:text-3xl 2xl:text-4xl font-bold text-slate-800 leading-tight font-serif">
-                      {university.name}
-                    </h3>
+            <div className="border border-border/50 bg-card p-6 sm:p-8 ms-5 sm:ms-6">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-xs text-primary font-bold uppercase tracking-wide">
+                    <GraduationCap className="h-3.5 w-3.5" />
+                    {labels.university}
                   </div>
+                  <h3 className="font-serif text-xl sm:text-2xl text-heading leading-tight">
+                    {university.name}
+                  </h3>
 
                   {university.city && (
-                    <div className="flex flex-wrap gap-6">
-                      <div className="flex items-center gap-2.5 text-slate-400 font-medium">
-                        <MapPin className="h-5 w-5 text-slate-300" />
-                        <span className="text-sm">{university.city}</span>
-                      </div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <MapPin className="h-4 w-4" />
+                      {university.city}
                     </div>
                   )}
 
                   {profile?.department && (
-                    <div className="pt-5 border-t border-slate-50">
-                      <div className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1.5">
+                    <div className="pt-3 border-t border-border/20">
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">
                         Department
-                      </div>
-                      <p className="text-lg font-bold text-slate-600">
-                        {profile.department}{" "}
-                        {profile.level && `— ${profile.level}`}
+                      </p>
+                      <p className="text-sm font-medium text-foreground">
+                        {profile.department}
+                        {profile.level && ` — ${profile.level}`}
                       </p>
                     </div>
                   )}
@@ -98,7 +90,7 @@ export function EducationSection({
                     <Button
                       variant="outline"
                       size="sm"
-                      className="rounded-full border-slate-200 text-slate-400 hover:text-primary transition-colors"
+                      className="rounded-md text-xs"
                     >
                       Edit
                     </Button>
@@ -109,14 +101,17 @@ export function EducationSection({
           </motion.div>
         </div>
       ) : (
-        <div className="rounded-[2.5rem] border-2 border-dashed border-slate-100 bg-white/50 p-16 text-center space-y-8">
-          <GraduationCap className="h-16 w-16 mx-auto text-slate-100" />
-          <p className="text-lg text-slate-300 font-medium max-w-xs mx-auto">
+        <div className="border border-dashed border-border/40 bg-card/50 p-10 text-center space-y-4">
+          <GraduationCap className="h-10 w-10 mx-auto text-muted-foreground/30" />
+          <p className="text-sm text-muted-foreground max-w-xs mx-auto">
             {labels.emptyMessage}
           </p>
           {canEdit && (
             <Link href="/dashboard/settings">
-              <Button className="rounded-full h-14 px-10 bg-primary text-xs font-black uppercase tracking-widest">
+              <Button
+                size="sm"
+                className="rounded-md text-xs font-bold uppercase tracking-[0.15em]"
+              >
                 {labels.addEducation}
               </Button>
             </Link>

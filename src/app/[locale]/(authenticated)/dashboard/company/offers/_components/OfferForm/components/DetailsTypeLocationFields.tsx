@@ -77,6 +77,7 @@ export function DetailsTypeLocationFields({
             value={field.state.value}
             onChange={(value) => field.handleChange(value as WorkMode | "")}
             onBlur={field.handleBlur}
+            error={getFieldError(field)}
           />
         )}
       </form.Field>
@@ -92,6 +93,7 @@ export function DetailsTypeLocationFields({
             value={field.state.value}
             onChange={(value) => field.handleChange(Number(value))}
             onBlur={field.handleBlur}
+            error={getFieldError(field)}
           />
         )}
       </form.Field>

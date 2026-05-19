@@ -225,14 +225,14 @@ export const createOfferProcedure = companyAdminProcedureStandard
       title: z.string().min(3),
       description: z.string().min(10),
       internshipType: internshipTypeSchema,
-      workMode: workModeSchema.optional(),
-      wilayaCode: z.coerce.number().int().min(1).max(58).optional(),
-      durationWeeks: z.coerce.number().int().min(1).max(52).optional(),
-      maxPositions: z.coerce.number().int().min(1).max(100).optional(),
-      applicationDeadlineAt: z.string().min(1).optional(),
-      expectedStartDate: z.string().min(1).optional(),
-      expectedEndDate: z.string().min(1).optional(),
-      skillTagIds: z.array(z.string()).max(20).default([]),
+      workMode: workModeSchema,
+      wilayaCode: z.coerce.number().int().min(1).max(58),
+      durationWeeks: z.coerce.number().int().min(1).max(52),
+      maxPositions: z.coerce.number().int().min(1).max(100),
+      applicationDeadlineAt: z.string().min(1),
+      expectedStartDate: z.string().min(1),
+      expectedEndDate: z.string().min(1),
+      skillTagIds: z.array(z.string()).min(1).max(20),
       languageRequirements: z.array(languageRequirementSchema).optional(),
     }),
   )
@@ -245,32 +245,23 @@ export const createOfferProcedure = companyAdminProcedureStandard
       ...restInput
     } = input
 
-    if (
-      (expectedStartDateInput && !expectedEndDateInput) ||
-      (!expectedStartDateInput && expectedEndDateInput)
-    ) {
-      throw new ORPCError("BAD_REQUEST", {
-        message: "Expected start and end dates must both be provided",
-      })
-    }
-
-    let applicationDeadlineAt: Date | undefined
-    let expectedStartDate: Date | undefined
-    let expectedEndDate: Date | undefined
+    let applicationDeadlineAt: Date
+    let expectedStartDate: Date
+    let expectedEndDate: Date
 
     try {
-      applicationDeadlineAt = parseOptionalDate(
+      applicationDeadlineAt = parseInputDate(
         applicationDeadlineAtInput,
         "Application deadline",
-      ) as Date | undefined
-      expectedStartDate = parseOptionalDate(
+      )
+      expectedStartDate = parseInputDate(
         expectedStartDateInput,
         "Expected start date",
-      ) as Date | undefined
-      expectedEndDate = parseOptionalDate(
+      )
+      expectedEndDate = parseInputDate(
         expectedEndDateInput,
         "Expected end date",
-      ) as Date | undefined
+      )
     } catch (error) {
       throw new ORPCError("BAD_REQUEST", {
         message: error instanceof Error ? error.message : "Invalid date input",
@@ -308,11 +299,9 @@ export const createOfferProcedure = companyAdminProcedureStandard
       const result = await createOffer({
         companyId: context.companyMembership.companyId,
         ...restInput,
-        ...(applicationDeadlineAt !== undefined
-          ? { applicationDeadlineAt }
-          : {}),
-        ...(expectedStartDate !== undefined ? { expectedStartDate } : {}),
-        ...(expectedEndDate !== undefined ? { expectedEndDate } : {}),
+        applicationDeadlineAt,
+        expectedStartDate,
+        expectedEndDate,
         ...(isLanguageRequirementsEnabled
           ? { languageRequirements: languageRequirements ?? [] }
           : {}),

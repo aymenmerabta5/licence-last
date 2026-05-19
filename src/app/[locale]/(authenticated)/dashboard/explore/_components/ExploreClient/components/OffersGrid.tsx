@@ -50,7 +50,7 @@ export function OffersGrid({
       <div className="px-6 py-6">
         <div className="flex gap-8">
           {/* Sidebar filters — desktop only */}
-          <aside className="hidden lg:block w-56 shrink-0 sticky top-24 self-start max-h-[calc(100vh-8rem)] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <aside className="hidden lg:block w-56 shrink-0 sticky top-24 self-start max-h-[calc(100vh-8rem)] overflow-y-auto [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 pb-6">
             {filterPanel}
           </aside>
 

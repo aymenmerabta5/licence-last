@@ -3,7 +3,6 @@
 import type { LucideIcon } from "lucide-react"
 import * as motion from "motion/react-client"
 import { ease, fadeIn, reveal } from "@/lib/animations"
-import { cn } from "@/lib/utils"
 
 interface StatItem {
   title: string
@@ -20,8 +19,8 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
   return (
     <motion.div
       {...fadeIn}
-      transition={{ duration: 0.6, delay: 0.2, ease }}
-      className="grid grid-cols-1 sm:grid-cols-3 gap-6 2xl:gap-8"
+      transition={{ duration: 0.6, delay: 0.15, ease }}
+      className="grid grid-cols-1 sm:grid-cols-3 gap-4"
     >
       {stats.map((stat, i) => {
         const Icon = stat.icon
@@ -32,54 +31,43 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
           <motion.div
             key={i}
             {...reveal}
-            transition={{ delay: 0.3 + i * 0.1, duration: 0.6, ease }}
-            className="group relative"
+            transition={{ delay: 0.25 + i * 0.08, duration: 0.5, ease }}
+            className="border border-border/50 bg-card p-5 space-y-3"
           >
-            <div
-              className={cn(
-                "relative h-full rounded-[2rem] border border-slate-100 bg-white p-8 2xl:p-10 transition-all duration-500",
-                "hover:border-primary/20 hover:shadow-[0_30px_60px_rgba(0,0,0,0.05)] hover:-translate-y-1",
-              )}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex h-12 w-12 2xl:h-14 2xl:w-14 items-center justify-center rounded-2xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                  <Icon className="h-6 w-6 2xl:h-7 2xl:w-7" />
-                </div>
-                <div className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-300 group-hover:text-primary transition-colors">
-                  {stat.title}
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="font-serif text-3xl sm:text-4xl 2xl:text-5xl font-bold tracking-tight text-slate-900 group-hover:text-primary transition-colors duration-500">
-                  {stat.value}
-                </div>
-
-                {isHighlight ? (
-                  <div className="space-y-3 pt-2">
-                    <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${percentage}%` }}
-                        transition={{
-                          duration: 1.5,
-                          delay: 0.5,
-                          ease: "circOut",
-                        }}
-                        className="h-full bg-primary rounded-full shadow-[0_4px_10px_rgba(var(--primary-rgb),0.2)]"
-                      />
-                    </div>
-                    <p className="text-[11px] font-bold text-primary/60 uppercase tracking-widest">
-                      {stat.description}
-                    </p>
-                  </div>
-                ) : (
-                  <p className="text-[13px] text-slate-400 font-medium leading-relaxed italic">
-                    {stat.description}
-                  </p>
-                )}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium uppercase tracking-wide">
+                <Icon className="h-3.5 w-3.5 text-primary" />
+                {stat.title}
               </div>
             </div>
+
+            <div className="font-serif text-3xl text-heading tracking-tight">
+              {stat.value}
+            </div>
+
+            {isHighlight ? (
+              <div className="space-y-2">
+                <div className="h-1.5 w-full bg-muted rounded-sm overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${percentage}%` }}
+                    transition={{
+                      duration: 1.2,
+                      delay: 0.4,
+                      ease: "circOut",
+                    }}
+                    className="h-full bg-primary rounded-sm"
+                  />
+                </div>
+                <p className="text-[11px] font-bold text-primary/70 uppercase tracking-wider">
+                  {stat.description}
+                </p>
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground italic">
+                {stat.description}
+              </p>
+            )}
           </motion.div>
         )
       })}

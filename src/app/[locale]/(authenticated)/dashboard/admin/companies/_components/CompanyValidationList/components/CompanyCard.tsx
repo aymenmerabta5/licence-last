@@ -13,6 +13,7 @@ import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { CompanyCardActionPanel } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/components/CompanyCardActionPanel"
 import type { CompanyListItem } from "@/app/[locale]/(authenticated)/dashboard/admin/companies/_components/CompanyValidationList/types"
+import { resolvePublicUrl } from "@/lib/storage"
 import { getWilayaName } from "@/lib/wilayas"
 
 const STATUS_STYLES: Record<string, string> = {
@@ -89,7 +90,7 @@ export function CompanyCard({
               <div className="flex items-center gap-4">
                 {company.logoUrl ? (
                   <Image
-                    src={company.logoUrl}
+                    src={resolvePublicUrl(company.logoUrl) ?? ""}
                     alt={company.name}
                     width={48}
                     height={48}

@@ -59,6 +59,11 @@ function getStorageImageRemotePatterns(): ImageRemotePattern[] {
       hostname: "*.r2.dev",
       pathname: "/**",
     },
+    {
+      protocol: "https",
+      hostname: "picsum.photos",
+      pathname: "/**",
+    },
   )
 
   return Array.from(

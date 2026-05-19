@@ -51,11 +51,13 @@ export function SearchBar({
             </span>
           )}
         </SheetTrigger>
-        <SheetContent side="left" className="w-80 sm:w-96 max-w-[90vw]">
-          <SheetHeader>
+        <SheetContent side="left" className="w-80 sm:w-96 max-w-[90vw] overflow-hidden">
+          <SheetHeader className="shrink-0">
             <SheetTitle className="font-serif">{t("filters")}</SheetTitle>
           </SheetHeader>
-          <div className="mt-6">{filterPanel}</div>
+          <div className="overflow-y-auto flex-1 pe-1 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5">
+            <div className="pb-6">{filterPanel}</div>
+          </div>
         </SheetContent>
       </Sheet>
 

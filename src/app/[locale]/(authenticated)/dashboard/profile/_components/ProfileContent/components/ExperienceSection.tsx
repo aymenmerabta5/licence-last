@@ -33,51 +33,46 @@ export function ExperienceSection({
   return (
     <motion.section
       {...reveal}
-      transition={{ delay: 0.5, duration: 0.8, ease }}
-      className="space-y-10"
+      transition={{ delay: 0.5, duration: 0.6, ease }}
+      className="space-y-4"
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-5">
-          <span className="text-[10px] font-black text-primary/40 uppercase tracking-[0.3em] hidden sm:block">
-            03
-          </span>
-          <div className="h-12 w-2 rounded-full bg-primary/40" />
-          <h2 className="font-serif text-3xl sm:text-4xl 2xl:text-5xl font-bold text-slate-900 tracking-tight">
-            {labels.experience}
-          </h2>
-        </div>
+      <div className="flex items-center gap-3">
+        <div className="h-0.5 w-8 bg-primary/60" />
+        <h2 className="font-serif text-xl sm:text-2xl text-heading">
+          {labels.experience}
+        </h2>
       </div>
 
       {hasExperience ? (
-        <div className="relative space-y-10">
-          {/* Timeline Line */}
-          <div className="absolute top-0 bottom-0 start-[27px] sm:start-[35px] md:start-[43px] w-1 bg-gradient-to-b from-primary/30 via-primary/10 to-transparent rounded-full" />
+        <div className="relative ps-6 sm:ps-8 space-y-6">
+          {/* Timeline line */}
+          <div className="absolute top-0 bottom-0 start-[11px] sm:start-[15px] w-px bg-border" />
 
           {experiences.map((exp, idx) => (
             <motion.div
               key={exp.id}
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 12 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.6 + idx * 0.1 }}
-              className="relative ps-2 sm:ps-4 md:ps-6 group"
+              transition={{ delay: 0.55 + idx * 0.08 }}
+              className="relative"
             >
-              {/* Timeline Marker */}
-              <div className="absolute start-[18px] sm:start-[26px] md:start-[34px] top-6 h-6 w-6 rounded-full border-4 border-white bg-primary shadow-lg shadow-primary/20 group-hover:scale-125 transition-transform" />
+              {/* Timeline dot */}
+              <div className="absolute start-0 sm:start-1 top-2 h-2.5 w-2.5 rounded-full border-2 border-background bg-primary" />
 
-              <div className="rounded-[2.5rem] border border-slate-100 bg-white p-8 sm:p-12 2xl:p-14 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_30px_70px_rgba(0,0,0,0.06)] transition-all duration-500">
-                <div className="space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
-                        <Briefcase className="h-4 w-4" />
+              <div className="border border-border/50 bg-card p-6 sm:p-8 ms-5 sm:ms-6">
+                <div className="space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div className="flex items-center gap-2 text-xs text-primary font-bold uppercase tracking-wide">
+                        <Briefcase className="h-3.5 w-3.5" />
                         {exp.organization}
                       </div>
-                      <h3 className="text-2xl sm:text-3xl 2xl:text-4xl font-bold text-slate-800 leading-tight font-serif">
+                      <h3 className="font-serif text-lg sm:text-xl text-heading leading-tight mt-1">
                         {exp.title}
                       </h3>
                     </div>
-                    <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-2xl bg-slate-50 border border-slate-100 text-slate-400 font-bold text-[11px] uppercase tracking-widest shrink-0">
-                      <Calendar className="h-3.5 w-3.5 text-slate-300" />
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-sm bg-muted border border-border/20 text-muted-foreground text-[11px] font-bold uppercase tracking-wider shrink-0">
+                      <Calendar className="h-3 w-3" />
                       {dateFormatter.format(exp.startDate)} —{" "}
                       {exp.endDate
                         ? dateFormatter.format(exp.endDate)
@@ -86,7 +81,7 @@ export function ExperienceSection({
                   </div>
 
                   {exp.description && (
-                    <p className="text-base sm:text-lg text-slate-500 leading-relaxed font-light max-w-3xl">
+                    <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl pt-2">
                       {exp.description}
                     </p>
                   )}
@@ -96,33 +91,30 @@ export function ExperienceSection({
           ))}
 
           {canEdit && (
-            <div className="ps-2 sm:ps-4 md:ps-6">
+            <div className="ms-5 sm:ms-6">
               <Link href="/dashboard/settings">
                 <button
                   type="button"
-                  className="flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.25em] text-slate-300 hover:text-primary transition-all"
+                  className="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors"
                 >
-                  <span>+ {labels.addExperience}</span>
-                  <motion.span
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ repeat: Infinity, duration: 1.5 }}
-                  >
-                    →
-                  </motion.span>
+                  + {labels.addExperience}
                 </button>
               </Link>
             </div>
           )}
         </div>
       ) : (
-        <div className="rounded-[2.5rem] border-2 border-dashed border-slate-100 bg-white/50 p-16 text-center space-y-8">
-          <Briefcase className="h-16 w-16 mx-auto text-slate-100" />
-          <p className="text-lg text-slate-300 font-medium max-w-xs mx-auto">
+        <div className="border border-dashed border-border/40 bg-card/50 p-10 text-center space-y-4">
+          <Briefcase className="h-10 w-10 mx-auto text-muted-foreground/30" />
+          <p className="text-sm text-muted-foreground max-w-xs mx-auto">
             {labels.emptyMessage}
           </p>
           {canEdit && (
             <Link href="/dashboard/settings">
-              <Button className="rounded-full h-14 px-10 bg-primary text-xs font-black uppercase tracking-widest">
+              <Button
+                size="sm"
+                className="rounded-md text-xs font-bold uppercase tracking-[0.15em]"
+              >
                 {labels.addExperience}
               </Button>
             </Link>

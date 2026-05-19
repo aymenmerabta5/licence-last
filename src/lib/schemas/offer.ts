@@ -61,37 +61,33 @@ export function createOfferSchema(
       internshipType: z.enum(["pfe", "immersion", "summer", "practical"], {
         error: t("internshipTypeRequired"),
       }),
-      workMode: z
-        .enum(["on_site", "hybrid", "remote"], {
-          error: t("workModeInvalid"),
-        })
-        .optional()
-        .or(z.literal("")),
+      workMode: z.enum(["on_site", "hybrid", "remote"], {
+        error: t("workModeInvalid"),
+      }),
       wilayaCode: z.coerce
         .number()
         .int()
         .min(1, { error: t("wilayaRequired") })
-        .max(58, { error: t("wilayaInvalid") })
-        .optional()
-        .or(z.literal(0)),
+        .max(58, { error: t("wilayaInvalid") }),
       durationWeeks: z.coerce
         .number()
         .int()
         .min(1, { error: t("durationWeeksMin") })
-        .max(52, { error: t("durationWeeksMax") })
-        .optional()
-        .or(z.literal(0)),
+        .max(52, { error: t("durationWeeksMax") }),
       maxPositions: z.coerce
         .number()
         .int()
         .min(1, { error: t("maxPositionsMin") })
-        .max(100, { error: t("maxPositionsMax") })
-        .optional()
-        .or(z.literal(0)),
-      applicationDeadlineAt: z.string().optional().or(z.literal("")),
-      expectedStartDate: z.string().optional().or(z.literal("")),
-      expectedEndDate: z.string().optional().or(z.literal("")),
-      skillTagIds: z.array(z.string()).max(20, { error: t("offerSkillsMax") }),
+        .max(100, { error: t("maxPositionsMax") }),
+      applicationDeadlineAt: z
+        .string()
+        .min(1, { message: t("dateRequired") }),
+      expectedStartDate: z.string().min(1, { message: t("dateRequired") }),
+      expectedEndDate: z.string().min(1, { message: t("dateRequired") }),
+      skillTagIds: z
+        .array(z.string())
+        .min(1, { message: t("offerSkillsMin") })
+        .max(20, { message: t("offerSkillsMax") }),
       languageRequirements: languageRequirementsSchema,
     })
     .superRefine((data, ctx) => {

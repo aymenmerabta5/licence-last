@@ -29,27 +29,27 @@ function groupByCategory(skills: StudentSkill[], fallbackCategory: string) {
   return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b))
 }
 
-const categoryGradients: Record<string, string> = {
+const categoryStyles: Record<string, string> = {
   frontend:
-    "from-amber-500/10 to-orange-500/10 text-amber-700 border-amber-200 hover:bg-amber-500 hover:text-white hover:border-amber-500",
+    "bg-amber-500/10 text-amber-700 border-amber-200/60 hover:bg-amber-500 hover:text-white",
   backend:
-    "from-emerald-500/10 to-teal-500/10 text-emerald-700 border-emerald-200 hover:bg-emerald-500 hover:text-white hover:border-emerald-500",
+    "bg-emerald-500/10 text-emerald-700 border-emerald-200/60 hover:bg-emerald-500 hover:text-white",
   devops:
-    "from-sky-500/10 to-blue-500/10 text-sky-700 border-sky-200 hover:bg-sky-500 hover:text-white hover:border-sky-500",
+    "bg-sky-500/10 text-sky-700 border-sky-200/60 hover:bg-sky-500 hover:text-white",
   design:
-    "from-rose-500/10 to-pink-500/10 text-rose-700 border-rose-200 hover:bg-rose-500 hover:text-white hover:border-rose-500",
+    "bg-rose-500/10 text-rose-700 border-rose-200/60 hover:bg-rose-500 hover:text-white",
   mobile:
-    "from-violet-500/10 to-purple-500/10 text-violet-700 border-violet-200 hover:bg-violet-500 hover:text-white hover:border-violet-500",
+    "bg-violet-500/10 text-violet-700 border-violet-200/60 hover:bg-violet-500 hover:text-white",
   general:
-    "from-slate-100 to-slate-200/50 text-slate-700 border-slate-200 hover:bg-slate-800 hover:text-white hover:border-slate-800",
+    "bg-muted text-foreground border-border/40 hover:bg-foreground hover:text-background",
 }
 
 function getCategoryStyle(category: string) {
   const key = category.toLowerCase()
-  for (const [prefix, style] of Object.entries(categoryGradients)) {
+  for (const [prefix, style] of Object.entries(categoryStyles)) {
     if (key.includes(prefix)) return style
   }
-  return categoryGradients.general
+  return categoryStyles.general
 }
 
 export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
@@ -59,61 +59,44 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
 
   return (
     <motion.section
-      initial={{ opacity: 0, x: -20 }}
+      initial={{ opacity: 0, x: -16 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.4, duration: 0.8, ease }}
-      className="relative group"
+      transition={{ delay: 0.35, duration: 0.6, ease }}
+      className="border border-border/50 bg-card overflow-hidden"
     >
       {hasSkills ? (
-        <div className="relative rounded-[2rem] border border-slate-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-500 hover:shadow-[0_30px_70px_rgba(0,0,0,0.06)]">
-          <div className="flex items-center justify-between px-6 py-6 border-b border-slate-50 bg-slate-50/30">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/5">
-                <Zap className="h-5 w-5 text-primary" />
-              </div>
-              <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-800">
+        <>
+          <div className="flex items-center justify-between px-5 py-4 border-b border-border/20 bg-muted/30">
+            <div className="flex items-center gap-2.5">
+              <Zap className="h-4 w-4 text-primary" />
+              <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-foreground">
                 {labels.skills}
               </h2>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-primary" />
-              <span className="text-[11px] font-bold text-primary uppercase tracking-widest">
-                {skills.length}
-              </span>
-            </div>
+            <span className="text-[11px] font-bold text-primary uppercase tracking-wider">
+              {skills.length}
+            </span>
           </div>
 
-          <div className="p-6 space-y-7">
-            {grouped.map(([category, categorySkills], groupIdx) => (
-              <div key={category} className="space-y-3">
+          <div className="p-5 space-y-5">
+            {grouped.map(([category, categorySkills]) => (
+              <div key={category} className="space-y-2.5">
                 {grouped.length > 1 && (
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">
                     {category}
                   </p>
                 )}
-                <div className="flex flex-wrap gap-2.5">
-                  {categorySkills.map((skill, skillIdx) => {
+                <div className="flex flex-wrap gap-2">
+                  {categorySkills.map((skill) => {
                     const catStyle = getCategoryStyle(category)
                     return (
-                      <motion.div
+                      <Badge
                         key={skill.id}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{
-                          delay: 0.5 + groupIdx * 0.1 + skillIdx * 0.04,
-                          duration: 0.4,
-                          type: "spring",
-                          stiffness: 200,
-                        }}
-                        whileHover={{ y: -3, scale: 1.05 }}
+                        variant="outline"
+                        className={`${catStyle} text-[11px] font-medium rounded-md px-3 py-1 transition-colors cursor-default`}
                       >
-                        <Badge
-                          variant="outline"
-                          className={`bg-gradient-to-br ${catStyle} text-[11px] font-bold uppercase tracking-wide rounded-xl px-4 py-2 transition-all hover:shadow-lg cursor-default`}
-                        >
-                          {skill.name}
-                        </Badge>
-                      </motion.div>
+                        {skill.name}
+                      </Badge>
                     )
                   })}
                 </div>
@@ -121,27 +104,21 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
             ))}
 
             {canEdit && (
-              <div className="pt-4 border-t border-slate-50">
+              <div className="pt-3 border-t border-border/10">
                 <Link href="/dashboard/settings">
                   <button
                     type="button"
-                    className="group/btn flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.25em] text-slate-400 transition-all hover:text-primary hover:gap-5"
+                    className="text-[11px] font-bold uppercase tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors"
                   >
-                    <span>+ {t("addMoreSkills")}</span>
-                    <motion.span
-                      animate={{ x: [0, 5, 0] }}
-                      transition={{ repeat: Infinity, duration: 1.5 }}
-                    >
-                      →
-                    </motion.span>
+                    + {t("addMoreSkills")}
                   </button>
                 </Link>
               </div>
             )}
           </div>
-        </div>
+        </>
       ) : (
-        <div className="rounded-[2rem] border-2 border-dashed border-slate-100 p-12 bg-white/50 backdrop-blur-sm">
+        <div className="p-8">
           {canEdit ? (
             <EmptyState
               icon={Award}
@@ -149,7 +126,7 @@ export function SkillsCard({ skills, canEdit, labels }: SkillsCardProps) {
               buttonText={labels.addSkills}
             />
           ) : (
-            <p className="text-[11px] text-slate-300 font-black uppercase tracking-[0.25em] text-center">
+            <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-[0.2em] text-center">
               {t("noSkillsListed")}
             </p>
           )}
@@ -171,15 +148,16 @@ export function EmptyState({
   buttonText,
 }: EmptyStateProps) {
   return (
-    <div className="text-center space-y-8">
-      <div className="flex h-24 w-24 mx-auto items-center justify-center rounded-[2.5rem] bg-slate-50 border border-slate-100 shadow-inner">
-        <Icon className="h-12 w-12 text-slate-200" />
+    <div className="text-center space-y-5">
+      <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-lg bg-muted border border-border/20">
+        <Icon className="h-6 w-6 text-muted-foreground" />
       </div>
-      <p className="text-base text-slate-400 font-medium tracking-wide leading-relaxed">
-        {message}
-      </p>
-      <Link href="/dashboard/settings" className="inline-block pt-4">
-        <Button className="rounded-full h-14 px-10 text-[11px] font-black uppercase tracking-[0.25em] bg-primary shadow-[0_15px_40px_rgba(var(--primary-rgb),0.2)] transition-all hover:scale-105">
+      <p className="text-sm text-muted-foreground">{message}</p>
+      <Link href="/dashboard/settings">
+        <Button
+          size="sm"
+          className="rounded-md text-xs font-bold uppercase tracking-[0.15em]"
+        >
           {buttonText}
         </Button>
       </Link>
