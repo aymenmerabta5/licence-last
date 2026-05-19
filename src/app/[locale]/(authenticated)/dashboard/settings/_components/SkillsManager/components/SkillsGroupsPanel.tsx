@@ -1,5 +1,7 @@
 "use client"
 
+import { Loader2 } from "lucide-react"
+
 import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
 
 interface Skill {
@@ -7,63 +9,69 @@ interface Skill {
   name: string
 }
 
-interface SkillGrouping {
+interface SkillsGroupsPanelProps {
   groups: Record<string, Skill[]>
   categoryOrder: readonly string[]
   categoryLabels: Record<string, string>
-}
-
-interface SkillsGroupsPanelProps {
-  hasDeptSkills: boolean
-  deptGrouping: SkillGrouping
-  otherGrouping: SkillGrouping
+  recommendedCategorySlugs: Set<string>
   selectedIds: string[]
   maxSkills: number
   isLoadingSkills: boolean
   onToggleSkill: (skillId: string) => void
+  sentinelRef?: React.RefObject<HTMLDivElement | null>
+  isFetchingNextPage?: boolean
 }
 
 export function SkillsGroupsPanel({
-  hasDeptSkills,
-  deptGrouping,
-  otherGrouping,
+  groups,
+  categoryOrder,
+  categoryLabels,
+  recommendedCategorySlugs,
   selectedIds,
   maxSkills,
   isLoadingSkills,
   onToggleSkill,
+  sentinelRef,
+  isFetchingNextPage,
 }: SkillsGroupsPanelProps) {
+  const hasCategories = categoryOrder.length > 0
+
   return (
     <div className="space-y-4">
-      {hasDeptSkills && (
+      {isLoadingSkills && !hasCategories ? (
+        <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Loading skills...
+        </div>
+      ) : null}
+
+      {hasCategories ? (
         <>
-          <p className="text-[11px] font-semibold text-primary">
-            Recommended for your department
-          </p>
           <SkillCategoryGrid
-            groups={deptGrouping.groups}
-            categoryOrder={deptGrouping.categoryOrder}
-            categoryLabels={deptGrouping.categoryLabels}
+            groups={groups}
+            categoryOrder={categoryOrder}
+            categoryLabels={categoryLabels}
             selectedIds={selectedIds}
             maxSkills={maxSkills}
-            isLoading={isLoadingSkills}
+            isLoading={false}
             onToggle={onToggleSkill}
+            recommendedCategorySlugs={recommendedCategorySlugs}
+            recommendedLabel="Recommended"
           />
-          <div className="border-t border-border/50" />
-          <p className="text-[11px] font-semibold text-muted-foreground">
-            Other skills
-          </p>
+          <div ref={sentinelRef} className="py-2">
+            {isFetchingNextPage && (
+              <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                Loading more...
+              </div>
+            )}
+          </div>
         </>
-      )}
-
-      <SkillCategoryGrid
-        groups={otherGrouping.groups}
-        categoryOrder={otherGrouping.categoryOrder}
-        categoryLabels={otherGrouping.categoryLabels}
-        selectedIds={selectedIds}
-        maxSkills={maxSkills}
-        isLoading={isLoadingSkills}
-        onToggle={onToggleSkill}
-      />
+      ) : !isLoadingSkills ? (
+        <p className="py-4 text-sm text-muted-foreground">
+          No skills available yet.
+        </p>
+      ) : null}
     </div>
   )
 }

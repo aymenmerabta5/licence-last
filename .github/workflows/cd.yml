@@ -145,6 +145,11 @@ jobs:
               fi
             done
 
+            echo "[deploy] Cleaning old images before pull..."
+            # Remove all unused images (not just dangling), ignore errors
+            sudo docker image prune -a -f || true
+            sudo docker builder prune -f || true
+
             python3 - <<'PY'
             import os
             from pathlib import Path
@@ -211,7 +216,7 @@ jobs:
             sudo docker compose --env-file .env -f docker-compose.prod.yml ps
 
       - name: Cleanup old images on server
-        if: success()
+        if: always()
         uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -219,4 +224,6 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
             set -euo pipefail
-            sudo docker image prune -f
+            echo "[deploy] Post-deploy cleanup..."
+            sudo docker image prune -a -f || true
+            sudo docker builder prune -f || true

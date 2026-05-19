@@ -13,8 +13,8 @@ import { university } from "@/server/db/schema/universities"
 import {
   adminProcedureStandard,
   authedProcedureGenerous,
-  authedProcedureStandard,
   publicProcedureStandard,
+  universityProcedureStandard,
 } from "@/server/orpc/rate-limited-procedures"
 import {
   createServiceORPCError,
@@ -36,6 +36,7 @@ interface DepartmentAdminContext {
     role: string | null | undefined
     universityId?: string | null
     universityMembershipRole?: string | null
+    universityDepartmentId?: string | null
   }
 }
 
@@ -116,6 +117,48 @@ async function assertCanManageDepartment(
       message: "Department not found",
     })
   }
+
+  if (context.user.role !== "super_admin") {
+    const universityId = context.user.universityId
+    if (!universityId || dept.universityId !== universityId) {
+      throwCodedORPCError("FORBIDDEN", "DEPARTMENT_SCOPE_FORBIDDEN", {
+        message: "Department does not belong to your university",
+      })
+    }
+  }
+}
+
+async function assertCanManageDepartmentCategories(
+  departmentId: string,
+  context: DepartmentAdminContext,
+) {
+  const [dept] = await db
+    .select({ universityId: department.universityId })
+    .from(department)
+    .where(eq(department.id, departmentId))
+    .limit(1)
+
+  if (!dept) {
+    throwCodedORPCError("NOT_FOUND", "DEPARTMENT_NOT_FOUND", {
+      message: "Department not found",
+    })
+  }
+
+  // Department heads can only manage their own assigned department
+  if (context.user.universityMembershipRole === "department_head") {
+    if (context.user.universityDepartmentId !== departmentId) {
+      throwCodedORPCError("FORBIDDEN", "DEPARTMENT_SCOPE_FORBIDDEN", {
+        message: "Department head can only manage their own department",
+      })
+    }
+    return
+  }
+
+  // Admin access required for everyone else
+  assertDepartmentAdminRole({
+    role: context.user.role,
+    universityMembershipRole: context.user.universityMembershipRole,
+  })
 
   if (context.user.role !== "super_admin") {
     const universityId = context.user.universityId
@@ -348,7 +391,7 @@ export const getDepartmentSkillsProcedure = authedProcedureGenerous
   .input(z.object({ departmentId: z.string().min(1) }))
   .handler(async ({ input }) => getDepartmentSkillIds(input.departmentId))
 
-export const assignCategoriesProcedure = authedProcedureStandard
+export const assignCategoriesProcedure = universityProcedureStandard
   .input(
     z.object({
       departmentId: z.string().min(1),
@@ -356,18 +399,7 @@ export const assignCategoriesProcedure = authedProcedureStandard
     }),
   )
   .handler(async ({ input, context }) => {
-    const userRole = context.user.rawRole ?? context.user.role ?? "unknown"
-
-    if (
-      userRole !== "super_admin" &&
-      userRole !== "company_admin" &&
-      userRole !== "company_owner"
-    ) {
-      throwCodedORPCError("FORBIDDEN", "CATEGORY_ASSIGN_ACCESS_REQUIRED", {
-        message:
-          "Only super admins, company admins, and company owners can assign categories",
-      })
-    }
+    await assertCanManageDepartmentCategories(input.departmentId, context)
 
     const { departmentId, categoryIds } = input
 

@@ -61,6 +61,17 @@ function extractUserId(result: unknown): string | undefined {
   return undefined
 }
 
+async function findCreatedUserIdByEmail(
+  email: string,
+): Promise<string | undefined> {
+  const [row] = await db
+    .select({ id: user.id })
+    .from(user)
+    .where(eq(user.email, email))
+    .limit(1)
+  return row?.id
+}
+
 function resolvePrimaryRole(role: CreateUserRole): PrimaryUserRole {
   if (role === "recruiter") return "company_admin"
   if (role === "department_head") return "university_admin"
@@ -109,20 +120,28 @@ export async function createUser(
     throw error
   }
 
-  const createdUserId = extractUserId(result)
+  // Prefer the ID from the API response, but fall back to a DB lookup
+  // by email so that the activation update never gets skipped.
+  const createdUserId =
+    extractUserId(result) ?? (await findCreatedUserIdByEmail(data.email))
+
   if (!createdUserId) {
-    return result
+    throw new ServiceError(
+      "USER_NOT_FOUND_AFTER_CREATION",
+      "User was created but could not be located for activation",
+    )
   }
 
   try {
-    if (data.role === "student" && data.universityId) {
+    if (data.role === "student") {
       await db
         .update(user)
-        .set({ universityId: data.universityId })
+        .set({
+          emailVerified: true,
+          ...(data.universityId ? { universityId: data.universityId } : {}),
+        })
         .where(eq(user.id, createdUserId))
-    }
-
-    if (data.role === "department_head" && data.universityId) {
+    } else if (data.role === "department_head" && data.universityId) {
       await db.transaction(async (tx) => {
         await tx.insert(universityMember).values({
           userId: createdUserId,
@@ -131,12 +150,10 @@ export async function createUser(
         })
         await tx
           .update(user)
-          .set({ onboardingCompleted: true })
+          .set({ emailVerified: true, onboardingCompleted: true })
           .where(eq(user.id, createdUserId))
       })
-    }
-
-    if (data.role === "recruiter" && data.companyId) {
+    } else if (data.role === "recruiter" && data.companyId) {
       await db.transaction(async (tx) => {
         await tx.insert(companyMember).values({
           companyId: data.companyId!,
@@ -145,9 +162,14 @@ export async function createUser(
         })
         await tx
           .update(user)
-          .set({ onboardingCompleted: true })
+          .set({ emailVerified: true, onboardingCompleted: true })
           .where(eq(user.id, createdUserId))
       })
+    } else {
+      await db
+        .update(user)
+        .set({ emailVerified: true, onboardingCompleted: true })
+        .where(eq(user.id, createdUserId))
     }
   } catch (error) {
     const constraint =

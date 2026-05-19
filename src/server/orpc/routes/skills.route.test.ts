@@ -73,6 +73,30 @@ mock.module("@/server/services/skills/list", () => ({
 mock.module("@/server/services/skills/list-prioritized", () => ({
   listSkillTagsPrioritized: listSkillTagsPrioritizedMock,
 }))
+interface ListSkillsByCategoryResult {
+  categories: Array<{
+    id: number
+    name: string
+    slug: string
+    skills: Array<{
+      id: string
+      name: string
+      slug: string
+      category: string | null
+    }>
+  }>
+  nextCursor: number | null
+  hasMore: boolean
+}
+
+const listSkillsByCategoryMock = mock(async () => ({
+  categories: [],
+  nextCursor: null,
+  hasMore: false,
+}) as ListSkillsByCategoryResult)
+mock.module("@/server/services/skills/list-by-category", () => ({
+  listSkillsByCategory: listSkillsByCategoryMock,
+}))
 mock.module("@/server/services/skills/create", () => ({
   createSkill: createSkillMock,
 }))
@@ -81,6 +105,7 @@ describe("src/server/orpc/routes/skills", () => {
   beforeEach(() => {
     listSkillTagsMock.mockClear()
     listSkillTagsPrioritizedMock.mockClear()
+    listSkillsByCategoryMock.mockClear()
     createSkillMock.mockClear()
     dbSelectResult = [{ id: 1 }]
     dbOrderByResult = []
@@ -238,6 +263,47 @@ describe("src/server/orpc/routes/skills", () => {
     ).rejects.toMatchObject({
       code: "FORBIDDEN",
       data: { code: "SKILL_CREATE_ACCESS_REQUIRED" },
+    })
+  })
+
+  test("listSkillTagsByCategoryProcedure delegates with optional filters", async () => {
+    listSkillsByCategoryMock.mockResolvedValueOnce({
+      categories: [
+        {
+          id: 1,
+          name: "Programming",
+          slug: "programming",
+          skills: [{ id: "skill-1", name: "Rust", slug: "rust", category: "programming" }],
+        },
+      ],
+      nextCursor: null,
+      hasMore: false,
+    })
+
+    const { listSkillTagsByCategoryProcedure } = await import(
+      "@/server/orpc/routes/skills"
+    )
+
+    const result = await callProcedure(listSkillTagsByCategoryProcedure, {
+      input: { query: "rust", cursor: 1, limit: 5 },
+    })
+
+    expect(result).toEqual({
+      categories: [
+        {
+          id: 1,
+          name: "Programming",
+          slug: "programming",
+          skills: [{ id: "skill-1", name: "Rust", slug: "rust", category: "programming" }],
+        },
+      ],
+      nextCursor: null,
+      hasMore: false,
+    })
+    expect(listSkillsByCategoryMock).toHaveBeenCalledWith({
+      query: "rust",
+      cursor: 1,
+      limit: 5,
     })
   })
 

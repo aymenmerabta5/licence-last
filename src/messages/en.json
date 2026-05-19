@@ -506,8 +506,13 @@
       },
       "skillsSection": "Technical Skills",
       "skillsHint": "Select up to 10 skills that best describe your expertise",
-      "skillsSelectDepartmentFirst": "Please select a department first to see relevant skills",
+      "searchSkills": "Search skills...",
+      "loadingSkills": "Loading skills...",
+      "loadingMore": "Loading more...",
+      "noSkillsFound": "No skills match your search.",
+      "noSkillsAvailable": "No skills available yet.",
       "skillsSelected": "selected",
+      "recommended": "Recommended",
       "recommendedSkills": "Recommended for your department",
       "otherSkills": "Other skills",
       "submit": "Complete Profile",
@@ -1797,6 +1802,7 @@
         "super": "Your ecosystem at a glance.",
         "university": "Track, coordinate, and steer your university."
       },
+      "subtitle": "Oversee platform operations and placements",
       "description": {
         "super": "Monitor platform health, validate placements, and track institutional progress across the Stag network.",
         "university": "Follow key student and department indicators to run your university internship operations from one place."
@@ -1972,7 +1978,8 @@
           "clearAll": "Clear all",
           "selectAll": "Select all",
           "deselectAll": "Deselect all",
-          "selectRemaining": "Select remaining"
+          "selectRemaining": "Select remaining",
+          "loadingMore": "Loading more..."
         },
         "bulkCreate": {
           "title": "Bulk Create Departments",

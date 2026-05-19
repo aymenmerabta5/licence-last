@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
-const mockCreateUser = mock(() =>
+const mockCreateUser = mock<() => Promise<unknown>>(() =>
   Promise.resolve({ user: { id: "new-user", email: "a@b.com" } }),
 )
 const mockHeaders = mock(() => Promise.resolve(new Headers()))
 const mockDbSet = mock(() => ({ where: () => Promise.resolve([]) }))
+const mockDbSelectChain = mock(() => Promise.resolve([{ id: "fallback-id" }]))
 
 mock.module("@/lib/auth", () => ({
   auth: { api: {} },
@@ -14,6 +15,14 @@ mock.module("@/lib/auth", () => ({
 mock.module("@/server/db", () => ({
   db: {
     update: () => ({ set: mockDbSet }),
+    select: () =>
+      ({
+        from: () => ({
+          where: () => ({
+            limit: mockDbSelectChain,
+          }),
+        }),
+      }),
   },
 }))
 
@@ -24,6 +33,7 @@ describe("createUser", () => {
   beforeEach(() => {
     mockCreateUser.mockClear()
     mockDbSet.mockClear()
+    mockDbSelectChain.mockClear()
   })
 
   test("should call auth.api.createUser with all fields", async () => {
@@ -94,10 +104,13 @@ describe("createUser", () => {
 
     expect(result).toEqual({ user: { id: "new-user", email: "a@b.com" } })
     expect(mockDbSet).toHaveBeenCalledTimes(1)
-    expect(mockDbSet).toHaveBeenCalledWith({ universityId: "uni-1" })
+    expect(mockDbSet).toHaveBeenCalledWith({
+      emailVerified: true,
+      universityId: "uni-1",
+    })
   })
 
-  test("should not update user universityId when not provided", async () => {
+  test("should activate user when universityId is not provided", async () => {
     await createUser(
       {
         email: "admin@company.com",
@@ -108,6 +121,54 @@ describe("createUser", () => {
       { authApi: { createUser: mockCreateUser }, getHeaders: mockHeaders },
     )
 
-    expect(mockDbSet).not.toHaveBeenCalled()
+    expect(mockDbSet).toHaveBeenCalledTimes(1)
+    expect(mockDbSet).toHaveBeenCalledWith({
+      emailVerified: true,
+      onboardingCompleted: true,
+    })
+  })
+
+  test("should fall back to DB lookup when auth response lacks user id", async () => {
+    mockCreateUser.mockImplementationOnce(() =>
+      Promise.resolve({ id: "malformed" }),
+    )
+
+    await createUser(
+      {
+        email: "fallback@example.com",
+        password: "password123",
+        name: "Fallback User",
+        role: "super_admin",
+      },
+      { authApi: { createUser: mockCreateUser }, getHeaders: mockHeaders },
+    )
+
+    expect(mockDbSelectChain).toHaveBeenCalledTimes(1)
+    expect(mockDbSet).toHaveBeenCalledTimes(1)
+    expect(mockDbSet).toHaveBeenCalledWith({
+      emailVerified: true,
+      onboardingCompleted: true,
+    })
+  })
+
+  test("should throw when user cannot be located after creation", async () => {
+    mockCreateUser.mockImplementationOnce(() =>
+      Promise.resolve({ id: "malformed" }),
+    )
+    mockDbSelectChain.mockResolvedValueOnce([])
+
+    await expect(
+      createUser(
+        {
+          email: "missing@example.com",
+          password: "password123",
+          name: "Missing User",
+          role: "super_admin",
+        },
+        { authApi: { createUser: mockCreateUser }, getHeaders: mockHeaders },
+      ),
+    ).rejects.toMatchObject({
+      code: "USER_NOT_FOUND_AFTER_CREATION",
+    })
   })
 })

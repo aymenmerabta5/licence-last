@@ -1,12 +1,13 @@
 "use client"
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
 
-import { useSkillGrouping } from "@/hooks"
-import { orpc } from "@/server/orpc/client"
+import { useDebounce } from "@/hooks/useDebounce"
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll"
+import { orpc, orpcClient } from "@/server/orpc/client"
 
 const MAX_SKILLS = 10
 
@@ -21,47 +22,109 @@ export function useSkillsManager() {
   const { data: profileData, isLoading: isLoadingProfile } =
     useQuery(profileQueryOptions)
 
-  // Fetch prioritized skills when student has a department
   const departmentId = profileData?.profile?.departmentId ?? undefined
 
-  const { data: prioritizedResult, isLoading: isLoadingPrioritized } = useQuery(
-    {
-      ...orpc.skills.listPrioritized.queryOptions({
-        input: { departmentId: departmentId ?? "" },
-      }),
-      enabled: !!departmentId,
-    },
-  )
-
-  const { data: flatResult, isLoading: isLoadingFlat } = useQuery({
-    ...orpc.skills.list.queryOptions({ input: { limit: 500 } }),
-    enabled: !departmentId,
-  })
-
-  const isLoadingSkills = departmentId ? isLoadingPrioritized : isLoadingFlat
-
-  const deptSkills = useMemo(
-    () => prioritizedResult?.departmentSkills ?? [],
-    [prioritizedResult?.departmentSkills],
-  )
-  const otherSkillsRaw = useMemo(
-    () =>
-      departmentId
-        ? (prioritizedResult?.otherSkills ?? [])
-        : (flatResult?.skills ?? []),
-    [departmentId, prioritizedResult?.otherSkills, flatResult?.skills],
+  // Load all skills for the selected skills bar name lookup
+  const { data: allSkillsResult } = useQuery(
+    orpc.skills.list.queryOptions({ input: { limit: 500 } }),
   )
   const allSkills = useMemo(
-    () => [...deptSkills, ...otherSkillsRaw],
-    [deptSkills, otherSkillsRaw],
+    () => allSkillsResult?.skills ?? [],
+    [allSkillsResult?.skills],
   )
+
+  const [query, setQuery] = useState("")
+  const debouncedQuery = useDebounce(query, 300)
+  const searchKey = debouncedQuery.trim().toLowerCase()
+
+  const {
+    data: infiniteData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading: isLoadingInfinite,
+  } = useInfiniteQuery({
+    queryKey: [
+      "settings",
+      "skills",
+      "by-category",
+      departmentId || "__none__",
+      searchKey || "__all__",
+    ],
+    queryFn: async ({ pageParam }) => {
+      return orpcClient.skills.listByCategory({
+        query: searchKey || undefined,
+        cursor: pageParam ?? undefined,
+        limit: 5,
+        departmentId: departmentId || undefined,
+      })
+    },
+    initialPageParam: null as number | null,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasMore ? lastPage.nextCursor : null,
+  })
+
+  const sentinelRef = useInfiniteScroll(
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  )
+
+  // Aggregate loaded categories across all pages
+  const loadedCategories = useMemo(() => {
+    const pages = infiniteData?.pages ?? []
+    const seen = new Set<number>()
+    const result: Array<{
+      id: number
+      name: string
+      slug: string
+      isRecommended: boolean
+      skills: Array<{ id: string; name: string }>
+    }> = []
+
+    for (const page of pages) {
+      for (const cat of page.categories) {
+        if (seen.has(cat.id)) continue
+        seen.add(cat.id)
+        result.push(cat)
+      }
+    }
+
+    return result
+  }, [infiniteData])
+
+  const groups = useMemo(() => {
+    const map: Record<string, Array<{ id: string; name: string }>> = {}
+    for (const cat of loadedCategories) {
+      map[cat.slug] = cat.skills
+    }
+    return map
+  }, [loadedCategories])
+
+  const categoryOrder = useMemo(
+    () => loadedCategories.map((c) => c.slug),
+    [loadedCategories],
+  )
+
+  const categoryLabels = useMemo(() => {
+    const map: Record<string, string> = {}
+    for (const cat of loadedCategories) {
+      map[cat.slug] = cat.name
+    }
+    return map
+  }, [loadedCategories])
+
+  const recommendedCategorySlugs = useMemo(() => {
+    return new Set(
+      loadedCategories.filter((c) => c.isRecommended).map((c) => c.slug),
+    )
+  }, [loadedCategories])
 
   const initialSkillIds = useMemo(() => {
     const ids = profileData?.skills?.map((s) => s.id) ?? []
     return Array.from(new Set(ids))
   }, [profileData?.skills])
 
-  const [query, setQuery] = useState("")
   const [draftSelectedIds, setDraftSelectedIds] = useState<string[] | null>(
     null,
   )
@@ -69,28 +132,6 @@ export function useSkillsManager() {
   const [saveTick, setSaveTick] = useState(0)
 
   const selectedIds = draftSelectedIds ?? initialSkillIds
-
-  const filteredDeptSkills = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return deptSkills
-    return deptSkills.filter((s) => s.name.toLowerCase().includes(q))
-  }, [deptSkills, query])
-
-  const filteredOtherSkills = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return otherSkillsRaw
-    return otherSkillsRaw.filter((s) => s.name.toLowerCase().includes(q))
-  }, [otherSkillsRaw, query])
-
-  const filteredSkills = useMemo(
-    () => [...filteredDeptSkills, ...filteredOtherSkills],
-    [filteredDeptSkills, filteredOtherSkills],
-  )
-
-  const deptGrouping = useSkillGrouping(filteredDeptSkills)
-  const otherGrouping = useSkillGrouping(filteredOtherSkills)
-  const { groups, categoryOrder, categoryLabels } =
-    useSkillGrouping(filteredSkills)
 
   const upsertMutation = useMutation({
     ...orpc.students.upsertSkills.mutationOptions(),
@@ -128,7 +169,7 @@ export function useSkillsManager() {
     },
   })
 
-  const isBusy = isLoadingSkills || isLoadingProfile || upsertMutation.isPending
+  const isBusy = isLoadingInfinite || isLoadingProfile || upsertMutation.isPending
   const isAtMax = selectedIds.length >= MAX_SKILLS
   const isDirty =
     draftSelectedIds !== null &&
@@ -170,7 +211,7 @@ export function useSkillsManager() {
     setQuery,
     selectedIds,
     allSkills,
-    isLoadingSkills,
+    isLoadingSkills: isLoadingInfinite,
     isBusy,
     isAtMax,
     isDirty,
@@ -180,11 +221,11 @@ export function useSkillsManager() {
     groups,
     categoryOrder,
     categoryLabels,
-    deptGrouping,
-    otherGrouping,
-    hasDeptSkills: deptSkills.length > 0,
+    recommendedCategorySlugs,
     toggleSkill,
     save,
     maxSkills: MAX_SKILLS,
+    sentinelRef,
+    isFetchingNextPage,
   }
 }

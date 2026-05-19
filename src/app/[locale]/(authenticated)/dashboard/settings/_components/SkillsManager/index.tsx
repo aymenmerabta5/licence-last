@@ -19,12 +19,15 @@ export function SkillsManager() {
     isSaving,
     saveError,
     saveTick,
-    deptGrouping,
-    otherGrouping,
-    hasDeptSkills,
+    groups,
+    categoryOrder,
+    categoryLabels,
+    recommendedCategorySlugs,
     toggleSkill,
     save,
     maxSkills,
+    sentinelRef,
+    isFetchingNextPage,
   } = useSkillsManager()
 
   return (
@@ -55,13 +58,16 @@ export function SkillsManager() {
         />
 
         <SkillsGroupsPanel
-          hasDeptSkills={hasDeptSkills}
-          deptGrouping={deptGrouping}
-          otherGrouping={otherGrouping}
+          groups={groups}
+          categoryOrder={categoryOrder}
+          categoryLabels={categoryLabels}
+          recommendedCategorySlugs={recommendedCategorySlugs}
           selectedIds={selectedIds}
           maxSkills={maxSkills}
           isLoadingSkills={isLoadingSkills}
           onToggleSkill={toggleSkill}
+          sentinelRef={sentinelRef}
+          isFetchingNextPage={isFetchingNextPage}
         />
       </div>
     </section>

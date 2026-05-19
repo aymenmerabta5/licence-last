@@ -135,4 +135,72 @@ describe("updateUserRole", () => {
     )
     expect(result).toEqual({ success: true })
   })
+
+  test("should set onboardingCompleted to false for student", async () => {
+    mockDbUpdateSet.mockClear()
+    const { updateUserRole } = await import(
+      "@/server/services/admin/set-role?fresh=6" as string
+    )
+    await updateUserRole(
+      "user-1",
+      { role: "student", universityId: "uni-1" },
+      {
+        authApi: { setRole: mockSetRole },
+        getHeaders: mockHeaders,
+      },
+    )
+    const payload = (mockDbUpdateSet.mock.calls as unknown[][])[0][0] as Record<string, unknown>
+    expect(payload.onboardingCompleted).toBe(false)
+  })
+
+  test("should set onboardingCompleted to true for super_admin", async () => {
+    mockDbUpdateSet.mockClear()
+    const { updateUserRole } = await import(
+      "@/server/services/admin/set-role?fresh=7" as string
+    )
+    await updateUserRole(
+      "user-1",
+      { role: "super_admin" },
+      {
+        authApi: { setRole: mockSetRole },
+        getHeaders: mockHeaders,
+      },
+    )
+    const payload = (mockDbUpdateSet.mock.calls as unknown[][])[0][0] as Record<string, unknown>
+    expect(payload.onboardingCompleted).toBe(true)
+  })
+
+  test("should set onboardingCompleted to true for company_admin", async () => {
+    mockDbUpdateSet.mockClear()
+    const { updateUserRole } = await import(
+      "@/server/services/admin/set-role?fresh=8" as string
+    )
+    await updateUserRole(
+      "user-1",
+      { role: "company_admin" },
+      {
+        authApi: { setRole: mockSetRole },
+        getHeaders: mockHeaders,
+      },
+    )
+    const payload = (mockDbUpdateSet.mock.calls as unknown[][])[0][0] as Record<string, unknown>
+    expect(payload.onboardingCompleted).toBe(true)
+  })
+
+  test("should set onboardingCompleted to true for university_admin", async () => {
+    mockDbUpdateSet.mockClear()
+    const { updateUserRole } = await import(
+      "@/server/services/admin/set-role?fresh=9" as string
+    )
+    await updateUserRole(
+      "user-1",
+      { role: "university_admin" },
+      {
+        authApi: { setRole: mockSetRole },
+        getHeaders: mockHeaders,
+      },
+    )
+    const payload = (mockDbUpdateSet.mock.calls as unknown[][])[0][0] as Record<string, unknown>
+    expect(payload.onboardingCompleted).toBe(true)
+  })
 })

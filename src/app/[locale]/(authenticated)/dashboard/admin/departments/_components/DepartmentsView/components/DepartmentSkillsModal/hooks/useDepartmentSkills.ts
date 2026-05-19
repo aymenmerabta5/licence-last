@@ -1,9 +1,10 @@
 "use client"
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useCallback, useMemo, useState } from "react"
 
-import { useSkillGrouping } from "@/hooks"
+import { useDebounce } from "@/hooks/useDebounce"
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll"
 import { orpc, orpcClient } from "@/server/orpc/client"
 
 const DEPARTMENTS_LIST_QUERY_PATH = orpc.departments.list.queryOptions({
@@ -19,25 +20,12 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
     input: { limit: 500 },
   }).queryKey
 
-  // Fetch all skills (admin picks from the full pool)
-  const { data: allSkillsResult, isLoading: isLoadingSkills } = useQuery(
-    orpc.skills.list.queryOptions({ input: { limit: 500 } }),
-  )
-  const allSkills = useMemo(
-    () => allSkillsResult?.skills ?? [],
-    [allSkillsResult?.skills],
-  )
+  const [query, setQuery] = useState("")
+  const debouncedQuery = useDebounce(query, 300)
+  const [saveError, setSaveError] = useState("")
 
-  // Fetch assigned categories for this department
-  const { data: assignedCategories, isLoading: isLoadingCategories } = useQuery(
-    orpc.departments.listCategories.queryOptions({
-      input: { departmentId },
-    }),
-  )
-
-  const assignedCategorySlugs = useMemo(() => {
-    return new Set((assignedCategories ?? []).map((c) => c.slug))
-  }, [assignedCategories])
+  // Track if search is active to drive the infinite query key
+  const searchKey = debouncedQuery.trim().toLowerCase()
 
   // Fetch current department skill assignment
   const { data: currentSkillIds, isLoading: isLoadingCurrent } = useQuery({
@@ -49,55 +37,95 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
 
   // Draft override: null = use server data, non-null = user has modified
   const [draftOverride, setDraftOverride] = useState<string[] | null>(null)
-  const [query, setQuery] = useState("")
-  const [saveError, setSaveError] = useState("")
 
   // Derive active IDs: user's draft if modified, otherwise server data
   const draftIds = draftOverride ?? currentSkillIds ?? []
 
-  // Reset all local state when modal closes (called from onOpenChange wrapper)
+  // Infinite scroll: load skills grouped by category
+  const {
+    data: infiniteData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading: isLoadingInfinite,
+  } = useInfiniteQuery({
+    queryKey: ["skills", "by-category", searchKey || "__all__"],
+    queryFn: async ({ pageParam }) => {
+      return orpcClient.skills.listByCategory({
+        query: searchKey || undefined,
+        cursor: pageParam ?? undefined,
+        limit: 5,
+      })
+    },
+    initialPageParam: null as number | null,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasMore ? lastPage.nextCursor : null,
+  })
+
+  const sentinelRef = useInfiniteScroll(
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  )
+
+  // Aggregate loaded categories across all pages
+  const loadedCategories = useMemo(() => {
+    const pages = infiniteData?.pages ?? []
+    const seen = new Set<number>()
+    const result: Array<{
+      id: number
+      name: string
+      slug: string
+      skills: Array<{ id: string; name: string }>
+    }> = []
+
+    for (const page of pages) {
+      for (const cat of page.categories) {
+        if (seen.has(cat.id)) continue
+        seen.add(cat.id)
+        result.push(cat)
+      }
+    }
+
+    return result
+  }, [infiniteData])
+
+  // Build groups and category order for SkillCategoryGrid
+  const groups = useMemo(() => {
+    const map: Record<string, Array<{ id: string; name: string }>> = {}
+    for (const cat of loadedCategories) {
+      map[cat.slug] = cat.skills
+    }
+    return map
+  }, [loadedCategories])
+
+  const categoryOrder = useMemo(
+    () => loadedCategories.map((c) => c.slug),
+    [loadedCategories],
+  )
+
+  const categoryLabels = useMemo(() => {
+    const map: Record<string, string> = {}
+    for (const cat of loadedCategories) {
+      map[cat.slug] = cat.name
+    }
+    return map
+  }, [loadedCategories])
+
+  const hasExactMatch = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    if (!q) return true
+    return loadedCategories.some((cat) =>
+      cat.skills.some((s) => s.name.toLowerCase() === q),
+    )
+  }, [loadedCategories, query])
+
+  // Reset all local state when modal closes
   const resetState = useCallback(() => {
     setDraftOverride(null)
     setQuery("")
     setSaveError("")
   }, [])
-
-  // Remove deselected categories from draft so hidden skills don't persist
-  useEffect(() => {
-    if (!assignedCategories || allSkills.length === 0) return
-    const validSlugs = new Set(assignedCategories.map((c) => c.slug))
-    const validIds = new Set(
-      allSkills
-        .filter((s) => validSlugs.has(s.category ?? "general"))
-        .map((s) => s.id),
-    )
-    setDraftOverride((prev) => {
-      if (prev === null) return null
-      const next = prev.filter((id) => validIds.has(id))
-      return next.length === prev.length ? prev : next
-    })
-  }, [assignedCategories, allSkills])
-
-  const filteredSkills = useMemo(() => {
-    // Only show skills from categories assigned to this department
-    const pool =
-      assignedCategorySlugs.size > 0
-        ? allSkills.filter((s) => assignedCategorySlugs.has(s.category ?? "general"))
-        : []
-
-    const q = query.trim().toLowerCase()
-    if (!q) return pool
-    return pool.filter((s) => s.name.toLowerCase().includes(q))
-  }, [allSkills, assignedCategorySlugs, query])
-
-  const hasExactMatch = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return true
-    return filteredSkills.some((s) => s.name.toLowerCase() === q)
-  }, [filteredSkills, query])
-
-  const { groups, categoryOrder, categoryLabels } =
-    useSkillGrouping(filteredSkills)
 
   const syncMutation = useMutation({
     ...orpc.departments.syncSkills.mutationOptions(),
@@ -228,9 +256,9 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
     query,
     setQuery,
     draftIds,
-    allSkills,
-    assignedCategories: assignedCategories ?? [],
-    isLoading: isLoadingSkills || isLoadingCurrent || isLoadingCategories,
+    allSkills: [],
+    assignedCategories: [],
+    isLoading: isLoadingInfinite || isLoadingCurrent,
     isSaving: syncMutation.isPending,
     isDirty,
     saveError,
@@ -245,5 +273,7 @@ export function useDepartmentSkills(departmentId: string, open: boolean) {
     resetState,
     createSkill: createSkillMutation.mutateAsync,
     isCreatingSkill: createSkillMutation.isPending,
+    sentinelRef,
+    isFetchingNextPage,
   }
 }

@@ -1,6 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 
 import { SkillsFooter } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/components/SkillsFooter"
 import { SkillsMainSection } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/components/SkillsMainSection"
@@ -32,7 +33,6 @@ export function DepartmentSkillsModal({
     query,
     setQuery,
     draftIds,
-    assignedCategories,
     isLoading,
     isSaving,
     isDirty,
@@ -48,13 +48,13 @@ export function DepartmentSkillsModal({
     resetState,
     createSkill,
     isCreatingSkill,
+    sentinelRef,
+    isFetchingNextPage,
   } = useDepartmentSkills(departmentId, open)
 
   const {
     similarSkills,
-    showCategories,
     dismissSimilar,
-    toggleCategories,
     resetModal,
     handleCreateSkill,
     handleForceCreate,
@@ -64,7 +64,6 @@ export function DepartmentSkillsModal({
     setQuery,
     createSkill,
     t,
-    assignedCategoryCount: assignedCategories.length,
   })
 
   const handleOpenChange = (next: boolean) => {
@@ -78,7 +77,7 @@ export function DepartmentSkillsModal({
   const handleSave = async () => {
     handleOpenChange(false)
     if (await save()) {
-      // toast handled inside save hook or could be added here
+      toast.success(t("saveSuccess"))
     }
   }
 
@@ -92,8 +91,6 @@ export function DepartmentSkillsModal({
           <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
         <SkillsMainSection
-          departmentId={departmentId}
-          assignedCategories={assignedCategories}
           isLoading={isLoading}
           query={query}
           setQuery={setQuery}
@@ -103,8 +100,6 @@ export function DepartmentSkillsModal({
           categoryLabels={categoryLabels}
           toggleSkill={toggleSkill}
           toggleCategory={toggleCategory}
-          showCategories={showCategories}
-          toggleCategories={toggleCategories}
           similarSkills={similarSkills}
           dismissSimilar={dismissSimilar}
           isCreatingSkill={isCreatingSkill}
@@ -112,6 +107,8 @@ export function DepartmentSkillsModal({
           handleForceCreate={handleForceCreate}
           handleUseExisting={handleUseExisting}
           hasExactMatch={hasExactMatch}
+          sentinelRef={sentinelRef}
+          isFetchingNextPage={isFetchingNextPage}
         />
         <SkillsFooter
           draftIds={draftIds}

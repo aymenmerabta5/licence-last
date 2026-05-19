@@ -333,7 +333,7 @@ describe("src/server/orpc/routes/departments", () => {
     expect(insertValuesMock).toHaveBeenCalled()
   })
 
-  test("assignCategoriesProcedure allows company_admin", async () => {
+  test("assignCategoriesProcedure allows university_admin", async () => {
     const { assignCategoriesProcedure } = await import(
       "@/server/orpc/routes/departments"
     )
@@ -341,7 +341,11 @@ describe("src/server/orpc/routes/departments", () => {
     const result = await callProcedure(assignCategoriesProcedure, {
       input: { departmentId: "dept-1", categoryIds: [1, 2] },
       context: {
-        user: { role: "company_admin", rawRole: "company_admin" },
+        user: {
+          role: "university_admin",
+          rawRole: "university_admin",
+          universityId: "uni-1",
+        },
       },
     })
 
@@ -350,7 +354,7 @@ describe("src/server/orpc/routes/departments", () => {
     expect(insertValuesMock).toHaveBeenCalled()
   })
 
-  test("assignCategoriesProcedure allows company_owner", async () => {
+  test("assignCategoriesProcedure allows department_head for own department", async () => {
     const { assignCategoriesProcedure } = await import(
       "@/server/orpc/routes/departments"
     )
@@ -358,11 +362,88 @@ describe("src/server/orpc/routes/departments", () => {
     const result = await callProcedure(assignCategoriesProcedure, {
       input: { departmentId: "dept-1", categoryIds: [1, 2] },
       context: {
-        user: { role: "company_owner", rawRole: "company_owner" },
+        user: {
+          role: "university_admin",
+          rawRole: "university_admin",
+          universityId: "uni-1",
+          universityMembershipRole: "department_head",
+          universityDepartmentId: "dept-1",
+        },
       },
     })
 
     expect(result).toEqual({ success: true })
+    expect(deleteWhereMock).toHaveBeenCalled()
+    expect(insertValuesMock).toHaveBeenCalled()
+  })
+
+  test("assignCategoriesProcedure rejects department_head for other department", async () => {
+    const { assignCategoriesProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
+
+    await expect(
+      callProcedure(assignCategoriesProcedure, {
+        input: { departmentId: "dept-2", categoryIds: [1, 2] },
+        context: {
+          user: {
+            role: "university_admin",
+            rawRole: "university_admin",
+            universityId: "uni-1",
+            universityMembershipRole: "department_head",
+            universityDepartmentId: "dept-1",
+          },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      data: { code: "DEPARTMENT_SCOPE_FORBIDDEN" },
+    })
+
+    expect(deleteWhereMock).not.toHaveBeenCalled()
+    expect(insertValuesMock).not.toHaveBeenCalled()
+  })
+
+  test("assignCategoriesProcedure rejects company_admin", async () => {
+    const { assignCategoriesProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
+
+    await expect(
+      callProcedure(assignCategoriesProcedure, {
+        input: { departmentId: "dept-1", categoryIds: [1, 2] },
+        context: {
+          user: { role: "company_admin", rawRole: "company_admin" },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      data: { code: "DEPARTMENT_ADMIN_ACCESS_REQUIRED" },
+    })
+
+    expect(deleteWhereMock).not.toHaveBeenCalled()
+    expect(insertValuesMock).not.toHaveBeenCalled()
+  })
+
+  test("assignCategoriesProcedure rejects company_owner", async () => {
+    const { assignCategoriesProcedure } = await import(
+      "@/server/orpc/routes/departments"
+    )
+
+    await expect(
+      callProcedure(assignCategoriesProcedure, {
+        input: { departmentId: "dept-1", categoryIds: [1, 2] },
+        context: {
+          user: { role: "company_owner", rawRole: "company_owner" },
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+      data: { code: "DEPARTMENT_ADMIN_ACCESS_REQUIRED" },
+    })
+
+    expect(deleteWhereMock).not.toHaveBeenCalled()
+    expect(insertValuesMock).not.toHaveBeenCalled()
   })
 
   test("assignCategoriesProcedure clears all categories when given empty array", async () => {
@@ -392,7 +473,7 @@ describe("src/server/orpc/routes/departments", () => {
       }),
     ).rejects.toMatchObject({
       code: "FORBIDDEN",
-      data: { code: "CATEGORY_ASSIGN_ACCESS_REQUIRED" },
+      data: { code: "DEPARTMENT_ADMIN_ACCESS_REQUIRED" },
     })
 
     expect(deleteWhereMock).not.toHaveBeenCalled()

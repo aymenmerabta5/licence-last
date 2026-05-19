@@ -153,6 +153,7 @@ import {
 import {
   createSkillProcedure,
   listSkillCategoriesProcedure,
+  listSkillTagsByCategoryProcedure,
   listSkillTagsPrioritizedProcedure,
   listSkillTagsProcedure,
 } from "@/server/orpc/routes/skills"
@@ -241,6 +242,7 @@ export const appRouter = {
   skills: {
     list: listSkillTagsProcedure,
     listPrioritized: listSkillTagsPrioritizedProcedure,
+    listByCategory: listSkillTagsByCategoryProcedure,
     create: createSkillProcedure,
     listCategories: listSkillCategoriesProcedure,
   },

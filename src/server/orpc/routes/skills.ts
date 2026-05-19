@@ -17,6 +17,7 @@ import { ServiceError } from "@/server/services/errors"
 import { createSkill } from "@/server/services/skills/create"
 import { listSkillCategories } from "@/server/services/skills/list-categories"
 import { listSkillTags } from "@/server/services/skills/list"
+import { listSkillsByCategory } from "@/server/services/skills/list-by-category"
 import { listSkillTagsPrioritized } from "@/server/services/skills/list-prioritized"
 
 export const listSkillTagsProcedure = publicProcedureStandard
@@ -42,6 +43,26 @@ export const listSkillTagsProcedure = publicProcedureStandard
 export const listSkillTagsPrioritizedProcedure = publicProcedureStandard
   .input(z.object({ departmentId: z.string().min(1) }))
   .handler(async ({ input }) => listSkillTagsPrioritized(input.departmentId))
+
+export const listSkillTagsByCategoryProcedure = publicProcedureStandard
+  .input(
+    z
+      .object({
+        query: z.string().optional(),
+        cursor: z.coerce.number().optional(),
+        limit: z.coerce.number().int().min(1).max(15).optional(),
+        departmentId: z.string().min(1).optional(),
+      })
+      .optional(),
+  )
+  .handler(async ({ input }) =>
+    listSkillsByCategory({
+      query: input?.query,
+      cursor: input?.cursor ?? null,
+      limit: input?.limit,
+      departmentId: input?.departmentId,
+    }),
+  )
 
 export const createSkillProcedure = authedProcedureStandard
   .input(

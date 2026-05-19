@@ -10,7 +10,6 @@ import { StudentSubmitSection } from "@/app/[locale]/onboarding/student/_compone
 import { useOnboardingForm } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/hooks/useOnboardingForm"
 import { FormHeader } from "@/components/FormHeader"
 import { ServerError } from "@/components/ServerError"
-import { useSkillGrouping } from "@/hooks"
 import { isLanguageRequirementsEnabledOnClient } from "@/lib/feature-flags-client"
 
 export function StudentOnboardingFormContent() {
@@ -20,14 +19,10 @@ export function StudentOnboardingFormContent() {
   const {
     form,
     serverError,
-    departmentSkills,
-    otherSkills,
     departments,
     selectedDepartmentId,
     handleDepartmentChange,
   } = useOnboardingForm()
-  const departmentGrouping = useSkillGrouping(departmentSkills)
-  const otherGrouping = useSkillGrouping(otherSkills)
 
   return (
     <form
@@ -56,10 +51,6 @@ export function StudentOnboardingFormContent() {
         form={form}
         skillsSectionIndex={skillsSectionIndex}
         selectedDepartmentId={selectedDepartmentId}
-        departmentSkills={departmentSkills}
-        otherSkills={otherSkills}
-        departmentGrouping={departmentGrouping}
-        otherGrouping={otherGrouping}
       />
 
       <StudentSubmitSection form={form} />

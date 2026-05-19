@@ -20,6 +20,8 @@ interface SkillCategoryGridProps {
   selectAllLabel?: string
   deselectAllLabel?: string
   selectRemainingLabel?: string
+  recommendedCategorySlugs?: Set<string>
+  recommendedLabel?: string
 }
 
 export function SkillCategoryGrid({
@@ -34,6 +36,8 @@ export function SkillCategoryGrid({
   selectAllLabel = "Select all",
   deselectAllLabel = "Deselect all",
   selectRemainingLabel = "Select remaining",
+  recommendedCategorySlugs,
+  recommendedLabel = "Recommended",
 }: SkillCategoryGridProps) {
   if (isLoading) {
     return (
@@ -63,9 +67,16 @@ export function SkillCategoryGrid({
         return (
           <div key={category} className="space-y-2.5">
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-bold tracking-[0.15em] uppercase text-muted-foreground/60">
-                {categoryLabels[category] ?? category}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-[10px] font-bold tracking-[0.15em] uppercase text-muted-foreground/60">
+                  {categoryLabels[category] ?? category}
+                </p>
+                {recommendedCategorySlugs?.has(category) && (
+                  <span className="inline-block rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary">
+                    {recommendedLabel}
+                  </span>
+                )}
+              </div>
               {onToggleCategory && (
                 <button
                   type="button"

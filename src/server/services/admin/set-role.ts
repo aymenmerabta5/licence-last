@@ -133,7 +133,7 @@ export async function updateUserRole(
     .set({
       universityId: null,
       departmentId: null,
-      onboardingCompleted: false,
+      onboardingCompleted: true,
     })
     .where(eq(user.id, targetUserId))
 

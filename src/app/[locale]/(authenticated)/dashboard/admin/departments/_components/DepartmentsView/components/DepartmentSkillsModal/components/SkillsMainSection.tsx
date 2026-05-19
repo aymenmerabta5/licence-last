@@ -1,9 +1,5 @@
 "use client"
 
-import { ChevronDown, ChevronUp } from "lucide-react"
-import { useTranslations } from "next-intl"
-
-import { DepartmentCategoryConfig } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentCategoryConfig"
 import { SkillsBody } from "@/app/[locale]/(authenticated)/dashboard/admin/departments/_components/DepartmentsView/components/DepartmentSkillsModal/components/SkillsBody"
 
 interface Skill {
@@ -12,8 +8,6 @@ interface Skill {
 }
 
 interface SkillsMainSectionProps {
-  departmentId: string
-  assignedCategories: Array<{ id: number; name: string; slug: string }>
   isLoading: boolean
   query: string
   setQuery: (value: string) => void
@@ -23,8 +17,6 @@ interface SkillsMainSectionProps {
   categoryLabels: Record<string, string>
   toggleSkill: (skillId: string) => void
   toggleCategory: (category: string, skillIds: string[]) => void
-  showCategories: boolean
-  toggleCategories: () => void
   similarSkills: Array<{ id: string; name: string }> | null
   dismissSimilar: () => void
   isCreatingSkill: boolean
@@ -32,11 +24,11 @@ interface SkillsMainSectionProps {
   handleForceCreate: (query: string) => void
   handleUseExisting: (skillId: string) => void
   hasExactMatch: boolean
+  sentinelRef?: React.RefObject<HTMLDivElement | null>
+  isFetchingNextPage?: boolean
 }
 
 export function SkillsMainSection({
-  departmentId,
-  assignedCategories,
   isLoading,
   query,
   setQuery,
@@ -46,8 +38,6 @@ export function SkillsMainSection({
   categoryLabels,
   toggleSkill,
   toggleCategory,
-  showCategories,
-  toggleCategories,
   similarSkills,
   dismissSimilar,
   isCreatingSkill,
@@ -55,47 +45,29 @@ export function SkillsMainSection({
   handleForceCreate,
   handleUseExisting,
   hasExactMatch,
+  sentinelRef,
+  isFetchingNextPage,
 }: SkillsMainSectionProps) {
-  const hasCategories = assignedCategories.length > 0
-  const t = useTranslations("dashboard.admin.departments.skills")
-
   return (
-    <>
-      <button
-        type="button"
-        onClick={toggleCategories}
-        className="flex items-center justify-between w-full text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:text-foreground transition-colors py-1"
-      >
-        <span>{t("manageCategories")}</span>
-        {showCategories ? (
-          <ChevronUp className="h-3.5 w-3.5" />
-        ) : (
-          <ChevronDown className="h-3.5 w-3.5" />
-        )}
-      </button>
-      {showCategories && (
-        <DepartmentCategoryConfig departmentId={departmentId} />
-      )}
-      <SkillsBody
-        hasCategories={hasCategories}
-        isLoading={isLoading}
-        query={query}
-        setQuery={setQuery}
-        draftIds={draftIds}
-        groups={groups}
-        categoryOrder={categoryOrder}
-        categoryLabels={categoryLabels}
-        toggleSkill={toggleSkill}
-        toggleCategory={toggleCategory}
-        similarSkills={similarSkills}
-        dismissSimilar={dismissSimilar}
-        isCreatingSkill={isCreatingSkill}
-        handleCreateSkill={handleCreateSkill}
-        handleForceCreate={handleForceCreate}
-        handleUseExisting={handleUseExisting}
-        hasExactMatch={hasExactMatch}
-        toggleCategories={toggleCategories}
-      />
-    </>
+    <SkillsBody
+      isLoading={isLoading}
+      query={query}
+      setQuery={setQuery}
+      draftIds={draftIds}
+      groups={groups}
+      categoryOrder={categoryOrder}
+      categoryLabels={categoryLabels}
+      toggleSkill={toggleSkill}
+      toggleCategory={toggleCategory}
+      similarSkills={similarSkills}
+      dismissSimilar={dismissSimilar}
+      isCreatingSkill={isCreatingSkill}
+      handleCreateSkill={handleCreateSkill}
+      handleForceCreate={handleForceCreate}
+      handleUseExisting={handleUseExisting}
+      hasExactMatch={hasExactMatch}
+      sentinelRef={sentinelRef}
+      isFetchingNextPage={isFetchingNextPage}
+    />
   )
 }

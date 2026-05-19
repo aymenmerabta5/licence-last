@@ -506,8 +506,13 @@
       },
       "skillsSection": "Compétences techniques",
       "skillsHint": "Sélectionnez jusqu'à 10 compétences qui décrivent le mieux votre expertise",
-      "skillsSelectDepartmentFirst": "Veuillez d'abord sélectionner un département pour voir les compétences pertinentes",
+      "searchSkills": "Rechercher des compétences...",
+      "loadingSkills": "Chargement des compétences...",
+      "loadingMore": "Chargement...",
+      "noSkillsFound": "Aucune compétence ne correspond à votre recherche.",
+      "noSkillsAvailable": "Aucune compétence disponible pour le moment.",
       "skillsSelected": "sélectionnées",
+      "recommended": "Recommandé",
       "recommendedSkills": "Recommandées pour votre département",
       "otherSkills": "Autres compétences",
       "submit": "Compléter le profil",
@@ -1797,6 +1802,7 @@
         "super": "Votre écosystème en un coup d'œil.",
         "university": "Suivez, coordonnez et dirigez votre université."
       },
+      "subtitle": "Supervisez les opérations et les placements",
       "description": {
         "super": "Supervisez la santé de la plateforme, validez les placements et suivez les progrès des institutions sur le réseau Stag.",
         "university": "Suivez les indicateurs clés des étudiants et des départements pour gérer les stages de votre université en un seul endroit."
@@ -1972,7 +1978,8 @@
           "clearAll": "Tout effacer",
           "selectAll": "Tout sélectionner",
           "deselectAll": "Tout désélectionner",
-          "selectRemaining": "Sélectionner le reste"
+          "selectRemaining": "Sélectionner le reste",
+          "loadingMore": "Chargement..."
         },
         "bulkCreate": {
           "title": "Création en masse de départements",

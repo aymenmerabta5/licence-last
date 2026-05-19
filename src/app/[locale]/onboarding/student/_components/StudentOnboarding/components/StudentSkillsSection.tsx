@@ -1,43 +1,50 @@
-﻿import { useTranslations } from "next-intl"
-import type {
-  OnboardingFormApi,
-  SkillGroupingResult,
-  StudentSkillTag,
-} from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/types"
+﻿"use client"
+
+import { Loader2 } from "lucide-react"
+import { useTranslations } from "next-intl"
+
+import { useOnboardingSkills } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/hooks/useOnboardingSkills"
+import type { OnboardingFormApi } from "@/app/[locale]/onboarding/student/_components/StudentOnboarding/components/types"
 import { FormSection } from "@/components/form-fields"
 import { SkillCategoryGrid } from "@/components/SkillCategoryGrid"
+import { SkillSearchInput } from "@/components/skill-modals/SkillSearchInput"
 
 interface StudentSkillsSectionProps {
   form: OnboardingFormApi
   skillsSectionIndex: string
   selectedDepartmentId: string
-  departmentSkills: StudentSkillTag[]
-  otherSkills: StudentSkillTag[]
-  departmentGrouping: SkillGroupingResult
-  otherGrouping: SkillGroupingResult
 }
 
 export function StudentSkillsSection({
   form,
   skillsSectionIndex,
   selectedDepartmentId,
-  departmentSkills,
-  otherSkills,
-  departmentGrouping,
-  otherGrouping,
 }: StudentSkillsSectionProps) {
   const t = useTranslations("onboarding.student")
+  const {
+    query,
+    setQuery,
+    groups,
+    categoryOrder,
+    categoryLabels,
+    recommendedCategorySlugs,
+    isLoading,
+    isFetchingNextPage,
+    sentinelRef,
+  } = useOnboardingSkills(selectedDepartmentId)
+
+  const hasCategories = categoryOrder.length > 0
 
   return (
     <FormSection
       title={`${skillsSectionIndex} - ${t("skillsSection")}`}
       delay={0.18}
     >
-      <p className="text-xs text-muted-foreground">
-        {selectedDepartmentId
-          ? t("skillsHint")
-          : t("skillsSelectDepartmentFirst")}
-      </p>
+      <SkillSearchInput
+        query={query}
+        onChange={setQuery}
+        placeholder={t("searchSkills")}
+      />
 
       <form.Field name="skillTagIds">
         {(field) => {
@@ -56,46 +63,41 @@ export function StudentSkillsSection({
 
           return (
             <div className="space-y-5">
-              {selectedDepartmentId && departmentSkills.length > 0 ? (
-                <div className="space-y-3">
-                  <p className="text-[11px] font-semibold text-primary">
-                    {t("recommendedSkills")}
-                  </p>
+              {isLoading && !hasCategories ? (
+                <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  {t("loadingSkills")}
+                </div>
+              ) : null}
+
+              {hasCategories ? (
+                <>
                   <SkillCategoryGrid
-                    groups={departmentGrouping.groups}
-                    categoryOrder={departmentGrouping.categoryOrder}
-                    categoryLabels={departmentGrouping.categoryLabels}
+                    groups={groups}
+                    categoryOrder={categoryOrder}
+                    categoryLabels={categoryLabels}
                     selectedIds={field.state.value}
                     maxSkills={10}
                     isLoading={false}
                     onToggle={toggleSkill}
+                    recommendedCategorySlugs={recommendedCategorySlugs}
+                    recommendedLabel={t("recommended")}
                   />
-                </div>
-              ) : null}
-
-              {selectedDepartmentId &&
-              departmentSkills.length > 0 &&
-              otherSkills.length > 0 ? (
-                <div className="border-t border-border/50" />
-              ) : null}
-
-              {otherSkills.length > 0 ? (
-                <div className="space-y-3">
-                  {selectedDepartmentId && departmentSkills.length > 0 ? (
-                    <p className="text-[11px] font-semibold text-muted-foreground">
-                      {t("otherSkills")}
-                    </p>
-                  ) : null}
-                  <SkillCategoryGrid
-                    groups={otherGrouping.groups}
-                    categoryOrder={otherGrouping.categoryOrder}
-                    categoryLabels={otherGrouping.categoryLabels}
-                    selectedIds={field.state.value}
-                    maxSkills={10}
-                    isLoading={false}
-                    onToggle={toggleSkill}
-                  />
-                </div>
+                  <div ref={sentinelRef} className="py-2">
+                    {isFetchingNextPage && (
+                      <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        {t("loadingMore")}
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : !isLoading ? (
+                <p className="py-4 text-sm text-muted-foreground">
+                  {query.trim()
+                    ? t("noSkillsFound")
+                    : t("noSkillsAvailable")}
+                </p>
               ) : null}
 
               <div className="flex items-center gap-3 pt-1">
