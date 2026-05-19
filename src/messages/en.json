@@ -1791,9 +1791,27 @@
       "certificateVersion": "{language} · {border}"
     },
     "admin": {
-      "title": "Admin Dashboard",
-      "subtitle": "Overview of platform activity",
+      "title": {
+        "super": "Your ecosystem at a glance.",
+        "university": "Track, coordinate, and steer your university."
+      },
+      "description": {
+        "super": "Monitor platform health, validate placements, and track institutional progress across the Stag network.",
+        "university": "Follow key student and department indicators to run your university internship operations from one place."
+      },
+      "badge": {
+        "system": "System",
+        "university": "University"
+      },
+      "eyebrow": {
+        "global": "Global Operations",
+        "institutional": "Institutional Oversight"
+      },
       "stats": {
+        "totalStudents": "Students",
+        "placementRate": "Placement Rate",
+        "totalCompanies": "Companies",
+        "totalOffers": "Offers",
         "totalPlacements": "Total Placements",
         "pendingValidation": "Pending Validation",
         "docsGenerated": "Documents Generated",

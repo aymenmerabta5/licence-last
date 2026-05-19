@@ -1791,9 +1791,27 @@
       "certificateVersion": "{language} · {border}"
     },
     "admin": {
-      "title": "لوحة تحكم المشرف",
-      "subtitle": "نظرة عامة على نشاط المنصة",
+      "title": {
+        "super": "نظرة عامة على نظامك البيئي.",
+        "university": "تتبع وتنسيق وتوجيه جامعتك."
+      },
+      "description": {
+        "super": "راقِب صحة المنصة، وتحقّق من صحة المواضع، وتتبّع التقدم المؤسساتي عبر شبكة Stag.",
+        "university": "تابع المؤشرات الرئيسية للطلاب والأقسام لإدارة عمليات التدريب لجامعتك من مكان واحد."
+      },
+      "badge": {
+        "system": "النظام",
+        "university": "الجامعة"
+      },
+      "eyebrow": {
+        "global": "العمليات العالمية",
+        "institutional": "الرقابة المؤسساتية"
+      },
       "stats": {
+        "totalStudents": "الطلاب",
+        "placementRate": "معدل التوظيف",
+        "totalCompanies": "الشركات",
+        "totalOffers": "العروض",
         "totalPlacements": "إجمالي المواضع",
         "pendingValidation": "في انتظار التحقق من الصحة",
         "docsGenerated": "تم إنشاء المستندات",

@@ -1791,9 +1791,27 @@
       "certificateVersion": "{language} · {border}"
     },
     "admin": {
-      "title": "Tableau de Bord Admin",
-      "subtitle": "Aperçu de l'activité de la plateforme",
+      "title": {
+        "super": "Votre écosystème en un coup d'œil.",
+        "university": "Suivez, coordonnez et dirigez votre université."
+      },
+      "description": {
+        "super": "Supervisez la santé de la plateforme, validez les placements et suivez les progrès des institutions sur le réseau Stag.",
+        "university": "Suivez les indicateurs clés des étudiants et des départements pour gérer les stages de votre université en un seul endroit."
+      },
+      "badge": {
+        "system": "Système",
+        "university": "Université"
+      },
+      "eyebrow": {
+        "global": "Opérations globales",
+        "institutional": "Supervision institutionnelle"
+      },
       "stats": {
+        "totalStudents": "Étudiants",
+        "placementRate": "Taux de placement",
+        "totalCompanies": "Entreprises",
+        "totalOffers": "Offres",
         "totalPlacements": "Total des placements",
         "pendingValidation": "En attente de validation",
         "docsGenerated": "Documents générés",
