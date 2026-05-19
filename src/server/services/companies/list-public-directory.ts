@@ -107,7 +107,7 @@ export async function listPublicDirectoryCompanies(
   const nextCursor =
     hasMore && lastCompany
       ? {
-          createdAt: lastCompany.createdAt.toISOString(),
+          createdAt: new Date(lastCompany.createdAt).toISOString(),
           id: lastCompany.id,
         }
       : undefined
